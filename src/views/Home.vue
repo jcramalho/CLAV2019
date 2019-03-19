@@ -1,18 +1,18 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <ListaPedidos @pedidoSelected="consultaPedido($event)"/>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+<script>
+import ListaPedidos from "@/components/ListaPedidos.vue"; // @ is an alias to /src
 
-@Component({
+export default {
   components: {
-    HelloWorld
+        ListaPedidos
+    },
+  methods: {
+    consultaPedido: function(item){
+      this.$router.push('/consulta/' + item.codigo);
+    }
   }
-})
-export default class Home extends Vue {}
+}
 </script>
