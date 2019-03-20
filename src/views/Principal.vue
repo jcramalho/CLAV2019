@@ -3,7 +3,7 @@
   <v-layout row wrap justify-center>
     <v-flex xs12 sm5>
       <v-card>
-        <v-toolbar color="blue" dark>
+        <v-toolbar :color="panelHeaderColor" dark>
             <v-toolbar-title>O que é a CLAV</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
@@ -41,7 +41,7 @@
 
     <v-flex xs12 sm5>
         <v-card>
-            <v-toolbar color="blue" dark>
+            <v-toolbar :color="panelHeaderColor" dark>
                 <v-toolbar-title>Documentação Técnica de Apoio</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
@@ -77,7 +77,7 @@
   <v-layout row wrap justify-center>
     <v-flex xs12 sm5>
         <v-card>
-            <v-toolbar color="blue" dark>
+            <v-toolbar :color="panelHeaderColor" dark>
                 <v-toolbar-title>Operações</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
@@ -90,7 +90,7 @@
                             <v-card-text>
                                 <p>{{ item.texto }}</p>
                                 <div>
-                                    <v-btn color="green accent-4" dark v-for="o in item.ops" @click="go(o.url);">
+                                    <v-btn color="deep-purple darken-3" dark v-for="o in item.ops" @click="go(o.url);">
                                         {{ o.label }}
                                     </v-btn>
                                 </div>
@@ -104,7 +104,7 @@
     
     <v-flex xs12 sm5>
         <v-card>
-            <v-toolbar color="blue" dark>
+            <v-toolbar :color="panelHeaderColor" dark>
                 <v-toolbar-title>Entidades</v-toolbar-title>
             </v-toolbar>
 
@@ -137,6 +137,7 @@ export default {
     },
     data () {
       return {
+        panelHeaderColor: "indigo accent-4",
         operacoes: [
             {
                 entidade: "Lista Consolidada",
@@ -144,7 +145,7 @@ export default {
                 ops: [
                     {
                         label: "Consultar",
-                        url: "/lc"
+                        url: "/classes"
                     }
                 ]
             },

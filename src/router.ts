@@ -14,6 +14,13 @@ export default new Router({
       component: () => 
         import("./views/Principal.vue")
     },
+    // Routes das classes
+    {
+      path: "/classes",
+      name: "classes",
+      component: () => 
+        import("./views/classes/Classes.vue")
+    },
     // Routes dos pedidos
     {
       path: "/consulta/:idPedido",
