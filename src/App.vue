@@ -34,11 +34,6 @@ export default {
       legislacaoOps: [
         'Listar', 'Consultar', 'Inserir', 'Alterar', 'Desativar'
       ]
-    }),
-  methods: {
-    consultaPedido: function(item){
-      this.$router.push('/consulta');
-    }
-  }
+    })
 }
 </script>

@@ -1,7 +1,11 @@
 <template>
-    <v-container>
+    <v-container grid-list-md fluid>
       <v-layout row wrap justify-center>
-        <v-flex xs12>    
+        <!-- MENU LATERAL -->
+        <v-flex xs12 sm2>
+            <ClassesArvoreLateral/>
+        </v-flex>
+        <v-flex xs12 sm10>    
           <!-- HEADER -->
           <v-card v-if="classeLoaded">
             <v-toolbar color="indigo darken-1" dark>
@@ -199,6 +203,7 @@
   import Participantes from '@/components/classes/Participantes.vue'
   import ProcessosRelacionados from '@/components/classes/ProcessosRelacionados.vue'
   import Legislacao from '@/components/classes/Legislacao.vue'
+  import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
 
   export default {
     props: ["idc"],
@@ -213,7 +218,7 @@
 
     components: {
         ClassesFilho, NotasAp, NotasEx, ExemplosNotasAp, TermosIndice, Donos, Participantes, 
-        ProcessosRelacionados, Legislacao
+        ProcessosRelacionados, Legislacao, ClassesArvoreLateral
     },
 
     methods: {
