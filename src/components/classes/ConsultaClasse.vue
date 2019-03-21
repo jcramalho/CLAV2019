@@ -89,8 +89,92 @@
                         </v-toolbar>
                     </template>
                     <v-card class="light-blue lighten-5">
-
+                        <v-toolbar color="light-blue accent-2 font-weight-medium" dark>
+                            <v-toolbar-title>Prazo de Conservação Administrativa (PCA)</v-toolbar-title>
+                        </v-toolbar>
+                        <v-card-title>
+                            <v-flex xs12 sm6>
+                                <v-text-field
+                                    label="PCA"
+                                    readonly
+                                    :value="this.classe.pca.valores+' anos'"
+                                ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 v-if="this.classe.pca.notas">
+                            <v-text-field
+                                label="Notas"
+                                readonly
+                                :value="this.classe.pca.notas"
+                            ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6>
+                            <v-text-field
+                                label="Forma de Contagem"
+                                readonly
+                                :value="this.classe.pca.formaContagem"
+                            ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 v-if="this.classe.pca.subFormaContagem">
+                            <v-text-field
+                                label="Subforma de Contagem"
+                                readonly
+                                :value="this.classe.pca.subFormaContagem"
+                            ></v-text-field>
+                        </v-flex>
+                    </v-card-title>
                     </v-card>
+                    <v-container xs11 justify-center>
+                        <v-card>
+                            <v-toolbar color="light-blue accent-1 font-weight-medium">
+                                <v-toolbar-title>Justificação</v-toolbar-title>
+                            </v-toolbar>
+                            
+                            <v-container xs11 justify-center v-for="c in this.classe.pca.justificacao" :key="c.criterio">
+                                <v-card>
+                                    <v-toolbar color="light-blue lighten-5">
+                                        <v-toolbar-title>{{ c.tipoLabel }}</v-toolbar-title>
+                                    </v-toolbar>
+                                    <v-card-text>
+                                        <span>{{ c.conteudo }}</span>
+                                    </v-card-text>
+                                </v-card>
+                            </v-container>
+                        </v-card>
+                    </v-container>
+
+                    <v-card class="light-blue lighten-5">
+                        <v-toolbar color="light-blue accent-2 font-weight-medium" dark>
+                            <v-toolbar-title>Destino Final (DF)</v-toolbar-title>
+                        </v-toolbar>
+                        <v-card-title>
+                            <v-flex xs12 sm6>
+                                <v-text-field
+                                    label="Destino Final"
+                                    readonly
+                                    :value="this.classe.df.valor"
+                                ></v-text-field>
+                            </v-flex>
+                        </v-card-title>
+                    </v-card>
+                    <v-container xs11 justify-center>
+                        <v-card>
+                            <v-toolbar color="light-blue accent-1 font-weight-medium">
+                                <v-toolbar-title>Justificação</v-toolbar-title>
+                            </v-toolbar>
+                            
+                            <v-container xs11 justify-center v-for="c in this.classe.df.justificacao" :key="c.criterio">
+                                <v-card>
+                                    <v-toolbar color="light-blue lighten-5">
+                                        <v-toolbar-title>{{ c.tipoLabel }}</v-toolbar-title>
+                                    </v-toolbar>
+                                    <v-card-text>
+                                        <span>{{ c.conteudo }}</span>
+                                    </v-card-text>
+                                </v-card>
+                            </v-container>
+                        </v-card>
+                    </v-container>
+                    
                 </v-expansion-panel-content>
 
 
