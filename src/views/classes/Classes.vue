@@ -1,35 +1,31 @@
 <template>
-    
-
-    <v-card
-    class="mx-auto"
-  >
-    <v-sheet class="pa-3 indigo lighten-2">
-      <v-text-field
-        v-model="search"
-        label="Pesquisa por código ou título"
-        dark
-        flat
-        solo-inverted
-        hide-details
-        clearable
-        clear-icon="mdi-close-circle-outline"
-      ></v-text-field>
-    </v-sheet>
-    <v-card-text>
-        <div v-if="classesCarregadas">
-            <v-treeview 
-                :items="classesTree"
-                item-key="id"
-                :search="search"
-                :filter="filter"
+    <v-card class="mx-auto">
+        <v-sheet class="pa-3 indigo lighten-2">
+            <v-text-field
+                v-model="search"
+                label="Pesquisa por código ou título"
+                dark
+                flat
+                solo-inverted
+                hide-details
+                clearable
+                clear-icon="mdi-close-circle-outline"
+            ></v-text-field>
+        </v-sheet>
+        <v-card-text>
+            <div v-if="classesCarregadas">
+                <v-treeview 
+                    :items="classesTree"
+                    item-key="id"
+                    :search="search"
+                    :filter="filter"
                 >
-                <template slot="label" slot-scope="{item}">
-                    <a @click="go(item.id)"> {{ item.name }} </a>
-                </template>
-            </v-treeview>
-        </div>
-    </v-card-text>
+                    <template slot="label" slot-scope="{item}">
+                        <a @click="go(item.id)"> {{ item.name }} </a>
+                    </template>
+                </v-treeview>
+            </div>
+        </v-card-text>
   </v-card>
 </template>
 
