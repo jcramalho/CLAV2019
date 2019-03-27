@@ -19,8 +19,6 @@
                     item-key="id"
                     :search="search"
                     :filter="filter"
-                    active="['250.10']"
-                    open="['250.10']"
                 >
                     <template slot="label" slot-scope="{item}">
                         <a @click="go(item.id)"> {{ item.name }} </a>
@@ -54,7 +52,7 @@ export default {
 
     methods: {
         go: function(idClasse){
-            this.$router.push('/classes/c'+idClasse);
+            this.$router.push('/classes/consultar/c'+idClasse);
             this.$router.go();
         },
         preparaTree: async function(lclasses){

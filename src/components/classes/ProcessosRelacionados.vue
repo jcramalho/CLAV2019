@@ -21,7 +21,7 @@
                 <td>
                     <ul>
                         <li v-for="p in props.item.processos" :key="p.label">
-                            <a :href="'/classes/c' + p.codigo"> {{ p.codigo }} </a>
+                            <a :href="'/classes/consultar/c' + p.codigo"> {{ p.codigo }} </a>
                                 - {{ p.titulo }} 
                         </li>
                     </ul>
@@ -70,7 +70,7 @@ export default {
 
     methods: {
         go: function(id){
-            this.$router.push('/classes/c'+id);
+            this.$router.push('/classes/consultar/c'+id);
             this.$router.go();
         }
     },

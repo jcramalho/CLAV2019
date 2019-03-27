@@ -90,7 +90,7 @@
                             <v-card-text>
                                 <p>{{ item.texto }}</p>
                                 <div>
-                                    <v-btn color="deep-purple darken-3" dark v-for="o in item.ops" @click="go(o.url);">
+                                    <v-btn color="deep-purple darken-3" dark v-for="o in item.ops" @click="go(o.url);" :key="o.url">
                                         {{ o.label }}
                                     </v-btn>
                                 </div>
@@ -146,6 +146,10 @@ export default {
                     {
                         label: "Consultar",
                         url: "/classes"
+                    },
+                    {
+                        label: "Criar classe",
+                        url: "/classes/criar"
                     }
                 ]
             },

@@ -48,7 +48,7 @@
                 </v-expansion-panel-content>
 
                 <!-- CONTEXTO DA CLASSE -->
-                <v-expansion-panel-content>
+                <v-expansion-panel-content v-if="classe.nivel == 3">
                     <template v-slot:header>
                         <v-toolbar color="deep-purple accent-4 body-2 font-weight-bold" dark>
                             <v-toolbar-title>Contexto de Avaliação</v-toolbar-title>
@@ -86,7 +86,7 @@
                     </v-card>
                 </v-expansion-panel-content>
 
-                <v-expansion-panel-content>
+                <v-expansion-panel-content v-if="((classe.nivel == 3)&&(classe.filhos.length == 0))||(classe.nivel == 4)">
                     <template v-slot:header>
                         <v-toolbar color="light-blue accent-4 body-2 font-weight-bold" dark>
                             <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
@@ -186,7 +186,7 @@
             </v-card-text>
           </v-card>
           
-          <p v-else>Loading...</p>
+          <p v-else>A carregar...</p>
         </v-flex>
       </v-layout>
     </v-container>
@@ -223,7 +223,7 @@
 
     methods: {
         go: function(idClasse){
-            this.$router.push('/classes/c'+idClasse);
+            this.$router.push('/classes/consultar/c'+idClasse);
         }
     },
     

@@ -52,7 +52,7 @@ export default {
 
     methods: {
         go: function(idClasse){
-            this.$router.push('/classes/c'+idClasse);
+            this.$router.push('/classes/consultar/c'+idClasse);
         },
         preparaTree: async function(lclasses){
             try{
