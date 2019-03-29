@@ -85,17 +85,46 @@
                                 </v-toolbar>
                             </template>
                             <v-layout wrap>
-                                <!-- TÍTULO -->
+                                <!-- DESCRIÇÂO -->
                                 <v-flex xs2>
                                     <v-subheader>Descrição:</v-subheader>
                                 </v-flex>
-                                <v-flex xs10>
+                                <v-flex xs9>
                                     <v-text-field
                                         v-model="classe.descricao"
                                         label="Descrição"
                                         solo
                                         clearable
                                     ></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout wrap row>
+                                <!-- Notas de Aplicação -->
+                                <v-flex xs2>
+                                    <v-subheader>Notas de Aplicação:</v-subheader>
+                                    <v-btn color="green darken-2" dark round @click="insereNovaNota(classe.notasAp, 'na')">
+                                        Nova nota
+                                        <v-icon dark right>add_circle_outline</v-icon>
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex>
+                                    <v-layout row wrap v-for="(nota, index) in classe.notasAp" :key="index">
+                                        <v-flex>
+                                            <v-textarea
+                                                v-model="nota.nota"
+                                                auto-grow
+                                                solo
+                                                label="Nota de Aplicação:"
+                                                rows="1"
+                                            ></v-textarea>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-btn color="red darken-2" dark round @click="classe.notasAp.splice(index,1)">
+                                                Remover
+                                                <v-icon dark right>clear</v-icon>
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
                                 </v-flex>
                             </v-layout>
                         </v-expansion-panel-content>
@@ -109,7 +138,8 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  const axios = require('axios')
+  import nanoid from 'nanoid'
   import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
   
   export default {
@@ -266,6 +296,13 @@
                 console.log(erro);
             }
         },
+        insereNovaNota: function(notas, tipo){
+            var n = {id: tipo + '_' + nanoid(), conteudo: ''};
+            notas.push(n);
+        },
+        removeNota: function(ind){
+            this.classe.notasAp.splice(ind,1)
+        }
     }
   }
 </script>
