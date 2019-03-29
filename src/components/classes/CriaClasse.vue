@@ -103,13 +103,13 @@
                                 <v-flex xs2>
                                     <v-subheader>Notas de Aplicação:</v-subheader>
                                     <v-btn color="green darken-2" dark round @click="insereNovaNota(classe.notasAp, 'na')">
-                                        Nova nota
+                                        Nota Aplic.
                                         <v-icon dark right>add_circle_outline</v-icon>
                                     </v-btn>
                                 </v-flex>
                                 <v-flex>
-                                    <v-layout row wrap v-for="(nota, index) in classe.notasAp" :key="index">
-                                        <v-flex>
+                                    <v-layout fluid row v-for="(nota, index) in classe.notasAp" :key="index">
+                                        <v-flex xs9>
                                             <v-textarea
                                                 v-model="nota.nota"
                                                 auto-grow
@@ -120,6 +120,35 @@
                                         </v-flex>
                                         <v-flex>
                                             <v-btn color="red darken-2" dark round @click="classe.notasAp.splice(index,1)">
+                                                Remover
+                                                <v-icon dark right>clear</v-icon>
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout wrap row>
+                                <!-- Notas de Exclusão -->
+                                <v-flex xs2>
+                                    <v-subheader>Notas de Exclusão:</v-subheader>
+                                    <v-btn color="green darken-2" dark round @click="insereNovaNota(classe.notasEx, 'ne')">
+                                        Nota Exclusão
+                                        <v-icon dark right>add_circle_outline</v-icon>
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex>
+                                    <v-layout fluid row v-for="(nota, index) in classe.notasEx" :key="index">
+                                        <v-flex xs9>
+                                            <v-textarea
+                                                v-model="nota.nota"
+                                                auto-grow
+                                                solo
+                                                label="Nota de Exclusão:"
+                                                rows="1"
+                                            ></v-textarea>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-btn color="red darken-2" dark round @click="classe.notasEx.splice(index,1)">
                                                 Remover
                                                 <v-icon dark right>clear</v-icon>
                                             </v-btn>
@@ -139,7 +168,7 @@
 
 <script>
   const axios = require('axios')
-  import nanoid from 'nanoid'
+  const nanoid = require('nanoid')
   import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
   
   export default {
