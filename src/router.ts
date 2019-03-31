@@ -33,6 +33,13 @@ export default new Router({
       component: () => 
         import("./views/classes/ClassesCria.vue")
     },
+    // Routes das tabelas de seleção
+    {
+      path: "/ts/criar",
+      name: "criaTs",
+      component: () =>
+        import("./views/tabSel/TabSelCria.vue")
+    },
     // Routes dos pedidos
     {
       path: "/consulta/:idPedido",
