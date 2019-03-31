@@ -1,5 +1,5 @@
 <template>
-    <v-data-table
+        <v-data-table
             :headers="headers"
             :items="entidades"
             class="elevation-1"
@@ -10,16 +10,24 @@
                     <th v-for="h in props.headers" :key="h.text" class="body-2 font-weight-bold">
                         {{ h.text }}
                     </th>
+                    <th style="color: green;"> Desselecionar </th>
                 </tr>
             </template>
 
             <template v-slot:items="props">
                 <tr>
+                    <td>{{ props.item.intervencao }}</td>
                     <td>{{ props.item.sigla }}</td>
                     <td> {{ props.item.designacao }} </td>
-                    <td> {{ props.item.tipo.split('#')[1] }} </td>
+                    <td> {{ props.item.tipo }} </td>
+                    <td>
+                        <v-btn small color="red darken-2" dark round @click="unselectParticipante(props.item)">
+                            <v-icon dark>remove_circle</v-icon>
+                        </v-btn>
+                    </td>
                 </tr>
             </template>
+            
         </v-data-table>
 </template>
 
@@ -27,9 +35,10 @@
 export default {
     props: ["entidades"],
 
-     data: function() {
+    data: function() {
       return {
           headers: [
+            { text: 'Tipo de Intervenção', align: 'left', sortable: false, value: 'intervencao'},
             { text: 'Sigla', align: 'left', value: 'sigla'},
             { text: 'Designação', value: 'designacao' },
             { text: 'Tipo', value: 'tipo' }
@@ -41,6 +50,9 @@ export default {
         go: function(idClasse){
             this.$router.push('/entidades/'+idClasse);
             this.$router.go();
+        },
+        unselectParticipante: function(entidade){
+            this.$emit('unselectParticipante', entidade)
         }
     }
 }

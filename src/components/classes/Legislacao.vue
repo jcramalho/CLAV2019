@@ -1,6 +1,4 @@
 <template>
-    <div>
-        <div class="subheading font-weight-medium">Legislação</div>
         <v-data-table
             :headers="headers"
             :items="legs"
@@ -23,7 +21,6 @@
                 </tr>
             </template>
         </v-data-table>
-    </div>
 </template>
 
 <script>

@@ -30,8 +30,8 @@
                             />
                         </v-flex>
                     </v-layout>
+                    <!-- CLASSE PAI -->
                     <v-layout wrap v-if="classe.nivel>1">
-                        <!-- CLASSE PAI -->
                         <v-flex xs2>
                             <v-subheader>Classe Pai:</v-subheader>
                         </v-flex>
@@ -47,8 +47,8 @@
                             />
                         </v-flex>
                     </v-layout>
+                    <!-- CÓDIGO DA NOVA CLASSE -->
                     <v-layout wrap v-if="(classe.nivel==1)||classe.pai.codigo">
-                        <!-- CÓDIGO DA NOVA CLASSE -->
                         <v-flex xs2>
                             <v-subheader>Código:</v-subheader>
                         </v-flex>
@@ -61,8 +61,8 @@
                             ></v-text-field>
                         </v-flex>
                     </v-layout>
+                    <!-- TÍTULO -->
                     <v-layout wrap v-if="(classe.nivel==1)||classe.pai.codigo">
-                        <!-- TÍTULO -->
                         <v-flex xs2>
                             <v-subheader>Título:</v-subheader>
                         </v-flex>
@@ -98,6 +98,9 @@
                                     ></v-text-field>
                                 </v-flex>
                             </v-layout>
+
+                            <hr/>
+
                             <v-layout wrap row>
                                 <!-- Notas de Aplicação -->
                                 <v-flex xs2>
@@ -127,6 +130,41 @@
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
+
+                            <hr/>
+
+                            <v-layout wrap row>
+                                <!-- Exemplos de notas de Aplicação -->
+                                <v-flex xs2>
+                                    <v-subheader>Exemplo(s) de Nota(s) de Aplicação:</v-subheader>
+                                    <v-btn color="green darken-2" dark round @click="insereNovaNota(classe.exemplosNotasAp, 'exna')">
+                                        Novo exemplo
+                                        <v-icon dark right>add_circle_outline</v-icon>
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex>
+                                    <v-layout fluid row v-for="(ex, index) in classe.exemplosNotasAp" :key="index">
+                                        <v-flex xs9>
+                                            <v-textarea
+                                                v-model="ex.exemplo"
+                                                auto-grow
+                                                solo
+                                                label="Exemplo de Nota de Aplicação"
+                                                rows="1"
+                                            ></v-textarea>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-btn color="red darken-2" dark round @click="classe.exemplosNotasAp.splice(index,1)">
+                                                Remover
+                                                <v-icon dark right>clear</v-icon>
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                            </v-layout>
+
+                            <hr/>
+
                             <v-layout wrap row>
                                 <!-- Notas de Exclusão -->
                                 <v-flex xs2>
@@ -156,6 +194,207 @@
                                     </v-layout>
                                 </v-flex>
                             </v-layout>
+
+                            <hr/>
+
+                            <v-layout wrap row>
+                                <!-- TERMOS DE ÍNDICE -->
+                                <v-flex xs2>
+                                    <v-subheader>Termos de Índice:</v-subheader>
+                                    <v-btn color="green darken-2" dark round @click="insereNovoTI(classe.termosInd)">
+                                        Novo termo
+                                        <v-icon dark right>add_circle_outline</v-icon>
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex>
+                                    <v-layout fluid row v-for="(ti, index) in classe.termosInd" :key="index">
+                                        <v-flex xs9>
+                                            <v-textarea
+                                                v-model="ti.termo"
+                                                auto-grow
+                                                solo
+                                                label="Termo de Índice"
+                                                rows="1"
+                                            ></v-textarea>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-btn color="red darken-2" dark round @click="classe.termosInd.splice(index,1)">
+                                                Remover
+                                                <v-icon dark right>clear</v-icon>
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-flex>
+                            </v-layout>
+
+                        </v-expansion-panel-content>
+
+                         <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+                        <v-expansion-panel-content v-if="classe.nivel == 3">
+                            <template v-slot:header>
+                                <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
+                                    <v-toolbar-title>Contexto de Avaliação</v-toolbar-title>
+                                </v-toolbar>
+                            </template>
+                            <!-- TIPO DE PROCESSO -->
+                            <v-layout row wrap>
+                                <v-flex xs2>
+                                    <v-subheader>Tipo de Processo:</v-subheader>
+                                </v-flex>
+                                <v-flex xs9>
+                                    <v-select
+                                        item-text="label"
+                                        item-value="value"
+                                        v-model="classe.tipoProc"
+                                        :items="processoTipos"
+                                        label="Selecione o tipo de processo:"
+                                        solo
+                                        dense
+                                    />
+                                </v-flex>
+                            </v-layout>
+
+                            <!-- PROCESSO TRANVERSAL -->
+                            <v-layout row wrap>
+                                <v-flex xs2>
+                                    <v-subheader>Processo Transversal:</v-subheader>
+                                </v-flex>
+                                <v-flex xs9>
+                                    <v-select
+                                        item-text="label"
+                                        item-value="value"
+                                        v-model="classe.procTrans"
+                                        :items="simNao"
+                                        label="Indique se o processo é transversal:"
+                                        solo
+                                        dense
+                                    />
+                                </v-flex>
+                            </v-layout>
+
+                            <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+                            <!-- DONOS -->
+                            <v-layout row wrap color="teal lighten-5">
+                                <v-flex xs2>
+                                    <v-subheader>Donos do processo:</v-subheader>
+                                </v-flex>
+                                <v-flex xs9 v-if="classe.donos.length > 0">
+                                    <DonosOps :entidades="classe.donos" @unselectEntidade="unselectEntidade($event)"/>
+                                </v-flex>
+                                <v-flex xs9 v-else>
+                                    <v-alert :value="true" type="warning">
+                                        Não tem donos selecionados...
+                                    </v-alert>
+                                </v-flex>
+                            </v-layout>
+
+                            <hr style="border-top: 1px dashed green;"/>
+
+                            <v-layout row wrap>
+                                <v-flex xs2>
+                                    <v-subheader>Selecione o(s) dono(s) do processo:</v-subheader>
+                                </v-flex>
+                                <v-flex xs9 v-if="semaforos.entidadesReady">
+                                    <v-card>
+                                        <v-card-title>
+                                            <v-text-field v-model="searchEntidades"
+                                                append-icon="search"
+                                                label="Procura filtra entidades"
+                                                single-line
+                                                hide-details
+                                            ></v-text-field>
+                                        </v-card-title>
+                                        <v-data-table
+                                            :headers="entidadesHeaders"
+                                            :items="entidadesD"
+                                            :search="searchEntidades"
+                                            item-key="id"
+                                            class="elevation-1"
+                                    >
+                                            <template v-slot:items="props">
+                                                <tr @click="selectEntidade(props.item)">
+                                                    <td>{{ props.item.sigla }}</td>
+                                                    <td> {{ props.item.designacao }} </td>
+                                                    <td> {{ props.item.tipo }} </td>
+                                                </tr>
+                                            </template>
+
+                                            <v-alert v-slot:no-results :value="true" color="error" icon="warning">
+                                                A procura por "{{ search }}" não deu resultados.
+                                            </v-alert>
+                                        </v-data-table>
+                                    </v-card>
+                                    
+                                </v-flex>
+                                <v-flex xs9 v-else>
+                                    <v-subheader>A carregar entidades...</v-subheader>
+                                </v-flex>
+                            </v-layout>
+
+                            <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+                            <!-- PARTICIPANTES -->
+                            <v-layout row wrap color="teal lighten-5">
+                                <v-flex xs2>
+                                    <v-subheader>Participantes no processo e respetivas intervenções:</v-subheader>
+                                </v-flex>
+                                <v-flex xs9 v-if="classe.participantes.length > 0">
+                                    <ParticipantesOps :entidades="classe.participantes" @unselectParticipante="unselectParticipante($event)"/>
+                                </v-flex>
+                                <v-flex xs9 v-else>
+                                    <v-alert :value="true" type="warning">
+                                        Não tem participantes selecionados...
+                                    </v-alert>
+                                </v-flex>
+                            </v-layout>
+
+                            <hr style="border-top: 1px dashed green;"/>
+
+                            <v-layout row wrap>
+                                <v-flex xs2>
+                                    <v-subheader>Selecione o(s) participante(s) no processo:</v-subheader>
+                                </v-flex>
+                                <v-flex xs9 v-if="semaforos.entidadesReady">
+                                    <v-card>
+                                        <v-card-title>
+                                            <v-text-field v-model="searchEntidades"
+                                                append-icon="search"
+                                                label="Procura filtra entidades"
+                                                single-line
+                                                hide-details
+                                            ></v-text-field>
+                                        </v-card-title>
+                                        <v-data-table
+                                            :headers="participantesHeaders"
+                                            :items="entidadesP"
+                                            :search="searchEntidades"
+                                            item-key="id"
+                                            class="elevation-1"
+                                    >
+                                            <template v-slot:items="props">
+                                                <tr @click="selectParticipante(props.item)">
+                                                    <td>{{ props.item.intervencao }}</td>
+                                                    <td>{{ props.item.sigla }}</td>
+                                                    <td> {{ props.item.designacao }} </td>
+                                                    <td> {{ props.item.tipo }} </td>
+                                                </tr>
+                                            </template>
+
+                                            <v-alert v-slot:no-results :value="true" color="error" icon="warning">
+                                                A procura por "{{ search }}" não deu resultados.
+                                            </v-alert>
+                                        </v-data-table>
+                                    </v-card>
+                                    
+                                </v-flex>
+                                <v-flex xs9 v-else>
+                                    <v-subheader>A carregar entidades e tipologias...</v-subheader>
+                                </v-flex>
+                            </v-layout>
+
+                            <hr style="border-top: 1px dashed green;"/>
+
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-container>
@@ -167,9 +406,12 @@
 </template>
 
 <script>
+  const lhost = require('@/config/global').host
   const axios = require('axios')
   const nanoid = require('nanoid')
   import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
+  import DonosOps from '@/components/classes/DonosOps.vue'
+  import ParticipantesOps from '@/components/classes/ParticipantesOps.vue'
   
   export default {
     
@@ -255,6 +497,18 @@
         ],
 
         classesPai: [],
+        entidadesD: [],
+        entidadesP: [],
+
+        processoTipos: [
+            {label: "Processo Comum", value: "PC"},
+            {label: "Processo Específico", value: "PE"}
+        ],
+
+        simNao: [
+            {label: "Não", value: "N"},
+            {label: "Sim", value: "S"}
+        ],
 
         semaforos: {
             paisReady: false,
@@ -264,10 +518,35 @@
             pcaFormasContagemReady: false,
             pcaSubFormasContagemReady: false,
         },
+
+        searchEntidades: "",
+
+        entidadesHeaders: [
+            { text: 'Sigla', align: 'left', value: 'sigla'},
+            { text: 'Designação', value: 'designacao' },
+            { text: 'Tipo', value: 'tipo' }
+        ],
+        
+        participantesHeaders: [
+            { text: 'Intervenção', align: 'left', value: 'intervencao'},
+            { text: 'Sigla', align: 'left', value: 'sigla'},
+            { text: 'Designação', value: 'designacao' },
+            { text: 'Tipo', value: 'tipo' }
+        ],
+
+        tiposIntervencao: [
+            {label: 'Por selecionar', value: 'Indefinido'},
+            {label: 'Apreciar', value: 'Apreciar'},
+            {label: 'Assessorar', value: 'Assessorar'},
+            {label: 'Comunicar', value: 'Comunicar'},
+            {label: 'Decidir', value: 'Decidir'},
+            {label: 'Executar', value: 'Executar'},
+            {label: 'Iniciar', value: 'Iniciar'}
+        ]
     }),
 
     components: { 
-        ClassesArvoreLateral
+        ClassesArvoreLateral, DonosOps, ParticipantesOps
     },
 
     watch: {
@@ -284,21 +563,24 @@
             if (this.classe.nivel > 1) {
                 if(this.classesPai.length == 0) this.loadPais();
             }
-            if (this.classe.nivel >= 3 && !this.classesReady) {
-                this.loadProcessos();
+            if (this.classe.nivel >= 3 && !this.semaforos.entidadesReady) {
+                this.loadEntidades();
+            }
+            if (this.classe.nivel >= 3 && !this.semaforos.classesReady) {
+                //this.loadProcessos();
             }
             if(this.classe.nivel >= 3){
-                this.loadPCA();
+                //this.loadPCA();
             }
         },
         'classe.codigo': function () {
-            this.mensValCodigo = "";
+            //this.mensValCodigo = "";
 
             if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
-                this.mensValCodigo = "Formato inválido";
+                //this.mensValCodigo = "Formato inválido";
             }
             else if(!this.classe.codigo.includes(this.classe.pai.codigo)){
-                this.mensValCodigo = "Não pode alterar o código do pai selecionado em cima...";
+                //this.mensValCodigo = "Não pode alterar o código do pai selecionado em cima...";
             }
             else {
                 this.verificaExistenciaCodigo(this.classe.codigo);
@@ -311,7 +593,7 @@
 
         loadPais: async function () {
             try{
-                var response = await axios.get("http://localhost:7778/api/classes?nivel=" + (this.classe.nivel - 1));
+                var response = await axios.get(lhost + "/api/classes?nivel=" + (this.classe.nivel - 1));
                 this.classesPai = response.data.map(function (item) {
                     return {
                         label: item.codigo + " - " + item.titulo,
@@ -325,13 +607,90 @@
                 console.log(erro);
             }
         },
+
         insereNovaNota: function(notas, tipo){
             var n = {id: tipo + '_' + nanoid(), conteudo: ''};
             notas.push(n);
         },
+
         removeNota: function(ind){
             this.classe.notasAp.splice(ind,1)
-        }
+        },
+
+        insereNovoTI: function(termos){
+            var n = {id: 'ti_' + nanoid(), termo: '', existe: false};
+            termos.push(n);
+        },
+
+        // Carrega as entidades da BD....................
+
+        loadEntidades: async function () {
+            try{
+                var response = await axios.get(lhost + "/api/entidades")
+                this.entidadesD = response.data
+                    .map(function (item) {
+                        return {
+                            selected: false,
+                            id: item.id,
+                            sigla: item.sigla,
+                            designacao: item.designacao,
+                            tipo: "Entidade",
+                            intervencao: "Indefinido"
+                        }
+                    });
+                response = await axios.get(lhost + "/api/tipologias")
+                this.entidadesD = await this.entidadesD.concat(
+                    response.data
+                        .map(function (item) {
+                            return {
+                                selected: false,
+                                id: item.id,
+                                sigla: item.sigla,
+                                designacao: item.designacao,
+                                tipo: "Tipologia",
+                                intervencao: "Indefinido"
+                            }
+                        }));
+                await this.entidadesD.sort(function (a, b) {
+                    return a.sigla.localeCompare(b.sigla);
+                });
+                        
+                this.entidadesP = JSON.parse(JSON.stringify(this.entidadesD));
+                this.semaforos.entidadesReady = true;
+            }
+            catch(erro){
+                console.log(erro);
+            }
+        },
+
+        selectEntidade: function(entidade){
+            this.classe.donos.push(entidade);
+            // Remove dos selecionáveis
+            var index = this.entidadesD.findIndex(e => e.id === entidade.id);
+            this.entidadesD.splice(index,1);
+        },
+
+        unselectEntidade: function(entidade){
+            // Recoloca a entidade nos selecionáveis
+            this.entidadesD.push(entidade);
+            var index = this.classe.donos.findIndex(e => e.id === entidade.id);
+            this.classe.donos.splice(index,1);
+        },
+
+        selectParticipante: function(entidade){
+            this.classe.participantes.push(entidade);
+            // Remove dos selecionáveis
+            var index = this.entidadesP.findIndex(e => e.id === entidade.id);
+            this.entidadesP.splice(index,1);
+        },
+
+        unselectParticipante: function(entidade){
+            // Recoloca a entidade nos selecionáveis
+            this.entidadesP.push(entidade);
+            var index = this.classe.participantes.findIndex(e => e.id === entidade.id);
+            this.classe.participantes.splice(index,1);
+        },
+
     }
   }
 </script>

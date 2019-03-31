@@ -71,18 +71,43 @@
                             ></v-text-field>
                         </v-flex>
                     </v-card-title>
-                    <v-card-title v-if="this.classe.donos.length > 0">
-                        <Donos :entidades="this.classe.donos"/>
-                    </v-card-title>
-                    <v-card-title v-if="this.classe.participantes.length > 0">
-                        <Participantes :entidades="this.classe.participantes"/>
-                    </v-card-title>
-                    <v-card-title v-if="this.classe.processosRelacionados.length > 0">
-                        <ProcessosRelacionados :processos="this.classe.processosRelacionados"/>
-                    </v-card-title>
-                    <v-card-title v-if="this.classe.legislacao.length > 0">
-                        <Legislacao :legs="this.classe.legislacao"/>
-                    </v-card-title>
+
+                    <v-layout row wrap v-if="classe.donos.length > 0">
+                        <v-flex xs2>
+                            <v-subheader class="subheading font-weight-medium">Donos do processo:</v-subheader>
+                        </v-flex>
+                        <v-flex xs9 >
+                            <Donos :entidades="classe.donos"/>
+                        </v-flex>
+                    </v-layout>
+
+                    <v-layout row wrap v-if="classe.participantes.length > 0">
+                        <v-flex xs2>
+                            <v-subheader class="subheading font-weight-medium">Participantes no processo:</v-subheader>
+                        </v-flex>
+                        <v-flex xs9 >
+                            <Participantes :entidades="classe.participantes"/>
+                        </v-flex>
+                    </v-layout>
+
+                    <v-layout row wrap v-if="classe.processosRelacionados.length > 0">
+                        <v-flex xs2>
+                            <v-subheader class="subheading font-weight-medium">Processos Relacionados:</v-subheader>
+                        </v-flex>
+                        <v-flex xs9 >
+                            <ProcessosRelacionados :processos="classe.processosRelacionados"/>
+                        </v-flex>
+                    </v-layout>
+
+                    <v-layout row wrap v-if="classe.legislacao.length > 0">
+                        <v-flex xs2>
+                            <v-subheader class="subheading font-weight-medium">Legislação:</v-subheader>
+                        </v-flex>
+                        <v-flex xs9 >
+                            <Legislacao :legs="this.classe.legislacao"/>
+                        </v-flex>
+                    </v-layout>
+
                     </v-card>
                 </v-expansion-panel-content>
 

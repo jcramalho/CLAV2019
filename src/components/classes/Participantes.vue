@@ -1,6 +1,4 @@
 <template>
-    <div>
-        <div class="subheading font-weight-medium">Participantes</div>
         <v-data-table
             :headers="headers"
             :items="myParticipantes"
@@ -30,7 +28,6 @@
             </template>
             
         </v-data-table>
-    </div>
 </template>
 
 <script>

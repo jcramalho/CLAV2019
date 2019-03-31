@@ -16,6 +16,7 @@
     "nanoid": "^2.0.1",
     "popper.js": "^1.14.7",
     "register-service-worker": "^1.6.2",
+    "sparql-client-2": "^0.6.3",
     "vue": "^2.6.6",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",

@@ -1,6 +1,4 @@
 <template>
-    <v-container>
-        <div class="subheading font-weight-medium">Processos Relacionados</div>
         <v-data-table
             :headers="headers"
             :items="myProcRel"
@@ -30,7 +28,6 @@
             </template>
             
         </v-data-table>
-    </v-container>
 </template>
 
 <script>
