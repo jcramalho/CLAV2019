@@ -371,13 +371,25 @@
                                             :search="searchEntidades"
                                             item-key="id"
                                             class="elevation-1"
-                                    >
+                                            :pagination.sync="paginationParticipantes"
+                                        >
                                             <template v-slot:items="props">
-                                                <tr @click="selectParticipante(props.item)">
-                                                    <td>{{ props.item.intervencao }}</td>
-                                                    <td>{{ props.item.sigla }}</td>
-                                                    <td> {{ props.item.designacao }} </td>
-                                                    <td> {{ props.item.tipo }} </td>
+                                                <tr>
+                                                    <td>
+                                                        <v-select
+                                                            item-text="label"
+                                                            item-value="value"
+                                                            v-model="props.item.intervencao"
+                                                            :items="tiposIntervencao"
+                                                            label="Selecione o tipo de intervenção:"
+                                                            solo small-chips
+                                                            dense
+                                                            @change="selectParticipante(props.item.id)"
+                                                        />
+                                                    </td>
+                                                    <td @click="selectParticipante(props.item.id)">{{ props.item.sigla }}</td>
+                                                    <td @click="selectParticipante(props.item.id)"> {{ props.item.designacao }} </td>
+                                                    <td @click="selectParticipante(props.item.id)"> {{ props.item.tipo }} </td>
                                                 </tr>
                                             </template>
 
@@ -526,10 +538,14 @@
             { text: 'Designação', value: 'designacao' },
             { text: 'Tipo', value: 'tipo' }
         ],
+
+        paginationParticipantes: {
+            sortBy: 'sigla'
+        },
         
         participantesHeaders: [
             { text: 'Intervenção', align: 'left', value: 'intervencao'},
-            { text: 'Sigla', align: 'left', value: 'sigla'},
+            { text: 'Sigla', align: 'left', value: 'sigla', sortable: true},
             { text: 'Designação', value: 'designacao' },
             { text: 'Tipo', value: 'tipo' }
         ],
@@ -542,7 +558,8 @@
             {label: 'Decidir', value: 'Decidir'},
             {label: 'Executar', value: 'Executar'},
             {label: 'Iniciar', value: 'Iniciar'}
-        ]
+        ],
+        selectedIntervencao: "Indefinido"
     }),
 
     components: { 
@@ -677,14 +694,17 @@
             this.classe.donos.splice(index,1);
         },
 
-        selectParticipante: function(entidade){
-            this.classe.participantes.push(entidade);
+        selectParticipante: function(id){
             // Remove dos selecionáveis
-            var index = this.entidadesP.findIndex(e => e.id === entidade.id);
+            var index = this.entidadesP.findIndex(e => e.id === id);
+            //this.entidadesP[index].intervencao = this.selectedIntervencao;
+            //this.selectedIntervencao = "Indefinido";
+            this.classe.participantes.push(this.entidadesP[index]);
             this.entidadesP.splice(index,1);
         },
 
         unselectParticipante: function(entidade){
+            entidade.intervencao = "Indefinido";
             // Recoloca a entidade nos selecionáveis
             this.entidadesP.push(entidade);
             var index = this.classe.participantes.findIndex(e => e.id === entidade.id);
