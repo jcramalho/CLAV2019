@@ -405,7 +405,79 @@
                                 </v-flex>
                             </v-layout>
 
+                            <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+                            <!-- PROCESSOS RELACIONADOS -->
+                            <v-layout row wrap color="teal lighten-5">
+                                <v-flex xs2>
+                                    <v-subheader>Processos Relacionados:</v-subheader>
+                                </v-flex>
+                                <v-flex xs9 v-if="classe.processosRelacionados.length > 0">
+                                    <ParticipantesOps :entidades="classe.participantes" @unselectParticipante="unselectParticipante($event)"/>
+                                </v-flex>
+                                <v-flex xs9 v-else>
+                                    <v-alert :value="true" type="warning">
+                                        Não tem processos relacionados...
+                                    </v-alert>
+                                </v-flex>
+                            </v-layout>
+
                             <hr style="border-top: 1px dashed green;"/>
+
+                            <v-layout row wrap>
+                                <v-flex xs2>
+                                    <v-subheader>Selecione o(s) processo(s) relacionado(s):</v-subheader>
+                                </v-flex>
+                                <v-flex xs9 v-if="semaforos.classesReady">
+                                    <v-card>
+                                        <v-card-title>
+                                            <v-text-field v-model="searchProcessos"
+                                                append-icon="search"
+                                                label="Procura filtra processos"
+                                                single-line
+                                                hide-details
+                                            ></v-text-field>
+                                        </v-card-title>
+                                        <v-data-table
+                                            :headers="participantesHeaders"
+                                            :items="listaProcessos"
+                                            :search="searchProcessos"
+                                            item-key="id"
+                                            class="elevation-1"
+                                            :pagination.sync="paginationProcessos"
+                                        >
+                                            <template v-slot:items="props">
+                                                <tr>
+                                                    <td>
+                                                        <v-select
+                                                            item-text="label"
+                                                            item-value="value"
+                                                            v-model="props.item.intervencao"
+                                                            :items="tiposIntervencao"
+                                                            label="Selecione o tipo de intervenção:"
+                                                            solo small-chips
+                                                            dense
+                                                            @change="selectParticipante(props.item.id)"
+                                                        />
+                                                    </td>
+                                                    <td @click="selectParticipante(props.item.id)">{{ props.item.codigo }}</td>
+                                                    <td @click="selectParticipante(props.item.id)"> {{ props.item.titulo }} </td>
+                                                </tr>
+                                            </template>
+
+                                            <v-alert v-slot:no-results :value="true" color="error" icon="warning">
+                                                A procura por "{{ search }}" não deu resultados.
+                                            </v-alert>
+                                        </v-data-table>
+                                    </v-card>
+                                    
+                                </v-flex>
+                                <v-flex xs9 v-else>
+                                    <v-subheader>A carregar entidades e tipologias...</v-subheader>
+                                </v-flex>
+                            </v-layout>
+
+                            <hr style="border: 3px solid green; border-radius: 2px;"/>
 
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -511,6 +583,7 @@
         classesPai: [],
         entidadesD: [],
         entidadesP: [],
+        listaProcessos: [],
 
         processoTipos: [
             {label: "Processo Comum", value: "PC"},
@@ -532,6 +605,7 @@
         },
 
         searchEntidades: "",
+        searchProcessos: "",
 
         entidadesHeaders: [
             { text: 'Sigla', align: 'left', value: 'sigla'},
@@ -539,9 +613,8 @@
             { text: 'Tipo', value: 'tipo' }
         ],
 
-        paginationParticipantes: {
-            sortBy: 'sigla'
-        },
+        paginationParticipantes: { sortBy: 'sigla'},
+        paginationProcessos: { sortBy: 'codigo'},
         
         participantesHeaders: [
             { text: 'Intervenção', align: 'left', value: 'intervencao'},
@@ -584,7 +657,7 @@
                 this.loadEntidades();
             }
             if (this.classe.nivel >= 3 && !this.semaforos.classesReady) {
-                //this.loadProcessos();
+                this.loadProcessos();
             }
             if(this.classe.nivel >= 3){
                 //this.loadPCA();
@@ -697,8 +770,6 @@
         selectParticipante: function(id){
             // Remove dos selecionáveis
             var index = this.entidadesP.findIndex(e => e.id === id);
-            //this.entidadesP[index].intervencao = this.selectedIntervencao;
-            //this.selectedIntervencao = "Indefinido";
             this.classe.participantes.push(this.entidadesP[index]);
             this.entidadesP.splice(index,1);
         },
@@ -710,7 +781,31 @@
             var index = this.classe.participantes.findIndex(e => e.id === entidade.id);
             this.classe.participantes.splice(index,1);
         },
+        // Carrega os Processos da BD....................
 
+        loadProcessos: async function () {
+            try{
+                var response = await axios.get(lhost + "/api/classes?nivel=3");
+                this.listaProcessos = response.data
+                    .map(function (item) {
+                        return {
+                            selected: false,
+                            id: item.id.split('#')[1],
+                            codigo: item.codigo,
+                            titulo: item.titulo,
+                            relacao: "Indefinido"
+                        }
+                    })
+                    .sort(function (a, b) {
+                        return a.codigo.localeCompare(b.codigo);
+                    });
+                
+                this.semaforos.classesReady = true;
+            }
+            catch(error) {
+                    console.error(error);
+            };
+        },
     }
   }
 </script>
