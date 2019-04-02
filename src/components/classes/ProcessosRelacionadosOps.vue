@@ -1,33 +1,44 @@
 <template>
-        <v-data-table
-            :headers="headers"
-            :items="processos"
-            class="elevation-1"
-            hide-actions
-        >
-            <template v-slot:headers="props">
-                <tr>
-                    <th v-for="h in props.headers" :key="h.text" class="body-2 font-weight-bold">
-                        {{ h.text }}
-                    </th>
-                    <th style="color: green;"> Desselecionar </th>
-                </tr>
-            </template>
+    <v-layout row wrap color="teal lighten-5">
+        <v-flex xs2>
+            <v-subheader>Processos Relacionados:</v-subheader>
+        </v-flex>
+        <v-flex xs9 v-if="processos.length > 0">
+            <v-data-table
+                :headers="headers"
+                :items="processos"
+                class="elevation-1"
+                hide-actions
+            >
+                <template v-slot:headers="props">
+                    <tr>
+                        <th v-for="h in props.headers" :key="h.text" class="body-2 font-weight-bold">
+                            {{ h.text }}
+                        </th>
+                        <th style="color: green;"> Desselecionar </th>
+                    </tr>
+                </template>
 
-            <template v-slot:items="props">
-                <tr>
-                    <td>{{ props.item.idRel }}</td>
-                    <td>{{ props.item.codigo }}</td>
-                    <td> {{ props.item.titulo }} </td>
-                    <td>
-                        <v-btn small color="red darken-2" dark round @click="unselectProcRel(props.item)">
-                            <v-icon dark>remove_circle</v-icon>
-                        </v-btn>
-                    </td>
-                </tr>
-            </template>
-            
-        </v-data-table>
+                <template v-slot:items="props">
+                    <tr>
+                        <td>{{ props.item.idRel }}</td>
+                        <td>{{ props.item.codigo }}</td>
+                        <td> {{ props.item.titulo }} </td>
+                        <td>
+                            <v-btn small color="red darken-2" dark round @click="unselectProcRel(props.item)">
+                                <v-icon dark>remove_circle</v-icon>
+                            </v-btn>
+                        </td>
+                    </tr>
+                </template>
+            </v-data-table>                 
+        </v-flex>
+        <v-flex xs9 v-else>
+            <v-alert :value="true" type="warning">
+                Não tem processos relacionados...
+            </v-alert>
+        </v-flex>
+    </v-layout>
 </template>
 
 <script>

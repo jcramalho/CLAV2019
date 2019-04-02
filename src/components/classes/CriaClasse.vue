@@ -1,11 +1,11 @@
 <template>
     <v-container grid-list-md fluid>
       <v-layout row wrap justify-center>
-        <!-- MENU LATERAL -->
+        <!-- MENU LATERAL 
         <v-flex xs12 sm2>
             <ClassesArvoreLateral/>
-        </v-flex>
-        <v-flex xs12 sm10>    
+        </v-flex>-->
+        <v-flex xs12>    
           <!-- HEADER -->
           <v-card>
             <v-toolbar color="teal darken-4" dark>
@@ -275,207 +275,50 @@
                             <hr style="border: 3px solid green; border-radius: 2px;"/>
 
                             <!-- DONOS -->
-                            <v-layout row wrap color="teal lighten-5">
-                                <v-flex xs2>
-                                    <v-subheader>Donos do processo:</v-subheader>
-                                </v-flex>
-                                <v-flex xs9 v-if="classe.donos.length > 0">
-                                    <DonosOps :entidades="classe.donos" @unselectEntidade="unselectEntidade($event)"/>
-                                </v-flex>
-                                <v-flex xs9 v-else>
-                                    <v-alert :value="true" type="warning">
-                                        Não tem donos selecionados...
-                                    </v-alert>
-                                </v-flex>
-                            </v-layout>
+                            <DonosOps 
+                                :entidades="classe.donos" 
+                                @unselectEntidade="unselectEntidade($event)"
+                            />
 
                             <hr style="border-top: 1px dashed green;"/>
 
-                            <v-layout row wrap>
-                                <v-flex xs2>
-                                    <v-subheader>Selecione o(s) dono(s) do processo:</v-subheader>
-                                </v-flex>
-                                <v-flex xs9 v-if="semaforos.entidadesReady">
-                                    <v-card>
-                                        <v-card-title>
-                                            <v-text-field v-model="searchEntidades"
-                                                append-icon="search"
-                                                label="Procura filtra entidades"
-                                                single-line
-                                                hide-details
-                                            ></v-text-field>
-                                        </v-card-title>
-                                        <v-data-table
-                                            :headers="entidadesHeaders"
-                                            :items="entidadesD"
-                                            :search="searchEntidades"
-                                            item-key="id"
-                                            class="elevation-1"
-                                    >
-                                            <template v-slot:items="props">
-                                                <tr @click="selectEntidade(props.item)">
-                                                    <td>{{ props.item.sigla }}</td>
-                                                    <td> {{ props.item.designacao }} </td>
-                                                    <td> {{ props.item.tipo }} </td>
-                                                </tr>
-                                            </template>
-
-                                            <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-                                                A procura por "{{ search }}" não deu resultados.
-                                            </v-alert>
-                                        </v-data-table>
-                                    </v-card>
-                                    
-                                </v-flex>
-                                <v-flex xs9 v-else>
-                                    <v-subheader>A carregar entidades...</v-subheader>
-                                </v-flex>
-                            </v-layout>
+                            <DonosSelect
+                                :entidadesReady="semaforos.entidadesReady"
+                                :entidades="entidadesD"
+                                @selectEntidade="selectEntidade($event)"
+                            />
 
                             <hr style="border: 3px solid green; border-radius: 2px;"/>
 
                             <!-- PARTICIPANTES -->
-                            <v-layout row wrap color="teal lighten-5">
-                                <v-flex xs2>
-                                    <v-subheader>Participantes no processo e respetivas intervenções:</v-subheader>
-                                </v-flex>
-                                <v-flex xs9 v-if="classe.participantes.length > 0">
-                                    <ParticipantesOps :entidades="classe.participantes" @unselectParticipante="unselectParticipante($event)"/>
-                                </v-flex>
-                                <v-flex xs9 v-else>
-                                    <v-alert :value="true" type="warning">
-                                        Não tem participantes selecionados...
-                                    </v-alert>
-                                </v-flex>
-                            </v-layout>
-
+                            <ParticipantesOps 
+                                :entidades="classe.participantes" 
+                                @unselectParticipante="unselectParticipante($event)"
+                            />
+                            
                             <hr style="border-top: 1px dashed green;"/>
 
-                            <v-layout row wrap>
-                                <v-flex xs2>
-                                    <v-subheader>Selecione o(s) participante(s) no processo:</v-subheader>
-                                </v-flex>
-                                <v-flex xs9 v-if="semaforos.entidadesReady">
-                                    <v-card>
-                                        <v-card-title>
-                                            <v-text-field v-model="searchEntidades"
-                                                append-icon="search"
-                                                label="Procura filtra entidades"
-                                                single-line
-                                                hide-details
-                                            ></v-text-field>
-                                        </v-card-title>
-                                        <v-data-table
-                                            :headers="participantesHeaders"
-                                            :items="entidadesP"
-                                            :search="searchEntidades"
-                                            item-key="id"
-                                            class="elevation-1"
-                                            :pagination.sync="paginationParticipantes"
-                                        >
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <td>
-                                                        <v-select
-                                                            item-text="label"
-                                                            item-value="value"
-                                                            v-model="props.item.intervencao"
-                                                            :items="tiposIntervencao"
-                                                            label="Selecione o tipo de intervenção:"
-                                                            solo small-chips
-                                                            dense
-                                                            @change="selectParticipante(props.item.id)"
-                                                        />
-                                                    </td>
-                                                    <td @click="selectParticipante(props.item.id)">{{ props.item.sigla }}</td>
-                                                    <td @click="selectParticipante(props.item.id)"> {{ props.item.designacao }} </td>
-                                                    <td @click="selectParticipante(props.item.id)"> {{ props.item.tipo }} </td>
-                                                </tr>
-                                            </template>
-
-                                            <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-                                                A procura por "{{ search }}" não deu resultados.
-                                            </v-alert>
-                                        </v-data-table>
-                                    </v-card>
-                                    
-                                </v-flex>
-                                <v-flex xs9 v-else>
-                                    <v-subheader>A carregar entidades e tipologias...</v-subheader>
-                                </v-flex>
-                            </v-layout>
+                            <ParticipantesSelect
+                                :entidadesReady="semaforos.entidadesReady"
+                                :entidades="entidadesP"
+                                @selectParticipante="selectParticipante($event)"
+                            />
 
                             <hr style="border: 3px solid green; border-radius: 2px;"/>
 
                             <!-- PROCESSOS RELACIONADOS -->
-                            <v-layout row wrap color="teal lighten-5">
-                                <v-flex xs2>
-                                    <v-subheader>Processos Relacionados:</v-subheader>
-                                </v-flex>
-                                <v-flex xs9 v-if="classe.processosRelacionados.length > 0">
-                                    <ParticipantesOps :entidades="classe.participantes" @unselectParticipante="unselectParticipante($event)"/>
-                                </v-flex>
-                                <v-flex xs9 v-else>
-                                    <v-alert :value="true" type="warning">
-                                        Não tem processos relacionados...
-                                    </v-alert>
-                                </v-flex>
-                            </v-layout>
+                            <ProcessosRelacionadosOps 
+                                :processos="classe.processosRelacionados" 
+                                @unselectParticipante="unselectParticipante($event)"
+                            />
 
                             <hr style="border-top: 1px dashed green;"/>
 
-                            <v-layout row wrap>
-                                <v-flex xs2>
-                                    <v-subheader>Selecione o(s) processo(s) relacionado(s):</v-subheader>
-                                </v-flex>
-                                <v-flex xs9 v-if="semaforos.classesReady">
-                                    <v-card>
-                                        <v-card-title>
-                                            <v-text-field v-model="searchProcessos"
-                                                append-icon="search"
-                                                label="Procura filtra processos"
-                                                single-line
-                                                hide-details
-                                            ></v-text-field>
-                                        </v-card-title>
-                                        <v-data-table
-                                            :headers="participantesHeaders"
-                                            :items="listaProcessos"
-                                            :search="searchProcessos"
-                                            item-key="id"
-                                            class="elevation-1"
-                                            :pagination.sync="paginationProcessos"
-                                        >
-                                            <template v-slot:items="props">
-                                                <tr>
-                                                    <td>
-                                                        <v-select
-                                                            item-text="label"
-                                                            item-value="value"
-                                                            v-model="props.item.intervencao"
-                                                            :items="tiposIntervencao"
-                                                            label="Selecione o tipo de intervenção:"
-                                                            solo small-chips
-                                                            dense
-                                                            @change="selectParticipante(props.item.id)"
-                                                        />
-                                                    </td>
-                                                    <td @click="selectParticipante(props.item.id)">{{ props.item.codigo }}</td>
-                                                    <td @click="selectParticipante(props.item.id)"> {{ props.item.titulo }} </td>
-                                                </tr>
-                                            </template>
-
-                                            <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-                                                A procura por "{{ search }}" não deu resultados.
-                                            </v-alert>
-                                        </v-data-table>
-                                    </v-card>
-                                    
-                                </v-flex>
-                                <v-flex xs9 v-else>
-                                    <v-subheader>A carregar entidades e tipologias...</v-subheader>
-                                </v-flex>
-                            </v-layout>
+                            <ProcessosRelacionadosSelect
+                                :procReady="semaforos.classesReady"
+                                :processos="listaProcessos"
+                                @selectProcesso="selectProcesso($event)"
+                            />
 
                             <hr style="border: 3px solid green; border-radius: 2px;"/>
 
@@ -495,9 +338,18 @@
   const nanoid = require('nanoid')
   import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
   import DonosOps from '@/components/classes/DonosOps.vue'
+  import DonosSelect from '@/components/classes/DonosSelect.vue'
   import ParticipantesOps from '@/components/classes/ParticipantesOps.vue'
+  import ParticipantesSelect from '@/components/classes/ParticipantesSelect.vue'
+  import ProcessosRelacionadosOps from '@/components/classes/ProcessosRelacionadosOps.vue'
+  import ProcessosRelacionadosSelect from '@/components/classes/ProcessosRelacionadosSelect.vue'
   
   export default {
+    components: { 
+        ClassesArvoreLateral, DonosOps, DonosSelect, ParticipantesOps, ParticipantesSelect, 
+        ProcessosRelacionadosOps, ProcessosRelacionadosSelect
+    },
+
     
     data: () => ({
         // Objeto que guarda uma classe
@@ -602,42 +454,8 @@
             legislacaoReady: false,
             pcaFormasContagemReady: false,
             pcaSubFormasContagemReady: false,
-        },
-
-        searchEntidades: "",
-        searchProcessos: "",
-
-        entidadesHeaders: [
-            { text: 'Sigla', align: 'left', value: 'sigla'},
-            { text: 'Designação', value: 'designacao' },
-            { text: 'Tipo', value: 'tipo' }
-        ],
-
-        paginationParticipantes: { sortBy: 'sigla'},
-        paginationProcessos: { sortBy: 'codigo'},
-        
-        participantesHeaders: [
-            { text: 'Intervenção', align: 'left', value: 'intervencao'},
-            { text: 'Sigla', align: 'left', value: 'sigla', sortable: true},
-            { text: 'Designação', value: 'designacao' },
-            { text: 'Tipo', value: 'tipo' }
-        ],
-
-        tiposIntervencao: [
-            {label: 'Por selecionar', value: 'Indefinido'},
-            {label: 'Apreciar', value: 'Apreciar'},
-            {label: 'Assessorar', value: 'Assessorar'},
-            {label: 'Comunicar', value: 'Comunicar'},
-            {label: 'Decidir', value: 'Decidir'},
-            {label: 'Executar', value: 'Executar'},
-            {label: 'Iniciar', value: 'Iniciar'}
-        ],
-        selectedIntervencao: "Indefinido"
+        }
     }),
-
-    components: { 
-        ClassesArvoreLateral, DonosOps, ParticipantesOps
-    },
 
     watch: {
         'classe.pai.codigo': function () {
@@ -768,6 +586,7 @@
         },
 
         selectParticipante: function(id){
+            alert(JSON.stringify(id))
             // Remove dos selecionáveis
             var index = this.entidadesP.findIndex(e => e.id === id);
             this.classe.participantes.push(this.entidadesP[index]);
@@ -781,6 +600,13 @@
             var index = this.classe.participantes.findIndex(e => e.id === entidade.id);
             this.classe.participantes.splice(index,1);
         },
+
+        selectProcesso: function(id){
+            // Remove dos selecionáveis
+            var index = this.listaProcessos.findIndex(e => e.id === id);
+            this.classe.processosRelacionados.push(JSON.parse(JSON.stringify(this.listaProcessos[index])));
+            this.listaProcessos.splice(index,1);
+        },
         // Carrega os Processos da BD....................
 
         loadProcessos: async function () {
@@ -793,7 +619,7 @@
                             id: item.id.split('#')[1],
                             codigo: item.codigo,
                             titulo: item.titulo,
-                            relacao: "Indefinido"
+                            idRel: "Indefinido"
                         }
                     })
                     .sort(function (a, b) {
