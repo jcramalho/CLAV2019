@@ -33,12 +33,46 @@ export default new Router({
       component: () => 
         import("./views/classes/ClassesCria.vue")
     },
+    // Routes das entidades
+    {
+      path: "/entidades",
+      name: "entidades",
+      component: () =>
+        import("./views/entidades/Entidades.vue")
+    },
+    // Routes da legislação
+    {
+      path: "/legislacao",
+      name: "legislacao",
+      component: () =>
+        import("./views/legislacao/Legislacao.vue")
+    },
     // Routes das tabelas de seleção
+    {
+      path: "/ts",
+      name: "ts",
+      component: () =>
+        import("./views/tabSel/TabSel.vue")
+    },
     {
       path: "/ts/criar",
       name: "criaTs",
       component: () =>
         import("./views/tabSel/TabSelCria.vue")
+    },
+    // Routes dos termos de indice
+    {
+      path: "/termosIndice",
+      name: "termosIndice",
+      component: () =>
+        import("./views/termosIndice/TermosIndice.vue")
+    },
+    // Routes das tipologias
+    {
+      path: "/tipologias",
+      name: "tipologias",
+      component: () =>
+        import("./views/tipologias/Tipologias.vue")
     },
     // Routes dos pedidos
     {

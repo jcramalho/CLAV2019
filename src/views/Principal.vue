@@ -210,6 +210,16 @@ export default {
                 ]
             },
             {
+                entidade: "Termos de Indice",
+                texto: 'Lista da legislação que enquadra os processos de negócio da Administração Pública e que foi identificada até ao momento. Em atualização constante.',
+                ops: [
+                    {
+                        label: "Consultar",
+                        url: "/termosIndice"
+                    }
+                ]
+            },
+            {
                 entidade: "Pedidos",
                 texto: 'Pedidos de alteração ou de criação de novas instâncias que deram entrada na plataforma.',
                 ops: [
