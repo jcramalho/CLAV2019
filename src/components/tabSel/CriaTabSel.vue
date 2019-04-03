@@ -2,7 +2,7 @@
   <v-stepper v-model="stepNo" vertical>
     <v-stepper-step :complete="stepNo > 1" step="1">
       Designação
-      <small>Designação da Tabela de Seleção</small>
+      <small>Designação da Nova Tabela de Seleção</small>
     </v-stepper-step>
 
     <v-stepper-content step="1">
@@ -14,12 +14,12 @@
       <v-btn color="primary" @click="stepNo = 2">Continuar</v-btn>
     </v-stepper-content>
 
-    <v-stepper-step :complete="stepNo > 2" step="2">Selecionar tipo da Tabela de Seleção</v-stepper-step>
+    <v-stepper-step :complete="stepNo > 2" step="2">Tipo da Tabela de Seleção</v-stepper-step>
 
     <v-stepper-content step="2">
         <v-container fluid grid-list-xl>
             <v-layout wrap align-center>
-                <v-flex xs2>
+                <v-flex xs3>
                     <v-subheader>Selecionar tipo de Tabela de Seleção:</v-subheader>
                 </v-flex>
                 <v-flex xs12 sm6 d-flex>
@@ -27,6 +27,14 @@
                     :items="items"
                     label="Tipo"
                     ></v-select>
+                    <v-flex xs12 sm3>
+                        <v-btn medium @click="infoButton=true" v-if="!infoButton" icon color="info">
+                        <v-icon>info</v-icon>
+                        </v-btn>
+                        <v-btn medium v-if="infoButton" color="info" @click="passos()">
+                            <v-icon left>info</v-icon>Informações sobre os seguintes passos
+                        </v-btn>
+                    </v-flex>
                 </v-flex>
             </v-layout>
         </v-container>
@@ -75,9 +83,13 @@ import axios from 'axios'
         stepNo: 1,
         items: ['Organizacional', 'Pluriorganizacional'],
         entidades: [],
+        infoButton: false,
       }
     },
     methods: {
+        passos: function(){
+            this.$router.push('/ts/passos');
+        },
         loadEntidades: async function () {
             try{
                 var response = await axios.get("http://localhost:7778/api/entidades");
@@ -94,6 +106,11 @@ import axios from 'axios'
                 console.log(erro);
             }
         },
+        /*info: async function () {
+            try{
+
+            }
+        }*/
     },
     created: function() {
         this.loadEntidades()

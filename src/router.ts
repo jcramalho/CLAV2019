@@ -60,6 +60,12 @@ export default new Router({
       component: () =>
         import("./views/tabSel/TabSelCria.vue")
     },
+    {
+      path: "/ts/passos",
+      name: "passosTs",
+      component: () =>
+        import("./views/tabSel/TabSelPassos.vue")
+    },
     // Routes dos termos de indice
     {
       path: "/termosIndice",
