@@ -1,0 +1,68 @@
+<template>
+  <Listagem v-bind:lista="legislacao" 
+            tipo="Legislação" 
+            v-bind:cabecalho="['Data', 'Tipo', 'Entidade(s)', 'Número', 'Sumário']"
+            v-bind:campos="['data', 'tipo', 'entidades', 'numero', 'sumario']"/>
+</template>
+
+<script>
+import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
+import axios from 'axios'
+
+export default {
+    data: () => ({
+      legislacao: [],
+      campos: [],
+    }),
+    components: {
+            Listagem
+        },
+    
+    mounted: async function (){
+        try{
+            var response = await axios.get('http://localhost:7778/api/legislacao');
+            this.legislacao = await this.preparaTree(response.data);
+        }
+        catch(e){
+            console.log(e);
+        }
+    },
+
+    methods: {
+        /*go: function(idLegislacao){
+            this.$router.push('/legislacao/' + idLegislacao);
+        },*/
+        preparaTree: async function(listaLegislacao){
+            try{
+                var myTree = [];
+                for(var i=0; i < listaLegislacao.length; i++){
+                    var temp = '';
+                    for(var j=0; j < listaLegislacao[i].entidades.length; j++){
+                        if(temp === ''){
+                            temp = listaLegislacao[i].entidades[j].sigla
+                        }
+                        else{ 
+                            temp = temp + ',' + listaLegislacao[i].entidades[j].sigla 
+                            }
+                    }
+                    listaLegislacao[i].entidades = temp;
+                    myTree.push({
+                        data: listaLegislacao[i].data,
+                        tipo: listaLegislacao[i].tipo,
+                        entidades: listaLegislacao[i].entidades,
+                        numero: listaLegislacao[i].numero,
+                        sumario: listaLegislacao[i].sumario,
+                        // mandar o id num campo à parte
+                        // id: listaLegislacao[i].id,
+                    });
+                }
+                return myTree;
+            }
+            catch(error){
+                return []
+            }
+        }
+    },
+}
+</script>
+
