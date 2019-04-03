@@ -322,6 +322,20 @@
 
                             <hr style="border: 3px solid green; border-radius: 2px;"/>
 
+                            <!-- LEGISLAÇÂO -->
+                            <LegislacaoOps
+                                :legs="classe.legislacao"
+                                @unselectDiploma="unselectDiploma($event)"
+                            />
+
+                            <hr style="border-top: 1px dashed green;"/>
+
+                            <LegislacaoSelect
+                                :legs="listaLegislacao"
+                                :legislacaoReady="semaforos.legislacaoReady"
+                                @selectDiploma="selectDiploma($event)"
+                            />
+
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-container>
@@ -343,11 +357,13 @@
   import ParticipantesSelect from '@/components/classes/ParticipantesSelect.vue'
   import ProcessosRelacionadosOps from '@/components/classes/ProcessosRelacionadosOps.vue'
   import ProcessosRelacionadosSelect from '@/components/classes/ProcessosRelacionadosSelect.vue'
+  import LegislacaoOps from '@/components/classes/LegislacaoOps.vue'
+  import LegislacaoSelect from '@/components/classes/LegislacaoSelect.vue'
   
   export default {
     components: { 
         ClassesArvoreLateral, DonosOps, DonosSelect, ParticipantesOps, ParticipantesSelect, 
-        ProcessosRelacionadosOps, ProcessosRelacionadosSelect
+        ProcessosRelacionadosOps, ProcessosRelacionadosSelect, LegislacaoOps, LegislacaoSelect
     },
 
     
@@ -477,6 +493,9 @@
             if (this.classe.nivel >= 3 && !this.semaforos.classesReady) {
                 this.loadProcessos();
             }
+            if (this.classe.nivel >= 3 && !this.semaforos.legislacaoReady) {
+                this.loadLegislacao();
+            }
             if(this.classe.nivel >= 3){
                 //this.loadPCA();
             }
@@ -585,12 +604,8 @@
             this.classe.donos.splice(index,1);
         },
 
-        selectParticipante: function(id){
-            alert(JSON.stringify(id))
-            // Remove dos selecionáveis
-            var index = this.entidadesP.findIndex(e => e.id === id);
-            this.classe.participantes.push(this.entidadesP[index]);
-            this.entidadesP.splice(index,1);
+        selectParticipante: function( entidade ){
+            this.classe.participantes.push(entidade);
         },
 
         unselectParticipante: function(entidade){
@@ -606,6 +621,13 @@
             var index = this.listaProcessos.findIndex(e => e.id === id);
             this.classe.processosRelacionados.push(JSON.parse(JSON.stringify(this.listaProcessos[index])));
             this.listaProcessos.splice(index,1);
+        },
+
+        selectDiploma: function(leg){
+            // Remove dos selecionáveis
+            var index = this.listaLegislacao.findIndex(l => l.id === leg.id);
+            this.classe.legislacao.push(JSON.parse(JSON.stringify(this.listaLegislacao[index])));
+            this.listaLegislacao.splice(index,1);
         },
         // Carrega os Processos da BD....................
 
@@ -631,6 +653,39 @@
             catch(error) {
                     console.error(error);
             };
+        },
+
+        // Carrega a legislação da BD....................
+
+        loadLegislacao: async function () {
+            try{
+                var response = await axios.get(lhost + "/api/legislacao?estado=A");
+                this.listaLegislacao = response.data
+                    .map(function (item) {
+                        return {
+                            tipo: item.tipo, 
+                            numero: item.numero, 
+                            sumario: item.sumario, 
+                            data: item.data,
+                            selected: false,
+                            id: item.id
+                        }
+                    })
+                    .sort(function (a, b) {
+                        return -1 * a.data.localeCompare(b.data);
+                    });
+                this.semaforos.legislacaoReady = true;
+            }
+            catch(error) {
+                console.error(error);
+            };
+        },
+
+        unselectDiploma: function(diploma){
+            // Recoloca o diploma nos selecionáveis
+            this.listaLegislacao.push(diploma);
+            var index = this.classe.legislacao.findIndex(e => e.id === diploma.id);
+            this.classe.legislacao.splice(index,1);
         },
     }
   }

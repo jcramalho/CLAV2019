@@ -19,12 +19,22 @@
                     :search="searchEntidades"
                     item-key="id"
                     class="elevation-1"
+                    rows-per-page-text="Linhas por página"
                     :pagination.sync="paginationParticipantes"
                 >
                     <template v-slot:items="props">
                         <tr v-if="!props.item.selected">
                             <td>
-                                <v-select
+                                <v-btn color="teal" dark round small text-xs-center>
+                                    <SelectValueFromList 
+                                        :options="tiposIntervencao"
+                                        :initialValue="'Indefinido'"
+                                        @value-change="selectParticipante(props.item.id, $event)"
+                                    />
+                                </v-btn>
+                                
+
+                                <!--v-select
                                     item-text="label"
                                     item-value="value"
                                     v-model="props.item.intervencao"
@@ -33,11 +43,11 @@
                                     solo small-chips
                                     dense
                                     @change="props.item.selected=true; selectParticipante(props.item.id)"
-                                />
+                                /-->
                             </td>
-                            <td @click="selectParticipante(props.item.id)">{{ props.item.sigla }}</td>
-                            <td @click="selectParticipante(props.item.id)"> {{ props.item.designacao }} </td>
-                            <td @click="selectParticipante(props.item.id)"> {{ props.item.tipo }} </td>
+                            <td>{{ props.item.sigla }}</td>
+                            <td> {{ props.item.designacao }} </td>
+                            <td> {{ props.item.tipo }} </td>
                         </tr>
                     </template>
 
@@ -54,8 +64,12 @@
 </template>
 
 <script>
+import SelectValueFromList from '@/components/generic/SelectValueFromList.vue'
+
 export default {
     props: ["entidades","entidadesReady"],
+
+    components: { SelectValueFromList },
 
     data: function() {
       return {
@@ -86,8 +100,12 @@ export default {
             this.$router.push('/entidades/'+idClasse);
             this.$router.go();
         },
-        selectParticipante: function(id){
-            this.$emit('selectParticipante', id);
+        selectParticipante: function(id, intervencao){
+            var index = this.entidades.findIndex(e => e.id === id);
+            this.entidades[index].intervencao = intervencao;
+            var selectedEntidade = this.entidades[index]
+            this.entidades.splice(index,1);
+            this.$emit('selectParticipante', selectedEntidade);
         }
     }
 }
