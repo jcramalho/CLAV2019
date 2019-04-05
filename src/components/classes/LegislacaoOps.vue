@@ -9,6 +9,7 @@
                 :items="legs"
                 class="elevation-1"
                 hide-actions
+                rows-per-page-text="Linhas por página"
             >
                 <template v-slot:headers="props">
                     <tr>
@@ -31,6 +32,10 @@
                             </v-btn>
                         </td>
                     </tr>
+                </template>
+
+                <template v-slot:pageText="props">
+                    Diplomas {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
                 </template>
             </v-data-table>        
         </v-flex>

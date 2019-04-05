@@ -19,6 +19,7 @@
                     :search="searchEntidades"
                     item-key="id"
                     class="elevation-1"
+                    rows-per-page-text="Linhas por página"
                 >
                     <template v-slot:items="props">
                         <tr @click="selectEntidade(props.item)">
@@ -26,6 +27,10 @@
                             <td> {{ props.item.designacao }} </td>
                             <td> {{ props.item.tipo }} </td>
                         </tr>
+                    </template>
+
+                    <template v-slot:pageText="props">
+                        {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
                     </template>
 
                     <v-alert v-slot:no-results :value="true" color="error" icon="warning">

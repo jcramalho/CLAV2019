@@ -19,6 +19,7 @@
                     :search="searchDiplomas"
                     item-key="id"
                     class="elevation-1"
+                    rows-per-page-text="Linhas por página"
                 >
                     <template v-slot:items="props">
                         <tr @click="selectDiploma(props.item)">
@@ -27,6 +28,10 @@
                             <td> {{ props.item.sumario }} </td>
                             <td> {{ props.item.data }} </td>
                         </tr>
+                    </template>
+
+                    <template v-slot:pageText="props">
+                        Diplomas {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
                     </template>
 
                     <v-alert v-slot:no-results :value="true" color="error" icon="warning">
@@ -50,9 +55,9 @@ export default {
           searchDiplomas: "",
 
           headers: [
-            { text: 'Tipo', align: 'left', value: 'tipo'},
-            { text: 'Número', value: 'numero' },
-            { text: 'Sumário', value: 'sumario' },
+            { text: 'Tipo', align: 'left', value: 'tipo', sortable: false},
+            { text: 'Número', value: 'numero', sortable: false },
+            { text: 'Sumário', value: 'sumario', sortable: false },
             { text: 'Data', value: 'data' }
           ]
       }

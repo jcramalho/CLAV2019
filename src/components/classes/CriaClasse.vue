@@ -624,9 +624,9 @@
         },
 
         selectDiploma: function(leg){
+            this.classe.legislacao.push(leg);
             // Remove dos selecionáveis
             var index = this.listaLegislacao.findIndex(l => l.id === leg.id);
-            this.classe.legislacao.push(JSON.parse(JSON.stringify(this.listaLegislacao[index])));
             this.listaLegislacao.splice(index,1);
         },
         // Carrega os Processos da BD....................
