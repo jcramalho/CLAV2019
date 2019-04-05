@@ -229,7 +229,7 @@
 
                         </v-expansion-panel-content>
 
-                         <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+                        <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
                         <v-expansion-panel-content v-if="classe.nivel == 3">
                             <template v-slot:header>
                                 <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
@@ -335,6 +335,70 @@
                                 :legislacaoReady="semaforos.legislacaoReady"
                                 @selectDiploma="selectDiploma($event)"
                             />
+
+                        </v-expansion-panel-content>
+
+                        <!-- DECISÕES DE AVALIAÇÂO -->
+                        <v-expansion-panel-content v-if="classe.nivel == 3">
+                            <template v-slot:header>
+                                <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
+                                    <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
+                                </v-toolbar>
+                            </template>
+                            <!-- HÁ SUBDIVISÃO? -->
+                            <v-layout row wrap justify-center>
+                                <v-flex xs11>
+                                    <p>Os critérios justificativos das decisões de avaliação têm por base o contexto de avaliação.</p>
+                                    <p>Quando existe necessidade de diferenciar prazos de conservação e/ou destinos finais da 
+                                        informação produzida no âmbito de m processo de negócio (classe de 3º nível) devem ser
+                                        criadas classes de 4.º nível.</p>
+                                </v-flex>
+                                <v-flex xs11>
+                                    <h4> Esta classe de 3º nível irá ter subclasses de 4º nível?</h4>
+                                    <v-radio-group v-model="classe.temSubclasses4Nivel" row>
+                                        <v-radio label="Sim" v-bind:value="true" color="success"></v-radio>
+                                        <v-radio label="Não" v-bind:value="false" color="red"></v-radio>
+                                    </v-radio-group>
+                                </v-flex>
+                            </v-layout>
+
+                            <v-layout v-if="classe.temSubclasses4Nivel" row wrap justify-center>
+                                <v-flex xs11>
+                                    <h4> Selecione o(s) motivo(s) da subdivisão em 4ºs níveis:</h4>
+                                    <v-checkbox v-model="classe.temSubclasses4NivelPCA" 
+                                                hide-details class="shrink mr-2" color="teal"
+                                                label="Prazo de conservação administrativa distinto"
+                                                value="true"></v-checkbox>
+                                    <v-checkbox v-model="classe.temSubclasses4NivelDF"
+                                                hide-details class="shrink mr-2" color="teal darken-4"
+                                                label="Destino final distinto"
+                                                value="true"></v-checkbox>
+                                </v-flex>
+                            </v-layout>
+
+                            <v-layout v-if="classe.temSubclasses4Nivel && classe.temSubclasses4NivelDF" row wrap justify-center>
+                                <v-flex xs11>
+                                    <p>Quando  a subdivisão resulta da necessidade de criar destinos finais diferentes
+                                        é gerada uma relação de síntese entre as classes de 4.º nível.</p>
+                                    <h4> Seleccione o sentido dessa relação de síntese:</h4>
+                                    <v-radio-group v-model="classe.subdivisao4Nivel01Sintetiza02" col>
+                                        <v-radio v-bind:value="true" color="indigo">
+                                            <template v-slot:label>
+                                                <div>{{classe.codigo}}.01 sintetiza {{classe.codigo}}.02</div>
+                                            </template>
+                                        </v-radio>
+                                        <v-radio v-bind:value="false" color="indigo">
+                                            <template v-slot:label>
+                                                <div>{{classe.codigo}}.01 é sintetizada por {{classe.codigo}}.02</div>
+                                            </template>
+                                        </v-radio>
+                                    </v-radio-group>
+                                </v-flex>
+                            </v-layout>
+
+                            <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+                            <hr style="border: 3px solid green; border-radius: 2px;"/>
 
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -452,6 +516,7 @@
         entidadesD: [],
         entidadesP: [],
         listaProcessos: [],
+        listaLegislacao:[],
 
         processoTipos: [
             {label: "Processo Comum", value: "PC"},
@@ -623,12 +688,6 @@
             this.listaProcessos.splice(index,1);
         },
 
-        selectDiploma: function(leg){
-            this.classe.legislacao.push(leg);
-            // Remove dos selecionáveis
-            var index = this.listaLegislacao.findIndex(l => l.id === leg.id);
-            this.listaLegislacao.splice(index,1);
-        },
         // Carrega os Processos da BD....................
 
         loadProcessos: async function () {
@@ -679,6 +738,13 @@
             catch(error) {
                 console.error(error);
             };
+        },
+
+        selectDiploma: function(leg){
+            this.classe.legislacao.push(leg);
+            // Remove dos selecionáveis
+            var index = this.listaLegislacao.findIndex(l => l.id === leg.id);
+            this.listaLegislacao.splice(index,1);
         },
 
         unselectDiploma: function(diploma){
