@@ -309,7 +309,7 @@
                             <!-- PROCESSOS RELACIONADOS -->
                             <ProcessosRelacionadosOps 
                                 :processos="classe.processosRelacionados" 
-                                @unselectParticipante="unselectParticipante($event)"
+                                @unselectProcRel="unselectProcesso($event)"
                             />
 
                             <hr style="border-top: 1px dashed green;"/>
@@ -681,11 +681,15 @@
             this.classe.participantes.splice(index,1);
         },
 
-        selectProcesso: function(id){
-            // Remove dos selecionáveis
-            var index = this.listaProcessos.findIndex(e => e.id === id);
-            this.classe.processosRelacionados.push(JSON.parse(JSON.stringify(this.listaProcessos[index])));
-            this.listaProcessos.splice(index,1);
+        selectProcesso: function(proc){
+            this.classe.processosRelacionados.push(proc);
+        },
+
+        unselectProcesso: function(proc){
+            proc.idRel = "Indefinido";
+            this.listaProcessos.push(proc);
+            var index = this.classe.processosRelacionados.findIndex(p => p.id === proc.id);
+            this.classe.processosRelacionados.splice(index,1);
         },
 
         // Carrega os Processos da BD....................

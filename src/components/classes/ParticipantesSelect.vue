@@ -23,27 +23,15 @@
                     :pagination.sync="paginationParticipantes"
                 >
                     <template v-slot:items="props">
-                        <tr v-if="!props.item.selected">
+                        <tr>
                             <td>
-                                <v-btn color="teal" dark round small text-xs-center>
+                                <v-btn color="teal draken-2" dark round small text-xs-center>
                                     <SelectValueFromList 
                                         :options="tiposIntervencao"
-                                        :initialValue="'Indefinido'"
+                                        :initialValue="props.item.intervencao"
                                         @value-change="selectParticipante(props.item.id, $event)"
                                     />
                                 </v-btn>
-                                
-
-                                <!--v-select
-                                    item-text="label"
-                                    item-value="value"
-                                    v-model="props.item.intervencao"
-                                    :items="tiposIntervencao"
-                                    label="Selecione o tipo de intervenção:"
-                                    solo small-chips
-                                    dense
-                                    @change="props.item.selected=true; selectParticipante(props.item.id)"
-                                /-->
                             </td>
                             <td>{{ props.item.sigla }}</td>
                             <td> {{ props.item.designacao }} </td>
@@ -103,7 +91,7 @@ export default {
         selectParticipante: function(id, intervencao){
             var index = this.entidades.findIndex(e => e.id === id);
             this.entidades[index].intervencao = intervencao;
-            var selectedEntidade = this.entidades[index]
+            var selectedEntidade = this.entidades[index];
             this.entidades.splice(index,1);
             this.$emit('selectParticipante', selectedEntidade);
         }

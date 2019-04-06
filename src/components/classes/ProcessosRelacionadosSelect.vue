@@ -24,19 +24,16 @@
                     <template v-slot:items="props">
                         <tr>
                             <td>
-                                <v-select
-                                    item-text="label"
-                                    item-value="value"
-                                    v-model="props.item.idRel"
-                                    :items="tiposRelacao"
-                                    label="Selecione o tipo de relação:"
-                                    solo small-chips
-                                    dense
-                                    @change="selectProcesso(props.item.id)"
-                                />
+                                <v-btn color="teal draken-2" dark round small text-xs-center>
+                                    <SelectValueFromList 
+                                        :options="tiposRelacao"
+                                        :initialValue="props.item.idRel"
+                                        @value-change="selectProcesso(props.item.id, $event)"
+                                    />
+                                </v-btn>
                             </td>
-                            <td @click="selectProcesso(props.item.id)">{{ props.item.codigo }}</td>
-                            <td @click="selectProcesso(props.item.id)"> {{ props.item.titulo }} </td>
+                            <td>{{ props.item.codigo }}</td>
+                            <td> {{ props.item.titulo }} </td>
                         </tr>
                     </template>
 
@@ -53,9 +50,12 @@
 </template>
 
 <script>
+import SelectValueFromList from '@/components/generic/SelectValueFromList.vue'
 
 export default {
     props: ["procReady","processos"],
+
+    components: { SelectValueFromList },
 
     data: function() {
       return {
@@ -98,9 +98,12 @@ export default {
             this.$router.push('/classes/consultar/c'+id);
             this.$router.go();
         },
-        selectProcesso: function(id){
-            // Comunica ao pai que houve uma seleção
-            this.$emit('selectProcesso', id)
+        selectProcesso: function(id, relacao){
+            var index = this.processos.findIndex(p => p.id === id);
+            this.processos[index].idRel = relacao;
+            var selectedProcesso = this.processos[index];
+            this.processos.splice(index,1);
+            this.$emit('selectProcesso', selectedProcesso);
         }
     }
 }

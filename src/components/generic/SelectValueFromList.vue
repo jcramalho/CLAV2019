@@ -6,7 +6,7 @@
     Recebe como parâmetro um array de opções: options.
     Em que cada elemento é um objeto com dois campos: label e value.
      -->
-    <select v-model="currentValue">
+    <select v-model="currentValue" @change="valueChange">
         <option v-for='op in options' :value='op.value' :key='op.value'>
             {{op.label}}
         </option>
@@ -28,9 +28,10 @@ export default {
       currentValue: "Indefinido"
     }),
 
-    watch: {
-        currentValue: function () {
+    methods: {
+        valueChange: function(){
             this.$emit('value-change', this.currentValue);
+            this.currentValue = this.initialValue;
         }
     },
   
