@@ -7,7 +7,8 @@
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
-import axios from 'axios'
+import axios from 'axios';
+const lhost = require('@/config/global').host
 
 export default {
     data: () => ({
@@ -20,8 +21,8 @@ export default {
     
     mounted: async function (){
         try{
-            var response = await axios.get('http://localhost:7778/api/entidades');
-            this.entidades = await this.preparaTree(response.data);
+            var response = await axios.get(lhost + "/api/entidades");
+            this.entidades = await this.preparaLista(response.data);
         }
         catch(e){
             console.log(e);
@@ -29,10 +30,7 @@ export default {
     },
 
     methods: {
-        /*go: function(idEntidade){
-            this.$router.push('/entidades/' + idEntidade);
-        },*/
-        preparaTree: async function(listaEntidades){
+        preparaLista: async function(listaEntidades){
             try{
                 var myTree = [];
                 for(var i=0; i < listaEntidades.length; i++){
