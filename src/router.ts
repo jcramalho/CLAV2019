@@ -40,12 +40,24 @@ export default new Router({
       component: () =>
         import("./views/entidades/Entidades.vue")
     },
+    {
+      path: "/entidades/:idEntidade",
+      name: "consultaEntidade",
+      component: () => 
+        import("./views/entidades/EntidadesConsulta.vue")
+    },
     // Routes da legislação
     {
       path: "/legislacao",
       name: "legislacao",
       component: () =>
         import("./views/legislacao/Legislacao.vue")
+    },
+    {
+      path: "/legislacao/:idLegislacao",
+      name: "consultaLegislacao",
+      component: () => 
+        import("./views/legislacao/LegislacaoConsulta.vue")
     },
     // Routes das tabelas de seleção
     {
@@ -79,6 +91,12 @@ export default new Router({
       name: "tipologias",
       component: () =>
         import("./views/tipologias/Tipologias.vue")
+    },
+    {
+      path: "/tipologias/:idTipologia",
+      name: "consultaTipologia",
+      component: () => 
+        import("./views/tipologias/TipologiasConsulta.vue")
     },
     // Routes dos pedidos
     {

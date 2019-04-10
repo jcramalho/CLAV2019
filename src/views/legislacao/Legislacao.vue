@@ -52,8 +52,7 @@ export default {
                         entidades: listaLegislacao[i].entidades,
                         numero: listaLegislacao[i].numero,
                         sumario: listaLegislacao[i].sumario,
-                        // mandar o id num campo à parte
-                        // id: listaLegislacao[i].id,
+                        id: listaLegislacao[i].id
                     });
                 }
                 return myTree;
