@@ -346,57 +346,84 @@
                                 </v-toolbar>
                             </template>
                             <!-- HÁ SUBDIVISÃO? -->
-                            <v-layout row wrap justify-center>
-                                <v-flex xs11>
-                                    <p>Os critérios justificativos das decisões de avaliação têm por base o contexto de avaliação.</p>
-                                    <p>Quando existe necessidade de diferenciar prazos de conservação e/ou destinos finais da 
-                                        informação produzida no âmbito de m processo de negócio (classe de 3º nível) devem ser
-                                        criadas classes de 4.º nível.</p>
-                                </v-flex>
-                                <v-flex xs11>
-                                    <h4> Esta classe de 3º nível irá ter subclasses de 4º nível?</h4>
-                                    <v-radio-group v-model="classe.temSubclasses4Nivel" row>
-                                        <v-radio label="Sim" v-bind:value="true" color="success"></v-radio>
-                                        <v-radio label="Não" v-bind:value="false" color="red"></v-radio>
-                                    </v-radio-group>
-                                </v-flex>
-                            </v-layout>
-
-                            <v-layout v-if="classe.temSubclasses4Nivel" row wrap justify-center>
-                                <v-flex xs11>
-                                    <h4> Selecione o(s) motivo(s) da subdivisão em 4ºs níveis:</h4>
-                                    <v-checkbox v-model="classe.temSubclasses4NivelPCA" 
-                                                hide-details class="shrink mr-2" color="teal"
-                                                label="Prazo de conservação administrativa distinto"
-                                                value="true"></v-checkbox>
-                                    <v-checkbox v-model="classe.temSubclasses4NivelDF"
-                                                hide-details class="shrink mr-2" color="teal darken-4"
-                                                label="Destino final distinto"
-                                                value="true"></v-checkbox>
-                                </v-flex>
-                            </v-layout>
-
-                            <v-layout v-if="classe.temSubclasses4Nivel && classe.temSubclasses4NivelDF" row wrap justify-center>
-                                <v-flex xs11>
-                                    <p>Quando  a subdivisão resulta da necessidade de criar destinos finais diferentes
-                                        é gerada uma relação de síntese entre as classes de 4.º nível.</p>
-                                    <h4> Seleccione o sentido dessa relação de síntese:</h4>
-                                    <v-radio-group v-model="classe.subdivisao4Nivel01Sintetiza02" col>
-                                        <v-radio v-bind:value="true" color="indigo">
-                                            <template v-slot:label>
-                                                <div>{{classe.codigo}}.01 sintetiza {{classe.codigo}}.02</div>
-                                            </template>
-                                        </v-radio>
-                                        <v-radio v-bind:value="false" color="indigo">
-                                            <template v-slot:label>
-                                                <div>{{classe.codigo}}.01 é sintetizada por {{classe.codigo}}.02</div>
-                                            </template>
-                                        </v-radio>
-                                    </v-radio-group>
-                                </v-flex>
-                            </v-layout>
+                            <Subdivisao3Nivel
+                                :subdivisao="classe.temSubclasses4Nivel" @subdivisao="classe.temSubclasses4Nivel=$event"
+                                :motivoPCA="classe.temSubclasses4NivelPCA" @motivoPCA="classe.temSubclasses4NivelPCA=$event"
+                                :motivoDF="classe.temSubclasses4NivelDF" @motivoDF="classe.temSubclasses4NivelDF=$event" 
+                                :subclasse01Sintetiza02="classe.subdivisao4Nivel01Sintetiza02" @subclasse01Sintetiza02="classe.subdivisao4Nivel01Sintetiza02=$event"
+                                :codigoClasse="classe.codigo"
+                            />
 
                             <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+                            <!-- DECISÃO SEM SUBDIVISÃO -->
+                                <!-- PCA -->
+                            <v-layout row wrap color="teal lighten-5" v-if="!classe.temSubclasses4Nivel">
+                                <v-flex xs2>
+                                    <span class="title">Prazo de Conservação Administrativa</span>
+                                </v-flex>
+                                <v-flex xs9>
+                                    <v-layout row wrap>
+                                        <v-flex xs2>
+                                            <v-subheader>Prazo:</v-subheader>
+                                        </v-flex>
+                                        <v-flex xs10>
+                                            <v-text-field
+                                                v-model="classe.pca.valor"
+                                                label="Prazo em anos"
+                                                solo
+                                                clearable
+                                            ></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout row wrap v-if="semaforos.pcaFormasContagemReady">
+                                        <v-flex xs2>
+                                            <v-subheader>Forma de Contagem:</v-subheader>
+                                        </v-flex>
+                                        <v-flex xs10>
+                                            <v-select
+                                                item-text="label"
+                                                item-value="value"
+                                                v-model="classe.pca.formaContagem"
+                                                :items="pcaFormasContagem"
+                                                label="Selecione uma forma de contagem para o prazo"
+                                                solo
+                                                dense
+                                            />
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout row wrap v-if="semaforos.pcaSubFormasContagemReady && classe.pca.formaContagem=='vc_pcaFormaContagem_disposicaoLegal'">
+                                        <v-flex xs2>
+                                            <v-subheader>Subforma de contagem:</v-subheader>
+                                        </v-flex>
+                                        <v-flex xs10>
+                                            <v-select
+                                                item-text="label"
+                                                item-value="value"
+                                                v-model="classe.pca.subFormaContagem"
+                                                :items="pcaSubFormasContagem"
+                                                label="Selecione uma subforma de contagem para o prazo"
+                                                solo
+                                                dense
+                                            />
+                                        </v-flex>
+                                    </v-layout>
+
+                                    <hr style="border-top: 1px dashed green;"/>
+
+                                </v-flex>
+
+                                <!-- JUSTIFICAÇÂO DO PCA -->
+                                <v-layout row wrap v-if="classe.pca.justificacao.length>0">
+                                    <v-flex xs2>
+                                        <span class="subheading">Justificação do Prazo de Conservação Administrativa</span>
+                                    </v-flex>
+                                    <v-flex xs9>
+                                        Critérios...
+                                    </v-flex>
+                                </v-layout>
+                                
+                            </v-layout>
 
                             <hr style="border: 3px solid green; border-radius: 2px;"/>
 
@@ -423,11 +450,13 @@
   import ProcessosRelacionadosSelect from '@/components/classes/ProcessosRelacionadosSelect.vue'
   import LegislacaoOps from '@/components/classes/LegislacaoOps.vue'
   import LegislacaoSelect from '@/components/classes/LegislacaoSelect.vue'
+  import Subdivisao3Nivel from '@/components/classes/Subdivisao3Nivel.vue'
   
   export default {
     components: { 
         ClassesArvoreLateral, DonosOps, DonosSelect, ParticipantesOps, ParticipantesSelect, 
-        ProcessosRelacionadosOps, ProcessosRelacionadosSelect, LegislacaoOps, LegislacaoSelect
+        ProcessosRelacionadosOps, ProcessosRelacionadosSelect, LegislacaoOps, LegislacaoSelect,
+        Subdivisao3Nivel
     },
 
     
@@ -523,6 +552,9 @@
             {label: "Processo Específico", value: "PE"}
         ],
 
+        pcaFormasContagem: [],
+        pcaSubFormasContagem: [],
+
         simNao: [
             {label: "Não", value: "N"},
             {label: "Sim", value: "S"}
@@ -562,7 +594,7 @@
                 this.loadLegislacao();
             }
             if(this.classe.nivel >= 3){
-                //this.loadPCA();
+                this.loadPCA();
             }
         },
         'classe.codigo': function () {
@@ -756,6 +788,56 @@
             this.listaLegislacao.push(diploma);
             var index = this.classe.legislacao.findIndex(e => e.id === diploma.id);
             this.classe.legislacao.splice(index,1);
+        },
+
+        // Carrega a informação contextual relativa ao PCA: formas de contagem, etc....................
+
+        loadPCA: function(){
+            this.loadPCAFormasContagem();
+            this.loadPCASubFormasContagem();
+        },
+
+        // Carrega as possíveis formas de contagem do PCA....................
+
+        loadPCAFormasContagem: async function(){
+            try{
+                var response = await axios.get(lhost + "/api/vocabularios/vc_pcaFormaContagem");
+                this.pcaFormasContagem = this.pcaFormasContagem.concat(
+                    response.data.map(function (item) {
+                        return {
+                            label: item.termo,
+                            value: item.idtermo.split('#')[1],
+                        }
+                    }).sort(function (a, b) {
+                        return a.label.localeCompare(b.label);
+                    }));
+                this.semaforos.pcaFormasContagemReady = true;
+            }
+            catch(error) {
+                console.error(error);
+            };
+        },
+
+        // Carrega as possíveis subformas de contagem do PCA....................
+
+        loadPCASubFormasContagem: async function(){
+            try{
+                var response = await axios.get(lhost + "/api/vocabularios/vc_pcaSubformaContagem");
+                this.pcaSubFormasContagem = this.pcaSubFormasContagem.concat(
+                    response.data.map(function (item) {
+                        var formaID = item.termo.substring(item.termo.length - 6)
+                        return {
+                            label: formaID + ": " + item.desc.substring(0, 70) + "...",
+                            value: item.idtermo.split('#')[1],
+                        }
+                    }).sort(function (a, b) {
+                        return a.label.localeCompare(b.label);
+                    }));
+                this.semaforos.pcaSubFormasContagemReady = true;
+            }
+            catch(error) {
+                console.error(error);
+            };
         },
     }
   }
