@@ -358,6 +358,7 @@
 
                             <!-- DECISÃO SEM SUBDIVISÃO -->
                                 <!-- PCA -->
+                            <v-container fluid>
                             <v-layout row wrap color="teal lighten-5" v-if="!classe.temSubclasses4Nivel">
                                 <v-flex xs2>
                                     <span class="title">Prazo de Conservação Administrativa</span>
@@ -409,17 +410,18 @@
                                         </v-flex>
                                     </v-layout>
 
-                                    <hr style="border-top: 1px dashed green;"/>
+                                    <hr style="border-top: 2px dashed green;"/>
 
                                 </v-flex>
 
                                 <!-- JUSTIFICAÇÂO DO PCA -->
+                                <v-container fluid>
                                 <v-layout row wrap>
                                     <v-flex xs2>
                                         <span class="subheading">Justificação do PCA</span>
                                     </v-flex>
                                     <v-flex xs9>
-                                        <v-layout row wrap>
+                                        <v-layout row justify-start>
                                             <v-flex>
                                                 <v-btn color="indigo darken-3" dark 
                                                     @click="adicionarCriterioGestionario(classe.pca.justificacao, 'CriterioJustificacaoGestionario', 'Critério Gestionário', textoCriterioGestionario, [], [])"
@@ -430,28 +432,36 @@
                                             <v-flex>
                                                 <v-btn color="indigo darken-3" dark 
                                                     @click="adicionarCriterioLegalPCA(classe.pca.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], classe.legislacao)"
-                                                    v-if="!critLegalAdicionadoPCA"
+                                                    v-if="!semaforos.critLegalAdicionadoPCA"
                                                 > Adicionar Critério Legal
                                                 </v-btn>
                                             </v-flex>
                                         </v-layout>
                                         <v-layout row wrap v-for="(crit, cindex) in classe.pca.justificacao" :key="cindex">
-                                            <v-flex xs12>
+                                            <v-flex xs6>
                                                 <v-subheader>{{ crit.label }}</v-subheader>
+                                            </v-flex>
+                                            <v-flex xs6>
+                                                <v-btn small color="red darken-2" dark round @click="removerCriterioTodo(classe.pca.justificacao, cindex, 'PCA')">
+                                                    <v-icon dark>remove_circle</v-icon>
+                                                </v-btn>
                                             </v-flex>
                                             <v-flex xs12>
                                                 <v-textarea
                                                     solo
-                                                    label="Nota do critério"
+                                                    label="Notas do critério"
                                                     v-model="crit.notas"
                                                     rows="2"
                                                 ></v-textarea>
                                             </v-flex>
+                                            <hr style="border-top: 2px dotted green; width: 100%;"/>
                                         </v-layout>
                                     </v-flex>
                                 </v-layout>
+                                </v-container>
                                 
                             </v-layout>
+                            </v-container>
 
                             <hr style="border: 3px solid green; border-radius: 2px;"/>
 
@@ -1010,7 +1020,26 @@
         adicionarCriterioGestionario: function (justificacao, tipo, label, notas, procRel, legislacao) {
             this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
             this.semaforos.critGestionarioAdicionado = true;
-        }
+        },
+
+        // Remove um critério completo duma vez
+        removerCriterioTodo: function(justificacao, i, PCAouDF){
+            this.atualizaFlagsCriterios(justificacao[i].tipo, PCAouDF);
+            justificacao.splice(i, 1);
+        },
+
+        // Atualiza as flags que controlam os botões de adicionar e remover critérios
+        atualizaFlagsCriterios(tipo, PCAouDF){
+            if(tipo == "CriterioJustificacaoLegal"){
+                if(PCAouDF == 'PCA')
+                    this.semaforos.critLegalAdicionadoPCA = false;
+                else
+                    this.semaforos.critLegalAdicionadoDF = false;
+            }
+            else if(tipo == "CriterioJustificacaoGestionario"){
+                this.semaforos.critGestionarioAdicionado = false;
+            }
+        },
     }
   }
 </script>
