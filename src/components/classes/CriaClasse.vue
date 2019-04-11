@@ -416,10 +416,31 @@
                                 <!-- JUSTIFICAÇÂO DO PCA -->
                                 <v-layout row wrap v-if="classe.pca.justificacao.length>0">
                                     <v-flex xs2>
-                                        <span class="subheading">Justificação do Prazo de Conservação Administrativa</span>
+                                        <span class="subheading">Justificação do PCA</span>
                                     </v-flex>
                                     <v-flex xs9>
-                                        Critérios...
+                                        <v-layout row wrap>
+                                            <v-flex>
+                                                <v-btn color="indigo darken-3" dark 
+                                                    @click="adicionarCriterioGestionario(classe.pca.justificacao, 'CriterioJustificacaoGestionario', 'Critério Gestionário', textoCriterioGestionario, [], [])"
+                                                    v-if="!semaforos.critGestionarioAdicionado"
+                                                > Adicionar Critério Gestionário
+                                                </v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                        <v-layout row wrap v-for="(crit, cindex) in classe.pca.justificacao" :key="cindex">
+                                            <v-flex xs12>
+                                                <v-subheader>{{ crit.label }}</v-subheader>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-textarea
+                                                    solo
+                                                    label="Nota do critério"
+                                                    v-model="crit.notas"
+                                                    rows="2"
+                                                ></v-textarea>
+                                            </v-flex>
+                                        </v-layout>
                                     </v-flex>
                                 </v-layout>
                                 
@@ -567,7 +588,14 @@
             legislacaoReady: false,
             pcaFormasContagemReady: false,
             pcaSubFormasContagemReady: false,
-        }
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false,
+        },
+
+        textoCriterioGestionario: "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
+                                    " escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para" +
+                                    " a definição do prazo o tempo do mandato de maior duração: 5 anos."
     }),
 
     watch: {
@@ -715,6 +743,77 @@
 
         selectProcesso: function(proc){
             this.classe.processosRelacionados.push(proc);
+            for(var i=0; i < this.classe.subclasses.length; i++){
+                this.classe.subclasses[i].processosRelacionados.push(proc);
+            }
+            this.classe.df.valor = this.calcDF(this.classe.processosRelacionados);
+            if(!this.classe.temSubclasses4Nivel){
+                // Tratamento do invariante: se é Suplemento Para então cria-se um critério de Utilidade Administrativa
+                if(proc.relacao == "eSuplementoPara"){
+                    this.adicionarCriterio(this.classe.pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", "Critério de Utilidade Administrativa", "", [proc], []);
+                }
+                // Tratamento do invariante: se é Suplemento De então cria-se um critério Legal com toda a legislação selecionada associada
+                else if(proc.relacao == "eSuplementoDe"){
+                    this.adicionarCriterio(this.classe.pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", "", [proc], this.classe.legislacao);
+                    this.critLegalAdicionadoPCA = true;
+                }
+                // Tratamento do invariante: se é Síntese De então cria-se um critério de Densidade Informacional
+                else if(proc.relacao == "eSinteseDe"){
+                    this.adicionarCriterio(this.classe.df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                }
+                // Tratamento do invariante: se é Síntetizado Por então cria-se um critério de Densidade Informacional
+                else if(proc.relacao == "eSintetizadoPor"){
+                    this.adicionarCriterio(this.classe.df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                }
+                // Tratamento do invariante: se é Complementar De então cria-se um critério de Complementaridade Informacional
+                else if(proc.relacao == "eComplementarDe"){
+                    this.adicionarCriterio(this.classe.df.justificacao, "CriterioJustificacaoComplementaridadeInfo", "Critério de Complementaridade Informacional", "", [proc], []);
+                }
+            }
+            else{
+                // Tratamento do invariante: se é Suplemento Para 
+                // então cria-se um critério de Utilidade Administrativa para todas as subclasses
+                if(proc.relacao == "eSuplementoPara"){
+                    for(var i=0; i < this.classe.subclasses.length; i++){
+                        this.adicionarCriterio(this.classe.subclasses[i].pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", "Critério de Utilidade Administrativa", "", [proc], []);
+                    }
+                }
+                // Tratamento do invariante: se é Suplemento De então 
+                // cria-se um critério Legal com toda a legislação selecionada associada para todas as subclasses
+                else if(proc.relacao == "eSuplementoDe"){
+                    for(var i=0; i < this.classe.subclasses.length; i++){
+                        this.adicionarCriterio(this.classe.subclasses[i].pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", "", [proc], this.classe.legislacao);
+                        this.critLegalAdicionadoPCA = true;
+                    }    
+                }
+                // Tratamento do invariante: se é Síntese De então 
+                // cria-se um critério de Densidade Informacional para todas as subclasses
+                else if(proc.relacao == "eSinteseDe"){
+                    for(var i=0; i < this.classe.subclasses.length; i++){
+                        this.adicionarCriterio(this.classe.subclasses[i].df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                    } 
+                }
+                // Tratamento do invariante: se é Síntetizado Por então 
+                // cria-se um critério de Densidade Informacional
+                else if(proc.relacao == "eSintetizadoPor"){
+                    for(var i=0; i < this.classe.subclasses.length; i++){
+                        this.adicionarCriterio(this.classe.subclasses[i].df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                    }
+                }
+                // Tratamento do invariante: se é Complementar De então cria-se um critério de Complementaridade Informacional
+                else if(proc.relacao == "eComplementarDe"){
+                    for(var i=0; i < this.classe.subclasses.length; i++){
+                        this.adicionarCriterio(this.classe.subclasses[i].df.justificacao, "CriterioJustificacaoComplementaridadeInfo", "Critério de Complementaridade Informacional", "", [proc], []);
+                    }
+                }
+                // No fim, recalcula-se o DF para todas as subclasses se a sbdivisão não for DF distinto
+                if(!this.classe.temSubclasses4NivelDF){
+                    for(var i=0; i < this.classe.subclasses.length; i++){
+                        this.classe.subclasses[i].df.valor = this.calcDF(this.classe.subclasses[i].processosRelacionados);
+                    }
+                } 
+            }
+            alert(JSON.stringify(this.classe));
         },
 
         unselectProcesso: function(proc){
@@ -839,6 +938,72 @@
                 console.error(error);
             };
         },
+
+        // Calcula o destino final para o contexto do momento
+        calcDF: function(listaProc){
+            var res = "NE";
+
+            if(!this.classe.temSubclasses4NivelDF){
+                var complementar = listaProc.findIndex(p => p.relacao == 'eComplementarDe');
+                if(complementar != -1){
+                    res = "C";
+                }
+                else{
+                    var sinteseDe = listaProc.findIndex(p => p.relacao == 'eSinteseDe');
+                    if(sinteseDe != -1){
+                        res = "C";
+                    }
+                    else{
+                        var sintetizado = listaProc.findIndex(p => p.relacao == 'eSintetizadoPor');
+                        if(sintetizado != -1){
+                            es = "E";
+                        }
+                        else{
+                            res = "NE";
+                        }
+                    }
+                }
+            }
+            return res;
+        },
+
+        // Adiciona um critério à lista de critérios do PCA ou do DF....................
+
+        adicionarCriterio: function (justificacao, tipo, label, notas, procRel, legislacao) {
+            let myProcRel = JSON.parse(JSON.stringify(procRel));
+            let myLeg = JSON.parse(JSON.stringify(legislacao));
+            
+            var indice = justificacao.findIndex(crit => crit.tipo === tipo);
+            if(indice == -1){
+                justificacao.push({
+                    tipo: tipo,
+                    label, label,
+                    notas: notas,
+                    procRel: myProcRel,
+                    legislacao: myLeg
+                });
+            }
+            else{
+                justificacao[indice].procRel = justificacao[indice].procRel.concat(myProcRel);
+                justificacao[indice].legislacao = justificacao[indice].legislacao.concat(myLeg);
+            }
+            
+        },
+
+        adicionarCriterioLegalDF: function (justificacao, tipo, label, notas, procRel, legislacao) {
+            this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
+            this.semaforos.critLegalAdicionadoDF = true;
+        },    
+
+        adicionarCriterioLegalPCA: function (justificacao, tipo, label, notas, procRel, legislacao) {
+            this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
+            this.semaforos.critLegalAdicionadoPCA = true;
+        },
+
+        adicionarCriterioGestionario: function (justificacao, tipo, label, notas, procRel, legislacao) {
+            this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
+            this.semaforos.critGestionarioAdicionado = true;
+        }
     }
   }
 </script>

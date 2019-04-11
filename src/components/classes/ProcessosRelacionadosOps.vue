@@ -21,7 +21,7 @@
 
                 <template v-slot:items="props">
                     <tr>
-                        <td>{{ props.item.idRel }}</td>
+                        <td>{{ props.item.relacao }}</td>
                         <td>{{ props.item.codigo }}</td>
                         <td> {{ props.item.titulo }} </td>
                         <td>

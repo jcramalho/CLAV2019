@@ -100,7 +100,7 @@ export default {
         },
         selectProcesso: function(id, relacao){
             var index = this.processos.findIndex(p => p.id === id);
-            this.processos[index].idRel = relacao;
+            this.processos[index].relacao = relacao;
             var selectedProcesso = this.processos[index];
             this.processos.splice(index,1);
             this.$emit('selectProcesso', selectedProcesso);
