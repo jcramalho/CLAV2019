@@ -414,7 +414,7 @@
                                 </v-flex>
 
                                 <!-- JUSTIFICAÇÂO DO PCA -->
-                                <v-layout row wrap v-if="classe.pca.justificacao.length>0">
+                                <v-layout row wrap>
                                     <v-flex xs2>
                                         <span class="subheading">Justificação do PCA</span>
                                     </v-flex>
@@ -425,6 +425,13 @@
                                                     @click="adicionarCriterioGestionario(classe.pca.justificacao, 'CriterioJustificacaoGestionario', 'Critério Gestionário', textoCriterioGestionario, [], [])"
                                                     v-if="!semaforos.critGestionarioAdicionado"
                                                 > Adicionar Critério Gestionário
+                                                </v-btn>
+                                            </v-flex>
+                                            <v-flex>
+                                                <v-btn color="indigo darken-3" dark 
+                                                    @click="adicionarCriterioLegalPCA(classe.pca.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], classe.legislacao)"
+                                                    v-if="!critLegalAdicionadoPCA"
+                                                > Adicionar Critério Legal
                                                 </v-btn>
                                             </v-flex>
                                         </v-layout>
