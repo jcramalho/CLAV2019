@@ -1,0 +1,296 @@
+<template>
+    <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+    <v-expansion-panel-content v-if="c.nivel == 3">
+        <template v-slot:header>
+            <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
+                <v-toolbar-title>Contexto de Avaliação</v-toolbar-title>
+            </v-toolbar>
+        </template>
+        <!-- TIPO DE PROCESSO -->
+        <v-layout row wrap>
+            <v-flex xs2>
+               <v-subheader>Tipo de Processo:</v-subheader>
+            </v-flex>
+            <v-flex xs9>
+                <v-select
+                    item-text="label"
+                    item-value="value"
+                    v-model="c.tipoProc"
+                    :items="processoTipos"
+                    label="Selecione o tipo de processo:"
+                    solo dense
+                />
+            </v-flex>
+        </v-layout>
+
+        <!-- PROCESSO TRANVERSAL -->
+        <v-layout row wrap>
+            <v-flex xs2>
+                <v-subheader>Processo Transversal:</v-subheader>
+            </v-flex>
+            <v-flex xs9>
+                <v-select
+                    item-text="label"
+                    item-value="value"
+                    v-model="c.procTrans"
+                    :items="simNao"
+                    label="Indique se o processo é transversal:"
+                    solo dense
+                />
+            </v-flex>
+        </v-layout>
+
+        <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+        <!-- DONOS -->
+        <DonosOps 
+            :entidades="c.donos" 
+            @unselectEntidade="unselectEntidade($event)"
+        />
+
+        <hr style="border-top: 1px dashed green;"/>
+
+        <DonosSelect
+            :entidadesReady="semaforos.entidadesReady"
+            :entidades="donos"
+            @selectEntidade="selectEntidade($event)"
+        />
+
+        <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+        <!-- PARTICIPANTES -->
+        <ParticipantesOps 
+            :entidades="c.participantes" 
+            @unselectParticipante="unselectParticipante($event)"
+        />
+                            
+        <hr style="border-top: 1px dashed green;"/>
+
+        <ParticipantesSelect
+            :entidadesReady="semaforos.entidadesReady"
+            :entidades="participantes"
+            @selectParticipante="selectParticipante($event)"
+        />
+
+        <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+        <!-- PROCESSOS RELACIONADOS -->
+        <ProcessosRelacionadosOps 
+            :processos="c.processosRelacionados" 
+            @unselectProcRel="unselectProcesso($event)"
+        />
+
+        <hr style="border-top: 1px dashed green;"/>
+
+        <ProcessosRelacionadosSelect
+            :procReady="semaforos.classesReady"
+            :processos="procRel"
+            @selectProcesso="selectProcesso($event)"
+        />
+
+        <hr style="border: 3px solid green; border-radius: 2px;"/>
+
+        <!-- LEGISLAÇÂO -->
+        <LegislacaoOps
+            :legs="c.legislacao"
+            @unselectDiploma="unselectDiploma($event)"
+        />
+
+        <hr style="border-top: 1px dashed green;"/>
+
+        <LegislacaoSelect
+            :legs="legs"
+            :legislacaoReady="semaforos.legislacaoReady"
+            @selectDiploma="selectDiploma($event)"
+        />
+
+    </v-expansion-panel-content>
+</template>
+
+<script>
+const nanoid = require('nanoid')
+
+import DonosOps from '@/components/classes/DonosOps.vue'
+import DonosSelect from '@/components/classes/DonosSelect.vue'
+import ParticipantesOps from '@/components/classes/ParticipantesOps.vue'
+import ParticipantesSelect from '@/components/classes/ParticipantesSelect.vue'
+import ProcessosRelacionadosOps from '@/components/classes/ProcessosRelacionadosOps.vue'
+import ProcessosRelacionadosSelect from '@/components/classes/ProcessosRelacionadosSelect.vue'
+import LegislacaoOps from '@/components/classes/LegislacaoOps.vue'
+import LegislacaoSelect from '@/components/classes/LegislacaoSelect.vue'
+
+export default {
+    props: ["c","semaforos","donos","participantes","procRel","legs"],
+
+    components: {
+        DonosOps, DonosSelect, ParticipantesOps, ParticipantesSelect, 
+        ProcessosRelacionadosOps, ProcessosRelacionadosSelect, LegislacaoOps, LegislacaoSelect
+    },
+
+    data: () => {
+        return {
+            processoTipos: [
+                {label: "Processo Comum", value: "PC"},
+                {label: "Processo Específico", value: "PE"}
+            ],
+
+            simNao: [
+                {label: "Não", value: "N"},
+                {label: "Sim", value: "S"}
+            ]
+        }
+    },
+
+    methods: {
+        unselectEntidade: function(entidade){
+            // Recoloca a entidade nos selecionáveis
+            this.donos.push(entidade);
+            var index = this.c.donos.findIndex(e => e.id === entidade.id);
+            this.c.donos.splice(index,1);
+        },
+        selectEntidade: function(entidade){
+            this.c.donos.push(entidade);
+            // Remove dos selecionáveis
+            var index = this.donos.findIndex(e => e.id === entidade.id);
+            this.donos.splice(index,1);
+        },
+
+        unselectParticipante: function(entidade){
+            entidade.intervencao = "Indefinido";
+            // Recoloca a entidade nos selecionáveis
+            this.participantes.push(entidade);
+            var index = this.c.participantes.findIndex(e => e.id === entidade.id);
+            this.c.participantes.splice(index,1);
+        },
+
+        selectParticipante: function( entidade ){
+            this.c.participantes.push(entidade);
+        },
+
+        unselectProcesso: function(proc){
+            proc.idRel = "Indefinido";
+            this.procRel.push(proc);
+            var index = this.c.processosRelacionados.findIndex(p => p.id === proc.id);
+            this.c.processosRelacionados.splice(index,1);
+        },
+
+
+        selectProcesso: function(proc){
+            this.c.processosRelacionados.push(proc);
+            for(var i=0; i < this.c.subclasses.length; i++){
+                this.c.subclasses[i].processosRelacionados.push(proc);
+            }
+            this.c.df.valor = this.calcDF(this.c.processosRelacionados);
+            if(!this.c.temSubclasses4Nivel){
+                // Tratamento do invariante: se é Suplemento Para então cria-se um critério de Utilidade Administrativa
+                if(proc.relacao == "eSuplementoPara"){
+                    this.adicionarCriterio(this.c.pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", "Critério de Utilidade Administrativa", "", [proc], []);
+                }
+                // Tratamento do invariante: se é Suplemento De então cria-se um critério Legal com toda a legislação selecionada associada
+                else if(proc.relacao == "eSuplementoDe"){
+                    this.adicionarCriterio(this.c.pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", "", [proc], this.classe.legislacao);
+                    this.semaforos.critLegalAdicionadoPCA = true;
+                }
+                // Tratamento do invariante: se é Síntese De então cria-se um critério de Densidade Informacional
+                else if(proc.relacao == "eSinteseDe"){
+                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                }
+                // Tratamento do invariante: se é Síntetizado Por então cria-se um critério de Densidade Informacional
+                else if(proc.relacao == "eSintetizadoPor"){
+                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                }
+                // Tratamento do invariante: se é Complementar De então cria-se um critério de Complementaridade Informacional
+                else if(proc.relacao == "eComplementarDe"){
+                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoComplementaridadeInfo", "Critério de Complementaridade Informacional", "", [proc], []);
+                }
+            }
+            else{
+                // Tratamento do invariante: se é Suplemento Para 
+                // então cria-se um critério de Utilidade Administrativa para todas as subclasses
+                if(proc.relacao == "eSuplementoPara"){
+                    for(var i=0; i < this.c.subclasses.length; i++){
+                        this.adicionarCriterio(this.c.subclasses[i].pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", "Critério de Utilidade Administrativa", "", [proc], []);
+                    }
+                }
+                // Tratamento do invariante: se é Suplemento De então 
+                // cria-se um critério Legal com toda a legislação selecionada associada para todas as subclasses
+                else if(proc.relacao == "eSuplementoDe"){
+                    for(var i=0; i < this.c.subclasses.length; i++){
+                        this.adicionarCriterio(this.c.subclasses[i].pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", "", [proc], this.classe.legislacao);
+                        this.semaforos.critLegalAdicionadoPCA = true;
+                    }    
+                }
+                // Tratamento do invariante: se é Síntese De então 
+                // cria-se um critério de Densidade Informacional para todas as subclasses
+                else if(proc.relacao == "eSinteseDe"){
+                    for(var i=0; i < this.c.subclasses.length; i++){
+                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                    } 
+                }
+                // Tratamento do invariante: se é Síntetizado Por então 
+                // cria-se um critério de Densidade Informacional
+                else if(proc.relacao == "eSintetizadoPor"){
+                    for(var i=0; i < this.c.subclasses.length; i++){
+                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                    }
+                }
+                // Tratamento do invariante: se é Complementar De então cria-se um critério de Complementaridade Informacional
+                else if(proc.relacao == "eComplementarDe"){
+                    for(var i=0; i < this.c.subclasses.length; i++){
+                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoComplementaridadeInfo", "Critério de Complementaridade Informacional", "", [proc], []);
+                    }
+                }
+                // No fim, recalcula-se o DF para todas as subclasses se a sbdivisão não for DF distinto
+                if(!this.c.temSubclasses4NivelDF){
+                    for(var i=0; i < this.c.subclasses.length; i++){
+                        this.c.subclasses[i].df.valor = this.calcDF(this.c.subclasses[i].processosRelacionados);
+                    }
+                } 
+            }
+        },
+
+        // Calcula o destino final para o contexto do momento
+        calcDF: function(listaProc){
+            var res = "NE";
+
+            if(!this.classe.temSubclasses4NivelDF){
+                var complementar = listaProc.findIndex(p => p.relacao == 'eComplementarDe');
+                if(complementar != -1){
+                    res = "C";
+                }
+                else{
+                    var sinteseDe = listaProc.findIndex(p => p.relacao == 'eSinteseDe');
+                    if(sinteseDe != -1){
+                        res = "C";
+                    }
+                    else{
+                        var sintetizado = listaProc.findIndex(p => p.relacao == 'eSintetizadoPor');
+                        if(sintetizado != -1){
+                            res = "E";
+                        }
+                        else{
+                            res = "NE";
+                        }
+                    }
+                }
+            }
+            return res;
+        },
+
+        selectDiploma: function(leg){
+            this.c.legislacao.push(leg);
+            // Remove dos selecionáveis
+            var index = this.legs.findIndex(l => l.id === leg.id);
+            this.legs.splice(index,1);
+        },
+
+        unselectDiploma: function(diploma){
+            // Recoloca o diploma nos selecionáveis
+            this.legs.push(diploma);
+            var index = this.c.legislacao.findIndex(e => e.id === diploma.id);
+            this.c.legislacao.splice(index,1);
+        },
+
+    }
+}
+</script>
