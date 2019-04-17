@@ -72,7 +72,6 @@ export default {
                     this.$router.push('/classes/consultar/c'+id);
                     break;
                 }             
-            //this.$router.push('/classes/consultar/c'+idClasse);
         },
     },
     mounted: async function (){
