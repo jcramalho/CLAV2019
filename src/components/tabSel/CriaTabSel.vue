@@ -66,7 +66,18 @@
 
             <v-stepper-step :complete="stepNo > 3" step="3">Processos Comuns</v-stepper-step>
             <v-stepper-content step="3">
-            <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
+            <v-layout wrap>
+                <v-flex xs10>
+                    <v-select
+                        item-text="label"
+                        item-value="value"
+                        :items="procComuns"
+                        label="Selecione os processos comuns"
+                        solo
+                        dense
+                    />
+                </v-flex>
+            </v-layout>
             <v-btn color="primary" @click="stepNo = 4; barra(75)">Continuar</v-btn>
             <v-btn flat @click="stepNo = 2.5; barra(33)" v-if="estado.tipo == 'Pluriorganizacional'">Voltar</v-btn>
             <v-btn flat @click="stepNo = 2; barra(25)" v-else>Voltar</v-btn>
@@ -100,6 +111,7 @@ import axios from 'axios'
         stepNo: 1,
         items: ['Organizacional', 'Pluriorganizacional'],
         entidades: [],
+        procComuns: [],
         infoButton: false,
         valorBarra: 0
       }
@@ -124,12 +136,30 @@ import axios from 'axios'
                 console.log(erro);
             }
         },
+        loadClasses: async function () {
+            try{
+                var response = await axios.get("http://localhost:7778/api/classes?tipo=comum");
+                console.log(response)
+                this.procComuns = response.data.map(function (item) {
+                    return {
+                        label: item.codigo + " - " + item.titulo,
+                        value: item.id.split('#')[1],
+                    }
+                    }).sort(function (a, b) {
+                        return a.label.localeCompare(b.label);
+                    });
+            }
+            catch(erro){
+                console.log(erro);
+            }
+        },
         barra: async function (valor){
             this.valorBarra = valor;
         }
     },
     created: function() {
-        this.loadEntidades()
+        this.loadEntidades();
+        this.loadClasses();
         if( this.$store.state.criacaoTabSel.passoN > "1") {
             this.stepNo =  this.$store.state.criacaoTabSel.passoN
             this.valorBarra =  this.$store.state.criacaoTabSel.percent
