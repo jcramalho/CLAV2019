@@ -68,14 +68,8 @@
             <v-stepper-content step="3">
             <v-layout wrap>
                 <v-flex xs10>
-                    <v-select
-                        item-text="label"
-                        item-value="value"
-                        :items="procComuns"
-                        label="Selecione os processos comuns"
-                        solo
-                        dense
-                    />
+                    <ListaProcessos v-bind:lista="procComuns"
+                                    tipo="Processos Comuns"/>
                 </v-flex>
             </v-layout>
             <v-btn color="primary" @click="stepNo = 4; barra(75)">Continuar</v-btn>
@@ -99,12 +93,17 @@
 
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
+import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
+
   export default {
     computed: {
         estado() {
             return this.$store.state.criacaoTabSel
         }
+    },
+    components: {
+        ListaProcessos
     },
     data () {
       return {
@@ -139,15 +138,15 @@ import axios from 'axios'
         loadClasses: async function () {
             try{
                 var response = await axios.get("http://localhost:7778/api/classes?tipo=comum");
-                console.log(response)
-                this.procComuns = response.data.map(function (item) {
-                    return {
-                        label: item.codigo + " - " + item.titulo,
-                        value: item.id.split('#')[1],
-                    }
-                    }).sort(function (a, b) {
-                        return a.label.localeCompare(b.label);
+                console.log(response);
+                var id=0;
+                for(var i=0; i < response.data.length; i++){
+                    this.procComuns.push({
+                        classe: response.data[i].codigo + " - " + response.data[i].titulo
                     });
+                }
+                console.log(this.procComuns)
+                return this.procComuns
             }
             catch(erro){
                 console.log(erro);
