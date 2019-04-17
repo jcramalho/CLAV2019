@@ -68,8 +68,18 @@
             <v-stepper-content step="3">
             <v-layout wrap>
                 <v-flex xs10>
-                    <ListaProcessos v-bind:lista="procComuns"
-                                    tipo="Processos Comuns"/>
+                    <v-expansion-panel>
+                        <v-expansion-panel-content class="expansion-panel-heading">
+                            <template v-slot:header>
+                                <div class="subheading font-weight-bold">
+                                    Selecione os Processos de negócio
+                                </div>
+                            </template>
+                            <ListaProcessos v-bind:lista="procComuns"
+                                            tipo="Processos Comuns"/>
+                        
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
                 </v-flex>
             </v-layout>
             <v-btn color="primary" @click="stepNo = 4; barra(75)">Continuar</v-btn>
@@ -142,7 +152,9 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
                 var id=0;
                 for(var i=0; i < response.data.length; i++){
                     this.procComuns.push({
-                        classe: response.data[i].codigo + " - " + response.data[i].titulo
+                        classe: response.data[i].codigo + " - " + response.data[i].titulo,
+                        /*nivel2: response.data[i].pai,
+                        nivel1: response.data[i].avo*/
                     });
                 }
                 console.log(this.procComuns)
@@ -166,3 +178,10 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
     }
   }
 </script>
+
+<style>
+    .expansion-panel-heading {
+        color: #1a237e !important;
+        background-image: linear-gradient(to bottom,#bac1eb 0,#8c9eff 100%);
+    }
+</style>
