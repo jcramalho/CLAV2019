@@ -218,19 +218,20 @@
 </template>
 
 <script>
-  import axios from 'axios'
-  import ClassesFilho from '@/components/classes/ClassesFilho.vue'
-  import NotasAp from '@/components/classes/NotasAp.vue'
-  import NotasEx from '@/components/classes/NotasEx.vue'
-  import ExemplosNotasAp from '@/components/classes/ExemplosNotasAp.vue'
-  import TermosIndice from '@/components/classes/TermosIndice.vue'
-  import Donos from '@/components/classes/Donos.vue'
-  import Participantes from '@/components/classes/Participantes.vue'
-  import ProcessosRelacionados from '@/components/classes/ProcessosRelacionados.vue'
-  import Legislacao from '@/components/classes/Legislacao.vue'
-  import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
+const lhost = require('@/config/global').host   
+import axios from 'axios'
+import ClassesFilho from '@/components/classes/ClassesFilho.vue'
+import NotasAp from '@/components/classes/NotasAp.vue'
+import NotasEx from '@/components/classes/NotasEx.vue'
+import ExemplosNotasAp from '@/components/classes/ExemplosNotasAp.vue'
+import TermosIndice from '@/components/classes/TermosIndice.vue'
+import Donos from '@/components/classes/Donos.vue'
+import Participantes from '@/components/classes/Participantes.vue'
+import ProcessosRelacionados from '@/components/classes/ProcessosRelacionados.vue'
+import Legislacao from '@/components/classes/Legislacao.vue'
+import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
 
-  export default {
+export default {
     props: ["idc"],
     data: () => ({
       classe: {},
@@ -254,7 +255,7 @@
     
     mounted: function (){
         axios
-            .get('http://localhost:7778/api/classes/' + this.idc)
+            .get(lhost + '/api/classes/' + this.idc)
             .then(response => {
                 this.classe = response.data;
                 this.classeLoaded = true;

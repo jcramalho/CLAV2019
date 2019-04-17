@@ -31,6 +31,7 @@
 
 <script>
 import axios from 'axios'
+const lhost = require('@/config/global').host
 
 export default {
     data: () => ({
@@ -41,7 +42,7 @@ export default {
 
     mounted: async function (){
         try{
-            var response = await axios.get('http://localhost:7778/api/classes');
+            var response = await axios.get(lhost + '/api/classes');
             this.classesTree = await this.preparaTree(response.data);
             this.classesCarregadas = true;
         }
