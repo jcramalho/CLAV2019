@@ -47,9 +47,18 @@ export default {
             try {
                 console.log(leg)
                 var myLegislacao = {
-                    sumario: leg.sumario,
-                    data: leg.data,
-                    link: leg.link,
+                    data: {
+                        campo: "Data",
+                        text: leg.data,
+                    },
+                    sumario: {
+                        campo: "Sumário",
+                        text: leg.sumario,
+                    },
+                    link: {
+                        campo: "Link",
+                        text:leg.link,
+                    },
                     regula: '',
                 }
                 return myLegislacao
