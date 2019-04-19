@@ -59,20 +59,23 @@
         <hr style="border: 3px solid green; border-radius: 2px;"/>
 
         <!-- PARTICIPANTES -->
-        <ParticipantesOps 
-            :entidades="c.participantes" 
-            @unselectParticipante="unselectParticipante($event)"
-        />
+        <div v-if="c.procTrans != 'N'">
+            <ParticipantesOps 
+                :entidades="c.participantes" 
+                @unselectParticipante="unselectParticipante($event)"
+            />
                             
-        <hr style="border-top: 1px dashed green;"/>
+            <hr style="border-top: 1px dashed green;"/>
 
-        <ParticipantesSelect
-            :entidadesReady="semaforos.entidadesReady"
-            :entidades="participantes"
-            @selectParticipante="selectParticipante($event)"
-        />
+            <ParticipantesSelect
+                :entidadesReady="semaforos.entidadesReady"
+                :entidades="participantes"
+                @selectParticipante="selectParticipante($event)"
+            />
 
-        <hr style="border: 3px solid green; border-radius: 2px;"/>
+            <hr style="border: 3px solid green; border-radius: 2px;"/>
+        </div>
+        
 
         <!-- PROCESSOS RELACIONADOS -->
         <ProcessosRelacionadosOps 

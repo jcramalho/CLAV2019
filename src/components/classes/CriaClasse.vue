@@ -282,7 +282,7 @@ const nanoid = require('nanoid')
             this.classe.pai.codigo = null;
             
             if (this.classe.nivel > 1) {
-                if(this.classesPai.length == 0) this.loadPais();
+                this.loadPais();
             }
             if (this.classe.nivel >= 3 && !this.semaforos.entidadesReady) {
                 this.loadEntidades();
