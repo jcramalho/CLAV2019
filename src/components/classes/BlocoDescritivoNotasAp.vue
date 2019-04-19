@@ -3,10 +3,15 @@
         <!-- Notas de Aplicação -->
         <v-flex xs2>
             <v-subheader>Notas de Aplicação:</v-subheader>
-            <v-btn color="green darken-2" dark round @click="insereNovaNota(c.notasAp, 'na')">
-                Nota Aplic.
-                <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
+            <v-tooltip top color="info">
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" color="green darken-2" dark round @click="insereNovaNota(c.notasAp, 'na')">
+                        Nota aplicação
+                        <v-icon dark right>add_circle_outline</v-icon>
+                    </v-btn>
+                </template>
+                <span>Nota de aplicação</span>
+            </v-tooltip>
         </v-flex>
         <v-flex>
             <v-layout fluid row v-for="(nota, index) in c.notasAp" :key="index">

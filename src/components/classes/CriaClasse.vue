@@ -52,9 +52,9 @@
                             <v-text-field
                                 v-model="classe.codigo"
                                 label="Código"
-                                solo
-                                clearable
+                                solo clearable
                             ></v-text-field>
+                            <span style="color: red"> {{ mensValCodigo }} </span>
                         </v-flex>
                     </v-layout>
                     <!-- TÍTULO -->
@@ -135,9 +135,10 @@
 </template>
 
 <script>
-  const lhost = require('@/config/global').host
-  const axios = require('axios')
-  const nanoid = require('nanoid')
+const lhost = require('@/config/global').host
+const axios = require('axios')
+const nanoid = require('nanoid')
+
   import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
   
   import BlocoDescritivo from '@/components/classes/BlocoDescritivo.vue'
@@ -225,12 +226,19 @@
         // Estruturas auxiliares
 
         codeFormats: {
-                1: /^[0-9]{3}$/,
-                2: /^[0-9]{3}\.[0-9]{2}$/,
-                3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-                4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
+            1: /^[0-9]{3}$/,
+            2: /^[0-9]{3}\.[0-9]{2}$/,
+            3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
+            4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
         },
 
+        formatoCodigo: {
+            1: "ddd (d - digito)",
+            2: "ddd.dd (d - digito)",
+            3: "ddd.dd.ddd (d - digito)",
+            4: "ddd.dd.ddd.dd (d - digito)"
+        },
+        
         classeNiveis: [
             {label: 'Nível 1', value: '1'},
             {label: 'Nível 2', value: '2'},
@@ -256,7 +264,10 @@
             critLegalAdicionadoPCA: false,
             critLegalAdicionadoDF: false,
             critGestionarioAdicionado: false,
-        }
+        },
+
+        mensValCodigo: ""
+
     }),
 
     watch: {
@@ -286,20 +297,28 @@
                 this.loadPCA();
             }
         },
-        'classe.codigo': function () {
-            //this.mensValCodigo = "";
 
-            if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
-                //this.mensValCodigo = "Formato inválido";
+        'classe.codigo': async function () {
+            try{
+                this.mensValCodigo = "";
+                if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
+                    this.mensValCodigo = "Formato de código inválido! Deve ser: " + this.formatoCodigo[this.classe.nivel];
+                }
+                else if(!this.classe.codigo.includes(this.classe.pai.codigo)){
+                    this.mensValCodigo = "Não pode alterar o código do pai selecionado em cima...";
+                }
+                else{
+                    var existe = await this.verificaExistenciaCodigo(this.classe.codigo);
+                    if(existe){
+                        this.mensValCodigo = "Código já existente na base de dados...";
+                    }
+                } 
             }
-            else if(!this.classe.codigo.includes(this.classe.pai.codigo)){
-                //this.mensValCodigo = "Não pode alterar o código do pai selecionado em cima...";
-            }
-            else {
-                this.verificaExistenciaCodigo(this.classe.codigo);
+            catch(erro){
+                console.log(erro)
             }
         },
-
+        
         'classe.temSubclasses4Nivel': function(){
             // Se passou a verdade vamos criar um par de subclasses
             // Informação base:
@@ -400,7 +419,7 @@
                 this.classesPai = response.data.map(function (item) {
                     return {
                         label: item.codigo + " - " + item.titulo,
-                        value: item.id.split('#')[1],
+                        value: item.id.split('#c')[1],
                     }
                     }).sort(function (a, b) {
                         return a.label.localeCompare(b.label);
@@ -695,6 +714,13 @@
                 }
             }
         },
+
+        // Verifica se o código introduzido pelo utilizador já existe na BD....................
+
+        verificaExistenciaCodigo: async function (codigo) {
+            var response = await axios.get(lhost + '/api/classes/verificar/' + codigo);
+            return response.data
+        }
     }
   }
 </script>
