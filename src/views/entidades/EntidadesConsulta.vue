@@ -1,7 +1,7 @@
 <template>
     <Consulta   tipo="Entidades" 
                 v-bind:objeto="entidade"
-                v-bind:lista = "tipologias"
+                v-bind:listaTip = "tipologias"
                 v-bind:titulo="titulo"
                 />
 </template>
@@ -54,9 +54,9 @@ export default {
 
             var response = await axios.get(lhost + "/api/entidades/" + this.idEntidade);
             this.titulo = response.data.designacao;
+            this.entidade = await this.preparaEntidade(response.data);
             var tipologias = await axios.get(lhost + "/api/entidades/" + this.idEntidade + "/tipologias");
             this.tipologias = tipologias.data;
-            this.entidade = await this.preparaEntidade(response.data);
         }
         catch(e){
             console.log(e)

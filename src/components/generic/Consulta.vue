@@ -10,7 +10,7 @@
                     <div class="form-group">
                     <table class="consulta">
                         <tr v-for="(item, index) in objeto" v-bind:key="index">
-                            <td v-if="item.text" style="width:10%;">
+                            <td v-if="item.text" style="width:20%;">
                                 <div class="info-label">{{ item.campo }}: </div>
                             </td>
                             <td v-if="item.text" style="width:80%;">
@@ -23,24 +23,47 @@
                             </td>
                         </tr>
                     </table>
-                        <table class="consulta" v-if="lista">
-                            <tr v-if="tipo==='Entidades'">
-                                <td style="width:100%">
-                                    <div class="info-label">Pertence às tipologias de Entidade: </div>
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                <ul style="padding-left:20px;">
-                                                    <li v-for="(l, index) in lista" v-bind:key="index"><a :href="'/tipologias/'+l.id">{{ l.sigla }} </a>- {{ l.designacao }}</li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
+                        <div v-if="tipo==='Entidades'">
+                            <table class="consulta" v-if="listaTip.length">
+                                <tr>
+                                    <td style="width:100%">
+                                        <div class="info-label">Pertence às tipologias de Entidade: </div>
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <ul style="padding-left:20px;">
+                                                        <li v-for="(l, index) in listaTip" v-bind:key="index">
+                                                            <a :href="'/tipologias/'+l.id">{{ l.sigla }} </a>- {{ l.designacao }}
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div v-if="tipo==='Tipologias'">
+                            <table class="consulta" v-if="listaProcD.length">
+                                <tr>
+                                    <td style="width:10%">
+                                        <div class="info-label">Dono de:</div>
+                                    </td>
+                                    <td style="width:80%">
+                                        <ul style="padding-left:20px;" :class="{'is-collapsed' : domainCollapsed }">
+                                            <li v-for="(l, index) in listaProcD" v-bind:key="index">
+                                                <a :href="'/classes/consultar/'+l.id">{{ l.codigo }} </a>- {{ l.titulo }}
+                                            </li>
+                                        </ul>
+                                        <a @click="domainCollapsed=!domainCollapsed" v-if="listaProcD.length>6">
+                                            <span v-if="domainCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
+                                            <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                    <h1>{{ objeto }}</h1>
                 </v-card-text>
                 </v-card>
             </v-flex>
@@ -50,20 +73,10 @@
 
 <script>
 export default {
-    props: ["tipo", "objeto", "titulo", "lista"],
-    methods: {
-        preparaObj: async function() {
-            try {
-
-            }
-            catch(e){
-                console.log(e)
-            }
-        }
-    },
-    created: function() {
-        this.preparaObj();
-    }
+    props: ["tipo", "objeto", "titulo", "listaTip", "listaProcD"],
+    data: () => ({
+        domainCollapsed: true
+    })
 }
 </script>
 
@@ -99,6 +112,15 @@ export default {
     padding-left: 15px;
 }
 
+.info-label {
+    color: #1A237E;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #dee2f8;
+    font-weight: bold;
+}
+
 .panel-info-custom .panel-body{
     font-size: 1pc;
     font-family: 'Times New Roman', Times, serif;
@@ -122,13 +144,8 @@ li .panel-body li{
     margin-left:20px;
 }
 
-.info-label {
-    color: #1A237E;
-    padding: 5px; 
-    font-weight: 400;
-    width: 100%;
-    background-color: #dee2f8;
-    font-weight: bold;
+.is-collapsed li:nth-child(n+5) {
+    display: none;
 }
 </style>
 

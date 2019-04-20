@@ -2,6 +2,7 @@
     <Consulta   tipo="Tipologias"
                 v-bind:objeto="tipologia"
                 v-bind:titulo="titulo"
+                v-bind:listaProcD="processosDono"
                 />
 </template>
 
@@ -18,19 +19,8 @@ export default {
         idTipologia: '',
         tipologia: {},
         titulo: '',
+        processosDono: [],
     }),
-    created: async function () {
-        try {
-            this.idTipologia = window.location.pathname.split('/')[2];
-
-            var response = await axios.get(lhost + "/api/tipologias/" + this.idTipologia);
-            this.titulo = response.data.designacao;
-            this.tipologia = await this.preparaTipologia(response.data);
-        }
-        catch(e){
-            console.log(e)
-        }
-    },
     methods: {
         preparaTipologia: async function(tip){
             try {
@@ -43,7 +33,6 @@ export default {
                         campo: "Sigla",
                         text: tip.sigla,
                     },
-                    dono: '',
                     participacao: '',
                     entidades: '',
                 }
@@ -51,7 +40,21 @@ export default {
             } catch (e) {
                 return {}
             }
+        },
+    },
+    created: async function () {
+        try {
+            this.idTipologia = window.location.pathname.split('/')[2];
+
+            var response = await axios.get(lhost + "/api/tipologias/" + this.idTipologia);
+            this.titulo = response.data.designacao;
+            this.tipologia = await this.preparaTipologia(response.data);
+            var processosDono = await axios.get(lhost + "/api/tipologias/" + this.idTipologia + "/intervencao/dono");
+            this.processosDono = processosDono.data;
         }
-    }
+        catch(e){
+            console.log(e)
+        }
+    },
 }
 </script>
