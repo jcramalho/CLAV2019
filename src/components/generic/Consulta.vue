@@ -8,61 +8,81 @@
                     </v-toolbar>
                 <v-card-text class="panel-body">
                     <div class="form-group">
-                    <table class="consulta">
-                        <tr v-for="(item, index) in objeto" v-bind:key="index">
-                            <td v-if="item.text" style="width:20%;">
-                                <div class="info-label">{{ item.campo }}: </div>
-                            </td>
-                            <td v-if="item.text" style="width:80%;">
-                                <a v-if="item.campo==='Link'" :href="item.text" target="_blank">
-                                    {{ item.text }}
-                                </a>
-                                <div v-else> 
-                                     {{ item.text }}
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                        <div v-if="tipo==='Entidades'">
-                            <table class="consulta" v-if="listaTip.length">
-                                <tr>
-                                    <td style="width:100%">
-                                        <div class="info-label">Pertence às tipologias de Entidade: </div>
-                                        <table>
-                                            <tr>
-                                                <td>
-                                                    <ul style="padding-left:20px;">
-                                                        <li v-for="(l, index) in listaTip" v-bind:key="index">
-                                                            <a :href="'/tipologias/'+l.id">{{ l.sigla }} </a>- {{ l.designacao }}
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div v-if="tipo==='Tipologias'">
-                            <table class="consulta" v-if="listaProcD.length">
-                                <tr>
-                                    <td style="width:10%">
-                                        <div class="info-label">Dono de:</div>
-                                    </td>
-                                    <td style="width:80%">
-                                        <ul style="padding-left:20px;" :class="{'is-collapsed' : domainCollapsed }">
-                                            <li v-for="(l, index) in listaProcD" v-bind:key="index">
-                                                <a :href="'/classes/consultar/'+l.id">{{ l.codigo }} </a>- {{ l.titulo }}
-                                            </li>
-                                        </ul>
-                                        <a @click="domainCollapsed=!domainCollapsed" v-if="listaProcD.length>6">
-                                            <span v-if="domainCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
-                                            <span v-else style="color:#4d94ff;">Mostrar menos...</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+                        <table class="consulta">
+                            <tr v-for="(item, index) in objeto" v-bind:key="index">
+                                <td v-if="item.text" style="width:20%;">
+                                    <div class="info-label">{{ item.campo }}: </div>
+                                </td>
+                                <td v-if="item.text" style="width:80%;">
+                                    <a v-if="item.campo==='Link'" :href="item.text" target="_blank">
+                                        {{ item.text }}
+                                    </a>
+                                    <div v-else> 
+                                        {{ item.text }}
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Consulta de Entidade: tipologias a que pertence -->
+                            <tr v-if="tipo==='Entidades' && listaTip.length">
+                                <td style="width:20%">
+                                    <div class="info-label">Pertence às tipologias de Entidade: </div>
+                                </td>
+                                <td style="width:80%">
+                                    <ul style="padding-left:20px;">
+                                        <li v-for="(l, index) in listaTip" v-bind:key="index">
+                                            <a :href="'/tipologias/'+l.id">{{ l.sigla }} </a>- {{ l.designacao }}
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <!-- Consulta de Tipologia: processos em que a tipologia atua como dona -->
+                            <tr v-if="tipo==='Tipologias' && listaProcD.length">
+                                <td style="width:20%;">
+                                    <div class="info-label">Dono de: </div>
+                                </td>
+                                <td style="width:80%;">
+                                    <ul style="padding-left:20px;" :class="{'is-collapsed' : domainCollapsed }">
+                                        <li v-for="(l, index) in listaProcD" v-bind:key="index">
+                                            <a :href="'/classes/consultar/'+l.id">{{ l.codigo }} </a>- {{ l.titulo }}
+                                        </li>
+                                    </ul>
+                                    <a @click="domainCollapsed=!domainCollapsed" v-if="listaProcD.length>6">
+                                        <span v-if="domainCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
+                                        <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            <!-- Consulta de Tipologia: entidades pertencentes à Tipologia -->
+                            <tr v-if="tipo==='Tipologias' && listaEnt.length">
+                                <td style="width:10%:">
+                                    <div class="info-label">Entidades:</div>
+                                </td>
+                                <td style="width:80%;">
+                                    <ul style="padding-left:20px;" :class="{'is-collapsed' : entCollapsed }">
+                                        <li v-for="(l, index) in listaEnt" v-bind:key="index">
+                                            <a :href="'/entidades/'+l.id">{{ l.sigla }} </a>- {{ l.designacao }}
+                                        </li>
+                                    </ul>
+                                    <a @click="entCollapsed=!entCollapsed" v-if="listaEnt.length>6">
+                                        <span v-if="entCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
+                                        <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            <!-- Consulta de legislação: processos regulados -->
+                            <tr v-if="tipo==='Legislação' && listaReg.length">
+                                <td style="width:20%">
+                                    <div class="info-label">Regula os processos de negócio:  </div>
+                                </td>
+                                <td style="width:80%;">
+                                    <ul style="padding-left:20px;">
+                                        <li v-for="(l, index) in listaReg" v-bind:key="index">
+                                            <a :href="'/classes/consultar/'+l.id">{{ l.codigo }} </a>- {{ l.titulo }}
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </v-card-text>
                 </v-card>
@@ -73,9 +93,10 @@
 
 <script>
 export default {
-    props: ["tipo", "objeto", "titulo", "listaTip", "listaProcD"],
+    props: ["tipo", "objeto", "titulo", "listaTip", "listaProcD", "listaEnt", "listaReg"],
     data: () => ({
-        domainCollapsed: true
+        domainCollapsed: true,
+        entCollapsed: true,
     })
 }
 </script>

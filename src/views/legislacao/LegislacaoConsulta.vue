@@ -2,6 +2,7 @@
     <Consulta   tipo="Legislação"
                 v-bind:objeto="legislacao"
                 v-bind:titulo="titulo"
+                v-bind:listaReg="regulaProc"
                 />
 </template>
 
@@ -18,19 +19,8 @@ export default {
         idLegislacao: '',
         legislacao: {},
         titulo: '',
+        regulaProc: [],
     }),
-    created: async function () {
-        try {
-            this.idLegislacao = window.location.pathname.split('/')[2];
-
-            var response = await axios.get(lhost + "/api/legislacao/" + this.idLegislacao);
-            this.titulo = response.data.tipo + " " + await this.parseEntidades(response.data.entidades) + " " + response.data.numero
-            this.legislacao = await this.preparaLegislacao(response.data)
-        }
-        catch(e){
-            console.log(e)
-        }
-    },
     methods: {
         parseEntidades: async function(ent){
             try {
@@ -45,7 +35,6 @@ export default {
         },
         preparaLegislacao: async function(leg){
             try {
-                console.log(leg)
                 var myLegislacao = {
                     data: {
                         campo: "Data",
@@ -59,14 +48,30 @@ export default {
                         campo: "Link",
                         text:leg.link,
                     },
-                    regula: '',
                 }
                 return myLegislacao
             } catch (e) {
                 return {}
             }
         }
-    }
+    },
+    created: async function () {
+        try {
+            this.idLegislacao = window.location.pathname.split('/')[2];
+
+            // Informação sobre a legislação
+            var response = await axios.get(lhost + "/api/legislacao/" + this.idLegislacao);
+            this.titulo = response.data.tipo + " " + await this.parseEntidades(response.data.entidades) + " " + response.data.numero
+            this.legislacao = await this.preparaLegislacao(response.data);
+
+            // Processos de negócio que são regulados pela legislação em causa
+            var regulaProc = await axios.get(lhost + "/api/legislacao/" + this.idLegislacao + "/regula")
+            this.regulaProc = regulaProc.data;
+        }
+        catch(e){
+            console.log(e)
+        }
+    },
 }
 </script>
 
