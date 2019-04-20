@@ -35,6 +35,50 @@
                                     </ul>
                                 </td>
                             </tr>
+                            <!-- Consulta de Entidade: Natureza de intervenção nos PNs -->
+                            <tr v-if="tipo ==='Entidades' && (listaProcD.length)">
+                                <td style="width:20%;">
+                                    <div class="info-label">Natureza de intervenção nos Processos de Negócio: </div>
+                                </td>
+                                <td style="width:80%;">
+                                    <table>
+                                        <tr v-if="listaProcD.length">
+                                            <td style="width:15%;"><label style="font-weight: bold;">Como Dono: </label></td>
+                                            <td>
+                                                <ul style="padding-left:5px;" :class="{'is-collapsed' : domainCollapsed }">
+                                                    <li v-for="(l, index) in listaProcD" v-bind:key="index">
+                                                        <a :href="'/classes/consultar/'+l.id">{{ l.codigo }} </a>- {{ l.titulo }}
+                                                    </li>
+                                                </ul>
+                                                <a @click="domainCollapsed=!domainCollapsed" v-if="listaProcD.length>6">
+                                                    <span v-if="domainCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
+                                                    <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="parts">
+                                            <td style="width:25%;"><label style="font-weight: bold;">Como Participante: </label></td>
+                                            <td>
+                                                <ul v-for="(key, index) in Object.keys(listaProcP)" v-bind:key="index" style="padding-left:5px;">
+                                                    <li  v-if="listaProcP[key].length>0" >
+                                                        <b v-if="listaProcP[key].length>0">{{ participationsDic[key] }}:</b>
+                                                            <ul :class="{'is-collapsed' : partsCollapsed[key] }">
+                                                                <li v-for="(p, index) in listaProcP[key]" v-bind:key="index">
+                                                                    <a :href="'/classes/consultar/c'+p.codigo">{{ p.codigo }}</a> - {{ p.titulo }}
+                                                                </li>
+                                                            </ul>
+                                                            <a @click="partsCollapsed[key]=!partsCollapsed[key]" v-if="listaProcP[key].length>6">
+                                                                <span v-if="partsCollapsed[key]" style="color:#4d94ff;">Mostrar mais...</span>
+                                                                <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                                                            </a>
+                                                    </li>
+                                                </ul>
+                                                
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
                             <!-- Consulta de Tipologia: processos em que a tipologia atua como dona -->
                             <tr v-if="tipo==='Tipologias' && listaProcD.length">
                                 <td style="width:20%;">
@@ -93,10 +137,26 @@
 
 <script>
 export default {
-    props: ["tipo", "objeto", "titulo", "listaTip", "listaProcD", "listaEnt", "listaReg"],
+    props: ["tipo", "objeto", "titulo", "listaTip", "listaProcD", "listaProcP", "listaEnt", "listaReg", "parts"],
     data: () => ({
         domainCollapsed: true,
         entCollapsed: true,
+        partsCollapsed: {
+            Apreciador: true,
+            Assessor: true,
+            Comunicador: true,
+            Decisor: true,
+            Executor: true,
+            Iniciador: true,
+        }, 
+        participationsDic: {
+            Apreciador: "Apreciar",
+            Assessor: "Assessorar",
+            Comunicador: "Comunicar",
+            Decisor: "Decidir",
+            Executor: "Executar",
+            Iniciador: "Iniciar"
+        },
     })
 }
 </script>
