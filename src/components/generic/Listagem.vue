@@ -21,6 +21,11 @@
             v-if="listaReady"   
             :disable-initial-sort="true"         
         >
+             <template v-slot:no-results>
+                <v-alert :value="true" color="error" icon="warning">
+                    Não foram encontrados resultados para "{{ search }}" .
+                </v-alert>
+            </template>
             <template v-slot:items="props" >
                 <tr v-if="tipo=='Termos de Índice'" @click="go(props.item.idClasse)" >
                     <td v-for="(campo, index) in props.item" v-bind:key="index">    
@@ -43,6 +48,7 @@
             <template v-slot:pageText="props">
                 Resultados: {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
             </template>
+           
         </v-data-table>
     </v-card>
 </template>

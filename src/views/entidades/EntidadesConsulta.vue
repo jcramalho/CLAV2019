@@ -81,7 +81,7 @@ export default {
             }
         }
     },
-        created: async function () {
+    created: async function () {
         try {
             this.idEntidade = window.location.pathname.split('/')[2];
 

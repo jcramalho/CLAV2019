@@ -43,9 +43,9 @@
                                 <td style="width:80%;">
                                     <table>
                                         <tr v-if="listaProcD.length">
-                                            <td style="width:15%;"><label style="font-weight: bold;">Como Dono: </label></td>
+                                            <td><label style="font-weight: bold;">Como Dono: </label></td>
                                             <td>
-                                                <ul style="padding-left:5px;" :class="{'is-collapsed' : domainCollapsed }">
+                                                <ul style="padding-left:20px;" :class="{'is-collapsed' : domainCollapsed }">
                                                     <li v-for="(l, index) in listaProcD" v-bind:key="index">
                                                         <a :href="'/classes/consultar/'+l.id">{{ l.codigo }} </a>- {{ l.titulo }}
                                                     </li>
@@ -57,7 +57,7 @@
                                             </td>
                                         </tr>
                                         <tr v-if="parts">
-                                            <td style="width:25%;"><label style="font-weight: bold;">Como Participante: </label></td>
+                                            <td><label style="font-weight: bold;">Como Participante: </label></td>
                                             <td>
                                                 <ul v-for="(key, index) in Object.keys(listaProcP)" v-bind:key="index" style="padding-left:5px;">
                                                     <li  v-if="listaProcP[key].length>0" >
@@ -73,7 +73,6 @@
                                                             </a>
                                                     </li>
                                                 </ul>
-                                                
                                             </td>
                                         </tr>
                                     </table>
@@ -94,6 +93,28 @@
                                         <span v-if="domainCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
                                         <span v-else style="color:#4d94ff;">Mostrar menos...</span>
                                     </a>
+                                </td>
+                            </tr>
+                            <!-- Consulta de Tipologia: processos em que a tipologia participa -->
+                            <tr v-if="tipo==='Tipologias' && parts">
+                                <td style="width:20%;">
+                                    <div class="info-label">Tipo de participação: </div>
+                                </td>
+                                <td>
+                                    <ul v-for="(key, index) in Object.keys(listaProcP)" v-bind:key="index" style="padding-left:5px;">
+                                        <li  v-if="listaProcP[key].length>0" >
+                                            <b v-if="listaProcP[key].length>0">{{ participationsDic[key] }}:</b>
+                                                <ul :class="{'is-collapsed' : partsCollapsed[key] }">
+                                                    <li v-for="(p, index) in listaProcP[key]" v-bind:key="index">
+                                                        <a :href="'/classes/consultar/c'+p.codigo">{{ p.codigo }}</a> - {{ p.titulo }}
+                                                    </li>
+                                                </ul>
+                                                <a @click="partsCollapsed[key]=!partsCollapsed[key]" v-if="listaProcP[key].length>6">
+                                                    <span v-if="partsCollapsed[key]" style="color:#4d94ff;">Mostrar mais...</span>
+                                                    <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                                                </a>
+                                        </li>
+                                    </ul>
                                 </td>
                             </tr>
                             <!-- Consulta de Tipologia: entidades pertencentes à Tipologia -->
