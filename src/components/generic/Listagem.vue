@@ -32,7 +32,7 @@
                             {{ campo }}
                     </td>
                 </tr>
-                <tr v-if="tipo=='Legislação'" @click="go(props.item.id)" > 
+                <tr v-if="tipo=='Legislação'" @click="go(props.item.numero)" > 
                         <td v-for="(campo, index) in props.item" v-bind:key="index"> 
                             <div v-if="props.item">
                                 {{ campo }}
@@ -48,7 +48,6 @@
             <template v-slot:pageText="props">
                 Resultados: {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
             </template>
-           
         </v-data-table>
     </v-card>
 </template>
@@ -56,11 +55,11 @@
 
 <script>
 export default {
-    props: ["lista", "tipo", "cabecalho", "campos"],
+    props: ["lista", "tipo", "cabecalho", "campos", "ids"],
     data: () => ({
       search: '',
       listaReady: false,
-      headers: []
+      headers: [],
     }),
     methods: {
         go: function(id){
@@ -68,11 +67,18 @@ export default {
                 case "Entidades":
                     this.$router.push('/entidades/ent_'+id);
                     break;
-                case "Tipologias":
+                case "Tipologias de Entidade":
                     this.$router.push('/tipologias/tip_'+id);
                     break;
-                case "Legislação":
-                    this.$router.push('/legislacao/'+id);
+                case "Legislação": 
+                    var idLeg = '';
+                    for( var i=0; i<this.ids.length; i++){
+                        if(this.ids[i].numero===id){
+                            idLeg = this.ids[i].id;
+                            break;
+                        }
+                    }
+                    this.$router.push('/legislacao/'+idLeg);  
                     break;
                 case "Termos de Índice":
                     this.$router.push('/classes/consultar/c'+id);
@@ -93,7 +99,6 @@ export default {
             console.log(e);
         }
         this.listaReady= true;
-        console.log(this.lista)
     },
 
 }

@@ -1,6 +1,6 @@
 <template>
   <Listagem v-bind:lista="tipologias" 
-            tipo="Tipologias" 
+            tipo="Tipologias de Entidade" 
             v-bind:cabecalho="['Sigla', 'Designação']"
             v-bind:campos="['id', 'designacao']"/>
 </template>
