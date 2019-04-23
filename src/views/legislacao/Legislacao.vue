@@ -2,7 +2,8 @@
   <Listagem v-bind:lista="legislacao" 
             tipo="Legislação" 
             v-bind:cabecalho="['Data', 'Tipo', 'Entidade(s)', 'Número', 'Sumário']"
-            v-bind:campos="['data', 'tipo', 'entidades', 'numero', 'sumario']"/>
+            v-bind:campos="['data', 'tipo', 'entidades', 'numero', 'sumario']"
+            v-bind:ids="ids"/>
 </template>
 
 <script>
@@ -14,6 +15,7 @@ export default {
     data: () => ({
       legislacao: [],
       campos: [],
+      ids: [],
     }),
     components: {
             Listagem
@@ -23,6 +25,7 @@ export default {
         try{
             var response = await axios.get(lhost + "/api/legislacao");
             this.legislacao = await this.preparaLista(response.data);
+            this.ids = await this.preparaIds(response.data);
         }
         catch(e){
             console.log(e);
@@ -50,13 +53,27 @@ export default {
                         entidades: listaLegislacao[i].entidades,
                         numero: listaLegislacao[i].numero,
                         sumario: listaLegislacao[i].sumario,
-                        id: listaLegislacao[i].id
+                        //id: listaLegislacao[i].id
                     });
                 }
                 return myTree;
             }
             catch(error){
                 return []
+            }
+        },
+        preparaIds: async function(listaLegislacao){
+            try {
+                var ids = [];
+                for( var i=0; i < listaLegislacao.length; i++){
+                    ids.push({
+                        numero: listaLegislacao[i].numero,
+                        id: listaLegislacao[i].id,
+                    });
+                }
+                return ids;
+            } catch (e) {
+                
             }
         }
     },

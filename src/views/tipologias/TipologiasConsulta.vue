@@ -4,6 +4,8 @@
                 v-bind:titulo="titulo"
                 v-bind:listaProcD="processosDono"
                 v-bind:listaEnt="entidades"
+                v-bind:listaProcP="processosParticipa"
+                v-bind:parts="partsReady"
                 />
 </template>
 
@@ -21,6 +23,15 @@ export default {
         tipologia: {},
         titulo: '',
         processosDono: [],
+        processosParticipa: {
+                Apreciador: [],
+                Assessor: [],
+                Comunicador: [],
+                Decisor: [],
+                Executor: [],
+                Iniciador: [],
+            },
+        partsReady: false,
         entidades: [],
     }),
     methods: {
@@ -34,15 +45,32 @@ export default {
                     sigla: {
                         campo: "Sigla",
                         text: tip.sigla,
-                    },
-                    participacao: '',
-                    entidades: '',
+                    }
                 }
                 return myTipologia
             } catch (e) {
                 return {}
             }
         },
+        parseParticipacoes: async function(proc){
+            try {
+            var tipoPar = "";
+            var participa = false;
+
+            for(var i=0; i < proc.length; i++ ){
+                tipoPar = proc[i].tipoPar.replace(/.*temParticipante(.*)/, '$1');
+
+                this.processosParticipa[tipoPar].push(
+                                { titulo: proc[i].titulo,
+                                codigo: proc[i].codigo 
+                                })
+                participa = true;
+                }
+                if(participa) this.partsReady = true;
+            } catch (e) {
+                console.log(e)
+            }
+        }
     },
     created: async function () {
         try {
@@ -56,6 +84,10 @@ export default {
             // Processos cuja tipologia em questão é dona de 
             var processosDono = await axios.get(lhost + "/api/tipologias/" + this.idTipologia + "/intervencao/dono");
             this.processosDono = processosDono.data;
+
+            // Procesos em que a entidade participa
+            var processosParticipa = await axios.get(lhost + "/api/entidades/" + this.idTipologia + "/intervencao/participante");
+            await this.parseParticipacoes(processosParticipa.data);
 
             // Entidades que pertencem à tipologia em questão
             var entidades = await axios.get(lhost + "/api/tipologias/" + this.idTipologia + "/elementos");
