@@ -109,6 +109,18 @@ export default new Router({
       name: "pedidos",
       component: () => 
         import("./views/Pedidos.vue")
+    },
+    {
+      path: "/registo",
+      name: "registo",
+      component: () => 
+        import("./views/Registo.vue")
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: () => 
+        import("./views/Login.vue")
     }
   ]
 });

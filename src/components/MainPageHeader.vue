@@ -11,7 +11,12 @@
       <v-spacer></v-spacer>
 
       <v-toolbar-title class="subheading">
-        Login
+        <v-btn to="/registo">
+          Registo
+        </v-btn>
+        <v-btn to="/login">
+          Login
+        </v-btn>
       </v-toolbar-title>
 
     </v-toolbar>
