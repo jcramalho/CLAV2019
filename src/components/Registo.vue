@@ -66,17 +66,22 @@
 				}).catch(error => console.log(error))
 			},
 			registarUtilizador() {
-				let data = {
+				// alert("Nome: " + this.$data.form.name 
+				// 	+ "\nEmail: " + this.$data.form.email 
+				// 	+ "\nEntidade: " + this.$data.form.entidade 
+				// 	+ "\nNivel: "+ this.$data.form.nivel 
+				// 	+ "\nPassword: " + this.$data.form.password
+				// )
+				axios.post("http://localhost:7778/auth/registar", {
 					name: this.$data.form.name,
 					email: this.$data.form.email,
 					entidade: this.$data.form.entidade,
 					type: this.$data.form.type,
 					password: this.$data.form.password  
-				}
-				axios.post("http://localhost:7778/api/users/criarUser", data).then(res => {
-					alert("RES: " +res)
+				}).then(res => {
+					alert(res)
 				}).catch(function (err) {
-					alert('ERRO: ' + err);
+					alert(err);
 				});
 			}
 		}
