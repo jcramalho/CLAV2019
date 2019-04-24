@@ -12,7 +12,7 @@
 							<v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email"/>
 							<v-flex>
 								<v-select
-									:items="this.ent_list"
+									:items="ent_list"
 									prepend-icon="account_balance"
 									v-model="form.entidade"
 									label="Entidade">
@@ -40,11 +40,12 @@
 </template>
 
 <script>
+	const lhost = require('@/config/global').host
 	import axios from 'axios'
 
 	export default {
 		name: "signup",
-		async created () {
+		async mounted () {
 			await this.getEntidades();
 		},
 		data() {
@@ -56,12 +57,12 @@
 					type: "",
 					password: ""
 				},
-				ent_list: {}
+				ent_list: []
 			};
 		},
 		methods: {
 			async getEntidades () {
-				await axios.get("http://localhost:7778/api/entidades").then(res => {
+				await axios.get(lhost + "/api/entidades").then(res => {
 					this.ent_list = res.data.map((ent) => {return ent.sigla});
 				}).catch(error => console.log(error))
 			},
@@ -72,14 +73,14 @@
 				// 	+ "\nNivel: "+ this.$data.form.nivel 
 				// 	+ "\nPassword: " + this.$data.form.password
 				// )
-				axios.post("http://localhost:7778/auth/registar", {
+				axios.post(lhost + "/auth/registar", {
 					name: this.$data.form.name,
 					email: this.$data.form.email,
 					entidade: this.$data.form.entidade,
 					type: this.$data.form.type,
 					password: this.$data.form.password  
 				}).then(res => {
-					alert(res)
+					alert(JSON.stringify(res))
 				}).catch(function (err) {
 					alert(err);
 				});
