@@ -153,8 +153,8 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
                 for(var i=0; i < response.data.length; i++){
                     this.procComuns.push({
                         classe: response.data[i].codigo + " - " + response.data[i].titulo,
-                        /*nivel2: response.data[i].pai,
-                        nivel1: response.data[i].avo*/
+                        dono: false,
+                        participante: false
                     });
                 }
                 console.log(this.procComuns)

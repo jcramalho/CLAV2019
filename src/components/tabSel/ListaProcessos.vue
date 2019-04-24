@@ -14,24 +14,23 @@
         </tr>
     </template>
     <template v-slot:items="props">
-        <td v-for="(campo, index) in props.item" v-bind:key="index">    
-                {{ campo }}
+        <td>    
+                {{ props.item.classe }}
         </td>
         <td>
             <v-checkbox
-                v-model="props.selected"
+                v-model="props.item.dono"
                 primary
                 hide-details
             ></v-checkbox>
         </td>
         <td>
             <v-checkbox
-                v-model="props.selected"
+                v-model="props.item.participante"
                 primary
                 hide-details
             ></v-checkbox>
         </td>
-
     </template>
     </v-data-table>
 </template>
