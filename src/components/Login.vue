@@ -15,6 +15,7 @@
 					<v-card-actions>
 						<v-spacer></v-spacer>
 						<v-btn color="primary" type="submit" @click="loginUtilizador">Login</v-btn>
+                        <v-btn color="primary" type="submit" @click="getUser">get info</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-flex>
@@ -33,7 +34,8 @@
 				form: {
 					email: "",
 					password: ""
-				}
+                },
+                user: null,
 			};
 		},
 		methods: {
@@ -45,11 +47,14 @@
 					username: this.$data.form.email,
 					password: this.$data.form.password  
 				}).then(res => {
-					alert(JSON.stringify(res.data))
+                    alert(JSON.stringify(res.data))
 				}).catch(function (err) {
 					alert(err);
 				});
-			}
+            },
+            getUser(){
+                
+            }
 		}
 	};
 </script>

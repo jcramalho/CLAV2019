@@ -8,7 +8,7 @@
 					</v-toolbar>
 					<v-card-text>
 						<v-form>
-							<v-text-field prepend-icon="person" name="name" v-model="form.name" label="Nome" type="text"/>
+							<v-text-field prepend-icon="person" name="name" v-model="form.name" label="Nome" type="text" required/>
 							<v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email"/>
 							<v-flex>
 								<v-select
@@ -67,20 +67,38 @@
 				}).catch(error => console.log(error))
 			},
 			registarUtilizador() {
-				// alert("Nome: " + this.$data.form.name 
-				// 	+ "\nEmail: " + this.$data.form.email 
-				// 	+ "\nEntidade: " + this.$data.form.entidade 
-				// 	+ "\nNivel: "+ this.$data.form.nivel 
-				// 	+ "\nPassword: " + this.$data.form.password
-				// )
-				axios.post(lhost + "/auth/registar", {
+				var parsedType;
+				switch(this.$data.form.type) {
+					case 'Administrador de Perfil Tecnológico':
+						parsedType = 7;
+						break;
+					case 'Administrador de Perfil Funcional':
+						parsedType = 6;
+						break;
+					case 'Utilizador Validador':
+						parsedType = 5;
+						break;
+					case 'Utilizador Avançado':
+						parsedType = 4;
+						break;
+					case 'Utilizador Decisor':
+						parsedType = 3;
+						break;
+					case 'Utilizador Simples':
+						parsedType = 2;
+						break;
+					case 'Representante Entidade':
+						parsedType = 1;
+						break;
+				}
+				axios.post("http://localhost:7778/api/users/registar", {
 					name: this.$data.form.name,
 					email: this.$data.form.email,
 					entidade: this.$data.form.entidade,
-					type: this.$data.form.type,
+					type: parsedType,
 					password: this.$data.form.password  
 				}).then(res => {
-					alert(JSON.stringify(res))
+					alert(res.data)
 				}).catch(function (err) {
 					alert(err);
 				});
