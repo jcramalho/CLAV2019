@@ -43,7 +43,7 @@
 				// alert("Email: " + this.$data.form.email
 				// 	+ "\nPassword: " + this.$data.form.password
 				// )
-				axios.post("http://localhost:7778/api/users/login", {
+				axios.post(lhost + "/api/users/login", {
 					username: this.$data.form.email,
 					password: this.$data.form.password  
 				}).then(res => {

@@ -12,6 +12,8 @@
 							<v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email"/>
 							<v-flex>
 								<v-select
+									item-text="label"
+									item-value="value"
 									:items="ent_list"
 									prepend-icon="account_balance"
 									v-model="form.entidade"
@@ -63,7 +65,7 @@
 		methods: {
 			async getEntidades () {
 				await axios.get(lhost + "/api/entidades").then(res => {
-					this.ent_list = res.data.map((ent) => {return ent.sigla});
+					this.ent_list = res.data.map((ent) => {return {label: ent.sigla +' - '+ent.designacao, value: ent.sigla}});
 				}).catch(error => console.log(error))
 			},
 			registarUtilizador() {
