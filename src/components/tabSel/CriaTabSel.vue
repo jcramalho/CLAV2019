@@ -72,7 +72,7 @@
                         <v-expansion-panel-content class="expansion-panel-heading">
                             <template v-slot:header>
                                 <div class="subheading font-weight-bold">
-                                    Selecione os Processos de negócio
+                                    Selecione os Processos de Negócio Comuns
                                 </div>
                             </template>
                             <ListaProcessos v-bind:lista="procComuns"
@@ -88,7 +88,21 @@
 
             <v-stepper-step :complete="stepNo > 4" step="4">Processos Específicos</v-stepper-step>
             <v-stepper-content step="4">
-            <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
+            <v-layout wrap>
+                <v-flex xs10>
+                    <v-expansion-panel>
+                        <v-expansion-panel-content class="expansion-panel-heading">
+                            <template v-slot:header>
+                                <div class="subheading font-weight-bold">
+                                    Selecione os Processos de Negócio Específicos
+                                </div>
+                            </template>
+                            <ListaProcessos v-bind:lista="procEsp"
+                                            tipo="Processos Especificos"/>       
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-flex>
+            </v-layout>
             <v-btn color="primary" @click="stepNo = 5; barra(75)">Continuar</v-btn>
             <v-btn flat @click="stepNo = 3; barra(50)">Voltar</v-btn>
             </v-stepper-content>
@@ -120,6 +134,7 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
         items: ['Organizacional', 'Pluriorganizacional'],
         entidades: [],
         procComuns: [],
+        procEsp: [],
         infoButton: false,
         valorBarra: 0
       }
