@@ -15,7 +15,6 @@
 					<v-card-actions>
 						<v-spacer></v-spacer>
 						<v-btn color="primary" type="submit" @click="loginUtilizador">Login</v-btn>
-                        <v-btn color="primary" type="submit" @click="getUser">get info</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-flex>
@@ -51,9 +50,6 @@
 				}).catch(function (err) {
 					alert(err);
 				});
-            },
-            getUser(){
-                
             }
 		}
 	};

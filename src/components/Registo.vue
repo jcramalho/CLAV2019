@@ -7,33 +7,37 @@
 						<v-toolbar-title>Registo de utilizador</v-toolbar-title>
 					</v-toolbar>
 					<v-card-text>
-						<v-form>
-							<v-text-field prepend-icon="person" name="name" v-model="form.name" label="Nome" type="text" :rules="nameRules" required/>
-							<v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email" :rules="emailRules" required/>
+						<v-form ref="form" v-model="valid" lazy-validation>
+							<v-text-field prepend-icon="person" name="name" v-model="form.name" label="Nome" type="text" :rules="regraNome" required/>
+							<v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email" :rules="regraEmail" required/>
 							<v-flex>
 								<v-select
 									item-text="label"
 									item-value="value"
 									:items="ent_list"
+									:rules="regraEntidade"
 									prepend-icon="account_balance"
 									v-model="form.entidade"
-									label="Entidade">
+									label="Entidade"
+									required>
 								</v-select>
 							</v-flex>
 							<v-flex>
 								<v-select
 									:items="['Administrador de Perfil Tecnológico','Administrador de Perfil Funcional','Utilizador Validador','Utilizador Avançado','Utilizador Decisor','Utilizador Simples','Representante Entidade']"
+									:rules="regraTipo"
 									prepend-icon="info"
 									v-model="form.type"
-									label="Nível de utilizador">
+									label="Nível de utilizador"
+									required>
 								</v-select>
 							</v-flex>
-							<v-text-field id="password" prepend-icon="lock" name="password"  v-model="form.password" label="Password" type="password"/>
+							<v-text-field id="password" prepend-icon="lock" name="password"  v-model="form.password" label="Password" type="password" :rules="regraPassword" required/>
 						</v-form>
 					</v-card-text>
 					<v-card-actions>
 						<v-spacer></v-spacer>
-						<v-btn color="primary" type="submit" @click="registarUtilizador">Registar</v-btn>
+						<v-btn color="primary" type="submit" :disabled="!valid" @click="registarUtilizador">Registar</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-flex>
@@ -52,17 +56,26 @@
 		},
 		data() {
 			return {
+				valid: true,
+				regraNome: [
+					v => !!v || 'Nome é obrigatório.'
+				],
+				regraEmail: [
+					v => !!v || 'Email é obrigatório.',
+					v => /.+@.+/.test(v) || 'Email tem de ser válido.'
+				],
+				regraEntidade: [
+					v => !!v || 'Entidade é obrigatório.'
+				],
+				regraPassword: [
+					v => !!v || 'Password é obrigatório.'
+				],
+				regraTipo: [
+					v => !!v || 'Tipo de utilizador é obrigatório.'
+				],
 				form: {
 					name: "",
-					nameRules: [
-						v => !!v || 'Name is required',
-						v => (v && v.length <= 10) || 'Name must be less than 10 characters'
-					],
 					email: "",
-					emailRules: [
-						v => !!v || 'E-mail is required',
-						v => /.+@.+/.test(v) || 'E-mail must be valid'
-					],
 					entidade: "",
 					type: "",
 					password: ""
@@ -77,6 +90,7 @@
 				}).catch(error => console.log(error))
 			},
 			registarUtilizador() {
+				if (this.$refs.form.validate()) {
 					var parsedType;
 					switch(this.$data.form.type) {
 						case 'Administrador de Perfil Tecnológico':
@@ -112,7 +126,9 @@
 					}).catch(function (err) {
 						alert(err);
 					});
-				
+				}else{
+					alert("Por favor preencha todos os campos antes de se registar.")
+				}
 			},
 		}
 	};
