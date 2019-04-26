@@ -119,6 +119,8 @@
 import axios from 'axios';
 import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
 
+const lhost = require('@/config/global').host
+
   export default {
     computed: {
         estado() {
@@ -145,7 +147,7 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
         },
         loadEntidades: async function () {
             try{
-                var response = await axios.get("http://localhost:7778/api/entidades");
+                var response = await axios.get(lhost + "/api/entidades");
                 this.entidades = response.data.map(function (item) {
                     return {
                         label: item.sigla + " - " + item.designacao,
@@ -161,7 +163,7 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
         },
         loadClasses: async function () {
             try{
-                var response = await axios.get("http://localhost:7778/api/classes?tipo=comum");
+                var response = await axios.get(lhost + "/api/classes?tipo=comum");
                 console.log(response);
                 var id=0;
                 for(var i=0; i < response.data.length; i++){
