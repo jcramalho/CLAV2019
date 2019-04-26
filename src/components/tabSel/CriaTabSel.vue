@@ -76,13 +76,12 @@
                                 </div>
                             </template>
                             <ListaProcessos v-bind:lista="procComuns"
-                                            tipo="Processos Comuns"/>
-                        
+                                            tipo="Processos Comuns"/>       
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-flex>
             </v-layout>
-            <v-btn color="primary" @click="stepNo = 4; barra(75)">Continuar</v-btn>
+            <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado()">Continuar</v-btn>
             <v-btn flat @click="stepNo = 2.5; barra(33)" v-if="estado.tipo == 'Pluriorganizacional'">Voltar</v-btn>
             <v-btn flat @click="stepNo = 2; barra(25)" v-else>Voltar</v-btn>
             </v-stepper-content>
@@ -152,7 +151,8 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
                 var id=0;
                 for(var i=0; i < response.data.length; i++){
                     this.procComuns.push({
-                        classe: response.data[i].codigo + " - " + response.data[i].titulo,
+                        classe: response.data[i].codigo ,
+                        designacao: response.data[i].titulo,
                         dono: false,
                         participante: false
                     });
@@ -166,6 +166,9 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
         },
         barra: async function (valor){
             this.valorBarra = valor;
+        },
+        printEstado: async function () {
+            console.log(this.$store.state.criacaoTabSel)   
         }
     },
     created: function() {
