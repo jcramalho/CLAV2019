@@ -8,8 +8,8 @@
 					</v-toolbar>
 					<v-card-text>
 						<v-form>
-							<v-text-field prepend-icon="person" name="name" v-model="form.name" label="Nome" type="text" required/>
-							<v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email"/>
+							<v-text-field prepend-icon="person" name="name" v-model="form.name" label="Nome" type="text" :rules="nameRules" required/>
+							<v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email" :rules="emailRules" required/>
 							<v-flex>
 								<v-select
 									item-text="label"
@@ -54,7 +54,15 @@
 			return {
 				form: {
 					name: "",
+					nameRules: [
+						v => !!v || 'Name is required',
+						v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+					],
 					email: "",
+					emailRules: [
+						v => !!v || 'E-mail is required',
+						v => /.+@.+/.test(v) || 'E-mail must be valid'
+					],
 					entidade: "",
 					type: "",
 					password: ""
@@ -69,42 +77,43 @@
 				}).catch(error => console.log(error))
 			},
 			registarUtilizador() {
-				var parsedType;
-				switch(this.$data.form.type) {
-					case 'Administrador de Perfil Tecnológico':
-						parsedType = 7;
-						break;
-					case 'Administrador de Perfil Funcional':
-						parsedType = 6;
-						break;
-					case 'Utilizador Validador':
-						parsedType = 5;
-						break;
-					case 'Utilizador Avançado':
-						parsedType = 4;
-						break;
-					case 'Utilizador Decisor':
-						parsedType = 3;
-						break;
-					case 'Utilizador Simples':
-						parsedType = 2;
-						break;
-					case 'Representante Entidade':
-						parsedType = 1;
-						break;
-				}
-				axios.post("http://localhost:7778/api/users/registar", {
-					name: this.$data.form.name,
-					email: this.$data.form.email,
-					entidade: this.$data.form.entidade,
-					type: parsedType,
-					password: this.$data.form.password  
-				}).then(res => {
-					alert(res.data)
-				}).catch(function (err) {
-					alert(err);
-				});
-			}
+					var parsedType;
+					switch(this.$data.form.type) {
+						case 'Administrador de Perfil Tecnológico':
+							parsedType = 7;
+							break;
+						case 'Administrador de Perfil Funcional':
+							parsedType = 6;
+							break;
+						case 'Utilizador Validador':
+							parsedType = 5;
+							break;
+						case 'Utilizador Avançado':
+							parsedType = 4;
+							break;
+						case 'Utilizador Decisor':
+							parsedType = 3;
+							break;
+						case 'Utilizador Simples':
+							parsedType = 2;
+							break;
+						case 'Representante Entidade':
+							parsedType = 1;
+							break;
+					}
+					axios.post(lhost + "/api/users/registar", {
+						name: this.$data.form.name,
+						email: this.$data.form.email,
+						entidade: this.$data.form.entidade,
+						type: parsedType,
+						password: this.$data.form.password  
+					}).then(res => {
+						alert(res.data)
+					}).catch(function (err) {
+						alert(err);
+					});
+				
+			},
 		}
 	};
 </script>
