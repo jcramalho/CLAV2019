@@ -122,6 +122,7 @@
 						type: parsedType,
 						password: this.$data.form.password  
 					}).then(res => {
+						this.$router.push('/');
 						alert(res.data)
 					}).catch(function (err) {
 						alert(err);
