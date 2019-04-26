@@ -72,24 +72,37 @@
                         <v-expansion-panel-content class="expansion-panel-heading">
                             <template v-slot:header>
                                 <div class="subheading font-weight-bold">
-                                    Selecione os Processos de negócio
+                                    Selecione os Processos de Negócio Comuns
                                 </div>
                             </template>
                             <ListaProcessos v-bind:lista="procComuns"
-                                            tipo="Processos Comuns"/>
-                        
+                                            tipo="Processos Comuns"/>       
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-flex>
             </v-layout>
-            <v-btn color="primary" @click="stepNo = 4; barra(75)">Continuar</v-btn>
+            <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado()">Continuar</v-btn>
             <v-btn flat @click="stepNo = 2.5; barra(33)" v-if="estado.tipo == 'Pluriorganizacional'">Voltar</v-btn>
             <v-btn flat @click="stepNo = 2; barra(25)" v-else>Voltar</v-btn>
             </v-stepper-content>
 
             <v-stepper-step :complete="stepNo > 4" step="4">Processos Específicos</v-stepper-step>
             <v-stepper-content step="4">
-            <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
+            <v-layout wrap>
+                <v-flex xs10>
+                    <v-expansion-panel>
+                        <v-expansion-panel-content class="expansion-panel-heading">
+                            <template v-slot:header>
+                                <div class="subheading font-weight-bold">
+                                    Selecione os Processos de Negócio Específicos
+                                </div>
+                            </template>
+                            <ListaProcessos v-bind:lista="procEsp"
+                                            tipo="Processos Especificos"/>       
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-flex>
+            </v-layout>
             <v-btn color="primary" @click="stepNo = 5; barra(75)">Continuar</v-btn>
             <v-btn flat @click="stepNo = 3; barra(50)">Voltar</v-btn>
             </v-stepper-content>
@@ -106,6 +119,8 @@
 import axios from 'axios';
 import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
 
+const lhost = require('@/config/global').host
+
   export default {
     computed: {
         estado() {
@@ -121,6 +136,7 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
         items: ['Organizacional', 'Pluriorganizacional'],
         entidades: [],
         procComuns: [],
+        procEsp: [],
         infoButton: false,
         valorBarra: 0
       }
@@ -131,7 +147,7 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
         },
         loadEntidades: async function () {
             try{
-                var response = await axios.get("http://localhost:7778/api/entidades");
+                var response = await axios.get(lhost + "/api/entidades");
                 this.entidades = response.data.map(function (item) {
                     return {
                         label: item.sigla + " - " + item.designacao,
@@ -147,12 +163,13 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
         },
         loadClasses: async function () {
             try{
-                var response = await axios.get("http://localhost:7778/api/classes?tipo=comum");
+                var response = await axios.get(lhost + "/api/classes?tipo=comum");
                 console.log(response);
                 var id=0;
                 for(var i=0; i < response.data.length; i++){
                     this.procComuns.push({
-                        classe: response.data[i].codigo + " - " + response.data[i].titulo,
+                        classe: response.data[i].codigo ,
+                        designacao: response.data[i].titulo,
                         dono: false,
                         participante: false
                     });
@@ -166,6 +183,9 @@ import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
         },
         barra: async function (valor){
             this.valorBarra = valor;
+        },
+        printEstado: async function () {
+            console.log(this.$store.state.criacaoTabSel)   
         }
     },
     created: function() {

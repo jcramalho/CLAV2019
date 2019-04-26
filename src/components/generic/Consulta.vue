@@ -47,7 +47,7 @@
                                             <td>
                                                 <ul style="padding-left:20px;" :class="{'is-collapsed' : domainCollapsed }">
                                                     <li v-for="(l, index) in listaProcD" v-bind:key="index">
-                                                        <a :href="'/classes/consultar/'+l.id">{{ l.codigo }} </a>- {{ l.titulo }}
+                                                        <a :href="'/classes/consultar/c'+l.codigo">{{ l.codigo }} </a>- {{ l.titulo }}
                                                     </li>
                                                 </ul>
                                                 <a @click="domainCollapsed=!domainCollapsed" v-if="listaProcD.length>6">

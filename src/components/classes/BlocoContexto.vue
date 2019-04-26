@@ -140,7 +140,13 @@ export default {
             simNao: [
                 {label: "Não", value: "N"},
                 {label: "Sim", value: "S"}
-            ]
+            ],
+                
+            textoCriterioUtilidadeAdministrativa: "Prazo decorrente da necessidade de consulta para apuramento da " +
+                                    "responsabilidade em sede de ",
+            textoCriterioComplementaridade: "É complementar de ",
+            textoCriterioDensidadeSinPor: "Informação sintetizada em ",
+            textoCriterioDensidadeSinDe: "Informação pertinente não recuperável noutro PN. Sintetiza a informação de "
         }
     },
 
@@ -184,10 +190,12 @@ export default {
                 this.c.subclasses[i].processosRelacionados.push(proc);
             }
             this.c.df.valor = this.calcDF(this.c.processosRelacionados);
+            
             if(!this.c.temSubclasses4Nivel){
                 // Tratamento do invariante: se é Suplemento Para então cria-se um critério de Utilidade Administrativa
                 if(proc.relacao == "eSuplementoPara"){
-                    this.adicionarCriterio(this.c.pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", "Critério de Utilidade Administrativa", "", [proc], []);
+                    this.adicionarCriterio(this.c.pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", 
+                        "Critério de Utilidade Administrativa", this.textoCriterioUtilidadeAdministrativa, [proc], []);
                 }
                 // Tratamento do invariante: se é Suplemento De então cria-se um critério Legal com toda a legislação selecionada associada
                 else if(proc.relacao == "eSuplementoDe"){
@@ -196,15 +204,18 @@ export default {
                 }
                 // Tratamento do invariante: se é Síntese De então cria-se um critério de Densidade Informacional
                 else if(proc.relacao == "eSinteseDe"){
-                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoDensidadeInfo", 
+                        "Critério de Densidade Informacional", this.textoCriterioDensidadeSinDe, [proc], []);
                 }
                 // Tratamento do invariante: se é Síntetizado Por então cria-se um critério de Densidade Informacional
                 else if(proc.relacao == "eSintetizadoPor"){
-                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoDensidadeInfo", 
+                        "Critério de Densidade Informacional", this.textoCriterioDensidadeSinPor, [proc], []);
                 }
                 // Tratamento do invariante: se é Complementar De então cria-se um critério de Complementaridade Informacional
                 else if(proc.relacao == "eComplementarDe"){
-                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoComplementaridadeInfo", "Critério de Complementaridade Informacional", "", [proc], []);
+                    this.adicionarCriterio(this.c.df.justificacao, "CriterioJustificacaoComplementaridadeInfo", 
+                        "Critério de Complementaridade Informacional", this.textoCriterioComplementaridade, [proc], []);
                 }
             }
             else{
@@ -212,7 +223,8 @@ export default {
                 // então cria-se um critério de Utilidade Administrativa para todas as subclasses
                 if(proc.relacao == "eSuplementoPara"){
                     for(var i=0; i < this.c.subclasses.length; i++){
-                        this.adicionarCriterio(this.c.subclasses[i].pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", "Critério de Utilidade Administrativa", "", [proc], []);
+                        this.adicionarCriterio(this.c.subclasses[i].pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", 
+                            "Critério de Utilidade Administrativa", this.textoCriterioUtilidadeAdministrativa, [proc], []);
                     }
                 }
                 // Tratamento do invariante: se é Suplemento De então 
@@ -227,20 +239,23 @@ export default {
                 // cria-se um critério de Densidade Informacional para todas as subclasses
                 else if(proc.relacao == "eSinteseDe"){
                     for(var i=0; i < this.c.subclasses.length; i++){
-                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoDensidadeInfo", 
+                            "Critério de Densidade Informacional", this.textoCriterioDensidadeSinDe, [proc], []);
                     } 
                 }
                 // Tratamento do invariante: se é Síntetizado Por então 
                 // cria-se um critério de Densidade Informacional
                 else if(proc.relacao == "eSintetizadoPor"){
                     for(var i=0; i < this.c.subclasses.length; i++){
-                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [proc], []);
+                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoDensidadeInfo", 
+                            "Critério de Densidade Informacional", this.textoCriterioDensidadeSinPor, [proc], []);
                     }
                 }
                 // Tratamento do invariante: se é Complementar De então cria-se um critério de Complementaridade Informacional
                 else if(proc.relacao == "eComplementarDe"){
                     for(var i=0; i < this.c.subclasses.length; i++){
-                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoComplementaridadeInfo", "Critério de Complementaridade Informacional", "", [proc], []);
+                        this.adicionarCriterio(this.c.subclasses[i].df.justificacao, "CriterioJustificacaoComplementaridadeInfo", 
+                            "Critério de Complementaridade Informacional", this.textoCriterioComplementaridade, [proc], []);
                     }
                 }
                 // No fim, recalcula-se o DF para todas as subclasses se a sbdivisão não for DF distinto
@@ -256,7 +271,7 @@ export default {
         calcDF: function(listaProc){
             var res = "NE";
 
-            if(!this.classe.temSubclasses4NivelDF){
+            if(!this.c.temSubclasses4NivelDF){
                 var complementar = listaProc.findIndex(p => p.relacao == 'eComplementarDe');
                 if(complementar != -1){
                     res = "C";
@@ -292,6 +307,29 @@ export default {
             this.legs.push(diploma);
             var index = this.c.legislacao.findIndex(e => e.id === diploma.id);
             this.c.legislacao.splice(index,1);
+        },
+
+        // Adiciona um critério à lista de critérios do PCA ou do DF....................
+
+        adicionarCriterio: function (justificacao, tipo, label, notas, procRel, legislacao) {
+            let myProcRel = JSON.parse(JSON.stringify(procRel));
+            let myLeg = JSON.parse(JSON.stringify(legislacao));
+            
+            var indice = justificacao.findIndex(crit => crit.tipo === tipo);
+            if(indice == -1){
+                justificacao.push({
+                    tipo: tipo,
+                    label, label,
+                    notas: notas,
+                    procRel: myProcRel,
+                    legislacao: myLeg
+                });
+            }
+            else{
+                justificacao[indice].procRel = justificacao[indice].procRel.concat(myProcRel);
+                justificacao[indice].legislacao = justificacao[indice].legislacao.concat(myLeg);
+            }
+            
         },
 
     }

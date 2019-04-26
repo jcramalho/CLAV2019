@@ -127,9 +127,9 @@ export default {
         ProcessosRelacionadosOps, LegislacaoOps
     },
 
-     data: function() {
-      return {
-          textoCriterioGestionario: "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
+        data: function() {
+            return {
+                textoCriterioGestionario: "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
                                     " escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para" +
                                     " a definição do prazo o tempo do mandato de maior duração: 5 anos."
       }
