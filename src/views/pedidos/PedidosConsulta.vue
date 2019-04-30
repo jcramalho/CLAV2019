@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ConsultaPedido from "@/components/ConsultaPedido.vue"; // @ is an alias to /src
+import ConsultaPedido from "@/components/pedidos/ConsultaPedido.vue"; // @ is an alias to /src
 
 export default {
   components: {

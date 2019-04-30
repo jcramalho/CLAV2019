@@ -99,17 +99,18 @@ export default new Router({
     },
     // Routes dos pedidos
     {
-      path: "/consulta/:idPedido",
+      path: "/pedidos/consultar/:idPedido",
       name: "consultaPedido",
       component: () => 
-        import("./views/Consulta.vue")
+        import("./views/pedidos/PedidosConsulta.vue")
     },
     {
       path: "/pedidos",
       name: "pedidos",
       component: () => 
-        import("./views/Pedidos.vue")
+        import("./views/pedidos/Pedidos.vue")
     },
+    // Routes da gestão de utilizadores
     {
       path: "/registo",
       name: "registo",

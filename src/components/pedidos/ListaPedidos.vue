@@ -26,6 +26,7 @@
 
 <script>
   import axios from 'axios'
+  const lhost = require('@/config/global').host
 
   export default {
     data: () => ({
@@ -36,15 +37,18 @@
           { text: 'Tipo', value: 'tipo', sortable: false, class: 'title'},
           { text: 'Objeto', value: 'objeto', sortable: false, class: 'title'}
         ],
-      pedidos: []
+      pedidos: [],
+      pedidosCarregados: false
     }),
-    mounted: function (){
-        axios
-            .get('http://localhost:7778/api/pedidos')
-            .then(response => {
-                this.pedidos = response.data;
-            })
-            .catch(error => { return(error)})
+    mounted: async function (){
+        try{
+            var response = await axios.get(lhost + '/api/pedidos');
+            this.pedidos = response.data;
+            this.pedidosCarregados = true;
+        }
+        catch(e){
+            return(e);
+        }
     },
     methods: {
         rowClicked: function (item){

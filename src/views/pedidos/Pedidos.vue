@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ListaPedidos from "@/components/ListaPedidos.vue"; // @ is an alias to /src
+import ListaPedidos from "@/components/pedidos/ListaPedidos.vue"; // @ is an alias to /src
 
 export default {
   components: {
@@ -11,7 +11,7 @@ export default {
     },
   methods: {
     consultaPedido: function(item){
-      this.$router.push('/consulta/' + item.codigo);
+      this.$router.push('/pedidos/consultar/' + item.codigo);
     }
   }
 }
