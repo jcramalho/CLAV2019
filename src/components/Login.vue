@@ -16,6 +16,13 @@
 						<v-spacer></v-spacer>
 						<v-btn color="primary" type="submit" @click="loginUtilizador">Login</v-btn>
 					</v-card-actions>
+					<v-snackbar
+						v-model="snackbar"
+						:timeout="timeout"
+						:top="true">
+						{{ text }}
+						<v-btn color="blue" flat @click="snackbar = false">Close</v-btn>
+					</v-snackbar>
 				</v-card>
 			</v-flex>
     	</v-layout>
@@ -34,21 +41,29 @@
 					email: "",
 					password: ""
                 },
-                user: null,
+				snackbar: false,
+				timeout: 4000,
+				text: ''
 			};
 		},
 		methods: {
 			loginUtilizador() {
-				// alert("Email: " + this.$data.form.email
-				// 	+ "\nPassword: " + this.$data.form.password
-				// )
 				axios.post(lhost + "/api/users/login", {
 					username: this.$data.form.email,
-					password: this.$data.form.password  
+					password: this.$data.form.password
 				}).then(res => {
-                    alert(JSON.stringify(res.data))
+					if(res.data._id!=undefined){
+						this.text = 'Login efetuado com sucesso!';
+						this.snackbar = true;
+						this.$store.state.user.id = res.data._id;
+						this.$store.state.user.name = res.data.name;
+					}else{
+						this.text = 'Ocorreu um erro ao realizar o login, por favor verifique as suas credenciais!';
+						this.snackbar = true;
+					}
 				}).catch(function (err) {
-					alert(err);
+					this.text = err;
+					this.snackbar = true;
 				});
             }
 		}
