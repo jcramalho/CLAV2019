@@ -57,6 +57,7 @@
 						this.snackbar = true;
 						this.$store.state.user.id = res.data._id;
 						this.$store.state.user.name = res.data.name;
+						// this.$router.push('/');
 					}else{
 						this.text = 'Ocorreu um erro ao realizar o login, por favor verifique as suas credenciais!';
 						this.snackbar = true;

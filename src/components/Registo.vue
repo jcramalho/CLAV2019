@@ -97,7 +97,7 @@
 			async getEntidades () {
 				await axios.get(lhost + "/api/entidades").then(res => {
 					this.ent_list = res.data.map((ent) => {return {label: ent.sigla +' - '+ent.designacao, value: ent.sigla}});
-				}).catch(error => console.log(error))
+				}).catch(error => alert(error))
 			},
 			registarUtilizador() {
 				if (this.$refs.form.validate()) {
@@ -135,7 +135,7 @@
 						if(res.data === 'Utilizador registado com sucesso!'){
 							this.text = 'Utilizador registado com sucesso!';
 							this.snackbar = true;
-							this.$router.push('/');
+							// this.$router.push('/');
 						}else if(res.data === 'Email já em uso!'){
 							this.text = 'Ocorrou um erro ao registar o utilizador: Email já em uso!';
 							this.snackbar = true;
