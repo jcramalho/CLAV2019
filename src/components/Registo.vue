@@ -26,7 +26,7 @@
 								<v-select
 									:items="['Administrador de Perfil Tecnológico','Administrador de Perfil Funcional','Utilizador Validador','Utilizador Avançado','Utilizador Decisor','Utilizador Simples','Representante Entidade']"
 									:rules="regraTipo"
-									prepend-icon="info"
+									prepend-icon="assignment"
 									v-model="form.type"
 									label="Nível de utilizador"
 									required>
@@ -39,6 +39,13 @@
 						<v-spacer></v-spacer>
 						<v-btn color="primary" type="submit" :disabled="!valid" @click="registarUtilizador">Registar</v-btn>
 					</v-card-actions>
+					<v-snackbar
+						v-model="snackbar"
+						:timeout="timeout"
+						:top="true">
+						{{ text }}
+						<v-btn color="blue" flat @click="snackbar = false">Close</v-btn>
+					</v-snackbar>
 				</v-card>
 			</v-flex>
     	</v-layout>
@@ -80,14 +87,17 @@
 					type: "",
 					password: ""
 				},
-				ent_list: []
+				ent_list: [],
+				snackbar: false,
+				timeout: 4000,
+				text: ''
 			};
 		},
 		methods: {
 			async getEntidades () {
 				await axios.get(lhost + "/api/entidades").then(res => {
 					this.ent_list = res.data.map((ent) => {return {label: ent.sigla +' - '+ent.designacao, value: ent.sigla}});
-				}).catch(error => console.log(error))
+				}).catch(error => alert(error))
 			},
 			registarUtilizador() {
 				if (this.$refs.form.validate()) {
@@ -122,13 +132,21 @@
 						type: parsedType,
 						password: this.$data.form.password  
 					}).then(res => {
-						this.$router.push('/');
-						alert(res.data)
+						if(res.data === 'Utilizador registado com sucesso!'){
+							this.text = 'Utilizador registado com sucesso!';
+							this.snackbar = true;
+							// this.$router.push('/');
+						}else if(res.data === 'Email já em uso!'){
+							this.text = 'Ocorrou um erro ao registar o utilizador: Email já em uso!';
+							this.snackbar = true;
+						}
 					}).catch(function (err) {
-						alert(err);
+						this.text = err;
+						this.snackbar = true;
 					});
 				}else{
-					alert("Por favor preencha todos os campos antes de se registar.")
+					this.text = 'Por favor preencha todos os campos!';
+					this.snackbar = true;
 				}
 			},
 		}
