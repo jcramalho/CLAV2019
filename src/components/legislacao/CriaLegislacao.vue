@@ -110,10 +110,8 @@ export default {
         loadTipoDiploma: async function () {
             try {
                 var response = await axios.get(lhost + "/api/vocabularios/vc_tipoDiplomaLegislativo")
-                console.log(response)
                 for( var i = 0; i < response.data.length; i++){
                     this.tiposDiploma[i] = response.data[i].termo
-                    console.log(this.tiposDiploma[i])
                 }
                 this.tiposDiploma.sort()
             } catch (error) {
