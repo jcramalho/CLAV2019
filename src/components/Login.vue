@@ -19,9 +19,10 @@
 					<v-snackbar
 						v-model="snackbar"
 						:timeout="timeout"
+						:color="color"
 						:top="true">
 						{{ text }}
-						<v-btn color="blue" flat @click="snackbar = false">Close</v-btn>
+						<v-btn flat @click="fecharSnackbar">Fechar</v-btn>
 					</v-snackbar>
 				</v-card>
 			</v-flex>
@@ -42,6 +43,7 @@
 					password: ""
                 },
 				snackbar: false,
+				color: '',
 				timeout: 4000,
 				text: ''
 			};
@@ -54,19 +56,25 @@
 				}).then(res => {
 					if(res.data._id!=undefined){
 						this.text = 'Login efetuado com sucesso!';
+						this.color = 'success';
 						this.snackbar = true;
 						this.$store.state.user.id = res.data._id;
 						this.$store.state.user.name = res.data.name;
-						// this.$router.push('/');
 					}else{
 						this.text = 'Ocorreu um erro ao realizar o login, por favor verifique as suas credenciais!';
+						this.color = 'error';
 						this.snackbar = true;
 					}
 				}).catch(function (err) {
 					this.text = err;
+					this.color = 'error';
 					this.snackbar = true;
 				});
-            }
+			},
+			fecharSnackbar(){
+				this.snackbar = false;
+				this.$router.push('/');
+			}
 		}
 	};
 </script>

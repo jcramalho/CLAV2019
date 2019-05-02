@@ -41,10 +41,11 @@
 					</v-card-actions>
 					<v-snackbar
 						v-model="snackbar"
+						:color="color"
 						:timeout="timeout"
 						:top="true">
 						{{ text }}
-						<v-btn color="blue" flat @click="snackbar = false">Close</v-btn>
+						<v-btn flat @click="fecharSnackbar">Fechar</v-btn>
 					</v-snackbar>
 				</v-card>
 			</v-flex>
@@ -89,6 +90,8 @@
 				},
 				ent_list: [],
 				snackbar: false,
+				color: '',
+				done: false,
 				timeout: 4000,
 				text: ''
 			};
@@ -134,21 +137,32 @@
 					}).then(res => {
 						if(res.data === 'Utilizador registado com sucesso!'){
 							this.text = 'Utilizador registado com sucesso!';
+							this.color = 'success';
 							this.snackbar = true;
-							// this.$router.push('/');
+							this.done = true;
 						}else if(res.data === 'Email já em uso!'){
 							this.text = 'Ocorrou um erro ao registar o utilizador: Email já em uso!';
+							this.color = 'error';
 							this.snackbar = true;
+							this.done = false;
 						}
 					}).catch(function (err) {
 						this.text = err;
+						this.color = 'error';
 						this.snackbar = true;
+						this.done = false;
 					});
 				}else{
 					this.text = 'Por favor preencha todos os campos!';
+					this.color = 'error';
 					this.snackbar = true;
+					this.done = false;
 				}
 			},
+			fecharSnackbar(){
+				this.snackbar = false;
+				if(this.done==true) this.$router.push('/');
+			}
 		}
 	};
 </script>
