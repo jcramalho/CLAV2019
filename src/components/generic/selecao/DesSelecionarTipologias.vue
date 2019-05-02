@@ -1,12 +1,12 @@
 <template>
     <v-layout row wrap color="teal lighten-5">
         <v-flex xs2>
-            <v-subheader class="info-label" style="border-color: white; border-style:solid; color: #1A237E;">Entidades:</v-subheader>
+            <v-subheader class="info-label" style="border-color: white; border-style:solid; color: #1A237E;">Pertence às Tipologias:</v-subheader>
         </v-flex>
-        <v-flex xs20 v-if="entidades.length > 0">
+        <v-flex xs20 v-if="tipologias.length > 0">
             <v-data-table
                 :headers="headers"
-                :items="entidades"
+                :items="tipologias"
                 class="elevation-1"
                 hide-actions
             >
@@ -24,7 +24,7 @@
                         <td>{{ props.item.sigla }}</td>
                         <td> {{ props.item.designacao }} </td>
                         <td>
-                            <v-btn small color="red darken-2" dark round @click="unselectEntidade(props.item)">
+                            <v-btn small color="red darken-2" dark round @click="unselectTipologia(props.item)">
                                 <v-icon dark>remove_circle</v-icon>
                             </v-btn>
                         </td>
@@ -34,7 +34,7 @@
         </v-flex>
         <v-flex xs9 v-else>
             <v-alert :value="true" type="warning">
-                Não tem entidades selecionadas...
+                Não tem tipologias selecionadas...
             </v-alert>
         </v-flex>
     </v-layout>
@@ -42,7 +42,7 @@
 
 <script>
 export default {
-    props: ["entidades"],
+    props: ["tipologias"],
 
      data: function() {
       return {
@@ -54,12 +54,8 @@ export default {
     },
 
     methods: {
-        go: function(idClasse){
-            this.$router.push('/entidades/'+idClasse);
-            this.$router.go();
-        },
-        unselectEntidade: function(entidade){
-            this.$emit('unselectEntidade', entidade)
+        unselectTipologia: function(tipologia){
+            this.$emit('unselectTipologia', tipologia)
         }
     }
 }

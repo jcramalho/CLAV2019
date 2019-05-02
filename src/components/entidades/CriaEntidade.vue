@@ -72,6 +72,19 @@
 
                             </tr>-->
                         </table>
+                        <hr style="border: 3px solid #dee2f8; border-radius: 2px;"/>
+                        <DesSelTip
+                            :tipologias="tipSel" 
+                            @unselectTipologia="unselectTipologia($event)"
+                        />
+
+                        <hr style="border-top: 1px dashed #dee2f8;"/>
+
+                        <SelTip
+                            :tipologiasReady="tipologiasReady"
+                            :tipologias="tipologias"
+                            @selectTipologia="selectTipologia($event)"
+                        />
                     </div>
                 </v-card-text>
                 </v-card>
@@ -81,13 +94,60 @@
 </template>
 
 <script>
+import DesSelTip from '@/components/generic/selecao/DesSelecionarTipologias.vue'
+import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
+
+import axios from 'axios';
+const lhost = require('@/config/global').host
+
 export default {
     data: () => ({
         designacao: '',
         sigla: '',
         internacional: '',
         sioe: '',
-    })
+
+        // Para o seletor de processos
+        tipologias: [],
+        tipSel: [],
+        tipologiasReady: false,
+    }),
+    components: {
+        DesSelTip, SelTip
+    },
+    methods:{
+        // Vai à API buscar todas as tipologias
+        loadTipologias: async function () {
+            try {
+                var response = await axios.get(lhost + "/api/tipologias/")
+                this.tipologias = response.data.map(function(item){
+                    return {
+                        sigla: item.sigla,
+                        designacao: item.designacao,
+                        id: item.id
+                    }
+                })
+                this.tipologiasReady = true
+            } catch (error) {
+                console.log(error);
+            }
+    },
+        unselectTipologia: function(tipologia){
+            // Recoloca a tipologia nos selecionáveis
+            this.tipologias.push(tipologia);
+            var index = this.tipSel.findIndex(e => e.id === tipologia.id);
+            this.tipSel.splice(index,1);
+        },
+        selectTipologia: function(tipologia){
+            this.tipSel.push(tipologia);
+            // Remove dos selecionáveis
+            var index = this.tipologias.findIndex(e => e.id === tipologia.id);
+            this.tipologias.splice(index,1);
+        },
+    },
+    created: function() {
+        this.loadTipologias();
+    },
 }
 
 // campo internacional por default é "não"

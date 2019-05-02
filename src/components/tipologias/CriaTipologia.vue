@@ -42,17 +42,18 @@
                         <hr style="border: 3px solid #dee2f8; border-radius: 2px;"/>
                         
                         <DesSelEnt 
-                                        :entidades="entSel" 
-                                        @unselectEntidade="unselectEntidade($event)"
-                                    />
+                            :entidades="entSel" 
+                            tipo="tipologias"
+                            @unselectEntidade="unselectEntidade($event)"
+                        />
 
-                                    <hr style="border-top: 1px dashed #dee2f8;"/>
+                        <hr style="border-top: 1px dashed #dee2f8;"/>
 
-                                    <SelEnt
-                                        :entidadesReady="entidadesReady"
-                                        :entidades="entidades"
-                                        @selectEntidade="selectEntidade($event)"
-                                    />
+                        <SelEnt
+                            :entidadesReady="entidadesReady"
+                            :entidades="entidades"
+                            @selectEntidade="selectEntidade($event)"
+                        />
                     </div>
                 </v-card-text>
                 </v-card>
@@ -62,8 +63,9 @@
 </template>
 
 <script>
-import DesSelEnt from '@/components/generic/DesSelecionarEntidades.vue'
-import SelEnt from '@/components/generic/SelecionarEntidades.vue'
+import DesSelEnt from '@/components/generic/selecao/DesSelecionarEntidades.vue'
+import SelEnt from '@/components/generic/selecao/SelecionarEntidades.vue'
+
 import axios from 'axios';
 const lhost = require('@/config/global').host
 
@@ -91,6 +93,7 @@ export default {
             var index = this.entidades.findIndex(e => e.id === entidade.id);
             this.entidades.splice(index,1);
         },
+        // Vai à API buscar todas as entidades
         loadEntidades: async function () {
             try {
                 var response = await axios.get(lhost + "/api/entidades")
