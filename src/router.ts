@@ -40,6 +40,12 @@ export default new Router({
         import("./views/entidades/Entidades.vue")
     },
     {
+      path: "/entidades/criar",
+      name: "criaEntidade",
+      component: () => 
+        import("./views/entidades/EntidadesCria.vue")
+    },
+    {
       path: "/entidades/:idEntidade",
       name: "consultaEntidade",
       component: () => 
@@ -51,6 +57,12 @@ export default new Router({
       name: "legislacao",
       component: () =>
         import("./views/legislacao/Legislacao.vue")
+    },
+    {
+      path: "/legislacao/criar",
+      name: "criaLegislacao",
+      component: () => 
+        import("./views/legislacao/LegislacaoCria.vue")
     },
     {
       path: "/legislacao/:idLegislacao",
@@ -90,6 +102,12 @@ export default new Router({
       name: "tipologias",
       component: () =>
         import("./views/tipologias/Tipologias.vue")
+    },
+    {
+      path: "/tipologias/criar",
+      name: "criaTipologia",
+      component: () => 
+        import("./views/tipologias/TipologiasCria.vue")
     },
     {
       path: "/tipologias/:idTipologia",
