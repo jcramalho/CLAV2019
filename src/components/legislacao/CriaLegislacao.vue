@@ -148,6 +148,14 @@
                         </v-expansion-panel>
                     </div>
                 </v-card-text>
+                <v-snackbar
+                    v-model="snackbar"
+                    :timeout=8000
+                    color="error"
+                    :top="true">
+                    {{ text }}
+                    <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+				</v-snackbar>
                 </v-card>
                 <div style="text-align:center">
                         <v-btn medium color="primary" :disabled="!(legislacao.sumario && legislacao.numero)" @click="submeter()">Submeter Diploma</v-btn>
@@ -173,6 +181,7 @@ export default {
             numero: '',
             sumario: '',
             tipo: '',
+            data: '',
             link: '',
             entidades: [],
             processos: [],
@@ -198,11 +207,15 @@ export default {
 
         // regras para submissão
         regraNumero: [
-                    v => /[0-9]+(\-\w)?\/[0-9]\d{3}$/.test(v) || 'Este campo está no formato errado.',
+                    v => /[0-9]+(\-\w)?\/[0-9]+$/.test(v) || 'Este campo está no formato errado.',
                 ],
         regraData: [
 					v => /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || 'Este campo está no formato errado.'
-				],
+                ],
+                
+        // para mostrar mensagens de erro
+        snackbar: false,
+        text: '',
     }),
     components: {
         DesSelEnt, SelEnt, DesSelProc, SelProc
@@ -216,7 +229,6 @@ export default {
     watch: {
       date (val) {
         this.dateFormatted = this.formatDate(this.date)
-        this.legislacao.data = this.dateFormatted;
       }
     },
 
@@ -302,6 +314,10 @@ export default {
                 console.log(error);
             }
         },
+        // fechar o snackbar em caso de erro
+        fecharSnackbar(){
+				this.snackbar = false;
+		},
         submeter: function () {
             for(var i = 0; i< this.entSel.length; i++){
                 this.legislacao.entidades[i] = this.entSel[i].id
@@ -311,13 +327,77 @@ export default {
                 this.legislacao.processos[i] = this.procSel[i].id
             }
 
+            // testes aos campos numero e data
             var parseAno = this.legislacao.numero.split("/");
             var anoDiploma = parseInt(parseAno[1]);
 
+            if( !(/[0-9]+(\-\w)?\/[0-9]+$/.test(this.legislacao.numero))){
+                this.text = "O campo 'Número' está no formato errado."
+                this.snackbar = true;
+                return false;
+            }
+
             if( anoDiploma<2000 ){
-                this.regraNumero = [
-                    v => /[0-9]+(\-\w)?\/[0-9]\d{1}$/.test(v) || 'Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!',
-                ]
+                if(!(/[0-9]+(\-\w)?\/[0-9]\d{1}$/.test(this.legislacao.numero))){
+                    this.text = "Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!"
+                    this.snackbar = true;
+                    return false;
+                }
+            }
+
+            this.legislacao.data = this.dateFormatted;
+
+            if( !(/[0-9]+\/[0-9]+\/[0-9]+/.test(this.legislacao.data))){
+                this.text = "O campo 'Data' está no formato errado."
+                this.snackbar = true;
+                return false;
+            }
+
+            var date = new Date();
+
+            var ano = parseInt(this.legislacao.data.slice(0, 4));
+            var mes = parseInt(this.legislacao.data.slice(5, 7));
+            var dia = parseInt(this.legislacao.data.slice(8, 10));
+
+            var dias = [31,28,31,30,31,30,31,31,30,31,30,31]
+
+            if( mes>12 ){
+                this.text = "Mês inválido!"
+                this.snackbar = true;
+                return false;
+            }
+            if( dia > dias[mes-1]){
+                if( ano % 4 == 0 && mes == 2 && dia == 29){}
+                else{ 
+                    this.text = "Dia do mês inválido!"
+                    this.snackbar = true;
+                    return false;
+                }
+            }
+
+            if( anoDiploma > parseInt(date.getFullYear()) ){
+                rthis.text = "Ano de Diploma inválido!"
+                this.snackbar = true;
+                return false;
+            }
+            if( ano > parseInt(date.getFullYear()) ){
+                this.text = "Ano inválido! Por favor selecione uma data anterior à atual"
+                this.snackbar = true;
+                return false;
+            }
+            if( ano == parseInt(date.getFullYear()) && mes > parseInt(date.getMonth() + 1) ){
+                this.text = "Mês inválido! Por favor selecione uma data anterior à atual"
+                this.snackbar = true;
+                return false;
+            }
+            if( ano == parseInt(date.getFullYear()) && mes == parseInt(date.getMonth() + 1) && dia > parseInt(date.getDate()) ){
+                this.text = "Dia inválido! Por favor selecione uma data anterior à atual"
+                this.snackbar = true;
+                return false;
+            }
+
+            if(!(/https?:\/\/.+/).test(this.legislacao.link) && this.legislacao.link!=""){
+                this.legislacao.link = "http://"+this.legislacao.link;
             }
 
             var dataObj = this.legislacao;  
@@ -325,64 +405,6 @@ export default {
             console.log(dataObj)
         }
         /*
-
-            
-
-            for(let field in formats){
-                if(!formats[field].test(this.diploma[field])){
-                    if( anoDiploma<2000 ){
-                        messageL.showMsg("Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!");
-                        return false;
-                    }
-                    messageL.showMsg("O campo " + field + " está no formato errado!");
-                    return false;
-                }
-            }
-
-            var date = new Date();
-
-            var ano = parseInt(this.diploma.data.slice(0, 4));
-            var mes = parseInt(this.diploma.data.slice(5, 7));
-            var dia = parseInt(this.diploma.data.slice(8, 10));
-
-            dias = [31,28,31,30,31,30,31,31,30,31,30,31]
-
-            if( mes>12 ){
-                messageL.showMsg("Mês inválido!")
-                return false
-            }
-            if( dia > dias[mes-1]){
-                if( ano % 4 == 0 && mes == 2 && dia == 29){}
-                else{ 
-                messageL.showMsg("Dia do mês inválido!")
-                return false
-                }
-            }
-
-            if( anoDiploma > parseInt(date.getFullYear()) ){
-                messageL.showMsg("Ano de Diploma inválido!")
-                return false
-            }
-            if( ano > parseInt(date.getFullYear()) ){
-                messageL.showMsg("Ano inválido! Por favor selecione uma data anterior à atual");
-                return false
-            }
-            if( ano == parseInt(date.getFullYear()) && mes > parseInt(date.getMonth() + 1) ){
-                messageL.showMsg("Mês inválido! Por favor selecione uma data anterior à atual");
-                return false
-            }
-            if( ano == parseInt(date.getFullYear()) && mes == parseInt(date.getMonth() + 1) && dia > parseInt(date.getDate()) ){
-                messageL.showMsg("Dia inválido! Por favor selecione uma data anterior à atual");
-                return false
-            }
-
-
-            let Link = new RegExp(/https?:\/\/.+/);
-
-            if(!Link.test(this.diploma.link) && this.diploma.link!=""){
-                this.diploma.link = "http://"+this.diploma.link;
-            
-
             this.$http.post('/api/legislacao/', dataObj,{
                 headers: {
                     'content-type' : 'application/json'

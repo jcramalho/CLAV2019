@@ -92,6 +92,14 @@
                         </v-expansion-panel>
                     </div>
                 </v-card-text>
+                <v-snackbar
+                    v-model="snackbar"
+                    :timeout=8000
+                    color="error"
+                    :top="true">
+                    {{ text }}
+                    <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+                </v-snackbar>
                 </v-card>
                 <div style="text-align:center">
                         <v-btn medium color="primary" @click="submeter()" :disabled="!(entidade.designacao && entidade.sigla)">Submeter Entidade</v-btn>
@@ -126,7 +134,10 @@ export default {
 
         regraSIOE: [
 					v => /^[0-9]*$/.test(v) || 'Apenas são aceites caracteres numéricos.'
-				],
+                ],
+
+        snackbar: false,
+        text: '',
     }),
     components: {
         DesSelTip, SelTip
@@ -160,6 +171,10 @@ export default {
             var index = this.tipologias.findIndex(e => e.id === tipologia.id);
             this.tipologias.splice(index,1);
         },
+        // fechar o snackbar em caso de erro
+        fecharSnackbar(){
+				this.snackbar = false;
+		},
         submeter: function () {
             for(var i = 0; i< this.tipSel.length; i++){
                 this.entidade.tipologiasSel[i] = this.tipSel[i].id
@@ -167,6 +182,12 @@ export default {
 
             if (this.entidade.internacional == ''){
                 this.entidade.internacional = "Não"
+            }
+
+            if( !(/^[0-9]*$/.test(this.entidade.sioe))){
+                this.text = "O campo 'SIOE' está no formato errado."
+                this.snackbar = true;
+                return false;
             }
             
             var dataObj = this.entidade;
