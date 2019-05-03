@@ -49,11 +49,11 @@ export default {
             this.$router.push('/');
         },
         logoutUtilizador: function(){
-						this.text = 'Logout efetuado com sucesso!';
-						this.color = 'success';
-						this.snackbar = true;
+			this.text = 'Logout efetuado com sucesso!';
+			this.color = 'success';
+			this.snackbar = true;
             this.$store.state.user.id = '';
-					  this.$store.state.user.name = '';
+			this.$store.state.user.name = '';
 		},
 		fecharSnackbar(){
 			this.snackbar = false;

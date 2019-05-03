@@ -7,7 +7,7 @@
 						<v-toolbar-title>Registo de utilizador</v-toolbar-title>
 					</v-toolbar>
 					<v-card-text>
-						<v-form ref="form" v-model="valid" lazy-validation>
+						<v-form ref="form" lazy-validation>
 							<v-text-field prepend-icon="person" name="name" v-model="form.name" label="Nome" type="text" :rules="regraNome" required/>
 							<v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email" :rules="regraEmail" required/>
 							<v-flex>
@@ -37,7 +37,7 @@
 					</v-card-text>
 					<v-card-actions>
 						<v-spacer></v-spacer>
-						<v-btn color="primary" type="submit" :disabled="!valid" @click="registarUtilizador">Registar</v-btn>
+						<v-btn color="primary" type="submit" @click="registarUtilizador">Registar</v-btn>
 					</v-card-actions>
 					<v-snackbar
 						v-model="snackbar"
@@ -64,7 +64,6 @@
 		},
 		data() {
 			return {
-				valid: true,
 				regraNome: [
 					v => !!v || 'Nome é obrigatório.'
 				],
@@ -141,7 +140,7 @@
 							this.snackbar = true;
 							this.done = true;
 						}else if(res.data === 'Email já em uso!'){
-							this.text = 'Ocorrou um erro ao registar o utilizador: Email já em uso!';
+							this.text = 'Ocorreu um erro ao registar o utilizador: Email já em uso!';
 							this.color = 'error';
 							this.snackbar = true;
 							this.done = false;
