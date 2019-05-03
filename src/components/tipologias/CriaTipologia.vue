@@ -87,6 +87,7 @@ export default {
             designacao: '',
             sigla: '',
             entidades: [],
+            codigo: '',
         },
         designacao: '',
         sigla: '',
@@ -137,23 +138,16 @@ export default {
 
             console.log(dataObj)
 
+            axios.post(lhost + "/api/tipologias/", dataObj).then( res => {
+                console.log(res)
+                this.$router.push('/pedidos/submissao');
+            }).catch(function (err) {
+					this.text = err;
+					this.color = 'error';
+					this.snackbar = true;
+				});
+
         }
-        /*
-            this.$http.post('/api/tipologias/', dataObj, {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            })
-                .then(function () {
-                    this.$refs.spinner.hide();
-                    window.location.href = '/pedidos/submissao';
-                })
-                .catch(error => {if (error.status === 409) {
-                    messageL.showMsg(error.body);
-                    this.$refs.spinner.hide();
-                    } 
-                    console.error(error);
-            });*/
     },
     created: function() {
         this.loadEntidades();

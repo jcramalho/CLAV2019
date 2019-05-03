@@ -402,27 +402,17 @@ export default {
 
             var dataObj = this.legislacao;  
 
-            console.log(dataObj)
-        }
-        /*
-            this.$http.post('/api/legislacao/', dataObj,{
-                headers: {
-                    'content-type' : 'application/json'
-                }
-            })
-                .then( function() { 
-                    this.$refs.spinner.hide();
+            console.log(dataObj);
 
-                    window.location.href = '/pedidos/submissao';
-                       
-                })
-                .catch( error => {if (error.status === 409 ){
-                    messageL.showMsg(error.body);
-                    this.$refs.spinner.hide();
-                }  
-                    console.error(error); 
-                });
-    },*/
+            axios.post(lhost + "/api/legislacao/", dataObj).then( res => {
+                console.log(res)
+                this.$router.push('/pedidos/submissao');
+            }).catch(function (err) {
+					this.text = err;
+					this.color = 'error';
+					this.snackbar = true;
+				});
+        }
     },
     created: function() {
         this.loadTipoDiploma();

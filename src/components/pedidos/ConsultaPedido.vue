@@ -72,6 +72,7 @@
 
 <script>
   import axios from 'axios'
+  const lhost = require('@/config/global').host
 
   export default {
     props: ["idp"],
@@ -94,7 +95,7 @@
     },
     mounted: function (){
         axios
-            .get('http://localhost:7778/api/pedidos/' + this.idp)
+            .get(lhost + '/api/pedidos/' + this.idp)
             .then(response => {
                 this.pedido = response.data;
                 this.pedidoLoaded = true;

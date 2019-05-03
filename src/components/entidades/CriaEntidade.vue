@@ -124,7 +124,7 @@ export default {
             internacional: '',
             sioe: '',
             tipologiasSel: [],
-            //codigo: "ent_" + this.entidade.sigla,
+            codigo: '',
         },
 
         // Para o seletor de processos
@@ -195,30 +195,21 @@ export default {
             dataObj.codigo = "ent_" + this.entidade.sigla;
 
             console.log(dataObj)
+
+            axios.post(lhost + "/api/entidades/", dataObj).then( res => {
+                console.log(res)
+                this.$router.push('/pedidos/submissao');
+            }).catch(function (err) {
+					this.text = err;
+					this.color = 'error';
+					this.snackbar = true;
+				});
         }
-        /*
-            this.$http.post('/api/entidades/', dataObj, {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            })
-                .then(function () {
-                    this.$refs.spinner.hide();
-                    window.location.href = '/pedidos/submissao';
-                })
-                .catch(error => {if (error.status === 409) {
-                        messageL.showMsg(error.body);
-                        this.$refs.spinner.hide();
-                    } 
-                    console.error(error);
-                });*/
     },
     created: function() {
         this.loadTipologias();
     },
 }
-
-// campo internacional por default é "não"
 </script>
 
 
