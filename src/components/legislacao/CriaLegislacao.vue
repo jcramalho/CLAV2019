@@ -15,7 +15,7 @@
                                 </td>
                                 <td style="width:80%;">
                                     <v-select
-                                        v-model="tipo"
+                                        v-model="legislacao.tipo"
                                         :items="tiposDiploma"
                                         solo
                                         dense
@@ -31,11 +31,11 @@
                                             solo clearable
                                             counter="11"
                                             single-line
-                                            v-model="numero"
+                                            v-model="legislacao.numero"
                                             maxlength="11"
                                             placeholder=" NNNNNN/AAAA"
+                                            :rules="regraNumero"
                                         ></v-text-field>
-                                        <!--pattern="[0-9]+(\-\w)?/[0-9]+"-->
                                 </td>
                             </tr>
                             <tr>
@@ -64,6 +64,7 @@
                                                 persistent-hint
                                                 @blur="date = parseDate(dateFormatted)"
                                                 v-on="on"
+                                                :rules="regraData"
                                             ></v-text-field>
                                         </template>
                                         <v-date-picker v-model="date" no-title @input="open = false" :max="date"></v-date-picker>
@@ -80,7 +81,7 @@
                                             solo clearable
                                             counter="150"
                                             single-line
-                                            v-model="sumario"
+                                            v-model="legislacao.sumario"
                                         ></v-text-field>
                                 </td>
                             </tr>
@@ -92,43 +93,65 @@
                                         <v-text-field
                                             solo clearable
                                             single-line
-                                            v-model="link"
+                                            v-model="legislacao.link"
                                         ></v-text-field>
                                 </td>
                             </tr>
                         </table>
-                        <hr style="border: 3px solid #dee2f8; border-radius: 2px;"/>
-                        
-                        <DesSelEnt 
-                            :entidades="entSel" 
-                            tipo="legislacao"
-                            @unselectEntidade="unselectEntidade($event)"
-                        />
+                        <v-expansion-panel>
+                            <v-expansion-panel-content class="expansion-panel-heading">
+                                <template v-slot:header>
+                                    <div class="subheading font-weight-bold">
+                                        Entidade responsável pela publicação
+                                    </div>
+                                </template>
+                                <v-card  style="padding-top:30px;">
+                                    <DesSelEnt 
+                                        :entidades="entSel" 
+                                        tipo="legislacao"
+                                        @unselectEntidade="unselectEntidade($event)"
+                                    />
 
-                        <hr style="border-top: 1px dashed #dee2f8;"/>
+                                    <hr style="border-top: 1px dashed #dee2f8;"/>
 
-                        <SelEnt
-                            :entidadesReady="entidadesReady"
-                            :entidades="entidades"
-                            @selectEntidade="selectEntidade($event)"
-                        />
-                        <hr style="border: 3px solid #dee2f8; border-radius: 2px;"/>
-                        
-                        <DesSelProc
-                            :processos="procSel" 
-                            @unselectProcesso="unselectProcesso($event)"
-                        />
+                                    <SelEnt
+                                        :entidadesReady="entidadesReady"
+                                        :entidades="entidades"
+                                        @selectEntidade="selectEntidade($event)"
+                                    />
+                                 </v-card>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
 
-                        <hr style="border-top: 1px dashed #dee2f8;"/>
+                        <v-expansion-panel>
+                            <v-expansion-panel-content class="expansion-panel-heading">
+                                <template v-slot:header>
+                                    <div class="subheading font-weight-bold">
+                                        Regula os processos de negócio
+                                    </div>
+                                </template>
+                                <v-card  style="padding-top:30px;">
+                                    <DesSelProc
+                                        :processos="procSel" 
+                                        @unselectProcesso="unselectProcesso($event)"
+                                    />
 
-                        <SelProc
-                            :processosReady="processosReady"
-                            :processos="processos"
-                            @selectProcesso="selectProcesso($event)"
-                        />
+                                    <hr style="border-top: 1px dashed #dee2f8;"/>
+
+                                    <SelProc
+                                        :processosReady="processosReady"
+                                        :processos="processos"
+                                        @selectProcesso="selectProcesso($event)"
+                                    />
+                                </v-card>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
                     </div>
                 </v-card-text>
                 </v-card>
+                <div style="text-align:center">
+                        <v-btn medium color="primary" :disabled="!(legislacao.sumario && legislacao.numero)" @click="submeter()">Submeter Diploma</v-btn>
+                </div>
             </v-flex>
         </v-layout>
     </v-container>
@@ -146,10 +169,15 @@ const lhost = require('@/config/global').host
 
 export default {
     data: vm => ({
-        numero: '',
-        sumario: '',
-        tipo: '',
-        link: '',
+        legislacao: {
+            numero: '',
+            sumario: '',
+            tipo: '',
+            link: '',
+            entidades: [],
+            processos: [],
+        },
+        
 
         tiposDiploma: [],
 
@@ -167,6 +195,14 @@ export default {
         processos: [],
         procSel: [],
         processosReady: false,
+
+        // regras para submissão
+        regraNumero: [
+                    v => /[0-9]+(\-\w)?\/[0-9]\d{3}$/.test(v) || 'Este campo está no formato errado.',
+                ],
+        regraData: [
+					v => /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || 'Este campo está no formato errado.'
+				],
     }),
     components: {
         DesSelEnt, SelEnt, DesSelProc, SelProc
@@ -180,6 +216,7 @@ export default {
     watch: {
       date (val) {
         this.dateFormatted = this.formatDate(this.date)
+        this.legislacao.data = this.dateFormatted;
       }
     },
 
@@ -260,12 +297,110 @@ export default {
                         id: item.codigo
                     }
                 })
-                console.log(this.processos)
                 this.processosReady = true
             } catch (error) {
                 console.log(error);
             }
-    },
+        },
+        submeter: function () {
+            for(var i = 0; i< this.entSel.length; i++){
+                this.legislacao.entidades[i] = this.entSel[i].id
+            }
+
+            for(var i = 0; i< this.procSel.length; i++){
+                this.legislacao.processos[i] = this.procSel[i].id
+            }
+
+            var parseAno = this.legislacao.numero.split("/");
+            var anoDiploma = parseInt(parseAno[1]);
+
+            if( anoDiploma<2000 ){
+                this.regraNumero = [
+                    v => /[0-9]+(\-\w)?\/[0-9]\d{1}$/.test(v) || 'Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!',
+                ]
+            }
+
+            var dataObj = this.legislacao;  
+
+            console.log(dataObj)
+        }
+        /*
+
+            
+
+            for(let field in formats){
+                if(!formats[field].test(this.diploma[field])){
+                    if( anoDiploma<2000 ){
+                        messageL.showMsg("Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!");
+                        return false;
+                    }
+                    messageL.showMsg("O campo " + field + " está no formato errado!");
+                    return false;
+                }
+            }
+
+            var date = new Date();
+
+            var ano = parseInt(this.diploma.data.slice(0, 4));
+            var mes = parseInt(this.diploma.data.slice(5, 7));
+            var dia = parseInt(this.diploma.data.slice(8, 10));
+
+            dias = [31,28,31,30,31,30,31,31,30,31,30,31]
+
+            if( mes>12 ){
+                messageL.showMsg("Mês inválido!")
+                return false
+            }
+            if( dia > dias[mes-1]){
+                if( ano % 4 == 0 && mes == 2 && dia == 29){}
+                else{ 
+                messageL.showMsg("Dia do mês inválido!")
+                return false
+                }
+            }
+
+            if( anoDiploma > parseInt(date.getFullYear()) ){
+                messageL.showMsg("Ano de Diploma inválido!")
+                return false
+            }
+            if( ano > parseInt(date.getFullYear()) ){
+                messageL.showMsg("Ano inválido! Por favor selecione uma data anterior à atual");
+                return false
+            }
+            if( ano == parseInt(date.getFullYear()) && mes > parseInt(date.getMonth() + 1) ){
+                messageL.showMsg("Mês inválido! Por favor selecione uma data anterior à atual");
+                return false
+            }
+            if( ano == parseInt(date.getFullYear()) && mes == parseInt(date.getMonth() + 1) && dia > parseInt(date.getDate()) ){
+                messageL.showMsg("Dia inválido! Por favor selecione uma data anterior à atual");
+                return false
+            }
+
+
+            let Link = new RegExp(/https?:\/\/.+/);
+
+            if(!Link.test(this.diploma.link) && this.diploma.link!=""){
+                this.diploma.link = "http://"+this.diploma.link;
+            
+
+            this.$http.post('/api/legislacao/', dataObj,{
+                headers: {
+                    'content-type' : 'application/json'
+                }
+            })
+                .then( function() { 
+                    this.$refs.spinner.hide();
+
+                    window.location.href = '/pedidos/submissao';
+                       
+                })
+                .catch( error => {if (error.status === 409 ){
+                    messageL.showMsg(error.body);
+                    this.$refs.spinner.hide();
+                }  
+                    console.error(error); 
+                });
+    },*/
     },
     created: function() {
         this.loadTipoDiploma();
@@ -276,6 +411,11 @@ export default {
 </script>
 
 <style>
+.expansion-panel-heading {
+        color: #1a237e !important;
+        background-image: linear-gradient(to bottom,#e8eaf6 0,#8c9eff 100%);
+}
+
 .panel-custom .panel-heading {
     background-image: linear-gradient(to top,#e8eaf6 0,#c7cefa 100%);
 }

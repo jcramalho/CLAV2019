@@ -18,7 +18,7 @@
                                             solo clearable
                                             counter="50"
                                             single-line
-                                            v-model="designacao"
+                                            v-model="tipologia.designacao"
                                             maxlength="50"
                                         ></v-text-field>
                                 </td>
@@ -32,31 +32,43 @@
                                             solo clearable
                                             counter="10"
                                             single-line
-                                            v-model="sigla"
+                                            v-model="tipologia.sigla"
                                             maxlength="10"
                                         ></v-text-field>
                                 </td>
                             </tr>
                         </table>
 
-                        <hr style="border: 3px solid #dee2f8; border-radius: 2px;"/>
-                        
-                        <DesSelEnt 
-                            :entidades="entSel" 
-                            tipo="tipologias"
-                            @unselectEntidade="unselectEntidade($event)"
-                        />
+                        <v-expansion-panel>
+                            <v-expansion-panel-content class="expansion-panel-heading">
+                                <template v-slot:header>
+                                    <div class="subheading font-weight-bold">
+                                        Entidades
+                                    </div>
+                                </template>
+                                <v-card  style="padding-top:30px;">
+                                    <DesSelEnt 
+                                        :entidades="entSel" 
+                                        tipo="tipologias"
+                                        @unselectEntidade="unselectEntidade($event)"
+                                    />
 
-                        <hr style="border-top: 1px dashed #dee2f8;"/>
+                                    <hr style="border-top: 1px dashed #dee2f8;"/>
 
-                        <SelEnt
-                            :entidadesReady="entidadesReady"
-                            :entidades="entidades"
-                            @selectEntidade="selectEntidade($event)"
-                        />
+                                    <SelEnt
+                                        :entidadesReady="entidadesReady"
+                                        :entidades="entidades"
+                                        @selectEntidade="selectEntidade($event)"
+                                    />
+                                </v-card>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
                     </div>
                 </v-card-text>
                 </v-card>
+                <div style="text-align:center">
+                        <v-btn medium color="primary" @click="submeter()" :disabled="!(tipologia.designacao && tipologia.sigla)">Submeter Tipologia</v-btn>
+                </div>
             </v-flex>
         </v-layout>
     </v-container>
@@ -71,6 +83,11 @@ const lhost = require('@/config/global').host
 
 export default {
     data: () => ({
+        tipologia: {
+            designacao: '',
+            sigla: '',
+            entidades: [],
+        },
         designacao: '',
         sigla: '',
         entidades: [],
@@ -109,6 +126,34 @@ export default {
                 console.log(error)
             }    
         },
+        submeter: function() {
+            for(var i = 0; i< this.entSel.length; i++){
+                this.tipologia.entidades[i] = this.entSel[i].id
+            }
+
+            var dataObj = this.tipologia;
+
+            dataObj.codigo = "tip_" + this.tipologia.sigla;
+
+            console.log(dataObj)
+
+        }
+        /*
+            this.$http.post('/api/tipologias/', dataObj, {
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+                .then(function () {
+                    this.$refs.spinner.hide();
+                    window.location.href = '/pedidos/submissao';
+                })
+                .catch(error => {if (error.status === 409) {
+                    messageL.showMsg(error.body);
+                    this.$refs.spinner.hide();
+                    } 
+                    console.error(error);
+            });*/
     },
     created: function() {
         this.loadEntidades();
@@ -119,6 +164,11 @@ export default {
 
 
 <style>
+.expansion-panel-heading {
+        color: #1a237e !important;
+        background-image: linear-gradient(to bottom,#e8eaf6 0,#8c9eff 100%);
+}
+
 .panel-custom .panel-heading {
     background-image: linear-gradient(to top,#e8eaf6 0,#c7cefa 100%);
 }
