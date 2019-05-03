@@ -15,7 +15,7 @@
                         <th v-for="h in props.headers" :key="h.text" class="body-2 font-weight-bold" style="color: green;">
                             {{ h.text }}
                         </th>
-                        <th style="color: green;"> Desselecionar </th>
+                        <th class="body-2 font-weight-bold" style="color: green;"> {{ mylabels.remover }} </th>
                     </tr>
                 </template>
 
@@ -42,11 +42,14 @@
 </template>
 
 <script>
+const labels = require('@/config/labels').classeCriacaoDonosOps
+
 export default {
     props: ["entidades"],
 
      data: function() {
       return {
+          mylabels: labels,
           headers: [
             { text: 'Sigla', align: 'left', value: 'sigla'},
             { text: 'Designação', value: 'designacao' },

@@ -13,7 +13,8 @@
                     <v-flex xs10>
                         <v-text-field
                             v-model="c.pca.valor"
-                            label="Prazo em anos"
+                            label="Prazo em anos: 0 a 199"
+                            mask="###"
                             solo
                             clearable
                         ></v-text-field>

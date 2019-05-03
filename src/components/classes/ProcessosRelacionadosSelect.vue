@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap>
         <v-flex xs2>
-            <v-subheader>Selecione o(s) processo(s) relacionado(s):</v-subheader>
+            <v-subheader>Selecione o(s) processo(s) relacionado(s)</v-subheader>
         </v-flex>
         <v-flex xs9 v-if="procReady">
             <v-card>
@@ -24,7 +24,7 @@
                     <template v-slot:items="props">
                         <tr>
                             <td>
-                                <v-btn color="teal draken-2" dark round small text-xs-center>
+                                <v-btn round small text-xs-center>
                                     <SelectValueFromList 
                                         :options="tiposRelacao"
                                         :initialValue="props.item.idRel"

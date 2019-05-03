@@ -2,7 +2,7 @@
     <v-layout wrap row>
     <!-- TERMOS DE ÍNDICE -->
         <v-flex xs2>
-            <v-subheader>Termos de Índice:</v-subheader>
+            <v-subheader>Termos de Índice</v-subheader>
             <v-btn color="green darken-2" dark round @click="insereNovoTI(c.termosInd)">
                 Novo termo
                 <v-icon dark right>add_circle_outline</v-icon>

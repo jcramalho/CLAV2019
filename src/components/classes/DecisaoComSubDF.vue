@@ -8,7 +8,7 @@
             <v-flex xs9>
                 <v-layout row wrap>
                     <v-flex xs2>
-                        <v-subheader>Destino:</v-subheader>
+                        <v-subheader>Destino</v-subheader>
                     </v-flex>
                     <v-flex xs10>
                         <SelectValueFromList
@@ -107,17 +107,17 @@ export default {
      data: function() {
       return {
           destinoFinalTipos: [
-            {label: 'Não Especificado (NE)', value: 'NE'},
-            {label: 'Conservação (C)', value: 'C'},
-            {label: 'Conservação Parcial (CP)', value: 'CP'},
-            {label: 'Eliminação (E)', value: 'E'}
+            {label: 'Não Especificado', value: 'NE'},
+            {label: 'Conservação', value: 'C'},
+            {label: 'Conservação Parcial', value: 'CP'},
+            {label: 'Eliminação', value: 'E'}
         ],
 
         destinoFinalLabels: {
-            'NE': 'Não Especificado (NE)', 
-            'C': 'Conservação (C)',
-            'CP': 'Conservação Parcial (CP)',
-            'E': 'Eliminação (E)'
+            'NE': 'Não Especificado', 
+            'C': 'Conservação',
+            'CP': 'Conservação Parcial',
+            'E': 'Eliminação'
         },
       }
     },

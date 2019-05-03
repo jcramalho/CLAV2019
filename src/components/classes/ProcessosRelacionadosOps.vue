@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap color="teal lighten-5">
         <v-flex xs2>
-            <v-subheader>Processos Relacionados:</v-subheader>
+            <v-subheader>Processos Relacionados</v-subheader>
         </v-flex>
         <v-flex xs9 v-if="processos.length > 0">
             <v-data-table
@@ -15,7 +15,7 @@
                         <th v-for="h in props.headers" :key="h.text" class="body-2 font-weight-bold">
                             {{ h.text }}
                         </th>
-                        <th style="color: green;"> Desselecionar </th>
+                        <th style="color: green;"> {{ mylabels.remover }} </th>
                     </tr>
                 </template>
 
@@ -43,11 +43,14 @@
 
 <script>
 
+const labels = require('@/config/labels').classeCriacaoProcessosRelacionadosOps
+
 export default {
     props: ["processos"],
 
     data: function() {
       return {
+        mylabels: labels,
         headers: [
             { text: 'Relação', align: 'left', sortable: true, value: 'idRel'},
             { text: 'Processo', align: 'left', sortable: false, value: 'codigo' },

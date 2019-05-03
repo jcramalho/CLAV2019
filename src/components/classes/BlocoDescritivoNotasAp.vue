@@ -2,7 +2,7 @@
     <v-layout wrap row>
         <!-- Notas de Aplicação -->
         <v-flex xs2>
-            <v-subheader>Notas de Aplicação:</v-subheader>
+            <v-subheader>Notas de Aplicação</v-subheader>
             <v-tooltip top color="info">
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" color="green darken-2" dark round @click="insereNovaNota(c.notasAp, 'na')">
