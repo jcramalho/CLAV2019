@@ -9,7 +9,8 @@ export default new Vuex.Store({
     user: {
       id: '',
       name: '',
-      entidade: ''
+      entidade: '',
+      email: ''
     }
   },
   mutations: {},

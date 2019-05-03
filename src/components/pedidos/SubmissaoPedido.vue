@@ -66,7 +66,6 @@ export default {
             var response = await axios.get(lhost + '/api/pedidos');
             this.pedido = response.data[response.data.length-1]
             this.pedido.data = this.pedido.data.split('T')[0]
-            console.log(this.pedido)
         }
         catch(e){
             console.log(e);

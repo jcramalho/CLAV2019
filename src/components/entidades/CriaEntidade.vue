@@ -126,6 +126,8 @@ export default {
             sioe: '',
             tipologiasSel: [],
             codigo: '',
+            // user: email para a API saber qual o email associado a esse pedido
+            user: '',
         },
 
         // Para o seletor de processos
@@ -194,17 +196,26 @@ export default {
             var dataObj = this.entidade;
 
             dataObj.codigo = "ent_" + this.entidade.sigla;
+            dataObj.user = this.$store.state.user.email;
 
             console.log(dataObj)
 
             axios.post(lhost + "/api/entidades/", dataObj).then( res => {
-                console.log(res)
                 this.$router.push('/pedidos/submissao');
-            }).catch(function (err) {
-					this.text = err;
-					this.color = 'error';
-					this.snackbar = true;
-				});
+            }).catch( (err) => {
+                    if(err.response.status === 409){
+                        this.text = "Já existe uma entidade com a sigla " + this.entidade.sigla + " ou designação " + this.entidade.designacao;
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                    if(err.response.status === 500){
+                        this.text = "Ocorreu um erro na criação desta entidade";
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                });
+               
+                
         }
     },
     created: function() {

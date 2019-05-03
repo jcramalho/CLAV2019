@@ -185,6 +185,8 @@ export default {
             link: '',
             entidades: [],
             processos: [],
+            // user: email para a API saber qual o email associado a esse pedido
+            user: '',
         },
         
 
@@ -376,7 +378,7 @@ export default {
             }
 
             if( anoDiploma > parseInt(date.getFullYear()) ){
-                rthis.text = "Ano de Diploma inválido!"
+                this.text = "Ano de Diploma inválido!"
                 this.snackbar = true;
                 return false;
             }
@@ -401,17 +403,24 @@ export default {
             }
 
             var dataObj = this.legislacao;  
+            dataObj.user = this.$store.state.user.email;
 
             console.log(dataObj);
 
             axios.post(lhost + "/api/legislacao/", dataObj).then( res => {
-                console.log(res)
                 this.$router.push('/pedidos/submissao');
-            }).catch(function (err) {
-					this.text = err;
-					this.color = 'error';
-					this.snackbar = true;
-				});
+            }).catch( (err) => {
+                    if(err.response.status === 409){
+                        this.text = "Já existe uma legislação com o número" + this.legislacao.numero;
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                    if(err.response.status === 500){
+                        this.text = "Ocorreu um erro na criação desta entidade";
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                });
         }
     },
     created: function() {
