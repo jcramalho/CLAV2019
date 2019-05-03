@@ -63,6 +63,7 @@
                                             v-model="entidade.sioe"
                                             maxlength="12"
                                             :rules="regraSIOE"
+                                            mask="############"
                                         ></v-text-field>
                                 </td>
                             </tr>
