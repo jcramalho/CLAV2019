@@ -70,6 +70,7 @@
 							this.done = true;
 							this.$store.state.user.id = res.data._id;
 							this.$store.state.user.name = res.data.name;
+							this.$store.state.user.entidade = res.data.entidade;
 						}else{
 							this.text = 'Ocorreu um erro ao realizar o login: Por favor verifique as suas credenciais!';
 							this.color = 'error';

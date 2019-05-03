@@ -8,7 +8,8 @@ export default new Vuex.Store({
     criacaoTabSel: {},
     user: {
       id: '',
-      name: ''
+      name: '',
+      entidade: ''
     }
   },
   mutations: {},
