@@ -101,7 +101,7 @@
                                     <div class="info-label">Tipo de participação: </div>
                                 </td>
                                 <td>
-                                    <ul v-for="(key, index) in Object.keys(listaProcP)" v-bind:key="index" style="padding-left:5px;">
+                                    <ul v-for="(key, index) in Object.keys(listaProcP)" v-bind:key="index" style="padding-left:20px;">
                                         <li  v-if="listaProcP[key].length>0" >
                                             <b v-if="listaProcP[key].length>0">{{ participationsDic[key] }}:</b>
                                                 <ul :class="{'is-collapsed' : partsCollapsed[key] }">
@@ -186,6 +186,12 @@ export default {
         voltar: function () {
             if( this.tipo === "Entidades"){
                 this.$router.push('/entidades');
+            }
+            if( this.tipo === "Tipologias"){
+                this.$router.push('/tipologias');
+            }
+            if( this.tipo === "Legislação"){
+                this.$router.push('/legislacao');
             }
         }
     }
