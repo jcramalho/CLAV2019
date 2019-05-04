@@ -9,7 +9,7 @@
         <v-layout wrap>
             <!-- DESCRIÇÂO -->
             <v-flex xs2>
-                <v-subheader>Descrição:</v-subheader>
+                <v-subheader>Descrição</v-subheader>
             </v-flex>
             <v-flex xs9>
                 <v-text-field
@@ -27,7 +27,7 @@
         <hr/>
         <BlocoDescritivoNotasEx :c="c"/>
         <hr/>
-        <TermosIndiceOps :c="c" v-if="c.nivel == 3"/>
+        <TermosIndiceOps :c="c" v-if="(c.nivel == 3) && (!c.temSubclasses4Nivel)"/>
 
     </v-expansion-panel-content>
 </template>
