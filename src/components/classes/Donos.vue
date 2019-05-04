@@ -6,28 +6,20 @@
         </v-flex>
         <v-flex xs10>
             <div class="info-content">
-            <v-data-table
-                :headers="headers"
-                :items="entidades"
-                class="elevation-1"
-                hide-actions
-            >
-                <template v-slot:headers="props">
-                    <tr>
-                        <th v-for="h in props.headers" :key="h.text" class="body-2 font-weight-bold">
-                            {{ h.text }}
-                        </th>
-                    </tr>
-                </template>
-
-                <template v-slot:items="props">
-                    <tr>
-                        <td>{{ props.item.sigla }}</td>
-                        <td> {{ props.item.designacao }} </td>
-                        <td> {{ props.item.tipo.split('#')[1] }} </td>
-                    </tr>
-                </template>
-            </v-data-table>
+                <ul>
+                    <li v-for="p in entidades" :key="p.idParticipante">
+                        <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idParticipante">
+                            {{ p.sigla }}:
+                            {{ p.designacao }}
+                            ({{ p.tipo.split('#')[1] }})
+                        </a>
+                        <a v-else :href="'/tipologias/' + p.idParticipante">
+                            {{ p.sigla }}:
+                            {{ p.designacao }}
+                            ({{ p.tipo.split('#')[1] }})
+                        </a>
+                    </li>
+                </ul>
             </div>
         </v-flex>
     </v-layout>
@@ -57,6 +49,16 @@ export default {
 </script>
 
 <style>
+a:link {
+  color: #1A237E;
+  background-color: transparent;
+}
+
+a:hover {
+  color: white ;
+  background-color: #1A237E ;
+}
+
 .info-label {
     color: #1A237E;
     padding: 5px; 

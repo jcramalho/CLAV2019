@@ -91,6 +91,16 @@ export default {
 </script>
 
 <style>
+a:link {
+  color: #1A237E;
+  background-color: transparent;
+}
+
+a:hover {
+  color: white ;
+  background-color: #1A237E ;
+}
+
 .info-label {
     color: #1A237E;
     padding: 5px; 

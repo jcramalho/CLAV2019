@@ -83,27 +83,10 @@
                     
                     <Participantes :entidades="classe.participantes" v-if="classe.participantes.length > 0"/>
 
-                    <v-card class="deep-purple lighten-5">
+                    <ProcessosRelacionados :processos="classe.processosRelacionados" v-if="classe.processosRelacionados.length > 0"/>
 
-                    <v-layout row wrap v-if="classe.processosRelacionados.length > 0">
-                        <v-flex xs2>
-                            <v-subheader class="subheading font-weight-medium">Processos Relacionados:</v-subheader>
-                        </v-flex>
-                        <v-flex xs9 >
-                            <ProcessosRelacionados :processos="classe.processosRelacionados"/>
-                        </v-flex>
-                    </v-layout>
+                    <Legislacao :legs="this.classe.legislacao" v-if="classe.legislacao.length > 0"/>
 
-                    <v-layout row wrap v-if="classe.legislacao.length > 0">
-                        <v-flex xs2>
-                            <v-subheader class="subheading font-weight-medium">Legislação:</v-subheader>
-                        </v-flex>
-                        <v-flex xs9 >
-                            <Legislacao :legs="this.classe.legislacao"/>
-                        </v-flex>
-                    </v-layout>
-
-                    </v-card>
                 </v-expansion-panel-content>
 
                 <v-expansion-panel-content v-if="((classe.nivel == 3)&&(classe.filhos.length == 0))||(classe.nivel == 4)">
