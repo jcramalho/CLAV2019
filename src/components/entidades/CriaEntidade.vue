@@ -63,6 +63,7 @@
                                             v-model="entidade.sioe"
                                             maxlength="12"
                                             :rules="regraSIOE"
+                                            mask="############"
                                         ></v-text-field>
                                 </td>
                             </tr>
@@ -124,7 +125,9 @@ export default {
             internacional: '',
             sioe: '',
             tipologiasSel: [],
-            //codigo: "ent_" + this.entidade.sigla,
+            codigo: '',
+            // user: email para a API saber qual o email associado a esse pedido
+            user: '',
         },
 
         // Para o seletor de processos
@@ -193,32 +196,32 @@ export default {
             var dataObj = this.entidade;
 
             dataObj.codigo = "ent_" + this.entidade.sigla;
+            dataObj.user = this.$store.state.user.email;
 
             console.log(dataObj)
+
+            axios.post(lhost + "/api/entidades/", dataObj).then( res => {
+                this.$router.push('/pedidos/submissao');
+            }).catch( (err) => {
+                    if(err.response.status === 409){
+                        this.text = "Já existe uma entidade com a sigla " + this.entidade.sigla + " ou designação " + this.entidade.designacao;
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                    if(err.response.status === 500){
+                        this.text = "Ocorreu um erro na criação desta entidade";
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                });
+               
+                
         }
-        /*
-            this.$http.post('/api/entidades/', dataObj, {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            })
-                .then(function () {
-                    this.$refs.spinner.hide();
-                    window.location.href = '/pedidos/submissao';
-                })
-                .catch(error => {if (error.status === 409) {
-                        messageL.showMsg(error.body);
-                        this.$refs.spinner.hide();
-                    } 
-                    console.error(error);
-                });*/
     },
     created: function() {
         this.loadTipologias();
     },
 }
-
-// campo internacional por default é "não"
 </script>
 
 

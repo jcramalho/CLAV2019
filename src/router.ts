@@ -123,7 +123,13 @@ export default new Router({
         import("./views/pedidos/Pedidos.vue")
     },
     {
-      path: "/pedidos/consultar/:idPedido",
+      path: "/pedidos/submissao",
+      name: "submissaoPedido",
+      component: () => 
+        import("./views/pedidos/PedidosSubmissao.vue")
+    },
+    {
+      path: "/pedidos/:idPedido",
       name: "consultaPedido",
       component: () => 
         import("./views/pedidos/PedidosConsulta.vue")

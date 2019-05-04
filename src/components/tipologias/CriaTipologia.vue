@@ -65,6 +65,14 @@
                         </v-expansion-panel>
                     </div>
                 </v-card-text>
+                <v-snackbar
+                    v-model="snackbar"
+                    :timeout=8000
+                    color="error"
+                    :top="true">
+                    {{ text }}
+                    <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+                </v-snackbar>
                 </v-card>
                 <div style="text-align:center">
                         <v-btn medium color="primary" @click="submeter()" :disabled="!(tipologia.designacao && tipologia.sigla)">Submeter Tipologia</v-btn>
@@ -87,12 +95,18 @@ export default {
             designacao: '',
             sigla: '',
             entidades: [],
+            codigo: '',
+            // user: email para a API saber qual o email associado a esse pedido
+            user: '',
         },
         designacao: '',
         sigla: '',
         entidades: [],
         entSel: [],
-        entidadesReady: false
+        entidadesReady: false,
+
+        snackbar: false,
+        text: '',
     }),
     components: {
         DesSelEnt, SelEnt
@@ -126,6 +140,10 @@ export default {
                 console.log(error)
             }    
         },
+        // fechar o snackbar em caso de erro
+        fecharSnackbar(){
+				this.snackbar = false;
+		},
         submeter: function() {
             for(var i = 0; i< this.entSel.length; i++){
                 this.tipologia.entidades[i] = this.entSel[i].id
@@ -134,30 +152,29 @@ export default {
             var dataObj = this.tipologia;
 
             dataObj.codigo = "tip_" + this.tipologia.sigla;
+            dataObj.user = this.$store.state.user.email;
 
             console.log(dataObj)
 
+            axios.post(lhost + "/api/tipologias/", dataObj).then( res => {
+                this.$router.push('/pedidos/submissao');
+            }).catch( (err) => {
+                    if(err.response.status === 409){
+                        this.text = "Já existe uma tipologia com a sigla " + this.tipologia.sigla + " ou designação " + this.tipologia.designacao;
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                    if(err.response.status === 500){
+                        this.text = "Ocorreu um erro na criação desta entidade";
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                });
+
         }
-        /*
-            this.$http.post('/api/tipologias/', dataObj, {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            })
-                .then(function () {
-                    this.$refs.spinner.hide();
-                    window.location.href = '/pedidos/submissao';
-                })
-                .catch(error => {if (error.status === 409) {
-                    messageL.showMsg(error.body);
-                    this.$refs.spinner.hide();
-                    } 
-                    console.error(error);
-            });*/
     },
     created: function() {
         this.loadEntidades();
-        console.log(this.entidades)
     }
 }
 </script>

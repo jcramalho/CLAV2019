@@ -149,6 +149,9 @@
                             </tr>
                         </table>
                     </div>
+                    <div>
+                        <v-btn medium color="primary" @click="voltar()">Voltar</v-btn>
+                    </div>
                 </v-card-text>
                 </v-card>
             </v-flex>
@@ -178,7 +181,14 @@ export default {
             Executor: "Executar",
             Iniciador: "Iniciar"
         },
-    })
+    }),
+    methods: {
+        voltar: function () {
+            if( this.tipo === "Entidades"){
+                this.$router.push('/entidades');
+            }
+        }
+    }
 }
 </script>
 

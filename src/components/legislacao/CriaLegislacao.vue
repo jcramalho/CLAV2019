@@ -185,6 +185,8 @@ export default {
             link: '',
             entidades: [],
             processos: [],
+            // user: email para a API saber qual o email associado a esse pedido
+            user: '',
         },
         
 
@@ -376,7 +378,7 @@ export default {
             }
 
             if( anoDiploma > parseInt(date.getFullYear()) ){
-                rthis.text = "Ano de Diploma inválido!"
+                this.text = "Ano de Diploma inválido!"
                 this.snackbar = true;
                 return false;
             }
@@ -401,28 +403,25 @@ export default {
             }
 
             var dataObj = this.legislacao;  
+            dataObj.user = this.$store.state.user.email;
 
-            console.log(dataObj)
-        }
-        /*
-            this.$http.post('/api/legislacao/', dataObj,{
-                headers: {
-                    'content-type' : 'application/json'
-                }
-            })
-                .then( function() { 
-                    this.$refs.spinner.hide();
+            console.log(dataObj);
 
-                    window.location.href = '/pedidos/submissao';
-                       
-                })
-                .catch( error => {if (error.status === 409 ){
-                    messageL.showMsg(error.body);
-                    this.$refs.spinner.hide();
-                }  
-                    console.error(error); 
+            axios.post(lhost + "/api/legislacao/", dataObj).then( res => {
+                this.$router.push('/pedidos/submissao');
+            }).catch( (err) => {
+                    if(err.response.status === 409){
+                        this.text = "Já existe uma legislação com o número" + this.legislacao.numero;
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
+                    if(err.response.status === 500){
+                        this.text = "Ocorreu um erro na criação desta entidade";
+                        this.color = 'error';
+                        this.snackbar = true;
+                    }
                 });
-    },*/
+        }
     },
     created: function() {
         this.loadTipoDiploma();

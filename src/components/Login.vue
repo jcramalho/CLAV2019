@@ -7,9 +7,9 @@
 						<v-toolbar-title>Login</v-toolbar-title>
 					</v-toolbar>
 					<v-card-text>
-						<v-form>
-                            <v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email"/>
-							<v-text-field id="password" prepend-icon="lock" name="password"  v-model="form.password" label="Password" type="password"/>
+						<v-form ref="form" v-model="valid" lazy-validation>
+                            <v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email" :rules="regraEmail" required/>
+							<v-text-field id="password" prepend-icon="lock" name="password"  v-model="form.password" label="Password" type="password" :rules="regraPassword" required/>
 						</v-form>
 					</v-card-text>
 					<v-card-actions>
@@ -41,39 +41,59 @@
 				form: {
 					email: "",
 					password: ""
-                },
+				},
+				regraEmail: [
+					v => !!v || 'Email é obrigatório.',
+					v => /.+@.+/.test(v) || 'Email tem de ser válido.'
+				],
+				regraPassword: [
+					v => !!v || 'Password é obrigatório.'
+				],
 				snackbar: false,
 				color: '',
 				timeout: 4000,
-				text: ''
+				text: '',
+				done: false
 			};
 		},
 		methods: {
 			loginUtilizador() {
-				axios.post(lhost + "/api/users/login", {
-					username: this.$data.form.email,
-					password: this.$data.form.password
-				}).then(res => {
-					if(res.data._id!=undefined){
-						this.text = 'Login efetuado com sucesso!';
-						this.color = 'success';
-						this.snackbar = true;
-						this.$store.state.user.id = res.data._id;
-						this.$store.state.user.name = res.data.name;
-					}else{
-						this.text = 'Ocorreu um erro ao realizar o login, por favor verifique as suas credenciais!';
+				if (this.$refs.form.validate()) {
+					axios.post(lhost + "/api/users/login", {
+						username: this.$data.form.email,
+						password: this.$data.form.password
+					}).then(res => {
+						if(res.data._id!=undefined){
+							this.text = 'Login efetuado com sucesso!';
+							this.color = 'success';
+							this.snackbar = true;
+							this.done = true;
+							this.$store.state.user.id = res.data._id;
+							this.$store.state.user.name = res.data.name;
+							this.$store.state.user.email = res.data.email;
+							this.$store.state.user.entidade = res.data.entidade;
+						}else{
+							this.text = 'Ocorreu um erro ao realizar o login: Por favor verifique as suas credenciais!';
+							this.color = 'error';
+							this.snackbar = true;
+							this.done = false;
+						}
+					}).catch(function (err) {
+						this.text = err;
 						this.color = 'error';
 						this.snackbar = true;
-					}
-				}).catch(function (err) {
-					this.text = err;
+						this.done = false;
+					});
+				}else{
+					this.text = 'Por favor preencha todos os campos!';
 					this.color = 'error';
 					this.snackbar = true;
-				});
+					this.done = false;
+				}
 			},
 			fecharSnackbar(){
 				this.snackbar = false;
-				this.$router.push('/');
+				if(this.done==true) this.$router.push('/');
 			}
 		}
 	};
