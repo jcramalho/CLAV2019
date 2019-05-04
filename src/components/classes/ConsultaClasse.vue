@@ -14,6 +14,8 @@
 
             <v-card-text>
 
+                <ClassesFilho :subclasses="classe.filhos" v-if="classe.filhos.length > 0"/>
+
                 <v-expansion-panel popout>
                 <!-- DESCRITIVO DA CLASSE -->
                 <v-expansion-panel-content>
@@ -22,73 +24,66 @@
                             <v-toolbar-title>Descritivo da Classe</v-toolbar-title>
                         </v-toolbar>
                     </template>
-                    <v-card class="indigo lighten-5">
-                        <v-card-title>
-                            <div>
-                                <div class="subheading font-weight-medium">Descrição</div>
-                                <span>{{this.classe.descricao}}</span>
+
+                    <v-layout wrap ma-2>
+                    <!-- DESCRIÇÂO -->
+                        <v-flex xs2>
+                            <div class="info-label">Descrição</div>
+                        </v-flex>
+                        <v-flex xs10>
+                            <div class="info-content">
+                                {{ classe.descricao }}
                             </div>
-                        </v-card-title>
-                        <v-card-title v-if="this.classe.filhos.length > 0">
-                            <ClassesFilho :subclasses="this.classe.filhos"/>
-                        </v-card-title>
-                        <v-card-title v-if="this.classe.notasAp.length > 0">
-                            <NotasAp :notas="this.classe.notasAp"/>
-                        </v-card-title>
-                        <v-card-title v-if="this.classe.exemplosNotasAp.length > 0">
-                            <ExemplosNotasAp :exemplos="this.classe.exemplosNotasAp"/>
-                        </v-card-title>
-                        <v-card-title v-if="this.classe.notasEx.length > 0">
-                            <NotasEx :notas="this.classe.notasEx"/>
-                        </v-card-title>
-                        <v-card-title v-if="this.classe.termosInd.length > 0">
-                            <TermosIndice :termos="this.classe.termosInd"/>
-                        </v-card-title>
-                    </v-card>
+                        </v-flex>
+                    </v-layout>
+
+                    <NotasAp :notas="classe.notasAp" v-if="classe.notasAp.length > 0"/>
+
+                    <ExemplosNotasAp :exemplos="classe.exemplosNotasAp" v-if="classe.exemplosNotasAp.length > 0"/>
+
+                    <NotasEx :notas="classe.notasEx" v-if="classe.notasEx.length > 0"/>
+
+                    <TermosIndice :termos="classe.termosInd" v-if="classe.termosInd.length > 0"/>
+
                 </v-expansion-panel-content>
 
                 <!-- CONTEXTO DA CLASSE -->
                 <v-expansion-panel-content v-if="classe.nivel == 3">
                     <template v-slot:header>
-                        <v-toolbar color="deep-purple accent-4 body-2 font-weight-bold" dark>
+                        <v-toolbar color="indigo accent-4 body-2 font-weight-bold" dark>
                             <v-toolbar-title>Contexto de Avaliação</v-toolbar-title>
                         </v-toolbar>
                     </template>
+
+                    <v-layout wrap ma-2>
+                    <!-- TIPO DE PROCESSO -->
+                        <v-flex xs2>
+                            <div class="info-label">Tipo de Processo</div>
+                        </v-flex>
+                        <v-flex xs10>
+                            <div class="info-content">
+                                {{ classe.tipoProc }}
+                            </div>
+                        </v-flex>
+                    </v-layout>
+
+                    <v-layout wrap ma-2>
+                    <!-- TRANSVERSALIDADE -->
+                        <v-flex xs2>
+                            <div class="info-label">Processo Transversal</div>
+                        </v-flex>
+                        <v-flex xs10>
+                            <div class="info-content">
+                                {{ (classe.procTrans=='S')?'Sim':'Não' }}
+                            </div>
+                        </v-flex>
+                    </v-layout>
+
+                    <Donos :entidades="classe.donos" v-if="classe.donos.length > 0"/>
+                    
+                    <Participantes :entidades="classe.participantes" v-if="classe.participantes.length > 0"/>
+
                     <v-card class="deep-purple lighten-5">
-                        <v-card-title>
-                        <v-flex xs12 sm6>
-                            <v-text-field
-                                label="Tipo de Processo"
-                                readonly
-                                :value="this.classe.tipoProc"
-                            ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6>
-                            <v-text-field
-                                label="Processo Transversal"
-                                readonly
-                                :value="(this.classe.procTrans=='S')?'Sim':'Não'"
-                            ></v-text-field>
-                        </v-flex>
-                    </v-card-title>
-
-                    <v-layout row wrap v-if="classe.donos.length > 0">
-                        <v-flex xs2>
-                            <v-subheader class="subheading font-weight-medium">Donos do processo:</v-subheader>
-                        </v-flex>
-                        <v-flex xs9 >
-                            <Donos :entidades="classe.donos"/>
-                        </v-flex>
-                    </v-layout>
-
-                    <v-layout row wrap v-if="classe.participantes.length > 0">
-                        <v-flex xs2>
-                            <v-subheader class="subheading font-weight-medium">Participantes no processo:</v-subheader>
-                        </v-flex>
-                        <v-flex xs9 >
-                            <Participantes :entidades="classe.participantes"/>
-                        </v-flex>
-                    </v-layout>
 
                     <v-layout row wrap v-if="classe.processosRelacionados.length > 0">
                         <v-flex xs2>
@@ -113,7 +108,7 @@
 
                 <v-expansion-panel-content v-if="((classe.nivel == 3)&&(classe.filhos.length == 0))||(classe.nivel == 4)">
                     <template v-slot:header>
-                        <v-toolbar color="light-blue accent-4 body-2 font-weight-bold" dark>
+                        <v-toolbar color="indigo accent-4 body-2 font-weight-bold" dark>
                             <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
                         </v-toolbar>
                     </template>
@@ -268,4 +263,22 @@ export default {
 
 <style>
 
+.info-label {
+    color: #1A237E;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #dee2f8;
+    font-weight: bold;
+}
+
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.is-collapsed li:nth-child(n+5) {
+    display: none;
+}
 </style>

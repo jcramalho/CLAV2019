@@ -1,33 +1,48 @@
 <template>
-        <v-data-table
-            :headers="headers"
-            :items="myParticipantes"
-            class="elevation-1"
-            hide-actions
-        >
-            <template v-slot:headers="props">
-                <tr>
-                    <th v-for="h in props.headers" :key="h.text" class="body-2 font-weight-bold">
-                        {{ h.text }}
-                    </th>
-                </tr>
-            </template>
+    <v-layout wrap ma-2>
+    <!-- PARTICIPANTES NO PROCESSO -->
+        <v-flex xs2>
+            <div class="info-label">Participantes no processo</div>
+        </v-flex>
+        <v-flex xs10>
+            <div class="info-content">
+                <v-data-table
+                    :headers="headers"
+                    :items="myParticipantes"
+                    class="elevation-1"
+                    hide-actions
+                >
+                    <template v-slot:headers="props">
+                        <tr>
+                            <th v-for="h in props.headers" :key="h.text" class="table-header body-2 font-weight-bold">
+                                {{ h.text }}
+                            </th>
+                        </tr>
+                    </template>
 
-            <template v-slot:items="props">
-                <tr>
-                <td>{{ props.item.label }}</td>
-                <td>
-                    <ul>
-                        <li v-for="p in props.item.participantes" :key="p.label">
-                            <a @click="go(p.idParticipante)"> {{ p.sigla }} </a>
-                                ({{ p.idTipo }}) - {{ p.designacao }} 
-                        </li>
-                    </ul>
-                </td>
-                </tr>
-            </template>
-            
-        </v-data-table>
+                    <template v-slot:items="props">
+                        <tr>
+                            <td style="color: #1A237E;">{{ props.item.label }}</td>
+                            <td>
+                                <ul>
+                                    <li v-for="p in props.item.participantes" :key="p.label">
+                                        <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idParticipante">
+                                            {{ p.sigla }} 
+                                            ({{ p.idTipo }}) - {{ p.designacao }} 
+                                        </a>
+                                        <a v-else :href="'/tipologias/' + p.idParticipante">
+                                            {{ p.sigla }} 
+                                            ({{ p.idTipo }}) - {{ p.designacao }} 
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </template>
+                </v-data-table>
+            </div>
+        </v-flex>
+    </v-layout>
 </template>
 
 <script>
@@ -74,3 +89,27 @@ export default {
     }
 }
 </script>
+
+<style>
+.info-label {
+    color: #1A237E;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #dee2f8;
+    font-weight: bold;
+}
+
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.table-header {
+    color: #1A237E;
+    font-weight: 400;
+    background-color: #dee2f8;
+    font-weight: bold;
+}
+</style>

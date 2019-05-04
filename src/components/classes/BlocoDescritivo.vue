@@ -9,7 +9,7 @@
         <v-layout wrap>
             <!-- DESCRIÇÂO -->
             <v-flex xs2>
-                <v-subheader>Descrição</v-subheader>
+                <v-subheader >Descrição</v-subheader>
             </v-flex>
             <v-flex xs9>
                 <v-text-field
@@ -49,3 +49,4 @@ export default {
     }
 }
 </script>
+
