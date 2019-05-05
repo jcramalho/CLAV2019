@@ -90,8 +90,11 @@
                             <v-card-text>
                                 <p>{{ item.texto }}</p>
                                 <div>
-                                    <v-btn color="deep-purple darken-3" dark v-for="o in item.ops" @click="go(o.url);" :key="o.url">
-                                        {{ o.label }}
+                                    <v-btn color="deep-purple darken-3" dark @click="go(item.cons.url);" :key="item.cons.url">
+                                        {{ item.cons.label }}
+                                    </v-btn>
+                                    <v-btn color="deep-purple darken-3" dark @click="go(item.criar.url);" :key="item.criar.url" v-if="$store.state.user.name!='' && item.criar">
+                                        {{ item.criar.label }}
                                     </v-btn>
                                 </div>
                             </v-card-text>
@@ -142,92 +145,78 @@ export default {
             {
                 entidade: "Lista Consolidada",
                 texto: 'Estrutura de classes da “Lista Consolidada para a classificação e avaliação da informação pública” que atualmente se encontra disponível. Inclui os níveis referentes aos processos de negócio da Administração Pública.',
-                ops: [
-                    {
+                cons: {
                         label: "Consultar",
                         url: "/classes"
                     },
-                    {
+                criar: {
                         label: "Criar classe",
                         url: "/classes/criar"
                     }
-                ]
             },
             {
                 entidade: "Tabelas de Seleção",
                 texto: 'Lista das Tabelas de seleção conformes à Lista Consolidada que se encontram aprovadas.',
-                ops: [
-                    {
+                cons: {
                         label: "Consultar",
                         url: "/ts"
                     },
-                    {
+                criar: {
                         label: "Criar",
                         url: "/ts/criar"
                     }
-                ]
             },
             {
                 entidade: "Entidades",
                 texto: 'Lista das entidades que estão envolvidas nos processos de negócio da Administração Pública e que foram identificadas até ao momento. Em atualização constante.',
-                ops: [
-                    {
+                cons: {
                         label: "Consultar",
                         url: "/entidades"
                     },
-                    {
+                criar: {
                         label: "Adicionar",
                         url: "/entidades/criar"
                     }
-                ]
             },
             {
                 entidade: "Tipologias de Entidades",
                 texto: 'Lista de tipologias de entidades que estão envolvidas nos processos de negócio da Administração Pública e que foram identificadas até ao momento. Em atualização constante.',
-                ops: [
-                    {
+                cons: {
                         label: "Consultar",
                         url: "/tipologias"
                     },
-                    {
+                criar: {
                         label: "Adicionar",
                         url: "/tipologias/criar"
                     }
-                ]
             },
             {
                 entidade: "Legislação",
                 texto: 'Lista da legislação que enquadra os processos de negócio da Administração Pública e que foi identificada até ao momento. Em atualização constante.',
-                ops: [
-                    {
+                cons: {
                         label: "Consultar",
                         url: "/legislacao"
                     },
-                    {
+                criar: {
                         label: "Adicionar",
                         url: "/legislacao/criar"
                     }
-                ]
             },
             {
                 entidade: "Termos de Indice",
                 texto: 'Lista da legislação que enquadra os processos de negócio da Administração Pública e que foi identificada até ao momento. Em atualização constante.',
-                ops: [
-                    {
+                cons: {
                         label: "Consultar",
                         url: "/termosIndice"
                     }
-                ]
             },
             {
                 entidade: "Pedidos",
                 texto: 'Pedidos de alteração ou de criação de novas instâncias que deram entrada na plataforma.',
-                ops: [
-                    {
+                cons: {
                         label: "Consultar",
                         url: "/pedidos"
                     }
-                ]
             }
         ]
       }
