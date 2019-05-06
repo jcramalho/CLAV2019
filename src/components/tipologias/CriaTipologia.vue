@@ -145,6 +145,12 @@ export default {
 				this.snackbar = false;
 		},
         submeter: function() {
+            if( this.$store.state.user.email === ''){
+                this.text = "Precisa de fazer login para criar a Tipologia"
+                this.snackbar = true;
+                return false;
+            }
+
             for(var i = 0; i< this.entSel.length; i++){
                 this.tipologia.entidades[i] = this.entSel[i].id
             }

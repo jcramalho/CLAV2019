@@ -179,6 +179,12 @@ export default {
 				this.snackbar = false;
 		},
         submeter: function () {
+            if( this.$store.state.user.email === ''){
+                this.text = "Precisa de fazer login para criar a Entidade"
+                this.snackbar = true;
+                return false;
+            }
+            
             for(var i = 0; i< this.tipSel.length; i++){
                 this.entidade.tipologiasSel[i] = this.tipSel[i].id
             }
