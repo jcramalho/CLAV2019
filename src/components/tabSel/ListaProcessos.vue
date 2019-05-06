@@ -135,6 +135,7 @@ export default {
             }
         },
         calcRel: async function(processo){
+            this.$emit('contadorProcSel')
             try{
                 var profundidade = 1;
                 var stackProc = [];
@@ -181,9 +182,8 @@ export default {
                 this.listaResultados.sort(function (a, b) {
                         return a.codigo.localeCompare(b.codigo);
                 });
-                /*
-                this.fechoCalculado = true;
-                this.resultadosReady = true;*/
+                
+                this.$emit('contadorProcPreSel', this.listaResultados);
             }
             catch(erro){
                 console.log(erro);
