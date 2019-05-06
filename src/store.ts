@@ -7,9 +7,7 @@ export default new Vuex.Store({
   state: {
     criacaoTabSel: {},
     user: {
-      id: '',
       name: '',
-      entidade: '',
       token: ''
     },
   },
