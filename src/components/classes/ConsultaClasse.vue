@@ -8,7 +8,7 @@
         <v-flex xs12 sm10>    
           <!-- HEADER -->
           <v-card v-if="classeLoaded">
-            <v-toolbar color="indigo darken-1" dark>
+            <v-toolbar color="indigo darken-2" dark>
               <v-toolbar-title>{{ this.classe.codigo }}: {{ this.classe.titulo }}</v-toolbar-title>
             </v-toolbar>
 
@@ -20,7 +20,7 @@
                 <!-- DESCRITIVO DA CLASSE -->
                 <v-expansion-panel-content>
                     <template v-slot:header>
-                        <v-toolbar color="indigo accent-4 body-2 font-weight-bold" dark>
+                        <v-toolbar color="indigo darken-1 body-2 font-weight-bold" dark dense>
                             <v-toolbar-title>Descritivo da Classe</v-toolbar-title>
                         </v-toolbar>
                     </template>
@@ -50,7 +50,7 @@
                 <!-- CONTEXTO DA CLASSE -->
                 <v-expansion-panel-content v-if="classe.nivel == 3">
                     <template v-slot:header>
-                        <v-toolbar color="indigo accent-4 body-2 font-weight-bold" dark>
+                        <v-toolbar color="indigo darken-1 body-2 font-weight-bold" dark dense>
                             <v-toolbar-title>Contexto de Avaliação</v-toolbar-title>
                         </v-toolbar>
                     </template>
@@ -91,99 +91,128 @@
 
                 <v-expansion-panel-content v-if="((classe.nivel == 3)&&(classe.filhos.length == 0))||(classe.nivel == 4)">
                     <template v-slot:header>
-                        <v-toolbar color="indigo accent-4 body-2 font-weight-bold" dark>
+                        <v-toolbar color="indigo darken-1 body-2 font-weight-bold" dark dense>
                             <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
                         </v-toolbar>
                     </template>
-                    <v-card class="light-blue lighten-5">
-                        <v-toolbar color="light-blue accent-2 font-weight-medium" dark>
-                            <v-toolbar-title>Prazo de Conservação Administrativa (PCA)</v-toolbar-title>
-                        </v-toolbar>
-                        <v-card-title>
-                            <v-flex xs12 sm6>
-                                <v-text-field
-                                    label="PCA"
-                                    readonly
-                                    :value="this.classe.pca.valores+' anos'"
-                                ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 v-if="this.classe.pca.notas">
-                            <v-text-field
-                                label="Notas"
-                                readonly
-                                :value="this.classe.pca.notas"
-                            ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6>
-                            <v-text-field
-                                label="Forma de Contagem"
-                                readonly
-                                :value="this.classe.pca.formaContagem"
-                            ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 v-if="this.classe.pca.subFormaContagem">
-                            <v-text-field
-                                label="Subforma de Contagem"
-                                readonly
-                                :value="this.classe.pca.subFormaContagem"
-                            ></v-text-field>
-                        </v-flex>
-                    </v-card-title>
-                    </v-card>
-                    <v-container xs11 justify-center>
-                        <v-card>
-                            <v-toolbar color="light-blue accent-1 font-weight-medium">
-                                <v-toolbar-title>Justificação</v-toolbar-title>
-                            </v-toolbar>
-                            
-                            <v-container xs11 justify-center v-for="c in this.classe.pca.justificacao" :key="c.criterio">
-                                <v-card>
-                                    <v-toolbar color="light-blue lighten-5">
-                                        <v-toolbar-title>{{ c.tipoLabel }}</v-toolbar-title>
-                                    </v-toolbar>
-                                    <v-card-text>
-                                        <span>{{ c.conteudo }}</span>
-                                    </v-card-text>
-                                </v-card>
-                            </v-container>
-                        </v-card>
-                    </v-container>
-
-                    <v-card class="light-blue lighten-5">
-                        <v-toolbar color="light-blue accent-2 font-weight-medium" dark>
-                            <v-toolbar-title>Destino Final (DF)</v-toolbar-title>
-                        </v-toolbar>
-                        <v-card-title>
-                            <v-flex xs12 sm6>
-                                <v-text-field
-                                    label="Destino Final"
-                                    readonly
-                                    :value="this.classe.df.valor"
-                                ></v-text-field>
+                    
+                        <v-layout ma-2 wrap>
+                            <v-flex xs12>
+                                <v-toolbar color="indigo font-weight-medium" dark height="30">
+                                    <v-toolbar-title>Prazo de Conservação Administrativa</v-toolbar-title>
+                                </v-toolbar>
                             </v-flex>
-                        </v-card-title>
-                    </v-card>
-                    <v-container xs11 justify-center>
-                        <v-card>
-                            <v-toolbar color="light-blue accent-1 font-weight-medium">
-                                <v-toolbar-title>Justificação</v-toolbar-title>
-                            </v-toolbar>
-                            
-                            <v-container xs11 justify-center v-for="c in this.classe.df.justificacao" :key="c.criterio">
-                                <v-card>
-                                    <v-toolbar color="light-blue lighten-5">
-                                        <v-toolbar-title>{{ c.tipoLabel }}</v-toolbar-title>
-                                    </v-toolbar>
-                                    <v-card-text>
-                                        <span>{{ c.conteudo }}</span>
-                                    </v-card-text>
-                                </v-card>
-                            </v-container>
-                        </v-card>
-                    </v-container>
+                        </v-layout>
+
+                        <v-layout wrap ma-2>
+                        <!-- PRAZO -->
+                            <v-flex xs2>
+                                <div class="info-label">Prazo</div>
+                            </v-flex>
+                            <v-flex xs10>
+                                <div class="info-content">
+                                    {{ classe.pca.valores+' anos' }}
+                                </div>
+                            </v-flex>
+                        </v-layout>
+
+                        <v-layout wrap ma-2 v-if="classe.pca.notas != ''">
+                        <!-- NOTAS -->
+                            <v-flex xs2>
+                                <div class="info-label">Notas</div>
+                            </v-flex>
+                            <v-flex xs10>
+                                <div class="info-content">
+                                    {{ classe.pca.notas }}
+                                </div>
+                            </v-flex>
+                        </v-layout>
+
+                        <v-layout wrap ma-2 v-if="classe.pca.formaContagem">
+                        <!-- FORMA DE CONTAGEM -->
+                            <v-flex xs2>
+                                <div class="info-label">Forma de Contagem</div>
+                            </v-flex>
+                            <v-flex xs10>
+                                <div class="info-content">
+                                    {{ classe.pca.formaContagem }}
+                                </div>
+                            </v-flex>
+                        </v-layout>
+
+                        <v-layout wrap ma-2 v-if="classe.pca.subFormaContagem">
+                        <!-- SUBFORMA DE CONTAGEM -->
+                            <v-flex xs2>
+                                <div class="info-label">Subforma de Contagem</div>
+                            </v-flex>
+                            <v-flex xs10>
+                                <div class="info-content">
+                                    {{ classe.pca.subFormaContagem }}
+                                </div>
+                            </v-flex>
+                        </v-layout>
+
+                        <v-layout wrap ma-2 v-if="classe.pca.justificacao">
+                        <!-- JUSTIFICAÇÂO -->
+                            <v-flex xs2>
+                                <div class="info-label">Justificação</div>
+                            </v-flex>
+                            <v-flex xs10>
+                                <div class="info-content">
+                                    <v-layout wrap ma-1 v-for="c in classe.pca.justificacao" :key="c.tipoLabel">
+                                        <v-flex xs2>
+                                            <div class="info-label">{{ c.tipoLabel }}</div>
+                                        </v-flex>
+                                        <v-flex xs10>
+                                            <div class="info-content">{{ c.conteudo }}</div>
+                                        </v-flex>
+                                    </v-layout>
+                                </div>
+                            </v-flex>
+                        </v-layout>
+
+                        <!-- DESTINO FINAL ................................................... -->
+
+                        <v-layout ma-2 wrap>
+                            <v-flex xs12>
+                                <v-toolbar color="indigo font-weight-medium" dark height="30">
+                                    <v-toolbar-title>Destino Final</v-toolbar-title>
+                                </v-toolbar>
+                            </v-flex>
+                        </v-layout>
+
+                        <v-layout wrap ma-2>
+                        <!-- VALOR -->
+                            <v-flex xs2>
+                                <div class="info-label">Destino Final</div>
+                            </v-flex>
+                            <v-flex xs10>
+                                <div class="info-content">
+                                    {{ classe.df.valor }}
+                                </div>
+                            </v-flex>
+                        </v-layout>
+
+                        <v-layout wrap ma-2 v-if="classe.df.justificacao">
+                        <!-- JUSTIFICAÇÂO -->
+                            <v-flex xs2>
+                                <div class="info-label">Justificação</div>
+                            </v-flex>
+                            <v-flex xs10>
+                                <div class="info-content">
+                                    <v-layout wrap ma-1 v-for="c in classe.df.justificacao" :key="c.tipoLabel">
+                                        <v-flex xs2>
+                                            <div class="info-label">{{ c.tipoLabel }}</div>
+                                        </v-flex>
+                                        <v-flex xs10>
+                                            <div class="info-content">{{ c.conteudo }}</div>
+                                        </v-flex>
+                                    </v-layout>
+                                </div>
+                            </v-flex>
+                        </v-layout>
                     
                 </v-expansion-panel-content>
-
 
                 </v-expansion-panel>
             </v-card-text>
