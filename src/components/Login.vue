@@ -63,15 +63,14 @@
 						username: this.$data.form.email,
 						password: this.$data.form.password
 					}).then(res => {
-						if(res.data._id!=undefined){
+						if(res.data.token!=undefined && res.data.name!=undefined){
 							this.text = 'Login efetuado com sucesso!';
 							this.color = 'success';
 							this.snackbar = true;
 							this.done = true;
-							this.$store.state.user.id = res.data._id;
 							this.$store.state.user.name = res.data.name;
-							this.$store.state.user.email = res.data.email;
 							this.$store.state.user.entidade = res.data.entidade;
+							this.$store.state.user.token = res.data.token;
 						}else{
 							this.text = 'Ocorreu um erro ao realizar o login: Por favor verifique as suas credenciais!';
 							this.color = 'error';
@@ -94,6 +93,9 @@
 			fecharSnackbar(){
 				this.snackbar = false;
 				if(this.done==true) this.$router.push('/');
+			},
+			lerJWT(){
+				
 			}
 		}
 	};

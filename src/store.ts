@@ -10,8 +10,8 @@ export default new Vuex.Store({
       id: '',
       name: '',
       entidade: '',
-      email: ''
-    }
+      token: ''
+    },
   },
   mutations: {},
   actions: {}

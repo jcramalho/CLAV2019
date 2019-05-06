@@ -52,9 +52,9 @@ export default {
 			this.text = 'Logout efetuado com sucesso!';
 			this.color = 'success';
 			this.snackbar = true;
-			this.$store.state.user.id = '';
 			this.$store.state.user.name = '';
-			this.$store.state.user.entidade = '';
+      this.$store.state.user.entidade = '';
+      this.$store.state.user.token = '';
 		},
 		fecharSnackbar(){
 			this.snackbar = false;
