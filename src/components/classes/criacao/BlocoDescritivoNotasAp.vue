@@ -1,31 +1,31 @@
 <template>
-    <v-layout wrap row>
-        <!-- Exemplos de notas de Aplicação -->
+    <v-layout wrap row ma-2>
+        <!-- Notas de Aplicação -->
         <v-flex xs2>
-            <v-subheader>Exemplo(s) de Nota(s) de Aplicação</v-subheader>
-            <v-tooltip top  color="info">
+            <div class="info-label">Notas de Aplicação</div>
+            <v-tooltip top color="info">
                 <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" color="green darken-2" dark round @click="insereNovaNota(c.exemplosNotasAp, 'exna')">
-                        Exemplo N. A.
+                    <v-btn v-on="on" color="green darken-2" dark round @click="insereNovaNota(c.notasAp, 'na')">
+                        Nota aplicação
                         <v-icon dark right>add_circle_outline</v-icon>
                     </v-btn>
                 </template>
-                <span>Exemplo de nota de aplicação</span>
+                <span>Nota de aplicação</span>
             </v-tooltip>
         </v-flex>
         <v-flex>
-            <v-layout fluid row v-for="(ex, index) in c.exemplosNotasAp" :key="index">
+            <v-layout fluid row v-for="(nota, index) in c.notasAp" :key="index">
                 <v-flex xs9>
                     <v-textarea
-                        v-model="ex.exemplo"
+                        v-model="nota.nota"
                         auto-grow
                         solo
-                        label="Exemplo de Nota de Aplicação"
+                        label="Nota de Aplicação:"
                         rows="1"
                     ></v-textarea>
                 </v-flex>
                 <v-flex>
-                    <v-btn color="red darken-2" dark round @click="c.exemplosNotasAp.splice(index,1)">
+                    <v-btn color="red darken-2" dark round @click="c.notasAp.splice(index,1)">
                         Remover
                         <v-icon dark right>clear</v-icon>
                     </v-btn>
@@ -49,3 +49,25 @@ export default {
     }
 }
 </script>
+
+<style>
+
+.info-label {
+    color: #00695C;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #E0F2F1;
+    font-weight: bold;
+}
+
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.is-collapsed li:nth-child(n+5) {
+    display: none;
+}
+</style>

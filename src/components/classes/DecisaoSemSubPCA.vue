@@ -64,14 +64,14 @@
                     <v-flex xs9>
                         <v-layout row justify-start>
                             <v-flex>
-                                <v-btn color="indigo darken-3" dark 
+                                <v-btn color="green darken-2" dark round
                                     @click="adicionarCriterioGestionario(c.pca.justificacao, 'CriterioJustificacaoGestionario', 'Critério Gestionário', textoCriterioGestionario, [], [])"
                                     v-if="!semaforos.critGestionarioAdicionado"
                                 > Adicionar Critério Gestionário
                                 </v-btn>
                             </v-flex>
                             <v-flex>
-                                <v-btn color="indigo darken-3" dark 
+                                <v-btn color="green darken-2" dark round
                                     @click="adicionarCriterioLegalPCA(c.pca.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], c.legislacao)"
                                     v-if="!semaforos.critLegalAdicionadoPCA"
                                 > Adicionar Critério Legal
@@ -118,8 +118,8 @@
 </template>
 
 <script>
-import ProcessosRelacionadosOps from '@/components/classes/ProcessosRelacionadosOps.vue'
-import LegislacaoOps from '@/components/classes/LegislacaoOps.vue'
+import ProcessosRelacionadosOps from '@/components/classes/criacao/ProcessosRelacionadosOps.vue'
+import LegislacaoOps from '@/components/classes/criacao/LegislacaoOps.vue'
 
 export default {
     props: ["c","semaforos","pcaFormasContagem","pcaSubFormasContagem"],

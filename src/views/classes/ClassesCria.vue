@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import CriaClasse from "@/components/classes/CriaClasse.vue"; // @ is an alias to /src
+import CriaClasse from "@/components/classes/criacao/CriaClasse.vue"; // @ is an alias to /src
 
 export default {
   components: {

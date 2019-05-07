@@ -6,10 +6,10 @@
                 <v-toolbar-title>Descritivo da Classe</v-toolbar-title>
             </v-toolbar>
         </template>
-        <v-layout wrap>
+        <v-layout wrap ma-2>
             <!-- DESCRIÇÂO -->
             <v-flex xs2>
-                <v-subheader >Descrição</v-subheader>
+                <div class="info-label">Descrição</div>
             </v-flex>
             <v-flex xs9>
                 <v-text-field
@@ -35,10 +35,10 @@
 <script>
 const nanoid = require('nanoid')
 
-import BlocoDescritivoNotasAp from '@/components/classes/BlocoDescritivoNotasAp.vue'
-import BlocoDescritivoExemplosNotasAp from '@/components/classes/BlocoDescritivoExemplosNotasAp.vue'
-import BlocoDescritivoNotasEx from '@/components/classes/BlocoDescritivoNotasEx.vue'
-import TermosIndiceOps from '@/components/classes/TermosIndiceOps.vue'
+import BlocoDescritivoNotasAp from '@/components/classes/criacao/BlocoDescritivoNotasAp.vue'
+import BlocoDescritivoExemplosNotasAp from '@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue'
+import BlocoDescritivoNotasEx from '@/components/classes/criacao/BlocoDescritivoNotasEx.vue'
+import TermosIndiceOps from '@/components/classes/criacao/TermosIndiceOps.vue'
 
 export default {
     props: ["c"],
@@ -50,3 +50,24 @@ export default {
 }
 </script>
 
+<style>
+
+.info-label {
+    color: #00695C;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #E0F2F1;
+    font-weight: bold;
+}
+
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.is-collapsed li:nth-child(n+5) {
+    display: none;
+}
+</style>

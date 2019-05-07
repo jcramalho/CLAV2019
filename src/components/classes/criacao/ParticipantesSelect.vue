@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap>
         <v-flex xs2>
-            <v-subheader>Selecione o(s) participante(s) no processo:</v-subheader>
+            <div class="info-label">Selecione o(s) participante(s) no processo</div>
         </v-flex>
         <v-flex xs9 v-if="entidadesReady">
             <v-card>
@@ -98,3 +98,23 @@ export default {
     }
 }
 </script>
+<style>
+.info-label {
+    color: #00695C;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #E0F2F1;
+    font-weight: bold;
+}
+
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.is-collapsed li:nth-child(n+5) {
+    display: none;
+}
+</style>

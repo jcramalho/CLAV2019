@@ -118,8 +118,8 @@
 </template>
 
 <script>
-import ProcessosRelacionadosOps from '@/components/classes/ProcessosRelacionadosOps.vue'
-import LegislacaoOps from '@/components/classes/LegislacaoOps.vue'
+import ProcessosRelacionadosOps from '@/components/classes/criacao/ProcessosRelacionadosOps.vue'
+import LegislacaoOps from '@/components/classes/criacao/LegislacaoOps.vue'
 
 export default {
     props: ["c","semaforos","pcaFormasContagem","pcaSubFormasContagem"],

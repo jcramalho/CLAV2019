@@ -7,9 +7,9 @@
             </v-toolbar>
         </template>
         <!-- TIPO DE PROCESSO -->
-        <v-layout row wrap>
+        <v-layout row wrap ma-2>
             <v-flex xs2>
-               <v-subheader>Tipo de Processo:</v-subheader>
+               <div class="info-label">Tipo de Processo:</div>
             </v-flex>
             <v-flex xs9>
                 <v-select
@@ -24,9 +24,9 @@
         </v-layout>
 
         <!-- PROCESSO TRANVERSAL -->
-        <v-layout row wrap>
+        <v-layout row wrap ma-2>
             <v-flex xs2>
-                <v-subheader>Processo Transversal:</v-subheader>
+                <div class="info-label">Processo Transversal:</div>
             </v-flex>
             <v-flex xs9>
                 <v-select
@@ -113,14 +113,14 @@
 <script>
 const nanoid = require('nanoid')
 
-import DonosOps from '@/components/classes/DonosOps.vue'
-import DonosSelect from '@/components/classes/DonosSelect.vue'
-import ParticipantesOps from '@/components/classes/ParticipantesOps.vue'
-import ParticipantesSelect from '@/components/classes/ParticipantesSelect.vue'
-import ProcessosRelacionadosOps from '@/components/classes/ProcessosRelacionadosOps.vue'
-import ProcessosRelacionadosSelect from '@/components/classes/ProcessosRelacionadosSelect.vue'
-import LegislacaoOps from '@/components/classes/LegislacaoOps.vue'
-import LegislacaoSelect from '@/components/classes/LegislacaoSelect.vue'
+import DonosOps from '@/components/classes/criacao/DonosOps.vue'
+import DonosSelect from '@/components/classes/criacao/DonosSelect.vue'
+import ParticipantesOps from '@/components/classes/criacao/ParticipantesOps.vue'
+import ParticipantesSelect from '@/components/classes/criacao/ParticipantesSelect.vue'
+import ProcessosRelacionadosOps from '@/components/classes/criacao/ProcessosRelacionadosOps.vue'
+import ProcessosRelacionadosSelect from '@/components/classes/criacao/ProcessosRelacionadosSelect.vue'
+import LegislacaoOps from '@/components/classes/criacao/LegislacaoOps.vue'
+import LegislacaoSelect from '@/components/classes/criacao/LegislacaoSelect.vue'
 
 export default {
     props: ["c","semaforos","donos","participantes","procRel","legs"],
@@ -335,3 +335,23 @@ export default {
     }
 }
 </script>
+<style>
+.info-label {
+    color: #00695C;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #E0F2F1;
+    font-weight: bold;
+}
+
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.is-collapsed li:nth-child(n+5) {
+    display: none;
+}
+</style>

@@ -12,7 +12,7 @@
                 <v-container fluid>
                     <v-layout wrap>
                         <v-flex xs2>
-                            <v-subheader>Nível:</v-subheader>
+                            <div class="info-label">Nível:</div>
                         </v-flex>
                         <v-flex xs6>
                             <v-select
@@ -29,7 +29,7 @@
                     <!-- CLASSE PAI -->
                     <v-layout wrap v-if="classe.nivel>1">
                         <v-flex xs2>
-                            <v-subheader>Classe Pai:</v-subheader>
+                            <div class="info-label">Classe Pai:</div>
                         </v-flex>
                         <v-flex xs10>
                             <v-select
@@ -46,7 +46,7 @@
                     <!-- CÓDIGO DA NOVA CLASSE -->
                     <v-layout wrap v-if="(classe.nivel==1)||classe.pai.codigo">
                         <v-flex xs2>
-                            <v-subheader>Código:</v-subheader>
+                            <div class="info-label">Código:</div>
                         </v-flex>
                         <v-flex xs10>
                             <v-text-field
@@ -60,7 +60,7 @@
                     <!-- TÍTULO -->
                     <v-layout wrap v-if="(classe.nivel==1)||classe.pai.codigo">
                         <v-flex xs2>
-                            <v-subheader>Título:</v-subheader>
+                            <div class="info-label">Título:</div>
                         </v-flex>
                         <v-flex xs10>
                             <v-text-field
@@ -142,8 +142,8 @@ const nanoid = require('nanoid')
 
   import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
   
-  import BlocoDescritivo from '@/components/classes/BlocoDescritivo.vue'
-  import BlocoContexto from '@/components/classes/BlocoContexto.vue'
+  import BlocoDescritivo from '@/components/classes/criacao/BlocoDescritivo.vue'
+  import BlocoContexto from '@/components/classes/criacao/BlocoContexto.vue'
   
   import Subdivisao3Nivel from '@/components/classes/Subdivisao3Nivel.vue'
   import DecisaoSemSubPCA from '@/components/classes/DecisaoSemSubPCA.vue'
@@ -727,5 +727,22 @@ const nanoid = require('nanoid')
 </script>
 
 <style>
+.info-label {
+    color: #00695C;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #E0F2F1;
+    font-weight: bold;
+}
 
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.is-collapsed li:nth-child(n+5) {
+    display: none;
+}
 </style>

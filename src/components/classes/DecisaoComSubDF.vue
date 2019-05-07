@@ -93,8 +93,8 @@
 </template>
 
 <script>
-import ProcessosRelacionadosOps from '@/components/classes/ProcessosRelacionadosOps.vue'
-import LegislacaoOps from '@/components/classes/LegislacaoOps.vue'
+import ProcessosRelacionadosOps from '@/components/classes/criacao/ProcessosRelacionadosOps.vue'
+import LegislacaoOps from '@/components/classes/criacao/LegislacaoOps.vue'
 import SelectValueFromList from '@/components/generic/SelectValueFromList.vue'
 
 export default {
