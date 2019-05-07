@@ -37,14 +37,12 @@
           { text: 'Tipo', value: 'tipo', sortable: false, class: 'title'},
           { text: 'Objeto', value: 'objeto', sortable: false, class: 'title'}
         ],
-      pedidos: [],
-      pedidosCarregados: false
+      pedidos: []
     }),
     mounted: async function (){
         try{
             var response = await axios.get(lhost + '/api/pedidos');
             this.pedidos = response.data;
-            this.pedidosCarregados = true;
         }
         catch(e){
             return(e);
