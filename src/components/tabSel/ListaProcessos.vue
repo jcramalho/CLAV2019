@@ -14,7 +14,7 @@
         </tr>
     </template>
     <template v-slot:items="props">
-        <tr :style="{backgroundColor: (listaResultados.findIndex(p => p.codigo == props.item.classe) != -1 ? 'orange' : 'transparent' ) }">
+        <tr :style="{backgroundColor: (listaResultados.findIndex(p => p == props.item.classe) != -1 && (!props.item.dono && !props.item.participante) ? 'orange' : 'transparent' ) }">
             <td>    
                     {{ props.item.classe }}
             </td>
@@ -26,7 +26,7 @@
                     v-model="props.item.dono"
                     primary
                     hide-details
-                    v-on:change="{(props.item.dono && !props.item.participante) ? calcRel(props.item.classe) : null} "
+                    v-on:change="{(props.item.dono && !props.item.participante) ? calcRel(props.item.classe) : ((props.item.dono && props.item.participante) ? null : (!props.item.dono && !props.item.participante) ? uncheck() : null)} "
                 ></v-checkbox>
             </td>
             <td>
@@ -34,7 +34,7 @@
                     v-model="props.item.participante"
                     primary
                     hide-details
-                    v-on:change="{(props.item.participante && !props.item.dono) ? calcRel(props.item.classe) : null} "
+                    v-on:change="{(props.item.participante && !props.item.dono) ? calcRel(props.item.classe) : ((props.item.participante && props.item.dono) ? null : (!props.item.participante && !props.item.dono) ? uncheck() : null)} "
                 ></v-checkbox>
             </td>
         </tr>
@@ -75,7 +75,9 @@ export default {
         ],
 
         processo: '',
-        listaResultados: []
+        listaResultados: [],
+        // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
+        listaProcResultado: [],
     }),
     computed: {
         estado() {
@@ -142,7 +144,7 @@ export default {
                 stackProc.push({listaProc: [], nivel: 1});
                 stackProc[0].listaProc.push(processo);
                 var proc;
-                //this.listaResultados = [];
+                var listaResultados = [];
                 var visitados = [];
                 visitados.push(processo);  // Processo inicial está no índice 0
 
@@ -157,32 +159,55 @@ export default {
                         // vai procurar os processos que estabelecem com este processo a relação de "complementares"
                         var comp = await this.loadComplementares(proc, profundidade);
                         if(comp.length > 0){
-                            this.listaResultados = await this.juntaNovos(this.listaResultados, comp);
+                            listaResultados = await this.juntaNovos(listaResultados, comp);
                             stackProc[profundidade].listaProc = stackProc[profundidade].listaProc.concat( await this.juntaNovosVisitas(visitados, this.filtra(comp), "comp"));
                         }
                         
 
                         var sint = await this.loadSintetizados(proc, profundidade);
                         if(sint.length > 0){
-                            this.listaResultados = await this.juntaNovos(this.listaResultados, sint);
+                            listaResultados = await this.juntaNovos(listaResultados, sint);
                             stackProc[profundidade].listaProc = stackProc[profundidade].listaProc.concat( await this.juntaNovosVisitas(visitados, this.filtra(sint), "sint"));
                         }
 
                         var sup = await this.loadSuplementares(proc, profundidade);
                         if(sup.length > 0){
-                            this.listaResultados = await this.juntaNovos(this.listaResultados, sup);
+                            listaResultados = await this.juntaNovos(listaResultados, sup);
                             stackProc[profundidade].listaProc = stackProc[profundidade].listaProc.concat( await this.juntaNovosVisitas(visitados, this.filtra(sup), "sup"));
                         }
                     }
                     profundidade++;
                 }
                 console.log(stackProc)
-                console.log(this.listaResultados)
+                console.log(listaResultados)
                 
-                this.listaResultados.sort(function (a, b) {
+                listaResultados.sort(function (a, b) {
                         return a.codigo.localeCompare(b.codigo);
                 });
                 
+                this.listaProcResultado[processo] = listaResultados;
+                console.log(this.listaProcResultado)
+
+                console.log(this.listaResultados)
+
+                // soma na lista de resultados total todos os processos presentes nesta lista exceto aqueles que já exitem
+                for( var i = 0; i < listaResultados.length; i++ ){
+                    if( !this.listaResultados.includes(listaResultados[i].codigo) && !Object.keys(this.listaProcResultado).includes(listaResultados[i].codigo)){
+                        this.listaResultados.push(listaResultados[i].codigo)
+                    }
+                }
+                var procSel = Object.keys(this.listaProcResultado);
+                for( var i = 0; i < procSel.length; i++){
+                    if( this.listaResultados.includes(procSel[i]) ){
+                        this.listaResultados.splice(this.listaResultados.indexOf(procSel[i]), 1);
+
+                        console.log(this.listaResultados)
+
+                    }
+                }
+                console.log()
+
+
                 this.$emit('contadorProcPreSel', this.listaResultados);
             }
             catch(erro){
@@ -221,6 +246,9 @@ export default {
                 return p.codigo
             })
         },
+        uncheck: function(){
+            this.$emit('uncheckProcSel')
+        }
     }
 }
 </script>

@@ -78,7 +78,8 @@
                             <ListaProcessos v-bind:lista="procComuns"
                                             tipo="Processos Comuns"
                                             @contadorProcSel="contadorProcSel($event);"
-                                            @contadorProcPreSel="contadorProcPreSel($event)"/>       
+                                            @contadorProcPreSel="contadorProcPreSel($event)"
+                                            @uncheckProcSel="uncheckProcSel($event)"/>       
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-flex>
@@ -211,6 +212,9 @@ const lhost = require('@/config/global').host
         },
         contadorProcPreSel: function (lista) {
             this.numProcPreSel = lista.length;
+        },
+        uncheckProcSel: function () {
+            this.numProcSel = this.numProcSel - 1;
         }
     },
     created: function() {
