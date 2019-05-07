@@ -17,6 +17,7 @@
                         readonly
                       ></v-text-field>
                       <v-text-field
+                        v-if="pedido.objeto"
                         :value="pedido.objeto.acao + ' de ' + pedido.objeto.tipo"
                         label="Tipo de pedido"
                         readonly

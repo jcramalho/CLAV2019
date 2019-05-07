@@ -97,7 +97,10 @@ export default {
             entidades: [],
             codigo: '',
             // user: email para a API saber qual o email associado a esse pedido
-            user: '',
+            user: {
+                token: '',
+                email: '',
+            },
         },
         designacao: '',
         sigla: '',
@@ -144,7 +147,13 @@ export default {
         fecharSnackbar(){
 				this.snackbar = false;
 		},
-        submeter: function() {
+        submeter: async function() {
+            if( this.$store.state.user.name === ''){
+                this.text = "Precisa de fazer login para criar a Tipologia"
+                this.snackbar = true;
+                return false;
+            }
+
             for(var i = 0; i< this.entSel.length; i++){
                 this.tipologia.entidades[i] = this.entSel[i].id
             }
@@ -152,7 +161,7 @@ export default {
             var dataObj = this.tipologia;
 
             dataObj.codigo = "tip_" + this.tipologia.sigla;
-            dataObj.user = this.$store.state.user.email;
+            dataObj.user.token = this.$store.state.user.token;
 
             console.log(dataObj)
 

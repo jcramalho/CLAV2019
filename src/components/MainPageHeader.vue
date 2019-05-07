@@ -30,35 +30,45 @@
         <v-btn color="indigo accent-4" v-if="this.$store.state.user.name!=''" @click="logoutUtilizador">
           Logout
         </v-btn>
+        <v-btn color="red" v-if="this.$store.state.user.name!=''" @click="testJWT">
+          JWT
+        </v-btn>
       </v-toolbar-title>
     </v-toolbar>
 </template>
 
 <script>
+
+const lhost = require('@/config/global').host
+import axios from 'axios'
+
 export default {
     data() {
-		return {
-			snackbar: false,
-			color: '',
-			timeout: 4000,
-			text: ''
-		};
-	},
+        return {
+          snackbar: false,
+          color: '',
+          timeout: 4000,
+          text: ''
+        };
+    },
     methods: {
-        goHome: function(){
+        goHome(){
             this.$router.push('/');
         },
-        logoutUtilizador: function(){
-			this.text = 'Logout efetuado com sucesso!';
-			this.color = 'success';
-			this.snackbar = true;
-			this.$store.state.user.id = '';
-			this.$store.state.user.name = '';
-			this.$store.state.user.entidade = '';
-		},
-		fecharSnackbar(){
-			this.snackbar = false;
-		}
+        logoutUtilizador(){
+            this.text = 'Logout efetuado com sucesso!';
+            this.color = 'success';
+            this.snackbar = true;
+            this.$store.state.user.name = '';
+            this.$store.state.user.token = '';
+        },
+        fecharSnackbar(){
+            this.snackbar = false;
+        },
+        async testJWT(){
+            var res = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
+            alert(JSON.stringify(res.data));
+			  },
     }
 }
 </script>

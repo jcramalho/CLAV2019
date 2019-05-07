@@ -186,7 +186,10 @@ export default {
             entidades: [],
             processos: [],
             // user: email para a API saber qual o email associado a esse pedido
-            user: '',
+            user: {
+                token: '',
+                email: '',
+            },
         },
         
 
@@ -320,7 +323,13 @@ export default {
         fecharSnackbar(){
 				this.snackbar = false;
 		},
-        submeter: function () {
+        submeter: async function () {
+            if( this.$store.state.user.name === ''){
+                this.text = "Precisa de fazer login para criar a Legislação"
+                this.snackbar = true;
+                return false;
+            }
+
             for(var i = 0; i< this.entSel.length; i++){
                 this.legislacao.entidades[i] = this.entSel[i].id
             }
@@ -402,8 +411,9 @@ export default {
                 this.legislacao.link = "http://"+this.legislacao.link;
             }
 
-            var dataObj = this.legislacao;  
-            dataObj.user = this.$store.state.user.email;
+            var dataObj = this.legislacao; 
+            
+            dataObj.user.token = this.$store.state.user.token;
 
             console.log(dataObj);
 

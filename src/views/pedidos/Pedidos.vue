@@ -11,7 +11,7 @@ export default {
     },
   methods: {
     consultaPedido: function(item){
-      this.$router.push('/pedidos/consultar/' + item.codigo);
+      this.$router.push('/pedidos/' + item.codigo);
     }
   }
 }

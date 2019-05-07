@@ -127,7 +127,10 @@ export default {
             tipologiasSel: [],
             codigo: '',
             // user: email para a API saber qual o email associado a esse pedido
-            user: '',
+            user: {
+                token: '',
+                email: '',
+            },
         },
 
         // Para o seletor de processos
@@ -178,7 +181,13 @@ export default {
         fecharSnackbar(){
 				this.snackbar = false;
 		},
-        submeter: function () {
+        submeter: async function () {
+            if( this.$store.state.user.name === ''){
+                this.text = "Precisa de fazer login para criar a Entidade"
+                this.snackbar = true;
+                return false;
+            }
+            
             for(var i = 0; i< this.tipSel.length; i++){
                 this.entidade.tipologiasSel[i] = this.tipSel[i].id
             }
@@ -196,7 +205,7 @@ export default {
             var dataObj = this.entidade;
 
             dataObj.codigo = "ent_" + this.entidade.sigla;
-            dataObj.user = this.$store.state.user.email;
+            dataObj.user.token = this.$store.state.user.token;
 
             console.log(dataObj)
 

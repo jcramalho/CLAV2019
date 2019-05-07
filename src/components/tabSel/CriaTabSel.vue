@@ -76,9 +76,25 @@
                                 </div>
                             </template>
                             <ListaProcessos v-bind:lista="procComuns"
-                                            tipo="Processos Comuns"/>       
+                                            tipo="Processos Comuns"
+                                            @contadorProcSel="contadorProcSel($event);"
+                                            @contadorProcPreSel="contadorProcPreSel($event)"/>       
                         </v-expansion-panel-content>
                     </v-expansion-panel>
+                </v-flex>
+            </v-layout>
+            <v-layout wrap>
+                <v-flex xs3>
+                    <v-text-field
+                    label="Nº de processos selecionados"
+                    :value="numProcSel"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs4 style="padding-left:60px;">
+                    <v-text-field
+                    label="Nº de processos pré selecionados"
+                    :value="numProcPreSel"
+                    ></v-text-field>
                 </v-flex>
             </v-layout>
             <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado()">Continuar</v-btn>
@@ -138,7 +154,10 @@ const lhost = require('@/config/global').host
         procComuns: [],
         procEsp: [],
         infoButton: false,
-        valorBarra: 0
+        valorBarra: 0,
+
+        numProcSel: 0,
+        numProcPreSel: 0,
       }
     },
     methods: {
@@ -186,6 +205,12 @@ const lhost = require('@/config/global').host
         },
         printEstado: async function () {
             console.log(this.$store.state.criacaoTabSel)   
+        },
+        contadorProcSel: function () {
+            this.numProcSel = this.numProcSel + 1;
+        },
+        contadorProcPreSel: function (lista) {
+            this.numProcPreSel = lista.length;
         }
     },
     created: function() {
