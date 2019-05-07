@@ -97,7 +97,10 @@ export default {
             entidades: [],
             codigo: '',
             // user: email para a API saber qual o email associado a esse pedido
-            user: '',
+            user: {
+                token: '',
+                email: '',
+            },
         },
         designacao: '',
         sigla: '',
@@ -144,8 +147,8 @@ export default {
         fecharSnackbar(){
 				this.snackbar = false;
 		},
-        submeter: function() {
-            if( this.$store.state.user.email === ''){
+        submeter: async function() {
+            if( this.$store.state.user.name === ''){
                 this.text = "Precisa de fazer login para criar a Tipologia"
                 this.snackbar = true;
                 return false;
@@ -158,7 +161,10 @@ export default {
             var dataObj = this.tipologia;
 
             dataObj.codigo = "tip_" + this.tipologia.sigla;
-            dataObj.user = this.$store.state.user.email;
+
+            var res = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
+            dataObj.user.email = res.data.email;
+            dataObj.user.token = this.$store.state.user.token;
 
             console.log(dataObj)
 

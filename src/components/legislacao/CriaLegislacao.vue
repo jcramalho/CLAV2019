@@ -186,7 +186,10 @@ export default {
             entidades: [],
             processos: [],
             // user: email para a API saber qual o email associado a esse pedido
-            user: '',
+            user: {
+                token: '',
+                email: '',
+            },
         },
         
 
@@ -320,8 +323,8 @@ export default {
         fecharSnackbar(){
 				this.snackbar = false;
 		},
-        submeter: function () {
-            if( this.$store.state.user.email === ''){
+        submeter: async function () {
+            if( this.$store.state.user.name === ''){
                 this.text = "Precisa de fazer login para criar a Legislação"
                 this.snackbar = true;
                 return false;
@@ -408,8 +411,11 @@ export default {
                 this.legislacao.link = "http://"+this.legislacao.link;
             }
 
-            var dataObj = this.legislacao;  
-            dataObj.user = this.$store.state.user.email;
+            var dataObj = this.legislacao; 
+
+            var res = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
+            dataObj.user.email = res.data.email;
+            dataObj.user.token = this.$store.state.user.token;
 
             console.log(dataObj);
 
