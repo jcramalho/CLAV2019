@@ -205,9 +205,6 @@ export default {
             var dataObj = this.entidade;
 
             dataObj.codigo = "ent_" + this.entidade.sigla;
-
-            var res = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
-            dataObj.user.email = res.data.email;
             dataObj.user.token = this.$store.state.user.token;
 
             console.log(dataObj)
