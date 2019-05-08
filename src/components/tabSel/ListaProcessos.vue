@@ -241,9 +241,6 @@ export default {
                     visitados.push(candidatos[i]);
                     res.push(candidatos[i]);
                 }
-                else if((index == 0) && (relacao != "comp")){
-                    alert("Circularidade!!!");
-                }
             }
             return res;
         },

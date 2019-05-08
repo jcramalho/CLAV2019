@@ -3,22 +3,9 @@
         <v-stepper v-model="stepNo" vertical>
             <v-progress-linear v-model="valorBarra"></v-progress-linear>
             <v-stepper-step :complete="stepNo > 1" step="1">
-            Designação
-            <small>Designação da Nova Tabela de Seleção</small>
+            Tipo de Tabela de Seleção
             </v-stepper-step>
             <v-stepper-content step="1">
-                <v-flex xs12 sm6 md3>
-                    <v-text-field
-                        placeholder="Nome da entidade associada ao utilizador"
-                        v-model="estado.nome"
-                    ></v-text-field>
-                </v-flex>
-            <v-btn color="primary" @click="stepNo = 2; barra(25)">Continuar</v-btn>
-            </v-stepper-content>
-
-            <v-stepper-step :complete="stepNo > 2" step="2">Tipo da Tabela de Seleção</v-stepper-step>
-
-            <v-stepper-content step="2">
                 <v-container fluid grid-list-xl>
                     <v-layout wrap align-center>
                         <v-flex xs3>
@@ -41,13 +28,12 @@
                         </v-flex>
                     </v-layout>
                 </v-container>
-            <v-btn color="primary" @click="stepNo = 2.5; barra(33)" v-if="estado.tipo == 'Pluriorganizacional'">Continuar</v-btn>
-            <v-btn color="primary" @click="stepNo = 3; barra(50)" v-else>Continuar</v-btn>
-            <v-btn flat @click="stepNo = 1; barra(0)" >Voltar</v-btn>
+            <v-btn color="primary" @click="stepNo = 1.5; barra(12.5)" v-if="estado.tipo == 'Pluriorganizacional'">Continuar</v-btn>
+            <v-btn color="primary" @click="stepNo = 2; barra(25); infoUser()" v-else>Continuar</v-btn>
             </v-stepper-content>
 
-            <v-stepper-step v-if="estado.tipo == 'Pluriorganizacional'" :complete="stepNo > 3" step="2.5">Indique as entidades abrangidas pela TS:</v-stepper-step>
-            <v-stepper-content step="2.5">
+            <v-stepper-step v-if="estado.tipo == 'Pluriorganizacional'" :complete="stepNo > 1.5" step="1.5">Indique as entidades abrangidas pela TS:</v-stepper-step>
+            <v-stepper-content step="1.5">
             <v-layout wrap>
                 <v-flex xs10>
                     <v-select
@@ -60,8 +46,23 @@
                     />
                 </v-flex>
             </v-layout>
+            <v-btn color="primary" @click="stepNo = 2; barra(25);">Continuar</v-btn>
+            <v-btn flat @click="stepNo = 1; barra(0)">Voltar</v-btn>
+            </v-stepper-content>
+
+            <v-stepper-step :complete="stepNo > 2" step="2">Designação
+            <small>Designação da Nova Tabela de Seleção</small>
+            </v-stepper-step>
+            <v-stepper-content step="2">
+                <v-flex xs12 sm6 md3 v-if="estado.tipo === 'Organizacional'">
+                    <v-text-field
+                        placeholder="Nome da entidade associada ao utilizador"
+                        v-model="estado.nome"
+                    ></v-text-field>
+                </v-flex>
             <v-btn color="primary" @click="stepNo = 3; barra(50)">Continuar</v-btn>
-            <v-btn flat @click="stepNo = 2; barra(25)">Voltar</v-btn>
+            <v-btn flat @click="stepNo = 1.5; barra(12.5)" v-if="estado.tipo == 'Pluriorganizacional'">Voltar</v-btn>
+            <v-btn flat @click="stepNo = 1; barra(0)" v-else>Voltar</v-btn>
             </v-stepper-content>
 
             <v-stepper-step :complete="stepNo > 3" step="3">Processos Comuns</v-stepper-step>
@@ -99,8 +100,7 @@
                 </v-flex>
             </v-layout>
             <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado()">Continuar</v-btn>
-            <v-btn flat @click="stepNo = 2.5; barra(33)" v-if="estado.tipo == 'Pluriorganizacional'">Voltar</v-btn>
-            <v-btn flat @click="stepNo = 2; barra(25)" v-else>Voltar</v-btn>
+            <v-btn flat @click="stepNo = 2; barra(25)">Voltar</v-btn>
             </v-stepper-content>
 
             <v-stepper-step :complete="stepNo > 4" step="4">Processos Específicos</v-stepper-step>
@@ -215,6 +215,12 @@ const lhost = require('@/config/global').host
         },
         uncheckProcSel: function () {
             this.numProcSel = this.numProcSel - 1;
+        },
+        infoUser: async function () {
+            var res = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
+            if( this.$store.state.criacaoTabSel.tipo === "Organizacional" ){
+                console.log(res.data)
+            }
         }
     },
     created: function() {
