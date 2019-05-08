@@ -14,7 +14,7 @@
         </tr>
     </template>
     <template v-slot:items="props">
-        <tr :style="{backgroundColor: (listaResultados.findIndex(p => p == props.item.classe) != -1 && (!props.item.dono && !props.item.participante) ? 'orange' : 'transparent' ) }">
+        <tr :style="{backgroundColor: (listaResComuns.findIndex(p => p == props.item.classe) != -1 && (!props.item.dono && !props.item.participante) ? 'orange' : 'transparent' ) }">
             <td>    
                     {{ props.item.classe }}
             </td>
@@ -75,7 +75,9 @@ export default {
         ],
 
         processo: '',
-        listaResultados: [],
+        // listas resultantes do calculo da travessia, separados por comuns e os restantes
+        listaResComuns: [],
+        listaResRestantes: [],
         // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
         listaProcResultado: [],
     }),
@@ -188,27 +190,31 @@ export default {
                 this.listaProcResultado[processo] = listaResultados;
                 console.log(this.listaProcResultado)
 
-                console.log(this.listaResultados)
-
-                // soma na lista de resultados total todos os processos presentes nesta lista exceto aqueles que já exitem
+                // separa o resultado da travessia em duas listas, uma com os processos comuns (que estão presentes na tabela) e os restantes   
                 for( var i = 0; i < listaResultados.length; i++ ){
-                    if( !this.listaResultados.includes(listaResultados[i].codigo) && !Object.keys(this.listaProcResultado).includes(listaResultados[i].codigo)){
-                        this.listaResultados.push(listaResultados[i].codigo)
+                    var procComum = false;
+                    for( var j = 0; j < this.lista.length; j++ ) {
+                        if(this.lista[j].classe === listaResultados[i].codigo && !this.listaResComuns.includes(listaResultados[i].codigo)){
+                            this.listaResComuns.push(listaResultados[i].codigo);
+                            procComum = true;
+                            break;
+                        }
+                    }
+                    if( !procComum && !this.listaResRestantes.includes(listaResultados[i].codigo) && !this.listaResComuns.includes(listaResultados[i].codigo)){
+                        this.listaResRestantes.push(listaResultados[i].codigo)
                     }
                 }
+                // retira aqueles processos que já estão selecionados 
                 var procSel = Object.keys(this.listaProcResultado);
                 for( var i = 0; i < procSel.length; i++){
-                    if( this.listaResultados.includes(procSel[i]) ){
-                        this.listaResultados.splice(this.listaResultados.indexOf(procSel[i]), 1);
-
-                        console.log(this.listaResultados)
-
+                    if( this.listaResComuns.includes(procSel[i]) ){
+                        this.listaResComuns.splice(this.listaResComuns.indexOf(procSel[i]), 1);
                     }
                 }
-                console.log()
+                console.log(this.listaResComuns)
+                console.log(this.listaResRestantes)
 
-
-                this.$emit('contadorProcPreSel', this.listaResultados);
+                this.$emit('contadorProcPreSel', this.listaResComuns);
             }
             catch(erro){
                 console.log(erro);
