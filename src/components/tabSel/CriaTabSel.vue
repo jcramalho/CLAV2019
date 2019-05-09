@@ -28,8 +28,20 @@
                         </v-flex>
                     </v-layout>
                 </v-container>
-            <v-btn color="primary" @click="stepNo = 1.5; barra(12.5)" v-if="estado.tipo == 'Pluriorganizacional'">Continuar</v-btn>
-            <v-btn color="primary" @click="stepNo = 2; barra(25); infoUser()" v-else>Continuar</v-btn>
+            <v-btn 
+                color="primary" 
+                @click="stepNo = 1.5; barra(12.5);" 
+                v-if="estado.tipo == 'Pluriorganizacional'" 
+                :disabled="!estado.tipo">
+                    Continuar
+            </v-btn>
+            <v-btn 
+                color="primary" 
+                @click="stepNo = 2; barra(25); infoUserEnt()" 
+                v-else 
+                :disabled="!estado.tipo">
+                    Continuar
+            </v-btn>
             </v-stepper-content>
 
             <v-stepper-step v-if="estado.tipo == 'Pluriorganizacional'" :complete="stepNo > 1.5" step="1.5">Indique as entidades abrangidas pela TS:</v-stepper-step>
@@ -55,6 +67,12 @@
             </v-stepper-step>
             <v-stepper-content step="2">
                 <v-flex xs12 sm6 md3 v-if="estado.tipo === 'Organizacional'">
+                    <v-text-field
+                        :placeholder="estado.nome"
+                        v-model="estado.nome"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md3 v-else>
                     <v-text-field
                         placeholder="Nome da entidade associada ao utilizador"
                         v-model="estado.nome"
@@ -144,6 +162,16 @@ const lhost = require('@/config/global').host
             return this.$store.state.criacaoTabSel
         }
     },
+    watch: {
+        'estado.tipo': function () {
+            if( this.estado.tipo === 'Organizacional' ){
+                this.infoUserEnt();
+            }
+            if( this.estado.tipo === 'Pluriorganizacional' ){
+                this.reverseUserEnt();
+            }
+        }
+        },
     components: {
         ListaProcessos
     },
@@ -216,11 +244,14 @@ const lhost = require('@/config/global').host
         uncheckProcSel: function () {
             this.numProcSel = this.numProcSel - 1;
         },
-        infoUser: async function () {
-            var res = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
-            if( this.$store.state.criacaoTabSel.tipo === "Organizacional" ){
-                console.log(res.data)
-            }
+        // função que procura o nome da entidade associada ao utilizador
+        infoUserEnt: async function () {
+            var resUser = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
+            var resEnt = await axios.get(lhost + "/api/entidades/" + resUser.data.entidade);
+            this.estado.nome = resEnt.data.designacao;
+        },
+        reverseUserEnt: async function () {
+            this.estado.nome = '';
         }
     },
     created: function() {
