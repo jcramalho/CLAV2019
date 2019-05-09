@@ -96,7 +96,8 @@
                             </template>
                             <ListaProcessos v-bind:lista="procComuns"
                                             tipo="Processos Comuns"
-                                            @contadorProcSel="contadorProcSel($event);"
+                                            @aCalcular="aCalcular($event)"
+                                            @contadorProcSel="contadorProcSel($event)"
                                             @contadorProcPreSel="contadorProcPreSel($event)"
                                             @uncheckProcSel="uncheckProcSel($event)"/>       
                         </v-expansion-panel-content>
@@ -112,9 +113,15 @@
                 </v-flex>
                 <v-flex xs4 style="padding-left:60px;">
                     <v-text-field
-                    label="Nº de processos pré selecionados"
-                    :value="numProcPreSel"
+                        v-if="!progressCalcular"
+                        label="Nº de processos pré selecionados"
+                        :value="numProcPreSel"
                     ></v-text-field>
+                    <v-progress-circular
+                        v-else
+                        indeterminate
+                        color="primary"
+                    ></v-progress-circular>
                 </v-flex>
             </v-layout>
             <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado()">Continuar</v-btn>
@@ -168,7 +175,7 @@ const lhost = require('@/config/global').host
                 this.infoUserEnt();
             }
             if( this.estado.tipo === 'Pluriorganizacional' ){
-                this.reverseUserEnt();
+                this.estado.nome = '';
             }
         }
         },
@@ -187,6 +194,8 @@ const lhost = require('@/config/global').host
 
         numProcSel: 0,
         numProcPreSel: 0,
+
+        progressCalcular: false,
       }
     },
     methods: {
@@ -250,8 +259,8 @@ const lhost = require('@/config/global').host
             var resEnt = await axios.get(lhost + "/api/entidades/" + resUser.data.entidade);
             this.estado.nome = resEnt.data.designacao;
         },
-        reverseUserEnt: async function () {
-            this.estado.nome = '';
+        aCalcular: async function (bool) {
+            this.progressCalcular = bool;
         }
     },
     created: function() {

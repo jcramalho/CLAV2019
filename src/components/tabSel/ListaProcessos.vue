@@ -140,6 +140,7 @@ export default {
         },
         calcRel: async function(processo){
             this.$emit('contadorProcSel')
+            this.$emit('aCalcular', true)
             try{
                 var profundidade = 1;
                 var stackProc = [];
@@ -215,6 +216,7 @@ export default {
                 console.log(this.listaResRestantes)
 
                 this.$emit('contadorProcPreSel', this.listaResComuns);
+                this.$emit('aCalcular', false)
             }
             catch(erro){
                 console.log(erro);
