@@ -1,76 +1,119 @@
 <template>
     <!-- DF -->
-    <v-container fluid>
-        <v-layout row wrap color="teal lighten-5" v-if="!c.temSubclasses4Nivel">
-            <v-flex xs2>
-                <span class="title">Destino Final</span>
+    <v-container fluid v-if="!c.temSubclasses4Nivel">
+        <v-layout ma-2 wrap>
+            <v-flex xs12>
+                <v-toolbar color="teal darken-4 font-weight-medium" dark height="30">
+                    <v-toolbar-title>Destino Final</v-toolbar-title>
+                </v-toolbar>
             </v-flex>
-            <v-flex xs9>
-                <v-layout row wrap>
-                    <v-flex xs2>
-                        <v-subheader>Destino</v-subheader>
-                    </v-flex>
-                    <v-flex xs10>
-                        <SelectValueFromList
-                            v-if="c.df.valor == 'NE'"
-                            :initial-value = "c.df.valor"
-                            :options = "destinoFinalTipos"
-                            @value-change="c.df.valor = $event"
-                        />
+        </v-layout>
+        <v-layout ma-2 wrap>
+            <v-flex xs2>
+                <div class="info-label">Destino</div>
+            </v-flex>
+            <v-flex xs10>
+                <SelectValueFromList
+                    v-if="c.df.valor == 'NE'"
+                    :initial-value = "c.df.valor"
+                    :options = "destinoFinalTipos"
+                    @value-change="c.df.valor = $event"
+                />
                         
-                        <span v-else>
-                            {{ destinoFinalLabels[c.df.valor] }}
-                        </span> 
-                    </v-flex>
+                <span v-else>
+                    {{ destinoFinalLabels[c.df.valor] }}
+                </span> 
+            </v-flex>
+        </v-layout>
+        <v-layout ma-2 wrap>
+            <v-flex xs2>
+                <div class="info-label">Notas</div>
+            </v-flex>
+            <v-flex xs10>
+                <v-textarea
+                    solo
+                    label="Notas ao destino final"
+                    v-model="c.df.notas"
+                    rows="2"
+                ></v-textarea>
+            </v-flex>
+        </v-layout>
 
+        <hr style="border-top: 2px dashed green;"/>
+
+        <!-- JUSTIFICAÇÂO DO DF -->
+        <v-layout row wrap>
+            <v-flex xs3>
+                <v-layout row wrap>
                     <v-flex xs12>
-                        <v-textarea
-                            solo
-                            label="Notas ao destino final"
-                            v-model="c.df.notas"
-                            rows="2"
-                        ></v-textarea>
+                        <div class="info-label">Justificação do DF</div>
+                    </v-flex>
+                    <v-flex xs12> 
+                        <v-btn color="green darken-2" dark round
+                            @click="adicionarCriterioLegalPCA(c.df.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], c.legislacao)"
+                            v-if="!semaforos.critLegalAdicionadoDF"
+                        > 
+                            Critério Legal
+                            <v-icon dark right>add_circle_outline</v-icon>
+                        </v-btn>
                     </v-flex>
                 </v-layout>
-
-                <hr style="border-top: 2px dashed green;"/>
-
             </v-flex>
 
-            <!-- JUSTIFICAÇÂO DO DF -->
-            <v-container fluid>
-                <v-layout row wrap>
-                    <v-flex xs2>
-                        <span class="subheading">Justificação do DF</span>
+            <v-flex xs9>
+                <v-layout row wrap v-for="(crit, cindex) in c.df.justificacao" :key="cindex">
+                    <v-flex xs3>
+                        <div class="info-label">
+                            {{ crit.label }}
+                            <v-icon 
+                                color="red darken-2" 
+                                dark small
+                                @click="removerCriterioTodo(c.df.justificacao, cindex, 'DF')"
+                            >remove_circle</v-icon>
+                        </div>
                     </v-flex>
-                    <v-flex xs9>
-                        <v-layout row justify-start>
-                            <v-flex>
-                                <v-btn color="indigo darken-3" dark 
-                                    @click="adicionarCriterioLegalPCA(c.df.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], c.legislacao)"
-                                    v-if="!semaforos.critLegalAdicionadoDF"
-                                > Adicionar Critério Legal
-                                </v-btn>
-                            </v-flex>
-                        </v-layout>
-                        <v-layout row wrap v-for="(crit, cindex) in c.df.justificacao" :key="cindex">
-                            <v-flex xs6>
-                                <v-subheader>{{ crit.label }}</v-subheader>
-                            </v-flex>
-                            <v-flex xs6>
-                                <v-btn small color="red darken-2" dark round @click="removerCriterioTodo(c.df.justificacao, cindex, 'DF')">
-                                    <v-icon dark>remove_circle</v-icon>
-                                </v-btn>
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-textarea
-                                    solo
-                                    label="Notas do critério"
-                                    v-model="crit.notas"
-                                    rows="2"
-                                ></v-textarea>
-                            </v-flex>
-                            <v-flex xs12 v-if="crit.procRel.length > 0">
+
+                    <v-flex xs9 v-if="crit.tipo == 'CriterioJustificacaoComplementaridadeInfo'">
+                        <div class="info-content">
+                            {{ crit.notas }}
+                            <a :href="'/classes/consultar/' + p.id" 
+                                v-for="(p, i) in crit.procRel" 
+                                :key="p.id">
+                                    {{ p.codigo }}
+                                    <span v-if="i==crit.procRel.length-1">.</span>
+                                    <span v-else>, </span>
+                            </a>
+                        </div>
+                    </v-flex>
+
+                    <v-flex xs9 v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
+                        <div class="info-content" v-if="crit.legislacao.length > 0">
+                            {{ crit.notas }}
+                            <span v-for="(l, i) in crit.legislacao" :key="l.id">
+                                <a :href="'/legislacao/' + l.id">
+                                    {{ l.tipo }} {{ l.numero }}
+                                </a>
+                                <v-icon 
+                                    color="red darken-2" 
+                                    dark small
+                                    @click="crit.legislacao.splice(i,1)"
+                                >remove_circle</v-icon>
+                                <span v-if="i==crit.legislacao.length-1">.</span>
+                                <span v-else>, </span>
+                            </span>
+                        </div>
+                        <div class="info-content" v-if="crit.legislacao.length == 0">
+                            Sem legislação associada. Pode associar legislação na área de contexto.
+                        </div>
+                    </v-flex>
+                            
+                    <v-flex xs9 v-else>
+                        <div class="info-content">
+                            {{ crit.notas }}
+                        </div>     
+                    </v-flex>
+                            
+                            <!--v-flex xs12 v-if="crit.procRel.length > 0">
                                 <ProcessosRelacionadosOps 
                                     :processos="crit.procRel" 
                                     @unselectProcRel="unselectProcesso($event, crit.procRel)"
@@ -81,15 +124,12 @@
                                     :legs="crit.legislacao"
                                     @unselectDiploma="unselectDiploma($event, crit.legislacao)"
                                 />
-                            </v-flex>
+                            </v-flex-->
                             <hr style="border-top: 2px dotted green; width: 100%;"/>
                         </v-layout>
                     </v-flex>
                 </v-layout>
             </v-container>
-                                
-        </v-layout>
-    </v-container>
 </template>
 
 <script>
@@ -147,12 +187,7 @@ export default {
 
         adicionarCriterioLegalPCA: function (justificacao, tipo, label, notas, procRel, legislacao) {
             this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
-            this.semaforos.critLegalAdicionadoPCA = true;
-        },
-
-        adicionarCriterioGestionario: function (justificacao, tipo, label, notas, procRel, legislacao) {
-            this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
-            this.semaforos.critGestionarioAdicionado = true;
+            this.semaforos.critLegalAdicionadoDF = true;
         },
 
         // Remove um critério completo duma vez
@@ -182,7 +217,7 @@ export default {
         unselectDiploma: function(diploma, listaLeg){
             var index = listaLeg.findIndex(e => e.id === diploma.id);
             listaLeg.splice(index,1);
-        },
+        }
     }
 }
 </script>

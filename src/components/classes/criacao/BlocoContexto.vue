@@ -143,10 +143,10 @@ export default {
             ],
                 
             textoCriterioUtilidadeAdministrativa: "Prazo decorrente da necessidade de consulta para apuramento da " +
-                                    "responsabilidade em sede de ",
-            textoCriterioComplementaridade: "É complementar de ",
-            textoCriterioDensidadeSinPor: "Informação sintetizada em ",
-            textoCriterioDensidadeSinDe: "Informação pertinente não recuperável noutro PN. Sintetiza a informação de "
+                                    "responsabilidade em sede de: ",
+            textoCriterioComplementaridade: "É complementar de: ",
+            textoCriterioDensidadeSinPor: "Informação sintetizada em: ",
+            textoCriterioDensidadeSinDe: "Informação pertinente não recuperável noutro PN. Sintetiza a informação de: "
         }
     },
 
@@ -194,8 +194,8 @@ export default {
             if(!this.c.temSubclasses4Nivel){
                 // Tratamento do invariante: se é Suplemento Para então cria-se um critério de Utilidade Administrativa
                 if(proc.relacao == "eSuplementoPara"){
-                    this.adicionarCriterio(this.c.pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", 
-                        "Critério de Utilidade Administrativa", this.textoCriterioUtilidadeAdministrativa, [proc], []);
+                    this.adicionarCriterioUA(this.c.pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", 
+                        "Critério de Utilidade Administrativa", this.textoCriterioUtilidadeAdministrativa, proc);
                 }
                 // Tratamento do invariante: se é Suplemento De então cria-se um critério Legal com toda a legislação selecionada associada
                 else if(proc.relacao == "eSuplementoDe"){
@@ -331,6 +331,35 @@ export default {
             }
             
         },
+
+        adicionarCriterioUA: function (justificacao, tipo, label, notas, proc) {
+            let myProc = JSON.parse(JSON.stringify(proc))
+            // Verifica-se se o critério já existe
+            var indice = justificacao.findIndex(crit => crit.tipo === tipo);
+            if(indice == -1){  // Não existe
+                justificacao.push({
+                    tipo: tipo,
+                    label, label,
+                    notas: notas, //this.procNotas(notas, [myProc]),
+                    procRel: [myProc]
+                });
+            }
+            else{  // Existe
+                justificacao[indice].procRel.push(myProc);
+                //justificacao[indice].notas = this.procNotas(notas, justificacao[indice].procRel)
+            }
+            
+        },
+
+        procNotas: function(notas, procRel){
+            var myNotas = notas
+            for(var i=0; i < procRel.length; i++){
+                myNotas += '[' + procRel[i].id + ']'
+                if(i == (procRel.length-1)) myNotas += ', '
+                else myNotas+= '.'
+            }
+            return myNotas
+        }
 
     }
 }

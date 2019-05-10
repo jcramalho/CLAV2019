@@ -56,7 +56,7 @@
 
         <!-- JUSTIFICAÇÂO DO PCA -->
         <v-layout row wrap>
-            <v-flex xs2>
+            <v-flex xs3>
                 <v-layout row wrap>
                     <v-flex xs12>
                         <div class="info-label">Justificação do PCA</div>
@@ -81,9 +81,9 @@
                     </v-flex>
                 </v-layout>  
             </v-flex>
-            <v-flex xs10>
+            <v-flex xs9>
                 <v-layout row wrap v-for="(crit, cindex) in c.pca.justificacao" :key="cindex">
-                    <v-flex xs2>
+                    <v-flex xs3>
                         <div class="info-label">
                             {{ crit.label }}
                             <v-btn small color="red darken-2" dark fab @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')">
@@ -91,27 +91,41 @@
                             </v-btn>
                         </div>
                     </v-flex>
-                    <v-flex xs10>
-                        <v-textarea
-                            solo
-                            label="Notas do critério"
-                            v-model="crit.notas"
-                            rows="2"
-                        ></v-textarea>
+
+                    <v-flex xs9 v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
+                        <div class="info-content">
+                            {{ crit.notas }}
+                            <a :href="'/classes/consultar/' + p.id" 
+                                v-for="(p, i) in crit.procRel" 
+                                :key="p.id">
+                                    {{ p.codigo }}
+                                    <span v-if="i==crit.procRel.length-1">.</span>
+                                    <span v-else>, </span>
+                            </a>
+                        </div>
                     </v-flex>
-                    <v-flex xs12 v-if="crit.procRel.length > 0">
-                        <ProcessosRelacionadosOps 
-                            :processos="crit.procRel" 
-                            @unselectProcRel="unselectProcesso($event, crit.procRel)"
-                        />
+
+                    <v-flex xs9 v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
+                        <div class="info-content" v-if="crit.legislacao.length > 0">
+                            {{ crit.notas }}
+                            <a :href="'/legislacao/' + l.id" v-for="(l, i) in crit.legislacao" :key="l.id">
+                                {{ l.tipo }} {{ l.numero }}
+                                <span v-if="i==crit.legislacao.length-1">.</span>
+                                <span v-else>, </span>
+                            </a>
+                        </div>
+                        <div class="info-content" v-if="crit.legislacao.length == 0">
+                            Sem legislação associada. Pode associar legislação na área de contexto.
+                        </div>
                     </v-flex>
-                    <v-flex xs12 v-if="crit.legislacao.length > 0">
-                        <LegislacaoOps
-                            :legs="crit.legislacao"
-                            @unselectDiploma="unselectDiploma($event, crit.legislacao)"
-                        />
+
+                    <v-flex xs9 v-else> <!-- Critério Gestionário -->
+                        <div class="info-content">
+                            {{ crit.notas }}
+                        </div>
                     </v-flex>
-                    <hr style="border-top: 2px dotted green; width: 100%;"/>
+
+                    <hr v-if="cindex < c.pca.justificacao.length" style="border-top: 2px dotted green; width: 100%;"/>
                 </v-layout>
             </v-flex>
         </v-layout>
