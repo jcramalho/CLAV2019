@@ -26,7 +26,7 @@
                     v-model="props.item.dono"
                     primary
                     hide-details
-                    v-on:change="{(props.item.dono && !props.item.participante) ? calcRel(props.item.classe) : ((props.item.dono && props.item.participante) ? null : (!props.item.dono && !props.item.participante) ? uncheck() : null)} "
+                    v-on:change="{(props.item.dono && !props.item.participante) ? calcRel(props.item.classe) : ((props.item.dono && props.item.participante) ? null : (!props.item.dono && !props.item.participante) ? uncheck(props.item.classe) : null)} "
                 ></v-checkbox>
             </td>
             <td>
@@ -34,7 +34,7 @@
                     v-model="props.item.participante"
                     primary
                     hide-details
-                    v-on:change="{(props.item.participante && !props.item.dono) ? calcRel(props.item.classe) : ((props.item.participante && props.item.dono) ? null : (!props.item.participante && !props.item.dono) ? uncheck() : null)} "
+                    v-on:change="{(props.item.participante && !props.item.dono) ? calcRel(props.item.classe) : ((props.item.participante && props.item.dono) ? null : (!props.item.participante && !props.item.dono) ? uncheck(props.item.classe) : null)} "
                 ></v-checkbox>
             </td>
         </tr>
@@ -79,7 +79,7 @@ export default {
         listaResComuns: [],
         listaResRestantes: [],
         // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
-        listaProcResultado: [],
+        listaProcResultado: {},
     }),
     computed: {
         estado() {
@@ -251,7 +251,34 @@ export default {
                 return p.codigo
             })
         },
-        uncheck: function(){
+        // função para reverter a seleção
+        uncheck: async function(processo){
+            // apaga o resultado da travessia desse processo
+            delete this.listaProcResultado[processo]
+
+            // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias. 
+            var procSel = Object.keys(this.listaProcResultado);
+            var newListaResComuns = [];
+            //var newListaResRestantes = [];
+            for( var i = 0; i < procSel.length; i++){
+                for( var j = 0; j < this.listaProcResultado[procSel[i]].length; j++){
+                    if( (this.listaResComuns.includes(this.listaProcResultado[procSel[i]][j].codigo) || this.listaProcResultado[procSel[i]][j].codigo === processo) && !newListaResComuns.includes(this.listaProcResultado[procSel[i]][j].codigo)) {
+                        newListaResComuns.push(this.listaProcResultado[procSel[i]][j].codigo)
+                    }
+                    // fazer o mesmo para a lista de processos restantes
+                    /*if( this.listaResRestantes.includes(this.listaProcResultado[procSel[i]][j].codigo) && !newListaResRestantes.includes(this.listaProcResultado[procSel[i]][j].codigo)) {
+                        newListaResComuns.push(this.listaProcResultado[procSel[i]][j].codigo)
+                    }*/
+                }
+            }
+            this.listaResComuns = newListaResComuns;
+            // this.listaResRestantes = newListaResRestantes;
+            console.log(newListaResComuns);
+            console.log(newListaResRestantes);
+            this.$emit('contadorProcPreSel', this.listaResComuns);
+
+            console.log(this.listaProcResultado)
+
             this.$emit('uncheckProcSel')
         }
     }
