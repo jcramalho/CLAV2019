@@ -94,7 +94,7 @@ import ProcessosRelacionadosOps from '@/components/classes/criacao/ProcessosRela
 import LegislacaoOps from '@/components/classes/criacao/LegislacaoOps.vue'
 import SelectValueFromList from '@/components/generic/SelectValueFromList.vue'
 import TermosIndiceOps from '@/components/classes/criacao/TermosIndiceOps.vue'
-import BlocoDecisoes4Nivel from '@/components/classes/BlocoDecisoes4Nivel.vue'
+import BlocoDecisoes4Nivel from '@/components/classes/criacao/BlocoDecisoes4Nivel.vue'
 
 export default {
     props: ["c","semaforos","pcaFormasContagem","pcaSubFormasContagem"],

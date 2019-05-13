@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import DecisaoComSubPCA from '@/components/classes/DecisaoComSubPCA.vue'
-import DecisaoComSubDF from '@/components/classes/DecisaoComSubDF.vue'
+import DecisaoComSubPCA from '@/components/classes/criacao/DecisaoComSubPCA.vue'
+import DecisaoComSubDF from '@/components/classes/criacao/DecisaoComSubDF.vue'
 
 export default {
     props: ["c","semaforos","pcaFormasContagem","pcaSubFormasContagem"],

@@ -145,10 +145,10 @@ const nanoid = require('nanoid')
   import BlocoDescritivo from '@/components/classes/criacao/BlocoDescritivo.vue'
   import BlocoContexto from '@/components/classes/criacao/BlocoContexto.vue'
   
-  import Subdivisao3Nivel from '@/components/classes/Subdivisao3Nivel.vue'
-  import DecisaoSemSubPCA from '@/components/classes/DecisaoSemSubPCA.vue'
-  import DecisaoSemSubDF from '@/components/classes/DecisaoSemSubDF.vue'
-  import Subclasses4Nivel from '@/components/classes/Subclasses4Nivel.vue'
+  import Subdivisao3Nivel from '@/components/classes/criacao/Subdivisao3Nivel.vue'
+  import DecisaoSemSubPCA from '@/components/classes/criacao/DecisaoSemSubPCA.vue'
+  import DecisaoSemSubDF from '@/components/classes/criacao/DecisaoSemSubDF.vue'
+  import Subclasses4Nivel from '@/components/classes/criacao/Subclasses4Nivel.vue'
   
   export default {
     components: { 

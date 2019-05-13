@@ -86,9 +86,11 @@
                     <v-flex xs3>
                         <div class="info-label">
                             {{ crit.label }}
-                            <v-btn small color="red darken-2" dark fab @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')">
-                                <v-icon dark>remove_circle</v-icon>
-                            </v-btn>
+                            <v-icon 
+                                color="red darken-2" 
+                                dark small
+                                @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
+                            >remove_circle</v-icon>
                         </div>
                     </v-flex>
 
