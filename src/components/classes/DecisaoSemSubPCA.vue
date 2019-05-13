@@ -98,7 +98,7 @@
                             <a :href="'/classes/consultar/' + p.id" 
                                 v-for="(p, i) in crit.procRel" 
                                 :key="p.id">
-                                    {{ p.codigo }}
+                                    {{ p.codigo }}: {{ p.titulo }}
                                     <span v-if="i==crit.procRel.length-1">.</span>
                                     <span v-else>, </span>
                             </a>

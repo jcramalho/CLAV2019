@@ -76,13 +76,18 @@
                     <v-flex xs9 v-if="crit.tipo == 'CriterioJustificacaoComplementaridadeInfo'">
                         <div class="info-content">
                             {{ crit.notas }}
-                            <a :href="'/classes/consultar/' + p.id" 
-                                v-for="(p, i) in crit.procRel" 
-                                :key="p.id">
-                                    {{ p.codigo }}
-                                    <span v-if="i==crit.procRel.length-1">.</span>
-                                    <span v-else>, </span>
-                            </a>
+                            <span v-for="(p, i) in crit.procRel" :key="p.id">
+                                <a :href="'/classes/consultar/' + p.id">
+                                    {{ p.codigo }}: {{ p.titulo }}
+                                </a>
+                                <v-icon 
+                                    color="red darken-2" 
+                                    dark small
+                                    @click="crit.procRel.splice(i,1)"
+                                >remove_circle</v-icon>
+                                <span v-if="i==crit.procRel.length-1">.</span>
+                                <span v-else>, </span>
+                            </span>
                         </div>
                     </v-flex>
 
