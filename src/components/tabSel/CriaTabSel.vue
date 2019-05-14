@@ -21,8 +21,8 @@
                                 <v-btn medium @click="infoButton=true" v-if="!infoButton" icon color="info">
                                 <v-icon>info</v-icon>
                                 </v-btn>
-                                <v-btn medium v-if="infoButton" color="info" @click="passos(); estado.passoN = stepNo; estado.percent = valorBarra">
-                                    <v-icon left>info</v-icon>Informações sobre os seguintes passos
+                                <v-btn medium v-if="infoButton" color="info" @click="passos()">
+                                    <v-icon left>info</v-icon>Info sobre os seguintes passos
                                 </v-btn>
                             </v-flex>
                         </v-flex>
@@ -30,22 +30,22 @@
                 </v-container>
             <v-btn 
                 color="primary" 
-                @click="stepNo = 1.5; barra(12.5);" 
+                @click="stepNo = 1.5; barra(12.5); loadEntidades();" 
                 v-if="estado.tipo == 'Pluriorganizacional'" 
                 :disabled="!estado.tipo">
                     Continuar
             </v-btn>
             <v-btn 
                 color="primary" 
-                @click="stepNo = 2; barra(25); infoUserEnt()" 
+                @click="stepNo = 1.5; barra(12.5); infoUserEnt(); loadTipologias();" 
                 v-else 
                 :disabled="!estado.tipo">
                     Continuar
             </v-btn>
             </v-stepper-content>
 
-            <v-stepper-step v-if="estado.tipo == 'Pluriorganizacional'" :complete="stepNo > 1.5" step="1.5">Indique as entidades abrangidas pela TS:</v-stepper-step>
-            <v-stepper-content step="1.5">
+            <v-stepper-step v-if="estado.tipo == 'Pluriorganizacional'" :complete="stepNo > 1.5" step="1.5">Entidades abrangidas pela TS</v-stepper-step>
+            <v-stepper-content step="1.5" v-if="estado.tipo == 'Pluriorganizacional'">
             <v-layout wrap>
                 <v-flex xs10>
                     <v-select
@@ -62,28 +62,58 @@
             <v-btn flat @click="stepNo = 1; barra(0)">Voltar</v-btn>
             </v-stepper-content>
 
+            <v-stepper-step v-if="estado.tipo == 'Organizacional'" :complete="stepNo > 1.5" step="1.5">Tipologias de entidade a que pertence</v-stepper-step>
+            <v-stepper-content step="1.5" v-if="estado.tipo == 'Organizacional'">
+            <v-expansion-panel>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                    <template v-slot:header>
+                        <div class="subheading font-weight-bold">
+                            Selecione as Tipologias de Entidade a que pertence
+                        </div>
+                    </template>
+                    <v-card  style="padding-top:30px;">
+                        <DesSelTip
+                            :tipologias="tipSel" 
+                            @unselectTipologia="unselectTipologia($event)"
+                        />
+
+                        <hr style="border-top: 1px dashed #dee2f8;"/>
+
+                        <SelTip
+                            :tipologiasReady="tipologiasReady"
+                            :tipologias="tipologias"
+                            @selectTipologia="selectTipologia($event)"
+                        />
+                    </v-card>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-btn color="primary" @click="stepNo = 2; barra(25);">Continuar</v-btn>
+            <v-btn flat @click="stepNo = 1; barra(0)">Voltar</v-btn>
+            </v-stepper-content>
+
             <v-stepper-step :complete="stepNo > 2" step="2">Designação
             <small>Designação da Nova Tabela de Seleção</small>
             </v-stepper-step>
             <v-stepper-content step="2">
                 <v-flex xs12 sm6 md3 v-if="estado.tipo === 'Organizacional'">
                     <v-text-field
-                        :placeholder="estado.nome"
-                        v-model="estado.nome"
+                        :placeholder="estado.designacao"
+                        v-model="estado.designacao"
                     ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md3 v-else>
                     <v-text-field
                         placeholder="Nome da entidade associada ao utilizador"
-                        v-model="estado.nome"
+                        v-model="estado.designacao"
                     ></v-text-field>
                 </v-flex>
             <v-btn color="primary" @click="stepNo = 3; barra(50)">Continuar</v-btn>
-            <v-btn flat @click="stepNo = 1.5; barra(12.5)" v-if="estado.tipo == 'Pluriorganizacional'">Voltar</v-btn>
-            <v-btn flat @click="stepNo = 1; barra(0)" v-else>Voltar</v-btn>
+            <v-btn flat @click="stepNo = 1.5; barra(0)">Voltar</v-btn>
             </v-stepper-content>
 
-            <v-stepper-step :complete="stepNo > 3" step="3">Processos Comuns</v-stepper-step>
+            <v-stepper-step :complete="stepNo > 3" step="3">Processos Comuns
+            <small>Processos passíveis de existirem em qualquer entidade</small>
+            </v-stepper-step>
             <v-stepper-content step="3">
             <v-layout wrap>
                 <v-flex xs10>
@@ -124,6 +154,7 @@
                     ></v-progress-circular>
                 </v-flex>
             </v-layout>
+            <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
             <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado()">Continuar</v-btn>
             <v-btn flat @click="stepNo = 2; barra(25)">Voltar</v-btn>
             </v-stepper-content>
@@ -159,9 +190,12 @@
 
 <script>
 import axios from 'axios';
+const lhost = require('@/config/global').host
+
 import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
 
-const lhost = require('@/config/global').host
+import DesSelTip from '@/components/generic/selecao/DesSelecionarTipologias.vue'
+import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
 
   export default {
     computed: {
@@ -175,12 +209,12 @@ const lhost = require('@/config/global').host
                 this.infoUserEnt();
             }
             if( this.estado.tipo === 'Pluriorganizacional' ){
-                this.estado.nome = '';
+                this.estado.designacao = '';
             }
         }
         },
     components: {
-        ListaProcessos
+        ListaProcessos, DesSelTip, SelTip
     },
     data () {
       return {
@@ -196,6 +230,13 @@ const lhost = require('@/config/global').host
         numProcPreSel: 0,
 
         progressCalcular: false,
+
+        idEntidade: '',
+
+        // Para o seletor de processos
+        tipologias: [],
+        tipSel: [],
+        tipologiasReady: false,
       }
     },
     methods: {
@@ -221,7 +262,6 @@ const lhost = require('@/config/global').host
         loadClasses: async function () {
             try{
                 var response = await axios.get(lhost + "/api/classes?tipo=comum");
-                console.log(response);
                 var id=0;
                 for(var i=0; i < response.data.length; i++){
                     this.procComuns.push({
@@ -231,7 +271,6 @@ const lhost = require('@/config/global').host
                         participante: false
                     });
                 }
-                console.log(this.procComuns)
                 return this.procComuns
             }
             catch(erro){
@@ -253,18 +292,62 @@ const lhost = require('@/config/global').host
         uncheckProcSel: function () {
             this.numProcSel = this.numProcSel - 1;
         },
-        // função que procura o nome da entidade associada ao utilizador
+        // função que procura o nome da entidade e o id da Entidade associada ao utilizador
         infoUserEnt: async function () {
             var resUser = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
             var resEnt = await axios.get(lhost + "/api/entidades/" + resUser.data.entidade);
-            this.estado.nome = resEnt.data.designacao;
+            this.estado.designacao = resEnt.data.designacao;
+            this.idEntidade = resUser.data.entidade;
         },
         aCalcular: async function (bool) {
             this.progressCalcular = bool;
-        }
+        },
+        // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
+        loadTipologias: async function () {
+            try {
+                var listaTip = [];
+
+                var response = await axios.get(lhost + "/api/tipologias/")
+                this.tipologias = response.data.map(function(item){
+                        return {
+                            sigla: item.sigla,
+                            designacao: item.designacao,
+                            id: item.id
+                        }
+                })
+                this.tipologiasReady = true;
+
+                // Tipologias onde a entidade se encontra
+                var tipologias = await axios.get(lhost + "/api/entidades/" + this.idEntidade + "/tipologias");
+                this.tipSel = tipologias.data.map(function(item){
+                    return {
+                        sigla: item.sigla,
+                        designacao: item.designacao,
+                        id: item.id
+                    }
+                })
+                for( var i = 0; i < this.tipSel.length; i++ ){
+                    var index = this.tipologias.findIndex(e => e.id === this.tipSel[i].id);
+                    this.tipologias.splice(index,1);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        unselectTipologia: function(tipologia){
+            // Recoloca a tipologia nos selecionáveis
+            this.tipologias.push(tipologia);
+            var index = this.tipSel.findIndex(e => e.id === tipologia.id);
+            this.tipSel.splice(index,1);
+        },
+        selectTipologia: function(tipologia){
+            this.tipSel.push(tipologia);
+            // Remove dos selecionáveis
+            var index = this.tipologias.findIndex(e => e.id === tipologia.id);
+            this.tipologias.splice(index,1);
+        },
     },
     created: function() {
-        this.loadEntidades();
         this.loadClasses();
         if( this.$store.state.criacaoTabSel.passoN > "1") {
             this.stepNo =  this.$store.state.criacaoTabSel.passoN
