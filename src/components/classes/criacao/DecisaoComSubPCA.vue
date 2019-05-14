@@ -1,118 +1,146 @@
 <template>
     <!-- PCA -->
     <v-container fluid>
-        <v-layout row wrap color="teal lighten-5">
+        <v-layout ma-2 wrap>
+            <v-flex xs12>
+                <v-toolbar color="teal darken-4 font-weight-medium" dark height="30">
+                    <v-toolbar-title>Prazo de Conservação Administrativa</v-toolbar-title>
+                </v-toolbar>
+            </v-flex>
+        </v-layout>
+
+        <v-layout ma-2 wrap>
             <v-flex xs2>
-                <span class="title">Prazo de Conservação Administrativa</span>
+                <div class="info-label">Prazo:</div>
             </v-flex>
+            <v-flex xs10>
+                <v-text-field
+                    v-model="c.pca.valor"
+                    label="Prazo em anos: 0 a 199"
+                    mask="###"
+                    solo clearable
+                ></v-text-field>
+            </v-flex>
+        </v-layout>
+
+        <v-layout ma-2 row wrap v-if="semaforos.pcaFormasContagemReady">
+            <v-flex xs2>
+                <div class="info-label">Forma de Contagem:</div>
+            </v-flex>
+            <v-flex xs10>
+                <v-select
+                    item-text="label"
+                    item-value="value"
+                    v-model="c.pca.formaContagem"
+                    :items="pcaFormasContagem"
+                    label="Selecione uma forma de contagem para o prazo"
+                    solo dense
+                />
+            </v-flex>
+        </v-layout>
+
+        <v-layout ma-2 row wrap v-if="semaforos.pcaSubFormasContagemReady && c.pca.formaContagem=='vc_pcaFormaContagem_disposicaoLegal'">
+            <v-flex xs2>
+                <div class="info-label">Subforma de contagem:</div>
+            </v-flex>
+            <v-flex xs10>
+                <v-select
+                    item-text="label"
+                    item-value="value"
+                    v-model="c.pca.subFormaContagem"
+                    :items="pcaSubFormasContagem"
+                    label="Selecione uma subforma de contagem para o prazo"
+                    solo dense
+                />
+            </v-flex>
+        </v-layout>
+
+        <hr style="border-top: 1px dashed green;"/>
+
+        <!-- JUSTIFICAÇÂO DO PCA -->
+        <v-layout row wrap>
+            <v-flex xs3>
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <div class="info-label">Justificação do PCA</div>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-btn color="green darken-2" dark round
+                            @click="adicionarCriterioGestionario(c.pca.justificacao, 'CriterioJustificacaoGestionario', 'Critério Gestionário', textoCriterioGestionario, [], [])"
+                            v-if="!semaforos.critGestionarioAdicionado"
+                        > 
+                            Critério Gestionário
+                            <v-icon dark right>add_circle_outline</v-icon>
+                        </v-btn>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-btn color="green darken-2" dark round
+                            @click="adicionarCriterioLegalPCA(c.pca.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], c.legislacao)"
+                            v-if="!semaforos.critLegalAdicionadoPCA"
+                        >  
+                            Critério Legal
+                            <v-icon dark right>add_circle_outline</v-icon>
+                        </v-btn>
+                    </v-flex>
+                </v-layout>  
+            </v-flex>
+
             <v-flex xs9>
-                <v-layout row wrap>
-                    <v-flex xs2>
-                        <v-subheader>Prazo:</v-subheader>
+                <v-layout row wrap v-for="(crit, cindex) in c.pca.justificacao" :key="cindex">
+                    <v-flex xs3>
+                        <div class="info-label">
+                            {{ crit.label }}
+                            <v-icon 
+                                color="red darken-2" 
+                                dark small
+                                @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
+                            >remove_circle</v-icon>
+                        </div>
                     </v-flex>
-                    <v-flex xs10>
-                        <v-text-field
-                            v-model="c.pca.valor"
-                            label="Prazo em anos: 0 a 199"
-                            mask="###"
-                            solo
-                            clearable
-                        ></v-text-field>
-                    </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="semaforos.pcaFormasContagemReady">
-                    <v-flex xs2>
-                        <v-subheader>Forma de Contagem:</v-subheader>
-                    </v-flex>
-                    <v-flex xs10>
-                        <v-select
-                            item-text="label"
-                            item-value="value"
-                            v-model="c.pca.formaContagem"
-                            :items="pcaFormasContagem"
-                            label="Selecione uma forma de contagem para o prazo"
-                            solo dense
-                        />
-                    </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="semaforos.pcaSubFormasContagemReady && c.pca.formaContagem=='vc_pcaFormaContagem_disposicaoLegal'">
-                    <v-flex xs2>
-                        <v-subheader>Subforma de contagem:</v-subheader>
-                    </v-flex>
-                    <v-flex xs10>
-                        <v-select
-                            item-text="label"
-                            item-value="value"
-                            v-model="c.pca.subFormaContagem"
-                            :items="pcaSubFormasContagem"
-                            label="Selecione uma subforma de contagem para o prazo"
-                            solo dense
-                        />
-                    </v-flex>
-                </v-layout>
 
-                <hr style="border-top: 2px dashed green;"/>
+                    <v-flex xs9 v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
+                        <div class="info-content">
+                            {{ crit.notas }}
+                            <a :href="'/classes/consultar/' + p.id" 
+                                v-for="(p, i) in crit.procRel" 
+                                :key="p.id">
+                                    {{ p.codigo }}: {{ p.titulo }}
+                                    <span v-if="i==crit.procRel.length-1">.</span>
+                                    <span v-else>, </span>
+                            </a>
+                        </div>
+                    </v-flex>
 
+                    <v-flex xs9 v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
+                        <div class="info-content" v-if="crit.legislacao.length > 0">
+                            {{ crit.notas }}
+                            <span v-for="(l, i) in crit.legislacao" :key="l.id">
+                                <a :href="'/legislacao/' + l.id">
+                                    {{ l.tipo }} {{ l.numero }}
+                                </a>
+                                <v-icon 
+                                    color="red darken-2" 
+                                    dark small
+                                    @click="crit.legislacao.splice(i,1)"
+                                >remove_circle</v-icon>
+                                <span v-if="i==crit.legislacao.length-1">.</span>
+                                <span v-else>, </span>
+                            </span>
+                        </div>
+                        <div class="info-content" v-if="crit.legislacao.length == 0">
+                            Sem legislação associada. Pode associar legislação na área de contexto.
+                        </div>
+                    </v-flex>
+
+                    <v-flex xs9 v-else> <!-- Critério Gestionário -->
+                        <div class="info-content">
+                            {{ crit.notas }}
+                        </div>
+                    </v-flex>
+
+                    <hr v-if="cindex < c.pca.justificacao.length" style="border-top: 2px dotted green; width: 100%;"/>
+                </v-layout>
             </v-flex>
-
-            <!-- JUSTIFICAÇÂO DO PCA -->
-            <v-container fluid>
-                <v-layout row wrap>
-                    <v-flex xs2>
-                        <span class="subheading">Justificação do PCA</span>
-                    </v-flex>
-                    <v-flex xs9>
-                        <v-layout row justify-start>
-                            <v-flex>
-                                <v-btn color="indigo darken-3" dark 
-                                    @click="adicionarCriterioGestionario(c.pca.justificacao, 'CriterioJustificacaoGestionario', 'Critério Gestionário', textoCriterioGestionario, [], [])"
-                                    v-if="!semaforos.critGestionarioAdicionado"
-                                > Adicionar Critério Gestionário
-                                </v-btn>
-                            </v-flex>
-                            <v-flex>
-                                <v-btn color="indigo darken-3" dark 
-                                    @click="adicionarCriterioLegalPCA(c.pca.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], c.legislacao)"
-                                    v-if="!semaforos.critLegalAdicionadoPCA"
-                                > Adicionar Critério Legal
-                                </v-btn>
-                            </v-flex>
-                        </v-layout>
-                        <v-layout row wrap v-for="(crit, cindex) in c.pca.justificacao" :key="cindex">
-                            <v-flex xs6>
-                                <v-subheader>{{ crit.label }}</v-subheader>
-                            </v-flex>
-                            <v-flex xs6>
-                                <v-btn small color="red darken-2" dark round @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')">
-                                    <v-icon dark>remove_circle</v-icon>
-                                </v-btn>
-                            </v-flex>
-                            <v-flex xs12>
-                                <v-textarea
-                                    solo
-                                    label="Notas do critério"
-                                    v-model="crit.notas"
-                                    rows="2"
-                                ></v-textarea>
-                            </v-flex>
-                            <v-flex xs12 v-if="crit.procRel.length > 0">
-                                <ProcessosRelacionadosOps 
-                                    :processos="crit.procRel" 
-                                    @unselectProcRel="unselectProcesso($event, crit.procRel)"
-                                />
-                            </v-flex>
-                            <v-flex xs12 v-if="crit.legislacao.length > 0">
-                                <LegislacaoOps
-                                    :legs="crit.legislacao"
-                                    @unselectDiploma="unselectDiploma($event, crit.legislacao)"
-                                />
-                            </v-flex>
-                            <hr style="border-top: 2px dotted green; width: 100%;"/>
-                        </v-layout>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-                                
         </v-layout>
     </v-container>
 </template>
@@ -200,3 +228,23 @@ export default {
     }
 }
 </script>
+<style>
+.info-label {
+    color: #00695C;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #E0F2F1;
+    font-weight: bold;
+}
+
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.is-collapsed li:nth-child(n+5) {
+    display: none;
+}
+</style>

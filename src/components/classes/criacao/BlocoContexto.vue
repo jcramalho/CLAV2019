@@ -146,7 +146,8 @@ export default {
                                     "responsabilidade em sede de: ",
             textoCriterioComplementaridade: "É complementar de: ",
             textoCriterioDensidadeSinPor: "Informação sintetizada em: ",
-            textoCriterioDensidadeSinDe: "Informação pertinente não recuperável noutro PN. Sintetiza a informação de: "
+            textoCriterioDensidadeSinDe: "Informação pertinente não recuperável noutro PN. Sintetiza a informação de: ",
+            textoCriterioLegal: "Prazo prescricional estabelecido em \"diplomas selecionados no contexto de avaliação\": "
         }
     },
 
@@ -199,7 +200,8 @@ export default {
                 }
                 // Tratamento do invariante: se é Suplemento De então cria-se um critério Legal com toda a legislação selecionada associada
                 else if(proc.relacao == "eSuplementoDe"){
-                    this.adicionarCriterio(this.c.pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", "", [proc], this.classe.legislacao);
+                    this.adicionarCriterio(this.c.pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", 
+                                            this.textoCriterioLegal, [proc], this.c.legislacao);
                     this.semaforos.critLegalAdicionadoPCA = true;
                 }
                 // Tratamento do invariante: se é Síntese De então cria-se um critério de Densidade Informacional
@@ -231,7 +233,8 @@ export default {
                 // cria-se um critério Legal com toda a legislação selecionada associada para todas as subclasses
                 else if(proc.relacao == "eSuplementoDe"){
                     for(var i=0; i < this.c.subclasses.length; i++){
-                        this.adicionarCriterio(this.c.subclasses[i].pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", "", [proc], this.classe.legislacao);
+                        this.adicionarCriterio(this.c.subclasses[i].pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", 
+                                                this.textoCriterioLegal, [proc], this.c.legislacao);
                         this.semaforos.critLegalAdicionadoPCA = true;
                     }    
                 }

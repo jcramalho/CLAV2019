@@ -29,7 +29,7 @@
                         >
                             <v-layout wrap row>
                                 <v-flex xs2>
-                                    <v-subheader>Código:</v-subheader>
+                                    <div class="info-label">Código:</div>
                                 </v-flex>
                                 <v-flex xs10>
                                     {{ subClasse.codigo }}
@@ -37,7 +37,7 @@
                             </v-layout>
                             <v-layout wrap row>
                                 <v-flex xs2>
-                                    <v-subheader>Código do pai:</v-subheader>
+                                    <div class="info-label">Código do pai:</div>
                                 </v-flex>
                                 <v-flex xs10>
                                     {{ c.codigo }}
@@ -45,7 +45,7 @@
                             </v-layout>
                             <v-layout wrap row>
                                 <v-flex xs2>
-                                    <v-subheader>Título:</v-subheader>
+                                    <div class="info-label">Título:</div>
                                 </v-flex>
                                 <v-flex xs10>
                                     <v-text-field
@@ -57,7 +57,7 @@
                             </v-layout>
                             <v-layout wrap row>
                                 <v-flex xs2>
-                                    <v-subheader>Descrição:</v-subheader>
+                                    <div class="info-label">Descrição:</div>
                                 </v-flex>
                                 <v-flex xs10>
                                     <v-text-field
@@ -188,3 +188,23 @@ export default {
     }
 }
 </script>
+<style>
+.info-label {
+    color: #00695C;
+    padding: 5px; 
+    font-weight: 400;
+    width: 100%;
+    background-color: #E0F2F1;
+    font-weight: bold;
+}
+
+.info-content {
+    padding: 5px; 
+    width: 100%;
+    border: 1px solid #1A237E ;
+}
+
+.is-collapsed li:nth-child(n+5) {
+    display: none;
+}
+</style>

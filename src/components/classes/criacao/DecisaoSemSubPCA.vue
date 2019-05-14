@@ -72,7 +72,8 @@
                     </v-flex>
                     <v-flex xs12>
                         <v-btn color="green darken-2" dark round
-                            @click="adicionarCriterioLegalPCA(c.pca.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], c.legislacao)"
+                            @click="adicionarCriterioLegalPCA(c.pca.justificacao, 'CriterioJustificacaoLegal', 
+                                        'Critério Legal', textoCriterioLegal, [], c.legislacao)"
                             v-if="!semaforos.critLegalAdicionadoPCA"
                         >  
                             Critério Legal
@@ -110,18 +111,25 @@
                     <v-flex xs9 v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
                         <div class="info-content" v-if="crit.legislacao.length > 0">
                             {{ crit.notas }}
-                            <a :href="'/legislacao/' + l.id" v-for="(l, i) in crit.legislacao" :key="l.id">
-                                {{ l.tipo }} {{ l.numero }}
+                            <span v-for="(l, i) in crit.legislacao" :key="l.id">
+                                <a :href="'/legislacao/' + l.id">
+                                    {{ l.tipo }} {{ l.numero }}
+                                </a>
+                                <v-icon 
+                                    color="red darken-2" 
+                                    dark small
+                                    @click="crit.legislacao.splice(i,1)"
+                                >remove_circle</v-icon>
                                 <span v-if="i==crit.legislacao.length-1">.</span>
                                 <span v-else>, </span>
-                            </a>
+                            </span>
                         </div>
                         <div class="info-content" v-if="crit.legislacao.length == 0">
                             Sem legislação associada. Pode associar legislação na área de contexto.
                         </div>
                     </v-flex>
 
-                    <v-flex xs9 v-else> <!-- Critério Gestionário -->
+                    <v-flex xs9 v-else-if="crit.tipo == 'CriterioJustificacaoGestionario'"> 
                         <div class="info-content">
                             {{ crit.notas }}
                         </div>
@@ -149,7 +157,8 @@ export default {
             return {
                 textoCriterioGestionario: "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
                                     " escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para" +
-                                    " a definição do prazo o tempo do mandato de maior duração: 5 anos."
+                                    " a definição do prazo o tempo do mandato de maior duração: 5 anos.",
+                textoCriterioLegal: "Prazo prescricional estabelecido em \"diplomas selecionados no contexto de avaliação\": "
       }
     },
 

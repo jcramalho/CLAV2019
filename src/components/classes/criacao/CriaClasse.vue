@@ -267,7 +267,15 @@ const nanoid = require('nanoid')
             critGestionarioAdicionado: false,
         },
 
-        mensValCodigo: ""
+        mensValCodigo: "",
+
+        textoCriterioUtilidadeAdministrativa: "Prazo decorrente da necessidade de consulta para apuramento da " +
+            "responsabilidade em sede de: ",
+        textoCriterioComplementaridade: "É complementar de: ",
+        textoCriterioDensidadeSinPor: "Informação sintetizada em: ",
+        textoCriterioDensidadeSinDe: "Informação pertinente não recuperável noutro PN. Sintetiza a informação de: ",
+        textoCriterioLegal: "Prazo prescricional estabelecido em \"diplomas selecionados no contexto de avaliação\": "
+        
 
     }),
 
@@ -636,24 +644,29 @@ const nanoid = require('nanoid')
             for(var i=0; i < procRel.length; i++){
                 // Tratamento do invariante: se é Suplemento Para então cria-se um critério de Utilidade Administrativa
                 if(procRel[i].relacao == "eSuplementoPara"){
-                    this.adicionarCriterio(novaClasse.pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", "Critério de Utilidade Administrativa", "", [procRel[i]], []);
+                    this.adicionarCriterio(novaClasse.pca.justificacao, "CriterioJustificacaoUtilidadeAdministrativa", 
+                        "Critério de Utilidade Administrativa", this.textoCriterioUtilidadeAdministrativa, [procRel[i]], []);
                 }
                 // Tratamento do invariante: se é Suplemento De então cria-se um critério Legal com toda a legislação selecionada associada
                 else if(procRel[i].relacao == "eSuplementoDe"){
-                    this.adicionarCriterio(novaClasse.pca.justificacao, "CriterioJustificacaoLegal", "Critério Legal", "", [procRel[i]], this.classe.legislacao);
+                    this.adicionarCriterio(novaClasse.pca.justificacao, "CriterioJustificacaoLegal", 
+                        "Critério Legal", this.textoCriterioLegal, [procRel[i]], this.classe.legislacao);
                     this.critLegalAdicionadoPCA = true;
                 }
                 // Tratamento do invariante: se é Síntese De então cria-se um critério de Densidade Informacional
                 else if(procRel[i].relacao == "eSinteseDe"){
-                    this.adicionarCriterio(novaClasse.df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [procRel[i]], []);
+                    this.adicionarCriterio(novaClasse.df.justificacao, "CriterioJustificacaoDensidadeInfo", 
+                        "Critério de Densidade Informacional", this.textoCriterioDensidadeSinDe, [procRel[i]], []);
                 }
                 // Tratamento do invariante: se é Síntetizado Por então cria-se um critério de Densidade Informacional
                 else if(procRel[i].relacao == "eSintetizadoPor"){
-                    this.adicionarCriterio(novaClasse.df.justificacao, "CriterioJustificacaoDensidadeInfo", "Critério de Densidade Informacional", "", [procRel[i]], []);
+                    this.adicionarCriterio(novaClasse.df.justificacao, "CriterioJustificacaoDensidadeInfo", 
+                        "Critério de Densidade Informacional", this.textoCriterioDensidadeSinPor, [procRel[i]], []);
                 }
                 // Tratamento do invariante: se é Complementar De então cria-se um critério de Complementaridade Informacional
                 else if(procRel[i].relacao == "eComplementarDe"){
-                    this.adicionarCriterio(novaClasse.df.justificacao, "CriterioJustificacaoComplementaridadeInfo", "Critério de Complementaridade Informacional", "", [procRel[i]], []);
+                    this.adicionarCriterio(novaClasse.df.justificacao, "CriterioJustificacaoComplementaridadeInfo", 
+                        "Critério de Complementaridade Informacional", this.textoCriterioComplementaridade, [procRel[i]], []);
                 }
             }
             if(!this.classe.temSubclasses4NivelDF){

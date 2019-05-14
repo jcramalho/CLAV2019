@@ -50,7 +50,8 @@
                     </v-flex>
                     <v-flex xs12> 
                         <v-btn color="green darken-2" dark round
-                            @click="adicionarCriterioLegalPCA(c.df.justificacao, 'CriterioJustificacaoLegal', 'Critério Legal', '', [], c.legislacao)"
+                            @click="adicionarCriterioLegalPCA(c.df.justificacao, 'CriterioJustificacaoLegal', 
+                                            'Critério Legal', textoCriterioLegal, [], c.legislacao)"
                             v-if="!semaforos.critLegalAdicionadoDF"
                         > 
                             Critério Legal
@@ -111,30 +112,47 @@
                             Sem legislação associada. Pode associar legislação na área de contexto.
                         </div>
                     </v-flex>
-                            
-                    <v-flex xs9 v-else>
+
+                    <v-flex xs9 v-if="crit.tipo == 'CriterioJustificacaoDensidadeInfo'">
                         <div class="info-content">
-                            {{ crit.notas }}
-                        </div>     
+                            <p>
+                                <span>Informação pertinente não recuprável noutro PN. Sintetiza a informação de: </span>
+                                <span v-for="(p, i) in crit.procRel.filter(p => p.relacao == 'eSinteseDe')" :key="p.id">
+                                    <a :href="'/classes/consultar/' + p.id">
+                                        {{ p.codigo }}: {{ p.titulo }}
+                                    </a>
+                                    <v-icon 
+                                        color="red darken-2" 
+                                        dark small
+                                        @click="crit.procRel.splice(i,1)"
+                                    >remove_circle</v-icon>
+                                    <span v-if="i==crit.procRel.length-1">.</span>
+                                    <span v-else>, </span>
+                                </span>
+                            </p>
+                            <p>
+                                <span>Informação sintetizada em: </span>
+                                <span v-for="(p, i) in crit.procRel.filter(p => p.relacao == 'eSintetizadoPor')" :key="p.id">
+                                    <a :href="'/classes/consultar/' + p.id">
+                                        {{ p.codigo }}: {{ p.titulo }}
+                                    </a>
+                                    <v-icon 
+                                        color="red darken-2" 
+                                        dark small
+                                        @click="crit.procRel.splice(i,1)"
+                                    >remove_circle</v-icon>
+                                    <span v-if="i==crit.procRel.length-1">.</span>
+                                    <span v-else>, </span>
+                                </span>
+                            </p>
+                        </div>
                     </v-flex>
-                            
-                            <!--v-flex xs12 v-if="crit.procRel.length > 0">
-                                <ProcessosRelacionadosOps 
-                                    :processos="crit.procRel" 
-                                    @unselectProcRel="unselectProcesso($event, crit.procRel)"
-                                />
-                            </v-flex>
-                            <v-flex xs12 v-if="crit.legislacao.length > 0">
-                                <LegislacaoOps
-                                    :legs="crit.legislacao"
-                                    @unselectDiploma="unselectDiploma($event, crit.legislacao)"
-                                />
-                            </v-flex-->
-                            <hr style="border-top: 2px dotted green; width: 100%;"/>
-                        </v-layout>
-                    </v-flex>
+
+                    <hr style="border-top: 2px dotted green; width: 100%;"/>
                 </v-layout>
-            </v-container>
+            </v-flex>
+        </v-layout>
+    </v-container>
 </template>
 
 <script>
@@ -164,6 +182,8 @@ export default {
             'CP': 'Conservação Parcial',
             'E': 'Eliminação'
         },
+
+        textoCriterioLegal: "Prazo prescricional estabelecido em \"diplomas selecionados no contexto de avaliação\": "
       }
     },
 
