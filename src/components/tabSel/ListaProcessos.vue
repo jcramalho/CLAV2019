@@ -181,15 +181,14 @@ export default {
                     }
                     profundidade++;
                 }
-                console.log(stackProc)
-                console.log(listaResultados)
+                console.log("calcRel: listaResultados \n Lista com todos os processos resultantes da travessia:", listaResultados)
                 
                 listaResultados.sort(function (a, b) {
                         return a.codigo.localeCompare(b.codigo);
                 });
                 
                 this.listaProcResultado[processo] = listaResultados;
-                console.log(this.listaProcResultado)
+                console.log("calcRel: listaProcResultados \n Listas com todos os processos resultantes da travessia com ponto de partida no processo x:", this.listaProcResultado)
 
                 // separa o resultado da travessia em duas listas, uma com os processos comuns (que estão presentes na tabela) e os restantes   
                 for( var i = 0; i < listaResultados.length; i++ ){
@@ -212,8 +211,8 @@ export default {
                         this.listaResComuns.splice(this.listaResComuns.indexOf(procSel[i]), 1);
                     }
                 }
-                console.log(this.listaResComuns)
-                console.log(this.listaResRestantes)
+                console.log("calcRel: listaResComuns \n Lista dos processos resultantes (das travessias) comuns:", this.listaResComuns)
+                console.log("calcRel: listaResRestantes \n Lista dos processos resultantes (das travessias) restantes:", this.listaResRestantes)
 
                 this.$emit('contadorProcPreSel', this.listaResComuns);
                 this.$emit('aCalcular', false)
@@ -265,7 +264,6 @@ export default {
                     if( (this.listaResComuns.includes(this.listaProcResultado[procSel[i]][j].codigo) || this.listaProcResultado[procSel[i]][j].codigo === processo) && !newListaResComuns.includes(this.listaProcResultado[procSel[i]][j].codigo)) {
                         newListaResComuns.push(this.listaProcResultado[procSel[i]][j].codigo)
                     }
-                    // fazer o mesmo para a lista de processos restantes
                     else if( this.listaResRestantes.includes(this.listaProcResultado[procSel[i]][j].codigo) && !newListaResRestantes.includes(this.listaProcResultado[procSel[i]][j].codigo)) {
                         newListaResRestantes.push(this.listaProcResultado[procSel[i]][j].codigo)
                     }
@@ -273,12 +271,12 @@ export default {
             }
             this.listaResComuns = newListaResComuns;
             this.listaResRestantes = newListaResRestantes;
-            console.log(newListaResComuns);
-            console.log(newListaResRestantes);
+
+            console.log("uncheck: listaProcResultado \n Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)", this.listaProcResultado)
+            console.log("uncheck: newListaResComuns \n Nova lista dos processos resultantes comuns:", newListaResComuns);
+            console.log("uncheck: newListaResRestantes \n Nova lista dos processos resultantes restantes:", newListaResRestantes);
+
             this.$emit('contadorProcPreSel', this.listaResComuns);
-
-            console.log(this.listaProcResultado)
-
             this.$emit('uncheckProcSel')
         }
     }

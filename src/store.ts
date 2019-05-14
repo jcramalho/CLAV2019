@@ -5,7 +5,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    criacaoTabSel: {},
+    criacaoTabSel: {
+      tipo: '',
+      designacao: ''
+    },
     user: {
       name: '',
       token: ''
