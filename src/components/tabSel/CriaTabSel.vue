@@ -37,7 +37,7 @@
             </v-btn>
             <v-btn 
                 color="primary" 
-                @click="stepNo = 1.5; barra(12.5); infoUserEnt(); loadTipologias();" 
+                @click="stepNo = 1.5; barra(12.5); loadTipologias();" 
                 v-else 
                 :disabled="!estado.tipo">
                     Continuar
@@ -87,7 +87,7 @@
                     </v-card>
                 </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-btn color="primary" @click="stepNo = 2; barra(25);">Continuar</v-btn>
+            <v-btn color="primary" @click="stepNo = 2; barra(25); guardarTip(); printEstado(); loadProcEspecificos();">Continuar</v-btn>
             <v-btn flat @click="stepNo = 1; barra(0)">Voltar</v-btn>
             </v-stepper-content>
 
@@ -124,12 +124,13 @@
                                     Selecione os Processos de Negócio Comuns
                                 </div>
                             </template>
-                            <ListaProcessos v-bind:lista="procComuns"
+                            <ListaProcessosComuns v-bind:lista="procComuns"
                                             tipo="Processos Comuns"
                                             @aCalcular="aCalcular($event)"
                                             @contadorProcSel="contadorProcSel($event)"
                                             @contadorProcPreSel="contadorProcPreSel($event)"
-                                            @uncheckProcSel="uncheckProcSel($event)"/>       
+                                            @uncheckProcSel="uncheckProcSel($event)"
+                                            @procPreSelRestantes="procPreSelRestantes($event)"/>       
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-flex>
@@ -159,7 +160,9 @@
             <v-btn flat @click="stepNo = 2; barra(25)">Voltar</v-btn>
             </v-stepper-content>
 
-            <v-stepper-step :complete="stepNo > 4" step="4">Processos Específicos</v-stepper-step>
+            <v-stepper-step :complete="stepNo > 4" step="4">Processos Específicos
+            <small>Processos específicos da entidade e tipologia em que se enquadra</small>
+            </v-stepper-step>
             <v-stepper-content step="4">
             <v-layout wrap>
                 <v-flex xs10>
@@ -170,10 +173,35 @@
                                     Selecione os Processos de Negócio Específicos
                                 </div>
                             </template>
-                            <ListaProcessos v-bind:lista="procEsp"
-                                            tipo="Processos Especificos"/>       
+                            <ListaProcessosEspecificos v-bind:lista="procEsp"
+                                            tipo="Processos Especificos"
+                                            v-bind:listaPreSel="procPreSelRestantes"
+                                            @aCalcular="aCalcular($event)"
+                                            @contadorProcSel="contadorProcSel($event)"
+                                            @contadorProcPreSel="contadorProcPreSel($event)"
+                                            @uncheckProcSel="uncheckProcSel($event)"/>       
                         </v-expansion-panel-content>
                     </v-expansion-panel>
+                </v-flex>
+            </v-layout>
+            <v-layout wrap>
+                <v-flex xs3>
+                    <v-text-field
+                    label="Nº de processos selecionados"
+                    :value="numProcSel"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs4 style="padding-left:60px;">
+                    <v-text-field
+                        v-if="!progressCalcular"
+                        label="Nº de processos pré selecionados"
+                        :value="numProcPreSel"
+                    ></v-text-field>
+                    <v-progress-circular
+                        v-else
+                        indeterminate
+                        color="primary"
+                    ></v-progress-circular>
                 </v-flex>
             </v-layout>
             <v-btn color="primary" @click="stepNo = 5; barra(75)">Continuar</v-btn>
@@ -192,7 +220,8 @@
 import axios from 'axios';
 const lhost = require('@/config/global').host
 
-import ListaProcessos from '@/components/tabSel/ListaProcessos.vue';
+import ListaProcessosComuns from '@/components/tabSel/ListaProcessosComuns.vue';
+import ListaProcessosEspecificos from '@/components/tabSel/ListaProcessosEspecificos.vue';
 
 import DesSelTip from '@/components/generic/selecao/DesSelecionarTipologias.vue'
 import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
@@ -214,7 +243,7 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         }
         },
     components: {
-        ListaProcessos, DesSelTip, SelTip
+        ListaProcessosComuns, ListaProcessosEspecificos, DesSelTip, SelTip
     },
     data () {
       return {
@@ -231,12 +260,12 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
 
         progressCalcular: false,
 
-        idEntidade: '',
-
         // Para o seletor de processos
         tipologias: [],
         tipSel: [],
         tipologiasReady: false,
+
+        procPreSelRestantes: [],
       }
     },
     methods: {
@@ -259,10 +288,9 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
                 console.log(erro);
             }
         },
-        loadClasses: async function () {
+        loadProcComuns: async function () {
             try{
                 var response = await axios.get(lhost + "/api/classes?tipo=comum");
-                var id=0;
                 for(var i=0; i < response.data.length; i++){
                     this.procComuns.push({
                         classe: response.data[i].codigo ,
@@ -292,12 +320,15 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         uncheckProcSel: function () {
             this.numProcSel = this.numProcSel - 1;
         },
+        procPreSelRestantes: function (procPreSelRestantes) {
+            this.procPreSelRestantes = procPreSelRestantes;
+        },
         // função que procura o nome da entidade e o id da Entidade associada ao utilizador
         infoUserEnt: async function () {
             var resUser = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
             var resEnt = await axios.get(lhost + "/api/entidades/" + resUser.data.entidade);
             this.estado.designacao = resEnt.data.designacao;
-            this.idEntidade = resUser.data.entidade;
+            this.estado.idEntidade = resUser.data.entidade;
         },
         aCalcular: async function (bool) {
             this.progressCalcular = bool;
@@ -318,7 +349,7 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
                 this.tipologiasReady = true;
 
                 // Tipologias onde a entidade se encontra
-                var tipologias = await axios.get(lhost + "/api/entidades/" + this.idEntidade + "/tipologias");
+                var tipologias = await axios.get(lhost + "/api/entidades/" + this.estado.idEntidade + "/tipologias");
                 this.tipSel = tipologias.data.map(function(item){
                     return {
                         sigla: item.sigla,
@@ -346,9 +377,36 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
             var index = this.tipologias.findIndex(e => e.id === tipologia.id);
             this.tipologias.splice(index,1);
         },
+        guardarTip: function(){
+            this.estado.tipologias = this.tipSel;
+        },
+        loadProcEspecificos: async function() {
+            try {
+                var url = lhost + "/api/classes?tipo=especifico&ent=" + this.estado.idEntidade;
+                if(this.estado.tipologias){
+                    url += "&tips="
+                    for( var i = 0; i<this.estado.tipologias.length - 1; i++ ){
+                        url += this.estado.tipologias[i].id + ","
+                    }
+                    url += this.estado.tipologias[i].id
+                }
+                var response = await axios.get(url);
+                for(var i=0; i < response.data.length; i++){
+                    this.procEsp.push({
+                        classe: response.data[i].codigo ,
+                        designacao: response.data[i].titulo,
+                        dono: false,
+                        participante: false
+                    });
+                }
+                return this.procEsp
+            } catch (error) {
+                console.log(error);
+            }
+        }
     },
     created: function() {
-        this.loadClasses();
+        this.loadProcComuns();
         if( this.$store.state.criacaoTabSel.passoN > "1") {
             this.stepNo =  this.$store.state.criacaoTabSel.passoN
             this.valorBarra =  this.$store.state.criacaoTabSel.percent

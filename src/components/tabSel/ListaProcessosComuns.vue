@@ -49,10 +49,6 @@ const axios = require('axios')
 export default {
     props: [ "lista", "tipo" ],
     data: () => ({
-        search: null,
-        donos: [],
-        participantes: [],
-        selected: [],
         headers: [
             {
                 text: "Classe",
@@ -151,9 +147,6 @@ export default {
                 var visitados = [];
                 visitados.push(processo);  // Processo inicial está no índice 0
 
-                /*this.fechoCalculado = false;
-                var stop = false;*/
-
                 while((profundidade <= 1000) && (stackProc[profundidade-1].listaProc.length > 0)){
                     stackProc.push({listaProc: [], nivel: profundidade+1});
                     for(var i = 0; i < stackProc[profundidade-1].listaProc.length; i++){
@@ -207,13 +200,14 @@ export default {
                 // retira aqueles processos que já estão selecionados 
                 var procSel = Object.keys(this.listaProcResultado);
                 for( var i = 0; i < procSel.length; i++){
-                    if( this.listaResComuns.includes(procSel[i]) ){
-                        this.listaResComuns.splice(this.listaResComuns.indexOf(procSel[i]), 1);
+                    if( this.listaResRestantes.includes(procSel[i]) ){
+                        this.listaResRestantes.splice(this.listaResRestantes.indexOf(procSel[i]), 1);
                     }
                 }
                 console.log("calcRel: listaResComuns \n Lista dos processos resultantes (das travessias) comuns:", this.listaResComuns)
                 console.log("calcRel: listaResRestantes \n Lista dos processos resultantes (das travessias) restantes:", this.listaResRestantes)
 
+                this.$emit('procPreSelRestantes', this.listaResRestantes)
                 this.$emit('contadorProcPreSel', this.listaResComuns);
                 this.$emit('aCalcular', false)
             }
