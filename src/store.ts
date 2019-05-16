@@ -7,7 +7,9 @@ export default new Vuex.Store({
   state: {
     criacaoTabSel: {
       tipo: '',
-      designacao: ''
+      designacao: '',
+      idEntidade: '',
+      tipologias: []
     },
     user: {
       name: '',
