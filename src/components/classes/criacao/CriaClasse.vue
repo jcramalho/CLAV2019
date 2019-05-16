@@ -250,7 +250,11 @@ const nanoid = require('nanoid')
 
             // Bloco de subclasses de nível 4, caso haja desdobramento
 
-            subclasses: []
+            subclasses: [],
+
+            user: {
+                token: ""
+            }
         },
 
         // Estruturas auxiliares
@@ -771,24 +775,21 @@ const nanoid = require('nanoid')
         // Lança o pedido de criação da classe no worflow
 
         criarClasse: async function(){
-            if( this.$store.state.user.name === ''){
-                this.loginErrorSnackbar = true;
-            }
-            else{
-                try{
-                    var dataObj = JSON.parse(JSON.stringify(this.classe));
-                    dataObj.codigo = "c" + this.classe.codigo;
-                    dataObj.user.token = this.$store.state.user.token;
+            try{
+                if( this.$store.state.user.name === ''){
+                    this.loginErrorSnackbar = true;
+                }
+                else{
+                    this.classe.user.token = this.$store.state.user.token;
 
-                    var response = await axios.post(lhost + "/api/classes", dataObj)
+                    var response = await axios.post(lhost + "/api/classes", this.classe)
                     alert(JSON.stringify(response.data))
                     this.pedidoCriado = true;
                 }
-                catch(error) {
-                    return(error);
-                }
             }
-            
+            catch(error) {
+                    return(error);
+            }
         }
     }
   }
