@@ -14,7 +14,7 @@
         </tr>
     </template>
     <template v-slot:items="props">
-        <tr :style="{backgroundColor: (listaResRestantes.findIndex(p => p == props.item.classe) != -1 && (!props.item.dono && !props.item.participante) ? 'orange' : 'transparent' ) }">
+        <tr :style="{backgroundColor: ((listaResEspecificos.findIndex(p => p == props.item.classe) != -1) || (listaPreSel.findIndex(p => p == props.item.classe) != -1) && (!props.item.dono && !props.item.participante) ? 'orange' : 'transparent' ) }">
             <td>    
                     {{ props.item.classe }}
             </td>
@@ -72,8 +72,8 @@ export default {
 
         processo: '',
         // listas resultantes do calculo da travessia, separados por comuns e os restantes
-        listaResComuns: [],
         listaResRestantes: [],
+        listaResEspecificos: [],
         // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
         listaProcResultado: {},
     }),
@@ -183,27 +183,27 @@ export default {
                 for( var i = 0; i < listaResultados.length; i++ ){
                     var procRestante = false;
                     for( var j = 0; j < this.lista.length; j++ ) {
-                        if(this.lista[j].classe === listaResultados[i].codigo && !this.listaResRestantes.includes(listaResultados[i].codigo)){
-                            this.listaResRestantes.push(listaResultados[i].codigo);
+                        if(this.lista[j].classe === listaResultados[i].codigo && !this.listaResEspecificos.includes(listaResultados[i].codigo)){
+                            this.listaResEspecificos.push(listaResultados[i].codigo);
                             procRestante = true;
                             break;
                         }
                     }
-                    if( !procRestante && !this.listaResComuns.includes(listaResultados[i].codigo) && !this.listaResComuns.includes(listaResultados[i].codigo)){
-                        this.listaResComuns.push(listaResultados[i].codigo)
+                    if( !procRestante && !this.listaResRestantes.includes(listaResultados[i].codigo) && !this.listaResRestantes.includes(listaResultados[i].codigo)){
+                        this.listaResRestantes.push(listaResultados[i].codigo)
                     }
                 }
                 // retira aqueles processos que já estão selecionados 
                 var procSel = Object.keys(this.listaProcResultado);
                 for( var i = 0; i < procSel.length; i++){
-                    if( this.listaResRestantes.includes(procSel[i]) ){
-                        this.listaResRestantes.splice(this.listaResRestantes.indexOf(procSel[i]), 1);
+                    if( this.listaResEspecificos.includes(procSel[i]) ){
+                        this.listaResEspecificos.splice(this.listaResEspecificos.indexOf(procSel[i]), 1);
                     }
                 }
-                console.log("calcRel: listaResComuns \n Lista dos processos resultantes (das travessias) comuns:", this.listaResComuns)
                 console.log("calcRel: listaResRestantes \n Lista dos processos resultantes (das travessias) restantes:", this.listaResRestantes)
+                console.log("calcRel: listaResEspecificos \n Lista dos processos resultantes (das travessias) especificos:", this.listaResEspecificos)
 
-                this.$emit('contadorProcPreSel', this.listaResComuns);
+                this.$emit('contadorProcPreSelEsp', this.listaResEspecificos);
                 this.$emit('aCalcular', false)
             }
             catch(erro){
@@ -250,26 +250,26 @@ export default {
 
             // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias. 
             var procSel = Object.keys(this.listaProcResultado);
-            var newListaResComuns = [];
             var newListaResRestantes = [];
+            var newListaResEspecificos = [];
             for( var i = 0; i < procSel.length; i++){
                 for( var j = 0; j < this.listaProcResultado[procSel[i]].length; j++){
-                    if( (this.listaResComuns.includes(this.listaProcResultado[procSel[i]][j].codigo) || this.listaProcResultado[procSel[i]][j].codigo === processo) && !newListaResComuns.includes(this.listaProcResultado[procSel[i]][j].codigo)) {
-                        newListaResComuns.push(this.listaProcResultado[procSel[i]][j].codigo)
-                    }
-                    else if( this.listaResRestantes.includes(this.listaProcResultado[procSel[i]][j].codigo) && !newListaResRestantes.includes(this.listaProcResultado[procSel[i]][j].codigo)) {
+                    if( (this.listaResRestantes.includes(this.listaProcResultado[procSel[i]][j].codigo) || this.listaProcResultado[procSel[i]][j].codigo === processo) && !newListaResRestantes.includes(this.listaProcResultado[procSel[i]][j].codigo)) {
                         newListaResRestantes.push(this.listaProcResultado[procSel[i]][j].codigo)
+                    }
+                    else if( this.listaResEspecificos.includes(this.listaProcResultado[procSel[i]][j].codigo) && !newListaResEspecificos.includes(this.listaProcResultado[procSel[i]][j].codigo)) {
+                        newListaResEspecificos.push(this.listaProcResultado[procSel[i]][j].codigo)
                     }
                 }
             }
-            this.listaResComuns = newListaResComuns;
             this.listaResRestantes = newListaResRestantes;
+            this.listaResEspecificos = newListaResEspecificos;
 
             console.log("uncheck: listaProcResultado \n Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)", this.listaProcResultado)
-            console.log("uncheck: newListaResComuns \n Nova lista dos processos resultantes comuns:", newListaResComuns);
             console.log("uncheck: newListaResRestantes \n Nova lista dos processos resultantes restantes:", newListaResRestantes);
+            console.log("uncheck: newListaResEspecificos \n Nova lista dos processos resultantes especificos:", newListaResEspecificos);
 
-            this.$emit('contadorProcPreSel', this.listaResComuns);
+            this.$emit('contadorProcPreSel', this.newListaResEspecificos);
             this.$emit('uncheckProcSel')
         }
     }

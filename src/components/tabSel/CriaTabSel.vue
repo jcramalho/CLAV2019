@@ -128,7 +128,7 @@
                                             tipo="Processos Comuns"
                                             @aCalcular="aCalcular($event)"
                                             @contadorProcSel="contadorProcSel($event)"
-                                            @contadorProcPreSel="contadorProcPreSel($event)"
+                                            @contadorProcPreSelCom="contadorProcPreSelCom($event)"
                                             @uncheckProcSel="uncheckProcSel($event)"
                                             @procPreSelRestantes="procPreSelRestantes($event)"/>       
                         </v-expansion-panel-content>
@@ -146,7 +146,7 @@
                     <v-text-field
                         v-if="!progressCalcular"
                         label="Nº de processos pré selecionados"
-                        :value="numProcPreSel"
+                        :value="numProcPreSelCom"
                     ></v-text-field>
                     <v-progress-circular
                         v-else
@@ -156,7 +156,7 @@
                 </v-flex>
             </v-layout>
             <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
-            <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado()">Continuar</v-btn>
+            <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado(); procPreSelEspecificos()">Continuar</v-btn>
             <v-btn flat @click="stepNo = 2; barra(25)">Voltar</v-btn>
             </v-stepper-content>
 
@@ -175,10 +175,10 @@
                             </template>
                             <ListaProcessosEspecificos v-bind:lista="procEsp"
                                             tipo="Processos Especificos"
-                                            v-bind:listaPreSel="procPreSelRestantes"
+                                            v-bind:listaPreSel="procPreSelRes"
                                             @aCalcular="aCalcular($event)"
                                             @contadorProcSel="contadorProcSel($event)"
-                                            @contadorProcPreSel="contadorProcPreSel($event)"
+                                            @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
                                             @uncheckProcSel="uncheckProcSel($event)"/>       
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -195,7 +195,7 @@
                     <v-text-field
                         v-if="!progressCalcular"
                         label="Nº de processos pré selecionados"
-                        :value="numProcPreSel"
+                        :value="numProcPreSelEsp"
                     ></v-text-field>
                     <v-progress-circular
                         v-else
@@ -256,7 +256,8 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         valorBarra: 0,
 
         numProcSel: 0,
-        numProcPreSel: 0,
+        numProcPreSelCom: 0,
+        numProcPreSelEsp: 0,
 
         progressCalcular: false,
 
@@ -265,7 +266,8 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         tipSel: [],
         tipologiasReady: false,
 
-        procPreSelRestantes: [],
+        procPreSelRes: [],
+        procPreSelEsp: []
       }
     },
     methods: {
@@ -314,14 +316,26 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         contadorProcSel: function () {
             this.numProcSel = this.numProcSel + 1;
         },
-        contadorProcPreSel: function (lista) {
-            this.numProcPreSel = lista.length;
+        contadorProcPreSelCom: function (lista) {
+            this.numProcPreSelCom = lista.length;
+        },
+        contadorProcPreSelEsp: function (lista) {
+            this.numProcPreSelEsp = lista.length;
         },
         uncheckProcSel: function () {
             this.numProcSel = this.numProcSel - 1;
         },
         procPreSelRestantes: function (procPreSelRestantes) {
-            this.procPreSelRestantes = procPreSelRestantes;
+            this.procPreSelRes = procPreSelRestantes;
+        },
+        // Processos pre selecionados especificos resultantes das travessias da tabela de processos comuns
+        procPreSelEspecificos: function () {
+            console.log(this.procEsp)
+            for( var i = 0; i< this.procEsp.length; i++){
+                if(this.procPreSelRes.includes(this.procEsp[i].classe)){
+                    this.numProcPreSelEsp += 1;
+                }
+            }
         },
         // função que procura o nome da entidade e o id da Entidade associada ao utilizador
         infoUserEnt: async function () {
