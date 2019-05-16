@@ -7,7 +7,7 @@
 						<v-toolbar-title>Login</v-toolbar-title>
 					</v-toolbar>
 					<v-card-text>
-						<v-form ref="form" v-model="valid" lazy-validation>
+						<v-form ref="form" lazy-validation>
                             <v-text-field prepend-icon="email" name="email" v-model="form.email" label="Email" type="email" :rules="regraEmail" required/>
 							<v-text-field id="password" prepend-icon="lock" name="password"  v-model="form.password" label="Password" type="password" :rules="regraPassword" required/>
 						</v-form>
@@ -68,8 +68,10 @@
 							this.color = 'success';
 							this.snackbar = true;
 							this.done = true;
-							this.$store.state.user.name = res.data.name;
-							this.$store.state.user.token = res.data.token;
+							this.$store.commit('guardaTokenUtilizador', res.data.token);
+							this.$store.commit('guardaNomeUtilizador', res.data.name);
+							// this.$store.state.user.name = res.data.name;
+							// this.$store.state.user.token = res.data.token;
 						}else{
 							this.text = 'Ocorreu um erro ao realizar o login: Por favor verifique as suas credenciais!';
 							this.color = 'error';
