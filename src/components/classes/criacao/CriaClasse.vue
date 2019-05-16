@@ -134,10 +134,30 @@
         <v-flex xs12>
             <div>
                 <v-btn dark round color="teal darken-4">Guardar trabalho</v-btn>
-                <v-btn dark round color="teal darken-4">Criar classe</v-btn>
+                <v-btn dark round color="teal darken-4" @click="criarClasse">Criar classe</v-btn>
                 <v-btn dark round color="red darken-4">Cancelar</v-btn>
             </div>
         </v-flex>
+
+        <v-snackbar
+            v-model="pedidoCriado"
+            :color="'success'"
+            :timeout="60000"
+                        >
+            Pedido para criação da classe criado com sucesso.
+            <v-btn dark flat @click="pedidoCriado = false" >
+                Fechar
+            </v-btn>
+        </v-snackbar>
+
+        <v-snackbar
+            v-model="loginErrorSnackbar"
+            :timeout=8000
+            color="error"
+            :top="true">
+            {{ loginErrorMessage }}
+            <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
+        </v-snackbar>
       </v-layout>
       
     </v-container>
@@ -146,6 +166,7 @@
 <script>
 const lhost = require('@/config/global').host
 const axios = require('axios')
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 const nanoid = require('nanoid')
 
   import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
@@ -275,6 +296,10 @@ const nanoid = require('nanoid')
             critGestionarioAdicionado: false,
         },
 
+        pedidoCriado: false,
+        loginErrorSnackbar: false,
+
+        loginErrorMessage: "Precisa de fazer login para criar a Classe!",
         mensValCodigo: "",
 
         textoCriterioUtilidadeAdministrativa: "Prazo decorrente da necessidade de consulta para apuramento da " +
@@ -284,7 +309,6 @@ const nanoid = require('nanoid')
         textoCriterioDensidadeSinDe: "Informação pertinente não recuperável noutro PN. Sintetiza a informação de: ",
         textoCriterioLegal: "Prazo prescricional estabelecido em \"diplomas selecionados no contexto de avaliação\": "
         
-
     }),
 
     watch: {
@@ -742,6 +766,29 @@ const nanoid = require('nanoid')
         verificaExistenciaCodigo: async function (codigo) {
             var response = await axios.get(lhost + '/api/classes/verificar/' + codigo);
             return response.data
+        },
+
+        // Lança o pedido de criação da classe no worflow
+
+        criarClasse: async function(){
+            if( this.$store.state.user.name === ''){
+                this.loginErrorSnackbar = true;
+            }
+            else{
+                try{
+                    var dataObj = JSON.parse(JSON.stringify(this.classe));
+                    dataObj.codigo = "c" + this.classe.codigo;
+                    dataObj.user.token = this.$store.state.user.token;
+
+                    var response = await axios.post(lhost + "/api/classes", dataObj)
+                    alert(JSON.stringify(response.data))
+                    this.pedidoCriado = true;
+                }
+                catch(error) {
+                    return(error);
+                }
+            }
+            
         }
     }
   }
