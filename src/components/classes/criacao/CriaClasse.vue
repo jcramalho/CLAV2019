@@ -130,6 +130,14 @@
             </v-card-text>
           </v-card>
         </v-flex>
+
+        <v-flex xs12>
+            <div>
+                <v-btn dark round color="teal darken-4">Guardar trabalho</v-btn>
+                <v-btn dark round color="teal darken-4">Criar classe</v-btn>
+                <v-btn dark round color="red darken-4">Cancelar</v-btn>
+            </div>
+        </v-flex>
       </v-layout>
       
     </v-container>
