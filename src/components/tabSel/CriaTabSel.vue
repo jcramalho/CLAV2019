@@ -406,12 +406,20 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
                 }
                 var response = await axios.get(url);
                 for(var i=0; i < response.data.length; i++){
-                    this.procEsp.push({
-                        classe: response.data[i].codigo ,
-                        designacao: response.data[i].titulo,
-                        dono: false,
-                        participante: false
-                    });
+                    var jaExiste = false;
+                    for(var j = 0; j < this.procEsp.length; j++ ){
+                        if( this.procEsp[j].classe === response.data[i].codigo){
+                            jaExiste = true;
+                        }
+                    }
+                    if( !jaExiste ){
+                        this.procEsp.push({
+                            classe: response.data[i].codigo ,
+                            designacao: response.data[i].titulo,
+                            dono: false,
+                            participante: false
+                        });
+                    }
                 }
                 return this.procEsp
             } catch (error) {
