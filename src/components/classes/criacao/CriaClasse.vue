@@ -145,7 +145,7 @@
             :timeout="60000"
                         >
             Pedido para criação da classe criado com sucesso.
-            <v-btn dark flat @click="pedidoCriado = false" >
+            <v-btn dark flat @click="pedidoCriadoOK" >
                 Fechar
             </v-btn>
         </v-snackbar>
@@ -783,13 +783,17 @@ const nanoid = require('nanoid')
                     this.classe.user.token = this.$store.state.user.token;
 
                     var response = await axios.post(lhost + "/api/classes", this.classe)
-                    alert(JSON.stringify(response.data))
                     this.pedidoCriado = true;
                 }
             }
             catch(error) {
                     return(error);
             }
+        },
+
+        pedidoCriadoOK: function(){
+            this.pedidoCriado = false;
+            this.$router.push('/');
         }
     }
   }
