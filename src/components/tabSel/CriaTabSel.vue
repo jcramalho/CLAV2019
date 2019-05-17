@@ -72,6 +72,29 @@
                         </div>
                     </template>
                     <v-card  style="padding-top:30px;">
+                        <v-layout>
+                        <v-flex xs2>
+                            <v-subheader style="border-color: white; border-style:solid; color: #1A237E;">Tipologias da entidade:</v-subheader>
+                        </v-flex>
+                        <v-flex xs9>
+                            <v-data-table
+                                :headers="[
+                                            { text: 'Sigla', align: 'left', value: 'sigla'},
+                                            { text: 'Designação', value: 'designacao' },
+                                        ]"
+                                :items="tipEnt"
+                                class="elevation-1"
+                                hide-actions
+                            >
+                                <template v-slot:items="props">
+                                    <tr>
+                                        <td>{{ props.item.sigla }}</td>
+                                        <td> {{ props.item.designacao }} </td>
+                                    </tr>
+                                </template>
+                            </v-data-table>        
+                        </v-flex>
+                        </v-layout>
                         <DesSelTip
                             :tipologias="tipSel" 
                             @unselectTipologia="unselectTipologia($event)"
@@ -128,7 +151,7 @@
                                             tipo="Processos Comuns"
                                             @aCalcular="aCalcular($event)"
                                             @contadorProcSel="contadorProcSel($event)"
-                                            @contadorProcPreSel="contadorProcPreSel($event)"
+                                            @contadorProcPreSelCom="contadorProcPreSelCom($event)"
                                             @uncheckProcSel="uncheckProcSel($event)"
                                             @procPreSelRestantes="procPreSelRestantes($event)"/>       
                         </v-expansion-panel-content>
@@ -146,7 +169,7 @@
                     <v-text-field
                         v-if="!progressCalcular"
                         label="Nº de processos pré selecionados"
-                        :value="numProcPreSel"
+                        :value="numProcPreSelCom"
                     ></v-text-field>
                     <v-progress-circular
                         v-else
@@ -156,7 +179,7 @@
                 </v-flex>
             </v-layout>
             <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
-            <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado()">Continuar</v-btn>
+            <v-btn color="primary" @click="stepNo = 4; barra(75); printEstado(); procPreSelEspecificos()">Continuar</v-btn>
             <v-btn flat @click="stepNo = 2; barra(25)">Voltar</v-btn>
             </v-stepper-content>
 
@@ -175,10 +198,10 @@
                             </template>
                             <ListaProcessosEspecificos v-bind:lista="procEsp"
                                             tipo="Processos Especificos"
-                                            v-bind:listaPreSel="procPreSelRestantes"
+                                            v-bind:listaPreSel="procPreSelRes"
                                             @aCalcular="aCalcular($event)"
                                             @contadorProcSel="contadorProcSel($event)"
-                                            @contadorProcPreSel="contadorProcPreSel($event)"
+                                            @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
                                             @uncheckProcSel="uncheckProcSel($event)"/>       
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -195,7 +218,7 @@
                     <v-text-field
                         v-if="!progressCalcular"
                         label="Nº de processos pré selecionados"
-                        :value="numProcPreSel"
+                        :value="numProcPreSelEsp"
                     ></v-text-field>
                     <v-progress-circular
                         v-else
@@ -256,16 +279,19 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         valorBarra: 0,
 
         numProcSel: 0,
-        numProcPreSel: 0,
+        numProcPreSelCom: 0,
+        numProcPreSelEsp: 0,
 
         progressCalcular: false,
 
         // Para o seletor de processos
         tipologias: [],
         tipSel: [],
+        tipEnt: [],
         tipologiasReady: false,
 
-        procPreSelRestantes: [],
+        procPreSelRes: [],
+        procPreSelEsp: []
       }
     },
     methods: {
@@ -314,14 +340,26 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         contadorProcSel: function () {
             this.numProcSel = this.numProcSel + 1;
         },
-        contadorProcPreSel: function (lista) {
-            this.numProcPreSel = lista.length;
+        contadorProcPreSelCom: function (lista) {
+            this.numProcPreSelCom = lista.length;
+        },
+        contadorProcPreSelEsp: function (lista) {
+            this.numProcPreSelEsp = lista.length;
         },
         uncheckProcSel: function () {
             this.numProcSel = this.numProcSel - 1;
         },
         procPreSelRestantes: function (procPreSelRestantes) {
-            this.procPreSelRestantes = procPreSelRestantes;
+            this.procPreSelRes = procPreSelRestantes;
+        },
+        // Processos pre selecionados especificos resultantes das travessias da tabela de processos comuns
+        procPreSelEspecificos: function () {
+            console.log(this.procEsp)
+            for( var i = 0; i< this.procEsp.length; i++){
+                if(this.procPreSelRes.includes(this.procEsp[i].classe)){
+                    this.numProcPreSelEsp += 1;
+                }
+            }
         },
         // função que procura o nome da entidade e o id da Entidade associada ao utilizador
         infoUserEnt: async function () {
@@ -350,15 +388,15 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
 
                 // Tipologias onde a entidade se encontra
                 var tipologias = await axios.get(lhost + "/api/entidades/" + this.estado.idEntidade + "/tipologias");
-                this.tipSel = tipologias.data.map(function(item){
+                this.tipEnt = tipologias.data.map(function(item){
                     return {
                         sigla: item.sigla,
                         designacao: item.designacao,
                         id: item.id
                     }
                 })
-                for( var i = 0; i < this.tipSel.length; i++ ){
-                    var index = this.tipologias.findIndex(e => e.id === this.tipSel[i].id);
+                for( var i = 0; i < this.tipEnt.length; i++ ){
+                    var index = this.tipologias.findIndex(e => e.id === this.tipEnt[i].id);
                     this.tipologias.splice(index,1);
                 }
             } catch (error) {
@@ -392,12 +430,20 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
                 }
                 var response = await axios.get(url);
                 for(var i=0; i < response.data.length; i++){
-                    this.procEsp.push({
-                        classe: response.data[i].codigo ,
-                        designacao: response.data[i].titulo,
-                        dono: false,
-                        participante: false
-                    });
+                    var jaExiste = false;
+                    for(var j = 0; j < this.procEsp.length; j++ ){
+                        if( this.procEsp[j].classe === response.data[i].codigo){
+                            jaExiste = true;
+                        }
+                    }
+                    if( !jaExiste ){
+                        this.procEsp.push({
+                            classe: response.data[i].codigo ,
+                            designacao: response.data[i].titulo,
+                            dono: false,
+                            participante: false
+                        });
+                    }
                 }
                 return this.procEsp
             } catch (error) {

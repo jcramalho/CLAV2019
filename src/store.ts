@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex);
 
@@ -16,6 +17,14 @@ export default new Vuex.Store({
       token: ''
     },
   },
-  mutations: {},
+  plugins: [createPersistedState()],
+  mutations: {
+    guardaTokenUtilizador (state, token) {
+      state.user.token = token;
+    },
+    guardaNomeUtilizador (state, nome) {
+      state.user.name = nome;
+    }
+  },
   actions: {}
 });

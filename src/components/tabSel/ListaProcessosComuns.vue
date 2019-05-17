@@ -208,7 +208,7 @@ export default {
                 console.log("calcRel: listaResRestantes \n Lista dos processos resultantes (das travessias) restantes:", this.listaResRestantes)
 
                 this.$emit('procPreSelRestantes', this.listaResRestantes)
-                this.$emit('contadorProcPreSel', this.listaResComuns);
+                this.$emit('contadorProcPreSelCom', this.listaResComuns);
                 this.$emit('aCalcular', false)
             }
             catch(erro){
@@ -270,7 +270,7 @@ export default {
             console.log("uncheck: newListaResComuns \n Nova lista dos processos resultantes comuns:", newListaResComuns);
             console.log("uncheck: newListaResRestantes \n Nova lista dos processos resultantes restantes:", newListaResRestantes);
 
-            this.$emit('contadorProcPreSel', this.listaResComuns);
+            this.$emit('contadorProcPreSelCom', this.listaResComuns);
             this.$emit('uncheckProcSel')
         }
     }

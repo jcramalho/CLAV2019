@@ -3,7 +3,7 @@
         <v-flex xs2>
             <v-subheader class="info-label" style="border-color: white; border-style:solid; color: #1A237E;">Regula os Processos de Negócio: </v-subheader>
         </v-flex>
-        <v-flex xs20 v-if="processos.length > 0">
+        <v-flex xs9 v-if="processos.length > 0">
             <v-data-table
                 :headers="headers"
                 :items="processos"

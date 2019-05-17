@@ -1,9 +1,9 @@
 <template>
     <v-layout row wrap color="teal lighten-5">
         <v-flex xs2>
-            <v-subheader class="info-label" style="border-color: white; border-style:solid; color: #1A237E;">Pertence às Tipologias:</v-subheader>
+            <v-subheader class="info-label" style="border-color: white; border-style:solid; color: #1A237E;">Tipologias selecionadas:</v-subheader>
         </v-flex>
-        <v-flex xs20 v-if="tipologias.length > 0">
+        <v-flex xs9 v-if="tipologias.length > 0">
             <v-data-table
                 :headers="headers"
                 :items="tipologias"
