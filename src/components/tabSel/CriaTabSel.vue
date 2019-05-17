@@ -72,6 +72,29 @@
                         </div>
                     </template>
                     <v-card  style="padding-top:30px;">
+                        <v-layout>
+                        <v-flex xs2>
+                            <v-subheader style="border-color: white; border-style:solid; color: #1A237E;">Tipologias da entidade:</v-subheader>
+                        </v-flex>
+                        <v-flex xs9>
+                            <v-data-table
+                                :headers="[
+                                            { text: 'Sigla', align: 'left', value: 'sigla'},
+                                            { text: 'Designação', value: 'designacao' },
+                                        ]"
+                                :items="tipEnt"
+                                class="elevation-1"
+                                hide-actions
+                            >
+                                <template v-slot:items="props">
+                                    <tr>
+                                        <td>{{ props.item.sigla }}</td>
+                                        <td> {{ props.item.designacao }} </td>
+                                    </tr>
+                                </template>
+                            </v-data-table>        
+                        </v-flex>
+                        </v-layout>
                         <DesSelTip
                             :tipologias="tipSel" 
                             @unselectTipologia="unselectTipologia($event)"
@@ -264,6 +287,7 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         // Para o seletor de processos
         tipologias: [],
         tipSel: [],
+        tipEnt: [],
         tipologiasReady: false,
 
         procPreSelRes: [],
@@ -364,15 +388,15 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
 
                 // Tipologias onde a entidade se encontra
                 var tipologias = await axios.get(lhost + "/api/entidades/" + this.estado.idEntidade + "/tipologias");
-                this.tipSel = tipologias.data.map(function(item){
+                this.tipEnt = tipologias.data.map(function(item){
                     return {
                         sigla: item.sigla,
                         designacao: item.designacao,
                         id: item.id
                     }
                 })
-                for( var i = 0; i < this.tipSel.length; i++ ){
-                    var index = this.tipologias.findIndex(e => e.id === this.tipSel[i].id);
+                for( var i = 0; i < this.tipEnt.length; i++ ){
+                    var index = this.tipologias.findIndex(e => e.id === this.tipEnt[i].id);
                     this.tipologias.splice(index,1);
                 }
             } catch (error) {

@@ -6,7 +6,7 @@
         <v-flex xs2 v-if="tipo==='legislacao'">
             <v-subheader class="info-label" style="border-color: white; border-style:solid; color: #1A237E;">Entidade responsável pela publicação:</v-subheader>
         </v-flex>
-        <v-flex xs20 v-if="entidades.length > 0">
+        <v-flex xs9 v-if="entidades.length > 0">
             <v-data-table
                 :headers="headers"
                 :items="entidades"
