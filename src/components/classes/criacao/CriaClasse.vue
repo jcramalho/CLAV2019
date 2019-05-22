@@ -780,17 +780,19 @@ const nanoid = require('nanoid')
                     this.loginErrorSnackbar = true;
                 }
                 else{
-                    var user = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
+                    var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
                     var pedidoParams = {
                         tipoPedido: 'Criação',
                         tipoObjeto: 'Classe',
                         novoObjeto: this.classe,
-                        utilizador: user.data.email
+                        user: {
+                            email: userBD.data.email,
+                            token: this.$store.state.user.token
+                        }
                     }
 
                     var response = await axios.post(lhost + "/api/pedidos", pedidoParams)
-                    alert(JSON.stringify(response.data))
-                    this.mensagemPedidoCriadoOK += response.data
+                    this.mensagemPedidoCriadoOK += response.data.codigo
                     this.pedidoCriado = true;
                 }
             }
