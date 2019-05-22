@@ -144,7 +144,7 @@
             :color="'success'"
             :timeout="60000"
                         >
-            Pedido para criação da classe criado com sucesso.
+            {{ mensagemPedidoCriadoOK }}
             <v-btn dark flat @click="pedidoCriadoOK" >
                 Fechar
             </v-btn>
@@ -166,7 +166,6 @@
 <script>
 const lhost = require('@/config/global').host
 const axios = require('axios')
-axios.defaults.headers.post['Content-Type'] = 'application/json';
 const nanoid = require('nanoid')
 
   import ClassesArvoreLateral from '@/components/classes/ClassesArvoreLateral.vue'
@@ -301,6 +300,7 @@ const nanoid = require('nanoid')
         },
 
         pedidoCriado: false,
+        mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
         loginErrorSnackbar: false,
 
         loginErrorMessage: "Precisa de fazer login para criar a Classe!",
@@ -780,9 +780,17 @@ const nanoid = require('nanoid')
                     this.loginErrorSnackbar = true;
                 }
                 else{
-                    this.classe.user.token = this.$store.state.user.token;
+                    var user = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.user.token);
+                    var pedidoParams = {
+                        tipoPedido: 'Criação',
+                        tipoObjeto: 'Classe',
+                        novoObjeto: this.classe,
+                        utilizador: user.data.email
+                    }
 
-                    var response = await axios.post(lhost + "/api/classes", this.classe)
+                    var response = await axios.post(lhost + "/api/pedidos", pedidoParams)
+                    alert(JSON.stringify(response.data))
+                    this.mensagemPedidoCriadoOK += response.data
                     this.pedidoCriado = true;
                 }
             }
