@@ -200,8 +200,8 @@ export default {
                 // retira aqueles processos que já estão selecionados 
                 var procSel = Object.keys(this.listaProcResultado);
                 for( var i = 0; i < procSel.length; i++){
-                    if( this.listaResRestantes.includes(procSel[i]) ){
-                        this.listaResRestantes.splice(this.listaResRestantes.indexOf(procSel[i]), 1);
+                    if( this.listaResComuns.includes(procSel[i]) ){
+                        this.listaResComuns.splice(this.listaResComuns.indexOf(procSel[i]), 1);
                     }
                 }
                 console.log("calcRel: listaResComuns \n Lista dos processos resultantes (das travessias) comuns:", this.listaResComuns)

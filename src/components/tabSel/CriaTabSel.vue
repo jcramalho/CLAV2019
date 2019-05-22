@@ -281,6 +281,7 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
         numProcSel: 0,
         numProcPreSelCom: 0,
         numProcPreSelEsp: 0,
+        numProcPreSel: 0,
 
         progressCalcular: false,
 
@@ -416,7 +417,7 @@ import SelTip from '@/components/generic/selecao/SelecionarTipologias.vue'
             this.tipologias.splice(index,1);
         },
         guardarTip: function(){
-            this.estado.tipologias = this.tipSel;
+            this.estado.tipologias = this.tipEnt.concat(this.tipSel);
         },
         loadProcEspecificos: async function() {
             try {
