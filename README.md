@@ -1,4 +1,4 @@
-# pedidos
+# CLAV2019: interface web do  projeto "Classificação e Avaliação da Informação Pública"
 
 ## Project setup
 ```
