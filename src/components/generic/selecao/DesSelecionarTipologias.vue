@@ -1,62 +1,77 @@
 <template>
-    <v-layout row wrap color="teal lighten-5">
-        <v-flex xs2>
-            <v-subheader class="info-label" style="border-color: white; border-style:solid; color: #1A237E;">Tipologias selecionadas:</v-subheader>
-        </v-flex>
-        <v-flex xs9 v-if="tipologias.length > 0">
-            <v-data-table
-                :headers="headers"
-                :items="tipologias"
-                class="elevation-1"
-                hide-actions
+  <v-layout row wrap color="teal lighten-5">
+    <v-flex xs2>
+      <v-subheader
+        class="info-label"
+        style="border-color: white; border-style:solid; color: #1A237E;"
+        >Tipologias selecionadas:</v-subheader
+      >
+    </v-flex>
+    <v-flex xs9 v-if="tipologias.length > 0">
+      <v-data-table
+        :headers="headers"
+        :items="tipologias"
+        class="elevation-1"
+        hide-actions
+      >
+        <template v-slot:headers="props">
+          <tr>
+            <th
+              v-for="h in props.headers"
+              :key="h.text"
+              class="body-2 font-weight-bold"
+              style="color: #1A237E;"
             >
-                <template v-slot:headers="props">
-                    <tr>
-                        <th v-for="h in props.headers" :key="h.text" class="body-2 font-weight-bold" style="color: #1A237E;">
-                            {{ h.text }}
-                        </th>
-                        <th style="color: #1A237E;"> Remover </th>
-                    </tr>
-                </template>
+              {{ h.text }}
+            </th>
+            <th style="color: #1A237E;">Remover</th>
+          </tr>
+        </template>
 
-                <template v-slot:items="props">
-                    <tr>
-                        <td>{{ props.item.sigla }}</td>
-                        <td> {{ props.item.designacao }} </td>
-                        <td>
-                            <v-btn small color="red darken-2" dark round @click="unselectTipologia(props.item)">
-                                <v-icon dark>remove_circle</v-icon>
-                            </v-btn>
-                        </td>
-                    </tr>
-                </template>
-            </v-data-table>        
-        </v-flex>
-        <v-flex xs9 v-else>
-            <v-alert :value="true" type="warning">
-                Não tem tipologias selecionadas...
-            </v-alert>
-        </v-flex>
-    </v-layout>
+        <template v-slot:items="props">
+          <tr>
+            <td>{{ props.item.sigla }}</td>
+            <td>{{ props.item.designacao }}</td>
+            <td>
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                round
+                @click="unselectTipologia(props.item)"
+              >
+                <v-icon dark>remove_circle</v-icon>
+              </v-btn>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-flex>
+    <v-flex xs9 v-else>
+      <v-alert :value="true" type="warning">
+        Não tem tipologias selecionadas...
+      </v-alert>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
 export default {
-    props: ["tipologias"],
+  props: ["tipologias"],
 
-     data: function() {
-      return {
-          headers: [
-            { text: 'Sigla', align: 'left', value: 'sigla'},
-            { text: 'Designação', value: 'designacao' },
-          ]
-      }
-    },
+  data: function() {
+    return {
+      headers: [
+        { text: "Sigla", align: "left", value: "sigla" },
+        { text: "Designação", value: "designacao" }
+      ]
+    };
+  },
 
-    methods: {
-        unselectTipologia: function(tipologia){
-            this.$emit('unselectTipologia', tipologia)
-        }
+  methods: {
+    unselectTipologia: function(tipologia) {
+      this.$emit("unselectTipologia", tipologia);
     }
-}
+  }
+};
 </script>

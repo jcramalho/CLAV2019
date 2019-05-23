@@ -1,5 +1,5 @@
 <template>
-  <ListaPedidos @pedidoSelected="consultaPedido($event)"/>
+  <ListaPedidos @pedidoSelected="consultaPedido($event)" />
 </template>
 
 <script>
@@ -7,12 +7,12 @@ import ListaPedidos from "@/components/ListaPedidos.vue"; // @ is an alias to /s
 
 export default {
   components: {
-        ListaPedidos
-    },
+    ListaPedidos
+  },
   methods: {
-    consultaPedido: function(item){
-      this.$router.push('/consulta/' + item.codigo);
+    consultaPedido: function(item) {
+      this.$router.push("/consulta/" + item.codigo);
     }
   }
-}
+};
 </script>

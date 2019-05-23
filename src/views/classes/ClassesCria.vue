@@ -1,5 +1,5 @@
 <template>
-  <CriaClasse/>
+  <CriaClasse />
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import CriaClasse from "@/components/classes/criacao/CriaClasse.vue"; // @ is an
 
 export default {
   components: {
-        CriaClasse
-    }
-}
+    CriaClasse
+  }
+};
 </script>

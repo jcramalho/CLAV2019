@@ -1,13 +1,13 @@
 <template>
-    <CriaTip />
+  <CriaTip />
 </template>
 
 <script>
-import CriaTip from '@/components/tipologias/CriaTipologia.vue';
+import CriaTip from "@/components/tipologias/CriaTipologia.vue";
 
 export default {
-    components: {
-        CriaTip
-    }
-}
+  components: {
+    CriaTip
+  }
+};
 </script>

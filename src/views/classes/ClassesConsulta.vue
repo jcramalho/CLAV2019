@@ -1,5 +1,5 @@
 <template>
-  <ConsultaClasse :idc="$route.params.idClasse"/>
+  <ConsultaClasse :idc="$route.params.idClasse" />
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import ConsultaClasse from "@/components/classes/ConsultaClasse.vue"; // @ is an
 
 export default {
   components: {
-        ConsultaClasse
-    }
-}
+    ConsultaClasse
+  }
+};
 </script>

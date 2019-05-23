@@ -1,5 +1,5 @@
 <template>
-  <ConsultaPedido :idp="$route.params.idPedido"/>
+  <ConsultaPedido :idp="$route.params.idPedido" />
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import ConsultaPedido from "@/components/pedidos/ConsultaPedido.vue"; // @ is an
 
 export default {
   components: {
-        ConsultaPedido
-    }
-}
+    ConsultaPedido
+  }
+};
 </script>

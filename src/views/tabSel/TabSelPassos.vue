@@ -1,13 +1,13 @@
 <template>
-    <PassosTabSel />
+  <PassosTabSel />
 </template>
 
 <script>
-import PassosTabSel from '@/components/tabSel/PassosTabSel.vue';
+import PassosTabSel from "@/components/tabSel/PassosTabSel.vue";
 
 export default {
-    components: {
-        PassosTabSel
-    }
-}
+  components: {
+    PassosTabSel
+  }
+};
 </script>

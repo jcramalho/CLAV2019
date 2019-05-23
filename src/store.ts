@@ -1,28 +1,28 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import createPersistedState from 'vuex-persistedstate'
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     criacaoTabSel: {
-      tipo: '',
-      designacao: '',
-      idEntidade: '',
+      tipo: "",
+      designacao: "",
+      idEntidade: "",
       tipologias: []
     },
     user: {
-      name: '',
-      token: ''
-    },
+      name: "",
+      token: ""
+    }
   },
   plugins: [createPersistedState()],
   mutations: {
-    guardaTokenUtilizador (state, token) {
+    guardaTokenUtilizador(state, token) {
       state.user.token = token;
     },
-    guardaNomeUtilizador (state, nome) {
+    guardaNomeUtilizador(state, nome) {
       state.user.name = nome;
     }
   },

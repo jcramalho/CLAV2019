@@ -7,7 +7,7 @@ import SubmissaoPedido from "@/components/pedidos/SubmissaoPedido.vue"; // @ is 
 
 export default {
   components: {
-        SubmissaoPedido
-    }
-}
+    SubmissaoPedido
+  }
+};
 </script>

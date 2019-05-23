@@ -1,13 +1,13 @@
 <template>
-    <Registo/>
+  <Registo />
 </template>
 
 <script>
-import Registo from "@/components/Registo.vue"; 
+import Registo from "@/components/Registo.vue";
 
 export default {
   components: {
-        Registo
-    }
-}
+    Registo
+  }
+};
 </script>

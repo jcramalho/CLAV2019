@@ -1,5 +1,5 @@
 <template>
-  <ListaPedidos @pedidoSelected="consultaPedido($event)"/>
+  <ListaPedidos @pedidoSelected="consultaPedido($event)" />
 </template>
 
 <script>
@@ -7,12 +7,12 @@ import ListaPedidos from "@/components/pedidos/ListaPedidos.vue"; // @ is an ali
 
 export default {
   components: {
-        ListaPedidos
-    },
+    ListaPedidos
+  },
   methods: {
-    consultaPedido: function(item){
-      this.$router.push('/pedidos/' + item.codigo);
+    consultaPedido: function(item) {
+      this.$router.push("/pedidos/" + item.codigo);
     }
   }
-}
+};
 </script>

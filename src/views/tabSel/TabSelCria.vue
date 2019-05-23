@@ -1,13 +1,13 @@
 <template>
-    <CriaTabSel />
+  <CriaTabSel />
 </template>
 
 <script>
-import CriaTabSel from '@/components/tabSel/CriaTabSel.vue';
+import CriaTabSel from "@/components/tabSel/CriaTabSel.vue";
 
 export default {
-    components: {
-        CriaTabSel
-    }
-}
+  components: {
+    CriaTabSel
+  }
+};
 </script>
