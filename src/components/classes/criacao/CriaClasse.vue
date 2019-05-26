@@ -148,6 +148,13 @@
         </v-btn>
       </v-snackbar>
 
+      <v-snackbar v-model="pendenteGuardado" :color="'teal darken-1'" :timeout="60000">
+        {{ mensagemPendenteGuardadoOK }}
+        <v-btn dark flat @click="pendenteGuardadoOK">
+          Fechar
+        </v-btn>
+      </v-snackbar>
+
       <v-snackbar
         v-model="loginErrorSnackbar"
         :timeout="8000"
@@ -299,6 +306,8 @@ export default {
 
     pedidoCriado: false,
     mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
+    pendenteGuardado: false,
+    mensagemPendenteGuardadoOK: "Trabalho guardado com sucesso.",
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
@@ -866,27 +875,34 @@ export default {
       this.$router.push("/");
     },
 
-    guardarTrabalho: async () => {
+    pendenteGuardadoOK: function() {
+      this.pendenteGuardado = false;
+      this.$router.push("/");
+    },
+
+    guardarTrabalho: async function() {
       try{
         if (this.$store.state.user.name === "") {
           this.loginErrorSnackbar = true;
         } else {
+          alert('Entrei')
           var userBD = await axios.get(
             lhost + "/api/users/listarToken/" + this.$store.state.user.token
           );
-          var pedidoParams = {
-            tipoPedido: "Criação",
-            tipoObjeto: "Classe",
-            novoObjeto: this.classe,
+          alert('User OK')
+          var pendenteParams = {
+            acao: "Criação",
+            tipo: "Classe",
+            objeto: this.classe,
+            criadoPor: userBD.data.email,
             user: {
               email: userBD.data.email,
               token: this.$store.state.user.token
             }
           };
-
-          var response = await axios.post(lhost + "/api/pendentes", pedidoParams);
-          this.mensagemPedidoCriadoOK += response.data.codigo;
-          this.pedidoCriado = true;
+          alert(JSON.stringify(pendenteParams))
+          var response = await axios.post(lhost + "/api/pendentes", pendenteParams);
+          this.pendenteGuardado = true;
       }
     }
     catch(error){

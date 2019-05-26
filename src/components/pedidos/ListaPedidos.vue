@@ -9,6 +9,7 @@
 
       <template v-slot:items="props">
         <tr @click="rowClicked(props.item)">
+          <td class="subheading">{{ props.item.data.split('T')[0] }}</td>
           <td class="subheading">{{ props.item.estado }}</td>
           <td class="subheading">{{ props.item.codigo }}</td>
           <td class="subheading">{{ props.item.criadoPor }}</td>
@@ -29,6 +30,13 @@ const lhost = require("@/config/global").host;
 export default {
   data: () => ({
     headers: [
+      {
+        text: "Data",
+        align: "left",
+        sortable: true,
+        value: "data",
+        class: "title"
+      },
       {
         text: "Estado",
         align: "left",
