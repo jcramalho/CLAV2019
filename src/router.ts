@@ -116,6 +116,11 @@ export default new Router({
     },
     // Routes da gestão de utilizadores
     {
+      path: "/autenticacao",
+      name: "autenticacao",
+      component: () => import("./views/Autenticacao.vue")
+    },
+    {
       path: "/registo",
       name: "registo",
       component: () => import("./views/Registo.vue")
