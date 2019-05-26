@@ -3,9 +3,9 @@
         <v-layout row wrap>
             <v-flex d-flex xs12 sm6 md5>
                 <v-card>
-                    <v-card-title primary-title>
-                        <div class="headline">Como proceder à autenticação?</div>
-                    </v-card-title>
+                    <v-toolbar color="indigo accent-4" dark>
+                        <v-toolbar-title>Como proceder à autenticação?</v-toolbar-title>
+                    </v-toolbar>
                     <v-card-text>
                         Na plataforma CLAV é possível proceder à autenticação através das seguintes formas:
                         <ul>
@@ -25,14 +25,12 @@
             </v-flex>
             <v-flex d-flex xs12 sm6 md7>
                 <v-card>
-                    <v-card-title primary-title>
-                        <div>
-                            <div class="headline">Autenticação</div>
-                            <v-card-text>
-                                De modo a aceder à plataforma CLAV, por favor escolha um dos seguintes métodos de autenticação.
-                            </v-card-text>
-                        </div>
-                    </v-card-title>
+                    <v-toolbar color="indigo accent-4" dark>
+                        <v-toolbar-title>Autenticação</v-toolbar-title>
+                    </v-toolbar>
+                    <v-card-text>
+                        De modo a aceder à plataforma CLAV, por favor escolha um dos seguintes métodos de autenticação.
+                    </v-card-text>
                     <v-card-actions>
                         <v-flex>
                             Cartão de Cidadão
