@@ -7,7 +7,7 @@
           <v-card-text>
             <v-expansion-panel>
               <v-expansion-panel-content
-                v-for="(item, i) in operacoes"
+                v-for="(item, i) in fops"
                 :key="i"
               >
                 <template v-slot:header>
@@ -18,42 +18,18 @@
                     <p>{{ item.texto }}</p>
                     <div>
                       <v-btn
+                        v-for="op in item.ops"
                         color="deep-purple darken-3"
                         dark
-                        @click="go(item.cons.url)"
-                        :key="item.cons.url"
+                        @click="go(op.url)"
+                        :key="op.url"
                       >
-                        {{ item.cons.label }}
-                      </v-btn>
-                      <v-btn
-                        color="deep-purple darken-3"
-                        dark
-                        @click="go(item.criar.url)"
-                        :key="item.criar.url"
-                        v-if="$store.state.user.name != '' && item.criar"
-                      >
-                        {{ item.criar.label }}
+                        {{ op.label }}
                       </v-btn>
                     </div>
                   </v-card-text>
                 </v-card>
               </v-expansion-panel-content>
-              <v-list two-line>
-            <template>
-              <v-list-tile>
-                <v-list-tile-content>
-                  <v-list-tile-title
-                    >Identificação de Representantes</v-list-tile-title
-                  >
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-content>
-                  <v-list-tile-title>Área de Trabalho</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </template>
-          </v-list>
             </v-expansion-panel>
           </v-card-text>
         </v-card>
@@ -65,23 +41,65 @@ export default {
     methods: {
         go: function(url) {
             this.$router.push(url);
+        },
+
+        filtraOps: function(operacoes){
+          var filtered = []
+          for(var i=0; i < operacoes.length; i++){
+            filtered.push({
+              entidade: operacoes[i].entidade,
+              texto: operacoes[i].texto,
+              ops: operacoes[i].ops.filter(o => o.level == 'public')
+            })
+          }
+          return filtered
         }
+    },
+
+    computed: {
+      fops: function(){
+        if(this.$store.state.user.name != ''){
+          return this.operacoes
+        }
+        else{
+          return this.filtraOps(this.operacoes)
+        }
+      }
     },
     
     data() {
         return {
             panelHeaderColor: "indigo accent-4",
             operacoes: [
-                {
-                    entidade: "Pedidos",
-                    texto:
-                        "Pedidos de alteração ou de criação de novas instâncias que deram entrada na plataforma.",
-                    cons: {
-                        label: "Consultar",
-                        url: "/pedidos"
-                    }
-                }
-            ]
+        {
+          entidade: "Pedidos",
+          texto:
+            "Pedidos de alteração ou de criação de novas instâncias que deram entrada na plataforma.",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/pedidos",
+              level: "public"
+            },
+            {
+              label: "Criar pedido",
+              url: "/pedidos/criar",
+              level: "auth" 
+            }
+          ]
+        },
+        {
+          entidade: "Pendentes",
+          texto:
+            "Trabalhos em curso guardados para mais tarde terem continuidade: criação e alteração de instâncias.",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/pendentes"
+            }
+          ]
+        }
+      ]
         }
     }
 }
