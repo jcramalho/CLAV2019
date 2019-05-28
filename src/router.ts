@@ -120,11 +120,11 @@ export default new Router({
       name: "pendentes",
       component: () => import("./views/pendentes/Pendentes.vue")
     },
-    /*{
-      path: "/pendentes/:idPendente",
-      name: "consultaPendente",
-      component: () => import("./views/pendentes/PendentesConsulta.vue")
-    },*/
+    {
+      path: "/pendentes/continuar/:idPendente",
+      name: "continuaPendente",
+      component: () => import("./views/pendentes/PendentesContinuacao.vue")
+    },
     // Routes da gestão de utilizadores
     {
       path: "/autenticacao",

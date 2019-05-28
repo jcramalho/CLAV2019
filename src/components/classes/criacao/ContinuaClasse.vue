@@ -15,15 +15,9 @@
                   <div class="info-label">Nível:</div>
                 </v-flex>
                 <v-flex xs6>
-                  <v-select
-                    item-text="label"
-                    item-value="value"
-                    v-model="classe.nivel"
-                    :items="classeNiveis"
-                    label="Selecione o nível da classe:"
-                    solo
-                    dense
-                  />
+                  <div class="info-content">
+                      {{ classe.nivel }}
+                    </div>
                 </v-flex>
               </v-layout>
               <!-- CLASSE PAI -->
@@ -132,9 +126,7 @@
 
       <v-flex xs12>
         <div>
-          <v-btn dark round color="teal darken-4" 
-            @click="guardarTrabalho"
-            v-bind:disabled="classe.codigo==''"
+          <v-btn dark round color="teal darken-4" @click="guardarTrabalho"
             >Guardar trabalho</v-btn>
           <v-btn dark round color="teal darken-4" @click="criarClasse"
             >Criar classe</v-btn
@@ -184,6 +176,8 @@ import DecisaoSemSubDF from "@/components/classes/criacao/DecisaoSemSubDF.vue";
 import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel.vue";
 
 export default {
+    props: ["obj"],
+
   components: {
     BlocoDescritivo,
     BlocoContexto,
@@ -196,72 +190,7 @@ export default {
   data: () => ({
     // Objeto que guarda uma classe
 
-    classe: {
-      // Metainformação e campos da área de Descrição
-
-      nivel: 0,
-      pai: {
-        codigo: "",
-        titulo: ""
-      },
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      notasAp: [],
-      exemplosNotasAp: [],
-      notasEx: [],
-      termosInd: [],
-
-      temSubclasses4Nivel: false,
-      temSubclasses4NivelPCA: false,
-      temSubclasses4NivelDF: false,
-      subdivisao4Nivel01Sintetiza02: true,
-
-      // Campos da área do Contexto de Avaliação
-      // Tipo de processo
-
-      tipoProc: "PC",
-      procTrans: "N",
-
-      // Donos do processo: lista de entidades
-
-      donos: [],
-
-      // Participantes no processo: lista de entidades
-
-      participantes: [],
-
-      // Processos Relacionados
-
-      processosRelacionados: [],
-
-      // Legislação Associada
-
-      legislacao: [],
-
-      // Bloco de decisão de avaliação: PCA e DF
-
-      pca: {
-        valor: null,
-        formaContagem: "",
-        subFormaContagem: "",
-        justificacao: [] // j = [criterio]
-      }, // criterio = {tipo, notas, [proc], [leg]}
-
-      df: {
-        valor: "NE",
-        notas: "",
-        justificacao: []
-      },
-
-      // Bloco de subclasses de nível 4, caso haja desdobramento
-
-      subclasses: [],
-
-      user: {
-        token: ""
-      }
-    },
+    classe: {},
 
     // Estruturas auxiliares
 
@@ -326,31 +255,17 @@ export default {
       'Prazo prescricional estabelecido em "diplomas selecionados no contexto de avaliação": '
   }),
 
+  created: async function(){
+      this.classe = this.obj
+      await this.loadPais();
+  },
+
   watch: {
     "classe.pai.codigo": function() {
       // O código da classe depende da classe pai
-      this.classe.codigo = '';
-      if (this.classe.pai.codigo)
-        this.classe.codigo = this.classe.pai.codigo + ".";
-    },
-    "classe.nivel": function() {
-      // A classe pai depende do nível
-      this.classe.pai.codigo = '';
-
-      if (this.classe.nivel > 1) {
-        this.loadPais();
-      }
-      if (this.classe.nivel >= 3 && !this.semaforos.entidadesReady) {
-        this.loadEntidades();
-      }
-      if (this.classe.nivel >= 3 && !this.semaforos.classesReady) {
-        this.loadProcessos();
-      }
-      if (this.classe.nivel >= 3 && !this.semaforos.legislacaoReady) {
-        this.loadLegislacao();
-      }
-      if (this.classe.nivel >= 3) {
-        this.loadPCA();
+      if(this.classe.codigo == ''){
+          if (this.classe.pai.codigo)
+            this.classe.codigo = this.classe.pai.codigo + ".";
       }
     },
 
@@ -882,10 +797,6 @@ export default {
       this.$router.push("/");
     },
 
-    guardarTrabalhoOK: function(){
-      return ((this.classe.codigo!='')&&(this.classe.pai.codigo!=''))
-    },
-
     guardarTrabalho: async function() {
       try{
         if (this.$store.state.user.name === "") {
@@ -905,6 +816,7 @@ export default {
             }
           };
           var response = await axios.post(lhost + "/api/pendentes", pendenteParams);
+          alert(JSON.stringify(response.data))
           this.pendenteGuardado = true;
       }
     }
