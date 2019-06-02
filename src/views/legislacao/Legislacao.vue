@@ -71,7 +71,9 @@ export default {
           });
         }
         return ids;
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 };

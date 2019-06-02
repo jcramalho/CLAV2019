@@ -9,7 +9,7 @@
 
       <template v-slot:items="props">
         <tr @click="rowClicked(props.item)">
-          <td class="subheading">{{ props.item.data.split('T')[0] }}</td>
+          <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
           <td class="subheading">{{ props.item.estado }}</td>
           <td class="subheading">{{ props.item.codigo }}</td>
           <td class="subheading">{{ props.item.criadoPor }}</td>
