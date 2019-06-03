@@ -41,11 +41,11 @@
             v-on:change="
               {
                 props.item.dono && !props.item.participante
-                  ? calcRel(props.item.classe)
+                  ? (calcRel(props.item.classe), selProcComum(props.item))
                   : props.item.dono && props.item.participante
-                  ? null
+                  ? selProcComum(props.item)
                   : !props.item.dono && !props.item.participante
-                  ? uncheck(props.item.classe)
+                  ? (uncheck(props.item.classe), desSelProcComum(props.item))
                   : null;
               }
             "
@@ -59,11 +59,11 @@
             v-on:change="
               {
                 props.item.participante && !props.item.dono
-                  ? calcRel(props.item.classe)
+                  ? (calcRel(props.item.classe), selProcComum(props.item))
                   : props.item.participante && props.item.dono
-                  ? null
+                  ? selProcComum(props.item)
                   : !props.item.participante && !props.item.dono
-                  ? uncheck(props.item.classe)
+                  ? (uncheck(props.item.classe), desSelProcComum(props.item))
                   : null;
               }
             "
@@ -81,6 +81,7 @@ const axios = require("axios");
 export default {
   props: ["lista", "tipo"],
   data: () => ({
+    // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
         text: "Classe",
@@ -101,21 +102,17 @@ export default {
         value: "participante"
       }
     ],
-
-    processo: "",
-    // listas resultantes do calculo da travessia, separados por comuns e os restantes
+    // Lista dos processos comuns resultantes das travessias
     listaResComuns: [],
+    // Lista dos processos restantes resultantes das travessias
     listaResRestantes: [],
     // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
-    listaProcResultado: {}
+    listaProcResultado: {},
+    // Lista com os processos comuns selecionados
+    procComunsSel: []
   }),
-  computed: {
-    estado() {
-      return this.$store.state.criacaoTabSel;
-    }
-  },
   methods: {
-    // retorna a lista dos processos complementares ao processo passado como parâmetro
+    // Retorna a lista dos processos complementares ao processo passado como parâmetro
     loadComplementares: async function(p, profundidade) {
       try {
         var response = await axios.get(
@@ -133,7 +130,7 @@ export default {
         console.log(erro);
       }
     },
-
+    // Retorna a lista dos processos sintetizados ao processo passado como parâmetro
     loadSintetizados: async function(p, profundidade) {
       try {
         var response = await axios.get(
@@ -151,7 +148,7 @@ export default {
         console.log(erro);
       }
     },
-
+    // Retorna a lista dos processos suplementares ao processo passado como parâmetro
     loadSuplementares: async function(p, profundidade) {
       try {
         var response = await axios.get(
@@ -169,9 +166,10 @@ export default {
         console.log(erro);
       }
     },
+    // Calculo da travessia do processo passado como parametro
     calcRel: async function(processo) {
-      this.$emit("contadorProcSel");
       this.$emit("aCalcular", true);
+
       try {
         var profundidade = 1;
         var stackProc = [];
@@ -188,13 +186,13 @@ export default {
         ) {
           stackProc.push({ listaProc: [], nivel: profundidade + 1 });
           for (
-            var i = 0;
-            i < stackProc[profundidade - 1].listaProc.length;
-            i++
+            var s = 0;
+            s < stackProc[profundidade - 1].listaProc.length;
+            s++
           ) {
-            proc = stackProc[profundidade - 1].listaProc[i];
+            proc = stackProc[profundidade - 1].listaProc[s];
 
-            // vai procurar os processos que estabelecem com este processo a relação de "complementares"
+            // Procura os processos que estabelecem com este processo a relação de "complementares"
             var comp = await this.loadComplementares(proc, profundidade);
             if (comp.length > 0) {
               listaResultados = await this.juntaNovos(listaResultados, comp);
@@ -208,7 +206,7 @@ export default {
                 )
               );
             }
-
+            // Procura os processos que estabelecem com este processo a relação de "sintetizados"
             var sint = await this.loadSintetizados(proc, profundidade);
             if (sint.length > 0) {
               listaResultados = await this.juntaNovos(listaResultados, sint);
@@ -222,7 +220,7 @@ export default {
                 )
               );
             }
-
+            // Procura os processos que estabelecem com este processo a relação de "suplementares"
             var sup = await this.loadSuplementares(proc, profundidade);
             if (sup.length > 0) {
               listaResultados = await this.juntaNovos(listaResultados, sup);
@@ -245,6 +243,7 @@ export default {
         });
 
         this.listaProcResultado[processo] = listaResultados;
+
         console.log(
           "calcRel: listaProcResultados \n Listas com todos os processos resultantes da travessia com ponto de partida no processo x:",
           this.listaProcResultado
@@ -273,10 +272,10 @@ export default {
         }
         // retira aqueles processos que já estão selecionados
         var procSel = Object.keys(this.listaProcResultado);
-        for (var i = 0; i < procSel.length; i++) {
-          if (this.listaResComuns.includes(procSel[i])) {
+        for (var x = 0; x < procSel.length; x++) {
+          if (this.listaResComuns.includes(procSel[x])) {
             this.listaResComuns.splice(
-              this.listaResComuns.indexOf(procSel[i]),
+              this.listaResComuns.indexOf(procSel[x]),
               1
             );
           }
@@ -326,7 +325,7 @@ export default {
         return p.codigo;
       });
     },
-    // função para reverter a seleção
+    // Reverte a seleção
     uncheck: async function(processo) {
       // apaga o resultado da travessia desse processo
       delete this.listaProcResultado[processo];
@@ -380,7 +379,20 @@ export default {
       );
 
       this.$emit("contadorProcPreSelCom", this.listaResComuns);
-      this.$emit("uncheckProcSel");
+    },
+    // Para colocar e retirar qualquer processo da lista de processos comuns selecionados
+    selProcComum: async function(processo) {
+      if (!this.procComunsSel.includes(processo)) {
+        this.procComunsSel.push(processo);
+        this.$emit("contadorProcSelCom", this.procComunsSel);
+      }
+    },
+    desSelProcComum: async function(processo) {
+      var index = this.procComunsSel.findIndex(
+        e => e.classe === processo.classe
+      );
+      this.procComunsSel.splice(index, 1);
+      this.$emit("contadorProcSelCom", this.procComunsSel);
     }
   }
 };

@@ -13,9 +13,9 @@
             </v-flex>
             <v-flex xs12 sm6 d-flex>
               <v-select
-                :items="items"
+                :items="['Organizacional', 'Pluriorganizacional']"
                 label="Tipo"
-                v-model="estado.tipo"
+                v-model="tipo"
               ></v-select>
               <v-flex xs12 sm3>
                 <v-btn
@@ -40,9 +40,10 @@
             stepNo = 1.5;
             barra(12.5);
             loadEntidades();
+            estado.tipo = tipo;
           "
-          v-if="estado.tipo == 'Pluriorganizacional'"
-          :disabled="!estado.tipo"
+          v-if="tipo == 'Pluriorganizacional'"
+          :disabled="!tipo"
         >
           Continuar
         </v-btn>
@@ -52,21 +53,22 @@
             stepNo = 1.5;
             barra(12.5);
             loadTipologias();
+            estado.tipo = tipo;
           "
           v-else
-          :disabled="!estado.tipo"
+          :disabled="!tipo"
         >
           Continuar
         </v-btn>
       </v-stepper-content>
 
       <v-stepper-step
-        v-if="estado.tipo == 'Pluriorganizacional'"
+        v-if="tipo == 'Pluriorganizacional'"
         :complete="stepNo > 1.5"
         step="1.5"
         >Entidades abrangidas pela TS</v-stepper-step
       >
-      <v-stepper-content step="1.5" v-if="estado.tipo == 'Pluriorganizacional'">
+      <v-stepper-content step="1.5" v-if="tipo == 'Pluriorganizacional'">
         <v-layout wrap>
           <v-flex xs10>
             <v-select
@@ -98,12 +100,12 @@
       </v-stepper-content>
 
       <v-stepper-step
-        v-if="estado.tipo == 'Organizacional'"
+        v-if="tipo == 'Organizacional'"
         :complete="stepNo > 1.5"
         step="1.5"
         >Tipologias de entidade a que pertence</v-stepper-step
       >
-      <v-stepper-content step="1.5" v-if="estado.tipo == 'Organizacional'">
+      <v-stepper-content step="1.5" v-if="tipo == 'Organizacional'">
         <v-expansion-panel>
           <v-expansion-panel-content class="expansion-panel-heading">
             <template v-slot:header>
@@ -179,7 +181,7 @@
         <small>Designação da Nova Tabela de Seleção</small>
       </v-stepper-step>
       <v-stepper-content step="2">
-        <v-flex xs12 sm6 md3 v-if="estado.tipo === 'Organizacional'">
+        <v-flex xs12 sm6 md3 v-if="tipo === 'Organizacional'">
           <v-text-field
             :placeholder="estado.designacao"
             v-model="estado.designacao"
@@ -224,12 +226,11 @@
                   </div>
                 </template>
                 <ListaProcessosComuns
-                  v-bind:lista="procComuns"
+                  v-bind:lista="listaProcComuns"
                   tipo="Processos Comuns"
                   @aCalcular="aCalcular($event)"
-                  @contadorProcSel="contadorProcSel($event)"
+                  @contadorProcSelCom="contadorProcSelCom($event)"
                   @contadorProcPreSelCom="contadorProcPreSelCom($event)"
-                  @uncheckProcSel="uncheckProcSel($event)"
                   @procPreSelRestantes="procPreSelRestantes($event)"
                 />
               </v-expansion-panel-content>
@@ -239,14 +240,14 @@
         <v-layout wrap>
           <v-flex xs3>
             <v-text-field
-              label="Nº de processos selecionados"
-              :value="numProcSel"
+              label="Nº de processos comuns selecionados"
+              :value="numProcSelCom"
             ></v-text-field>
           </v-flex>
           <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               v-if="!progressCalcular"
-              label="Nº de processos pré selecionados"
+              label="Nº de processos comuns pré selecionados"
               :value="numProcPreSelCom"
             ></v-text-field>
             <v-progress-circular
@@ -295,13 +296,13 @@
                   </div>
                 </template>
                 <ListaProcessosEspecificos
-                  v-bind:lista="procEsp"
+                  v-bind:lista="listaProcEsp"
                   tipo="Processos Especificos"
                   v-bind:listaPreSel="procPreSelRes"
                   @aCalcular="aCalcular($event)"
-                  @contadorProcSel="contadorProcSel($event)"
+                  @contadorProcSelEsp="contadorProcSelEsp($event)"
                   @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
-                  @uncheckProcSel="uncheckProcSel($event)"
+                  @procPreSelRestantes="procPreSelRestantes($event)"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -310,8 +311,69 @@
         <v-layout wrap>
           <v-flex xs3>
             <v-text-field
-              label="Nº de processos selecionados"
-              :value="numProcSel"
+              label="Nº de processos específicos selecionados"
+              :value="numProcSelEsp"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs4 style="padding-left:60px;">
+            <v-text-field
+              v-if="!progressCalcular"
+              label="Nº de processos pré selecionados"
+              :value="numProcPreSelEsp"
+            ></v-text-field>
+            <v-progress-circular
+              v-else
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </v-flex>
+        </v-layout>
+        <v-btn
+          color="primary"
+          @click="
+            stepNo = 5;
+            barra(75);
+            printEstado();
+            loadProcEspRestantes();
+          "
+          >Continuar</v-btn
+        >
+        <v-btn
+          flat
+          @click="
+            stepNo = 3;
+            barra(50);
+          "
+          >Voltar</v-btn
+        >
+      </v-stepper-content>
+
+      <v-stepper-step :complete="stepNo > 5" step="5"
+        >Processos Específicos Restantes
+      </v-stepper-step>
+      <v-stepper-content step="5">
+        <v-layout wrap>
+          <v-flex xs10>
+            <v-expansion-panel>
+              <v-expansion-panel-content class="expansion-panel-heading">
+                <template v-slot:header>
+                  <div class="subheading font-weight-bold">
+                    Selecione os Processos de Negócio Específicos Restantes
+                  </div>
+                </template>
+                <ListaProcessosRestantes
+                  v-bind:lista="listaProcEspRes"
+                  tipo="Processos Especificos"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-flex>
+        </v-layout>
+        <v-layout wrap>
+          <v-flex xs3>
+            <v-text-field
+              label="Nº de processos restantes selecionados"
+              :value="numProcSelRes"
             ></v-text-field>
           </v-flex>
           <v-flex xs4 style="padding-left:60px;">
@@ -345,7 +407,7 @@
         >
       </v-stepper-content>
 
-      <v-btn color="primary" v-if="stepNo > 4">Submeter</v-btn>
+      <v-btn color="primary" v-if="stepNo > 5">Submeter</v-btn>
       <v-btn color="primary" v-else>Guardar trabalho</v-btn>
       <v-btn flat>Cancelar</v-btn>
     </v-stepper>
@@ -358,6 +420,7 @@ const lhost = require("@/config/global").host;
 
 import ListaProcessosComuns from "@/components/tabSel/ListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/ListaProcessosEspecificos.vue";
+import ListaProcessosRestantes from "@/components/tabSel/ListaProcessosRestantes.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
@@ -369,11 +432,11 @@ export default {
     }
   },
   watch: {
-    "estado.tipo": function() {
-      if (this.estado.tipo === "Organizacional") {
+    tipo: function() {
+      if (this.tipo === "Organizacional") {
         this.infoUserEnt();
       }
-      if (this.estado.tipo === "Pluriorganizacional") {
+      if (this.tipo === "Pluriorganizacional") {
         this.estado.designacao = "";
       }
     }
@@ -381,40 +444,83 @@ export default {
   components: {
     ListaProcessosComuns,
     ListaProcessosEspecificos,
+    ListaProcessosRestantes,
     DesSelTip,
     SelTip
   },
   data() {
     return {
+      // Numero do passo da criação de TS
       stepNo: 1,
-      items: ["Organizacional", "Pluriorganizacional"],
-      entidades: [],
-      procComuns: [],
-      procEsp: [],
-      infoButton: false,
+      // Valor da barra de progresso
       valorBarra: 0,
-
-      numProcSel: 0,
+      // Tipo da TS
+      tipo: "",
+      // Botão da informação sobre os passos da criação de TS
+      infoButton: false,
+      // Lista de todas as entidades existentes
+      entidades: [],
+      // Lista de todas as tipologias existentes
+      tipologias: [],
+      // True quando a lista de tipologias estiver carregada
+      tipologiasReady: false,
+      // Lista das tipologias desta entidade
+      tipEnt: [],
+      // Lista com as tipologias selecionadas
+      tipSel: [],
+      // Lista com todos os processos especificos da entidade e tipologias em causa
+      listaProcEsp: [],
+      // Lista com Todos os processos especificos existentes
+      listaTotalProcEsp: [],
+      // Lista com todos os processos comuns
+      listaProcComuns: [],
+      // True enquanto estiver a ser efetuado uma travessia
+      progressCalcular: false,
+      // Numero de processos comuns selecionados
+      numProcSelCom: 0,
+      // Lista dos processos comuns selecionados
+      listaProcSelCom: [],
+      // Numero de processos comuns que se encontram pré selecionados
       numProcPreSelCom: 0,
+      // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs comuns)
+      procPreSelRes: [],
+      // Numero de processos pre selecionados especificos
       numProcPreSelEsp: 0,
+      // Numero de processos especificos selecionados
+      numProcSelEsp: 0,
+      // Lista dos processos especificos selecionados
+      listaProcSelEsp: [],
+      // Lista dos processos especificos restantes (que não são especificos da entidade nem da tipologia em causa)
+      listaProcEspRes: [],
+      // Numero de processos restantes selecionados
+      numProcSelRes: 0,
+
       numProcPreSel: 0,
 
-      progressCalcular: false,
-
-      // Para o seletor de processos
-      tipologias: [],
-      tipSel: [],
-      tipEnt: [],
-      tipologiasReady: false,
-
-      procPreSelRes: [],
       procPreSelEsp: []
     };
   },
   methods: {
+    // Valor da barra de progresso
+    barra: async function(valor) {
+      this.valorBarra = valor;
+    },
+    // Reencaminha para a página da informação dos seguintes passos
     passos: function() {
       this.$router.push("/ts/passos");
     },
+    // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
+    infoUserEnt: async function() {
+      var resUser = await axios.get(
+        lhost + "/api/users/listarToken/" + this.$store.state.user.token
+      );
+      var resEnt = await axios.get(
+        lhost + "/api/entidades/" + resUser.data.entidade
+      );
+      this.estado.designacao = resEnt.data.designacao;
+      this.estado.idEntidade = resUser.data.entidade;
+    },
+    // Faz load de todas as entidades
     loadEntidades: async function() {
       try {
         var response = await axios.get(lhost + "/api/entidades");
@@ -432,71 +538,9 @@ export default {
         console.log(erro);
       }
     },
-    loadProcComuns: async function() {
-      try {
-        var response = await axios.get(lhost + "/api/classes?tipo=comum");
-        for (var i = 0; i < response.data.length; i++) {
-          this.procComuns.push({
-            classe: response.data[i].codigo,
-            designacao: response.data[i].titulo,
-            dono: false,
-            participante: false
-          });
-        }
-        return this.procComuns;
-      } catch (erro) {
-        console.log(erro);
-      }
-    },
-    barra: async function(valor) {
-      this.valorBarra = valor;
-    },
-    printEstado: async function() {
-      console.log(this.$store.state.criacaoTabSel);
-    },
-    contadorProcSel: function() {
-      this.numProcSel = this.numProcSel + 1;
-    },
-    contadorProcPreSelCom: function(lista) {
-      this.numProcPreSelCom = lista.length;
-    },
-    contadorProcPreSelEsp: function(lista) {
-      this.numProcPreSelEsp = lista.length;
-    },
-    uncheckProcSel: function() {
-      this.numProcSel = this.numProcSel - 1;
-    },
-    procPreSelRestantes: function(procPreSelRestantes) {
-      this.procPreSelRes = procPreSelRestantes;
-    },
-    // Processos pre selecionados especificos resultantes das travessias da tabela de processos comuns
-    procPreSelEspecificos: function() {
-      console.log(this.procEsp);
-      for (var i = 0; i < this.procEsp.length; i++) {
-        if (this.procPreSelRes.includes(this.procEsp[i].classe)) {
-          this.numProcPreSelEsp += 1;
-        }
-      }
-    },
-    // função que procura o nome da entidade e o id da Entidade associada ao utilizador
-    infoUserEnt: async function() {
-      var resUser = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.user.token
-      );
-      var resEnt = await axios.get(
-        lhost + "/api/entidades/" + resUser.data.entidade
-      );
-      this.estado.designacao = resEnt.data.designacao;
-      this.estado.idEntidade = resUser.data.entidade;
-    },
-    aCalcular: async function(bool) {
-      this.progressCalcular = bool;
-    },
     // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
     loadTipologias: async function() {
       try {
-        var listaTip = [];
-
         var response = await axios.get(lhost + "/api/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
@@ -518,6 +562,7 @@ export default {
             id: item.id
           };
         });
+        // Retira da lista de todas as tipologias as que já pertencem a esta entidade
         for (var i = 0; i < this.tipEnt.length; i++) {
           var index = this.tipologias.findIndex(
             e => e.id === this.tipEnt[i].id
@@ -528,21 +573,23 @@ export default {
         console.log(error);
       }
     },
+    // Retira da lista de tipologias selecionadas
     unselectTipologia: function(tipologia) {
-      // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
       var index = this.tipSel.findIndex(e => e.id === tipologia.id);
       this.tipSel.splice(index, 1);
     },
+    // Coloca na lista de tipologias selecionadas
     selectTipologia: function(tipologia) {
       this.tipSel.push(tipologia);
-      // Remove dos selecionáveis
       var index = this.tipologias.findIndex(e => e.id === tipologia.id);
       this.tipologias.splice(index, 1);
     },
+    // Guarda no estado as tipologias da entidade
     guardarTip: function() {
       this.estado.tipologias = this.tipEnt.concat(this.tipSel);
     },
+    // Carrega os processos específicos da entidade em causa
     loadProcEspecificos: async function() {
       try {
         var url =
@@ -555,34 +602,121 @@ export default {
           url += this.estado.tipologias[i].id;
         }
         var response = await axios.get(url);
-        for (var i = 0; i < response.data.length; i++) {
+        for (var x = 0; x < response.data.length; x++) {
           var jaExiste = false;
-          for (var j = 0; j < this.procEsp.length; j++) {
-            if (this.procEsp[j].classe === response.data[i].codigo) {
+          for (var j = 0; j < this.listaProcEsp.length; j++) {
+            if (this.listaProcEsp[j].classe === response.data[x].codigo) {
               jaExiste = true;
             }
           }
           if (!jaExiste) {
-            this.procEsp.push({
-              classe: response.data[i].codigo,
-              designacao: response.data[i].titulo,
+            this.listaProcEsp.push({
+              classe: response.data[x].codigo,
+              designacao: response.data[x].titulo,
               dono: false,
               participante: false
             });
           }
         }
-        return this.procEsp;
+        return this.listaProcEsp;
       } catch (error) {
         console.log(error);
       }
+    },
+    // Carrega todos os processos comuns
+    loadProcComuns: async function() {
+      try {
+        var response = await axios.get(lhost + "/api/classes?tipo=comum");
+        for (var i = 0; i < response.data.length; i++) {
+          this.listaProcComuns.push({
+            classe: response.data[i].codigo,
+            designacao: response.data[i].titulo,
+            dono: false,
+            participante: false
+          });
+        }
+        return this.listaProcComuns;
+      } catch (erro) {
+        console.log(erro);
+      }
+    },
+    // Enquanto estiver a ser efetuado o calculo da travessia, coloca esta variavel a false
+    aCalcular: async function(bool) {
+      this.progressCalcular = bool;
+    },
+    // Contador dos processos selecionados comuns
+    contadorProcSelCom: function(procSelec) {
+      this.numProcSelCom = procSelec.length;
+      this.estado.procComuns = procSelec;
+      this.listaProcSelCom = procSelec;
+    },
+    // Contador dos processos pre selecionados comuns
+    contadorProcPreSelCom: function(lista) {
+      this.numProcPreSelCom = lista.length;
+    },
+    // Lista dos processos pre selecionados restantes
+    procPreSelRestantes: function(procPreSelRestantes) {
+      this.procPreSelRes = procPreSelRestantes;
+    },
+    // Processos pre selecionados especificos resultantes das travessias da tabela de processos comuns
+    procPreSelEspecificos: function() {
+      for (var i = 0; i < this.listaProcEsp.length; i++) {
+        if (this.procPreSelRes.includes(this.listaProcEsp[i].classe)) {
+          this.numProcPreSelEsp += 1;
+        }
+      }
+    },
+    // Contador dos processos selecionados especificos
+    contadorProcSelEsp: function(procSelec) {
+      this.numProcSelEsp = procSelec.length;
+      this.estado.procEspecificos = procSelec;
+      this.listaProcSelEsp = procSelec;
+    },
+    // Contador dos processos pre selecionados especificos
+    contadorProcPreSelEsp: function(lista) {
+      this.numProcPreSelEsp = lista.length;
+    },
+    // Carrega todos os processos especificos testantes
+    loadProcEspRestantes: async function() {
+      try {
+        var response = await axios.get(lhost + "/api/classes?tipo=especifico");
+        this.listaTotalProcEsp = response.data;
+        for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
+          var espEntTip = false;
+          for (var j = 0; j < this.listaProcEsp.length; j++) {
+            if (
+              this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
+            ) {
+              espEntTip = true;
+              break;
+            }
+          }
+          if (espEntTip === false) {
+            this.listaProcEspRes.push({
+              classe: this.listaTotalProcEsp[i].codigo,
+              designacao: this.listaTotalProcEsp[i].titulo,
+              dono: false,
+              participante: false
+            });
+          }
+        }
+        console.log(this.listaTotalProcEsp);
+        console.log(this.listaProcEsp);
+        console.log(this.listaProcComuns);
+        console.log(this.estado.procComuns);
+        console.log(this.estado.procEspecificos);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    printEstado: async function() {
+      console.log(this.$store.state.criacaoTabSel);
     }
   },
   created: function() {
     this.loadProcComuns();
-    if (this.$store.state.criacaoTabSel.passoN > "1") {
-      this.stepNo = this.$store.state.criacaoTabSel.passoN;
-      this.valorBarra = this.$store.state.criacaoTabSel.percent;
-    }
+    this.estado.procComuns = [];
+    this.estado.procEspecificos = [];
   }
 };
 </script>

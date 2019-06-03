@@ -233,7 +233,7 @@ export default {
     // regras para submissão
     regraNumero: [
       v =>
-        /[0-9]+(\-\w)?\/[0-9]+$/.test(v) || "Este campo está no formato errado."
+        /[0-9]+(-\w)?\/[0-9]+$/.test(v) || "Este campo está no formato errado."
     ],
     regraData: [
       v =>
@@ -361,22 +361,22 @@ export default {
         this.legislacao.entidades[i] = this.entSel[i].id;
       }
 
-      for (var i = 0; i < this.procSel.length; i++) {
-        this.legislacao.processos[i] = this.procSel[i].id;
+      for (var j = 0; j < this.procSel.length; j++) {
+        this.legislacao.processos[j] = this.procSel[j].id;
       }
 
       // testes aos campos numero e data
       var parseAno = this.legislacao.numero.split("/");
       var anoDiploma = parseInt(parseAno[1]);
 
-      if (!/[0-9]+(\-\w)?\/[0-9]+$/.test(this.legislacao.numero)) {
+      if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.legislacao.numero)) {
         this.text = "O campo 'Número' está no formato errado.";
         this.snackbar = true;
         return false;
       }
 
       if (anoDiploma < 2000) {
-        if (!/[0-9]+(\-\w)?\/[0-9]\d{1}$/.test(this.legislacao.numero)) {
+        if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.legislacao.numero)) {
           this.text =
             "Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!";
           this.snackbar = true;
@@ -406,8 +406,7 @@ export default {
         return false;
       }
       if (dia > dias[mes - 1]) {
-        if (ano % 4 == 0 && mes == 2 && dia == 29) {
-        } else {
+        if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
           this.text = "Dia do mês inválido!";
           this.snackbar = true;
           return false;
