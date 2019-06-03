@@ -56,10 +56,10 @@ export default {
     ],
     etapas: []
   }),
-  
+
   mounted: function() {
-    this.pendente = this.obj
-    this.pendenteLoaded = true
+    this.pendente = this.obj;
+    this.pendenteLoaded = true;
   }
 };
 </script>

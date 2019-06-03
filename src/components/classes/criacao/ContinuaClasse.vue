@@ -16,8 +16,8 @@
                 </v-flex>
                 <v-flex xs6>
                   <div class="info-content">
-                      {{ classe.nivel }}
-                    </div>
+                    {{ classe.nivel }}
+                  </div>
                 </v-flex>
               </v-layout>
               <!-- CLASSE PAI -->
@@ -127,7 +127,8 @@
       <v-flex xs12>
         <div>
           <v-btn dark round color="teal darken-4" @click="guardarTrabalho"
-            >Guardar trabalho</v-btn>
+            >Guardar trabalho</v-btn
+          >
           <v-btn dark round color="teal darken-4" @click="criarClasse"
             >Criar classe</v-btn
           >
@@ -142,7 +143,11 @@
         </v-btn>
       </v-snackbar>
 
-      <v-snackbar v-model="pendenteGuardado" :color="'teal darken-1'" :timeout="60000">
+      <v-snackbar
+        v-model="pendenteGuardado"
+        :color="'teal darken-1'"
+        :timeout="60000"
+      >
         {{ mensagemPendenteGuardadoOK }}
         <v-btn dark flat @click="pendenteGuardadoOK">
           Fechar
@@ -176,7 +181,7 @@ import DecisaoSemSubDF from "@/components/classes/criacao/DecisaoSemSubDF.vue";
 import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel.vue";
 
 export default {
-    props: ["obj"],
+  props: ["obj"],
 
   components: {
     BlocoDescritivo,
@@ -255,17 +260,17 @@ export default {
       'Prazo prescricional estabelecido em "diplomas selecionados no contexto de avaliação": '
   }),
 
-  created: async function(){
-      this.classe = this.obj
-      await this.loadPais();
+  created: async function() {
+    this.classe = this.obj.objeto;
+    await this.loadPais();
   },
 
   watch: {
     "classe.pai.codigo": function() {
       // O código da classe depende da classe pai
-      if(this.classe.codigo == ''){
-          if (this.classe.pai.codigo)
-            this.classe.codigo = this.classe.pai.codigo + ".";
+      if (this.classe.codigo == "") {
+        if (this.classe.pai.codigo)
+          this.classe.codigo = this.classe.pai.codigo + ".";
       }
     },
 
@@ -798,31 +803,34 @@ export default {
     },
 
     guardarTrabalho: async function() {
-      try{
+      try {
         if (this.$store.state.user.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          var userBD = await axios.get(
-            lhost + "/api/users/listarToken/" + this.$store.state.user.token
-          );
+          this.obj.numInterv++;
+          var cDate = Date.now();
+          
           var pendenteParams = {
-            acao: "Criação",
-            tipo: "Classe",
+            _id: this.obj._id,
+            dataAtualizacao: cDate,
+            numInterv: this.obj.numInterv,
+            acao: this.obj.acao,
+            tipo: this.obj.tipo,
             objeto: this.classe,
-            criadoPor: userBD.data.email,
+            criadoPor: this.obj.criadoPor,
             user: {
-              email: userBD.data.email,
               token: this.$store.state.user.token
             }
           };
-          var response = await axios.post(lhost + "/api/pendentes", pendenteParams);
-          alert(JSON.stringify(response.data))
+          var response = await axios.put(
+            lhost + "/api/pendentes",
+            pendenteParams
+          );
           this.pendenteGuardado = true;
+        }
+      } catch (error) {
+        return error;
       }
-    }
-    catch(error){
-      return error
-    }
     }
   }
 };

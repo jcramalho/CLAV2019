@@ -1,5 +1,7 @@
 <template>
-  <v-container>
+  <v-container fluid>
+    <v-layout row wrap ma-2>
+      <v-flex xs12>
     <v-data-table :headers="headers" :items="pedidos" class="elevation-1">
       <template v-slot:no-data>
         <v-alert :value="true" color="error" icon="warning">
@@ -9,7 +11,7 @@
 
       <template v-slot:items="props">
         <tr @click="rowClicked(props.item)">
-          <td class="subheading">{{ props.item.data.split('T')[0] }}</td>
+          <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
           <td class="subheading">{{ props.item.estado }}</td>
           <td class="subheading">{{ props.item.codigo }}</td>
           <td class="subheading">{{ props.item.criadoPor }}</td>
@@ -20,6 +22,8 @@
         </tr>
       </template>
     </v-data-table>
+    </v-flex>
+    </v-layout>
   </v-container>
 </template>
 

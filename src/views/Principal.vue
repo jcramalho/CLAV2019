@@ -20,7 +20,10 @@ import Entidades from "@/components/principal/Entidades.vue";
 
 export default {
   components: {
-    Info, DocumentacaoApoio, Operacoes, Entidades
+    Info,
+    DocumentacaoApoio,
+    Operacoes,
+    Entidades
   },
 
   methods: {
@@ -30,7 +33,7 @@ export default {
   },
   data() {
     return {
-      panelHeaderColor: "indigo accent-4",
+      panelHeaderColor: "indigo accent-4"
     };
   }
 };

@@ -132,10 +132,14 @@
 
       <v-flex xs12>
         <div>
-          <v-btn dark round color="teal darken-4" 
+          <v-btn
+            dark
+            round
+            color="teal darken-4"
             @click="guardarTrabalho"
-            v-bind:disabled="classe.codigo==''"
-            >Guardar trabalho</v-btn>
+            v-bind:disabled="classe.codigo == ''"
+            >Guardar trabalho</v-btn
+          >
           <v-btn dark round color="teal darken-4" @click="criarClasse"
             >Criar classe</v-btn
           >
@@ -150,7 +154,11 @@
         </v-btn>
       </v-snackbar>
 
-      <v-snackbar v-model="pendenteGuardado" :color="'teal darken-1'" :timeout="60000">
+      <v-snackbar
+        v-model="pendenteGuardado"
+        :color="'teal darken-1'"
+        :timeout="60000"
+      >
         {{ mensagemPendenteGuardadoOK }}
         <v-btn dark flat @click="pendenteGuardadoOK">
           Fechar
@@ -329,13 +337,13 @@ export default {
   watch: {
     "classe.pai.codigo": function() {
       // O código da classe depende da classe pai
-      this.classe.codigo = '';
+      this.classe.codigo = "";
       if (this.classe.pai.codigo)
         this.classe.codigo = this.classe.pai.codigo + ".";
     },
     "classe.nivel": function() {
       // A classe pai depende do nível
-      this.classe.pai.codigo = '';
+      this.classe.pai.codigo = "";
 
       if (this.classe.nivel > 1) {
         this.loadPais();
@@ -882,12 +890,12 @@ export default {
       this.$router.push("/");
     },
 
-    guardarTrabalhoOK: function(){
-      return ((this.classe.codigo!='')&&(this.classe.pai.codigo!=''))
+    guardarTrabalhoOK: function() {
+      return this.classe.codigo != "" && this.classe.pai.codigo != "";
     },
 
     guardarTrabalho: async function() {
-      try{
+      try {
         if (this.$store.state.user.name === "") {
           this.loginErrorSnackbar = true;
         } else {
@@ -895,6 +903,7 @@ export default {
             lhost + "/api/users/listarToken/" + this.$store.state.user.token
           );
           var pendenteParams = {
+            numInterv: 1,
             acao: "Criação",
             tipo: "Classe",
             objeto: this.classe,
@@ -904,13 +913,15 @@ export default {
               token: this.$store.state.user.token
             }
           };
-          var response = await axios.post(lhost + "/api/pendentes", pendenteParams);
+          var response = await axios.post(
+            lhost + "/api/pendentes",
+            pendenteParams
+          );
           this.pendenteGuardado = true;
+        }
+      } catch (error) {
+        return error;
       }
-    }
-    catch(error){
-      return error
-    }
     }
   }
 };
