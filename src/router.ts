@@ -145,6 +145,16 @@ export default new Router({
       path: "/login",
       name: "login",
       component: () => import("./views/Login.vue")
-    }
+    },
+    {
+      path: "/recuperacao",
+      name: "recuperacao",
+      component: () => import("./views/Recuperacao.vue")
+    },
+    {
+      path: "/alteracaoPassword",
+      name: "alteracaoPassword",
+      component: () => import("./views/AlteracaoPassword.vue")
+    },
   ]
 });
