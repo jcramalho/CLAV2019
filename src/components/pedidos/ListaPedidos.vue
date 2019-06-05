@@ -2,11 +2,22 @@
   <v-container fluid>
     <v-layout row wrap ma-2>
       <v-flex xs12>
-    <v-data-table :headers="headers" :items="pedidos" class="elevation-1">
+    <v-data-table 
+      :headers="headers" 
+      :items="pedidos" 
+      class="elevation-1"
+      rows-per-page-text="Pedidos por página">
+      
       <template v-slot:no-data>
         <v-alert :value="true" color="error" icon="warning">
           Não foi possível apresentar uma lista dos pedidos...
         </v-alert>
+      </template>
+
+      <template slot="headerCell" slot-scope="props">
+        <span style="color: blue;">
+          {{ props.header.text }}
+        </span>
       </template>
 
       <template v-slot:items="props">
@@ -18,8 +29,21 @@
           <td class="subheading">
             {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
           </td>
-          <td class="subheading">{{ props.item.objeto.codigo }}</td>
+          <td class="subheading">
+            <v-btn color="blue" dark round @click="showPedido(props.item)">
+              {{ props.item.objeto.codigo }}
+            </v-btn>
+          </td>
+          <td>
+            <v-btn v-if="props.item.estado=='Submetido'" color="blue" dark round @click="distribuir(props.item)">
+              Distribuir
+            </v-btn>
+          </td>
         </tr>
+      </template>
+
+      <template v-slot:pageText="props">
+        Pedidos {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
       </template>
     </v-data-table>
     </v-flex>
@@ -34,20 +58,8 @@ const lhost = require("@/config/global").host;
 export default {
   data: () => ({
     headers: [
-      {
-        text: "Data",
-        align: "left",
-        sortable: true,
-        value: "data",
-        class: "title"
-      },
-      {
-        text: "Estado",
-        align: "left",
-        sortable: false,
-        value: "estado",
-        class: "title"
-      },
+      {text: "Data", align: "left", sortable: true, value: "data", class: "title"},
+      { text: "Estado", align: "left", sortable: false, value: "estado", class: "title"},
       { text: "Código", value: "codigo", sortable: false, class: "title" },
       {
         text: "Responsável",
@@ -56,7 +68,8 @@ export default {
         class: "title"
       },
       { text: "Tipo", value: "tipo", sortable: false, class: "title" },
-      { text: "Objeto", value: "objeto", sortable: false, class: "title" }
+      { text: "Objeto", value: "objeto", sortable: false, class: "title" },
+      { text: "Tarefa", sortable: false, class: "title" }
     ],
     pedidos: []
   }),
@@ -70,6 +83,10 @@ export default {
   },
   methods: {
     rowClicked: function(item) {
+      this.$emit("pedidoSelected", item);
+    },
+
+    showPedido: function(item){
       this.$emit("pedidoSelected", item);
     }
   }

@@ -2,7 +2,10 @@
   <v-layout wrap row ma-2>
     <!-- Notas de Aplicação -->
     <v-flex xs2>
-      <div class="info-label">Notas de Aplicação</div>
+      <div class="info-label">
+        Notas de Aplicação
+        <InfoBox header="Notas de Aplicação" :text="myhelp.Classe.Campos.NotasAp" />
+      </div>
       <v-tooltip top color="info">
         <template v-slot:activator="{ on }">
           <v-btn
@@ -48,9 +51,22 @@
 
 <script>
 const nanoid = require("nanoid");
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["c"],
+
+  components: {
+    InfoBox
+  },
+
+  data () {
+      return {
+        myhelp: help
+      }
+  },
 
   methods: {
     insereNovaNota: function(notas, tipo) {

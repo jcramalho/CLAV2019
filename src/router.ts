@@ -24,6 +24,11 @@ export default new Router({
       component: () => import("./views/classes/ClassesConsulta.vue")
     },
     {
+      path: "/classes/showPedido/:idPedido",
+      name: "showPedidoClasse",
+      component: () => import("./views/classes/ClassesShowPedido.vue")
+    },
+    {
       path: "/classes/criar",
       name: "criaClasse",
       component: () => import("./views/classes/ClassesCria.vue")

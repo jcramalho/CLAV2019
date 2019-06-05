@@ -3,13 +3,19 @@
   <v-expansion-panel-content>
     <template v-slot:header>
       <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
-        <v-toolbar-title>Descritivo da Classe</v-toolbar-title>
+        <v-toolbar-title>
+          Descritivo da Classe
+          <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" />
+        </v-toolbar-title>
       </v-toolbar>
     </template>
     <v-layout wrap ma-2>
       <!-- DESCRIÇÂO -->
       <v-flex xs2>
-        <div class="info-label">Descrição</div>
+        <div class="info-label">
+          Descrição
+          <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
+        </div>
       </v-flex>
       <v-flex xs9>
         <v-text-field
@@ -34,11 +40,13 @@
 
 <script>
 const nanoid = require("nanoid");
+const help = require("@/config/help").help;
 
 import BlocoDescritivoNotasAp from "@/components/classes/criacao/BlocoDescritivoNotasAp.vue";
 import BlocoDescritivoExemplosNotasAp from "@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue";
 import BlocoDescritivoNotasEx from "@/components/classes/criacao/BlocoDescritivoNotasEx.vue";
 import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["c"],
@@ -47,8 +55,15 @@ export default {
     BlocoDescritivoNotasAp,
     BlocoDescritivoExemplosNotasAp,
     BlocoDescritivoNotasEx,
-    TermosIndiceOps
-  }
+    TermosIndiceOps,
+    InfoBox
+  },
+
+  data () {
+      return {
+        myhelp: help
+      }
+    }
 };
 </script>
 

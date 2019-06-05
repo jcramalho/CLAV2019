@@ -34,6 +34,9 @@
 </template>
 
 <script>
+
+const help = require("@/config/help").help;
+
 export default {
   methods: {
     go: function(url) {
@@ -69,8 +72,7 @@ export default {
       operacoes: [
         {
           entidade: "Lista Consolidada",
-          texto:
-            "Estrutura de classes da “Lista Consolidada para a classificação e avaliação da informação pública” que atualmente se encontra disponível. Inclui os níveis referentes aos processos de negócio da Administração Pública.",
+          texto: help.ListaConsolidada,
           ops: [
             {
               label: "Consultar",
@@ -86,8 +88,7 @@ export default {
         },
         {
           entidade: "Tabelas de Seleção",
-          texto:
-            "Lista das Tabelas de seleção conformes à Lista Consolidada que se encontram aprovadas.",
+          texto: help.TabelasSelecao,
           ops: [
             {
               label: "Consultar",
@@ -101,8 +102,7 @@ export default {
         },
         {
           entidade: "Entidades",
-          texto:
-            "Lista das entidades que estão envolvidas nos processos de negócio da Administração Pública e que foram identificadas até ao momento. Em atualização constante.",
+          texto: help.Entidades,
           ops: [
             {
               label: "Consultar",
@@ -116,8 +116,7 @@ export default {
         },
         {
           entidade: "Tipologias de Entidades",
-          texto:
-            "Lista de tipologias de entidades que estão envolvidas nos processos de negócio da Administração Pública e que foram identificadas até ao momento. Em atualização constante.",
+          texto: help.Tipologias,
           ops: [
             {
               label: "Consultar",
@@ -131,8 +130,7 @@ export default {
         },
         {
           entidade: "Legislação",
-          texto:
-            "Lista da legislação que enquadra os processos de negócio da Administração Pública e que foi identificada até ao momento. Em atualização constante.",
+          texto: help.Legislacao,
           ops: [
             {
               label: "Consultar",
@@ -146,8 +144,7 @@ export default {
         },
         {
           entidade: "Termos de Indice",
-          texto:
-            "Lista da legislação que enquadra os processos de negócio da Administração Pública e que foi identificada até ao momento. Em atualização constante.",
+          texto: help.TermosIndice,
           ops: [
             {
               label: "Consultar",

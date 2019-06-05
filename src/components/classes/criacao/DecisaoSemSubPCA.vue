@@ -24,7 +24,10 @@
     </v-layout>
     <v-layout ma-2 row wrap v-if="semaforos.pcaFormasContagemReady">
       <v-flex xs2>
-        <div class="info-label">Forma de Contagem:</div>
+        <div class="info-label">
+          Forma de Contagem
+          <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
+        </div>
       </v-flex>
       <v-flex xs10>
         <v-select
@@ -70,7 +73,10 @@
       <v-flex xs3>
         <v-layout row wrap>
           <v-flex xs12>
-            <div class="info-label">Justificação do PCA</div>
+            <div class="info-label">
+              Justificação do PCA
+              <InfoBox header="Justificação do PCA" :text="myhelp.Classe.Campos.JustificacaoPCA" />
+            </div>
           </v-flex>
           <v-flex xs12>
             <v-btn
@@ -201,16 +207,21 @@
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
+
 export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
 
   components: {
     ProcessosRelacionadosOps,
-    LegislacaoOps
+    LegislacaoOps, InfoBox
   },
 
   data: function() {
     return {
+      myhelp: help,
       textoCriterioGestionario:
         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
         " escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para" +

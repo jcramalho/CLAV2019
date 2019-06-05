@@ -12,7 +12,7 @@
             <v-container fluid>
               <v-layout wrap>
                 <v-flex xs2>
-                  <div class="info-label">Nível:</div>
+                  <div class="info-label">Nível</div>
                 </v-flex>
                 <v-flex xs6>
                   <v-select
@@ -29,7 +29,10 @@
               <!-- CLASSE PAI -->
               <v-layout wrap v-if="classe.nivel > 1">
                 <v-flex xs2>
-                  <div class="info-label">Classe Pai:</div>
+                  <div class="info-label">
+                    Classe Pai
+                    <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
+                  </div>
                 </v-flex>
                 <v-flex xs10>
                   <v-select
@@ -46,7 +49,10 @@
               <!-- CÓDIGO DA NOVA CLASSE -->
               <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
                 <v-flex xs2>
-                  <div class="info-label">Código:</div>
+                  <div class="info-label">
+                    Código
+                    <InfoBox header="Código da Classe" :text="myhelp.Classe.Campos.Codigo" />
+                  </div>
                 </v-flex>
                 <v-flex xs10>
                   <v-text-field
@@ -61,7 +67,10 @@
               <!-- TÍTULO -->
               <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
                 <v-flex xs2>
-                  <div class="info-label">Título:</div>
+                  <div class="info-label">
+                    Título
+                    <InfoBox header="Título da Classe" :text="myhelp.Classe.Campos.Titulo" />
+                  </div>
                 </v-flex>
                 <v-flex xs10>
                   <v-text-field
@@ -182,6 +191,9 @@
 const lhost = require("@/config/global").host;
 const axios = require("axios");
 const nanoid = require("nanoid");
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
 
 import BlocoDescritivo from "@/components/classes/criacao/BlocoDescritivo.vue";
 import BlocoContexto from "@/components/classes/criacao/BlocoContexto.vue";
@@ -198,7 +210,8 @@ export default {
     Subdivisao3Nivel,
     DecisaoSemSubPCA,
     DecisaoSemSubDF,
-    Subclasses4Nivel
+    Subclasses4Nivel,
+    InfoBox
   },
 
   data: () => ({
@@ -272,6 +285,8 @@ export default {
     },
 
     // Estruturas auxiliares
+
+    myhelp: help,
 
     codeFormats: {
       1: /^[0-9]{3}$/,
