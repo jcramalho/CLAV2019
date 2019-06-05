@@ -289,7 +289,7 @@ export default {
           this.listaResRestantes
         );
 
-        this.$emit("procPreSelRestantes", this.listaResRestantes);
+        this.$emit("procPreSelResTravCom", this.listaResRestantes);
         this.$emit("contadorProcPreSelCom", this.listaResComuns);
         this.$emit("aCalcular", false);
       } catch (erro) {
