@@ -287,7 +287,6 @@ import Donos from "@/components/classes/Donos.vue";
 import Participantes from "@/components/classes/Participantes.vue";
 import ProcessosRelacionados from "@/components/classes/ProcessosRelacionados.vue";
 import Legislacao from "@/components/classes/Legislacao.vue";
-import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue";
 
 export default {
   props: ["idp"],
@@ -309,8 +308,7 @@ export default {
     Donos,
     Participantes,
     ProcessosRelacionados,
-    Legislacao,
-    ClassesArvoreLateral
+    Legislacao
   },
 
   methods: {

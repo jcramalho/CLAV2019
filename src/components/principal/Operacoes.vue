@@ -116,7 +116,7 @@ export default {
         },
         {
           entidade: "Tipologias de Entidades",
-          texto: help.Tipologias,
+          texto: help.TipologiasIntro,
           ops: [
             {
               label: "Consultar",
@@ -130,7 +130,7 @@ export default {
         },
         {
           entidade: "Legislação",
-          texto: help.Legislacao,
+          texto: help.LegislacaoIntro,
           ops: [
             {
               label: "Consultar",

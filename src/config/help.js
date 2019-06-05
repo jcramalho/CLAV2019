@@ -8,9 +8,9 @@ module.exports.help = {
                     "dos Arquivos e das Bibliotecas (DGLAB), conformes à Lista Consolidada.",
     Entidades: "Entidades públicas que intervêm nos processos de negócio (classes de 3º nível) da " +
                 "Lista Consolidada. Podem integrar uma ou mais tipologias de entidades.",
-    Tipologias: "Forma de agrupamento de entidades que intervêm nos processos de negócio " +
+    TipologiasIntro: "Forma de agrupamento de entidades que intervêm nos processos de negócio " +
                 "(classes de 3º nível) da Lista Consolidada. ",
-    Legislacao: "Legislação que regula os processos de negócio e enquadra os respetivos prazos " +
+    LegislacaoIntro: "Legislação que regula os processos de negócio e enquadra os respetivos prazos " +
                 "de conservação administrativa (PCA) e destino final (DF).",
     TermosIndice: "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação.",
     Classe: {
@@ -34,38 +34,38 @@ module.exports.help = {
             TipoProcesso: "Indicação do tipo de processo: processo comum  (ocorre em qualquer entidade pública) ou específico (só ocorre em algumas entidades). Aplica-se  às classes de 3º nível.",
             ProcessoTransversal: "Indicação do tipo de processo: processo comum  (ocorre em qualquer entidade pública) ou específico (só ocorre em algumas entidades). Aplica-se  às classes de 3º nível.",
             Donos: "Nome da(s) entidade(s) responsável(eis) pela condução  do processo de negócio, pelo respetivo produto final e pela guarda do produto final. Aplica-se às classes de 3º nível.",
-            Participantes: "Nome da(s) entidade(s) que participam e contribuem para o produto final, não sendo responsáveis " +
-                            "pela condução do processo de negócio. Aplica-se às classes de 3º nível. \nOs tipos de " +
-                            "participação num processo de negócio são os seguintes: \nApreciar: intervenção no âmbito " +
-                            "da emissão de opinião (parecer, proposta, entre outros). Pode revestir caráter vinculativo." +
-                            "\nAssessorar:  intervenção de apoio pontual ou global. Inclui as ações de assessoria, de " +
-                            "consultoria, entre outras. \nComunicar: intervenção para a comunicação, notificação da ação " +
-                            "ou produto. \nDecidir: intervenção deliberativa, individual ou coletiva, imediata ou decorrente " +
-                            "de conjugação de intenções ou votação. Inclui ações de direção, coordenação, entre outras." +
-                            "\nExecutar: intervenção para a realização da ação. Pode ser uma execução global ou parcial." +
-                            "\nIniciar: intervenção que tem por objetivo desencadear a ação mas não implica a responsabilidade" +
-                            " pela sua execução.",
-            ProcessosRelacionados: "Processos que se relacionam com o processo descrito, com indicação do código e respetivo " +
-                            "título e do tipo de relação. Aplica-se às classes de 3º nível." +
-                            "\nOs tipos de relação entre processos de negócio são os seguintes:" +
-                            "\nAntecessor de: quando o output de um PN é o input de outro PN. O PN descrito é,  por conseguinte, " +
-                            "o antecessor ou o output para o PN aqui selecionado." +
-                            "\nSucessor de: quando o output de um PN é o input de outro PN. O PN descrito é,  por conseguinte, " +
-                            "o sucessor ou o intput para o PN aqui selecionado." +
-                            "\nComplementar de: quando dois PN decorrem de forma paralela, adicionando informação complementar " +
-                            "um ao outro, mas nunca se tocam." +
-                            "\nCruzado com: quando existe interseção de dois PN em determinado momento, seguindo " +
-                            "percursos distintos." +
-                            "\nSíntese de: quando um PN (ou uma etapa de um PN) condensa a informação de outro (ou uma etapa de " +
-                            "outro PN). O PN descrito é, por conseguinte, uma síntese do PN aqui selecionado." +
-                            "\nSintetizado por: quando um PN (ou uma etapa de um PN) condensa a informação de outro (ou uma etapa " +
-                            "de outro PN). O PN descrito é, por conseguinte, sintetizado pelo PN aqui selecionado." +
-                            "\nSuplemento de: quando um PN recolha e analisa informação contida noutros PN, cotejando-os entre si, " +
+            Participantes: "<p>Nome da(s) entidade(s) que participam e contribuem para o produto final, não sendo responsáveis " +
+                            "pela condução do processo de negócio. Aplica-se às classes de 3º nível.</p>\n<p>Os tipos de " +
+                            "participação num processo de negócio são os seguintes:<dl>\n<dt>Apreciar:</dt><dd> intervenção no âmbito " +
+                            "da emissão de opinião (parecer, proposta, entre outros). Pode revestir caráter vinculativo.<dd>" +
+                            "\n<dt>Assessorar:</dt><dd>  intervenção de apoio pontual ou global. Inclui as ações de assessoria, de " +
+                            "consultoria, entre outras.<dd> \n<dt>Comunicar:</dt><dd> intervenção para a comunicação, notificação da ação " +
+                            "ou produto.<dd> \n<dt>Decidir:</dt><dd> intervenção deliberativa, individual ou coletiva, imediata ou decorrente " +
+                            "de conjugação de intenções ou votação. Inclui ações de direção, coordenação, entre outras.<dd>" +
+                            "\n<dt>Executar:</dt><dd> intervenção para a realização da ação. Pode ser uma execução global ou parcial.<dd>" +
+                            "\n<dt>Iniciar:</dt><dd> intervenção que tem por objetivo desencadear a ação mas não implica a responsabilidade" +
+                            " pela sua execução.<dd></dl></p>",
+            ProcessosRelacionados: "<p>Processos que se relacionam com o processo descrito, com indicação do código e respetivo " +
+                            "título e do tipo de relação. Aplica-se às classes de 3º nível.</p>" +
+                            "\n<p>Os tipos de relação entre processos de negócio são os seguintes:<dl>" +
+                            "\n<dt>Antecessor de:</dt><dd> quando o output de um PN é o input de outro PN. O PN descrito é,  por conseguinte, " +
+                            "o antecessor ou o output para o PN aqui selecionado.<dd>" +
+                            "\n<dt>Sucessor de:</dt><dd> quando o output de um PN é o input de outro PN. O PN descrito é,  por conseguinte, " +
+                            "o sucessor ou o intput para o PN aqui selecionado.<dd>" +
+                            "\n<dt>Complementar de:</dt><dd> quando dois PN decorrem de forma paralela, adicionando informação complementar " +
+                            "um ao outro, mas nunca se tocam.<dd>" +
+                            "\n<dt>Cruzado com:</dt><dd> quando existe interseção de dois PN em determinado momento, seguindo " +
+                            "percursos distintos.<dd>" +
+                            "\n<dt>Síntese de:</dt><dd> quando um PN (ou uma etapa de um PN) condensa a informação de outro (ou uma etapa de " +
+                            "outro PN). O PN descrito é, por conseguinte, uma síntese do PN aqui selecionado.<dd>" +
+                            "\n<dt>Sintetizado por:</dt><dd> quando um PN (ou uma etapa de um PN) condensa a informação de outro (ou uma etapa " +
+                            "de outro PN). O PN descrito é, por conseguinte, sintetizado pelo PN aqui selecionado.<dd>" +
+                            "\n<dt>Suplemento de:</dt><dd> quando um PN recolha e analisa informação contida noutros PN, cotejando-os entre si, " +
                             "mas não lhes adicionando conteúdo informativo. O PN descrito é um suplemento do PN aqui selecionado, " +
-                            "isto é, o primeiro recolhe e analisa informação existente no segundo." +
-                            "\nSuplemento para: quando um PN recolha e analisa informação contida noutros PN, cotejando-os entre si, " +
+                            "isto é, o primeiro recolhe e analisa informação existente no segundo.<dd>" +
+                            "\n<dt>Suplemento para:</dt><dd> quando um PN recolha e analisa informação contida noutros PN, cotejando-os entre si, " +
                             "mas não lhes adicionando conteúdo informativo. O PN descrito é um suplemento para o PN aqui selecionado, " +
-                            "isto é, contém informação que o segundo vai necessitar de recolher e analisar.",
+                            "isto é, contém informação que o segundo vai necessitar de recolher e analisar.<dd></dl></p>",
             Legislacao: "Legislação que regula os processos de negócio e enquadra os respetivos prazos de conservação administrativa " +
                         "(PCA) e destino final (DF). Aplica-se às classes de 3º e 4º nível.",
             Prazo: "Prazo de conservação administrativa (PCA), período de tempo, registado em anos, durante o qual a informação " +
@@ -97,25 +97,26 @@ module.exports.help = {
             SubformaContagem: "Informação complementar da forma de contagem do prazo  Conforme disposição legal (F01) " +
                             "referente às datas ou à ação que determina o momento a partir do qual é iniciada a contagem do " +
                             "prazo de conservação administrativa fixado na tabela. Aplica-se às classes de 3º ou 4º nível.",
-            JustificacaoPCA: "Indicação dos critérios que fundamentam o prazo de conservação administrativa (PCA). " +
-                            "Aplica-se às classes de 3º ou 4º nível." +
-                            "\nOs critérios podem ser:" +
-                            "\nCritério de utilidade administrativa: critério que advém da relação suplementar entre PN " +
-                            "sendo necessário guardar o tempo necessário para dar sequência ao PN com o qual está relacionado." +
-                            "\nCritério legal: critério que advém da existência de diploma(s) legal(ais)." +
-                            "\nCritério gestionário: critério que advém do prazo para imputação de responsabilidade pela " +
-                            "gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato.",
+            JustificacaoPCA: "<p>Indicação dos critérios que fundamentam o prazo de conservação administrativa (PCA). " +
+                            "Aplica-se às classes de 3º ou 4º nível.</p>" +
+                            "\n<p>Os critérios podem ser:<dl>" +
+                            "\n<dt>Critério de utilidade administrativa:</dt><dd> critério que advém da relação suplementar entre PN " +
+                            "sendo necessário guardar o tempo necessário para dar sequência ao PN com o qual está relacionado.</dd>" +
+                            "\n<dt>Critério legal:</dt><dd> critério que advém da existência de diploma(s) legal(ais).</dd>" +
+                            "\n<dt>Critério gestionário:</dt><dd> critério que advém do prazo para imputação de responsabilidade pela " +
+                            "gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato.</dd></dl></p>",
             DF: "Indicação do destino final (DF) da informação / documentação, depois de cumprido o prazo de conservação " +
                 "administrativo, podendo ser: Conservação (C), Conservação parcial (CP), Eliminação  (E) e Não especificado " +
                 "(NE). Aplica-se às classes de 3º ou 4º nível.",
-            JustificacaoDF: "Indicação dos critérios que fundamentam o destino final (DF). Aplica-se às classes de 3º ou 4º " +
-                            "nível." +
-                            "\nOs critérios podem ser:" +
-                            "\nCritério de densidade informacional: critério que advém da relação de síntese entre PN, " +
-                            "conservando-se a síntese e eliminando-se a restante informação." +
-                            "\nCritério da complementaridade informacional: critério que advém da relação complementar entre " +
-                            "PN, valorizando-se a conservação da informação dos dois PN. - Critério legal: critério que advém " +
-                            "da existência de diploma(s) legal(ais)."
+            JustificacaoDF: "<p>Indicação dos critérios que fundamentam o destino final (DF). Aplica-se às classes de 3º ou 4º " +
+                            "nível.</p>" +
+                            "\n<p>Os critérios podem ser:<dl>" +
+                            "\n<dt>Critério de densidade informacional:</dt><dd> critério que advém da relação de síntese entre PN, " +
+                            "conservando-se a síntese e eliminando-se a restante informação.</dd>" +
+                            "\n<dt>Critério da complementaridade informacional:</dt><dd> critério que advém da relação complementar entre " +
+                            "PN, valorizando-se a conservação da informação dos dois PN.</dd>" +
+                            "\n<dt>Critério legal:</dt><dd> critério que advém " +
+                            "da existência de diploma(s) legal(ais).</dd></dl></p>"
         }
     },
     Entidade: {
