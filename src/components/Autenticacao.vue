@@ -73,9 +73,16 @@
               É a primeira vez que utiliza estes serviços?
             </v-flex>
             <v-flex class="text-xs-right">
-              <v-btn color="primary" type="submit" @click="registar"
-                >Registar</v-btn
-              >
+              <v-btn color="primary" type="submit" @click="registar">Registar</v-btn>
+            </v-flex>
+          </v-card-actions>
+
+          <v-card-actions>
+            <v-flex>
+              Esqueceu a sua password?
+            </v-flex>
+            <v-flex class="text-xs-right">
+              <v-btn color="primary" type="submit" @click="recuperarPW">Recuperação</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -90,6 +97,9 @@ export default {
   methods: {
     registar() {
       this.$router.push("/registo");
+    },
+    recuperarPW() {
+      this.$router.push("/recuperacao");
     },
     loginEmail() {
       this.$router.push("/login");

@@ -231,7 +231,7 @@
                   @aCalcular="aCalcular($event)"
                   @contadorProcSelCom="contadorProcSelCom($event)"
                   @contadorProcPreSelCom="contadorProcPreSelCom($event)"
-                  @procPreSelRestantes="procPreSelRestantes($event)"
+                  @procPreSelResTravCom="procPreSelResTravCom($event)"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -265,6 +265,7 @@
             barra(75);
             printEstado();
             procPreSelEspecificos();
+            loadProcEspRestantes();
           "
           >Continuar</v-btn
         >
@@ -298,11 +299,11 @@
                 <ListaProcessosEspecificos
                   v-bind:lista="listaProcEsp"
                   tipo="Processos Especificos"
-                  v-bind:listaPreSel="procPreSelRes"
+                  v-bind:listaPreSel="procPreSelResTravComum"
                   @aCalcular="aCalcular($event)"
                   @contadorProcSelEsp="contadorProcSelEsp($event)"
                   @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
-                  @procPreSelRestantes="procPreSelRestantes($event)"
+                  @procPreSelResTravEsp="procPreSelResTravEsp($event)"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -318,7 +319,7 @@
           <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               v-if="!progressCalcular"
-              label="Nº de processos pré selecionados"
+              label="Nº de processos específicos pré selecionados"
               :value="numProcPreSelEsp"
             ></v-text-field>
             <v-progress-circular
@@ -334,7 +335,7 @@
             stepNo = 5;
             barra(75);
             printEstado();
-            loadProcEspRestantes();
+            procPreSelRestantes();
           "
           >Continuar</v-btn
         >
@@ -364,6 +365,10 @@
                 <ListaProcessosRestantes
                   v-bind:lista="listaProcEspRes"
                   tipo="Processos Especificos"
+                  v-bind:listaPreSel="procPreSelEspRestantes"
+                  @aCalcular="aCalcular($event)"
+                  @procPreSelResTravRes="procPreSelResTravRes($event)"
+                  @contadorProcPreSelRes="contadorProcPreSelRes($event)"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -379,8 +384,8 @@
           <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               v-if="!progressCalcular"
-              label="Nº de processos pré selecionados"
-              :value="numProcPreSelEsp"
+              label="Nº de processos restantes pré selecionados"
+              :value="numProcPreSelRes"
             ></v-text-field>
             <v-progress-circular
               v-else
@@ -400,7 +405,7 @@
         <v-btn
           flat
           @click="
-            stepNo = 3;
+            stepNo = 4;
             barra(50);
           "
           >Voltar</v-btn
@@ -483,7 +488,9 @@ export default {
       // Numero de processos comuns que se encontram pré selecionados
       numProcPreSelCom: 0,
       // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs comuns)
-      procPreSelRes: [],
+      procPreSelResTravComum: [],
+      // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs especificos)
+      procPreSelResTravEspecifico: [],
       // Numero de processos pre selecionados especificos
       numProcPreSelEsp: 0,
       // Numero de processos especificos selecionados
@@ -494,10 +501,14 @@ export default {
       listaProcEspRes: [],
       // Numero de processos restantes selecionados
       numProcSelRes: 0,
-
-      numProcPreSel: 0,
-
-      procPreSelEsp: []
+      // Numero de processos restantes que se encontram pré selecionados
+      numProcPreSelRes: 0,
+      // Lista dos processos restantes selecionados
+      listaProcSelRes: [], 
+      // Lista dos processos pré selecionados restantes (resultado das travessias pos PNs especificos restantes)
+      procPreSelResTravRestante: [],
+      // Lista dos processos pré selecionados resultantes das travessias dos comuns e especificos
+      procPreSelEspRestantes: [],
     };
   },
   methods: {
@@ -654,15 +665,30 @@ export default {
     contadorProcPreSelCom: function(lista) {
       this.numProcPreSelCom = lista.length;
     },
-    // Lista dos processos pre selecionados restantes
-    procPreSelRestantes: function(procPreSelRestantes) {
-      this.procPreSelRes = procPreSelRestantes;
+    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
+    procPreSelResTravCom: function(procPreSelResTravCom) {
+      console.log(procPreSelResTravCom)
+      this.procPreSelResTravComum = procPreSelResTravCom;
+    },
+    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs especificos
+    procPreSelResTravEsp: function(procPreSelResTravEsp) {
+      this.procPreSelResTravEspecifico = procPreSelResTravEsp;
     },
     // Processos pre selecionados especificos resultantes das travessias da tabela de processos comuns
     procPreSelEspecificos: function() {
       for (var i = 0; i < this.listaProcEsp.length; i++) {
-        if (this.procPreSelRes.includes(this.listaProcEsp[i].classe)) {
+        if (this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)) {
           this.numProcPreSelEsp += 1;
+        }
+      }
+    },
+    // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
+    procPreSelRestantes: function() {
+      for (var i = 0; i < this.listaProcEspRes.length; i++) {
+        if (this.procPreSelResTravComum.includes(this.listaProcEspRes[i].classe) ||
+        this.procPreSelResTravEspecifico.includes(this.listaProcEspRes[i].classe)) {
+          this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe)
+          this.numProcPreSelRes += 1;
         }
       }
     },
@@ -676,7 +702,7 @@ export default {
     contadorProcPreSelEsp: function(lista) {
       this.numProcPreSelEsp = lista.length;
     },
-    // Carrega todos os processos especificos testantes
+    // Carrega todos os processos especificos restantes
     loadProcEspRestantes: async function() {
       try {
         var response = await axios.get(lhost + "/api/classes?tipo=especifico");
@@ -700,14 +726,28 @@ export default {
             });
           }
         }
-        console.log(this.listaTotalProcEsp);
-        console.log(this.listaProcEsp);
-        console.log(this.listaProcComuns);
+        // console.log(this.listaTotalProcEsp);
+        // console.log(this.listaProcEsp);
+        // console.log(this.listaProcComuns);
         console.log(this.estado.procComuns);
         console.log(this.estado.procEspecificos);
       } catch (error) {
         console.log(error);
       }
+    },
+    // Contador dos processos selecionados restantes
+    contadorProcSelRes: function(procSelec) {
+      this.numProcSelRes = procSelec.length;
+      this.estado.procRestantes = procSelec;
+      this.listaProcSelRes = procSelec;
+    },
+    // Contador dos processos pre selecionados restantes
+    contadorProcPreSelRes: function(lista) {
+      this.numProcPreSelRes = lista.length;
+    },
+    // Lista dos processos pre selecionados especificos restantes, resultantes das travessias dos PNs especificos
+    procPreSelResTravRes: function(procPreSelResTravRes) {
+      this.procPreSelResTravRestante = procPreSelResTravRes;
     },
     printEstado: async function() {
       console.log(this.$store.state.criacaoTabSel);
