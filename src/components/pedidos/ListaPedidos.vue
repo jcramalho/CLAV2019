@@ -21,7 +21,7 @@
           </template>
 
           <template v-slot:items="props">
-            <tr @click="rowClicked(props.item)">
+            <tr>
               <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
               <td class="subheading">{{ props.item.estado }}</td>
               <td class="subheading">{{ props.item.codigo }}</td>
@@ -40,7 +40,7 @@
                   color="blue"
                   dark
                   round
-                  @click="distribuir(props.item)"
+                  @click="distribuirPedido(props.item)"
                 >
                   Distribuir
                 </v-btn>
@@ -54,6 +54,43 @@
           </template>
         </v-data-table>
       </v-flex>
+
+      <v-dialog v-model="distribuir" width="60%" >
+      <v-card>
+        <v-card-title class="headline">Distribuição do pedido</v-card-title>
+
+        <v-card-text>
+          Selecione o utilizador a quem deve ser atribuída a análise do pedido (basta clicar na linha correspondente):
+
+          <v-data-table
+            :headers="usersHeaders"
+            :items="usersRecords"
+            class="elevation-1"
+            hide-actions
+          >
+            <template v-slot:items="props">
+              <tr>
+                <td class="subheading">{{ props.item.name }}</td>
+                <td class="subheading">{{ props.item.entidade }}</td>
+              </tr>
+            </template>
+          </v-data-table>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="red darken-4"
+            flat="flat"
+            @click="distribuir = false"
+          >
+            Cancelar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     </v-layout>
   </v-container>
 </template>
@@ -64,6 +101,12 @@ const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
+    distribuir: false,
+    usersHeaders: [
+      {text: "Nome", value: "name", class:"title"},
+      {text: "Entidade", value: "entidade", class:"title"}
+    ],
+    usersRecords: [],
     headers: [
       {
         text: "Data",
@@ -92,7 +135,7 @@ export default {
     ],
     pedidos: []
   }),
-  mounted: async function() {
+  created: async function() {
     try {
       var response = await axios.get(lhost + "/api/pedidos");
       this.pedidos = response.data;
@@ -107,6 +150,16 @@ export default {
 
     showPedido: function(item) {
       this.$emit("pedidoSelected", item);
+    },
+
+    distribuirPedido: async function(pedido){
+      try {
+        var response = await axios.get(lhost + "/api/users");
+        this.usersRecords = response.data;
+        this.distribuir = true
+      } catch (e) {
+        return e;
+      }
     }
   }
 };
