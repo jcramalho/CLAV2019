@@ -75,7 +75,7 @@ export default {
           ops: [
             {
               label: "Consultar utilizadores",
-              url: "/",
+              url: "/users/listagem",
               level: "public"
             }
           ]

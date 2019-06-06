@@ -156,5 +156,10 @@ export default new Router({
       name: "alteracaoPassword",
       component: () => import("./views/AlteracaoPassword.vue")
     },
+    {
+      path: "/users/listagem",
+      name: "listagem",
+      component: () => import("./views/users/ListagemUsers.vue")
+    },
   ]
 });
