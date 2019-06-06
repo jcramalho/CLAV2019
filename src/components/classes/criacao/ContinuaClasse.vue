@@ -809,7 +809,7 @@ export default {
         } else {
           this.obj.numInterv++;
           var cDate = Date.now();
-          
+
           var pendenteParams = {
             _id: this.obj._id,
             dataAtualizacao: cDate,

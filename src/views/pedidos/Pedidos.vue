@@ -11,10 +11,12 @@ export default {
   },
   methods: {
     consultaPedido: function(item) {
-      switch(item.objeto.tipo){
-        case 'Classe':  this.$router.push("/classes/showPedido/" + item.codigo);
-                        break;
-        default: this.$router.push("/pedidos/" + item.codigo);
+      switch (item.objeto.tipo) {
+        case "Classe":
+          this.$router.push("/classes/showPedido/" + item.codigo);
+          break;
+        default:
+          this.$router.push("/pedidos/" + item.codigo);
       }
     }
   }

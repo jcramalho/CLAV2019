@@ -5,7 +5,10 @@
       <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
         <v-toolbar-title>
           Descritivo da Classe
-          <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" />
+          <InfoBox
+            header="Descritivo da Classe"
+            :text="myhelp.Classe.BlocoDescritivo"
+          />
         </v-toolbar-title>
       </v-toolbar>
     </template>
@@ -59,11 +62,11 @@ export default {
     InfoBox
   },
 
-  data () {
-      return {
-        myhelp: help
-      }
-    }
+  data() {
+    return {
+      myhelp: help
+    };
+  }
 };
 </script>
 

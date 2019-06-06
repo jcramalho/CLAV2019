@@ -31,7 +31,10 @@
                 <v-flex xs2>
                   <div class="info-label">
                     Classe Pai
-                    <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
+                    <InfoBox
+                      header="Classe Pai"
+                      :text="myhelp.Classe.Campos.Pai"
+                    />
                   </div>
                 </v-flex>
                 <v-flex xs10>
@@ -51,7 +54,10 @@
                 <v-flex xs2>
                   <div class="info-label">
                     Código
-                    <InfoBox header="Código da Classe" :text="myhelp.Classe.Campos.Codigo" />
+                    <InfoBox
+                      header="Código da Classe"
+                      :text="myhelp.Classe.Campos.Codigo"
+                    />
                   </div>
                 </v-flex>
                 <v-flex xs10>
@@ -69,7 +75,10 @@
                 <v-flex xs2>
                   <div class="info-label">
                     Título
-                    <InfoBox header="Título da Classe" :text="myhelp.Classe.Campos.Titulo" />
+                    <InfoBox
+                      header="Título da Classe"
+                      :text="myhelp.Classe.Campos.Titulo"
+                    />
                   </div>
                 </v-flex>
                 <v-flex xs10>
@@ -152,7 +161,9 @@
           <v-btn dark round color="teal darken-4" @click="criarClasse"
             >Criar classe</v-btn
           >
-          <v-btn dark round color="red darken-4">Cancelar</v-btn>
+          <v-btn dark round color="red darken-4" @click="eliminarClasse"
+            >Eliminar classe</v-btn
+          >
         </div>
       </v-flex>
 
@@ -182,6 +193,11 @@
       >
         {{ loginErrorMessage }}
         <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
+      </v-snackbar>
+
+      <v-snackbar v-model="pedidoEliminado" :timeout="8000" color="error">
+        {{ mensagemPedidoEliminado }}
+        <v-btn flat @click="pedidoEliminado = false">Fechar</v-btn>
       </v-snackbar>
     </v-layout>
   </v-container>
@@ -331,6 +347,8 @@ export default {
 
     pedidoCriado: false,
     mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
+    pedidoEliminado: false,
+    mensagemPedidoEliminado: "Este trabalho foi eliminado.",
     pendenteGuardado: false,
     mensagemPendenteGuardadoOK: "Trabalho guardado com sucesso.",
     loginErrorSnackbar: false,
@@ -394,7 +412,7 @@ export default {
           }
         }
       } catch (erro) {
-        console.log(erro);
+        return(erro);
       }
     },
 
@@ -513,7 +531,7 @@ export default {
             return a.label.localeCompare(b.label);
           });
       } catch (erro) {
-        console.log(erro);
+        return(erro);
       }
     },
 
@@ -552,7 +570,7 @@ export default {
         this.entidadesP = JSON.parse(JSON.stringify(this.entidadesD));
         this.semaforos.entidadesReady = true;
       } catch (erro) {
-        console.log(erro);
+        return(erro);
       }
     },
 
@@ -577,7 +595,7 @@ export default {
 
         this.semaforos.classesReady = true;
       } catch (error) {
-        console.error(error);
+        return(error);
       }
     },
 
@@ -602,7 +620,7 @@ export default {
           });
         this.semaforos.legislacaoReady = true;
       } catch (error) {
-        console.error(error);
+        return(error);
       }
     },
 
@@ -634,7 +652,7 @@ export default {
         );
         this.semaforos.pcaFormasContagemReady = true;
       } catch (error) {
-        console.error(error);
+        return(error);
       }
     },
 
@@ -660,7 +678,7 @@ export default {
         );
         this.semaforos.pcaSubFormasContagemReady = true;
       } catch (error) {
-        console.error(error);
+        return(error);
       }
     },
 
@@ -893,6 +911,11 @@ export default {
       } catch (error) {
         return error;
       }
+    },
+
+    eliminarClasse: function() {
+      this.pedidoEliminado = true;
+      this.$router.push("/");
     },
 
     pedidoCriadoOK: function() {

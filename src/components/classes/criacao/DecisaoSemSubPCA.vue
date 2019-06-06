@@ -26,7 +26,10 @@
       <v-flex xs2>
         <div class="info-label">
           Forma de Contagem
-          <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
+          <InfoBox
+            header="Forma de Contagem do PCA"
+            :text="myhelp.Classe.Campos.FormaContagem"
+          />
         </div>
       </v-flex>
       <v-flex xs10>
@@ -75,7 +78,10 @@
           <v-flex xs12>
             <div class="info-label">
               Justificação do PCA
-              <InfoBox header="Justificação do PCA" :text="myhelp.Classe.Campos.JustificacaoPCA" />
+              <InfoBox
+                header="Justificação do PCA"
+                :text="myhelp.Classe.Campos.JustificacaoPCA"
+              />
             </div>
           </v-flex>
           <v-flex xs12>

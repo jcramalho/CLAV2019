@@ -34,7 +34,6 @@
 </template>
 
 <script>
-
 const help = require("@/config/help").help;
 
 export default {

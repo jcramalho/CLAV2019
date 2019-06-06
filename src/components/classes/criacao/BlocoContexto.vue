@@ -50,7 +50,19 @@
       @unselectEntidade="unselectEntidade($event)"
     />
 
-    <hr style="border-top: 1px dashed green;" />
+    <v-layout row wrap ma-2>
+      <v-flex xs12>
+        <hr style="border-top: 1px dashed green;" />
+      </v-flex>
+    </v-layout>
+
+    <DonosNew />
+
+    <v-layout row wrap ma-2>
+      <v-flex xs12>
+        <hr style="border-top: 1px dashed green;" />
+      </v-flex>
+    </v-layout>
 
     <DonosSelect
       :entidadesReady="semaforos.entidadesReady"
@@ -114,6 +126,7 @@
 const nanoid = require("nanoid");
 
 import DonosOps from "@/components/classes/criacao/DonosOps.vue";
+import DonosNew from "@/components/classes/criacao/DonosNew.vue";
 import DonosSelect from "@/components/classes/criacao/DonosSelect.vue";
 import ParticipantesOps from "@/components/classes/criacao/ParticipantesOps.vue";
 import ParticipantesSelect from "@/components/classes/criacao/ParticipantesSelect.vue";
@@ -127,6 +140,7 @@ export default {
 
   components: {
     DonosOps,
+    DonosNew,
     DonosSelect,
     ParticipantesOps,
     ParticipantesSelect,
@@ -164,6 +178,7 @@ export default {
       var index = this.c.donos.findIndex(e => e.id === entidade.id);
       this.c.donos.splice(index, 1);
     },
+
     selectEntidade: function(entidade) {
       this.c.donos.push(entidade);
       // Remove dos selecionáveis

@@ -6,13 +6,11 @@
         <v-card v-if="classeLoaded">
           <v-toolbar color="indigo darken-2" dark>
             <v-toolbar-title
-              >{{ classe.codigo }}:
-              {{ classe.titulo }}</v-toolbar-title
+              >{{ classe.codigo }}: {{ classe.titulo }}</v-toolbar-title
             >
           </v-toolbar>
 
           <v-card-text>
-
             <v-expansion-panel popout>
               <!-- DESCRITIVO DA CLASSE -->
               <v-expansion-panel-content>
@@ -116,9 +114,7 @@
                 />
               </v-expansion-panel-content>
 
-              <v-expansion-panel-content
-                v-if="(classe.nivel >= 3)">
-
+              <v-expansion-panel-content v-if="classe.nivel >= 3">
                 <template v-slot:header>
                   <v-toolbar
                     color="indigo darken-1 body-2 font-weight-bold"

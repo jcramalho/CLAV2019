@@ -1,51 +1,51 @@
 <template>
- <v-container fluid>
-   <v-layout row wrap ma-2>
+  <v-container fluid>
+    <v-layout row wrap ma-2>
       <v-flex xs12>
+        <v-data-table :headers="headers" :items="pendentes" class="elevation-1">
+          <template v-slot:no-data>
+            <v-alert :value="true" color="error" icon="warning">
+              Não foi possível apresentar uma lista dos trabalhos guardados...
+            </v-alert>
+          </template>
 
-  <v-data-table :headers="headers" :items="pendentes" class="elevation-1">
-    <template v-slot:no-data>
-      <v-alert :value="true" color="error" icon="warning">
-        Não foi possível apresentar uma lista dos trabalhos guardados...
-      </v-alert>
-    </template>
-
-    <template v-slot:items="props">
-      <tr>
-        <td class="subheading">{{ props.item.dataCriacao.split("T")[0] }}</td>
-        <td class="subheading">
-          {{ props.item.dataAtualizacao.split("T")[0] }}
-        </td>
-        <td class="subheading">{{ props.item.numInterv }}</td>
-        <td class="subheading">{{ props.item.criadoPor }}</td>
-        <td class="subheading">{{ props.item.acao }}</td>
-        <td class="subheading" v-if="props.item.tipo == 'Classe'">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark v-on="on">Classe</v-btn>
-            </template>
-            <span
-              >{{ props.item.objeto.codigo }}:
-              {{ props.item.objeto.titulo }}</span
-            >
-          </v-tooltip>
-        </td>
-        <td class="subheading" v-else>{{ props.item.tipo }}</td>
-        <td class="subheading">
-          <v-btn
-            round
-            color="indigo darken-3"
-            dark
-            @click="continuarTrabalho(props.item)"
-          >
-            Continuar trabalho
-          </v-btn>
-        </td>
-      </tr>
-    </template>
-  </v-data-table>
-
-  </v-flex>
+          <template v-slot:items="props">
+            <tr>
+              <td class="subheading">
+                {{ props.item.dataCriacao.split("T")[0] }}
+              </td>
+              <td class="subheading">
+                {{ props.item.dataAtualizacao.split("T")[0] }}
+              </td>
+              <td class="subheading">{{ props.item.numInterv }}</td>
+              <td class="subheading">{{ props.item.criadoPor }}</td>
+              <td class="subheading">{{ props.item.acao }}</td>
+              <td class="subheading" v-if="props.item.tipo == 'Classe'">
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="primary" dark v-on="on">Classe</v-btn>
+                  </template>
+                  <span
+                    >{{ props.item.objeto.codigo }}:
+                    {{ props.item.objeto.titulo }}</span
+                  >
+                </v-tooltip>
+              </td>
+              <td class="subheading" v-else>{{ props.item.tipo }}</td>
+              <td class="subheading">
+                <v-btn
+                  round
+                  color="indigo darken-3"
+                  dark
+                  @click="continuarTrabalho(props.item)"
+                >
+                  Continuar trabalho
+                </v-btn>
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>

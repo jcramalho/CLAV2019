@@ -4,7 +4,10 @@
     <v-flex xs2>
       <div class="info-label">
         Exemplo(s) de Nota(s) de Aplicação
-        <InfoBox header="Exemplo(s) de Nota(s) de Aplicação" :text="myhelp.Classe.Campos.ExemplosNotasAp" />
+        <InfoBox
+          header="Exemplo(s) de Nota(s) de Aplicação"
+          :text="myhelp.Classe.Campos.ExemplosNotasAp"
+        />
       </div>
       <v-tooltip top color="info">
         <template v-slot:activator="{ on }">
@@ -62,10 +65,10 @@ export default {
     InfoBox
   },
 
-  data () {
-      return {
-        myhelp: help
-      }
+  data() {
+    return {
+      myhelp: help
+    };
   },
 
   methods: {

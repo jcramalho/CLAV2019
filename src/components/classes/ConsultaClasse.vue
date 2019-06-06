@@ -6,6 +6,7 @@
         <ClassesArvoreLateral />
       </v-flex>
       <v-flex xs12 sm10>
+        <InnerPageHeader />
         <!-- HEADER -->
         <v-card v-if="classeLoaded">
           <v-toolbar color="indigo darken-2" dark>
@@ -299,6 +300,7 @@ import Participantes from "@/components/classes/Participantes.vue";
 import ProcessosRelacionados from "@/components/classes/ProcessosRelacionados.vue";
 import Legislacao from "@/components/classes/Legislacao.vue";
 import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue";
+import InnerPageHeader from "@/components/generic/InnerPageHeader.vue";
 
 export default {
   props: ["idc"],
@@ -312,6 +314,7 @@ export default {
   }),
 
   components: {
+    InnerPageHeader,
     ClassesFilho,
     NotasAp,
     NotasEx,
