@@ -2,7 +2,7 @@
   <v-flex xs12>
     <v-card>
       <v-toolbar :color="panelHeaderColor" dark>
-        <v-toolbar-title>Entidades</v-toolbar-title>
+        <v-toolbar-title>Gestão Administrativa</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-expansion-panel>
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+const help = require("@/config/help").help;
+
 export default {
   methods: {
     go: function(url) {
@@ -68,30 +70,13 @@ export default {
       panelHeaderColor: "indigo accent-4",
       operacoes: [
         {
-          entidade: "Pedidos",
-          texto:
-            "Pedidos de alteração ou de criação de novas instâncias que deram entrada na plataforma.",
+          entidade: "Gestão de utilizadores",
+          texto: '',
           ops: [
             {
-              label: "Consultar",
-              url: "/pedidos",
+              label: "Consultar utilizadores",
+              url: "/",
               level: "public"
-            },
-            {
-              label: "Criar pedido",
-              url: "/pedidos/criar",
-              level: "auth"
-            }
-          ]
-        },
-        {
-          entidade: "Pendentes",
-          texto:
-            "Trabalhos em curso guardados para mais tarde terem continuidade: criação e alteração de instâncias.",
-          ops: [
-            {
-              label: "Consultar",
-              url: "/pendentes"
             }
           ]
         }

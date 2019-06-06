@@ -82,7 +82,7 @@
               Esqueceu a sua password?
             </v-flex>
             <v-flex class="text-xs-right">
-              <v-btn color="primary" type="submit" @click="recuperarPW">Recuperação</v-btn>
+              <v-btn color="primary" type="submit" @click="recuperarPW">Recuperar</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>

@@ -7,8 +7,14 @@
 
     <v-layout row wrap justify-center>
       <Operacoes />
-      <Entidades />
+      <v-flex xs12 sm5>
+        <v-layout column>
+          <Entidades />
+          <Gestao v-if="this.$store.state.user.name != ''"/>
+        </v-layout>
+      </v-flex>
     </v-layout>
+    
   </v-container>
 </template>
 
@@ -17,13 +23,15 @@ import Info from "@/components/principal/Info.vue";
 import DocumentacaoApoio from "@/components/principal/DocumentacaoApoio.vue";
 import Operacoes from "@/components/principal/Operacoes.vue";
 import Entidades from "@/components/principal/Entidades.vue";
+import Gestao from "@/components/principal/Gestao.vue";
 
 export default {
   components: {
     Info,
     DocumentacaoApoio,
     Operacoes,
-    Entidades
+    Entidades,
+    Gestao
   },
 
   methods: {
