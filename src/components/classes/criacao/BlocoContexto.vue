@@ -56,7 +56,7 @@
       </v-flex>
     </v-layout>
 
-    <DonosNew />
+    <DonosNew @newEntidade="newEntidade($event)"/>
 
     <v-layout row wrap ma-2>
       <v-flex xs12>
@@ -174,7 +174,9 @@ export default {
   methods: {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
-      this.donos.push(entidade);
+      if(entidade.estado && (entidade.estado!="Nova")){
+        this.donos.push(entidade);
+      }
       var index = this.c.donos.findIndex(e => e.id === entidade.id);
       this.c.donos.splice(index, 1);
     },
@@ -184,6 +186,10 @@ export default {
       // Remove dos selecionáveis
       var index = this.donos.findIndex(e => e.id === entidade.id);
       this.donos.splice(index, 1);
+    },
+
+    newEntidade: function(entidade) {
+      this.c.donos.push(entidade);
     },
 
     unselectParticipante: function(entidade) {

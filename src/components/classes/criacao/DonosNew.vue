@@ -2,6 +2,10 @@
   <v-layout row wrap color="teal lighten-5" ma-2>
     <v-flex xs2>
       <div class="info-label">Entidade nova</div>
+      <v-btn small dark round color="teal darken-4" @click="newEntidade">
+          Adicionar
+          <v-icon small dark right>add_circle_outline</v-icon>
+      </v-btn>
     </v-flex>
     <v-flex xs10>
       <v-form v-model="valid">
@@ -30,10 +34,16 @@
             </v-flex>
 
             <v-flex xs12 md3>
-              <v-text-field
+              <v-select
+                prefix="Internacional: "
+                item-text="label"
+                item-value="value"
                 v-model="internacional"
+                :items="simNao"
                 label="Internacional"
-              ></v-text-field>
+                solo
+                dense
+              />
             </v-flex>
           </v-layout>
         </v-container>
@@ -51,8 +61,35 @@ export default {
       sioe: "",
       siglaRules: [v => !!v || "A Sigla é um campo obrigatório."],
       designacao: "",
-      designacaoRules: [v => !!v || "A Designação é obrigatória."]
+      designacaoRules: [v => !!v || "A Designação é obrigatória."],
+      internacional: "Nao",
+      simNao: [
+          {
+              label: "Sim", value: "Sim"
+          },
+          {
+              label: "Não", value: "Nao"
+          }
+      ]
     };
+  },
+
+  methods: {
+      newEntidade: function(){
+          var entidade = {
+              estado: "Nova",
+              id: "ent_" + this.sigla,
+              sigla: this.sigla,
+              sioe: this.sioe,
+              designacao: this.designacao,
+              internacional: this.internacional
+          }
+          this.sigla = ""
+          this.sioe = ""
+          this.designacao = ""
+          this.internacional = "Nao"
+          this.$emit('newEntidade', entidade)
+      }
   }
 };
 </script>

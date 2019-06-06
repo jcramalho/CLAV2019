@@ -412,7 +412,7 @@ export default {
           }
         }
       } catch (erro) {
-        return(erro);
+        return erro;
       }
     },
 
@@ -531,7 +531,7 @@ export default {
             return a.label.localeCompare(b.label);
           });
       } catch (erro) {
-        return(erro);
+        return erro;
       }
     },
 
@@ -570,7 +570,7 @@ export default {
         this.entidadesP = JSON.parse(JSON.stringify(this.entidadesD));
         this.semaforos.entidadesReady = true;
       } catch (erro) {
-        return(erro);
+        return erro;
       }
     },
 
@@ -595,7 +595,7 @@ export default {
 
         this.semaforos.classesReady = true;
       } catch (error) {
-        return(error);
+        return error;
       }
     },
 
@@ -620,7 +620,7 @@ export default {
           });
         this.semaforos.legislacaoReady = true;
       } catch (error) {
-        return(error);
+        return error;
       }
     },
 
@@ -652,7 +652,7 @@ export default {
         );
         this.semaforos.pcaFormasContagemReady = true;
       } catch (error) {
-        return(error);
+        return error;
       }
     },
 
@@ -678,7 +678,7 @@ export default {
         );
         this.semaforos.pcaSubFormasContagemReady = true;
       } catch (error) {
-        return(error);
+        return error;
       }
     },
 
