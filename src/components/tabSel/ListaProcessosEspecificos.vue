@@ -336,7 +336,6 @@ export default {
         return p.codigo;
       });
     },
-
     // função para reverter a seleção
     uncheck: async function(processo) {
       // apaga o resultado da travessia desse processo

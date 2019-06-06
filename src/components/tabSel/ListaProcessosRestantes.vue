@@ -336,6 +336,61 @@ export default {
         return p.codigo;
       });
     },
+    // função para reverter a seleção
+    uncheck: async function(processo) {
+      // apaga o resultado da travessia desse processo
+      delete this.listaProcResultado[processo];
+
+      // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
+      var procSel = Object.keys(this.listaProcResultado);
+      var newListaResEspRestantes = []; 
+      var newListaResRestantes = [];
+      for (var i = 0; i < procSel.length; i++) {
+        for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
+          if (
+            (this.listaResEspRestantes.includes(
+              this.listaProcResultado[procSel[i]][j].codigo
+            ) ||
+              this.listaProcResultado[procSel[i]][j].codigo === processo) &&
+            !newListaResEspRestantes.includes(
+              this.listaProcResultado[procSel[i]][j].codigo
+            )
+          ) {
+            newListaResEspRestantes.push(
+              this.listaProcResultado[procSel[i]][j].codigo
+            );
+          } else if (
+            this.listaResRestantes.includes(
+              this.listaProcResultado[procSel[i]][j].codigo
+            ) &&
+            !newListaResRestantes.includes(
+              this.listaProcResultado[procSel[i]][j].codigo
+            )
+          ) {
+            newListaResRestantes.push(
+              this.listaProcResultado[procSel[i]][j].codigo
+            );
+          }
+        }
+      }
+      this.listaResEspRestantes = newListaResEspRestantes;
+      this.listaResRestantes = newListaResRestantes;
+
+      console.log(
+        "uncheck: listaProcResultado \n Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)",
+        this.listaProcResultado
+      );
+      console.log(
+        "uncheck: newListaResEspRestantes \n Nova lista dos processos resultantes especificos:",
+        newListaResEspRestantes
+      );
+      console.log(
+        "uncheck: newListaResRestantes \n Nova lista dos processos resultantes restantes:",
+        newListaResRestantes
+      );
+
+      this.$emit("contadorProcPreSelEsp", this.newListaResEspRestantes);
+    },
     // Para colocar e retirar qualquer processo da lista de processos especificos restantes selecionados
     selProcRes: async function(processo) {
       if (!this.procEspSel.includes(processo)) {

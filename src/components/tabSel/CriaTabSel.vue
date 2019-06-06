@@ -368,6 +368,7 @@
                   v-bind:listaPreSel="procPreSelEspRestantes"
                   @aCalcular="aCalcular($event)"
                   @procPreSelResTravRes="procPreSelResTravRes($event)"
+                  @contadorProcSelRes="contadorProcSelRes($event)"
                   @contadorProcPreSelRes="contadorProcPreSelRes($event)"
                 />
               </v-expansion-panel-content>
