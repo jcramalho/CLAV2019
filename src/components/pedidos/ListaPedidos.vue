@@ -60,7 +60,9 @@
         <v-card-title class="headline">Distribuição do pedido</v-card-title>
 
         <v-card-text>
-          Selecione o utilizador a quem deve ser atribuída a análise do pedido (basta clicar na linha correspondente):
+          <div v-if="!selectedUser.name">
+          <p>Selecione o utilizador a quem deve ser atribuída a análise do pedido 
+            (basta clicar na linha correspondente):</p>
 
           <v-data-table
             :headers="usersHeaders"
@@ -69,21 +71,40 @@
             hide-actions
           >
             <template v-slot:items="props">
-              <tr>
+              <tr @click="selectedUser=props.item">
                 <td class="subheading">{{ props.item.name }}</td>
                 <td class="subheading">{{ props.item.entidade }}</td>
               </tr>
             </template>
           </v-data-table>
+          </div>
+
+          <div v-else>
+            <p>Tarefa atribuída a: <b>{{ selectedUser.name }} ({{ selectedUser.entidade }})</b>.</p>
+            <div class="info-label">Despacho</div>
+            <v-textarea
+              v-model="despacho"
+              auto-grow
+              solo
+              label="Introduza o texto para o despacho (opcional)..."
+              rows="1"
+            ></v-textarea>
+          </div>
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-btn
+            color="indigo darken-4"
+            round dark
+            @click="guardarDistribuicao"
+          >
+            Guardar
+          </v-btn>
 
           <v-btn
             color="red darken-4"
-            flat="flat"
-            @click="distribuir = false"
+            round dark
+            @click="cancelarDistribuicao"
           >
             Cancelar
           </v-btn>
@@ -102,11 +123,13 @@ const lhost = require("@/config/global").host;
 export default {
   data: () => ({
     distribuir: false,
+    despacho: "",
     usersHeaders: [
       {text: "Nome", value: "name", class:"title"},
       {text: "Entidade", value: "entidade", class:"title"}
     ],
     usersRecords: [],
+    selectedUser: {},
     headers: [
       {
         text: "Data",
@@ -160,9 +183,40 @@ export default {
       } catch (e) {
         return e;
       }
+    },
+
+    cancelarDistribuicao: function(){
+      this.distribuir = false
+      this.selectedUser = {}
+      this.despacho = ""
+    },
+
+    guardarDistribuicao: function(){
+      this.distribuir = false
+      this.selectedUser = {}
+      this.despacho = ""
     }
   }
 };
 </script>
 
-<style></style>
+<style>
+.info-label {
+  color: #00695c;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #e0f2f1;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
+}
+</style>
