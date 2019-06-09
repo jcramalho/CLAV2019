@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Registo from "@/components/Registo.vue";
+import Registo from "@/components/users/Registo.vue";
 
 export default {
   components: {
