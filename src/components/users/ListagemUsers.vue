@@ -34,37 +34,52 @@
               <td class="subheading">{{ props.item.email }}</td>
               <td class="subheading">{{ props.item.level }}</td>
               <td class="subheading">
-                <v-btn icon @click="editar(props.item)">
-                  <v-icon color="primary">edit</v-icon>
-                </v-btn>
-                <v-btn icon @click="confirmacaoDesativar = true">
-                  <v-icon color="grey darken-1">lock</v-icon>
-                  <v-dialog v-model="confirmacaoDesativar" persistent max-width="290">
-                    <v-card>
-                      <v-card-title class="headline">Confirmar ação</v-card-title>
-                      <v-card-text>Tem a certeza que pretende desativar o utilizador?</v-card-text>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="red" flat @click="confirmacaoDesativar = false">Cancelar</v-btn>
-                        <v-btn color="primary" flat @click="desativar(props.item); confirmacaoDesativar=false">Confirmar</v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-btn>
-                <v-btn icon @click="confirmacaoEliminar = true">
-                  <v-icon color="red">delete</v-icon>
-                  <v-dialog v-model="confirmacaoEliminar" persistent max-width="290">
-                    <v-card>
-                      <v-card-title class="headline">Confirmar ação</v-card-title>
-                      <v-card-text>Tem a certeza que pretende eliminar o utilizador?</v-card-text>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="red" flat @click="confirmacaoEliminar = false">Cancelar</v-btn>
-                        <v-btn color="primary" flat @click="eliminar(props.item); confirmacaoEliminar=false">Confirmar</v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-btn>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on" @click="editar(props.item)">
+                      <v-icon color="primary">edit</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Editar utilizador</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on" @click="confirmacaoDesativar = true">
+                      <v-icon v-b-tooltip.hover title="Tooltip content" color="grey darken-1">lock</v-icon>
+                      <v-dialog v-model="confirmacaoDesativar" persistent max-width="290">
+                        <v-card>
+                          <v-card-title class="headline">Confirmar ação</v-card-title>
+                          <v-card-text>Tem a certeza que pretende desativar o utilizador?</v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="red" flat @click="confirmacaoDesativar = false">Cancelar</v-btn>
+                            <v-btn color="primary" flat @click="desativar(props.item); confirmacaoDesativar=false">Confirmar</v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-btn>
+                  </template>
+                  <span>Desativar utilizador</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" icon @click="confirmacaoEliminar = true">
+                      <v-icon color="red">delete</v-icon>
+                      <v-dialog v-model="confirmacaoEliminar" persistent max-width="290">
+                        <v-card>
+                          <v-card-title class="headline">Confirmar ação</v-card-title>
+                          <v-card-text>Tem a certeza que pretende eliminar o utilizador?</v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="red" flat @click="confirmacaoEliminar = false">Cancelar</v-btn>
+                            <v-btn color="primary" flat @click="eliminar(props.item); confirmacaoEliminar=false">Confirmar</v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-btn>
+                    </template>
+                  <span>Eliminar utilizador</span>
+                </v-tooltip>
               </td>
           </tr>
         </template>
