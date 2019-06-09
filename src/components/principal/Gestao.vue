@@ -79,6 +79,17 @@ export default {
               level: "public"
             }
           ]
+        },
+        {
+          entidade: "Métrica API dados",
+          texto: '',
+          ops: [
+            {
+              label: "Consultar API de dados",
+              url: "/api/metrica",
+              level: "public"
+            }
+          ]
         }
       ]
     };

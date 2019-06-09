@@ -161,5 +161,11 @@ export default new Router({
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue")
     },
+    //Métrica API
+    {
+      path: "/api/metrica",
+      name: "metrica",
+      component: () => import("./views/api/Metrica.vue")
+    },
   ]
 });
