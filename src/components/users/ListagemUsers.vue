@@ -37,8 +37,33 @@
                 <v-btn icon @click="editar(props.item)">
                   <v-icon color="primary">edit</v-icon>
                 </v-btn>
-                <v-btn icon @click="desativar(props.item)">
+                <v-btn icon @click="confirmacaoDesativar = true">
+                  <v-icon color="grey darken-1">lock</v-icon>
+                  <v-dialog v-model="confirmacaoDesativar" persistent max-width="290">
+                    <v-card>
+                      <v-card-title class="headline">Confirmar ação</v-card-title>
+                      <v-card-text>Tem a certeza que pretende desativar o utilizador?</v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red" flat @click="confirmacaoDesativar = false">Cancelar</v-btn>
+                        <v-btn color="primary" flat @click="desativar(props.item); confirmacaoDesativar=false">Confirmar</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-btn>
+                <v-btn icon @click="confirmacaoEliminar = true">
                   <v-icon color="red">delete</v-icon>
+                  <v-dialog v-model="confirmacaoEliminar" persistent max-width="290">
+                    <v-card>
+                      <v-card-title class="headline">Confirmar ação</v-card-title>
+                      <v-card-text>Tem a certeza que pretende eliminar o utilizador?</v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red" flat @click="confirmacaoEliminar = false">Cancelar</v-btn>
+                        <v-btn color="primary" flat @click="eliminar(props.item); confirmacaoEliminar=false">Confirmar</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-btn>
               </td>
           </tr>
@@ -51,7 +76,7 @@
     </v-card>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
-        <v-card-title class="primary" >
+        <v-card-title class="headline">
           <span class="headline">Editar utilizador</span>
         </v-card-title>
         <v-card-text>
@@ -92,7 +117,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" flat @click="fechar">Cancelar</v-btn>
+          <v-btn color="red" flat @click="dialog = false">Cancelar</v-btn>
           <v-btn color="primary" flat @click="guardar">Guardar</v-btn>
         </v-card-actions>
       </v-card>
@@ -154,6 +179,8 @@ export default {
       }
     ],
     dialog: false,
+    confirmacaoDesativar: false,
+    confirmacaoEliminar: false,
     editedIndex: -1,
     editedItem: {
       nome: '',
@@ -210,8 +237,35 @@ export default {
           this.done = false;
         });
     },
+    eliminar(item) {
+      axios.post(lhost + "/api/users/eliminar", {
+          token: this.$store.state.user.token,
+          id: item.id
+        }).then(res => {
+          if (res.data === "Utilizador eliminado com sucesso!") {
+            this.text = "Utilizador eliminado com sucesso!";
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
+          }else if(res.data === "Não pode eliminar o seu próprio utilizador!"){
+            this.text = "Não pode eliminar o seu próprio utilizador!";
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          }else{
+            this.text = "Ocorreu um erro ao eliminar o utilizador utilizador!";
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          }
+        }).catch(function(err) {
+          this.text = err;
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        });
+    },
     guardar(){
-      alert(JSON.stringify(this.editedItem))
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.editedItem.level) {
@@ -270,9 +324,6 @@ export default {
     fecharSnackbar() {
       this.snackbar = false;
       if (this.done == true) this.$router.push("/");
-    },
-    fechar(){
-      this.dialog = false;
     }
   }
 };
