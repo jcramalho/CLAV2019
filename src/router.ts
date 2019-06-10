@@ -134,32 +134,38 @@ export default new Router({
     {
       path: "/autenticacao",
       name: "autenticacao",
-      component: () => import("./views/Autenticacao.vue")
+      component: () => import("./views/users/Autenticacao.vue")
     },
     {
       path: "/registo",
       name: "registo",
-      component: () => import("./views/Registo.vue")
+      component: () => import("./views/users/Registo.vue")
     },
     {
       path: "/login",
       name: "login",
-      component: () => import("./views/Login.vue")
+      component: () => import("./views/users/Login.vue")
     },
     {
       path: "/recuperacao",
       name: "recuperacao",
-      component: () => import("./views/Recuperacao.vue")
+      component: () => import("./views/users/Recuperacao.vue")
     },
     {
       path: "/alteracaoPassword",
       name: "alteracaoPassword",
-      component: () => import("./views/AlteracaoPassword.vue")
+      component: () => import("./views/users/AlteracaoPassword.vue")
     },
     {
       path: "/users/listagem",
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue")
+    },
+    //Métrica API
+    {
+      path: "/api/metrica",
+      name: "metrica",
+      component: () => import("./views/api/Metrica.vue")
     },
   ]
 });

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Recuperacao from "@/components/Recuperacao.vue";
+import Recuperacao from "@/components/users/Recuperacao.vue";
 
 export default {
   components: {

@@ -1,13 +1,13 @@
 <template>
-  <Registo />
+  <Metrica />
 </template>
 
 <script>
-import Registo from "@/components/Registo.vue";
+import Metrica from "@/components/api/Metrica.vue";
 
 export default {
   components: {
-    Registo
+    Metrica
   }
 };
 </script>

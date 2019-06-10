@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import AlteracaoPassword from "@/components/AlteracaoPassword.vue";
+import AlteracaoPassword from "@/components/users/AlteracaoPassword.vue";
 
 export default {
   components: {

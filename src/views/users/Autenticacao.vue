@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Autenticacao from "@/components/Autenticacao.vue";
+import Autenticacao from "@/components/users/Autenticacao.vue";
 
 export default {
   components: {
