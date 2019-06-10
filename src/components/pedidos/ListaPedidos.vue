@@ -122,6 +122,7 @@ const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
+    pedidoParaDistribuir: {},
     distribuir: false,
     despacho: "",
     usersHeaders: [
@@ -177,6 +178,7 @@ export default {
 
     distribuirPedido: async function(pedido){
       try {
+        this.pedidoParaDistribuir = pedido
         var response = await axios.get(lhost + "/api/users");
         this.usersRecords = response.data;
         this.distribuir = true
@@ -195,6 +197,7 @@ export default {
       this.distribuir = false
       this.selectedUser = {}
       this.despacho = ""
+      alert(JSON.stringify(this.pedidoParaDistribuir))
     }
   }
 };
