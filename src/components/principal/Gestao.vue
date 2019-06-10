@@ -81,12 +81,12 @@ export default {
           ]
         },
         {
-          entidade: "Métrica API dados",
+          entidade: "Métrica plataforma CLAV",
           texto: '',
           ops: [
             {
-              label: "Consultar API de dados",
-              url: "/api/metrica",
+              label: "Consultar métrica",
+              url: "/gestao/metrica",
               level: "public"
             }
           ]

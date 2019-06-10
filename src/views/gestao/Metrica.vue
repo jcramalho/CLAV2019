@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Metrica from "@/components/api/Metrica.vue";
+import Metrica from "@/components/gestao/Metrica.vue";
 
 export default {
   components: {
