@@ -13,7 +13,6 @@
         ></v-text-field>
       </v-card-title>
       <v-data-table
-        v-model="selected"
         :headers="headers"
         :items="utilizadores"
         :search="search"
@@ -29,58 +28,20 @@
         </template>
         <template v-slot:items="props">
           <tr>
-              <td class="subheading">{{ props.item.name }}</td>
-              <td class="subheading">{{ props.item.entidade }}</td>
-              <td class="subheading">{{ props.item.email }}</td>
-              <td class="subheading">{{ props.item.level }}</td>
-              <td class="subheading">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on" @click="editar(props.item)">
-                      <v-icon color="primary">edit</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Editar utilizador</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on" @click="confirmacaoDesativar = true">
-                      <v-icon v-b-tooltip.hover title="Tooltip content" color="grey darken-1">lock</v-icon>
-                      <v-dialog v-model="confirmacaoDesativar" persistent max-width="290">
-                        <v-card>
-                          <v-card-title class="headline">Confirmar ação</v-card-title>
-                          <v-card-text>Tem a certeza que pretende desativar o utilizador?</v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="red" flat @click="confirmacaoDesativar = false">Cancelar</v-btn>
-                            <v-btn color="primary" flat @click="desativar(props.item); confirmacaoDesativar=false">Confirmar</v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </v-btn>
-                  </template>
-                  <span>Desativar utilizador</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon @click="confirmacaoEliminar = true">
-                      <v-icon color="red">delete</v-icon>
-                      <v-dialog v-model="confirmacaoEliminar" persistent max-width="290">
-                        <v-card>
-                          <v-card-title class="headline">Confirmar ação</v-card-title>
-                          <v-card-text>Tem a certeza que pretende eliminar o utilizador?</v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="red" flat @click="confirmacaoEliminar = false">Cancelar</v-btn>
-                            <v-btn color="primary" flat @click="eliminar(props.item); confirmacaoEliminar=false">Confirmar</v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </v-btn>
-                    </template>
-                  <span>Eliminar utilizador</span>
-                </v-tooltip>
-              </td>
+            <td class="subheading">{{ props.item.name }}</td>
+            <td class="subheading">{{ props.item.entidade }}</td>
+            <td class="subheading">{{ props.item.email }}</td>
+            <td class="subheading">{{ props.item.level }}</td>
+            <td class="subheading">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click="editar(props.item)">
+                    <v-icon color="primary">edit</v-icon>
+                  </v-btn>
+                </template>
+                <span>Editar utilizador</span>
+              </v-tooltip>
+            </td>
           </tr>
         </template>
         <template v-slot:pageText="props">
@@ -93,6 +54,45 @@
       <v-card>
         <v-card-title class="headline">
           <span class="headline">Editar utilizador</span>
+          <v-spacer></v-spacer>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on" @click="confirmacaoDesativar = true">
+                <v-icon color="grey darken-2">lock</v-icon>
+                <v-dialog v-model="confirmacaoDesativar" persistent max-width="290">
+                  <v-card>
+                    <v-card-title class="headline">Confirmar ação</v-card-title>
+                    <v-card-text>Tem a certeza que pretende desativar o utilizador?</v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="red" flat @click="confirmacaoDesativar = false">Cancelar</v-btn>
+                      <v-btn color="primary" flat @click="desativar(editedItem); confirmacaoDesativar=false; dialog = false">Confirmar</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-btn>
+            </template>
+            <span>Desativar utilizador</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on" icon @click="confirmacaoEliminar = true">
+                <v-icon color="red">delete</v-icon>
+                <v-dialog v-model="confirmacaoEliminar" persistent max-width="290">
+                  <v-card>
+                    <v-card-title class="headline">Confirmar ação</v-card-title>
+                    <v-card-text>Tem a certeza que pretende eliminar o utilizador?</v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="red" flat @click="confirmacaoEliminar = false">Cancelar</v-btn>
+                      <v-btn color="primary" flat @click="eliminar(editedItem); confirmacaoEliminar=false; dialog = false">Confirmar</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-btn>
+              </template>
+            <span>Eliminar utilizador</span>
+          </v-tooltip>
         </v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
@@ -190,7 +190,9 @@ export default {
       },
       { 
         text: "Ações", 
-        class: "title" 
+        sortable: false,
+        value: '',
+        class: "title"
       }
     ],
     dialog: false,
@@ -210,15 +212,18 @@ export default {
     timeout: 4000,
     text: ""
   }),
-  mounted: async function() {
-    try {
-      var response = await axios.get(lhost + "/api/users?formato=normalizado");
-      this.utilizadores = response.data;
-    } catch (e) {
-      return e;
-    }
+  created() {
+    this.loadUtilizadores();
   },
   methods: {
+    async loadUtilizadores(){
+      try {
+        var response = await axios.get(lhost + "/api/users?formato=normalizado");
+        this.utilizadores = response.data;
+      } catch (e) {
+        return e;
+      }
+    },
     editar(item) {
       this.editedIndex = this.utilizadores.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -226,61 +231,63 @@ export default {
     },
     desativar(item) {
       axios.post(lhost + "/api/users/desativar", {
-          token: this.$store.state.user.token,
-          id: item.id
-        }).then(res => {
-          if (res.data === "Utilizador desativado com sucesso!") {
-            this.text = "Utilizador desativado com sucesso!";
-            this.color = "success";
-            this.snackbar = true;
-            this.done = true;
-          }else if(res.data === "Não pode desativar o seu próprio utilizador!"){
-            this.text = "Não pode desativar o seu próprio utilizador!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }else{
-            this.text = "Ocorreu um erro ao atualizar a informação do utilizador!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }
-        }).catch(function(err) {
-          this.text = err;
+        token: this.$store.state.user.token,
+        id: item.id
+      }).then(res => {
+        if (res.data === "Utilizador desativado com sucesso!") {
+          this.text = "Utilizador desativado com sucesso!";
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.loadUtilizadores();
+        }else if(res.data === "Não pode desativar o seu próprio utilizador!"){
+          this.text = "Não pode desativar o seu próprio utilizador!";
           this.color = "error";
           this.snackbar = true;
           this.done = false;
-        });
+        }else{
+          this.text = "Ocorreu um erro ao atualizar a informação do utilizador!";
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        }
+      }).catch(function(err) {
+        this.text = err;
+        this.color = "error";
+        this.snackbar = true;
+        this.done = false;
+      });
     },
     eliminar(item) {
       axios.post(lhost + "/api/users/eliminar", {
-          token: this.$store.state.user.token,
-          id: item.id
-        }).then(res => {
-          if (res.data === "Utilizador eliminado com sucesso!") {
-            this.text = "Utilizador eliminado com sucesso!";
-            this.color = "success";
-            this.snackbar = true;
-            this.done = true;
-          }else if(res.data === "Não pode eliminar o seu próprio utilizador!"){
-            this.text = "Não pode eliminar o seu próprio utilizador!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }else{
-            this.text = "Ocorreu um erro ao eliminar o utilizador utilizador!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }
-        }).catch(function(err) {
-          this.text = err;
+        token: this.$store.state.user.token,
+        id: item.id
+      }).then(res => {
+        if (res.data === "Utilizador eliminado com sucesso!") {
+          this.text = "Utilizador eliminado com sucesso!";
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.loadUtilizadores();
+        }else if(res.data === "Não pode eliminar o seu próprio utilizador!"){
+          this.text = "Não pode eliminar o seu próprio utilizador!";
           this.color = "error";
           this.snackbar = true;
           this.done = false;
-        });
+        }else{
+          this.text = "Ocorreu um erro ao eliminar o utilizador utilizador!";
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        }
+      }).catch(function(err) {
+        this.text = err;
+        this.color = "error";
+        this.snackbar = true;
+        this.done = false;
+      });
     },
-    guardar(){
+    async guardar(){
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.editedItem.level) {
@@ -306,7 +313,7 @@ export default {
             parsedType = 1;
             break;
         }
-        axios.post(lhost + "/api/users/atualizarMultiplos", {
+        await axios.post(lhost + "/api/users/atualizarMultiplos", {
           id: this.editedItem.id,
           nome: this.editedItem.name,
           email: this.editedItem.email,
@@ -317,6 +324,8 @@ export default {
             this.color = "success";
             this.snackbar = true;
             this.done = true;
+            this.dialog = false;
+            this.loadUtilizadores();
           }else{
             this.text = "Ocorreu um erro ao atualizar a informação do utilizador!";
             this.color = "error";
@@ -338,7 +347,7 @@ export default {
     },
     fecharSnackbar() {
       this.snackbar = false;
-      if (this.done == true) this.$router.push("/");
+      if (this.done == true) this.loadUtilizadores();
     }
   }
 };
