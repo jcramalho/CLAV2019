@@ -47,9 +47,9 @@
 <script>
 const lhost = require("@/config/global").host;
 import axios from "axios";
-import Bar from "../chart/Bar";
-import Doughnut from "../chart/Doughnut";
-import LineChart from "../chart/LineChart";
+import Bar from "./chart/Bar"
+import Doughnut from "./chart/Doughnut";
+import LineChart from "./chart/LineChart";
 
 export default {
   name: "Dashboard",

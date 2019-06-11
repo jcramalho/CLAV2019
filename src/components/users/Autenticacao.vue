@@ -96,13 +96,13 @@ export default {
   name: "autenticacao",
   methods: {
     registar() {
-      this.$router.push("/registo");
+      this.$router.push("/users/registo");
     },
     recuperarPW() {
-      this.$router.push("/recuperacao");
+      this.$router.push("/users/recuperacao");
     },
     loginEmail() {
-      this.$router.push("/login");
+      this.$router.push("/users/login");
     }
   }
 };

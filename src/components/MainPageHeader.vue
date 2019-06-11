@@ -25,14 +25,14 @@
     <v-toolbar-title class="subheading">
       <v-btn
         color="indigo accent-4"
-        to="/autenticacao"
+        to="/users/autenticacao"
         v-if="this.$store.state.user.name === ''"
       >
         Autenticação
       </v-btn>
       <!-- <v-btn
         color="indigo accent-4"
-        to="/login"
+        to="/users/login"
         v-if="this.$store.state.user.name === ''"
       >
         Login
