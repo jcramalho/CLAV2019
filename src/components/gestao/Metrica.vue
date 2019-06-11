@@ -1,7 +1,7 @@
 <template>
   <v-container fluid grid-list-lg class="mx-0 pa-2">
     <v-layout row wrap>
-      <v-flex md3 sm6 xs12 v-for="(stat,index) in stats" v-bind:key="index">
+      <v-flex md4 sm6 xs12 v-for="(stat,index) in stats" v-bind:key="index">
         <v-card :class="stat.bgColor" dark>
           <v-container fluid grid-list-sm dark>
             <v-layout class="mt-0 mb-0 mx-0" row wrap>
