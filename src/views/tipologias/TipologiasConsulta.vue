@@ -39,8 +39,8 @@ export default {
     preparaTipologia: async function(tip) {
       try {
         var myTipologia = {
-          designacao: {
-            campo: "Designação",
+          nome: {
+            campo: "Nome",
             text: tip.designacao
           },
           sigla: {

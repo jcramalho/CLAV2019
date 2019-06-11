@@ -8,6 +8,8 @@
           <InfoBox
             header="Descritivo da Classe"
             :text="myhelp.Classe.BlocoDescritivo"
+            helpColor="#00695c"
+            dialogColor="#E0F2F1"
           />
         </v-toolbar-title>
       </v-toolbar>
