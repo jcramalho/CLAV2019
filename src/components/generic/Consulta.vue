@@ -10,8 +10,6 @@
                 v-if="tipo === 'Legislação'"
                 header="Tipo + Entidade + Número"
                 :text="myhelp.Legislacao.Campos.Tipo + ' + Entidade responsável pela publicação. + ' + myhelp.Legislacao.Campos.Numero"
-                helpColor="#1a237e"
-                dialogColor="#dee2f8"
               /></h1></v-toolbar-title
             >
           </v-toolbar>
@@ -25,22 +23,16 @@
                         v-if="tipo === 'Entidades'"
                         :header="item.campo"
                         :text="myhelp.Entidade.Campos[item.campo]"
-                        helpColor="#1a237e"
-                        dialogColor="#dee2f8"
                       />
                       <InfoBox
                         v-if="tipo === 'Tipologias'"
                         :header="item.campo"
                         :text="myhelp.Tipologias.Campos[item.campo]"
-                        helpColor="#1a237e"
-                        dialogColor="#dee2f8"
                       />
                       <InfoBox
                         v-if="tipo === 'Legislação'"
                         :header="item.campo"
                         :text="myhelp.Legislacao.Campos[item.campo]"
-                        helpColor="#1a237e"
-                        dialogColor="#dee2f8"
                       />
                     </div>
                   </td>
@@ -65,8 +57,6 @@
                       <InfoBox
                         header="Tipologias de Entidade"
                         :text="myhelp.Entidade.Campos.Tipologias"
-                        helpColor="#1a237e"
-                        dialogColor="#dee2f8"
                       />
                     </div>
                   </td>
@@ -94,8 +84,6 @@
                             <InfoBox
                               header="Intervenção nos PNs como Dono"
                               :text="myhelp.Entidade.Intervencoes.Dono"
-                              helpColor="#1a237e"
-                              dialogColor="#dee2f8"
                             />
                           </label>
                         </td>
@@ -133,8 +121,6 @@
                             <InfoBox
                               header="Intervenção nos PNs como Participante"
                               :text="myhelp.Entidade.Intervencoes.Participante"
-                              helpColor="#1a237e"
-                              dialogColor="#dee2f8"
                             />
                           </label>
                         </td>
@@ -199,8 +185,6 @@
                             <InfoBox
                               header="Intervenção nos PNs como Dono"
                               :text="myhelp.Tipologias.Intervencoes.Dono"
-                              helpColor="#1a237e"
-                              dialogColor="#dee2f8"
                             />
                           </label>
                         </td>
@@ -238,8 +222,6 @@
                             <InfoBox
                               header="Intervenção nos PNs como Participante"
                               :text="myhelp.Tipologias.Intervencoes.Participante"
-                              helpColor="#1a237e"
-                              dialogColor="#dee2f8"
                             />
                           </label>
                         </td>
@@ -291,8 +273,6 @@
                       <InfoBox
                         header="Entidades"
                         :text="myhelp.Tipologias.Campos.Entidades"
-                        helpColor="#1a237e"
-                        dialogColor="#dee2f8"
                       />
                     </div>
                   </td>
@@ -327,8 +307,6 @@
                       <InfoBox
                         header="Processos de negócio que regula ou enquadra"
                         :text="myhelp.Legislacao.Campos.ProcessosRegulados"
-                        helpColor="#1a237e"
-                        dialogColor="#dee2f8"
                       />
                     </div>
                   </td>
