@@ -99,7 +99,7 @@ export default {
       }).catch(error => alert(error));
     },
     async getApiCalls() {
-      await axios.get(lhost + "/api/users/contarChamadasApi").then(res => {
+      await axios.get(lhost + "/api/stats/total").then(res => {
         this.stats.push({
           bgColor: "primary",
           icon: "lock",
