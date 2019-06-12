@@ -33,7 +33,7 @@ export default {
       .get(lhost + "/api/stats")
       .then(res => {
         for (var i = 0; i < res.data.length; i++) {
-          if (res.data[i]._id != "" && res.data[i]._id != "unknown route") {
+          if (res.data[i]._id != "" && res.data[i]._id != "unknown route" && res.data[i] != '/api/stats') {
             // alert(JSON.stringify(res.data[i]))
             this.info.labels.push(res.data[i]._id);
             var index = this.info.labels.indexOf(res.data[i]._id);
