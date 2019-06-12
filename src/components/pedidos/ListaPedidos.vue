@@ -197,6 +197,9 @@ export default {
       this.distribuir = false
       this.selectedUser = {}
       this.despacho = ""
+      this.pedidoParaDistribuir.distribuicao.push({
+        
+      })
       alert(JSON.stringify(this.pedidoParaDistribuir))
     }
   }
