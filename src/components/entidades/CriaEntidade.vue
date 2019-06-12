@@ -81,7 +81,7 @@
                 <v-expansion-panel-content class="expansion-panel-heading">
                   <template v-slot:header>
                     <div class="subheading font-weight-bold">
-                      Pertence às Tipologias de Entidade
+                      Tipologias de Entidade
                     </div>
                   </template>
                   <v-card style="padding-top:30px;">

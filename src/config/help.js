@@ -224,7 +224,7 @@ module.exports.help = {
       Numero: "Número de diploma.",
       Tipo: "Tipo de diploma.",
       Data: "Data de publicação do diploma.",
-      Sumario: "Sumário do diploma.",
+      Sumário: "Sumário do diploma.",
       ProcessosRegulados:
         "Processos de negócio que são regulados ou enquadrados pelo diploma."
     },

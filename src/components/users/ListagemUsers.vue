@@ -9,17 +9,24 @@
           append-icon="search"
           label="Filtrar"
           single-line
-          hide-details
         ></v-text-field>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" @click="registo">
+              <v-icon medium color="primary">person_add</v-icon>
+            </v-btn>
+          </template>
+          <span>Adicionar novo utilizador</span>
+        </v-tooltip>
       </v-card-title>
       <v-data-table
         :headers="headers"
         :items="utilizadores"
         :search="search"
         class="elevation-1"
-        :rows-per-page-items="[10, 20, 100]"
+        :rows-per-page-items="[10, 20, 50]"
         rows-per-page-text="Mostrar"
-        :disable-initial-sort="true"
+
       >
         <template v-slot:no-results>
           <v-alert :value="true" color="error" icon="warning">
@@ -36,7 +43,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-btn icon v-on="on" @click="editar(props.item)">
-                    <v-icon color="primary">edit</v-icon>
+                    <v-icon medium color="primary">edit</v-icon>
                   </v-btn>
                 </template>
                 <span>Editar utilizador</span>
@@ -167,7 +174,7 @@ export default {
       {
         text: "Nome",
         sortable: true,
-        value: "nome",
+        value: "name",
         class: "title"
       },
       {
@@ -348,6 +355,9 @@ export default {
     fecharSnackbar() {
       this.snackbar = false;
       if (this.done == true) this.loadUtilizadores();
+    },
+    registo(){
+      this.$router.push('/users/registo')
     }
   }
 };

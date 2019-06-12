@@ -132,27 +132,27 @@ export default new Router({
     },
     // Routes da gestão de utilizadores
     {
-      path: "/autenticacao",
+      path: "/users/autenticacao",
       name: "autenticacao",
       component: () => import("./views/users/Autenticacao.vue")
     },
     {
-      path: "/registo",
+      path: "/users/registo",
       name: "registo",
       component: () => import("./views/users/Registo.vue")
     },
     {
-      path: "/login",
+      path: "/users/login",
       name: "login",
       component: () => import("./views/users/Login.vue")
     },
     {
-      path: "/recuperacao",
+      path: "/users/recuperacao",
       name: "recuperacao",
       component: () => import("./views/users/Recuperacao.vue")
     },
     {
-      path: "/alteracaoPassword",
+      path: "/users/alteracaoPassword",
       name: "alteracaoPassword",
       component: () => import("./views/users/AlteracaoPassword.vue")
     },

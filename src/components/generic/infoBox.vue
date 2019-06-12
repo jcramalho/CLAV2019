@@ -1,12 +1,12 @@
 <template>
   <v-dialog v-model="dialog" width="500">
     <template v-slot:activator="{ on }">
-      <v-icon v-on="on" small color="#00695c" dark>help</v-icon>
+      <v-icon v-on="on" small :color="colorHelp" dark>help</v-icon>
     </template>
 
-    <v-card color="#E0F2F1">
+    <v-card :color="colorDialog">
       <v-card-title>
-        <span class="title font-weight-light">{{ header }}</span>
+        <span class="title font-weight-light">{{header}}</span>
       </v-card-title>
 
       <v-card-text>
@@ -28,11 +28,24 @@
 
 <script>
 export default {
-  props: ["text", "header"],
+  props: ["text", "header", "helpColor", "dialogColor"],
   data() {
     return {
-      dialog: false
+      dialog: false,
+      colorHelp: '',
+      colorDialog: '',
     };
-  }
+  },
+  created: function() {
+    if(!this.helpColor){
+      this.colorHelp = "#1a237e"
+    }
+    else this.colorHelp = this.helpColor
+
+    if(!this.dialogColor){
+      this.colorDialog = "#dee2f8"
+    }
+    else this.colorDialog = this.dialogColor
+  },
 };
 </script>

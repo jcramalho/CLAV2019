@@ -2,8 +2,8 @@
   <Listagem
     v-bind:lista="entidades"
     tipo="Entidades"
-    v-bind:cabecalho="['Sigla', 'Designação', 'Internacional']"
-    v-bind:campos="['id', 'designacao', 'internacional']"
+    v-bind:cabecalho="['Sigla', 'Designação']"
+    v-bind:campos="['id', 'designacao']"
   />
 </template>
 
@@ -37,8 +37,7 @@ export default {
         for (var i = 0; i < listaEntidades.length; i++) {
           myTree.push({
             id: listaEntidades[i].sigla,
-            designacao: listaEntidades[i].designacao,
-            internacional: listaEntidades[i].internacional
+            designacao: listaEntidades[i].designacao
           });
         }
         return myTree;

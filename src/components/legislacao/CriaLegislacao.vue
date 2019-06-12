@@ -29,7 +29,7 @@
                 </tr>
                 <tr>
                   <td style="width:20%;">
-                    <div class="info-label">Número:</div>
+                    <div class="info-label">Número de diploma:</div>
                   </td>
                   <td style="width:80%;">
                     <v-text-field
@@ -141,7 +141,7 @@
                 <v-expansion-panel-content class="expansion-panel-heading">
                   <template v-slot:header>
                     <div class="subheading font-weight-bold">
-                      Regula os processos de negócio
+                      Processos de negócio que regula ou enquadra
                     </div>
                   </template>
                   <v-card style="padding-top:30px;">

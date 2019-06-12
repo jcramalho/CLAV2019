@@ -5,7 +5,12 @@
         <v-card class="panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
             <v-toolbar-title class="page-header"
-              ><h1>{{ titulo }}</h1></v-toolbar-title
+              ><h1>{{ titulo }}
+              <InfoBox
+                v-if="tipo === 'Legislação'"
+                header="Tipo + Entidade + Número"
+                :text="myhelp.Legislacao.Campos.Tipo + ' + Entidade responsável pela publicação. + ' + myhelp.Legislacao.Campos.Numero"
+              /></h1></v-toolbar-title
             >
           </v-toolbar>
           <v-card-text class="panel-body">
@@ -13,7 +18,23 @@
               <table class="consulta">
                 <tr v-for="(item, index) in objeto" v-bind:key="index">
                   <td v-if="item.text" style="width:20%;">
-                    <div class="info-label">{{ item.campo }}:</div>
+                    <div class="info-label">{{ item.campo }}:
+                      <InfoBox
+                        v-if="tipo === 'Entidades'"
+                        :header="item.campo"
+                        :text="myhelp.Entidade.Campos[item.campo]"
+                      />
+                      <InfoBox
+                        v-if="tipo === 'Tipologias'"
+                        :header="item.campo"
+                        :text="myhelp.Tipologias.Campos[item.campo]"
+                      />
+                      <InfoBox
+                        v-if="tipo === 'Legislação'"
+                        :header="item.campo"
+                        :text="myhelp.Legislacao.Campos[item.campo]"
+                      />
+                    </div>
                   </td>
                   <td v-if="item.text" style="width:80%;">
                     <a
@@ -32,7 +53,11 @@
                 <tr v-if="tipo === 'Entidades' && listaTip.length">
                   <td style="width:20%">
                     <div class="info-label">
-                      Pertence às tipologias de Entidade:
+                      Tipologias de Entidade:
+                      <InfoBox
+                        header="Tipologias de Entidade"
+                        :text="myhelp.Entidade.Campos.Tipologias"
+                      />
                     </div>
                   </td>
                   <td style="width:80%">
@@ -55,7 +80,12 @@
                     <table>
                       <tr v-if="listaProcD.length">
                         <td>
-                          <label style="font-weight: bold;">Como Dono: </label>
+                          <label style="font-weight: bold;">Como Dono: 
+                            <InfoBox
+                              header="Intervenção nos PNs como Dono"
+                              :text="myhelp.Entidade.Intervencoes.Dono"
+                            />
+                          </label>
                         </td>
                         <td>
                           <ul
@@ -88,6 +118,10 @@
                         <td>
                           <label style="font-weight: bold;"
                             >Como Participante:
+                            <InfoBox
+                              header="Intervenção nos PNs como Participante"
+                              :text="myhelp.Entidade.Intervencoes.Participante"
+                            />
                           </label>
                         </td>
                         <td>
@@ -136,82 +170,111 @@
                     </table>
                   </td>
                 </tr>
-                <!-- Consulta de Tipologia: processos em que a tipologia atua como dona -->
+                <!-- Consulta de Tipologia: Natureza de intervenção nos PNs -->
                 <tr v-if="tipo === 'Tipologias' && listaProcD.length">
                   <td style="width:20%;">
-                    <div class="info-label">Dono de:</div>
+                    <div class="info-label">
+                      Natureza de intervenção nos Processos de Negócio:
+                    </div>
                   </td>
                   <td style="width:80%;">
-                    <ul
-                      style="padding-left:20px;"
-                      :class="{ 'is-collapsed': domainCollapsed }"
-                    >
-                      <li v-for="(l, index) in listaProcD" v-bind:key="index">
-                        <a :href="'/classes/consultar/' + l.id"
-                          >{{ l.codigo }} </a
-                        >- {{ l.titulo }}
-                      </li>
-                    </ul>
-                    <a
-                      @click="domainCollapsed = !domainCollapsed"
-                      v-if="listaProcD.length > 6"
-                    >
-                      <span v-if="domainCollapsed" style="color:#4d94ff;"
-                        >Mostrar mais...</span
-                      >
-                      <span v-else style="color:#4d94ff;"
-                        >Mostrar menos...</span
-                      >
-                    </a>
-                  </td>
-                </tr>
-                <!-- Consulta de Tipologia: processos em que a tipologia participa -->
-                <tr v-if="tipo === 'Tipologias' && parts">
-                  <td style="width:20%;">
-                    <div class="info-label">Tipo de participação:</div>
-                  </td>
-                  <td>
-                    <ul
-                      v-for="(key, index) in Object.keys(listaProcP)"
-                      v-bind:key="index"
-                      style="padding-left:20px;"
-                    >
-                      <li v-if="listaProcP[key].length > 0">
-                        <b v-if="listaProcP[key].length > 0"
-                          >{{ participationsDic[key] }}:</b
-                        >
-                        <ul :class="{ 'is-collapsed': partsCollapsed[key] }">
-                          <li
-                            v-for="(p, index) in listaProcP[key]"
+                    <table>
+                      <tr v-if="listaProcD.length">
+                        <td>
+                          <label style="font-weight: bold;">Como Dono: 
+                            <InfoBox
+                              header="Intervenção nos PNs como Dono"
+                              :text="myhelp.Tipologias.Intervencoes.Dono"
+                            />
+                          </label>
+                        </td>
+                        <td>
+                          <ul
+                            style="padding-left:20px;"
+                            :class="{ 'is-collapsed': domainCollapsed }"
+                          >
+                            <li
+                              v-for="(l, index) in listaProcD"
+                              v-bind:key="index"
+                            >
+                              <a :href="'/classes/consultar/c' + l.codigo"
+                                >{{ l.codigo }} </a
+                              >- {{ l.titulo }}
+                            </li>
+                          </ul>
+                          <a
+                            @click="domainCollapsed = !domainCollapsed"
+                            v-if="listaProcD.length > 6"
+                          >
+                            <span v-if="domainCollapsed" style="color:#4d94ff;"
+                              >Mostrar mais...</span
+                            >
+                            <span v-else style="color:#4d94ff;"
+                              >Mostrar menos...</span
+                            >
+                          </a>
+                        </td>
+                      </tr>
+                      <tr v-if="parts">
+                        <td>
+                          <label style="font-weight: bold;"
+                            >Como Participante:
+                            <InfoBox
+                              header="Intervenção nos PNs como Participante"
+                              :text="myhelp.Tipologias.Intervencoes.Participante"
+                            />
+                          </label>
+                        </td>
+                        <td>
+                          <ul
+                            v-for="(key, index) in Object.keys(listaProcP)"
                             v-bind:key="index"
+                            style="padding-left:20px;"
                           >
-                            <a :href="'/classes/consultar/c' + p.codigo">{{
-                              p.codigo
-                            }}</a>
-                            - {{ p.titulo }}
-                          </li>
-                        </ul>
-                        <a
-                          @click="partsCollapsed[key] = !partsCollapsed[key]"
-                          v-if="listaProcP[key].length > 6"
-                        >
-                          <span
-                            v-if="partsCollapsed[key]"
-                            style="color:#4d94ff;"
-                            >Mostrar mais...</span
-                          >
-                          <span v-else style="color:#4d94ff;"
-                            >Mostrar menos...</span
-                          >
-                        </a>
-                      </li>
-                    </ul>
+                            <li v-if="listaProcP[key].length > 0">
+                              <b v-if="listaProcP[key].length > 0"
+                                >{{ participationsDic[key] }}:</b
+                              >
+                              <ul :class="{ 'is-collapsed': partsCollapsed[key] }">
+                                <li
+                                  v-for="(p, index) in listaProcP[key]"
+                                  v-bind:key="index"
+                                >
+                                  <a :href="'/classes/consultar/c' + p.codigo">{{
+                                    p.codigo
+                                  }}</a>
+                                  - {{ p.titulo }}
+                                </li>
+                              </ul>
+                              <a
+                                @click="partsCollapsed[key] = !partsCollapsed[key]"
+                                v-if="listaProcP[key].length > 6"
+                              >
+                                <span
+                                  v-if="partsCollapsed[key]"
+                                  style="color:#4d94ff;"
+                                  >Mostrar mais...</span
+                                >
+                                <span v-else style="color:#4d94ff;"
+                                  >Mostrar menos...</span
+                                >
+                              </a>
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
                 <!-- Consulta de Tipologia: entidades pertencentes à Tipologia -->
                 <tr v-if="tipo === 'Tipologias' && listaEnt.length">
                   <td style="width:10%:">
-                    <div class="info-label">Entidades:</div>
+                    <div class="info-label">Entidades:
+                      <InfoBox
+                        header="Entidades"
+                        :text="myhelp.Tipologias.Campos.Entidades"
+                      />
+                    </div>
                   </td>
                   <td style="width:80%;">
                     <ul
@@ -240,7 +303,11 @@
                 <tr v-if="tipo === 'Legislação' && listaReg.length">
                   <td style="width:20%">
                     <div class="info-label">
-                      Regula os processos de negócio:
+                      Processos de negócio que regula ou enquadra:
+                      <InfoBox
+                        header="Processos de negócio que regula ou enquadra"
+                        :text="myhelp.Legislacao.Campos.ProcessosRegulados"
+                      />
                     </div>
                   </td>
                   <td style="width:80%;">
@@ -266,6 +333,9 @@
 </template>
 
 <script>
+const help = require("@/config/help").help;
+import InfoBox from "@/components/generic/infoBox.vue";
+
 export default {
   props: [
     "tipo",
@@ -278,6 +348,9 @@ export default {
     "listaReg",
     "parts"
   ],
+  components: {
+    InfoBox
+  },
   data: () => ({
     domainCollapsed: true,
     entCollapsed: true,
@@ -296,7 +369,8 @@ export default {
       Decisor: "Decidir",
       Executor: "Executar",
       Iniciador: "Iniciar"
-    }
+    },
+    myhelp: help
   }),
   methods: {
     voltar: function() {
