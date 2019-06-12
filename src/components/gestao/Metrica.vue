@@ -25,12 +25,12 @@
       </v-flex>
     </v-layout>
     <v-layout class="" row wrap>
-      <v-flex md4 xs12>
+      <v-flex md6 xs12>
         <v-card light>
           <doughnut></doughnut>
         </v-card>
       </v-flex>
-      <v-flex md4 xs12>
+      <v-flex md6 xs12>
         <v-card light>
           <bar></bar>
         </v-card>
@@ -56,7 +56,7 @@ export default {
   components: {
     Bar,
     Doughnut,
-    LineChart
+    //LineChart
   },
   data() {
     return {

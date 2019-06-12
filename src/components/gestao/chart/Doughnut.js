@@ -14,7 +14,8 @@ export default {
           "Utilizador Avançado",
           "Utilizador Decisor",
           "Utilizador Simples",
-          "Representante Entidade"
+          "Representante Entidade",
+          "Utilizador desativado"
         ],
         datasets: [
           {
@@ -25,9 +26,10 @@ export default {
               "#ffff9d",
               "#fcc267",
               "#ef8250",
-              "#d43d5"
+              "#d43d5",
+              "#00aba9"
             ],
-            data: [0, 0, 0, 0, 0, 0, 0]
+            data: [0, 0, 0, 0, 0, 0, 0, 0]
           }
         ]
       },
