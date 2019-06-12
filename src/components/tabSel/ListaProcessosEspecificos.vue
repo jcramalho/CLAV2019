@@ -55,6 +55,7 @@
         <td>
           <v-checkbox
             v-model="props.item.participante"
+            v-if="!(props.item.participante != true && props.item.participante != false)"
             primary
             hide-details
             v-on:change="
@@ -71,6 +72,23 @@
           ></v-checkbox>
         </td>
       </tr>
+      <v-snackbar
+        v-model="snackbar"
+        color="info"
+        :top="true"
+        :timeout="0"
+      > 
+      {{ text }}
+        <v-progress-circular
+            :rotate="-90"
+            :size="40"
+            :width="5"
+            :value="value"
+            color="white"
+          >
+            {{ value }}
+        </v-progress-circular>
+      </v-snackbar>
     </template>
   </v-data-table>
 </template>
@@ -109,7 +127,11 @@ export default {
     // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
     listaProcResultado: {},
     // Lista com os processos especificos selecionados
-    procEspSel: []
+    procEspSel: [],
+    // Para o snackbar enquanto estão a ser calculadas as travessias iniciais (dos processos não tranversais que são logo assumidos como donos)
+    snackbar: false,
+    text: "Por favor aguarde enquanto são efetuados os calculos das travessias iniciais.",
+    value: 0,
   }),
   methods: {
     // Retorna a lista dos processos complementares ao processo passado como parâmetro
@@ -403,6 +425,28 @@ export default {
       this.procEspSel.splice(index, 1);
       this.$emit("contadorProcSelEsp", this.procEspSel);
     }
-  }
+  },
+  mounted: async function() {
+    try{
+      for( var i = 0; i < this.lista.length; i++ ){
+        this.snackbar = true;
+        this.value = Math.floor((i / this.lista.length) * 100);
+        console.log(i)
+        console.log(this.lista[i].dono)
+        if(this.lista[i].dono){
+          console.log("Travessia")
+          await this.calcRel(this.lista[i].classe);
+          if (!this.procEspSel.includes(this.lista[i].classe)) {
+            this.procEspSel.push(this.lista[i].classe);
+            this.$emit("contadorProcSelEsp", this.procEspSel);
+          }
+        }
+      }
+      this.snackbar = false;
+    }
+    catch(e){
+      console.log(e)
+    }
+  },
 };
 </script>

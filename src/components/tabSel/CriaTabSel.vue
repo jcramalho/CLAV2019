@@ -198,6 +198,7 @@
           @click="
             stepNo = 3;
             barra(50);
+            loadProcComuns();
           "
           >Continuar</v-btn
         >
@@ -226,6 +227,7 @@
                   </div>
                 </template>
                 <ListaProcessosComuns
+                  v-if="listaProcComunsReady"
                   v-bind:lista="listaProcComuns"
                   tipo="Processos Comuns"
                   @aCalcular="aCalcular($event)"
@@ -297,6 +299,7 @@
                   </div>
                 </template>
                 <ListaProcessosEspecificos
+                  v-if="listaProcEspReady"
                   v-bind:lista="listaProcEsp"
                   tipo="Processos Especificos"
                   v-bind:listaPreSel="procPreSelResTravComum"
@@ -362,7 +365,8 @@
                     Selecione os Processos de Negócio Específicos Restantes
                   </div>
                 </template>
-                <ListaProcessosRestantes
+                <ListaProcessosEspRestantes
+                  v-if="listaProcEspResReady"
                   v-bind:lista="listaProcEspRes"
                   tipo="Processos Especificos"
                   v-bind:listaPreSel="procPreSelEspRestantes"
@@ -426,7 +430,7 @@ const lhost = require("@/config/global").host;
 
 import ListaProcessosComuns from "@/components/tabSel/ListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/ListaProcessosEspecificos.vue";
-import ListaProcessosRestantes from "@/components/tabSel/ListaProcessosRestantes.vue";
+import ListaProcessosEspRestantes from "@/components/tabSel/ListaProcessosEspRestantes.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
@@ -450,7 +454,7 @@ export default {
   components: {
     ListaProcessosComuns,
     ListaProcessosEspecificos,
-    ListaProcessosRestantes,
+    ListaProcessosEspRestantes,
     DesSelTip,
     SelTip
   },
@@ -476,10 +480,14 @@ export default {
       tipSel: [],
       // Lista com todos os processos especificos da entidade e tipologias em causa
       listaProcEsp: [],
+      // True quando a lista de todos os processos especificos da entidade e tipologias em causa estiver completa
+      listaProcEspReady: false,
       // Lista com Todos os processos especificos existentes
       listaTotalProcEsp: [],
       // Lista com todos os processos comuns
       listaProcComuns: [],
+      // True quando a lista de todos os processos comuns existentes estiver completa
+      listaProcComunsReady: false,
       // True enquanto estiver a ser efetuado uma travessia
       progressCalcular: false,
       // Numero de processos comuns selecionados
@@ -500,6 +508,8 @@ export default {
       listaProcSelEsp: [],
       // Lista dos processos especificos restantes (que não são especificos da entidade nem da tipologia em causa)
       listaProcEspRes: [],
+      // True quando a lista dos processos especificos restantes estiver completa
+      listaProcEspResReady: false,
       // Numero de processos restantes selecionados
       numProcSelRes: 0,
       // Numero de processos restantes que se encontram pré selecionados
@@ -615,19 +625,20 @@ export default {
         }
         var response = await axios.get(url);
         for (var x = 0; x < response.data.length; x++) {
-          var jaExiste = false;
-          for (var j = 0; j < this.listaProcEsp.length; j++) {
-            if (this.listaProcEsp[j].classe === response.data[x].codigo) {
-              jaExiste = true;
-            }
-          }
-          if (!jaExiste) {
+          if(response.data[x].transversal==='S'){
             this.listaProcEsp.push({
               classe: response.data[x].codigo,
               designacao: response.data[x].titulo,
               dono: false,
               participante: false
             });
+          }
+          else {
+            this.listaProcEsp.push({
+              classe: response.data[x].codigo,
+              designacao: response.data[x].titulo,
+              dono: true
+            })
           }
         }
         return this.listaProcEsp;
@@ -640,13 +651,23 @@ export default {
       try {
         var response = await axios.get(lhost + "/api/classes?tipo=comum");
         for (var i = 0; i < response.data.length; i++) {
-          this.listaProcComuns.push({
-            classe: response.data[i].codigo,
-            designacao: response.data[i].titulo,
-            dono: false,
-            participante: false
-          });
+          if(response.data[i].transversal==="S"){
+            this.listaProcComuns.push({
+              classe: response.data[i].codigo,
+              designacao: response.data[i].titulo,
+              dono: false,
+              participante: false
+            });
+          }
+          else {
+            this.listaProcComuns.push({
+              classe: response.data[i].codigo,
+              designacao: response.data[i].titulo,
+              dono: true
+            });
+          }
         }
+        this.listaProcComunsReady = true;
         return this.listaProcComuns;
       } catch (erro) {
         console.log(erro);
@@ -668,7 +689,6 @@ export default {
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
     procPreSelResTravCom: function(procPreSelResTravCom) {
-      console.log(procPreSelResTravCom)
       this.procPreSelResTravComum = procPreSelResTravCom;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs especificos
@@ -682,6 +702,7 @@ export default {
           this.numProcPreSelEsp += 1;
         }
       }
+      this.listaProcEspReady = true;
     },
     // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
     procPreSelRestantes: function() {
@@ -719,17 +740,24 @@ export default {
             }
           }
           if (espEntTip === false) {
-            this.listaProcEspRes.push({
-              classe: this.listaTotalProcEsp[i].codigo,
-              designacao: this.listaTotalProcEsp[i].titulo,
-              dono: false,
-              participante: false
-            });
-          }
+            if(this.listaTotalProcEsp[i].transversal==="S"){
+                this.listaProcEspRes.push({
+                  classe: this.listaTotalProcEsp[i].codigo,
+                  designacao: this.listaTotalProcEsp[i].titulo,
+                  dono: false,
+                  participante: false
+                });
+              }
+              else {
+                this.listaProcEspRes.push({
+                  classe: this.listaTotalProcEsp[i].codigo,
+                  designacao: this.listaTotalProcEsp[i].titulo,
+                  dono: true
+                });
+              }
+            }
+            this.listaProcEspResReady = true;
         }
-        // console.log(this.listaTotalProcEsp);
-        // console.log(this.listaProcEsp);
-        // console.log(this.listaProcComuns);
         console.log(this.estado.procComuns);
         console.log(this.estado.procEspecificos);
       } catch (error) {
@@ -755,7 +783,6 @@ export default {
     }
   },
   created: function() {
-    this.loadProcComuns();
     this.estado.procComuns = [];
     this.estado.procEspecificos = [];
   }
