@@ -13,12 +13,12 @@ export default {
           {
             label: "GET",
             backgroundColor: "#f87979",
-            data: [0, 0, 0, 0, 0, 40, 39, 60, 40, 20, 12, 11]
+            data: []
           },
           {
             label: "POST",
             backgroundColor: "#05CBE1",
-            data: [40, 20, 12, 39, 10, 40, 39, 60, 40, 20, 12, 11]
+            data: []
           }
         ]
       },
