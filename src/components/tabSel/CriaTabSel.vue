@@ -267,7 +267,6 @@
             barra(75);
             printEstado();
             procPreSelEspecificos();
-            loadProcEspRestantes();
           "
           >Continuar</v-btn
         >
@@ -339,6 +338,7 @@
             barra(75);
             printEstado();
             procPreSelRestantes();
+            loadProcEspRestantes();
           "
           >Continuar</v-btn
         >
