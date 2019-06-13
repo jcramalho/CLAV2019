@@ -3,6 +3,14 @@
     <v-card>
       <v-card-title>
         <h1>Listagem de Utilizadores</h1>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" @click="registo">
+              <v-icon large color="primary">person_add</v-icon>
+            </v-btn>
+          </template>
+          <span>Adicionar novo utilizador</span>
+        </v-tooltip>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -10,14 +18,6 @@
           label="Filtrar"
           single-line
         ></v-text-field>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" @click="registo">
-              <v-icon medium color="primary">person_add</v-icon>
-            </v-btn>
-          </template>
-          <span>Adicionar novo utilizador</span>
-        </v-tooltip>
       </v-card-title>
       <v-data-table
         :headers="headers"
@@ -36,7 +36,7 @@
         <template v-slot:items="props">
           <tr>
             <td class="subheading">{{ props.item.name }}</td>
-            <td class="subheading">{{ props.item.entidade }}</td>
+            <td class="subheading">{{format(props.item.entidade)}}</td>
             <td class="subheading">{{ props.item.email }}</td>
             <td class="subheading">{{ props.item.level }}</td>
             <td class="subheading">
@@ -358,6 +358,13 @@ export default {
     },
     registo(){
       this.$router.push('/users/registo')
+    },
+    format(entidade){
+      if(entidade!=undefined){
+        return entidade.split('_')[1];
+      }else{
+        return '';
+      }
     }
   }
 };
