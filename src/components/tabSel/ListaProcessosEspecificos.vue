@@ -130,7 +130,7 @@ export default {
     procEspSel: [],
     // Para o snackbar enquanto estão a ser calculadas as travessias iniciais (dos processos não tranversais que são logo assumidos como donos)
     snackbar: false,
-    text: "Por favor aguarde enquanto são efetuados os calculos das travessias iniciais.",
+    text: "Por favor aguarde enquanto são efetuados os calculos das travessias iniciais dos processos de negócio específicos.",
     value: 0,
   }),
   methods: {
@@ -436,8 +436,8 @@ export default {
         if(this.lista[i].dono){
           console.log("Travessia")
           await this.calcRel(this.lista[i].classe);
-          if (!this.procEspSel.includes(this.lista[i].classe)) {
-            this.procEspSel.push(this.lista[i].classe);
+          if (!this.procEspSel.includes(this.lista[i])) {
+            this.procEspSel.push(this.lista[i]);
             this.$emit("contadorProcSelEsp", this.procEspSel);
           }
         }
