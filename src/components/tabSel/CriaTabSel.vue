@@ -402,8 +402,10 @@
         <v-btn
           color="primary"
           @click="
-            stepNo = 5;
+            stepNo = 6;
             barra(75);
+            loadUltimosProcessos();
+            printEstado();
           "
           >Continuar</v-btn
         >
@@ -417,7 +419,74 @@
         >
       </v-stepper-content>
 
-      <v-btn color="primary" v-if="stepNo > 5">Submeter</v-btn>
+      <v-stepper-step :complete="stepNo > 6" step="6"
+        >Outros processos
+        <small
+          >Revisão de processos de negócio não selecionados nas 
+          etapas anteriores</small
+        >
+      </v-stepper-step>
+      <v-stepper-content step="6">
+        <v-layout wrap>
+          <v-flex xs10>
+            <v-expansion-panel>
+              <v-expansion-panel-content class="expansion-panel-heading">
+                <template v-slot:header>
+                  <div class="subheading font-weight-bold">
+                    Selecione os Processos de Negócio Restantes
+                  </div>
+                </template>
+                <ListaProcessosUltimos
+                  v-if="listaProcUltReady"
+                  v-bind:lista="listaProcUlt"
+                  tipo="Processos Ultimos"
+                  @aCalcular="aCalcular($event)"
+                  @contadorProcSelUlt="contadorProcSelUlt($event)"
+                  @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-flex>
+        </v-layout>
+        <v-layout wrap>
+          <v-flex xs3>
+            <v-text-field
+              label="Nº dos últimos processos selecionados"
+              :value="numProcSelRes"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs4 style="padding-left:60px;">
+            <v-text-field
+              v-if="!progressCalcular"
+              label="Nº dos últimos processos pré selecionados"
+              :value="numProcPreSelUlt"
+            ></v-text-field>
+            <v-progress-circular
+              v-else
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </v-flex>
+        </v-layout>
+        <v-btn
+          color="primary"
+          @click="
+            stepNo = 5;
+            barra(75);
+          "
+          >Continuar</v-btn
+        >
+        <v-btn
+          flat
+          @click="
+            stepNo = 5;
+            barra(50);
+          "
+          >Voltar</v-btn
+        >
+      </v-stepper-content>
+
+      <v-btn color="primary" v-if="stepNo > 6">Submeter</v-btn>
       <v-btn color="primary" v-else>Guardar trabalho</v-btn>
       <v-btn flat>Cancelar</v-btn>
     </v-stepper>
@@ -431,6 +500,7 @@ const lhost = require("@/config/global").host;
 import ListaProcessosComuns from "@/components/tabSel/ListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/ListaProcessosEspRestantes.vue";
+import ListaProcessosUltimos from "@/components/tabSel/ListaProcessosUltimos.vue"
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
@@ -455,6 +525,7 @@ export default {
     ListaProcessosComuns,
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
+    ListaProcessosUltimos,
     DesSelTip,
     SelTip
   },
@@ -520,6 +591,13 @@ export default {
       procPreSelResTravRestante: [],
       // Lista dos processos pré selecionados resultantes das travessias dos comuns e especificos
       procPreSelEspRestantes: [],
+      // Lista dos ultimos processos pre selecionados
+      procPreSelUltimos: [],
+      // Lista de todos os processos que ainda não foram selecionados nas etapas anteriores
+      listaProcUlt: [],
+      // Numero de processos pré selecionados no ultimo componente de seleção
+      numProcPreSelUlt: 0,
+      listaProcUltReady: false,
     };
   },
   methods: {
@@ -767,7 +845,7 @@ export default {
     // Contador dos processos selecionados restantes
     contadorProcSelRes: function(procSelec) {
       this.numProcSelRes = procSelec.length;
-      this.estado.procRestantes = procSelec;
+      this.estado.procEspRestantes = procSelec;
       this.listaProcSelRes = procSelec;
     },
     // Contador dos processos pre selecionados restantes
@@ -777,6 +855,65 @@ export default {
     // Lista dos processos pre selecionados especificos restantes, resultantes das travessias dos PNs especificos
     procPreSelResTravRes: function(procPreSelResTravRes) {
       this.procPreSelResTravRestante = procPreSelResTravRes;
+    },
+    // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
+    loadUltimosProcessos: function() {
+      for( var i = 0; i < this.listaProcComuns.length; i++ ){
+        var procSelecionado = false;
+        for( var j = 0; j < this.estado.procComuns.length; j++ ){
+          if( this.listaProcComuns[i].classe === this.estado.procComuns[j].classe ){
+            procSelecionado = true;
+            break;
+          }
+        }
+        if( procSelecionado == false ){
+          this.listaProcUlt.push(this.listaProcComuns[i]);
+        }
+      }
+      // Lista com todos os processos já selecionados
+      var procEspSelecionados = this.estado.procEspecificos.concat(this.estado.procEspRestantes);
+      // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
+      for( var f = 0; f < this.listaTotalProcEsp.length; f++ ){
+        var procSelecionado = false;
+        for( var m = 0; m < procEspSelecionados.length; m++ ){
+          if( this.listaTotalProcEsp[f].codigo === procEspSelecionados[m].classe ){
+            procSelecionado = true;
+            break;
+          }
+        }
+        if( procSelecionado == false ){
+          this.listaProcUlt.push({
+            classe: this.listaTotalProcEsp[f].codigo,
+            designacao: this.listaTotalProcEsp[f].titulo,
+            dono: false,
+            participante: false 
+            });
+        }
+      }
+      this.listaProcUltReady = true;
+      console.log("LISTA DOS ULTIMOS PROCESSOS")
+      console.log(this.listaProcUlt)
+    },
+    // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
+    /*procPreSelUlt: function() {
+      for (var i = 0; i < this.listaProcUlt.length; i++) {
+        if (this.procPreSelResTravComum.includes(this.listaProcUlt[i].classe) ||
+        this.procPreSelResTravEspecifico.includes(this.listaProcUlt[i].classe) ||
+        this.procPreSelResTravRestante.includes(this.listaProcUlt[i].classe)) {
+          this.procPreSelUltimos.push(this.listaProcUlt[i])
+          this.numProcPreSelUlt += 1;
+        }
+      }
+    },*/
+    // Contador dos ultimos processos pre selecionados
+    contadorProcPreSelUlt: function(lista) {
+      this.numProcPreSelUlt = lista.length;
+    },
+    // Contador dos processos selecionados ultimos
+    contadorProcSelUlt: function(procSelec) {
+      this.numProcSelUlt = procSelec.length;
+      this.estado.procUltimos = procSelec;
+      this.listaProcSelUlt = procSelec;
     },
     printEstado: async function() {
       console.log(this.$store.state.criacaoTabSel);
