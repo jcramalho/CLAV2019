@@ -199,7 +199,7 @@ export default {
       this.snackbar = false;
     },
     submeter: async function() {
-      if (this.$store.state.user.name === "") {
+      if (this.$store.state.name === "") {
         this.text = "Precisa de fazer login para criar a Entidade";
         this.snackbar = true;
         return false;
@@ -222,7 +222,7 @@ export default {
       var dataObj = this.entidade;
 
       dataObj.codigo = "ent_" + this.entidade.sigla;
-      dataObj.user.token = this.$store.state.user.token;
+      dataObj.token = this.$store.state.token;
 
       console.log(dataObj);
 

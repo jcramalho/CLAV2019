@@ -207,10 +207,8 @@ export default {
       entidades: [],
       processos: [],
       // user: email para a API saber qual o email associado a esse pedido
-      user: {
-        token: "",
-        email: ""
-      }
+      token: "",
+      email: ""  
     },
 
     tiposDiploma: [],
@@ -351,7 +349,7 @@ export default {
       this.snackbar = false;
     },
     submeter: async function() {
-      if (this.$store.state.user.name === "") {
+      if (this.$store.state.name === "") {
         this.text = "Precisa de fazer login para criar a Legislação";
         this.snackbar = true;
         return false;
@@ -453,7 +451,7 @@ export default {
 
       var dataObj = this.legislacao;
 
-      dataObj.user.token = this.$store.state.user.token;
+      dataObj.token = this.$store.state.token;
 
       console.log(dataObj);
 

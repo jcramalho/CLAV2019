@@ -52,8 +52,7 @@
           </tr>
         </template>
         <template v-slot:pageText="props">
-          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
+          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
         </template>
       </v-data-table>
     </v-card>
@@ -112,7 +111,17 @@
                   <v-text-field prepend-icon="email" v-model="editedItem.email" label="Email" :rules="regraEmail" required></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
-                  <v-text-field prepend-icon="account_balance" v-model="editedItem.entidade" label="Entidade" disabled></v-text-field>
+                  <v-select
+                    item-text="label"
+                    item-value="value"
+                    :items="entidades"
+                    :rules="regraEntidade"
+                    prepend-icon="account_balance"
+                    v-model="editedItem.entidade"
+                    label="Entidade"
+                    required
+                  >
+                  </v-select>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
                   <v-select
@@ -123,7 +132,8 @@
                       'Utilizador Avançado',
                       'Utilizador Decisor',
                       'Utilizador Simples',
-                      'Representante Entidade'
+                      'Representante Entidade',
+                      'Utilizador desativado'
                     ]"
                     :rules="regraTipo"
                     prepend-icon="assignment"
@@ -213,6 +223,7 @@ export default {
       level: ''
     },
     utilizadores: [],
+    entidades: [],
     snackbar: false,
     color: "",
     done: false,
@@ -220,10 +231,24 @@ export default {
     text: ""
   }),
   created() {
-    this.loadUtilizadores();
+    this.getUtilizadores();
+    this.getEntidades();
   },
   methods: {
-    async loadUtilizadores(){
+    async getEntidades() {
+      await axios
+        .get(lhost + "/api/entidades")
+        .then(res => {
+          this.entidades = res.data.map(ent => {
+            return {
+              label: ent.sigla + " - " + ent.designacao,
+              value: ent.sigla
+            };
+          });
+        })
+        .catch(error => alert(error));
+    },
+    async getUtilizadores(){
       try {
         var response = await axios.get(lhost + "/api/users?formato=normalizado");
         this.utilizadores = response.data;
@@ -232,13 +257,14 @@ export default {
       }
     },
     editar(item) {
-      this.editedIndex = this.utilizadores.indexOf(item)
-      this.editedItem = Object.assign({}, item)
+      this.editedIndex = this.utilizadores.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.editedItem.entidade = this.editedItem.entidade.split('_')[1];
       this.dialog = true;
     },
     desativar(item) {
       axios.post(lhost + "/api/users/desativar", {
-        token: this.$store.state.user.token,
+        token: this.$store.state.token,
         id: item.id
       }).then(res => {
         if (res.data === "Utilizador desativado com sucesso!") {
@@ -246,7 +272,7 @@ export default {
           this.color = "success";
           this.snackbar = true;
           this.done = true;
-          this.loadUtilizadores();
+          this.getUtilizadores();
         }else if(res.data === "Não pode desativar o seu próprio utilizador!"){
           this.text = "Não pode desativar o seu próprio utilizador!";
           this.color = "error";
@@ -267,7 +293,7 @@ export default {
     },
     eliminar(item) {
       axios.post(lhost + "/api/users/eliminar", {
-        token: this.$store.state.user.token,
+        token: this.$store.state.token,
         id: item.id
       }).then(res => {
         if (res.data === "Utilizador eliminado com sucesso!") {
@@ -275,7 +301,7 @@ export default {
           this.color = "success";
           this.snackbar = true;
           this.done = true;
-          this.loadUtilizadores();
+          this.getUtilizadores();
         }else if(res.data === "Não pode eliminar o seu próprio utilizador!"){
           this.text = "Não pode eliminar o seu próprio utilizador!";
           this.color = "error";
@@ -295,6 +321,7 @@ export default {
       });
     },
     async guardar(){
+      alert(JSON.stringify(this.editedItem))
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.editedItem.level) {
@@ -319,11 +346,15 @@ export default {
           case "Representante Entidade":
             parsedType = 1;
             break;
+          case "Utilizador desativado":
+            parsedType = -1;
+            break;
         }
         await axios.post(lhost + "/api/users/atualizarMultiplos", {
           id: this.editedItem.id,
           nome: this.editedItem.name,
           email: this.editedItem.email,
+          entidade: 'ent_' + this.editedItem.entidade,
           level: parsedType
         }).then(res => {
           if (res.data === "Utilizador atualizado com sucesso!") {
@@ -332,7 +363,7 @@ export default {
             this.snackbar = true;
             this.done = true;
             this.dialog = false;
-            this.loadUtilizadores();
+            this.getUtilizadores();
           }else{
             this.text = "Ocorreu um erro ao atualizar a informação do utilizador!";
             this.color = "error";
@@ -354,7 +385,7 @@ export default {
     },
     fecharSnackbar() {
       this.snackbar = false;
-      if (this.done == true) this.loadUtilizadores();
+      if (this.done == true) this.getUtilizadores();
     },
     registo(){
       this.$router.push('/users/registo')

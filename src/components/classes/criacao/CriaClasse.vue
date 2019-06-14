@@ -888,11 +888,11 @@ export default {
 
     criarClasse: async function() {
       try {
-        if (this.$store.state.user.name === "") {
+        if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
           var userBD = await axios.get(
-            lhost + "/api/users/listarToken/" + this.$store.state.user.token
+            lhost + "/api/users/listarToken/" + this.$store.state.token
           );
           var pedidoParams = {
             tipoPedido: "Criação",
@@ -900,7 +900,7 @@ export default {
             novoObjeto: this.classe,
             user: {
               email: userBD.data.email,
-              token: this.$store.state.user.token
+              token: this.$store.state.token
             }
           };
 
@@ -934,11 +934,11 @@ export default {
 
     guardarTrabalho: async function() {
       try {
-        if (this.$store.state.user.name === "") {
+        if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
           var userBD = await axios.get(
-            lhost + "/api/users/listarToken/" + this.$store.state.user.token
+            lhost + "/api/users/listarToken/" + this.$store.state.token
           );
           var pendenteParams = {
             numInterv: 1,
@@ -948,7 +948,7 @@ export default {
             criadoPor: userBD.data.email,
             user: {
               email: userBD.data.email,
-              token: this.$store.state.user.token
+              token: this.$store.state.token
             }
           };
           var response = await axios.post(

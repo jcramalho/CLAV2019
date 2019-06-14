@@ -274,7 +274,7 @@
 <script>
 const lhost = require("@/config/global").host;
 import axios from "axios";
-//import ClassesFilho from "@/components/classes/consulta/ClassesFilho.vue";
+import ClassesFilho from "@/components/classes/consulta/ClassesFilho.vue";
 import NotasAp from "@/components/classes/consulta/NotasAp.vue";
 import NotasEx from "@/components/classes/consulta/NotasEx.vue";
 import ExemplosNotasAp from "@/components/classes/consulta/ExemplosNotasAp.vue";

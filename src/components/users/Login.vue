@@ -90,8 +90,8 @@ export default {
               this.done = true;
               this.$store.commit("guardaTokenUtilizador", res.data.token);
               this.$store.commit("guardaNomeUtilizador", res.data.name);
-              // this.$store.state.user.name = res.data.name;
-              // this.$store.state.user.token = res.data.token;
+              // this.$store.state.name = res.data.name;
+              // this.$store.state.token = res.data.token;
             } else {
               this.text =
                 "Ocorreu um erro ao realizar o login: Por favor verifique as suas credenciais!";

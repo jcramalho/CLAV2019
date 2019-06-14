@@ -202,7 +202,7 @@ export default {
           despacho: this.despacho
         }
         this.pedidoParaDistribuir.estado = "Distribuído"
-        this.pedidoParaDistribuir.user = {token: this.$store.state.user.token}
+        this.pedidoParaDistribuir.user = {token: this.$store.state.token}
         var response = await axios.put(lhost + '/api/pedidos', { pedido: this.pedidoParaDistribuir, distribuicao: novaDistribuicao})
         
         this.distribuir = false

@@ -10,7 +10,7 @@
       <v-flex xs12 sm5>
         <v-layout column>
           <Entidades />
-          <Gestao v-if="this.$store.state.user.name != ''"/>
+          <Gestao v-if="this.$store.state.name != ''"/>
         </v-layout>
       </v-flex>
     </v-layout>
