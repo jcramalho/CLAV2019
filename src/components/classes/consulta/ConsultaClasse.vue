@@ -311,6 +311,8 @@ import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue";
 import InnerPageHeader from "@/components/generic/InnerPageHeader.vue";
 
+import InfoBox from "@/components/generic/infoBox.vue";
+
 export default {
   props: ["idc"],
   data: () => ({
@@ -325,6 +327,7 @@ export default {
 
   components: {
     InnerPageHeader,
+    InfoBox,
     ClassesFilho,
     NotasAp,
     NotasEx,
