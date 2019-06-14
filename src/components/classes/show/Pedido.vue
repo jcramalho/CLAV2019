@@ -274,15 +274,15 @@
 <script>
 const lhost = require("@/config/global").host;
 import axios from "axios";
-import ClassesFilho from "@/components/classes/ClassesFilho.vue";
-import NotasAp from "@/components/classes/NotasAp.vue";
-import NotasEx from "@/components/classes/NotasEx.vue";
-import ExemplosNotasAp from "@/components/classes/ExemplosNotasAp.vue";
-import TermosIndice from "@/components/classes/TermosIndice.vue";
-import Donos from "@/components/classes/Donos.vue";
-import Participantes from "@/components/classes/Participantes.vue";
-import ProcessosRelacionados from "@/components/classes/ProcessosRelacionados.vue";
-import Legislacao from "@/components/classes/Legislacao.vue";
+import ClassesFilho from "@/components/classes/consulta/ClassesFilho.vue";
+import NotasAp from "@/components/classes/consulta/NotasAp.vue";
+import NotasEx from "@/components/classes/consulta/NotasEx.vue";
+import ExemplosNotasAp from "@/components/classes/consulta/ExemplosNotasAp.vue";
+import TermosIndice from "@/components/classes/consulta/TermosIndice.vue";
+import Donos from "@/components/classes/consulta/Donos.vue";
+import Participantes from "@/components/classes/consulta/Participantes.vue";
+import ProcessosRelacionados from "@/components/classes/consulta/ProcessosRelacionados.vue";
+import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 
 export default {
   props: ["idp"],
