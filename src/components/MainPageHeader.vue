@@ -26,32 +26,32 @@
       <v-btn
         color="indigo accent-4"
         to="/users/autenticacao"
-        v-if="this.$store.state.user.name === ''"
+        v-if="this.$store.state.name === ''"
       >
         Autenticação
       </v-btn>
       <!-- <v-btn
         color="indigo accent-4"
         to="/users/login"
-        v-if="this.$store.state.user.name === ''"
+        v-if="this.$store.state.name === ''"
       >
         Login
       </v-btn> -->
       <span
         class="font-weight-light"
-        v-if="this.$store.state.user.name != ''"
-        >{{ this.$store.state.user.name }}</span
+        v-if="this.$store.state.name != ''"
+        >{{ this.$store.state.name }}</span
       >
       <v-btn
         color="indigo accent-4"
-        v-if="this.$store.state.user.name != ''"
+        v-if="this.$store.state.name != ''"
         @click="logoutUtilizador"
       >
         Logout
       </v-btn>
       <v-btn
         color="red"
-        v-if="this.$store.state.user.name != ''"
+        v-if="this.$store.state.name != ''"
         @click="testJWT"
       >
         JWT
@@ -81,8 +81,8 @@ export default {
       this.text = "Logout efetuado com sucesso!";
       this.color = "success";
       this.snackbar = true;
-      // this.$store.state.user.name = '';
-      // this.$store.state.user.token = '';
+      // this.$store.state.name = '';
+      // this.$store.state.token = '';
       this.$store.commit("guardaTokenUtilizador", "");
       this.$store.commit("guardaNomeUtilizador", "");
     },
@@ -91,7 +91,7 @@ export default {
     },
     async testJWT() {
       var res = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.user.token
+        lhost + "/api/users/listarToken/" + this.$store.state.token
       );
       alert(JSON.stringify(res.data));
     }

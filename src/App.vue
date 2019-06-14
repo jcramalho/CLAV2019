@@ -35,9 +35,9 @@ export default {
   },
   watch: {
     async $route(to, from) {
-      if (this.$store.state.user.token != "") {
+      if (this.$store.state.token != "") {
         var res = await axios.get(
-          lhost + "/api/users/verificaToken/" + this.$store.state.user.token
+          lhost + "/api/users/verificaToken/" + this.$store.state.token
         );
         if (res.data.name == "TokenExpiredError") {
           this.text = "A sua sessão expirou! Por favor faça login novamente.";

@@ -16,18 +16,16 @@ export default new Vuex.Store({
       procEspRestantes: [],
       procUltimos: [],
     },
-    user: {
-      name: "",
-      token: ""
-    }
+    name: "",
+    token: ""
   },
   plugins: [createPersistedState()],
   mutations: {
     guardaTokenUtilizador(state, token) {
-      state.user.token = token;
+      state.token = token;
     },
     guardaNomeUtilizador(state, nome) {
-      state.user.name = nome;
+      state.name = nome;
     }
   },
   actions: {}

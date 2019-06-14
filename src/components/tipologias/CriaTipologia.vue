@@ -111,10 +111,8 @@ export default {
       entidades: [],
       codigo: "",
       // user: email para a API saber qual o email associado a esse pedido
-      user: {
-        token: "",
-        email: ""
-      }
+      token: "",
+      email: ""
     },
     designacao: "",
     sigla: "",
@@ -163,7 +161,7 @@ export default {
       this.snackbar = false;
     },
     submeter: async function() {
-      if (this.$store.state.user.name === "") {
+      if (this.$store.state.name === "") {
         this.text = "Precisa de fazer login para criar a Tipologia";
         this.snackbar = true;
         return false;
@@ -176,7 +174,7 @@ export default {
       var dataObj = this.tipologia;
 
       dataObj.codigo = "tip_" + this.tipologia.sigla;
-      dataObj.user.token = this.$store.state.user.token;
+      dataObj.token = this.$store.state.token;
 
       console.log(dataObj);
 

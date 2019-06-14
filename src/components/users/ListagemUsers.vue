@@ -264,7 +264,7 @@ export default {
     },
     desativar(item) {
       axios.post(lhost + "/api/users/desativar", {
-        token: this.$store.state.user.token,
+        token: this.$store.state.token,
         id: item.id
       }).then(res => {
         if (res.data === "Utilizador desativado com sucesso!") {
@@ -293,7 +293,7 @@ export default {
     },
     eliminar(item) {
       axios.post(lhost + "/api/users/eliminar", {
-        token: this.$store.state.user.token,
+        token: this.$store.state.token,
         id: item.id
       }).then(res => {
         if (res.data === "Utilizador eliminado com sucesso!") {

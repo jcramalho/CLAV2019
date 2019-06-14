@@ -612,7 +612,7 @@ export default {
     // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
     infoUserEnt: async function() {
       var resUser = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.user.token
+        lhost + "/api/users/listarToken/" + this.$store.state.token
       );
       var resEnt = await axios.get(
         lhost + "/api/entidades/" + resUser.data.entidade

@@ -55,7 +55,7 @@ export default {
 
   computed: {
     fops: function() {
-      if (this.$store.state.user.name != "") {
+      if (this.$store.state.name != "") {
         return this.operacoes;
       } else {
         return this.filtraOps(this.operacoes);
