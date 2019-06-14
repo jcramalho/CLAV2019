@@ -12,7 +12,9 @@ export default new Vuex.Store({
       idEntidade: "",
       tipologias: [],
       procComuns: [],
-      procEspecificos: []
+      procEspecificos: [],
+      procEspRestantes: [],
+      procUltimos: [],
     },
     user: {
       name: "",

@@ -437,9 +437,9 @@
                   </div>
                 </template>
                 <ListaProcessosUltimos
+                  v-if="listaProcUltReady"
                   v-bind:lista="listaProcUlt"
                   tipo="Processos Ultimos"
-                  v-bind:listaPreSel="procPreSelUltimos"
                   @aCalcular="aCalcular($event)"
                   @contadorProcSelUlt="contadorProcSelUlt($event)"
                   @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
@@ -459,7 +459,7 @@
             <v-text-field
               v-if="!progressCalcular"
               label="Nº dos últimos processos pré selecionados"
-              :value="numProcPreSelRes"
+              :value="numProcPreSelUlt"
             ></v-text-field>
             <v-progress-circular
               v-else
@@ -595,6 +595,9 @@ export default {
       procPreSelUltimos: [],
       // Lista de todos os processos que ainda não foram selecionados nas etapas anteriores
       listaProcUlt: [],
+      // Numero de processos pré selecionados no ultimo componente de seleção
+      numProcPreSelUlt: 0,
+      listaProcUltReady: false,
     };
   },
   methods: {
@@ -842,7 +845,7 @@ export default {
     // Contador dos processos selecionados restantes
     contadorProcSelRes: function(procSelec) {
       this.numProcSelRes = procSelec.length;
-      this.estado.procRestantes = procSelec;
+      this.estado.procEspRestantes = procSelec;
       this.listaProcSelRes = procSelec;
     },
     // Contador dos processos pre selecionados restantes
@@ -868,7 +871,8 @@ export default {
         }
       }
       // Lista com todos os processos já selecionados
-      var procEspSelecionados = this.estado.procEspecificos.concat(this.estado.procRestantes);
+      var procEspSelecionados = this.estado.procEspecificos.concat(this.estado.procEspRestantes);
+      // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
       for( var f = 0; f < this.listaTotalProcEsp.length; f++ ){
         var procSelecionado = false;
         for( var m = 0; m < procEspSelecionados.length; m++ ){
@@ -878,11 +882,38 @@ export default {
           }
         }
         if( procSelecionado == false ){
-          this.listaProcUlt.push(this.listaTotalProcEsp[f]);
+          this.listaProcUlt.push({
+            classe: this.listaTotalProcEsp[f].codigo,
+            designacao: this.listaTotalProcEsp[f].titulo,
+            dono: false,
+            participante: false 
+            });
         }
       }
+      this.listaProcUltReady = true;
       console.log("LISTA DOS ULTIMOS PROCESSOS")
       console.log(this.listaProcUlt)
+    },
+    // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
+    /*procPreSelUlt: function() {
+      for (var i = 0; i < this.listaProcUlt.length; i++) {
+        if (this.procPreSelResTravComum.includes(this.listaProcUlt[i].classe) ||
+        this.procPreSelResTravEspecifico.includes(this.listaProcUlt[i].classe) ||
+        this.procPreSelResTravRestante.includes(this.listaProcUlt[i].classe)) {
+          this.procPreSelUltimos.push(this.listaProcUlt[i])
+          this.numProcPreSelUlt += 1;
+        }
+      }
+    },*/
+    // Contador dos ultimos processos pre selecionados
+    contadorProcPreSelUlt: function(lista) {
+      this.numProcPreSelUlt = lista.length;
+    },
+    // Contador dos processos selecionados ultimos
+    contadorProcSelUlt: function(procSelec) {
+      this.numProcSelUlt = procSelec.length;
+      this.estado.procUltimos = procSelec;
+      this.listaProcSelUlt = procSelec;
     },
     printEstado: async function() {
       console.log(this.$store.state.criacaoTabSel);
