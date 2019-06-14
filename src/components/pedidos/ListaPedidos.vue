@@ -193,14 +193,27 @@ export default {
       this.despacho = ""
     },
 
-    guardarDistribuicao: function(){
-      this.distribuir = false
-      this.selectedUser = {}
-      this.despacho = ""
-      this.pedidoParaDistribuir.distribuicao.push({
+    guardarDistribuicao: async function(){
+      try{
+        var novaDistribuicao = {
+          estado: 'Distribuído',
+          responsavel: this.selectedUser.email,
+          data: new Date(),
+          despacho: this.despacho
+        }
+        this.pedidoParaDistribuir.estado = "Distribuído"
+        this.pedidoParaDistribuir.user = {token: this.$store.state.user.token}
+        var response = await axios.put(lhost + '/api/pedidos', { pedido: this.pedidoParaDistribuir, distribuicao: novaDistribuicao})
         
-      })
-      alert(JSON.stringify(this.pedidoParaDistribuir))
+        this.distribuir = false
+        this.selectedUser = {}
+        this.despacho = ""
+
+        return this.pedidoParaDistribuir
+      }
+      catch(e){
+        return e
+      }
     }
   }
 };
