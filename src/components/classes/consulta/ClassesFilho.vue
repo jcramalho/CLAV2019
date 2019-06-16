@@ -2,7 +2,15 @@
   <v-layout wrap ma-2>
     <!-- DESCENDÊNCIA -->
     <v-flex xs2>
-      <div class="info-label">Descendência</div>
+      <div class="info-label">
+        Descendência
+        <InfoBox
+          header="Descendência"
+          :text="myhelp.Classe.Campos.Descendencia"
+          helpColor="indigo darken-4"
+          dialogColor="#E0F2F1"
+        />
+      </div>
     </v-flex>
     <v-flex xs10>
       <v-data-table
@@ -27,8 +35,14 @@
 </template>
 
 <script>
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
 export default {
+  components: { InfoBox },
   props: ["subclasses"],
+  data: () => ({
+    myhelp: help
+  }),
   methods: {
     go: function(idClasse) {
       this.$router.push("/classes/c" + idClasse);

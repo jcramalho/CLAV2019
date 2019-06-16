@@ -2,7 +2,15 @@
   <v-layout wrap ma-2>
     <!-- TERMOS DE ÍNDICE -->
     <v-flex xs2>
-      <div class="info-label">Termos de Índice</div>
+      <div class="info-label">
+        Termos de Índice
+        <InfoBox
+          header="Termos de Índice"
+          :text="myhelp.Classe.Campos.TermosIndice"
+          helpColor="indigo darken-4"
+          dialogColor="#E0F2F1"
+        />
+      </div>
     </v-flex>
     <v-flex xs10>
       <div class="info-content">
@@ -17,8 +25,15 @@
 </template>
 
 <script>
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
+
 export default {
-  props: ["termos"]
+  props: ["termos"],
+  components: { InfoBox },
+  data: () => ({
+    myhelp: help
+  })
 };
 </script>
 

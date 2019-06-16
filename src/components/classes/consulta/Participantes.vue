@@ -2,7 +2,15 @@
   <v-layout wrap ma-2>
     <!-- PARTICIPANTES NO PROCESSO -->
     <v-flex xs2>
-      <div class="info-label">Participantes no processo</div>
+      <div class="info-label">
+        Participantes no processo
+        <InfoBox
+          header="Participantes no processo"
+          :text="myhelp.Classe.Campos.Participantes"
+          helpColor="indigo darken-4"
+          dialogColor="#E0F2F1"
+        />
+      </div>
     </v-flex>
     <v-flex xs10>
       <div class="info-content">
@@ -53,8 +61,12 @@
 </template>
 
 <script>
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
+
 export default {
   props: ["entidades"],
+  components: { InfoBox },
 
   data: function() {
     return {
@@ -75,7 +87,8 @@ export default {
         Executor: [],
         Iniciador: []
       },
-      myParticipantes: []
+      myParticipantes: [],
+      myhelp: help
     };
   },
 
