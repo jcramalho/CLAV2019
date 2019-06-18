@@ -1,0 +1,145 @@
+<template>
+  <v-container fluid fill-height>
+    <v-layout align-center justify-center>
+      <v-flex xs12 sm8 md4>
+        <v-card class="elevation-12">
+          <v-toolbar dark color="primary">
+            <v-toolbar-title>Registo de chave API</v-toolbar-title>
+          </v-toolbar>
+          <v-card-text>
+            <v-form ref="form" lazy-validation>
+              <v-text-field
+                prepend-icon="person"
+                name="name"
+                v-model="form.name"
+                label="Nome"
+                type="text"
+                :rules="regraNome"
+                required
+              />
+              <v-text-field
+                prepend-icon="email"
+                name="email"
+                v-model="form.email"
+                label="Email"
+                type="email"
+                :rules="regraEmail"
+                required
+              />
+              <v-text-field
+                prepend-icon="account_balance"
+                name="entidade"
+                v-model="form.entidade"
+                label="Entidade"
+                type="text"
+                :rules="regraEntidade"
+                required
+              >
+              </v-text-field>
+              <!-- <v-text-field
+                id="password"
+                prepend-icon="lock"
+                name="password"
+                v-model="form.password"
+                label="Password"
+                type="password"
+                :rules="regraPassword"
+                required
+              /> -->
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" type="submit" @click="registarChaveApi"
+              >Registar</v-btn
+            >
+          </v-card-actions>
+          <v-snackbar
+            v-model="snackbar"
+            :color="color"
+            :timeout="timeout"
+            :top="true"
+          >
+            {{ text }}
+            <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+          </v-snackbar>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+</template>
+
+<script>
+const lhost = require("@/config/global").host;
+import axios from "axios";
+
+export default {
+  name: "signup",
+  async mounted() {
+    await this.getEntidades();
+  },
+  data() {
+    return {
+      regraNome: [v => !!v || "Nome é obrigatório."],
+      regraEmail: [
+        v => !!v || "Email é obrigatório.",
+        v => /.+@.+/.test(v) || "Email tem de ser válido."
+      ],
+      regraEntidade: [v => !!v || "Entidade é obrigatório."],
+      regraPassword: [v => !!v || "Password é obrigatório."],
+      form: {
+        name: "",
+        email: "",
+        entidade: "",
+        password: ""
+      },
+      snackbar: false,
+      color: "",
+      done: false,
+      timeout: 4000,
+      text: ""
+    };
+  },
+  methods: {
+    registarChaveApi() {
+      if (this.$refs.form.validate()) {
+        axios
+          .post(lhost + "/api/chaves/registar", {
+            name: this.$data.form.name,
+            email: this.$data.form.email,
+            entidade: this.$data.form.entidade
+            // password: this.$data.form.password
+          })
+          .then(res => {
+            if (res.data === "Chave API registada com sucesso!") {
+              this.text = "Chave API registada com sucesso!";
+              this.color = "success";
+              this.snackbar = true;
+              this.done = true;
+            } else if (res.data === "Email já em uso!") {
+              this.text = "Ocorreu um erro ao registar a chave API: Email já em uso!";
+              this.color = "error";
+              this.snackbar = true;
+              this.done = false;
+            }
+          })
+          .catch(function(err) {
+            this.text = err;
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          });
+      } else {
+        this.text = "Por favor preencha todos os campos!";
+        this.color = "error";
+        this.snackbar = true;
+        this.done = false;
+      }
+    },
+    fecharSnackbar() {
+      this.snackbar = false;
+      if (this.done == true) this.$router.push("/gestao/api/listagem");
+    }
+  }
+};
+</script>

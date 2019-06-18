@@ -81,6 +81,17 @@ export default {
           ]
         },
         {
+          entidade: "Gestão de chaves API",
+          texto: '',
+          ops: [
+            {
+              label: "Consultar chaves API",
+              url: "/gestao/api/listagem",
+              level: "public"
+            }
+          ]
+        },
+        {
           entidade: "Métrica plataforma CLAV",
           texto: '',
           ops: [
