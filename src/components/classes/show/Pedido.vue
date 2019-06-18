@@ -296,7 +296,7 @@ export default {
   }),
 
   components: {
-    ClassesFilho,
+    //ClassesFilho,
     NotasAp,
     NotasEx,
     ExemplosNotasAp,

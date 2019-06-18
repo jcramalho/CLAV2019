@@ -2,7 +2,15 @@
   <v-layout wrap ma-2>
     <!-- LEGISLAÇÂO -->
     <v-flex xs2>
-      <div class="info-label">Legislação</div>
+      <div class="info-label">
+        Legislação
+        <InfoBox
+          header="Legislação"
+          :text="myhelp.Classe.Campos.Legislacao"
+          helpColor="indigo darken-4"
+          dialogColor="#E0F2F1"
+        />
+      </div>
     </v-flex>
     <v-flex xs10>
       <div class="info-content">
@@ -50,8 +58,12 @@
 </template>
 
 <script>
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
+
 export default {
   props: ["legs"],
+  components: { InfoBox },
 
   data: function() {
     return {
@@ -59,7 +71,8 @@ export default {
         { text: "Tipo", align: "left", value: "tipo" },
         { text: "Número", value: "numero" },
         { text: "Sumário", value: "sumario" }
-      ]
+      ],
+      myhelp: help
     };
   },
 

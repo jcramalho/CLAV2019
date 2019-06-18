@@ -2,7 +2,15 @@
   <v-layout wrap ma-2>
     <!-- PROCESSOS RELACIONADOS -->
     <v-flex xs2>
-      <div class="info-label">Processos Relacionados</div>
+      <div class="info-label">
+        Processos Relacionados
+        <InfoBox
+          header="Processos Relacionados"
+          :text="myhelp.Classe.Campos.ProcessosRelacionados"
+          helpColor="indigo darken-4"
+          dialogColor="#E0F2F1"
+        />
+      </div>
     </v-flex>
     <v-flex xs10>
       <div class="info-content">
@@ -46,8 +54,12 @@
 </template>
 
 <script>
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
+
 export default {
   props: ["processos"],
+  components: { InfoBox },
 
   data: function() {
     return {
@@ -75,7 +87,8 @@ export default {
         eSuplementoDe: "É Suplemento de",
         eSuplementoPara: "É Suplemento para"
       },
-      myProcRel: []
+      myProcRel: [],
+      myhelp: help
     };
   },
 

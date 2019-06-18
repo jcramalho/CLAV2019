@@ -2,7 +2,15 @@
   <v-layout wrap ma-2>
     <!-- NOTAS DE EXCLUSÂO -->
     <v-flex xs2>
-      <div class="info-label">Notas de Exclusão</div>
+      <div class="info-label">
+        Notas de Exclusão
+        <InfoBox
+          header="Notas de Exclusão"
+          :text="myhelp.Classe.Campos.NotasEx"
+          helpColor="indigo darken-4"
+          dialogColor="#E0F2F1"
+        />
+      </div>
     </v-flex>
     <v-flex xs10>
       <div class="info-content">
@@ -17,8 +25,15 @@
 </template>
 
 <script>
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
+
 export default {
-  props: ["notas"]
+  props: ["notas"],
+  components: { InfoBox },
+  data: () => ({
+    myhelp: help
+  })
 };
 </script>
 

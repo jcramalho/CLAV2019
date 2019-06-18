@@ -2,7 +2,15 @@
   <v-layout wrap ma-2>
     <!-- DONOS DO PROCESSO -->
     <v-flex xs2>
-      <div class="info-label">Donos do processo</div>
+      <div class="info-label">
+        Donos do processo
+        <InfoBox
+          header="Donos do processo"
+          :text="myhelp.Classe.Campos.Donos"
+          helpColor="indigo darken-4"
+          dialogColor="#E0F2F1"
+        />
+      </div>
     </v-flex>
     <v-flex xs10>
       <div class="info-content">
@@ -29,8 +37,12 @@
 </template>
 
 <script>
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
+
 export default {
   props: ["entidades"],
+  components: { InfoBox },
 
   data: function() {
     return {
@@ -38,8 +50,9 @@ export default {
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
         { text: "Tipo", value: "tipo" }
-      ]
-    };
+      ],
+      myhelp: help
+    }
   },
 
   methods: {

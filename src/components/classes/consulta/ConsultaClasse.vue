@@ -36,7 +36,7 @@
                       <InfoBox
                         header="Descritivo da Classe"
                         :text="myhelp.Classe.BlocoDescritivo"
-                        helpColor="#00695c"
+                        helpColor="white"
                         dialogColor="#E0F2F1"
                       />
                     </v-toolbar-title>
@@ -46,7 +46,15 @@
                 <v-layout wrap ma-2>
                   <!-- DESCRIÇÂO -->
                   <v-flex xs2>
-                    <div class="info-label">Descrição</div>
+                    <div class="info-label">
+                      Descrição
+                      <InfoBox
+                        header="Descrição"
+                        :text="myhelp.Classe.Campos.Descricao"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -84,14 +92,30 @@
                     dark
                     dense
                   >
-                    <v-toolbar-title>Contexto de Avaliação</v-toolbar-title>
+                    <v-toolbar-title>
+                      Contexto de Avaliação
+                      <InfoBox
+                        header="Contexto de Avaliação"
+                        :text="myhelp.Classe.BlocoContexto"
+                        helpColor="white"
+                        dialogColor="#E0F2F1"
+                      />
+                    </v-toolbar-title>
                   </v-toolbar>
                 </template>
 
                 <v-layout wrap ma-2>
                   <!-- TIPO DE PROCESSO -->
                   <v-flex xs2>
-                    <div class="info-label">Tipo de Processo</div>
+                    <div class="info-label">
+                      Tipo de Processo
+                      <InfoBox
+                        header="Tipo de Processo"
+                        :text="myhelp.Classe.Campos.TipoProcesso"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -103,7 +127,15 @@
                 <v-layout wrap ma-2>
                   <!-- TRANSVERSALIDADE -->
                   <v-flex xs2>
-                    <div class="info-label">Processo Transversal</div>
+                    <div class="info-label">
+                      Processo Transversal
+                      <InfoBox
+                        header="Processo Transversal"
+                        :text="myhelp.Classe.Campos.ProcessoTransversal"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -145,7 +177,15 @@
                     dark
                     dense
                   >
-                    <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
+                    <v-toolbar-title>
+                      Decisões de Avaliação
+                      <InfoBox
+                        header="Decisões de Avaliação"
+                        :text="myhelp.Classe.BlocoDecisoes"
+                        helpColor="white"
+                        dialogColor="#E0F2F1"
+                      />
+                    </v-toolbar-title>
                   </v-toolbar>
                 </template>
 
@@ -166,7 +206,15 @@
                 <v-layout wrap ma-2>
                   <!-- PRAZO -->
                   <v-flex xs2>
-                    <div class="info-label">Prazo</div>
+                    <div class="info-label">
+                      Prazo
+                      <InfoBox
+                        header="Prazo"
+                        :text="myhelp.Classe.Campos.Prazo"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -190,7 +238,15 @@
                 <v-layout wrap ma-2 v-if="classe.pca.formaContagem">
                   <!-- FORMA DE CONTAGEM -->
                   <v-flex xs2>
-                    <div class="info-label">Forma de Contagem</div>
+                    <div class="info-label">
+                      Forma de Contagem
+                      <InfoBox
+                        header="Forma de Contagem"
+                        :text="myhelp.Classe.Campos.FormaContagem"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -202,7 +258,15 @@
                 <v-layout wrap ma-2 v-if="classe.pca.subFormaContagem">
                   <!-- SUBFORMA DE CONTAGEM -->
                   <v-flex xs2>
-                    <div class="info-label">Subforma de Contagem</div>
+                    <div class="info-label">
+                      Subforma de Contagem
+                      <InfoBox
+                        header="Subforma de Contagem"
+                        :text="myhelp.Classe.Campos.SubformaContagem"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -214,7 +278,15 @@
                 <v-layout wrap ma-2 v-if="classe.pca.justificacao">
                   <!-- JUSTIFICAÇÂO -->
                   <v-flex xs2>
-                    <div class="info-label">Justificação</div>
+                    <div class="info-label">
+                      Justificação
+                      <InfoBox
+                        header="Justificação do PCA"
+                        :text="myhelp.Classe.Campos.JustificacaoPCA"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -252,7 +324,15 @@
                 <v-layout wrap ma-2>
                   <!-- VALOR -->
                   <v-flex xs2>
-                    <div class="info-label">Destino Final</div>
+                    <div class="info-label">
+                      Destino Final
+                      <InfoBox
+                        header="Destino Final"
+                        :text="myhelp.Classe.Campos.DF"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -264,7 +344,15 @@
                 <v-layout wrap ma-2 v-if="classe.df.justificacao">
                   <!-- JUSTIFICAÇÂO -->
                   <v-flex xs2>
-                    <div class="info-label">Justificação</div>
+                    <div class="info-label">
+                      Justificação
+                      <InfoBox
+                        header="Justificação do DF"
+                        :text="myhelp.Classe.Campos.JustificacaoDF"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
@@ -311,6 +399,8 @@ import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue";
 import InnerPageHeader from "@/components/generic/InnerPageHeader.vue";
 
+import InfoBox from "@/components/generic/infoBox.vue";
+
 export default {
   props: ["idc"],
   data: () => ({
@@ -325,6 +415,7 @@ export default {
 
   components: {
     InnerPageHeader,
+    InfoBox,
     ClassesFilho,
     NotasAp,
     NotasEx,
