@@ -5,12 +5,12 @@
         <v-card class="panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
             <v-toolbar-title class="page-header"
-              ><h1>{{ titulo }}
+              ><h1 v-if="tipo === 'Legislação'">{{ titulo }}
               <InfoBox
-                v-if="tipo === 'Legislação'"
                 header="Tipo + Entidade + Número"
-                :text="myhelp.Legislacao.Campos.Tipo + ' + Entidade responsável pela publicação. + ' + myhelp.Legislacao.Campos.Numero"
-              /></h1></v-toolbar-title
+                :text="myhelp.Legislacao.Campos.Tipo + ' + ' + myhelp.Legislacao.Campos.Entidades + ' + ' + myhelp.Legislacao.Campos.Numero"
+              /></h1>
+              <h1 v-else>{{ titulo }}</h1></v-toolbar-title
             >
           </v-toolbar>
           <v-card-text class="panel-body">
@@ -37,15 +37,26 @@
                     </div>
                   </td>
                   <td v-if="item.text" style="width:80%;">
-                    <a
-                      v-if="item.campo === 'Link'"
-                      :href="item.text"
-                      target="_blank"
-                    >
-                      {{ item.text }}
-                    </a>
+                      <a
+                        v-if="item.campo === 'Link'"
+                        :href="item.text"
+                        target="_blank"
+                      >
+                        {{ item.text }}
+                      </a>
                     <div v-else>
-                      {{ item.text }}
+                      <div v-if="item.campo === 'Entidades'">
+                        <a
+                          v-for='(ent, index) in item.text.split(" ")'
+                          v-bind:key="index"
+                          :href="'/entidades/ent_' + ent"
+                        >
+                          {{ ent }}
+                        </a>
+                      </div>
+                      <div v-else>
+                        {{ item.text }}
+                      </div>
                     </div>
                   </td>
                 </tr>

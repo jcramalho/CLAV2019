@@ -48,6 +48,10 @@ export default {
           link: {
             campo: "Link",
             text: leg.link
+          },
+          entidades: {
+            campo: "Entidades",
+            text: await this.parseEntidades(leg.entidades)
           }
         };
         return myLegislacao;
@@ -64,13 +68,13 @@ export default {
       var response = await axios.get(
         lhost + "/api/legislacao/" + this.idLegislacao
       );
+      this.legislacao = await this.preparaLegislacao(response.data);
       this.titulo =
         response.data.tipo +
         " " +
         (await this.parseEntidades(response.data.entidades)) +
         " " +
         response.data.numero;
-      this.legislacao = await this.preparaLegislacao(response.data);
 
       // Processos de negócio que são regulados pela legislação em causa
       var regulaProc = await axios.get(
