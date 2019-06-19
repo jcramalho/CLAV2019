@@ -21,7 +21,8 @@
       <tr
         :style="{
           backgroundColor:
-            listaResUltimos.findIndex(p => p == props.item.classe) != -1 &&
+            (listaResUltimos.findIndex(p => p == props.item.classe) != -1 ||
+            listaPreSel.findIndex(p => p == props.item.classe) != -1) &&
             (!props.item.dono && !props.item.participante)
               ? 'orange'
               : 'transparent'
@@ -79,7 +80,7 @@ const lhost = require("@/config/global").host;
 const axios = require("axios");
 
 export default {
-  props: ["lista", "tipo"],
+  props: ["lista", "tipo", "listaPreSel"],
   data: () => ({
     headers: [
       {
@@ -179,14 +180,14 @@ export default {
 
         // Coloca na lista de processos resultantes ultimos os processos pré selecionados
         // resultantes das travessias das anteriores seleções de processos
-        /*if (!this.listaResUltimos.length) {
+        if (!this.listaResUltimos.length) {
           if (this.listaPreSel.length) {
             for (var l = 0; l < this.lista.length; l++) {
               if (this.listaPreSel.includes(this.lista[l].classe))
                 this.listaResUltimos.push(this.lista[l].classe);
             }
           }
-        }*/
+        }
 
         while (
           profundidade <= 1000 &&

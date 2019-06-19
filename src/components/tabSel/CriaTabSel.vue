@@ -441,6 +441,7 @@
                   v-bind:lista="listaProcUlt"
                   tipo="Processos Ultimos"
                   @aCalcular="aCalcular($event)"
+                  v-bind:listaPreSel="procPreSelUltimos"
                   @contadorProcSelUlt="contadorProcSelUlt($event)"
                   @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
                 />
@@ -486,9 +487,11 @@
         >
       </v-stepper-content>
 
-      <v-btn color="primary" v-if="stepNo > 6">Submeter</v-btn>
-      <v-btn color="primary" v-else>Guardar trabalho</v-btn>
-      <v-btn flat>Cancelar</v-btn>
+      <v-btn color="primary" v-if="stepNo > 6" @click="submeterTS()">Submeter</v-btn>
+      <v-btn color="primary" v-else @click="guardarTrabalho()">Guardar trabalho</v-btn>
+      <v-btn dark flat color="red darken-4" @click="eliminarTS()"
+            >Eliminar TS</v-btn
+          >
     </v-stepper>
   </v-container>
 </template>
@@ -597,7 +600,10 @@ export default {
       listaProcUlt: [],
       // Numero de processos pré selecionados no ultimo componente de seleção
       numProcPreSelUlt: 0,
+      // True quando a ultima lista estiver pronta
       listaProcUltReady: false,
+      // Número dos ultimos processos selecionados
+      numProcSelUlt: 0,
     };
   },
   methods: {
@@ -858,6 +864,7 @@ export default {
     },
     // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
     loadUltimosProcessos: function() {
+      // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
       for( var i = 0; i < this.listaProcComuns.length; i++ ){
         var procSelecionado = false;
         for( var j = 0; j < this.estado.procComuns.length; j++ ){
@@ -867,35 +874,54 @@ export default {
           }
         }
         if( procSelecionado == false ){
-          this.listaProcUlt.push(this.listaProcComuns[i]);
+          var jaExiste = false;
+          for( var a = 0; a < this.listaProcUlt.length; a++ ){
+            if( this.listaProcUlt[a].classe === this.listaProcComuns[i].classe ){
+              jaExiste = true;
+              break;
+            }
+          }
+          if( jaExiste == false ){
+            this.listaProcUlt.push(this.listaProcComuns[i]);
+          }
         }
       }
-      // Lista com todos os processos já selecionados
-      var procEspSelecionados = this.estado.procEspecificos.concat(this.estado.procEspRestantes);
+      // Lista com todos os processos especificos já selecionados (especificos e especificos restantes)
+      var procSelecionados = this.estado.procEspecificos.concat(this.estado.procEspRestantes);
       // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
       for( var f = 0; f < this.listaTotalProcEsp.length; f++ ){
         var procSelecionado = false;
-        for( var m = 0; m < procEspSelecionados.length; m++ ){
-          if( this.listaTotalProcEsp[f].codigo === procEspSelecionados[m].classe ){
+        for( var m = 0; m < procSelecionados.length; m++ ){
+          if( this.listaTotalProcEsp[f].codigo === procSelecionados[m].classe ){
             procSelecionado = true;
             break;
           }
         }
         if( procSelecionado == false ){
-          this.listaProcUlt.push({
+          var jaExiste = false;
+          for( var a = 0; a < this.listaProcUlt.length; a++ ){
+            if( this.listaProcUlt[a].classe === this.listaTotalProcEsp[f].codigo ){
+              jaExiste = true;
+              break;
+            }
+          }
+          if( jaExiste == false ){
+            this.listaProcUlt.push({
             classe: this.listaTotalProcEsp[f].codigo,
             designacao: this.listaTotalProcEsp[f].titulo,
             dono: false,
             participante: false 
             });
+          }
         }
       }
       this.listaProcUltReady = true;
       console.log("LISTA DOS ULTIMOS PROCESSOS")
       console.log(this.listaProcUlt)
+      this.procPreSelUlt();
     },
     // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
-    /*procPreSelUlt: function() {
+    procPreSelUlt: function() {
       for (var i = 0; i < this.listaProcUlt.length; i++) {
         if (this.procPreSelResTravComum.includes(this.listaProcUlt[i].classe) ||
         this.procPreSelResTravEspecifico.includes(this.listaProcUlt[i].classe) ||
@@ -904,7 +930,7 @@ export default {
           this.numProcPreSelUlt += 1;
         }
       }
-    },*/
+    },
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {
       this.numProcPreSelUlt = lista.length;
@@ -914,6 +940,23 @@ export default {
       this.numProcSelUlt = procSelec.length;
       this.estado.procUltimos = procSelec;
       this.listaProcSelUlt = procSelec;
+    },
+
+
+
+
+
+
+
+    // Quando o utilizador quiser cancelar todo o trabalho feito até então
+    eliminarTS: function() {
+      this.$router.push("/");
+    },
+    guardarTrabalho: function(){
+      console.log("Guardar Trabalho TS")
+    },
+    submeterTS: function(){
+      console.log("Submeter TS")
     },
     printEstado: async function() {
       console.log(this.$store.state.criacaoTabSel);
