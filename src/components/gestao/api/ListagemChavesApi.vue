@@ -205,55 +205,55 @@ export default {
       {
         text: "Chave",
         sortable: true,
-        value: "chave",
+        value: "key",
         class: "title"
       },
       {
         text: "Nome",
         sortable: true,
-        value: "nome",
+        value: "name",
         class: "title"
       },
       {
         text: "Entidade",
         sortable: true,
-        value: "entidade",
+        value: "entity",
         class: "title"
       },
       {
         text: "Contacto",
         sortable: true,
-        value: "contacto",
+        value: "contactInfo",
         class: "title"
       },
       {
         text: "Ativa?",
         sortable: true,
-        value: "ativa",
+        value: "active",
         class: "title"
       },
       // {
       //   text: "Utilizações",
       //   sortable: true,
-      //   value: "utilizacoes",
+      //   value: "nCalls",
       //   class: "title"
       // },
       // { 
       //   text: "Ultima utilização", 
       //   sortable: true,
-      //   value: "ultima_utilizacao",
+      //   value: "lastUsed",
       //   class: "title"
       // },
       { 
         text: "Data Criação", 
         sortable: true,
-        value: "data_criacao",
+        value: "created",
         class: "title"
       },
       { 
         text: "Data Expiração", 
         sortable: true,
-        value: "data_expiracao",
+        value: "expiration",
         class: "title"
       },
       { 
