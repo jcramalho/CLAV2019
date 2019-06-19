@@ -167,5 +167,16 @@ export default new Router({
       name: "metrica",
       component: () => import("./views/gestao/Metrica.vue")
     },
+    //Chaves API
+    {
+      path: "/gestao/api/listagem",
+      name: "listagemApi",
+      component: () => import("./views/gestao/api/ListagemChavesApi.vue")
+    },
+    {
+      path: "/gestao/api/registo",
+      name: "registoApi",
+      component: () => import("./views/gestao/api/RegistoChaveApi.vue")
+    },
   ]
 });

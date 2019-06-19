@@ -1,7 +1,7 @@
 <template>
   <v-container fluid grid-list-lg class="mx-0 pa-2">
     <v-layout row wrap>
-      <v-flex md4 sm6 xs12 v-for="(stat,index) in stats" v-bind:key="index">
+      <v-flex md3 sm6 xs12 v-for="(stat,index) in stats" v-bind:key="index">
         <v-card :class="stat.bgColor" dark>
           <v-container fluid grid-list-sm dark>
             <v-layout class="mt-0 mb-0 mx-0" row wrap>
@@ -35,7 +35,7 @@
           <bar></bar>
         </v-card>
       </v-flex>
-      <v-flex md4 xs12>
+      <v-flex md6 xs12>
         <v-card light >
           <line-chart></line-chart>
         </v-card>
@@ -67,6 +67,7 @@ export default {
     this.getNumeroUtilizadores();
     this.getNumeroEntidades();
     this.getApiCalls();
+    this.getNumeroChavesApi();
   },
   methods: {
     async getNumeroEntidades() {
@@ -108,6 +109,21 @@ export default {
           action: {
             label: "",
             link: ""
+          },
+        });
+      }).catch(error => alert(error));
+    },
+    async getNumeroChavesApi() {
+      await axios.get(lhost + "/api/chaves/listagem").then(res => {
+        this.numeroChavesApi = res.data.length
+        this.stats.push({
+          bgColor: "primary",
+          icon: "vpn_key",
+          title: "Número de chaves API",
+          data: res.data.length,
+          action: {
+            label: "Mais info",
+            link: "/gestao/api/listagem"
           },
         });
       }).catch(error => alert(error));
