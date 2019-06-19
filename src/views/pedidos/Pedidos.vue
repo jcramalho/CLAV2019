@@ -1,13 +1,13 @@
 <template>
-  <ListaPedidos @pedidoSelected="consultaPedido($event)" />
+  <GestaoPedidos @pedidoSelected="consultaPedido($event)" />
 </template>
 
 <script>
-import ListaPedidos from "@/components/pedidos/ListaPedidos.vue"; // @ is an alias to /src
+import GestaoPedidos from "@/components/pedidos/GestaoPedidos.vue"; // @ is an alias to /src
 
 export default {
   components: {
-    ListaPedidos
+    GestaoPedidos
   },
   methods: {
     consultaPedido: function(item) {

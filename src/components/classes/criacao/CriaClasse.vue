@@ -898,10 +898,8 @@ export default {
             tipoPedido: "Criação",
             tipoObjeto: "Classe",
             novoObjeto: this.classe,
-            user: {
-              email: userBD.data.email,
-              token: this.$store.state.token
-            }
+            user: {email: userBD.data.email},
+            token: this.$store.state.token
           };
 
           var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
