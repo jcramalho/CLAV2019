@@ -405,6 +405,7 @@
             stepNo = 6;
             barra(75);
             loadUltimosProcessos();
+            procPreSelUlt();
             printEstado();
           "
           >Continuar</v-btn
@@ -899,8 +900,8 @@ export default {
         }
         if( procSelecionado == false ){
           var jaExiste = false;
-          for( var a = 0; a < this.listaProcUlt.length; a++ ){
-            if( this.listaProcUlt[a].classe === this.listaTotalProcEsp[f].codigo ){
+          for( var c = 0; c < this.listaProcUlt.length; c++ ){
+            if( this.listaProcUlt[c].classe === this.listaTotalProcEsp[f].codigo ){
               jaExiste = true;
               break;
             }
@@ -918,7 +919,6 @@ export default {
       this.listaProcUltReady = true;
       console.log("LISTA DOS ULTIMOS PROCESSOS")
       console.log(this.listaProcUlt)
-      this.procPreSelUlt();
     },
     // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
     procPreSelUlt: function() {
@@ -926,10 +926,11 @@ export default {
         if (this.procPreSelResTravComum.includes(this.listaProcUlt[i].classe) ||
         this.procPreSelResTravEspecifico.includes(this.listaProcUlt[i].classe) ||
         this.procPreSelResTravRestante.includes(this.listaProcUlt[i].classe)) {
-          this.procPreSelUltimos.push(this.listaProcUlt[i])
+          this.procPreSelUltimos.push(this.listaProcUlt[i].classe)
           this.numProcPreSelUlt += 1;
         }
       }
+      console.log(this.procPreSelUltimos)
     },
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {
