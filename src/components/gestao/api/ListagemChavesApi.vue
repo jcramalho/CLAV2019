@@ -274,8 +274,8 @@ export default {
     timeout: 4000,
     text: ""
   }),
-  created() {
-    this.getChavesApi();
+  async created() {
+    await this.getChavesApi();
   },
   methods: {
     async getChavesApi(){
@@ -365,7 +365,7 @@ export default {
     },
     guardar(){
       if (this.$refs.form.validate()) {
-        axios.post(lhost + "/api/chaves/atualizarMultiplos", {
+        axios.put(lhost + "/api/chaves/atualizarMultiplos", {
           id: this.editedItem.id,
           name: this.editedItem.name,
           contactInfo: this.editedItem.contactInfo,
@@ -405,7 +405,7 @@ export default {
       this.$router.push('/gestao/api/registo')
     },
     format(key){
-      return key.substring(0, 10)+'...';
+      return key.substring(15, 25)+'...';
     }
   }
 };
