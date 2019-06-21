@@ -178,5 +178,15 @@ export default new Router({
       name: "registoApi",
       component: () => import("./views/gestao/api/RegistoChaveApi.vue")
     },
+    {
+      path: "/gestao/api/renovar",
+      name: "renovarApi",
+      component: () => import("./views/gestao/api/RenovarChaveApi.vue")
+    },
+    {
+      path: "/gestao/api/alteracaoChaveApi",
+      name: "alteracaoChaveApi",
+      component: () => import("./views/gestao/api/AlteracaoChaveApi.vue")
+    }
   ]
 });

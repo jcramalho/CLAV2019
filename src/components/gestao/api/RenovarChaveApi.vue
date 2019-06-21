@@ -4,19 +4,13 @@
       <v-flex xs12 sm8 md4>
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Registo de chave API</v-toolbar-title>
+            <v-toolbar-title>Renovação de Chave API</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
+            A sua chave API tem duração de 30 dias após a sua emissão.
+            Caso esses 30 dias tenham passado, pode requisitar aqui uma nova chave API, que será associada ao seu email já existente.
+            Receberá no seu email um link para realizar a renovação da mesma.
             <v-form ref="form" lazy-validation>
-              <v-text-field
-                prepend-icon="person"
-                name="name"
-                v-model="form.name"
-                label="Nome"
-                type="text"
-                :rules="regraNome"
-                required
-              />
               <v-text-field
                 prepend-icon="email"
                 name="email"
@@ -26,33 +20,11 @@
                 :rules="regraEmail"
                 required
               />
-              <v-text-field
-                prepend-icon="account_balance"
-                name="entidade"
-                v-model="form.entidade"
-                label="Entidade"
-                type="text"
-                :rules="regraEntidade"
-                required
-              >
-              </v-text-field>
-              <!-- <v-text-field
-                id="password"
-                prepend-icon="lock"
-                name="password"
-                v-model="form.password"
-                label="Password"
-                type="password"
-                :rules="regraPassword"
-                required
-              /> -->
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" type="submit" @click="registarChaveApi"
-              >Registar</v-btn
-            >
+            <v-btn color="primary" type="submit" @click="renovar">Renovar</v-btn>
           </v-card-actions>
           <v-snackbar
             v-model="snackbar"
@@ -74,24 +46,15 @@ const lhost = require("@/config/global").host;
 import axios from "axios";
 
 export default {
-  name: "signup",
-  async mounted() {
-    await this.getEntidades();
-  },
+  name: "renovar",
   data() {
     return {
-      regraNome: [v => !!v || "Nome é obrigatório."],
       regraEmail: [
         v => !!v || "Email é obrigatório.",
         v => /.+@.+/.test(v) || "Email tem de ser válido."
       ],
-      regraEntidade: [v => !!v || "Entidade é obrigatório."],
-      regraPassword: [v => !!v || "Password é obrigatório."],
       form: {
-        name: "",
         email: "",
-        entidade: "",
-        password: ""
       },
       snackbar: false,
       color: "",
@@ -101,26 +64,23 @@ export default {
     };
   },
   methods: {
-    registarChaveApi() {
+    renovar(){
       if (this.$refs.form.validate()) {
-        axios
-          .post(lhost + "/api/chaves/registar", {
-            name: this.$data.form.name,
+        axios.post(lhost + "/api/chaves/renovar", {
             email: this.$data.form.email,
-            entidade: this.$data.form.entidade
-            // password: this.$data.form.password
+            url: window.location.href
           })
           .then(res => {
-            if (res.data === "Chave API registada com sucesso!") {
-              this.text = "Chave API registada com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            } else if (res.data === "Email já em uso!") {
-              this.text = "Ocorreu um erro ao registar a chave API: Email já em uso!";
+            if (res.data === "Não existe nenhuma chave API associada neste email!") {
+              this.text = "Não existe nenhuma chave API associada neste email!";
               this.color = "error";
               this.snackbar = true;
               this.done = false;
+            }else{
+              this.text = "Email enviado com sucesso!";
+              this.color = "success";
+              this.snackbar = true;
+              this.done = true;
             }
           })
           .catch(function(err) {
