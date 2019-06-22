@@ -50,7 +50,7 @@
                   color="blue"
                   dark
                   round
-                  @click="distribuirPedido(props.item)"
+                  @click="distribuiPedido(props.item)"
                 >
                   Distribuir
                 </v-btn>
@@ -103,16 +103,9 @@ export default {
   },
 
   methods: {
-      distribuirPedido: async function(pedido){
-      try {
-        this.pedidoParaDistribuir = pedido
-        var response = await axios.get(lhost + "/api/users");
-        this.usersRecords = response.data;
-        this.distribuir = true
-      } catch (e) {
-        return e;
+      distribuiPedido: function(pedido){
+          this.$emit('distribuir', pedido)
       }
-    }
   }
 };
 </script>

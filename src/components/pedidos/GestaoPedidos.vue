@@ -9,10 +9,10 @@
           <v-card-text>
             <v-container fluid>
                 <v-expansion-panel popout>
-                    <PedidosLista :pedidos="pedidosSubmetidos" titulo="Pedidos novos" />
+                    <PedidosLista :pedidos="pedidosSubmetidos" 
+                                  titulo="Pedidos novos" 
+                                  @distribuir="distribuiPedido($event)"/>
                 </v-expansion-panel>
-
-                <DialogoDistribuicao :distribuirFlag="distribuir"/>
 
                 <v-expansion-panel popout>
                     <PedidosLista :pedidos="pedidosDistribuidos" titulo="Pedidos em apreciação técnica"/>
@@ -30,6 +30,66 @@
         </v-card>
       </v-flex>
     </v-layout>
+
+    <v-layout row wrap ma-2>
+      <v-dialog v-model="distribuir" width="60%" >
+      <v-card>
+        <v-card-title class="headline">Distribuição do pedido</v-card-title>
+
+        <v-card-text>
+          <div v-if="!selectedUser.name">
+          <p>Selecione o utilizador a quem deve ser atribuída a análise do pedido 
+            (basta clicar na linha correspondente):</p>
+
+          <v-data-table
+            :headers="usersHeaders"
+            :items="usersRecords"
+            class="elevation-1"
+            hide-actions
+          >
+            <template v-slot:items="props">
+              <tr @click="selectedUser=props.item">
+                <td class="subheading">{{ props.item.name }}</td>
+                <td class="subheading">{{ props.item.entidade }}</td>
+              </tr>
+            </template>
+          </v-data-table>
+          </div>
+
+          <div v-else>
+            <p>Tarefa atribuída a: <b>{{ selectedUser.name }} ({{ selectedUser.entidade }})</b>.</p>
+            <div class="info-label">Despacho</div>
+            <v-textarea
+              v-model="despacho"
+              auto-grow
+              solo
+              label="Introduza o texto para o despacho (opcional)..."
+              rows="1"
+            ></v-textarea>
+          </div>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            color="indigo darken-4"
+            round dark
+            @click="guardarDistribuicao"
+          >
+            Guardar
+          </v-btn>
+
+          <v-btn
+            color="red darken-4"
+            round dark
+            @click="cancelarDistribuicao"
+          >
+            Cancelar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    </v-layout>
   </v-container>
 </template>
 
@@ -38,10 +98,9 @@ import axios from "axios";
 const lhost = require("@/config/global").host;
 
 import PedidosLista from "@/components/pedidos/PedidosLista.vue"
-import DialogoDistribuicao from "@/components/pedidos/DialogoDistribuicao.vue"
 
 export default {
-  components: { PedidosLista, DialogoDistribuicao },
+  components: { PedidosLista },
   data: () => ({
     pedidoParaDistribuir: {},
     distribuir: false,
@@ -105,11 +164,11 @@ export default {
       this.$emit("pedidoSelected", item);
     },
 
-    distribuirPedido: async function(pedido){
+    distribuiPedido: async function(pedido){
       try {
-        this.pedidoParaDistribuir = pedido
         var response = await axios.get(lhost + "/api/users");
         this.usersRecords = response.data;
+        this.pedidoParaDistribuir = pedido
         this.distribuir = true
       } catch (e) {
         return e;
@@ -123,7 +182,6 @@ export default {
     },
 
     guardarDistribuicao: async function(){
-      try{
         var novaDistribuicao = {
           estado: 'Distribuído',
           responsavel: this.selectedUser.email,
@@ -131,19 +189,25 @@ export default {
           despacho: this.despacho
         }
         this.pedidoParaDistribuir.estado = "Distribuído"
-        this.pedidoParaDistribuir.user = {token: this.$store.state.token}
-        var response = await axios.put(lhost + '/api/pedidos', { pedido: this.pedidoParaDistribuir, distribuicao: novaDistribuicao})
-        
-        this.distribuir = false
-        this.selectedUser = {}
-        this.despacho = ""
+        this.pedidoParaDistribuir.token = this.$store.state.token
 
-        return this.pedidoParaDistribuir
+        axios.put(lhost + '/api/pedidos', 
+            { pedido: this.pedidoParaDistribuir, distribuicao: novaDistribuicao})
+            .then(response => {
+              var index = this.pedidosSubmetidos.findIndex( p => p.codigo == this.pedidoParaDistribuir.codigo )
+              if(index != -1){
+                this.pedidosSubmetidos.splice(index,1)
+              }
+              this.pedidosDistribuidos.push(this.pedidoParaDistribuir)
+
+              this.distribuir = false
+              this.selectedUser = {}
+              this.despacho = ""
+
+              return response.data
+            })
+            .catch(e => {return e})
       }
-      catch(e){
-        return e
-      }
-    }
   }
 };
 </script>

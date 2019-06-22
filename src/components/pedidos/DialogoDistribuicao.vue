@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout row wrap ma-2>
-      <v-dialog v-model="distribuir" width="60%" >
+      <v-dialog v-model="dFlag" width="60%" >
       <v-card>
         <v-card-title class="headline">Distribuição do pedido</v-card-title>
 
@@ -69,8 +69,7 @@ const lhost = require("@/config/global").host;
 export default {
   props: ['distribuirFlag', 'pedido'],
   data: () => ({
-    distribuir: distribuirFlag,
-    pedidoParaDistribuir: pedido,
+    dFlag: false,
     despacho: "",
     usersHeaders: [
       {text: "Nome", value: "name", class:"title"},
@@ -79,22 +78,26 @@ export default {
     usersRecords: [],
     selectedUser: {}
   }),
+
+  watch: {
+        distribuirFlag: function(newVal) { 
+           this.dFlag = newVal
+        }
+  },
   
   methods: {
 
-    distribuirPedido: async function(pedido){
+    created: async function(pedido){
       try {
-        this.pedidoParaDistribuir = pedido
         var response = await axios.get(lhost + "/api/users");
         this.usersRecords = response.data;
-        this.distribuir = true
       } catch (e) {
         return e;
       }
     },
 
     cancelarDistribuicao: function(){
-      this.distribuir = false
+      this.dFlag = false
       this.selectedUser = {}
       this.despacho = ""
     },
