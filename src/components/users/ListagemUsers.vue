@@ -230,9 +230,9 @@ export default {
     timeout: 4000,
     text: ""
   }),
-  created() {
-    this.getUtilizadores();
-    this.getEntidades();
+  async created() {
+    await this.getUtilizadores();
+    await this.getEntidades();
   },
   methods: {
     async getEntidades() {
@@ -320,7 +320,7 @@ export default {
         this.done = false;
       });
     },
-    async guardar(){
+    guardar(){
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.editedItem.level) {
@@ -349,7 +349,7 @@ export default {
             parsedType = -1;
             break;
         }
-        await axios.post(lhost + "/api/users/atualizarMultiplos", {
+        axios.put(lhost + "/api/users/atualizarMultiplos", {
           id: this.editedItem.id,
           nome: this.editedItem.name,
           email: this.editedItem.email,

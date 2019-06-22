@@ -1,7 +1,6 @@
 import { Bar } from "vue-chartjs";
 const lhost = require("@/config/global").host;
 import axios from "axios";
-import { throws } from "assert";
 
 export default {
   extends: Bar,
@@ -38,7 +37,12 @@ export default {
       .get(lhost + "/api/stats")
       .then(res => {
         for (var i = 0; i < res.data.length; i++) {
-          if (res.data[i]._id != "" && res.data[i]._id != "unknown route" && res.data[i] != '/api/stats') {
+          if (
+            res.data[i]._id != "" &&
+            res.data[i]._id != "unknown route" &&
+            res.data[i]._id != "/api/stats" &&
+            res.data[i]._id != "/api/chaves"
+          ) {
             // alert(JSON.stringify(res.data[i]))
             this.info.labels.push(res.data[i]._id);
             var index = this.info.labels.indexOf(res.data[i]._id);

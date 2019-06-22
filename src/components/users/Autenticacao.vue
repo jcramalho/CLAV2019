@@ -39,7 +39,7 @@
               Cartão de Cidadão
             </v-flex>
             <v-flex class="text-xs-right">
-              <v-btn color="primary" disabled type="submit" @click="loginCC"
+              <v-btn color="primary" disabled type="submit"
                 >Login</v-btn
               >
             </v-flex>
@@ -49,7 +49,7 @@
               Chave Móvel Digital
             </v-flex>
             <v-flex class="text-xs-right">
-              <v-btn color="primary" disabled type="submit" @click="loginCMD"
+              <v-btn color="primary" disabled type="submit"
                 >Login</v-btn
               >
             </v-flex>
@@ -73,16 +73,33 @@
               É a primeira vez que utiliza estes serviços?
             </v-flex>
             <v-flex class="text-xs-right">
-              <v-btn color="primary" type="submit" @click="registar">Registar</v-btn>
+              <v-btn color="primary" type="submit" @click="registarUtilizador">Registar</v-btn>
             </v-flex>
           </v-card-actions>
-
           <v-card-actions>
             <v-flex>
               Esqueceu a sua password?
             </v-flex>
             <v-flex class="text-xs-right">
-              <v-btn color="primary" type="submit" @click="recuperarPW">Recuperar</v-btn>
+              <v-btn color="primary" type="submit" @click="recuperarPw">Recuperar</v-btn>
+            </v-flex>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 sm6 md12>
+        <v-card>
+          <v-card-actions>
+            <v-flex>
+              É um fornecedor de serviços? Registe aqui a sua chave API
+            </v-flex>
+            <v-flex class="text-xs-right">
+              <v-btn color="primary" type="submit" @click="registarApi">Registar</v-btn>
+            </v-flex>
+            <v-flex>
+              A sua chave API expirou? Peça aqui a renovação da sua chave API
+            </v-flex>
+            <v-flex class="text-xs-right">
+              <v-btn color="primary" type="submit" @click="renovarApi">Renovar</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -95,14 +112,21 @@
 export default {
   name: "autenticacao",
   methods: {
-    registar() {
+    registarUtilizador() {
       this.$router.push("/users/registo");
     },
-    recuperarPW() {
+    recuperarPw() {
       this.$router.push("/users/recuperacao");
     },
     loginEmail() {
       this.$router.push("/users/login");
+    },
+    //API
+    registarApi() {
+      this.$router.push("/gestao/api/registo");
+    },
+    renovarApi(){
+      this.$router.push("/gestao/api/renovar");
     }
   }
 };
