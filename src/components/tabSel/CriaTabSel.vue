@@ -230,6 +230,7 @@
                   v-if="listaProcComunsReady"
                   v-bind:lista="listaProcComuns"
                   tipo="Processos Comuns"
+                  v-bind:criacaoTS="criacaoTS"
                   @aCalcular="aCalcular($event)"
                   @contadorProcSelCom="contadorProcSelCom($event)"
                   @contadorProcPreSelCom="contadorProcPreSelCom($event)"
@@ -301,6 +302,7 @@
                   v-if="listaProcEspReady"
                   v-bind:lista="listaProcEsp"
                   tipo="Processos Especificos"
+                  :criacaoTS="criacaoTS"
                   v-bind:listaPreSel="procPreSelResTravComum"
                   @aCalcular="aCalcular($event)"
                   @contadorProcSelEsp="contadorProcSelEsp($event)"
@@ -369,6 +371,7 @@
                   v-if="listaProcEspResReady"
                   v-bind:lista="listaProcEspRes"
                   tipo="Processos Especificos"
+                  :criacaoTS="criacaoTS"
                   v-bind:listaPreSel="procPreSelEspRestantes"
                   @aCalcular="aCalcular($event)"
                   @procPreSelResTravRes="procPreSelResTravRes($event)"
@@ -441,6 +444,7 @@
                   v-if="listaProcUltReady"
                   v-bind:lista="listaProcUlt"
                   tipo="Processos Ultimos"
+                  :criacaoTS="criacaoTS"
                   @aCalcular="aCalcular($event)"
                   v-bind:listaPreSel="procPreSelUltimos"
                   @contadorProcSelUlt="contadorProcSelUlt($event)"
@@ -454,7 +458,7 @@
           <v-flex xs3>
             <v-text-field
               label="Nº dos últimos processos selecionados"
-              :value="numProcSelRes"
+              :value="numProcSelUlt"
             ></v-text-field>
           </v-flex>
           <v-flex xs4 style="padding-left:60px;">
@@ -473,7 +477,7 @@
         <v-btn
           color="primary"
           @click="
-            stepNo = 5;
+            stepNo = 7;
             barra(75);
           "
           >Continuar</v-btn
@@ -523,7 +527,8 @@ export default {
       if (this.tipo === "Pluriorganizacional") {
         this.estado.designacao = "";
       }
-    }
+    },
+    
   },
   components: {
     ListaProcessosComuns,
@@ -605,6 +610,8 @@ export default {
       listaProcUltReady: false,
       // Número dos ultimos processos selecionados
       numProcSelUlt: 0,
+      // Caso a criação da TS seja cancelada passa a false
+      criacaoTS: true,
     };
   },
   methods: {
@@ -950,8 +957,14 @@ export default {
 
 
     // Quando o utilizador quiser cancelar todo o trabalho feito até então
-    eliminarTS: function() {
-      this.$router.push("/");
+    eliminarTS: async function() {
+      await this.criacao();
+      if( this.criacaoTS == false ){
+        this.$router.push("/");
+      }
+    },
+    criacao: function() {
+      this.criacaoTS = false;
     },
     guardarTrabalho: function(){
       console.log("Guardar Trabalho TS")

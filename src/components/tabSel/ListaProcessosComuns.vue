@@ -97,7 +97,7 @@ const lhost = require("@/config/global").host;
 const axios = require("axios");
 
 export default {
-  props: ["lista", "tipo"],
+  props: ["lista", "tipo", "criacaoTS"],
   data: () => ({
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
@@ -193,127 +193,130 @@ export default {
       this.$emit("aCalcular", true);
 
       try {
-        var profundidade = 1;
-        var stackProc = [];
-        stackProc.push({ listaProc: [], nivel: 1 });
-        stackProc[0].listaProc.push(processo);
-        var proc;
-        var listaResultados = [];
-        var visitados = [];
-        visitados.push(processo); // Processo inicial está no índice 0
+        console.log(this.criacaoTS)
+        if( this.criacaoTS === true ){
+          var profundidade = 1;
+          var stackProc = [];
+          stackProc.push({ listaProc: [], nivel: 1 });
+          stackProc[0].listaProc.push(processo);
+          var proc;
+          var listaResultados = [];
+          var visitados = [];
+          visitados.push(processo); // Processo inicial está no índice 0
 
-        while (
-          profundidade <= 1000 &&
-          stackProc[profundidade - 1].listaProc.length > 0
-        ) {
-          stackProc.push({ listaProc: [], nivel: profundidade + 1 });
-          for (
-            var s = 0;
-            s < stackProc[profundidade - 1].listaProc.length;
-            s++
+          while (
+            profundidade <= 1000 &&
+            stackProc[profundidade - 1].listaProc.length > 0
           ) {
-            proc = stackProc[profundidade - 1].listaProc[s];
+            stackProc.push({ listaProc: [], nivel: profundidade + 1 });
+            for (
+              var s = 0;
+              s < stackProc[profundidade - 1].listaProc.length;
+              s++
+            ) {
+              proc = stackProc[profundidade - 1].listaProc[s];
 
-            // Procura os processos que estabelecem com este processo a relação de "complementares"
-            var comp = await this.loadComplementares(proc, profundidade);
-            if (comp.length > 0) {
-              listaResultados = await this.juntaNovos(listaResultados, comp);
-              stackProc[profundidade].listaProc = stackProc[
-                profundidade
-              ].listaProc.concat(
-                await this.juntaNovosVisitas(
-                  visitados,
-                  this.filtra(comp),
-                  "comp"
-                )
-              );
+              // Procura os processos que estabelecem com este processo a relação de "complementares"
+              var comp = await this.loadComplementares(proc, profundidade);
+              if (comp.length > 0) {
+                listaResultados = await this.juntaNovos(listaResultados, comp);
+                stackProc[profundidade].listaProc = stackProc[
+                  profundidade
+                ].listaProc.concat(
+                  await this.juntaNovosVisitas(
+                    visitados,
+                    this.filtra(comp),
+                    "comp"
+                  )
+                );
+              }
+              // Procura os processos que estabelecem com este processo a relação de "sintetizados"
+              var sint = await this.loadSintetizados(proc, profundidade);
+              if (sint.length > 0) {
+                listaResultados = await this.juntaNovos(listaResultados, sint);
+                stackProc[profundidade].listaProc = stackProc[
+                  profundidade
+                ].listaProc.concat(
+                  await this.juntaNovosVisitas(
+                    visitados,
+                    this.filtra(sint),
+                    "sint"
+                  )
+                );
+              }
+              // Procura os processos que estabelecem com este processo a relação de "suplementares"
+              var sup = await this.loadSuplementares(proc, profundidade);
+              if (sup.length > 0) {
+                listaResultados = await this.juntaNovos(listaResultados, sup);
+                stackProc[profundidade].listaProc = stackProc[
+                  profundidade
+                ].listaProc.concat(
+                  await this.juntaNovosVisitas(visitados, this.filtra(sup), "sup")
+                );
+              }
             }
-            // Procura os processos que estabelecem com este processo a relação de "sintetizados"
-            var sint = await this.loadSintetizados(proc, profundidade);
-            if (sint.length > 0) {
-              listaResultados = await this.juntaNovos(listaResultados, sint);
-              stackProc[profundidade].listaProc = stackProc[
-                profundidade
-              ].listaProc.concat(
-                await this.juntaNovosVisitas(
-                  visitados,
-                  this.filtra(sint),
-                  "sint"
-                )
-              );
-            }
-            // Procura os processos que estabelecem com este processo a relação de "suplementares"
-            var sup = await this.loadSuplementares(proc, profundidade);
-            if (sup.length > 0) {
-              listaResultados = await this.juntaNovos(listaResultados, sup);
-              stackProc[profundidade].listaProc = stackProc[
-                profundidade
-              ].listaProc.concat(
-                await this.juntaNovosVisitas(visitados, this.filtra(sup), "sup")
-              );
-            }
+            profundidade++;
           }
-          profundidade++;
-        }
-        console.log(
-          "calcRel: listaResultados \n Lista com todos os processos resultantes da travessia:",
-          listaResultados
-        );
+          console.log(
+            "calcRel: listaResultados \n Lista com todos os processos resultantes da travessia:",
+            listaResultados
+          );
 
-        listaResultados.sort(function(a, b) {
-          return a.codigo.localeCompare(b.codigo);
-        });
+          listaResultados.sort(function(a, b) {
+            return a.codigo.localeCompare(b.codigo);
+          });
 
-        this.listaProcResultado[processo] = listaResultados;
+          this.listaProcResultado[processo] = listaResultados;
 
-        console.log(
-          "calcRel: listaProcResultados \n Listas com todos os processos resultantes da travessia com ponto de partida no processo x:",
-          this.listaProcResultado
-        );
+          console.log(
+            "calcRel: listaProcResultados \n Listas com todos os processos resultantes da travessia com ponto de partida no processo x:",
+            this.listaProcResultado
+          );
 
-        // separa o resultado da travessia em duas listas, uma com os processos comuns (que estão presentes na tabela) e os restantes
-        for (var i = 0; i < listaResultados.length; i++) {
-          var procComum = false;
-          for (var j = 0; j < this.lista.length; j++) {
+          // separa o resultado da travessia em duas listas, uma com os processos comuns (que estão presentes na tabela) e os restantes
+          for (var i = 0; i < listaResultados.length; i++) {
+            var procComum = false;
+            for (var j = 0; j < this.lista.length; j++) {
+              if (
+                this.lista[j].classe === listaResultados[i].codigo &&
+                !this.listaResComuns.includes(listaResultados[i].codigo)
+              ) {
+                this.listaResComuns.push(listaResultados[i].codigo);
+                procComum = true;
+                break;
+              }
+            }
             if (
-              this.lista[j].classe === listaResultados[i].codigo &&
+              !procComum &&
+              !this.listaResRestantes.includes(listaResultados[i].codigo) &&
               !this.listaResComuns.includes(listaResultados[i].codigo)
             ) {
-              this.listaResComuns.push(listaResultados[i].codigo);
-              procComum = true;
-              break;
+              this.listaResRestantes.push(listaResultados[i].codigo);
             }
           }
-          if (
-            !procComum &&
-            !this.listaResRestantes.includes(listaResultados[i].codigo) &&
-            !this.listaResComuns.includes(listaResultados[i].codigo)
-          ) {
-            this.listaResRestantes.push(listaResultados[i].codigo);
+          // retira aqueles processos que já estão selecionados
+          var procSel = Object.keys(this.listaProcResultado);
+          for (var x = 0; x < procSel.length; x++) {
+            if (this.listaResComuns.includes(procSel[x])) {
+              this.listaResComuns.splice(
+                this.listaResComuns.indexOf(procSel[x]),
+                1
+              );
+            }
           }
-        }
-        // retira aqueles processos que já estão selecionados
-        var procSel = Object.keys(this.listaProcResultado);
-        for (var x = 0; x < procSel.length; x++) {
-          if (this.listaResComuns.includes(procSel[x])) {
-            this.listaResComuns.splice(
-              this.listaResComuns.indexOf(procSel[x]),
-              1
-            );
-          }
-        }
-        console.log(
-          "calcRel: listaResComuns \n Lista dos processos resultantes (das travessias) comuns:",
-          this.listaResComuns
-        );
-        console.log(
-          "calcRel: listaResRestantes \n Lista dos processos resultantes (das travessias) restantes:",
-          this.listaResRestantes
-        );
+          console.log(
+            "calcRel: listaResComuns \n Lista dos processos resultantes (das travessias) comuns:",
+            this.listaResComuns
+          );
+          console.log(
+            "calcRel: listaResRestantes \n Lista dos processos resultantes (das travessias) restantes:",
+            this.listaResRestantes
+          );
 
-        this.$emit("procPreSelResTravCom", this.listaResRestantes);
-        this.$emit("contadorProcPreSelCom", this.listaResComuns);
-        this.$emit("aCalcular", false);
+          this.$emit("procPreSelResTravCom", this.listaResRestantes);
+          this.$emit("contadorProcPreSelCom", this.listaResComuns);
+          this.$emit("aCalcular", false);
+        }
       } catch (erro) {
         console.log(erro);
       }

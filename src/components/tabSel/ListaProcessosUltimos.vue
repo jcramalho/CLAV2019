@@ -80,7 +80,7 @@ const lhost = require("@/config/global").host;
 const axios = require("axios");
 
 export default {
-  props: ["lista", "tipo", "listaPreSel"],
+  props: ["lista", "tipo", "listaPreSel", "criacaoTS"],
   data: () => ({
     headers: [
       {
@@ -169,6 +169,7 @@ export default {
       this.$emit("aCalcular", true);
 
       try {
+        if (this.criacaoTS === true) {
         var profundidade = 1;
         var stackProc = [];
         stackProc.push({ listaProc: [], nivel: 1 });
@@ -285,6 +286,7 @@ export default {
 
         this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
         this.$emit("aCalcular", false);
+        }
       } catch (erro) {
         console.log(erro);
       }
