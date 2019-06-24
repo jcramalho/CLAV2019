@@ -214,7 +214,7 @@
 
       <v-stepper-step :complete="stepNo > 3" step="3"
         >Processos Comuns
-        <small>Processos passíveis de existirem em qualquer entidade</small>
+        <small>Processos passíveis de existir em qualquer entidade</small>
       </v-stepper-step>
       <v-stepper-content step="3">
         <v-layout wrap>
@@ -247,17 +247,23 @@
               :value="numProcSelCom"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
             <v-text-field
-              v-if="!progressCalcular"
               label="Nº de processos comuns pré selecionados"
               :value="numProcPreSelCom"
             ></v-text-field>
+          </v-flex>
+          <v-flex xs2 style="padding-left:60px;" v-if="progressCalcular">
             <v-progress-circular
-              v-else
               indeterminate
               color="primary"
             ></v-progress-circular>
+          </v-flex>
+          <v-flex xs3 v-if="progressCalcular">
+            <v-text-field
+              label="A calcular a travessia do processo: "
+              :value="travessiaProcesso"
+            ></v-text-field>
           </v-flex>
         </v-layout>
         <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
@@ -320,17 +326,23 @@
               :value="numProcSelEsp"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
             <v-text-field
-              v-if="!progressCalcular"
               label="Nº de processos específicos pré selecionados"
               :value="numProcPreSelEsp"
             ></v-text-field>
+          </v-flex>
+          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
             <v-progress-circular
-              v-else
               indeterminate
               color="primary"
             ></v-progress-circular>
+          </v-flex>
+          <v-flex xs3 v-if="progressCalcular">
+            <v-text-field
+              label="A calcular a travessia do processo: "
+              :value="travessiaProcesso"
+            ></v-text-field>
           </v-flex>
         </v-layout>
         <v-btn
@@ -389,17 +401,23 @@
               :value="numProcSelRes"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
             <v-text-field
-              v-if="!progressCalcular"
               label="Nº de processos restantes pré selecionados"
               :value="numProcPreSelRes"
             ></v-text-field>
+          </v-flex>
+          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
             <v-progress-circular
-              v-else
               indeterminate
               color="primary"
             ></v-progress-circular>
+          </v-flex>
+          <v-flex xs3 v-if="progressCalcular">
+            <v-text-field
+              label="A calcular a travessia do processo: "
+              :value="travessiaProcesso"
+            ></v-text-field>
           </v-flex>
         </v-layout>
         <v-btn
@@ -461,17 +479,23 @@
               :value="numProcSelUlt"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
             <v-text-field
-              v-if="!progressCalcular"
               label="Nº dos últimos processos pré selecionados"
               :value="numProcPreSelUlt"
             ></v-text-field>
+          </v-flex>
+          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
             <v-progress-circular
-              v-else
               indeterminate
               color="primary"
             ></v-progress-circular>
+          </v-flex>
+          <v-flex xs3 v-if="progressCalcular">
+            <v-text-field
+              label="A calcular a travessia do processo: "
+              :value="travessiaProcesso"
+            ></v-text-field>
           </v-flex>
         </v-layout>
         <v-btn
@@ -612,6 +636,8 @@ export default {
       numProcSelUlt: 0,
       // Caso a criação da TS seja cancelada passa a false
       criacaoTS: true,
+      // Processo no qual está se a calcular a travessia
+      travessiaProcesso: '',
     };
   },
   methods: {
@@ -706,34 +732,36 @@ export default {
     // Carrega os processos específicos da entidade em causa
     loadProcEspecificos: async function() {
       try {
-        var url =
-          lhost + "/api/classes?tipo=especifico&ent=" + this.estado.idEntidade;
-        if (this.estado.tipologias) {
-          url += "&tips=";
-          for (var i = 0; i < this.estado.tipologias.length - 1; i++) {
-            url += this.estado.tipologias[i].id + ",";
+        if( !this.listaProcEspReady ){
+          var url =
+            lhost + "/api/classes?tipo=especifico&ent=" + this.estado.idEntidade;
+          if (this.estado.tipologias) {
+            url += "&tips=";
+            for (var i = 0; i < this.estado.tipologias.length - 1; i++) {
+              url += this.estado.tipologias[i].id + ",";
+            }
+            url += this.estado.tipologias[i].id;
           }
-          url += this.estado.tipologias[i].id;
+          var response = await axios.get(url);
+          for (var x = 0; x < response.data.length; x++) {
+            if(response.data[x].transversal==='S'){
+              this.listaProcEsp.push({
+                classe: response.data[x].codigo,
+                designacao: response.data[x].titulo,
+                dono: false,
+                participante: false
+              });
+            }
+            else {
+              this.listaProcEsp.push({
+                classe: response.data[x].codigo,
+                designacao: response.data[x].titulo,
+                dono: true
+              })
+            }
+          }
+          return this.listaProcEsp;
         }
-        var response = await axios.get(url);
-        for (var x = 0; x < response.data.length; x++) {
-          if(response.data[x].transversal==='S'){
-            this.listaProcEsp.push({
-              classe: response.data[x].codigo,
-              designacao: response.data[x].titulo,
-              dono: false,
-              participante: false
-            });
-          }
-          else {
-            this.listaProcEsp.push({
-              classe: response.data[x].codigo,
-              designacao: response.data[x].titulo,
-              dono: true
-            })
-          }
-        }
-        return this.listaProcEsp;
       } catch (error) {
         console.log(error);
       }
@@ -741,33 +769,39 @@ export default {
     // Carrega todos os processos comuns
     loadProcComuns: async function() {
       try {
-        var response = await axios.get(lhost + "/api/classes?tipo=comum");
-        for (var i = 0; i < response.data.length; i++) {
-          if(response.data[i].transversal==="S"){
-            this.listaProcComuns.push({
-              classe: response.data[i].codigo,
-              designacao: response.data[i].titulo,
-              dono: false,
-              participante: false
-            });
+        if( !this.listaProcComunsReady ){
+          var response = await axios.get(lhost + "/api/classes?tipo=comum");
+          for (var i = 0; i < response.data.length; i++) {
+            if(response.data[i].transversal==="S"){
+              this.listaProcComuns.push({
+                classe: response.data[i].codigo,
+                designacao: response.data[i].titulo,
+                dono: false,
+                participante: false
+              });
+            }
+            else {
+              this.listaProcComuns.push({
+                classe: response.data[i].codigo,
+                designacao: response.data[i].titulo,
+                dono: true
+              });
+            }
           }
-          else {
-            this.listaProcComuns.push({
-              classe: response.data[i].codigo,
-              designacao: response.data[i].titulo,
-              dono: true
-            });
-          }
+          this.listaProcComunsReady = true;
+          return this.listaProcComuns;
         }
-        this.listaProcComunsReady = true;
-        return this.listaProcComuns;
       } catch (erro) {
         console.log(erro);
       }
     },
     // Enquanto estiver a ser efetuado o calculo da travessia, coloca esta variavel a false
-    aCalcular: async function(bool) {
-      this.progressCalcular = bool;
+    aCalcular: async function(calcular) {
+      if(calcular.split(' ')[0] === 'true'){
+        this.progressCalcular = true;
+      }
+      else this.progressCalcular = false;
+      this.travessiaProcesso = calcular.split(' ')[1];
     },
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
@@ -819,39 +853,41 @@ export default {
     // Carrega todos os processos especificos restantes
     loadProcEspRestantes: async function() {
       try {
-        var response = await axios.get(lhost + "/api/classes?tipo=especifico");
-        this.listaTotalProcEsp = response.data;
-        for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
-          var espEntTip = false;
-          for (var j = 0; j < this.listaProcEsp.length; j++) {
-            if (
-              this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
-            ) {
-              espEntTip = true;
-              break;
+        if( !this.listaProcEspResReady ){
+          var response = await axios.get(lhost + "/api/classes?tipo=especifico");
+          this.listaTotalProcEsp = response.data;
+          for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
+            var espEntTip = false;
+            for (var j = 0; j < this.listaProcEsp.length; j++) {
+              if (
+                this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
+              ) {
+                espEntTip = true;
+                break;
+              }
             }
+            if (espEntTip === false) {
+              if(this.listaTotalProcEsp[i].transversal==="S"){
+                  this.listaProcEspRes.push({
+                    classe: this.listaTotalProcEsp[i].codigo,
+                    designacao: this.listaTotalProcEsp[i].titulo,
+                    dono: false,
+                    participante: false
+                  });
+                }
+                else {
+                  this.listaProcEspRes.push({
+                    classe: this.listaTotalProcEsp[i].codigo,
+                    designacao: this.listaTotalProcEsp[i].titulo,
+                    dono: true
+                  });
+                }
+              }
+              this.listaProcEspResReady = true;
           }
-          if (espEntTip === false) {
-            if(this.listaTotalProcEsp[i].transversal==="S"){
-                this.listaProcEspRes.push({
-                  classe: this.listaTotalProcEsp[i].codigo,
-                  designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: false,
-                  participante: false
-                });
-              }
-              else {
-                this.listaProcEspRes.push({
-                  classe: this.listaTotalProcEsp[i].codigo,
-                  designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: true
-                });
-              }
-            }
-            this.listaProcEspResReady = true;
+          console.log(this.estado.procComuns);
+          console.log(this.estado.procEspecificos);
         }
-        console.log(this.estado.procComuns);
-        console.log(this.estado.procEspecificos);
       } catch (error) {
         console.log(error);
       }

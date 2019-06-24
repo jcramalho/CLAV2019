@@ -80,7 +80,7 @@ const lhost = require("@/config/global").host;
 const axios = require("axios");
 
 export default {
-  props: ["lista", "tipo", "listaPreSel", "criacaoTS"],
+  props: ["lista", "tipo", "listaPreSel" ],
   data: () => ({
     headers: [
       {
@@ -166,10 +166,10 @@ export default {
     },
     // Calculo da travessia do processo passado como parametro
     calcRel: async function(processo) {
-      this.$emit("aCalcular", true);
+      var emit = 'true ' + processo;
+      this.$emit("aCalcular", emit);
 
       try {
-        if (this.criacaoTS === true) {
         var profundidade = 1;
         var stackProc = [];
         stackProc.push({ listaProc: [], nivel: 1 });
@@ -285,8 +285,8 @@ export default {
         );
 
         this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
-        this.$emit("aCalcular", false);
-        }
+        emit = 'false';
+        this.$emit("aCalcular", emit);
       } catch (erro) {
         console.log(erro);
       }

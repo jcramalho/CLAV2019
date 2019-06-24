@@ -190,10 +190,10 @@ export default {
     },
     // Calculo da travessia do processo passado como parametro
     calcRel: async function(processo) {
-      this.$emit("aCalcular", true);
+      var emit = 'true ' + processo;
+      this.$emit("aCalcular", emit);
 
       try {
-        console.log(this.criacaoTS)
         if( this.criacaoTS === true ){
           var profundidade = 1;
           var stackProc = [];
@@ -315,7 +315,8 @@ export default {
 
           this.$emit("procPreSelResTravCom", this.listaResRestantes);
           this.$emit("contadorProcPreSelCom", this.listaResComuns);
-          this.$emit("aCalcular", false);
+          emit = 'false';
+          this.$emit("aCalcular", emit);
         }
       } catch (erro) {
         console.log(erro);

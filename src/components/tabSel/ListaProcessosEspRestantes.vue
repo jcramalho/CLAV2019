@@ -190,7 +190,8 @@ export default {
     },
     // Calculo da travessia do processo passado como parametro
     calcRel: async function(processo) {
-      this.$emit("aCalcular", true);
+      var emit = 'true ' + processo;
+      this.$emit("aCalcular", emit);
 
       try {
         if( this.criacaoTS === true ){
@@ -324,7 +325,8 @@ export default {
 
           this.$emit("procPreSelResTravRes", this.listaResRestantes);
           this.$emit("contadorProcPreSelRes", this.listaResEspRestantes);
-          this.$emit("aCalcular", false);
+          emit = 'false';
+          this.$emit("aCalcular", emit);
         }
       } catch (erro) {
         console.log(erro);
@@ -413,7 +415,7 @@ export default {
         newListaResRestantes
       );
 
-      this.$emit("contadorProcPreSelEsp", this.newListaResEspRestantes);
+      this.$emit("contadorProcPreSelRes", this.listaResEspRestantes);
     },
     // Para colocar e retirar qualquer processo da lista de processos especificos restantes selecionados
     selProcRes: async function(processo) {
