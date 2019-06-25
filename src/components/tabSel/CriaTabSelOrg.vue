@@ -328,7 +328,7 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 6" step="6"
+      <v-stepper-step :complete="stepNo > 6" step="6" v-if="listaProcUltReady"
         >Outros processos
         <small
           >Revisão de processos de negócio não selecionados nas 
@@ -666,22 +666,27 @@ export default {
     },
     // Processos pre selecionados especificos resultantes das travessias da tabela de processos comuns
     procPreSelEspecificos: function() {
-      for (var i = 0; i < this.listaProcEsp.length; i++) {
-        if (this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)) {
-          this.numProcPreSelEsp += 1;
+      if( !this.listaProcEspReady ){
+        for (var i = 0; i < this.listaProcEsp.length; i++) {
+          if (this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)) {
+            this.numProcPreSelEsp += 1;
+          }
         }
       }
       this.listaProcEspReady = true;
     },
     // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
     procPreSelRestantes: function() {
-      for (var i = 0; i < this.listaProcEspRes.length; i++) {
-        if (this.procPreSelResTravComum.includes(this.listaProcEspRes[i].classe) ||
-        this.procPreSelResTravEspecifico.includes(this.listaProcEspRes[i].classe)) {
-          this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe)
-          this.numProcPreSelRes += 1;
+      if( !this.listaProcEspResReady ) {
+        for (var i = 0; i < this.listaProcEspRes.length; i++) {
+          if (this.procPreSelResTravComum.includes(this.listaProcEspRes[i].classe) ||
+            this.procPreSelResTravEspecifico.includes(this.listaProcEspRes[i].classe)) {
+            this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe)
+            this.numProcPreSelRes += 1;
+          }
         }
-      }
+        this.listaProcEspResReady = true;
+    }
     },
     // Contador dos processos selecionados especificos
     contadorProcSelEsp: function(procSelec) {
@@ -726,7 +731,6 @@ export default {
                   });
                 }
               }
-              this.listaProcEspResReady = true;
           }
           console.log(this.estado.procComuns);
           console.log(this.estado.procEspecificos);
@@ -816,7 +820,7 @@ export default {
           this.numProcPreSelUlt += 1;
         }
       }
-      console.log(this.procPreSelUltimos)
+
     },
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {

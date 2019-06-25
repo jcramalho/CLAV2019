@@ -5,6 +5,7 @@
     class="elevation-1"
     item-key="classe"
     :rows-per-page-items="[10, 20, 100]"
+    rows-per-page-text="Mostrar"
   >
     <template v-slot:headers="props">
       <tr>
@@ -71,6 +72,10 @@
           ></v-checkbox>
         </td>
       </tr>
+    </template>
+    <template v-slot:pageText="props">
+      Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+      {{ props.itemsLength }}
     </template>
   </v-data-table>
 </template>
