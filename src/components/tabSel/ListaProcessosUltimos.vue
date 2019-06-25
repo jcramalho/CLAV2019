@@ -357,7 +357,7 @@ export default {
         newListaResUltimos
       );
 
-      this.$emit("contadorProcPreSelUlt", this.listaResEspecificos);
+      this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
     },
     // Para colocar e retirar qualquer processo da lista de processos ultimos selecionados
     selProcUlt: async function(processo) {

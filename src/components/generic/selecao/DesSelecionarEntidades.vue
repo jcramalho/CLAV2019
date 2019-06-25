@@ -1,17 +1,17 @@
 <template>
   <v-layout row wrap color="teal lighten-5">
-    <v-flex xs2 v-if="tipo === 'tipologias'">
-      <v-subheader
-        class="info-label"
-        style="border-color: white; border-style:solid; color: #1A237E;"
-        >Entidades:</v-subheader
-      >
-    </v-flex>
     <v-flex xs2 v-if="tipo === 'legislacao'">
       <v-subheader
         class="info-label"
         style="border-color: white; border-style:solid; color: #1A237E;"
         >Entidade responsável pela publicação:</v-subheader
+      >
+    </v-flex>
+    <v-flex xs2 v-else>
+      <v-subheader
+        class="info-label"
+        style="border-color: white; border-style:solid; color: #1A237E;"
+        >Entidades selecionadas:</v-subheader
       >
     </v-flex>
     <v-flex xs9 v-if="entidades.length > 0">

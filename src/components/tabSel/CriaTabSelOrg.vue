@@ -3,109 +3,9 @@
     <v-stepper v-model="stepNo" vertical>
       <v-progress-linear v-model="valorBarra"></v-progress-linear>
       <v-stepper-step :complete="stepNo > 1" step="1">
-        Tipo de Tabela de Seleção
+        Tipologias de entidade a que pertence
       </v-stepper-step>
       <v-stepper-content step="1">
-        <v-container fluid grid-list-xl>
-          <v-layout wrap align-center>
-            <v-flex xs3>
-              <v-subheader>Selecionar tipo de Tabela de Seleção:</v-subheader>
-            </v-flex>
-            <v-flex xs12 sm6 d-flex>
-              <v-select
-                :items="['Organizacional', 'Pluriorganizacional']"
-                label="Tipo"
-                v-model="tipo"
-              ></v-select>
-              <v-flex xs12 sm3>
-                <v-btn
-                  medium
-                  @click="infoButton = true"
-                  v-if="!infoButton"
-                  icon
-                  color="info"
-                >
-                  <v-icon>info</v-icon>
-                </v-btn>
-                <v-btn medium v-if="infoButton" color="info" @click="passos()">
-                  <v-icon left>info</v-icon>Info sobre os seguintes passos
-                </v-btn>
-              </v-flex>
-            </v-flex>
-          </v-layout>
-        </v-container>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 1.5;
-            barra(12.5);
-            loadEntidades();
-            estado.tipo = tipo;
-          "
-          v-if="tipo == 'Pluriorganizacional'"
-          :disabled="!tipo"
-        >
-          Continuar
-        </v-btn>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 1.5;
-            barra(12.5);
-            loadTipologias();
-            estado.tipo = tipo;
-          "
-          v-else
-          :disabled="!tipo"
-        >
-          Continuar
-        </v-btn>
-      </v-stepper-content>
-
-      <v-stepper-step
-        v-if="tipo == 'Pluriorganizacional'"
-        :complete="stepNo > 1.5"
-        step="1.5"
-        >Entidades abrangidas pela TS</v-stepper-step
-      >
-      <v-stepper-content step="1.5" v-if="tipo == 'Pluriorganizacional'">
-        <v-layout wrap>
-          <v-flex xs10>
-            <v-select
-              item-text="label"
-              item-value="value"
-              :items="entidades"
-              label="Selecione uma classe de nível superior"
-              solo
-              dense
-            />
-          </v-flex>
-        </v-layout>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 2;
-            barra(25);
-          "
-          >Continuar</v-btn
-        >
-        <v-btn
-          flat
-          @click="
-            stepNo = 1;
-            barra(0);
-          "
-          >Voltar</v-btn
-        >
-      </v-stepper-content>
-
-      <v-stepper-step
-        v-if="tipo == 'Organizacional'"
-        :complete="stepNo > 1.5"
-        step="1.5"
-        >Tipologias de entidade a que pertence</v-stepper-step
-      >
-      <v-stepper-content step="1.5" v-if="tipo == 'Organizacional'">
         <v-expansion-panel>
           <v-expansion-panel-content class="expansion-panel-heading">
             <template v-slot:header>
@@ -117,6 +17,7 @@
               <v-layout>
                 <v-flex xs2>
                   <v-subheader
+                    class="info-label"
                     style="border-color: white; border-style:solid; color: #1A237E;"
                     >Tipologias da entidade:</v-subheader
                   >
@@ -159,20 +60,12 @@
           color="primary"
           @click="
             stepNo = 2;
-            barra(25);
+            barra(16);
             guardarTip();
             printEstado();
             loadProcEspecificos();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          flat
-          @click="
-            stepNo = 1;
-            barra(0);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -181,15 +74,9 @@
         <small>Designação da Nova Tabela de Seleção</small>
       </v-stepper-step>
       <v-stepper-content step="2">
-        <v-flex xs12 sm6 md3 v-if="tipo === 'Organizacional'">
+        <v-flex xs12 sm6 md3>
           <v-text-field
             :placeholder="estado.designacao"
-            v-model="estado.designacao"
-          ></v-text-field>
-        </v-flex>
-        <v-flex xs12 sm6 md3 v-else>
-          <v-text-field
-            placeholder="Nome da entidade associada ao utilizador"
             v-model="estado.designacao"
           ></v-text-field>
         </v-flex>
@@ -197,7 +84,7 @@
           color="primary"
           @click="
             stepNo = 3;
-            barra(50);
+            barra(32);
             loadProcComuns();
           "
           >Continuar</v-btn
@@ -205,7 +92,7 @@
         <v-btn
           flat
           @click="
-            stepNo = 1.5;
+            stepNo = 1;
             barra(0);
           "
           >Voltar</v-btn
@@ -271,7 +158,7 @@
           color="primary"
           @click="
             stepNo = 4;
-            barra(75);
+            barra(48);
             printEstado();
             procPreSelEspecificos();
           "
@@ -281,7 +168,7 @@
           flat
           @click="
             stepNo = 2;
-            barra(25);
+            barra(16);
           "
           >Voltar</v-btn
         >
@@ -349,7 +236,7 @@
           color="primary"
           @click="
             stepNo = 5;
-            barra(75);
+            barra(64);
             printEstado();
             procPreSelRestantes();
             loadProcEspRestantes();
@@ -360,7 +247,7 @@
           flat
           @click="
             stepNo = 3;
-            barra(50);
+            barra(32);
           "
           >Voltar</v-btn
         >
@@ -424,7 +311,7 @@
           color="primary"
           @click="
             stepNo = 6;
-            barra(75);
+            barra(80);
             loadUltimosProcessos();
             procPreSelUlt();
             printEstado();
@@ -435,7 +322,7 @@
           flat
           @click="
             stepNo = 4;
-            barra(50);
+            barra(48);
           "
           >Voltar</v-btn
         >
@@ -502,7 +389,7 @@
           color="primary"
           @click="
             stepNo = 7;
-            barra(75);
+            barra(100);
           "
           >Continuar</v-btn
         >
@@ -510,7 +397,7 @@
           flat
           @click="
             stepNo = 5;
-            barra(50);
+            barra(64);
           "
           >Voltar</v-btn
         >
@@ -541,18 +428,7 @@ export default {
   computed: {
     estado() {
       return this.$store.state.criacaoTabSel;
-    }
-  },
-  watch: {
-    tipo: function() {
-      if (this.tipo === "Organizacional") {
-        this.infoUserEnt();
-      }
-      if (this.tipo === "Pluriorganizacional") {
-        this.estado.designacao = "";
-      }
-    },
-    
+    }    
   },
   components: {
     ListaProcessosComuns,
@@ -568,12 +444,8 @@ export default {
       stepNo: 1,
       // Valor da barra de progresso
       valorBarra: 0,
-      // Tipo da TS
-      tipo: "",
       // Botão da informação sobre os passos da criação de TS
       infoButton: false,
-      // Lista de todas as entidades existentes
-      entidades: [],
       // Lista de todas as tipologias existentes
       tipologias: [],
       // True quando a lista de tipologias estiver carregada
@@ -648,35 +520,6 @@ export default {
     // Reencaminha para a página da informação dos seguintes passos
     passos: function() {
       this.$router.push("/ts/passos");
-    },
-    // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
-    infoUserEnt: async function() {
-      var resUser = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
-      );
-      var resEnt = await axios.get(
-        lhost + "/api/entidades/" + resUser.data.entidade
-      );
-      this.estado.designacao = resEnt.data.designacao;
-      this.estado.idEntidade = resUser.data.entidade;
-    },
-    // Faz load de todas as entidades
-    loadEntidades: async function() {
-      try {
-        var response = await axios.get(lhost + "/api/entidades");
-        this.entidades = response.data
-          .map(function(item) {
-            return {
-              label: item.sigla + " - " + item.designacao,
-              value: item.id.split("#")[1]
-            };
-          })
-          .sort(function(a, b) {
-            return a.label.localeCompare(b.label);
-          });
-      } catch (erro) {
-        console.log(erro);
-      }
     },
     // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
     loadTipologias: async function() {
@@ -1013,6 +856,7 @@ export default {
     }
   },
   created: function() {
+    this.loadTipologias();
     this.estado.procComuns = [];
     this.estado.procEspecificos = [];
   }

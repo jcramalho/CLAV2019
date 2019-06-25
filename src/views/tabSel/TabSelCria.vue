@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import CriaTabSel from "@/components/tabSel/CriaTabSel.vue";
+import CriaTabSel from "@/components/tabSel/CriaTabSelTipo.vue";
 
 export default {
   components: {

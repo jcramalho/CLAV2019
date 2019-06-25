@@ -73,8 +73,18 @@ export default new Router({
     },
     {
       path: "/ts/criar",
-      name: "criaTs",
+      name: "criaTsTipo",
       component: () => import("./views/tabSel/TabSelCria.vue")
+    },
+    {
+      path: "/ts/criar/organizacional",
+      name: "criaTsOrg",
+      component: () => import("./views/tabSel/TabSelCriaOrg.vue")
+    },
+    {
+      path: "/ts/criar/pluriorganizacional",
+      name: "criaTsPluri",
+      component: () => import("./views/tabSel/TabSelCriaPluri.vue")
     },
     {
       path: "/ts/passos",
