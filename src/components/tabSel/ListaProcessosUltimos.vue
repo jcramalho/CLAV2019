@@ -5,6 +5,7 @@
     class="elevation-1"
     item-key="classe"
     :rows-per-page-items="[10, 20, 100]"
+    rows-per-page-text="Mostrar"
   >
     <template v-slot:headers="props">
       <tr>
@@ -72,6 +73,10 @@
         </td>
       </tr>
     </template>
+    <template v-slot:pageText="props">
+      Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+      {{ props.itemsLength }}
+    </template>
   </v-data-table>
 </template>
 
@@ -80,7 +85,7 @@ const lhost = require("@/config/global").host;
 const axios = require("axios");
 
 export default {
-  props: ["lista", "tipo", "listaPreSel"],
+  props: ["lista", "tipo", "listaPreSel" ],
   data: () => ({
     headers: [
       {
@@ -166,7 +171,8 @@ export default {
     },
     // Calculo da travessia do processo passado como parametro
     calcRel: async function(processo) {
-      this.$emit("aCalcular", true);
+      var emit = 'true ' + processo;
+      this.$emit("aCalcular", emit);
 
       try {
         var profundidade = 1;
@@ -284,7 +290,8 @@ export default {
         );
 
         this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
-        this.$emit("aCalcular", false);
+        emit = 'false';
+        this.$emit("aCalcular", emit);
       } catch (erro) {
         console.log(erro);
       }
@@ -355,7 +362,7 @@ export default {
         newListaResUltimos
       );
 
-      this.$emit("contadorProcPreSelUlt", this.listaResEspecificos);
+      this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
     },
     // Para colocar e retirar qualquer processo da lista de processos ultimos selecionados
     selProcUlt: async function(processo) {

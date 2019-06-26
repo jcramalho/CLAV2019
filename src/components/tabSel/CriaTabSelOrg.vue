@@ -3,109 +3,9 @@
     <v-stepper v-model="stepNo" vertical>
       <v-progress-linear v-model="valorBarra"></v-progress-linear>
       <v-stepper-step :complete="stepNo > 1" step="1">
-        Tipo de Tabela de Seleção
+        Tipologias de entidade a que pertence
       </v-stepper-step>
       <v-stepper-content step="1">
-        <v-container fluid grid-list-xl>
-          <v-layout wrap align-center>
-            <v-flex xs3>
-              <v-subheader>Selecionar tipo de Tabela de Seleção:</v-subheader>
-            </v-flex>
-            <v-flex xs12 sm6 d-flex>
-              <v-select
-                :items="['Organizacional', 'Pluriorganizacional']"
-                label="Tipo"
-                v-model="tipo"
-              ></v-select>
-              <v-flex xs12 sm3>
-                <v-btn
-                  medium
-                  @click="infoButton = true"
-                  v-if="!infoButton"
-                  icon
-                  color="info"
-                >
-                  <v-icon>info</v-icon>
-                </v-btn>
-                <v-btn medium v-if="infoButton" color="info" @click="passos()">
-                  <v-icon left>info</v-icon>Info sobre os seguintes passos
-                </v-btn>
-              </v-flex>
-            </v-flex>
-          </v-layout>
-        </v-container>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 1.5;
-            barra(12.5);
-            loadEntidades();
-            estado.tipo = tipo;
-          "
-          v-if="tipo == 'Pluriorganizacional'"
-          :disabled="!tipo"
-        >
-          Continuar
-        </v-btn>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 1.5;
-            barra(12.5);
-            loadTipologias();
-            estado.tipo = tipo;
-          "
-          v-else
-          :disabled="!tipo"
-        >
-          Continuar
-        </v-btn>
-      </v-stepper-content>
-
-      <v-stepper-step
-        v-if="tipo == 'Pluriorganizacional'"
-        :complete="stepNo > 1.5"
-        step="1.5"
-        >Entidades abrangidas pela TS</v-stepper-step
-      >
-      <v-stepper-content step="1.5" v-if="tipo == 'Pluriorganizacional'">
-        <v-layout wrap>
-          <v-flex xs10>
-            <v-select
-              item-text="label"
-              item-value="value"
-              :items="entidades"
-              label="Selecione uma classe de nível superior"
-              solo
-              dense
-            />
-          </v-flex>
-        </v-layout>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 2;
-            barra(25);
-          "
-          >Continuar</v-btn
-        >
-        <v-btn
-          flat
-          @click="
-            stepNo = 1;
-            barra(0);
-          "
-          >Voltar</v-btn
-        >
-      </v-stepper-content>
-
-      <v-stepper-step
-        v-if="tipo == 'Organizacional'"
-        :complete="stepNo > 1.5"
-        step="1.5"
-        >Tipologias de entidade a que pertence</v-stepper-step
-      >
-      <v-stepper-content step="1.5" v-if="tipo == 'Organizacional'">
         <v-expansion-panel>
           <v-expansion-panel-content class="expansion-panel-heading">
             <template v-slot:header>
@@ -117,6 +17,7 @@
               <v-layout>
                 <v-flex xs2>
                   <v-subheader
+                    class="info-label"
                     style="border-color: white; border-style:solid; color: #1A237E;"
                     >Tipologias da entidade:</v-subheader
                   >
@@ -159,10 +60,32 @@
           color="primary"
           @click="
             stepNo = 2;
-            barra(25);
+            barra(16);
             guardarTip();
             printEstado();
             loadProcEspecificos();
+          "
+          >Continuar</v-btn
+        >
+      </v-stepper-content>
+
+      <v-stepper-step :complete="stepNo > 2" step="2"
+        >Designação
+        <small>Designação da Nova Tabela de Seleção</small>
+      </v-stepper-step>
+      <v-stepper-content step="2">
+        <v-flex xs12 sm6 md3>
+          <v-text-field
+            :placeholder="estado.designacao"
+            v-model="estado.designacao"
+          ></v-text-field>
+        </v-flex>
+        <v-btn
+          color="primary"
+          @click="
+            stepNo = 3;
+            barra(32);
+            loadProcComuns();
           "
           >Continuar</v-btn
         >
@@ -176,45 +99,9 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 2" step="2"
-        >Designação
-        <small>Designação da Nova Tabela de Seleção</small>
-      </v-stepper-step>
-      <v-stepper-content step="2">
-        <v-flex xs12 sm6 md3 v-if="tipo === 'Organizacional'">
-          <v-text-field
-            :placeholder="estado.designacao"
-            v-model="estado.designacao"
-          ></v-text-field>
-        </v-flex>
-        <v-flex xs12 sm6 md3 v-else>
-          <v-text-field
-            placeholder="Nome da entidade associada ao utilizador"
-            v-model="estado.designacao"
-          ></v-text-field>
-        </v-flex>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 3;
-            barra(50);
-            loadProcComuns();
-          "
-          >Continuar</v-btn
-        >
-        <v-btn
-          flat
-          @click="
-            stepNo = 1.5;
-            barra(0);
-          "
-          >Voltar</v-btn
-        >
-      </v-stepper-content>
-
       <v-stepper-step :complete="stepNo > 3" step="3"
         >Processos Comuns
-        <small>Processos passíveis de existirem em qualquer entidade</small>
+        <small>Processos passíveis de existir em qualquer entidade</small>
       </v-stepper-step>
       <v-stepper-content step="3">
         <v-layout wrap>
@@ -230,6 +117,7 @@
                   v-if="listaProcComunsReady"
                   v-bind:lista="listaProcComuns"
                   tipo="Processos Comuns"
+                  v-bind:criacaoTS="criacaoTS"
                   @aCalcular="aCalcular($event)"
                   @contadorProcSelCom="contadorProcSelCom($event)"
                   @contadorProcPreSelCom="contadorProcPreSelCom($event)"
@@ -246,17 +134,23 @@
               :value="numProcSelCom"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
             <v-text-field
-              v-if="!progressCalcular"
               label="Nº de processos comuns pré selecionados"
               :value="numProcPreSelCom"
             ></v-text-field>
+          </v-flex>
+          <v-flex xs2 style="padding-left:60px;" v-if="progressCalcular">
             <v-progress-circular
-              v-else
               indeterminate
               color="primary"
             ></v-progress-circular>
+          </v-flex>
+          <v-flex xs3 v-if="progressCalcular">
+            <v-text-field
+              label="A calcular a travessia do processo: "
+              :value="travessiaProcesso"
+            ></v-text-field>
           </v-flex>
         </v-layout>
         <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
@@ -264,7 +158,7 @@
           color="primary"
           @click="
             stepNo = 4;
-            barra(75);
+            barra(48);
             printEstado();
             procPreSelEspecificos();
           "
@@ -274,7 +168,7 @@
           flat
           @click="
             stepNo = 2;
-            barra(25);
+            barra(16);
           "
           >Voltar</v-btn
         >
@@ -301,6 +195,7 @@
                   v-if="listaProcEspReady"
                   v-bind:lista="listaProcEsp"
                   tipo="Processos Especificos"
+                  :criacaoTS="criacaoTS"
                   v-bind:listaPreSel="procPreSelResTravComum"
                   @aCalcular="aCalcular($event)"
                   @contadorProcSelEsp="contadorProcSelEsp($event)"
@@ -318,24 +213,30 @@
               :value="numProcSelEsp"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
             <v-text-field
-              v-if="!progressCalcular"
               label="Nº de processos específicos pré selecionados"
               :value="numProcPreSelEsp"
             ></v-text-field>
+          </v-flex>
+          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
             <v-progress-circular
-              v-else
               indeterminate
               color="primary"
             ></v-progress-circular>
+          </v-flex>
+          <v-flex xs3 v-if="progressCalcular">
+            <v-text-field
+              label="A calcular a travessia do processo: "
+              :value="travessiaProcesso"
+            ></v-text-field>
           </v-flex>
         </v-layout>
         <v-btn
           color="primary"
           @click="
             stepNo = 5;
-            barra(75);
+            barra(64);
             printEstado();
             procPreSelRestantes();
             loadProcEspRestantes();
@@ -346,7 +247,7 @@
           flat
           @click="
             stepNo = 3;
-            barra(50);
+            barra(32);
           "
           >Voltar</v-btn
         >
@@ -369,6 +270,7 @@
                   v-if="listaProcEspResReady"
                   v-bind:lista="listaProcEspRes"
                   tipo="Processos Especificos"
+                  :criacaoTS="criacaoTS"
                   v-bind:listaPreSel="procPreSelEspRestantes"
                   @aCalcular="aCalcular($event)"
                   @procPreSelResTravRes="procPreSelResTravRes($event)"
@@ -386,24 +288,30 @@
               :value="numProcSelRes"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
             <v-text-field
-              v-if="!progressCalcular"
               label="Nº de processos restantes pré selecionados"
               :value="numProcPreSelRes"
             ></v-text-field>
+          </v-flex>
+          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
             <v-progress-circular
-              v-else
               indeterminate
               color="primary"
             ></v-progress-circular>
+          </v-flex>
+          <v-flex xs3 v-if="progressCalcular">
+            <v-text-field
+              label="A calcular a travessia do processo: "
+              :value="travessiaProcesso"
+            ></v-text-field>
           </v-flex>
         </v-layout>
         <v-btn
           color="primary"
           @click="
             stepNo = 6;
-            barra(75);
+            barra(80);
             loadUltimosProcessos();
             procPreSelUlt();
             printEstado();
@@ -414,13 +322,13 @@
           flat
           @click="
             stepNo = 4;
-            barra(50);
+            barra(48);
           "
           >Voltar</v-btn
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 6" step="6"
+      <v-stepper-step :complete="stepNo > 6" step="6" v-if="listaProcUltReady"
         >Outros processos
         <small
           >Revisão de processos de negócio não selecionados nas 
@@ -441,6 +349,7 @@
                   v-if="listaProcUltReady"
                   v-bind:lista="listaProcUlt"
                   tipo="Processos Ultimos"
+                  :criacaoTS="criacaoTS"
                   @aCalcular="aCalcular($event)"
                   v-bind:listaPreSel="procPreSelUltimos"
                   @contadorProcSelUlt="contadorProcSelUlt($event)"
@@ -454,27 +363,33 @@
           <v-flex xs3>
             <v-text-field
               label="Nº dos últimos processos selecionados"
-              :value="numProcSelRes"
+              :value="numProcSelUlt"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
             <v-text-field
-              v-if="!progressCalcular"
               label="Nº dos últimos processos pré selecionados"
               :value="numProcPreSelUlt"
             ></v-text-field>
+          </v-flex>
+          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
             <v-progress-circular
-              v-else
               indeterminate
               color="primary"
             ></v-progress-circular>
+          </v-flex>
+          <v-flex xs3 v-if="progressCalcular">
+            <v-text-field
+              label="A calcular a travessia do processo: "
+              :value="travessiaProcesso"
+            ></v-text-field>
           </v-flex>
         </v-layout>
         <v-btn
           color="primary"
           @click="
-            stepNo = 5;
-            barra(75);
+            stepNo = 7;
+            barra(100);
           "
           >Continuar</v-btn
         >
@@ -482,7 +397,7 @@
           flat
           @click="
             stepNo = 5;
-            barra(50);
+            barra(64);
           "
           >Voltar</v-btn
         >
@@ -513,17 +428,7 @@ export default {
   computed: {
     estado() {
       return this.$store.state.criacaoTabSel;
-    }
-  },
-  watch: {
-    tipo: function() {
-      if (this.tipo === "Organizacional") {
-        this.infoUserEnt();
-      }
-      if (this.tipo === "Pluriorganizacional") {
-        this.estado.designacao = "";
-      }
-    }
+    }    
   },
   components: {
     ListaProcessosComuns,
@@ -539,12 +444,8 @@ export default {
       stepNo: 1,
       // Valor da barra de progresso
       valorBarra: 0,
-      // Tipo da TS
-      tipo: "",
       // Botão da informação sobre os passos da criação de TS
       infoButton: false,
-      // Lista de todas as entidades existentes
-      entidades: [],
       // Lista de todas as tipologias existentes
       tipologias: [],
       // True quando a lista de tipologias estiver carregada
@@ -605,6 +506,10 @@ export default {
       listaProcUltReady: false,
       // Número dos ultimos processos selecionados
       numProcSelUlt: 0,
+      // Caso a criação da TS seja cancelada passa a false
+      criacaoTS: true,
+      // Processo no qual está se a calcular a travessia
+      travessiaProcesso: '',
     };
   },
   methods: {
@@ -615,35 +520,6 @@ export default {
     // Reencaminha para a página da informação dos seguintes passos
     passos: function() {
       this.$router.push("/ts/passos");
-    },
-    // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
-    infoUserEnt: async function() {
-      var resUser = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
-      );
-      var resEnt = await axios.get(
-        lhost + "/api/entidades/" + resUser.data.entidade
-      );
-      this.estado.designacao = resEnt.data.designacao;
-      this.estado.idEntidade = resUser.data.entidade;
-    },
-    // Faz load de todas as entidades
-    loadEntidades: async function() {
-      try {
-        var response = await axios.get(lhost + "/api/entidades");
-        this.entidades = response.data
-          .map(function(item) {
-            return {
-              label: item.sigla + " - " + item.designacao,
-              value: item.id.split("#")[1]
-            };
-          })
-          .sort(function(a, b) {
-            return a.label.localeCompare(b.label);
-          });
-      } catch (erro) {
-        console.log(erro);
-      }
     },
     // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
     loadTipologias: async function() {
@@ -699,34 +575,36 @@ export default {
     // Carrega os processos específicos da entidade em causa
     loadProcEspecificos: async function() {
       try {
-        var url =
-          lhost + "/api/classes?tipo=especifico&ent=" + this.estado.idEntidade;
-        if (this.estado.tipologias) {
-          url += "&tips=";
-          for (var i = 0; i < this.estado.tipologias.length - 1; i++) {
-            url += this.estado.tipologias[i].id + ",";
+        if( !this.listaProcEspReady ){
+          var url =
+            lhost + "/api/classes?tipo=especifico&ent=" + this.estado.idEntidade;
+          if (this.estado.tipologias) {
+            url += "&tips=";
+            for (var i = 0; i < this.estado.tipologias.length - 1; i++) {
+              url += this.estado.tipologias[i].id + ",";
+            }
+            url += this.estado.tipologias[i].id;
           }
-          url += this.estado.tipologias[i].id;
+          var response = await axios.get(url);
+          for (var x = 0; x < response.data.length; x++) {
+            if(response.data[x].transversal==='S'){
+              this.listaProcEsp.push({
+                classe: response.data[x].codigo,
+                designacao: response.data[x].titulo,
+                dono: false,
+                participante: false
+              });
+            }
+            else {
+              this.listaProcEsp.push({
+                classe: response.data[x].codigo,
+                designacao: response.data[x].titulo,
+                dono: true
+              })
+            }
+          }
+          return this.listaProcEsp;
         }
-        var response = await axios.get(url);
-        for (var x = 0; x < response.data.length; x++) {
-          if(response.data[x].transversal==='S'){
-            this.listaProcEsp.push({
-              classe: response.data[x].codigo,
-              designacao: response.data[x].titulo,
-              dono: false,
-              participante: false
-            });
-          }
-          else {
-            this.listaProcEsp.push({
-              classe: response.data[x].codigo,
-              designacao: response.data[x].titulo,
-              dono: true
-            })
-          }
-        }
-        return this.listaProcEsp;
       } catch (error) {
         console.log(error);
       }
@@ -734,33 +612,39 @@ export default {
     // Carrega todos os processos comuns
     loadProcComuns: async function() {
       try {
-        var response = await axios.get(lhost + "/api/classes?tipo=comum");
-        for (var i = 0; i < response.data.length; i++) {
-          if(response.data[i].transversal==="S"){
-            this.listaProcComuns.push({
-              classe: response.data[i].codigo,
-              designacao: response.data[i].titulo,
-              dono: false,
-              participante: false
-            });
+        if( !this.listaProcComunsReady ){
+          var response = await axios.get(lhost + "/api/classes?tipo=comum");
+          for (var i = 0; i < response.data.length; i++) {
+            if(response.data[i].transversal==="S"){
+              this.listaProcComuns.push({
+                classe: response.data[i].codigo,
+                designacao: response.data[i].titulo,
+                dono: false,
+                participante: false
+              });
+            }
+            else {
+              this.listaProcComuns.push({
+                classe: response.data[i].codigo,
+                designacao: response.data[i].titulo,
+                dono: true
+              });
+            }
           }
-          else {
-            this.listaProcComuns.push({
-              classe: response.data[i].codigo,
-              designacao: response.data[i].titulo,
-              dono: true
-            });
-          }
+          this.listaProcComunsReady = true;
+          return this.listaProcComuns;
         }
-        this.listaProcComunsReady = true;
-        return this.listaProcComuns;
       } catch (erro) {
         console.log(erro);
       }
     },
     // Enquanto estiver a ser efetuado o calculo da travessia, coloca esta variavel a false
-    aCalcular: async function(bool) {
-      this.progressCalcular = bool;
+    aCalcular: async function(calcular) {
+      if(calcular.split(' ')[0] === 'true'){
+        this.progressCalcular = true;
+      }
+      else this.progressCalcular = false;
+      this.travessiaProcesso = calcular.split(' ')[1];
     },
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
@@ -782,22 +666,27 @@ export default {
     },
     // Processos pre selecionados especificos resultantes das travessias da tabela de processos comuns
     procPreSelEspecificos: function() {
-      for (var i = 0; i < this.listaProcEsp.length; i++) {
-        if (this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)) {
-          this.numProcPreSelEsp += 1;
+      if( !this.listaProcEspReady ){
+        for (var i = 0; i < this.listaProcEsp.length; i++) {
+          if (this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)) {
+            this.numProcPreSelEsp += 1;
+          }
         }
       }
       this.listaProcEspReady = true;
     },
     // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
     procPreSelRestantes: function() {
-      for (var i = 0; i < this.listaProcEspRes.length; i++) {
-        if (this.procPreSelResTravComum.includes(this.listaProcEspRes[i].classe) ||
-        this.procPreSelResTravEspecifico.includes(this.listaProcEspRes[i].classe)) {
-          this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe)
-          this.numProcPreSelRes += 1;
+      if( !this.listaProcEspResReady ) {
+        for (var i = 0; i < this.listaProcEspRes.length; i++) {
+          if (this.procPreSelResTravComum.includes(this.listaProcEspRes[i].classe) ||
+            this.procPreSelResTravEspecifico.includes(this.listaProcEspRes[i].classe)) {
+            this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe)
+            this.numProcPreSelRes += 1;
+          }
         }
-      }
+        this.listaProcEspResReady = true;
+    }
     },
     // Contador dos processos selecionados especificos
     contadorProcSelEsp: function(procSelec) {
@@ -812,39 +701,40 @@ export default {
     // Carrega todos os processos especificos restantes
     loadProcEspRestantes: async function() {
       try {
-        var response = await axios.get(lhost + "/api/classes?tipo=especifico");
-        this.listaTotalProcEsp = response.data;
-        for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
-          var espEntTip = false;
-          for (var j = 0; j < this.listaProcEsp.length; j++) {
-            if (
-              this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
-            ) {
-              espEntTip = true;
-              break;
+        if( !this.listaProcEspResReady ){
+          var response = await axios.get(lhost + "/api/classes?tipo=especifico");
+          this.listaTotalProcEsp = response.data;
+          for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
+            var espEntTip = false;
+            for (var j = 0; j < this.listaProcEsp.length; j++) {
+              if (
+                this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
+              ) {
+                espEntTip = true;
+                break;
+              }
             }
+            if (espEntTip === false) {
+              if(this.listaTotalProcEsp[i].transversal==="S"){
+                  this.listaProcEspRes.push({
+                    classe: this.listaTotalProcEsp[i].codigo,
+                    designacao: this.listaTotalProcEsp[i].titulo,
+                    dono: false,
+                    participante: false
+                  });
+                }
+                else {
+                  this.listaProcEspRes.push({
+                    classe: this.listaTotalProcEsp[i].codigo,
+                    designacao: this.listaTotalProcEsp[i].titulo,
+                    dono: true
+                  });
+                }
+              }
           }
-          if (espEntTip === false) {
-            if(this.listaTotalProcEsp[i].transversal==="S"){
-                this.listaProcEspRes.push({
-                  classe: this.listaTotalProcEsp[i].codigo,
-                  designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: false,
-                  participante: false
-                });
-              }
-              else {
-                this.listaProcEspRes.push({
-                  classe: this.listaTotalProcEsp[i].codigo,
-                  designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: true
-                });
-              }
-            }
-            this.listaProcEspResReady = true;
+          console.log(this.estado.procComuns);
+          console.log(this.estado.procEspecificos);
         }
-        console.log(this.estado.procComuns);
-        console.log(this.estado.procEspecificos);
       } catch (error) {
         console.log(error);
       }
@@ -930,7 +820,7 @@ export default {
           this.numProcPreSelUlt += 1;
         }
       }
-      console.log(this.procPreSelUltimos)
+
     },
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {
@@ -950,8 +840,14 @@ export default {
 
 
     // Quando o utilizador quiser cancelar todo o trabalho feito até então
-    eliminarTS: function() {
-      this.$router.push("/");
+    eliminarTS: async function() {
+      await this.criacao();
+      if( this.criacaoTS == false ){
+        this.$router.push("/");
+      }
+    },
+    criacao: function() {
+      this.criacaoTS = false;
     },
     guardarTrabalho: function(){
       console.log("Guardar Trabalho TS")
@@ -964,6 +860,7 @@ export default {
     }
   },
   created: function() {
+    this.loadTipologias();
     this.estado.procComuns = [];
     this.estado.procEspecificos = [];
   }
