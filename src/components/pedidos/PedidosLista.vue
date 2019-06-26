@@ -46,14 +46,30 @@
                 </v-btn>
               </td>
               <td>
-                <v-btn
-                  color="blue"
-                  dark
-                  round
-                  @click="distribuiPedido(props.item)"
-                >
-                  Distribuir
-                </v-btn>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-icon @click="showPedido(props.item)" color="indigo darken-2" v-on="on">visibility</v-icon>
+                    </template>
+                    <span>Ver pedido...</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-icon @click="distribuiPedido(props.item)" color="indigo darken-2" v-on="on">person</v-icon>
+                    </template>
+                    <span>Distribuir pedido...</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-icon color="indigo darken-2" v-on="on">keyboard_return</v-icon>
+                    </template>
+                    <span>Devolver pedido...</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-icon color="indigo darken-2" v-on="on">check</v-icon>
+                    </template>
+                    <span>Validar pedido...</span>
+                </v-tooltip>
               </td>
             </tr>
           </template>
@@ -105,6 +121,10 @@ export default {
   methods: {
       distribuiPedido: function(pedido){
           this.$emit('distribuir', pedido)
+      },
+
+      showPedido: function(pedido){
+          this.$emit('show', pedido)
       }
   }
 };

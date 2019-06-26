@@ -944,10 +944,8 @@ export default {
             tipo: "Classe",
             objeto: this.classe,
             criadoPor: userBD.data.email,
-            user: {
-              email: userBD.data.email,
-              token: this.$store.state.token
-            }
+            user: { email: userBD.data.email},
+            token: this.$store.state.token
           };
           var response = await axios.post(
             lhost + "/api/pendentes",

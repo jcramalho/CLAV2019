@@ -11,11 +11,15 @@
                 <v-expansion-panel popout>
                     <PedidosLista :pedidos="pedidosSubmetidos" 
                                   titulo="Pedidos novos" 
-                                  @distribuir="distribuiPedido($event)"/>
+                                  @distribuir="distribuiPedido($event)"
+                                  @show="showPedido($event)"
+                    />               
                 </v-expansion-panel>
 
                 <v-expansion-panel popout>
-                    <PedidosLista :pedidos="pedidosDistribuidos" titulo="Pedidos em apreciação técnica"/>
+                    <PedidosLista :pedidos="pedidosDistribuidos" 
+                                  titulo="Pedidos em apreciação técnica"
+                                  @show="showPedido($event)"/>
                 </v-expansion-panel>
 
                 <v-expansion-panel popout>
@@ -88,7 +92,74 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    </v-layout>
 
+    <v-layout row wrap ma-2>
+      <v-dialog v-model="show" width="80%" >
+      <v-card>
+        <v-card-title class="headline">Dados do pedido</v-card-title>
+        <v-card-text>
+          <v-layout row wrap ma-2>
+            <v-flex xs2>
+              <div class="info-label">Código</div>
+            </v-flex>
+            <v-flex xs10>
+              <div class="info-content">{{pedido.codigo}}</div>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap ma-2>
+            <v-flex xs2>
+              <div class="info-label">Estado</div>
+            </v-flex>
+            <v-flex xs10>
+              <div class="info-content">{{pedido.estado}}</div>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap ma-2>
+            <v-flex xs2>
+              <div class="info-label">Data</div>
+            </v-flex>
+            <v-flex xs10>
+              <div class="info-content">{{pedido.data}}</div>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap ma-2>
+            <v-flex xs2>
+              <div class="info-label">Criado Por</div>
+            </v-flex>
+            <v-flex xs10>
+              <div class="info-content">{{pedido.criadoPor}}</div>
+            </v-flex>
+          </v-layout>
+          <div class="info-label title">Distribuição</div>
+          <v-data-table
+            :headers="distHeaders"
+            :items="pedido.distribuicao"
+            class="elevation-1"
+            hide-actions
+          >
+            <template v-slot:items="props">
+              <tr>
+                <td class="subheading">{{ props.item.estado }}</td>
+                <td class="subheading">{{ props.item.data }}</td>
+                <td class="subheading">{{ props.item.responsavel }}</td>
+                <td class="subheading">{{ props.item.despacho }}</td>
+              </tr>
+            </template>
+          </v-data-table>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            color="red darken-4"
+            round dark
+            @click="closePedido"
+          >
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     </v-layout>
   </v-container>
 </template>
@@ -104,6 +175,14 @@ export default {
   data: () => ({
     pedidoParaDistribuir: {},
     distribuir: false,
+    show: false,
+    pedido: {},
+    distHeaders: [
+      {text: "Estado", value: "estado", class:"title"},
+      {text: "Data", value: "data", class:"title"},
+      {text: "Responsável", value: "responsavel", class:"title"},
+      {text: "Despacho", value: "despacho", class:"title"}
+    ],
     despacho: "",
     usersHeaders: [
       {text: "Nome", value: "name", class:"title"},
@@ -161,7 +240,12 @@ export default {
     },
 
     showPedido: function(item) {
-      this.$emit("pedidoSelected", item);
+      this.pedido = item
+      this.show = true
+    },
+
+    closePedido: function(item) {
+      this.show = false
     },
 
     distribuiPedido: async function(pedido){
