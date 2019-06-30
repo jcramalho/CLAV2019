@@ -685,7 +685,6 @@ export default {
             this.numProcPreSelRes += 1;
           }
         }
-        this.listaProcEspResReady = true;
     }
     },
     // Contador dos processos selecionados especificos
@@ -735,6 +734,7 @@ export default {
           console.log(this.estado.procComuns);
           console.log(this.estado.procEspecificos);
         }
+        this.listaProcEspResReady = true;
       } catch (error) {
         console.log(error);
       }

@@ -451,11 +451,23 @@ export default {
 
       var dataObj = this.legislacao;
 
-      dataObj.token = this.$store.state.token;
-
       console.log(dataObj);
 
-      axios
+      var userBD = await axios.get(
+        lhost + "/api/users/listarToken/" + this.$store.state.token
+      );
+      var pedidoParams = {
+        tipoPedido: "Criação",
+        tipoObjeto: "Legislação",
+        novoObjeto: dataObj,
+        user: {email: userBD.data.email},
+        token: this.$store.state.token
+      };
+
+      var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+      this.$router.push("/pedidos/submissao");
+
+      /*axios
         .post(lhost + "/api/legislacao/", dataObj)
         .then(res => {
           this.$router.push("/pedidos/submissao");
@@ -472,7 +484,7 @@ export default {
             this.color = "error";
             this.snackbar = true;
           }
-        });
+        });*/
     }
   },
   created: function() {

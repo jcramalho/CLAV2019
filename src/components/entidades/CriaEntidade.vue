@@ -22,10 +22,10 @@
                     <v-text-field
                       solo
                       clearable
-                      counter="50"
+                      counter="150"
                       single-line
                       v-model="entidade.designacao"
-                      maxlength="50"
+                      maxlength="150"
                     ></v-text-field>
                   </td>
                 </tr>
@@ -122,6 +122,7 @@
           >
         </div>
       </v-flex>
+
     </v-layout>
   </v-container>
 </template>
@@ -159,7 +160,7 @@ export default {
     ],
 
     snackbar: false,
-    text: ""
+    text: "",
   }),
   components: {
     DesSelTip,
@@ -199,55 +200,75 @@ export default {
       this.snackbar = false;
     },
     submeter: async function() {
-      if (this.$store.state.name === "") {
-        this.text = "Precisa de fazer login para criar a Entidade";
-        this.snackbar = true;
-        return false;
+      try {
+        if (this.$store.state.name === "") {
+          this.text = "Precisa de fazer login para criar a Entidade";
+          this.snackbar = true;
+          return false;
+        }
+
+        for (var i = 0; i < this.tipSel.length; i++) {
+          this.entidade.tipologiasSel[i] = this.tipSel[i].id;
+        }
+
+        if (this.entidade.internacional == "") {
+          this.entidade.internacional = "Não";
+        }
+
+        if (!/^[0-9]*$/.test(this.entidade.sioe)) {
+          this.text = "O campo 'SIOE' está no formato errado.";
+          this.snackbar = true;
+          return false;
+        }
+
+        var dataObj = this.entidade;
+
+        dataObj.codigo = "ent_" + this.entidade.sigla;
+
+        console.log(dataObj);
+
+        var userBD = await axios.get(
+          lhost + "/api/users/listarToken/" + this.$store.state.token
+        );
+        console.log(userBD.data)
+        var pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "Entidade",
+          novoObjeto: dataObj,
+          user: {email: userBD.data.email},
+          token: this.$store.state.token
+        };
+
+        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+        this.$router.push("/pedidos/submissao");
+
+        /*axios
+          .post(lhost + "/api/entidades/", dataObj)
+          .then(res => {
+            this.$router.push("/pedidos/submissao");
+          })
+          .catch(err => {
+            if (err.response.status === 409) {
+              this.text =
+                "Já existe uma entidade com a sigla " +
+                this.entidade.sigla +
+                " ou designação " +
+                this.entidade.designacao;
+              this.color = "error";
+              this.snackbar = true;
+            }
+            if (err.response.status === 500) {
+              this.text = "Ocorreu um erro na criação desta entidade";
+              this.color = "error";
+              this.snackbar = true;
+            }
+          });*/
+        }
+      catch(error) {
+        return error;
       }
+    },
 
-      for (var i = 0; i < this.tipSel.length; i++) {
-        this.entidade.tipologiasSel[i] = this.tipSel[i].id;
-      }
-
-      if (this.entidade.internacional == "") {
-        this.entidade.internacional = "Não";
-      }
-
-      if (!/^[0-9]*$/.test(this.entidade.sioe)) {
-        this.text = "O campo 'SIOE' está no formato errado.";
-        this.snackbar = true;
-        return false;
-      }
-
-      var dataObj = this.entidade;
-
-      dataObj.codigo = "ent_" + this.entidade.sigla;
-      dataObj.token = this.$store.state.token;
-
-      console.log(dataObj);
-
-      axios
-        .post(lhost + "/api/entidades/", dataObj)
-        .then(res => {
-          this.$router.push("/pedidos/submissao");
-        })
-        .catch(err => {
-          if (err.response.status === 409) {
-            this.text =
-              "Já existe uma entidade com a sigla " +
-              this.entidade.sigla +
-              " ou designação " +
-              this.entidade.designacao;
-            this.color = "error";
-            this.snackbar = true;
-          }
-          if (err.response.status === 500) {
-            this.text = "Ocorreu um erro na criação desta entidade";
-            this.color = "error";
-            this.snackbar = true;
-          }
-        });
-    }
   },
   created: function() {
     this.loadTipologias();
