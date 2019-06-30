@@ -161,9 +161,7 @@
           <v-btn dark round color="teal darken-4" @click="criarClasse"
             >Criar classe</v-btn
           >
-          <v-btn dark round color="red darken-4" @click="eliminarClasse"
-            >Eliminar classe</v-btn
-          >
+          <v-btn dark round color="red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
         </div>
       </v-flex>
 
