@@ -9,10 +9,8 @@
           :text="myhelp.Classe.Campos.NotasAp"
         />
       </div>
-      <v-tooltip top color="info">
-        <template v-slot:activator="{ on }">
+      
           <v-btn
-            v-on="on"
             color="green darken-2"
             dark
             round
@@ -21,9 +19,7 @@
             Nota aplicação
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
-        </template>
-        <span>Nota de aplicação</span>
-      </v-tooltip>
+       
     </v-flex>
     <v-flex>
       <v-layout fluid row v-for="(nota, index) in c.notasAp" :key="index">
@@ -49,12 +45,29 @@
         </v-flex>
       </v-layout>
     </v-flex>
+
+    <v-snackbar v-model="naVaziaFlag" :color="'warning'" :timeout="60000">
+        {{ mensagemNAVazia }}
+        <v-btn dark flat @click="naVaziaFlag=false">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
+    <v-snackbar v-model="naDuplicadaFlag" :color="'error'" :timeout="60000">
+        {{ mensagemNADuplicada }}
+        <v-btn dark flat @click="naDuplicadaFlag=false">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
   </v-layout>
 </template>
 
 <script>
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
+const lhost = require("@/config/global").host;
+const axios = require("axios");
 
 import InfoBox from "@/components/generic/infoBox.vue";
 
@@ -67,14 +80,40 @@ export default {
 
   data() {
     return {
-      myhelp: help
+      myhelp: help,
+      naVaziaFlag: false,
+      naDuplicadaFlag: false,
+      mensagemNAVazia: "A nota anterior encontra-se vazia. Queira preenchê-la antes de criar nova.",
+      mensagemNADuplicada: "A última nota introduzida é um duplicado de outra já introduzida previamente!"
     };
   },
 
   methods: {
-    insereNovaNota: function(notas, tipo) {
-      var n = { id: tipo + "_" + nanoid(), conteudo: "" };
-      notas.push(n);
+    notaDuplicada: function(notas){
+      if(notas.length > 1){
+        var lastNota = notas[notas.length-1].nota
+        var duplicados = notas.filter(n => n.nota == lastNota )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
+    insereNovaNota: async function(notas, tipo) {
+      if((notas.length > 0) && (notas[notas.length-1].nota == "")){
+        this.naVaziaFlag = true
+      }
+      else if(this.notaDuplicada(notas)){
+        this.naDuplicadaFlag = true
+      }
+      else{
+        var n = { id: tipo + "_" + nanoid(), nota: "" }; 
+        notas.push(n);
+      }
     }
   }
 };
