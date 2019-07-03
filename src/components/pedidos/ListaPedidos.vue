@@ -142,7 +142,7 @@ export default {
       {
         text: "Estado",
         align: "left",
-        sortable: false,
+        sortable: true,
         value: "estado",
         class: "title"
       },
@@ -150,12 +150,12 @@ export default {
       {
         text: "Responsável",
         value: "responsavel",
-        sortable: false,
+        sortable: true,
         class: "title"
       },
-      { text: "Tipo", value: "tipo", sortable: false, class: "title" },
+      { text: "Tipo", value: "tipo", sortable: true, class: "title" },
       { text: "Objeto", value: "objeto", sortable: false, class: "title" },
-      { text: "Tarefa", sortable: false, class: "title" }
+      { text: "Tarefa", sortable: true, class: "title" }
     ],
     pedidos: []
   }),

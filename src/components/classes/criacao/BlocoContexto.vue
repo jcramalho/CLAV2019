@@ -56,7 +56,10 @@
       </v-flex>
     </v-layout>
 
-    <DonosNew @newEntidade="newEntidade($event)"/>
+    <DonosNew 
+      @newEntidade="newEntidade($event, c.donos)"
+      :entidadesReady="semaforos.entidadesReady"
+      :entidades="donos"/>
 
     <v-layout row wrap ma-2>
       <v-flex xs12>
@@ -78,6 +81,17 @@
         :entidades="c.participantes"
         @unselectParticipante="unselectParticipante($event)"
       />
+
+      <v-layout row wrap ma-2>
+        <v-flex xs12>
+          <hr style="border-top: 1px dashed green;" />
+        </v-flex>
+      </v-layout>
+
+      <ParticipantesNew 
+        @newEntidade="newEntidade($event, c.participantes)"
+        :entidadesReady="semaforos.entidadesReady"
+        :entidades="participantes"/>
 
       <hr style="border-top: 1px dashed green;" />
 
@@ -112,6 +126,17 @@
       @unselectDiploma="unselectDiploma($event)"
     />
 
+    <v-layout row wrap ma-2>
+        <v-flex xs12>
+          <hr style="border-top: 1px dashed green;" />
+        </v-flex>
+    </v-layout>
+
+    <LegislacaoNew 
+        :legislacao="c.legislacao"
+        @newLegislacao="newEntidade($event, c.legislacao)"
+    />
+
     <hr style="border-top: 1px dashed green;" />
 
     <LegislacaoSelect
@@ -129,10 +154,12 @@ import DonosOps from "@/components/classes/criacao/DonosOps.vue";
 import DonosNew from "@/components/classes/criacao/DonosNew.vue";
 import DonosSelect from "@/components/classes/criacao/DonosSelect.vue";
 import ParticipantesOps from "@/components/classes/criacao/ParticipantesOps.vue";
+import ParticipantesNew from "@/components/classes/criacao/ParticipantesNew.vue";
 import ParticipantesSelect from "@/components/classes/criacao/ParticipantesSelect.vue";
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import ProcessosRelacionadosSelect from "@/components/classes/criacao/ProcessosRelacionadosSelect.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
+import LegislacaoNew from "@/components/classes/criacao/LegislacaoNew.vue";
 import LegislacaoSelect from "@/components/classes/criacao/LegislacaoSelect.vue";
 
 export default {
@@ -143,10 +170,12 @@ export default {
     DonosNew,
     DonosSelect,
     ParticipantesOps,
+    ParticipantesNew,
     ParticipantesSelect,
     ProcessosRelacionadosOps,
     ProcessosRelacionadosSelect,
     LegislacaoOps,
+    LegislacaoNew,
     LegislacaoSelect
   },
 
@@ -188,8 +217,8 @@ export default {
       this.donos.splice(index, 1);
     },
 
-    newEntidade: function(entidade) {
-      this.c.donos.push(entidade);
+    newEntidade: function(entidade, lista) {
+      lista.push(entidade);
     },
 
     unselectParticipante: function(entidade) {

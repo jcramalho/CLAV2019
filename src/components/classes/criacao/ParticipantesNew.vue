@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap color="teal lighten-5" ma-2>
     <v-flex xs2>
-      <div class="info-label">Entidade nova</div>
+      <div class="info-label">Participante novo</div>
       <v-btn small dark round color="teal darken-4" @click="newEntidade">
           Adicionar
           <v-icon small dark right>add_circle_outline</v-icon>
@@ -12,6 +12,19 @@
         <v-container>
           <v-layout>
             <v-flex xs12 md3>
+              <v-select
+                prefix="Intervenção: "
+                item-text="label"
+                item-value="value"
+                v-model="intervencao"
+                :items="tiposIntervencao"
+                label="Intervenção"
+                solo
+                dense
+              />
+            </v-flex>
+
+            <v-flex xs12 md2>
               <v-text-field
                 v-model="sigla"
                 :rules="siglaRules"
@@ -20,7 +33,7 @@
               ></v-text-field>
             </v-flex>
 
-            <v-flex xs12 md3>
+            <v-flex xs12 md2>
               <v-text-field v-model="sioe" label="SIOE"></v-text-field>
             </v-flex>
 
@@ -33,7 +46,7 @@
               ></v-text-field>
             </v-flex>
 
-            <v-flex xs12 md3>
+            <v-flex xs12 md2>
               <v-select
                 prefix="Internacional: "
                 item-text="label"
@@ -75,6 +88,16 @@ export default {
       designacao: "",
       designacaoRules: [v => !!v || "A Designação é obrigatória."],
       internacional: "Nao",
+      intervencao: "Indefinido",
+      tiposIntervencao: [
+        { label: "Por selecionar", value: "Indefinido" },
+        { label: "Apreciar", value: "Apreciar" },
+        { label: "Assessorar", value: "Assessorar" },
+        { label: "Comunicar", value: "Comunicar" },
+        { label: "Decidir", value: "Decidir" },
+        { label: "Executar", value: "Executar" },
+        { label: "Iniciar", value: "Iniciar" }
+      ],
       simNao: [
           {
               label: "Sim", value: "Sim"
@@ -126,12 +149,14 @@ export default {
               sigla: this.sigla,
               sioe: this.sioe,
               designacao: this.designacao,
-              internacional: this.internacional
+              internacional: this.internacional,
+              intervencao: this.intervencao
           }
           this.sigla = ""
           this.sioe = ""
           this.designacao = ""
           this.internacional = "Nao"
+          this.intervencao = "Indefinido"
           this.$emit('newEntidade', entidade)
         }
         else{
