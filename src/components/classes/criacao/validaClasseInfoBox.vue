@@ -3,69 +3,15 @@
       <v-btn dark round color="green darken-4" @click="validarClasse">Validar classe
       <v-dialog v-model="dialog" width="80%" >
         <v-card>
-          <v-card-title class="headline">Validação da informação introduzida</v-card-title>
+          <v-card-title class="headline">Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
           <v-card-text>
-            <v-layout row wrap ma-2>
+            <v-layout row wrap ma-2 v-for="(m, i) in mensagensErro" :key="i">
               <v-flex xs2>
-                <div class="info-label">Título</div>
-              </v-flex>
-              <v-flex xs10>
-                <div class="info-content" :style="{color: tituloColor}">
-                      {{ existeTituloMensagem }}
-                </div>
-              </v-flex>
-            </v-layout>
-
-            <v-layout row wrap ma-2>
-              <v-flex xs2>
-                <div class="info-label">Notas de Aplicação</div>
-              </v-flex>
-              <v-flex xs10 v-if="c.notasAp.length > 0" >
-                <div class="info-content" v-for="(mensagem, index) in existeNotaApMensagem" :key="index">
-                      {{ mensagem }}
-                </div>
-              </v-flex>
-              <v-flex xs10 v-else >
-                <div class="info-content">
-                      Sem notas. OK.
-                </div>
-              </v-flex>
-            </v-layout>
-
-            <v-layout row wrap ma-2>
-              <v-flex xs2>
-                <div class="info-label">Exemplos de notas de Aplicação</div>
-              </v-flex>
-              <v-flex xs10 v-if="c.exemplosNotasAp.length > 0" >
-                <div class="info-content" v-for="(mensagem, index) in existeExemploNotaApMensagem" :key="index">
-                      {{ mensagem }}
-                </div>
-              </v-flex>
-              <v-flex xs10 v-else >
-                <div class="info-content">
-                      Sem notas. OK.
-                </div>
-              </v-flex>
-            </v-layout>
-
-            <v-layout row wrap ma-2>
-              <v-flex xs2>
-                <div class="info-label">Notas de Exclusão</div>
+                <div class="info-label">{{ m.sobre }}</div>
               </v-flex>
               <v-flex xs10>
                 <div class="info-content">
-                      {{ existeNotaExMensagem }}
-                </div>
-              </v-flex>
-            </v-layout>
-
-            <v-layout row wrap ma-2>
-              <v-flex xs2>
-                <div class="info-label">PCA (prazo)</div>
-              </v-flex>
-              <v-flex xs10>
-                <div class="info-content" :style="{color: PCAPrazoColor}">
-                      {{ PCAPrazoMensagem }}
+                      {{ m.mensagem }}
                 </div>
               </v-flex>
             </v-layout>
@@ -75,7 +21,7 @@
           <v-btn
             color="red darken-4"
             round dark
-            @click="dialog=false">Fechar</v-btn>
+            @click="fecharReport">Fechar</v-btn>
         </v-card-actions>
         </v-card>
       </v-dialog>
@@ -91,14 +37,9 @@ export default {
   data() {
     return {
       dialog: false,
-      existeTituloMensagem: "",
-      tituloColor: "green",
-      existeNotaApMensagem: [],
-      notasApColor: "green",
-      existeNotaExMensagem: "",
-      existeExemploNotaApMensagem: [],
-      PCAPrazoMensagem: "",
-      PCAPrazoColor: "green"
+      
+      mensagensErro: [],
+      numeroErros: 0
     };
   },
 
@@ -134,69 +75,79 @@ export default {
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
     validarClasse: async function(){
+      alert(JSON.stringify(this.c))
       // Título
-      var existeTitulo = await axios.post( lhost + '/api/classes/verificarTitulo', {titulo: this.c.titulo})
-      if(existeTitulo.data){
-        this.existeTituloMensagem = "Título já existente na BD."
-        this.tituloColor = "red"
+      if(this.c.titulo == ""){
+          this.mensagensErro.push({sobre: "Título", mensagem:"O título não pode ser vazio."})
+          this.numeroErros++
       }
-      else{
-        this.existeTituloMensagem = "OK."
-        this.tituloColor = "green"
+      else {
+          var existeTitulo = await axios.post( lhost + '/api/classes/verificarTitulo', {titulo: this.c.titulo})
+          if(existeTitulo.data){
+            this.mensagensErro.push({sobre: "Título", mensagem:"Título já existente na BD."})
+            this.numeroErros++
+          }
       }
-
+      
       // Notas de Aplicação
-      var existeNotaAp = false
-      this.existeNotaApMensagem = []
       for(var i=0; i < this.c.notasAp.length; i++){
         existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: this.c.notasAp[i].nota})
         if(existeNotaAp.data){
-          this.existeNotaApMensagem.push("Nota de Aplicação(" + (i+1) + "): [" + this.c.notasAp[i].nota + "] já existente na BD.")
-        }
-        else{
-          this.existeNotaApMensagem.push("Nota de Aplicação(" + (i+1) + "): OK." ) 
+          this.mensagensErro.push({sobre: "Nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.notasAp[i].nota + "] já existente na BD."})
+          this.numeroErros++
         }
       }
       if(this.notaDuplicada(this.c.notasAp)){
-          this.existeNotaApMensagem.push("A última nota encontra-se duplicada.")
+          this.mensagensErro.push({sobre: "Nota de Aplicação(" + (i+1) + ")", mensagem:"A última nota encontra-se duplicada."})
+          this.numeroErros++
       }
 
       // Exemplos de notas de Aplicação
-      var existeExemploNotaAp = false
-      this.existeExemploNotaApMensagem = []
       for(var i=0; i < this.c.exemplosNotasAp.length; i++){
         existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: this.c.exemplosNotasAp[i].exemplo})
         if(existeExemploNotaAp.data){
-          this.existeExemploNotaApMensagem.push("Exemplo de nota de Aplicação(" + (i+1) + "): [" + this.c.exemplosNotasAp[i].exemplo + "] já existente na BD.")
-        }
-        else{
-          this.existeExemploNotaApMensagem.push("Exemplo de nota de Aplicação(" + (i+1) + "): OK." ) 
+          this.mensagensErro.push({sobre: "Exemplo de nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.exemplosNotasAp[i].exemplo + "] já existente na BD."})
+          this.numeroErros++
         }
       }
       if(this.exemploDuplicado(this.c.exemplosNotasAp)){
-          this.existeExemploNotaApMensagem.push("O último exemplo encontra-se duplicado.")
+          this.mensagensErro.push({sobre: "Exemplo de nota de Aplicação(" + (i+1) + ")", mensagem:"O último exemplo encontra-se duplicado."})
+          this.numeroErros++
       }
 
       // Notas de Exclusão
       if(this.notaDuplicada(this.c.notasEx)){
-          this.existeNotaExMensagem = "A última nota encontra-se duplicada."
-      }
-      else{
-          this.existeNotaExMensagem = "Notas de exclusão em conformidade."
+          this.mensagensErro.push({sobre: "Nota de Exclusão(" + (this.c.notasEx.length) + ")", mensagem:"A última nota encontra-se duplicada."})
+          this.numeroErros++
       }
 
-      // PCA: prazo
-      if((this.c.pca.valor>0)&&(this.c.pca.valor<200)){
-          this.PCAPrazoMensagem = "Prazo em conformidade."
-          this.PCAPrazoColor = "green"
-      }
-      else{
-          this.PCAPrazoMensagem = "Prazo fora dos limites."
-          this.PCAPrazoColor = "red"
+      // Decisões
+      // Sem subdivisão
+      if((this.c.nivel == 3)&&(!this.c.temSubclasses4Nivel)){
+        // PCA: prazo
+        if((this.c.pca.valor<0)||(this.c.pca.valor>200)||(!this.c.pca.valor)){
+          this.mensagensErro.push({sobre: "PCA (prazo)", mensagem:"Prazo fora dos limites."})
+          this.numeroErros++
+        }
+        // PCA: forma e subforma de contagem
+        if(this.c.pca.formaContagem == ""){
+          this.mensagensErro.push({sobre: "PCA (forma de contagem)", mensagem:"A forma de contagem não pode ser vazia."})
+          this.numeroErros++
+        }
+        else if((this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(this.c.pca.subFormaContagem == "")){
+          this.mensagensErro.push({sobre: "PCA (subforma de contagem)", mensagem:"Quando a forma de contagem é \"Disposição legal\" a subforma não pode ser vazia."})
+          this.numeroErros++
+        }
       }
 
       this.dialog = true
     },
+
+    fecharReport: function(){
+      this.dialog = false
+      this.numeroErros = 0
+      this.mensagensErro = []
+    }
   }
 };
 </script>
