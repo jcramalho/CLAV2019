@@ -233,11 +233,113 @@ export default {
       this.c.participantes.push(entidade);
     },
 
+    verificaCriteriosPCA: function(proc){
+      var i=0, index=-1, j=0
+      var criterios = []
+      // Sem subdivisão
+      if(!this.c.temSubclasses4Nivel){
+        criterios = this.c.pca.justificacao
+        for(i=0; i < criterios.length; i++){
+          if(criterios[i].tipo == "CriterioJustificacaoUtilidadeAdministrativa"){
+            if(criterios[i].procRel.length > 0){
+              index = criterios[i].procRel.findIndex(p => p.id == proc.id)
+              if(index != -1){
+                criterios[i].procRel.splice(index, 1)
+                if(criterios[i].procRel.length == 0){
+                  criterios.splice(i, 1)
+                }
+              }
+            }
+          }
+        }
+      }
+      // Com subdivisão
+      else{
+        for(j=0; j < this.c.subclasses.length; j++){
+          criterios = this.c.subclasses[i].pca.justificacao
+          for(i=0; i < criterios.length; i++){
+            if(criterios[i].tipo == "CriterioJustificacaoUtilidadeAdministrativa"){
+              if(criterios[i].procRel.length > 0){
+                index = criterios[i].procRel.findIndex(p => p.id == proc.id)
+                if(index != -1){
+                  criterios[i].procRel.splice(index, 1)
+                  if(criterios[i].procRel.length == 0){
+                    criterios.splice(i, 1)
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    verificaCriteriosDF: function(proc){
+      var criterios = []
+      // Sem subdivisão
+      if(!this.c.temSubclasses4Nivel){
+        criterios = this.c.df.justificacao
+
+        if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
+          var indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
+          if(indexCriterio != -1){
+            var indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
+            criterios[indexCriterio].procRel.splice(indexProc, 1)
+            if(criterios[indexCriterio].procRel.length == 0){
+              criterios.splice(indexCriterio, 1)
+            }
+          }
+        }
+        if(proc.relacao == "eComplementarDe"){
+          var indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoComplementaridadeInfo")
+          if(indexCriterio != -1){
+            var indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
+            criterios[indexCriterio].procRel.splice(indexProc, 1)
+            if(criterios[indexCriterio].procRel.length == 0){
+              criterios.splice(indexCriterio, 1)
+            }
+          }
+        }
+      }
+      // Com subdivisão
+      else{
+        var j, indexCriterio, indexProc
+        for(j=0; j < this.c.subclasses.length; j++){
+          criterios = this.c.subclasses[j].df.justificacao
+          
+          if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
+            indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
+            if(indexCriterio != -1){
+              indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
+              criterios[indexCriterio].procRel.splice(indexProc, 1)
+              if(criterios[indexCriterio].procRel.length == 0){
+                criterios.splice(indexCriterio, 1)
+              }
+            }
+          }
+          if(proc.relacao == "eComplementarDe"){
+            indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoComplementaridadeInfo")
+            if(indexCriterio != -1){
+              indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
+              criterios[indexCriterio].procRel.splice(indexProc, 1)
+              if(criterios[indexCriterio].procRel.length == 0){
+                criterios.splice(indexCriterio, 1)
+              }
+            }
+          }
+        }
+      }
+    }, 
+
     unselectProcesso: function(proc) {
       proc.idRel = "Indefinido";
       this.procRel.push(proc);
       var index = this.c.processosRelacionados.findIndex(p => p.id === proc.id);
       this.c.processosRelacionados.splice(index, 1);
+
+      // Remover os critérios quando já não há relações que os suportem
+      this.verificaCriteriosPCA(proc)
+      this.verificaCriteriosDF(proc)
     },
 
     selectProcesso: function(proc) {
