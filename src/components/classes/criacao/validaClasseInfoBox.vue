@@ -6,10 +6,10 @@
           <v-card-title class="headline">Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
           <v-card-text>
             <v-layout row wrap ma-2 v-for="(m, i) in mensagensErro" :key="i">
-              <v-flex xs2>
+              <v-flex xs4>
                 <div class="info-label">{{ m.sobre }}</div>
               </v-flex>
-              <v-flex xs10>
+              <v-flex xs8>
                 <div class="info-content">
                       {{ m.mensagem }}
                 </div>
@@ -76,6 +76,7 @@ export default {
 
     validarClasse: async function(){
       alert(JSON.stringify(this.c))
+      var i = 0
       // Título
       if(this.c.titulo == ""){
           this.mensagensErro.push({sobre: "Título", mensagem:"O título não pode ser vazio."})
@@ -90,7 +91,7 @@ export default {
       }
       
       // Notas de Aplicação
-      for(var i=0; i < this.c.notasAp.length; i++){
+      for(i=0; i < this.c.notasAp.length; i++){
         existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: this.c.notasAp[i].nota})
         if(existeNotaAp.data){
           this.mensagensErro.push({sobre: "Nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.notasAp[i].nota + "] já existente na BD."})
@@ -103,7 +104,7 @@ export default {
       }
 
       // Exemplos de notas de Aplicação
-      for(var i=0; i < this.c.exemplosNotasAp.length; i++){
+      for(i=0; i < this.c.exemplosNotasAp.length; i++){
         existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: this.c.exemplosNotasAp[i].exemplo})
         if(existeExemploNotaAp.data){
           this.mensagensErro.push({sobre: "Exemplo de nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.exemplosNotasAp[i].exemplo + "] já existente na BD."})
@@ -137,6 +138,27 @@ export default {
         else if((this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(this.c.pca.subFormaContagem == "")){
           this.mensagensErro.push({sobre: "PCA (subforma de contagem)", mensagem:"Quando a forma de contagem é \"Disposição legal\" a subforma não pode ser vazia."})
           this.numeroErros++
+        }
+      }
+      // Com subdivisão
+      else if((this.c.nivel == 3)&&(this.c.temSubclasses4Nivel)){
+        var subclasse = {}
+        // PCA: prazo
+        for(i=0; i < this.c.subclasses.length; i++){
+          subclasse = this.c.subclasses[i]
+          if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)||(!subclasse.pca.valor)){
+            this.mensagensErro.push({sobre: "PCA (prazo) da subclasse " + subclasse.codigo, mensagem:"Prazo fora dos limites."})
+            this.numeroErros++
+          }
+          // PCA: forma e subforma de contagem
+          if(subclasse.pca.formaContagem == ""){
+            this.mensagensErro.push({sobre: "PCA (forma de contagem) da subclasse " + subclasse.codigo, mensagem:"A forma de contagem não pode ser vazia."})
+            this.numeroErros++
+          }
+          else if((subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(subclasse.pca.subFormaContagem == "")){
+            this.mensagensErro.push({sobre: "PCA (subforma de contagem) da subclasse " + subclasse.codigo, mensagem:"Quando a forma de contagem é \"Disposição legal\" a subforma não pode ser vazia."})
+            this.numeroErros++
+          }
         }
       }
 
