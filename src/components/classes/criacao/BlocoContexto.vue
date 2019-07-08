@@ -276,14 +276,15 @@ export default {
 
     verificaCriteriosDF: function(proc){
       var criterios = []
+      var j, indexCriterio, indexProc
       // Sem subdivisão
       if(!this.c.temSubclasses4Nivel){
         criterios = this.c.df.justificacao
 
         if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
-          var indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
+          indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
           if(indexCriterio != -1){
-            var indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
+            indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
             criterios[indexCriterio].procRel.splice(indexProc, 1)
             if(criterios[indexCriterio].procRel.length == 0){
               criterios.splice(indexCriterio, 1)
@@ -291,9 +292,9 @@ export default {
           }
         }
         if(proc.relacao == "eComplementarDe"){
-          var indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoComplementaridadeInfo")
+          indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoComplementaridadeInfo")
           if(indexCriterio != -1){
-            var indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
+            indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
             criterios[indexCriterio].procRel.splice(indexProc, 1)
             if(criterios[indexCriterio].procRel.length == 0){
               criterios.splice(indexCriterio, 1)
@@ -303,10 +304,9 @@ export default {
       }
       // Com subdivisão
       else{
-        var j, indexCriterio, indexProc
         for(j=0; j < this.c.subclasses.length; j++){
           criterios = this.c.subclasses[j].df.justificacao
-          
+
           if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
             indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
             if(indexCriterio != -1){
