@@ -26,13 +26,22 @@
           <template v-slot:items="props">
             <tr>
               <td>
-                <v-btn color="teal draken-2" dark round small text-xs-center>
+                <v-select
+                item-text="label"
+                item-value="value"
+                v-model="props.item.intervencao"
+                :items="tiposIntervencao"
+                solo
+                dense
+                @change="selectParticipante(props.item.id, $event)"
+              />
+                <!--v-btn color="teal draken-2" dark round small text-xs-center>
                   <SelectValueFromList
                     :options="tiposIntervencao"
                     :initialValue="props.item.intervencao"
                     @value-change="selectParticipante(props.item.id, $event)"
                   />
-                </v-btn>
+                </v-btn-->
               </td>
               <td>{{ props.item.sigla }}</td>
               <td>{{ props.item.designacao }}</td>

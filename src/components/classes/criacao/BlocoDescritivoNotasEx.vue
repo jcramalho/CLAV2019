@@ -43,6 +43,21 @@
         </v-flex>
       </v-layout>
     </v-flex>
+
+    <v-snackbar v-model="neVaziaFlag" :color="'warning'" :timeout="60000">
+        {{ mensagemNEVazia }}
+        <v-btn dark flat @click="neVaziaFlag=false">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
+    <v-snackbar v-model="neDuplicadaFlag" :color="'error'" :timeout="60000">
+        {{ mensagemNEDuplicada }}
+        <v-btn dark flat @click="neDuplicadaFlag=false">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
   </v-layout>
 </template>
 
@@ -52,10 +67,43 @@ const nanoid = require("nanoid");
 export default {
   props: ["c"],
 
+  data() {
+    return {
+      neVaziaFlag: false,
+      neDuplicadaFlag: false,
+      mensagemNEVazia: "A nota anterior encontra-se vazia. Queira preenchê-la antes de criar nova.",
+      mensagemNEDuplicada: "A última nota introduzida é um duplicado de outra já introduzida previamente!"
+    };
+  },
+
+
   methods: {
+
+    notaDuplicada: function(notas){
+      if(notas.length > 1){
+        var lastNota = notas[notas.length-1].nota
+        var duplicados = notas.filter(n => n.nota == lastNota )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
     insereNovaNota: function(notas, tipo) {
-      var n = { id: tipo + "_" + nanoid(), conteudo: "" };
-      notas.push(n);
+      if((notas.length > 0) && (notas[notas.length-1].nota == "")){
+        this.neVaziaFlag = true
+      }
+      else if(this.notaDuplicada(notas)){
+        this.neDuplicadaFlag = true
+      }
+      else{
+        var n = { id: tipo + "_" + nanoid(), nota: "" }; 
+        notas.push(n);
+      }
     }
   }
 };

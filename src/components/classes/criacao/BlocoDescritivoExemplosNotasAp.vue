@@ -16,7 +16,7 @@
             color="green darken-2"
             dark
             round
-            @click="insereNovaNota(c.exemplosNotasAp, 'exna')"
+            @click="insereNovoExemplo(c.exemplosNotasAp)"
           >
             Exemplo N. A.
             <v-icon dark right>add_circle_outline</v-icon>
@@ -49,6 +49,21 @@
         </v-flex>
       </v-layout>
     </v-flex>
+
+    <v-snackbar v-model="exemploNotaApVazioFlag" :color="'warning'" :timeout="60000">
+        {{ mensagemExemploNotaApVazio }}
+        <v-btn dark flat @click="exemploNotaApVazioFlag=false">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
+    <v-snackbar v-model="exemploNotaApDuplicadoFlag" :color="'error'" :timeout="60000">
+        {{ mensagemExemploNotaApDuplicado }}
+        <v-btn dark flat @click="exemploNotaApDuplicadoFlag=false">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
   </v-layout>
 </template>
 
@@ -61,20 +76,46 @@ import InfoBox from "@/components/generic/infoBox.vue";
 export default {
   props: ["c"],
 
+  data() {
+    return {
+      myhelp: help,
+      exemploNotaApVazioFlag: false,
+      exemploNotaApDuplicadoFlag: false,
+      mensagemExemploNotaApVazio: "O exemplo anterior encontra-se vazio. Queira preenchê-lo antes de criar novo.",
+      mensagemExemploNotaApDuplicado: "O último exemplo introduzido é um duplicado de outro já introduzido previamente!"
+    };
+  },
+
   components: {
     InfoBox
   },
 
-  data() {
-    return {
-      myhelp: help
-    };
-  },
-
   methods: {
-    insereNovaNota: function(notas, tipo) {
-      var n = { id: tipo + "_" + nanoid(), conteudo: "" };
-      notas.push(n);
+    exemploDuplicado: function(exemplos){
+      if(exemplos.length > 1){
+        var lastExemplo = exemplos[exemplos.length-1].exemplo
+        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
+    insereNovoExemplo: async function(exemplos) {
+      if((exemplos.length > 0) && (exemplos[exemplos.length-1].exemplo == "")){
+        this.exemploNotaApVazioFlag = true
+      }
+      else if(this.exemploDuplicado(exemplos)){
+        this.exemploNotaApDuplicadoFlag = true
+      }
+      else{
+        var e = { idExemplo: "exna_" + nanoid(), exemplo: "" }; 
+        exemplos.push(e);
+      }
     }
   }
 };

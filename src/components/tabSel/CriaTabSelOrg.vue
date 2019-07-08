@@ -62,8 +62,6 @@
             stepNo = 2;
             barra(16);
             guardarTip();
-            printEstado();
-            loadProcEspecificos();
           "
           >Continuar</v-btn
         >
@@ -74,7 +72,7 @@
         <small>Designação da Nova Tabela de Seleção</small>
       </v-stepper-step>
       <v-stepper-content step="2">
-        <v-flex xs12 sm6 md3>
+        <v-flex xs12 sm6 md10>
           <v-text-field
             :placeholder="estado.designacao"
             v-model="estado.designacao"
@@ -85,7 +83,8 @@
           @click="
             stepNo = 3;
             barra(32);
-            loadProcComuns();
+            listaProcComunsReady = true;
+            loadProcEspecificos();
           "
           >Continuar</v-btn
         >
@@ -117,8 +116,6 @@
                   v-if="listaProcComunsReady"
                   v-bind:lista="listaProcComuns"
                   tipo="Processos Comuns"
-                  v-bind:criacaoTS="criacaoTS"
-                  @aCalcular="aCalcular($event)"
                   @contadorProcSelCom="contadorProcSelCom($event)"
                   @contadorProcPreSelCom="contadorProcPreSelCom($event)"
                   @procPreSelResTravCom="procPreSelResTravCom($event)"
@@ -134,22 +131,10 @@
               :value="numProcSelCom"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
+          <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos comuns pré selecionados"
               :value="numProcPreSelCom"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs2 style="padding-left:60px;" v-if="progressCalcular">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </v-flex>
-          <v-flex xs3 v-if="progressCalcular">
-            <v-text-field
-              label="A calcular a travessia do processo: "
-              :value="travessiaProcesso"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -161,6 +146,7 @@
             barra(48);
             printEstado();
             procPreSelEspecificos();
+            loadProcEspRestantes();
           "
           >Continuar</v-btn
         >
@@ -195,13 +181,12 @@
                   v-if="listaProcEspReady"
                   v-bind:lista="listaProcEsp"
                   tipo="Processos Especificos"
-                  :criacaoTS="criacaoTS"
                   v-bind:listaPreSel="procPreSelResTravComum"
-                  @aCalcular="aCalcular($event)"
                   @contadorProcSelEsp="contadorProcSelEsp($event)"
                   @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
                   @procPreSelResTravEsp="procPreSelResTravEsp($event)"
                 />
+                <div v-else>a carregar</div>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
@@ -213,22 +198,10 @@
               :value="numProcSelEsp"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
+          <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos específicos pré selecionados"
               :value="numProcPreSelEsp"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </v-flex>
-          <v-flex xs3 v-if="progressCalcular">
-            <v-text-field
-              label="A calcular a travessia do processo: "
-              :value="travessiaProcesso"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -239,7 +212,6 @@
             barra(64);
             printEstado();
             procPreSelRestantes();
-            loadProcEspRestantes();
           "
           >Continuar</v-btn
         >
@@ -270,13 +242,12 @@
                   v-if="listaProcEspResReady"
                   v-bind:lista="listaProcEspRes"
                   tipo="Processos Especificos"
-                  :criacaoTS="criacaoTS"
                   v-bind:listaPreSel="procPreSelEspRestantes"
-                  @aCalcular="aCalcular($event)"
                   @procPreSelResTravRes="procPreSelResTravRes($event)"
                   @contadorProcSelRes="contadorProcSelRes($event)"
                   @contadorProcPreSelRes="contadorProcPreSelRes($event)"
                 />
+                <div v-else>a carregar</div>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
@@ -288,22 +259,10 @@
               :value="numProcSelRes"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
+          <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos restantes pré selecionados"
               :value="numProcPreSelRes"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </v-flex>
-          <v-flex xs3 v-if="progressCalcular">
-            <v-text-field
-              label="A calcular a travessia do processo: "
-              :value="travessiaProcesso"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -349,8 +308,6 @@
                   v-if="listaProcUltReady"
                   v-bind:lista="listaProcUlt"
                   tipo="Processos Ultimos"
-                  :criacaoTS="criacaoTS"
-                  @aCalcular="aCalcular($event)"
                   v-bind:listaPreSel="procPreSelUltimos"
                   @contadorProcSelUlt="contadorProcSelUlt($event)"
                   @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
@@ -366,22 +323,10 @@
               :value="numProcSelUlt"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;" v-if="!progressCalcular">
+          <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               label="Nº dos últimos processos pré selecionados"
               :value="numProcPreSelUlt"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs2 style="padding-left:60px;"  v-if="progressCalcular">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </v-flex>
-          <v-flex xs3 v-if="progressCalcular">
-            <v-text-field
-              label="A calcular a travessia do processo: "
-              :value="travessiaProcesso"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -464,8 +409,6 @@ export default {
       listaProcComuns: [],
       // True quando a lista de todos os processos comuns existentes estiver completa
       listaProcComunsReady: false,
-      // True enquanto estiver a ser efetuado uma travessia
-      progressCalcular: false,
       // Numero de processos comuns selecionados
       numProcSelCom: 0,
       // Lista dos processos comuns selecionados
@@ -506,10 +449,6 @@ export default {
       listaProcUltReady: false,
       // Número dos ultimos processos selecionados
       numProcSelUlt: 0,
-      // Caso a criação da TS seja cancelada passa a false
-      criacaoTS: true,
-      // Processo no qual está se a calcular a travessia
-      travessiaProcesso: '',
     };
   },
   methods: {
@@ -638,14 +577,6 @@ export default {
         console.log(erro);
       }
     },
-    // Enquanto estiver a ser efetuado o calculo da travessia, coloca esta variavel a false
-    aCalcular: async function(calcular) {
-      if(calcular.split(' ')[0] === 'true'){
-        this.progressCalcular = true;
-      }
-      else this.progressCalcular = false;
-      this.travessiaProcesso = calcular.split(' ')[1];
-    },
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
       this.numProcSelCom = procSelec.length;
@@ -655,6 +586,10 @@ export default {
     // Contador dos processos pre selecionados comuns
     contadorProcPreSelCom: function(lista) {
       this.numProcPreSelCom = lista.length;
+    },
+    // Contador dos processos pre selecionados especificos
+    contadorProcPreSelEsp: function(lista) {
+      this.numProcPreSelEsp = lista.length;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
     procPreSelResTravCom: function(procPreSelResTravCom) {
@@ -685,7 +620,8 @@ export default {
             this.numProcPreSelRes += 1;
           }
         }
-    }
+      }
+      this.listaProcEspResReady = true;
     },
     // Contador dos processos selecionados especificos
     contadorProcSelEsp: function(procSelec) {
@@ -693,10 +629,7 @@ export default {
       this.estado.procEspecificos = procSelec;
       this.listaProcSelEsp = procSelec;
     },
-    // Contador dos processos pre selecionados especificos
-    contadorProcPreSelEsp: function(lista) {
-      this.numProcPreSelEsp = lista.length;
-    },
+
     // Carrega todos os processos especificos restantes
     loadProcEspRestantes: async function() {
       try {
@@ -734,7 +667,6 @@ export default {
           console.log(this.estado.procComuns);
           console.log(this.estado.procEspecificos);
         }
-        this.listaProcEspResReady = true;
       } catch (error) {
         console.log(error);
       }
@@ -806,7 +738,9 @@ export default {
           }
         }
       }
-      this.listaProcUltReady = true;
+      if( this.listaProcUlt.length ){
+        this.listaProcUltReady = true;
+      }
       console.log("LISTA DOS ULTIMOS PROCESSOS")
       console.log(this.listaProcUlt)
     },
@@ -842,12 +776,7 @@ export default {
     // Quando o utilizador quiser cancelar todo o trabalho feito até então
     eliminarTS: async function() {
       await this.criacao();
-      if( this.criacaoTS == false ){
-        this.$router.push("/");
-      }
-    },
-    criacao: function() {
-      this.criacaoTS = false;
+      this.$router.push("/");
     },
     guardarTrabalho: function(){
       console.log("Guardar Trabalho TS")
@@ -855,7 +784,7 @@ export default {
     submeterTS: function(){
       console.log("Submeter TS")
     },
-    printEstado: async function() {
+    printEstado: function() {
       console.log(this.$store.state.criacaoTabSel);
     }
   },
@@ -863,6 +792,7 @@ export default {
     this.loadTipologias();
     this.estado.procComuns = [];
     this.estado.procEspecificos = [];
+    this.loadProcComuns();
   }
 };
 </script>

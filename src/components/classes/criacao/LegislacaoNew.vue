@@ -1,0 +1,189 @@
+<template>
+  <v-layout row wrap color="teal lighten-5" ma-2>
+    <v-flex xs2>
+      <div class="info-label">Legislação nova</div>
+      <v-btn small dark round color="teal darken-4" @click="newLegislacao">
+          Adicionar
+          <v-icon small dark right>add_circle_outline</v-icon>
+      </v-btn>
+    </v-flex>
+    <v-flex xs10>
+      <v-form v-model="valid">
+        <v-container>
+          <v-layout>
+
+            <v-flex xs12 md3 v-if="listaTipos.length > 0">
+              <v-select
+                item-text="label"
+                item-value="value"
+                v-model="tipo"
+                :items="listaTipos"
+                label="Tipo"
+              />
+            </v-flex>
+
+            <v-flex xs12 md3 v-else>
+              <v-text-field
+                v-model="tipo"
+                label="Tipo"
+              ></v-text-field>
+            </v-flex>
+
+
+            <v-flex xs12 md3>
+              <v-text-field v-model="numero" label="Número"></v-text-field>
+            </v-flex>
+
+            <v-flex xs12 md3>
+              <v-text-field
+                v-model="sumario"
+                label="Sumário"
+              ></v-text-field>
+            </v-flex>
+
+            <v-flex xs12 md3>
+              <v-text-field
+                v-model="data"
+                label="Data"
+              />
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-form>
+    </v-flex>
+
+    <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
+      <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
+        <v-btn dark flat @click="fecharErros">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
+  </v-layout>
+</template>
+
+<script>
+const lhost = require("@/config/global").host;
+const axios = require("axios");
+
+export default {
+  props: ["legislacao"],
+
+  data: function() {
+    return {
+      listaTipos: [],
+      erroValidacao: false,
+      mensagensErro:[],
+      valid: false,
+      tipo: "",
+      numero: "",
+      sumario: "",
+      data: ""
+    };
+  },
+
+  created: async function(){
+      try{
+          var tipos = await axios.get(lhost + "/api/vocabularios/vc_tipoDiplomaLegislativo")
+          this.listaTipos = tipos.data.map(t => {return {label: t.termo, value: t.termo }})
+      }
+      catch(e){
+          return e
+      }
+  },
+
+  methods: {
+      fecharErros: function(){
+        this.mensagensErro = []
+        this.erroValidacao=false
+      },
+
+      validaTipo: function(t){
+        var res = true
+        if(t==""){
+          this.mensagensErro.push("O tipo não pode ser vazio, selecione um valor!")
+          res = false
+        }
+        return res
+      },
+
+      validaNumero: function(n){
+        var res = true
+        if(n==""){
+          this.mensagensErro.push("O número não pode ser vazio, introduza um valor!")
+          res = false
+        }
+        return res
+      },
+
+      validaDups: async function(t, n){
+          try{
+              var legs = await axios.get(lhost + "/api/legislacao")
+              var test = legs.data.filter(l => (l.tipo == t) && (l.numero == n))
+              if(test.length > 0){
+                  this.mensagensErro.push("Já existe um documento legislativo na BD com o mesmo tipo e número!")
+                  return false
+              }
+              else{
+                  return true
+              } 
+          }
+          catch(e){
+              return false
+          }
+      },
+
+      validaDupsLocais: function(t, n){
+          var test = this.legislacao.filter(l => (l.tipo == t) && (l.numero == n))
+          if(test.length > 0){
+            this.mensagensErro.push("Já foi criado um item com esse tipo e número!")
+            return false
+          }
+          else{
+            return true
+          } 
+      },
+
+      newLegislacao: async function(){
+        if(this.validaTipo(this.tipo) && this.validaNumero(this.numero) 
+            && await this.validaDups(this.tipo, this.numero) && this.validaDupsLocais(this.tipo, this.numero)){
+          var legislacao = {
+              tipo: this.tipo,
+              id: "...",
+              numero: this.numero,
+              sumario: this.sumario,
+              data: this.data
+          }
+          this.tipo = ""
+          this.numero = ""
+          this.sumario = ""
+          this.data = ""
+          this.$emit('newLegislacao', legislacao)
+        }
+        else{
+          this.erroValidacao = true
+        } 
+      }
+  }
+};
+</script>
+<style>
+.info-label {
+  color: #00695c;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #e0f2f1;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
+}
+</style>

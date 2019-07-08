@@ -156,14 +156,12 @@
             color="teal darken-4"
             @click="guardarTrabalho"
             v-bind:disabled="classe.codigo == ''"
-            >Guardar trabalho</v-btn
-          >
-          <v-btn dark round color="teal darken-4" @click="criarClasse"
-            >Criar classe</v-btn
-          >
-          <v-btn dark round color="red darken-4" @click="eliminarClasse"
-            >Eliminar classe</v-btn
-          >
+            >Guardar trabalho</v-btn>
+            
+          <valida-classe-info-box :c="classe"/>
+          
+          <v-btn dark round color="teal darken-4" @click="criarClasse">Criar classe</v-btn>
+          <v-btn dark round color="red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
         </div>
       </v-flex>
 
@@ -200,6 +198,7 @@
         <v-btn flat @click="pedidoEliminado = false">Fechar</v-btn>
       </v-snackbar>
     </v-layout>
+
   </v-container>
 </template>
 
@@ -218,6 +217,7 @@ import Subdivisao3Nivel from "@/components/classes/criacao/Subdivisao3Nivel.vue"
 import DecisaoSemSubPCA from "@/components/classes/criacao/DecisaoSemSubPCA.vue";
 import DecisaoSemSubDF from "@/components/classes/criacao/DecisaoSemSubDF.vue";
 import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel.vue";
+import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
 
 export default {
   components: {
@@ -227,7 +227,8 @@ export default {
     DecisaoSemSubPCA,
     DecisaoSemSubDF,
     Subclasses4Nivel,
-    InfoBox
+    InfoBox,
+    ValidaClasseInfoBox
   },
 
   data: () => ({
