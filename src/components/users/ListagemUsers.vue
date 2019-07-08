@@ -111,7 +111,7 @@
                   <v-text-field prepend-icon="email" v-model="editedItem.email" label="Email" :rules="regraEmail" required></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
-                  <v-select
+                  <v-autocomplete
                     item-text="label"
                     item-value="value"
                     :items="entidades"
@@ -121,7 +121,7 @@
                     label="Entidade"
                     required
                   >
-                  </v-select>
+                  </v-autocomplete>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
                   <v-select

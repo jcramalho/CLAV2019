@@ -27,7 +27,7 @@
                 required
               />
               <v-flex>
-                <v-select
+                <v-autocomplete
                   item-text="label"
                   item-value="value"
                   :items="ent_list"
@@ -37,7 +37,7 @@
                   label="Entidade"
                   required
                 >
-                </v-select>
+                </v-autocomplete>
               </v-flex>
               <v-flex>
                 <v-select
