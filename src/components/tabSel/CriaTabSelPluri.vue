@@ -73,7 +73,7 @@
         <small>Designação da Nova Tabela de Seleção</small>
       </v-stepper-step>
       <v-stepper-content step="2">
-        <v-flex xs12 sm6 md3>
+        <v-flex xs12 sm6 md10>
           <v-text-field
             placeholder="Nome da entidade associada ao utilizador"
             v-model="designacao"
