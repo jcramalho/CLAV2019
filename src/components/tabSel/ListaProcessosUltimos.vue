@@ -23,7 +23,7 @@
         :style="{
           backgroundColor:
             (listaResUltimos.findIndex(p => p == props.item.classe) != -1 ||
-            listaPreSel.findIndex(p => p == props.item.classe) != -1) &&
+            preSel.findIndex(p => p == props.item.classe) != -1) &&
             (!props.item.dono && !props.item.participante)
               ? 'orange'
               : 'transparent'
@@ -113,23 +113,38 @@ export default {
     listaProcResultado: {},
     // Lista com os processos ultimos selecionados
     procUltSel: [],
+    // Todas as travessias são carregadas para esta variável
+    travessias: [],
+    preSel: [],
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro
     calcRel: async function(processo) {
       try {
         // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
-        this.listaProcResultado[processo] = listaResultados;
+        this.listaProcResultado[processo] = this.travessias[processo];
+
+        // Coloca na lista de processos resultantes especificos os processos pré selecionados
+        // resultantes das travessias dos processos comuns
+        if (!this.listaResUltimos.length) {
+          if (this.preSel.length) {
+            for (var l = 0; l < this.lista.length; l++) {
+              if (this.preSel.includes(this.lista[l].classe))
+                this.listaResUltimos.push(this.lista[l].classe);
+            }
+          }
+          this.preSel = [];
+        }
 
         // resultado da travessia
         // listaResUltimos: Lista dos processos resultantes (das travessias) dos ultimos
-        for (var i = 0; i < listaResultados.length; i++) {
+        for (var i = 0; i < this.travessias[processo].length; i++) {
           for (var j = 0; j < this.lista.length; j++) {
             if (
-              this.lista[j].classe === listaResultados[i].codigo &&
-              !this.listaResUltimos.includes(listaResultados[i].codigo)
+              this.lista[j].classe === this.travessias[processo][i] &&
+              !this.listaResUltimos.includes(this.travessias[processo][i])
             ) {
-              this.listaResUltimos.push(listaResultados[i].codigo);
+              this.listaResUltimos.push(this.travessias[processo][i]);
             }
           }
         }
@@ -192,7 +207,23 @@ export default {
       var index = this.procUltSel.findIndex(e => e.classe === processo.classe);
       this.procUltSel.splice(index, 1);
       this.$emit("contadorProcSelUlt", this.procUltSel);
+    },
+  },
+  mounted: async function() {
+      try {
+        this.preSel = this.listaPreSel;
+
+        // Vai a API de dados buscar todos os cálculos das travessias
+        var res = await axios.get(
+            lhost + "/api/travessia"
+          );
+        var trav = res.data;
+        for( var j = 0; j < trav.length; j++){
+          this.travessias[trav[j].processo] = trav[j].travessia
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
-  }
 };
 </script>
