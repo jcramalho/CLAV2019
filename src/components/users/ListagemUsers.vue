@@ -80,7 +80,7 @@
             </template>
             <span>Desativar utilizador</span>
           </v-tooltip>
-          <v-tooltip bottom>
+          <!-- <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn v-on="on" icon @click="confirmacaoEliminar = true">
                 <v-icon color="red">delete</v-icon>
@@ -98,7 +98,7 @@
               </v-btn>
               </template>
             <span>Eliminar utilizador</span>
-          </v-tooltip>
+          </v-tooltip> -->
         </v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
@@ -111,7 +111,7 @@
                   <v-text-field prepend-icon="email" v-model="editedItem.email" label="Email" :rules="regraEmail" required></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
-                  <v-select
+                  <v-autocomplete
                     item-text="label"
                     item-value="value"
                     :items="entidades"
@@ -121,7 +121,7 @@
                     label="Entidade"
                     required
                   >
-                  </v-select>
+                  </v-autocomplete>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
                   <v-select

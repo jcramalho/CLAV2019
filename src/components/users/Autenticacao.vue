@@ -95,6 +95,8 @@
             <v-flex class="text-xs-right">
               <v-btn color="primary" type="submit" @click="registarApi">Registar</v-btn>
             </v-flex>
+          </v-card-actions>
+          <v-card-actions>
             <v-flex>
               A sua chave API expirou? Peça aqui a renovação da sua chave API
             </v-flex>

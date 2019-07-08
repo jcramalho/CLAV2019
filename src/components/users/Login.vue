@@ -30,6 +30,9 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
+            <v-btn color="error" type="submit" @click="cancelar"
+              >Cancelar</v-btn
+            >
             <v-spacer></v-spacer>
             <v-btn color="primary" type="submit" @click="loginUtilizador"
               >Login</v-btn
@@ -116,6 +119,9 @@ export default {
     fecharSnackbar() {
       this.snackbar = false;
       if (this.done == true) this.$router.push("/");
+    },
+    cancelar() {
+      this.$router.push("/users/autenticacao");
     }
   }
 };
