@@ -354,6 +354,17 @@
             >Eliminar TS</v-btn
           >
     </v-stepper>
+    <v-snackbar
+      v-model="pendenteGuardado"
+      color="primary"
+      :timeout="60000"
+      :top="true"
+    >
+      Trabalho guardado com sucesso.
+      <v-btn dark flat @click="pendenteGuardadoOK">
+        Fechar
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -385,6 +396,7 @@ export default {
   },
   data() {
     return {
+      tabelaSelecao: {},
       // Numero do passo da criação de TS
       stepNo: 1,
       // Valor da barra de progresso
@@ -449,6 +461,8 @@ export default {
       listaProcUltReady: false,
       // Número dos ultimos processos selecionados
       numProcSelUlt: 0,
+      
+      pendenteGuardado: false,
     };
   },
   methods: {
@@ -778,9 +792,44 @@ export default {
       await this.criacao();
       this.$router.push("/");
     },
-    guardarTrabalho: function(){
+    guardarTrabalho: async function(){
       console.log("Guardar Trabalho TS")
+      this.printEstado();
+      try {
+        var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
+        
+        this.tabelaSelecao = this.estado;
+
+        if(this.stepNo == "1"){
+          this.tabelaSelecao.tipologias = this.tipSel;
+        }
+
+        // console.log(this.tabelaSelecao)
+
+        var pendenteParams = {
+          numInterv: 1,
+          acao: "Criação",
+          tipo: "Tabela de seleção",
+          objeto: this.tabelaSelecao,
+          criadoPor: userBD.data.email,
+          user: { email: userBD.data.email },
+          token: this.$store.state.token
+        };
+
+        var response = await axios.post(
+          lhost + "/api/pendentes",
+          pendenteParams
+        );
+        this.pendenteGuardado = true;
+      } catch (err) {
+        return err;
+      }
     },
+    pendenteGuardadoOK: function() {
+      this.pendenteGuardado = false;
+      this.$router.push("/");
+    },
+
     submeterTS: function(){
       console.log("Submeter TS")
     },
