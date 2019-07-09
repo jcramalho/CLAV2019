@@ -37,10 +37,30 @@
       >
         Login
       </v-btn> -->
-      <span
-        class="font-weight-light"
-        v-if="this.$store.state.name != ''"
-        >{{ this.$store.state.name }}</span
+      <!-- <span v-if="this.$store.state.name != ''">
+        <notification-bell
+          :size="10"
+          :count="2"
+          counterLocation="upperRight"
+          counterStyle="roundRectangle"
+          counterBackgroundColor="#FF0000"
+          counterTextColor="#FFFFFF"
+          iconColor="primary"
+        />
+      </span> -->
+      <span class="font-weight-light" v-if="this.$store.state.name != ''">
+        <v-btn icon>
+          <notification-bell
+          :size="25"
+          :count="this.counter"
+          counterLocation="upperRight"
+          counterStyle="roundRectangle"
+          counterBackgroundColor="#FF0000"
+          counterTextColor="#FFFFFF"
+          iconColor="#3a88fe"
+        />
+        </v-btn>
+        {{ this.$store.state.name }}</span
       >
       <v-btn
         color="indigo accent-4"
@@ -63,6 +83,7 @@
 <script>
 const lhost = require("@/config/global").host;
 import axios from "axios";
+import NotificationBell from 'vue-notification-bell'
 
 export default {
   data() {
@@ -70,8 +91,12 @@ export default {
       snackbar: false,
       color: "",
       timeout: 4000,
-      text: ""
+      text: "",
+      counter: 10
     };
+  },
+  components: {
+    NotificationBell
   },
   methods: {
     goHome() {
