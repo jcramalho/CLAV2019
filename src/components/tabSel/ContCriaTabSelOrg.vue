@@ -220,7 +220,7 @@
         >
       </v-stepper-content>
 
-      <!--<v-stepper-step :complete="stepNo > 5" step="5"
+      <v-stepper-step :complete="stepNo > 5" step="5"
         >Processos Específicos Restantes
       </v-stepper-step>
       <v-stepper-content step="5">
@@ -268,7 +268,6 @@
             barra(80);
             loadUltimosProcessos();
             procPreSelUlt();
-            printEstado();
           "
           >Continuar</v-btn
         >
@@ -282,7 +281,7 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 6" step="6" v-if="listaProcUltReady"
+      <!--<v-stepper-step :complete="stepNo > 6" step="6" v-if="listaProcUltReady"
         >Outros processos
         <small
           >Revisão de processos de negócio não selecionados nas 
@@ -426,6 +425,12 @@ export default {
             listaProcEspRes: [],
             // True quando a lista dos processos especificos restantes estiver completa
             listaProcEspResReady: false,
+            // Numero de processos restantes selecionados
+            numProcSelRes: 0,
+            // Numero de processos restantes que se encontram pré selecionados
+            numProcPreSelRes: 0,
+            // Lista dos processos pré selecionados resultantes das travessias dos comuns e especificos
+            procPreSelEspRestantes: [],
         }
     },
     methods: {
@@ -512,7 +517,6 @@ export default {
                         for(var j = 0; j < this.tabelaSelecao.procEspecificos.length; j++){
                             var estavaGuardado = false;
                             if(this.tabelaSelecao.procEspecificos[j].classe == response.data[x].codigo){
-                                console.log(this.tabelaSelecao.procEspecificos[j].classe)
                                 this.listaProcEsp.push({
                                     classe: this.tabelaSelecao.procEspecificos[j].classe,
                                     designacao: this.tabelaSelecao.procEspecificos[j].designacao,
@@ -633,9 +637,9 @@ export default {
                 this.listaTotalProcEsp = response.data;
                 for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
                     var espEntTip = false;
-                    for (var j = 0; j < this.listaProcEsp.length; j++) {
+                    for (var x = 0; x < this.listaProcEsp.length; x++) {
                     if (
-                        this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
+                        this.listaTotalProcEsp[i].codigo === this.listaProcEsp[x].classe
                     ) {
                         espEntTip = true;
                         break;
@@ -645,8 +649,8 @@ export default {
                     if(this.listaTotalProcEsp[i].transversal==="S"){
                         for(var j = 0; j < this.tabelaSelecao.procEspRestantes.length; j++){
                             var estavaGuardado = false;
-                            if(this.tabelaSelecao.prosEspRes[j].classe == response.data[i].codigo){
-                                this.procEspRestantes.push({
+                            if(this.tabelaSelecao.procEspRestantes[j].classe == response.data[i].codigo){
+                                this.listaProcEspRes.push({
                                     classe: this.tabelaSelecao.procEspRestantes[j].classe,
                                     designacao: this.tabelaSelecao.procEspRestantes[i].designacao,
                                     dono: this.tabelaSelecao.procComuns[j].dono,
@@ -682,6 +686,33 @@ export default {
         // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs especificos
         procPreSelResTravEsp: function(procPreSelResTravEsp) {
             this.procPreSelResTravEspecifico = procPreSelResTravEsp;
+        },
+        // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
+        procPreSelRestantes: function() {
+            if( !this.listaProcEspResReady ) {
+                for (var i = 0; i < this.listaProcEspRes.length; i++) {
+                if (this.procPreSelResTravComum.includes(this.listaProcEspRes[i].classe) ||
+                    this.procPreSelResTravEspecifico.includes(this.listaProcEspRes[i].classe)) {
+                    this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe)
+                    this.numProcPreSelRes += 1;
+                }
+                }
+            }
+            this.listaProcEspResReady = true;
+        },
+        // Lista dos processos pre selecionados especificos restantes, resultantes das travessias dos PNs especificos
+        procPreSelResTravRes: function(procPreSelResTravRes) {
+            this.procPreSelResTravRestante = procPreSelResTravRes;
+        },
+        // Contador dos processos selecionados restantes
+        contadorProcSelRes: function(procSelec) {
+            this.numProcSelRes = procSelec.length;
+            this.tabelaSelecao.procEspRestantes = procSelec;
+            this.listaProcSelRes = procSelec;
+        },
+        // Contador dos processos pre selecionados restantes
+        contadorProcPreSelRes: function(lista) {
+            this.numProcPreSelRes = lista.length;
         },
     },
     created: async function(){
