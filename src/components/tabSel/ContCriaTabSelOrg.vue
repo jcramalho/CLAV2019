@@ -96,7 +96,7 @@
         >
       </v-stepper-content>
 
-      <!--<v-stepper-step :complete="stepNo > 3" step="3"
+      <v-stepper-step :complete="stepNo > 3" step="3"
         >Processos Comuns
         <small>Processos passíveis de existir em qualquer entidade</small>
       </v-stepper-step>
@@ -111,7 +111,6 @@
                   </div>
                 </template>
                 <ListaProcessosComuns
-                  v-if="listaProcComunsReady"
                   v-bind:lista="listaProcComuns"
                   tipo="Processos Comuns"
                   @contadorProcSelCom="contadorProcSelCom($event)"
@@ -136,7 +135,7 @@
             ></v-text-field>
           </v-flex>
         </v-layout>
-        <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 
+        <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
         <v-btn
           color="primary"
           @click="
@@ -158,7 +157,7 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 4" step="4"
+      <!--<v-stepper-step :complete="stepNo > 4" step="4"
         >Processos Específicos
         <small
           >Processos específicos da entidade e tipologia em que se
@@ -370,12 +369,21 @@
 import axios from "axios";
 const lhost = require("@/config/global").host;
 
+import ListaProcessosComuns from "@/components/tabSel/ListaProcessosComuns.vue";
+import ListaProcessosEspecificos from "@/components/tabSel/ListaProcessosEspecificos.vue";
+import ListaProcessosEspRestantes from "@/components/tabSel/ListaProcessosEspRestantes.vue";
+import ListaProcessosUltimos from "@/components/tabSel/ListaProcessosUltimos.vue";
+
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 
 export default {
     props: ["obj"],
     components: {
+        ListaProcessosComuns,
+        ListaProcessosEspecificos,
+        ListaProcessosEspRestantes,
+        ListaProcessosUltimos,
         DesSelTip,
         SelTip
     },
@@ -396,6 +404,18 @@ export default {
             difTip: false,
             // Lista com as tipologias selecionadas
             tipSel: [],
+            // Lista com todos os processos especificos da entidade e tipologias em causa
+            listaProcEsp: [],
+            // True quando a lista de todos os processos especificos da entidade e tipologias em causa estiver completa
+            listaProcEspReady: false,
+            // Numero de processos comuns selecionados
+            numProcSelCom: 0, 
+            // Numero de processos comuns que se encontram pré selecionados
+            numProcPreSelCom: 0,
+            // Lista com todos os processos comuns
+            listaProcComuns: [],
+            // True quando a lista de todos os processos comuns existentes estiver completa
+            listaProcComunsReady: false,
         }
     },
     methods: {
@@ -466,16 +486,16 @@ export default {
         // Carrega os processos específicos da entidade em causa
         loadProcEspecificos: async function() {
             try {
-                this.tabelaSelecao.tipologias = this.tabelaSelecao.tipologias + this.tipEnt
+                this.tabelaSelecao.tipologias = this.tabelaSelecao.tipologias.concat(this.tipEnt)
                 if( !this.listaProcEspReady && this.difTip){
                 var url =
                     lhost + "/api/classes?tipo=especifico&ent=" + this.tabelaSelecao.idEntidade;
-                if (this.estado.tipologias) {
+                if (this.tabelaSelecao.tipologias) {
                     url += "&tips=";
-                    for (var i = 0; i < this.estado.tipologias.length - 1; i++) {
-                    url += this.estado.tipologias[i].id + ",";
+                    for (var i = 0; i < this.tabelaSelecao.tipologias.length - 1; i++) {
+                    url += this.tabelaSelecao.tipologias[i].id + ",";
                     }
-                    url += this.estado.tipologias[i].id;
+                    url += this.tabelaSelecao.tipologias[i].id;
                 }
                 var response = await axios.get(url);
                 for (var x = 0; x < response.data.length; x++) {
@@ -501,10 +521,70 @@ export default {
                 console.log(error);
             }
         },
+        // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
+        procPreSelResTravCom: function(procPreSelResTravCom) {
+            this.procPreSelResTravComum = procPreSelResTravCom;
+        },
+        // Contador dos processos pre selecionados comuns
+        contadorProcPreSelCom: function(lista) {
+            this.numProcPreSelCom = lista.length;
+        },
+        // Contador dos processos selecionados comuns
+        contadorProcSelCom: function(procSelec) {
+            this.numProcSelCom = procSelec.length;
+            this.tabelaSelecao.procComuns = procSelec;
+            this.listaProcSelCom = procSelec;
+        },
+        // Carrega todos os processos comuns
+        loadProcComuns: async function() {
+            try {
+                if( !this.listaProcComunsReady ){
+                var response = await axios.get(lhost + "/api/classes?tipo=comum");
+                for (var i = 0; i < response.data.length; i++) {
+                    if(response.data[i].transversal==="S"){
+                        for(var j = 0; j < this.tabelaSelecao.procComuns.length; j++){
+                            var estavaGuardado = false;
+                            if(this.tabelaSelecao.procComuns[j].classe == response.data[i].codigo){
+                                this.listaProcComuns.push({
+                                    classe: this.tabelaSelecao.procComuns[j].classe,
+                                    designacao: this.tabelaSelecao.procComuns[j].designacao,
+                                    dono: this.tabelaSelecao.procComuns[j].dono,
+                                    participante: this.tabelaSelecao.procComuns[j].participante
+                                })
+                                estavaGuardado = true;
+                                break;
+                            }
+                        }
+                        if( !estavaGuardado ){
+                            this.listaProcComuns.push({
+                                classe: response.data[i].codigo,
+                                designacao: response.data[i].titulo,
+                                dono: false,
+                                participante: false
+                            });
+                        }
+                    }
+                else {
+                    this.listaProcComuns.push({
+                        classe: response.data[i].codigo,
+                        designacao: response.data[i].titulo,
+                        dono: true
+                    });
+                    }
+                }
+                this.listaProcComunsReady = true;
+            return this.listaProcComuns;
+            }
+        } catch (erro) {
+            console.log(erro);
+        }
+        },
     },
     created: async function(){
         this.tabelaSelecao = this.obj.objeto;
+        console.log(this.tabelaSelecao.procComuns)
         this.loadTipologias();
+        this.loadProcComuns();
     }
 }
 </script>

@@ -61,7 +61,6 @@
           @click="
             stepNo = 2;
             barra(16);
-            guardarTip();
           "
           >Continuar</v-btn
         >
@@ -74,8 +73,8 @@
       <v-stepper-content step="2">
         <v-flex xs12 sm6 md10>
           <v-text-field
-            :placeholder="estado.designacao"
-            v-model="estado.designacao"
+            :placeholder="tabelaSelecao.designacao"
+            v-model="tabelaSelecao.designacao"
           ></v-text-field>
         </v-flex>
         <v-btn
@@ -144,7 +143,6 @@
           @click="
             stepNo = 4;
             barra(48);
-            printEstado();
             procPreSelEspecificos();
             loadProcEspRestantes();
           "
@@ -210,7 +208,6 @@
           @click="
             stepNo = 5;
             barra(64);
-            printEstado();
             procPreSelRestantes();
           "
           >Continuar</v-btn
@@ -273,7 +270,6 @@
             barra(80);
             loadUltimosProcessos();
             procPreSelUlt();
-            printEstado();
           "
           >Continuar</v-btn
         >
@@ -375,17 +371,12 @@ const lhost = require("@/config/global").host;
 import ListaProcessosComuns from "@/components/tabSel/ListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/ListaProcessosEspRestantes.vue";
-import ListaProcessosUltimos from "@/components/tabSel/ListaProcessosUltimos.vue"
+import ListaProcessosUltimos from "@/components/tabSel/ListaProcessosUltimos.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 
 export default {
-  computed: {
-    estado() {
-      return this.$store.state.criacaoTabSel;
-    }    
-  },
   components: {
     ListaProcessosComuns,
     ListaProcessosEspecificos,
@@ -396,7 +387,15 @@ export default {
   },
   data() {
     return {
-      tabelaSelecao: {},
+      tabelaSelecao: {
+        idEntidade: "",
+        designacao: "",
+        tipologias: [],
+        procComuns: [],
+        procEspecificos: [],
+        procEspRestantes: [],
+        procUltimos: []
+      },
       // Numero do passo da criação de TS
       stepNo: 1,
       // Valor da barra de progresso
@@ -466,6 +465,17 @@ export default {
     };
   },
   methods: {
+    // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
+    infoUserEnt: async function() {
+      var resUser = await axios.get(
+          lhost + "/api/users/listarToken/" + this.$store.state.token
+      );
+      var resEnt = await axios.get(
+          lhost + "/api/entidades/" + resUser.data.entidade
+      );
+      this.tabelaSelecao.designacao = resEnt.data.designacao;
+      this.tabelaSelecao.idEntidade = resUser.data.entidade;
+    },
     // Valor da barra de progresso
     barra: async function(valor) {
       this.valorBarra = valor;
@@ -489,8 +499,9 @@ export default {
 
         // Tipologias onde a entidade se encontra
         var tipologias = await axios.get(
-          lhost + "/api/entidades/" + this.estado.idEntidade + "/tipologias"
+          lhost + "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
+        console.log(lhost + "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias")
         this.tipEnt = tipologias.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -521,22 +532,18 @@ export default {
       var index = this.tipologias.findIndex(e => e.id === tipologia.id);
       this.tipologias.splice(index, 1);
     },
-    // Guarda no estado as tipologias da entidade
-    guardarTip: function() {
-      this.estado.tipologias = this.tipEnt.concat(this.tipSel);
-    },
     // Carrega os processos específicos da entidade em causa
     loadProcEspecificos: async function() {
       try {
         if( !this.listaProcEspReady ){
           var url =
-            lhost + "/api/classes?tipo=especifico&ent=" + this.estado.idEntidade;
-          if (this.estado.tipologias) {
+            lhost + "/api/classes?tipo=especifico&ent=" + this.tabelaSelecao.idEntidade;
+          if (this.tipSel) {
             url += "&tips=";
-            for (var i = 0; i < this.estado.tipologias.length - 1; i++) {
-              url += this.estado.tipologias[i].id + ",";
+            for (var i = 0; i < this.tipSel.length - 1; i++) {
+              url += this.tipSel[i].id + ",";
             }
-            url += this.estado.tipologias[i].id;
+            url += this.tipSel[i].id;
           }
           var response = await axios.get(url);
           for (var x = 0; x < response.data.length; x++) {
@@ -594,7 +601,7 @@ export default {
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
       this.numProcSelCom = procSelec.length;
-      this.estado.procComuns = procSelec;
+      this.tabelaSelecao.procComuns = procSelec;
       this.listaProcSelCom = procSelec;
     },
     // Contador dos processos pre selecionados comuns
@@ -640,7 +647,7 @@ export default {
     // Contador dos processos selecionados especificos
     contadorProcSelEsp: function(procSelec) {
       this.numProcSelEsp = procSelec.length;
-      this.estado.procEspecificos = procSelec;
+      this.tabelaSelecao.procEspecificos = procSelec;
       this.listaProcSelEsp = procSelec;
     },
 
@@ -678,8 +685,6 @@ export default {
                 }
               }
           }
-          console.log(this.estado.procComuns);
-          console.log(this.estado.procEspecificos);
         }
       } catch (error) {
         console.log(error);
@@ -688,7 +693,7 @@ export default {
     // Contador dos processos selecionados restantes
     contadorProcSelRes: function(procSelec) {
       this.numProcSelRes = procSelec.length;
-      this.estado.procEspRestantes = procSelec;
+      this.tabelaSelecao.procEspRestantes = procSelec;
       this.listaProcSelRes = procSelec;
     },
     // Contador dos processos pre selecionados restantes
@@ -704,8 +709,8 @@ export default {
       // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
       for( var i = 0; i < this.listaProcComuns.length; i++ ){
         var procSelecionado = false;
-        for( var j = 0; j < this.estado.procComuns.length; j++ ){
-          if( this.listaProcComuns[i].classe === this.estado.procComuns[j].classe ){
+        for( var j = 0; j < this.tabelaSelecao.procComuns.length; j++ ){
+          if( this.listaProcComuns[i].classe === this.tabelaSelecao.procComuns[j].classe ){
             procSelecionado = true;
             break;
           }
@@ -724,7 +729,7 @@ export default {
         }
       }
       // Lista com todos os processos especificos já selecionados (especificos e especificos restantes)
-      var procSelecionados = this.estado.procEspecificos.concat(this.estado.procEspRestantes);
+      var procSelecionados = this.tabelaSelecao.procEspecificos.concat(this.tabelaSelecao.procEspRestantes);
       // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
       for( var f = 0; f < this.listaTotalProcEsp.length; f++ ){
         var procSelecionado = false;
@@ -777,7 +782,7 @@ export default {
     // Contador dos processos selecionados ultimos
     contadorProcSelUlt: function(procSelec) {
       this.numProcSelUlt = procSelec.length;
-      this.estado.procUltimos = procSelec;
+      this.tabelaSelecao.procUltimos = procSelec;
       this.listaProcSelUlt = procSelec;
     },
 
@@ -794,17 +799,12 @@ export default {
     },
     guardarTrabalho: async function(){
       console.log("Guardar Trabalho TS")
-      this.printEstado();
       try {
         var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
-        
-        this.tabelaSelecao = this.estado;
 
-        if(this.stepNo == "1"){
-          this.tabelaSelecao.tipologias = this.tipSel;
-        }
+        this.tabelaSelecao.tipologias = this.tipSel;
 
-        // console.log(this.tabelaSelecao)
+        console.log(this.tabelaSelecao)
 
         var pendenteParams = {
           numInterv: 1,
@@ -834,14 +834,10 @@ export default {
     submeterTS: function(){
       console.log("Submeter TS")
     },
-    printEstado: function() {
-      console.log(this.$store.state.criacaoTabSel);
-    }
   },
-  created: function() {
+  created: async function() {
+    await this.infoUserEnt();
     this.loadTipologias();
-    this.estado.procComuns = [];
-    this.estado.procEspecificos = [];
     this.loadProcComuns();
   }
 };
