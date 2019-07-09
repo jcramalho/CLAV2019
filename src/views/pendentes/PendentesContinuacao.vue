@@ -1,6 +1,7 @@
 <template>
   <div>
     <ContinuaClasse v-if="objLoaded && tipoClasse" :obj="objeto" />
+    <ContinuaTSOrg v-else-if="objLoaded && tipoTSOrg" :obj="objeto"/>
     <ContinuaPendente v-else-if="objLoaded" :obj="objeto" />
     <v-alert v-else type="warning">
       Por algum motivo não foi possível carregar o trabalho pretendido. Contacte
@@ -14,17 +15,20 @@ import axios from "axios";
 const lhost = require("@/config/global").host;
 import ContinuaClasse from "@/components/classes/criacao/ContinuaClasse"; // @ is an alias to /src
 import ContinuaPendente from "@/components/pendentes/ContinuaPendente";
+import ContinuaTSOrg from "@/components/tabSel/ContCriaTabSelOrg";
 
 export default {
   components: {
     ContinuaPendente,
-    ContinuaClasse
+    ContinuaClasse,
+    ContinuaTSOrg
   },
 
   data: () => ({
     objeto: {},
     objLoaded: false,
-    tipoClasse: false
+    tipoClasse: false,
+    tipoTSOrg: false,
   }),
 
   created: function() {
@@ -35,6 +39,9 @@ export default {
         switch (this.objeto.tipo) {
           case "Classe":
             this.tipoClasse = true;
+            break;
+          case "TS Organizacional":
+            this.tipoTSOrg = true;
             break;
         }
         this.objLoaded = true;

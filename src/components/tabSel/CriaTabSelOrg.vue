@@ -809,12 +809,13 @@ export default {
         var pendenteParams = {
           numInterv: 1,
           acao: "Criação",
-          tipo: "Tabela de seleção",
+          tipo: "TS Organizacional",
           objeto: this.tabelaSelecao,
           criadoPor: userBD.data.email,
           user: { email: userBD.data.email },
           token: this.$store.state.token
         };
+        console.log(pendenteParams.objeto)
 
         var response = await axios.post(
           lhost + "/api/pendentes",
