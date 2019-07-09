@@ -536,15 +536,19 @@ export default {
     loadProcEspecificos: async function() {
       try {
         if( !this.listaProcEspReady ){
+          this.tipSel = this.tipSel.concat(this.tipEnt);
           var url =
             lhost + "/api/classes?tipo=especifico&ent=" + this.tabelaSelecao.idEntidade;
-          if (this.tipSel) {
+          if (this.tipSel.length || this.tipEnt.length){
             url += "&tips=";
+          }
+          if (this.tipSel.length) {
             for (var i = 0; i < this.tipSel.length - 1; i++) {
               url += this.tipSel[i].id + ",";
             }
             url += this.tipSel[i].id;
           }
+          console.log(url)
           var response = await axios.get(url);
           for (var x = 0; x < response.data.length; x++) {
             if(response.data[x].transversal==='S'){
@@ -802,7 +806,7 @@ export default {
       try {
         var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
 
-        this.tabelaSelecao.tipologias = this.tipSel.concat(this.tipEnt);
+        this.tabelaSelecao.tipologias = this.tipSel;
 
         console.log(this.tabelaSelecao)
 

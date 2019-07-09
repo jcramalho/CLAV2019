@@ -240,7 +240,7 @@ mounted: async function() {
     
     // Faz os calculos iniciais dos processos selecionados por default como donos (não transversais)
     for( var i = 0; i < this.lista.length; i++ ){
-      if(this.lista[i].dono){
+      if(this.lista[i].dono || this.lista[i].participante){
         this.calcRel(this.lista[i].classe);
         if (!this.procComunsSel.includes(this.lista[i])) {
           this.procComunsSel.push(this.lista[i]);

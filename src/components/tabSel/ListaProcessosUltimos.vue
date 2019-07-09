@@ -221,6 +221,17 @@ export default {
         for( var j = 0; j < trav.length; j++){
           this.travessias[trav[j].processo] = trav[j].travessia
         }
+
+        // Faz os calculos iniciais dos processos selecionados
+        for( var i = 0; i < this.lista.length; i++ ){
+          if(this.lista[i].dono || this.lista[i].participante){
+            if (!this.procUltSel.includes(this.lista[i])) {
+              this.procUltSel.push(this.lista[i]);
+              this.$emit("contadorProcSelUlt", this.procUltSel);
+            }
+          }
+        }
+
       } catch (error) {
         console.log(error)
       }
