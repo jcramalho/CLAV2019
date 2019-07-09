@@ -802,7 +802,7 @@ export default {
       try {
         var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
 
-        this.tabelaSelecao.tipologias = this.tipSel;
+        this.tabelaSelecao.tipologias = this.tipSel.concat(this.tipEnt);
 
         console.log(this.tabelaSelecao)
 
