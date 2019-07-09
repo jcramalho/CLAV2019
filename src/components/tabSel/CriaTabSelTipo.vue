@@ -41,7 +41,7 @@
             <v-btn
                 center
                 color="primary"
-                @click="estado.tipo = tipo; continuar()"
+                @click="continuar()"
                 :disabled="!tipo"
             >
                 Continuar
@@ -65,21 +65,6 @@ import axios from "axios";
 const lhost = require("@/config/global").host;
 
 export default {
-    computed: {
-      estado() {
-        return this.$store.state.criacaoTabSel;
-      }
-    },
-    watch: {
-      tipo: function() {
-        if (this.tipo === "Organizacional") {
-          this.infoUserEnt();
-        }
-        if (this.tipo === "Pluriorganizacional") {
-          this.estado.designacao = "";
-        }
-      },
-    },
     data(){
       return {
       // Tipo da TS
@@ -97,25 +82,13 @@ export default {
           this.$router.push("/");
       },
       continuar: function() {
-          console.log(this.estado)
-          if(this.estado.tipo === "Organizacional"){
+          if(this.tipo === "Organizacional"){
               this.$router.push("/ts/criar/organizacional")
           }
-          else if(this.estado.tipo === "Pluriorganizacional"){
+          else if(this.tipo === "Pluriorganizacional"){
               this.$router.push("/ts/criar/pluriorganizacional")
           }
       },
-      // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
-      infoUserEnt: async function() {
-        var resUser = await axios.get(
-            lhost + "/api/users/listarToken/" + this.$store.state.token
-        );
-        var resEnt = await axios.get(
-            lhost + "/api/entidades/" + resUser.data.entidade
-        );
-        this.estado.designacao = resEnt.data.designacao;
-        this.estado.idEntidade = resUser.data.entidade;
-      }
     }
 }
 </script>

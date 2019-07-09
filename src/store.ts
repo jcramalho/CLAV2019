@@ -6,16 +6,6 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    criacaoTabSel: {
-      tipo: "",
-      designacao: "",
-      idEntidade: "",
-      tipologias: [],
-      procComuns: [],
-      procEspecificos: [],
-      procEspRestantes: [],
-      procUltimos: [],
-    },
     name: "",
     token: ""
   },
