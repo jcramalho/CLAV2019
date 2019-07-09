@@ -85,6 +85,15 @@
                 :pcaSubFormasContagem="pcaSubFormasContagem"
               />
             </v-tab-item>
+            <v-tab>
+              <v-btn
+                color="green darken-2"
+                round dark
+                @click="addSubclasse">
+                  Adicionar subclasse
+                  <v-icon dark right>add_circle_outline</v-icon>
+              </v-btn>
+            </v-tab>
           </v-tabs>
         </v-flex>
       </v-layout>
@@ -93,9 +102,6 @@
 </template>
 
 <script>
-import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
-import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
-import SelectValueFromList from "@/components/generic/SelectValueFromList.vue";
 import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
 import BlocoDecisoes4Nivel from "@/components/classes/criacao/BlocoDecisoes4Nivel.vue";
 
@@ -103,9 +109,6 @@ export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
 
   components: {
-    ProcessosRelacionadosOps,
-    LegislacaoOps,
-    SelectValueFromList,
     TermosIndiceOps,
     BlocoDecisoes4Nivel
   },
@@ -147,8 +150,7 @@ export default {
       if (indice == -1) {
         justificacao.push({
           tipo: tipo,
-          label,
-          label,
+          label: label,
           notas: notas,
           procRel: myProcRel,
           legislacao: myLeg
@@ -225,6 +227,135 @@ export default {
     unselectDiploma: function(diploma, listaLeg) {
       var index = listaLeg.findIndex(e => e.id === diploma.id);
       listaLeg.splice(index, 1);
+    },
+
+    // Calcula o destino final para o contexto do momento
+    calcDF: function(listaProc) {
+      var res = "NE";
+
+      if (!this.c.temSubclasses4NivelDF) {
+        var complementar = listaProc.findIndex(
+          p => p.relacao == "eComplementarDe"
+        );
+        if (complementar != -1) {
+          res = "C";
+        } else {
+          var sinteseDe = listaProc.findIndex(p => p.relacao == "eSinteseDe");
+          if (sinteseDe != -1) {
+            res = "C";
+          } else {
+            var sintetizado = listaProc.findIndex(
+              p => p.relacao == "eSintetizadoPor"
+            );
+            if (sintetizado != -1) {
+              res = "E";
+            } else {
+              res = "NE";
+            }
+          }
+        }
+      }
+      return res;
+    },
+
+    procHeranca: function(procRel, novaClasse) {
+      for (var i = 0; i < procRel.length; i++) {
+        // Tratamento do invariante: se é Suplemento Para então cria-se um critério de Utilidade Administrativa
+        if (procRel[i].relacao == "eSuplementoPara") {
+          this.adicionarCriterio(
+            novaClasse.pca.justificacao,
+            "CriterioJustificacaoUtilidadeAdministrativa",
+            "Critério de Utilidade Administrativa",
+            this.textoCriterioUtilidadeAdministrativa,
+            [procRel[i]],
+            []
+          );
+        }
+        // Tratamento do invariante: se é Suplemento De então cria-se um critério Legal com toda a legislação selecionada associada
+        else if (procRel[i].relacao == "eSuplementoDe") {
+          this.adicionarCriterio(
+            novaClasse.pca.justificacao,
+            "CriterioJustificacaoLegal",
+            "Critério Legal",
+            this.textoCriterioLegal,
+            [procRel[i]],
+            this.classe.legislacao
+          );
+          this.critLegalAdicionadoPCA = true;
+        }
+        // Tratamento do invariante: se é Síntese De então cria-se um critério de Densidade Informacional
+        else if (procRel[i].relacao == "eSinteseDe") {
+          this.adicionarCriterio(
+            novaClasse.df.justificacao,
+            "CriterioJustificacaoDensidadeInfo",
+            "Critério de Densidade Informacional",
+            this.textoCriterioDensidadeSinDe,
+            [procRel[i]],
+            []
+          );
+        }
+        // Tratamento do invariante: se é Síntetizado Por então cria-se um critério de Densidade Informacional
+        else if (procRel[i].relacao == "eSintetizadoPor") {
+          this.adicionarCriterio(
+            novaClasse.df.justificacao,
+            "CriterioJustificacaoDensidadeInfo",
+            "Critério de Densidade Informacional",
+            this.textoCriterioDensidadeSinPor,
+            [procRel[i]],
+            []
+          );
+        }
+        // Tratamento do invariante: se é Complementar De então cria-se um critério de Complementaridade Informacional
+        else if (procRel[i].relacao == "eComplementarDe") {
+          this.adicionarCriterio(
+            novaClasse.df.justificacao,
+            "CriterioJustificacaoComplementaridadeInfo",
+            "Critério de Complementaridade Informacional",
+            this.textoCriterioComplementaridade,
+            [procRel[i]],
+            []
+          );
+        }
+      }
+      if (!this.c.temSubclasses4NivelDF) {
+        novaClasse.df.valor = this.calcDF(novaClasse.processosRelacionados);
+      }
+    },
+
+    addSubclasse: function(){
+      var novaSubclasse = {
+          nivel: 4,
+          pai: this.c.codigo,
+          codigo: this.c.codigo + (this.c.subclasses.length+1).toString(),
+          titulo: this.c.titulo + ": ",
+          descricao: "",
+          termosInd: JSON.parse(JSON.stringify(this.c.termosInd)),
+
+          // Bloco de contexto de avaliação
+
+          processosRelacionados: JSON.parse(
+            JSON.stringify(this.c.processosRelacionados)
+          ),
+          legislacao: JSON.parse(JSON.stringify(this.c.legislacao)),
+
+          // Bloco de decisão de avaliação: PCA e DF
+
+          pca: {
+            valor: null,
+            formaContagem: "",
+            subFormaContagem: "",
+            justificacao: []
+          },
+
+          df: {
+            valor: "NE",
+            notas: null,
+            justificacao: []
+          }
+        };
+
+        this.procHeranca(this.c.processosRelacionados, novaSubclasse)
+        this.c.subclasses.push(novaSubclasse)
     }
   }
 };

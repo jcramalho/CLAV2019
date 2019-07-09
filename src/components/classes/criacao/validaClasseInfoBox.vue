@@ -75,8 +75,8 @@ export default {
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
     validarClasse: async function(){
-      alert(JSON.stringify(this.c))
       var i = 0
+  
       // Título
       if(this.c.titulo == ""){
           this.mensagensErro.push({sobre: "Título", mensagem:"O título não pode ser vazio."})
@@ -92,7 +92,7 @@ export default {
       
       // Notas de Aplicação
       for(i=0; i < this.c.notasAp.length; i++){
-        existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: this.c.notasAp[i].nota})
+        var existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: this.c.notasAp[i].nota})
         if(existeNotaAp.data){
           this.mensagensErro.push({sobre: "Nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.notasAp[i].nota + "] já existente na BD."})
           this.numeroErros++
@@ -105,7 +105,7 @@ export default {
 
       // Exemplos de notas de Aplicação
       for(i=0; i < this.c.exemplosNotasAp.length; i++){
-        existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: this.c.exemplosNotasAp[i].exemplo})
+        var existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: this.c.exemplosNotasAp[i].exemplo})
         if(existeExemploNotaAp.data){
           this.mensagensErro.push({sobre: "Exemplo de nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.exemplosNotasAp[i].exemplo + "] já existente na BD."})
           this.numeroErros++
@@ -161,8 +161,9 @@ export default {
           }
         }
       }
-
-      this.dialog = true
+      if(this.numeroErros > 0){
+        this.dialog = true
+      }
     },
 
     fecharReport: function(){
