@@ -349,7 +349,7 @@
             >Eliminar TS</v-btn
           >
     </v-stepper>
-    <!--<v-snackbar
+    <v-snackbar
       v-model="pendenteGuardado"
       color="primary"
       :timeout="60000"
@@ -359,7 +359,7 @@
       <v-btn dark flat @click="pendenteGuardadoOK">
         Fechar
       </v-btn>
-    </v-snackbar>-->
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -448,6 +448,8 @@ export default {
             procPreSelResTravEspecifico: [],
             // Lista dos processos pré selecionados restantes (resultado das travessias pos PNs especificos restantes)
             procPreSelResTravRestante: [],
+
+            pendenteGuardado: false,
         }
     },
     methods: {
@@ -756,7 +758,6 @@ export default {
                         for(var c = 0; c < this.tabelaSelecao.procUltimos.length; c++){
                             var estavaGuardado = false;
                             if(this.tabelaSelecao.procUltimos[c].classe == this.listaProcComuns[i].classe){
-                                console.log("IGUAL");
                                 this.listaProcUlt.push({
                                     classe: this.tabelaSelecao.procUltimos[c].classe,
                                     designacao: this.tabelaSelecao.procUltimos[c].designacao,
@@ -801,7 +802,6 @@ export default {
                             for(var u = 0; u < this.tabelaSelecao.procUltimos.length; u++){
                                 var estavaGuardado = false;
                                 if(this.tabelaSelecao.procUltimos[u].classe == this.listaTotalProcEsp[f].codigo){
-                                    console.log("IGUAL")
                                     this.listaProcUlt.push({
                                         classe: this.tabelaSelecao.procUltimos[u].classe,
                                         designacao: this.tabelaSelecao.procUltimos[u].designacao,
@@ -835,8 +835,6 @@ export default {
             if( this.listaProcUlt.length ){
                 this.listaProcUltReady = true;
             }
-        console.log("LISTA DOS ULTIMOS PROCESSOS")
-        console.log(this.listaProcUlt)
             }
             catch(err){
                 console.log(err)
@@ -865,6 +863,39 @@ export default {
         // Contador dos ultimos processos pre selecionados
         contadorProcPreSelUlt: function(lista) {
             this.numProcPreSelUlt = lista.length;
+        },
+        guardarTrabalho: async function(){
+            try {
+                this.tabelaSelecao.tipologias = this.tipEnt.concat(this.tipSel);
+
+                this.obj.numInterv++;
+                var cDate = Date.now();
+
+                var pendenteParams = {
+                    _id: this.obj._id,
+                    dataAtualizacao: cDate,
+                    numInterv: this.obj.numInterv,
+                    acao: this.obj.acao,
+                    tipo: this.obj.tipo,
+                    objeto: this.tabelaSelecao,
+                    criadoPor: this.obj.criadoPor,
+                    user: {
+                    token: this.$store.state.token
+                    }
+                };
+                console.log(pendenteParams.objeto)
+                var response = await axios.put(
+                    lhost + "/api/pendentes",
+                    pendenteParams
+                );
+                this.pendenteGuardado = true;
+            } catch (err) {
+                return err;
+            }
+        },
+        pendenteGuardadoOK: function() {
+            this.pendenteGuardado = false;
+            this.$router.push("/");
         },
     },
     created: async function(){

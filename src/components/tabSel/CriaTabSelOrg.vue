@@ -501,7 +501,6 @@ export default {
         var tipologias = await axios.get(
           lhost + "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        console.log(lhost + "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias")
         this.tipEnt = tipologias.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -548,7 +547,6 @@ export default {
             }
             url += this.tipSel[i].id;
           }
-          console.log(url)
           var response = await axios.get(url);
           for (var x = 0; x < response.data.length; x++) {
             if(response.data[x].transversal==='S'){
@@ -764,8 +762,6 @@ export default {
       if( this.listaProcUlt.length ){
         this.listaProcUltReady = true;
       }
-      console.log("LISTA DOS ULTIMOS PROCESSOS")
-      console.log(this.listaProcUlt)
     },
     // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
     procPreSelUlt: function() {
@@ -802,13 +798,10 @@ export default {
       this.$router.push("/");
     },
     guardarTrabalho: async function(){
-      console.log("Guardar Trabalho TS")
       try {
         var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
 
         this.tabelaSelecao.tipologias = this.tipSel;
-
-        console.log(this.tabelaSelecao)
 
         var pendenteParams = {
           numInterv: 1,
