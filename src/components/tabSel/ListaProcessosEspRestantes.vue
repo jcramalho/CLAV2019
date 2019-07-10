@@ -230,12 +230,14 @@ export default {
     if (!this.procEspSel.includes(processo)) {
       this.procEspSel.push(processo);
       this.$emit("contadorProcSelRes", this.procEspSel);
+      this.$emit("contadorProcSelEspResUtilizador", this.procEspSel)
     }
   },
   desSelProcRes: async function(processo) {
     var index = this.procEspSel.findIndex(e => e.classe === processo.classe);
     this.procEspSel.splice(index, 1);
     this.$emit("contadorProcSelRes", this.procEspSel);
+    this.$emit("contadorProcSelEspResUtilizador", this.procEspSel)
   }
 },
 mounted: async function() {
@@ -258,6 +260,7 @@ mounted: async function() {
         if (!this.procEspSel.includes(this.lista[i])) {
           this.procEspSel.push(this.lista[i]);
           this.$emit("contadorProcSelRes", this.procEspSel);
+          this.$emit("contadorProcSelEspResSistema", this.procEspSel);
         }
       }
     }

@@ -275,6 +275,8 @@
                   @procPreSelResTravRes="procPreSelResTravRes($event)"
                   @contadorProcSelRes="contadorProcSelRes($event)"
                   @contadorProcPreSelRes="contadorProcPreSelRes($event)"
+                  @contadorProcSelEspResSistema="contadorProcSelEspResSistema($event)"
+                  @contadorProcSelEspResUtilizador="contadorProcSelEspResUtilizador($event)"
                 />
                 <div v-else>a carregar</div>
               </v-expansion-panel-content>
@@ -282,16 +284,30 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs3>
+          <v-flex xs5>
             <v-text-field
-              label="Nº de processos restantes selecionados"
+              label="Nº de processos restantes selecionados total"
               :value="numProcSelRes"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs6 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos restantes pré selecionados"
               :value="numProcPreSelRes"
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout wrap>
+          <v-flex xs5>
+            <v-text-field
+              label="Nº de processos específicos restantes selecionados pelo sistema"
+              :value="numProcSelEspResSistema"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs6 style="padding-left:60px;">
+            <v-text-field
+              label="Nº de processos específicos restantes selecionados pelo utilizador"
+              :value="numProcSelEspResUtilizador"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -491,6 +507,10 @@ export default {
       listaProcEspResReady: false,
       // Numero de processos restantes selecionados
       numProcSelRes: 0,
+      // Numero de processos esp restantes selecionados pelo sistema
+      numProcSelEspResSistema: 0,
+      // Numero de processos esp restantes selecionados pelo utilizador
+      numProcSelEspResUtilizador: 0,
       // Numero de processos restantes que se encontram pré selecionados
       numProcPreSelRes: 0,
       // Lista dos processos restantes selecionados
@@ -763,6 +783,13 @@ export default {
       this.numProcSelRes = procSelec.length;
       this.tabelaSelecao.procEspRestantes = procSelec;
       this.listaProcSelRes = procSelec;
+    },
+    // Contador dos processos selecionados pelo sistema
+    contadorProcSelEspResSistema: function(procSelec){
+      this.numProcSelEspResSistema = procSelec.length;
+    },
+    contadorProcSelEspResUtilizador: function(procSelec){
+      this.numProcSelEspResUtilizador = procSelec.length - this.numProcSelEspResSistema;
     },
     // Contador dos processos pre selecionados restantes
     contadorProcPreSelRes: function(lista) {
