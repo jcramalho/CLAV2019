@@ -350,12 +350,21 @@
             >Eliminar TS</v-btn
           >
     </v-stepper>
+
+    <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
+      {{ mensagemPedidoCriadoOK }}
+      <v-btn dark flat @click="pedidoCriadoOK">
+        Fechar
+      </v-btn>
+    </v-snackbar>
+
     <v-snackbar
       v-model="pendenteGuardado"
       color="primary"
       :timeout="60000"
       :top="true"
     >
+
       Trabalho guardado com sucesso.
       <v-btn dark flat @click="pendenteGuardadoOK">
         Fechar
@@ -462,6 +471,8 @@ export default {
       numProcSelUlt: 0,
       
       pendenteGuardado: false,
+      pedidoCriado: false,
+      mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
     };
   },
   methods: {
@@ -828,8 +839,31 @@ export default {
       this.$router.push("/");
     },
 
-    submeterTS: function(){
-      console.log("Submeter TS")
+    submeterTS: async function(){
+      try {
+        var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
+        
+        this.tabelaSelecao.tipologias = this.tipSel;
+
+        var pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "TS Organizacional",
+          novoObjeto: this.tabelaSelecao,
+          user: {email: userBD.data.email},
+          token: this.$store.state.token
+        }
+
+        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+        console.log(response.data)
+        this.mensagemPedidoCriadoOk += response.data.codigo;
+        this.pedidoCriado = true;
+      } catch (error) {
+        return error;
+      }
+    },
+    pedidoCriadoOK: function() {
+      this.pedidoCriado = false;
+      this.$router.push("/");
     },
   },
   created: async function() {
