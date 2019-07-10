@@ -217,6 +217,7 @@ export default {
     if (!this.procComunsSel.includes(processo)) {
       this.procComunsSel.push(processo);
       this.$emit("contadorProcSelCom", this.procComunsSel);
+      this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
     }
   },
   desSelProcComum: async function(processo) {
@@ -225,6 +226,7 @@ export default {
     );
     this.procComunsSel.splice(index, 1);
     this.$emit("contadorProcSelCom", this.procComunsSel);
+    this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
   }
 },
 mounted: async function() {
@@ -245,6 +247,7 @@ mounted: async function() {
         if (!this.procComunsSel.includes(this.lista[i])) {
           this.procComunsSel.push(this.lista[i]);
           this.$emit("contadorProcSelCom", this.procComunsSel);
+          this.$emit("contadorProcSelComSistema", this.procComunsSel);
         }
       }
     }

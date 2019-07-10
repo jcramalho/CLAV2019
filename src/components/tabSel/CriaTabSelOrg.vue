@@ -118,15 +118,17 @@
                   @contadorProcSelCom="contadorProcSelCom($event)"
                   @contadorProcPreSelCom="contadorProcPreSelCom($event)"
                   @procPreSelResTravCom="procPreSelResTravCom($event)"
+                  @contadorProcSelComSistema="contadorProcSelComSistema($event)"
+                  @contadorProcSelComUtilizador="contadorProcSelComUtilizador($event)"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs3>
+          <v-flex xs4>
             <v-text-field
-              label="Nº de processos comuns selecionados"
+              label="Nº de processos comuns selecionados total"
               :value="numProcSelCom"
             ></v-text-field>
           </v-flex>
@@ -134,6 +136,20 @@
             <v-text-field
               label="Nº de processos comuns pré selecionados"
               :value="numProcPreSelCom"
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout wrap>
+          <v-flex xs4>
+            <v-text-field
+              label="Nº de processos comuns selecionados pelo sistema"
+              :value="numProcSelComSistema"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs4 style="padding-left:60px;">
+            <v-text-field
+              label="Nº de processos comuns selecionados pelo utilizador"
+              :value="numProcSelComUtilizador"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -183,6 +199,8 @@
                   @contadorProcSelEsp="contadorProcSelEsp($event)"
                   @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
                   @procPreSelResTravEsp="procPreSelResTravEsp($event)"
+                  @contadorProcSelEspSistema="contadorProcSelEspSistema($event)"
+                  @contadorProcSelEspUtilizador="contadorProcSelEspUtilizador($event)"
                 />
                 <div v-else>a carregar</div>
               </v-expansion-panel-content>
@@ -190,16 +208,30 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs3>
+          <v-flex xs4>
             <v-text-field
-              label="Nº de processos específicos selecionados"
+              label="Nº de processos específicos selecionados total"
               :value="numProcSelEsp"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos específicos pré selecionados"
               :value="numProcPreSelEsp"
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout wrap>
+          <v-flex xs4>
+            <v-text-field
+              label="Nº de processos específicos selecionados pelo sistema"
+              :value="numProcSelEspSistema"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs5 style="padding-left:60px;">
+            <v-text-field
+              label="Nº de processos específicos selecionados pelo utilizador"
+              :value="numProcSelEspUtilizador"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -431,6 +463,10 @@ export default {
       listaProcComunsReady: false,
       // Numero de processos comuns selecionados
       numProcSelCom: 0,
+      // Numero de processos comuns selecionados pelo sistema
+      numProcSelComSistema: 0,
+      // Numero de processos comuns selecionados pelo utilizador
+      numProcSelComUtilizador: 0,
       // Lista dos processos comuns selecionados
       listaProcSelCom: [],
       // Numero de processos comuns que se encontram pré selecionados
@@ -443,6 +479,10 @@ export default {
       numProcPreSelEsp: 0,
       // Numero de processos especificos selecionados
       numProcSelEsp: 0,
+      // Numero de processos especificos selecionados pelo sistema
+      numProcSelEspSistema: 0,
+      // Numero de processos especificos selecionados pelo utilizador
+      numProcSelEspUtilizador: 0,
       // Lista dos processos especificos selecionados
       listaProcSelEsp: [],
       // Lista dos processos especificos restantes (que não são especificos da entidade nem da tipologia em causa)
@@ -617,6 +657,13 @@ export default {
       this.tabelaSelecao.procComuns = procSelec;
       this.listaProcSelCom = procSelec;
     },
+    // Contador dos processos selecionados pelo sistema
+    contadorProcSelComSistema: function(procSelec){
+      this.numProcSelComSistema = procSelec.length;
+    },
+    contadorProcSelComUtilizador: function(procSelec){
+      this.numProcSelComUtilizador = procSelec.length - this.numProcSelComSistema;
+    },
     // Contador dos processos pre selecionados comuns
     contadorProcPreSelCom: function(lista) {
       this.numProcPreSelCom = lista.length;
@@ -624,6 +671,14 @@ export default {
     // Contador dos processos pre selecionados especificos
     contadorProcPreSelEsp: function(lista) {
       this.numProcPreSelEsp = lista.length;
+    },
+    // Contador dos processos selecionados pelo sistema
+    contadorProcSelEspSistema: function(procSelec){
+      this.numProcSelEspSistema = procSelec.length;
+    },
+    // Contador dos processos selecionados pelo utilizador
+    contadorProcSelEspUtilizador: function(procSelec){
+      this.numProcSelEspUtilizador = procSelec.length - this.numProcSelEspSistema;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
     procPreSelResTravCom: function(procPreSelResTravCom) {
