@@ -23,7 +23,7 @@
         :style="{
           backgroundColor:
             (listaResUltimos.findIndex(p => p == props.item.classe) != -1 ||
-            preSel.findIndex(p => p == props.item.classe) != -1) &&
+              preSel.findIndex(p => p == props.item.classe) != -1) &&
             (!props.item.dono && !props.item.participante)
               ? 'orange'
               : 'transparent'
@@ -85,7 +85,7 @@ const lhost = require("@/config/global").host;
 const axios = require("axios");
 
 export default {
-  props: ["lista", "tipo", "listaPreSel" ],
+  props: ["lista", "tipo", "listaPreSel"],
   data: () => ({
     headers: [
       {
@@ -115,7 +115,7 @@ export default {
     procUltSel: [],
     // Todas as travessias são carregadas para esta variável
     travessias: [],
-    preSel: [],
+    preSel: []
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro
@@ -160,11 +160,11 @@ export default {
         }
 
         this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
-      } catch (erro) {
-        console.log(erro);
+      } catch (err) {
+        return err;
       }
     },
-    
+
     // Reverte a seleção
     uncheck: async function(processo) {
       // apaga o resultado da travessia desse processo
@@ -182,14 +182,10 @@ export default {
               this.listaProcResultado[procSel[i]][j]
             ) ||
               this.listaProcResultado[procSel[i]][j] === processo) &&
-            !newListaResUltimos.includes(
-              this.listaProcResultado[procSel[i]][j]
-            )
+            !newListaResUltimos.includes(this.listaProcResultado[procSel[i]][j])
           ) {
-            newListaResUltimos.push(
-              this.listaProcResultado[procSel[i]][j]
-            );
-          } 
+            newListaResUltimos.push(this.listaProcResultado[procSel[i]][j]);
+          }
         }
       }
       this.listaResUltimos = newListaResUltimos;
@@ -207,34 +203,31 @@ export default {
       var index = this.procUltSel.findIndex(e => e.classe === processo.classe);
       this.procUltSel.splice(index, 1);
       this.$emit("contadorProcSelUlt", this.procUltSel);
-    },
+    }
   },
   mounted: async function() {
-      try {
-        this.preSel = this.listaPreSel;
+    try {
+      this.preSel = this.listaPreSel;
 
-        // Vai a API de dados buscar todos os cálculos das travessias
-        var res = await axios.get(
-            lhost + "/api/travessia"
-          );
-        var trav = res.data;
-        for( var j = 0; j < trav.length; j++){
-          this.travessias[trav[j].processo] = trav[j].travessia
-        }
+      // Vai a API de dados buscar todos os cálculos das travessias
+      var res = await axios.get(lhost + "/api/travessia");
+      var trav = res.data;
+      for (var j = 0; j < trav.length; j++) {
+        this.travessias[trav[j].processo] = trav[j].travessia;
+      }
 
-        // Faz os calculos iniciais dos processos selecionados
-        for( var i = 0; i < this.lista.length; i++ ){
-          if(this.lista[i].dono || this.lista[i].participante){
-            if (!this.procUltSel.includes(this.lista[i])) {
-              this.procUltSel.push(this.lista[i]);
-              this.$emit("contadorProcSelUlt", this.procUltSel);
-            }
+      // Faz os calculos iniciais dos processos selecionados
+      for (var i = 0; i < this.lista.length; i++) {
+        if (this.lista[i].dono || this.lista[i].participante) {
+          if (!this.procUltSel.includes(this.lista[i])) {
+            this.procUltSel.push(this.lista[i]);
+            this.$emit("contadorProcSelUlt", this.procUltSel);
           }
         }
-
-      } catch (error) {
-        console.log(error)
       }
+    } catch (error) {
+      return error;
     }
+  }
 };
 </script>

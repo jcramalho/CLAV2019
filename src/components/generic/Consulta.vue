@@ -5,11 +5,19 @@
         <v-card class="panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
             <v-toolbar-title class="page-header"
-              ><h1 v-if="tipo === 'Legislação'">{{ titulo }}
-              <InfoBox
-                header="Tipo + Entidade + Número"
-                :text="myhelp.Legislacao.Campos.Tipo + ' + ' + myhelp.Legislacao.Campos.Entidades + ' + ' + myhelp.Legislacao.Campos.Numero"
-              /></h1>
+              ><h1 v-if="tipo === 'Legislação'">
+                {{ titulo }}
+                <InfoBox
+                  header="Tipo + Entidade + Número"
+                  :text="
+                    myhelp.Legislacao.Campos.Tipo +
+                      ' + ' +
+                      myhelp.Legislacao.Campos.Entidades +
+                      ' + ' +
+                      myhelp.Legislacao.Campos.Numero
+                  "
+                />
+              </h1>
               <h1 v-else>{{ titulo }}</h1></v-toolbar-title
             >
           </v-toolbar>
@@ -18,7 +26,8 @@
               <table class="consulta">
                 <tr v-for="(item, index) in objeto" v-bind:key="index">
                   <td v-if="item.text" style="width:20%;">
-                    <div class="info-label">{{ item.campo }}:
+                    <div class="info-label">
+                      {{ item.campo }}:
                       <InfoBox
                         v-if="tipo === 'Entidades'"
                         :header="item.campo"
@@ -37,17 +46,17 @@
                     </div>
                   </td>
                   <td v-if="item.text" style="width:80%;">
-                      <a
-                        v-if="item.campo === 'Link'"
-                        :href="item.text"
-                        target="_blank"
-                      >
-                        {{ item.text }}
-                      </a>
+                    <a
+                      v-if="item.campo === 'Link'"
+                      :href="item.text"
+                      target="_blank"
+                    >
+                      {{ item.text }}
+                    </a>
                     <div v-else>
                       <div v-if="item.campo === 'Entidades'">
                         <a
-                          v-for='(ent, index) in item.text.split(" ")'
+                          v-for="(ent, index) in item.text.split(' ')"
                           v-bind:key="index"
                           :href="'/entidades/ent_' + ent"
                         >
@@ -91,7 +100,8 @@
                     <table>
                       <tr v-if="listaProcD.length">
                         <td>
-                          <label style="font-weight: bold;">Como Dono: 
+                          <label style="font-weight: bold;"
+                            >Como Dono:
                             <InfoBox
                               header="Intervenção nos PNs como Dono"
                               :text="myhelp.Entidade.Intervencoes.Dono"
@@ -192,7 +202,8 @@
                     <table>
                       <tr v-if="listaProcD.length">
                         <td>
-                          <label style="font-weight: bold;">Como Dono: 
+                          <label style="font-weight: bold;"
+                            >Como Dono:
                             <InfoBox
                               header="Intervenção nos PNs como Dono"
                               :text="myhelp.Tipologias.Intervencoes.Dono"
@@ -232,7 +243,9 @@
                             >Como Participante:
                             <InfoBox
                               header="Intervenção nos PNs como Participante"
-                              :text="myhelp.Tipologias.Intervencoes.Participante"
+                              :text="
+                                myhelp.Tipologias.Intervencoes.Participante
+                              "
                             />
                           </label>
                         </td>
@@ -246,19 +259,24 @@
                               <b v-if="listaProcP[key].length > 0"
                                 >{{ participationsDic[key] }}:</b
                               >
-                              <ul :class="{ 'is-collapsed': partsCollapsed[key] }">
+                              <ul
+                                :class="{ 'is-collapsed': partsCollapsed[key] }"
+                              >
                                 <li
                                   v-for="(p, index) in listaProcP[key]"
                                   v-bind:key="index"
                                 >
-                                  <a :href="'/classes/consultar/c' + p.codigo">{{
-                                    p.codigo
-                                  }}</a>
+                                  <a
+                                    :href="'/classes/consultar/c' + p.codigo"
+                                    >{{ p.codigo }}</a
+                                  >
                                   - {{ p.titulo }}
                                 </li>
                               </ul>
                               <a
-                                @click="partsCollapsed[key] = !partsCollapsed[key]"
+                                @click="
+                                  partsCollapsed[key] = !partsCollapsed[key]
+                                "
                                 v-if="listaProcP[key].length > 6"
                               >
                                 <span
@@ -280,7 +298,8 @@
                 <!-- Consulta de Tipologia: entidades pertencentes à Tipologia -->
                 <tr v-if="tipo === 'Tipologias' && listaEnt.length">
                   <td style="width:10%:">
-                    <div class="info-label">Entidades:
+                    <div class="info-label">
+                      Entidades:
                       <InfoBox
                         header="Entidades"
                         :text="myhelp.Tipologias.Campos.Entidades"

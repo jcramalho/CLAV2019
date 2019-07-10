@@ -35,15 +35,17 @@
         <tr v-if="tipo == 'Legislação'" @click="go(props.item.numero)">
           <td v-for="(campo, index) in props.item" v-bind:key="index">
             <div v-if="props.item">
-              <div v-if="index==='entidades'">
-                <div v-for="(ent, index) in campo.split(',')" v-bind:key="index">
-                  <a :href="'/entidades/ent_' + ent"
-                            >{{ ent }} </a>
+              <div v-if="index === 'entidades'">
+                <div
+                  v-for="(ent, index) in campo.split(',')"
+                  v-bind:key="index"
+                >
+                  <a :href="'/entidades/ent_' + ent">{{ ent }} </a>
                 </div>
               </div>
-            <div v-else>
-              {{ campo }}
-            </div>
+              <div v-else>
+                {{ campo }}
+              </div>
             </div>
           </td>
         </tr>
@@ -103,7 +105,7 @@ export default {
         };
       }
     } catch (e) {
-      console.log(e);
+      return e;
     }
     this.listaReady = true;
   }

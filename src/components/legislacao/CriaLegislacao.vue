@@ -208,7 +208,7 @@ export default {
       processos: [],
       // user: email para a API saber qual o email associado a esse pedido
       token: "",
-      email: ""  
+      email: ""
     },
 
     tiposDiploma: [],
@@ -285,7 +285,7 @@ export default {
         }
         this.tiposDiploma.sort();
       } catch (error) {
-        console.log(erro);
+        return error;
       }
     },
     unselectEntidade: function(entidade) {
@@ -313,7 +313,7 @@ export default {
         });
         this.entidadesReady = true;
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     unselectProcesso: function(processo) {
@@ -341,7 +341,7 @@ export default {
         });
         this.processosReady = true;
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     // fechar o snackbar em caso de erro
@@ -451,8 +451,6 @@ export default {
 
       var dataObj = this.legislacao;
 
-      console.log(dataObj);
-
       var userBD = await axios.get(
         lhost + "/api/users/listarToken/" + this.$store.state.token
       );
@@ -460,7 +458,7 @@ export default {
         tipoPedido: "Criação",
         tipoObjeto: "Legislação",
         novoObjeto: dataObj,
-        user: {email: userBD.data.email},
+        user: { email: userBD.data.email },
         token: this.$store.state.token
       };
 

@@ -1,5 +1,5 @@
 <template>
-    <v-container grid-list-md fluid>
+  <v-container grid-list-md fluid>
     <v-stepper v-model="stepNo" vertical>
       <v-progress-linear v-model="valorBarra"></v-progress-linear>
       <v-stepper-step :complete="stepNo > 1" step="1">
@@ -62,7 +62,6 @@
             stepNo = 2;
             barra(16);
             guardarEnt();
-            printEstado();
           "
           >Continuar</v-btn
         >
@@ -84,8 +83,7 @@
           @click="
             stepNo = 3;
             barra(32);
-            estado.designacao=designacao;
-            printEstado();
+            estado.designacao = designacao;
           "
           >Continuar</v-btn
         >
@@ -135,7 +133,6 @@
           @click="
             stepNo = 4;
             barra(48);
-            printEstado();
           "
           >Continuar</v-btn
         >
@@ -187,7 +184,6 @@
           @click="
             stepNo = 5;
             barra(64);
-            printEstado();
           "
           >Continuar</v-btn
         >
@@ -235,7 +231,6 @@
           @click="
             stepNo = 6;
             barra(80);
-            printEstado();
           "
           >Continuar</v-btn
         >
@@ -252,8 +247,8 @@
       <v-stepper-step :complete="stepNo > 6" step="6"
         >Outros processos
         <small
-          >Revisão de processos de negócio não selecionados nas 
-          etapas anteriores</small
+          >Revisão de processos de negócio não selecionados nas etapas
+          anteriores</small
         >
       </v-stepper-step>
       <v-stepper-content step="6">
@@ -300,11 +295,15 @@
         >
       </v-stepper-content>
 
-      <v-btn color="primary" v-if="stepNo > 6" @click="submeterTS()">Submeter</v-btn>
-      <v-btn color="primary" v-else @click="guardarTrabalho()">Guardar trabalho</v-btn>
+      <v-btn color="primary" v-if="stepNo > 6" @click="submeterTS()"
+        >Submeter</v-btn
+      >
+      <v-btn color="primary" v-else @click="guardarTrabalho()"
+        >Guardar trabalho</v-btn
+      >
       <v-btn dark flat color="red darken-4" @click="eliminarTS()"
-            >Eliminar TS</v-btn
-          >
+        >Eliminar TS</v-btn
+      >
     </v-stepper>
   </v-container>
 </template>
@@ -317,78 +316,74 @@ import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
 export default {
-    computed: {
-      estado() {
-        return this.$store.state.criacaoTabSel;
-      }    
-    },
-    components: {
-      DesSelEnt,
-      SelEnt
-    },
-    data() {
-      return {
-        // Numero do passo da criação de TS
-        stepNo: 1,
-        // Valor da barra de progresso
-        valorBarra: 0,
-        // Lista de todas as entidades existentes
-        entidades: [],
-        // Lista com as entidades selecionadas
-        entSel: [],
-        // Lista das entidades 
-        entTip: [],
-        // True quando a lista de entidades estiver carregada
-        entidadesReady: false,
-        // Designação da TS
-        designacao: '',
-      }
-    },
-    methods: {
-      // Valor da barra de progresso
-      barra: async function(valor) {
-        this.valorBarra = valor;
-        },
-      // Faz load de todas as entidades
-      loadEntidades: async function() {
-        try {
-          var response = await axios.get(lhost + "/api/entidades");
-          this.entidades = response.data
-          .map(function(item) {
-            return {
-              sigla: item.sigla,
-              designacao: item.designacao
-            };
-          })
-          this.entidadesReady = true;
-        } catch (erro) {
-            console.log(erro);
-        }
-      },
-      // Retira da lista de tipologias selecionadas
-      unselectEntidade: function(entidade) {
-        this.entidades.push(entidade);
-        var index = this.entSel.findIndex(e => e.id === entidade.id);
-        this.entSel.splice(index, 1);
-      },
-      // Coloca na lista de tipologias selecionadas
-      selectEntidade: function(entidade) {
-        this.entSel.push(entidade);
-        var index = this.entidades.findIndex(e => e.id === entidade.id);
-        this.entidades.splice(index, 1);
-      },
-      // Guarda no estado as entidades em causa
-      guardarEnt: function() {
-        this.estado.entidades = this.entSel;
-      },
-      printEstado: async function() {
-        console.log(this.$store.state.criacaoTabSel);
-      }
-    },
-    created: function() {
-      this.loadEntidades();
+  computed: {
+    estado() {
+      return this.$store.state.criacaoTabSel;
     }
-}
+  },
+  components: {
+    DesSelEnt,
+    SelEnt
+  },
+  data() {
+    return {
+      // Numero do passo da criação de TS
+      stepNo: 1,
+      // Valor da barra de progresso
+      valorBarra: 0,
+      // Lista de todas as entidades existentes
+      entidades: [],
+      // Lista com as entidades selecionadas
+      entSel: [],
+      // Lista das entidades
+      entTip: [],
+      // True quando a lista de entidades estiver carregada
+      entidadesReady: false,
+      // Designação da TS
+      designacao: ""
+    };
+  },
+  methods: {
+    // Valor da barra de progresso
+    barra: async function(valor) {
+      this.valorBarra = valor;
+    },
+    // Faz load de todas as entidades
+    loadEntidades: async function() {
+      try {
+        var response = await axios.get(lhost + "/api/entidades");
+        this.entidades = response.data.map(function(item) {
+          return {
+            sigla: item.sigla,
+            designacao: item.designacao
+          };
+        });
+        this.entidadesReady = true;
+      } catch (err) {
+        return err;
+      }
+    },
+    // Retira da lista de tipologias selecionadas
+    unselectEntidade: function(entidade) {
+      this.entidades.push(entidade);
+      var index = this.entSel.findIndex(e => e.id === entidade.id);
+      this.entSel.splice(index, 1);
+    },
+    // Coloca na lista de tipologias selecionadas
+    selectEntidade: function(entidade) {
+      this.entSel.push(entidade);
+      var index = this.entidades.findIndex(e => e.id === entidade.id);
+      this.entidades.splice(index, 1);
+    },
+    // Guarda no estado as entidades em causa
+    guardarEnt: function() {
+      this.estado.entidades = this.entSel;
+    }
+  },
+  created: function() {
+    this.loadEntidades();
+  }
+};
 </script>
 
 <style>

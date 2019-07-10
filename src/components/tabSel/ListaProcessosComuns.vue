@@ -55,7 +55,12 @@
         <td>
           <v-checkbox
             v-model="props.item.participante"
-            v-if="!(props.item.participante != true && props.item.participante != false)"
+            v-if="
+              !(
+                props.item.participante != true &&
+                props.item.participante != false
+              )
+            "
             primary
             hide-details
             v-on:change="
@@ -117,7 +122,7 @@ export default {
     // Lista com os processos comuns selecionados
     procComunsSel: [],
     // Todas as travessias são carregadas para esta variável
-    travessias: [],
+    travessias: []
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
@@ -162,99 +167,90 @@ export default {
 
         this.$emit("procPreSelResTravCom", this.listaResRestantes);
         this.$emit("contadorProcPreSelCom", this.listaResComuns);
-    } catch (erro) {
-      console.log(erro);
-    }
-  },
+      } catch (err) {
+        return err;
+      }
+    },
 
-  // Reverte a seleção
-  uncheck: async function(processo) {
-    // apaga o resultado da travessia desse processo
-    // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
-    delete this.listaProcResultado[processo];
+    // Reverte a seleção
+    uncheck: async function(processo) {
+      // apaga o resultado da travessia desse processo
+      // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
+      delete this.listaProcResultado[processo];
 
-    // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
-    var procSel = Object.keys(this.listaProcResultado);
-    // newListaResComuns: Nova lista dos processos resultantes comuns
-    var newListaResComuns = [];
-    // newListaResRestantes: Nova lista dos processos resultantes restantes
-    var newListaResRestantes = [];
-    for (var i = 0; i < procSel.length; i++) {
-      for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
-        if (
-          (this.listaResComuns.includes(
-            this.listaProcResultado[procSel[i]][j]
-          ) ||
-            this.listaProcResultado[procSel[i]][j] === processo) &&
-          !newListaResComuns.includes(
-            this.listaProcResultado[procSel[i]][j]
-          )
-        ) {
-          newListaResComuns.push(
-            this.listaProcResultado[procSel[i]][j]
-          );
-        } else if (
-          this.listaResRestantes.includes(
-            this.listaProcResultado[procSel[i]][j]
-          ) &&
-          !newListaResRestantes.includes(
-            this.listaProcResultado[procSel[i]][j]
-          )
-        ) {
-          newListaResRestantes.push(
-            this.listaProcResultado[procSel[i]][j]
-          );
+      // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
+      var procSel = Object.keys(this.listaProcResultado);
+      // newListaResComuns: Nova lista dos processos resultantes comuns
+      var newListaResComuns = [];
+      // newListaResRestantes: Nova lista dos processos resultantes restantes
+      var newListaResRestantes = [];
+      for (var i = 0; i < procSel.length; i++) {
+        for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
+          if (
+            (this.listaResComuns.includes(
+              this.listaProcResultado[procSel[i]][j]
+            ) ||
+              this.listaProcResultado[procSel[i]][j] === processo) &&
+            !newListaResComuns.includes(this.listaProcResultado[procSel[i]][j])
+          ) {
+            newListaResComuns.push(this.listaProcResultado[procSel[i]][j]);
+          } else if (
+            this.listaResRestantes.includes(
+              this.listaProcResultado[procSel[i]][j]
+            ) &&
+            !newListaResRestantes.includes(
+              this.listaProcResultado[procSel[i]][j]
+            )
+          ) {
+            newListaResRestantes.push(this.listaProcResultado[procSel[i]][j]);
+          }
         }
       }
-    }
-    this.listaResComuns = newListaResComuns;
-    this.listaResRestantes = newListaResRestantes;
+      this.listaResComuns = newListaResComuns;
+      this.listaResRestantes = newListaResRestantes;
 
-    this.$emit("contadorProcPreSelCom", this.listaResComuns);
-  },
-  // Para colocar e retirar qualquer processo da lista de processos comuns selecionados
-  selProcComum: async function(processo) {
-    if (!this.procComunsSel.includes(processo)) {
-      this.procComunsSel.push(processo);
+      this.$emit("contadorProcPreSelCom", this.listaResComuns);
+    },
+    // Para colocar e retirar qualquer processo da lista de processos comuns selecionados
+    selProcComum: async function(processo) {
+      if (!this.procComunsSel.includes(processo)) {
+        this.procComunsSel.push(processo);
+        this.$emit("contadorProcSelCom", this.procComunsSel);
+        this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
+      }
+    },
+    desSelProcComum: async function(processo) {
+      var index = this.procComunsSel.findIndex(
+        e => e.classe === processo.classe
+      );
+      this.procComunsSel.splice(index, 1);
       this.$emit("contadorProcSelCom", this.procComunsSel);
       this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
     }
   },
-  desSelProcComum: async function(processo) {
-    var index = this.procComunsSel.findIndex(
-      e => e.classe === processo.classe
-    );
-    this.procComunsSel.splice(index, 1);
-    this.$emit("contadorProcSelCom", this.procComunsSel);
-    this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
-  }
-},
-mounted: async function() {
-  try{
-    // Vai a API de dados buscar todos os cálculos das travessias
-    var res = await axios.get(
-        lhost + "/api/travessia"
-      );
-    var trav = res.data;
-    for( var j = 0; j < trav.length; j++){
-      this.travessias[trav[j].processo] = trav[j].travessia
-    }
-    
-    // Faz os calculos iniciais dos processos selecionados por default como donos (não transversais)
-    for( var i = 0; i < this.lista.length; i++ ){
-      if(this.lista[i].dono || this.lista[i].participante){
-        this.calcRel(this.lista[i].classe);
-        if (!this.procComunsSel.includes(this.lista[i])) {
-          this.procComunsSel.push(this.lista[i]);
-          this.$emit("contadorProcSelCom", this.procComunsSel);
-          this.$emit("contadorProcSelComSistema", this.procComunsSel);
+  mounted: async function() {
+    try {
+      // Vai a API de dados buscar todos os cálculos das travessias
+      var res = await axios.get(lhost + "/api/travessia");
+      var trav = res.data;
+      for (var j = 0; j < trav.length; j++) {
+        this.travessias[trav[j].processo] = trav[j].travessia;
+      }
+
+      // Faz os calculos iniciais dos processos selecionados por default como donos (não transversais)
+      for (var i = 0; i < this.lista.length; i++) {
+        if (this.lista[i].dono || this.lista[i].participante) {
+          this.calcRel(this.lista[i].classe);
+          if (!this.procComunsSel.includes(this.lista[i])) {
+            this.procComunsSel.push(this.lista[i]);
+            this.$emit("contadorProcSelCom", this.procComunsSel);
+            this.$emit("contadorProcSelComSistema", this.procComunsSel);
+          }
         }
       }
+    } catch (e) {
+      return e;
     }
   }
-  catch(e){
-    console.log(e)
-  }
-},
 };
 </script>

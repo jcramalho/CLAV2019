@@ -69,7 +69,7 @@ export default {
         }
         if (participa) this.partsReady = true;
       } catch (e) {
-        console.log(e);
+        return e;
       }
     }
   },
@@ -105,7 +105,7 @@ export default {
       );
       this.entidades = entidades.data;
     } catch (e) {
-      console.log(e);
+      return e;
     }
   }
 };

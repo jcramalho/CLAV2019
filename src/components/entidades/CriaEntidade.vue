@@ -122,7 +122,6 @@
           >
         </div>
       </v-flex>
-
     </v-layout>
   </v-container>
 </template>
@@ -160,7 +159,7 @@ export default {
     ],
 
     snackbar: false,
-    text: "",
+    text: ""
   }),
   components: {
     DesSelTip,
@@ -180,7 +179,7 @@ export default {
         });
         this.tipologiasReady = true;
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     unselectTipologia: function(tipologia) {
@@ -225,17 +224,17 @@ export default {
 
         dataObj.codigo = "ent_" + this.entidade.sigla;
 
-        console.log(dataObj);
+        // console.log(dataObj);
 
         var userBD = await axios.get(
           lhost + "/api/users/listarToken/" + this.$store.state.token
         );
-        console.log(userBD.data)
+
         var pedidoParams = {
           tipoPedido: "Criação",
           tipoObjeto: "Entidade",
           novoObjeto: dataObj,
-          user: {email: userBD.data.email},
+          user: { email: userBD.data.email },
           token: this.$store.state.token
         };
 
@@ -263,12 +262,10 @@ export default {
               this.snackbar = true;
             }
           });*/
-        }
-      catch(error) {
+      } catch (error) {
         return error;
       }
-    },
-
+    }
   },
   created: function() {
     this.loadTipologias();

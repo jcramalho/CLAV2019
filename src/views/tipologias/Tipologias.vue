@@ -26,7 +26,7 @@ export default {
       var response = await axios.get(lhost + "/api/tipologias");
       this.tipologias = await this.preparaLista(response.data);
     } catch (e) {
-      console.log(e);
+      return e;
     }
   },
 

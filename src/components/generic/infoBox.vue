@@ -6,7 +6,7 @@
 
     <v-card :color="colorDialog">
       <v-card-title>
-        <span class="title font-weight-light">{{header}}</span>
+        <span class="title font-weight-light">{{ header }}</span>
       </v-card-title>
 
       <v-card-text>
@@ -32,20 +32,18 @@ export default {
   data() {
     return {
       dialog: false,
-      colorHelp: '',
-      colorDialog: '',
+      colorHelp: "",
+      colorDialog: ""
     };
   },
   created: function() {
-    if(!this.helpColor){
-      this.colorHelp = "#1a237e"
-    }
-    else this.colorHelp = this.helpColor
+    if (!this.helpColor) {
+      this.colorHelp = "#1a237e";
+    } else this.colorHelp = this.helpColor;
 
-    if(!this.dialogColor){
-      this.colorDialog = "#dee2f8"
-    }
-    else this.colorDialog = this.dialogColor
-  },
+    if (!this.dialogColor) {
+      this.colorDialog = "#dee2f8";
+    } else this.colorDialog = this.dialogColor;
+  }
 };
 </script>

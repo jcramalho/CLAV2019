@@ -82,7 +82,7 @@ export default {
       );
       this.regulaProc = regulaProc.data;
     } catch (e) {
-      console.log(e);
+      return e;
     }
   }
 };

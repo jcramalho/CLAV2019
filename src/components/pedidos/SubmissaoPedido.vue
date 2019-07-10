@@ -68,7 +68,7 @@ export default {
       this.pedido = response.data[response.data.length - 1];
       this.pedido.data = this.pedido.data.split("T")[0];
     } catch (e) {
-      console.log(e);
+      return e;
     }
   }
 };

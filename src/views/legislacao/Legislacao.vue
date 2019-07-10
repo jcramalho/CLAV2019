@@ -29,7 +29,7 @@ export default {
       this.legislacao = await this.preparaLista(response.data);
       this.ids = await this.preparaIds(response.data);
     } catch (e) {
-      console.log(e);
+      return e;
     }
   },
 
@@ -72,7 +72,7 @@ export default {
         }
         return ids;
       } catch (e) {
-        console.log(e);
+        return e;
       }
     }
   }

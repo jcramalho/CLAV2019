@@ -78,7 +78,7 @@ export default {
         }
         if (participa) this.partsReady = true;
       } catch (e) {
-        console.log(e);
+        return e;
       }
     }
   },
@@ -114,7 +114,7 @@ export default {
       );
       await this.parseParticipacoes(processosParticipa.data);
     } catch (e) {
-      console.log(e);
+      return e;
     }
   }
 };

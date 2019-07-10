@@ -153,7 +153,7 @@ export default {
         });
         this.entidadesReady = true;
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     // fechar o snackbar em caso de erro
@@ -175,8 +175,6 @@ export default {
 
       dataObj.codigo = "tip_" + this.tipologia.sigla;
 
-      console.log(dataObj);
-
       var userBD = await axios.get(
         lhost + "/api/users/listarToken/" + this.$store.state.token
       );
@@ -184,7 +182,7 @@ export default {
         tipoPedido: "Criação",
         tipoObjeto: "Tipologia",
         novoObjeto: dataObj,
-        user: {email: userBD.data.email},
+        user: { email: userBD.data.email },
         token: this.$store.state.token
       };
 
