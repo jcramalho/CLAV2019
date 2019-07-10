@@ -114,7 +114,6 @@
                 <ListaProcessosComuns
                   v-if="listaProcComunsReady"
                   v-bind:lista="listaProcComuns"
-                  tipo="Processos Comuns"
                   @contadorProcSelCom="contadorProcSelCom($event)"
                   @contadorProcPreSelCom="contadorProcPreSelCom($event)"
                   @procPreSelResTravCom="procPreSelResTravCom($event)"
@@ -196,7 +195,6 @@
                 <ListaProcessosEspecificos
                   v-if="listaProcEspReady"
                   v-bind:lista="listaProcEsp"
-                  tipo="Processos Especificos"
                   v-bind:listaPreSel="procPreSelResTravComum"
                   @contadorProcSelEsp="contadorProcSelEsp($event)"
                   @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
@@ -274,7 +272,6 @@
                 <ListaProcessosEspRestantes
                   v-if="listaProcEspResReady"
                   v-bind:lista="listaProcEspRes"
-                  tipo="Processos Especificos"
                   v-bind:listaPreSel="procPreSelEspRestantes"
                   @contadorProcSelRes="contadorProcSelRes($event)"
                   @procPreSelResTravRes="procPreSelResTravRes($event)"
@@ -359,7 +356,6 @@
                 <ListaProcessosUltimos
                   v-if="listaProcUltReady"
                   v-bind:lista="listaProcUlt"
-                  tipo="Processos Ultimos"
                   v-bind:listaPreSel="procPreSelUltimos"
                   @contadorProcSelUlt="contadorProcSelUlt($event)"
                   @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
@@ -436,10 +432,10 @@
 import axios from "axios";
 const lhost = require("@/config/global").host;
 
-import ListaProcessosComuns from "@/components/tabSel/ListaProcessosComuns.vue";
-import ListaProcessosEspecificos from "@/components/tabSel/ListaProcessosEspecificos.vue";
-import ListaProcessosEspRestantes from "@/components/tabSel/ListaProcessosEspRestantes.vue";
-import ListaProcessosUltimos from "@/components/tabSel/ListaProcessosUltimos.vue";
+import ListaProcessosComuns from "@/components/tabSel/criacaoTSOrg/ListaProcessosComuns.vue";
+import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspecificos.vue";
+import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspRestantes.vue";
+import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";

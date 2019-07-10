@@ -22,8 +22,7 @@
       <tr
         :style="{
           backgroundColor:
-            (listaResEspecificos.findIndex(p => p == props.item.classe) != -1 ||
-              preSel.findIndex(p => p == props.item.classe) != -1) &&
+            listaResComuns.findIndex(p => p == props.item.classe) != -1 &&
             (!props.item.dono && !props.item.participante)
               ? 'orange'
               : 'transparent'
@@ -43,11 +42,11 @@
             v-on:change="
               {
                 props.item.dono && !props.item.participante
-                  ? (calcRel(props.item.classe), selProcEsp(props.item))
+                  ? (calcRel(props.item.classe), selProcComum(props.item))
                   : props.item.dono && props.item.participante
-                  ? selProcEsp(props.item)
+                  ? selProcComum(props.item)
                   : !props.item.dono && !props.item.participante
-                  ? (uncheck(props.item.classe), desSelProcEsp(props.item))
+                  ? (uncheck(props.item.classe), desSelProcComum(props.item))
                   : null;
               }
             "
@@ -67,11 +66,11 @@
             v-on:change="
               {
                 props.item.participante && !props.item.dono
-                  ? (calcRel(props.item.classe), selProcEsp(props.item))
+                  ? (calcRel(props.item.classe), selProcComum(props.item))
                   : props.item.participante && props.item.dono
-                  ? selProcEsp(props.item)
+                  ? selProcComum(props.item)
                   : !props.item.participante && !props.item.dono
-                  ? (uncheck(props.item.classe), desSelProcEsp(props.item))
+                  ? (uncheck(props.item.classe), desSelProcComum(props.item))
                   : null;
               }
             "
@@ -91,8 +90,9 @@ const lhost = require("@/config/global").host;
 const axios = require("axios");
 
 export default {
-  props: ["lista", "tipo", "listaPreSel"],
+  props: ["lista"],
   data: () => ({
+    // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
         text: "Classe",
@@ -113,56 +113,43 @@ export default {
         value: "participante"
       }
     ],
-    // Lista dos processos especificos resultantes das travessias
-    listaResEspecificos: [],
+    // Lista dos processos comuns resultantes das travessias
+    listaResComuns: [],
     // Lista dos processos restantes resultantes das travessias
     listaResRestantes: [],
     // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
     listaProcResultado: {},
-    // Lista com os processos especificos selecionados
-    procEspSel: [],
+    // Lista com os processos comuns selecionados
+    procComunsSel: [],
     // Todas as travessias são carregadas para esta variável
-    travessias: [],
-    preSel: []
+    travessias: []
   }),
   methods: {
-    // Calculo da travessia do processo passado como parametro
+    // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
     calcRel: async function(processo) {
       try {
         // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
         this.listaProcResultado[processo] = this.travessias[processo];
 
-        // Coloca na lista de processos resultantes especificos os processos pré selecionados
-        // resultantes das travessias dos processos comuns
-        if (!this.listaResEspecificos.length) {
-          if (this.preSel.length) {
-            for (var l = 0; l < this.lista.length; l++) {
-              if (this.preSel.includes(this.lista[l].classe))
-                this.listaResEspecificos.push(this.lista[l].classe);
-            }
-          }
-          this.preSel = [];
-        }
-
-        // separa o resultado da travessia em duas listas, uma com os processos especificos (que estão presentes na tabela) e os restantes
-        // listaResEspecificos: Lista dos processos resultantes (das travessias) especificos
+        // separa o resultado da travessia em duas listas, uma com os processos comuns (que estão presentes na tabela) e os restantes
+        // listaResComuns: Lista dos processos resultantes (das travessias) comuns
         // listaResRestantes: Lista dos processos resultantes (das travessias) restantes
         for (var i = 0; i < this.travessias[processo].length; i++) {
-          var procEspecifico = false;
+          var procComum = false;
           for (var j = 0; j < this.lista.length; j++) {
             if (
               this.lista[j].classe === this.travessias[processo][i] &&
-              !this.listaResEspecificos.includes(this.travessias[processo][i])
+              !this.listaResComuns.includes(this.travessias[processo][i])
             ) {
-              this.listaResEspecificos.push(this.travessias[processo][i]);
-              procEspecifico = true;
+              this.listaResComuns.push(this.travessias[processo][i]);
+              procComum = true;
               break;
             }
           }
           if (
-            !procEspecifico &&
+            !procComum &&
             !this.listaResRestantes.includes(this.travessias[processo][i]) &&
-            !this.listaResEspecificos.includes(this.travessias[processo][i])
+            !this.listaResComuns.includes(this.travessias[processo][i])
           ) {
             this.listaResRestantes.push(this.travessias[processo][i]);
           }
@@ -170,16 +157,16 @@ export default {
         // retira aqueles processos que já estão selecionados
         var procSel = Object.keys(this.listaProcResultado);
         for (var x = 0; x < procSel.length; x++) {
-          if (this.listaResEspecificos.includes(procSel[x])) {
-            this.listaResEspecificos.splice(
-              this.listaResEspecificos.indexOf(procSel[x]),
+          if (this.listaResComuns.includes(procSel[x])) {
+            this.listaResComuns.splice(
+              this.listaResComuns.indexOf(procSel[x]),
               1
             );
           }
         }
 
-        this.$emit("procPreSelResTravEsp", this.listaResRestantes);
-        this.$emit("contadorProcPreSelEsp", this.listaResEspecificos);
+        this.$emit("procPreSelResTravCom", this.listaResRestantes);
+        this.$emit("contadorProcPreSelCom", this.listaResComuns);
       } catch (err) {
         return err;
       }
@@ -193,22 +180,20 @@ export default {
 
       // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
       var procSel = Object.keys(this.listaProcResultado);
-      // newListaResEspecificos: Nova lista dos processos resultantes especificos
-      var newListaResEspecificos = [];
+      // newListaResComuns: Nova lista dos processos resultantes comuns
+      var newListaResComuns = [];
       // newListaResRestantes: Nova lista dos processos resultantes restantes
       var newListaResRestantes = [];
       for (var i = 0; i < procSel.length; i++) {
         for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
           if (
-            (this.listaResEspecificos.includes(
+            (this.listaResComuns.includes(
               this.listaProcResultado[procSel[i]][j]
             ) ||
               this.listaProcResultado[procSel[i]][j] === processo) &&
-            !newListaResEspecificos.includes(
-              this.listaProcResultado[procSel[i]][j]
-            )
+            !newListaResComuns.includes(this.listaProcResultado[procSel[i]][j])
           ) {
-            newListaResEspecificos.push(this.listaProcResultado[procSel[i]][j]);
+            newListaResComuns.push(this.listaProcResultado[procSel[i]][j]);
           } else if (
             this.listaResRestantes.includes(
               this.listaProcResultado[procSel[i]][j]
@@ -221,30 +206,30 @@ export default {
           }
         }
       }
-      this.listaResEspecificos = newListaResEspecificos;
+      this.listaResComuns = newListaResComuns;
       this.listaResRestantes = newListaResRestantes;
 
-      this.$emit("contadorProcPreSelEsp", this.listaResEspecificos);
+      this.$emit("contadorProcPreSelCom", this.listaResComuns);
     },
-    // Para colocar e retirar qualquer processo da lista de processos especificos selecionados
-    selProcEsp: async function(processo) {
-      if (!this.procEspSel.includes(processo)) {
-        this.procEspSel.push(processo);
-        this.$emit("contadorProcSelEsp", this.procEspSel);
-        this.$emit("contadorProcSelEspUtilizador", this.procEspSel);
+    // Para colocar e retirar qualquer processo da lista de processos comuns selecionados
+    selProcComum: async function(processo) {
+      if (!this.procComunsSel.includes(processo)) {
+        this.procComunsSel.push(processo);
+        this.$emit("contadorProcSelCom", this.procComunsSel);
+        this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
       }
     },
-    desSelProcEsp: async function(processo) {
-      var index = this.procEspSel.findIndex(e => e.classe === processo.classe);
-      this.procEspSel.splice(index, 1);
-      this.$emit("contadorProcSelEsp", this.procEspSel);
-      this.$emit("contadorProcSelEspUtilizador", this.procEspSel);
+    desSelProcComum: async function(processo) {
+      var index = this.procComunsSel.findIndex(
+        e => e.classe === processo.classe
+      );
+      this.procComunsSel.splice(index, 1);
+      this.$emit("contadorProcSelCom", this.procComunsSel);
+      this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
     }
   },
   mounted: async function() {
     try {
-      this.preSel = this.listaPreSel;
-
       // Vai a API de dados buscar todos os cálculos das travessias
       var res = await axios.get(lhost + "/api/travessia");
       var trav = res.data;
@@ -255,11 +240,11 @@ export default {
       // Faz os calculos iniciais dos processos selecionados por default como donos (não transversais)
       for (var i = 0; i < this.lista.length; i++) {
         if (this.lista[i].dono || this.lista[i].participante) {
-          await this.calcRel(this.lista[i].classe);
-          if (!this.procEspSel.includes(this.lista[i])) {
-            this.procEspSel.push(this.lista[i]);
-            this.$emit("contadorProcSelEsp", this.procEspSel);
-            this.$emit("contadorProcSelEspSistema", this.procEspSel);
+          this.calcRel(this.lista[i].classe);
+          if (!this.procComunsSel.includes(this.lista[i])) {
+            this.procComunsSel.push(this.lista[i]);
+            this.$emit("contadorProcSelCom", this.procComunsSel);
+            this.$emit("contadorProcSelComSistema", this.procComunsSel);
           }
         }
       }

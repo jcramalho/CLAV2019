@@ -14,12 +14,12 @@
               </div>
             </template>
             <v-card style="padding-top:30px;">
-              <!---<v-layout>
+              <v-layout>
                 <v-flex xs2>
                   <v-subheader
                     class="info-label"
                     style="border-color: white; border-style:solid; color: #1A237E;"
-                    >Entidades:</v-subheader
+                    >Entidades pré selecionadas:</v-subheader
                   >
                 </v-flex>
                 <v-flex xs9>
@@ -61,7 +61,7 @@
           @click="
             stepNo = 2;
             barra(16);
-            guardarEnt();
+            tabelaSelecao.entidades = entSel.concat(entTip)
           "
           >Continuar</v-btn
         >
@@ -74,8 +74,8 @@
       <v-stepper-content step="2">
         <v-flex xs12 sm6 md10>
           <v-text-field
-            placeholder="Nome da entidade associada ao utilizador"
-            v-model="designacao"
+            placeholder="Designação da Nova Tabela de Seleção"
+            v-model="tabelaSelecao.designacao"
           ></v-text-field>
         </v-flex>
         <v-btn
@@ -83,7 +83,7 @@
           @click="
             stepNo = 3;
             barra(32);
-            estado.designacao = designacao;
+            print();
           "
           >Continuar</v-btn
         >
@@ -111,6 +111,9 @@
                     Selecione os Processos de Negócio Comuns
                   </div>
                 </template>
+                <ListaProcessosComuns 
+                  v-if="listaProcComunsReady"
+                  v-bind:lista="listaProcComuns"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
@@ -315,18 +318,22 @@ const lhost = require("@/config/global").host;
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
+import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns.vue"
+
 export default {
-  computed: {
-    estado() {
-      return this.$store.state.criacaoTabSel;
-    }
-  },
   components: {
     DesSelEnt,
-    SelEnt
+    SelEnt,
+    ListaProcessosComuns
   },
   data() {
     return {
+      // Objeto Tabela de Seleção
+      tabelaSelecao: {
+        designacao: "",
+        idEntidade: "",
+
+      },
       // Numero do passo da criação de TS
       stepNo: 1,
       // Valor da barra de progresso
@@ -339,14 +346,26 @@ export default {
       entTip: [],
       // True quando a lista de entidades estiver carregada
       entidadesReady: false,
-      // Designação da TS
-      designacao: ""
+      // Lista com todos os processos comuns
+      listaProcComuns: [],
+      // True quando a lista de todos os processos comuns existentes estiver completa
+      listaProcComunsReady: false,
     };
   },
   methods: {
     // Valor da barra de progresso
     barra: async function(valor) {
       this.valorBarra = valor;
+    },
+    // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
+    infoUserEnt: async function() {
+      var resUser = await axios.get(
+        lhost + "/api/users/listarToken/" + this.$store.state.token
+      );
+      var resEnt = await axios.get(
+        lhost + "/api/entidades/" + resUser.data.entidade
+      );
+      this.tabelaSelecao.idEntidade = resUser.data.entidade;
     },
     // Faz load de todas as entidades
     loadEntidades: async function() {
@@ -355,9 +374,25 @@ export default {
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
-            designacao: item.designacao
+            designacao: item.designacao,
+            id: item.id
           };
         });
+
+        // Retira da lista das entidades a entidade a que pertence o utilizador
+        for(var i = 0; i < this.entidades.length; i++){
+          if("ent_" + this.entidades[i].sigla === this.tabelaSelecao.idEntidade){
+            this.entTip.push({
+              sigla: this.entidades[i].sigla,
+              designacao: this.entidades[i].designacao,
+              id: this.entidades[i].id
+            })
+            break;
+          }
+        }
+        var index = this.entidades.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
+        this.entidades.splice(index, 1);
+        
         this.entidadesReady = true;
       } catch (err) {
         return err;
@@ -375,13 +410,32 @@ export default {
       var index = this.entidades.findIndex(e => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
-    // Guarda no estado as entidades em causa
-    guardarEnt: function() {
-      this.estado.entidades = this.entSel;
-    }
+    print: function(){
+      console.log(this.tabelaSelecao)
+    },
+    // Carrega todos os processos comuns
+    loadProcComuns: async function() {
+      try {
+        if (!this.listaProcComunsReady) {
+          var response = await axios.get(lhost + "/api/classes?tipo=comum");
+          for (var i = 0; i < response.data.length; i++) {
+              this.listaProcComuns.push({
+                classe: response.data[i].codigo,
+                designacao: response.data[i].titulo,
+              });
+          }
+          this.listaProcComunsReady = true;
+          return this.listaProcComuns;
+        }
+      } catch (err) {
+        return err;
+      }
+    },
   },
-  created: function() {
+  created: async function() {
+    await this.infoUserEnt();
     this.loadEntidades();
+    this.loadProcComuns();
   }
 };
 </script>

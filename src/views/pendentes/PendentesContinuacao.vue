@@ -15,7 +15,7 @@ import axios from "axios";
 const lhost = require("@/config/global").host;
 import ContinuaClasse from "@/components/classes/criacao/ContinuaClasse"; // @ is an alias to /src
 import ContinuaPendente from "@/components/pendentes/ContinuaPendente";
-import ContinuaTSOrg from "@/components/tabSel/ContCriaTabSelOrg";
+import ContinuaTSOrg from "@/components/tabSel/criacaoTSOrg/ContCriaTabSelOrg";
 
 export default {
   components: {

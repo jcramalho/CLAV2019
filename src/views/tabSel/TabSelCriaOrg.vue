@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import CriaTabSelOrg from "@/components/tabSel/CriaTabSelOrg.vue";
+import CriaTabSelOrg from "@/components/tabSel/criacaoTSOrg/CriaTabSelOrg.vue";
 
 export default {
   components: {

@@ -432,10 +432,10 @@
 import axios from "axios";
 const lhost = require("@/config/global").host;
 
-import ListaProcessosComuns from "@/components/tabSel/ListaProcessosComuns.vue";
-import ListaProcessosEspecificos from "@/components/tabSel/ListaProcessosEspecificos.vue";
-import ListaProcessosEspRestantes from "@/components/tabSel/ListaProcessosEspRestantes.vue";
-import ListaProcessosUltimos from "@/components/tabSel/ListaProcessosUltimos.vue";
+import ListaProcessosComuns from "@/components/tabSel/criacaoTSOrg/ListaProcessosComuns.vue";
+import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspecificos.vue";
+import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspRestantes.vue";
+import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
