@@ -174,6 +174,7 @@ export default {
   data: () => ({
     search: "",
     regraNome: [v => !!v || "Nome é obrigatório."],
+    regraEntidade: [v => !!v || "Entidade é obrigatório."],
     regraEmail: [
       v => !!v || "Email é obrigatório.",
       v => /.+@.+/.test(v) || "Email tem de ser válido."
