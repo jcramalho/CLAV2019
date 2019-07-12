@@ -61,7 +61,8 @@
           @click="
             stepNo = 2;
             barra(16);
-            tabelaSelecao.entidades = entSel.concat(entTip)
+            tabelaSelecao.entidades = entSel.concat(entTip);
+            entSelReady = true;
           "
           >Continuar</v-btn
         >
@@ -112,8 +113,9 @@
                   </div>
                 </template>
                 <ListaProcessosComuns 
-                  v-if="listaProcComunsReady"
-                  v-bind:lista="listaProcComuns"/>
+                  v-if="listaProcComunsReady && entSelReady"
+                  v-bind:lista="listaProcComuns"
+                  v-bind:entidades="tabelaSelecao.entidades"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
@@ -332,7 +334,7 @@ export default {
       tabelaSelecao: {
         designacao: "",
         idEntidade: "",
-
+        entidades: [],
       },
       // Numero do passo da criação de TS
       stepNo: 1,
@@ -348,6 +350,8 @@ export default {
       entidadesReady: false,
       // Lista com todos os processos comuns
       listaProcComuns: [],
+      // Passa a true quando o utilizador tiver selecionado todas as entidades no primeiro passo
+      entSelReady: false,
       // True quando a lista de todos os processos comuns existentes estiver completa
       listaProcComunsReady: false,
     };
@@ -422,6 +426,8 @@ export default {
               this.listaProcComuns.push({
                 classe: response.data[i].codigo,
                 designacao: response.data[i].titulo,
+                dono: false,
+                participante: true
               });
           }
           this.listaProcComunsReady = true;
