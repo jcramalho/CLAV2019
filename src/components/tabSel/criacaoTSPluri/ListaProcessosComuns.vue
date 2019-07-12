@@ -27,9 +27,32 @@
                     {{ props.item.designacao }}
                 </td> 
                 <td>
-                    <v-btn fab small color="primary">
-                        <v-icon>list</v-icon>
-                    </v-btn>
+                        <v-dialog v-model="props.item.dono" scrollable width="700px">
+                            <template v-slot:activator="{ on }">
+                                <v-btn fab small color="primary" v-on="on">
+                                    <v-icon>list</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-card>
+                                <v-card-title>
+                                    <span class="headline">Selecione as entidades donas do processo: {{ props.item.classe }} </span>
+                                </v-card-title>
+                                <v-divider></v-divider>
+                                <v-card-text style="height: 400px;">
+                                        <v-checkbox 
+                                            v-for="e in entidades" 
+                                            :key="e.id" 
+                                            v-model="tempDono" 
+                                            :value="e.id"
+                                            :label="e.designacao"
+                                        ></v-checkbox>
+                                </v-card-text>
+                                <v-divider></v-divider>
+                                <v-card-actions>
+                                    <v-btn color="blue darken-1" flat @click="props.item.dono = false; guardaEntDonos(props.item.classe)">Continuar</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
                 </td>
                 <td>
                     <v-btn fab small color="primary">
@@ -46,8 +69,9 @@
 </template>
 
 <script>
+
 export default {
-    props: ["lista"],
+    props: ["lista", "entidades"],
     data: () => ({
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
@@ -70,10 +94,27 @@ export default {
         value: "participante"
       }
     ],
+    // Onde vão ficar armazenados as entidades donas de cada processo. Por ex: {proc1: [ent1,ent2]; proc2: [ent1,ent3]}
+    entProcDono: [],
+    // True quando a lista das entidades donas de cada processo estiver pronta
+    entProcDonoReady: false,
+    // Para abrir e fechar a caixa de dialogo
+    dialog: false,
+    tempDono: [],
     }),
+    methods: {
+        guardaEntDonos: async function(proc){
+            this.entProcDono[proc] = this.tempDono;
+            this.tempDono = [];
+            console.log(this.entProcDono)
+        }
+    },
     mounted: async function(){
         try {
-            console.log(this.lista)
+            for( var i = 0; i < this.lista.length; i++ ){
+                this.entProcDono[this.lista[i].classe] = [];
+            }
+            this.entProcDonoReady = true;
         } catch (err) {
             return err;
         }
