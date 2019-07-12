@@ -60,6 +60,12 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
+                        <v-icon @click="analisaPedido(props.item)" color="indigo darken-2" v-on="on">search</v-icon>
+                    </template>
+                    <span>Analisar pedido...</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
                         <v-icon color="indigo darken-2" v-on="on">keyboard_return</v-icon>
                     </template>
                     <span>Devolver pedido...</span>
@@ -125,6 +131,10 @@ export default {
 
       showPedido: function(pedido){
           this.$emit('show', pedido)
+      },
+
+      analisaPedido: function(pedido){
+        return true
       }
   }
 };

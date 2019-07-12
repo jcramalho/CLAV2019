@@ -94,6 +94,7 @@
     </v-dialog>
     </v-layout>
 
+    <!-- Show do pedido ................................................-->
     <v-layout row wrap ma-2>
       <v-dialog v-model="show" width="80%" >
       <v-card>
