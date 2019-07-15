@@ -427,7 +427,7 @@ export default {
                 classe: response.data[i].codigo,
                 designacao: response.data[i].titulo,
                 dono: false,
-                participante: true
+                participante: false
               });
           }
           this.listaProcComunsReady = true;

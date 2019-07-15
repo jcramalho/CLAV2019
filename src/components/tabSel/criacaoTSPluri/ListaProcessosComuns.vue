@@ -1,5 +1,6 @@
 <template>
     <v-data-table
+        v-if="entProcDonoReady"
         :items="lista"
         :headers="headers"
         class="elevation-1"
@@ -27,38 +28,103 @@
                     {{ props.item.designacao }}
                 </td> 
                 <td>
-                        <v-dialog v-model="props.item.dono" scrollable persistent width="700px">
-                            <template v-slot:activator="{ on }">
-                                <v-btn fab small color="primary" v-on="on">
-                                    <v-icon>list</v-icon>
-                                </v-btn>
-                            </template>
-                            <v-card>
-                                <v-card-title>
-                                    <span class="headline">Selecione as entidades donas do processo: {{ props.item.classe }} </span>
-                                </v-card-title>
-                                <v-divider></v-divider>
-                                <v-card-text style="height: 400px;">
-                                        <v-checkbox 
-                                            v-for="e in entidades" 
-                                            :key="e.id" 
-                                            v-model="tempDono" 
-                                            :value="e.id"
-                                            :label="e.designacao + '  (' + e.sigla + ') '"
-                                        ></v-checkbox>
-                                </v-card-text>
-                                <v-divider></v-divider>
-                                <v-card-actions>
-                                    <v-btn color="blue darken-1" flat @click="selecTodasEnt(entidades);">Selecionar todos</v-btn>
-                                    <v-btn color="blue darken-1" flat @click="props.item.dono = false; guardaEntDonos(props.item.classe)">Continuar</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
+                    <v-dialog v-model="props.item.dono" scrollable persistent width="700px">
+                        <template v-slot:activator="{ on }">
+                            <v-btn fab small color="primary" v-on="on">
+                                <v-icon>list</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title>
+                                <span class="headline">Selecione as entidades donas do processo: {{ props.item.classe }} </span>
+                            </v-card-title>
+                            <v-divider></v-divider>
+                            <v-card-text style="height: 400px;" v-if="!entProcDono[props.item.classe].length">
+                                    <v-checkbox 
+                                        v-for="e in entidades" 
+                                        :key="e.id" 
+                                        v-model="tempDono" 
+                                        :value="e.id"
+                                        :label="e.designacao + '  (' + e.sigla + ') '"
+                                    ></v-checkbox>
+                            </v-card-text>
+                            <v-card-text style="height: 400px;" v-else>
+                                    <v-checkbox 
+                                        v-for="e in entidades" 
+                                        :key="e.id" 
+                                        v-model="entProcDono[props.item.classe]" 
+                                        :value="e.id"
+                                        :label="e.designacao + '  (' + e.sigla + ') '"
+                                    ></v-checkbox>
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                                <v-btn color="blue darken-1" flat v-if="!entProcDono[props.item.classe].length" @click="selecTodasEnt(entidades);">Selecionar todos</v-btn>
+                                <v-btn color="blue darken-1" flat v-else @click="selecTodasEnt(entidades, props.item.classe)">Selecionar todos</v-btn>
+                                <v-btn color="blue darken-1" flat @click="props.item.dono = false; guardaEntDonos(props.item.classe)">Continuar</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </td>
                 <td>
-                    <v-btn fab small color="primary">
-                        <v-icon>list</v-icon>
-                    </v-btn>
+                    <v-dialog v-model="props.item.participante" scrollable persistent width="700px" v-if="entProcParReady">
+                        <template v-slot:activator="{ on }">
+                            <v-btn fab small color="primary" v-on="on">
+                                <v-icon>list</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title>
+                                <span class="headline">Selecione as entidades participante no processo: {{ props.item.classe }} </span>
+                            </v-card-title>
+                            <v-divider></v-divider>
+                            <v-card-text style="height: 400px;" >
+                                <div v-for="e in entidades" :key="e.id"  >
+                                    <template>
+                                    <v-btn color="primary" fab small dark @click="dialog[props.item.classe][e.id] = !dialog[props.item.classe][e.id]; props.item.participante = false"> 
+                                        <v-icon dark>add</v-icon> 
+                                    </v-btn>
+                                        {{ e.designacao + '  (' + e.sigla + ') ' }}
+                                    </template>
+                                    <div style="flex: 1 1 auto;">
+                                    <v-dialog v-model="dialog[props.item.classe][e.id]" max-width="500px">
+                                        <v-card>
+                                            <v-card-title>
+                                                {{ "Selecione o tipo de intervenção da entidade: " + e.id }}
+                                                <br />
+                                                {{ "No processo: " + props.item.classe }}
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <v-select
+                                                    :items="tipoParticipacao"
+                                                    label="Tipo de intervenção"
+                                                    item-value="text"
+                                                ></v-select>
+                                            </v-card-text>
+                                            <v-card-actions>
+                                                <v-btn color="primary" flat @click="dialog[props.item.classe][e.id]=false; props.item.participante=true">Continuar</v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
+                                    </div>
+                                </div>
+
+                            </v-card-text>
+                            <!--<v-card-text style="height: 400px;" v-else v-if="!entProcPar[props.item.classe].length">
+                                    <v-checkbox 
+                                        v-for="e in entidades" 
+                                        :key="e.id" 
+                                        v-model="entProcPar[props.item.classe]" 
+                                        :value="e.id"
+                                        :label="e.designacao + '  (' + e.sigla + ') '"
+                                    ></v-checkbox>
+                            </v-card-text>-->
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                                <v-btn color="blue darken-1" flat @click="props.item.participante = false; guardaEntPar(props.item.classe)">Continuar</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </td>
             </tr>
         </template>
@@ -70,6 +136,8 @@
 </template>
 
 <script>
+import axios from "axios";
+const lhost = require("@/config/global").host;
 
 export default {
     props: ["lista", "entidades"],
@@ -100,27 +168,70 @@ export default {
     // True quando a lista das entidades donas de cada processo estiver pronta
     entProcDonoReady: false,
     // Para abrir e fechar a caixa de dialogo
-    dialog: false,
+    dialog: {},
     tempDono: [],
+    tempPar: [],
+    // Onde vão ficar armazenados as entidades participantes de cada processo. Por ex: {proc1: [ent1 : "apreciar", ent2 : __]; proc2: [ent1: __,ent3: "iniciar"]}
+    entProcPar: [],
+    // True quando a lista das entidades donas de cada processo estiver pronta
+    entProcParReady: false,
+    // Tipos de participação
+    tipoParticipacao: [],
     }),
     methods: {
         guardaEntDonos: async function(proc){
-            this.entProcDono[proc] = this.tempDono;
-            this.tempDono = [];
+            if(!this.entProcDono[proc].length){
+                this.entProcDono[proc] = this.tempDono;
+                this.tempDono = [];
+            }
             console.log(this.entProcDono)
         },
-        selecTodasEnt: async function(entidades){
-            for( var i = 0; i < entidades.length; i++){
-                this.tempDono.push(entidades[i].id)
+        selecTodasEnt: async function(entidades, proc){
+            if(!proc){
+                for( var i = 0; i < entidades.length; i++){
+                    this.tempDono.push(entidades[i].id)
+                }
+            }
+            else {
+                for( var j = 0; j < entidades.length; j++){
+                    if(!this.entProcDono[proc].includes(entidades[j].id)){
+                        this.entProcDono[proc].push(this.entidades[j].id)
+                    }
+                }
+            }
+        },
+        guardaEntPar: async function(proc){
+            if(!this.entProcPar[proc].length){
+                this.entProcPar[proc] = this.tempPar;
+                this.tempPar = [];
+            }
+            console.log(this.entProcPar)
+        },
+        tipoPar: async function(){
+            var resPar = await axios.get(lhost + "/api/vocabularios/vc_processoTipoParticipacao");
+            for( var i = 0; i < resPar.data.length; i++){
+                this.tipoParticipacao.push(resPar.data[i].termo)
             }
         }
     },
     mounted: async function(){
         try {
+            this.tipoPar();
             for( var i = 0; i < this.lista.length; i++ ){
                 this.entProcDono[this.lista[i].classe] = [];
             }
             this.entProcDonoReady = true;
+            for( var i = 0; i < this.lista.length; i++ ){
+                this.entProcPar[this.lista[i].classe] = [];
+                var tempDialog = [];
+                for(var j = 0; j < this.entidades.length; j++){
+                    tempDialog[this.entidades[j].id] = false
+                }
+                this.dialog[this.lista[i].classe] = tempDialog;
+                tempDialog = [];
+            }
+            console.log(this.dialog)
+            this.entProcParReady = true;
         } catch (err) {
             return err;
         }
