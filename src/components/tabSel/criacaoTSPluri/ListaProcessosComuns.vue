@@ -27,7 +27,7 @@
                     {{ props.item.designacao }}
                 </td> 
                 <td>
-                        <v-dialog v-model="props.item.dono" scrollable width="700px">
+                        <v-dialog v-model="props.item.dono" scrollable persistent width="700px">
                             <template v-slot:activator="{ on }">
                                 <v-btn fab small color="primary" v-on="on">
                                     <v-icon>list</v-icon>
@@ -44,11 +44,12 @@
                                             :key="e.id" 
                                             v-model="tempDono" 
                                             :value="e.id"
-                                            :label="e.designacao"
+                                            :label="e.designacao + '  (' + e.sigla + ') '"
                                         ></v-checkbox>
                                 </v-card-text>
                                 <v-divider></v-divider>
                                 <v-card-actions>
+                                    <v-btn color="blue darken-1" flat @click="selecTodasEnt(entidades);">Selecionar todos</v-btn>
                                     <v-btn color="blue darken-1" flat @click="props.item.dono = false; guardaEntDonos(props.item.classe)">Continuar</v-btn>
                                 </v-card-actions>
                             </v-card>
@@ -107,6 +108,11 @@ export default {
             this.entProcDono[proc] = this.tempDono;
             this.tempDono = [];
             console.log(this.entProcDono)
+        },
+        selecTodasEnt: async function(entidades){
+            for( var i = 0; i < entidades.length; i++){
+                this.tempDono.push(entidades[i].id)
+            }
         }
     },
     mounted: async function(){

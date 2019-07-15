@@ -40,7 +40,7 @@
                     </template>
                   </v-data-table>
                 </v-flex>
-              </v-layout>-->
+              </v-layout>
               <DesSelEnt
                 :entidades="entSel"
                 @unselectEntidade="unselectEntidade($event)"
