@@ -209,6 +209,7 @@ export default {
       this.listaResComuns = newListaResComuns;
       this.listaResRestantes = newListaResRestantes;
 
+      this.$emit("procPreSelResTravCom", this.listaResRestantes);
       this.$emit("contadorProcPreSelCom", this.listaResComuns);
     },
     // Para colocar e retirar qualquer processo da lista de processos comuns selecionados

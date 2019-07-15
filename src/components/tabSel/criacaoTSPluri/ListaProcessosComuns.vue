@@ -20,7 +20,15 @@
             </tr>
         </template>
         <template v-slot:items="props">
-            <tr>
+            <tr
+                :style="{
+                    backgroundColor:
+                        listaResComuns.findIndex(p => p == props.item.classe) != -1 &&
+                        !entProcDono[props.item.classe].length && !(Object.keys(entProcPar[props.item.classe])).length
+                            ? 'orange'
+                            : 'transparent'
+                }"
+            >
                <td>
                    {{ props.item.classe }}
                 </td>
@@ -29,9 +37,14 @@
                 </td> 
                 <td>
                     <v-dialog v-model="props.item.dono" scrollable persistent width="700px">
-                        <template v-slot:activator="{ on }">
+                        <template v-slot:activator="{ on }" v-if="!entProcDono[props.item.classe].length">
                             <v-btn fab small color="primary" v-on="on">
                                 <v-icon>list</v-icon>
+                            </v-btn>
+                        </template>
+                        <template v-slot:activator="{ on }" v-else>
+                            <v-btn fab small color="primary" v-on="on">
+                                <v-icon>check</v-icon>
                             </v-btn>
                         </template>
                         <v-card>
@@ -68,9 +81,14 @@
                 </td>
                 <td>
                     <v-dialog v-model="props.item.participante" scrollable persistent width="700px" v-if="entProcParReady">
-                        <template v-slot:activator="{ on }">
+                        <template v-slot:activator="{ on }" v-if="!(Object.keys(entProcPar[props.item.classe])).length">
                             <v-btn fab small color="primary" v-on="on">
                                 <v-icon>list</v-icon>
+                            </v-btn>
+                        </template>
+                        <template v-slot:activator="{ on }" v-else>
+                            <v-btn fab small color="primary" v-on="on">
+                                <v-icon>check</v-icon>
                             </v-btn>
                         </template>
                         <v-card>
@@ -80,14 +98,20 @@
                             <v-divider></v-divider>
                             <v-card-text style="height: 400px;" >
                                 <div v-for="e in entidades" :key="e.id"  >
-                                    <template>
-                                    <v-btn color="primary" fab small dark @click="dialog[props.item.classe][e.id] = !dialog[props.item.classe][e.id]; props.item.participante = false"> 
-                                        <v-icon dark>add</v-icon> 
-                                    </v-btn>
-                                        {{ e.designacao + '  (' + e.sigla + ') ' }}
+                                    <template v-if="!entProcPar[props.item.classe][e.id]">
+                                        <v-btn color="primary" fab small dark @click="dialog[props.item.classe][e.id] = !dialog[props.item.classe][e.id]; props.item.participante = false"> 
+                                            <v-icon dark>add</v-icon> 
+                                        </v-btn>
+                                            {{ e.designacao + '  (' + e.sigla + ') '}}
+                                    </template>
+                                    <template v-else>
+                                        <v-btn color="primary" fab small dark @click="dialog[props.item.classe][e.id] = !dialog[props.item.classe][e.id]; props.item.participante = false"> 
+                                            <v-icon dark>edit</v-icon> 
+                                        </v-btn>
+                                            {{ e.designacao + '  (' + e.sigla + ') ' + ': ' + entProcPar[props.item.classe][e.id]}}
                                     </template>
                                     <div style="flex: 1 1 auto;">
-                                    <v-dialog v-model="dialog[props.item.classe][e.id]" max-width="500px">
+                                    <v-dialog v-model="dialog[props.item.classe][e.id]" persistent max-width="500px">
                                         <v-card>
                                             <v-card-title>
                                                 {{ "Selecione o tipo de intervenção da entidade: " + e.id }}
@@ -97,6 +121,7 @@
                                             <v-card-text>
                                                 <v-select
                                                     :items="tipoParticipacao"
+                                                    v-model="entProcPar[props.item.classe][e.id]"
                                                     label="Tipo de intervenção"
                                                     item-value="text"
                                                 ></v-select>
@@ -110,15 +135,6 @@
                                 </div>
 
                             </v-card-text>
-                            <!--<v-card-text style="height: 400px;" v-else v-if="!entProcPar[props.item.classe].length">
-                                    <v-checkbox 
-                                        v-for="e in entidades" 
-                                        :key="e.id" 
-                                        v-model="entProcPar[props.item.classe]" 
-                                        :value="e.id"
-                                        :label="e.designacao + '  (' + e.sigla + ') '"
-                                    ></v-checkbox>
-                            </v-card-text>-->
                             <v-divider></v-divider>
                             <v-card-actions>
                                 <v-btn color="blue darken-1" flat @click="props.item.participante = false; guardaEntPar(props.item.classe)">Continuar</v-btn>
@@ -177,14 +193,42 @@ export default {
     entProcParReady: false,
     // Tipos de participação
     tipoParticipacao: [],
+    // Processos comuns selecionados (como dono ou participante ou ambos)
+    procComunsSel: [],
+    // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
+    listaProcResultado: {},
+    // Todas as travessias são carregadas para esta variável
+    travessias: [],
+    // Lista dos processos comuns resultantes das travessias
+    listaResComuns: [],
+    // Lista dos processos restantes resultantes das travessias
+    listaResRestantes: [],
     }),
     methods: {
         guardaEntDonos: async function(proc){
             if(!this.entProcDono[proc].length){
                 this.entProcDono[proc] = this.tempDono;
+                var guardar = {}
+                guardar['dono'] = this.entProcDono;
+                this.$emit("guardarTSProcComuns", guardar);
                 this.tempDono = [];
             }
+            if (!this.procComunsSel.includes(proc) && this.entProcDono[proc].length > 0) {
+                    this.procComunsSel.push(proc);
+                    this.$emit("contadorProcSelCom", this.procComunsSel)
+                    this.calcRel(proc);
+                }
+            else if (this.entProcDono[proc].length == 0) {
+                var index = this.procComunsSel.findIndex(
+                    e => e.classe === proc.classe
+                );
+                this.procComunsSel.splice(index, 1);
+                this.uncheck(proc)
+            }
+            console.log("entProcDono!!")
             console.log(this.entProcDono)
+            console.log("Processos selecionados")
+            console.log(this.procComunsSel)
         },
         selecTodasEnt: async function(entidades, proc){
             if(!proc){
@@ -196,26 +240,138 @@ export default {
                 for( var j = 0; j < entidades.length; j++){
                     if(!this.entProcDono[proc].includes(entidades[j].id)){
                         this.entProcDono[proc].push(this.entidades[j].id)
+                        var guardar = {}
+                        guardar['dono'] = this.entProcDono;
+                        this.$emit("guardarTSProcComuns", guardar);
                     }
                 }
             }
         },
         guardaEntPar: async function(proc){
-            if(!this.entProcPar[proc].length){
-                this.entProcPar[proc] = this.tempPar;
-                this.tempPar = [];
+            var guardar = {}
+            guardar['part'] = this.entProcPar;
+            this.$emit("guardarTSProcComuns", guardar);
+            if( !this.procComunsSel.includes(proc) && Object.keys(this.entProcPar[proc]).length ){
+                this.procComunsSel.push(proc);
+                this.$emit("contadorProcSelCom", this.procComunsSel)
+                this.calcRel(proc);
             }
+            else if (this.entProcDono[proc].length == 0) {
+                var index = this.procComunsSel.findIndex(
+                    e => e.classe === proc.classe
+                );
+                this.procComunsSel.splice(index, 1);
+                this.uncheck(proc)
+            }
+        
+            console.log("entProcPar!!")
             console.log(this.entProcPar)
+            console.log("Processos selecionados")
+            console.log(this.procComunsSel)
         },
         tipoPar: async function(){
             var resPar = await axios.get(lhost + "/api/vocabularios/vc_processoTipoParticipacao");
             for( var i = 0; i < resPar.data.length; i++){
                 this.tipoParticipacao.push(resPar.data[i].termo)
             }
-        }
+        },
+        // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
+        calcRel: async function(processo) {
+            try {
+                // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
+                this.listaProcResultado[processo] = this.travessias[processo];
+
+                // separa o resultado da travessia em duas listas, uma com os processos comuns (que estão presentes na tabela) e os restantes
+                // listaResComuns: Lista dos processos resultantes (das travessias) comuns
+                // listaResRestantes: Lista dos processos resultantes (das travessias) restantes
+                for (var i = 0; i < this.travessias[processo].length; i++) {
+                var procComum = false;
+                for (var j = 0; j < this.lista.length; j++) {
+                    if (
+                    this.lista[j].classe === this.travessias[processo][i] &&
+                    !this.listaResComuns.includes(this.travessias[processo][i])
+                    ) {
+                    this.listaResComuns.push(this.travessias[processo][i]);
+                    procComum = true;
+                    break;
+                    }
+                }
+                if (
+                    !procComum &&
+                    !this.listaResRestantes.includes(this.travessias[processo][i]) &&
+                    !this.listaResComuns.includes(this.travessias[processo][i])
+                ) {
+                    this.listaResRestantes.push(this.travessias[processo][i]);
+                }
+                }
+                // retira aqueles processos que já estão selecionados
+                var procSel = Object.keys(this.listaProcResultado);
+                for (var x = 0; x < procSel.length; x++) {
+                if (this.listaResComuns.includes(procSel[x])) {
+                    this.listaResComuns.splice(
+                    this.listaResComuns.indexOf(procSel[x]),
+                    1
+                    );
+                }
+                }
+
+                this.$emit("procPreSelResTravCom", this.listaResRestantes);
+                this.$emit("contadorProcPreSelCom", this.listaResComuns);
+            } catch (err) {
+                return err;
+            }
+            },
+        // Reverte a seleção
+        uncheck: async function(processo) {
+            // apaga o resultado da travessia desse processo
+            // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
+            delete this.listaProcResultado[processo];
+
+            // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
+            var procSel = Object.keys(this.listaProcResultado);
+            // newListaResComuns: Nova lista dos processos resultantes comuns
+            var newListaResComuns = [];
+            // newListaResRestantes: Nova lista dos processos resultantes restantes
+            var newListaResRestantes = [];
+            for (var i = 0; i < procSel.length; i++) {
+                for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
+                if (
+                    (this.listaResComuns.includes(
+                    this.listaProcResultado[procSel[i]][j]
+                    ) ||
+                    this.listaProcResultado[procSel[i]][j] === processo) &&
+                    !newListaResComuns.includes(this.listaProcResultado[procSel[i]][j])
+                ) {
+                    newListaResComuns.push(this.listaProcResultado[procSel[i]][j]);
+                } else if (
+                    this.listaResRestantes.includes(
+                    this.listaProcResultado[procSel[i]][j]
+                    ) &&
+                    !newListaResRestantes.includes(
+                    this.listaProcResultado[procSel[i]][j]
+                    )
+                ) {
+                    newListaResRestantes.push(this.listaProcResultado[procSel[i]][j]);
+                }
+                }
+            }
+            this.listaResComuns = newListaResComuns;
+            this.listaResRestantes = newListaResRestantes;
+
+            this.$emit("procPreSelResTravCom", this.listaResRestantes);
+            this.$emit("contadorProcPreSelCom", this.listaResComuns);
+        },
     },
     mounted: async function(){
         try {
+            // Vai a API de dados buscar todos os cálculos das travessias
+            var res = await axios.get(lhost + "/api/travessia");
+            var trav = res.data;
+            for (var j = 0; j < trav.length; j++) {
+                this.travessias[trav[j].processo] = trav[j].travessia;
+            }
+            console.log(this.travessias)
+
             this.tipoPar();
             for( var i = 0; i < this.lista.length; i++ ){
                 this.entProcDono[this.lista[i].classe] = [];
