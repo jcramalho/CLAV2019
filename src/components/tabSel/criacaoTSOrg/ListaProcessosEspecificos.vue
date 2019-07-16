@@ -224,6 +224,7 @@ export default {
       this.listaResEspecificos = newListaResEspecificos;
       this.listaResRestantes = newListaResRestantes;
 
+      this.$emit("procPreSelResTravEsp", this.listaResRestantes);
       this.$emit("contadorProcPreSelEsp", this.listaResEspecificos);
     },
     // Para colocar e retirar qualquer processo da lista de processos especificos selecionados

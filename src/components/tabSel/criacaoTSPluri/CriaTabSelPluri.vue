@@ -40,7 +40,7 @@
                     </template>
                   </v-data-table>
                 </v-flex>
-              </v-layout>-->
+              </v-layout>
               <DesSelEnt
                 :entidades="entSel"
                 @unselectEntidade="unselectEntidade($event)"
@@ -115,7 +115,11 @@
                 <ListaProcessosComuns 
                   v-if="listaProcComunsReady && entSelReady"
                   v-bind:lista="listaProcComuns"
-                  v-bind:entidades="tabelaSelecao.entidades"/>
+                  v-bind:entidades="tabelaSelecao.entidades"
+                  @contadorProcSelCom="contadorProcSelCom($event)"
+                  @contadorProcPreSelCom="contadorProcPreSelCom($event)"
+                  @procPreSelResTravCom="procPreSelResTravCom($event)"
+                  @guardarTSProcComuns="guardarTSProcComuns($event)"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
@@ -124,11 +128,13 @@
           <v-flex xs3>
             <v-text-field
               label="Nº de processos comuns selecionados"
+              :value="numProcSelCom"
             ></v-text-field>
           </v-flex>
           <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos comuns pré selecionados"
+              :value="numProcPreSelCom"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -335,6 +341,10 @@ export default {
         designacao: "",
         idEntidade: "",
         entidades: [],
+        procComuns: [],
+        procEspecificos: [],
+        procEspRestantes: [],
+        procUltimos: []
       },
       // Numero do passo da criação de TS
       stepNo: 1,
@@ -354,6 +364,12 @@ export default {
       entSelReady: false,
       // True quando a lista de todos os processos comuns existentes estiver completa
       listaProcComunsReady: false,
+      // Numero de processos comuns selecionados
+      numProcSelCom: 0,
+      // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs comuns)
+      procPreSelResTravComum: [],
+      // Numero de processos comuns que se encontram pré selecionados
+      numProcPreSelCom: 0,
     };
   },
   methods: {
@@ -427,16 +443,50 @@ export default {
                 classe: response.data[i].codigo,
                 designacao: response.data[i].titulo,
                 dono: false,
-                participante: true
+                participante: false
               });
           }
           this.listaProcComunsReady = true;
+
+          // coloca os proc comuns prontos para receber a info da seleção
+          for( var j = 0; j < this.listaProcComuns.length; j++){
+            this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe] = ({
+              dono: [],
+              part: []
+            })
+          }
           return this.listaProcComuns;
         }
       } catch (err) {
         return err;
       }
     },
+    // Contador dos processos selecionados comuns
+    contadorProcSelCom: function(procSelec) {
+      this.numProcSelCom = procSelec.length;
+    },
+    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
+    procPreSelResTravCom: function(procPreSelResTravCom) {
+      this.procPreSelResTravComum = procPreSelResTravCom;
+    },
+    // Contador dos processos pre selecionados comuns
+    contadorProcPreSelCom: function(lista) {
+      this.numProcPreSelCom = lista.length;
+    },
+    // 
+    guardarTSProcComuns: function(procComuns){
+      if( Object.keys(procComuns) == "dono" ){
+        for( var i = 0; i < this.listaProcComuns.length; i++){
+          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].dono = procComuns['dono'][this.listaProcComuns[i].classe]
+        }
+      }
+      else {
+        for( var i = 0; i < this.listaProcComuns.length; i++){
+          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].part = procComuns['part'][this.listaProcComuns[i].classe]
+        }
+      }
+      console.log(this.tabelaSelecao.procComuns)
+    }
   },
   created: async function() {
     await this.infoUserEnt();
