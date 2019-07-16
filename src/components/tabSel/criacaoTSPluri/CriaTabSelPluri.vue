@@ -447,6 +447,14 @@ export default {
               });
           }
           this.listaProcComunsReady = true;
+
+          // coloca os proc comuns prontos para receber a info da seleção
+          for( var j = 0; j < this.listaProcComuns.length; j++){
+            this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe] = ({
+              dono: [],
+              part: []
+            })
+          }
           return this.listaProcComuns;
         }
       } catch (err) {
@@ -468,11 +476,16 @@ export default {
     // 
     guardarTSProcComuns: function(procComuns){
       if( Object.keys(procComuns) == "dono" ){
-        console.log(procComuns['dono'])
+        for( var i = 0; i < this.listaProcComuns.length; i++){
+          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].dono = procComuns['dono'][this.listaProcComuns[i].classe]
+        }
       }
       else {
-        console.log("part")
+        for( var i = 0; i < this.listaProcComuns.length; i++){
+          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].part = procComuns['part'][this.listaProcComuns[i].classe]
+        }
       }
+      console.log(this.tabelaSelecao.procComuns)
     }
   },
   created: async function() {

@@ -208,9 +208,6 @@ export default {
         guardaEntDonos: async function(proc){
             if(!this.entProcDono[proc].length){
                 this.entProcDono[proc] = this.tempDono;
-                var guardar = {}
-                guardar['dono'] = this.entProcDono;
-                this.$emit("guardarTSProcComuns", guardar);
                 this.tempDono = [];
             }
             if (!this.procComunsSel.includes(proc) && this.entProcDono[proc].length > 0) {
@@ -225,12 +222,18 @@ export default {
                 this.procComunsSel.splice(index, 1);
                 this.uncheck(proc)
             }
+            var guardar = {}
+            guardar['dono'] = this.entProcDono;
+            this.$emit("guardarTSProcComuns", guardar);
             console.log("entProcDono!!")
             console.log(this.entProcDono)
             console.log("Processos selecionados")
             console.log(this.procComunsSel)
         },
         selecTodasEnt: async function(entidades, proc){
+            var guardar = {}
+            guardar['dono'] = this.entProcDono;
+            this.$emit("guardarTSProcComuns", guardar);
             if(!proc){
                 for( var i = 0; i < entidades.length; i++){
                     this.tempDono.push(entidades[i].id)
@@ -240,9 +243,6 @@ export default {
                 for( var j = 0; j < entidades.length; j++){
                     if(!this.entProcDono[proc].includes(entidades[j].id)){
                         this.entProcDono[proc].push(this.entidades[j].id)
-                        var guardar = {}
-                        guardar['dono'] = this.entProcDono;
-                        this.$emit("guardarTSProcComuns", guardar);
                     }
                 }
             }
@@ -256,7 +256,7 @@ export default {
                 this.$emit("contadorProcSelCom", this.procComunsSel)
                 this.calcRel(proc);
             }
-            else if (this.entProcDono[proc].length == 0) {
+            else if (Object.keys(this.entProcPar[proc]).length == 0) {
                 var index = this.procComunsSel.findIndex(
                     e => e.classe === proc.classe
                 );

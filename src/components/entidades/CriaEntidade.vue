@@ -142,11 +142,6 @@ export default {
       sioe: "",
       tipologiasSel: [],
       codigo: "",
-      // user: email para a API saber qual o email associado a esse pedido
-      user: {
-        token: "",
-        email: ""
-      }
     },
 
     // Para o seletor de processos

@@ -206,9 +206,6 @@ export default {
       link: "",
       entidades: [],
       processos: [],
-      // user: email para a API saber qual o email associado a esse pedido
-      token: "",
-      email: ""
     },
 
     tiposDiploma: [],
