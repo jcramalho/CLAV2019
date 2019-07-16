@@ -19,6 +19,7 @@
                 <v-expansion-panel popout>
                     <PedidosLista :pedidos="pedidosDistribuidos" 
                                   titulo="Pedidos em apreciação técnica"
+                                  @analisar="analisaPedido($event)"
                                   @show="showPedido($event)"/>
                 </v-expansion-panel>
 
@@ -258,6 +259,10 @@ export default {
       } catch (e) {
         return e;
       }
+    },
+
+    analisaPedido: function(pedido){
+      this.$router.push("/pedidos/analisar/"+pedido.codigo);
     },
 
     cancelarDistribuicao: function(){

@@ -134,7 +134,7 @@ export default {
       },
 
       analisaPedido: function(pedido){
-        return true
+        this.$emit('analisar', pedido)
       }
   }
 };

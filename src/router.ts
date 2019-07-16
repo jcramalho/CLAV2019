@@ -129,6 +129,11 @@ export default new Router({
       name: "consultaPedido",
       component: () => import("./views/pedidos/PedidosConsulta.vue")
     },
+    {
+      path: "/pedidos/analisar/:idPedido",
+      name: "analisePedido",
+      component: () => import("./views/pedidos/PedidosAnalise.vue")
+    },
     // Routes dos pendentes (trabalho guardado)
     {
       path: "/pendentes",
