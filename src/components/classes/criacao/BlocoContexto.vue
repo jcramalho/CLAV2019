@@ -251,6 +251,18 @@ export default {
               }
             }
           }
+          else if(criterios[i].tipo == "CriterioJustificacaoLegal"){
+            if(criterios[i].legislacao.length > 0){
+              index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
+              if(index != -1){
+                criterios[i].legislacao.splice(index, 1)
+                if(criterios[i].legislacao.length == 0){
+                  criterios.splice(i, 1)
+                  this.semaforos.critLegalAdicionadoPCA = false
+                }
+              }
+            }
+          }
         }
       }
       // Com subdivisão
@@ -269,6 +281,17 @@ export default {
                 }
               }
             }
+            else if(criterios[i].tipo == "CriterioJustificacaoLegal"){
+              if(criterios[i].legislacao.length > 0){
+                index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
+                if(index != -1){
+                  criterios[i].legislacao.splice(index, 1)
+                  if(criterios[i].legislacao.length == 0){
+                    criterios.splice(i, 1)
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -280,6 +303,18 @@ export default {
       // Sem subdivisão
       if(!this.c.temSubclasses4Nivel){
         criterios = this.c.df.justificacao
+
+        if(criterios[i].tipo == "CriterioJustificacaoLegal"){
+          if(criterios[i].legislacao.length > 0){
+            index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
+            if(index != -1){
+              criterios[i].legislacao.splice(index, 1)
+              if(criterios[i].legislacao.length == 0){
+                criterios.splice(i, 1)
+              }
+            }
+          }
+        }
 
         if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
           indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
@@ -306,6 +341,18 @@ export default {
       else{
         for(j=0; j < this.c.subclasses.length; j++){
           criterios = this.c.subclasses[j].df.justificacao
+
+          if(criterios[i].tipo == "CriterioJustificacaoLegal"){
+            if(criterios[i].legislacao.length > 0){
+              index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
+              if(index != -1){
+                criterios[i].legislacao.splice(index, 1)
+                if(criterios[i].legislacao.length == 0){
+                  criterios.splice(i, 1)
+                }
+              }
+            }
+          }
 
           if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
             indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
@@ -528,6 +575,10 @@ export default {
       this.legs.push(diploma);
       var index = this.c.legislacao.findIndex(e => e.id === diploma.id);
       this.c.legislacao.splice(index, 1);
+
+      // Remover os critérios quando já não há relações que os suportem
+      this.verificaCriteriosPCA(diploma)
+      this.verificaCriteriosDF(diploma)
     },
 
     // Adiciona um critério à lista de critérios do PCA ou do DF....................

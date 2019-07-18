@@ -16,7 +16,7 @@
       <div class="info-content">
         <ul>
           <li v-for="n in notas" :key="n.idNota">
-            {{ n.nota }}
+            {{ analisaRefs(n.nota) }}
           </li>
         </ul>
       </div>
@@ -32,8 +32,20 @@ export default {
   props: ["notas"],
   components: { InfoBox },
   data: () => ({
-    myhelp: help
-  })
+    myhelp: help,
+    codeFormats: {
+      1: /^[0-9]{3}$/,
+      2: /^[0-9]{3}\.[0-9]{2}$/,
+      3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
+      4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
+    },
+  }),
+  methods: {
+    analisaRefs: function(nota){
+      if(this.codeFormats[2].matches(nota)){}
+      return nota
+    }
+  }
 };
 </script>
 

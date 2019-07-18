@@ -315,6 +315,9 @@ export default {
     unselectDiploma: function(diploma, listaLeg) {
       var index = listaLeg.findIndex(e => e.id === diploma.id);
       listaLeg.splice(index, 1);
+      if(listaLeg.length == 0){
+        this.semaforos.critLegalAdicionadoPCA = false
+      }
     }
   }
 };

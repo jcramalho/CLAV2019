@@ -224,11 +224,6 @@ export default {
       listaProc.splice(index, 1);
     },
 
-    unselectDiploma: function(diploma, listaLeg) {
-      var index = listaLeg.findIndex(e => e.id === diploma.id);
-      listaLeg.splice(index, 1);
-    },
-
     // Calcula o destino final para o contexto do momento
     calcDF: function(listaProc) {
       var res = "NE";
