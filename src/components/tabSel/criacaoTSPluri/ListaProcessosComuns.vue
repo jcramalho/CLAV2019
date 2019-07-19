@@ -24,7 +24,7 @@
                 :style="{
                     backgroundColor:
                         listaResComuns.findIndex(p => p == props.item.classe) != -1 &&
-                        !entProcDono[props.item.classe].length && !(Object.keys(entProcPar[props.item.classe])).length
+                        !entProcDono[props.item.classe][Object.keys(entProcDono[props.item.classe])] && !(Object.keys(entProcPar[props.item.classe])).length
                             ? 'orange'
                             : 'transparent'
                 }"
@@ -37,7 +37,7 @@
                 </td> 
                 <td>
                     <v-dialog v-model="props.item.dono" scrollable persistent width="700px">
-                        <template v-slot:activator="{ on }" v-if="!entProcDono[props.item.classe].length">
+                        <template v-slot:activator="{ on }" v-if=" !procSelDonos.includes(props.item.classe) ">
                             <v-btn fab small color="primary" v-on="on">
                                 <v-icon>list</v-icon>
                             </v-btn>
@@ -52,28 +52,17 @@
                                 <span class="headline">Selecione as entidades donas do processo: {{ props.item.classe }} </span>
                             </v-card-title>
                             <v-divider></v-divider>
-                            <v-card-text style="height: 400px;" v-if="!entProcDono[props.item.classe].length">
+                            <v-card-text style="height: 400px;">
                                     <v-checkbox 
                                         v-for="e in entidades" 
                                         :key="e.id" 
-                                        v-model="tempDono" 
-                                        :value="e.id"
-                                        :label="e.designacao + '  (' + e.sigla + ') '"
-                                    ></v-checkbox>
-                            </v-card-text>
-                            <v-card-text style="height: 400px;" v-else>
-                                    <v-checkbox 
-                                        v-for="e in entidades" 
-                                        :key="e.id" 
-                                        v-model="entProcDono[props.item.classe]" 
-                                        :value="e.id"
+                                        v-model="entProcDono[props.item.classe][e.id]" 
                                         :label="e.designacao + '  (' + e.sigla + ') '"
                                     ></v-checkbox>
                             </v-card-text>
                             <v-divider></v-divider>
                             <v-card-actions>
-                                <v-btn color="blue darken-1" flat v-if="!entProcDono[props.item.classe].length" @click="selecTodasEnt(entidades);">Selecionar todos</v-btn>
-                                <v-btn color="blue darken-1" flat v-else @click="selecTodasEnt(entidades, props.item.classe)">Selecionar todos</v-btn>
+                                <v-btn color="blue darken-1" flat @click="props.item.dono = false; selecTodasEnt(entidades, props.item.classe)">Selecionar todos</v-btn>
                                 <v-btn color="blue darken-1" flat @click="props.item.dono = false; guardaEntDonos(props.item.classe)">Continuar</v-btn>
                             </v-card-actions>
                         </v-card>
@@ -114,7 +103,7 @@
                                     <v-dialog v-model="dialog[props.item.classe][e.id]" persistent max-width="500px">
                                         <v-card>
                                             <v-card-title>
-                                                {{ "Selecione o tipo de intervenção da entidade: " + e.id }}
+                                                {{ "Selecione o tipo de intervenção da entidade: " + e.sigla }}
                                                 <br />
                                                 {{ "No processo: " + props.item.classe }}
                                             </v-card-title>
@@ -185,7 +174,6 @@ export default {
     entProcDonoReady: false,
     // Para abrir e fechar a caixa de dialogo
     dialog: {},
-    tempDono: [],
     tempPar: [],
     // Onde vão ficar armazenados as entidades participantes de cada processo. Por ex: {proc1: [ent1 : "apreciar", ent2 : __]; proc2: [ent1: __,ent3: "iniciar"]}
     entProcPar: [],
@@ -203,49 +191,58 @@ export default {
     listaResComuns: [],
     // Lista dos processos restantes resultantes das travessias
     listaResRestantes: [],
+    // Lista dos processos selecionados como donos
+    procSelDonos: []
     }),
     methods: {
         guardaEntDonos: async function(proc){
-            if(!this.entProcDono[proc].length){
-                this.entProcDono[proc] = this.tempDono;
-                this.tempDono = [];
-            }
-            if (!this.procComunsSel.includes(proc) && this.entProcDono[proc].length > 0) {
-                    this.procComunsSel.push(proc);
-                    this.$emit("contadorProcSelCom", this.procComunsSel)
-                    this.calcRel(proc);
+            for( var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++){
+                var haDono = false;
+                if( this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]] ){
+                    haDono = true;
+                    if (!this.procComunsSel.includes(proc)) {
+                        this.procComunsSel.push(proc);
+                        this.procSelDonos.push(proc);
+                        this.$emit("contadorProcSelCom", this.procComunsSel);
+                        this.calcRel(proc);
+                    }
+                    break;
                 }
-            else if (this.entProcDono[proc].length == 0) {
-                var index = this.procComunsSel.findIndex(
-                    e => e.classe === proc.classe
-                );
-                this.procComunsSel.splice(index, 1);
-                this.uncheck(proc)
             }
+            if( !haDono ){
+                if (Object.keys(this.entProcPar[proc]).length == 0) {
+                    var index = this.procComunsSel.indexOf(proc);
+                    var indexDono = this.procSelDonos.indexOf(proc);
+                    if( index != -1){
+                        this.procComunsSel.splice(index, 1);
+                        this.procSelDonos.push(proc)
+                        this.uncheck(proc);
+                        this.$emit("contadorProcSelCom", this.procComunsSel);
+                    }
+                }
+            }
+
             var guardar = {}
             guardar['dono'] = this.entProcDono;
             this.$emit("guardarTSProcComuns", guardar);
-            console.log("entProcDono!!")
+            console.log("Guardei entProcDono!!")
             console.log(this.entProcDono)
             console.log("Processos selecionados")
             console.log(this.procComunsSel)
         },
         selecTodasEnt: async function(entidades, proc){
+            for( var i = 0; i < entidades.length; i++){
+                this.entProcDono[proc][entidades[i].id] = true;
+            }
+            if (!this.procComunsSel.includes(proc)) {
+                    this.procComunsSel.push(proc);
+                    this.procSelDonos.push(proc)
+                    this.$emit("contadorProcSelCom", this.procComunsSel);
+                    this.calcRel(proc);
+            }
             var guardar = {}
             guardar['dono'] = this.entProcDono;
             this.$emit("guardarTSProcComuns", guardar);
-            if(!proc){
-                for( var i = 0; i < entidades.length; i++){
-                    this.tempDono.push(entidades[i].id)
-                }
-            }
-            else {
-                for( var j = 0; j < entidades.length; j++){
-                    if(!this.entProcDono[proc].includes(entidades[j].id)){
-                        this.entProcDono[proc].push(this.entidades[j].id)
-                    }
-                }
-            }
         },
         guardaEntPar: async function(proc){
             var guardar = {}
@@ -257,14 +254,24 @@ export default {
                 this.calcRel(proc);
             }
             else if (Object.keys(this.entProcPar[proc]).length == 0) {
-                var index = this.procComunsSel.findIndex(
-                    e => e.classe === proc.classe
-                );
-                this.procComunsSel.splice(index, 1);
-                this.uncheck(proc)
+                var haDono = false;
+                for( var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++){
+                    if( this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]] ){
+                        haDono = true;
+                        break;
+                        }
+                }
+                if( !haDono ){
+                    var index = this.procComunsSel.indexOf(proc);
+                    if( index != -1 ){
+                        this.procComunsSel.splice(index, 1);
+                        this.uncheck(proc);
+                        this.$emit("contadorProcSelCom", this.procComunsSel);
+                    }
+                }
             }
         
-            console.log("entProcPar!!")
+            console.log("Guardei entProcPar!!")
             console.log(this.entProcPar)
             console.log("Processos selecionados")
             console.log(this.procComunsSel)
@@ -370,15 +377,17 @@ export default {
             for (var j = 0; j < trav.length; j++) {
                 this.travessias[trav[j].processo] = trav[j].travessia;
             }
-            console.log(this.travessias)
 
             this.tipoPar();
             for( var i = 0; i < this.lista.length; i++ ){
-                this.entProcDono[this.lista[i].classe] = [];
+                this.entProcDono[this.lista[i].classe] = {};
+                for(var j = 0; j < this.entidades.length; j++){
+                    this.entProcDono[this.lista[i].classe][this.entidades[j].id] = false
+                }
             }
             this.entProcDonoReady = true;
             for( var i = 0; i < this.lista.length; i++ ){
-                this.entProcPar[this.lista[i].classe] = [];
+                this.entProcPar[this.lista[i].classe] = {};
                 var tempDialog = [];
                 for(var j = 0; j < this.entidades.length; j++){
                     tempDialog[this.entidades[j].id] = false
@@ -386,7 +395,6 @@ export default {
                 this.dialog[this.lista[i].classe] = tempDialog;
                 tempDialog = [];
             }
-            console.log(this.dialog)
             this.entProcParReady = true;
         } catch (err) {
             return err;
