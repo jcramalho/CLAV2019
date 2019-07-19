@@ -320,7 +320,7 @@ export default {
                         var indexDono = this.procSelDonos.indexOf(proc);
                         if( index != -1){
                             this.procEspSel.splice(index, 1);
-                            this.procSelDonos.push(proc)
+                            this.procSelDonos.splice(indexDono, 1);
                             this.uncheck(proc);
                             this.$emit("contadorProcSelEsp", this.procEspSel);
                         }
