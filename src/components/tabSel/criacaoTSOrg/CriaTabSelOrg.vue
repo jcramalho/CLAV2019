@@ -629,14 +629,14 @@ export default {
     barra: async function(valor) {
       this.valorBarra = valor;
     },
-    // Carrega os processos específicos da entidade em causa
+    // Carrega os processos específicos da entidade e das tipologias em causa
     loadProcEspecificos: async function() {
       try {
         if (!this.listaProcEspReady) {
           this.tipSel = this.tipSel.concat(this.tipEnt);
           var url =
             lhost +
-            "/api/classes?tipo=especifico&ent=" +
+            "/api/classes?tipo=especifico&ents=" +
             this.tabelaSelecao.idEntidade;
           if (this.tipSel.length || this.tipEnt.length) {
             url += "&tips=";

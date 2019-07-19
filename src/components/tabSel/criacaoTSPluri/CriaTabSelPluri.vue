@@ -84,6 +84,7 @@
           @click="
             stepNo = 3;
             barra(32);
+            loadProcEspecificos();
             print();
           "
           >Continuar</v-btn
@@ -144,6 +145,7 @@
           @click="
             stepNo = 4;
             barra(48);
+            procPreSelEspecificos();
           "
           >Continuar</v-btn
         >
@@ -174,6 +176,16 @@
                     Selecione os Processos de Negócio Específicos
                   </div>
                 </template>
+                <ListaProcessosEspecificos
+                  v-if="listaProcEspReady"
+                  v-bind:lista="listaProcEsp"
+                  v-bind:listaPreSel="procPreSelResTravComum"
+                  v-bind:entidades="tabelaSelecao.entidades"
+                  @contadorProcSelEsp="contadorProcSelEsp($event)"
+                  @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
+                  @procPreSelResTravEsp="procPreSelResTravEsp($event)"
+                  @guardarTSProcEsp="guardarTSProcEsp($event)"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
@@ -182,11 +194,13 @@
           <v-flex xs3>
             <v-text-field
               label="Nº de processos específicos selecionados"
+              :value="numProcSelEsp"
             ></v-text-field>
           </v-flex>
           <v-flex xs4 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos específicos pré selecionados"
+              :value="numProcPreSelEsp"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -326,13 +340,15 @@ const lhost = require("@/config/global").host;
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
-import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns.vue"
+import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns.vue";
+import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspecificos.vue"
 
 export default {
   components: {
     DesSelEnt,
     SelEnt,
-    ListaProcessosComuns
+    ListaProcessosComuns,
+    ListaProcessosEspecificos
   },
   data() {
     return {
@@ -370,6 +386,16 @@ export default {
       procPreSelResTravComum: [],
       // Numero de processos comuns que se encontram pré selecionados
       numProcPreSelCom: 0,
+      // True quando a lista de todos os processos especificos da entidade e tipologias em causa estiver completa
+      listaProcEspReady: false,
+      // Lista com todos os processos especificos da entidade e tipologias em causa
+      listaProcEsp: [],
+      // Numero de processos pre selecionados especificos
+      numProcPreSelEsp: 0,
+      // Numero de processos especificos selecionados
+      numProcSelEsp: 0,
+      // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs especificos)
+      procPreSelResTravEspecifico: [],
     };
   },
   methods: {
@@ -473,7 +499,7 @@ export default {
     contadorProcPreSelCom: function(lista) {
       this.numProcPreSelCom = lista.length;
     },
-    // 
+    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
     guardarTSProcComuns: function(procComuns){
       if( Object.keys(procComuns) == "dono" ){
         for( var i = 0; i < this.listaProcComuns.length; i++){
@@ -485,8 +511,77 @@ export default {
           this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].part = procComuns['part'][this.listaProcComuns[i].classe]
         }
       }
+      console.log("Processos comuns da tabela de seleção")
       console.log(this.tabelaSelecao.procComuns)
-    }
+    },
+    // Carrega os processos específicos das entidades em causa
+    loadProcEspecificos: async function() {
+      try {
+        if(!this.listaProcEspReady){
+          var url = lhost + "/api/classes?tipo=especifico&ents=" 
+          for( var i = 0; i < this.tabelaSelecao.entidades.length - 1; i++){
+            url += this.tabelaSelecao.entidades[i].id + ",";
+          }
+          url += this.tabelaSelecao.entidades[i].id;
+        }
+        var response = await axios.get(url);
+        for( var j = 0; j < response.data.length; j++){
+          this.listaProcEsp.push({
+            classe: response.data[j].codigo,
+            designacao: response.data[j].titulo,
+            dono: false,
+            participante: false
+          })
+        }
+        
+        // coloca os proc comuns prontos para receber a info da seleção
+        for( var j = 0; j < this.listaProcEsp.length; j++){
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[j].classe] = ({
+            dono: [],
+            part: []
+          })
+        }
+
+      } catch (error) {
+        return error;
+      }
+    },
+    procPreSelEspecificos: function() {
+      if(!this.listaProcEspReady){
+        for( var i = 0; i < this.listaProcEsp.length; i++) {
+          if( this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)){
+            this.numProcPreSelEsp += 1;
+          }
+        }
+      }
+      this.listaProcEspReady = true;
+    },
+    // Contador dos processos selecionados comuns
+    contadorProcSelEsp: function(procSelec) {
+      this.numProcSelEsp = procSelec.length;
+    },
+    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
+    procPreSelResTravEsp: function(procPreSelResTravEsp) {
+      this.procPreSelResTravEspecifico = procPreSelResTravEsp;
+    },
+    // Contador dos processos pre selecionados comuns
+    contadorProcPreSelEsp: function(lista) {
+      this.numProcPreSelEsp = lista.length;
+    },
+    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
+    guardarTSProcEsp: function(procEsp){
+      if( Object.keys(procEsp) == "dono" ){
+        for( var i = 0; i < this.listaProcEsp.length; i++){
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[i].classe].dono = procEsp['dono'][this.listaProcEsp[i].classe]
+        }
+      }
+      else {
+        for( var i = 0; i < this.listaProcEsp.length; i++){
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[i].classe].part = procEsp['part'][this.listaProcEsp[i].classe]
+        }
+      }
+      console.log(this.tabelaSelecao.procEspecificos)
+    },
   },
   created: async function() {
     await this.infoUserEnt();
