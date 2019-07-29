@@ -141,9 +141,9 @@
 
           <v-flex xs9 v-if="crit.tipo == 'CriterioJustificacaoDensidadeInfo'">
             <div class="info-content">
-              <p>
+              <p v-if="crit.procRel.filter(p => p.relacao == 'eSinteseDe').length > 0">
                 <span
-                  >Informação pertinente não recuprável noutro PN. Sintetiza a
+                  >Informação pertinente não recuperável noutro PN. Sintetiza a
                   informação de:
                 </span>
                 <span
@@ -166,7 +166,7 @@
                   <span v-else>, </span>
                 </span>
               </p>
-              <p>
+              <p  v-if="crit.procRel.filter(p => p.relacao == 'eSintetizadoPor').length > 0">
                 <span>Informação sintetizada em: </span>
                 <span
                   v-for="(p, i) in crit.procRel.filter(

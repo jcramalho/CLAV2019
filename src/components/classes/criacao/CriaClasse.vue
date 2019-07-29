@@ -197,6 +197,21 @@
         {{ mensagemPedidoEliminado }}
         <v-btn flat @click="pedidoEliminado = false">Fechar</v-btn>
       </v-snackbar>
+
+      <v-dialog v-model="errosValidacao" width="60%" >
+        <v-card>
+          <v-card-title class="headline">Erros detetados na validação</v-card-title>
+          <v-card-text>
+            <p>Há erros de validação. Selecione "Validar" para ver extamente quais e proceder à sua correção.</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="red darken-4"
+              round dark
+              @click="errosValidacao=false">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
 
   </v-container>
@@ -207,6 +222,7 @@ const lhost = require("@/config/global").host;
 const axios = require("axios");
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
+const criteriosLabels = require("@/config/labels").criterios;
 
 import InfoBox from "@/components/generic/infoBox.vue";
 
@@ -347,6 +363,7 @@ export default {
     },
 
     pedidoCriado: false,
+    errosValidacao: false,
     mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
     pedidoEliminado: false,
     mensagemPedidoEliminado: "Este trabalho foi eliminado.",
@@ -355,17 +372,7 @@ export default {
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
-    mensValCodigo: "",
-
-    textoCriterioUtilidadeAdministrativa:
-      "Prazo decorrente da necessidade de consulta para apuramento da " +
-      "responsabilidade em sede de: ",
-    textoCriterioComplementaridade: "É complementar de: ",
-    textoCriterioDensidadeSinPor: "Informação sintetizada em: ",
-    textoCriterioDensidadeSinDe:
-      "Informação pertinente não recuperável noutro PN. Sintetiza a informação de: ",
-    textoCriterioLegal:
-      'Prazo prescricional estabelecido em "diplomas selecionados no contexto de avaliação": '
+    mensValCodigo: ""
   }),
 
   watch: {
@@ -773,7 +780,7 @@ export default {
             novaClasse.pca.justificacao,
             "CriterioJustificacaoUtilidadeAdministrativa",
             "Critério de Utilidade Administrativa",
-            this.textoCriterioUtilidadeAdministrativa,
+            criteriosLabels.textoCriterioUtilidadeAdministrativa,
             [procRel[i]],
             []
           );
@@ -784,7 +791,7 @@ export default {
             novaClasse.pca.justificacao,
             "CriterioJustificacaoLegal",
             "Critério Legal",
-            this.textoCriterioLegal,
+            criteriosLabels.textoCriterioLegal,
             [procRel[i]],
             this.classe.legislacao
           );
@@ -796,7 +803,7 @@ export default {
             novaClasse.df.justificacao,
             "CriterioJustificacaoDensidadeInfo",
             "Critério de Densidade Informacional",
-            this.textoCriterioDensidadeSinDe,
+            criteriosLabels.textoCriterioDensidadeSinDe,
             [procRel[i]],
             []
           );
@@ -807,7 +814,7 @@ export default {
             novaClasse.df.justificacao,
             "CriterioJustificacaoDensidadeInfo",
             "Critério de Densidade Informacional",
-            this.textoCriterioDensidadeSinPor,
+            criteriosLabels.textoCriterioDensidadeSinPor,
             [procRel[i]],
             []
           );
@@ -818,7 +825,7 @@ export default {
             novaClasse.df.justificacao,
             "CriterioJustificacaoComplementaridadeInfo",
             "Critério de Complementaridade Informacional",
-            this.textoCriterioComplementaridade,
+            criteriosLabels.textoCriterioComplementaridade,
             [procRel[i]],
             []
           );
@@ -885,6 +892,157 @@ export default {
       return response.data;
     },
 
+    notaDuplicada: function(notas){
+      if(notas.length > 1){
+        var lastNota = notas[notas.length-1].nota
+        var duplicados = notas.filter(n => n.nota == lastNota )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
+    exemploDuplicado: function(exemplos){
+      if(exemplos.length > 1){
+        var lastExemplo = exemplos[exemplos.length-1].exemplo
+        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
+    // Valida a classe antes de a criar
+
+    validaClasse: async function(c){
+      var i = 0, numeroErros = 0
+      
+      // Codigo
+      if(c.codigo){
+        if (c.nivel >1){
+          if(!c.pai.codigo){
+            numeroErros++
+          }
+          else{
+            if(!c.codigo.includes(c.pai.codigo)){
+              numeroErros++
+            }
+          }
+          if (!this.codeFormats[c.nivel].test(c.codigo)) {
+            numeroErros++
+          }
+        }
+        try{
+          var existe = await this.verificaExistenciaCodigo(c.codigo);
+          if (existe) {
+            numeroErros++
+          }
+        }
+        catch(e){
+          numeroErros++
+        }
+      }
+      else{
+        numeroErros++
+      }
+  
+      // Título
+      if(c.titulo == ""){
+        numeroErros++
+      }
+      else {
+        try{
+          var existeTitulo = await axios.post( lhost + '/api/classes/verificarTitulo', {titulo: c.titulo})
+          if(existeTitulo.data){
+            numeroErros++
+          }
+        }
+        catch(e){
+          numeroErros++
+        }
+      }
+      
+      // Notas de Aplicação
+      for(i=0; i < c.notasAp.length; i++){
+        try{
+          var existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: c.notasAp[i].nota})
+          if(existeNotaAp.data){
+            numeroErros++
+          }
+        }
+        catch(e){
+          numeroErros++
+        }
+      }
+      if(this.notaDuplicada(c.notasAp)){
+          numeroErros++
+      }
+
+      // Exemplos de notas de Aplicação
+      for(i=0; i < c.exemplosNotasAp.length; i++){
+        try{
+          var existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: c.exemplosNotasAp[i].exemplo})
+          if(existeExemploNotaAp.data){
+            numeroErros++
+          }
+        }
+        catch(e){
+          numeroErros++
+        }
+      }
+      if(this.exemploDuplicado(c.exemplosNotasAp)){
+        numeroErros++
+      }
+
+      // Notas de Exclusão
+      if(this.notaDuplicada(c.notasEx)){
+        numeroErros++
+      }
+
+      // Decisões
+      // Sem subdivisão
+      if((c.nivel == 3)&&(!c.temSubclasses4Nivel)){
+        // PCA: prazo
+        if((c.pca.valor<0)||(c.pca.valor>200)||(!c.pca.valor)){
+          numeroErros++
+        }
+        // PCA: forma e subforma de contagem
+        if(c.pca.formaContagem == ""){
+          numeroErros++
+        }
+        else if((c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(c.pca.subFormaContagem == "")){
+          numeroErros++
+        }
+      }
+      // Com subdivisão
+      else if((c.nivel == 3)&&(c.temSubclasses4Nivel)){
+        var subclasse = {}
+        // PCA: prazo
+        for(i=0; i < c.subclasses.length; i++){
+          subclasse = c.subclasses[i]
+          if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)||(!subclasse.pca.valor)){
+            numeroErros++
+          }
+          // PCA: forma e subforma de contagem
+          if(subclasse.pca.formaContagem == ""){
+            numeroErros++
+          }
+          else if((subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(subclasse.pca.subFormaContagem == "")){
+            numeroErros++
+          }
+        }
+      }
+      return numeroErros
+    },
+
     // Lança o pedido de criação da classe no worflow
 
     criarClasse: async function() {
@@ -892,23 +1050,28 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          var userBD = await axios.get(
-            lhost + "/api/users/listarToken/" + this.$store.state.token
-          );
-          var pedidoParams = {
-            tipoPedido: "Criação",
-            tipoObjeto: "Classe",
-            novoObjeto: this.classe,
-            user: {email: userBD.data.email},
-            token: this.$store.state.token
-          };
+          var erros = await this.validaClasse(this.classe)
+          if(erros == 0){
+            var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
+            var pedidoParams = {
+              tipoPedido: "Criação",
+              tipoObjeto: "Classe",
+              novoObjeto: this.classe,
+              user: {email: userBD.data.email},
+              token: this.$store.state.token
+            };
 
-          var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
-          this.mensagemPedidoCriadoOK += response.data.codigo;
-          this.pedidoCriado = true;
-        }
-      } catch (error) {
-        return error;
+            var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+            this.mensagemPedidoCriadoOK += response.data.codigo;
+            this.pedidoCriado = true;
+          }
+          else{
+            this.errosValidacao = true
+          }
+        } 
+      }
+      catch (error) {
+          return error;
       }
     },
 

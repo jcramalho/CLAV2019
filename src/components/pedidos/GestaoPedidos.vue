@@ -20,7 +20,8 @@
                     <PedidosLista :pedidos="pedidosDistribuidos" 
                                   titulo="Pedidos em apreciação técnica"
                                   @analisar="analisaPedido($event)"
-                                  @show="showPedido($event)"/>
+                                  @show="showPedido($event)"
+                    />
                 </v-expansion-panel>
 
                 <v-expansion-panel popout>

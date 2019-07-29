@@ -39,7 +39,21 @@ export default {
       dialog: false,
       
       mensagensErro: [],
-      numeroErros: 0
+      numeroErros: 0,
+
+      codeFormats: {
+        1: /^[0-9]{3}$/,
+        2: /^[0-9]{3}\.[0-9]{2}$/,
+        3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
+      },
+
+      formatoCodigo: {
+        1: "ddd (d - digito)",
+        2: "ddd.dd (d - digito)",
+        3: "ddd.dd.ddd (d - digito)",
+        4: "ddd.dd.ddd.dd (d - digito)"
+      }
     };
   },
 
@@ -72,30 +86,84 @@ export default {
       }
     },
 
+    // Verifica se o código introduzido pelo utilizador já existe na BD....................
+
+    verificaExistenciaCodigo: async function(codigo) {
+      var response = await axios.get(lhost + "/api/classes/verificar/" + codigo);
+      return response.data;
+    },
+
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
     validarClasse: async function(){
       var i = 0
+
+      // Codigo
+      if(this.c.codigo){
+        if (this.c.nivel >1){
+          if(!this.c.pai.codigo){
+            this.mensagensErro.push({sobre: "Código do Pai", mensagem:"Para classes de níveis superiores a 1 deve especificar um pai."})
+            this.numeroErros++
+          }
+          else{
+            if(!this.c.codigo.includes(this.c.pai.codigo)){
+              this.mensagensErro.push({sobre: "Código", mensagem:"O código do pai deve ser prefixo do código da classe."})
+              this.numeroErros++
+            }
+          }
+          if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
+            this.mensagensErro.push({sobre: "Código", mensagem: "Formato de código inválido! Deve ser: "+this.formatoCodigo[this.c.nivel]})
+            this.numeroErros++
+          }
+        }
+        try{
+          var existe = await this.verificaExistenciaCodigo(this.c.codigo);
+          if (existe) {
+            this.mensagensErro.push({sobre: "Código", mensagem:"Código já existente na base de dados..."})
+            this.numeroErros++
+          }
+        }
+        catch(e){
+          this.numeroErros++
+          this.mensagensErro.push({sobre: "Acesso à Ontologia", mensagem:"Não consegui verificar a existência do código."})
+        }
+      }
+      else{
+        this.mensagensErro.push({sobre: "Código", mensagem:"O código da classe não foi especificado."})
+        this.numeroErros++
+      }
   
       // Título
       if(this.c.titulo == ""){
-          this.mensagensErro.push({sobre: "Título", mensagem:"O título não pode ser vazio."})
-          this.numeroErros++
+        this.mensagensErro.push({sobre: "Título", mensagem:"O título não pode ser vazio."})
+        this.numeroErros++
       }
       else {
+        try{
           var existeTitulo = await axios.post( lhost + '/api/classes/verificarTitulo', {titulo: this.c.titulo})
           if(existeTitulo.data){
             this.mensagensErro.push({sobre: "Título", mensagem:"Título já existente na BD."})
             this.numeroErros++
           }
+        }
+        catch(e){
+          this.numeroErros++
+          this.mensagensErro.push({sobre: "Acesso à Ontologia", mensagem:"Não consegui verificar a existência do título."})
+        }
       }
       
       // Notas de Aplicação
       for(i=0; i < this.c.notasAp.length; i++){
-        var existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: this.c.notasAp[i].nota})
-        if(existeNotaAp.data){
-          this.mensagensErro.push({sobre: "Nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.notasAp[i].nota + "] já existente na BD."})
+        try{
+          var existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: this.c.notasAp[i].nota})
+          if(existeNotaAp.data){
+            this.mensagensErro.push({sobre: "Nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.notasAp[i].nota + "] já existente na BD."})
+            this.numeroErros++
+          }
+        }
+        catch(e){
           this.numeroErros++
+          this.mensagensErro.push({sobre: "Acesso à Ontologia", mensagem:"Não consegui verificar a existência da NotaAp."})
         }
       }
       if(this.notaDuplicada(this.c.notasAp)){
@@ -105,10 +173,16 @@ export default {
 
       // Exemplos de notas de Aplicação
       for(i=0; i < this.c.exemplosNotasAp.length; i++){
-        var existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: this.c.exemplosNotasAp[i].exemplo})
-        if(existeExemploNotaAp.data){
-          this.mensagensErro.push({sobre: "Exemplo de nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.exemplosNotasAp[i].exemplo + "] já existente na BD."})
+        try{
+          var existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: this.c.exemplosNotasAp[i].exemplo})
+          if(existeExemploNotaAp.data){
+            this.mensagensErro.push({sobre: "Exemplo de nota de Aplicação(" + (i+1) + ")", mensagem:"[" + this.c.exemplosNotasAp[i].exemplo + "] já existente na BD."})
+            this.numeroErros++
+          }
+        }
+        catch(e){
           this.numeroErros++
+          this.mensagensErro.push({sobre: "Acesso à Ontologia", mensagem:"Não consegui verificar a existência do exemploNotaAp."})
         }
       }
       if(this.exemploDuplicado(this.c.exemplosNotasAp)){
