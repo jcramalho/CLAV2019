@@ -150,6 +150,17 @@ export default {
               url: "/termosIndice"
             }
           ]
+        },
+        {
+          entidade: "Testar Invariantes",
+          texto: help.Invariantes,
+          ops: [
+            {
+              label: "Listar Invariantes",
+              url: "/invariantes",
+              level: "public"
+            }
+          ]
         }
       ]
     };

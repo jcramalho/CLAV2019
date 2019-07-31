@@ -202,6 +202,11 @@ export default new Router({
       path: "/gestao/api/alteracaoChaveApi",
       name: "alteracaoChaveApi",
       component: () => import("./views/gestao/api/AlteracaoChaveApi.vue")
+    },
+    {
+      path: "/invariantes",
+      name: "invariantes",
+      component: () => import("./views/invariantes/Invariantes.vue")
     }
   ]
 });
