@@ -217,8 +217,11 @@
                     </div>
                   </v-flex>
                   <v-flex xs10>
-                    <div class="info-content">
+                    <div class="info-content" v-if="classe.pca.valores > 1">
                       {{ classe.pca.valores + " anos" }}
+                    </div>
+                    <div class="info-content" v-else-if="classe.pca.valores == 1">
+                      {{ classe.pca.valores + " ano" }}
                     </div>
                   </v-flex>
                 </v-layout>
