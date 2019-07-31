@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
-    <v-layout row wrap>
-      <v-flex xs12 v-if="erro == ''">
+    <v-layout row wrap justify-center>
+      <v-flex xs11 v-if="erro == ''">
         <v-card>
           <v-toolbar color="indigo darken-4" dark>
             <v-toolbar-title>Invariantes</v-toolbar-title>
@@ -22,7 +22,11 @@
                 @click="goToInvariante(rel.idRel, inv.idInv)"
               >
                 <v-list-tile-content>
-                  <div v-html="inv.desc"></div>
+                  <v-layout row wrap ma-1 fill-height>
+                    <v-flex xs12>
+                      <div v-html="inv.desc"></div>
+                    </v-flex>
+                  </v-layout>
                 </v-list-tile-content>
               </v-list-tile>
             </v-list-group>
@@ -53,13 +57,16 @@ export default {
       var response = await axios.get(lhost + "/api/invariantes");
       this.invariantes = response.data;
     } catch (e) {
-      this.erro = "Não foi possível obter os invariantes... Tente novamente mais tarde.";
+      this.erro =
+        "Não foi possível obter os invariantes... Tente novamente mais tarde.";
     }
   },
 
   methods: {
     goToInvariante: function(idRel, idInv) {
-      this.$router.push("/invariantes?" + idRel + "&" + idInv);
+      this.$router.push("/invariantes?idRel=" + idRel + "&idInv=" + idInv);
+      //reload page
+      this.$router.go();
     }
   }
 };
