@@ -98,6 +98,20 @@
                                         <v-btn color="primary" fab small dark @click="dialog[props.item.classe][e.id] = !dialog[props.item.classe][e.id]; props.item.participante = false"> 
                                             <v-icon dark>edit</v-icon> 
                                         </v-btn>
+                                        <v-btn color="primary" fab small dark @click="eliminarPart = true"> 
+                                            <v-icon dark>remove</v-icon> 
+                                            <v-dialog v-model="eliminarPart" persistent max-width="290">
+                                                <v-card>
+                                                    <v-card-title class="headline">Confirmar ação</v-card-title>
+                                                    <v-card-text>Pretende eliminar esta participação?</v-card-text>
+                                                    <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn color="red" flat @click="eliminarPart = false">Cancelar</v-btn>
+                                                    <v-btn color="primary" flat @click="desselecionarPart(props.item.classe, e.id); eliminarPart=false;">Confirmar</v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-btn>
                                             {{ e.designacao + '  (' + e.sigla + ') ' + ': ' + entProcPar[props.item.classe][e.id]}}
                                     </template>
                                     <div style="flex: 1 1 auto;">
@@ -194,6 +208,8 @@ export default {
     preSel: [],
     // Processos especificos selecionados (como dono ou participante ou ambos)
     procEspSel: [],
+    // Dialog de confirmação de eliminação de participação
+    eliminarPart: false
     }),
     methods: {
         tipoPar: async function(){
@@ -201,6 +217,9 @@ export default {
             for( var i = 0; i < resPar.data.length; i++){
                 this.tipoParticipacao.push(resPar.data[i].termo)
             }
+        },
+        desselecionarPart: async function(classe, id){
+            delete this.entProcPar[classe][id];
         },
         // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
         calcRel: async function(processo) {

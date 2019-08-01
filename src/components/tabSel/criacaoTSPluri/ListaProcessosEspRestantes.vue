@@ -69,7 +69,7 @@
                         </v-card>
                     </v-dialog>
                 </td>
-                <!--<td>
+                <td>
                     <v-dialog v-model="props.item.participante" scrollable persistent width="700px" v-if="entProcParReady">
                         <template v-slot:activator="{ on }" v-if="!(Object.keys(entProcPar[props.item.classe])).length">
                             <v-btn fab small color="primary" v-on="on">
@@ -145,7 +145,7 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
-                </td> -->
+                </td>
             </tr>
         </template>
         <template v-slot:pageText="props">
@@ -208,6 +208,8 @@ export default {
     listaProcResultado: {},
     // Lista dos processos restantes resultantes das travessias
     listaResRestantes: [],
+    // Dialog de confirmação de eliminação de participação
+    eliminarPart: false
     }),
     methods: {
         tipoPar: async function(){
@@ -215,6 +217,9 @@ export default {
             for( var i = 0; i < resPar.data.length; i++){
                 this.tipoParticipacao.push(resPar.data[i].termo)
             }
+        },
+        desselecionarPart: async function(classe, id){
+            delete this.entProcPar[classe][id];
         },
         // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
         calcRel: async function(processo) {
@@ -393,7 +398,7 @@ export default {
             console.log("Guardei entProcPar!!")
             console.log(this.entProcPar)
             console.log("Processos selecionados")
-            console.log(this.procEspSelRes)
+            console.log(this.procEspResSel)
         },
     },
     mounted: async function(){

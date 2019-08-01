@@ -270,6 +270,7 @@
           @click="
             stepNo = 6;
             barra(80);
+            print();
           "
           >Continuar</v-btn
         >
@@ -646,7 +647,7 @@ export default {
               part: []
             })
           }
-          
+
           }
 
       } catch (error) {
