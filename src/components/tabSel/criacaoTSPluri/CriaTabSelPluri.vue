@@ -303,6 +303,15 @@
                     Selecione os Processos de Negócio Restantes
                   </div>
                 </template>
+                <ListaProcessosUltimos 
+                  v-if="listaProcUltReady"
+                  v-bind:lista="listaProcUlt"
+                  v-bind:listaPreSel="procPreSelUltimos"
+                  v-bind:entidades="tabelaSelecao.entidades"
+                  @contadorProcSelUlt="contadorProcSelUlt($event)"
+                  @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
+                  @guardarTSProcUlt="guardarTSProcUlt($event)"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
@@ -361,6 +370,7 @@ import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspRestantes.vue";
+import ListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ListaProcessosUltimos.vue";
 
 export default {
   components: {
@@ -368,7 +378,8 @@ export default {
     SelEnt,
     ListaProcessosComuns,
     ListaProcessosEspecificos,
-    ListaProcessosEspRestantes
+    ListaProcessosEspRestantes,
+    ListaProcessosUltimos
   },
   data() {
     return {
@@ -549,8 +560,8 @@ export default {
         }
       }
       else {
-        for( var i = 0; i < this.listaProcComuns.length; i++){
-          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].part = procComuns['part'][this.listaProcComuns[i].classe]
+        for( var j = 0; j < this.listaProcComuns.length; j++){
+          this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe].part = procComuns['part'][this.listaProcComuns[j].classe]
         }
       }
       console.log("Processos comuns da tabela de seleção")
@@ -577,8 +588,8 @@ export default {
         }
         
         // coloca os proc especificos prontos para receber a info da seleção
-        for( var j = 0; j < this.listaProcEsp.length; j++){
-          this.tabelaSelecao.procEspecificos[this.listaProcEsp[j].classe] = ({
+        for( var l = 0; l < this.listaProcEsp.length; l++){
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[l].classe] = ({
             dono: [],
             part: []
           })
@@ -618,8 +629,8 @@ export default {
         }
       }
       else {
-        for( var i = 0; i < this.listaProcEsp.length; i++){
-          this.tabelaSelecao.procEspecificos[this.listaProcEsp[i].classe].part = procEsp['part'][this.listaProcEsp[i].classe]
+        for( var j = 0; j < this.listaProcEsp.length; j++){
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[j].classe].part = procEsp['part'][this.listaProcEsp[j].classe]
         }
       }
       console.log(this.tabelaSelecao.procEspecificos)
@@ -652,8 +663,8 @@ export default {
               }
             }
           // coloca os proc especificos restantes prontos para receber a info da seleção
-          for( var j = 0; j < this.listaProcEspRes.length; j++){
-            this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[j].classe] = ({
+          for( var l = 0; l < this.listaProcEspRes.length; l++){
+            this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[l].classe] = ({
               dono: [],
               part: []
             })
@@ -704,8 +715,8 @@ export default {
         }
       }
       else {
-        for( var i = 0; i < this.listaProcEspRes.length; i++){
-          this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[i].classe].part = procEsp['part'][this.listaProcEspRes[i].classe]
+        for( var j = 0; j < this.listaProcEspRes.length; j++){
+          this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[j].classe].part = procEsp['part'][this.listaProcEspRes[j].classe]
         }
       }
       console.log(this.tabelaSelecao.procEspRestantes)
@@ -713,6 +724,9 @@ export default {
     // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
     loadUltimosProcessos: function() {
       // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
+
+      // ERRO NO LOAD: fazer uma lista com todos os processos previamente selecionados
+      
       for (var i = 0; i < this.listaProcComuns.length; i++) {
         var procSelecionado = false;
         for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
@@ -799,6 +813,20 @@ export default {
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {
       this.numProcPreSelUlt = lista.length;
+    },
+    // Guarda na tabela de seleção a lista dos ultimos processos, depois de selecionados no componente
+    guardarTSProcUlt: function(procUlt){
+      if( Object.keys(procUlt) == "dono" ){
+        for( var i = 0; i < this.listaProcUlt.length; i++){
+          this.tabelaSelecao.procUltimos[this.listaProcUlt[i].classe].dono = procUlt['dono'][this.listaProcUlt[i].classe]
+        }
+      }
+      else {
+        for( var j = 0; j < this.listaProcUlt.length; j++){
+          this.tabelaSelecao.procUltimos[this.listaProcUlt[j].classe].part = procUlt['part'][this.listaProcUlt[j].classe]
+        }
+      }
+      console.log(this.tabelaSelecao.procUltimos)
     },
   },
   created: async function() {

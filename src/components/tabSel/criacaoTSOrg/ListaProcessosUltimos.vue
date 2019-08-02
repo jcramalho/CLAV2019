@@ -124,8 +124,8 @@ export default {
         // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
         this.listaProcResultado[processo] = this.travessias[processo];
 
-        // Coloca na lista de processos resultantes especificos os processos pré selecionados
-        // resultantes das travessias dos processos comuns
+        // Coloca na lista de processos resultantes ultimos os processos pré selecionados
+        // resultantes das travessias anteriores
         if (!this.listaResUltimos.length) {
           if (this.preSel.length) {
             for (var l = 0; l < this.lista.length; l++) {
