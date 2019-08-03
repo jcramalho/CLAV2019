@@ -9,14 +9,19 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@types/node": "^12.6.9",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
+    "fs": "0.0.1-security",
     "jquery": "^3.4.0",
     "nanoid": "^2.0.1",
     "popper.js": "^1.14.7",
+    "raw-loader": "^3.1.0",
     "register-service-worker": "^1.6.2",
     "sparql-client-2": "^0.6.3",
+    "stream": "0.0.2",
+    "uuid": "^3.3.2",
     "vue": "^2.6.6",
     "vue-chartjs": "^3.4.2",
     "vue-class-component": "^6.0.0",
@@ -27,7 +32,9 @@
     "vue-strap": "^1.1.40",
     "vuetify": "^1.5.5",
     "vuex": "^3.0.1",
-    "vuex-persistedstate": "^2.5.4"
+    "vuex-persistedstate": "^2.5.4",
+    "xml-crypto": "^1.4.0",
+    "xmlbuilder": "^13.0.2"
   },
   "devDependencies": {
     "@mdi/font": "^3.5.95",
