@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noImplicitAny": false, //adicionei devido a avisos dos ficheiros .d.ts
     "target": "esnext",
     "module": "esnext",
     "strict": true,
