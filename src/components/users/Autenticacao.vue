@@ -151,7 +151,7 @@ export default {
             "@IssueInstant": new Date().toISOString(),
             "@Destination": "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
             "@ProtocolBinding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-            "@AssertionConsumerServiceURL": "https://clav-auth.di.uminho.pt/assertion",
+            "@AssertionConsumerServiceURL": "http://localhost:8080/users/callback",
             "@ProviderName": "CLAV",
             "@xmlns": "urn:oasis:names:tc:SAML:2.0:protocol",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
