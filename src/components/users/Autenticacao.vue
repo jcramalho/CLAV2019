@@ -151,7 +151,7 @@ export default {
             "@IssueInstant": new Date().toISOString(),
             "@Destination": "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
             "@ProtocolBinding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-            "@AssertionConsumerServiceURL": "http://localhost:8080/users/callback",
+            "@AssertionConsumerServiceURL": "http://localhost:7779/api/users/callback",
             "@ProviderName": "CLAV",
             "@xmlns": "urn:oasis:names:tc:SAML:2.0:protocol",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -179,11 +179,11 @@ export default {
         )
       .end();
 
-      var sig = new SignedXml()
+      var sig = new SignedXml();
       sig.signingKey = SigningKey;
-      sig.keyInfoProvider = new FileKeyInfo()
+      sig.keyInfoProvider = new FileKeyInfo();
       sig.addReference("//*[local-name(.)='AuthnRequest']", ["http://www.w3.org/2000/09/xmldsig#enveloped-signature", "http://www.w3.org/2001/10/xml-exc-c14n#"], "http://www.w3.org/2000/09/xmldsig#sha1")
-      sig.computeSignature(xml,{location: { reference: "//*[local-name(.)='Issuer']", action: "after" }})
+      sig.computeSignature(xml,{location: { reference: "//*[local-name(.)='Issuer']", action: "after" }});
 
       //Metodo auxiliar pra adicionar X509, visto o keyInfoProvider nao funcionar em Typescript
       return sig.getSignedXml().replace('<X509Data/>',this.generateX509())
