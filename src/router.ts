@@ -178,9 +178,9 @@ export default new Router({
     },
     //cartao cidadao
     {
-      path: "/users/registoCC",
-      name: "registoCC",
-      component: () => import("./views/users/RegistoCC.vue")
+      path: "/users/handlerCC",
+      name: "handlerCC",
+      component: () => import("./views/users/HandlerCC.vue")
     },
     //Métricas
     {

@@ -79,7 +79,7 @@
         </v-card>
         <v-card class="elevation-12" v-if="!successfullAuthentication">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Renovação de chave API</v-toolbar-title>
+            <v-toolbar-title>Registo de utilizador via Cartão de Cidadão</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             Ocorreu um erro durante a autenticação com o Cartão de Cidadão!
@@ -104,17 +104,33 @@ import axios from "axios";
 export default {
   name: "signup",
   async mounted() {
-    await this.getEntidades();
-    this.nic = Buffer.from(this.$route.query.NIC, 'base64').toString();
-    this.nomeCompleto = Buffer.from(this.$route.query.Nome, 'base64').toString();
+    if(this.$route.query.NIC!=undefined)
+      this.nic = Buffer.from(this.$route.query.NIC, 'base64').toString()
+    if(this.$route.query.Nome!=undefined)
+      this.nomeCompleto = Buffer.from(this.$route.query.Nome, 'base64').toString() 
+    if(this.$route.query.Token!=undefined)
+      this.token = this.$route.query.Token
+    if(this.$route.query.Entidade!=undefined)
+      this.entidade = Buffer.from(this.$route.query.Entidade, 'base64').toString()
+
+    this.alreadyRegistered = this.token != undefined && this.nomeCompleto != undefined && this.entidade!=undefined
+    if(this.alreadyRegistered){
+      this.$store.commit("guardaTokenUtilizador", this.token);
+      this.$store.commit("guardaNomeUtilizador", this.nomeCompleto);
+      this.$router.push("/");
+    }
+
     this.successfullAuthentication = this.nic != undefined && this.nomeCompleto != undefined
-    // alert(this.$route.query.NIC + ' ' + this.$route.query.Nome)
+    await this.getEntidades();
   },
   data() {
     return {
       successfullAuthentication: false,
-      nic: '',
-      nomeCompleto: '',
+      alreadyRegistered: false,
+      nic: undefined,
+      nomeCompleto: undefined,
+      token: undefined,
+      entidade: undefined,
       regraEmail: [
         v => !!v || "Email é obrigatório.",
         v => /.+@.+/.test(v) || "Email tem de ser válido."
@@ -174,22 +190,20 @@ export default {
             parsedType = 1;
             break;
         }
-        axios
-          .post(lhost + "/api/users/registarCC", {
+        axios.post(lhost + "/api/users/registarCC", {
             nic: this.nic,
+            name: this.nomeCompleto,
             email: this.$data.form.email,
             entidade: this.$data.form.entidade,
             type: parsedType,
-          })
-          .then(res => {
+          }).then(res => {
             if (res.data === "Utilizador registado com sucesso!") {
-              this.text = "Utilizador registado com sucesso!";
+              this.text = "Utilizador registado com sucesso! Pode agora utilizar o login via cartão de cidadão para usufruir da plataforma CLAV:";
               this.color = "success";
               this.snackbar = true;
               this.done = true;
-            } else if (res.data === "Email já em uso!") {
-              this.text =
-                "Ocorreu um erro ao registar o utilizador: Email já em uso!";
+            } else if (res.data === "Utilizador já registado!") {
+              this.text = "Ocorreu um erro ao registar o utilizador: Este cartão de cidadão já tem um utilizador associado!";
               this.color = "error";
               this.snackbar = true;
               this.done = false;

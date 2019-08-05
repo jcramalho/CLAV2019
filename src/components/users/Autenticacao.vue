@@ -112,7 +112,7 @@
 </template>
 
 <script>
-const fs = require('fs');
+const lhost = require("@/config/global").host;
 const builder = require('xmlbuilder');
 const uuidv4 = require('uuid/v4');
 const SignedXml = require('xml-crypto').SignedXml
@@ -151,7 +151,7 @@ export default {
             "@IssueInstant": new Date().toISOString(),
             "@Destination": "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
             "@ProtocolBinding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-            "@AssertionConsumerServiceURL": "http://localhost:7779/api/users/callback",
+            "@AssertionConsumerServiceURL": lhost+"/api/users/callback",
             "@ProviderName": "CLAV",
             "@xmlns": "urn:oasis:names:tc:SAML:2.0:protocol",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
