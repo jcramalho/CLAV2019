@@ -28,6 +28,7 @@
     "vue-notification-bell": "^0.8.12",
     "vue-progressbar": "^0.7.5",
     "vue-property-decorator": "^7.0.0",
+    "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
     "vue-strap": "^1.1.40",
     "vuetify": "^1.5.5",
