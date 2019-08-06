@@ -176,6 +176,12 @@ export default new Router({
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue")
     },
+    //cartao cidadao
+    {
+      path: "/users/handlerCC",
+      name: "handlerCC",
+      component: () => import("./views/users/HandlerCC.vue")
+    },
     //Métricas
     {
       path: "/gestao/metrica",

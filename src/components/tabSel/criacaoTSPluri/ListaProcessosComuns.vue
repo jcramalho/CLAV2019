@@ -206,6 +206,7 @@ export default {
     listaResRestantes: [],
     // Lista dos processos selecionados como donos
     procSelDonos: [],
+    // Dialog de confirmação de eliminação de participação
     eliminarPart: false
     }),
     methods: {
