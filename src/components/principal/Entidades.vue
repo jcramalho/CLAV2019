@@ -34,6 +34,8 @@
 </template>
 
 <script>
+const help = require("@/config/help").help;
+
 export default {
   methods: {
     go: function(url) {
@@ -92,6 +94,17 @@ export default {
             {
               label: "Consultar",
               url: "/pendentes"
+            }
+          ]
+        },
+        {
+          entidade: "Testar Invariantes",
+          texto: help.Invariantes,
+          ops: [
+            {
+              label: "Listar Invariantes",
+              url: "/invariantes",
+              level: "public"
             }
           ]
         }
