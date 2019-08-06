@@ -16,19 +16,17 @@
                 </v-list-tile>
               </template>
 
-              <v-list-tile
-                v-for="inv in rel.invs"
-                :key="inv.idInv"
-                @click="goToInvariante(rel.idRel, inv.idInv)"
-              >
-                <v-list-tile-content>
-                  <v-layout row wrap ma-1 fill-height>
-                    <v-flex xs12>
-                      <div v-html="inv.desc"></div>
-                    </v-flex>
-                  </v-layout>
-                </v-list-tile-content>
-              </v-list-tile>
+              <template v-for="inv in rel.invs">
+                <v-card
+                  flat
+                  hover
+                  :key="inv.idInv"
+                  @click="goToInvariante(rel.idRel, inv.idInv)"
+                  class="ma-1 ml-5 pa-2"
+                >
+                  <div v-html="inv.desc"></div>
+                </v-card>
+              </template>
             </v-list-group>
           </v-list>
         </v-card>
@@ -65,9 +63,14 @@ export default {
   methods: {
     goToInvariante: function(idRel, idInv) {
       this.$router.push("/invariantes?idRel=" + idRel + "&idInv=" + idInv);
-      //reload page
-      this.$router.go();
     }
   }
 };
 </script>
+
+<style scoped>
+.v-card:hover {
+  background-color: grey;
+  color: white;
+}
+</style>

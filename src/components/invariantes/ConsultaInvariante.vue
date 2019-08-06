@@ -65,8 +65,6 @@ export default {
   methods: {
     goBack: function() {
       this.$router.push("/invariantes");
-      //reload
-      this.$router.go();
     }
   },
 

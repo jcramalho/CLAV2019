@@ -26,6 +26,15 @@ export default {
   mounted: async function() {
     if (this.$route.query.idRel != null) this.idRel = this.$route.query.idRel;
     if (this.$route.query.idInv != null) this.idInv = this.$route.query.idInv;
+  },
+
+  //reload page when query string changes
+  watch: {
+    $route(to, from) {
+      if (from.query != to.query) {
+        this.$router.go();
+      }
+    }
   }
 };
 </script>
