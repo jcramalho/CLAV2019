@@ -198,7 +198,7 @@ export default {
             type: parsedType,
           }).then(res => {
             if (res.data === "Utilizador registado com sucesso!") {
-              this.text = "Utilizador registado com sucesso! Pode agora utilizar o login via cartão de cidadão para usufruir da plataforma CLAV:";
+              this.text = "Utilizador registado com sucesso!\n Pode agora utilizar o login via cartão de cidadão para usufruir da plataforma CLAV!";
               this.color = "success";
               this.snackbar = true;
               this.done = true;
