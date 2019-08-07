@@ -23,7 +23,9 @@
                     :key="v"
                     class="text-xs-center"
                   >
-                    {{ erros.item[v] }}
+                    <a @click="goToClass(erros.item[v].split('#')[1])">
+                      {{ erros.item[v].split("#")[1] }}
+                    </a>
                   </td>
                 </tr>
               </template>
@@ -65,6 +67,9 @@ export default {
   methods: {
     goBack: function() {
       this.$router.push("/invariantes");
+    },
+    goToClass: function(classe) {
+      this.$router.push("/classes/consultar/" + classe);
     }
   },
 
