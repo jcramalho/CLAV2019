@@ -22,7 +22,7 @@
                   hover
                   :key="inv.idInv"
                   @click="goToInvariante(rel.idRel, inv.idInv)"
-                  class="ma-1 ml-5 pa-2"
+                  class="ma-1 ml-5 pa-2 elevation-2"
                 >
                   <div v-html="inv.desc"></div>
                 </v-card>
