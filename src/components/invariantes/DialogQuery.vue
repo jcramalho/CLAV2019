@@ -21,6 +21,9 @@
       <v-divider></v-divider>
 
       <v-card-actions>
+        <v-btn color="red darken-4" flat @click="goToInvariante()">
+          Correr query
+        </v-btn>
         <v-spacer></v-spacer>
         <v-btn color="red darken-4" flat @click="dialog = false">
           Fechar
@@ -32,11 +35,19 @@
 
 <script>
 export default {
-  props: ["title", "subtitle", "query"],
+  props: ["title", "subtitle", "query", "idRel", "idInv"],
   data() {
     return {
       dialog: false
     };
+  },
+
+  methods: {
+    goToInvariante: function() {
+      this.$router.push(
+        "/invariantes?idRel=" + this.idRel + "&idInv=" + this.idInv
+      );
+    }
   }
 };
 </script>

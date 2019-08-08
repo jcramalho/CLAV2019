@@ -33,6 +33,8 @@
                         :title="rel.desc"
                         :subtitle="inv.desc"
                         :query="inv.query"
+                        :idRel="rel.idRel"
+                        :idInv="inv.idInv"
                       />
                     </v-flex>
                   </v-layout>

@@ -23,9 +23,16 @@
                     :key="v"
                     class="text-xs-center"
                   >
-                    <a @click="goToClass(erros.item[v].split('#')[1])">
+                    <a
+                      v-if="erros.item[v].includes('#c')"
+                      @click="goToClass(erros.item[v].split('#')[1])"
+                    >
                       {{ erros.item[v].split("#")[1] }}
                     </a>
+                    <span v-else-if="erros.item[v].includes('#')">
+                      {{ erros.item[v].split("#")[1] }}
+                    </span>
+                    <span v-else>{{ erros.item[v] }}</span>
                   </td>
                 </tr>
               </template>
