@@ -25,10 +25,10 @@
                   class="ml-5 mr-4 elevation-2"
                 >
                   <v-layout row wrap ma-1 pa-2 align-center>
-                    <v-flex xs11>
+                    <v-flex>
                       <span v-html="inv.desc"></span>
                     </v-flex>
-                    <v-flex xs1>
+                    <v-flex class="text-right">
                       <DialogQuery
                         :title="rel.desc"
                         :subtitle="inv.desc"
