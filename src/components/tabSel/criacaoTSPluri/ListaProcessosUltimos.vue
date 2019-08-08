@@ -23,7 +23,7 @@
             <tr
                 :style="{
                     backgroundColor:
-                        (listaResEspecificos.findIndex(p => p == props.item.classe) != -1 ||
+                        (listaResUltimos.findIndex(p => p == props.item.classe) != -1 ||
                         preSel.findIndex(p => p == props.item.classe) != -1) &&
                         !entProcDono[props.item.classe][Object.keys(entProcDono[props.item.classe])] && !(Object.keys(entProcPar[props.item.classe])).length
                             ? 'orange'
@@ -196,7 +196,7 @@ export default {
     // True quando a lista das entidades donas de cada processo estiver pronta
     entProcParReady: false,
     // Lista dos processos especificos resultantes das travessias
-    listaResEspecificos: [],
+    listaResUltimos: [],
     // Lista dos processos restantes resultantes das travessias
     listaResRestantes: [],
     // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
@@ -227,54 +227,41 @@ export default {
                 // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
                 this.listaProcResultado[processo] = this.travessias[processo];
 
-                // Coloca na lista de processos resultantes especificos os processos pré selecionados
+                // Coloca na lista de processos resultantes ultimos os processos pré selecionados
                 // resultantes das travessias dos processos comuns
-                if (!this.listaResEspecificos.length) {
+                if (!this.listaResUltimos.length) {
                     if (this.preSel.length) {
                         for (var l = 0; l < this.lista.length; l++) {
                         if (this.preSel.includes(this.lista[l].classe))
-                            this.listaResEspecificos.push(this.lista[l].classe);
+                            this.listaResUltimos.push(this.lista[l].classe);
                         }
                     }
                     this.preSel = [];
                 }
 
-                // separa o resultado da travessia em duas listas, uma com os processos comuns (que estão presentes na tabela) e os restantes
-                // listaResEspecificos: Lista dos processos resultantes (das travessias) comuns
-                // listaResRestantes: Lista dos processos resultantes (das travessias) restantes
+                // listaResUltimos: Lista dos processos resultantes (das travessias) comuns
                 for (var i = 0; i < this.travessias[processo].length; i++) {
-                var procEsp = false;
                 for (var j = 0; j < this.lista.length; j++) {
                     if (
                     this.lista[j].classe === this.travessias[processo][i] &&
-                    !this.listaResEspecificos.includes(this.travessias[processo][i])
+                    !this.listaResUltimos.includes(this.travessias[processo][i])
                     ) {
-                    this.listaResEspecificos.push(this.travessias[processo][i]);
-                    procEsp = true;
-                    break;
+                    this.listaResUltimos.push(this.travessias[processo][i]);
                     }
-                }
-                if (
-                    !procEsp &&
-                    !this.listaResRestantes.includes(this.travessias[processo][i]) &&
-                    !this.listaResEspecificos.includes(this.travessias[processo][i])
-                ) {
-                    this.listaResRestantes.push(this.travessias[processo][i]);
                 }
                 }
                 // retira aqueles processos que já estão selecionados
                 var procSel = Object.keys(this.listaProcResultado);
                 for (var x = 0; x < procSel.length; x++) {
-                if (this.listaResEspecificos.includes(procSel[x])) {
-                    this.listaResEspecificos.splice(
-                    this.listaResEspecificos.indexOf(procSel[x]),
+                if (this.listaResUltimos.includes(procSel[x])) {
+                    this.listaResUltimos.splice(
+                    this.listaResUltimos.indexOf(procSel[x]),
                     1
                     );
                 }
                 }
 
-                this.$emit("procPreSelResTravEsp", this.listaResRestantes);
-                this.$emit("contadorProcPreSelEsp", this.listaResEspecificos);
+                this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
             } catch (err) {
                 return err;
             }
@@ -287,37 +274,26 @@ export default {
 
                 // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
                 var procSel = Object.keys(this.listaProcResultado);
-                // newListaResEspecificos: Nova lista dos processos resultantes comuns
-                var newListaResEspecificos = [];
-                // newListaResRestantes: Nova lista dos processos resultantes restantes
-                var newListaResRestantes = [];
+                // newListaResUltimos: Nova lista dos processos resultantes comuns
+                var newListaResUltimos = [];
+                // newListaResUltimos: Nova lista dos processos resultantes restantes
+                var newListaResUltimos = [];
                 for (var i = 0; i < procSel.length; i++) {
                     for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
                     if (
-                        (this.listaResEspecificos.includes(
+                        (this.listaResUltimos.includes(
                         this.listaProcResultado[procSel[i]][j]
                         ) ||
                         this.listaProcResultado[procSel[i]][j] === processo) &&
-                        !newListaResEspecificos.includes(this.listaProcResultado[procSel[i]][j])
+                        !newListaResUltimos.includes(this.listaProcResultado[procSel[i]][j])
                     ) {
-                        newListaResEspecificos.push(this.listaProcResultado[procSel[i]][j]);
-                    } else if (
-                        this.listaResRestantes.includes(
-                        this.listaProcResultado[procSel[i]][j]
-                        ) &&
-                        !newListaResRestantes.includes(
-                        this.listaProcResultado[procSel[i]][j]
-                        )
-                    ) {
-                        newListaResRestantes.push(this.listaProcResultado[procSel[i]][j]);
-                    }
+                        newListaResUltimos.push(this.listaProcResultado[procSel[i]][j]);
+                    } 
                     }
                 }
-                this.listaResEspecificos = newListaResEspecificos;
-                this.listaResRestantes = newListaResRestantes;
+                this.listaResUltimos = newListaResUltimos;
 
-                this.$emit("procPreSelResTravEsp", this.listaResRestantes);
-                this.$emit("contadorProcPreSelEsp", this.listaResEspecificos);
+                this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
             },
             guardaEntDonos: async function(proc){
                 for( var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++){
@@ -327,7 +303,7 @@ export default {
                         if (!this.procEspSel.includes(proc)) {
                             this.procEspSel.push(proc);
                             this.procSelDonos.push(proc);
-                            this.$emit("contadorProcSelEsp", this.procEspSel);
+                            this.$emit("contadorProcSelUlt", this.procEspSel);
                             this.calcRel(proc);
                         }
                         break;
@@ -341,14 +317,14 @@ export default {
                             this.procEspSel.splice(index, 1);
                             this.procSelDonos.splice(indexDono, 1);
                             this.uncheck(proc);
-                            this.$emit("contadorProcSelEsp", this.procEspSel);
+                            this.$emit("contadorProcSelUlt", this.procEspSel);
                         }
                     }
                 }
 
                 var guardar = {}
                 guardar['dono'] = this.entProcDono;
-                this.$emit("guardarTSProcEsp", guardar);
+                this.$emit("guardarTSProcUlt", guardar);
                 console.log("Guardei entProcDono!!")
                 console.log(this.entProcDono)
                 console.log("Processos selecionados")
@@ -361,20 +337,20 @@ export default {
                 if (!this.procEspSel.includes(proc)) {
                         this.procEspSel.push(proc);
                         this.procSelDonos.push(proc)
-                        this.$emit("contadorProcSelEsp", this.procEspSel);
+                        this.$emit("contadorProcSelUlt", this.procEspSel);
                         this.calcRel(proc);
                 }
                 var guardar = {}
                 guardar['dono'] = this.entProcDono;
-                this.$emit("guardarTSProcEsp", guardar);
+                this.$emit("guardarTSProcUlt", guardar);
             },
             guardaEntPar: async function(proc){
                 var guardar = {}
                 guardar['part'] = this.entProcPar;
-                this.$emit("guardarTSProcEsp", guardar);
+                this.$emit("guardarTSProcUlt", guardar);
                 if( !this.procEspSel.includes(proc) && Object.keys(this.entProcPar[proc]).length ){
                     this.procEspSel.push(proc);
-                    this.$emit("contadorProcSelEsp", this.procEspSel)
+                    this.$emit("contadorProcSelUlt", this.procEspSel)
                     this.calcRel(proc);
                 }
                 else if (Object.keys(this.entProcPar[proc]).length == 0) {
@@ -390,7 +366,7 @@ export default {
                         if( index != -1 ){
                             this.procEspSel.splice(index, 1);
                             this.uncheck(proc);
-                            this.$emit("contadorProcSelEsp", this.procEspSel);
+                            this.$emit("contadorProcSelUlt", this.procEspSel);
                         }
                     }
                 }

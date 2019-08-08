@@ -299,18 +299,20 @@ export default {
 
     verificaCriteriosDF: function(proc){
       var criterios = []
-      var j, indexCriterio, indexProc
+      var i, j, indexCriterio, indexProc
       // Sem subdivisão
       if(!this.c.temSubclasses4Nivel){
         criterios = this.c.df.justificacao
 
-        if(criterios[i].tipo == "CriterioJustificacaoLegal"){
-          if(criterios[i].legislacao.length > 0){
-            index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
-            if(index != -1){
-              criterios[i].legislacao.splice(index, 1)
-              if(criterios[i].legislacao.length == 0){
-                criterios.splice(i, 1)
+        for(j=0; j < criterios.length; j++){
+          if(criterios[j].tipo == "CriterioJustificacaoLegal"){
+            if(criterios[j].legislacao.length > 0){
+              index = criterios[j].legislacao.findIndex(p => p.id == proc.id)
+              if(index != -1){
+                criterios[j].legislacao.splice(index, 1)
+                if(criterios[j].legislacao.length == 0){
+                  criterios.splice(i, 1)
+                }
               }
             }
           }
@@ -342,17 +344,19 @@ export default {
         for(j=0; j < this.c.subclasses.length; j++){
           criterios = this.c.subclasses[j].df.justificacao
 
-          if(criterios[i].tipo == "CriterioJustificacaoLegal"){
-            if(criterios[i].legislacao.length > 0){
-              index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
-              if(index != -1){
-                criterios[i].legislacao.splice(index, 1)
-                if(criterios[i].legislacao.length == 0){
-                  criterios.splice(i, 1)
+          for(i=0; i < criterios.length; i++){
+            if(criterios[i].tipo == "CriterioJustificacaoLegal"){
+              if(criterios[i].legislacao.length > 0){
+                index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
+                if(index != -1){
+                  criterios[i].legislacao.splice(index, 1)
+                  if(criterios[i].legislacao.length == 0){
+                    criterios.splice(i, 1)
+                  }
                 }
               }
             }
-          }
+          } 
 
           if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
             indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")

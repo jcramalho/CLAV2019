@@ -3,7 +3,7 @@
     <v-btn to="/" icon>
       <v-icon large>home</v-icon>
     </v-btn>
-    <v-toolbar-title class="headline" @click="goHome">
+    <v-toolbar-title class="headline">
       <span class="text-uppercase">CLAV</span>
     </v-toolbar-title>
 

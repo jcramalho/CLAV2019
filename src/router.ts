@@ -187,6 +187,12 @@ export default new Router({
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue")
     },
+    //cartao cidadao
+    {
+      path: "/users/handlerCC",
+      name: "handlerCC",
+      component: () => import("./views/users/HandlerCC.vue")
+    },
     //Métricas
     {
       path: "/gestao/metrica",
@@ -213,6 +219,11 @@ export default new Router({
       path: "/gestao/api/alteracaoChaveApi",
       name: "alteracaoChaveApi",
       component: () => import("./views/gestao/api/AlteracaoChaveApi.vue")
+    },
+    {
+      path: "/invariantes",
+      name: "invariantes",
+      component: () => import("./views/invariantes/Invariantes.vue")
     }
   ]
 });

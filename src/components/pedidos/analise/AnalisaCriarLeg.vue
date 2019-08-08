@@ -46,7 +46,36 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
-                        <v-icon @click="analisaPedido(props.item)" color="indigo darken-2" v-on="on">edit</v-icon>
+                        <v-dialog v-model="dialog" width="60%">
+                          <template v-slot:activator="{ on }">
+                            <v-icon v-on="on" color="indigo darken-2">edit</v-icon>
+                          </template>
+
+                          <v-card>
+                            <v-card-title>
+                              <span class="title font-weight-light">Proposta de revisão</span>
+                            </v-card-title>
+
+                            <v-card-text>
+                              <v-layout row wrap ma-2>
+                                <v-flex xs10>
+                                  <v-text-field
+                                    v-model="props.item.nota"
+                                    label="Notas"
+                                  ></v-text-field>
+                                </v-flex>
+                              </v-layout>
+                            </v-card-text>
+
+                            <v-divider></v-divider>
+
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                                <v-btn color="red darken-4" flat @click="dialog = false">Fechar</v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+                        <!--v-icon @click="analisaPedido(props.item)" color="indigo darken-2" v-on="on">edit</v-icon-->
                     </template>
                     <span>Escrever proposta de revisão</span>
                 </v-tooltip>
@@ -59,17 +88,9 @@
 </template>
 
 <script>
-import axios from "axios"
-const lhost = require("@/config/global").host
-
-import AnalisaCriarLeg from "@/components/pedidos/analise/AnalisaCriarLeg.vue"; // @ is an alias to /src
 
 export default {
   props: ["leg"],
-
-  components: {
-    AnalisaCriarLeg
-  },
 
   data: () => ({
     headers: [
@@ -78,6 +99,7 @@ export default {
         { text: "Tarefas", sortable: false, class: "title" },
         { text: "Proposta de revisão", sortable: false, class: "title" }
     ],
+    dialog: false,
     content: []
   }),
 

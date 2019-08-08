@@ -15,9 +15,7 @@
     <v-flex xs10>
       <div class="info-content">
         <ul>
-          <li v-for="n in notas" :key="n.idNota">
-            {{ analisaRefs(n.nota) }}
-          </li>
+          <li v-for="n in notas" :key="n.idNota" v-html="analisaRefs(n.nota)"/>
         </ul>
       </div>
     </v-flex>
@@ -34,16 +32,15 @@ export default {
   data: () => ({
     myhelp: help,
     codeFormats: {
-      1: /^[0-9]{3}$/,
-      2: /^[0-9]{3}\.[0-9]{2}$/,
-      3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-      4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
+      2: /[0-9]{3}\.[0-9]{2}(?!\.)/,
+      3: /[0-9]{3}\.[0-9]{2}\.[0-9]{3}(?!\.)/
     },
   }),
   methods: {
     analisaRefs: function(nota){
-      if(this.codeFormats[2].matches(nota)){}
-      return nota
+      var notaHtml = nota.replace(this.codeFormats[3], '<a href=\"/classes/consultar/c$&\">$&</a>')
+      notaHtml = notaHtml.replace(this.codeFormats[2], '<a href=\"/classes/consultar/c$&\">$&</a>')
+      return notaHtml
     }
   }
 };

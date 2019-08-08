@@ -82,7 +82,7 @@
                         </template>
                         <v-card>
                             <v-card-title>
-                                <span class="headline">Selecione as entidades participante no processo: {{ props.item.classe }} </span>
+                                <span class="headline">Selecione as entidades participantes no processo: {{ props.item.classe }} </span>
                             </v-card-title>
                             <v-divider></v-divider>
                             <v-card-text style="height: 400px;" >
@@ -96,6 +96,20 @@
                                     <template v-else>
                                         <v-btn color="primary" fab small dark @click="dialog[props.item.classe][e.id] = !dialog[props.item.classe][e.id]; props.item.participante = false"> 
                                             <v-icon dark>edit</v-icon> 
+                                        </v-btn>
+                                        <v-btn color="primary" fab small dark @click="eliminarPart = true"> 
+                                            <v-icon dark>remove</v-icon> 
+                                            <v-dialog v-model="eliminarPart" persistent max-width="290">
+                                                <v-card>
+                                                    <v-card-title class="headline">Confirmar ação</v-card-title>
+                                                    <v-card-text>Pretende eliminar esta participação?</v-card-text>
+                                                    <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn color="red" flat @click="eliminarPart = false">Cancelar</v-btn>
+                                                    <v-btn color="primary" flat @click="desselecionarPart(props.item.classe, e.id); eliminarPart=false;">Confirmar</v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
                                         </v-btn>
                                             {{ e.designacao + '  (' + e.sigla + ') ' + ': ' + entProcPar[props.item.classe][e.id]}}
                                     </template>
@@ -191,7 +205,9 @@ export default {
     // Lista dos processos restantes resultantes das travessias
     listaResRestantes: [],
     // Lista dos processos selecionados como donos
-    procSelDonos: []
+    procSelDonos: [],
+    // Dialog de confirmação de eliminação de participação
+    eliminarPart: false
     }),
     methods: {
         guardaEntDonos: async function(proc){
@@ -274,6 +290,9 @@ export default {
             console.log(this.entProcPar)
             console.log("Processos selecionados")
             console.log(this.procComunsSel)
+        },
+        desselecionarPart: async function(classe, id){
+            delete this.entProcPar[classe][id];
         },
         tipoPar: async function(){
             var resPar = await axios.get(lhost + "/api/vocabularios/vc_processoTipoParticipacao");

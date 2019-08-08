@@ -78,6 +78,11 @@ export default {
               this.color = "error";
               this.snackbar = true;
               this.done = false;
+            }else if(res.data === 'Este utilizador foi registado através do Cartão de Cidadão!'){
+              this.text = "Este utilizador foi registado na plataforma CLAV através do Cartão de Cidadão, não existindo uma password para o mesmo!";
+              this.color = "error";
+              this.snackbar = true;
+              this.done = false;
             }else{
               this.text = "Email enviado com sucesso!";
               this.color = "success";
