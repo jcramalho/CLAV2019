@@ -150,6 +150,17 @@ export default {
               url: "/termosIndice"
             }
           ]
+        },
+        {
+          entidade: "Vocabulários Controlados",
+          texto: help.VocabulariosControlados,
+          ops: [
+            {
+              label: "Consultar",
+              url: "/vocabularios",
+              level: "public"
+            }
+          ]
         }
       ]
     };

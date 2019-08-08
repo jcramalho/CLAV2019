@@ -97,6 +97,17 @@ export default new Router({
       name: "termosIndice",
       component: () => import("./views/termosIndice/TermosIndice.vue")
     },
+    // Routes dos Vocabulários Controlados
+    {
+      path: "/vocabularios",
+      name: "vocabulariosControlados",
+      component: () => import("./views/vocabularios/Vocabularios.vue")
+    },
+    {
+      path: "/vocabularios/:idVC",
+      name: "TermosVocabulariosControlados",
+      component: () => import("./views/vocabularios/VocabulariosTermos.vue")
+    },
     // Routes das tipologias
     {
       path: "/tipologias",
