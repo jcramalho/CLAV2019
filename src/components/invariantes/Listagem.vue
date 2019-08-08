@@ -22,9 +22,20 @@
                   hover
                   :key="inv.idInv"
                   @click="goToInvariante(rel.idRel, inv.idInv)"
-                  class="ma-1 ml-5 pa-2 elevation-2"
+                  class="ml-5 mr-4 elevation-2"
                 >
-                  <div v-html="inv.desc"></div>
+                  <v-layout row wrap ma-1 pa-2 align-center>
+                    <v-flex xs11>
+                      <span v-html="inv.desc"></span>
+                    </v-flex>
+                    <v-flex xs1>
+                      <DialogQuery
+                        :title="rel.desc"
+                        :subtitle="inv.desc"
+                        :query="inv.query"
+                      />
+                    </v-flex>
+                  </v-layout>
                 </v-card>
               </template>
             </v-list-group>
@@ -43,12 +54,17 @@
 <script>
 import axios from "axios";
 const lhost = require("@/config/global").host;
+import DialogQuery from "@/components/invariantes/DialogQuery.vue";
 
 export default {
   data: () => ({
     invariantes: [],
     erro: ""
   }),
+
+  components: {
+    DialogQuery
+  },
 
   mounted: async function() {
     try {
