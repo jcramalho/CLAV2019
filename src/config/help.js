@@ -19,13 +19,10 @@ module.exports.help = {
     "de conservação administrativa (PCA) e destino final (DF).",
   TermosIndice:
     "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação.",
-<<<<<<< HEAD
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
-=======
   Invariantes:
     "Conjunto de invariantes que testam situações de erro e identificam os PNs onde estas ocorrem.",
->>>>>>> 7f5df4dcee8a83013f93d260937cbd707af237cb
   Classe: {
     BlocoDescritivo:
       "Conjunto de campos que descrevem a classe. Aplica-se às classes de 1º, 2º, 3º e 4º nível.",
