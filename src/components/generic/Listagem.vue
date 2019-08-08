@@ -10,6 +10,9 @@
         single-line
         hide-details
       ></v-text-field>
+      <v-btn v-if="tipo == 'Vocabulários Controlados'" class="ml-4" fab dark small color="indigo" @click="dialog = true">
+        <v-icon dark>add</v-icon>
+      </v-btn>
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -69,7 +72,8 @@ export default {
   data: () => ({
     search: "",
     listaReady: false,
-    headers: []
+    headers: [],
+    dialog: false
   }),
   methods: {
     go: function(id) {
@@ -92,6 +96,9 @@ export default {
           break;
         case "Termos de Índice":
           this.$router.push("/classes/consultar/c" + id);
+          break;
+        case "Vocabulários Controlados":
+          this.$router.push("/vocabularios/" + id);
           break;
       }
     }
