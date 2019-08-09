@@ -110,6 +110,7 @@ export default {
       // this.$store.state.token = '';
       this.$store.commit("guardaTokenUtilizador", "");
       this.$store.commit("guardaNomeUtilizador", "");
+      this.$router.push("/");
     },
     fecharSnackbar() {
       this.snackbar = false;

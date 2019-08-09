@@ -120,6 +120,7 @@ const FileKeyInfo = require('xml-crypto').FileKeyInfo
 
 import SigningKey from '!raw-loader!./../../certificates/signing_key.pem';
 import X509Certificate from '!raw-loader!./../../certificates/x509_certificate.cer';
+import axios from "axios";
 
 export default {
   name: "autenticacao",
@@ -178,6 +179,11 @@ export default {
           }
         )
       .end();
+
+      axios.post(lhost + "/api/auth/adicionar", {
+        id: uuid,
+        url: window.location.protocol + "//" + window.location.host 
+      });
 
       var sig = new SignedXml();
       sig.signingKey = SigningKey;
