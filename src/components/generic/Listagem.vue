@@ -35,7 +35,7 @@
             {{ campo }}
           </td>
         </tr>
-        <tr v-if="tipo == 'Legislação'" @click="go(props.item.numero)">
+        <tr v-else-if="tipo == 'Legislação'" @click="go(props.item.numero)">
           <td v-for="(campo, index) in props.item" v-bind:key="index">
             <div v-if="props.item">
               <div v-if="index === 'entidades'">
