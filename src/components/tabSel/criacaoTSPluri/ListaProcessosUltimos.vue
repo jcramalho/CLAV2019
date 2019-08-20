@@ -396,13 +396,13 @@ export default {
                 }
             }
             this.entProcDonoReady = true;
-            for( var i = 0; i < this.lista.length; i++ ){
-                this.entProcPar[this.lista[i].classe] = {};
+            for( var x = 0; x < this.lista.length; x++ ){
+                this.entProcPar[this.lista[x].classe] = {};
                 var tempDialog = [];
-                for(var j = 0; j < this.entidades.length; j++){
-                    tempDialog[this.entidades[j].id] = false
+                for(var l = 0; l < this.entidades.length; l++){
+                    tempDialog[this.entidades[l].id] = false
                 }
-                this.dialog[this.lista[i].classe] = tempDialog;
+                this.dialog[this.lista[x].classe] = tempDialog;
                 tempDialog = [];
             }
             this.entProcParReady = true;

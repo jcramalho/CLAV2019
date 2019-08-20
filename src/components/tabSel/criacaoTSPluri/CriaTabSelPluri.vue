@@ -320,6 +320,7 @@
           <v-flex xs3>
             <v-text-field
               label="Nº dos últimos processos selecionados"
+              :value="numProcSelUlt"
             ></v-text-field>
           </v-flex>
           <v-flex xs4 style="padding-left:60px;">
@@ -447,8 +448,16 @@ export default {
       listaProcUltReady: false,
       // Numero de processos pré selecionados no ultimo componente de seleção
       numProcPreSelUlt: 0,
+      // Numero dos ultimos processos selecionados
+      numProcSelUlt: 0,
       // Lista dos ultimos processos pre selecionados
       procPreSelUltimos: [],
+      // Lista de todos os processos selecionados
+      listaProcSel: {
+        procSelComuns: [],
+        procSelEspecificos: [],
+        procSelEspRestantes: []
+      },
     };
   },
   methods: {
@@ -542,6 +551,7 @@ export default {
     },
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
+      this.listaProcSel.procSelComuns = procSelec;
       this.numProcSelCom = procSelec.length;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
@@ -611,6 +621,7 @@ export default {
     },
     // Contador dos processos selecionados especificos
     contadorProcSelEsp: function(procSelec) {
+      this.listaProcSel.procSelEspecificos = procSelec;
       this.numProcSelEsp = procSelec.length;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
@@ -697,6 +708,7 @@ export default {
     },
     // Contador dos processos selecionados especificos
     contadorProcSelRes: function(procSelec) {
+      this.listaProcSel.procSelEspRestantes = procSelec;
       this.numProcSelRes = procSelec.length;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
@@ -723,16 +735,14 @@ export default {
     },
     // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
     loadUltimosProcessos: function() {
+      console.log(this.listaProcSel)
       // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
-
-      // ERRO NO LOAD: fazer uma lista com todos os processos previamente selecionados
-      
       for (var i = 0; i < this.listaProcComuns.length; i++) {
         var procSelecionado = false;
-        for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
+        for (var j = 0; j < this.listaProcSel.procSelComuns.length; j++) {
           if (
             this.listaProcComuns[i].classe ===
-            this.tabelaSelecao.procComuns[j].classe
+            this.listaProcSel.procSelComuns[j]
           ) {
             procSelecionado = true;
             break;
@@ -754,14 +764,14 @@ export default {
         }
       }
       // Lista com todos os processos especificos já selecionados (especificos e especificos restantes)
-      var procSelecionados = this.tabelaSelecao.procEspecificos.concat(
-        this.tabelaSelecao.procEspRestantes
+      var procSelecionados = this.listaProcSel.procSelEspecificos.concat(
+        this.listaProcSel.procSelEspRestantes
       );
       // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
       for (var f = 0; f < this.listaTotalProcEsp.length; f++) {
         procSelecionado = false;
         for (var m = 0; m < procSelecionados.length; m++) {
-          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m].classe) {
+          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m]) {
             procSelecionado = true;
             break;
           }
@@ -786,6 +796,14 @@ export default {
           }
         }
       }
+      // coloca os ultimos processos prontos para receber a info da seleção
+      for( var l = 0; l < this.listaProcUlt.length; l++){
+        this.tabelaSelecao.procUltimos[this.listaProcUlt[l].classe] = ({
+          dono: [],
+          part: []
+        })
+      }
+
       if (this.listaProcUlt.length) {
         this.listaProcUltReady = true;
       }
@@ -808,7 +826,6 @@ export default {
     // Contador dos processos selecionados ultimos
     contadorProcSelUlt: function(procSelec) {
       this.numProcSelUlt = procSelec.length;
-      this.tabelaSelecao.procUltimos = procSelec;
     },
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {
