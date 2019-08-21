@@ -358,6 +358,25 @@
         >Eliminar TS</v-btn
       >
     </v-stepper>
+
+    <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
+      {{ mensagemPedidoCriadoOK }}
+      <v-btn dark flat @click="pedidoCriadoOK">
+        Fechar
+      </v-btn>
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="pendenteGuardado"
+      color="primary"
+      :timeout="60000"
+      :top="true"
+    >
+      Trabalho guardado com sucesso.
+      <v-btn dark flat @click="pendenteGuardadoOK">
+        Fechar
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -458,6 +477,10 @@ export default {
         procSelEspecificos: [],
         procSelEspRestantes: []
       },
+      // Para o snackbar de pedido criado e trabalho guardado
+      pendenteGuardado: false,
+      pedidoCriado: false,
+      mensagemPedidoCriadoOK: "Pedido criado com sucesso: "
     };
   },
   methods: {
@@ -845,6 +868,45 @@ export default {
       }
       console.log(this.tabelaSelecao.procUltimos)
     },
+    // Lança o pedido de submissão de uma TS
+    submeterTS: async function() {
+      try {
+        var userBD = await axios.get(
+          lhost + "/api/users/listarToken/" + this.$store.state.token
+        );
+
+        var pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "TS Pluriorganizacional",
+          novoObjeto: this.tabelaSelecao,
+          user: { email: userBD.data.email },
+          token: this.$store.state.token
+        };
+
+        console.log(pedidoParams.novoObjeto)
+        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+        this.mensagemPedidoCriadoOk += response.data.codigo;
+        this.pedidoCriado = true;
+      } catch (error) {
+        return error;
+      }
+    },
+    pedidoCriadoOK: function() {
+      this.pedidoCriado = false;
+      this.$router.push("/");
+    },
+
+
+
+
+    pendenteGuardadoOK: function() {
+      this.pendenteGuardado = false;
+      this.$router.push("/");
+    },
+    // Elimina todo o trabalho feito até esse momento
+    eliminarTS: async function() {
+      this.$router.push("/");
+    }
   },
   created: async function() {
     await this.infoUserEnt();
