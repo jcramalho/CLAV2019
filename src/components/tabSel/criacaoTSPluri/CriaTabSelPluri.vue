@@ -408,10 +408,16 @@ export default {
         designacao: "",
         idEntidade: "",
         entidades: [],
-        procComuns: [],
-        procEspecificos: [],
-        procEspRestantes: [],
-        procUltimos: []
+        procComuns: {},
+        procEspecificos: {},
+        procEspRestantes: {},
+        procUltimos: {},
+        // Lista de todos os processos selecionados
+        listaProcSel: {
+          procSelComuns: [],
+          procSelEspecificos: [],
+          procSelEspRestantes: []
+        },
       },
       // Numero do passo da criação de TS
       stepNo: 1,
@@ -471,12 +477,6 @@ export default {
       numProcSelUlt: 0,
       // Lista dos ultimos processos pre selecionados
       procPreSelUltimos: [],
-      // Lista de todos os processos selecionados
-      listaProcSel: {
-        procSelComuns: [],
-        procSelEspecificos: [],
-        procSelEspRestantes: []
-      },
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
       pedidoCriado: false,
@@ -576,7 +576,7 @@ export default {
     },
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
-      this.listaProcSel.procSelComuns = procSelec;
+      this.tabelaSelecao.listaProcSel.procSelComuns = procSelec;
       this.numProcSelCom = procSelec.length;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
@@ -646,7 +646,7 @@ export default {
     },
     // Contador dos processos selecionados especificos
     contadorProcSelEsp: function(procSelec) {
-      this.listaProcSel.procSelEspecificos = procSelec;
+      this.tabelaSelecao.listaProcSel.procSelEspecificos = procSelec;
       this.numProcSelEsp = procSelec.length;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
@@ -733,7 +733,7 @@ export default {
     },
     // Contador dos processos selecionados especificos
     contadorProcSelRes: function(procSelec) {
-      this.listaProcSel.procSelEspRestantes = procSelec;
+      this.tabelaSelecao.listaProcSel.procSelEspRestantes = procSelec;
       this.numProcSelRes = procSelec.length;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
@@ -760,14 +760,14 @@ export default {
     },
     // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
     loadUltimosProcessos: function() {
-      console.log(this.listaProcSel)
+      console.log(this.tabelaSelecao.listaProcSel)
       // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
       for (var i = 0; i < this.listaProcComuns.length; i++) {
         var procSelecionado = false;
-        for (var j = 0; j < this.listaProcSel.procSelComuns.length; j++) {
+        for (var j = 0; j < this.tabelaSelecao.listaProcSel.procSelComuns.length; j++) {
           if (
             this.listaProcComuns[i].classe ===
-            this.listaProcSel.procSelComuns[j]
+            this.tabelaSelecao.listaProcSel.procSelComuns[j]
           ) {
             procSelecionado = true;
             break;
@@ -789,8 +789,8 @@ export default {
         }
       }
       // Lista com todos os processos especificos já selecionados (especificos e especificos restantes)
-      var procSelecionados = this.listaProcSel.procSelEspecificos.concat(
-        this.listaProcSel.procSelEspRestantes
+      var procSelecionados = this.tabelaSelecao.listaProcSel.procSelEspecificos.concat(
+        this.tabelaSelecao.listaProcSel.procSelEspRestantes
       );
       // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
       for (var f = 0; f < this.listaTotalProcEsp.length; f++) {
@@ -907,6 +907,11 @@ export default {
         if(this.stepNo < 2){
           this.tabelaSelecao.entidades = this.entTip.concat(this.entSel)
         }
+
+        this.tabelaSelecao.procComuns = JSON.stringify(this.tabelaSelecao.procComuns)
+        this.tabelaSelecao.procEspecificos = JSON.stringify(this.tabelaSelecao.procEspecificos)
+        this.tabelaSelecao.procEspRestantes = JSON.stringify(this.tabelaSelecao.procEspRestantes)
+        this.tabelaSelecao.procUltimos = JSON.stringify(this.tabelaSelecao.procUltimos)
 
         var pendenteParams = {
           numInterv: 1,

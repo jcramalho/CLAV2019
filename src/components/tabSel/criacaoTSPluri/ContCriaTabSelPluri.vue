@@ -105,7 +105,7 @@
         >
       </v-stepper-content>
 
-      <!--<v-stepper-step :complete="stepNo > 3" step="3"
+      <v-stepper-step :complete="stepNo > 3" step="3"
         >Processos Comuns
         <small>Processos passíveis de existir em qualquer entidade</small>
       </v-stepper-step>
@@ -119,14 +119,15 @@
                     Selecione os Processos de Negócio Comuns
                   </div>
                 </template>
-                <ListaProcessosComuns 
+                <ContListaProcessosComuns 
                   v-if="listaProcComunsReady && entSelReady"
                   v-bind:lista="listaProcComuns"
                   v-bind:entidades="tabelaSelecao.entidades"
                   @contadorProcSelCom="contadorProcSelCom($event)"
                   @contadorProcPreSelCom="contadorProcPreSelCom($event)"
                   @procPreSelResTravCom="procPreSelResTravCom($event)"
-                  @guardarTSProcComuns="guardarTSProcComuns($event)"/>
+                  @guardarTSProcComuns="guardarTSProcComuns($event)"
+                  v-bind:procSelGuardados="tabelaSelecao.procComuns"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-flex>
@@ -144,9 +145,9 @@
               :value="numProcPreSelCom"
             ></v-text-field>
           </v-flex>
-        </v-layout>-->
+        </v-layout>
         <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
-        <!--<v-btn
+        <v-btn
           color="primary"
           @click="
             stepNo = 4;
@@ -166,7 +167,7 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 4" step="4"
+      <!--<v-stepper-step :complete="stepNo > 4" step="4"
         >Processos Específicos
         <small
           >Processos específicos da entidade e tipologia em que se
@@ -393,7 +394,7 @@ const lhost = require("@/config/global").host;
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
-import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns.vue";
+import ContListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ContListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ListaProcessosUltimos.vue";
@@ -403,7 +404,7 @@ export default {
     components: {
     DesSelEnt,
     SelEnt,
-    ListaProcessosComuns,
+    ContListaProcessosComuns,
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
     ListaProcessosUltimos
@@ -519,8 +520,7 @@ export default {
             break;
           }
         }
-        console.log(this.entidades)
-        console.log(this.entSel)
+
         var index = this.entidades.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
         this.entidades.splice(index, 1);
         var index2 = this.entSel.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
@@ -546,11 +546,78 @@ export default {
     print: function(){
       console.log(this.tabelaSelecao)
     },
+    // Carrega todos os processos comuns
+    loadProcComuns: async function() {
+      try {
+        if (!this.listaProcComunsReady) {
+          var response = await axios.get(lhost + "/api/classes?tipo=comum");
+          for (var i = 0; i < response.data.length; i++) {
+              for(var j = 0; j < this.tabelaSelecao.listaProcSel.procSelComuns.length; j++){
+                  var estavaGuardado = false;
+                  if ( this.tabelaSelecao.listaProcSel.procSelComuns[j] == response.data[i].codigo) {
+                      this.listaProcComuns.push({
+                        classe: response.data[i].codigo,
+                        designacao: response.data[i].titulo,
+                        dono: false,
+                        participante: false
+                    });
+                    estavaGuardado = true;
+                    break;
+                  }
+              }
+              if(!estavaGuardado) {
+                  this.listaProcComuns.push({
+                      classe: response.data[i].codigo,
+                      designacao: response.data[i].titulo,
+                      dono: false,
+                      participante: false
+                  });
+              }
+          }
+          this.listaProcComunsReady = true;
+          return this.listaProcComuns;
+        }
+      } catch (err) {
+        return err;
+      }
+    },
+    // Contador dos processos selecionados comuns
+    contadorProcSelCom: function(procSelec) {
+      this.tabelaSelecao.listaProcSel.procSelComuns = procSelec;
+      this.numProcSelCom = procSelec.length;
+    },
+    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
+    procPreSelResTravCom: function(procPreSelResTravCom) {
+      this.procPreSelResTravComum = procPreSelResTravCom;
+    },
+    // Contador dos processos pre selecionados comuns
+    contadorProcPreSelCom: function(lista) {
+      this.numProcPreSelCom = lista.length;
+    },
+    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
+    guardarTSProcComuns: function(procComuns){
+      if( Object.keys(procComuns) == "dono" ){
+        for( var i = 0; i < this.listaProcComuns.length; i++){
+          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].dono = procComuns['dono'][this.listaProcComuns[i].classe]
+        }
+      }
+      else {
+        for( var j = 0; j < this.listaProcComuns.length; j++){
+          this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe].part = procComuns['part'][this.listaProcComuns[j].classe]
+        }
+      }
+      console.log("Processos comuns da tabela de seleção")
+      console.log(this.tabelaSelecao.procComuns)
+    },
   },
   created: async function() {
     this.tabelaSelecao = this.obj.objeto;
+    this.tabelaSelecao.procComuns = JSON.parse(this.tabelaSelecao.procComuns);
+    this.tabelaSelecao.procEspecificos = JSON.parse(this.tabelaSelecao.procEspecificos);
+    this.tabelaSelecao.procEspRestantes = JSON.parse(this.tabelaSelecao.procEspRestantes);
+    this.tabelaSelecao.procUltimos = JSON.parse(this.tabelaSelecao.procUltimos);
     this.loadEntidades();
-    //this.loadProcComuns();
+    this.loadProcComuns();
   }
   }
 </script>

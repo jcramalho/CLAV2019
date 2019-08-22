@@ -300,9 +300,9 @@ export default {
                     var haDono = false;
                     if( this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]] ){
                         haDono = true;
+                        this.procSelDonos.push(proc);
                         if (!this.procEspSel.includes(proc)) {
                             this.procEspSel.push(proc);
-                            this.procSelDonos.push(proc);
                             this.$emit("contadorProcSelUlt", this.procEspSel);
                             this.calcRel(proc);
                         }
@@ -320,6 +320,12 @@ export default {
                             this.$emit("contadorProcSelUlt", this.procEspSel);
                         }
                     }
+                    else {
+                        var indexDono = this.procSelDonos.indexOf(proc);
+                        if( index != -1){
+                            this.procSelDonos.splice(indexDono, 1);
+                        }
+                    }
                 }
 
                 var guardar = {}
@@ -334,9 +340,9 @@ export default {
                 for( var i = 0; i < entidades.length; i++){
                     this.entProcDono[proc][entidades[i].id] = true;
                 }
+                this.procSelDonos.push(proc)
                 if (!this.procEspSel.includes(proc)) {
                         this.procEspSel.push(proc);
-                        this.procSelDonos.push(proc)
                         this.$emit("contadorProcSelUlt", this.procEspSel);
                         this.calcRel(proc);
                 }
