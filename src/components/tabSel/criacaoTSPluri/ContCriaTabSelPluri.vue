@@ -75,7 +75,13 @@
       <v-stepper-content step="2">
         <v-flex xs12 sm6 md10>
           <v-text-field
+            v-if="!tabelaSelecao.designacao"
             placeholder="Designação da Nova Tabela de Seleção"
+            v-model="tabelaSelecao.designacao"
+          ></v-text-field>
+          <v-text-field
+            v-else
+            :placeholder="tabelaSelecao.designacao"
             v-model="tabelaSelecao.designacao"
           ></v-text-field>
         </v-flex>
@@ -99,7 +105,7 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 3" step="3"
+      <!--<v-stepper-step :complete="stepNo > 3" step="3"
         >Processos Comuns
         <small>Processos passíveis de existir em qualquer entidade</small>
       </v-stepper-step>
@@ -138,9 +144,9 @@
               :value="numProcPreSelCom"
             ></v-text-field>
           </v-flex>
-        </v-layout>
+        </v-layout>-->
         <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
-        <v-btn
+        <!--<v-btn
           color="primary"
           @click="
             stepNo = 4;
@@ -356,10 +362,10 @@
       >
       <v-btn dark flat color="red darken-4" @click="eliminarTS()"
         >Eliminar TS</v-btn
-      >
+      >-->
     </v-stepper>
 
-    <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
+    <!--<v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
       {{ mensagemPedidoCriadoOK }}
       <v-btn dark flat @click="pedidoCriadoOK">
         Fechar
@@ -376,7 +382,7 @@
       <v-btn dark flat @click="pendenteGuardadoOK">
         Fechar
       </v-btn>
-    </v-snackbar>
+    </v-snackbar>-->
   </v-container>
 </template>
 
@@ -393,7 +399,8 @@ import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/Lista
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ListaProcessosUltimos.vue";
 
 export default {
-  components: {
+    props: ["obj"],
+    components: {
     DesSelEnt,
     SelEnt,
     ListaProcessosComuns,
@@ -404,15 +411,7 @@ export default {
   data() {
     return {
       // Objeto Tabela de Seleção
-      tabelaSelecao: {
-        designacao: "",
-        idEntidade: "",
-        entidades: [],
-        procComuns: [],
-        procEspecificos: [],
-        procEspRestantes: [],
-        procUltimos: []
-      },
+      tabelaSelecao: {},
       // Numero do passo da criação de TS
       stepNo: 1,
       // Valor da barra de progresso
@@ -488,16 +487,6 @@ export default {
     barra: async function(valor) {
       this.valorBarra = valor;
     },
-    // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
-    infoUserEnt: async function() {
-      var resUser = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
-      );
-      var resEnt = await axios.get(
-        lhost + "/api/entidades/" + resUser.data.entidade
-      );
-      this.tabelaSelecao.idEntidade = resUser.data.entidade;
-    },
     // Faz load de todas as entidades
     loadEntidades: async function() {
       try {
@@ -510,34 +499,45 @@ export default {
           };
         });
 
-        for(var i = 0; i < this.entidades.length; i++){
-          if("ent_" + this.entidades[i].sigla === this.tabelaSelecao.idEntidade){
+        // Retira da lista de todas as entidades as que já pertencem a esta entidade
+        for (var i = 0; i < this.tabelaSelecao.entidades.length; i++) {
+          var index = this.entidades.findIndex(
+            e => e.id === this.tabelaSelecao.entidades[i].id
+          );
+          this.entidades.splice(index, 1);
+        }
+
+        this.entSel = this.tabelaSelecao.entidades;
+
+        for(var i = 0; i < this.tabelaSelecao.entidades.length; i++){
+          if(this.tabelaSelecao.entidades[i].id === this.tabelaSelecao.idEntidade){
             this.entTip.push({
-              sigla: this.entidades[i].sigla,
-              designacao: this.entidades[i].designacao,
-              id: this.entidades[i].id
-            })
+                sigla: this.tabelaSelecao.entidades[i].sigla,
+                designacao: this.tabelaSelecao.entidades[i].designacao,
+                id: this.tabelaSelecao.entidades[i].id
+            });
             break;
           }
         }
-        // Retira da lista das entidades a entidade a que pertence o utilizador
+        console.log(this.entidades)
+        console.log(this.entSel)
         var index = this.entidades.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
         this.entidades.splice(index, 1);
-
-        this.tabelaSelecao.entidades= this.entTip;
+        var index2 = this.entSel.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
+        this.entSel.splice(index2, 1);
         
         this.entidadesReady = true;
       } catch (err) {
         return err;
       }
     },
-    // Retira da lista de entidades selecionadas
+    // Retira da lista as entidadesselecionadas
     unselectEntidade: function(entidade) {
       this.entidades.push(entidade);
       var index = this.entSel.findIndex(e => e.id === entidade.id);
       this.entSel.splice(index, 1);
     },
-    // Coloca na lista de entidades selecionadas
+    // Coloca na lista as entidades selecionadas
     selectEntidade: function(entidade) {
       this.entSel.push(entidade);
       var index = this.entidades.findIndex(e => e.id === entidade.id);
@@ -546,417 +546,18 @@ export default {
     print: function(){
       console.log(this.tabelaSelecao)
     },
-    // Carrega todos os processos comuns
-    loadProcComuns: async function() {
-      try {
-        if (!this.listaProcComunsReady) {
-          var response = await axios.get(lhost + "/api/classes?tipo=comum");
-          for (var i = 0; i < response.data.length; i++) {
-              this.listaProcComuns.push({
-                classe: response.data[i].codigo,
-                designacao: response.data[i].titulo,
-                dono: false,
-                participante: false
-              });
-          }
-          this.listaProcComunsReady = true;
-
-          // coloca os proc comuns prontos para receber a info da seleção
-          for( var j = 0; j < this.listaProcComuns.length; j++){
-            this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe] = ({
-              dono: [],
-              part: []
-            })
-          }
-          return this.listaProcComuns;
-        }
-      } catch (err) {
-        return err;
-      }
-    },
-    // Contador dos processos selecionados comuns
-    contadorProcSelCom: function(procSelec) {
-      this.listaProcSel.procSelComuns = procSelec;
-      this.numProcSelCom = procSelec.length;
-    },
-    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
-    procPreSelResTravCom: function(procPreSelResTravCom) {
-      this.procPreSelResTravComum = procPreSelResTravCom;
-    },
-    // Contador dos processos pre selecionados comuns
-    contadorProcPreSelCom: function(lista) {
-      this.numProcPreSelCom = lista.length;
-    },
-    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
-    guardarTSProcComuns: function(procComuns){
-      if( Object.keys(procComuns) == "dono" ){
-        for( var i = 0; i < this.listaProcComuns.length; i++){
-          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].dono = procComuns['dono'][this.listaProcComuns[i].classe]
-        }
-      }
-      else {
-        for( var j = 0; j < this.listaProcComuns.length; j++){
-          this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe].part = procComuns['part'][this.listaProcComuns[j].classe]
-        }
-      }
-      console.log("Processos comuns da tabela de seleção")
-      console.log(this.tabelaSelecao.procComuns)
-    },
-    // Carrega os processos específicos das entidades em causa
-    loadProcEspecificos: async function() {
-      try {
-        if(!this.listaProcEspReady){
-          var url = lhost + "/api/classes?tipo=especifico&ents=" 
-          for( var i = 0; i < this.tabelaSelecao.entidades.length - 1; i++){
-            url += this.tabelaSelecao.entidades[i].id + ",";
-          }
-          url += this.tabelaSelecao.entidades[i].id;
-        }
-        var response = await axios.get(url);
-        for( var j = 0; j < response.data.length; j++){
-          this.listaProcEsp.push({
-            classe: response.data[j].codigo,
-            designacao: response.data[j].titulo,
-            dono: false,
-            participante: false
-          })
-        }
-        
-        // coloca os proc especificos prontos para receber a info da seleção
-        for( var l = 0; l < this.listaProcEsp.length; l++){
-          this.tabelaSelecao.procEspecificos[this.listaProcEsp[l].classe] = ({
-            dono: [],
-            part: []
-          })
-        }
-
-      } catch (error) {
-        return error;
-      }
-    },
-    procPreSelEspecificos: function() {
-      if(!this.listaProcEspReady){
-        for( var i = 0; i < this.listaProcEsp.length; i++) {
-          if( this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)){
-            this.numProcPreSelEsp += 1;
-          }
-        }
-      }
-      this.listaProcEspReady = true;
-    },
-    // Contador dos processos selecionados especificos
-    contadorProcSelEsp: function(procSelec) {
-      this.listaProcSel.procSelEspecificos = procSelec;
-      this.numProcSelEsp = procSelec.length;
-    },
-    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
-    procPreSelResTravEsp: function(procPreSelResTravEsp) {
-      this.procPreSelResTravEspecifico = procPreSelResTravEsp;
-    },
-    // Contador dos processos pre selecionados comuns
-    contadorProcPreSelEsp: function(lista) {
-      this.numProcPreSelEsp = lista.length;
-    },
-    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
-    guardarTSProcEsp: function(procEsp){
-      if( Object.keys(procEsp) == "dono" ){
-        for( var i = 0; i < this.listaProcEsp.length; i++){
-          this.tabelaSelecao.procEspecificos[this.listaProcEsp[i].classe].dono = procEsp['dono'][this.listaProcEsp[i].classe]
-        }
-      }
-      else {
-        for( var j = 0; j < this.listaProcEsp.length; j++){
-          this.tabelaSelecao.procEspecificos[this.listaProcEsp[j].classe].part = procEsp['part'][this.listaProcEsp[j].classe]
-        }
-      }
-      console.log(this.tabelaSelecao.procEspecificos)
-    },
-    // Carrega todos os processos especificos restantes
-    loadProcEspRestantes: async function() {
-      try {
-        if (!this.listaProcEspResReady) {
-          var response = await axios.get(
-            lhost + "/api/classes?tipo=especifico"
-          );
-          this.listaTotalProcEsp = response.data;
-          for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
-            var espEntTip = false;
-            for (var j = 0; j < this.listaProcEsp.length; j++) {
-              if (
-                this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
-              ) {
-                espEntTip = true;
-                break;
-              }
-            }
-            if (espEntTip === false) {
-                this.listaProcEspRes.push({
-                  classe: this.listaTotalProcEsp[i].codigo,
-                  designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: false,
-                  participante: false
-                });
-              }
-            }
-          // coloca os proc especificos restantes prontos para receber a info da seleção
-          for( var l = 0; l < this.listaProcEspRes.length; l++){
-            this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[l].classe] = ({
-              dono: [],
-              part: []
-            })
-          }
-
-          }
-
-      } catch (error) {
-        return error;
-      }
-    },
-    // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
-    procPreSelRestantes: function() {
-      if (!this.listaProcEspResReady) {
-        for (var i = 0; i < this.listaProcEspRes.length; i++) {
-          if (
-            this.procPreSelResTravComum.includes(
-              this.listaProcEspRes[i].classe
-            ) ||
-            this.procPreSelResTravEspecifico.includes(
-              this.listaProcEspRes[i].classe
-            )
-          ) {
-            this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe);
-            this.numProcPreSelRes += 1;
-          }
-        }
-      }
-      this.listaProcEspResReady = true;
-    },
-    // Contador dos processos selecionados especificos
-    contadorProcSelRes: function(procSelec) {
-      this.listaProcSel.procSelEspRestantes = procSelec;
-      this.numProcSelRes = procSelec.length;
-    },
-    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
-    procPreSelResTravRes: function(procPreSelResTravRes) {
-      this.procPreSelResTravRestante = procPreSelResTravRes;
-    },
-    // Contador dos processos pre selecionados comuns
-    contadorProcPreSelRes: function(lista) {
-      this.numProcPreSelRes = lista.length;
-    },
-    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
-    guardarTSProcRes: function(procEsp){
-      if( Object.keys(procEsp) == "dono" ){
-        for( var i = 0; i < this.listaProcEspRes.length; i++){
-          this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[i].classe].dono = procEsp['dono'][this.listaProcEspRes[i].classe]
-        }
-      }
-      else {
-        for( var j = 0; j < this.listaProcEspRes.length; j++){
-          this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[j].classe].part = procEsp['part'][this.listaProcEspRes[j].classe]
-        }
-      }
-      console.log(this.tabelaSelecao.procEspRestantes)
-    },
-    // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
-    loadUltimosProcessos: function() {
-      console.log(this.listaProcSel)
-      // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
-      for (var i = 0; i < this.listaProcComuns.length; i++) {
-        var procSelecionado = false;
-        for (var j = 0; j < this.listaProcSel.procSelComuns.length; j++) {
-          if (
-            this.listaProcComuns[i].classe ===
-            this.listaProcSel.procSelComuns[j]
-          ) {
-            procSelecionado = true;
-            break;
-          }
-        }
-        if (procSelecionado == false) {
-          var jaExiste = false;
-          for (var a = 0; a < this.listaProcUlt.length; a++) {
-            if (
-              this.listaProcUlt[a].classe === this.listaProcComuns[i].classe
-            ) {
-              jaExiste = true;
-              break;
-            }
-          }
-          if (jaExiste == false) {
-            this.listaProcUlt.push(this.listaProcComuns[i]);
-          }
-        }
-      }
-      // Lista com todos os processos especificos já selecionados (especificos e especificos restantes)
-      var procSelecionados = this.listaProcSel.procSelEspecificos.concat(
-        this.listaProcSel.procSelEspRestantes
-      );
-      // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
-      for (var f = 0; f < this.listaTotalProcEsp.length; f++) {
-        procSelecionado = false;
-        for (var m = 0; m < procSelecionados.length; m++) {
-          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m]) {
-            procSelecionado = true;
-            break;
-          }
-        }
-        if (procSelecionado == false) {
-          jaExiste = false;
-          for (var c = 0; c < this.listaProcUlt.length; c++) {
-            if (
-              this.listaProcUlt[c].classe === this.listaTotalProcEsp[f].codigo
-            ) {
-              jaExiste = true;
-              break;
-            }
-          }
-          if (jaExiste == false) {
-            this.listaProcUlt.push({
-              classe: this.listaTotalProcEsp[f].codigo,
-              designacao: this.listaTotalProcEsp[f].titulo,
-              dono: false,
-              participante: false
-            });
-          }
-        }
-      }
-      // coloca os ultimos processos prontos para receber a info da seleção
-      for( var l = 0; l < this.listaProcUlt.length; l++){
-        this.tabelaSelecao.procUltimos[this.listaProcUlt[l].classe] = ({
-          dono: [],
-          part: []
-        })
-      }
-
-      if (this.listaProcUlt.length) {
-        this.listaProcUltReady = true;
-      }
-    },
-    // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
-    procPreSelUlt: function() {
-      for (var i = 0; i < this.listaProcUlt.length; i++) {
-        if (
-          this.procPreSelResTravComum.includes(this.listaProcUlt[i].classe) ||
-          this.procPreSelResTravEspecifico.includes(
-            this.listaProcUlt[i].classe
-          ) ||
-          this.procPreSelResTravRestante.includes(this.listaProcUlt[i].classe)
-        ) {
-          this.procPreSelUltimos.push(this.listaProcUlt[i].classe);
-          this.numProcPreSelUlt += 1;
-        }
-      }
-    },
-    // Contador dos processos selecionados ultimos
-    contadorProcSelUlt: function(procSelec) {
-      this.numProcSelUlt = procSelec.length;
-    },
-    // Contador dos ultimos processos pre selecionados
-    contadorProcPreSelUlt: function(lista) {
-      this.numProcPreSelUlt = lista.length;
-    },
-    // Guarda na tabela de seleção a lista dos ultimos processos, depois de selecionados no componente
-    guardarTSProcUlt: function(procUlt){
-      if( Object.keys(procUlt) == "dono" ){
-        for( var i = 0; i < this.listaProcUlt.length; i++){
-          this.tabelaSelecao.procUltimos[this.listaProcUlt[i].classe].dono = procUlt['dono'][this.listaProcUlt[i].classe]
-        }
-      }
-      else {
-        for( var j = 0; j < this.listaProcUlt.length; j++){
-          this.tabelaSelecao.procUltimos[this.listaProcUlt[j].classe].part = procUlt['part'][this.listaProcUlt[j].classe]
-        }
-      }
-      console.log(this.tabelaSelecao.procUltimos)
-    },
-    // Lança o pedido de submissão de uma TS
-    submeterTS: async function() {
-      try {
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
-        );
-
-        var pedidoParams = {
-          tipoPedido: "Criação",
-          tipoObjeto: "TS Pluriorganizacional",
-          novoObjeto: this.tabelaSelecao,
-          user: { email: userBD.data.email },
-          token: this.$store.state.token
-        };
-
-        console.log(pedidoParams.novoObjeto)
-        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
-        this.mensagemPedidoCriadoOk += response.data.codigo;
-        this.pedidoCriado = true;
-      } catch (error) {
-        return error;
-      }
-    },
-    pedidoCriadoOK: function() {
-      this.pedidoCriado = false;
-      this.$router.push("/");
-    },
-    // Guarda o trabalho de criação de uma TS
-    guardarTrabalho: async function() {
-      try {
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
-        );
-
-        if(this.stepNo < 2){
-          this.tabelaSelecao.entidades = this.entTip.concat(this.entSel)
-        }
-
-        var pendenteParams = {
-          numInterv: 1,
-          acao: "Criação",
-          tipo: "TS Pluriorganizacional",
-          objeto: this.tabelaSelecao,
-          criadoPor: userBD.data.email,
-          user: { email: userBD.data.email },
-          token: this.$store.state.token
-        };
-        console.log(pendenteParams.objeto);
-
-        var response = await axios.post(
-          lhost + "/api/pendentes",
-          pendenteParams
-        );
-        this.pendenteGuardado = true;
-      } catch (err) {
-        return err;
-      }
-    },
-    pendenteGuardadoOK: function() {
-      this.pendenteGuardado = false;
-      this.$router.push("/");
-    },
-    // Elimina todo o trabalho feito até esse momento
-    eliminarTS: async function() {
-      this.$router.push("/");
-    }
   },
   created: async function() {
-    await this.infoUserEnt();
+    this.tabelaSelecao = this.obj.objeto;
     this.loadEntidades();
-    this.loadProcComuns();
+    //this.loadProcComuns();
   }
-};
+  }
 </script>
 
 <style>
 .expansion-panel-heading {
   color: #1a237e !important;
   background-image: linear-gradient(to bottom, #bac1eb 0, #8c9eff 100%);
-}
-
-.info-label {
-  color: #1a237e;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #dee2f8;
-  font-weight: bold;
 }
 </style>
