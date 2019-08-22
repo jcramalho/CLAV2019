@@ -416,7 +416,8 @@ export default {
         listaProcSel: {
           procSelComuns: [],
           procSelEspecificos: [],
-          procSelEspRestantes: []
+          procSelEspRestantes: [],
+          procSelUltimos: []
         },
       },
       // Numero do passo da criação de TS
@@ -564,8 +565,8 @@ export default {
           // coloca os proc comuns prontos para receber a info da seleção
           for( var j = 0; j < this.listaProcComuns.length; j++){
             this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe] = ({
-              dono: [],
-              part: []
+              dono: {},
+              part: {}
             })
           }
           return this.listaProcComuns;
@@ -850,6 +851,7 @@ export default {
     },
     // Contador dos processos selecionados ultimos
     contadorProcSelUlt: function(procSelec) {
+      this.tabelaSelecao.listaProcSel.procSelUltimos = procSelec;
       this.numProcSelUlt = procSelec.length;
     },
     // Contador dos ultimos processos pre selecionados
@@ -913,6 +915,7 @@ export default {
         this.tabelaSelecao.procEspRestantes = JSON.stringify(this.tabelaSelecao.procEspRestantes)
         this.tabelaSelecao.procUltimos = JSON.stringify(this.tabelaSelecao.procUltimos)
 
+        console.log(this.tabelaSelecao)
         var pendenteParams = {
           numInterv: 1,
           acao: "Criação",

@@ -419,9 +419,20 @@ export default {
                 }
             }
             this.entProcDonoReady = true;
+            if(JSON.stringify(this.procSelGuardados[this.lista[0].classe].part) == "[]"){
+                for( var i = 0; i < this.lista.length; i++ ){
+                    this.entProcPar[this.lista[i].classe] = {};
+                    var tempDialog = [];
+                    for(var j = 0; j < this.entidades.length; j++){
+                        tempDialog[this.entidades[j].id] = false
+                    }
+                    this.dialog[this.lista[i].classe] = tempDialog;
+                    tempDialog = [];
+                }
+            }
+            else { 
             for( var i = 0; i < this.lista.length; i++ ){
                 this.entProcPar[this.lista[i].classe] = this.procSelGuardados[this.lista[i].classe].part;
-                console.log(JSON.stringify(this.procSelGuardados[this.lista[i].classe].part))
                 if( JSON.stringify(this.procSelGuardados[this.lista[i].classe].part) != "{}"){
                     if (!this.procComunsSel.includes(this.lista[i].classe)) {
                         this.procComunsSel.push(this.lista[i].classe);
@@ -435,6 +446,7 @@ export default {
                 }
                 this.dialog[this.lista[i].classe] = tempDialog;
                 tempDialog = [];
+            }
             }
             this.entProcParReady = true;
         } catch (err) {

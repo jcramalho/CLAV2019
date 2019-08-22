@@ -153,10 +153,10 @@
             stepNo = 4;
             barra(48);
             procPreSelEspecificos();
-            loadProcEspRestantes();
           "
           >Continuar</v-btn
         >
+        <!--loadProcEspRestantes();-->
         <v-btn
           flat
           @click="
@@ -167,7 +167,7 @@
         >
       </v-stepper-content>
 
-      <!--<v-stepper-step :complete="stepNo > 4" step="4"
+      <v-stepper-step :complete="stepNo > 4" step="4"
         >Processos Específicos
         <small
           >Processos específicos da entidade e tipologia em que se
@@ -184,7 +184,7 @@
                     Selecione os Processos de Negócio Específicos
                   </div>
                 </template>
-                <ListaProcessosEspecificos
+                <ContListaProcessosEspecificos
                   v-if="listaProcEspReady"
                   v-bind:lista="listaProcEsp"
                   v-bind:listaPreSel="procPreSelResTravComum"
@@ -193,6 +193,7 @@
                   @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
                   @procPreSelResTravEsp="procPreSelResTravEsp($event)"
                   @guardarTSProcEsp="guardarTSProcEsp($event)"
+                  v-bind:procSelGuardados="tabelaSelecao.procEspecificos"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -231,7 +232,7 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 5" step="5"
+      <!--<v-stepper-step :complete="stepNo > 5" step="5"
         >Processos Específicos Restantes
       </v-stepper-step>
       <v-stepper-content step="5">
@@ -253,6 +254,7 @@
                   @contadorProcPreSelRes="contadorProcPreSelRes($event)"
                   @procPreSelResTravRes="procPreSelResTravRes($event)"
                   @guardarTSProcRes="guardarTSProcRes($event)"
+                  v-bind:procSelGuardados="tabelaSelecao.procEspRestantes"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -318,6 +320,7 @@
                   @contadorProcSelUlt="contadorProcSelUlt($event)"
                   @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
                   @guardarTSProcUlt="guardarTSProcUlt($event)"
+                  v-bind:procSelGuardados="tabelaSelecao.procUltimos"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -395,9 +398,9 @@ import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
 import ContListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ContListaProcessosComuns.vue";
-import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspecificos.vue";
-import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspRestantes.vue";
-import ListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ListaProcessosUltimos.vue";
+import ContListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ContListaProcessosEspecificos.vue";
+import ContListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ContListaProcessosEspRestantes.vue";
+import ContListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ContListaProcessosUltimos.vue";
 
 export default {
     props: ["obj"],
@@ -405,9 +408,9 @@ export default {
     DesSelEnt,
     SelEnt,
     ContListaProcessosComuns,
-    ListaProcessosEspecificos,
-    ListaProcessosEspRestantes,
-    ListaProcessosUltimos
+    ContListaProcessosEspecificos,
+    ContListaProcessosEspRestantes,
+    ContListaProcessosUltimos
   },
   data() {
     return {
@@ -608,6 +611,82 @@ export default {
       }
       console.log("Processos comuns da tabela de seleção")
       console.log(this.tabelaSelecao.procComuns)
+    },
+    // Carrega os processos específicos das entidades em causa
+    loadProcEspecificos: async function() {
+      try {
+        if(!this.listaProcEspReady){
+          var url = lhost + "/api/classes?tipo=especifico&ents=" 
+          for( var i = 0; i < this.tabelaSelecao.entidades.length - 1; i++){
+            url += this.tabelaSelecao.entidades[i].id + ",";
+          }
+          url += this.tabelaSelecao.entidades[i].id;
+        }
+        var response = await axios.get(url);
+        for( var j = 0; j < response.data.length; j++){
+          for(var k = 0; k < this.tabelaSelecao.listaProcSel.procSelEspecificos.length; k++){
+                var estavaGuardado = false;
+                if ( this.tabelaSelecao.listaProcSel.procSelEspecificos[k] == response.data[j].codigo) {
+                    this.listaProcEsp.push({
+                        classe: response.data[j].codigo,
+                        designacao: response.data[j].titulo,
+                        dono: false,
+                        participante: false
+                    });
+                    estavaGuardado = true;
+                    break;
+                    }
+                }
+            if(!estavaGuardado) {
+                this.listaProcEsp.push({
+                    classe: response.data[j].codigo,
+                    designacao: response.data[j].titulo,
+                    dono: false,
+                    participante: false
+                });
+            }
+        }
+
+      } catch (error) {
+        return error;
+      }
+    },
+    procPreSelEspecificos: function() {
+      if(!this.listaProcEspReady){
+        for( var i = 0; i < this.listaProcEsp.length; i++) {
+          if( this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)){
+            this.numProcPreSelEsp += 1;
+          }
+        }
+      }
+      this.listaProcEspReady = true;
+    },
+    // Contador dos processos selecionados especificos
+    contadorProcSelEsp: function(procSelec) {
+      this.tabelaSelecao.listaProcSel.procSelEspecificos = procSelec;
+      this.numProcSelEsp = procSelec.length;
+    },
+    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
+    procPreSelResTravEsp: function(procPreSelResTravEsp) {
+      this.procPreSelResTravEspecifico = procPreSelResTravEsp;
+    },
+    // Contador dos processos pre selecionados comuns
+    contadorProcPreSelEsp: function(lista) {
+      this.numProcPreSelEsp = lista.length;
+    },
+    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
+    guardarTSProcEsp: function(procEsp){
+      if( Object.keys(procEsp) == "dono" ){
+        for( var i = 0; i < this.listaProcEsp.length; i++){
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[i].classe].dono = procEsp['dono'][this.listaProcEsp[i].classe]
+        }
+      }
+      else {
+        for( var j = 0; j < this.listaProcEsp.length; j++){
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[j].classe].part = procEsp['part'][this.listaProcEsp[j].classe]
+        }
+      }
+      console.log(this.tabelaSelecao.procEspecificos)
     },
   },
   created: async function() {
