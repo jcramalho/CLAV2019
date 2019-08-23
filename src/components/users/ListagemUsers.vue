@@ -264,7 +264,7 @@ export default {
       this.dialog = true;
     },
     desativar(item) {
-      axios.post(lhost + "/api/users/desativar", {
+      axios.put(lhost + "/api/users/desativar", {
         token: this.$store.state.token,
         id: item.id
       }).then(res => {
@@ -293,7 +293,7 @@ export default {
       });
     },
     eliminar(item) {
-      axios.post(lhost + "/api/users/eliminar", {
+      axios.delete(lhost + "/api/users/eliminar", {
         token: this.$store.state.token,
         id: item.id
       }).then(res => {
@@ -357,7 +357,12 @@ export default {
           entidade: 'ent_' + this.editedItem.entidade,
           level: parsedType
         }).then(res => {
-          if (res.data === "Utilizador atualizado com sucesso!") {
+          if (res.data === "Já existe utilizador registado com esse email!") {
+            this.text = "Já existe um utilizar registado com esse email!";
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          }else if (res.data === "Utilizador atualizado com sucesso!") {
             this.text = "Utilizador atualizado com sucesso!";
             this.color = "success";
             this.snackbar = true;
