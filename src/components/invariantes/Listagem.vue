@@ -5,6 +5,12 @@
         <v-card>
           <v-toolbar color="indigo darken-4" dark>
             <v-toolbar-title>Invariantes</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn flat @click="testarTodos()">
+                Testar todos os invariantes
+              </v-btn>
+            </v-toolbar-items>
           </v-toolbar>
           <v-list>
             <v-list-group v-for="rel in invariantes" :key="rel.idRel">
@@ -81,6 +87,9 @@ export default {
   methods: {
     goToInvariante: function(idRel, idInv) {
       this.$router.push("/invariantes?idRel=" + idRel + "&idInv=" + idInv);
+    },
+    testarTodos: function() {
+      this.$router.push("/invariantes/testarTodos");
     }
   }
 };

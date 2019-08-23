@@ -224,6 +224,11 @@ export default new Router({
       path: "/invariantes",
       name: "invariantes",
       component: () => import("./views/invariantes/Invariantes.vue")
+    },
+    {
+      path: "/invariantes/testarTodos",
+      name: "testarTodosInvariantes",
+      component: () => import("./views/invariantes/TestarTodos.vue")
     }
   ]
 });
