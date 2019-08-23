@@ -421,17 +421,17 @@ export default {
             this.tipoPar();
             for( var i = 0; i < this.lista.length; i++ ){
                 this.entProcDono[this.lista[i].classe] = {};
-                for(var j = 0; j < this.entidades.length; j++){
-                    this.entProcDono[this.lista[i].classe][this.entidades[j].id] = this.procSelGuardados[this.lista[i].classe].dono[this.entidades[j].id]
-                    if(this.procSelGuardados[this.lista[i].classe].dono[this.entidades[j].id]){
-                        if (!this.procEspSel.includes(this.lista[i].classe)) {
-                            this.procEspSel.push(this.lista[i].classe);
-                            this.$emit("contadorProcSelEsp", this.procEspSel);
-                            this.procSelDonos.push(this.lista[i].classe)
-                            this.calcRel(this.lista[i].classe)
+                    for(var j = 0; j < this.entidades.length; j++){
+                        this.entProcDono[this.lista[i].classe][this.entidades[j].id] = this.procSelGuardados[this.lista[i].classe].dono[this.entidades[j].id]
+                        if(this.procSelGuardados[this.lista[i].classe].dono[this.entidades[j].id]){
+                            if (!this.procEspSel.includes(this.lista[i].classe)) {
+                                this.procEspSel.push(this.lista[i].classe);
+                                this.$emit("contadorProcSelEsp", this.procEspSel);
+                                this.procSelDonos.push(this.lista[i].classe)
+                                this.calcRel(this.lista[i].classe)
+                            }
                         }
                     }
-                }
             }
             this.entProcDonoReady = true;
             if(JSON.stringify(this.procSelGuardados[this.lista[0].classe].part) == "[]"){

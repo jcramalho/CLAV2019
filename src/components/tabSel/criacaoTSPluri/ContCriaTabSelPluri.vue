@@ -369,7 +369,7 @@
       >
     </v-stepper>
 
-    <!--<v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
+    <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
       {{ mensagemPedidoCriadoOK }}
       <v-btn dark flat @click="pedidoCriadoOK">
         Fechar
@@ -386,7 +386,7 @@
       <v-btn dark flat @click="pendenteGuardadoOK">
         Fechar
       </v-btn>
-    </v-snackbar>-->
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -647,6 +647,15 @@ export default {
                 });
             }
         }
+        if(JSON.stringify(this.tabelaSelecao.procEspecificos) == "{}") {
+            // coloca os ultimos processos prontos para receber a info da seleção
+            for( var l = 0; l < this.listaProcEsp.length; l++){
+                this.tabelaSelecao.procEspecificos[this.listaProcEsp[l].classe] = ({
+                dono: [],
+                part: []
+                })
+            }
+        }
 
       } catch (error) {
         return error;
@@ -730,6 +739,15 @@ export default {
                     });
                 }
               }
+            }
+            if(JSON.stringify(this.tabelaSelecao.procEspRestantes) == "{}") {
+                // coloca os ultimos processos prontos para receber a info da seleção
+                for( var l = 0; l < this.listaProcEspRes.length; l++){
+                    this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[l].classe] = ({
+                    dono: [],
+                    part: []
+                    })
+                }
             }
           }
 
@@ -904,6 +922,16 @@ export default {
         }
       }
 
+    if(JSON.stringify(this.tabelaSelecao.procUltimos) == "{}") {
+        // coloca os ultimos processos prontos para receber a info da seleção
+        for( var l = 0; l < this.listaProcUlt.length; l++){
+            this.tabelaSelecao.procUltimos[this.listaProcUlt[l].classe] = ({
+            dono: [],
+            part: []
+            })
+        }
+    }
+
       if (this.listaProcUlt.length) {
         this.listaProcUltReady = true;
       }
@@ -937,7 +965,6 @@ export default {
       console.log(procUlt)
       if( Object.keys(procUlt) == "dono" ){
         for( var i = 0; i < this.listaProcUlt.length; i++){
-            console.log(this.listaProcUlt[i])
           this.tabelaSelecao.procUltimos[this.listaProcUlt[i].classe].dono = procUlt['dono'][this.listaProcUlt[i].classe]
         }
       }
@@ -948,6 +975,15 @@ export default {
       }
       console.log(this.tabelaSelecao.procUltimos)
     },
+    pedidoCriadoOK: function() {
+      this.pedidoCriado = false;
+      this.$router.push("/");
+    },
+    
+    pendenteGuardadoOK: function() {
+      this.pendenteGuardado = false;
+      this.$router.push("/");
+    }
   },
   created: async function() {
     this.tabelaSelecao = this.obj.objeto;

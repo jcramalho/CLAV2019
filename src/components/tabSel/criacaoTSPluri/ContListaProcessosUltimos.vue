@@ -397,27 +397,20 @@ export default {
             this.tipoPar();
             for( var i = 0; i < this.lista.length; i++ ){
                 this.entProcDono[this.lista[i].classe] = {};
-                if( JSON.stringify(this.procSelGuardados) != "{}") {
-                    for(var j = 0; j < this.entidades.length; j++){
-                            this.entProcDono[this.lista[i].classe][this.entidades[j].id] = this.procSelGuardados[this.lista[i].classe].dono[this.entidades[j].id]
-                            if(this.procSelGuardados[this.lista[i].classe].dono[this.entidades[j].id]){
-                                console.log(this.procUltSel)
-                                if (!this.procUltSel.includes(this.lista[i].classe)) {
-                                    this.procUltSel.push(this.lista[i].classe);
-                                    this.$emit("contadorProcSelUlt", this.procUltSel);
-                                    this.procSelDonos.push(this.lista[i].classe)
-                                    this.calcRel(this.lista[i].classe)
-                                }
+                for(var j = 0; j < this.entidades.length; j++){
+                        this.entProcDono[this.lista[i].classe][this.entidades[j].id] = this.procSelGuardados[this.lista[i].classe].dono[this.entidades[j].id]
+                        if(this.procSelGuardados[this.lista[i].classe].dono[this.entidades[j].id]){
+                            console.log(this.procUltSel)
+                            if (!this.procUltSel.includes(this.lista[i].classe)) {
+                                this.procUltSel.push(this.lista[i].classe);
+                                this.$emit("contadorProcSelUlt", this.procUltSel);
+                                this.procSelDonos.push(this.lista[i].classe)
+                                this.calcRel(this.lista[i].classe)
                             }
                         }
-                    } else {
-                        for(var j = 0; j < this.entidades.length; j++){
-                            this.entProcDono[this.lista[i].classe][this.entidades[j].id] = false;
-                        }
                     }
-                }
+            }
             this.entProcDonoReady = true;
-            if( JSON.stringify(this.procSelGuardados) != "{}") {
             if(JSON.stringify(this.procSelGuardados[this.lista[0].classe].part) == "[]"){
                 for( var i = 0; i < this.lista.length; i++ ){
                     this.entProcPar[this.lista[i].classe] = {};
@@ -446,18 +439,7 @@ export default {
                 this.dialog[this.lista[i].classe] = tempDialog;
                 tempDialog = [];
             }
-            }
-        } else {
-            for( var x = 0; x < this.lista.length; x++ ){
-                this.entProcPar[this.lista[x].classe] = {};
-                var tempDialog = [];
-                for(var l = 0; l < this.entidades.length; l++){
-                    tempDialog[this.entidades[l].id] = false
-                }
-                this.dialog[this.lista[x].classe] = tempDialog;
-                tempDialog = [];
-            }
-            } 
+        }
             this.entProcParReady = true;
         } catch (err) {
             return err;

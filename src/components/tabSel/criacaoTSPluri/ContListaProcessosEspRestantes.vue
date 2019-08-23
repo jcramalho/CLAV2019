@@ -432,7 +432,7 @@ export default {
                         }
                     }
                 }
-            }
+                } 
             this.entProcDonoReady = true;
             if(JSON.stringify(this.procSelGuardados[this.lista[0].classe].part) == "[]"){
                 for( var i = 0; i < this.lista.length; i++ ){
@@ -462,8 +462,8 @@ export default {
                 this.dialog[this.lista[i].classe] = tempDialog;
                 tempDialog = [];
             }
-            }
-            this.entProcParReady = true;
+        }
+        this.entProcParReady = true;
         } catch (err) {
             return err;
         }
