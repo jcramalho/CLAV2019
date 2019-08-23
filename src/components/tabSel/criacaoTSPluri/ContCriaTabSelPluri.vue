@@ -364,9 +364,6 @@
       <v-btn color="primary" v-else @click="guardarTrabalho()"
         >Guardar trabalho</v-btn
       >
-      <v-btn dark flat color="red darken-4" @click="eliminarTS()"
-        >Eliminar TS</v-btn
-      >
     </v-stepper>
 
     <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
@@ -975,11 +972,69 @@ export default {
       }
       console.log(this.tabelaSelecao.procUltimos)
     },
+    // Lança o pedido de submissão de uma TS
+    submeterTS: async function() {
+      try {
+        var userBD = await axios.get(
+          lhost + "/api/users/listarToken/" + this.$store.state.token
+        );
+
+        var pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "TS Plurirganizacional",
+          novoObjeto: this.tabelaSelecao,
+          user: { email: userBD.data.email },
+          token: this.$store.state.token
+        };
+
+        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+        this.mensagemPedidoCriadoOK += response.data.codigo;
+        this.pedidoCriado = true;
+      } catch (error) {
+        return error;
+      }
+    },
     pedidoCriadoOK: function() {
       this.pedidoCriado = false;
       this.$router.push("/");
     },
-    
+    // Guarda o trabalho de criação de uma TS
+    guardarTrabalho: async function() {
+      try {
+        if(this.stepNo < 2){
+          this.tabelaSelecao.entidades = this.entTip.concat(this.entSel)
+        }
+
+        this.tabelaSelecao.procComuns = JSON.stringify(this.tabelaSelecao.procComuns)
+        this.tabelaSelecao.procEspecificos = JSON.stringify(this.tabelaSelecao.procEspecificos)
+        this.tabelaSelecao.procEspRestantes = JSON.stringify(this.tabelaSelecao.procEspRestantes)
+        this.tabelaSelecao.procUltimos = JSON.stringify(this.tabelaSelecao.procUltimos)
+
+        this.obj.numInterv++;
+        var cDate = Date.now();
+
+        var pendenteParams = {
+          _id: this.obj._id,
+          dataAtualizacao: cDate,
+          numInterv: this.obj.numInterv,
+          acao: this.obj.acao,
+          tipo: this.obj.tipo,
+          objeto: this.tabelaSelecao,
+          criadoPor: this.obj.criadoPor,
+          user: {
+            token: this.$store.state.token
+          }
+        };
+        // console.log(pendenteParams.objeto);
+        var response = await axios.put(
+          lhost + "/api/pendentes",
+          pendenteParams
+        );
+        this.pendenteGuardado = true;
+      } catch (err) {
+        return err;
+      }
+    },
     pendenteGuardadoOK: function() {
       this.pendenteGuardado = false;
       this.$router.push("/");
