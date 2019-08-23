@@ -153,10 +153,10 @@
             stepNo = 4;
             barra(48);
             procPreSelEspecificos();
+            loadProcEspRestantes();
           "
           >Continuar</v-btn
         >
-        <!--loadProcEspRestantes();-->
         <v-btn
           flat
           @click="
@@ -232,7 +232,7 @@
         >
       </v-stepper-content>
 
-      <!--<v-stepper-step :complete="stepNo > 5" step="5"
+      <v-stepper-step :complete="stepNo > 5" step="5"
         >Processos Específicos Restantes
       </v-stepper-step>
       <v-stepper-content step="5">
@@ -245,7 +245,7 @@
                     Selecione os Processos de Negócio Específicos Restantes
                   </div>
                 </template>
-                <ListaProcessosEspRestantes
+                <ContListaProcessosEspRestantes
                   v-if="listaProcEspResReady"
                   v-bind:lista="listaProcEspRes"
                   v-bind:listaPreSel="procPreSelEspRestantes"
@@ -312,7 +312,7 @@
                     Selecione os Processos de Negócio Restantes
                   </div>
                 </template>
-                <ListaProcessosUltimos 
+                <ContListaProcessosUltimos 
                   v-if="listaProcUltReady"
                   v-bind:lista="listaProcUlt"
                   v-bind:listaPreSel="procPreSelUltimos"
@@ -366,7 +366,7 @@
       >
       <v-btn dark flat color="red darken-4" @click="eliminarTS()"
         >Eliminar TS</v-btn
-      >-->
+      >
     </v-stepper>
 
     <!--<v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
@@ -578,6 +578,7 @@ export default {
               }
           }
           this.listaProcComunsReady = true;
+          console.log(this.listaProcComuns)
           return this.listaProcComuns;
         }
       } catch (err) {
@@ -688,13 +689,278 @@ export default {
       }
       console.log(this.tabelaSelecao.procEspecificos)
     },
+    // Carrega todos os processos especificos restantes
+    loadProcEspRestantes: async function() {
+      try {
+        if (!this.listaProcEspResReady) {
+          var response = await axios.get(
+            lhost + "/api/classes?tipo=especifico"
+          );
+          this.listaTotalProcEsp = response.data;
+          for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
+            var espEntTip = false;
+            for (var j = 0; j < this.listaProcEsp.length; j++) {
+              if (
+                this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
+              ) {
+                espEntTip = true;
+                break;
+              }
+            }
+            if (espEntTip === false) {
+                for(var k = 0; k < this.tabelaSelecao.listaProcSel.procSelEspRestantes.length; k++){
+                    var estavaGuardado = false;
+                    if ( this.tabelaSelecao.listaProcSel.procSelEspRestantes[k] == this.listaTotalProcEsp[i].codigo) {
+                        this.listaProcEspRes.push({
+                            classe: this.listaTotalProcEsp[i].codigo,
+                            designacao: this.listaTotalProcEsp[i].titulo,
+                            dono: false,
+                            participante: false
+                        });
+                        estavaGuardado = true;
+                        break;
+                    }
+                }
+                if(!estavaGuardado) {
+                    this.listaProcEspRes.push({
+                        classe: this.listaTotalProcEsp[i].codigo,
+                        designacao: this.listaTotalProcEsp[i].titulo,
+                        dono: false,
+                        participante: false
+                    });
+                }
+              }
+            }
+          }
+
+      } catch (error) {
+        return error;
+      }
+    },
+    // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
+    procPreSelRestantes: function() {
+      if (!this.listaProcEspResReady) {
+        for (var i = 0; i < this.listaProcEspRes.length; i++) {
+          if (
+            this.procPreSelResTravComum.includes(
+              this.listaProcEspRes[i].classe
+            ) ||
+            this.procPreSelResTravEspecifico.includes(
+              this.listaProcEspRes[i].classe
+            )
+          ) {
+            this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe);
+            this.numProcPreSelRes += 1;
+          }
+        }
+      }
+      this.listaProcEspResReady = true;
+    },
+    // Contador dos processos selecionados especificos
+    contadorProcSelRes: function(procSelec) {
+      this.tabelaSelecao.listaProcSel.procSelEspRestantes = procSelec;
+      this.numProcSelRes = procSelec.length;
+    },
+    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
+    procPreSelResTravRes: function(procPreSelResTravRes) {
+      this.procPreSelResTravRestante = procPreSelResTravRes;
+    },
+    // Contador dos processos pre selecionados comuns
+    contadorProcPreSelRes: function(lista) {
+      this.numProcPreSelRes = lista.length;
+    },
+    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
+    guardarTSProcRes: function(procEsp){
+      if( Object.keys(procEsp) == "dono" ){
+        for( var i = 0; i < this.listaProcEspRes.length; i++){
+          this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[i].classe].dono = procEsp['dono'][this.listaProcEspRes[i].classe]
+        }
+      }
+      else {
+        for( var j = 0; j < this.listaProcEspRes.length; j++){
+          this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[j].classe].part = procEsp['part'][this.listaProcEspRes[j].classe]
+        }
+      }
+      console.log(this.tabelaSelecao.procEspRestantes)
+    },
+    // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
+    loadUltimosProcessos: function() {
+      // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
+      for (var i = 0; i < this.listaProcComuns.length; i++) {
+        var procSelecionado = false;
+        for (var j = 0; j < this.tabelaSelecao.listaProcSel.procSelComuns.length; j++) {
+          if (
+            this.listaProcComuns[i].classe ===
+            this.tabelaSelecao.listaProcSel.procSelComuns[j]
+          ) {
+            procSelecionado = true;
+            break;
+          }
+        }
+        if (procSelecionado == false) {
+          var jaExiste = false;
+          for (var a = 0; a < this.listaProcUlt.length; a++) {
+            if (
+              this.listaProcUlt[a].classe === this.listaProcComuns[i].classe
+            ) {
+              jaExiste = true;
+              break;
+            }
+          }
+          if (jaExiste == false) {
+            if (this.tabelaSelecao.listaProcSel.procSelUltimos.length) {
+                for (
+                  var c = 0;
+                  c < this.tabelaSelecao.listaProcSel.procSelUltimos.length;
+                  c++
+                ) {
+                  var estavaGuardado = false;
+                  if (
+                    this.tabelaSelecao.listaProcSel.procSelUltimos[c] ==
+                    this.listaProcComuns[i].classe
+                  ) {
+                    this.listaProcUlt.push({
+                      classe: this.listaProcComuns[i].classe,
+                      designacao: this.listaProcComuns[i].designacao,
+                      dono: false,
+                      participante: false
+                    });
+                    estavaGuardado = true;
+                    break;
+                  }
+                }
+                if (!estavaGuardado) {
+                  this.listaProcUlt.push(this.listaProcComuns[i]);
+                }
+              } else {
+                this.listaProcUlt.push(this.listaProcComuns[i]);
+              }
+              //console.log(this.listaProcUlt)
+          }
+        }
+      }
+      // Lista com todos os processos especificos já selecionados (especificos e especificos restantes)
+      var procSelecionados = this.tabelaSelecao.listaProcSel.procSelEspecificos.concat(
+        this.tabelaSelecao.listaProcSel.procSelEspRestantes
+      );
+      // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
+      for (var f = 0; f < this.listaTotalProcEsp.length; f++) {
+        procSelecionado = false;
+        for (var m = 0; m < procSelecionados.length; m++) {
+          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m]) {
+            procSelecionado = true;
+            break;
+          }
+        }
+        if (procSelecionado == false) {
+          jaExiste = false;
+          for (var c = 0; c < this.listaProcUlt.length; c++) {
+            if (
+              this.listaProcUlt[c].classe === this.listaTotalProcEsp[f].codigo
+            ) {
+              jaExiste = true;
+              break;
+            }
+          }
+          if (jaExiste == false) {
+            if (this.tabelaSelecao.listaProcSel.procSelUltimos.length) {
+                for (
+                  var u = 0;
+                  u < this.tabelaSelecao.listaProcSel.procSelUltimos.length;
+                  u++
+                ) {
+                  estavaGuardado = false;
+                  if (
+                    this.tabelaSelecao.listaProcSel.procSelUltimos[u] ==
+                    this.listaTotalProcEsp[f].codigo
+                  ) {
+                    this.listaProcUlt.push({
+                      classe: this.listaTotalProcEsp[f].codigo,
+                      designacao: this.listaTotalProcEsp[f].titulo,
+                      dono: false,
+                      participante: false
+                    });
+                    estavaGuardado = true;
+                    break;
+                  }
+                }
+                if (!estavaGuardado) {
+                  this.listaProcUlt.push({
+                    classe: this.listaTotalProcEsp[f].codigo,
+                    designacao: this.listaTotalProcEsp[f].titulo,
+                    dono: false,
+                    participante: false
+                  });
+                }
+              } else {
+                this.listaProcUlt.push({
+                  classe: this.listaTotalProcEsp[f].codigo,
+                  designacao: this.listaTotalProcEsp[f].titulo,
+                  dono: false,
+                  participante: false
+                });
+              }
+          }
+        }
+      }
+
+      if (this.listaProcUlt.length) {
+        this.listaProcUltReady = true;
+      }
+    },
+    // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
+    procPreSelUlt: function() {
+      for (var i = 0; i < this.listaProcUlt.length; i++) {
+        if (
+          this.procPreSelResTravComum.includes(this.listaProcUlt[i].classe) ||
+          this.procPreSelResTravEspecifico.includes(
+            this.listaProcUlt[i].classe
+          ) ||
+          this.procPreSelResTravRestante.includes(this.listaProcUlt[i].classe)
+        ) {
+          this.procPreSelUltimos.push(this.listaProcUlt[i].classe);
+          this.numProcPreSelUlt += 1;
+        }
+      }
+    },
+    // Contador dos processos selecionados ultimos
+    contadorProcSelUlt: function(procSelec) {
+      this.tabelaSelecao.listaProcSel.procSelUltimos = procSelec;
+      this.numProcSelUlt = procSelec.length;
+    },
+    // Contador dos ultimos processos pre selecionados
+    contadorProcPreSelUlt: function(lista) {
+      this.numProcPreSelUlt = lista.length;
+    },
+    // Guarda na tabela de seleção a lista dos ultimos processos, depois de selecionados no componente
+    guardarTSProcUlt: function(procUlt){
+      console.log(procUlt)
+      if( Object.keys(procUlt) == "dono" ){
+        for( var i = 0; i < this.listaProcUlt.length; i++){
+            console.log(this.listaProcUlt[i])
+          this.tabelaSelecao.procUltimos[this.listaProcUlt[i].classe].dono = procUlt['dono'][this.listaProcUlt[i].classe]
+        }
+      }
+      else {
+        for( var j = 0; j < this.listaProcUlt.length; j++){
+          this.tabelaSelecao.procUltimos[this.listaProcUlt[j].classe].part = procUlt['part'][this.listaProcUlt[j].classe]
+        }
+      }
+      console.log(this.tabelaSelecao.procUltimos)
+    },
   },
   created: async function() {
     this.tabelaSelecao = this.obj.objeto;
     this.tabelaSelecao.procComuns = JSON.parse(this.tabelaSelecao.procComuns);
-    this.tabelaSelecao.procEspecificos = JSON.parse(this.tabelaSelecao.procEspecificos);
-    this.tabelaSelecao.procEspRestantes = JSON.parse(this.tabelaSelecao.procEspRestantes);
-    this.tabelaSelecao.procUltimos = JSON.parse(this.tabelaSelecao.procUltimos);
+    if( this.tabelaSelecao.procEspecificos != {}){
+        this.tabelaSelecao.procEspecificos = JSON.parse(this.tabelaSelecao.procEspecificos);
+    }
+    if( this.tabelaSelecao.procEspRestantes != {}){
+        this.tabelaSelecao.procEspRestantes = JSON.parse(this.tabelaSelecao.procEspRestantes);
+    }
+    if( this.tabelaSelecao.procUltimos != {} ){
+        this.tabelaSelecao.procUltimos = JSON.parse(this.tabelaSelecao.procUltimos);
+    }
     this.loadEntidades();
     this.loadProcComuns();
   }
