@@ -402,8 +402,20 @@
       <v-btn color="primary" v-else @click="guardarTrabalho()"
         >Guardar trabalho</v-btn
       >
-      <v-btn dark flat color="red darken-4" @click="eliminarTS()"
-        >Eliminar TS</v-btn
+      <v-btn dark flat color="red darken-4" @click="eliminarTabela = true"
+        >Eliminar TS
+          <v-dialog v-model="eliminarTabela" persistent max-width="320">
+                <v-card>
+                    <v-card-title class="headline">Eliminar Tabela</v-card-title>
+                    <v-card-text>Pretende eliminar todo o trabalho realizado?</v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red" flat @click="eliminarTabela = false">Cancelar</v-btn>
+                    <v-btn color="primary" flat @click="eliminarTS(); eliminarTabela=false;">Confirmar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+          </v-btn
       >
     </v-stepper>
 
@@ -532,7 +544,9 @@ export default {
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
       pedidoCriado: false,
-      mensagemPedidoCriadoOK: "Pedido criado com sucesso: "
+      mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
+      // Dialog de confirmação de eliminação de TS
+      eliminarTabela: false
     };
   },
   methods: {
