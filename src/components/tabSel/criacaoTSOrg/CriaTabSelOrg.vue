@@ -945,7 +945,7 @@ export default {
           lhost + "/api/users/listarToken/" + this.$store.state.token
         );
 
-        this.tabelaSelecao.tipologias = this.tipSel;
+        this.tabelaSelecao.tipologias = this.tipSel.concat(this.tipEnt);
 
         var pendenteParams = {
           numInterv: 1,

@@ -539,9 +539,13 @@ export default {
         }
 
         var index = this.entidades.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
-        this.entidades.splice(index, 1);
+        if( index != -1) {
+            this.entidades.splice(index, 1);
+        }
         var index2 = this.entSel.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
-        this.entSel.splice(index2, 1);
+        if( index2 != -1 ){
+            this.entSel.splice(index2, 1);
+        }
         
         this.entidadesReady = true;
       } catch (err) {
