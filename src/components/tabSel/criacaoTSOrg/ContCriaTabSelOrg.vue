@@ -405,6 +405,21 @@
       <v-btn color="primary" v-else @click="guardarTrabalho()"
         >Guardar trabalho</v-btn
       >
+      <v-btn dark flat color="red darken-4" @click="eliminarTabela = true"
+        >Eliminar TS
+            <v-dialog v-model="eliminarTabela" persistent max-width="290">
+                <v-card>
+                    <v-card-title class="headline">Eliminar Tabela</v-card-title>
+                    <v-card-text>Pretende eliminar todo o trabalho realizado?</v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red" flat @click="eliminarTabela = false">Cancelar</v-btn>
+                    <v-btn color="primary" flat @click="eliminarTS(); eliminarTabela=false;">Confirmar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-btn
+      >
     </v-stepper>
 
     <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
@@ -527,7 +542,9 @@ export default {
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
       pedidoCriado: false,
-      mensagemPedidoCriadoOK: "Pedido criado com sucesso: "
+      mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
+      // Dialog de confirmação de eliminação de TS
+      eliminarTabela: false
     };
   },
   methods: {
@@ -1083,6 +1100,12 @@ export default {
     },
     pendenteGuardadoOK: function() {
       this.pendenteGuardado = false;
+      this.$router.push("/");
+    },
+    // Elimina todo o trabalho feito até o momento
+    eliminarTS: async function() {
+      this.id = window.location.pathname.split('/')[3];
+      axios.delete(lhost + "/api/pendentes/" + this.id)
       this.$router.push("/");
     }
   },
