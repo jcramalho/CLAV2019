@@ -37,6 +37,21 @@
         </v-flex>
       </v-layout>
     </v-flex>
+
+    <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
+        {{ mensagemTIVazio }}
+        <v-btn dark flat @click="tiVazioFlag=false">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
+    <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
+        {{ mensagemTIDuplicado }}
+        <v-btn dark flat @click="tiDuplicadoFlag=false">
+          Fechar
+        </v-btn>
+    </v-snackbar>
+
   </v-layout>
 </template>
 
@@ -46,10 +61,41 @@ const nanoid = require("nanoid");
 export default {
   props: ["c"],
 
+  data() {
+    return {
+      tiVazioFlag: false,
+      tiDuplicadoFlag: false,
+      mensagemTIVazio: "O Termo de Índice anterior encontra-se vazio. Queira preenchê-lo antes de criar um novo.",
+      mensagemTIDuplicado: "O último termo introduzido é um duplicado de outro já introduzido previamente!"
+    };
+  },
+
   methods: {
+    tiDuplicado: function(termos){
+      if(termos.length > 1){
+        var lastTermo = termos[termos.length-1].termo
+        var duplicados = termos.filter(t => t.termo == lastTermo )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
     insereNovoTI: function(termos) {
-      var n = { id: "ti_" + nanoid(), termo: "", existe: false };
-      termos.push(n);
+      if((termos.length > 0) && (termos[termos.length-1].termo == "")){
+        this.tiVazioFlag = true
+      }
+      else if(this.tiDuplicado(termos)){
+        this.tiDuplicadoFlag = true
+      }
+      else{
+        var n = { id: "ti_" + nanoid(), termo: "", existe: false };
+        termos.push(n);
+      }
     }
   }
 };

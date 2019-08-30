@@ -206,6 +206,9 @@ export default {
       if(entidade.estado && (entidade.estado!="Nova")){
         this.donos.push(entidade);
       }
+      else if(!entidade.estado){
+        this.donos.push(entidade);
+      }
       var index = this.c.donos.findIndex(e => e.id === entidade.id);
       this.c.donos.splice(index, 1);
     },

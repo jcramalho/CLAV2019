@@ -18,10 +18,11 @@
               v-for="h in props.headers"
               :key="h.text"
               class="body-2 font-weight-bold"
+              style="color: green;"
             >
               {{ h.text }}
             </th>
-            <th style="color: green;">Desselecionar</th>
+            <th class="body-2 font-weight-bold" style="color: green;">Remover</th>
           </tr>
         </template>
 

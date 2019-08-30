@@ -86,6 +86,20 @@ export default {
       }
     },
 
+    tiDuplicado: function(termos){
+      if(termos.length > 1){
+        var lastTermo = termos[termos.length-1].termo
+        var duplicados = termos.filter(t => t.termo == lastTermo )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
     // Verifica se o código introduzido pelo utilizador já existe na BD....................
 
     verificaExistenciaCodigo: async function(codigo) {
@@ -194,6 +208,25 @@ export default {
       if(this.notaDuplicada(this.c.notasEx)){
           this.mensagensErro.push({sobre: "Nota de Exclusão(" + (this.c.notasEx.length) + ")", mensagem:"A última nota encontra-se duplicada."})
           this.numeroErros++
+      }
+
+      // Termos de Índice
+      for(i=0; i < this.c.termosInd.length; i++){
+        try{
+          var existeTI = await axios.post( lhost + '/api/classes/verificarTI', {ti: this.c.termosInd[i].termo})
+          if(existeTI.data){
+            this.mensagensErro.push({sobre: "Termo de Índice(" + (i+1) + ")", mensagem:"[" + this.c.termosInd[i].termo + "] já existente na BD."})
+            this.numeroErros++
+          }
+        }
+        catch(e){
+          this.numeroErros++
+          this.mensagensErro.push({sobre: "Acesso à Ontologia", mensagem:"Não consegui verificar a existência do Termo de índice."})
+        }
+      }
+      if(this.tiDuplicado(this.c.termosInd)){
+          this.numeroErros++
+          this.mensagensErro.push({sobre: "Termo de Índice(" + (i+1) + ")", mensagem:"O último ti encontra-se duplicado."})
       }
 
       // Decisões

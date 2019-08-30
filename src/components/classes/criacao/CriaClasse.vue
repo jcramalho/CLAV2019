@@ -555,7 +555,8 @@ export default {
             sigla: item.sigla,
             designacao: item.designacao,
             tipo: "Entidade",
-            intervencao: "Indefinido"
+            intervencao: "Indefinido",
+            estado: item.estado
           };
         });
         response = await axios.get(lhost + "/api/tipologias");
@@ -920,6 +921,20 @@ export default {
       }
     },
 
+    tiDuplicado: function(termos){
+      if(termos.length > 1){
+        var lastTermo = termos[termos.length-1].termo
+        var duplicados = termos.filter(t => t.termo == lastTermo )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
     // Valida a classe antes de a criar
 
     validaClasse: async function(c){
@@ -1005,6 +1020,22 @@ export default {
       // Notas de Exclusão
       if(this.notaDuplicada(c.notasEx)){
         numeroErros++
+      }
+
+      // Termos de Índice
+      for(i=0; i < c.termosInd.length; i++){
+        try{
+          var existeTI = await axios.post( lhost + '/api/classes/verificarTI', {ti: c.termosInd[i].termo})
+          if(existeTI.data){
+            numeroErros++
+          }
+        }
+        catch(e){
+          numeroErros++
+        }
+      }
+      if(this.tiDuplicado(c.termosInd)){
+          numeroErros++
       }
 
       // Decisões
