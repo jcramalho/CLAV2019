@@ -85,7 +85,7 @@ export default {
   methods: {
     alterarPW(){
       if (this.$refs.form.validate()) {
-        axios.post(lhost + "/api/users/alterarPassword", {
+        axios.put(lhost + "/api/users/alterarPassword", {
             id: this.$data.form.id,
             password: this.$data.form.password
           })
