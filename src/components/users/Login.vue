@@ -87,12 +87,13 @@ export default {
           })
           .then(res => {
             if (res.data.token != undefined && res.data.name != undefined) {
-              this.text = "Login efetuado com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
+              // this.text = "Login efetuado com sucesso!";
+              // this.color = "success";
+              // this.snackbar = true;
+              // this.done = true;
               this.$store.commit("guardaTokenUtilizador", res.data.token);
               this.$store.commit("guardaNomeUtilizador", res.data.name);
+              this.$router.push("/");
               // this.$store.state.name = res.data.name;
               // this.$store.state.token = res.data.token;
             } else {
