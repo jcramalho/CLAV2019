@@ -2,7 +2,7 @@
     <v-layout wrap row ma-2 :key="componentKey">
         <v-flex xs3 >
             <div class="info-label">
-                Notas de Aplicação:
+                Notas de Aplicação (NA):
                 <InfoBox
                 header="Notas de Aplicação"
                 :text="myhelp.Classe.Campos.NotasAp"
@@ -12,7 +12,7 @@
                 color="primary"
                 dark
                 round
-                @click="insereNovaNota(lista.notasAp, 'na')"
+                @click="insereNovaNota(lista.notasAp)"
             >
                 Nova Nota
                 <v-icon dark right>add_circle_outline</v-icon>
@@ -25,7 +25,6 @@
                         v-model="nota.nota"
                         auto-grow
                         solo
-                        :label="nota.nota"
                         rows="1"
                     >
                     </v-textarea>
@@ -71,6 +70,7 @@ export default {
     components: {
         InfoBox,
     },
+
     data() {
         return {
             myhelp: help,
@@ -79,37 +79,38 @@ export default {
             componentKey: 0,
         }
     },
+
     methods: {
         notaDuplicada: function(notas){
-                if(notas.length > 1){
-                    var lastNota = notas[notas.length-1].nota
-                    var duplicados = notas.filter(n => n.nota == lastNota )
-                    if(duplicados.length > 1){
-                        return true
-                    }
-                    else return false
+            if(notas.length > 1){
+                var lastNota = notas[0].nota
+                var duplicados = notas.filter(n => n.nota == lastNota )
+                if(duplicados.length > 1){
+                    return true
                 }
-                else{
-                    return false
-                }
-            },
-            insereNovaNota: function(notas, tipo) {
-                if((notas.length > 0) && (notas[notas.length-1].nota == "")){
-                    this.naVaziaFlag = true
-                }
-                else if(this.notaDuplicada(notas)){
-                    this.naDuplicadaFlag = true
-                }
-                else{
-                    var n = { idNota: tipo + "_" + nanoid(), nota: "" }; 
-                    notas.push(n);
-                    this.forceRerender();
-                }
-            },
-            forceRerender() {
-                this.componentKey += 1;  
+                else return false
+            }
+            else{
+                return false
             }
         },
+        insereNovaNota: function(notas) {
+            if((notas.length > 0) && (notas[0].nota == "")){
+                this.naVaziaFlag = true
+            }
+            else if(this.notaDuplicada(notas)){
+                this.naDuplicadaFlag = true
+            }
+            else{
+                var n = { idNota: 'na' + "_" + nanoid(), nota: "" }; 
+                notas.unshift(n);
+                this.forceRerender();
+            }
+        },
+        forceRerender: function() {
+            this.componentKey += 1;  
+        }
+    },
 }
 </script>
 

@@ -418,6 +418,7 @@
                 <ListaParteDescritiva
                   v-if="listaTotalProcSelReady"
                   v-bind:lista="listaTotalProcSel"
+                  @listaTotalSelUpdate="listaTotalSelUpdate($event)"
                 />
           </v-expansion-panel-content>
             </v-expansion-panel>
@@ -597,6 +598,7 @@ export default {
       // Lista de todos os processos selecionados em todos os passos
       listaTotalProcSel: [],
       listaTotalProcSelReady: false,
+      listaTotalProcSelUpdate: [],
     };
   },
   methods: {
@@ -965,9 +967,11 @@ export default {
         this.listaTotalProcSel = this.listaTotalProcSel.concat(this.tabelaSelecao.procComuns)
           .concat(this.tabelaSelecao.procEspecificos).concat(this.tabelaSelecao.procEspRestantes)
           .concat(this.tabelaSelecao.procUltimos)
-        console.log(this.listaTotalProcSel)
         this.listaTotalProcSelReady = true;
       }
+    },
+    listaTotalSelUpdate: function(proc) {
+      this.listaTotalProcSelUpdate = proc;
     },
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
