@@ -99,9 +99,6 @@ export default {
     forceRerender: function() {
         this.componentKey += 1;  
     }
-  },
-  mounted: function() {
-      console.log(this.lista)
   }
 };
 </script>
