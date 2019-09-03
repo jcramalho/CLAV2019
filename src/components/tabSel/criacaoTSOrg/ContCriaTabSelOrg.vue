@@ -338,7 +338,7 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 6" step="6" v-if="listaProcUltReady"
+      <v-stepper-step :complete="stepNo > 6" step="6"
         >Outros processos
         <small
           >Revisão de processos de negócio não selecionados nas etapas
@@ -386,6 +386,7 @@
           @click="
             stepNo = 7;
             barra(100);
+            parseProcessosSel();
           "
           >Continuar</v-btn
         >
@@ -399,7 +400,53 @@
         >
       </v-stepper-content>
 
-      <v-btn color="primary" v-if="stepNo > 6" @click="submeterTS()"
+      <v-stepper-step :complete="stepNo > 7" step="7"
+        >Alterações na parte descritiva
+        <small
+          >Adicionar, remover ou editar Notas de Aplicação (NA),
+          Exclusão (NE), Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) 
+          nos processos selecionados</small
+        >
+      </v-stepper-step>
+      <v-stepper-content step="7">
+        <v-layout wrap>
+          <v-flex xs10>
+            <v-expansion-panel>
+              <v-expansion-panel-content class="expansion-panel-heading">
+                <template v-slot:header>
+                  <div class="subheading font-weight-bold">
+                    Lista de Processos selecionados
+                  </div>
+                </template>
+                <ListaParteDescritiva
+                  v-if="listaTotalProcSelReady"
+                  v-bind:lista="listaTotalProcSel"
+                  @listaTotalSelUpdate="listaTotalSelUpdate($event)"
+                />
+          </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-flex>
+        </v-layout>
+        <v-btn
+          color="primary"
+          @click="
+            stepNo = 8;
+            barra(100);
+          "
+          >Continuar</v-btn
+        >
+        <v-btn
+          flat
+          @click="
+            stepNo = 6;
+            barra(64);
+          "
+          >Voltar</v-btn
+        >
+      </v-stepper-content>
+
+
+      <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
         >Submeter</v-btn
       >
       <v-btn color="primary" v-else @click="guardarTrabalho()"
@@ -451,6 +498,7 @@ import ListaProcessosComuns from "@/components/tabSel/criacaoTSOrg/ListaProcesso
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
+import ListaParteDescritiva from "@/components/tabSel/criacaoTSOrg/ListaProcSel.vue"
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
@@ -463,7 +511,8 @@ export default {
     ListaProcessosEspRestantes,
     ListaProcessosUltimos,
     DesSelTip,
-    SelTip
+    SelTip,
+    ListaParteDescritiva
   },
 
   data() {
@@ -544,7 +593,11 @@ export default {
       pedidoCriado: false,
       mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
       // Dialog de confirmação de eliminação de TS
-      eliminarTabela: false
+      eliminarTabela: false,
+      // Lista de todos os processos selecionados em todos os passos
+      listaTotalProcSel: [],
+      listaTotalProcSelReady: false,
+      listaTotalProcSelUpdate: [],
     };
   },
   methods: {
@@ -1039,6 +1092,28 @@ export default {
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {
       this.numProcPreSelUlt = lista.length;
+    },
+    parseProcessosSel: function() {
+      if( !this.listaTotalProcSel.length ){
+        this.listaTotalProcSel = this.listaTotalProcSel.concat(this.tabelaSelecao.procComuns)
+          .concat(this.tabelaSelecao.procEspecificos).concat(this.tabelaSelecao.procEspRestantes)
+          .concat(this.tabelaSelecao.procUltimos)
+      }
+      this.tabelaSelecao.listaProcSel = JSON.parse(this.tabelaSelecao.listaProcSel)
+      for(var i = 0; i < this.tabelaSelecao.listaProcSel.length; i++){
+        var jaSel = false;
+        for( var j = 0; j < this.listaTotalProcSel.length; j++){
+          if( this.tabelaSelecao.listaProcSel[i].classe == this.listaTotalProcSel[j].classe){
+            this.listaTotalProcSel[j] = this.tabelaSelecao.listaProcSel[i];
+            jaSel = true;
+            break;
+          }
+        }
+      }
+      this.listaTotalProcSelReady = true;
+    },
+    listaTotalSelUpdate: function(proc) {
+      this.listaTotalProcSelUpdate = proc;
     },
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {

@@ -519,7 +519,8 @@ export default {
         procComuns: [],
         procEspecificos: [],
         procEspRestantes: [],
-        procUltimos: []
+        procUltimos: [],
+        listaProcSel: [],
       },
       // Numero do passo da criação de TS
       stepNo: 1,
@@ -1009,6 +1010,12 @@ export default {
         );
 
         this.tabelaSelecao.tipologias = this.tipSel.concat(this.tipEnt);
+
+        if(this.listaTotalProcSelUpdate.length){
+          this.listaTotalProcSel = this.listaTotalProcSelUpdate
+        }
+
+        this.tabelaSelecao.listaProcSel = JSON.stringify(this.listaTotalProcSel);
 
         var pendenteParams = {
           numInterv: 1,

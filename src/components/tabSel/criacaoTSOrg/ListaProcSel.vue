@@ -113,9 +113,9 @@ export default {
         novaLista: [],
         novaListaReady: false,
         notasAp: [],
-        exemplosNA: [],
+        exemplosNotasAp: [],
         notasEx: [],
-        termosIndice: [],
+        termosInd: [],
         componentKey: 0,
         
     }),
@@ -123,42 +123,61 @@ export default {
         guardar: async function(classe){
             // Slice para copiar o array
             this.notasAp[classe] = this.novaLista[classe].notasAp.slice(0);
-            this.exemplosNA[classe] = this.novaLista[classe].exemplosNotasAp.slice(0);
+            this.exemplosNotasAp[classe] = this.novaLista[classe].exemplosNotasAp.slice(0);
             this.notasEx[classe] = this.novaLista[classe].notasEx.slice(0);
-            this.termosIndice[classe] = this.novaLista[classe].termosInd.slice(0);
+            this.termosInd[classe] = this.novaLista[classe].termosInd.slice(0);
             this.$emit("listaTotalSelUpdate", this.novaLista);
             this.componentKey +=1;
         },
         cancelar: async function(classe){
             this.novaLista[classe].notasAp = this.notasAp[classe].slice(0);
-            this.novaLista[classe].exemplosNotasAp = this.exemplosNA[classe].slice(0);
+            this.novaLista[classe].exemplosNotasAp = this.exemplosNotasAp[classe].slice(0);
             this.novaLista[classe].notasEx = this.notasEx[classe].slice(0);
-            this.novaLista[classe].termosInd = this.termosIndice[classe].slice(0);
+            this.novaLista[classe].termosInd = this.termosInd[classe].slice(0);
             this.componentKey +=1;
         }
     },
     mounted: async function(){
         try {
             for( var i = 0; i < this.lista.length; i++){
-                console.log(i)
                 this.novaLista[this.lista[i].classe] = this.lista[i];
 
                 var na = await axios.get(lhost + "/api/classes/c" + this.lista[i].classe + "/notasAp")
-                this.novaLista[this.lista[i].classe].notasAp = na.data
+                // Caso já exista notas de Aplicação associadas (acontece quando já se guardou trabalho previamente)
+                if(this.lista[i].notasAp){
+                    this.novaLista[this.lista[i].classe].notasAp = this.lista[i].notasAp
+                }
+                else{
+                    this.novaLista[this.lista[i].classe].notasAp = na.data;
+                }
                 this.notasAp[this.lista[i].classe] = this.novaLista[this.lista[i].classe].notasAp.slice(0);
 
                 var ena = await axios.get(lhost + "/api/classes/c" + this.lista[i].classe + "/exemplosNotasAp")
-                this.novaLista[this.lista[i].classe].exemplosNotasAp = ena.data;
-                this.exemplosNA[this.lista[i].classe] = this.novaLista[this.lista[i].classe].exemplosNotasAp.slice(0);
+                if(this.lista[i].exemplosNotasAp){
+                    this.novaLista[this.lista[i].classe].exemplosNotasAp = this.lista[i].exemplosNotasAp
+                }
+                else{
+                    this.novaLista[this.lista[i].classe].exemplosNotasAp = ena.data;
+                }
+                this.exemplosNotasAp[this.lista[i].classe] = this.novaLista[this.lista[i].classe].exemplosNotasAp.slice(0);
 
                 var ne = await axios.get(lhost + "/api/classes/c" + this.lista[i].classe + "/notasEx")
-                this.novaLista[this.lista[i].classe].notasEx = ne.data;
+                if(this.lista[i].notasEx){
+                    this.novaLista[this.lista[i].classe].notasEx = this.lista[i].notasEx
+                }
+                else{
+                    this.novaLista[this.lista[i].classe].notasEx = ne.data;
+                }
                 this.notasEx[this.lista[i].classe] = this.novaLista[this.lista[i].classe].notasEx.slice(0);
 
-                var ti = await axios.get(lhost + "/api/classes/c" + this.lista[i].classe + "/ti")
-                this.novaLista[this.lista[i].classe].termosInd = ti.data;
-                this.termosIndice[this.lista[i].classe] = this.novaLista[this.lista[i].classe].termosInd.slice(0);
-                console.log(this.novaLista[this.lista[i].classe].termosInd)
+                var ti = await axios.get(lhost + "/api/classes/c" + this.lista[i].classe + "/ti");
+                if(this.lista[i].termosInd){
+                    this.novaLista[this.lista[i].classe].termosInd = this.lista[i].termosInd
+                }
+                else{
+                    this.novaLista[this.lista[i].classe].termosInd = ti.data;
+                }
+                this.termosInd[this.lista[i].classe] = this.novaLista[this.lista[i].classe].termosInd.slice(0);
             }
             this.$emit("listaTotalSelUpdate", this.novaLista);
             this.novaListaReady = true
