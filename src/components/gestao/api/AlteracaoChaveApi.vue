@@ -45,7 +45,7 @@ export default {
         this.snackbar = true;
         this.done = true;
     }else{
-        await axios.post(lhost + "/api/chaves/atualizarChave/", {
+        await axios.put(lhost + "/api/chaves/atualizarChave/", {
             id: res.data._id
         }).then(res => {
             if (res.data === "Chave API renovada com sucesso!") {

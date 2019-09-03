@@ -292,7 +292,7 @@ export default {
       this.dialog = true;
     },
     desativar(item) {
-      axios.post(lhost + "/api/chaves/desativar", {
+      axios.put(lhost + "/api/chaves/desativar", {
         id: item.id
       }).then(res => {
         if (res.data === "Chave API desativada com sucesso!") {
@@ -315,7 +315,7 @@ export default {
       });
     },
     ativar(item) {
-      axios.post(lhost + "/api/chaves/ativar", {
+      axios.put(lhost + "/api/chaves/ativar", {
         id: item.id
       }).then(res => {
         if (res.data === "Chave API ativada com sucesso!") {
@@ -338,7 +338,7 @@ export default {
       });
     },
     eliminar(item) {
-      axios.post(lhost + "/api/chaves/eliminar", {
+      axios.delete(lhost + "/api/chaves/eliminar", {
         id: item.id
       }).then(res => {
         if (res.data === "Chave API eliminada com sucesso!") {

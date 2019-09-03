@@ -69,7 +69,7 @@ export default {
   methods: {
     renovar(){
       if (this.$refs.form.validate()) {
-        axios.post(lhost + "/api/chaves/renovar", {
+        axios.put(lhost + "/api/chaves/renovar", {
             email: this.$data.form.email,
             url: window.location.href
           })
