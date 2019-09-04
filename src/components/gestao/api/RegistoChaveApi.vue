@@ -106,8 +106,7 @@ export default {
   methods: {
     registarChaveApi() {
       if (this.$refs.form.validate()) {
-        axios
-          .post(lhost + "/api/chaves/registar", {
+        axios.post(lhost + "/api/chaves/registar", {
             name: this.$data.form.name,
             email: this.$data.form.email,
             entidade: this.$data.form.entidade
