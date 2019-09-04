@@ -142,7 +142,12 @@ export default {
           this.snack = true
           this.mess = res.data.mensagem
           this.snackColor = "green"
-          this.lista = this.lista.push(this.novoTermo)
+          this.novoTermo.idtermo = this.$route.params.idVC+"_"+this.novoTermo.idtermo
+          this.lista = this.lista.push({
+            termo: this.novoTermo.termo,
+            desc: this.novoTermo.desc,
+            idtermo: this.novoTermo.idtermo
+          })
           this.novoTermo = {}
           this.dialog = false
         })
