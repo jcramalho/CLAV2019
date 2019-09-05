@@ -293,19 +293,51 @@
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
-                      <v-layout
-                        wrap
-                        ma-1
+                      <div
                         v-for="c in classe.pca.justificacao"
-                        :key="c.tipoLabel"
+                        :key="c.tipoId"
                       >
-                        <v-flex xs2>
-                          <div class="info-label">{{ c.tipoLabel }}</div>
-                        </v-flex>
-                        <v-flex xs10>
-                          <div class="info-content">{{ c.conteudo }}</div>
-                        </v-flex>
-                      </v-layout>
+                        <!-- Critério Gestionário ...............................-->
+                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoGestionario'" wrap ma-1>
+                          <v-flex xs2>
+                            <div class="info-label">Critério Gestionário</div>
+                          </v-flex>
+                          <v-flex xs10>
+                            <div class="info-content">{{ mylabels.textoCriterioJustificacaoGestionario }}</div>
+                          </v-flex>
+                        </v-layout>
+
+                        <!-- Critério Utilidade Administrativa .................-->
+                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'" wrap ma-1>
+                          <v-flex xs2>
+                            <div class="info-label">Critério de Utilidade Administrativa</div>
+                          </v-flex>
+                          <v-flex xs10>
+                            <div class="info-content">
+                              {{ mylabels.textoCriterioUtilidadeAdministrativa }}
+                              <span v-for="p in c.processos" :key="p.procId">
+                                {{ p.procId }}, 
+                              </span>
+                            </div>
+                          </v-flex>
+                        </v-layout>
+
+                        <!-- Critério Legal ...................................-->
+                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoLegal'" wrap ma-1>
+                          <v-flex xs2>
+                            <div class="info-label">Critério Legal</div>
+                          </v-flex>
+                          <v-flex xs10>
+                            <div class="info-content">
+                              {{ mylabels.textoCriterioLegal }}
+                              <span v-for="l in c.legislacao" :key="l.legId">
+                                {{ l.legId }}, 
+                              </span>
+                            </div>
+                          </v-flex>
+                        </v-layout>
+
+                      </div>
                     </div>
                   </v-flex>
                 </v-layout>
@@ -339,7 +371,9 @@
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
-                      {{ classe.df.valor }}
+                      <span v-if="classe.df.valor == 'E'">Eliminação</span>
+                      <span v-else-if="classe.df.valor == 'C'">Conservação</span>
+                      <span v-else>Não Especificado</span>
                     </div>
                   </v-flex>
                 </v-layout>
@@ -359,19 +393,57 @@
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">
-                      <v-layout
-                        wrap
-                        ma-1
+                      <div
                         v-for="c in classe.df.justificacao"
-                        :key="c.tipoLabel"
+                        :key="c.tipoId"
                       >
-                        <v-flex xs2>
-                          <div class="info-label">{{ c.tipoLabel }}</div>
-                        </v-flex>
-                        <v-flex xs10>
-                          <div class="info-content">{{ c.conteudo }}</div>
-                        </v-flex>
-                      </v-layout>
+
+                        <!-- Critério Legal ...................................-->
+                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoLegal'" wrap ma-1>
+                          <v-flex xs2>
+                            <div class="info-label">Critério Legal</div>
+                          </v-flex>
+                          <v-flex xs10>
+                            <div class="info-content">
+                              {{ mylabels.textoCriterioLegal }}
+                              <span v-for="l in c.legislacao" :key="l.legId">
+                                {{ l.legId }}, 
+                              </span>
+                            </div>
+                          </v-flex>
+                        </v-layout>
+
+                        <!-- Critério de Densidade Informacional ..............-->
+                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'" wrap ma-1>
+                          <v-flex xs2>
+                            <div class="info-label">Critério de Densidade Informacional</div>
+                          </v-flex>
+                          <v-flex xs10>
+                            <div class="info-content">
+                              {{ mylabels.textoCriterioDensidadeInfo }}
+                              <span v-for="p in c.processos" :key="p.procId">
+                                {{ p.procId }}, 
+                              </span>
+                            </div>
+                          </v-flex>
+                        </v-layout>
+
+                        <!-- Critério de Complementaridade Informacional ..............-->
+                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'" wrap ma-1>
+                          <v-flex xs2>
+                            <div class="info-label">Critério de Complementaridade Informacional</div>
+                          </v-flex>
+                          <v-flex xs10>
+                            <div class="info-content">
+                              {{ mylabels.textoCriterioComplementaridade }}
+                              <span v-for="p in c.processos" :key="p.procId">
+                                {{ p.procId }}, 
+                              </span>
+                            </div>
+                          </v-flex>
+                        </v-layout>
+
+                      </div>
                     </div>
                   </v-flex>
                 </v-layout>
@@ -388,7 +460,7 @@
 
 <script>
 const lhost = require("@/config/global").host;
-const help = require("@/config/help").help;
+
 import axios from "axios";
 import ClassesFilho from "@/components/classes/consulta/ClassesFilho.vue";
 import NotasAp from "@/components/classes/consulta/NotasAp.vue";
@@ -413,7 +485,8 @@ export default {
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", value: "titulo" }
     ],
-    myhelp: help
+    myhelp: require("@/config/help").help,
+    mylabels: require("@/config/labels").criterios
   }),
 
   components: {
