@@ -161,6 +161,21 @@ export default {
               level: "public"
             }
           ]
+        },
+        {
+          entidade: "Autos Eliminação",
+          texto: help.AutosEliminacao,
+          ops: [
+            {
+              label: "Consultar",
+              url: "/autosEliminacao",
+              level: "public"
+            },
+            {
+              label: "Adicionar",
+              url: "/autosEliminacao/criar"
+            }
+          ]
         }
       ]
     };

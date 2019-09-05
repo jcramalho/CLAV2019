@@ -21,6 +21,9 @@ module.exports.help = {
     "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação.",
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
+  AutosEliminacao:
+    "Registo da eliminação de todos os documentos que formam os autos. É precedida de publicação de edital de " + 
+    "eliminação e, em alguns casos, conservação.",
   Invariantes:
     "Conjunto de invariantes que testam situações de erro e identificam os PNs onde estas ocorrem.",
   Classe: {

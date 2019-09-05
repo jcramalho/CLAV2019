@@ -108,6 +108,17 @@ export default new Router({
       name: "TermosVocabulariosControlados",
       component: () => import("./views/vocabularios/VocabulariosTermos.vue")
     },
+    // Routes dos Autos de Eliminação
+    {
+      path: "/autosEliminacao",
+      name: "AutosEliminacao",
+      component: () => import("./views/autosEliminacao/AutosEliminacao.vue")
+    },
+    {
+      path: "/autosEliminacao/criar",
+      name: "criaAutosEliminacao",
+      component: () => import("./views/autosEliminacao/AutosEliminacaoCria.vue")
+    },
     // Routes das tipologias
     {
       path: "/tipologias",
