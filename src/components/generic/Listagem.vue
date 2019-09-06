@@ -10,9 +10,6 @@
         single-line
         hide-details
       ></v-text-field>
-      <v-btn v-if="tipo == 'Vocabulários Controlados'" class="ml-4" fab dark small color="indigo" @click="dialog = true">
-        <v-icon dark>add</v-icon>
-      </v-btn>
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -45,6 +42,18 @@
                 >
                   <a :href="'/entidades/ent_' + ent">{{ ent }} </a>
                 </div>
+              </div>
+              <div v-else>
+                {{ campo }}
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr v-else-if="tipo == 'Autos de Eliminação'" @click="go(props.item.id)">
+          <td v-for="(campo, index) in props.item" v-bind:key="index">
+            <div v-if="props.item">
+              <div v-if="index === 'entidade'">
+                <a :href="'/entidades/ent_' + campo">{{ campo }} </a>
               </div>
               <div v-else>
                 {{ campo }}
@@ -97,8 +106,8 @@ export default {
         case "Termos de Índice":
           this.$router.push("/classes/consultar/c" + id);
           break;
-        case "Vocabulários Controlados":
-          this.$router.push("/vocabularios/" + id);
+        case "Autos de Eliminação":
+          this.$router.push("/autosEliminacao/ae_"+id)
           break;
       }
     }

@@ -1,9 +1,9 @@
 <template>
   <Listagem
     v-bind:lista="autosEliminacao"
-    tipo="AutosEliminacao"
-    v-bind:cabecalho="['Entidade Responsável', 'Fonte de Legitimação', 'Fundo', 'Data']"
-    v-bind:campos="['entidade', 'fonte', 'fundo', 'data']"
+    tipo="Autos de Eliminação"
+    v-bind:cabecalho="['Identificação','Entidade Responsável', 'Fonte de Legitimação', 'Fundo', 'Data']"
+    v-bind:campos="['id','entidade', 'fonte', 'fundo', 'data']"
   />
 </template>
 
@@ -14,7 +14,7 @@ const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
-    tipologias: [],
+    autosEliminacao: [],
     campos: []
   }),
   components: {
@@ -25,7 +25,6 @@ export default {
     try {
       var response = await axios.get(lhost + "/api/autosEliminacao");
       this.autosEliminacao = await this.preparaLista(response.data);
-      console.warn(this.autosEliminacao)
     } catch (e) {
       return e;
     }
@@ -37,8 +36,9 @@ export default {
         var myTree = [];
         for (var i = 0; i < listaAutosEliminacao.length; i++) {
           myTree.push({
+            id: listaAutosEliminacao[i].id.split("#")[1].replace('ae_',''),
             entidade: listaAutosEliminacao[i].entidade.split("#")[1].replace('ent_',''),
-            fonte: listaAutosEliminacao[i].tipo +" "+listaAutosEliminacao[i].numero,
+            fonte: listaAutosEliminacao[i].tipo +" "+listaAutosEliminacao[i].num,
             fundo: listaAutosEliminacao[i].fundo,
             data: listaAutosEliminacao[i].data
           });

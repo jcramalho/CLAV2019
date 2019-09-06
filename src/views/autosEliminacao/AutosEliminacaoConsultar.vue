@@ -20,7 +20,7 @@ export default {
     Consulta
   },
   data: () => ({
-    idTipologia: "",
+    idAE: "",
     tipologia: {},
     titulo: "",
     processosDono: [],
@@ -75,11 +75,11 @@ export default {
   },
   created: async function() {
     try {
-      this.idTipologia = window.location.pathname.split("/")[2];
+      this.idAE = window.location.pathname.split("/")[2];
 
       // Informações sobre a tipologia
       var response = await axios.get(
-        lhost + "/api/tipologias/" + this.idTipologia
+        lhost + "/api/autoEliminacao/ae_" + this.idAE
       );
       this.titulo = response.data.designacao;
       this.tipologia = await this.preparaTipologia(response.data);
