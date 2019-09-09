@@ -192,35 +192,37 @@ export default {
       // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
       delete this.listaProcResultado[processo];
 
-      // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
+      // Vai rever se a lista de resultados de processos especificos contem processos iguais aos outros resultados de travessias.
       var procSel = Object.keys(this.listaProcResultado);
       // newListaResEspRestantes: Nova lista dos processos resultantes especificos
       var newListaResEspRestantes = [];
       // newListaResRestantes: Nova lista dos processos resultantes restantes
       var newListaResRestantes = [];
       for (var i = 0; i < procSel.length; i++) {
-        for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
-          if (
-            (this.listaResEspRestantes.includes(
-              this.listaProcResultado[procSel[i]][j]
-            ) ||
-              this.listaProcResultado[procSel[i]][j] === processo) &&
-            !newListaResEspRestantes.includes(
-              this.listaProcResultado[procSel[i]][j]
-            )
-          ) {
-            newListaResEspRestantes.push(
-              this.listaProcResultado[procSel[i]][j]
-            );
-          } else if (
-            this.listaResRestantes.includes(
-              this.listaProcResultado[procSel[i]][j]
-            ) &&
-            !newListaResRestantes.includes(
-              this.listaProcResultado[procSel[i]][j]
-            )
-          ) {
-            newListaResRestantes.push(this.listaProcResultado[procSel[i]][j]);
+        if(this.listaProcResultado[procSel[i]]){
+          for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
+            if (
+              (this.listaResEspRestantes.includes(
+                this.listaProcResultado[procSel[i]][j]
+              ) ||
+                this.listaProcResultado[procSel[i]][j] === processo) &&
+              !newListaResEspRestantes.includes(
+                this.listaProcResultado[procSel[i]][j]
+              )
+            ) {
+              newListaResEspRestantes.push(
+                this.listaProcResultado[procSel[i]][j]
+              );
+            } else if (
+              this.listaResRestantes.includes(
+                this.listaProcResultado[procSel[i]][j]
+              ) &&
+              !newListaResRestantes.includes(
+                this.listaProcResultado[procSel[i]][j]
+              )
+            ) {
+              newListaResRestantes.push(this.listaProcResultado[procSel[i]][j]);
+            }
           }
         }
       }
