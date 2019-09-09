@@ -21,7 +21,7 @@
           <v-btn
             color="red darken-4"
             round dark
-            @click="fecharReport">Fechar</v-btn>
+            @click="dialog = false">Fechar</v-btn>
         </v-card-actions>
         </v-card>
       </v-dialog>
@@ -55,6 +55,12 @@ export default {
         4: "ddd.dd.ddd.dd (d - digito)"
       }
     };
+  },
+
+  watch: {
+    dialog: function (val) {
+      if(!val) this.limpaErros()
+    }
   },
 
   methods: {
@@ -165,6 +171,12 @@ export default {
           this.mensagensErro.push({sobre: "Acesso à Ontologia", mensagem:"Não consegui verificar a existência do título."})
         }
       }
+
+      // Descrição
+      if(this.c.descricao == ""){
+        this.mensagensErro.push({sobre: "Descrição", mensagem:"A descrição não pode ser vazia."})
+        this.numeroErros++
+      }
       
       // Notas de Aplicação
       for(i=0; i < this.c.notasAp.length; i++){
@@ -273,8 +285,7 @@ export default {
       }
     },
 
-    fecharReport: function(){
-      this.dialog = false
+    limpaErros: function(){
       this.numeroErros = 0
       this.mensagensErro = []
     }

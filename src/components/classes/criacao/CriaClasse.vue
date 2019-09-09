@@ -984,6 +984,11 @@ export default {
           numeroErros++
         }
       }
+
+      // Descrição
+      if(c.descricao == ""){
+        numeroErros++
+      }
       
       // Notas de Aplicação
       for(i=0; i < c.notasAp.length; i++){
