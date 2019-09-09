@@ -44,7 +44,8 @@
             <v-flex xs12 md3>
               <v-text-field
                 v-model="data"
-                label="Data"
+                label="Data: AAAA-MM-DD"
+                mask="####-##-##"
               />
             </v-flex>
           </v-layout>
