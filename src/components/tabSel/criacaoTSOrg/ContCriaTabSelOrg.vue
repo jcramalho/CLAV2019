@@ -724,7 +724,7 @@ export default {
         if (!this.listaProcEspReady) {
           var url =
             lhost +
-            "/api/classes?tipo=especifico&ent=" +
+            "/api/classes?tipo=especifico&ents=" +
             this.tabelaSelecao.idEntidade;
           if (this.tabelaSelecao.tipologias) {
             url += "&tips=";
