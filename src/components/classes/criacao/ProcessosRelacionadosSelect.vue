@@ -25,13 +25,22 @@
           <template v-slot:items="props">
             <tr>
               <td>
-                <v-btn round small text-xs-center>
+                <v-select
+                  item-text="label"
+                  item-value="value"
+                  v-model="props.item.idRel"
+                  :items="tiposRelacao"
+                  solo
+                  dense
+                  @change="selectProcesso(props.item.id, $event)"
+                />
+                <!--v-btn round small text-xs-center>
                   <SelectValueFromList
                     :options="tiposRelacao"
                     :initialValue="props.item.idRel"
                     @value-change="selectProcesso(props.item.id, $event)"
                   />
-                </v-btn>
+                </v-btn-->
               </td>
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
