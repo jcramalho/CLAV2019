@@ -119,6 +119,11 @@ export default new Router({
       name: "criaAutosEliminacao",
       component: () => import("./views/autosEliminacao/AutosEliminacaoCria.vue")
     },
+    {
+      path: "/autosEliminacao/:idAE",
+      name: "consultaAutoEliminacao",
+      component: () => import("./views/autosEliminacao/AutosEliminacaoConsultar.vue")
+    },
     // Routes das tipologias
     {
       path: "/tipologias",

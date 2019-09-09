@@ -1,7 +1,7 @@
 <template>
   <Consulta
-    tipo="Tipologias"
-    v-bind:objeto="tipologia"
+    tipo="Auto de Eliminação"
+    v-bind:objeto="autoEliminacao"
     v-bind:titulo="titulo"
     v-bind:listaProcD="processosDono"
     v-bind:listaEnt="entidades"
@@ -21,7 +21,7 @@ export default {
   },
   data: () => ({
     idAE: "",
-    tipologia: {},
+    autoEliminacao: {},
     titulo: "",
     processosDono: [],
     processosParticipa: {
@@ -36,19 +36,39 @@ export default {
     entidades: []
   }),
   methods: {
-    preparaTipologia: async function(tip) {
+    preparaAutos: async function(auto) {
       try {
-        var myTipologia = {
-          nome: {
-            campo: "Nome",
-            text: tip.designacao
+        var myAuto = {
+          numero: {
+            campo: "Numero do Auto",
+            text: auto.id.replace('ae_','').replace(/_/g,'/')
           },
-          sigla: {
-            campo: "Sigla",
-            text: tip.sigla
+          data: {
+            campo: "Data de Autenticação",
+            text: auto.data
+          },
+          entidade: {
+            campo: "Entidades",
+            text: auto.entidade.split("#")[1].replace('ent_','')
+          },
+          responsavel: {
+            campo: "Identificação dos responsáveis",
+            text: auto.responsavel
+          },
+          legislacao: {
+            campo: "Fonte de Legitimação",
+            text: auto.legislacao
+          },
+          fundo: {
+            campo: "Fundo",
+            text: auto.fundo
+          },
+          zonaControlo: {
+            campo: "Zonas de Identificação e Controlo",
+            text: auto.zonaControlo
           }
         };
-        return myTipologia;
+        return myAuto;
       } catch (e) {
         return {};
       }
@@ -77,33 +97,13 @@ export default {
     try {
       this.idAE = window.location.pathname.split("/")[2];
 
-      // Informações sobre a tipologia
+      // Informações sobre o Auto de Eliminação
       var response = await axios.get(
-        lhost + "/api/autoEliminacao/ae_" + this.idAE
+        lhost + "/api/autosEliminacao/" + this.idAE
       );
-      this.titulo = response.data.designacao;
-      this.tipologia = await this.preparaTipologia(response.data);
-
-      // Processos cuja tipologia em questão é dona de
-      var processosDono = await axios.get(
-        lhost + "/api/tipologias/" + this.idTipologia + "/intervencao/dono"
-      );
-      this.processosDono = processosDono.data;
-
-      // Procesos em que a entidade participa
-      var processosParticipa = await axios.get(
-        lhost +
-          "/api/entidades/" +
-          this.idTipologia +
-          "/intervencao/participante"
-      );
-      await this.parseParticipacoes(processosParticipa.data);
-
-      // Entidades que pertencem à tipologia em questão
-      var entidades = await axios.get(
-        lhost + "/api/tipologias/" + this.idTipologia + "/elementos"
-      );
-      this.entidades = entidades.data;
+      this.titulo = response.data.id.replace('ae_','').replace(/_/g,'/');
+      this.autoEliminacao = await this.preparaAutos(response.data);
+      console.log(response)
     } catch (e) {
       return e;
     }
