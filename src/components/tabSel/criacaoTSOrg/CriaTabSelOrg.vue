@@ -2,6 +2,30 @@
   <v-container grid-list-md fluid>
     <v-stepper v-model="stepNo" vertical>
       <v-progress-linear v-model="valorBarra"></v-progress-linear>
+      <v-stepper-step :complete="stepNo > 0" step="0">
+        Identificação da Entidade da Tabela de Seleção
+      </v-stepper-step>
+      <v-stepper-content step="0">
+        <v-flex xs12 sm6 md10>
+          <v-select
+            v-model="ent"
+            :items="entidades"
+            label="Selecione a entidade"
+            dense
+            outlined
+          />
+        </v-flex>
+        <v-btn
+          color="primary"
+          @click="
+            stepNo = 1;
+            barra(16);
+            guardaEntidade();
+          "
+          >Continuar</v-btn
+        >
+      </v-stepper-content>
+
       <v-stepper-step :complete="stepNo > 1" step="1">
         Tipologias de entidade a que pertence
       </v-stepper-step>
@@ -523,9 +547,15 @@ export default {
         listaProcSel: [],
       },
       // Numero do passo da criação de TS
-      stepNo: 1,
+      stepNo: null,
       // Valor da barra de progresso
       valorBarra: 0,
+      // Se a entidade do utilizador for a DGLAB, o primeiro passo deve ser a seleção 
+      // da entidade que se quer fazer a TS. Pois a DGLAB irá fazer TS para outras entidades.
+      entidadeDGLAB: false,
+      entidades: [],
+      entidadesReady: false,
+      ent: "",
       // Lista de todas as tipologias existentes
       tipologias: [],
       // True quando a lista de tipologias estiver carregada
@@ -611,8 +641,40 @@ export default {
       var resEnt = await axios.get(
         lhost + "/api/entidades/" + resUser.data.entidade
       );
-      this.tabelaSelecao.designacao = resEnt.data.designacao;
-      this.tabelaSelecao.idEntidade = resUser.data.entidade;
+      if(resUser.data.entidade === "ent_DGLAB"){
+        this.stepNo = 0;
+        this.entidadeDGLAB = true;
+        this.loadEntidades();
+      }
+      else {
+        this.tabelaSelecao.designacao = resEnt.data.designacao;
+        this.tabelaSelecao.idEntidade = resUser.data.entidade;
+        this.stepNo = 1;
+        await this.loadTipologias();
+      }
+    },
+    // Vai à API buscar todas as entidades
+    loadEntidades: async function(){
+      try {
+        var response = await axios.get(lhost + "/api/entidades");
+        console.log(response.data)
+        for (var i = 0; i < response.data.length; i++) {
+          this.entidades[i] = response.data[i].sigla + " - " + response.data[i].designacao;
+        }
+        this.entidades.sort();
+        this.entidadesReady = true;
+      } catch (error) {
+        return error;
+      }
+    },
+    guardaEntidade: async function() {
+      try {
+        this.tabelaSelecao.designacao = this.ent.split(" - ")[1];
+        this.tabelaSelecao.idEntidade = "ent_" + this.ent.split(" - ")[0];
+        await this.loadTipologias();
+      } catch (err) {
+        return err;
+      }
     },
     // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
     loadTipologias: async function() {
@@ -1048,7 +1110,6 @@ export default {
   },
   created: async function() {
     await this.infoUserEnt();
-    this.loadTipologias();
     this.loadProcComuns();
   }
 };
