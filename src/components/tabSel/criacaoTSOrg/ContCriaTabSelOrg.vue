@@ -659,39 +659,44 @@ export default {
           for (var i = 0; i < response.data.length; i++) {
               for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
                 var estavaGuardado = false;
-                if (
-                  this.tabelaSelecao.procComuns[j].classe ==
-                  response.data[i].codigo && response.data[i].transversal === "S"
-                ) {
-                  this.listaProcComuns.push({
-                    classe: this.tabelaSelecao.procComuns[j].classe,
-                    designacao: this.tabelaSelecao.procComuns[j].designacao,
-                    dono: this.tabelaSelecao.procComuns[j].dono,
-                    participante: this.tabelaSelecao.procComuns[j].participante
-                  });
-                  estavaGuardado = true;
-                  break;
-                }
-                else if (
-                  this.tabelaSelecao.procComuns[j].classe ==
-                  response.data[i].codigo && response.data[i].transversal != "S"
-                ) {
-                  this.listaProcComuns.push({
-                    classe: this.tabelaSelecao.procComuns[j].classe,
-                    designacao: this.tabelaSelecao.procComuns[j].designacao,
-                    dono: this.tabelaSelecao.procComuns[j].dono
-                  });
-                  estavaGuardado = true;
-                  break;
-                }
+                  if (
+                    this.tabelaSelecao.procComuns[j].classe ==
+                    response.data[i].codigo 
+                  ) {
+                    if(response.data[i].transversal === "S") {
+                      this.listaProcComuns.push({
+                        classe: this.tabelaSelecao.procComuns[j].classe,
+                        designacao: this.tabelaSelecao.procComuns[j].designacao,
+                        dono: this.tabelaSelecao.procComuns[j].dono,
+                        participante: this.tabelaSelecao.procComuns[j].participante
+                      });
+                    }
+                    else {
+                        this.listaProcComuns.push({
+                        classe: response.data[i].codigo,
+                        designacao: response.data[i].titulo,
+                        dono: this.tabelaSelecao.procComuns[j].dono,
+                      });
+                    }
+                    estavaGuardado = true;
+                    break;
+                  }
               }
               if (!estavaGuardado) {
-                this.listaProcComuns.push({
-                  classe: response.data[i].codigo,
-                  designacao: response.data[i].titulo,
-                  dono: false,
-                  participante: false
-                });
+                if(response.data[i].transversal === "S") {
+                  this.listaProcComuns.push({
+                    classe: response.data[i].codigo,
+                    designacao: response.data[i].titulo,
+                    dono: false,
+                    participante: false
+                  });
+                } else {
+                  this.listaProcComuns.push({
+                    classe: response.data[i].codigo,
+                    designacao: response.data[i].titulo,
+                    dono: false
+                  });
+                }
               }
           }
           this.listaProcComunsReady = true;
@@ -743,40 +748,45 @@ export default {
                 var estavaGuardado = false;
                 if (
                   this.tabelaSelecao.procEspecificos[j].classe ==
-                  response.data[x].codigo && response.data[x].transversal === "S"
+                  response.data[x].codigo 
                 ) {
-                  this.listaProcEsp.push({
-                    classe: this.tabelaSelecao.procEspecificos[j].classe,
-                    designacao: this.tabelaSelecao.procEspecificos[j]
-                      .designacao,
-                    dono: this.tabelaSelecao.procEspecificos[j].dono,
-                    participante: this.tabelaSelecao.procEspecificos[j]
-                      .participante
-                  });
-                  estavaGuardado = true;
-                  break;
-                }
-                else if (
-                  this.tabelaSelecao.procEspecificos[j].classe ==
-                  response.data[x].codigo && response.data[x].transversal != "S"
-                ) {
-                  this.listaProcEsp.push({
-                    classe: this.tabelaSelecao.procEspecificos[j].classe,
-                    designacao: this.tabelaSelecao.procEspecificos[j]
-                      .designacao,
-                    dono: this.tabelaSelecao.procEspecificos[j].dono,
-                  });
+                  if(response.data[x].transversal === "S"){
+                    this.listaProcEsp.push({
+                      classe: this.tabelaSelecao.procEspecificos[j].classe,
+                      designacao: this.tabelaSelecao.procEspecificos[j]
+                        .designacao,
+                      dono: this.tabelaSelecao.procEspecificos[j].dono,
+                      participante: this.tabelaSelecao.procEspecificos[j]
+                        .participante
+                    });
+                  }
+                  else {
+                    this.listaProcEsp.push({
+                      classe: this.tabelaSelecao.procEspecificos[j].classe,
+                      designacao: this.tabelaSelecao.procEspecificos[j]
+                        .designacao,
+                      dono: this.tabelaSelecao.procEspecificos[j].dono,
+                    });
+                  }
                   estavaGuardado = true;
                   break;
                 }
               }
               if (!estavaGuardado) {
-                this.listaProcEsp.push({
-                  classe: response.data[x].codigo,
-                  designacao: response.data[x].titulo,
-                  dono: false,
-                  participante: false
-                });
+                if(response.data[x].transversal === "S") {
+                  this.listaProcEsp.push({
+                    classe: response.data[x].codigo,
+                    designacao: response.data[x].titulo,
+                    dono: false,
+                    participante: false
+                  });
+                } else {
+                    this.listaProcEsp.push({
+                      classe: response.data[x].codigo,
+                      designacao: response.data[x].titulo,
+                      dono: false,
+                    });
+                  }
               }
           }
           return this.listaProcEsp;
@@ -833,8 +843,9 @@ export default {
                   var estavaGuardado = false;
                   if (
                     this.tabelaSelecao.procEspRestantes[j].classe ==
-                    this.listaTotalProcEsp[i].codigo && this.listaTotalProcEsp[i].transversal === "S"
+                    this.listaTotalProcEsp[i].codigo
                   ) {
+                    if(this.listaTotalProcEsp[i].transversal === "S"){
                     this.listaProcEspRes.push({
                       classe: this.tabelaSelecao.procEspRestantes[j].classe,
                       designacao: this.tabelaSelecao.procEspRestantes[j]
@@ -843,30 +854,33 @@ export default {
                       participante: this.tabelaSelecao.procEspRestantes[j]
                         .participante
                     });
-                    estavaGuardado = true;
-                    break;
-                  }
-                  else if (
-                    this.tabelaSelecao.procEspRestantes[j].classe ==
-                    this.listaTotalProcEsp[i].codigo && this.listaTotalProcEsp[i].transversal != "S"
-                  ) {
-                    this.listaProcEspRes.push({
-                      classe: this.tabelaSelecao.procEspRestantes[j].classe,
-                      designacao: this.tabelaSelecao.procEspRestantes[j]
-                        .designacao,
-                      dono: this.tabelaSelecao.procEspRestantes[j].dono
-                    });
+                    } else {
+                      this.listaProcEspRes.push({
+                        classe: this.tabelaSelecao.procEspRestantes[j].classe,
+                        designacao: this.tabelaSelecao.procEspRestantes[j]
+                          .designacao,
+                        dono: this.tabelaSelecao.procEspRestantes[j].dono
+                      });
+                    }
                     estavaGuardado = true;
                     break;
                   }
                 }
                 if (!estavaGuardado) {
-                  this.listaProcEspRes.push({
-                    classe: this.listaTotalProcEsp[i].codigo,
-                    designacao: this.listaTotalProcEsp[i].titulo,
-                    dono: false,
-                    participante: false
-                  });
+                  if(this.listaTotalProcEsp[i].transversal === "S"){
+                    this.listaProcEspRes.push({
+                      classe: this.listaTotalProcEsp[i].codigo,
+                      designacao: this.listaTotalProcEsp[i].titulo,
+                      dono: false,
+                      participante: false
+                    });
+                  } else {
+                    this.listaProcEspRes.push({
+                      classe: this.listaTotalProcEsp[i].codigo,
+                      designacao: this.listaTotalProcEsp[i].titulo,
+                      dono: false,
+                    });
+                  }
                 }
             }
           }
