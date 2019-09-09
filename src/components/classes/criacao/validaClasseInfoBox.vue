@@ -245,7 +245,11 @@ export default {
       // Sem subdivisão
       if((this.c.nivel == 3)&&(!this.c.temSubclasses4Nivel)){
         // PCA: prazo
-        if((this.c.pca.valor<0)||(this.c.pca.valor>200)||(!this.c.pca.valor)){
+        if(!this.c.pca.valor && (this.c.pca.notas=='')){
+          this.mensagensErro.push({sobre: "PCA (prazo)", mensagem:"Prazo é de preenchimento obrigatório."})
+          this.numeroErros++
+        }
+        else if((this.c.pca.valor<0)||(this.c.pca.valor>200)){
           this.mensagensErro.push({sobre: "PCA (prazo)", mensagem:"Prazo fora dos limites."})
           this.numeroErros++
         }
@@ -265,8 +269,12 @@ export default {
         // PCA: prazo
         for(i=0; i < this.c.subclasses.length; i++){
           subclasse = this.c.subclasses[i]
-          if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)||(!subclasse.pca.valor)){
-            this.mensagensErro.push({sobre: "PCA (prazo) da subclasse " + subclasse.codigo, mensagem:"Prazo fora dos limites."})
+          if(!subclasse.pca.valor && (subclasse.pca.notas=='')){
+            this.mensagensErro.push({sobre: "PCA (prazo) da subclasse " + subclasse.codigo, mensagem:"O prazo é de preenchimento obrigatório."})
+            this.numeroErros++
+          }
+          else if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)){
+            this.mensagensErro.push({sobre: "PCA (prazo) da subclasse " + subclasse.codigo, mensagem:"O prazo está fora dos limites."})
             this.numeroErros++
           }
           // PCA: forma e subforma de contagem

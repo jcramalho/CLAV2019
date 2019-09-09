@@ -297,6 +297,7 @@ export default {
 
       pca: {
         valor: null,
+        notas: "",
         formaContagem: "",
         subFormaContagem: "",
         justificacao: [] // j = [criterio]
@@ -1047,7 +1048,7 @@ export default {
       // Sem subdivisão
       if((c.nivel == 3)&&(!c.temSubclasses4Nivel)){
         // PCA: prazo
-        if((c.pca.valor<0)||(c.pca.valor>200)||(!c.pca.valor)){
+        if((c.pca.valor<0)||(c.pca.valor>200)||(!c.pca.valor && (c.pca.notas==''))){
           numeroErros++
         }
         // PCA: forma e subforma de contagem
@@ -1064,7 +1065,7 @@ export default {
         // PCA: prazo
         for(i=0; i < c.subclasses.length; i++){
           subclasse = c.subclasses[i]
-          if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)||(!subclasse.pca.valor)){
+          if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)||(!subclasse.pca.valor && (subclasse.pca.notas==''))){
             numeroErros++
           }
           // PCA: forma e subforma de contagem

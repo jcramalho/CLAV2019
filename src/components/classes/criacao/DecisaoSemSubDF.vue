@@ -25,6 +25,7 @@
         </span>
       </v-flex>
     </v-layout>
+    
     <v-layout ma-2 wrap>
       <v-flex xs2>
         <div class="info-label">Notas</div>
