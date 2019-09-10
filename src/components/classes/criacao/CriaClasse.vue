@@ -148,31 +148,7 @@
         </v-card>
       </v-flex>
 
-      <!--v-flex xs12>
-        <div>
-          <v-btn
-            dark
-            round
-            color="teal darken-4"
-            @click="guardarTrabalho"
-            v-bind:disabled="classe.codigo == ''"
-            >Guardar trabalho</v-btn>
-            
-          <valida-classe-info-box :c="classe"/>
-          
-          <v-btn dark round color="teal darken-4" @click="criarClasse">Criar classe</v-btn>
-          <v-btn dark round color="red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
-        </div>
-      </v-flex-->
-
       <painel-operacoes :c="classe"/>
-
-      <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
-        {{ mensagemPedidoCriadoOK }}
-        <v-btn dark flat @click="pedidoCriadoOK">
-          Fechar
-        </v-btn>
-      </v-snackbar>
 
       <v-snackbar
         v-model="pendenteGuardado"
@@ -195,25 +171,6 @@
         <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
 
-      <v-snackbar v-model="pedidoEliminado" :timeout="8000" color="error">
-        {{ mensagemPedidoEliminado }}
-        <v-btn flat @click="pedidoEliminado = false">Fechar</v-btn>
-      </v-snackbar>
-
-      <v-dialog v-model="errosValidacao" width="60%" >
-        <v-card>
-          <v-card-title class="headline">Erros detetados na validação</v-card-title>
-          <v-card-text>
-            <p>Há erros de validação. Selecione "Validar" para ver extamente quais e proceder à sua correção.</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn
-              color="red darken-4"
-              round dark
-              @click="errosValidacao=false">Fechar</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-layout>
 
   </v-container>
@@ -365,13 +322,7 @@ export default {
       critGestionarioAdicionado: false
     },
 
-    pedidoCriado: false,
-    errosValidacao: false,
-    mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
-    pedidoEliminado: false,
-    mensagemPedidoEliminado: "Este trabalho foi eliminado.",
-    pendenteGuardado: false,
-    mensagemPendenteGuardadoOK: "Trabalho guardado com sucesso.",
+    
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
@@ -884,48 +835,6 @@ export default {
           );
           if (index != -1) subclasses[i].processosRelacionados.splice(index, 1);
         }
-      }
-    },
-
-    pedidoCriadoOK: function() {
-      this.pedidoCriado = false;
-      this.$router.push("/");
-    },
-
-    pendenteGuardadoOK: function() {
-      this.pendenteGuardado = false;
-      this.$router.push("/");
-    },
-
-    guardarTrabalhoOK: function() {
-      return this.classe.codigo != "" && this.classe.pai.codigo != "";
-    },
-
-    guardarTrabalho: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          var userBD = await axios.get(
-            lhost + "/api/users/listarToken/" + this.$store.state.token
-          );
-          var pendenteParams = {
-            numInterv: 1,
-            acao: "Criação",
-            tipo: "Classe",
-            objeto: this.classe,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email},
-            token: this.$store.state.token
-          };
-          var response = await axios.post(
-            lhost + "/api/pendentes",
-            pendenteParams
-          );
-          this.pendenteGuardado = true;
-        }
-      } catch (error) {
-        return error;
       }
     }
   }

@@ -37,6 +37,23 @@
             </v-dialog>
         </v-layout>
 
+        <!-- Trabalho pendente guardado com sucesso ........... -->
+        <v-layout row justify-center>
+            <v-dialog v-model="pendenteGuardado" persistent max-width="60%">
+                <v-card>
+                    <v-card-title class="headline">Trabalho pendente guardado</v-card-title>
+                    <v-card-text>
+                        <p>Os seus dados foram guardados para que possa retomar o trabalho mais tarde.</p>
+                        <p>{{ pendenteGuardadoInfo }}</p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" flat @click="criacaoPendenteTerminada">Fechar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-layout>
+
         <!-- Pedido de criação de classe submetido com sucesso ........... -->
         <v-layout row justify-center>
             <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
@@ -98,8 +115,9 @@ export default {
   },
   data() {
     return {
+      pendenteGuardado: false,
+      pendenteGuardadoInfo: "",
       dialogClasseCriada: false,
-      dialog: false,
       pedidoEliminado: false,
       pedidoCriado: false,
       mensagemPedidoCriadoOK: "",
@@ -143,10 +161,15 @@ export default {
           };
           var response = await axios.post(lhost + "/api/pendentes", pendenteParams);
           this.pendenteGuardado = true;
+          this.pendenteGuardadoInfo = JSON.stringify(response.data)
         }
       } catch (error) {
         return error;
       }
+    },
+
+    criacaoPendenteTerminada: function(){
+        this.$router.push("/")
     },
 
     // Verifica se o código introduzido pelo utilizador já existe na BD....................
