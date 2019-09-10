@@ -151,17 +151,6 @@
       <painel-operacoes :c="classe"/>
 
       <v-snackbar
-        v-model="pendenteGuardado"
-        :color="'teal darken-1'"
-        :timeout="60000"
-      >
-        {{ mensagemPendenteGuardadoOK }}
-        <v-btn dark flat @click="pendenteGuardadoOK">
-          Fechar
-        </v-btn>
-      </v-snackbar>
-
-      <v-snackbar
         v-model="loginErrorSnackbar"
         :timeout="8000"
         color="error"

@@ -25,6 +25,22 @@
         </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <!-- Validação não detetou erros ........... -->
+        <v-layout row justify-center>
+            <v-dialog v-model="dialogSemErros" persistent max-width="60%">
+                <v-card>
+                    <v-card-title class="headline">Validação sem erros</v-card-title>
+                    <v-card-text>
+                        <p>A informação introduzida não apresenta erros.</p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red darken-1" flat @click="dialogSemErros = false">Fechar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-layout>
     </v-btn>
 </template>
 
@@ -37,6 +53,7 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogSemErros: false,
       
       mensagensErro: [],
       numeroErros: 0,
@@ -290,6 +307,9 @@ export default {
       }
       if(this.numeroErros > 0){
         this.dialog = true
+      }
+      else{
+        this.dialogSemErros = true
       }
     },
 
