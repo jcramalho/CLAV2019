@@ -1,0 +1,564 @@
+<template>
+    <v-container grid-list-md fluid>
+        <v-layout row wrap justify-center>
+            <v-flex xs12>
+                <div>
+                    <v-btn
+                        dark
+                        round
+                        color="teal darken-4"
+                        @click="guardarTrabalho"
+                        v-bind:disabled="c.codigo == ''"
+                        >Guardar trabalho</v-btn>
+            
+                    <valida-classe-info-box :c="c"/>
+          
+                    <v-btn dark round color="teal darken-4" @click="criarClasse">Criar classe</v-btn>
+                    <v-btn dark round color="red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
+                </div>
+            </v-flex>
+        </v-layout>
+
+        <!-- Erros de Validação .................................... -->
+        <v-layout row wrap justify-center>
+            <v-dialog v-model="errosValidacao" width="60%" >
+                <v-card>
+                    <v-card-title class="headline">Erros detetados na validação</v-card-title>
+                    <v-card-text>
+                        <p>Há erros de validação. Selecione "Validar" para ver extamente quais e proceder à sua correção.</p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn
+                            color="red darken-4"
+                            round dark
+                            @click="errosValidacao=false">Fechar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-layout>
+
+        <!-- Pedido de criação de classe submetido com sucesso ........... -->
+        <v-layout row justify-center>
+            <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
+                <v-card>
+                    <v-card-title class="headline">Pedido de Criação de Classe Submetido</v-card-title>
+                    <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" flat @click="criacaoClasseTerminada">Fechar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-layout>
+
+        <!-- Cancelamento da criação duma classe: confirmação ........... -->
+        <v-layout row justify-center>
+            <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
+                <v-card>
+                    <v-card-title class="headline">Cancelamento e eliminação do pedido de criação de classe</v-card-title>
+                    <v-card-text>
+                        <p>Selecionou o cancelamento da criação da classe.</p>
+                        <p>Toda a informação introduzida será eliminada.</p>
+                        <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" flat @click="cancelarCriacaoClasse">Confirmo</v-btn>
+                        <v-btn color="red darken-1" flat @click="pedidoEliminado = false">Enganei-me, desejo continuar o trabalho</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-layout>
+
+        <v-layout>
+            <v-snackbar
+                v-model="loginErrorSnackbar"
+                :timeout="8000"
+                color="error"
+                :top="true"
+            >
+                {{ loginErrorMessage }}
+                <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
+            </v-snackbar>
+        </v-layout>
+
+    </v-container>
+</template>
+
+<script>
+const lhost = require("@/config/global").host;
+const axios = require("axios");
+
+import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
+
+export default {
+  props: ["c"],
+  components: {
+    ValidaClasseInfoBox
+  },
+  data() {
+    return {
+      dialogClasseCriada: false,
+      dialog: false,
+      pedidoEliminado: false,
+      pedidoCriado: false,
+      mensagemPedidoCriadoOK: "",
+      loginErrorSnackbar: false,
+      loginErrorMessage: "Precisa de fazer login para criar a Classe!",
+      numeroErros: 0,
+      errosValidacao: false,
+
+      codeFormats: {
+        1: /^[0-9]{3}$/,
+        2: /^[0-9]{3}\.[0-9]{2}$/,
+        3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
+      }
+    };
+  },
+
+  watch: {
+    dialog: function (val) {
+      if(!val) this.limpaErros()
+    }
+  },
+
+  methods: {
+
+    // Permite guardar o trabalho para ser retomado depois
+    guardarTrabalho: async function() {
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
+          var pendenteParams = {
+            numInterv: 1,
+            acao: "Criação",
+            tipo: "Classe",
+            objeto: this.c,
+            criadoPor: userBD.data.email,
+            user: { email: userBD.data.email},
+            token: this.$store.state.token
+          };
+          var response = await axios.post(lhost + "/api/pendentes", pendenteParams);
+          this.pendenteGuardado = true;
+        }
+      } catch (error) {
+        return error;
+      }
+    },
+
+    // Verifica se o código introduzido pelo utilizador já existe na BD....................
+
+    verificaExistenciaCodigo: async function(codigo) {
+      var response = await axios.get(lhost + "/api/classes/verificar/" + codigo);
+      return response.data;
+    },
+
+    notaDuplicada: function(notas){
+      if(notas.length > 1){
+        var lastNota = notas[notas.length-1].nota
+        var duplicados = notas.filter(n => n.nota == lastNota )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
+    exemploDuplicado: function(exemplos){
+      if(exemplos.length > 1){
+        var lastExemplo = exemplos[exemplos.length-1].exemplo
+        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
+    tiDuplicado: function(termos){
+      if(termos.length > 1){
+        var lastTermo = termos[termos.length-1].termo
+        var duplicados = termos.filter(t => t.termo == lastTermo )
+        if(duplicados.length > 1){
+          return true
+        }
+        else return false
+      }
+      else{
+        return false
+      }
+    },
+
+    // Valida a classe antes de a criar
+
+    validaClasse: async function(){
+      var i = 0, numeroErros = 0
+      
+      // Codigo
+      if(this.c.codigo){
+        if (this.c.nivel >1){
+          if(!this.c.pai.codigo){
+            numeroErros++
+          }
+          else{
+            if(!this.c.codigo.includes(this.c.pai.codigo)){
+              numeroErros++
+            }
+          }
+          if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
+            numeroErros++
+          }
+        }
+        try{
+          var existe = await this.verificaExistenciaCodigo(this.c.codigo);
+          if (existe) {
+            numeroErros++
+          }
+        }
+        catch(e){
+          console.log('Erro na verificação da existência do código da classe.')
+        }
+      }
+      else{
+        numeroErros++
+      }
+  
+      // Título
+      if(this.c.titulo == ""){
+        numeroErros++
+      }
+      else {
+        try{
+            alert('Existência de título')
+          var existeTitulo = await axios.post( lhost + '/api/classes/verificarTitulo', {titulo: this.c.titulo})
+          if(existeTitulo.data){
+            numeroErros++
+          }
+        }
+        catch(e){
+          console.log('Erro na verificação da existência do título da classe.')
+        }
+      }
+
+      // Descrição
+      if(this.c.descricao == ""){
+        numeroErros++
+      }
+      
+      // Notas de Aplicação
+      for(i=0; i < this.c.notasAp.length; i++){
+        try{
+          var existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: this.c.notasAp[i].nota})
+          if(existeNotaAp.data){
+            numeroErros++
+          }
+        }
+        catch(e){
+          numeroErros++
+        }
+      }
+      if(this.notaDuplicada(this.c.notasAp)){
+          numeroErros++
+      }
+
+      // Exemplos de notas de Aplicação
+      for(i=0; i < this.c.exemplosNotasAp.length; i++){
+        try{
+          var existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: this.c.exemplosNotasAp[i].exemplo})
+          if(existeExemploNotaAp.data){
+            numeroErros++
+          }
+        }
+        catch(e){
+          numeroErros++
+        }
+      }
+      if(this.exemploDuplicado(this.c.exemplosNotasAp)){
+        numeroErros++
+      }
+
+      // Notas de Exclusão
+      if(this.notaDuplicada(this.c.notasEx)){
+        numeroErros++
+      }
+
+      // Termos de Índice
+      for(i=0; i < this.c.termosInd.length; i++){
+        try{
+          var existeTI = await axios.post( lhost + '/api/classes/verificarTI', {ti: this.c.termosInd[i].termo})
+          if(existeTI.data){
+            numeroErros++
+          }
+        }
+        catch(e){
+          numeroErros++
+        }
+      }
+      if(this.tiDuplicado(this.c.termosInd)){
+          numeroErros++
+      }
+
+      // Decisões
+      // Sem subdivisão
+      if((this.c.nivel == 3)&&(!this.c.temSubclasses4Nivel)){
+        // PCA: prazo
+        if((this.c.pca.valor<0)||(this.c.pca.valor>200)||(!this.c.pca.valor && (this.c.pca.notas==''))){
+          numeroErros++
+        }
+        // PCA: forma e subforma de contagem
+        if(this.c.pca.formaContagem == ""){
+          numeroErros++
+        }
+        else if((this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(this.c.pca.subFormaContagem == "")){
+          numeroErros++
+        }
+      }
+      // Com subdivisão
+      else if((this.c.nivel == 3)&&(this.c.temSubclasses4Nivel)){
+        var subclasse = {}
+        // PCA: prazo
+        for(i=0; i < this.c.subclasses.length; i++){
+          subclasse = this.c.subclasses[i]
+          if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)||(!subclasse.pca.valor && (subclasse.pca.notas==''))){
+            numeroErros++
+          }
+          // PCA: forma e subforma de contagem
+          if(subclasse.pca.formaContagem == ""){
+            numeroErros++
+          }
+          else if((subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(subclasse.pca.subFormaContagem == "")){
+            numeroErros++
+          }
+        }
+      }
+      return numeroErros
+    },
+
+    // Valida a informação introduzida e verifica se a classe pode ser criada
+
+    validarClasse2: async function(){
+      var i = 0
+      this.numeroErros = 0
+
+      // Codigo
+      if(this.c.codigo){
+        if (this.c.nivel >1){
+          if(!this.c.pai.codigo){
+            this.numeroErros++
+          }
+          else{
+            if(!this.c.codigo.includes(this.c.pai.codigo)){
+              this.numeroErros++
+            }
+          }
+          if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
+            this.numeroErros++
+          }
+        }
+        try{
+          var existe = await this.verificaExistenciaCodigo(this.c.codigo);
+          if (existe) {
+            this.numeroErros++
+          }
+        }
+        catch(e){
+          this.numeroErros++
+        }
+      }
+      else{
+        this.numeroErros++
+      }
+  
+      // Título
+      if(this.c.titulo == ""){
+        this.numeroErros++
+      }
+      else {
+        try{
+          var existeTitulo = await axios.post( lhost + '/api/classes/verificarTitulo', {titulo: this.c.titulo})
+          if(existeTitulo.data){
+            this.numeroErros++
+          }
+        }
+        catch(e){
+          this.numeroErros++
+        }
+      }
+
+      // Descrição
+      if(this.c.descricao == ""){
+        this.numeroErros++
+      }
+      
+      // Notas de Aplicação
+      for(i=0; i < this.c.notasAp.length; i++){
+        try{
+          var existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: this.c.notasAp[i].nota})
+          if(existeNotaAp.data){
+            this.numeroErros++
+          }
+        }
+        catch(e){
+          this.numeroErros++
+        }
+      }
+      if(this.notaDuplicada(this.c.notasAp)){
+          this.numeroErros++
+      }
+
+      // Exemplos de notas de Aplicação
+      for(i=0; i < this.c.exemplosNotasAp.length; i++){
+        try{
+          var existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: this.c.exemplosNotasAp[i].exemplo})
+          if(existeExemploNotaAp.data){
+            this.numeroErros++
+          }
+        }
+        catch(e){
+          this.numeroErros++
+        }
+      }
+      if(this.exemploDuplicado(this.c.exemplosNotasAp)){
+          this.numeroErros++
+      }
+
+      // Notas de Exclusão
+      if(this.notaDuplicada(this.c.notasEx)){
+          this.numeroErros++
+      }
+
+      // Termos de Índice
+      for(i=0; i < this.c.termosInd.length; i++){
+        try{
+          var existeTI = await axios.post( lhost + '/api/classes/verificarTI', {ti: this.c.termosInd[i].termo})
+          if(existeTI.data){
+            this.numeroErros++
+          }
+        }
+        catch(e){
+          this.numeroErros++
+        }
+      }
+      if(this.tiDuplicado(this.c.termosInd)){
+          this.numeroErros++
+      }
+
+      // Decisões
+      // Sem subdivisão
+      if((this.c.nivel == 3)&&(!this.c.temSubclasses4Nivel)){
+        // PCA: prazo
+        if(!this.c.pca.valor && (this.c.pca.notas=='')){
+          this.numeroErros++
+        }
+        else if((this.c.pca.valor<0)||(this.c.pca.valor>200)){
+          this.numeroErros++
+        }
+        // PCA: forma e subforma de contagem
+        if(this.c.pca.formaContagem == ""){
+          this.numeroErros++
+        }
+        else if((this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(this.c.pca.subFormaContagem == "")){
+          this.numeroErros++
+        }
+      }
+      // Com subdivisão
+      else if((this.c.nivel == 3)&&(this.c.temSubclasses4Nivel)){
+        var subclasse = {}
+        // PCA: prazo
+        for(i=0; i < this.c.subclasses.length; i++){
+          subclasse = this.c.subclasses[i]
+          if(!subclasse.pca.valor && (subclasse.pca.notas=='')){
+            this.numeroErros++
+          }
+          else if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)){
+            this.numeroErros++
+          }
+          // PCA: forma e subforma de contagem
+          if(subclasse.pca.formaContagem == ""){
+            this.numeroErros++
+          }
+          else if((subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(subclasse.pca.subFormaContagem == "")){
+            this.numeroErros++
+          }
+        }
+      }
+      return this.numeroErros
+    },
+
+    // Lança o pedido de criação da classe no worflow
+
+    criarClasse: async function() {
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          var erros = await this.validarClasse2()
+          if(erros == 0){
+            var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
+            var pedidoParams = {
+              tipoPedido: "Criação",
+              tipoObjeto: "Classe",
+              novoObjeto: this.c,
+              user: {email: userBD.data.email},
+              token: this.$store.state.token
+            };
+            
+            var response = await axios.post(lhost + "/api/pedidos", pedidoParams)
+            this.mensagemPedidoCriadoOK += JSON.stringify(response.data)
+            this.dialogClasseCriada = true
+          }
+          else{
+            this.errosValidacao = true
+          }
+        } 
+      }
+      catch (error) {
+          return error;
+      }
+    },
+
+    criacaoClasseTerminada: function(){
+        this.$router.push("/")
+    },
+    
+    // Cancela a criação da classe
+    eliminarClasse: function() {
+      this.pedidoEliminado = true
+    },
+
+    cancelarCriacaoClasse: function(){
+        this.$router.push("/")
+    }
+
+  }
+};
+</script>
+<style>
+.info-label {
+  color: #00695c;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #e0f2f1;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
+}
+</style>
