@@ -657,38 +657,47 @@ export default {
         if (!this.listaProcComunsReady) {
           var response = await axios.get(lhost + "/api/classes?tipo=comum");
           for (var i = 0; i < response.data.length; i++) {
-            if (response.data[i].transversal === "S") {
               for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
                 var estavaGuardado = false;
-                if (
-                  this.tabelaSelecao.procComuns[j].classe ==
-                  response.data[i].codigo
-                ) {
-                  this.listaProcComuns.push({
-                    classe: this.tabelaSelecao.procComuns[j].classe,
-                    designacao: this.tabelaSelecao.procComuns[j].designacao,
-                    dono: this.tabelaSelecao.procComuns[j].dono,
-                    participante: this.tabelaSelecao.procComuns[j].participante
-                  });
-                  estavaGuardado = true;
-                  break;
-                }
+                  if (
+                    this.tabelaSelecao.procComuns[j].classe ==
+                    response.data[i].codigo 
+                  ) {
+                    if(response.data[i].transversal === "S") {
+                      this.listaProcComuns.push({
+                        classe: this.tabelaSelecao.procComuns[j].classe,
+                        designacao: this.tabelaSelecao.procComuns[j].designacao,
+                        dono: this.tabelaSelecao.procComuns[j].dono,
+                        participante: this.tabelaSelecao.procComuns[j].participante
+                      });
+                    }
+                    else {
+                        this.listaProcComuns.push({
+                        classe: response.data[i].codigo,
+                        designacao: response.data[i].titulo,
+                        dono: this.tabelaSelecao.procComuns[j].dono,
+                      });
+                    }
+                    estavaGuardado = true;
+                    break;
+                  }
               }
               if (!estavaGuardado) {
-                this.listaProcComuns.push({
-                  classe: response.data[i].codigo,
-                  designacao: response.data[i].titulo,
-                  dono: false,
-                  participante: false
-                });
+                if(response.data[i].transversal === "S") {
+                  this.listaProcComuns.push({
+                    classe: response.data[i].codigo,
+                    designacao: response.data[i].titulo,
+                    dono: false,
+                    participante: false
+                  });
+                } else {
+                  this.listaProcComuns.push({
+                    classe: response.data[i].codigo,
+                    designacao: response.data[i].titulo,
+                    dono: false
+                  });
+                }
               }
-            } else {
-              this.listaProcComuns.push({
-                classe: response.data[i].codigo,
-                designacao: response.data[i].titulo,
-                dono: true
-              });
-            }
           }
           this.listaProcComunsReady = true;
           return this.listaProcComuns;
@@ -720,7 +729,7 @@ export default {
         if (!this.listaProcEspReady) {
           var url =
             lhost +
-            "/api/classes?tipo=especifico&ent=" +
+            "/api/classes?tipo=especifico&ents=" +
             this.tabelaSelecao.idEntidade;
           if (this.tabelaSelecao.tipologias) {
             url += "&tips=";
@@ -731,7 +740,6 @@ export default {
           }
           var response = await axios.get(url);
           for (var x = 0; x < response.data.length; x++) {
-            if (response.data[x].transversal === "S") {
               for (
                 var j = 0;
                 j < this.tabelaSelecao.procEspecificos.length;
@@ -740,35 +748,46 @@ export default {
                 var estavaGuardado = false;
                 if (
                   this.tabelaSelecao.procEspecificos[j].classe ==
-                  response.data[x].codigo
+                  response.data[x].codigo 
                 ) {
-                  this.listaProcEsp.push({
-                    classe: this.tabelaSelecao.procEspecificos[j].classe,
-                    designacao: this.tabelaSelecao.procEspecificos[j]
-                      .designacao,
-                    dono: this.tabelaSelecao.procEspecificos[j].dono,
-                    participante: this.tabelaSelecao.procEspecificos[j]
-                      .participante
-                  });
+                  if(response.data[x].transversal === "S"){
+                    this.listaProcEsp.push({
+                      classe: this.tabelaSelecao.procEspecificos[j].classe,
+                      designacao: this.tabelaSelecao.procEspecificos[j]
+                        .designacao,
+                      dono: this.tabelaSelecao.procEspecificos[j].dono,
+                      participante: this.tabelaSelecao.procEspecificos[j]
+                        .participante
+                    });
+                  }
+                  else {
+                    this.listaProcEsp.push({
+                      classe: this.tabelaSelecao.procEspecificos[j].classe,
+                      designacao: this.tabelaSelecao.procEspecificos[j]
+                        .designacao,
+                      dono: this.tabelaSelecao.procEspecificos[j].dono,
+                    });
+                  }
                   estavaGuardado = true;
                   break;
                 }
               }
               if (!estavaGuardado) {
-                this.listaProcEsp.push({
-                  classe: response.data[x].codigo,
-                  designacao: response.data[x].titulo,
-                  dono: false,
-                  participante: false
-                });
+                if(response.data[x].transversal === "S") {
+                  this.listaProcEsp.push({
+                    classe: response.data[x].codigo,
+                    designacao: response.data[x].titulo,
+                    dono: false,
+                    participante: false
+                  });
+                } else {
+                    this.listaProcEsp.push({
+                      classe: response.data[x].codigo,
+                      designacao: response.data[x].titulo,
+                      dono: false,
+                    });
+                  }
               }
-            } else {
-              this.listaProcEsp.push({
-                classe: response.data[x].codigo,
-                designacao: response.data[x].titulo,
-                dono: true
-              });
-            }
           }
           return this.listaProcEsp;
         }
@@ -816,7 +835,6 @@ export default {
               }
             }
             if (espEntTip === false) {
-              if (this.listaTotalProcEsp[i].transversal === "S") {
                 for (
                   var j = 0;
                   j < this.tabelaSelecao.procEspRestantes.length;
@@ -827,6 +845,7 @@ export default {
                     this.tabelaSelecao.procEspRestantes[j].classe ==
                     this.listaTotalProcEsp[i].codigo
                   ) {
+                    if(this.listaTotalProcEsp[i].transversal === "S"){
                     this.listaProcEspRes.push({
                       classe: this.tabelaSelecao.procEspRestantes[j].classe,
                       designacao: this.tabelaSelecao.procEspRestantes[j]
@@ -835,25 +854,34 @@ export default {
                       participante: this.tabelaSelecao.procEspRestantes[j]
                         .participante
                     });
+                    } else {
+                      this.listaProcEspRes.push({
+                        classe: this.tabelaSelecao.procEspRestantes[j].classe,
+                        designacao: this.tabelaSelecao.procEspRestantes[j]
+                          .designacao,
+                        dono: this.tabelaSelecao.procEspRestantes[j].dono
+                      });
+                    }
                     estavaGuardado = true;
                     break;
                   }
                 }
                 if (!estavaGuardado) {
-                  this.listaProcEspRes.push({
-                    classe: this.listaTotalProcEsp[i].codigo,
-                    designacao: this.listaTotalProcEsp[i].titulo,
-                    dono: false,
-                    participante: false
-                  });
+                  if(this.listaTotalProcEsp[i].transversal === "S"){
+                    this.listaProcEspRes.push({
+                      classe: this.listaTotalProcEsp[i].codigo,
+                      designacao: this.listaTotalProcEsp[i].titulo,
+                      dono: false,
+                      participante: false
+                    });
+                  } else {
+                    this.listaProcEspRes.push({
+                      classe: this.listaTotalProcEsp[i].codigo,
+                      designacao: this.listaTotalProcEsp[i].titulo,
+                      dono: false,
+                    });
+                  }
                 }
-              } else {
-                this.listaProcEspRes.push({
-                  classe: this.listaTotalProcEsp[i].codigo,
-                  designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: true
-                });
-              }
             }
           }
         }

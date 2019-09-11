@@ -27,14 +27,14 @@
             <tr>
               <td>
                 <v-select
-                item-text="label"
-                item-value="value"
-                v-model="props.item.intervencao"
-                :items="tiposIntervencao"
-                solo
-                dense
-                @change="selectParticipante(props.item.id, $event)"
-              />
+                  item-text="label"
+                  item-value="value"
+                  v-model="props.item.intervencao"
+                  :items="tiposIntervencao"
+                  solo
+                  dense
+                  @change="selectParticipante(props.item.id, $event)"
+                />
                 <!--v-btn color="teal draken-2" dark round small text-xs-center>
                   <SelectValueFromList
                     :options="tiposIntervencao"

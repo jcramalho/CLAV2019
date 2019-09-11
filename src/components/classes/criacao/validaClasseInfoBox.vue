@@ -21,10 +21,26 @@
           <v-btn
             color="red darken-4"
             round dark
-            @click="fecharReport">Fechar</v-btn>
+            @click="dialog = false">Fechar</v-btn>
         </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <!-- Validação não detetou erros ........... -->
+        <v-layout row justify-center>
+            <v-dialog v-model="dialogSemErros" persistent max-width="60%">
+                <v-card>
+                    <v-card-title class="headline">Validação sem erros</v-card-title>
+                    <v-card-text>
+                        <p>A informação introduzida não apresenta erros.</p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red darken-1" flat @click="dialogSemErros = false">Fechar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-layout>
     </v-btn>
 </template>
 
@@ -37,6 +53,7 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogSemErros: false,
       
       mensagensErro: [],
       numeroErros: 0,
@@ -55,6 +72,12 @@ export default {
         4: "ddd.dd.ddd.dd (d - digito)"
       }
     };
+  },
+
+  watch: {
+    dialog: function (val) {
+      if(!val) this.limpaErros()
+    }
   },
 
   methods: {
@@ -165,6 +188,12 @@ export default {
           this.mensagensErro.push({sobre: "Acesso à Ontologia", mensagem:"Não consegui verificar a existência do título."})
         }
       }
+
+      // Descrição
+      if(this.c.descricao == ""){
+        this.mensagensErro.push({sobre: "Descrição", mensagem:"A descrição não pode ser vazia."})
+        this.numeroErros++
+      }
       
       // Notas de Aplicação
       for(i=0; i < this.c.notasAp.length; i++){
@@ -233,7 +262,11 @@ export default {
       // Sem subdivisão
       if((this.c.nivel == 3)&&(!this.c.temSubclasses4Nivel)){
         // PCA: prazo
-        if((this.c.pca.valor<0)||(this.c.pca.valor>200)||(!this.c.pca.valor)){
+        if(!this.c.pca.valor && (this.c.pca.notas=='')){
+          this.mensagensErro.push({sobre: "PCA (prazo)", mensagem:"Prazo é de preenchimento obrigatório."})
+          this.numeroErros++
+        }
+        else if((this.c.pca.valor<0)||(this.c.pca.valor>200)){
           this.mensagensErro.push({sobre: "PCA (prazo)", mensagem:"Prazo fora dos limites."})
           this.numeroErros++
         }
@@ -253,8 +286,12 @@ export default {
         // PCA: prazo
         for(i=0; i < this.c.subclasses.length; i++){
           subclasse = this.c.subclasses[i]
-          if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)||(!subclasse.pca.valor)){
-            this.mensagensErro.push({sobre: "PCA (prazo) da subclasse " + subclasse.codigo, mensagem:"Prazo fora dos limites."})
+          if(!subclasse.pca.valor && (subclasse.pca.notas=='')){
+            this.mensagensErro.push({sobre: "PCA (prazo) da subclasse " + subclasse.codigo, mensagem:"O prazo é de preenchimento obrigatório."})
+            this.numeroErros++
+          }
+          else if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)){
+            this.mensagensErro.push({sobre: "PCA (prazo) da subclasse " + subclasse.codigo, mensagem:"O prazo está fora dos limites."})
             this.numeroErros++
           }
           // PCA: forma e subforma de contagem
@@ -271,10 +308,12 @@ export default {
       if(this.numeroErros > 0){
         this.dialog = true
       }
+      else{
+        this.dialogSemErros = true
+      }
     },
 
-    fecharReport: function(){
-      this.dialog = false
+    limpaErros: function(){
       this.numeroErros = 0
       this.mensagensErro = []
     }

@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md fluid>
     <v-layout row wrap justify-center>
-      <v-flex xs11 v-if="erro == ''">
+      <v-flex xs11 v-if="erro == '' && inv != null">
         <TabelaErros :inv="inv" />
       </v-flex>
       <v-flex v-else>
@@ -21,7 +21,7 @@ import axios from "axios";
 export default {
   props: ["idRel", "idInv"],
   data: () => ({
-    inv: {},
+    inv: null,
     erro: ""
   }),
   components: {

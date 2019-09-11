@@ -148,40 +148,7 @@
         </v-card>
       </v-flex>
 
-      <v-flex xs12>
-        <div>
-          <v-btn
-            dark
-            round
-            color="teal darken-4"
-            @click="guardarTrabalho"
-            v-bind:disabled="classe.codigo == ''"
-            >Guardar trabalho</v-btn>
-            
-          <valida-classe-info-box :c="classe"/>
-          
-          <v-btn dark round color="teal darken-4" @click="criarClasse">Criar classe</v-btn>
-          <v-btn dark round color="red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
-        </div>
-      </v-flex>
-
-      <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
-        {{ mensagemPedidoCriadoOK }}
-        <v-btn dark flat @click="pedidoCriadoOK">
-          Fechar
-        </v-btn>
-      </v-snackbar>
-
-      <v-snackbar
-        v-model="pendenteGuardado"
-        :color="'teal darken-1'"
-        :timeout="60000"
-      >
-        {{ mensagemPendenteGuardadoOK }}
-        <v-btn dark flat @click="pendenteGuardadoOK">
-          Fechar
-        </v-btn>
-      </v-snackbar>
+      <painel-operacoes :c="classe"/>
 
       <v-snackbar
         v-model="loginErrorSnackbar"
@@ -193,25 +160,6 @@
         <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
 
-      <v-snackbar v-model="pedidoEliminado" :timeout="8000" color="error">
-        {{ mensagemPedidoEliminado }}
-        <v-btn flat @click="pedidoEliminado = false">Fechar</v-btn>
-      </v-snackbar>
-
-      <v-dialog v-model="errosValidacao" width="60%" >
-        <v-card>
-          <v-card-title class="headline">Erros detetados na validação</v-card-title>
-          <v-card-text>
-            <p>Há erros de validação. Selecione "Validar" para ver extamente quais e proceder à sua correção.</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn
-              color="red darken-4"
-              round dark
-              @click="errosValidacao=false">Fechar</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-layout>
 
   </v-container>
@@ -233,7 +181,7 @@ import Subdivisao3Nivel from "@/components/classes/criacao/Subdivisao3Nivel.vue"
 import DecisaoSemSubPCA from "@/components/classes/criacao/DecisaoSemSubPCA.vue";
 import DecisaoSemSubDF from "@/components/classes/criacao/DecisaoSemSubDF.vue";
 import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel.vue";
-import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
+import PainelOperacoes from "@/components/classes/criacao/PainelOperacoes.vue";
 
 export default {
   components: {
@@ -244,7 +192,7 @@ export default {
     DecisaoSemSubDF,
     Subclasses4Nivel,
     InfoBox,
-    ValidaClasseInfoBox
+    PainelOperacoes
   },
 
   data: () => ({
@@ -297,6 +245,7 @@ export default {
 
       pca: {
         valor: null,
+        notas: "",
         formaContagem: "",
         subFormaContagem: "",
         justificacao: [] // j = [criterio]
@@ -362,13 +311,7 @@ export default {
       critGestionarioAdicionado: false
     },
 
-    pedidoCriado: false,
-    errosValidacao: false,
-    mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
-    pedidoEliminado: false,
-    mensagemPedidoEliminado: "Este trabalho foi eliminado.",
-    pendenteGuardado: false,
-    mensagemPendenteGuardadoOK: "Trabalho guardado com sucesso.",
+    
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
@@ -881,275 +824,6 @@ export default {
           );
           if (index != -1) subclasses[i].processosRelacionados.splice(index, 1);
         }
-      }
-    },
-
-    // Verifica se o código introduzido pelo utilizador já existe na BD....................
-
-    verificaExistenciaCodigo: async function(codigo) {
-      var response = await axios.get(
-        lhost + "/api/classes/verificar/" + codigo
-      );
-      return response.data;
-    },
-
-    notaDuplicada: function(notas){
-      if(notas.length > 1){
-        var lastNota = notas[notas.length-1].nota
-        var duplicados = notas.filter(n => n.nota == lastNota )
-        if(duplicados.length > 1){
-          return true
-        }
-        else return false
-      }
-      else{
-        return false
-      }
-    },
-
-    exemploDuplicado: function(exemplos){
-      if(exemplos.length > 1){
-        var lastExemplo = exemplos[exemplos.length-1].exemplo
-        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo )
-        if(duplicados.length > 1){
-          return true
-        }
-        else return false
-      }
-      else{
-        return false
-      }
-    },
-
-    tiDuplicado: function(termos){
-      if(termos.length > 1){
-        var lastTermo = termos[termos.length-1].termo
-        var duplicados = termos.filter(t => t.termo == lastTermo )
-        if(duplicados.length > 1){
-          return true
-        }
-        else return false
-      }
-      else{
-        return false
-      }
-    },
-
-    // Valida a classe antes de a criar
-
-    validaClasse: async function(c){
-      var i = 0, numeroErros = 0
-      
-      // Codigo
-      if(c.codigo){
-        if (c.nivel >1){
-          if(!c.pai.codigo){
-            numeroErros++
-          }
-          else{
-            if(!c.codigo.includes(c.pai.codigo)){
-              numeroErros++
-            }
-          }
-          if (!this.codeFormats[c.nivel].test(c.codigo)) {
-            numeroErros++
-          }
-        }
-        try{
-          var existe = await this.verificaExistenciaCodigo(c.codigo);
-          if (existe) {
-            numeroErros++
-          }
-        }
-        catch(e){
-          numeroErros++
-        }
-      }
-      else{
-        numeroErros++
-      }
-  
-      // Título
-      if(c.titulo == ""){
-        numeroErros++
-      }
-      else {
-        try{
-          var existeTitulo = await axios.post( lhost + '/api/classes/verificarTitulo', {titulo: c.titulo})
-          if(existeTitulo.data){
-            numeroErros++
-          }
-        }
-        catch(e){
-          numeroErros++
-        }
-      }
-      
-      // Notas de Aplicação
-      for(i=0; i < c.notasAp.length; i++){
-        try{
-          var existeNotaAp = await axios.post( lhost + '/api/classes/verificarNA', {na: c.notasAp[i].nota})
-          if(existeNotaAp.data){
-            numeroErros++
-          }
-        }
-        catch(e){
-          numeroErros++
-        }
-      }
-      if(this.notaDuplicada(c.notasAp)){
-          numeroErros++
-      }
-
-      // Exemplos de notas de Aplicação
-      for(i=0; i < c.exemplosNotasAp.length; i++){
-        try{
-          var existeExemploNotaAp = await axios.post( lhost + '/api/classes/verificarExemploNA', {exemplo: c.exemplosNotasAp[i].exemplo})
-          if(existeExemploNotaAp.data){
-            numeroErros++
-          }
-        }
-        catch(e){
-          numeroErros++
-        }
-      }
-      if(this.exemploDuplicado(c.exemplosNotasAp)){
-        numeroErros++
-      }
-
-      // Notas de Exclusão
-      if(this.notaDuplicada(c.notasEx)){
-        numeroErros++
-      }
-
-      // Termos de Índice
-      for(i=0; i < c.termosInd.length; i++){
-        try{
-          var existeTI = await axios.post( lhost + '/api/classes/verificarTI', {ti: c.termosInd[i].termo})
-          if(existeTI.data){
-            numeroErros++
-          }
-        }
-        catch(e){
-          numeroErros++
-        }
-      }
-      if(this.tiDuplicado(c.termosInd)){
-          numeroErros++
-      }
-
-      // Decisões
-      // Sem subdivisão
-      if((c.nivel == 3)&&(!c.temSubclasses4Nivel)){
-        // PCA: prazo
-        if((c.pca.valor<0)||(c.pca.valor>200)||(!c.pca.valor)){
-          numeroErros++
-        }
-        // PCA: forma e subforma de contagem
-        if(c.pca.formaContagem == ""){
-          numeroErros++
-        }
-        else if((c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(c.pca.subFormaContagem == "")){
-          numeroErros++
-        }
-      }
-      // Com subdivisão
-      else if((c.nivel == 3)&&(c.temSubclasses4Nivel)){
-        var subclasse = {}
-        // PCA: prazo
-        for(i=0; i < c.subclasses.length; i++){
-          subclasse = c.subclasses[i]
-          if((subclasse.pca.valor<0)||(subclasse.pca.valor>200)||(!subclasse.pca.valor)){
-            numeroErros++
-          }
-          // PCA: forma e subforma de contagem
-          if(subclasse.pca.formaContagem == ""){
-            numeroErros++
-          }
-          else if((subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(subclasse.pca.subFormaContagem == "")){
-            numeroErros++
-          }
-        }
-      }
-      return numeroErros
-    },
-
-    // Lança o pedido de criação da classe no worflow
-
-    criarClasse: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          var erros = await this.validaClasse(this.classe)
-          if(erros == 0){
-            var userBD = await axios.get(lhost + "/api/users/listarToken/" + this.$store.state.token);
-            var pedidoParams = {
-              tipoPedido: "Criação",
-              tipoObjeto: "Classe",
-              novoObjeto: this.classe,
-              user: {email: userBD.data.email},
-              token: this.$store.state.token
-            };
-
-            var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
-            this.mensagemPedidoCriadoOK += response.data.codigo;
-            this.pedidoCriado = true;
-          }
-          else{
-            this.errosValidacao = true
-          }
-        } 
-      }
-      catch (error) {
-          return error;
-      }
-    },
-
-    eliminarClasse: function() {
-      this.pedidoEliminado = true;
-      this.$router.push("/");
-    },
-
-    pedidoCriadoOK: function() {
-      this.pedidoCriado = false;
-      this.$router.push("/");
-    },
-
-    pendenteGuardadoOK: function() {
-      this.pendenteGuardado = false;
-      this.$router.push("/");
-    },
-
-    guardarTrabalhoOK: function() {
-      return this.classe.codigo != "" && this.classe.pai.codigo != "";
-    },
-
-    guardarTrabalho: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          var userBD = await axios.get(
-            lhost + "/api/users/listarToken/" + this.$store.state.token
-          );
-          var pendenteParams = {
-            numInterv: 1,
-            acao: "Criação",
-            tipo: "Classe",
-            objeto: this.classe,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email},
-            token: this.$store.state.token
-          };
-          var response = await axios.post(
-            lhost + "/api/pendentes",
-            pendenteParams
-          );
-          this.pendenteGuardado = true;
-        }
-      } catch (error) {
-        return error;
       }
     }
   }

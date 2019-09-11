@@ -25,6 +25,7 @@
         </span>
       </v-flex>
     </v-layout>
+    
     <v-layout ma-2 wrap>
       <v-flex xs2>
         <div class="info-label">Notas</div>
@@ -199,16 +200,12 @@
 </template>
 
 <script>
-import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
-import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 import SelectValueFromList from "@/components/generic/SelectValueFromList.vue";
 
 export default {
   props: ["c", "semaforos"],
 
   components: {
-    ProcessosRelacionadosOps,
-    LegislacaoOps,
     SelectValueFromList
   },
 
@@ -250,8 +247,7 @@ export default {
       if (indice == -1) {
         justificacao.push({
           tipo: tipo,
-          label,
-          label,
+          label: label,
           notas: notas,
           procRel: myProcRel,
           legislacao: myLeg

@@ -22,6 +22,21 @@
         ></v-text-field>
       </v-flex>
     </v-layout>
+
+    <v-layout ma-2 wrap>
+      <v-flex xs2>
+        <div class="info-label">Notas</div>
+      </v-flex>
+      <v-flex xs10>
+        <v-textarea
+          solo
+          label="Notas ao PCA"
+          v-model="c.pca.notas"
+          rows="2"
+        ></v-textarea>
+      </v-flex>
+    </v-layout>
+
     <v-layout ma-2 row wrap v-if="semaforos.pcaFormasContagemReady">
       <v-flex xs2>
         <div class="info-label">
