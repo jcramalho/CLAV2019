@@ -96,6 +96,10 @@ export default {
             {
               label: "Criar",
               url: "/ts/criar"
+            },
+            {
+              label: "Importar CSV",
+              url: "/ts/importar/csv"
             }
           ]
         },

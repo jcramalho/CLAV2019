@@ -91,6 +91,11 @@ export default new Router({
       name: "passosTs",
       component: () => import("./views/tabSel/TabSelPassos.vue")
     },
+    {
+      path: "/ts/importar/csv",
+      name: "importaCSV",
+      component: () => import("./views/tabSel/TabSelImportaCSV.vue")
+    },
     // Routes dos termos de indice
     {
       path: "/termosIndice",
