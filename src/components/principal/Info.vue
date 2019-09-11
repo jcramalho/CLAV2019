@@ -5,11 +5,10 @@
         <v-toolbar-title>O que é a CLAV</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
+        <v-expansion-panels>
         <v-expansion-panel>
+          <v-expansion-panel-header>É uma Plataforma que visa:</v-expansion-panel-header>
           <v-expansion-panel-content>
-            <template v-slot:header>
-              <div>É uma Plataforma que visa:</div>
-            </template>
             <v-card>
               <v-card-text>
                 <ul>
@@ -69,6 +68,7 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        </v-expansion-panels>
       </v-card-text>
     </v-card>
   </v-flex>
