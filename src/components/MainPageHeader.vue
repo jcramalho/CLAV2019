@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar app color="indigo darken-4" dark>
+  <v-app-bar app color="indigo darken-4" dark height="64px">
     <v-btn to="/" icon>
       <v-icon large>home</v-icon>
     </v-btn>
@@ -77,7 +77,7 @@
         JWT
       </v-btn>
     </v-toolbar-title>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
