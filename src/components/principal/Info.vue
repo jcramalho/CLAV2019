@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 sm5>
+  <v-row class="mb-6" justify="center">
     <v-card>
       <v-toolbar :color="panelHeaderColor" dark>
         <v-toolbar-title>O que é a CLAV</v-toolbar-title>
@@ -71,7 +71,7 @@
         </v-expansion-panels>
       </v-card-text>
     </v-card>
-  </v-flex>
+  </v-row>
 </template>
 
 <script>

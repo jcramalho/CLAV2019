@@ -5,7 +5,7 @@
                 <div>
                     <v-btn
                         dark
-                        round
+                        rounded
                         color="teal darken-4"
                         @click="guardarTrabalho"
                         v-bind:disabled="c.codigo == ''"
@@ -13,8 +13,8 @@
             
                     <valida-classe-info-box :c="c"/>
           
-                    <v-btn dark round color="teal darken-4" @click="criarClasse">Criar classe</v-btn>
-                    <v-btn dark round color="red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
+                    <v-btn dark rounded color="teal darken-4" @click="criarClasse">Criar classe</v-btn>
+                    <v-btn dark rounded color="red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
                 </div>
             </v-flex>
         </v-layout>
@@ -48,7 +48,7 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" flat @click="criacaoPendenteTerminada">Fechar</v-btn>
+                        <v-btn color="green darken-1" text @click="criacaoPendenteTerminada">Fechar</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -62,7 +62,7 @@
                     <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" flat @click="criacaoClasseTerminada">Fechar</v-btn>
+                        <v-btn color="green darken-1" text @click="criacaoClasseTerminada">Fechar</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -80,8 +80,8 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" flat @click="cancelarCriacaoClasse">Confirmo</v-btn>
-                        <v-btn color="red darken-1" flat @click="pedidoEliminado = false">Enganei-me, desejo continuar o trabalho</v-btn>
+                        <v-btn color="green darken-1" text @click="cancelarCriacaoClasse">Confirmo</v-btn>
+                        <v-btn color="red darken-1" text @click="pedidoEliminado = false">Enganei-me, desejo continuar o trabalho</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -95,7 +95,7 @@
                 :top="true"
             >
                 {{ loginErrorMessage }}
-                <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
+                <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
             </v-snackbar>
         </v-layout>
 

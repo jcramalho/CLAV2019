@@ -1,20 +1,16 @@
 <template>
-  <v-container fluid grid-list-lg>
-    <v-layout row wrap justify-center>
-      <Info />
-      <DocumentacaoApoio />
-    </v-layout>
+  <v-container fluid>
+    <v-row class="mb-6" justify="center">
+      <v-col cols="6">
+        <Info />
+        <DocumentacaoApoio />
+      </v-col>
 
-    <v-layout row wrap justify-center>
-      <Operacoes />
-      <v-flex xs12 sm5>
-        <v-layout column>
-          <Entidades />
-          <Gestao v-if="this.$store.state.name != ''"/>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-    
+      <v-col>
+        <Entidades />
+        <Gestao v-if="this.$store.state.name != ''"/>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

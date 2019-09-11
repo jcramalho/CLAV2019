@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 sm5>
+  <v-row>
     <v-card>
       <v-toolbar :color="panelHeaderColor" dark>
         <v-toolbar-title>Operações</v-toolbar-title>
@@ -30,7 +30,7 @@
         </v-expansion-panels>
       </v-card-text>
     </v-card>
-  </v-flex>
+  </v-row>
 </template>
 
 <script>
