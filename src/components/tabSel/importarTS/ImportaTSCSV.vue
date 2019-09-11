@@ -1,12 +1,16 @@
 <template>
   <v-layout row wrap ma-2 justify-center>
-    <v-flex xs9 class="display-1">
+    <v-flex xs9>
+      <v-alert :value="erro != ''" type="error">
+        {{ erro }}
+      </v-alert>
       <v-file-input
         v-model="file"
         label="Importar CSV"
         placeholder="Escolha o seu ficheiro"
-        :show-size="1000"
+        show-size
         accept="text/csv"
+        multiple
       ></v-file-input>
       <div class="text-center">
         <v-btn
@@ -20,36 +24,38 @@
           class="white--text ma-2"
           color="indigo darken-4"
           @click="enviarFicheiro()"
-          :disabled="file.length == 0"
+          :disabled="file == null"
         >
           Enviar
         </v-btn>
       </div>
-      <v-snackbar
-        v-model="sended"
-        :timeout="4000"
-        color="success"
-        :top="true"
-      >
-        {{ text }}
-        <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
-      </v-snackbar>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
+const lhost = require("@/config/global").host;
 import axios from "axios";
 
 export default {
   data: () => ({
-    file: [],
-    sended: true
+    file: null,
+    erro: ""
   }),
 
   methods: {
-    enviarFicheiro: function() {
-
+    enviarFicheiro: async function() {
+      try {
+        var formData = new FormData();
+        formData.append("file", this.file[0]);
+        var response = await axios.post(
+          lhost + "/api/tabelasSelecao/CSV",
+          formData
+        );
+        this.$router.push("/");
+      } catch (e) {
+        this.erro = "Não foi possível importar o CSV... Tente novamente.";
+      }
     },
     cancelar: function() {
       this.$router.push("/");
