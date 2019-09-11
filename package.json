@@ -32,7 +32,7 @@
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
     "vue-strap": "^1.1.40",
-    "vuetify": "^2.0.1",
+    "vuetify": "^2.0.16",
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.4",
     "xml-crypto": "^1.4.0",
