@@ -48,13 +48,20 @@ export default {
       try {
         var formData = new FormData();
         formData.append("file", this.file[0]);
+
+        var userBD = await axios.get(
+          lhost + "/api/users/listarToken/" + this.$store.state.token
+        );
+
+        formData.append("email", userBD.data.email)
+
         var response = await axios.post(
           lhost + "/api/tabelasSelecao/CSV",
           formData
         );
         this.$router.push("/");
       } catch (e) {
-        this.erro = "Não foi possível importar o CSV... Tente novamente.";
+        this.erro = "Não foi possível importar o CSV/Excel... Tente novamente.";
       }
     },
     cancelar: function() {
