@@ -1,5 +1,4 @@
 <template>
-  <v-row>
     <v-card>
       <v-toolbar :color="panelHeaderColor" dark>
         <v-toolbar-title>Operações</v-toolbar-title>
@@ -30,7 +29,6 @@
         </v-expansion-panels>
       </v-card-text>
     </v-card>
-  </v-row>
 </template>
 
 <script>

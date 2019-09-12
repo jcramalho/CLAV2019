@@ -1,6 +1,5 @@
 <template>
-  <v-row>
-    <v-card>
+    <v-card  class="mb-4 pa-2" >
       <v-toolbar :color="panelHeaderColor" dark>
         <v-toolbar-title>Entidades</v-toolbar-title>
       </v-toolbar>
@@ -30,7 +29,6 @@
         </v-expansion-panels>
       </v-card-text>
     </v-card>
-  </v-row>
 </template>
 
 <script>

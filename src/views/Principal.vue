@@ -1,12 +1,13 @@
 <template>
-  <v-container fluid>
-    <v-row class="mb-6" justify="center">
-      <v-col cols="6">
+  <v-container>
+    <v-row>
+      <v-col>
         <Info />
-        <DocumentacaoApoio />
+        <Operacoes />
       </v-col>
 
       <v-col>
+        <DocumentacaoApoio />
         <Entidades />
         <Gestao v-if="this.$store.state.name != ''"/>
       </v-col>
