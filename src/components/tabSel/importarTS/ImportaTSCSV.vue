@@ -6,10 +6,10 @@
       </v-alert>
       <v-file-input
         v-model="file"
-        label="Importar CSV"
+        label="Importar CSV/Excel"
         placeholder="Escolha o seu ficheiro"
         show-size
-        accept="text/csv"
+        accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         multiple
       ></v-file-input>
       <div class="text-center">
