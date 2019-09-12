@@ -1,13 +1,13 @@
 <template>
   <v-container fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs11 v-if="erro == ''">
+    <v-row row wrap justify-center>
+      <v-col cols="11" v-if="erro == ''">
         <v-card>
           <v-toolbar color="indigo darken-4" dark>
             <v-toolbar-title>Invariantes</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn flat @click="testarTodos()">
+              <v-btn text @click="testarTodos()">
                 Testar todos os invariantes
               </v-btn>
             </v-toolbar-items>
@@ -15,47 +15,46 @@
           <v-list>
             <v-list-group v-for="rel in invariantes" :key="rel.idRel">
               <template v-slot:activator>
-                <v-list-tile>
-                  <v-list-tile-content>
-                    <v-list-tile-title v-text="rel.desc"></v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="rel.desc"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
               </template>
 
-              <template v-for="inv in rel.invs">
-                <v-card
-                  flat
-                  hover
-                  :key="inv.idInv"
-                  @click="goToInvariante(rel.idRel, inv.idInv)"
-                  class="ml-5 mr-4 elevation-2"
-                >
-                  <v-layout row wrap ma-1 pa-2 align-center>
-                    <v-flex>
-                      <span v-html="inv.desc"></span>
-                    </v-flex>
-                    <v-flex class="text-right">
-                      <DialogQuery
-                        :title="rel.desc"
-                        :subtitle="inv.desc"
-                        :query="inv.query"
-                        :idRel="rel.idRel"
-                        :idInv="inv.idInv"
-                      />
-                    </v-flex>
-                  </v-layout>
-                </v-card>
-              </template>
+              <v-card
+                text
+                hover
+                v-for="inv in rel.invs"
+                :key="inv.idInv"
+                @click="goToInvariante(rel.idRel, inv.idInv)"
+                class="ml-5 mr-4 elevation-2"
+              >
+                <v-row row wrap class="ma-1 pa-2" align-center>
+                  <v-col cols="10">
+                    <span v-html="inv.desc"></span>
+                  </v-col>
+                  <v-col class="text-right">
+                    <DialogQuery
+                      :title="rel.desc"
+                      :subtitle="inv.desc"
+                      :query="inv.query"
+                      :idRel="rel.idRel"
+                      :idInv="inv.idInv"
+                    />
+                  </v-col>
+                </v-row>
+              </v-card>
             </v-list-group>
           </v-list>
         </v-card>
-      </v-flex>
-      <v-flex v-else>
+      </v-col>
+      <v-col v-else>
         <v-alert :value="erro != ''" type="error">
           {{ erro }}
         </v-alert>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

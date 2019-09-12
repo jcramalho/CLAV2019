@@ -1,15 +1,15 @@
 <template>
   <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs11 v-if="erro == '' && inv != null">
+    <v-row row wrap justify-center>
+      <v-col cols="11" v-if="erro == '' && inv != null">
         <TabelaErros :inv="inv" />
-      </v-flex>
-      <v-flex v-else>
+      </v-col>
+      <v-col v-else>
         <v-alert :value="erro != ''" type="error">
           {{ erro }}
         </v-alert>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

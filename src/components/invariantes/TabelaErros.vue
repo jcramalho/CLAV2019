@@ -13,23 +13,19 @@
     </v-toolbar>
     <div v-if="inv.results.length != 0">
       <v-data-table :headers="headers" :items="inv.results">
-        <template v-slot:items="erros">
+        <template v-slot:item="{ item }">
           <tr>
-            <td
-              v-for="v in Object.keys(erros.item)"
-              :key="v"
-              class="text-xs-center"
-            >
+            <td v-for="v in Object.keys(item)" :key="v" class="text-center">
               <a
-                v-if="erros.item[v].includes('#c')"
-                @click="goToClass(erros.item[v].split('#')[1])"
+                v-if="item[v].includes('#c')"
+                @click="goToClass(item[v].split('#')[1])"
               >
-                {{ erros.item[v].split("#")[1] }}
+                {{ item[v].split("#")[1] }}
               </a>
-              <span v-else-if="erros.item[v].includes('#')">
-                {{ erros.item[v].split("#")[1] }}
+              <span v-else-if="item[v].includes('#')">
+                {{ item[v].split("#")[1] }}
               </span>
-              <span v-else>{{ erros.item[v] }}</span>
+              <span v-else>{{ item[v] }}</span>
             </td>
           </tr>
         </template>
@@ -41,7 +37,7 @@
       </v-alert>
     </div>
 
-    <v-btn color="indigo darken-2" @click="goBack()" dark>
+    <v-btn class="ma-2" color="indigo darken-2" @click="goBack()" dark>
       Voltar à lista de invariantes
     </v-btn>
   </v-card>

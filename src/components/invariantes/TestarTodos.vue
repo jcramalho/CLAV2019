@@ -1,22 +1,22 @@
 <template>
   <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs11 v-if="erro == '' && invs.length > 0 && !loading">
+    <v-row row wrap justify-center>
+      <v-col cols="11" v-if="erro == '' && invs.length > 0 && !loading">
         <div v-for="(inv, index) in invs" :key="index">
           <TabelaErros :inv="inv" />
           <br />
         </div>
-      </v-flex>
-      <v-flex v-else-if="!loading">
+      </v-col>
+      <v-col v-else-if="!loading">
         <v-alert :value="erro == ''" color="success">
           Não há erros após testar todos os invariantes!
         </v-alert>
         <v-alert :value="erro != ''" type="error">
           {{ erro }}
         </v-alert>
-      </v-flex>
-      <v-flex xs12 v-else>
-        <div class="text-xs-center">
+      </v-col>
+      <v-col cols="12" v-else>
+        <div class="text-center">
           <br /><br /><br />
           <div class="display-1 font-weight-black indigo--text">
             A testar invariantes
@@ -29,8 +29,8 @@
             color="indigo"
           ></v-progress-circular>
         </div>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
