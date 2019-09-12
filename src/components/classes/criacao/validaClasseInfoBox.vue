@@ -1,6 +1,6 @@
 <template>
   <!-- Infobox com os resultados da VALIDAÇÂO -->
-      <v-btn dark round color="green darken-4" @click="validarClasse">Validar classe
+      <v-btn dark rounded color="green darken-4" @click="validarClasse">Validar classe
       <v-dialog v-model="dialog" width="80%" >
         <v-card>
           <v-card-title class="headline">Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
@@ -20,7 +20,7 @@
 
           <v-btn
             color="red darken-4"
-            round dark
+            rounded dark
             @click="dialog = false">Fechar</v-btn>
         </v-card-actions>
         </v-card>
