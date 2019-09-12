@@ -52,14 +52,14 @@
 
     <v-snackbar v-model="exemploNotaApVazioFlag" :color="'warning'" :timeout="60000">
         {{ mensagemExemploNotaApVazio }}
-        <v-btn dark flat @click="exemploNotaApVazioFlag=false">
+        <v-btn dark text @click="exemploNotaApVazioFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="exemploNotaApDuplicadoFlag" :color="'error'" :timeout="60000">
         {{ mensagemExemploNotaApDuplicado }}
-        <v-btn dark flat @click="exemploNotaApDuplicadoFlag=false">
+        <v-btn dark text @click="exemploNotaApDuplicadoFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>

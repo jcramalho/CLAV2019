@@ -48,14 +48,14 @@
 
     <v-snackbar v-model="naVaziaFlag" :color="'warning'" :timeout="60000">
         {{ mensagemNAVazia }}
-        <v-btn dark flat @click="naVaziaFlag=false">
+        <v-btn dark text @click="naVaziaFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="naDuplicadaFlag" :color="'error'" :timeout="60000">
         {{ mensagemNADuplicada }}
-        <v-btn dark flat @click="naDuplicadaFlag=false">
+        <v-btn dark text @click="naDuplicadaFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>

@@ -16,8 +16,8 @@
       <v-data-table
         :items="subclasses"
         class="elevation-1"
-        hide-headers
-        hide-actions
+        hide-default-header
+        hide-default-footer
       >
         <template v-slot:items="props">
           <tr>

@@ -53,7 +53,7 @@
               >
                 Continuar
               </v-btn>
-              <v-btn dark flat color="red darken-4" @click="cancelar()">
+              <v-btn dark text color="red darken-4" @click="cancelar()">
                 Cancelar</v-btn
               >
             </div>

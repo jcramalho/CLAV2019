@@ -157,7 +157,7 @@
         :top="true"
       >
         {{ loginErrorMessage }}
-        <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
+        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
 
     </v-layout>

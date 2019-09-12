@@ -19,7 +19,7 @@
       :top="true"
     >
       {{ text }}
-      <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
     <v-toolbar-title class="subheading">

@@ -53,8 +53,8 @@
                             </v-card-text>
 
                             <v-card-actions>
-                                <v-btn color="blue darken-1" flat @click="guardar(props.item.classe); props.item.parteDescritiva=false">Guardar</v-btn>
-                                <v-btn color="blue darken-1" flat @click="cancelar(props.item.classe); props.item.parteDescritiva=false">Cancelar</v-btn>
+                                <v-btn color="blue darken-1" text @click="guardar(props.item.classe); props.item.parteDescritiva=false">Guardar</v-btn>
+                                <v-btn color="blue darken-1" text @click="cancelar(props.item.classe); props.item.parteDescritiva=false">Cancelar</v-btn>
                             </v-card-actions>
                         </v-card>
                         <v-card v-else>

@@ -1,20 +1,20 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
+  <v-container>
+    <v-row>
       <!-- MENU LATERAL -->
-      <v-flex xs12 sm2>
+      <v-col cols="2">
         <ClassesArvoreLateral />
-      </v-flex>
-      <v-flex xs12 sm10>
+      </v-col>
+      <v-col>
         <InnerPageHeader />
         <!-- HEADER -->
         <v-card v-if="classeLoaded">
-          <v-toolbar color="indigo darken-2" dark>
+          <v-app-bar color="indigo darken-2" dark>
             <v-toolbar-title
               >{{ this.classe.codigo }}:
               {{ this.classe.titulo }}</v-toolbar-title
             >
-          </v-toolbar>
+          </v-app-bar>
 
           <v-card-text>
             <ClassesFilho
@@ -22,27 +22,20 @@
               v-if="classe.filhos.length > 0"
             />
 
+            <v-expansion-panels>
             <v-expansion-panel popout>
               <!-- DESCRITIVO DA CLASSE -->
+              <v-expansion-panel-header>
+                <div class="title">Descritivo da Classe
+                <InfoBox
+                  header="Descritivo da Classe"
+                  :text="myhelp.Classe.BlocoDescritivo"
+                  helpColor="white"
+                  dialogColor="#E0F2F1"
+                />
+                </div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <template v-slot:header>
-                  <v-toolbar
-                    color="indigo darken-1 body-2 font-weight-bold"
-                    dark
-                    dense
-                  >
-                    <v-toolbar-title>
-                      Descritivo da Classe
-                      <InfoBox
-                        header="Descritivo da Classe"
-                        :text="myhelp.Classe.BlocoDescritivo"
-                        helpColor="white"
-                        dialogColor="#E0F2F1"
-                      />
-                    </v-toolbar-title>
-                  </v-toolbar>
-                </template>
-
                 <v-layout wrap ma-2>
                   <!-- DESCRIÇÂO -->
                   <v-flex xs2>
@@ -449,12 +442,13 @@
                 </v-layout>
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-card-text>
         </v-card>
 
         <p v-else>A carregar...</p>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

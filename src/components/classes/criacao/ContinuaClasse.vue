@@ -138,7 +138,7 @@
 
       <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
         {{ mensagemPedidoCriadoOK }}
-        <v-btn dark flat @click="pedidoCriadoOK">
+        <v-btn dark text @click="pedidoCriadoOK">
           Fechar
         </v-btn>
       </v-snackbar>
@@ -149,7 +149,7 @@
         :timeout="60000"
       >
         {{ mensagemPendenteGuardadoOK }}
-        <v-btn dark flat @click="pendenteGuardadoOK">
+        <v-btn dark text @click="pendenteGuardadoOK">
           Fechar
         </v-btn>
       </v-snackbar>
@@ -161,7 +161,7 @@
         :top="true"
       >
         {{ loginErrorMessage }}
-        <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
+        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
     </v-layout>
   </v-container>

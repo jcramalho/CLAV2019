@@ -16,6 +16,7 @@
                     v-for="op in item.ops"
                     color="deep-purple darken-3"
                     dark
+                    class="ma-2"
                     @click="go(op.url)"
                     :key="op.url"
                   >

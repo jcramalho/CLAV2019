@@ -45,8 +45,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat @click="novoTermo={}; dialog = false">Fechar</v-btn>
-            <v-btn color="green darken-1" flat @click="criarTermo">Guardar</v-btn>
+            <v-btn color="green darken-1" text @click="novoTermo={}; dialog = false">Fechar</v-btn>
+            <v-btn color="green darken-1" text @click="criarTermo">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -72,7 +72,7 @@
             {{ campo }}
           </td>
           <td>
-            <v-btn @click="eliminarProp(props.item)" flat>Apagar</v-btn>
+            <v-btn @click="eliminarProp(props.item)" text>Apagar</v-btn>
           </td>
         </tr>
       </template>
@@ -89,8 +89,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat @click="deleteTerm=''; deleteIdTerm=''; dialog2 = false">Fechar</v-btn>
-            <v-btn color="red darken-1" flat @click="apagarTermo(deleteIdTerm)">Apagar</v-btn>
+            <v-btn color="green darken-1" text @click="deleteTerm=''; deleteIdTerm=''; dialog2 = false">Fechar</v-btn>
+            <v-btn color="red darken-1" text @click="apagarTermo(deleteIdTerm)">Apagar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -102,7 +102,7 @@
       {{ mess }}
       <v-btn
         dark
-        flat
+        text
         @click="snack = false"
       >
         Fechar

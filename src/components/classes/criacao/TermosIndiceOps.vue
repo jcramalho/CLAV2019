@@ -40,14 +40,14 @@
 
     <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
         {{ mensagemTIVazio }}
-        <v-btn dark flat @click="tiVazioFlag=false">
+        <v-btn dark text @click="tiVazioFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
         {{ mensagemTIDuplicado }}
-        <v-btn dark flat @click="tiDuplicadoFlag=false">
+        <v-btn dark text @click="tiDuplicadoFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>

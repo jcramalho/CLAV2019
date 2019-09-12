@@ -74,7 +74,7 @@
             :top="true"
           >
             {{ text }}
-            <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
         </v-card>
         <v-card class="elevation-12" v-if="!successfullAuthentication">

@@ -62,8 +62,8 @@
                             </v-card-text>
                             <v-divider></v-divider>
                             <v-card-actions>
-                                <v-btn color="blue darken-1" flat @click="props.item.dono = false; selecTodasEnt(entidades, props.item.classe)">Selecionar todos</v-btn>
-                                <v-btn color="blue darken-1" flat @click="props.item.dono = false; guardaEntDonos(props.item.classe)">Continuar</v-btn>
+                                <v-btn color="blue darken-1" text @click="props.item.dono = false; selecTodasEnt(entidades, props.item.classe)">Selecionar todos</v-btn>
+                                <v-btn color="blue darken-1" text @click="props.item.dono = false; guardaEntDonos(props.item.classe)">Continuar</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
@@ -105,8 +105,8 @@
                                                     <v-card-text>Pretende eliminar esta participação?</v-card-text>
                                                     <v-card-actions>
                                                     <v-spacer></v-spacer>
-                                                    <v-btn color="red" flat @click="eliminarPart = false">Cancelar</v-btn>
-                                                    <v-btn color="primary" flat @click="desselecionarPart(props.item.classe, e.id); eliminarPart=false;">Confirmar</v-btn>
+                                                    <v-btn color="red" text @click="eliminarPart = false">Cancelar</v-btn>
+                                                    <v-btn color="primary" text @click="desselecionarPart(props.item.classe, e.id); eliminarPart=false;">Confirmar</v-btn>
                                                     </v-card-actions>
                                                 </v-card>
                                             </v-dialog>
@@ -130,7 +130,7 @@
                                                 ></v-select>
                                             </v-card-text>
                                             <v-card-actions>
-                                                <v-btn color="primary" flat @click="dialog[props.item.classe][e.id]=false; props.item.participante=true">Continuar</v-btn>
+                                                <v-btn color="primary" text @click="dialog[props.item.classe][e.id]=false; props.item.participante=true">Continuar</v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </v-dialog>
@@ -140,7 +140,7 @@
                             </v-card-text>
                             <v-divider></v-divider>
                             <v-card-actions>
-                                <v-btn color="blue darken-1" flat @click="props.item.participante = false; guardaEntPar(props.item.classe)">Continuar</v-btn>
+                                <v-btn color="blue darken-1" text @click="props.item.participante = false; guardaEntPar(props.item.classe)">Continuar</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>

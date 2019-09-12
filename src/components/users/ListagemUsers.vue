@@ -71,8 +71,8 @@
                     <v-card-text>Tem a certeza que pretende desativar o utilizador?</v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="red" flat @click="confirmacaoDesativar = false">Cancelar</v-btn>
-                      <v-btn color="primary" flat @click="desativar(editedItem); confirmacaoDesativar=false; dialog = false">Confirmar</v-btn>
+                      <v-btn color="red" text @click="confirmacaoDesativar = false">Cancelar</v-btn>
+                      <v-btn color="primary" text @click="desativar(editedItem); confirmacaoDesativar=false; dialog = false">Confirmar</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -90,8 +90,8 @@
                     <v-card-text>Tem a certeza que pretende eliminar o utilizador?</v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="red" flat @click="confirmacaoEliminar = false">Cancelar</v-btn>
-                      <v-btn color="primary" flat @click="eliminar(editedItem); confirmacaoEliminar=false; dialog = false">Confirmar</v-btn>
+                      <v-btn color="red" text @click="confirmacaoEliminar = false">Cancelar</v-btn>
+                      <v-btn color="primary" text @click="eliminar(editedItem); confirmacaoEliminar=false; dialog = false">Confirmar</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -149,8 +149,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" flat @click="dialog = false">Cancelar</v-btn>
-          <v-btn color="primary" flat @click="guardar">Guardar</v-btn>
+          <v-btn color="red" text @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="primary" text @click="guardar">Guardar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -161,7 +161,7 @@
       :top="true"
       >
       {{ text }}
-      <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
   </v-content>
 </template>
