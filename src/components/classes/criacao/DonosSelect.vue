@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap ma-2>
-    <v-flex xs2>
+  <v-row ma-2>
+    <v-col cols="2">
       <div class="info-label">Selecione o(s) dono(s) do processo</div>
-    </v-flex>
-    <v-flex xs9 v-if="entidadesReady">
+    </v-col>
+    <v-col v-if="entidadesReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -20,9 +20,9 @@
           :search="searchEntidades"
           item-key="id"
           class="elevation-1"
-          rows-per-page-text="Linhas por página"
+          items-per-page-text="Linhas por página"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr @click="selectEntidade(props.item)">
               <td>{{ props.item.sigla }}</td>
               <td>{{ props.item.designacao }}</td>
@@ -40,11 +40,11 @@
           </v-alert>
         </v-data-table>
       </v-card>
-    </v-flex>
-    <v-flex xs9 v-else>
+    </v-col>
+    <v-col v-else>
       <v-subheader>A carregar entidades...</v-subheader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

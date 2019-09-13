@@ -103,15 +103,16 @@
                   :participantes="entidadesP"
                   :procRel="listaProcessos"
                   :legs="listaLegislacao"
+                  v-if="classe.nivel == 3"
                 />
 
                 <!-- DECISÕES DE AVALIAÇÂO -->
-                <v-expansion-panel popout>
+                <v-expansion-panel popout v-if="classe.nivel == 3">
                   <v-expansion-panel-header>
                     <div class="title teal darken-4 pa-2 white--text">Decisões de Avaliação</div>
                   </v-expansion-panel-header>
 
-                <v-expansion-panel-content v-if="classe.nivel == 3">
+                <v-expansion-panel-content>
                   <!-- HÁ SUBDIVISÃO? -->
                   <Subdivisao3Nivel :c="classe" />
 
