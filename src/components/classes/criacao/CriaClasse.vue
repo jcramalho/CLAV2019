@@ -1,20 +1,19 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12>
+    <v-row class="ma-4">
+      <v-col>
         <!-- HEADER -->
         <v-card>
-          <v-toolbar color="teal darken-4" dark>
+          <v-app-bar color="teal darken-4" dark>
             <v-toolbar-title>Nova Classe</v-toolbar-title>
-          </v-toolbar>
+          </v-app-bar>
 
           <v-card-text>
             <v-container fluid>
-              <v-layout wrap>
-                <v-flex xs2>
+              <v-row>
+                <v-col cols="2">
                   <div class="info-label">Nível</div>
-                </v-flex>
-                <v-flex xs6>
+                </v-col>
+                <v-col>
                   <v-select
                     item-text="label"
                     item-value="value"
@@ -24,11 +23,11 @@
                     solo
                     dense
                   />
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
               <!-- CLASSE PAI -->
-              <v-layout wrap v-if="classe.nivel > 1">
-                <v-flex xs2>
+              <v-row v-if="classe.nivel > 1">
+                <v-col cols="2">
                   <div class="info-label">
                     Classe Pai
                     <InfoBox
@@ -36,8 +35,8 @@
                       :text="myhelp.Classe.Campos.Pai"
                     />
                   </div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   <v-select
                     item-text="label"
                     item-value="value"
@@ -47,11 +46,11 @@
                     solo
                     dense
                   />
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
               <!-- CÓDIGO DA NOVA CLASSE -->
-              <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
-                <v-flex xs2>
+              <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+                <v-col cols="2">
                   <div class="info-label">
                     Código
                     <InfoBox
@@ -59,8 +58,8 @@
                       :text="myhelp.Classe.Campos.Codigo"
                     />
                   </div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   <v-text-field
                     v-model="classe.codigo"
                     label="Código"
@@ -68,8 +67,8 @@
                     clearable
                   ></v-text-field>
                   <span style="color: red"> {{ mensValCodigo }} </span>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
               <!-- TÍTULO -->
               <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
                 <v-flex xs2>
@@ -91,6 +90,7 @@
                 </v-flex>
               </v-layout>
 
+              <v-expansion-panels>
               <v-expansion-panel popout>
                 <!-- DESCRITIVO DA CLASSE -->
                 <BlocoDescritivo :c="classe" />
@@ -143,10 +143,11 @@
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
               </v-expansion-panel>
+              </v-expansion-panels>
             </v-container>
           </v-card-text>
         </v-card>
-      </v-flex>
+      </v-col>
 
       <painel-operacoes :c="classe"/>
 
@@ -160,9 +161,8 @@
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
 
-    </v-layout>
+    </v-row>
 
-  </v-container>
 </template>
 
 <script>
