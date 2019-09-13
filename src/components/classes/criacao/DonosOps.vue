@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap color="teal lighten-5" ma-2>
-    <v-flex xs2>
+  <v-row class="ma-2 teal lighten-5">
+    <v-col cols="2">
       <div class="info-label">Donos do processo</div>
-    </v-flex>
-    <v-flex xs9 v-if="entidades.length > 0">
+    </v-col>
+    <v-col v-if="entidades.length > 0">
       <v-data-table
         :headers="headers"
         :items="entidades"
@@ -45,13 +45,13 @@
           </tr>
         </template>
       </v-data-table>
-    </v-flex>
-    <v-flex xs9 v-else>
+    </v-col>
+    <v-col v-else>
       <v-alert :value="true" type="warning">
         Não tem donos selecionados...
       </v-alert>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

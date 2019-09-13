@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap row ma-2>
+  <v-row ma-2>
     <!-- Notas de Aplicação -->
-    <v-flex xs2>
+    <v-col cols="2">
       <div class="info-label">
         Notas de Aplicação
         <InfoBox
@@ -13,17 +13,17 @@
           <v-btn
             color="green darken-2"
             dark
-            round
+            rounded
             @click="insereNovaNota(c.notasAp, 'na')"
           >
             Nota aplicação
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
        
-    </v-flex>
-    <v-flex>
-      <v-layout fluid row v-for="(nota, index) in c.notasAp" :key="index">
-        <v-flex xs9>
+    </v-col>
+    <v-col>
+      <v-row v-for="(nota, index) in c.notasAp" :key="index">
+        <v-col cols="9">
           <v-textarea
             v-model="nota.nota"
             auto-grow
@@ -31,20 +31,20 @@
             label="Nota de Aplicação:"
             rows="1"
           ></v-textarea>
-        </v-flex>
-        <v-flex>
+        </v-col>
+        <v-col>
           <v-btn
             color="red darken-2"
             dark
-            round
+            rounded
             @click="c.notasAp.splice(index, 1)"
           >
             Remover
             <v-icon dark right>clear</v-icon>
           </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+        </v-col>
+      </v-row>
+    </v-col>
 
     <v-snackbar v-model="naVaziaFlag" :color="'warning'" :timeout="60000">
         {{ mensagemNAVazia }}
@@ -60,7 +60,7 @@
         </v-btn>
     </v-snackbar>
 
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

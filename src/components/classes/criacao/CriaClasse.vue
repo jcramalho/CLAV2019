@@ -1,4 +1,5 @@
 <template>
+  <div>
     <v-row class="ma-4">
       <v-col>
         <!-- HEADER -->
@@ -8,7 +9,6 @@
           </v-app-bar>
 
           <v-card-text>
-            <v-container fluid>
               <v-row>
                 <v-col cols="2">
                   <div class="info-label">Nível</div>
@@ -70,8 +70,8 @@
                 </v-col>
               </v-row>
               <!-- TÍTULO -->
-              <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
-                <v-flex xs2>
+              <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+                <v-col cols="2">
                   <div class="info-label">
                     Título
                     <InfoBox
@@ -79,19 +79,19 @@
                       :text="myhelp.Classe.Campos.Titulo"
                     />
                   </div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   <v-text-field
                     v-model="classe.titulo"
                     label="Título"
                     solo
                     clearable
                   ></v-text-field>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
 
               <v-expansion-panels>
-              <v-expansion-panel popout>
+              
                 <!-- DESCRITIVO DA CLASSE -->
                 <BlocoDescritivo :c="classe" />
 
@@ -106,15 +106,12 @@
                 />
 
                 <!-- DECISÕES DE AVALIAÇÂO -->
+                <v-expansion-panel popout>
+                  <v-expansion-panel-header>
+                    <div class="title teal darken-4 pa-2 white--text">Decisões de Avaliação</div>
+                  </v-expansion-panel-header>
+
                 <v-expansion-panel-content v-if="classe.nivel == 3">
-                  <template v-slot:header>
-                    <v-toolbar
-                      color="teal darken-4 body-2 font-weight-bold"
-                      dark
-                    >
-                      <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
-                    </v-toolbar>
-                  </template>
                   <!-- HÁ SUBDIVISÃO? -->
                   <Subdivisao3Nivel :c="classe" />
 
@@ -144,12 +141,12 @@
                 />
               </v-expansion-panel>
               </v-expansion-panels>
-            </v-container>
           </v-card-text>
         </v-card>
       </v-col>
+    </v-row>
 
-      <painel-operacoes :c="classe"/>
+    <painel-operacoes :c="classe"/>
 
       <v-snackbar
         v-model="loginErrorSnackbar"
@@ -160,9 +157,8 @@
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
-
-    </v-row>
-
+    
+</div>
 </template>
 
 <script>

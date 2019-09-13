@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap row ma-2>
+  <v-row ma-2>
     <!-- Notas de Exclusão -->
-    <v-flex xs2>
+    <v-col cols="2">
       <div class="info-label">Notas de Exclusão</div>
       <v-tooltip top color="info">
         <template v-slot:activator="{ on }">
@@ -9,7 +9,7 @@
             v-on="on"
             color="green darken-2"
             dark
-            round
+            rounded
             @click="insereNovaNota(c.notasEx, 'ne')"
           >
             Nota Exclusão
@@ -18,10 +18,10 @@
         </template>
         <span>Nota de exclusão</span>
       </v-tooltip>
-    </v-flex>
-    <v-flex>
-      <v-layout fluid row v-for="(nota, index) in c.notasEx" :key="index">
-        <v-flex xs9>
+    </v-col>
+    <v-col>
+      <v-row v-for="(nota, index) in c.notasEx" :key="index">
+        <v-col cols="9">
           <v-textarea
             v-model="nota.nota"
             auto-grow
@@ -29,20 +29,20 @@
             label="Nota de Exclusão:"
             rows="1"
           ></v-textarea>
-        </v-flex>
-        <v-flex>
+        </v-col>
+        <v-col>
           <v-btn
             color="red darken-2"
             dark
-            round
+            rounded
             @click="c.notasEx.splice(index, 1)"
           >
             Remover
             <v-icon dark right>clear</v-icon>
           </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+        </v-col>
+      </v-row>
+    </v-col>
 
     <v-snackbar v-model="neVaziaFlag" :color="'warning'" :timeout="60000">
         {{ mensagemNEVazia }}
@@ -58,7 +58,7 @@
         </v-btn>
     </v-snackbar>
 
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

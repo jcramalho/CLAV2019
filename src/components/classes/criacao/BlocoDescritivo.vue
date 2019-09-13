@@ -1,36 +1,34 @@
 <template>
   <!-- BLOCO DESCRITIVO -->
+  <v-expansion-panel popout>
+  <v-expansion-panel-header>
+    <div class="title teal darken-4 pa-2 white--text">Descritivo da Classe
+      <InfoBox
+        header="Descritivo da Classe"
+        :text="myhelp.Classe.BlocoDescritivo"
+        helpColor="#00695c"
+        dialogColor="#E0F2F1"
+      />
+    </div>
+  </v-expansion-panel-header>
   <v-expansion-panel-content>
-    <template v-slot:header>
-      <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
-        <v-toolbar-title>
-          Descritivo da Classe
-          <InfoBox
-            header="Descritivo da Classe"
-            :text="myhelp.Classe.BlocoDescritivo"
-            helpColor="#00695c"
-            dialogColor="#E0F2F1"
-          />
-        </v-toolbar-title>
-      </v-toolbar>
-    </template>
-    <v-layout wrap ma-2>
+    <v-row ma-2>
       <!-- DESCRIÇÂO -->
-      <v-flex xs2>
+      <v-col cols="2">
         <div class="info-label">
           Descrição
           <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
         </div>
-      </v-flex>
-      <v-flex xs9>
+      </v-col>
+      <v-col>
         <v-text-field
           v-model="c.descricao"
           label="Descrição"
           solo
           clearable
         ></v-text-field>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <hr />
     <BlocoDescritivoNotasAp :c="c" />
@@ -41,6 +39,7 @@
     <hr />
     <TermosIndiceOps :c="c" v-if="c.nivel == 3 && !c.temSubclasses4Nivel" />
   </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script>
