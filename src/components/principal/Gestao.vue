@@ -1,6 +1,5 @@
 <template>
-  <v-row>
-    <v-card class="pa-2" >
+    <v-card class="ma-4 pa-2" >
       <v-toolbar :color="panelHeaderColor" dark>
         <v-toolbar-title>Gestão da Plataforma</v-toolbar-title>
       </v-toolbar>
@@ -31,7 +30,6 @@
         </v-expansion-panels>
       </v-card-text>
     </v-card>
-  </v-row>
 </template>
 
 <script>

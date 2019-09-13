@@ -12,11 +12,9 @@
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
-    <v-content>
-      <v-container fluid>
+    <v-content> 
         <router-view />
-      </v-container>
-    </v-content>
+    </v-content> 
 
     <PageFooter />
   </v-app>

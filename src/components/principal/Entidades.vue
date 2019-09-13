@@ -1,5 +1,5 @@
 <template>
-    <v-card  class="mb-4 pa-2" >
+    <v-card  class="ma-4 pa-2" >
       <v-toolbar :color="panelHeaderColor" dark>
         <v-toolbar-title>Gestão Administrativa</v-toolbar-title>
       </v-toolbar>

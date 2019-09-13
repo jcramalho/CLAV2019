@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card  class="ma-4 pa-2" >
       <v-toolbar :color="panelHeaderColor" dark>
         <v-toolbar-title>Operações</v-toolbar-title>
       </v-toolbar>
