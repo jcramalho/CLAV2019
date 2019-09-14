@@ -1,8 +1,8 @@
 <template>
   <!-- HÁ SUBDIVISÃO? -->
   <div>
-    <v-layout row wrap justify-center>
-      <v-flex xs11>
+    <v-row>
+      <v-col>
         <p>
           Os critérios justificativos das decisões de avaliação têm por base o
           contexto de avaliação.
@@ -12,18 +12,17 @@
           destinos finais da informação produzida no âmbito de m processo de
           negócio (classe de 3º nível) devem ser criadas classes de 4.º nível.
         </p>
-      </v-flex>
-      <v-flex xs11>
+      
         <h4>Esta classe de 3º nível irá ter subclasses de 4º nível?</h4>
         <v-radio-group v-model="c.temSubclasses4Nivel">
           <v-radio label="Sim" v-bind:value="true" color="success"></v-radio>
           <v-radio label="Não" v-bind:value="false" color="red"></v-radio>
         </v-radio-group>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
-    <v-layout v-if="c.temSubclasses4Nivel" row wrap justify-center>
-      <v-flex xs11>
+    <v-row v-if="c.temSubclasses4Nivel">
+      <v-col>
         <h4>Selecione o(s) motivo(s) da subdivisão em 4ºs níveis:</h4>
         <v-checkbox
           v-model="c.temSubclasses4NivelPCA"
@@ -41,16 +40,11 @@
           label="Destino final distinto"
           value="true"
         ></v-checkbox>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
-    <v-layout
-      v-if="c.temSubclasses4Nivel && c.temSubclasses4NivelDF"
-      row
-      wrap
-      justify-center
-    >
-      <v-flex xs11>
+    <v-row v-if="c.temSubclasses4Nivel && c.temSubclasses4NivelDF">
+      <v-col>
         <p>
           Quando a subdivisão resulta da necessidade de criar destinos finais
           diferentes é gerada uma relação de síntese entre as classes de 4.º
@@ -69,8 +63,8 @@
             </template>
           </v-radio>
         </v-radio-group>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

@@ -1,18 +1,20 @@
 <template>
   <!-- DF -->
-  <v-container fluid v-if="!c.temSubclasses4Nivel">
-    <v-layout ma-2 wrap>
-      <v-flex xs12>
+  <div v-if="!c.temSubclasses4Nivel">
+
+    <v-row class="ma-2">
+      <v-col>
         <v-toolbar color="teal darken-4 font-weight-medium" dark height="30">
           <v-toolbar-title>Destino Final</v-toolbar-title>
         </v-toolbar>
-      </v-flex>
-    </v-layout>
-    <v-layout ma-2 wrap>
-      <v-flex xs2>
+      </v-col>
+    </v-row>
+
+    <v-row class="ma-2">
+      <v-col cols="2">
         <div class="info-label">Destino</div>
-      </v-flex>
-      <v-flex xs10>
+      </v-col>
+      <v-col>
         <SelectValueFromList
           v-if="c.df.valor == 'NE'"
           :initial-value="c.df.valor"
@@ -23,37 +25,36 @@
         <span v-else>
           {{ destinoFinalLabels[c.df.valor] }}
         </span>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     
-    <v-layout ma-2 wrap>
-      <v-flex xs2>
+    <v-row class="ma-2">
+      <v-col cols="2">
         <div class="info-label">Notas</div>
-      </v-flex>
-      <v-flex xs10>
+      </v-col>
+      <v-col>
         <v-textarea
           solo
           label="Notas ao destino final"
           v-model="c.df.notas"
           rows="2"
         ></v-textarea>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <hr style="border-top: 2px dashed green;" />
 
     <!-- JUSTIFICAÇÂO DO DF -->
-    <v-layout row wrap>
-      <v-flex xs3>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <div class="info-label">Justificação do DF</div>
-          </v-flex>
-          <v-flex xs12>
+    <v-row>
+      <v-col cols="3">
+        
+        <div class="ma-2 info-label">Justificação do DF</div>
+          
+        <div>
             <v-btn
               color="green darken-2"
               dark
-              round
+              rounded
               @click="
                 adicionarCriterioLegalPCA(
                   c.df.justificacao,
@@ -69,18 +70,12 @@
               Critério Legal
               <v-icon dark right>add_circle_outline</v-icon>
             </v-btn>
-          </v-flex>
-        </v-layout>
-      </v-flex>
+        </div>
+      </v-col>
 
-      <v-flex xs9>
-        <v-layout
-          row
-          wrap
-          v-for="(crit, cindex) in c.df.justificacao"
-          :key="cindex"
-        >
-          <v-flex xs3>
+      <v-col>
+        <v-row v-for="(crit, cindex) in c.df.justificacao" :key="cindex">
+          <v-col cols="3">
             <div class="info-label">
               {{ crit.label }}
               <v-icon
@@ -91,12 +86,9 @@
                 >remove_circle</v-icon
               >
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex
-            xs9
-            v-if="crit.tipo == 'CriterioJustificacaoComplementaridadeInfo'"
-          >
+          <v-col v-if="crit.tipo == 'CriterioJustificacaoComplementaridadeInfo'">
             <div class="info-content">
               {{ crit.notas }}
               <span v-for="(p, i) in crit.procRel" :key="p.id">
@@ -114,9 +106,9 @@
                 <span v-else>, </span>
               </span>
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex xs9 v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
+          <v-col v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
             <div class="info-content" v-if="crit.legislacao.length > 0">
               {{ crit.notas }}
               <span v-for="(l, i) in crit.legislacao" :key="l.id">
@@ -138,9 +130,9 @@
               Sem legislação associada. Pode associar legislação na área de
               contexto.
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex xs9 v-if="crit.tipo == 'CriterioJustificacaoDensidadeInfo'">
+          <v-col v-if="crit.tipo == 'CriterioJustificacaoDensidadeInfo'">
             <div class="info-content">
               <p v-if="crit.procRel.filter(p => p.relacao == 'eSinteseDe').length > 0">
                 <span
@@ -190,13 +182,13 @@
                 </span>
               </p>
             </div>
-          </v-flex>
+          </v-col>
 
           <hr style="border-top: 2px dotted green; width: 100%;" />
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-container>
+        </v-row>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>

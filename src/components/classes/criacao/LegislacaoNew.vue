@@ -1,13 +1,13 @@
 <template>
-  <v-layout row wrap color="teal lighten-5" ma-2>
-    <v-flex xs2>
+  <v-row class="ma-2">
+    <v-col cols="2">
       <div class="info-label">Legislação nova</div>
-      <v-btn small dark round color="teal darken-4" @click="newLegislacao">
+      <v-btn small dark rounded color="teal darken-4" @click="newLegislacao">
           Adicionar
           <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col>
       <v-form v-model="valid">
         <v-container>
           <v-layout>
@@ -51,7 +51,7 @@
           </v-layout>
         </v-container>
       </v-form>
-    </v-flex>
+    </v-col>
 
     <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
       <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
@@ -60,7 +60,7 @@
         </v-btn>
     </v-snackbar>
 
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

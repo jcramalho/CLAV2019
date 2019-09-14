@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap ma-2>
-    <v-flex xs2>
+  <v-row class="ma-2">
+    <v-col cols="2">
       <div class="info-label">Selecione o(s) processo(s) relacionado(s)</div>
-    </v-flex>
-    <v-flex xs9 v-if="procReady">
+    </v-col>
+    <v-col v-if="procReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -22,7 +22,7 @@
           class="elevation-1"
           :pagination.sync="paginationProcessos"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td>
                 <v-select
@@ -34,13 +34,6 @@
                   dense
                   @change="selectProcesso(props.item.id, $event)"
                 />
-                <!--v-btn round small text-xs-center>
-                  <SelectValueFromList
-                    :options="tiposRelacao"
-                    :initialValue="props.item.idRel"
-                    @value-change="selectProcesso(props.item.id, $event)"
-                  />
-                </v-btn-->
               </td>
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
@@ -52,11 +45,11 @@
           </v-alert>
         </v-data-table>
       </v-card>
-    </v-flex>
-    <v-flex xs9 v-else>
+    </v-col>
+    <v-col v-else>
       <v-subheader>A carregar entidades e tipologias...</v-subheader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

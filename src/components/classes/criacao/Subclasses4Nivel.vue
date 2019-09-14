@@ -1,22 +1,15 @@
 <template>
+  <v-expansion-panel v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF">
   <!-- SUBCLASSES 4º NÍVEL -->
-  <v-expansion-panel-content
-    v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF"
-  >
-    <template v-slot:header>
-      <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
-        <v-toolbar-title>Subclasses de nível 4</v-toolbar-title>
-      </v-toolbar>
-    </template>
-
-    <v-container fluid>
-      <v-layout>
-        <v-flex>
+  <v-expansion-panel-header>
+    <div class="title teal darken-4 pa-2 white--text">Subclasses de nível 4</div>
+  </v-expansion-panel-header>
+  <v-expansion-panel-content>
+    <v-row>
           <v-tabs
             v-model="active"
-            color="teal darken-4"
-            dark
-            slider-color="white"
+            vertical
+            outlined
           >
             <v-tab
               v-for="subClasse in c.subclasses"
@@ -28,49 +21,50 @@
             <v-tab-item
               v-for="subClasse in c.subclasses"
               :key="subClasse.codigo"
+              class="ma-2 pa-2"
             >
-              <v-layout wrap row>
-                <v-flex xs2>
+              <v-row>
+                <v-col cols="2">
                   <div class="info-label">Código:</div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   {{ subClasse.codigo }}
-                </v-flex>
-              </v-layout>
-              <v-layout wrap row>
-                <v-flex xs2>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
                   <div class="info-label">Código do pai:</div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   {{ c.codigo }}
-                </v-flex>
-              </v-layout>
-              <v-layout wrap row>
-                <v-flex xs2>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
                   <div class="info-label">Título:</div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   <v-text-field
                     v-model="subClasse.titulo"
                     label="Título"
                     solo
                     clearable
                   ></v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout wrap row>
-                <v-flex xs2>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
                   <div class="info-label">Descrição:</div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   <v-text-field
                     v-model="subClasse.descricao"
                     label="Descrição"
                     solo
                     clearable
                   ></v-text-field>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
 
               <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
@@ -87,18 +81,16 @@
             </v-tab-item>
             <v-tab>
               <v-btn
-                color="green darken-2"
-                round dark
+                rounded
                 @click="addSubclasse">
                   Adicionar subclasse
                   <v-icon dark right>add_circle_outline</v-icon>
               </v-btn>
             </v-tab>
           </v-tabs>
-        </v-flex>
-      </v-layout>
-    </v-container>
+        </v-row>
   </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script>

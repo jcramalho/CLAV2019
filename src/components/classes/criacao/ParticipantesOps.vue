@@ -1,32 +1,30 @@
 <template>
-  <v-layout row wrap color="teal lighten-5" ma-2>
-    <v-flex xs2>
+  <v-row class="ma-2">
+    <v-col cols="2">
       <div class="info-label">
         Participantes no processo e respetivas intervenções
       </div>
-    </v-flex>
-    <v-flex xs9 v-if="entidades.length > 0">
+    </v-col>
+    <v-col v-if="entidades.length > 0">
       <v-data-table
         :headers="headers"
         :items="entidades"
         class="elevation-1"
-        hide-actions
+        hide-default-footer
       >
-        <template v-slot:headers="props">
+        <template v-slot:header="props">
           <tr>
             <th
               v-for="h in props.headers"
               :key="h.text"
-              class="body-2 font-weight-bold"
-              style="color: green;"
+              class="green darken-2 subtitle-2"
             >
               {{ h.text }}
             </th>
-            <th class="body-2 font-weight-bold" style="color: green;">Remover</th>
           </tr>
         </template>
 
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td>{{ props.item.intervencao }}</td>
             <td>{{ props.item.sigla }}</td>
@@ -35,9 +33,9 @@
             <td>
               <v-btn
                 small
-                color="red darken-2"
+                class="red darken-2"
                 dark
-                round
+                rounded
                 @click="unselectParticipante(props.item)"
               >
                 <v-icon dark>remove_circle</v-icon>
@@ -46,13 +44,13 @@
           </tr>
         </template>
       </v-data-table>
-    </v-flex>
-    <v-flex xs9 v-else>
+    </v-col>
+    <v-col v-else>
       <v-alert :value="true" type="warning">
         Não tem participantes selecionados...
       </v-alert>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -70,7 +68,8 @@ export default {
         },
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
-        { text: "Tipo", value: "tipo" }
+        { text: "Tipo", value: "tipo" },
+        { text: "Remover", value: "" }
       ]
     };
   },

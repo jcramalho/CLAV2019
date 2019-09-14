@@ -30,12 +30,11 @@
             </tr>
           </template>
 
-          <template v-slot:pageText="props">
-            {{ props.pageStart }} - {{ props.pageStop }} de
-            {{ props.itemsLength }}
+          <template v-slot:footer.page-text="props">
+            {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
           </template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
+          <v-alert v-slot:no-results :value="true" class="error" icon="warning">
             A procura por "{{ search }}" não deu resultados.
           </v-alert>
         </v-data-table>
