@@ -7,7 +7,7 @@
       </div>
     </v-card-title>
 
-    <v-toolbar flat color="white">
+    <v-toolbar text color="white">
       <v-toolbar-title>PNs que não cumprem o invariante:</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>

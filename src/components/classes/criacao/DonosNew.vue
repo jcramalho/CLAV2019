@@ -1,39 +1,39 @@
 <template>
-  <v-layout row wrap color="teal lighten-5" ma-2>
-    <v-flex xs2>
+  <v-row class="ma-2 teal lighten-5">
+    <v-col cols="2">
       <div class="info-label">Entidade nova</div>
-      <v-btn small dark round color="teal darken-4" @click="newEntidade">
+      <v-btn small dark rounded class="teal darken-4" @click="newEntidade">
           Adicionar
           <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col>
       <v-form v-model="valid">
         <v-container>
-          <v-layout>
-            <v-flex xs12 md3>
+          <v-row>
+            <v-col>
               <v-text-field
                 v-model="sigla"
                 :rules="siglaRules"
                 label="Sigla"
                 required
               ></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
+            <v-col>
               <v-text-field v-model="sioe" label="SIOE"></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
+            <v-col>
               <v-text-field
                 v-model="designacao"
                 :rules="designacaoRules"
                 label="Designação"
                 required
               ></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
+            <v-col>
               <v-select
                 prefix="Internacional: "
                 item-text="label"
@@ -44,20 +44,20 @@
                 solo
                 dense
               />
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-container>
       </v-form>
-    </v-flex>
+    </v-col>
 
     <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
       <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
-        <v-btn dark flat @click="fecharErros">
+        <v-btn dark text @click="fecharErros">
           Fechar
         </v-btn>
     </v-snackbar>
 
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

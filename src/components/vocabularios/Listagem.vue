@@ -46,7 +46,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" flat @click="novoVC= {}; dialog = false">Fechar</v-btn>
-            <v-btn color="green darken-1" flat @click="criarVC">Guardar</v-btn>
+            <v-btn color="green darken-1" text @click="criarVC">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -72,7 +72,7 @@
             {{ campo }}
           </td>
           <td>
-            <v-btn @click="guardarProp(props.item)" flat>Editar</v-btn>
+            <v-btn @click="guardarProp(props.item)" text>Editar</v-btn>
           </td>
         </tr>
       </template>
@@ -110,8 +110,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat @click="updateVC= {}; dialog2 = false">Fechar</v-btn>
-            <v-btn color="green darken-1" flat @click="editarVC(updateVC.id)">Guardar</v-btn>
+            <v-btn color="green darken-1" text @click="updateVC= {}; dialog2 = false">Fechar</v-btn>
+            <v-btn color="green darken-1" text @click="editarVC(updateVC.id)">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -123,7 +123,7 @@
       {{ mess }}
       <v-btn
         dark
-        flat
+        text
         @click="snack = false;"
       >
         Fechar

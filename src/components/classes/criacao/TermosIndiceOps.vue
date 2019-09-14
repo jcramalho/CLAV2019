@@ -1,21 +1,21 @@
 <template>
-  <v-layout wrap row ma-2>
+  <v-row ma-2>
     <!-- TERMOS DE ÍNDICE -->
-    <v-flex xs2>
+    <v-col cols="2">
       <div class="info-label">Termos de Índice</div>
       <v-btn
         color="green darken-2"
         dark
-        round
+        rounded
         @click="insereNovoTI(c.termosInd)"
       >
         Novo termo
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-flex>
-    <v-flex>
-      <v-layout fluid row v-for="(ti, index) in c.termosInd" :key="index">
-        <v-flex xs9>
+    </v-col>
+    <v-col>
+      <v-row v-for="(ti, index) in c.termosInd" :key="index">
+        <v-col cols="9">
           <v-textarea
             v-model="ti.termo"
             auto-grow
@@ -23,36 +23,36 @@
             label="Termo de Índice"
             rows="1"
           ></v-textarea>
-        </v-flex>
-        <v-flex>
+        </v-col>
+        <v-col>
           <v-btn
             color="red darken-2"
             dark
-            round
+            rounded
             @click="c.termosInd.splice(index, 1)"
           >
             Remover
             <v-icon dark right>clear</v-icon>
           </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+        </v-col>
+      </v-row>
+    </v-col>
 
     <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
         {{ mensagemTIVazio }}
-        <v-btn dark flat @click="tiVazioFlag=false">
+        <v-btn dark text @click="tiVazioFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
         {{ mensagemTIDuplicado }}
-        <v-btn dark flat @click="tiDuplicadoFlag=false">
+        <v-btn dark text @click="tiDuplicadoFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

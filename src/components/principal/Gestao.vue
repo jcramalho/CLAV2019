@@ -1,8 +1,7 @@
 <template>
-  <v-row>
-    <v-card>
+    <v-card class="ma-4 pa-2" >
       <v-toolbar :color="panelHeaderColor" dark>
-        <v-toolbar-title>Gestão Administrativa</v-toolbar-title>
+        <v-toolbar-title>Gestão da Plataforma</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-expansion-panels>
@@ -17,6 +16,7 @@
                     v-for="op in item.ops"
                     color="deep-purple darken-3"
                     dark
+                    class="ma-2"
                     @click="go(op.url)"
                     :key="op.url"
                   >
@@ -30,7 +30,6 @@
         </v-expansion-panels>
       </v-card-text>
     </v-card>
-  </v-row>
 </template>
 
 <script>

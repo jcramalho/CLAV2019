@@ -1,17 +1,16 @@
 <template>
+  <v-expansion-panel popout>
   <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+  <v-expansion-panel-header>
+    <div class="title teal darken-4 pa-2 white--text">Contexto de Avaliação</div>
+  </v-expansion-panel-header>
   <v-expansion-panel-content v-if="c.nivel == 3">
-    <template v-slot:header>
-      <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
-        <v-toolbar-title>Contexto de Avaliação</v-toolbar-title>
-      </v-toolbar>
-    </template>
     <!-- TIPO DE PROCESSO -->
-    <v-layout row wrap ma-2>
-      <v-flex xs2>
+    <v-row ma-2>
+      <v-col cols="2">
         <div class="info-label">Tipo de Processo:</div>
-      </v-flex>
-      <v-flex xs9>
+      </v-col>
+      <v-col>
         <v-select
           item-text="label"
           item-value="value"
@@ -21,15 +20,15 @@
           solo
           dense
         />
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <!-- PROCESSO TRANVERSAL -->
-    <v-layout row wrap ma-2>
-      <v-flex xs2>
+    <v-row ma-2>
+      <v-col cols="2">
         <div class="info-label">Processo Transversal:</div>
-      </v-flex>
-      <v-flex xs9>
+      </v-col>
+      <v-col>
         <v-select
           item-text="label"
           item-value="value"
@@ -39,8 +38,8 @@
           solo
           dense
         />
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <hr style="border: 3px solid green; border-radius: 2px;" />
 
@@ -50,22 +49,22 @@
       @unselectEntidade="unselectEntidade($event)"
     />
 
-    <v-layout row wrap ma-2>
-      <v-flex xs12>
+    <v-row ma-2>
+      <v-col>
         <hr style="border-top: 1px dashed green;" />
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <DonosNew 
       @newEntidade="newEntidade($event, c.donos)"
       :entidadesReady="semaforos.entidadesReady"
       :entidades="donos"/>
 
-    <v-layout row wrap ma-2>
-      <v-flex xs12>
+    <v-row ma-2>
+      <v-col>
         <hr style="border-top: 1px dashed green;" />
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <DonosSelect
       :entidadesReady="semaforos.entidadesReady"
@@ -82,11 +81,11 @@
         @unselectParticipante="unselectParticipante($event)"
       />
 
-      <v-layout row wrap ma-2>
-        <v-flex xs12>
-          <hr style="border-top: 1px dashed green;" />
-        </v-flex>
-      </v-layout>
+    <v-row ma-2>
+      <v-col>
+        <hr style="border-top: 1px dashed green;" />
+      </v-col>
+    </v-row>
 
       <ParticipantesNew 
         @newEntidade="newEntidade($event, c.participantes)"
@@ -126,11 +125,11 @@
       @unselectDiploma="unselectDiploma($event)"
     />
 
-    <v-layout row wrap ma-2>
-        <v-flex xs12>
-          <hr style="border-top: 1px dashed green;" />
-        </v-flex>
-    </v-layout>
+    <v-row ma-2>
+      <v-col>
+        <hr style="border-top: 1px dashed green;" />
+      </v-col>
+    </v-row>
 
     <LegislacaoNew 
         :legislacao="c.legislacao"
@@ -145,6 +144,7 @@
       @selectDiploma="selectDiploma($event)"
     />
   </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script>

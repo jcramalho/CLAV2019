@@ -1,20 +1,23 @@
 <template>
+  <v-col>
   <!-- Infobox com os resultados da VALIDAÇÂO -->
-      <v-btn dark rounded color="green darken-4" @click="validarClasse">Validar classe
+      <v-btn dark rounded class="green darken-4" @click="validarClasse">Validar classe</v-btn>
+
+      <!-- Erros na Validação ....................... -->
       <v-dialog v-model="dialog" width="80%" >
         <v-card>
           <v-card-title class="headline">Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
           <v-card-text>
-            <v-layout row wrap ma-2 v-for="(m, i) in mensagensErro" :key="i">
-              <v-flex xs4>
+            <v-row ma-2 v-for="(m, i) in mensagensErro" :key="i">
+              <v-col cols="4">
                 <div class="info-label">{{ m.sobre }}</div>
-              </v-flex>
-              <v-flex xs8>
+              </v-col>
+              <v-col>
                 <div class="info-content">
                       {{ m.mensagem }}
                 </div>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions>
 
@@ -27,7 +30,7 @@
       </v-dialog>
 
       <!-- Validação não detetou erros ........... -->
-        <v-layout row justify-center>
+        <v-row justify-center>
             <v-dialog v-model="dialogSemErros" persistent max-width="60%">
                 <v-card>
                     <v-card-title class="headline">Validação sem erros</v-card-title>
@@ -36,12 +39,13 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red darken-1" flat @click="dialogSemErros = false">Fechar</v-btn>
+                        <v-btn class="red darken-1" text @click="dialogSemErros = false">Fechar</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-        </v-layout>
-    </v-btn>
+        </v-row>
+    
+  </v-col>
 </template>
 
 <script>

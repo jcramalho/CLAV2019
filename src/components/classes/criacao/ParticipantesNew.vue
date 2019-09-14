@@ -65,7 +65,7 @@
 
     <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
       <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
-        <v-btn dark flat @click="fecharErros">
+        <v-btn dark text @click="fecharErros">
           Fechar
         </v-btn>
     </v-snackbar>

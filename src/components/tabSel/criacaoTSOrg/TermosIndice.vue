@@ -39,14 +39,14 @@
 
     <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
         {{ "O Termo de Índice anterior encontra-se vazio. Por favor preencha antes de criar um novo." }}
-        <v-btn dark flat @click="tiVazioFlag=false">
+        <v-btn dark text @click="tiVazioFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
         {{ "O último termo introduzido é um duplicado de outro já introduzido previamente!" }}
-        <v-btn dark flat @click="tiDuplicadoFlag=false">
+        <v-btn dark text @click="tiDuplicadoFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>

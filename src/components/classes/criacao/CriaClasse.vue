@@ -1,20 +1,19 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12>
+  <div>
+    <v-row class="ma-4">
+      <v-col>
         <!-- HEADER -->
         <v-card>
-          <v-toolbar color="teal darken-4" dark>
+          <v-app-bar color="teal darken-4" dark>
             <v-toolbar-title>Nova Classe</v-toolbar-title>
-          </v-toolbar>
+          </v-app-bar>
 
           <v-card-text>
-            <v-container fluid>
-              <v-layout wrap>
-                <v-flex xs2>
+              <v-row>
+                <v-col cols="2">
                   <div class="info-label">Nível</div>
-                </v-flex>
-                <v-flex xs6>
+                </v-col>
+                <v-col>
                   <v-select
                     item-text="label"
                     item-value="value"
@@ -24,11 +23,11 @@
                     solo
                     dense
                   />
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
               <!-- CLASSE PAI -->
-              <v-layout wrap v-if="classe.nivel > 1">
-                <v-flex xs2>
+              <v-row v-if="classe.nivel > 1">
+                <v-col cols="2">
                   <div class="info-label">
                     Classe Pai
                     <InfoBox
@@ -36,8 +35,8 @@
                       :text="myhelp.Classe.Campos.Pai"
                     />
                   </div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   <v-select
                     item-text="label"
                     item-value="value"
@@ -47,11 +46,11 @@
                     solo
                     dense
                   />
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
               <!-- CÓDIGO DA NOVA CLASSE -->
-              <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
-                <v-flex xs2>
+              <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+                <v-col cols="2">
                   <div class="info-label">
                     Código
                     <InfoBox
@@ -59,8 +58,8 @@
                       :text="myhelp.Classe.Campos.Codigo"
                     />
                   </div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   <v-text-field
                     v-model="classe.codigo"
                     label="Código"
@@ -68,11 +67,11 @@
                     clearable
                   ></v-text-field>
                   <span style="color: red"> {{ mensValCodigo }} </span>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
               <!-- TÍTULO -->
-              <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
-                <v-flex xs2>
+              <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+                <v-col cols="2">
                   <div class="info-label">
                     Título
                     <InfoBox
@@ -80,18 +79,19 @@
                       :text="myhelp.Classe.Campos.Titulo"
                     />
                   </div>
-                </v-flex>
-                <v-flex xs10>
+                </v-col>
+                <v-col>
                   <v-text-field
                     v-model="classe.titulo"
                     label="Título"
                     solo
                     clearable
                   ></v-text-field>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
 
-              <v-expansion-panel popout>
+              <v-expansion-panels>
+              
                 <!-- DESCRITIVO DA CLASSE -->
                 <BlocoDescritivo :c="classe" />
 
@@ -103,18 +103,16 @@
                   :participantes="entidadesP"
                   :procRel="listaProcessos"
                   :legs="listaLegislacao"
+                  v-if="classe.nivel == 3"
                 />
 
                 <!-- DECISÕES DE AVALIAÇÂO -->
-                <v-expansion-panel-content v-if="classe.nivel == 3">
-                  <template v-slot:header>
-                    <v-toolbar
-                      color="teal darken-4 body-2 font-weight-bold"
-                      dark
-                    >
-                      <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
-                    </v-toolbar>
-                  </template>
+                <v-expansion-panel popout v-if="classe.nivel == 3">
+                  <v-expansion-panel-header>
+                    <div class="title teal darken-4 pa-2 white--text">Decisões de Avaliação</div>
+                  </v-expansion-panel-header>
+
+                <v-expansion-panel-content>
                   <!-- HÁ SUBDIVISÃO? -->
                   <Subdivisao3Nivel :c="classe" />
 
@@ -143,12 +141,13 @@
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
               </v-expansion-panel>
-            </v-container>
+              </v-expansion-panels>
           </v-card-text>
         </v-card>
-      </v-flex>
+      </v-col>
+    </v-row>
 
-      <painel-operacoes :c="classe"/>
+    <painel-operacoes :c="classe"/>
 
       <v-snackbar
         v-model="loginErrorSnackbar"
@@ -157,12 +156,10 @@
         :top="true"
       >
         {{ loginErrorMessage }}
-        <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
+        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
-
-    </v-layout>
-
-  </v-container>
+    
+</div>
 </template>
 
 <script>

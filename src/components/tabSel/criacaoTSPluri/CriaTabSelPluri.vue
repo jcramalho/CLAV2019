@@ -90,7 +90,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 1;
             barra(0);
@@ -151,7 +151,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 2;
             barra(16);
@@ -215,7 +215,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 3;
             barra(32);
@@ -277,7 +277,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 4;
             barra(48);
@@ -339,7 +339,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 5;
             barra(64);
@@ -354,7 +354,7 @@
       <v-btn color="primary" v-else @click="guardarTrabalho()"
         >Guardar trabalho</v-btn
       >
-      <v-btn dark flat color="red darken-4" @click="eliminarTabela = true"
+      <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
         >Eliminar TS
           <v-dialog v-model="eliminarTabela" persistent max-width="320">
               <v-card>
@@ -362,8 +362,8 @@
                   <v-card-text>Pretende eliminar todo o trabalho realizado?</v-card-text>
                   <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="red" flat @click="eliminarTabela = false">Cancelar</v-btn>
-                  <v-btn color="primary" flat @click="eliminarTS(); eliminarTabela=false;">Confirmar</v-btn>
+                  <v-btn color="red" text @click="eliminarTabela = false">Cancelar</v-btn>
+                  <v-btn color="primary" text @click="eliminarTS(); eliminarTabela=false;">Confirmar</v-btn>
                   </v-card-actions>
               </v-card>
           </v-dialog>
@@ -373,7 +373,7 @@
 
     <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
       {{ mensagemPedidoCriadoOK }}
-      <v-btn dark flat @click="pedidoCriadoOK">
+      <v-btn dark text @click="pedidoCriadoOK">
         Fechar
       </v-btn>
     </v-snackbar>
@@ -385,7 +385,7 @@
       :top="true"
     >
       Trabalho guardado com sucesso.
-      <v-btn dark flat @click="pendenteGuardadoOK">
+      <v-btn dark text @click="pendenteGuardadoOK">
         Fechar
       </v-btn>
     </v-snackbar>

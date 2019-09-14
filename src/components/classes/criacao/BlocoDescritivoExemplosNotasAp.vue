@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap row ma-2>
+  <v-row ma-2>
     <!-- Exemplos de notas de Aplicação -->
-    <v-flex xs2>
+    <v-col cols="2">
       <div class="info-label">
         Exemplo(s) de Nota(s) de Aplicação
         <InfoBox
@@ -15,7 +15,7 @@
             v-on="on"
             color="green darken-2"
             dark
-            round
+            rounded
             @click="insereNovoExemplo(c.exemplosNotasAp)"
           >
             Exemplo N. A.
@@ -24,10 +24,10 @@
         </template>
         <span>Exemplo de nota de aplicação</span>
       </v-tooltip>
-    </v-flex>
-    <v-flex>
-      <v-layout fluid row v-for="(ex, index) in c.exemplosNotasAp" :key="index">
-        <v-flex xs9>
+    </v-col>
+    <v-col>
+      <v-row v-for="(ex, index) in c.exemplosNotasAp" :key="index">
+        <v-col cols="9">
           <v-textarea
             v-model="ex.exemplo"
             auto-grow
@@ -35,36 +35,36 @@
             label="Exemplo de Nota de Aplicação"
             rows="1"
           ></v-textarea>
-        </v-flex>
-        <v-flex>
+        </v-col>
+        <v-col>
           <v-btn
             color="red darken-2"
             dark
-            round
+            rounded
             @click="c.exemplosNotasAp.splice(index, 1)"
           >
             Remover
             <v-icon dark right>clear</v-icon>
           </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+        </v-col>
+      </v-row>
+    </v-col>
 
     <v-snackbar v-model="exemploNotaApVazioFlag" :color="'warning'" :timeout="60000">
         {{ mensagemExemploNotaApVazio }}
-        <v-btn dark flat @click="exemploNotaApVazioFlag=false">
+        <v-btn dark text @click="exemploNotaApVazioFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="exemploNotaApDuplicadoFlag" :color="'error'" :timeout="60000">
         {{ mensagemExemploNotaApDuplicado }}
-        <v-btn dark flat @click="exemploNotaApDuplicadoFlag=false">
+        <v-btn dark text @click="exemploNotaApDuplicadoFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

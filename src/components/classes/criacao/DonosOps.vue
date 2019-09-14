@@ -1,32 +1,28 @@
 <template>
-  <v-layout row wrap color="teal lighten-5" ma-2>
-    <v-flex xs2>
+  <v-row class="ma-2 teal lighten-5">
+    <v-col cols="2">
       <div class="info-label">Donos do processo</div>
-    </v-flex>
-    <v-flex xs9 v-if="entidades.length > 0">
+    </v-col>
+    <v-col v-if="entidades.length > 0">
       <v-data-table
         :headers="headers"
         :items="entidades"
         class="elevation-1"
-        hide-actions
+        hide-default-footer
       >
-        <template v-slot:headers="props">
+        <template v-slot:header="props">
           <tr>
             <th
               v-for="h in props.headers"
               :key="h.text"
-              class="body-2 font-weight-bold"
-              style="color: green;"
+              class="subtitle-2"
             >
               {{ h.text }}
-            </th>
-            <th class="body-2 font-weight-bold" style="color: green;">
-              {{ mylabels.remover }}
             </th>
           </tr>
         </template>
 
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td>{{ props.item.sigla }}</td>
             <td>{{ props.item.designacao }}</td>
@@ -36,7 +32,7 @@
                 small
                 color="red darken-2"
                 dark
-                round
+                rounded
                 @click="unselectEntidade(props.item)"
               >
                 <v-icon dark>remove_circle</v-icon>
@@ -45,13 +41,13 @@
           </tr>
         </template>
       </v-data-table>
-    </v-flex>
-    <v-flex xs9 v-else>
+    </v-col>
+    <v-col v-else>
       <v-alert :value="true" type="warning">
         Não tem donos selecionados...
       </v-alert>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -66,7 +62,8 @@ export default {
       headers: [
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
-        { text: "Tipo", value: "tipo" }
+        { text: "Tipo", value: "tipo" },
+        { text: "Remover"}
       ]
     };
   },

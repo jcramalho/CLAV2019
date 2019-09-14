@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar app color="indigo darken-4" dark>
+  <v-app-bar color="indigo darken-4" dark>
     <v-btn to="/" icon>
       <v-icon large>home</v-icon>
     </v-btn>
@@ -23,7 +23,7 @@
         </template>
       </v-breadcrumbs>
     </v-toolbar-title>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>

@@ -43,14 +43,14 @@
 
     <v-snackbar v-model="exemploNotaApVazioFlag" :color="'warning'" :timeout="60000">
         {{ "O exemplo anterior encontra-se vazio. Por favor preencha antes de criar novo." }}
-        <v-btn dark flat @click="exemploNotaApVazioFlag=false">
+        <v-btn dark text @click="exemploNotaApVazioFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="exemploNotaApDuplicadoFlag" :color="'error'" :timeout="60000">
         {{ "O último exemplo introduzido é um duplicado de outro já introduzido previamente!" }}
-        <v-btn dark flat @click="exemploNotaApDuplicadoFlag=false">
+        <v-btn dark text @click="exemploNotaApDuplicadoFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>

@@ -1,26 +1,26 @@
 <template>
-    <v-container grid-list-md fluid>
-        <v-layout row wrap justify-center>
-            <v-flex xs12>
-                <div>
-                    <v-btn
-                        dark
-                        rounded
-                        color="teal darken-4"
-                        @click="guardarTrabalho"
-                        v-bind:disabled="c.codigo == ''"
-                        >Guardar trabalho</v-btn>
+    <div>
+        <v-row class="justify-start align-start">
+            <v-col>
+              <v-btn
+                dark rounded
+                class="ma-2 teal darken-4"
+                @click="guardarTrabalho"
+                v-bind:disabled="c.codigo == ''">Guardar trabalho</v-btn>
+            </v-col>
             
-                    <valida-classe-info-box :c="c"/>
+            <valida-classe-info-box :c="c"/>
           
-                    <v-btn dark rounded color="teal darken-4" @click="criarClasse">Criar classe</v-btn>
-                    <v-btn dark rounded color="red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
-                </div>
-            </v-flex>
-        </v-layout>
+            <v-col>
+              <v-btn dark rounded class="ma-2 teal darken-4" @click="criarClasse">Criar classe</v-btn>
+            </v-col>
+            <v-col>
+              <v-btn dark rounded class="ma-2 red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
+            </v-col>
+        </v-row>
 
         <!-- Erros de Validação .................................... -->
-        <v-layout row wrap justify-center>
+        <v-row justify-center>
             <v-dialog v-model="errosValidacao" width="60%" >
                 <v-card>
                     <v-card-title class="headline">Erros detetados na validação</v-card-title>
@@ -35,10 +35,10 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-        </v-layout>
+        </v-row>
 
         <!-- Trabalho pendente guardado com sucesso ........... -->
-        <v-layout row justify-center>
+        <v-row justify-center>
             <v-dialog v-model="pendenteGuardado" persistent max-width="60%">
                 <v-card>
                     <v-card-title class="headline">Trabalho pendente guardado</v-card-title>
@@ -52,10 +52,10 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-        </v-layout>
+        </v-row>
 
         <!-- Pedido de criação de classe submetido com sucesso ........... -->
-        <v-layout row justify-center>
+        <v-row justify-center>
             <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
                 <v-card>
                     <v-card-title class="headline">Pedido de Criação de Classe Submetido</v-card-title>
@@ -66,10 +66,10 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-        </v-layout>
+        </v-row>
 
         <!-- Cancelamento da criação duma classe: confirmação ........... -->
-        <v-layout row justify-center>
+        <v-row justify-center>
             <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
                 <v-card>
                     <v-card-title class="headline">Cancelamento e eliminação do pedido de criação de classe</v-card-title>
@@ -85,9 +85,9 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-        </v-layout>
+        </v-row>
 
-        <v-layout>
+        <v-row>
             <v-snackbar
                 v-model="loginErrorSnackbar"
                 :timeout="8000"
@@ -97,9 +97,9 @@
                 {{ loginErrorMessage }}
                 <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
             </v-snackbar>
-        </v-layout>
+        </v-row>
 
-    </v-container>
+    </div>
 </template>
 
 <script>

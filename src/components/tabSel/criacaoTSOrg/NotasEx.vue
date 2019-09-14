@@ -39,14 +39,14 @@
 
     <v-snackbar v-model="neVaziaFlag" :color="'warning'" :timeout="60000">
         {{ "A nota anterior encontra-se vazia. Por favor preencha antes de criar nova." }}
-        <v-btn dark flat @click="neVaziaFlag=false">
+        <v-btn dark text @click="neVaziaFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="neDuplicadaFlag" :color="'error'" :timeout="60000">
         {{ "A última nota introduzida é um duplicado de outra já introduzida previamente!" }}
-        <v-btn dark flat @click="neDuplicadaFlag=false">
+        <v-btn dark text @click="neDuplicadaFlag=false">
           Fechar
         </v-btn>
     </v-snackbar>

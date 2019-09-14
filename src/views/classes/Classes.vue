@@ -5,7 +5,7 @@
         v-model="search"
         label="Pesquisa por código ou título"
         dark
-        flat
+        text
         solo-inverted
         hide-details
         clearable
