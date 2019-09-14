@@ -70,8 +70,9 @@ export default {
           formData
         );
         this.loading = false;
-        this.success =
-          "Pedido de criação de tabela de seleção criado com sucesso a partir do ficheiro importado.";
+        this.success = `Pedido de criação de tabela de seleção criado com sucesso a partir do ficheiro importado. Código do pedido: ${
+          response.data
+        }`;
       } catch (e) {
         this.loading = false;
         this.erro = "Não foi possível importar o CSV/Excel... Tente novamente.";
