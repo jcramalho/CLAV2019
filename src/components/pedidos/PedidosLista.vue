@@ -1,18 +1,18 @@
 <template>
-  <v-expansion-panel-content>
-    <template v-slot:header>
-      <v-toolbar color="indigo darken-4 body-2 font-weight-bold" dark>
-        <v-toolbar-title>{{ titulo }}</v-toolbar-title>
-        <sup>
+<v-expansion-panel popout>
+  <v-expansion-panel-header>
+    <div class="indigo darken-4 pa-2 white--text">
+      {{ titulo }}
+      <sup>
         <v-badge color="red" bottom>
           <template v-slot:badge>
             <span>{{ pedidos.length }}</span>
           </template>
         </v-badge>
-        </sup>
-      </v-toolbar>
-    </template>
-
+      </sup>
+    </div>
+  </v-expansion-panel-header>
+  <v-expansion-panel-content>
     <v-data-table
           :headers="headers"
           :items="pedidos"
@@ -31,7 +31,7 @@
             </span>
           </template>
 
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
               <td class="subheading">{{ props.item.estado }}</td>
@@ -86,6 +86,7 @@
           </template>
         </v-data-table>
   </v-expansion-panel-content>
+</v-expansion-panel>
 </template>
 
 <script>
