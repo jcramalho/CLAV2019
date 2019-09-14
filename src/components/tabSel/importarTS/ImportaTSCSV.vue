@@ -4,6 +4,9 @@
       <v-alert :value="erro != ''" type="error">
         {{ erro }}
       </v-alert>
+      <v-alert :value="success != ''" type="success">
+        {{ success }}
+      </v-alert>
       <v-file-input
         v-model="file"
         label="Importar CSV/Excel"
@@ -17,13 +20,15 @@
           class="white--text ma-2"
           color="indigo darken-4"
           @click="cancelar()"
+          :disabled="loading"
         >
-          Cancelar
+          Voltar
         </v-btn>
         <v-btn
           class="white--text ma-2"
           color="indigo darken-4"
           @click="enviarFicheiro()"
+          :loading="loading"
           :disabled="file == null"
         >
           Enviar
@@ -40,12 +45,17 @@ import axios from "axios";
 export default {
   data: () => ({
     file: null,
-    erro: ""
+    erro: "",
+    success: "",
+    loading: false
   }),
 
   methods: {
     enviarFicheiro: async function() {
       try {
+        this.erro = "";
+        this.success = "";
+        this.loading = true;
         var formData = new FormData();
         formData.append("file", this.file[0]);
 
@@ -53,14 +63,18 @@ export default {
           lhost + "/api/users/listarToken/" + this.$store.state.token
         );
 
-        formData.append("email", userBD.data.email)
+        formData.append("email", userBD.data.email);
 
         var response = await axios.post(
           lhost + "/api/tabelasSelecao/CSV",
           formData
         );
-        this.$router.push("/");
+        this.loading = false;
+        this.success = `Pedido de criação de tabela de seleção criado com sucesso a partir do ficheiro importado. Código do pedido: ${
+          response.data
+        }`;
       } catch (e) {
+        this.loading = false;
         this.erro = "Não foi possível importar o CSV/Excel... Tente novamente.";
       }
     },

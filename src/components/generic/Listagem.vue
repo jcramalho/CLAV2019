@@ -16,17 +16,14 @@
       :items="lista"
       :search="search"
       class="elevation-1"
-      :rows-per-page-items="[10, 20, 100]"
-      rows-per-page-text="Mostrar"
-      v-if="listaReady"
-      :disable-initial-sort="true"
+      :footer-props="footer_props"
     >
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
           Não foram encontrados resultados para "{{ search }}" .
         </v-alert>
       </template>
-      <template v-slot:items="props">
+      <template v-slot:item="props">
         <tr v-if="tipo == 'Termos de Índice'" @click="go(props.item.idClasse)">
           <td v-for="(campo, index) in props.item" v-bind:key="index">
             {{ campo }}
@@ -80,12 +77,15 @@ export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
   data: () => ({
     search: "",
-    listaReady: false,
     headers: [],
-    dialog: false
+    dialog: false,
+    footer_props: {
+      "items-per-page-options": [10, 20, 100],
+      "items-per-page-text": "Mostrar"
+    }
   }),
   methods: {
-    go: function(id) {
+    go(id) {
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/ent_" + id);
@@ -107,12 +107,12 @@ export default {
           this.$router.push("/classes/consultar/c" + id);
           break;
         case "Autos de Eliminação":
-          this.$router.push("/autosEliminacao/ae_"+id)
+          this.$router.push("/autosEliminacao/ae_" + id);
           break;
       }
     }
   },
-  mounted: async function() {
+  mounted: function() {
     try {
       for (var i = 0; i < this.cabecalho.length; i++) {
         this.headers[i] = {
@@ -123,7 +123,6 @@ export default {
     } catch (e) {
       return e;
     }
-    this.listaReady = true;
   }
 };
 </script>
