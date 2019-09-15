@@ -1,7 +1,7 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12 sm20>
+  <v-container style="max-width:100%">
+    <v-row>
+      <v-col>
         <v-card class="panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
             <v-toolbar-title class="page-header"
@@ -181,8 +181,8 @@
             >Submeter Diploma</v-btn
           >
         </div>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
