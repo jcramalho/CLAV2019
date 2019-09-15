@@ -15,9 +15,8 @@ function excel2Json (path) {
         var fundo = wb.getWorksheet(1).getRow(3).getCell(2).text;
 
         auto = {
-            dataAutenticacao: currentTime.getDate()+"/"+(currentTime.getMonth()+1)+"/"+currentTime.getFullYear(),
-            entidadeResponsavel: entidade,
-            legistacao: "Portaria "+fonte,
+            entidade: entidade,
+            legislacao: "Portaria "+fonte,
             fundo: fundo,
             zonaControlo: []
         }
@@ -30,8 +29,8 @@ function excel2Json (path) {
                 auto.zonaControlo.push({
                     codigo: row.getCell(1).text,
                     referencia: row.getCell(2).text,
-                    autoDataInicio: row.getCell(6).text,
-                    autoDataFim: row.getCell(7).text,
+                    dataInicio: row.getCell(6).text,
+                    dataFim: row.getCell(7).text,
                     agregacoes: []
                 })
                 var conservacao = row.getCell(4).value
@@ -46,10 +45,10 @@ function excel2Json (path) {
                         if(res <= currentTime.getFullYear()) {
                             index2++;
                             auto.zonaControlo[index].agregacoes.push({
-                                agregacaoCodigo: ag.getCell(3).text.replace(/[ -.,!/]/g,'_'),
-                                agregacaoTitulo: ag.getCell(4).text,
-                                agregacaoDataContagem: ag.getCell(5).text,
-                                temNI: ag.getCell(6).text
+                                codigo: ag.getCell(3).text.replace(/[ -.,!/]/g,'_'),
+                                titulo: ag.getCell(4).text,
+                                dataContagem: ag.getCell(5).text,
+                                ni: ag.getCell(6).text
                             })
                         }
                     }
