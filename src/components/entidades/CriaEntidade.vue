@@ -1,12 +1,12 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12 sm20>
+  <v-container style="max-width:100%">
+    <v-row>
+      <v-col>
         <v-card class="panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
-            <v-toolbar-title class="page-header"
-              ><h1>Nova Entidade</h1></v-toolbar-title
-            >
+            <v-toolbar-title class="page-header">
+              <h1>Nova Entidade</h1>
+            </v-toolbar-title>
           </v-toolbar>
           <v-card-text class="panel-body">
             <div class="form-group">
@@ -76,38 +76,32 @@
                   </td>
                 </tr>
               </table>
+              <v-expansion-panels>
+                <v-expansion-panel>
+                  <v-expansion-panel-header class="expansion-panel-heading">
+                    <div class="subheading font-weight-bold">Tipologias de Entidade</div>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card style="padding-top:30px;">
+                      <DesSelTip
+                        :tipologias="tipSel"
+                        @unselectTipologia="unselectTipologia($event)"
+                      />
 
-              <v-expansion-panel>
-                <v-expansion-panel-content class="expansion-panel-heading">
-                  <template v-slot:header>
-                    <div class="subheading font-weight-bold">
-                      Tipologias de Entidade
-                    </div>
-                  </template>
-                  <v-card style="padding-top:30px;">
-                    <DesSelTip
-                      :tipologias="tipSel"
-                      @unselectTipologia="unselectTipologia($event)"
-                    />
+                      <hr style="border-top: 1px dashed #dee2f8;" />
 
-                    <hr style="border-top: 1px dashed #dee2f8;" />
-
-                    <SelTip
-                      :tipologiasReady="tipologiasReady"
-                      :tipologias="tipologias"
-                      @selectTipologia="selectTipologia($event)"
-                    />
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
+                      <SelTip
+                        :tipologiasReady="tipologiasReady"
+                        :tipologias="tipologias"
+                        @selectTipologia="selectTipologia($event)"
+                      />
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
             </div>
           </v-card-text>
-          <v-snackbar
-            v-model="snackbar"
-            :timeout="8000"
-            color="error"
-            :top="true"
-          >
+          <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
             {{ text }}
             <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
@@ -118,11 +112,10 @@
             color="primary"
             @click="submeter()"
             :disabled="!(entidade.designacao && entidade.sigla)"
-            >Submeter Entidade</v-btn
-          >
+          >Submeter Entidade</v-btn>
         </div>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -141,7 +134,7 @@ export default {
       internacional: "",
       sioe: "",
       tipologiasSel: [],
-      codigo: "",
+      codigo: ""
     },
 
     // Para o seletor de processos

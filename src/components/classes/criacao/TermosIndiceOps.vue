@@ -2,7 +2,7 @@
   <v-row ma-2>
     <!-- TERMOS DE ÍNDICE -->
     <v-col cols="2">
-      <div class="info-label">Termos de Índice</div>
+      <div class="ma-2 info-label">Termos de Índice</div>
       <v-btn
         color="green darken-2"
         dark

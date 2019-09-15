@@ -17,6 +17,7 @@
       :search="search"
       class="elevation-1"
       :footer-props="footer_props"
+      v-if="this.headers[this.cabecalho.length-1]"
     >
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">

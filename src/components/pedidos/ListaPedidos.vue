@@ -20,7 +20,7 @@
             </span>
           </template>
 
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
               <td class="subheading">{{ props.item.estado }}</td>
@@ -70,7 +70,7 @@
             class="elevation-1"
             hide-actions
           >
-            <template v-slot:items="props">
+            <template v-slot:item="props">
               <tr @click="selectedUser=props.item">
                 <td class="subheading">{{ props.item.name }}</td>
                 <td class="subheading">{{ props.item.entidade }}</td>

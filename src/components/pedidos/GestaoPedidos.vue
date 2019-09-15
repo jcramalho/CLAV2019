@@ -1,20 +1,17 @@
 <template>
-  <v-container fluid>
-    <v-layout row wrap ma-2>
-      <v-flex xs12>
+    <v-row class="ma-2">
+      <v-col>
         <v-card>
           <v-toolbar color="indigo darken-4" dark>
             <v-toolbar-title>Gestão de Pedidos</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-container fluid>
-                <v-expansion-panel popout>
+            <v-expansion-panels>
                     <PedidosLista :pedidos="pedidosSubmetidos" 
                                   titulo="Pedidos novos" 
                                   @distribuir="distribuiPedido($event)"
                                   @show="showPedido($event)"
                     />               
-                </v-expansion-panel>
 
                 <v-expansion-panel popout>
                     <PedidosLista :pedidos="pedidosDistribuidos" 
@@ -31,16 +28,14 @@
                 <v-expansion-panel popout>
                     <PedidosLista :pedidos="pedidosDevolvidos" titulo="Pedidos devolvidos"/>
                 </v-expansion-panel>
-            </v-container>
+            </v-expansion-panels>
           </v-card-text>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
 
-    <v-layout row wrap ma-2>
       <v-dialog v-model="distribuir" width="60%" >
       <v-card>
-        <v-card-title class="headline">Distribuição do pedido</v-card-title>
+        <v-card-title class="title">Distribuição do pedido</v-card-title>
 
         <v-card-text>
           <div v-if="!selectedUser.name">
@@ -51,9 +46,9 @@
             :headers="usersHeaders"
             :items="usersRecords"
             class="elevation-1"
-            hide-actions
+            hide-default-footer
           >
-            <template v-slot:items="props">
+            <template v-slot:item="props">
               <tr @click="selectedUser=props.item">
                 <td class="subheading">{{ props.item.name }}</td>
                 <td class="subheading">{{ props.item.entidade }}</td>
@@ -78,7 +73,7 @@
         <v-card-actions>
           <v-btn
             color="indigo darken-4"
-            round dark
+            rounded dark
             @click="guardarDistribuicao"
           >
             Guardar
@@ -86,7 +81,7 @@
 
           <v-btn
             color="red darken-4"
-            round dark
+            rounded dark
             @click="cancelarDistribuicao"
           >
             Cancelar
@@ -94,54 +89,53 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    </v-layout>
 
     <!-- Show do pedido ................................................-->
-    <v-layout row wrap ma-2>
+    
       <v-dialog v-model="show" width="80%" >
       <v-card>
-        <v-card-title class="headline">Dados do pedido</v-card-title>
+        <v-card-title class="title">Dados do pedido</v-card-title>
         <v-card-text>
-          <v-layout row wrap ma-2>
-            <v-flex xs2>
+          <v-row class="ma-2">
+            <v-col cols="2">
               <div class="info-label">Código</div>
-            </v-flex>
-            <v-flex xs10>
+            </v-col>
+            <v-col>
               <div class="info-content">{{pedido.codigo}}</div>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap ma-2>
-            <v-flex xs2>
+            </v-col>
+          </v-row>
+          <v-row class="ma-2">
+            <v-col cols="2">
               <div class="info-label">Estado</div>
-            </v-flex>
-            <v-flex xs10>
+            </v-col>
+            <v-col>
               <div class="info-content">{{pedido.estado}}</div>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap ma-2>
-            <v-flex xs2>
+            </v-col>
+          </v-row>
+          <v-row class="ma-2">
+            <v-col cols="2">
               <div class="info-label">Data</div>
-            </v-flex>
-            <v-flex xs10>
+            </v-col>
+            <v-col>
               <div class="info-content">{{pedido.data}}</div>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap ma-2>
-            <v-flex xs2>
+            </v-col>
+          </v-row>
+          <v-row class="ma-2">
+            <v-col cols="2">
               <div class="info-label">Criado Por</div>
-            </v-flex>
-            <v-flex xs10>
+            </v-col>
+            <v-col>
               <div class="info-content">{{pedido.criadoPor}}</div>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
           <div class="info-label title">Distribuição</div>
           <v-data-table
             :headers="distHeaders"
             :items="pedido.distribuicao"
             class="elevation-1"
-            hide-actions
+            hide-default-footer
           >
-            <template v-slot:items="props">
+            <template v-slot:item="props">
               <tr>
                 <td class="subheading">{{ props.item.estado }}</td>
                 <td class="subheading">{{ props.item.data }}</td>
@@ -155,7 +149,7 @@
         <v-card-actions>
           <v-btn
             color="red darken-4"
-            round dark
+            rounded dark
             @click="closePedido"
           >
             Fechar
@@ -163,8 +157,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    </v-layout>
-  </v-container>
+    </v-row>
 </template>
 
 <script>

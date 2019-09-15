@@ -132,7 +132,8 @@
 
                   <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
                 </v-expansion-panel-content>
-
+                </v-expansion-panel>
+                
                 <!-- DECISÃO COM SUBDIVISÃO -->
                 <Subclasses4Nivel
                   :c="classe"
@@ -140,7 +141,7 @@
                   :pcaFormasContagem="pcaFormasContagem"
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
-              </v-expansion-panel>
+    
               </v-expansion-panels>
           </v-card-text>
         </v-card>

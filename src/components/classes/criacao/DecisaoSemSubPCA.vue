@@ -1,18 +1,18 @@
 <template>
   <!-- PCA -->
-  <v-container fluid v-if="!c.temSubclasses4Nivel">
-    <v-layout ma-2 wrap>
-      <v-flex xs12>
+  <div v-if="!c.temSubclasses4Nivel">
+    <v-row class="ma-2" >
+      <v-col>
         <v-toolbar color="teal darken-4 font-weight-medium" dark height="30">
           <v-toolbar-title>Prazo de Conservação Administrativa</v-toolbar-title>
         </v-toolbar>
-      </v-flex>
-    </v-layout>
-    <v-layout ma-2 wrap>
-      <v-flex xs2>
+      </v-col>
+    </v-row>
+    <v-row class="ma-2">
+      <v-col cols="2">
         <div class="info-label">Prazo:</div>
-      </v-flex>
-      <v-flex xs10>
+      </v-col>
+      <v-col>
         <v-text-field
           v-model="c.pca.valor"
           label="Prazo em anos: 0 a 199"
@@ -20,25 +20,25 @@
           solo
           clearable
         ></v-text-field>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
-    <v-layout ma-2 wrap>
-      <v-flex xs2>
+    <v-row class="ma-2">
+      <v-col cols="2">
         <div class="info-label">Notas</div>
-      </v-flex>
-      <v-flex xs10>
+      </v-col>
+      <v-col>
         <v-textarea
           solo
           label="Notas ao PCA"
           v-model="c.pca.notas"
           rows="2"
         ></v-textarea>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
-    <v-layout ma-2 row wrap v-if="semaforos.pcaFormasContagemReady">
-      <v-flex xs2>
+    <v-row class="ma-2" v-if="semaforos.pcaFormasContagemReady">
+      <v-col cols="2">
         <div class="info-label">
           Forma de Contagem
           <InfoBox
@@ -46,8 +46,8 @@
             :text="myhelp.Classe.Campos.FormaContagem"
           />
         </div>
-      </v-flex>
-      <v-flex xs10>
+      </v-col>
+      <v-col>
         <v-select
           item-text="label"
           item-value="value"
@@ -57,21 +57,19 @@
           solo
           dense
         />
-      </v-flex>
-    </v-layout>
-    <v-layout
-      ma-2
-      row
-      wrap
+      </v-col>
+    </v-row>
+    <v-row
+      class="ma-2"
       v-if="
         semaforos.pcaSubFormasContagemReady &&
           c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'
       "
     >
-      <v-flex xs2>
+      <v-col cols="2">
         <div class="info-label">Subforma de contagem:</div>
-      </v-flex>
-      <v-flex xs10>
+      </v-col>
+      <v-col>
         <v-select
           item-text="label"
           item-value="value"
@@ -81,29 +79,27 @@
           solo
           dense
         />
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <hr style="border-top: 2px dashed green;" />
 
     <!-- JUSTIFICAÇÂO DO PCA -->
-    <v-layout row wrap>
-      <v-flex xs3>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <div class="info-label">
-              Justificação do PCA
-              <InfoBox
-                header="Justificação do PCA"
-                :text="myhelp.Classe.Campos.JustificacaoPCA"
-              />
-            </div>
-          </v-flex>
-          <v-flex xs12>
+    <v-row>
+      <v-col cols="3">        
+          <div class="info-label ma-2">
+            Justificação do PCA
+            <InfoBox
+              header="Justificação do PCA"
+              :text="myhelp.Classe.Campos.JustificacaoPCA"
+            />
+          </div>
+          
+          <div class="ma-2">
             <v-btn
               color="green darken-2"
               dark
-              round
+              rounded
               @click="
                 adicionarCriterioGestionario(
                   c.pca.justificacao,
@@ -119,12 +115,12 @@
               Critério Gestionário
               <v-icon dark right>add_circle_outline</v-icon>
             </v-btn>
-          </v-flex>
-          <v-flex xs12>
+          </div>
+          <div class="ma-2">
             <v-btn
               color="green darken-2"
               dark
-              round
+              rounded
               @click="
                 adicionarCriterioLegalPCA(
                   c.pca.justificacao,
@@ -140,17 +136,11 @@
               Critério Legal
               <v-icon dark right>add_circle_outline</v-icon>
             </v-btn>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex xs9>
-        <v-layout
-          row
-          wrap
-          v-for="(crit, cindex) in c.pca.justificacao"
-          :key="cindex"
-        >
-          <v-flex xs3>
+          </div>
+      </v-col>
+      <v-col>
+        <v-row v-for="(crit, cindex) in c.pca.justificacao" :key="cindex">
+          <v-col cols="3">
             <div class="info-label">
               {{ crit.label }}
               <v-icon
@@ -161,12 +151,9 @@
                 >remove_circle</v-icon
               >
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex
-            xs9
-            v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'"
-          >
+          <v-col v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
             <div class="info-content">
               {{ crit.notas }}
               <a
@@ -179,9 +166,9 @@
                 <span v-else>, </span>
               </a>
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex xs9 v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
+          <v-col v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
             <div class="info-content" v-if="crit.legislacao.length > 0">
               {{ crit.notas }}
               <span v-for="(l, i) in crit.legislacao" :key="l.id">
@@ -203,25 +190,22 @@
               Sem legislação associada. Pode associar legislação na área de
               contexto.
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex
-            xs9
-            v-else-if="crit.tipo == 'CriterioJustificacaoGestionario'"
-          >
+          <v-col v-else-if="crit.tipo == 'CriterioJustificacaoGestionario'">
             <div class="info-content">
               {{ crit.notas }}
             </div>
-          </v-flex>
+          </v-col>
 
           <hr
             v-if="cindex < c.pca.justificacao.length"
             style="border-top: 2px dotted green; width: 100%;"
           />
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-container>
+        </v-row>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
