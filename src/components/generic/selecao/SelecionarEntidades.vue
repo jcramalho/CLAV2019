@@ -1,12 +1,9 @@
 <template>
   <v-row>
-    <v-col cols="12" xs="2" md="2">
-      <v-subheader
-        class="info-label"
-        style="border-color: white; border-style:solid; color: #1A237E;"
-      >Selecionar Entidades:</v-subheader>
+    <v-col cols="2">
+      <v-subheader class="info-label">Selecionar Entidades:</v-subheader>
     </v-col>
-    <v-col xs="9" md="9" v-if="entidadesReady">
+    <v-col v-if="entidadesReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -80,3 +77,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.info-label {
+  color: #0d47a1;
+  padding: 6px;
+  font-weight: 400;
+  width: auto;
+  height: auto;
+  background-color: #b3e5fc;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+</style>
