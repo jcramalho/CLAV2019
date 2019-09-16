@@ -1,8 +1,8 @@
 var Excel = require('exceljs')
 
-function excel2Json (path) {
+var excel2Json = function (file) {
     var workbook = new Excel.Workbook();
-    workbook.xlsx.readFile(path)
+    workbook.xlsx.load(file)
       .then(function(wb) {
         // Tratamento de Autos de Eliminação
         // Os autos de eliminação vão ser carregados num array para validações
@@ -14,7 +14,7 @@ function excel2Json (path) {
         var fonte = wb.getWorksheet(1).getRow(2).getCell(2).text;
         var fundo = wb.getWorksheet(1).getRow(3).getCell(2).text;
 
-        auto = {
+        var auto = {
             dataAutenticacao: currentTime.getDate()+"/"+(currentTime.getMonth()+1)+"/"+currentTime.getFullYear(),
             entidadeResponsavel: entidade,
             legistacao: "Portaria "+fonte,
@@ -44,7 +44,6 @@ function excel2Json (path) {
                         var dataContagem = ag.getCell(5).value
                         var res = parseInt(conservacao) + parseInt(dataContagem)
                         if(res <= currentTime.getFullYear()) {
-                            index2++;
                             auto.zonaControlo[index].agregacoes.push({
                                 agregacaoCodigo: ag.getCell(3).text.replace(/[ -.,!/]/g,'_'),
                                 agregacaoTitulo: ag.getCell(4).text,
@@ -56,9 +55,10 @@ function excel2Json (path) {
                 })
             } 
         })
-
+        console.warn(auto)
         return auto
     })
+    .catch(() => "Error")
 }
 
 export {excel2Json}
