@@ -1,10 +1,9 @@
 <template>
-    <v-row class="ma-2">
-      <v-col>
-        <v-card>
-          <v-toolbar color="indigo darken-4" dark>
-            <v-toolbar-title>Gestão de Pedidos</v-toolbar-title>
-          </v-toolbar>
+    <div>
+        <v-card class="ma-2">
+          <v-card-title class="indigo darken-4 title white--text" dark>
+            Gestão de Pedidos
+          </v-card-title>
           <v-card-text>
             <v-expansion-panels>
                     <PedidosLista :pedidos="pedidosSubmetidos" 
@@ -31,7 +30,6 @@
             </v-expansion-panels>
           </v-card-text>
         </v-card>
-      </v-col>
 
       <v-dialog v-model="distribuir" width="60%" >
       <v-card>
@@ -144,6 +142,15 @@
               </tr>
             </template>
           </v-data-table>
+
+          <div>
+
+          </div>
+          
+
+          <div>
+            {{ JSON.stringify(pedido) }}
+          </div>
         </v-card-text>
 
         <v-card-actions>
@@ -157,7 +164,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    </v-row>
+    </div>
 </template>
 
 <script>
