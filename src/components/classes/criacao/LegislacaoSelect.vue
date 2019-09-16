@@ -20,7 +20,7 @@
           :search="searchDiplomas"
           item-key="id"
           class="elevation-1"
-          items-per-page-text="Linhas por página"
+          :footer-props="footer_props"
         >
           <template v-slot:item="props">
             <tr @click="selectDiploma(props.item)">
@@ -60,7 +60,13 @@ export default {
         { text: "Número", value: "numero", sortable: false },
         { text: "Sumário", value: "sumario", sortable: false },
         { text: "Data", value: "data" }
-      ]
+      ],
+
+      footer_props: {
+        "items-per-page-text": "Diplomas por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
 

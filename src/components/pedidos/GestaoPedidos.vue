@@ -32,8 +32,10 @@
         </v-card>
 
       <v-dialog v-model="distribuir" width="60%" >
-      <v-card>
-        <v-card-title class="title">Distribuição do pedido</v-card-title>
+        <v-card>
+          <v-card-title class="indigo darken-4 title white--text" dark>
+            Distribuição do pedido
+          </v-card-title>
 
         <v-card-text>
           <div v-if="!selectedUser.name">
@@ -73,17 +75,13 @@
             color="indigo darken-4"
             rounded dark
             @click="guardarDistribuicao"
-          >
-            Guardar
-          </v-btn>
+          >Guardar</v-btn>
 
           <v-btn
             color="red darken-4"
             rounded dark
             @click="cancelarDistribuicao"
-          >
-            Cancelar
-          </v-btn>
+          >Cancelar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -92,7 +90,9 @@
     
       <v-dialog v-model="show" width="80%" >
       <v-card>
-        <v-card-title class="title">Dados do pedido</v-card-title>
+        <v-card-title class="green darken-4 title white--text" dark>
+            Dados do pedido
+          </v-card-title>
         <v-card-text>
           <v-row class="ma-2">
             <v-col cols="2">
