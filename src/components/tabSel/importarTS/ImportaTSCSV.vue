@@ -9,8 +9,11 @@
           </v-card-title>
 
           <v-card-text>
-            <span class="subtitle-1" style="white-space: pre-wrap">
-              {{ erro }}
+            <span
+              class="subtitle-1"
+              style="white-space: pre-wrap"
+              v-html="erro"
+            >
             </span>
           </v-card-text>
 
