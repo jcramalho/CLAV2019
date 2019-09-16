@@ -106,6 +106,7 @@
             <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
         </v-card>
+        <br>
         <div style="text-align:center">
           <v-btn
             medium

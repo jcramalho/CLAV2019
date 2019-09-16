@@ -15,7 +15,7 @@
 
       <v-card-text>
         <!-- eslint-disable-next-line -->
-        <span class="subheading" style="white-space: pre-wrap">{{ query }}</span>
+        <span class="subtitle-1" style="white-space: pre-wrap">{{ query }}</span>
       </v-card-text>
 
       <v-divider></v-divider>
