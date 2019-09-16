@@ -1,13 +1,12 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs2>
+  <v-row>
+    <v-col cols="12" xs="2" md="2">
       <v-subheader
         class="info-label"
         style="border-color: white; border-style:solid; color: #1A237E;"
-        >Selecionar Entidades:</v-subheader
-      >
-    </v-flex>
-    <v-flex xs9 v-if="entidadesReady">
+      >Selecionar Entidades:</v-subheader>
+    </v-col>
+    <v-col xs="9" md="9" v-if="entidadesReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -24,9 +23,9 @@
           :search="searchEntidades"
           item-key="id"
           class="elevation-1"
-          rows-per-page-text="Linhas por página"
+          :footer-props="footer_props"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr @click="selectEntidade(props.item)">
               <td>{{ props.item.sigla }}</td>
               <td>{{ props.item.designacao }}</td>
@@ -38,16 +37,19 @@
             {{ props.itemsLength }}
           </template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            color="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-card>
-    </v-flex>
-    <v-flex xs9 v-else>
+    </v-col>
+    <v-col xs="9" md="9" v-else>
       <v-subheader>A carregar entidades...</v-subheader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -57,7 +59,9 @@ export default {
   data: function() {
     return {
       searchEntidades: "",
-
+      footer_props: {
+        "items-per-page-text": "Linhas por página"
+      },
       entidadesHeaders: [
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" }
