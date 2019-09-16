@@ -19,178 +19,58 @@
                     <div class="info-label">Ficheiro:</div>
                   </td>
                   <td>
-                    <v-file-imput
-                      placeholder="Escolha um ficheiro xlsx"
-                    ></v-file-imput>
+                    <div>
+                      <input 
+                        type="file" 
+                        id="file" 
+                        ref="myFiles" 
+                        @change="previewFiles">
+                    </div>
                   </td>
+                  
                 </tr>
               </table>
-
-              <v-expansion-panel>
-                <v-expansion-panel-content class="expansion-panel-heading">
-                  <template v-slot:header>
-                    <div class="subheading font-weight-bold">
-                      Entidades
-                    </div>
-                  </template>
-                  <v-card style="padding-top:30px;">
-                    <DesSelEnt
-                      :entidades="entSel"
-                      tipo="tipologias"
-                      @unselectEntidade="unselectEntidade($event)"
-                    />
-
-                    <hr style="border-top: 1px dashed #dee2f8;" />
-
-                    <SelEnt
-                      :entidadesReady="entidadesReady"
-                      :entidades="entidades"
-                      @selectEntidade="selectEntidade($event)"
-                    />
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
             </div>
           </v-card-text>
-          <v-snackbar
-            v-model="snackbar"
-            :timeout="8000"
-            color="error"
-            :top="true"
-          >
-            {{ text }}
-            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-          </v-snackbar>
         </v-card>
         <div style="text-align:center">
           <v-btn
             medium
             color="primary"
-            @click="submeter()"
-            :disabled="!(tipologia.designacao && tipologia.sigla)"
-            >Submeter Tipologia</v-btn
+            @click="submit"
+            :disabled="!(file)"
+            >Submeter Auto de Eliminação</v-btn
           >
         </div>
+        {{ obj }}
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
-import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
 import axios from "axios";
 const lhost = require("@/config/global").host;
+const conversor = require("@/plugins/conversor").excel2Json;
 
 export default {
   data: () => ({
-    tipologia: {
-      designacao: "",
-      sigla: "",
-      entidades: [],
-      codigo: "",
-    },
-    designacao: "",
-    sigla: "",
-    entidades: [],
-    entSel: [],
-    entidadesReady: false,
-
-    snackbar: false,
-    text: ""
+    file: null,
+    obj: "",
   }),
-  components: {
-    DesSelEnt,
-    SelEnt
-  },
   methods: {
-    unselectEntidade: function(entidade) {
-      // Recoloca a entidade nos selecionáveis
-      this.entidades.push(entidade);
-      var index = this.entSel.findIndex(e => e.id === entidade.id);
-      this.entSel.splice(index, 1);
+    submit: async function() {
+        this.obj = await conversor(this.file)
+        console.log(this.obj)
     },
-    selectEntidade: function(entidade) {
-      this.entSel.push(entidade);
-      // Remove dos selecionáveis
-      var index = this.entidades.findIndex(e => e.id === entidade.id);
-      this.entidades.splice(index, 1);
-    },
-    // Vai à API buscar todas as entidades
-    loadEntidades: async function() {
-      try {
-        var response = await axios.get(lhost + "/api/entidades");
-        this.entidades = response.data.map(function(item) {
-          return {
-            sigla: item.sigla,
-            designacao: item.designacao,
-            id: item.id
-          };
-        });
-        this.entidadesReady = true;
-      } catch (error) {
-        return error;
-      }
-    },
-    // fechar o snackbar em caso de erro
-    fecharSnackbar() {
-      this.snackbar = false;
-    },
-    submeter: async function() {
-      if (this.$store.state.name === "") {
-        this.text = "Precisa de fazer login para criar a Tipologia";
-        this.snackbar = true;
-        return false;
-      }
+    previewFiles: function(ev) {
+      const file = ev.target.files[0];
+      const reader = new FileReader();
 
-      for (var i = 0; i < this.entSel.length; i++) {
-        this.tipologia.entidades[i] = this.entSel[i].id;
-      }
-
-      var dataObj = this.tipologia;
-
-      dataObj.codigo = "tip_" + this.tipologia.sigla;
-
-      var userBD = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
-      );
-      var pedidoParams = {
-        tipoPedido: "Criação",
-        tipoObjeto: "Tipologia",
-        novoObjeto: dataObj,
-        user: { email: userBD.data.email },
-        token: this.$store.state.token
-      };
-
-      var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
-      this.$router.push("/pedidos/submissao");
-
-      /*axios
-        .post(lhost + "/api/tipologias/", dataObj)
-        .then(res => {
-          this.$router.push("/pedidos/submissao");
-        })
-        .catch(err => {
-          if (err.response.status === 409) {
-            this.text =
-              "Já existe uma tipologia com a sigla " +
-              this.tipologia.sigla +
-              " ou designação " +
-              this.tipologia.designacao;
-            this.color = "error";
-            this.snackbar = true;
-          }
-          if (err.response.status === 500) {
-            this.text = "Ocorreu um erro na criação desta entidade";
-            this.color = "error";
-            this.snackbar = true;
-          }
-        });*/
+      reader.onload = e => this.file = e.target.result;
+      reader.readAsArrayBuffer(file);
     }
-  },
-  created: function() {
-    this.loadEntidades();
   }
 };
 </script>

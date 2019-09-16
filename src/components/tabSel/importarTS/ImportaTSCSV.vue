@@ -1,83 +1,82 @@
 <template>
   <div class="ma-2">
-      <v-dialog v-model="erroDialog" width="700">
-        <v-card outlined>
-          <v-card-title class="red darken-4 title white--text" dark>
-            Não foi possível criar o pedido de criação de tabela de seleção
-          </v-card-title>
+    <v-dialog v-model="erroDialog" width="700">
+      <v-card outlined>
+        <v-card-title class="red darken-4 title white--text" dark>
+          Não foi possível criar o pedido de criação de tabela de seleção
+        </v-card-title>
 
-          <v-card-text>
-            <span class="subtitle-1" style="white-space: pre-wrap">
-              {{ erro }}
-            </span>
-          </v-card-text>
-
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <v-btn color="red darken-4" text @click="erroDialog = false">
-              Fechar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-dialog v-model="successDialog" width="700">
-        <v-card outlined>
-          <v-card-title class="teal darken-4 title white--text" dark>
-            Pedido de criação de tabela de seleção criado com sucesso
-          </v-card-title>
-
-          <v-card-text>
-            <span
-              class="subtitle-1"
-              style="white-space: pre-wrap"
-              v-html="success"
-            >
-            </span>
-          </v-card-text>
-
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <v-btn color="green darken-4" text @click="successDialog = false">
-              Fechar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-card class="ma-2 mx-auto" outlined width="60%">
-        <v-card-title>Seleção do ficheiro</v-card-title>
         <v-card-text>
-          <v-file-input
-            v-model="file"
-            label="Importar CSV/Excel"
-            placeholder="Selecione o ficheiro com a Tabela de Seleção"
-            show-size
-            accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            multiple
-          ></v-file-input>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro">
+          </span>
         </v-card-text>
+
+        <v-divider></v-divider>
+
         <v-card-actions>
-          <v-btn
-            class="white--text ma-2"
-            color="indigo darken-4"
-            @click="cancelar()"
-            :disabled="loading"
-          >
-            Voltar
-          </v-btn>
-          <v-btn
-            class="white--text ma-2"
-            color="indigo darken-4"
-            @click="enviarFicheiro()"
-            :loading="loading"
-            :disabled="file == null"
-          >
-            Enviar
+          <v-btn color="red darken-4" text @click="erroDialog = false">
+            Fechar
           </v-btn>
         </v-card-actions>
       </v-card>
+    </v-dialog>
+    <v-dialog v-model="successDialog" width="700">
+      <v-card outlined>
+        <v-card-title class="teal darken-4 title white--text" dark>
+          Pedido de criação de tabela de seleção criado com sucesso
+        </v-card-title>
+
+        <v-card-text>
+          <span
+            class="subtitle-1"
+            style="white-space: pre-wrap"
+            v-html="success"
+          >
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="green darken-4" text @click="successDialog = false">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-card class="ma-2 mx-auto" outlined width="60%">
+      <v-card-title>Seleção do ficheiro</v-card-title>
+      <v-card-text>
+        <v-file-input
+          v-model="file"
+          label="Importar CSV/Excel"
+          placeholder="Selecione o ficheiro com a Tabela de Seleção"
+          show-size
+          accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          multiple
+        ></v-file-input>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          class="white--text ma-2"
+          color="indigo darken-4"
+          @click="cancelar()"
+          :disabled="loading"
+        >
+          Voltar
+        </v-btn>
+        <v-btn
+          class="white--text ma-2"
+          color="indigo darken-4"
+          @click="enviarFicheiro()"
+          :loading="loading"
+          :disabled="file == null"
+        >
+          Enviar
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 
