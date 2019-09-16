@@ -14,7 +14,7 @@
                 class="adicao"
                 style="border-color: white; border-style:solid; margin-bottom:20px;"
               >
-                <tr>
+                <tr> 
                   <td style="width:20%;">
                     <div class="info-label">Designação:</div>
                   </td>
@@ -47,10 +47,10 @@
               </table>
               <v-expansion-panels>
                 <v-expansion-panel>
-                  <v-expansion-panel-content class="expansion-panel-heading">
-                    <template v-slot:header>
-                      <div class="subheading font-weight-bold">Entidades</div>
-                    </template>
+                  <v-expansion-panel-header class="expansion-panel-heading">
+                    <div class="subheading font-weight-bold">Entidades</div>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
                     <v-card style="padding-top:30px;">
                       <DesSelEnt
                         :entidades="entSel"
@@ -76,6 +76,7 @@
             <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
         </v-card>
+        <br>
         <div style="text-align:center">
           <v-btn
             medium
