@@ -4,9 +4,9 @@
       <v-col>
         <v-card class="panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
-            <v-toolbar-title class="page-header"
-              ><h1>Novo Diploma</h1></v-toolbar-title
-            >
+            <v-toolbar-title class="page-header">
+              <h1>Novo Diploma</h1>
+            </v-toolbar-title>
           </v-toolbar>
           <v-card-text class="panel-body">
             <div class="form-group">
@@ -19,12 +19,7 @@
                     <div class="info-label">Tipo de diploma:</div>
                   </td>
                   <td style="width:80%;">
-                    <v-select
-                      v-model="legislacao.tipo"
-                      :items="tiposDiploma"
-                      solo
-                      dense
-                    />
+                    <v-select v-model="legislacao.tipo" :items="tiposDiploma" solo dense />
                   </td>
                 </tr>
                 <tr>
@@ -55,10 +50,8 @@
                         v-model="open"
                         :close-on-content-click="false"
                         :nudge-right="40"
-                        lazy
                         transition="scale-transition"
                         offset-y
-                        full-width
                         max-width="290px"
                         min-width="290px"
                       >
@@ -73,12 +66,7 @@
                             :rules="regraData"
                           ></v-text-field>
                         </template>
-                        <v-date-picker
-                          v-model="date"
-                          no-title
-                          @input="open = false"
-                          :max="date"
-                        ></v-date-picker>
+                        <v-date-picker v-model="date" no-title @input="open = false" :max="date"></v-date-picker>
                       </v-menu>
                     </v-flex>
                   </td>
@@ -102,72 +90,62 @@
                     <div class="info-label">Link:</div>
                   </td>
                   <td style="width:80%;">
-                    <v-text-field
-                      solo
-                      clearable
-                      single-line
-                      v-model="legislacao.link"
-                    ></v-text-field>
+                    <v-text-field solo clearable single-line v-model="legislacao.link"></v-text-field>
                   </td>
                 </tr>
               </table>
 
-              <v-expansion-panel>
-                <v-expansion-panel-content class="expansion-panel-heading">
-                  <template v-slot:header>
-                    <div class="subheading font-weight-bold">
-                      Entidade responsável pela publicação
-                    </div>
-                  </template>
-                  <v-card style="padding-top:30px;">
-                    <DesSelEnt
-                      :entidades="entSel"
-                      tipo="legislacao"
-                      @unselectEntidade="unselectEntidade($event)"
-                    />
+              <v-expansion-panels>
+                <v-expansion-panel>
+                  <v-expansion-panel-content class="expansion-panel-heading">
+                    <template v-slot:header>
+                      <div class="subheading font-weight-bold">Entidade responsável pela publicação</div>
+                    </template>
+                    <v-card style="padding-top:30px;">
+                      <DesSelEnt
+                        :entidades="entSel"
+                        tipo="legislacao"
+                        @unselectEntidade="unselectEntidade($event)"
+                      />
 
-                    <hr style="border-top: 1px dashed #dee2f8;" />
+                      <hr style="border-top: 1px dashed #dee2f8;" />
 
-                    <SelEnt
-                      :entidadesReady="entidadesReady"
-                      :entidades="entidades"
-                      @selectEntidade="selectEntidade($event)"
-                    />
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
+                      <SelEnt
+                        :entidadesReady="entidadesReady"
+                        :entidades="entidades"
+                        @selectEntidade="selectEntidade($event)"
+                      />
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
 
-              <v-expansion-panel>
-                <v-expansion-panel-content class="expansion-panel-heading">
-                  <template v-slot:header>
-                    <div class="subheading font-weight-bold">
-                      Processos de negócio que regula ou enquadra
-                    </div>
-                  </template>
-                  <v-card style="padding-top:30px;">
-                    <DesSelProc
-                      :processos="procSel"
-                      @unselectProcesso="unselectProcesso($event)"
-                    />
+                <v-expansion-panel>
+                  <v-expansion-panel-content class="expansion-panel-heading">
+                    <template v-slot:header>
+                      <div
+                        class="subheading font-weight-bold"
+                      >Processos de negócio que regula ou enquadra</div>
+                    </template>
+                    <v-card style="padding-top:30px;">
+                      <DesSelProc
+                        :processos="procSel"
+                        @unselectProcesso="unselectProcesso($event)"
+                      />
 
-                    <hr style="border-top: 1px dashed #dee2f8;" />
+                      <hr style="border-top: 1px dashed #dee2f8;" />
 
-                    <SelProc
-                      :processosReady="processosReady"
-                      :processos="processos"
-                      @selectProcesso="selectProcesso($event)"
-                    />
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
+                      <SelProc
+                        :processosReady="processosReady"
+                        :processos="processos"
+                        @selectProcesso="selectProcesso($event)"
+                      />
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
             </div>
           </v-card-text>
-          <v-snackbar
-            v-model="snackbar"
-            :timeout="8000"
-            color="error"
-            :top="true"
-          >
+          <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
             {{ text }}
             <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
@@ -178,8 +156,7 @@
             color="primary"
             :disabled="!(legislacao.sumario && legislacao.numero)"
             @click="submeter()"
-            >Submeter Diploma</v-btn
-          >
+          >Submeter Diploma</v-btn>
         </div>
       </v-col>
     </v-row>
@@ -205,7 +182,7 @@ export default {
       data: "",
       link: "",
       entidades: [],
-      processos: [],
+      processos: []
     },
 
     tiposDiploma: [],
