@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap ma-2>
+  <v-row>
     <!-- DONOS DO PROCESSO -->
-    <v-flex xs2>
+    <v-col xs="2" sm="2">
       <div class="info-label">
         Donos do processo
         <InfoBox
@@ -11,8 +11,8 @@
           dialogColor="#E0F2F1"
         />
       </div>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col xs="10" sm="10">
       <div class="info-content">
         <ul>
           <li v-for="p in entidades" :key="p.idDono">
@@ -32,8 +32,8 @@
           </li>
         </ul>
       </div>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

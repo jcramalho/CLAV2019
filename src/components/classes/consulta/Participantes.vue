@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap ma-2>
+  <v-row>
     <!-- PARTICIPANTES NO PROCESSO -->
-    <v-flex xs2>
+    <v-col xs="2" sm="2">
       <div class="info-label">
         Participantes no processo
         <InfoBox
@@ -11,14 +11,14 @@
           dialogColor="#E0F2F1"
         />
       </div>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col xs="10" sm="10">
       <div class="info-content">
         <v-data-table
           :headers="headers"
           :items="myParticipantes"
           class="elevation-1"
-          hide-actions
+          hide-default-footer
         >
           <template v-slot:headers="props">
             <tr>
@@ -32,7 +32,7 @@
             </tr>
           </template>
 
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td style="color: #1A237E;">{{ props.item.label }}</td>
               <td>
@@ -56,8 +56,8 @@
           </template>
         </v-data-table>
       </div>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap ma-2>
+  <v-row>
     <!-- LEGISLAÇÂO -->
-    <v-flex xs2>
+    <v-col xs="2" sm="2">
       <div class="info-label">
         Legislação
         <InfoBox
@@ -11,14 +11,14 @@
           dialogColor="#E0F2F1"
         />
       </div>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col xs="10" sm="10">
       <div class="info-content">
         <v-data-table
           :headers="headers"
           :items="legs"
           class="elevation-1"
-          hide-actions
+          hide-default-footer
         >
           <template v-slot:headers="props">
             <tr>
@@ -53,8 +53,8 @@
           </template>
         </v-data-table>
       </div>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
