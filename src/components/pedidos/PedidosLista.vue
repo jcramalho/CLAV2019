@@ -17,12 +17,16 @@
           :headers="headers"
           :items="pedidos"
           class="elevation-1"
-          rows-per-page-text="Pedidos por página"
+          :footer-props="footer_props"
         >
           <template v-slot:no-data>
             <v-alert :value="true" color="error" icon="warning">
               Não existem pedidos neste estado...
             </v-alert>
+          </template>
+
+          <template v-slot:footer.page-text="props">
+            {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
           </template>
 
           <template slot="headerCell" slot-scope="props">
@@ -39,11 +43,6 @@
               <td class="subheading">{{ props.item.criadoPor }}</td>
               <td class="subheading">
                 {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
-              </td>
-              <td class="subheading">
-                <v-btn color="blue" dark round @click="showPedido(props.item)">
-                  {{ props.item.objeto.codigo }}
-                </v-btn>
               </td>
               <td>
                 <v-tooltip bottom>
@@ -119,9 +118,14 @@ export default {
         class: "title"
       },
       { text: "Tipo", value: "tipo", sortable: false, class: "title" },
-      { text: "Objeto", value: "objeto", sortable: false, class: "title" },
       { text: "Tarefa", sortable: false, class: "title" }
-    ]
+    ],
+
+    footer_props: {
+        "items-per-page-text": "Pedidos por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todos"
+      }
     }
   },
 

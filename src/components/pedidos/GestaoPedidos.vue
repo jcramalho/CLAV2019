@@ -1,10 +1,9 @@
 <template>
-    <v-row class="ma-2">
-      <v-col>
-        <v-card>
-          <v-toolbar color="indigo darken-4" dark>
-            <v-toolbar-title>Gestão de Pedidos</v-toolbar-title>
-          </v-toolbar>
+    <div>
+        <v-card class="ma-2">
+          <v-card-title class="indigo darken-4 title white--text" dark>
+            Gestão de Pedidos
+          </v-card-title>
           <v-card-text>
             <v-expansion-panels>
                     <PedidosLista :pedidos="pedidosSubmetidos" 
@@ -31,11 +30,12 @@
             </v-expansion-panels>
           </v-card-text>
         </v-card>
-      </v-col>
 
       <v-dialog v-model="distribuir" width="60%" >
-      <v-card>
-        <v-card-title class="title">Distribuição do pedido</v-card-title>
+        <v-card>
+          <v-card-title class="indigo darken-4 title white--text" dark>
+            Distribuição do pedido
+          </v-card-title>
 
         <v-card-text>
           <div v-if="!selectedUser.name">
@@ -75,17 +75,13 @@
             color="indigo darken-4"
             rounded dark
             @click="guardarDistribuicao"
-          >
-            Guardar
-          </v-btn>
+          >Guardar</v-btn>
 
           <v-btn
             color="red darken-4"
             rounded dark
             @click="cancelarDistribuicao"
-          >
-            Cancelar
-          </v-btn>
+          >Cancelar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -94,9 +90,11 @@
     
       <v-dialog v-model="show" width="80%" >
       <v-card>
-        <v-card-title class="title">Dados do pedido</v-card-title>
+        <v-card-title class="green darken-4 title white--text" dark>
+            Dados do pedido
+          </v-card-title>
         <v-card-text>
-          <v-row class="ma-2">
+          <v-row class="ma-1">
             <v-col cols="2">
               <div class="info-label">Código</div>
             </v-col>
@@ -104,7 +102,7 @@
               <div class="info-content">{{pedido.codigo}}</div>
             </v-col>
           </v-row>
-          <v-row class="ma-2">
+          <v-row class="ma-1">
             <v-col cols="2">
               <div class="info-label">Estado</div>
             </v-col>
@@ -112,7 +110,7 @@
               <div class="info-content">{{pedido.estado}}</div>
             </v-col>
           </v-row>
-          <v-row class="ma-2">
+          <v-row class="ma-1">
             <v-col cols="2">
               <div class="info-label">Data</div>
             </v-col>
@@ -120,7 +118,7 @@
               <div class="info-content">{{pedido.data}}</div>
             </v-col>
           </v-row>
-          <v-row class="ma-2">
+          <v-row class="ma-1">
             <v-col cols="2">
               <div class="info-label">Criado Por</div>
             </v-col>
@@ -128,22 +126,33 @@
               <div class="info-content">{{pedido.criadoPor}}</div>
             </v-col>
           </v-row>
-          <div class="info-label title">Distribuição</div>
-          <v-data-table
-            :headers="distHeaders"
-            :items="pedido.distribuicao"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:item="props">
-              <tr>
-                <td class="subheading">{{ props.item.estado }}</td>
-                <td class="subheading">{{ props.item.data }}</td>
-                <td class="subheading">{{ props.item.responsavel }}</td>
-                <td class="subheading">{{ props.item.despacho }}</td>
-              </tr>
-            </template>
-          </v-data-table>
+
+          <v-card>
+            <v-card-title class="info-label title" dark>
+              Distribuição
+            </v-card-title>
+            <v-card-text>
+              <v-data-table
+                :headers="distHeaders"
+                :items="pedido.distribuicao"
+                class="elevation-1"
+                hide-default-footer
+              >
+                <template v-slot:item="props">
+                  <tr>
+                    <td class="subheading">{{ props.item.estado }}</td>
+                    <td class="subheading">{{ props.item.data }}</td>
+                    <td class="subheading">{{ props.item.responsavel }}</td>
+                    <td class="subheading">{{ props.item.despacho }}</td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-card-text>
+          </v-card>
+
+          <div>
+            {{ JSON.stringify(pedido) }}
+          </div>
         </v-card-text>
 
         <v-card-actions>
@@ -157,7 +166,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    </v-row>
+    </div>
 </template>
 
 <script>

@@ -7,7 +7,6 @@
 
       <v-col>
         <DocumentacaoApoio />
-        <Entidades />
         <Gestao v-if="this.$store.state.name != ''"/>
       </v-col>
     </v-row>

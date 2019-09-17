@@ -69,7 +69,56 @@ export default {
       panelHeaderColor: "indigo accent-4",
       operacoes: [
         {
-          entidade: "Gestão de utilizadores",
+          entidade: "Indicação de representante da entidade",
+          texto: "É necessário que a Entidade identifique os seus representantes antes destes se registarem.",
+          ops:[
+            {
+              label: "Identificar representantes",
+              url: "/representantes/identificar"
+            }
+          ]
+        },
+        {
+          entidade: "Pedidos",
+          texto:
+            "Pedidos de alteração ou de criação de novas instâncias que deram entrada na plataforma.",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/pedidos",
+              level: "public"
+            },
+            {
+              label: "Criar pedido",
+              url: "/pedidos/criar",
+              level: "auth"
+            }
+          ]
+        },
+        {
+          entidade: "Pendentes",
+          texto:
+            "Trabalhos em curso guardados para mais tarde terem continuidade: criação e alteração de instâncias.",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/pendentes"
+            }
+          ]
+        },
+        {
+          entidade: "Invariantes",
+          texto: help.Invariantes,
+          ops: [
+            {
+              label: "Listar Invariantes",
+              url: "/invariantes",
+              level: "public"
+            }
+          ]
+        },
+        {
+          entidade: "Utilizadores",
           texto: '',
           ops: [
             {
@@ -80,7 +129,7 @@ export default {
           ]
         },
         {
-          entidade: "Gestão de chaves API",
+          entidade: "Chaves API",
           texto: '',
           ops: [
             {
@@ -91,7 +140,7 @@ export default {
           ]
         },
         {
-          entidade: "Métrica plataforma CLAV",
+          entidade: "Métricas da plataforma",
           texto: '',
           ops: [
             {
