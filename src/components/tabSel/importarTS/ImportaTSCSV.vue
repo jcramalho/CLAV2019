@@ -110,6 +110,7 @@ export default {
         );
 
         formData.append("email", userBD.data.email);
+        formData.append("entidade", userBD.data.entidade);
 
         var response = await axios.post(
           lhost + "/api/tabelasSelecao/CSV",
