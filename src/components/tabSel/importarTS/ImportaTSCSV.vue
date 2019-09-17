@@ -48,6 +48,13 @@
     <v-card class="ma-2 mx-auto" outlined width="60%">
       <v-card-title>Seleção do ficheiro</v-card-title>
       <v-card-text>
+        <v-select
+          :items="entidades"
+          label="Entidade"
+          v-model="entidade"
+          prepend-icon="account_balance"
+        >
+        </v-select>
         <v-file-input
           v-model="file"
           label="Importar CSV/Excel"
@@ -71,7 +78,7 @@
           color="indigo darken-4"
           @click="enviarFicheiro()"
           :loading="loading"
-          :disabled="file == null"
+          :disabled="file.length == 0 || entidade == null"
         >
           Enviar
         </v-btn>
@@ -86,13 +93,30 @@ import axios from "axios";
 
 export default {
   data: () => ({
-    file: null,
+    file: [],
     erro: "",
     erroDialog: false,
     success: "",
     successDialog: false,
-    loading: false
+    loading: false,
+    entidades: [],
+    entidade: null
   }),
+
+  mounted: async function() {
+    try {
+      var response = await axios.get(lhost + "/api/entidades");
+      this.entidades = response.data.map(ent => {
+        return {
+          text: ent.sigla + " - " + ent.designacao,
+          value: ent.sigla
+        };
+      });
+    } catch (e) {
+      this.erro =
+        "Não foi possível obter as entidades... Realize reload da página.";
+    }
+  },
 
   methods: {
     enviarFicheiro: async function() {
@@ -110,6 +134,7 @@ export default {
         );
 
         formData.append("email", userBD.data.email);
+        formData.append("entidade", this.entidade);
 
         var response = await axios.post(
           lhost + "/api/tabelasSelecao/CSV",
