@@ -9,7 +9,7 @@
         :items="legs"
         class="elevation-1"
         hide-default-footer
-        items-per-page-text="Linhas por página"
+        :footer-props="footer_props"
       >
         <template v-slot:header="props">
           <tr>
@@ -70,7 +70,13 @@ export default {
         { text: "Sumário", value: "sumario" },
         { text: "Data", value: "data" },
         { text: "Remover", value: "" }
-      ]
+      ],
+
+      footer_props: {
+        "items-per-page-text": "Diplomas por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
 

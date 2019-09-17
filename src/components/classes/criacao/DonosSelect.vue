@@ -20,7 +20,7 @@
           :search="searchEntidades"
           item-key="id"
           class="elevation-1"
-          items-per-page-text="Linhas por página"
+          :footer-props="footer_props"
         >
           <template v-slot:item="props">
             <tr @click="selectEntidade(props.item)">
@@ -58,7 +58,13 @@ export default {
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
         { text: "Tipo", value: "tipo" }
-      ]
+      ],
+
+      footer_props: {
+        "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todas"
+      }
     };
   },
 
