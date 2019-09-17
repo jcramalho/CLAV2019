@@ -50,6 +50,12 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>Como registar-se na CLAV</v-expansion-panel-header>
+          <v-expansion-panel-content>
+
+          </v-expansion-panel-content>
+        </v-expansion-panel>
         </v-expansion-panels>
       </v-card-text>
     </v-card>
