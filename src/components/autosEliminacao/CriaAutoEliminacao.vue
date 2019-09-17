@@ -16,6 +16,18 @@
               >
                 <tr>
                   <td style="width:20%;">
+                    <div class="info-label">Tipo do Ficheiro:</div>
+                  </td>
+                  <td style="width:40%">
+                    <v-radio-group row v-model="tipo" :mandatory="true">
+                        <v-radio xs4 sm4 label="TS" value="ts"></v-radio>
+                        <v-radio xs4 sm4 label="PGD" value="pgd"></v-radio>
+                        <v-radio xs4 sm4 label="RADA" value="rada"></v-radio>
+                    </v-radio-group>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%;">
                     <div class="info-label">Ficheiro:</div>
                   </td>
                   <td>
@@ -53,16 +65,36 @@
 import axios from "axios";
 const lhost = require("@/config/global").host;
 const conversor = require("@/plugins/conversor").excel2Json;
+const conversorTS = require("@/plugins/conversor").excel2Json;
 
 export default {
   data: () => ({
     file: null,
+    tipo: "ts",
     obj: "",
   }),
   methods: {
     submit: async function() {
-        this.obj = await conversor(this.file)
-        console.log(this.obj)
+      switch(this.tipo) {
+        case "ts": 
+          conversorTS(this.file)
+            .then(res => {
+              console.warn("TS")
+              console.warn(res)
+            })
+            .catch(err => {
+              console.warn(err)
+            })
+          break;
+        default:
+          conversor(this.file)
+          .then(res => {
+            console.warn(res)
+          })
+          .catch(err => {
+            console.warn(err)
+          })
+      }
     },
     previewFiles: function(ev) {
       const file = ev.target.files[0];
