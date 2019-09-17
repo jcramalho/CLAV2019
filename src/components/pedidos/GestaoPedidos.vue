@@ -94,7 +94,7 @@
             Dados do pedido
           </v-card-title>
         <v-card-text>
-          <v-row class="ma-2">
+          <v-row class="ma-1">
             <v-col cols="2">
               <div class="info-label">Código</div>
             </v-col>
@@ -102,7 +102,7 @@
               <div class="info-content">{{pedido.codigo}}</div>
             </v-col>
           </v-row>
-          <v-row class="ma-2">
+          <v-row class="ma-1">
             <v-col cols="2">
               <div class="info-label">Estado</div>
             </v-col>
@@ -110,7 +110,7 @@
               <div class="info-content">{{pedido.estado}}</div>
             </v-col>
           </v-row>
-          <v-row class="ma-2">
+          <v-row class="ma-1">
             <v-col cols="2">
               <div class="info-label">Data</div>
             </v-col>
@@ -118,7 +118,7 @@
               <div class="info-content">{{pedido.data}}</div>
             </v-col>
           </v-row>
-          <v-row class="ma-2">
+          <v-row class="ma-1">
             <v-col cols="2">
               <div class="info-label">Criado Por</div>
             </v-col>
@@ -126,27 +126,29 @@
               <div class="info-content">{{pedido.criadoPor}}</div>
             </v-col>
           </v-row>
-          <div class="info-label title">Distribuição</div>
-          <v-data-table
-            :headers="distHeaders"
-            :items="pedido.distribuicao"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:item="props">
-              <tr>
-                <td class="subheading">{{ props.item.estado }}</td>
-                <td class="subheading">{{ props.item.data }}</td>
-                <td class="subheading">{{ props.item.responsavel }}</td>
-                <td class="subheading">{{ props.item.despacho }}</td>
-              </tr>
-            </template>
-          </v-data-table>
 
-          <div>
-
-          </div>
-          
+          <v-card>
+            <v-card-title class="info-label title" dark>
+              Distribuição
+            </v-card-title>
+            <v-card-text>
+              <v-data-table
+                :headers="distHeaders"
+                :items="pedido.distribuicao"
+                class="elevation-1"
+                hide-default-footer
+              >
+                <template v-slot:item="props">
+                  <tr>
+                    <td class="subheading">{{ props.item.estado }}</td>
+                    <td class="subheading">{{ props.item.data }}</td>
+                    <td class="subheading">{{ props.item.responsavel }}</td>
+                    <td class="subheading">{{ props.item.despacho }}</td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-card-text>
+          </v-card>
 
           <div>
             {{ JSON.stringify(pedido) }}
