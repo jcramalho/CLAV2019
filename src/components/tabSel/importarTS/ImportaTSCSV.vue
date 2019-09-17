@@ -52,6 +52,7 @@
           :items="['Organizacional', 'Pluriorganizacional']"
           label="Tipo de Tabela de Seleção"
           v-model="tipo"
+          @change="entidade_tipologia = null"
         >
         </v-select>
         <v-select
