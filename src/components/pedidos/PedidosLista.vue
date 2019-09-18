@@ -40,7 +40,6 @@
               <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
               <td class="subheading">{{ props.item.estado }}</td>
               <td class="subheading">{{ props.item.codigo }}</td>
-              <td class="subheading">{{ props.item.entidade }}</td>
               <td class="subheading">{{ props.item.criadoPor }}</td>
               <td class="subheading">{{ props.item.entidade }}</td>
               <td class="subheading">
@@ -113,10 +112,6 @@ export default {
         class: "title"
       },
       { text: "Código", value: "codigo", sortable: false, class: "title" },
-<<<<<<< HEAD
-      { text: "Entidade", value: "entidade", sortable: true, class: "title" },
-      { text: "Responsável", value: "responsavel", sortable: false, class: "title" },
-=======
       {
         text: "Responsável",
         value: "responsavel",
@@ -124,7 +119,6 @@ export default {
         class: "title"
       },
       { text: "Entidade", value: "entidade", sortable: true, class: "title" },
->>>>>>> ceb768dad2789287528854fe203a1b621016e792
       { text: "Tipo", value: "tipo", sortable: false, class: "title" },
       { text: "Tarefa", sortable: false, class: "title" }
     ],
@@ -143,7 +137,7 @@ export default {
       },
 
       showPedido: function(pedido){
-          this.$emit('show', pedido)
+          this.$router.push("/pedidos/" + pedido.codigo);
       },
 
       analisaPedido: function(pedido){
