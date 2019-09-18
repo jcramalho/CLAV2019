@@ -40,6 +40,7 @@
               <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
               <td class="subheading">{{ props.item.estado }}</td>
               <td class="subheading">{{ props.item.codigo }}</td>
+              <td class="subheading">{{ props.item.entidade }}</td>
               <td class="subheading">{{ props.item.criadoPor }}</td>
               <td class="subheading">
                 {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
@@ -111,12 +112,8 @@ export default {
         class: "title"
       },
       { text: "Código", value: "codigo", sortable: false, class: "title" },
-      {
-        text: "Responsável",
-        value: "responsavel",
-        sortable: false,
-        class: "title"
-      },
+      { text: "Entidade", value: "entidade", sortable: true, class: "title" },
+      { text: "Responsável", value: "responsavel", sortable: false, class: "title" },
       { text: "Tipo", value: "tipo", sortable: false, class: "title" },
       { text: "Tarefa", sortable: false, class: "title" }
     ],

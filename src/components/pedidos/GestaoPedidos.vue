@@ -120,6 +120,14 @@
           </v-row>
           <v-row class="ma-1">
             <v-col cols="2">
+              <div class="info-label">Entidade</div>
+            </v-col>
+            <v-col>
+              <div class="info-content">{{pedido.entidade}}</div>
+            </v-col>
+          </v-row>
+          <v-row class="ma-1">
+            <v-col cols="2">
               <div class="info-label">Criado Por</div>
             </v-col>
             <v-col>
@@ -150,8 +158,17 @@
             </v-card-text>
           </v-card>
 
+          <v-card v-if="pedido.tipo='TS Organizacional'">
+            <v-card-title class="info-label title" dark>
+              Tabela de Seleção para a entidade {{  }}
+            </v-card-title>
+            <v-card-text>
+
+            </v-card-text>
+          </v-card>
+
           <div>
-            {{ JSON.stringify(pedido) }}
+            {{ JSON.stringify(pedido.objeto) }}
           </div>
         </v-card-text>
 
@@ -211,12 +228,8 @@ export default {
         class: "title"
       },
       { text: "Código", value: "codigo", sortable: false, class: "title" },
-      {
-        text: "Responsável",
-        value: "responsavel",
-        sortable: false,
-        class: "title"
-      },
+      { text: "Entidade", value: "entidade", sortable: true, class: "title" },
+      { text: "Responsável", value: "responsavel", sortable: false, class: "title" },
       { text: "Tipo", value: "tipo", sortable: false, class: "title" },
       { text: "Objeto", value: "objeto", sortable: false, class: "title" },
       { text: "Tarefa", sortable: false, class: "title" }
