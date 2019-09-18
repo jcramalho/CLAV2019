@@ -4,7 +4,7 @@
       <v-subheader class="info-label">Regula os Processos de Negócio:</v-subheader>
     </v-col>
     <v-col v-if="processos.length > 0">
-      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-actions>
+      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
         <template v-slot:headers="props">
           <tr>
             <th
@@ -17,7 +17,7 @@
           </tr>
         </template>
 
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>

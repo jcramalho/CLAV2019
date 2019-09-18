@@ -24,16 +24,14 @@
         :items="utilizadores"
         :search="search"
         class="elevation-1"
-        :rows-per-page-items="[10, 20, 50]"
-        rows-per-page-text="Mostrar"
-
+        :footer-props="usersFooterProps"
       >
         <template v-slot:no-results>
           <v-alert :value="true" color="error" icon="warning">
             Não foram encontrados resultados para "{{ search }}" .
           </v-alert>
         </template>
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td class="subheading">{{ props.item.name }}</td>
             <td class="subheading">{{format(props.item.entidade)}}</td>
@@ -181,6 +179,11 @@ export default {
     ],
     regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
     ent_list: [],
+    usersFooterProps: {
+        "items-per-page-text": "Pedidos por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todos"
+      },
     headers: [
       {
         text: "Nome",

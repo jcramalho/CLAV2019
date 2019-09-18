@@ -19,7 +19,7 @@
                 </th>
             </tr>
         </template>
-        <template v-slot:items="props">
+        <template v-slot:item="props">
             <tr
                 :style="{
                     backgroundColor:

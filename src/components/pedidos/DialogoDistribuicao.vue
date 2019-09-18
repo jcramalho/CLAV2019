@@ -14,9 +14,9 @@
             :headers="usersHeaders"
             :items="usersRecords"
             class="elevation-1"
-            hide-actions
+            hide-default-footer
           >
-            <template v-slot:items="props">
+            <template v-slot:item="props">
               <tr @click="selectedUser=props.item">
                 <td class="subheading">{{ props.item.name }}</td>
                 <td class="subheading">{{ props.item.entidade }}</td>

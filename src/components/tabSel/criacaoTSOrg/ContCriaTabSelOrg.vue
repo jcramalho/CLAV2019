@@ -30,9 +30,9 @@
                     ]"
                     :items="tipEnt"
                     class="elevation-1"
-                    hide-actions
+                    hide-default-footer
                   >
-                    <template v-slot:items="props">
+                    <template v-slot:item="props">
                       <tr>
                         <td>{{ props.item.sigla }}</td>
                         <td>{{ props.item.designacao }}</td>

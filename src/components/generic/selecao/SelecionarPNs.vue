@@ -22,7 +22,7 @@
           class="elevation-1"
           footer-props.items-per-page-text="Linhas por página"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr @click="selectProcesso(props.item)">
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>

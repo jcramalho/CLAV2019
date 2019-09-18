@@ -108,7 +108,8 @@ export default {
           ops: [
             {
               label: "Consultar",
-              url: "/entidades"
+              url: "/entidades",
+              level: "public"
             },
             {
               label: "Adicionar",
@@ -122,7 +123,8 @@ export default {
           ops: [
             {
               label: "Consultar",
-              url: "/tipologias"
+              url: "/tipologias",
+              level: "public"
             },
             {
               label: "Adicionar",
@@ -136,7 +138,8 @@ export default {
           ops: [
             {
               label: "Consultar",
-              url: "/legislacao"
+              url: "/legislacao",
+              level: "public"
             },
             {
               label: "Adicionar",
@@ -150,7 +153,8 @@ export default {
           ops: [
             {
               label: "Consultar",
-              url: "/termosIndice"
+              url: "/termosIndice",
+              level: "public"
             }
           ]
         },
@@ -171,8 +175,7 @@ export default {
           ops: [
             {
               label: "Consultar",
-              url: "/autosEliminacao",
-              level: "public"
+              url: "/autosEliminacao"
             },
             {
               label: "Adicionar",

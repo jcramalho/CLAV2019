@@ -7,7 +7,7 @@
         <v-btn
             color="primary"
             dark
-            round
+            rounded
             @click="insereNovaNota(lista.notasEx)"
             >
             Nova Nota
@@ -28,7 +28,7 @@
           <v-btn
             color="red darken-2"
             dark
-            round
+            rounded
             @click="lista.notasEx.splice(index, 1); forceRerender()"
           >
             <v-icon dark>clear</v-icon>

@@ -32,7 +32,7 @@
             Não foram encontrados resultados para "{{ search }}" .
           </v-alert>
         </template>
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td class="subheading">{{format(props.item.key)}}</td>
             <td class="subheading">{{ props.item.name }}</td>

@@ -7,7 +7,7 @@
       <v-btn
         color="primary"
         dark
-        round
+        rounded
         @click="insereNovoTI(lista.termosInd)"
       >
         Novo termo
@@ -28,7 +28,7 @@
           <v-btn
             color="red darken-2"
             dark
-            round
+            rounded
             @click="lista.termosInd.splice(index, 1); forceRerender()"
           >
             <v-icon dark>clear</v-icon>
