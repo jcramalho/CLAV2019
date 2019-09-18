@@ -20,7 +20,7 @@
           :search="searchProcessos"
           item-key="id"
           class="elevation-1"
-          footer-props.items-per-page-text="Linhas por página"
+          :footer-props="footer_props"
         >
           <template v-slot:item="props">
             <tr @click="selectProcesso(props.item)">
@@ -56,7 +56,9 @@ export default {
   data: function() {
     return {
       searchProcessos: "",
-
+      footer_props: {
+        "items-per-page-text": "Linhas por página"
+      },
       processosHeaders: [
         { text: "Código", align: "left", value: "codigo" },
         { text: "Designação", value: "titulo" }
@@ -74,12 +76,12 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #0d47a1;
-  padding: 6px;
+  color: #2e7d32; /* green darken-3 */
+  padding: 5px;
   font-weight: 400;
   width: auto;
   height: auto;
-  background-color: #b3e5fc;
+  background-color: #e8f5e9; /* green lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
