@@ -49,9 +49,17 @@
       <v-card-title>Seleção do ficheiro</v-card-title>
       <v-card-text>
         <v-select
-          :items="entidades"
-          label="Entidade"
-          v-model="entidade"
+          :items="['Organizacional', 'Pluriorganizacional']"
+          label="Tipo de Tabela de Seleção"
+          v-model="tipo"
+          @change="entidade_tipologia = null"
+        >
+        </v-select>
+        <v-select
+          v-if="tipo == 'Organizacional'"
+          :items="entidades_tipologias"
+          label="Entidade/Tipologia"
+          v-model="entidade_tipologia"
           prepend-icon="account_balance"
         >
         </v-select>
@@ -78,7 +86,11 @@
           color="indigo darken-4"
           @click="enviarFicheiro()"
           :loading="loading"
-          :disabled="file.length == 0 || entidade == null"
+          :disabled="
+            file.length == 0 ||
+              tipo == null ||
+              (tipo == 'Organizacional' && entidade_tipologia == null)
+          "
         >
           Enviar
         </v-btn>
@@ -99,22 +111,36 @@ export default {
     success: "",
     successDialog: false,
     loading: false,
-    entidades: [],
-    entidade: null
+    entidades_tipologias: [],
+    entidade_tipologia: null,
+    tipo: null
   }),
 
   mounted: async function() {
     try {
       var response = await axios.get(lhost + "/api/entidades");
-      this.entidades = response.data.map(ent => {
+      var entidades = response.data.map(ent => {
         return {
           text: ent.sigla + " - " + ent.designacao,
           value: ent.sigla
         };
       });
+
+      response = await axios.get(lhost + "/api/tipologias");
+      var tipologias = response.data.map(tip => {
+        return {
+          text: tip.sigla + " - " + tip.designacao,
+          value: tip.sigla
+        };
+      });
+
+      this.entidades_tipologias = entidades.concat(tipologias);
+      this.entidades_tipologias = this.entidades_tipologias.sort((a, b) => {
+        return a.text.localeCompare(b.text);
+      });
     } catch (e) {
       this.erro =
-        "Não foi possível obter as entidades... Realize reload da página.";
+        "Não foi possível obter as entidades ou as tipologias... Realize reload da página.";
     }
   },
 
@@ -134,7 +160,9 @@ export default {
         );
 
         formData.append("email", userBD.data.email);
-        formData.append("entidade", this.entidade);
+        formData.append("entidade_user", userBD.data.entidade.split("_")[1]);
+        formData.append("entidade_ts", this.entidade_tipologia);
+        formData.append("tipo_ts", "TS " + this.tipo);
 
         var response = await axios.post(
           lhost + "/api/tabelasSelecao/CSV",

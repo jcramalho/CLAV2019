@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap ma-2>
+  <v-row>
     <!-- PROCESSOS RELACIONADOS -->
-    <v-flex xs2>
+    <v-col xs="2" sm="2">
       <div class="info-label">
         Processos Relacionados
         <InfoBox
@@ -11,36 +11,17 @@
           dialogColor="#E0F2F1"
         />
       </div>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col xs="10" sm="10">
       <div class="info-content">
-        <v-data-table
-          :headers="headers"
-          :items="myProcRel"
-          class="elevation-1"
-          hide-actions
-        >
-          <template v-slot:headers="props">
-            <tr>
-              <th
-                v-for="h in props.headers"
-                :key="h.text"
-                class="table-header body-2 font-weight-bold"
-              >
-                {{ h.text }}
-              </th>
-            </tr>
-          </template>
-
-          <template v-slot:items="props">
+        <v-data-table :headers="headers" :items="myProcRel" class="elevation-1" hide-default-footer>
+          <template v-slot:item="props">
             <tr>
               <td style="color: #1A237E;">{{ props.item.label }}</td>
               <td>
                 <ul>
                   <li v-for="p in props.item.processos" :key="p.label">
-                    <a :href="'/classes/consultar/c' + p.codigo">
-                      {{ p.codigo }}
-                    </a>
+                    <a :href="'/classes/consultar/c' + p.codigo">{{ p.codigo }}</a>
                     - {{ p.titulo }}
                   </li>
                 </ul>
@@ -49,8 +30,8 @@
           </template>
         </v-data-table>
       </div>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -64,8 +45,18 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: "Relação", align: "left", sortable: false, value: "label" },
-        { text: "Processos", value: "processos" }
+        {
+          text: "Relação",
+          align: "left",
+          sortable: false,
+          value: "label",
+          class: ["table-header", "body-2", "font-weight-bold"]
+        },
+        {
+          text: "Processos",
+          value: "processos",
+          class: ["table-header", "body-2", "font-weight-bold"]
+        }
       ],
       relPorTipo: {
         eAntecessorDe: [],

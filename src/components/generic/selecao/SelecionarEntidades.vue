@@ -1,12 +1,12 @@
 <template>
   <v-row>
-    <v-col cols="12" xs="2" md="2">
+    <v-col cols="2">
       <v-subheader
         class="info-label"
         style="border-color: white; border-style:solid; color: #1A237E;"
       >Selecionar Entidades:</v-subheader>
     </v-col>
-    <v-col xs="9" md="9" v-if="entidadesReady">
+    <v-col v-if="entidadesReady">
       <v-card>
         <v-card-title>
           <v-text-field

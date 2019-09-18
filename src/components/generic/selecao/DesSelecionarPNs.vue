@@ -1,19 +1,10 @@
 <template>
-  <v-layout row wrap color="teal lighten-5">
-    <v-flex xs2>
-      <v-subheader
-        class="info-label"
-        style="border-color: white; border-style:solid; color: #1A237E;"
-        >Regula os Processos de Negócio:
-      </v-subheader>
-    </v-flex>
-    <v-flex xs9 v-if="processos.length > 0">
-      <v-data-table
-        :headers="headers"
-        :items="processos"
-        class="elevation-1"
-        hide-actions
-      >
+  <v-row>
+    <v-col cols="2">
+      <v-subheader class="info-label">Regula os Processos de Negócio:</v-subheader>
+    </v-col>
+    <v-col v-if="processos.length > 0">
+      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-actions>
         <template v-slot:headers="props">
           <tr>
             <th
@@ -21,9 +12,7 @@
               :key="h.text"
               class="body-2 font-weight-bold"
               style="color: #1A237E;"
-            >
-              {{ h.text }}
-            </th>
+            >{{ h.text }}</th>
             <th style="color: #1A237E;">Remover</th>
           </tr>
         </template>
@@ -33,26 +22,18 @@
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
-              <v-btn
-                small
-                color="red darken-2"
-                dark
-                round
-                @click="unselectProcesso(props.item)"
-              >
+              <v-btn small color="red darken-2" dark round @click="unselectProcesso(props.item)">
                 <v-icon dark>remove_circle</v-icon>
               </v-btn>
             </td>
           </tr>
         </template>
       </v-data-table>
-    </v-flex>
-    <v-flex xs9 v-else>
-      <v-alert :value="true" type="warning">
-        Não tem entidades selecionadas...
-      </v-alert>
-    </v-flex>
-  </v-layout>
+    </v-col>
+    <v-col v-else>
+      <v-alert :value="true" type="warning">Não tem entidades selecionadas...</v-alert>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -75,3 +56,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.info-label {
+  color: #0d47a1;
+  padding: 6px;
+  font-weight: 400;
+  width: auto;
+  height: auto;
+  background-color: #b3e5fc;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+</style>

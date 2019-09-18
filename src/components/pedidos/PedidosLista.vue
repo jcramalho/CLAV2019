@@ -44,11 +44,6 @@
               <td class="subheading">
                 {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
               </td>
-              <td class="subheading">
-                <v-btn color="blue" dark rounded @click="showPedido(props.item)">
-                  {{ props.item.objeto.codigo }}
-                </v-btn>
-              </td>
               <td>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
@@ -123,7 +118,6 @@ export default {
         class: "title"
       },
       { text: "Tipo", value: "tipo", sortable: false, class: "title" },
-      { text: "Objeto", value: "objeto", sortable: false, class: "title" },
       { text: "Tarefa", sortable: false, class: "title" }
     ],
 
