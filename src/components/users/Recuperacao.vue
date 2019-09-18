@@ -73,25 +73,13 @@ export default {
             url: window.location.href
           })
           .then(res => {
-            if (res.data === "Não existe utilizador com esse email!") {
-              this.text = "Não existe nenhum utilizador registado com esse email!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }else if(res.data === 'Este utilizador foi registado através do Cartão de Cidadão!'){
-              this.text = "Este utilizador foi registado na plataforma CLAV através do Cartão de Cidadão, não existindo uma password para o mesmo!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }else{
-              this.text = "Email enviado com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            }
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text = err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;

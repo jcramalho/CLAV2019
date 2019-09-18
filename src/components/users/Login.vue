@@ -104,8 +104,9 @@ export default {
               this.done = false;
             }
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text =
+              "Ocorreu um erro ao realizar o login: Por favor verifique as suas credenciais!";
             this.color = "error";
             this.snackbar = true;
             this.done = false;

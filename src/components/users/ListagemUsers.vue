@@ -268,25 +268,13 @@ export default {
         token: this.$store.state.token,
         id: item.id
       }).then(res => {
-        if (res.data === "Utilizador desativado com sucesso!") {
-          this.text = "Utilizador desativado com sucesso!";
-          this.color = "success";
-          this.snackbar = true;
-          this.done = true;
-          this.getUtilizadores();
-        }else if(res.data === "Não pode desativar o seu próprio utilizador!"){
-          this.text = "Não pode desativar o seu próprio utilizador!";
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        }else{
-          this.text = "Ocorreu um erro ao desativar o utilizador!";
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        }
-      }).catch(function(err) {
-        this.text = err;
+        this.text = res.data;
+        this.color = "success";
+        this.snackbar = true;
+        this.done = true;
+        this.getUtilizadores();
+      }).catch(err => {
+        this.text = err.response.data;
         this.color = "error";
         this.snackbar = true;
         this.done = false;
@@ -297,25 +285,13 @@ export default {
         token: this.$store.state.token,
         id: item.id
       }).then(res => {
-        if (res.data === "Utilizador eliminado com sucesso!") {
-          this.text = "Utilizador eliminado com sucesso!";
-          this.color = "success";
-          this.snackbar = true;
-          this.done = true;
-          this.getUtilizadores();
-        }else if(res.data === "Não pode eliminar o seu próprio utilizador!"){
-          this.text = "Não pode eliminar o seu próprio utilizador!";
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        }else{
-          this.text = "Ocorreu um erro ao eliminar o utilizador!";
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        }
-      }).catch(function(err) {
-        this.text = err;
+        this.text = res.data;
+        this.color = "success";
+        this.snackbar = true;
+        this.done = true;
+        this.getUtilizadores();
+      }).catch(err => {
+        this.text = err.response.data;
         this.color = "error";
         this.snackbar = true;
         this.done = false;
@@ -357,26 +333,14 @@ export default {
           entidade: 'ent_' + this.editedItem.entidade,
           level: parsedType
         }).then(res => {
-          if (res.data === "Já existe utilizador registado com esse email!") {
-            this.text = "Já existe um utilizar registado com esse email!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }else if (res.data === "Utilizador atualizado com sucesso!") {
-            this.text = "Utilizador atualizado com sucesso!";
-            this.color = "success";
-            this.snackbar = true;
-            this.done = true;
-            this.dialog = false;
-            this.getUtilizadores();
-          }else{
-            this.text = "Ocorreu um erro ao atualizar a informação do utilizador!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }
-        }).catch(function(err) {
-          this.text = err;
+          this.text = res.data;
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.dialog = false;
+          this.getUtilizadores();
+        }).catch(err => {
+          this.text = err.response.data;
           this.color = "error";
           this.snackbar = true;
           this.done = false;

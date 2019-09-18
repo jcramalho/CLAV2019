@@ -90,20 +90,13 @@ export default {
             password: this.$data.form.password
           })
           .then(res => {
-            if (res.data === "Password atualizada com sucesso!") {
-              this.text = "Password atualizada com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            }else{
-              this.text = "Ocorreu um erro ao atualizar a sua password.";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = false;
-            }
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text = "Ocorreu um erro ao atualizar a sua password.";
             this.color = "error";
             this.snackbar = true;
             this.done = false;
