@@ -9,14 +9,12 @@
                     <PedidosLista :pedidos="pedidosSubmetidos" 
                                   titulo="Pedidos novos" 
                                   @distribuir="distribuiPedido($event)"
-                                  @show="showPedido($event)"
                     />               
 
                 <v-expansion-panel popout>
                     <PedidosLista :pedidos="pedidosDistribuidos" 
                                   titulo="Pedidos em apreciação técnica"
                                   @analisar="analisaPedido($event)"
-                                  @show="showPedido($event)"
                     />
                 </v-expansion-panel>
 
@@ -86,86 +84,6 @@
       </v-card>
     </v-dialog>
 
-    <!-- Show do pedido ................................................-->
-    
-      <v-dialog v-model="show" width="80%" >
-      <v-card>
-        <v-card-title class="green darken-4 title white--text" dark>
-            Dados do pedido
-          </v-card-title>
-        <v-card-text>
-          <v-row class="ma-1">
-            <v-col cols="2">
-              <div class="info-label">Código</div>
-            </v-col>
-            <v-col>
-              <div class="info-content">{{pedido.codigo}}</div>
-            </v-col>
-          </v-row>
-          <v-row class="ma-1">
-            <v-col cols="2">
-              <div class="info-label">Estado</div>
-            </v-col>
-            <v-col>
-              <div class="info-content">{{pedido.estado}}</div>
-            </v-col>
-          </v-row>
-          <v-row class="ma-1">
-            <v-col cols="2">
-              <div class="info-label">Data</div>
-            </v-col>
-            <v-col>
-              <div class="info-content">{{pedido.data}}</div>
-            </v-col>
-          </v-row>
-          <v-row class="ma-1">
-            <v-col cols="2">
-              <div class="info-label">Criado Por</div>
-            </v-col>
-            <v-col>
-              <div class="info-content">{{pedido.criadoPor}}</div>
-            </v-col>
-          </v-row>
-
-          <v-card>
-            <v-card-title class="info-label title" dark>
-              Distribuição
-            </v-card-title>
-            <v-card-text>
-              <v-data-table
-                :headers="distHeaders"
-                :items="pedido.distribuicao"
-                class="elevation-1"
-                hide-default-footer
-              >
-                <template v-slot:item="props">
-                  <tr>
-                    <td class="subheading">{{ props.item.estado }}</td>
-                    <td class="subheading">{{ props.item.data }}</td>
-                    <td class="subheading">{{ props.item.responsavel }}</td>
-                    <td class="subheading">{{ props.item.despacho }}</td>
-                  </tr>
-                </template>
-              </v-data-table>
-            </v-card-text>
-          </v-card>
-
-          <div>
-            {{ JSON.stringify(pedido) }}
-          </div>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            color="red darken-4"
-            rounded dark
-            @click="closePedido"
-          >
-            Fechar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     </div>
 </template>
 
@@ -182,12 +100,6 @@ export default {
     distribuir: false,
     show: false,
     pedido: {},
-    distHeaders: [
-      {text: "Estado", value: "estado", class:"title"},
-      {text: "Data", value: "data", class:"title"},
-      {text: "Responsável", value: "responsavel", class:"title"},
-      {text: "Despacho", value: "despacho", class:"title"}
-    ],
     despacho: "",
     usersHeaders: [
       {text: "Nome", value: "name", class:"title"},
@@ -195,32 +107,6 @@ export default {
     ],
     usersRecords: [],
     selectedUser: {},
-    headers: [
-      {
-        text: "Data",
-        align: "left",
-        sortable: true,
-        value: "data",
-        class: "title"
-      },
-      {
-        text: "Estado",
-        align: "left",
-        sortable: false,
-        value: "estado",
-        class: "title"
-      },
-      { text: "Código", value: "codigo", sortable: false, class: "title" },
-      {
-        text: "Responsável",
-        value: "responsavel",
-        sortable: false,
-        class: "title"
-      },
-      { text: "Tipo", value: "tipo", sortable: false, class: "title" },
-      { text: "Objeto", value: "objeto", sortable: false, class: "title" },
-      { text: "Tarefa", sortable: false, class: "title" }
-    ],
     pedidos: [], 
     pedidosSubmetidos: [],
     pedidosDistribuidos: [],
@@ -242,11 +128,6 @@ export default {
   methods: {
     rowClicked: function(item) {
       this.$emit("pedidoSelected", item);
-    },
-
-    showPedido: function(item) {
-      this.pedido = item
-      this.show = true
     },
 
     closePedido: function(item) {

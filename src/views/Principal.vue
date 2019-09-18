@@ -16,7 +16,7 @@
 import Info from "@/components/principal/Info.vue";
 import DocumentacaoApoio from "@/components/principal/DocumentacaoApoio.vue";
 import Operacoes from "@/components/principal/Operacoes.vue";
-import Entidades from "@/components/principal/Entidades.vue";
+//import Entidades from "@/components/principal/Entidades.vue";
 import Gestao from "@/components/principal/Gestao.vue";
 
 export default {
@@ -24,7 +24,7 @@ export default {
     Info,
     DocumentacaoApoio,
     Operacoes,
-    Entidades,
+    //Entidades,
     Gestao
   },
 
