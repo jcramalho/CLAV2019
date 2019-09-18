@@ -166,7 +166,7 @@ export default {
           ]
         },
         {
-          entidade: "Autos Eliminação",
+          entidade: "Autos de Eliminação",
           texto: help.AutosEliminacao,
           ops: [
             {
