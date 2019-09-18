@@ -195,22 +195,17 @@ export default {
             name: this.nomeCompleto,
             email: this.$data.form.email,
             entidade: this.$data.form.entidade,
-            type: parsedType,
+            type: parsedType
           }).then(res => {
-            if (res.data === "Utilizador registado com sucesso!") {
-              this.text = "Utilizador registado com sucesso!\n Pode agora utilizar o login via cartão de cidadão para usufruir da plataforma CLAV!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            } else if (res.data === "Utilizador já registado!") {
-              this.text = "Ocorreu um erro ao registar o utilizador: Este cartão de cidadão já tem um utilizador associado!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }
+            this.text =
+              "Utilizador registado com sucesso!\n Pode agora utilizar o login via cartão de cidadão para usufruir da plataforma CLAV!";
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text =
+              "Ocorreu um erro ao registar o utilizador: " + err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;

@@ -177,21 +177,14 @@ export default {
             password: this.$data.form.password
           })
           .then(res => {
-            if (res.data === "Utilizador registado com sucesso!") {
-              this.text = "Utilizador registado com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            } else if (res.data === "Email já em uso!") {
-              this.text =
-                "Ocorreu um erro ao registar o utilizador: Email já em uso!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text =
+              "Ocorreu um erro ao realizar o registo: " + err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;
