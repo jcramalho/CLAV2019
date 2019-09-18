@@ -15,6 +15,7 @@
     <v-card-text>
       <div v-if="classesCarregadas">
         <v-treeview
+          dense
           :items="classesTree"
           item-key="id"
           :search="search"

@@ -289,7 +289,7 @@
               </table>
             </div>
             <div>
-              <v-btn medium color="primary" @click="voltar()">Voltar</v-btn>
+              <v-btn medium color="primary" @click="$router.go(-1)">Voltar</v-btn>
             </div>
           </v-card-text>
         </v-card>
@@ -337,20 +337,7 @@ export default {
       Iniciador: "Iniciar"
     },
     myhelp: help
-  }),
-  methods: {
-    voltar: function() {
-      if (this.tipo === "Entidades") {
-        this.$router.push("/entidades");
-      }
-      if (this.tipo === "Tipologias") {
-        this.$router.push("/tipologias");
-      }
-      if (this.tipo === "Legislação") {
-        this.$router.push("/legislacao");
-      }
-    }
-  }
+  })
 };
 </script>
 
