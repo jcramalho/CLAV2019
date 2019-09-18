@@ -195,32 +195,6 @@ export default {
     ],
     usersRecords: [],
     selectedUser: {},
-    headers: [
-      {
-        text: "Data",
-        align: "left",
-        sortable: true,
-        value: "data",
-        class: "title"
-      },
-      {
-        text: "Estado",
-        align: "left",
-        sortable: false,
-        value: "estado",
-        class: "title"
-      },
-      { text: "Código", value: "codigo", sortable: false, class: "title" },
-      {
-        text: "Responsável",
-        value: "responsavel",
-        sortable: false,
-        class: "title"
-      },
-      { text: "Tipo", value: "tipo", sortable: false, class: "title" },
-      { text: "Objeto", value: "objeto", sortable: false, class: "title" },
-      { text: "Tarefa", sortable: false, class: "title" }
-    ],
     pedidos: [], 
     pedidosSubmetidos: [],
     pedidosDistribuidos: [],
