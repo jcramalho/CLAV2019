@@ -20,18 +20,6 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:headers="props">
-            <tr>
-              <th
-                v-for="h in props.headers"
-                :key="h.text"
-                class="table-header body-2 font-weight-bold"
-              >
-                {{ h.text }}
-              </th>
-            </tr>
-          </template>
-
           <template v-slot:item="props">
             <tr>
               <td style="color: #1A237E;">{{ props.item.label }}</td>
@@ -75,9 +63,12 @@ export default {
           text: "Tipo de Intervenção",
           align: "left",
           sortable: false,
-          value: "label"
+          value: "label",
+          class: ['table-header', 'body-2', 'font-weight-bold']
+
         },
-        { text: "Participantes", value: "participantes" }
+        { text: "Participantes", value: "participantes",
+        class: ['table-header', 'body-2', 'font-weight-bold']}
       ],
       participPorTipo: {
         Apreciador: [],

@@ -1,25 +1,19 @@
 <template>
   <v-row>
     <v-col cols="2" v-if="tipo === 'legislacao' && entidades.length === 0">
-      <v-subheader class="info-label">Entidade responsável pela publicação:</v-subheader>
+      <v-subheader
+        class="info-label"
+        style="border-color: white; border-style:solid; color: #1A237E;"
+      >Entidade responsável pela publicação:</v-subheader>
     </v-col>
     <v-col cols="2" v-else>
-      <v-subheader class="info-label">Entidades selecionadas:</v-subheader>
+      <v-subheader
+        class="info-label"
+        style="border-color: white; border-style:solid; color: #1A237E;"
+      >Entidades selecionadas:</v-subheader>
     </v-col>
     <v-col v-if="entidades.length > 0">
       <v-data-table :headers="headers" :items="entidades" class="elevation-1" hide-default-footer>
-        <template v-slot:headers="props">
-          <tr>
-            <th
-              v-for="h in props.headers"
-              :key="h.text"
-              class="body-2 font-weight-bold"
-              style="color: #1A237E;"
-            >{{ h.text }}</th>
-            <th style="color: #1A237E;">Remover</th>
-          </tr>
-        </template>
-
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.sigla }}</td>
@@ -46,9 +40,18 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: "Sigla", align: "left", value: "sigla" },
-        { text: "Designação", value: "designacao" },
-        { text: "Remover" }
+        {
+          text: "Sigla",
+          align: "left",
+          value: "sigla",
+          class: ["body-2", "font-weight-bold"]
+        },
+        {
+          text: "Designação",
+          value: "designacao",
+          class: ["body-2", "font-weight-bold"]
+        },
+        { text: "Remover", class: ["body-2", "font-weight-bold"] }
       ]
     };
   },
@@ -64,17 +67,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.info-label {
-  color: #0d47a1;
-  padding: 6px;
-  font-weight: 400;
-  width: auto;
-  height: auto;
-  background-color: #b3e5fc;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-</style>
