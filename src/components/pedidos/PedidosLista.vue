@@ -42,6 +42,7 @@
               <td class="subheading">{{ props.item.codigo }}</td>
               <td class="subheading">{{ props.item.entidade }}</td>
               <td class="subheading">{{ props.item.criadoPor }}</td>
+              <td class="subheading">{{ props.item.entidade }}</td>
               <td class="subheading">
                 {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
               </td>
@@ -112,8 +113,18 @@ export default {
         class: "title"
       },
       { text: "Código", value: "codigo", sortable: false, class: "title" },
+<<<<<<< HEAD
       { text: "Entidade", value: "entidade", sortable: true, class: "title" },
       { text: "Responsável", value: "responsavel", sortable: false, class: "title" },
+=======
+      {
+        text: "Responsável",
+        value: "responsavel",
+        sortable: false,
+        class: "title"
+      },
+      { text: "Entidade", value: "entidade", sortable: true, class: "title" },
+>>>>>>> ceb768dad2789287528854fe203a1b621016e792
       { text: "Tipo", value: "tipo", sortable: false, class: "title" },
       { text: "Tarefa", sortable: false, class: "title" }
     ],

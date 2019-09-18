@@ -212,6 +212,7 @@ export default {
     ],
     usersRecords: [],
     selectedUser: {},
+<<<<<<< HEAD
     headers: [
       {
         text: "Data",
@@ -234,6 +235,8 @@ export default {
       { text: "Objeto", value: "objeto", sortable: false, class: "title" },
       { text: "Tarefa", sortable: false, class: "title" }
     ],
+=======
+>>>>>>> ceb768dad2789287528854fe203a1b621016e792
     pedidos: [], 
     pedidosSubmetidos: [],
     pedidosDistribuidos: [],
