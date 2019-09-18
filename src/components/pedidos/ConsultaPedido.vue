@@ -19,7 +19,7 @@
                 <div class="info-content">{{pedido.data.split('T')[0]}}</div>
               </v-col>
             </v-row>
-            <v-row class="ma-1">
+            <v-row class="ma-1" v-if="pedido.entidade">
               <v-col cols="2">
                 <div class="info-label">Entidade</div>
               </v-col>
@@ -37,10 +37,10 @@
             </v-row>
             <v-row class="ma-1">
               <v-col cols="2">
-                <div class="info-label">Entidade</div>
+                <div class="info-label">Tipo</div>
               </v-col>
               <v-col>
-                <div class="info-content">{{pedido.entidade}}</div>
+                <div class="info-content">{{ pedido.objeto.acao }} - {{ pedido.objeto.tipo }}</div>
               </v-col>
             </v-row>
 
@@ -65,6 +65,7 @@
               </v-card-text>
             </v-card>
 
+            <!-- Criação de TS Organizacional via Importação ...........................-->
             <v-card class="mt-4" v-if="pedido.tipo='TS Organizacional'">
               <v-card-title class="info-label title" dark>
                 Tabela de Seleção para a entidade {{ pedido.objeto.dados.ts.entidade }}
@@ -99,6 +100,18 @@
                     Processos {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
                   </template>
                 </v-data-table>
+              </v-card-text>
+            </v-card>
+
+            <!-- Outros Pedidos ...............................................................-->
+            <v-card class="mt-4" v-else>
+              <v-card-title class="info-label title" dark>
+                Tipo de pedido: {{ pedido.tipo }}
+              </v-card-title>
+              <v-card-text>
+                <div>
+                  {{ JSON.stringify(pedido) }}
+                </div>
               </v-card-text>
             </v-card>
             

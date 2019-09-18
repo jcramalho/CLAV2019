@@ -466,8 +466,10 @@
         >Eliminar TS
           <v-dialog v-model="eliminarTabela" persistent max-width="320">
                 <v-card>
-                    <v-card-title class="headline">Eliminar Tabela</v-card-title>
-                    <v-card-text>Pretende eliminar todo o trabalho realizado?</v-card-text>
+                    <v-card-title class="title">Eliminar Tabela</v-card-title>
+                    <v-card-text>
+                      <p>Pretende eliminar todo o trabalho realizado?</p>
+                    </v-card-text>
                     <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="red" text @click="eliminarTabela = false">Cancelar</v-btn>
@@ -1037,11 +1039,12 @@ export default {
 
         var pedidoParams = {
           tipoPedido: "Criação",
-          tipoObjeto: "TS Organizacional",
-          novoObjeto: this.tabelaSelecao,
-          user: { email: userBD.data.email },
+          tipoObjeto: "TS Organizacional (via web)",
+          novoObjeto: {ts: this.tabelaSelecao},
+          user: {email: userBD.data.email},
+          entidade: userBD.data.entidade,
           token: this.$store.state.token
-        };
+        }
 
         var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
         this.mensagemPedidoCriadoOk += response.data.codigo;
