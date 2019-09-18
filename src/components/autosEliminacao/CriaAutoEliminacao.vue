@@ -57,6 +57,19 @@
         {{ obj }}
       </v-flex>
     </v-layout>
+    <v-snackbar
+      v-model="snack"
+      :color="snackColor"
+    >
+      {{ mess }}
+      <v-btn
+        dark
+        text
+        @click="snack = false;"
+      >
+        Fechar
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -71,6 +84,9 @@ export default {
   data: () => ({
     file: null,
     tipo: "ts",
+    snack: false,
+    snackColor: "green",
+    mess: "",
     obj: "",
   }),
   methods: {
@@ -89,7 +105,29 @@ export default {
         default:
           conversor(this.file)
           .then(res => {
-            console.warn(res)
+            if(this.tipo === "pgd")
+              axios.post(lhost + "/api/autosEliminacao/PGD/", res.auto)
+                .then(r => {
+                  this.snack = true
+                  this.mess = r.data
+                  this.snackColor = "green"
+                })
+                .catch((err) => {
+                  this.snack = true
+                  this.mess = "Erro na atualização do AE"
+                  this.snackColor = "red"
+                })
+            else   
+              axios.post(lhost + "/api/autosEliminacao/RADA/", res.auto)
+                .then(r => {
+                  this.snack = true
+                  this.mess = r.data
+                  this.snackColor = "green"})
+                .catch((err) => {
+                  this.snack = true
+                  this.mess = "Erro na atualização do AE"
+                  this.snackColor = "red"
+                })
           })
           .catch(err => {
             console.warn(err)

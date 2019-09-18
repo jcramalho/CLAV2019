@@ -15,9 +15,8 @@ var excel2Json = function (file) {
             var currentTime = new Date()
             //Processamento dos Autos de Eliminação
             var auto = {
-                dataAutenticacao: currentTime.getDate()+"/"+(currentTime.getMonth()+1)+"/"+currentTime.getFullYear(),
-                entidadeResponsavel: wb.getWorksheet(1).getRow(1).getCell(2).text,
-                legistacao: wb.getWorksheet(1).getRow(2).getCell(2).text,
+                entidade: wb.getWorksheet(1).getRow(1).getCell(2).text.replace(/-/g," "),
+                legislacao: wb.getWorksheet(1).getRow(2).getCell(2).text,
                 fundo: wb.getWorksheet(1).getRow(3).getCell(2).text,
                 zonaControlo: []
             }
@@ -30,8 +29,14 @@ var excel2Json = function (file) {
                     auto.zonaControlo.push({
                         codigo: row.getCell(1).text,
                         referencia: row.getCell(2).text,
-                        autoDataInicio: row.getCell(6).text,
-                        autoDataFim: row.getCell(7).text,
+                        titulo: row.getCell(3).text,
+                        prazoConservacao: row.getCell(4).text,
+                        destino: row.getCell(5).text,
+                        dataInicio: row.getCell(6).text,
+                        dataFim: row.getCell(7).text,
+                        uiPapel: row.getCell(9).text,
+                        uiDigital: row.getCell(10).text,
+                        uiOutros: row.getCell(11).text,
                         agregacoes: []
                     })
                     var conservacao = row.getCell(4).value
@@ -45,10 +50,10 @@ var excel2Json = function (file) {
                             var res = parseInt(conservacao) + parseInt(dataContagem)
                             if(res <= currentTime.getFullYear()) {
                                 auto.zonaControlo[index].agregacoes.push({
-                                    agregacaoCodigo: ag.getCell(3).text.replace(/[ -.,!/]/g,'_'),
-                                    agregacaoTitulo: ag.getCell(4).text,
-                                    agregacaoDataContagem: ag.getCell(5).text,
-                                    temNI: ag.getCell(6).text
+                                    codigo: ag.getCell(3).text.replace(/[ -.,!/]/g,'_'),
+                                    titulo: ag.getCell(4).text,
+                                    dataContagem: ag.getCell(5).text,
+                                    ni: ag.getCell(6).text
                                 })
                             } else {
                                 err.push({
