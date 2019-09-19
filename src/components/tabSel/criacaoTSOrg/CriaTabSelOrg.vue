@@ -794,12 +794,7 @@ export default {
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
       this.numProcSelCom = procSelec.length;
-      this.tabelaSelecao.procComuns = procSelec.map(p => {return {
-        codigo: p.classe,
-        titulo: p.designacao,
-        dono: p.dono,
-        participante: p.participante
-      }});
+      this.tabelaSelecao.procComuns = procSelec;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
     procPreSelResTravCom: function(procPreSelResTravCom) {
@@ -873,12 +868,7 @@ export default {
     // Contador dos processos selecionados especificos
     contadorProcSelEsp: function(procSelec) {
       this.numProcSelEsp = procSelec.length;
-      this.tabelaSelecao.procEspecificos = procSelec.map(p => {return {
-        codigo: p.classe,
-        titulo: p.designacao,
-        dono: p.dono,
-        participante: p.participante
-      }});
+      this.tabelaSelecao.procEspecificos = procSelec;
     },
     // Contador dos processos pre selecionados especificos
     contadorProcPreSelEsp: function(lista) {
@@ -919,12 +909,7 @@ export default {
     // Contador dos processos selecionados restantes
     contadorProcSelRes: function(procSelec) {
       this.numProcSelRes = procSelec.length;
-      this.tabelaSelecao.procEspRestantes = procSelec.map(p => {return {
-        codigo: p.classe,
-        titulo: p.designacao,
-        dono: p.dono,
-        participante: p.participante
-      }});
+      this.tabelaSelecao.procEspRestantes = procSelec
     },
     // Lista dos processos pre selecionados especificos restantes, resultantes das travessias dos PNs especificos
     procPreSelResTravRes: function(procPreSelResTravRes) {
@@ -950,7 +935,7 @@ export default {
         for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
           if (
             this.listaProcComuns[i].classe ===
-            this.tabelaSelecao.procComuns[j].codigo
+            this.tabelaSelecao.procComuns[j].classe
           ) {
             procSelecionado = true;
             break;
@@ -979,7 +964,7 @@ export default {
       for (var f = 0; f < this.listaTotalProcEsp.length; f++) {
         procSelecionado = false;
         for (var m = 0; m < procSelecionados.length; m++) {
-          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m].codigo) {
+          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m].classe) {
             procSelecionado = true;
             break;
           }
@@ -1026,12 +1011,7 @@ export default {
     // Contador dos processos selecionados ultimos
     contadorProcSelUlt: function(procSelec) {
       this.numProcSelUlt = procSelec.length;
-      this.tabelaSelecao.procUltimos = procSelec.map(p => {return {
-        codigo: p.classe,
-        titulo: p.designacao,
-        dono: p.dono,
-        participante: p.participante
-      }});
+      this.tabelaSelecao.procUltimos = procSelec;
     },
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {
@@ -1057,13 +1037,21 @@ export default {
 
         var tsObj = {
           entidade: this.tabelaSelecao.idEntidade.split("_")[1],
+          designacao: this.tabelaSelecao.designacao,
           tipologias: this.tipSel,
-          processos: this.listaTotalProcSel
+          processos: this.listaTotalProcSel.map(p => {
+            return {
+              codigo: p.classe,
+              titulo: p.designacao,
+              dono: p.dono,
+              participante: p.participante ? p.participante : false
+            };
+          })
         };
 
         var pedidoParams = {
           tipoPedido: "Criação",
-          tipoObjeto: "TS Organizacional (via web)",
+          tipoObjeto: "TS Organizacional",
           novoObjeto: {ts: tsObj},
           user: {email: userBD.data.email},
           entidade: userBD.data.entidade,
