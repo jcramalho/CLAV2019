@@ -1163,6 +1163,7 @@ export default {
 
         var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
         this.mensagemPedidoCriadoOK += response.data.codigo;
+        response = await axios.delete(lhost + "/api/pendentes/" + this.obj._id)
         this.pedidoCriado = true;
       } catch (error) {
         return error;
@@ -1188,9 +1189,8 @@ export default {
           tipo: this.obj.tipo,
           objeto: this.tabelaSelecao,
           criadoPor: this.obj.criadoPor,
-          user: {
-            token: this.$store.state.token
-          }
+          user: { email: userBD.data.email },
+          token: this.$store.state.token
         };
         // console.log(pendenteParams.objeto);
         var response = await axios.put(
