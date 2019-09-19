@@ -16,13 +16,13 @@
               >
                 <tr>
                   <td style="width:20%;">
-                    <div class="info-label">Tipo do Ficheiro:</div>
+                    <div class="info-label">Fonte de Legitimação:</div>
                   </td>
                   <td style="width:40%">
                     <v-radio-group row v-model="tipo" :mandatory="true">
-                        <v-radio xs4 sm4 label="TS" value="ts"></v-radio>
-                        <v-radio xs4 sm4 label="PGD" value="pgd"></v-radio>
-                        <v-radio xs4 sm4 label="RADA" value="rada"></v-radio>
+                        <v-radio xs4 sm4 label="PGD/LC" value="TS"></v-radio>
+                        <v-radio xs4 sm4 label="PGD" value="PGD"></v-radio>
+                        <v-radio xs4 sm4 label="RADA" value="RADA"></v-radio>
                     </v-radio-group>
                   </td>
                 </tr>
@@ -105,29 +105,17 @@ export default {
         default:
           conversor(this.file)
           .then(res => {
-            if(this.tipo === "pgd")
-              axios.post(lhost + "/api/autosEliminacao/PGD/", res.auto)
-                .then(r => {
-                  this.snack = true
-                  this.mess = r.data
-                  this.snackColor = "green"
-                })
-                .catch((err) => {
-                  this.snack = true
-                  this.mess = "Erro na atualização do AE"
-                  this.snackColor = "red"
-                })
-            else   
-              axios.post(lhost + "/api/autosEliminacao/RADA/", res.auto)
-                .then(r => {
-                  this.snack = true
-                  this.mess = r.data
-                  this.snackColor = "green"})
-                .catch((err) => {
-                  this.snack = true
-                  this.mess = "Erro na atualização do AE"
-                  this.snackColor = "red"
-                })
+            axios.post(lhost + "/api/autosEliminacao/"+this.tipo, res.auto)
+              .then(r => {
+                this.snack = true
+                this.mess = r.data
+                this.snackColor = "green"
+              })
+              .catch((err) => {
+                this.snack = true
+                this.mess = "Erro na atualização do AE"
+                this.snackColor = "red"
+              })
           })
           .catch(err => {
             console.warn(err)

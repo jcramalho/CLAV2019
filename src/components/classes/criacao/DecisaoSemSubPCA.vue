@@ -1,9 +1,9 @@
 <template>
   <!-- PCA -->
   <div v-if="!c.temSubclasses4Nivel">
-    <v-row class="ma-2" >
+    <v-row>
       <v-col>
-        <v-toolbar color="teal darken-4 font-weight-medium" dark height="30">
+        <v-toolbar color="green darken-4 font-weight-medium" dark height="30">
           <v-toolbar-title>Prazo de Conservação Administrativa</v-toolbar-title>
         </v-toolbar>
       </v-col>
@@ -25,26 +25,18 @@
 
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Notas</div>
+        <div class="info-label">Notas:</div>
       </v-col>
       <v-col>
-        <v-textarea
-          solo
-          label="Notas ao PCA"
-          v-model="c.pca.notas"
-          rows="2"
-        ></v-textarea>
+        <v-textarea solo label="Notas ao PCA" v-model="c.pca.notas" rows="2"></v-textarea>
       </v-col>
     </v-row>
 
     <v-row class="ma-2" v-if="semaforos.pcaFormasContagemReady">
       <v-col cols="2">
         <div class="info-label">
-          Forma de Contagem
-          <InfoBox
-            header="Forma de Contagem do PCA"
-            :text="myhelp.Classe.Campos.FormaContagem"
-          />
+          Forma de Contagem:
+          <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
         </div>
       </v-col>
       <v-col>
@@ -85,22 +77,19 @@
     <hr style="border-top: 2px dashed green;" />
 
     <!-- JUSTIFICAÇÂO DO PCA -->
-    <v-row>
-      <v-col cols="3">        
-          <div class="info-label ma-2">
-            Justificação do PCA
-            <InfoBox
-              header="Justificação do PCA"
-              :text="myhelp.Classe.Campos.JustificacaoPCA"
-            />
-          </div>
-          
-          <div class="ma-2">
-            <v-btn
-              color="green darken-2"
-              dark
-              rounded
-              @click="
+    <v-row class="ma-2">
+      <v-col cols="3">
+        <div class="info-label">
+          Justificação do PCA:
+          <InfoBox header="Justificação do PCA" :text="myhelp.Classe.Campos.JustificacaoPCA" />
+        </div>
+
+        <div class="ma-2">
+          <v-btn
+            color="green darken-2"
+            dark
+            rounded
+            @click="
                 adicionarCriterioGestionario(
                   c.pca.justificacao,
                   'CriterioJustificacaoGestionario',
@@ -110,18 +99,18 @@
                   []
                 )
               "
-              v-if="!semaforos.critGestionarioAdicionado"
-            >
-              Critério Gestionário
-              <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
-          </div>
-          <div class="ma-2">
-            <v-btn
-              color="green darken-2"
-              dark
-              rounded
-              @click="
+            v-if="!semaforos.critGestionarioAdicionado"
+          >
+            Critério Gestionário
+            <v-icon dark right>add_circle_outline</v-icon>
+          </v-btn>
+        </div>
+        <div class="ma-2">
+          <v-btn
+            color="green darken-2"
+            dark
+            rounded
+            @click="
                 adicionarCriterioLegalPCA(
                   c.pca.justificacao,
                   'CriterioJustificacaoLegal',
@@ -131,12 +120,12 @@
                   c.legislacao
                 )
               "
-              v-if="!semaforos.critLegalAdicionadoPCA"
-            >
-              Critério Legal
-              <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
-          </div>
+            v-if="!semaforos.critLegalAdicionadoPCA"
+          >
+            Critério Legal
+            <v-icon dark right>add_circle_outline</v-icon>
+          </v-btn>
+        </div>
       </v-col>
       <v-col>
         <v-row v-for="(crit, cindex) in c.pca.justificacao" :key="cindex">
@@ -148,8 +137,7 @@
                 dark
                 small
                 @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
-                >remove_circle</v-icon
-              >
+              >remove_circle_outline</v-icon>
             </div>
           </v-col>
 
@@ -163,7 +151,7 @@
               >
                 {{ p.codigo }}: {{ p.titulo }}
                 <span v-if="i == crit.procRel.length - 1">.</span>
-                <span v-else>, </span>
+                <span v-else>,</span>
               </a>
             </div>
           </v-col>
@@ -172,18 +160,15 @@
             <div class="info-content" v-if="crit.legislacao.length > 0">
               {{ crit.notas }}
               <span v-for="(l, i) in crit.legislacao" :key="l.id">
-                <a :href="'/legislacao/' + l.id">
-                  {{ l.tipo }} {{ l.numero }}
-                </a>
+                <a :href="'/legislacao/' + l.id">{{ l.tipo }} {{ l.numero }}</a>
                 <v-icon
                   color="red darken-2"
                   dark
                   small
                   @click="crit.legislacao.splice(i, 1)"
-                  >remove_circle</v-icon
-                >
+                >remove_circle_outline</v-icon>
                 <span v-if="i == crit.legislacao.length - 1">.</span>
-                <span v-else>, </span>
+                <span v-else>,</span>
               </span>
             </div>
             <div class="info-content" v-if="crit.legislacao.length == 0">
@@ -193,9 +178,7 @@
           </v-col>
 
           <v-col v-else-if="crit.tipo == 'CriterioJustificacaoGestionario'">
-            <div class="info-content">
-              {{ crit.notas }}
-            </div>
+            <div class="info-content">{{ crit.notas }}</div>
           </v-col>
 
           <hr
@@ -329,8 +312,8 @@ export default {
     unselectDiploma: function(diploma, listaLeg) {
       var index = listaLeg.findIndex(e => e.id === diploma.id);
       listaLeg.splice(index, 1);
-      if(listaLeg.length == 0){
-        this.semaforos.critLegalAdicionadoPCA = false
+      if (listaLeg.length == 0) {
+        this.semaforos.critLegalAdicionadoPCA = false;
       }
     }
   }

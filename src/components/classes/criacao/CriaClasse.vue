@@ -1,166 +1,139 @@
 <template>
-  <div>
-    <v-row class="ma-4">
-      <v-col>
-        <!-- HEADER -->
-        <v-card>
-          <v-app-bar color="teal darken-4" dark>
-            <v-toolbar-title>Nova Classe</v-toolbar-title>
-          </v-app-bar>
+  <v-row class="ma-1">
+    <v-col>
+      <!-- HEADER -->
+      <v-card>
+        <v-app-bar color="green darken-4" dark>
+          <v-toolbar-title class="card-heading">Nova Classe</v-toolbar-title>
+        </v-app-bar>
 
-          <v-card-text>
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Nível</div>
-                </v-col>
-                <v-col>
-                  <v-select
-                    item-text="label"
-                    item-value="value"
-                    v-model="classe.nivel"
-                    :items="classeNiveis"
-                    label="Selecione o nível da classe:"
-                    solo
-                    dense
-                  />
-                </v-col>
-              </v-row>
-              <!-- CLASSE PAI -->
-              <v-row v-if="classe.nivel > 1">
-                <v-col cols="2">
-                  <div class="info-label">
-                    Classe Pai
-                    <InfoBox
-                      header="Classe Pai"
-                      :text="myhelp.Classe.Campos.Pai"
-                    />
-                  </div>
-                </v-col>
-                <v-col>
-                  <v-select
-                    item-text="label"
-                    item-value="value"
-                    v-model="classe.pai.codigo"
-                    :items="classesPai"
-                    label="Selecione uma classe de nível superior"
-                    solo
-                    dense
-                  />
-                </v-col>
-              </v-row>
-              <!-- CÓDIGO DA NOVA CLASSE -->
-              <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
-                <v-col cols="2">
-                  <div class="info-label">
-                    Código
-                    <InfoBox
-                      header="Código da Classe"
-                      :text="myhelp.Classe.Campos.Codigo"
-                    />
-                  </div>
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    v-model="classe.codigo"
-                    label="Código"
-                    solo
-                    clearable
-                  ></v-text-field>
-                  <span style="color: red"> {{ mensValCodigo }} </span>
-                </v-col>
-              </v-row>
-              <!-- TÍTULO -->
-              <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
-                <v-col cols="2">
-                  <div class="info-label">
-                    Título
-                    <InfoBox
-                      header="Título da Classe"
-                      :text="myhelp.Classe.Campos.Titulo"
-                    />
-                  </div>
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    v-model="classe.titulo"
-                    label="Título"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+        <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Nível:</div>
+            </v-col>
+            <v-col>
+              <v-select
+                item-text="label"
+                item-value="value"
+                v-model="classe.nivel"
+                :items="classeNiveis"
+                label="Selecione o nível da classe:"
+                solo
+                dense
+              />
+            </v-col>
+          </v-row>
 
-              <v-expansion-panels>
-              
-                <!-- DESCRITIVO DA CLASSE -->
-                <BlocoDescritivo :c="classe" />
+          <!-- CLASSE PAI -->
+          <v-row v-if="classe.nivel > 1">
+            <v-col cols="2">
+              <div class="info-label">
+                Classe Pai:
+                <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
+              </div>
+            </v-col>
+            <v-col>
+              <v-select
+                item-text="label"
+                item-value="value"
+                v-model="classe.pai.codigo"
+                :items="classesPai"
+                label="Selecione uma classe de nível superior"
+                solo
+                dense
+              />
+            </v-col>
+          </v-row>
 
-                <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-                <BlocoContexto
-                  :c="classe"
-                  :semaforos="semaforos"
-                  :donos="entidadesD"
-                  :participantes="entidadesP"
-                  :procRel="listaProcessos"
-                  :legs="listaLegislacao"
-                  v-if="classe.nivel == 3"
-                />
+          <!-- CÓDIGO DA NOVA CLASSE -->
+          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+            <v-col cols="2">
+              <div class="info-label">
+                Código:
+                <InfoBox header="Código da Classe" :text="myhelp.Classe.Campos.Codigo" />
+              </div>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="classe.codigo" label="Código" solo clearable></v-text-field>
+              <span style="color: red">{{ mensValCodigo }}</span>
+            </v-col>
+          </v-row>
 
-                <!-- DECISÕES DE AVALIAÇÂO -->
-                <v-expansion-panel popout v-if="classe.nivel == 3">
-                  <v-expansion-panel-header>
-                    <div class="title teal darken-4 pa-2 white--text">Decisões de Avaliação</div>
-                  </v-expansion-panel-header>
+          <!-- TÍTULO -->
+          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+            <v-col cols="2">
+              <div class="info-label">
+                Título:
+                <InfoBox header="Título da Classe" :text="myhelp.Classe.Campos.Titulo" />
+              </div>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="classe.titulo" label="Título" solo clearable></v-text-field>
+            </v-col>
+          </v-row>
 
-                <v-expansion-panel-content>
-                  <!-- HÁ SUBDIVISÃO? -->
-                  <Subdivisao3Nivel :c="classe" />
+          <v-expansion-panels>
+            <!-- DESCRITIVO DA CLASSE -->
+            <BlocoDescritivo :c="classe" />
 
-                  <hr style="border: 3px solid green; border-radius: 2px;" />
+            <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+            <BlocoContexto
+              :c="classe"
+              :semaforos="semaforos"
+              :donos="entidadesD"
+              :participantes="entidadesP"
+              :procRel="listaProcessos"
+              :legs="listaLegislacao"
+              v-if="classe.nivel == 3"
+            />
 
-                  <!-- DECISÃO SEM SUBDIVISÃO -->
-                  <DecisaoSemSubPCA
-                    :c="classe"
-                    :semaforos="semaforos"
-                    :pcaFormasContagem="pcaFormasContagem"
-                    :pcaSubFormasContagem="pcaSubFormasContagem"
-                  />
+            <!-- DECISÕES DE AVALIAÇÂO -->
+            <v-expansion-panel popout focusable v-if="classe.nivel == 3">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>Decisões de Avaliação</div>
+              </v-expansion-panel-header>
 
-                  <hr
-                    style="border-top: 3px dashed green; border-radius: 2px;"
-                  />
+              <v-expansion-panel-content>
+                <!-- HÁ SUBDIVISÃO? -->
+                <Subdivisao3Nivel :c="classe" />
 
-                  <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
-                </v-expansion-panel-content>
-                </v-expansion-panel>
-                
-                <!-- DECISÃO COM SUBDIVISÃO -->
-                <Subclasses4Nivel
+                <hr style="border: 3px solid green; border-radius: 2px;" />
+
+                <!-- DECISÃO SEM SUBDIVISÃO -->
+                <DecisaoSemSubPCA
                   :c="classe"
                   :semaforos="semaforos"
                   :pcaFormasContagem="pcaFormasContagem"
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
-    
-              </v-expansion-panels>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
 
-    <painel-operacoes :c="classe"/>
+                <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
-      <v-snackbar
-        v-model="loginErrorSnackbar"
-        :timeout="8000"
-        color="error"
-        :top="true"
-      >
-        {{ loginErrorMessage }}
-        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
-      </v-snackbar>
-    
-</div>
+                <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+
+            <!-- DECISÃO COM SUBDIVISÃO -->
+            <!-- TODO: Corrigir este componente com o novo layout -->
+            <Subclasses4Nivel
+              :c="classe"
+              :semaforos="semaforos"
+              :pcaFormasContagem="pcaFormasContagem"
+              :pcaSubFormasContagem="pcaSubFormasContagem"
+            />
+          </v-expansion-panels>
+        </v-card-text>
+
+        <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+          {{ loginErrorMessage }}
+          <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+        </v-snackbar>
+      </v-card>
+      <!-- TODO: Corrigir este componente -->
+      <painel-operacoes :c="classe" />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -309,7 +282,6 @@ export default {
       critGestionarioAdicionado: false
     },
 
-    
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
@@ -830,11 +802,25 @@ export default {
 
 <style>
 .info-label {
-  color: #00695c;
+  color: #2e7d32; /* green darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8f5e9; /* green lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.expansion-panel-heading {
+  background-color: #1b5e20 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+}
+
+.card-heading {
+  font-size: x-large;
   font-weight: bold;
 }
 

@@ -3,11 +3,12 @@
       <v-col>
         <Info />
         <Operacoes />
+        <Noticias />
       </v-col>
 
       <v-col>
         <DocumentacaoApoio />
-        <IdentificacaoRepresentantes />
+        <Registo />
         <Gestao v-if="this.$store.state.name != ''"/>
       </v-col>
     </v-row>
@@ -16,17 +17,18 @@
 <script>
 import Info from "@/components/principal/Info.vue";
 import DocumentacaoApoio from "@/components/principal/DocumentacaoApoio.vue";
-import IdentificacaoRepresentantes from "@/components/principal/IdentificacaoRepresentantes.vue";
+import Registo from "@/components/principal/Registo.vue";
 import Operacoes from "@/components/principal/Operacoes.vue";
-//import Entidades from "@/components/principal/Entidades.vue";
+import Noticias from "@/components/principal/Noticias.vue";
 import Gestao from "@/components/principal/Gestao.vue";
 
 export default {
   components: {
     Info,
     DocumentacaoApoio,
-    IdentificacaoRepresentantes,
+    Registo,
     Operacoes,
+    Noticias,
     Gestao
   },
 
