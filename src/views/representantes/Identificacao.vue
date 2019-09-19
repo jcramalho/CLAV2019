@@ -1,7 +1,7 @@
 <template>
   <v-card class="ma-8">
     <v-card-title class="indigo darken-4 title white--text" dark>
-            Identificação dos representantes da Entidade X
+            Identificação de representantes da Entidade
     </v-card-title>
     <v-card-text class="pa-2">
         <p>Para identificar os representantes que utilizarão os serviços CLAV a entidade deve preencher

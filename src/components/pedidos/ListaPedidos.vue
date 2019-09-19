@@ -68,7 +68,7 @@
             :headers="usersHeaders"
             :items="usersRecords"
             class="elevation-1"
-            hide-actions
+            hide-default-footer
           >
             <template v-slot:item="props">
               <tr @click="selectedUser=props.item">

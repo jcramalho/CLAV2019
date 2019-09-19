@@ -1,150 +1,147 @@
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col>
-        <!-- Header -->
-        <v-card>
-          <v-app-bar color="light-blue" dark>
-            <v-toolbar-title>Novo Diploma</v-toolbar-title>
-          </v-app-bar>
+  <v-row>
+    <v-col>
+      <!-- Header -->
+      <v-card style="margin:1%">
+        <v-app-bar color="green darken-4" dark>
+          <v-toolbar-title>Novo Diploma</v-toolbar-title>
+        </v-app-bar>
 
-          <v-card-text>
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Tipo de diploma:</div>
-              </v-col>
-              <v-col>
-                <v-select v-model="legislacao.tipo" :items="tiposDiploma" solo dense />
-              </v-col>
-            </v-row>
+        <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Tipo de diploma:</div>
+            </v-col>
+            <v-col>
+              <v-select v-model="legislacao.tipo" :items="tiposDiploma" solo dense />
+            </v-col>
+          </v-row>
 
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Número de diploma:</div>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  solo
-                  clearable
-                  counter="11"
-                  single-line
-                  v-model="legislacao.numero"
-                  maxlength="11"
-                  placeholder=" NNNNNN/AAAA"
-                  :rules="regraNumero"
-                ></v-text-field>
-              </v-col>
-            </v-row>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Número de diploma:</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                solo
+                clearable
+                counter="11"
+                single-line
+                v-model="legislacao.numero"
+                maxlength="11"
+                placeholder=" NNNNNN/AAAA"
+                :rules="regraNumero"
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Data:</div>
-              </v-col>
-              <v-col>
-                <v-menu
-                  ref="open"
-                  v-model="open"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      solo
-                      v-model="dateFormatted"
-                      hint="AAAA/MM/DD"
-                      persistent-hint
-                      @blur="date = parseDate(dateFormatted)"
-                      v-on="on"
-                      :rules="regraData"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="date" no-title @input="open = false" :max="date"></v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Data:</div>
+            </v-col>
+            <v-col>
+              <v-menu
+                ref="open"
+                v-model="open"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    solo
+                    v-model="dateFormatted"
+                    hint="AAAA/MM/DD"
+                    persistent-hint
+                    @blur="date = parseDate(dateFormatted)"
+                    v-on="on"
+                    :rules="regraData"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="date" no-title @input="open = false" :max="date"></v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
 
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Sumário:</div>
-              </v-col>
-              <v-col>
-                <v-text-field solo clearable counter="150" single-line v-model="legislacao.sumario"></v-text-field>
-              </v-col>
-            </v-row>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Sumário:</div>
+            </v-col>
+            <v-col>
+              <v-text-field solo clearable counter="150" single-line v-model="legislacao.sumario"></v-text-field>
+            </v-col>
+          </v-row>
 
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Link:</div>
-              </v-col>
-              <v-col>
-                <v-text-field solo clearable single-line v-model="legislacao.link"></v-text-field>
-              </v-col>
-            </v-row>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Link:</div>
+            </v-col>
+            <v-col>
+              <v-text-field solo clearable single-line v-model="legislacao.link"></v-text-field>
+            </v-col>
+          </v-row>
 
-            <!-- Blocos expansivos -->
+          <!-- Blocos expansivos -->
 
-            <v-expansion-panels>
-              <v-expansion-panel popout focusable>
-                <v-expansion-panel-header
-                  class="expansion-panel-heading"
-                >Entidade responsável pela publicação</v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <DesSelEnt
-                    :entidades="entSel"
-                    tipo="legislacao"
-                    @unselectEntidade="unselectEntidade($event)"
-                  />
+          <v-expansion-panels>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header
+                class="expansion-panel-heading"
+              >Entidade responsável pela publicação</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <DesSelEnt
+                  :entidades="entSel"
+                  tipo="legislacao"
+                  @unselectEntidade="unselectEntidade($event)"
+                />
 
-                  <hr style="border-top: 1px dashed #dee2f8;" />
+                <hr style="border-top: 1px dashed #dee2f8;" />
 
-                  <SelEnt
-                    :entidadesReady="entidadesReady"
-                    :entidades="entidades"
-                    @selectEntidade="selectEntidade($event)"
-                  />
-                </v-expansion-panel-content>
-              </v-expansion-panel>
+                <SelEnt
+                  :entidadesReady="entidadesReady"
+                  :entidades="entidades"
+                  @selectEntidade="selectEntidade($event)"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
 
-              <!-- Segundo bloco expansivo -->
-              <!-- FIXME: Corrigir a seleção do processo (Não funciona) -->
-              <v-expansion-panel popout focusable>
-                <v-expansion-panel-header
-                  class="expansion-panel-heading"
-                >Processos de negócio que regula ou enquadra</v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <DesSelProc :processos="procSel" @unselectProcesso="unselectProcesso($event)" />
+            <!-- Segundo bloco expansivo -->
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header
+                class="expansion-panel-heading"
+              >Processos de negócio que regula ou enquadra</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <DesSelProc :processos="procSel" @unselectProcesso="unselectProcesso($event)" />
 
-                  <hr style="border-top: 1px dashed #dee2f8;" />
+                <hr style="border-top: 1px dashed #dee2f8;" />
 
-                  <SelProc
-                    :processosReady="processosReady"
-                    :processos="processos"
-                    @selectProcesso="selectProcesso($event)"
-                  />
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-card-text>
-          <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
-            {{ text }}
-            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-          </v-snackbar>
-        </v-card>
-        <div style="text-align:center">
-          <v-btn
-            medium
-            color="primary"
-            :disabled="!(legislacao.sumario && legislacao.numero)"
-            @click="submeter()"
-          >Submeter Diploma</v-btn>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+                <SelProc
+                  :processosReady="processosReady"
+                  :processos="processos"
+                  @selectProcesso="selectProcesso($event)"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card-text>
+        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+          {{ text }}
+          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+        </v-snackbar>
+      </v-card>
+      <div style="text-align:center">
+        <v-btn
+          medium
+          color="primary"
+          :disabled="!(legislacao.sumario && legislacao.numero)"
+          @click="submeter()"
+        >Submeter Diploma</v-btn>
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -453,7 +450,7 @@ export default {
 
 <style>
 .expansion-panel-heading {
-  background-color: #4fc3f7 !important;
+  background-color: #1b5e20 !important;
   color: #fff;
   font-size: large;
   font-weight: bold;
@@ -491,11 +488,11 @@ export default {
 }
 
 .info-label {
-  color: #0d47a1;
-  padding: 6px;
+  color: #2e7d32; /* green darken-3 */
+  padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #b3e5fc;
+  background-color: #e8f5e9; /* green lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

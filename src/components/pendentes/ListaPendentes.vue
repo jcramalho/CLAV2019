@@ -9,7 +9,7 @@
             </v-alert>
           </template>
 
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td class="subheading">
                 {{ props.item.dataCriacao.split("T")[0] }}

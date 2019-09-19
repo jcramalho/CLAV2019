@@ -532,6 +532,7 @@ export default {
               tipoObjeto: "Classe",
               novoObjeto: this.c,
               user: {email: userBD.data.email},
+              entidade: userBD.data.entidade,
               token: this.$store.state.token
             };
             

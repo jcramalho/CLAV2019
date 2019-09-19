@@ -19,7 +19,7 @@
         hide-default-header
         hide-default-footer
       >
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td>
               <a :href="'/classes/consultar/c' + props.item.codigo">

@@ -4,8 +4,8 @@
       <v-subheader class="info-label">Regula os Processos de Negócio:</v-subheader>
     </v-col>
     <v-col v-if="processos.length > 0">
-      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-actions>
-        <template v-slot:headers="props">
+      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
+        <!-- <template v-slot:headers="props">
           <tr>
             <th
               v-for="h in props.headers"
@@ -15,14 +15,14 @@
             >{{ h.text }}</th>
             <th style="color: #1A237E;">Remover</th>
           </tr>
-        </template>
+        </template>-->
 
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
-              <v-btn small color="red darken-2" dark round @click="unselectProcesso(props.item)">
+              <v-btn small color="red darken-2" dark rounded @click="unselectProcesso(props.item)">
                 <v-icon dark>remove_circle</v-icon>
               </v-btn>
             </td>
@@ -43,8 +43,18 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: "Código", align: "left", value: "codigo" },
-        { text: "Designação", value: "titulo" }
+        {
+          text: "Código",
+          align: "left",
+          value: "codigo",
+          class: ["body-2", "font-weight-bold"]
+        },
+        {
+          text: "Designação",
+          value: "titulo",
+          class: ["body-2", "font-weight-bold"]
+        },
+        { text: "Remover", class: ["body-2", "font-weight-bold"] }
       ]
     };
   },
@@ -59,12 +69,12 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #0d47a1;
-  padding: 6px;
+  color: #2e7d32; /* green darken-3 */
+  padding: 5px;
   font-weight: 400;
   width: auto;
   height: auto;
-  background-color: #b3e5fc;
+  background-color: #e8f5e9; /* green lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

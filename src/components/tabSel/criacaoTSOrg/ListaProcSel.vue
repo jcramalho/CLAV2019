@@ -4,11 +4,10 @@
         :headers="headers"
         class="elevation-1"
         item-key="classe"
-        :rows-per-page-items="[10, 20, 100]"
-        rows-per-page-text="Mostrar"
+        :footer-props="procsFooterProps"
         :key="componentKey"
     >
-        <template v-slot:headers="props">
+        <template v-slot:header="props">
             <tr>
                 <th
                     v-for="h in props.headers"
@@ -19,7 +18,7 @@
                 </th>
             </tr>
         </template>
-        <template v-slot:items="props" >
+        <template v-slot:item="props" >
             <tr>
                 <td>
                     {{ props.item.classe }}
@@ -110,6 +109,11 @@ export default {
                 value: "parteDescritiva"
             }
         ],
+        procsFooterProps: {
+            "items-per-page-text": "Processos por página",
+            "items-per-page-options": [10, 20, 100, -1],
+            "items-per-page-all-text": "Todos"
+        },
         novaLista: [],
         novaListaReady: false,
         notasAp: [],

@@ -44,9 +44,9 @@
                       :headers="headers"
                       :items="etapas"
                       class="elevation-1"
-                      hide-actions
+                      hide-default-footer
                     >
-                      <template v-slot:items="props">
+                      <template v-slot:item="props">
                         <td>{{ props.item.estado }}</td>
                         <td>{{ props.item.data.split("T")[0] }}</td>
                         <td>{{ props.item.responsavel }}</td>

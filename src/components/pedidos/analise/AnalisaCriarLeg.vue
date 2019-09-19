@@ -4,7 +4,7 @@
           :headers="headers"
           :items="content"
           class="elevation-1"
-          hide-actions
+          hide-default-footer
         >
           <template v-slot:no-data>
             <v-alert :value="true" color="error" icon="warning">
@@ -18,7 +18,7 @@
             </span>
           </template>
 
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr v-bind:style="props.item.style">
               <td class="subheading">{{ props.item.campo }}</td>
 

@@ -5,8 +5,7 @@
         :headers="headers"
         class="elevation-1"
         item-key="classe"
-        :rows-per-page-items="[10, 20, 100]"
-        rows-per-page-text="Mostrar"
+        :footer-props="procsFooterProps"
     >
         <template v-slot:headers="props">
             <tr>
@@ -19,7 +18,7 @@
                 </th>
             </tr>
         </template>
-        <template v-slot:items="props">
+        <template v-slot:item="props">
             <tr
                 :style="{
                     backgroundColor:
@@ -183,6 +182,11 @@ export default {
         value: "participante"
       }
     ],
+    procsFooterProps: {
+        "items-per-page-text": "Pedidos por página",
+        "items-per-page-options": [10, 20, 100, -1],
+        "items-per-page-all-text": "Todos"
+    },
     // Onde vão ficar armazenados as entidades donas de cada processo. Por ex: {proc1: [ent1,ent2]; proc2: [ent1,ent3]}
     entProcDono: [],
     // True quando a lista das entidades donas de cada processo estiver pronta
