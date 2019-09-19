@@ -1,10 +1,10 @@
 <template>
-  <v-row>
+  <v-row class="ma-1">
     <v-col>
       <!-- Header -->
-      <v-card style="margin:1%">
+      <v-card>
         <v-app-bar color="green darken-4" dark>
-          <v-toolbar-title>Novo Diploma</v-toolbar-title>
+          <v-toolbar-title class="card-heading">Novo Diploma</v-toolbar-title>
         </v-app-bar>
 
         <v-card-text>
@@ -80,12 +80,11 @@
               <div class="info-label">Link:</div>
             </v-col>
             <v-col>
-              <v-text-field solo clearable single-line v-model="legislacao.link"></v-text-field>
+              <v-text-field v-model="legislacao.link" solo clearable single-line></v-text-field>
             </v-col>
           </v-row>
 
           <!-- Blocos expansivos -->
-
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header
@@ -139,7 +138,7 @@
             medium
             centered
             rounded
-            color="#1B5E20"
+            color="#388E3C"
             :disabled="!(legislacao.sumario && legislacao.numero)"
             @click="submeter()"
           >Submeter Diploma</v-btn>
@@ -458,6 +457,11 @@ export default {
   background-color: #1b5e20 !important;
   color: #fff;
   font-size: large;
+  font-weight: bold;
+}
+
+.card-heading {
+  font-size: x-large;
   font-weight: bold;
 }
 

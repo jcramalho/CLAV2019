@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Selecione o(s) participante(s) no processo</div>
+      <div class="info-label">Selecione o(s) participante(s) no processo:</div>
     </v-col>
     <v-col v-if="entidadesReady">
       <v-card>
@@ -42,13 +42,16 @@
             </tr>
           </template>
 
-          <template v-slot:footer.page-text="props">
-            {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
-          </template>
+          <template
+            v-slot:footer.page-text="props"
+          >{{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            color="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-card>
     </v-col>
@@ -59,7 +62,6 @@
 </template>
 
 <script>
-
 export default {
   props: ["entidades", "entidadesReady"],
 

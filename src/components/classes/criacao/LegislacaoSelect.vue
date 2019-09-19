@@ -1,5 +1,5 @@
 <template>
-  <v-row class="ma-2">
+  <v-row>
     <v-col cols="2">
       <div class="info-label">Selecione os diplomas:</div>
     </v-col>
@@ -31,13 +31,16 @@
             </tr>
           </template>
 
-          <template v-slot:footer.page-text="props">
-            Diplomas {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
-          </template>
+          <template
+            v-slot:footer.page-text="props"
+          >Diplomas {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            color="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-card>
     </v-col>
