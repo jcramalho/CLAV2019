@@ -536,7 +536,7 @@ export default {
         procEspecificos: [],
         procEspRestantes: [],
         procUltimos: [],
-        listaProcSel: [],
+        listaProcSel: []
       },
       // Numero do passo da criação de TS
       stepNo: null,
@@ -909,7 +909,7 @@ export default {
     // Contador dos processos selecionados restantes
     contadorProcSelRes: function(procSelec) {
       this.numProcSelRes = procSelec.length;
-      this.tabelaSelecao.procEspRestantes = procSelec;
+      this.tabelaSelecao.procEspRestantes = procSelec
     },
     // Lista dos processos pre selecionados especificos restantes, resultantes das travessias dos PNs especificos
     procPreSelResTravRes: function(procPreSelResTravRes) {
@@ -1035,12 +1035,24 @@ export default {
           lhost + "/api/users/listarToken/" + this.$store.state.token
         );
 
-        this.tabelaSelecao.tipologias = this.tipSel;
+        var tsObj = {
+          entidade: this.tabelaSelecao.idEntidade.split("_")[1],
+          designacao: this.tabelaSelecao.designacao,
+          tipologias: this.tipSel,
+          processos: this.listaTotalProcSel.map(p => {
+            return {
+              codigo: p.classe,
+              titulo: p.designacao,
+              dono: p.dono,
+              participante: p.participante ? p.participante : false
+            };
+          })
+        };
 
         var pedidoParams = {
           tipoPedido: "Criação",
-          tipoObjeto: "TS Organizacional (via web)",
-          novoObjeto: {ts: this.tabelaSelecao},
+          tipoObjeto: "TS Organizacional",
+          novoObjeto: {ts: tsObj},
           user: {email: userBD.data.email},
           entidade: userBD.data.entidade,
           token: this.$store.state.token
