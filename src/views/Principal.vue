@@ -3,6 +3,7 @@
       <v-col>
         <Info />
         <Operacoes />
+        <Noticias />
       </v-col>
 
       <v-col>
@@ -18,6 +19,7 @@ import Info from "@/components/principal/Info.vue";
 import DocumentacaoApoio from "@/components/principal/DocumentacaoApoio.vue";
 import IdentificacaoRepresentantes from "@/components/principal/IdentificacaoRepresentantes.vue";
 import Operacoes from "@/components/principal/Operacoes.vue";
+import Noticias from "@/components/principal/Noticias.vue";
 //import Entidades from "@/components/principal/Entidades.vue";
 import Gestao from "@/components/principal/Gestao.vue";
 
@@ -27,6 +29,7 @@ export default {
     DocumentacaoApoio,
     IdentificacaoRepresentantes,
     Operacoes,
+    Noticias,
     Gestao
   },
 
