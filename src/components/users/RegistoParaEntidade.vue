@@ -131,7 +131,7 @@ export default {
     regraNIC: [
       v => !!v || "Número de Cartão de Cidadão é obrigatório.",
       v =>
-        /^[0-9]{8}$/.test(v) || "Número de Cartão de Cidadão tem de ser válido."
+        /^[0-9]{7,}$/.test(v) || "Número de Cartão de Cidadão tem de ser válido."
     ],
     regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
     users: [],
