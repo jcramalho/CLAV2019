@@ -1053,8 +1053,8 @@ export default {
           tipoPedido: "Criação",
           tipoObjeto: "TS Organizacional",
           novoObjeto: {ts: tsObj},
-          user: {email: userBD.data.email},
-          entidade: userBD.data.entidade,
+          user: { email: userBD.data.email },
+          entidade: userBD.data.entidade.split("_")[1],
           token: this.$store.state.token
         }
 
