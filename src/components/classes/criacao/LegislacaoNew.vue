@@ -1,17 +1,16 @@
 <template>
-  <v-row class="ma-2">
+  <v-row class="ma-2 green lighten-4">
     <v-col cols="2">
-      <div class="info-label">Legislação nova</div>
-      <v-btn small dark rounded color="teal darken-4" @click="newLegislacao">
-          Adicionar
-          <v-icon small dark right>add_circle_outline</v-icon>
+      <div class="info-label">Legislação nova:</div>
+      <v-btn small dark rounded color="green darken-2" @click="newLegislacao">
+        Adicionar
+        <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
     </v-col>
     <v-col>
       <v-form v-model="valid">
         <v-container>
           <v-layout>
-
             <v-flex xs12 md3 v-if="listaTipos.length > 0">
               <v-select
                 item-text="label"
@@ -23,30 +22,19 @@
             </v-flex>
 
             <v-flex xs12 md3 v-else>
-              <v-text-field
-                v-model="tipo"
-                label="Tipo"
-              ></v-text-field>
+              <v-text-field v-model="tipo" label="Tipo"></v-text-field>
             </v-flex>
-
 
             <v-flex xs12 md3>
               <v-text-field v-model="numero" label="Número"></v-text-field>
             </v-flex>
 
             <v-flex xs12 md3>
-              <v-text-field
-                v-model="sumario"
-                label="Sumário"
-              ></v-text-field>
+              <v-text-field v-model="sumario" label="Sumário"></v-text-field>
             </v-flex>
 
             <v-flex xs12 md3>
-              <v-text-field
-                v-model="data"
-                label="Data: AAAA-MM-DD"
-                mask="####-##-##"
-              />
+              <v-text-field v-model="data" label="Data: AAAA-MM-DD" mask="####-##-##" />
             </v-flex>
           </v-layout>
         </v-container>
@@ -55,11 +43,8 @@
 
     <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
       <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
-        <v-btn dark text @click="fecharErros">
-          Fechar
-        </v-btn>
+      <v-btn dark text @click="fecharErros">Fechar</v-btn>
     </v-snackbar>
-
   </v-row>
 </template>
 
@@ -74,7 +59,7 @@ export default {
     return {
       listaTipos: [],
       erroValidacao: false,
-      mensagensErro:[],
+      mensagensErro: [],
       valid: false,
       tipo: "",
       numero: "",
@@ -83,88 +68,99 @@ export default {
     };
   },
 
-  created: async function(){
-      try{
-          var tipos = await axios.get(lhost + "/api/vocabularios/vc_tipoDiplomaLegislativo")
-          this.listaTipos = tipos.data.map(t => {return {label: t.termo, value: t.termo }})
-      }
-      catch(e){
-          return e
-      }
+  created: async function() {
+    try {
+      var tipos = await axios.get(
+        lhost + "/api/vocabularios/vc_tipoDiplomaLegislativo"
+      );
+      this.listaTipos = tipos.data.map(t => {
+        return { label: t.termo, value: t.termo };
+      });
+    } catch (e) {
+      return e;
+    }
   },
 
   methods: {
-      fecharErros: function(){
-        this.mensagensErro = []
-        this.erroValidacao=false
-      },
+    fecharErros: function() {
+      this.mensagensErro = [];
+      this.erroValidacao = false;
+    },
 
-      validaTipo: function(t){
-        var res = true
-        if(t==""){
-          this.mensagensErro.push("O tipo não pode ser vazio, selecione um valor!")
-          res = false
-        }
-        return res
-      },
-
-      validaNumero: function(n){
-        var res = true
-        if(n==""){
-          this.mensagensErro.push("O número não pode ser vazio, introduza um valor!")
-          res = false
-        }
-        return res
-      },
-
-      validaDups: async function(t, n){
-          try{
-              var legs = await axios.get(lhost + "/api/legislacao")
-              var test = legs.data.filter(l => (l.tipo == t) && (l.numero == n))
-              if(test.length > 0){
-                  this.mensagensErro.push("Já existe um documento legislativo na BD com o mesmo tipo e número!")
-                  return false
-              }
-              else{
-                  return true
-              } 
-          }
-          catch(e){
-              return false
-          }
-      },
-
-      validaDupsLocais: function(t, n){
-          var test = this.legislacao.filter(l => (l.tipo == t) && (l.numero == n))
-          if(test.length > 0){
-            this.mensagensErro.push("Já foi criado um item com esse tipo e número!")
-            return false
-          }
-          else{
-            return true
-          } 
-      },
-
-      newLegislacao: async function(){
-        if(this.validaTipo(this.tipo) && this.validaNumero(this.numero) 
-            && await this.validaDups(this.tipo, this.numero) && this.validaDupsLocais(this.tipo, this.numero)){
-          var legislacao = {
-              tipo: this.tipo,
-              id: "...",
-              numero: this.numero,
-              sumario: this.sumario,
-              data: this.data
-          }
-          this.tipo = ""
-          this.numero = ""
-          this.sumario = ""
-          this.data = ""
-          this.$emit('newLegislacao', legislacao)
-        }
-        else{
-          this.erroValidacao = true
-        } 
+    validaTipo: function(t) {
+      var res = true;
+      if (t == "") {
+        this.mensagensErro.push(
+          "O tipo não pode ser vazio, selecione um valor!"
+        );
+        res = false;
       }
+      return res;
+    },
+
+    validaNumero: function(n) {
+      var res = true;
+      if (n == "") {
+        this.mensagensErro.push(
+          "O número não pode ser vazio, introduza um valor!"
+        );
+        res = false;
+      }
+      return res;
+    },
+
+    validaDups: async function(t, n) {
+      try {
+        var legs = await axios.get(lhost + "/api/legislacao");
+        var test = legs.data.filter(l => l.tipo == t && l.numero == n);
+        if (test.length > 0) {
+          this.mensagensErro.push(
+            "Já existe um documento legislativo na BD com o mesmo tipo e número!"
+          );
+          return false;
+        } else {
+          return true;
+        }
+      } catch (e) {
+        return false;
+      }
+    },
+
+    validaDupsLocais: function(t, n) {
+      var test = this.legislacao.filter(l => l.tipo == t && l.numero == n);
+      if (test.length > 0) {
+        this.mensagensErro.push(
+          "Já foi criado um item com esse tipo e número!"
+        );
+        return false;
+      } else {
+        return true;
+      }
+    },
+
+    newLegislacao: async function() {
+      if (
+        this.validaTipo(this.tipo) &&
+        this.validaNumero(this.numero) &&
+        (await this.validaDups(this.tipo, this.numero)) &&
+        this.validaDupsLocais(this.tipo, this.numero)
+      ) {
+        var legislacao = {
+          tipo: this.tipo,
+          id: "...",
+          numero: this.numero,
+          sumario: this.sumario,
+          data: this.data
+        };
+        this.tipo = "";
+        this.numero = "";
+        this.sumario = "";
+        this.data = "";
+        this.$emit("newLegislacao", legislacao);
+      } else {
+        this.erroValidacao = true;
+      }
+    }
   }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" width="500">
     <template v-slot:activator="{ on }">
-      <v-icon v-on="on" small :color="colorHelp" dark>help</v-icon>
+      <v-icon v-on="on" small :color="colorHelp" dark>info_outline</v-icon>
     </template>
 
     <v-card :color="colorDialog">
@@ -18,9 +18,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="red darken-4" text @click="dialog = false">
-          Fechar
-        </v-btn>
+        <v-btn color="red darken-4" text @click="dialog = false">Fechar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -38,11 +36,11 @@ export default {
   },
   created: function() {
     if (!this.helpColor) {
-      this.colorHelp = "#1a237e";
+      this.colorHelp = "#78909C";
     } else this.colorHelp = this.helpColor;
 
     if (!this.dialogColor) {
-      this.colorDialog = "#dee2f8";
+      this.colorDialog = "#ECEFF1";
     } else this.colorDialog = this.dialogColor;
   }
 };

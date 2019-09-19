@@ -1,14 +1,15 @@
 <template>
-  <v-row ma-2>
+  <v-row>
     <!-- Exemplos de notas de Aplicação -->
     <v-col cols="2">
       <div class="info-label">
-        Exemplo(s) de Nota(s) de Aplicação
+        Exemplo(s) de Nota(s) de Aplicação:
         <InfoBox
           header="Exemplo(s) de Nota(s) de Aplicação"
           :text="myhelp.Classe.Campos.ExemplosNotasAp"
         />
       </div>
+
       <v-tooltip top color="info">
         <template v-slot:activator="{ on }">
           <v-btn
@@ -27,7 +28,7 @@
     </v-col>
     <v-col>
       <v-row v-for="(ex, index) in c.exemplosNotasAp" :key="index">
-        <v-col cols="9">
+        <v-col cols="10">
           <v-textarea
             v-model="ex.exemplo"
             auto-grow
@@ -37,33 +38,23 @@
           ></v-textarea>
         </v-col>
         <v-col>
-          <v-btn
-            color="red darken-2"
-            dark
-            rounded
-            @click="c.exemplosNotasAp.splice(index, 1)"
-          >
+          <v-btn color="red darken-2" dark rounded @click="c.exemplosNotasAp.splice(index, 1)">
             Remover
-            <v-icon dark right>clear</v-icon>
+            <v-icon dark right>remove_circle_outline</v-icon>
           </v-btn>
         </v-col>
       </v-row>
     </v-col>
 
     <v-snackbar v-model="exemploNotaApVazioFlag" :color="'warning'" :timeout="60000">
-        {{ mensagemExemploNotaApVazio }}
-        <v-btn dark text @click="exemploNotaApVazioFlag=false">
-          Fechar
-        </v-btn>
+      {{ mensagemExemploNotaApVazio }}
+      <v-btn dark text @click="exemploNotaApVazioFlag=false">Fechar</v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="exemploNotaApDuplicadoFlag" :color="'error'" :timeout="60000">
-        {{ mensagemExemploNotaApDuplicado }}
-        <v-btn dark text @click="exemploNotaApDuplicadoFlag=false">
-          Fechar
-        </v-btn>
+      {{ mensagemExemploNotaApDuplicado }}
+      <v-btn dark text @click="exemploNotaApDuplicadoFlag=false">Fechar</v-btn>
     </v-snackbar>
-
   </v-row>
 </template>
 
@@ -81,8 +72,10 @@ export default {
       myhelp: help,
       exemploNotaApVazioFlag: false,
       exemploNotaApDuplicadoFlag: false,
-      mensagemExemploNotaApVazio: "O exemplo anterior encontra-se vazio. Queira preenchê-lo antes de criar novo.",
-      mensagemExemploNotaApDuplicado: "O último exemplo introduzido é um duplicado de outro já introduzido previamente!"
+      mensagemExemploNotaApVazio:
+        "O exemplo anterior encontra-se vazio. Queira preenchê-lo antes de criar novo.",
+      mensagemExemploNotaApDuplicado:
+        "O último exemplo introduzido é um duplicado de outro já introduzido previamente!"
     };
   },
 
@@ -91,29 +84,25 @@ export default {
   },
 
   methods: {
-    exemploDuplicado: function(exemplos){
-      if(exemplos.length > 1){
-        var lastExemplo = exemplos[exemplos.length-1].exemplo
-        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo )
-        if(duplicados.length > 1){
-          return true
-        }
-        else return false
-      }
-      else{
-        return false
+    exemploDuplicado: function(exemplos) {
+      if (exemplos.length > 1) {
+        var lastExemplo = exemplos[exemplos.length - 1].exemplo;
+        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
       }
     },
 
     insereNovoExemplo: async function(exemplos) {
-      if((exemplos.length > 0) && (exemplos[exemplos.length-1].exemplo == "")){
-        this.exemploNotaApVazioFlag = true
-      }
-      else if(this.exemploDuplicado(exemplos)){
-        this.exemploNotaApDuplicadoFlag = true
-      }
-      else{
-        var e = { idExemplo: "exna_" + nanoid(), exemplo: "" }; 
+      if (exemplos.length > 0 && exemplos[exemplos.length - 1].exemplo == "") {
+        this.exemploNotaApVazioFlag = true;
+      } else if (this.exemploDuplicado(exemplos)) {
+        this.exemploNotaApDuplicadoFlag = true;
+      } else {
+        var e = { idExemplo: "exna_" + nanoid(), exemplo: "" };
         exemplos.push(e);
       }
     }

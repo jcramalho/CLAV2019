@@ -1,63 +1,37 @@
 <template>
-  <v-row ma-2>
+  <v-row>
     <!-- Notas de Exclusão -->
     <v-col cols="2">
-      <div class="info-label">Notas de Exclusão</div>
-      <v-tooltip top color="info">
-        <template v-slot:activator="{ on }">
-          <v-btn
-            v-on="on"
-            color="green darken-2"
-            dark
-            rounded
-            @click="insereNovaNota(c.notasEx, 'ne')"
-          >
-            Nota Exclusão
-            <v-icon dark right>add_circle_outline</v-icon>
-          </v-btn>
-        </template>
-        <span>Nota de exclusão</span>
-      </v-tooltip>
+      <div class="info-label">Notas de Exclusão:</div>
+
+      <v-btn color="green darken-2" dark rounded @click="insereNovaNota(c.notasEx, 'ne')">
+        Nota Exclusão
+        <v-icon dark right>add_circle_outline</v-icon>
+      </v-btn>
     </v-col>
     <v-col>
       <v-row v-for="(nota, index) in c.notasEx" :key="index">
-        <v-col cols="9">
-          <v-textarea
-            v-model="nota.nota"
-            auto-grow
-            solo
-            label="Nota de Exclusão:"
-            rows="1"
-          ></v-textarea>
+        <v-col cols="10">
+          <v-textarea v-model="nota.nota" auto-grow solo label="Nota de Exclusão" rows="1"></v-textarea>
         </v-col>
         <v-col>
-          <v-btn
-            color="red darken-2"
-            dark
-            rounded
-            @click="c.notasEx.splice(index, 1)"
-          >
+          <v-btn color="red darken-2" dark rounded @click="c.notasEx.splice(index, 1)">
             Remover
-            <v-icon dark right>clear</v-icon>
+            <v-icon dark right>remove_circle_outline</v-icon>
           </v-btn>
         </v-col>
       </v-row>
     </v-col>
 
     <v-snackbar v-model="neVaziaFlag" :color="'warning'" :timeout="60000">
-        {{ mensagemNEVazia }}
-        <v-btn dark text @click="neVaziaFlag=false">
-          Fechar
-        </v-btn>
+      {{ mensagemNEVazia }}
+      <v-btn dark text @click="neVaziaFlag=false">Fechar</v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="neDuplicadaFlag" :color="'error'" :timeout="60000">
-        {{ mensagemNEDuplicada }}
-        <v-btn dark text @click="neDuplicadaFlag=false">
-          Fechar
-        </v-btn>
+      {{ mensagemNEDuplicada }}
+      <v-btn dark text @click="neDuplicadaFlag=false">Fechar</v-btn>
     </v-snackbar>
-
   </v-row>
 </template>
 
@@ -71,37 +45,33 @@ export default {
     return {
       neVaziaFlag: false,
       neDuplicadaFlag: false,
-      mensagemNEVazia: "A nota anterior encontra-se vazia. Queira preenchê-la antes de criar nova.",
-      mensagemNEDuplicada: "A última nota introduzida é um duplicado de outra já introduzida previamente!"
+      mensagemNEVazia:
+        "A nota anterior encontra-se vazia. Queira preenchê-la antes de criar nova.",
+      mensagemNEDuplicada:
+        "A última nota introduzida é um duplicado de outra já introduzida previamente!"
     };
   },
 
-
   methods: {
-
-    notaDuplicada: function(notas){
-      if(notas.length > 1){
-        var lastNota = notas[notas.length-1].nota
-        var duplicados = notas.filter(n => n.nota == lastNota )
-        if(duplicados.length > 1){
-          return true
-        }
-        else return false
-      }
-      else{
-        return false
+    notaDuplicada: function(notas) {
+      if (notas.length > 1) {
+        var lastNota = notas[notas.length - 1].nota;
+        var duplicados = notas.filter(n => n.nota == lastNota);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
       }
     },
 
     insereNovaNota: function(notas, tipo) {
-      if((notas.length > 0) && (notas[notas.length-1].nota == "")){
-        this.neVaziaFlag = true
-      }
-      else if(this.notaDuplicada(notas)){
-        this.neDuplicadaFlag = true
-      }
-      else{
-        var n = { id: tipo + "_" + nanoid(), nota: "" }; 
+      if (notas.length > 0 && notas[notas.length - 1].nota == "") {
+        this.neVaziaFlag = true;
+      } else if (this.notaDuplicada(notas)) {
+        this.neDuplicadaFlag = true;
+      } else {
+        var n = { id: tipo + "_" + nanoid(), nota: "" };
         notas.push(n);
       }
     }
