@@ -6,23 +6,21 @@
         Entidades abrangidas pela TS
       </v-stepper-step>
       <v-stepper-content step="1">
+        <v-expansion-panels>
         <v-expansion-panel>
+          <v-expansion-panel-header>Selecione as Entidades abrangidas pela TS</v-expansion-panel-header>
           <v-expansion-panel-content class="expansion-panel-heading">
-            <template v-slot:header>
-              <div class="subheading font-weight-bold">
-                Selecione as Entidades abrangidas pela TS
-              </div>
-            </template>
             <v-card style="padding-top:30px;">
-              <v-layout>
-                <v-flex xs2>
+              <v-card-text>
+              <v-row>
+                <v-col cols="2">
                   <v-subheader
                     class="info-label"
                     style="border-color: white; border-style:solid; color: #1A237E;"
                     >Entidades pré selecionadas:</v-subheader
                   >
-                </v-flex>
-                <v-flex xs9>
+                </v-col>
+                <v-col>
                   <v-data-table
                     :headers="[
                       { text: 'Sigla', align: 'left', value: 'sigla' },
@@ -39,8 +37,9 @@
                       </tr>
                     </template>
                   </v-data-table>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
+
               <DesSelEnt
                 :entidades="entSel"
                 @unselectEntidade="unselectEntidade($event)"
@@ -53,9 +52,11 @@
                 :entidades="entidades"
                 @selectEntidade="selectEntidade($event)"
               />
+              </v-card-text>
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panels>
         <v-btn
           color="primary"
           @click="
@@ -106,13 +107,12 @@
       <v-stepper-content step="3">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header class="subtitle-1">
+                Selecione os Processos de Negócio Comuns
+              </v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Selecione os Processos de Negócio Comuns
-                  </div>
-                </template>
                 <ListaProcessosComuns 
                   v-if="listaProcComunsReady && entSelReady"
                   v-bind:lista="listaProcComuns"
@@ -123,6 +123,7 @@
                   @guardarTSProcComuns="guardarTSProcComuns($event)"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-layout wrap>
@@ -170,13 +171,12 @@
       <v-stepper-content step="4">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header class="subtitle-1">
+                Selecione os Processos de Negócio Específicos
+              </v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Selecione os Processos de Negócio Específicos
-                  </div>
-                </template>
                 <ListaProcessosEspecificos
                   v-if="listaProcEspReady"
                   v-bind:lista="listaProcEsp"
@@ -189,6 +189,7 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-layout wrap>
@@ -230,13 +231,12 @@
       <v-stepper-content step="5">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header class="subtitle-1">
+                Selecione os Processos de Negócio Específicos Restantes
+              </v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Selecione os Processos de Negócio Específicos Restantes
-                  </div>
-                </template>
                 <ListaProcessosEspRestantes
                   v-if="listaProcEspResReady"
                   v-bind:lista="listaProcEspRes"
@@ -249,6 +249,7 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-layout wrap>
@@ -296,13 +297,12 @@
       <v-stepper-content step="6">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header class="subtitle-1">
+                Selecione os Processos de Negócio Restantes
+              </v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Selecione os Processos de Negócio Restantes
-                  </div>
-                </template>
                 <ListaProcessosUltimos 
                   v-if="listaProcUltReady"
                   v-bind:lista="listaProcUlt"
@@ -314,6 +314,7 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-layout wrap>
