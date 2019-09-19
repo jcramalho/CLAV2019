@@ -49,12 +49,6 @@ export default new Router({
       name: "consultaEntidade",
       component: () => import("./views/entidades/EntidadesConsulta.vue")
     },
-    // Routes dos representantes das entidades
-    {
-      path: "/representantes/identificar",
-      name: "identficação de representantes",
-      component: () => import("./views/representantes/Identificacao.vue")
-    },
     // Routes da legislação
     {
       path: "/legislacao",

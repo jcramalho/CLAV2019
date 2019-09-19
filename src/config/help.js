@@ -22,8 +22,7 @@ module.exports.help = {
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
   AutosEliminacao:
-    "Registo da eliminação de todos os documentos que formam os autos. É precedida de publicação de edital de " + 
-    "eliminação e, em alguns casos, conservação.",
+    "Autos de eliminação produzidos ao abrigo de tabela de seleção inserida em Portaria de gestão de documentos ou Relatório de avaliação de documentação acumulada e submetida à DGLAB para verificação de conformidade.",
   Invariantes:
     "Conjunto de invariantes que testam situações de erro e identificam os PNs onde estas ocorrem.",
   Classe: {
