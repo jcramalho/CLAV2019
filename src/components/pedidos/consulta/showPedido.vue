@@ -66,7 +66,7 @@
 
             <ShowTSOrg v-if="p.objeto.tipo=='TS Organizacional'" :p="p" />
             <ShowClasse v-else-if="p.objeto.tipo=='Classe'" :p="p" />
-            <ShowClasse v-else :p="p" />
+            <ShowDefault v-else :p="p" />
 
           </v-card-text>
           <v-card-actions>
@@ -83,6 +83,7 @@
 <script>
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue"
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue"
+import ShowDefault from "@/components/pedidos/consulta/showDefault.vue"
 
 export default {
   props: ["p"],
@@ -112,3 +113,20 @@ export default {
   }
 }
 </script>
+
+<style>
+.info-label {
+  color: #00695c;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #e0f2f1;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+</style>
