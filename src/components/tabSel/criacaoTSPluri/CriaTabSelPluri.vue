@@ -56,7 +56,7 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
-        <v-expansion-panels>
+        </v-expansion-panels>
         <v-btn
           color="primary"
           @click="
