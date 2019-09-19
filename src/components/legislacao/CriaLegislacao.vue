@@ -132,14 +132,19 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      <div style="text-align:center">
-        <v-btn
-          medium
-          color="primary"
-          :disabled="!(legislacao.sumario && legislacao.numero)"
-          @click="submeter()"
-        >Submeter Diploma</v-btn>
-      </div>
+      <v-row>
+        <v-col class="text-center">
+          <v-btn
+            class="white--text"
+            medium
+            centered
+            rounded
+            color="#1B5E20"
+            :disabled="!(legislacao.sumario && legislacao.numero)"
+            @click="submeter()"
+          >Submeter Diploma</v-btn>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
