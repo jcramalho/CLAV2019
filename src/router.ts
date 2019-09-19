@@ -214,6 +214,11 @@ export default new Router({
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue")
     },
+    {
+      path: "/users/registoParaEntidade",
+      name: "registoParaEntidade",
+      component: () => import("./views/users/RegistoParaEntidade.vue")
+    },
     //cartao cidadao
     {
       path: "/users/handlerCC",
@@ -247,6 +252,7 @@ export default new Router({
       name: "alteracaoChaveApi",
       component: () => import("./views/gestao/api/AlteracaoChaveApi.vue")
     },
+    // Routes de Invariantes
     {
       path: "/invariantes",
       name: "invariantes",

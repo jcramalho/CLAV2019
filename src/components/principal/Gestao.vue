@@ -125,6 +125,11 @@ export default {
               label: "Consultar utilizadores",
               url: "/users/listagem",
               level: "public"
+            },
+            {
+              label: "Registo de utilizadores para uma entidade",
+              url: "/users/registoParaEntidade",
+              level: "auth"
             }
           ]
         },
