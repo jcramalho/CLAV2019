@@ -1163,7 +1163,7 @@ export default {
 
         var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
         this.mensagemPedidoCriadoOK += response.data.codigo;
-        response = await axios.delete(lhost + "/api/pendentes/" + this.obj._id)
+        response = await axios.delete(lhost + "/api/pendentes/" + this.obj._id);
         this.pedidoCriado = true;
       } catch (error) {
         return error;
