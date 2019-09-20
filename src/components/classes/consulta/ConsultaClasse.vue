@@ -290,7 +290,7 @@
                                 <span
                                   v-for="l in c.legislacao"
                                   :key="l.legId"
-                                ><a :href="'/legislacao/' + l.legId ">{{ l.tipo }} com Nº {{l.numero}}</a>,</span>
+                                ><a :href="'/legislacao/' + l.legId ">{{l.tipo}} {{l.numero}}</a>,</span>
                               </div>
                             </v-col>
                           </v-row>
@@ -358,7 +358,7 @@
                                 <span
                                   v-for="l in c.legislacao"
                                   :key="l.legId"
-                                ><a :href="'/legislacao/' + l.legId ">{{l.tipo}} com Nº {{l.numero}}</a>,</span>
+                                ><a :href="'/legislacao/' + l.legId ">{{l.tipo}} {{l.numero}}</a>,</span>
                               </div>
                             </v-col>
                           </v-row>
