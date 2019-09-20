@@ -12,7 +12,7 @@
         />
       </div>
     </v-col>
-    <v-col xs="10" sm="10">
+    <v-col xs="10" sm="10">  
       <div class="info-content">
         <v-data-table :headers="headers" :items="myProcRel" class="elevation-1" hide-default-footer>
           <template v-slot:item="props">
