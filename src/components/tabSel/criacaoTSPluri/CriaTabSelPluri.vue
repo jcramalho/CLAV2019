@@ -881,7 +881,7 @@ export default {
           this.tabelaSelecao.procUltimos[this.listaProcUlt[i].classe].dono = procUlt['dono'][this.listaProcUlt[i].classe];
         }
       } else {
-        for ( var j = 0; j < this.listaProcUlt.length; j++) {
+        for (var j = 0; j < this.listaProcUlt.length; j++) {
           this.tabelaSelecao.procUltimos[this.listaProcUlt[j].classe].part = procUlt['part'][this.listaProcUlt[j].classe];
         }
       }
@@ -895,14 +895,42 @@ export default {
 
         var tsObj = [];
 
+        //Criação do objeto para enviar no pedido
         for (var k in this.tabelaSelecao.listaProcSel) {
           this.tabelaSelecao.listaProcSel[k].forEach(codigo => {
             var p = {
               codigo: codigo,
-              titulo: "",
               entidades: []
             };
 
+            //adicionar titulo
+            var lista = null;
+            switch (k) {
+              case "procSelComuns":
+                lista = "listaProcComuns";
+                break;
+              case "procSelEspecificos":
+                lista = "listaProcEsp";
+                break;
+              case "procSelEspRestantes":
+                lista = "listaProcEspRes";
+                break;
+              case "procSelUltimos":
+                lista = "listaProcUlt";
+                break;
+              default:
+                break;
+            }
+
+            var index;
+            if (lista) {
+              index = this[lista].findIndex(e => e.classe == codigo);
+              if (index != -1) {
+                p.titulo = this[lista][index].designacao;
+              }
+            }
+
+            //Adicionar donos
             var kr = k.replace(/Sel/g,"");
             for (var ent in this.tabelaSelecao[kr][codigo].dono) {
               if (this.tabelaSelecao[kr][codigo].dono[ent]) {
@@ -910,13 +938,14 @@ export default {
                   sigla: ent.split("_")[1],
                   dono: this.tabelaSelecao[kr][codigo].dono[ent],
                   participante: false
-                })
+                });
               }
             }
 
+            //Adicionar participantes
             for (ent in this.tabelaSelecao[kr][codigo].part) {
-              if (ent in this.tabelaSelecao[kr][codigo].dono) {
-                var index = p.entidades.findIndex(e => "ent_" + e.sigla == ent);
+              index = p.entidades.findIndex(e => "ent_" + e.sigla == ent);
+              if (index != -1) {
                 p.entidades[index].participante = this.tabelaSelecao[kr][codigo].part[ent];
               } else {
                 if (this.tabelaSelecao[kr][codigo].part[ent]) {
@@ -924,12 +953,12 @@ export default {
                     sigla: ent.split("_")[1],
                     dono: false,
                     participante: this.tabelaSelecao[kr][codigo].part[ent]
-                  })
+                  });
                 }
               }
             }
             tsObj.push(p);
-          })
+          });
         }
 
         var pedidoParams = {
@@ -942,8 +971,9 @@ export default {
         };
 
         console.log(JSON.stringify(this.tabelaSelecao))
+        console.log(JSON.stringify(tsObj))
         var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
-        this.mensagemPedidoCriadoOk += response.data.codigo;
+        this.mensagemPedidoCriadoOK += response.data.codigo;
         this.pedidoCriado = true;
       } catch (error) {
         return error;
