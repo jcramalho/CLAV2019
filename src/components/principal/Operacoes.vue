@@ -111,8 +111,8 @@ export default {
               url: "/autosEliminacao"
             },
             {
-              label: "Adicionar",
-              url: "/autosEliminacao/criar"
+              label: "Importar",
+              url: "/autosEliminacao/importar"
             }
           ]
         },

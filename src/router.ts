@@ -120,9 +120,9 @@ export default new Router({
       component: () => import("./views/autosEliminacao/AutosEliminacao.vue")
     },
     {
-      path: "/autosEliminacao/criar",
-      name: "criaAutosEliminacao",
-      component: () => import("./views/autosEliminacao/AutosEliminacaoCria.vue")
+      path: "/autosEliminacao/importar",
+      name: "importarAutosEliminacao",
+      component: () => import("./views/autosEliminacao/AutosEliminacaoImportar.vue")
     },
     {
       path: "/autosEliminacao/:idAE",
