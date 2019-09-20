@@ -250,10 +250,6 @@ export default {
             var guardar = {}
             guardar['dono'] = this.entProcDono;
             this.$emit("guardarTSProcComuns", guardar);
-            console.log("Guardei entProcDono!!")
-            console.log(this.entProcDono)
-            console.log("Processos selecionados")
-            console.log(this.procComunsSel)
         },
         selecTodasEnt: async function(entidades, proc){
             for( var i = 0; i < entidades.length; i++){
@@ -295,11 +291,6 @@ export default {
                     }
                 }
             }
-        
-            console.log("Guardei entProcPar!!")
-            console.log(this.entProcPar)
-            console.log("Processos selecionados")
-            console.log(this.procComunsSel)
         },
         desselecionarPart: async function(classe, id){
             delete this.entProcPar[classe][id];
