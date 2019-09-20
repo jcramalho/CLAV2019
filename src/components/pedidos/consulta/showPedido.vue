@@ -88,7 +88,7 @@ import ShowDefault from "@/components/pedidos/consulta/showDefault.vue"
 export default {
   props: ["p"],
 
-  components: { ShowTSOrg, ShowClasse },
+  components: { ShowTSOrg, ShowClasse, ShowDefault },
 
   data: () => ({
     headers: [
