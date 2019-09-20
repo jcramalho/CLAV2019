@@ -66,6 +66,7 @@
 
             <ShowTSOrg v-if="p.objeto.tipo=='TS Organizacional'" :p="p" />
             <ShowClasse v-else-if="p.objeto.tipo=='Classe'" :p="p" />
+            <ShowAE v-else-if="p.objeto.tipo.includes('AE ')" :p="p" />
             <ShowDefault v-else :p="p" />
 
           </v-card-text>
@@ -84,11 +85,12 @@
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue"
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue"
 import ShowDefault from "@/components/pedidos/consulta/showDefault.vue"
+import ShowAE from "@/components/pedidos/consulta/showAE.vue"
 
 export default {
   props: ["p"],
 
-  components: { ShowTSOrg, ShowClasse },
+  components: { ShowTSOrg, ShowClasse, ShowDefault },
 
   data: () => ({
     headers: [
