@@ -38,7 +38,7 @@
                 <v-expansion-panel-content>
                   <v-row>
                     <!-- DESCRIÇÂO -->
-                    <v-col xs="2" sm="2" >
+                    <v-col xs="2" sm="2">
                       <div class="info-label">
                         Descrição
                         <InfoBox
@@ -262,9 +262,7 @@
                           </v-row>
 
                           <!-- Critério Utilidade Administrativa .................-->
-                          <v-row
-                            v-if="c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'"
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">Critério de Utilidade Administrativa</div>
                             </v-col>
@@ -274,7 +272,9 @@
                                 <span
                                   v-for="p in c.processos"
                                   :key="p.procId"
-                                >{{ p.procId }},</span>
+                                >
+                                  <a :href="'/classes/consultar/' + p.procId">{{ p.procId }}</a>,
+                                </span>
                               </div>
                             </v-col>
                           </v-row>
@@ -290,7 +290,7 @@
                                 <span
                                   v-for="l in c.legislacao"
                                   :key="l.legId"
-                                >{{ l.legId }},</span>
+                                ><a :href="'/legislacao/' + l.legId ">{{l.tipo}} {{l.numero}}</a>,</span>
                               </div>
                             </v-col>
                           </v-row>
@@ -358,15 +358,13 @@
                                 <span
                                   v-for="l in c.legislacao"
                                   :key="l.legId"
-                                >{{ l.legId }},</span>
+                                ><a :href="'/legislacao/' + l.legId ">{{l.tipo}} {{l.numero}}</a>,</span>
                               </div>
                             </v-col>
                           </v-row>
 
                           <!-- Critério de Densidade Informacional ..............-->
-                          <v-row
-                            v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'"
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">Critério de Densidade Informacional</div>
                             </v-col>
@@ -376,15 +374,15 @@
                                 <span
                                   v-for="p in c.processos"
                                   :key="p.procId"
-                                >{{ p.procId }},</span>
+                                >
+                                  <a :href="'/classes/consultar/' + p.procId">{{ p.procId }}</a>,
+                                </span>
                               </div>
                             </v-col>
                           </v-row>
 
                           <!-- Critério de Complementaridade Informacional ..............-->
-                          <v-row
-                            v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'"
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">Critério de Complementaridade Informacional</div>
                             </v-col>
@@ -394,7 +392,9 @@
                                 <span
                                   v-for="p in c.processos"
                                   :key="p.procId"
-                                >{{ p.procId }},</span>
+                                >
+                                  <a :href="'/classes/consultar/' + p.procId">{{ p.procId }}</a>,
+                                </span>
                               </div>
                             </v-col>
                           </v-row>
@@ -437,6 +437,7 @@ export default {
   data: () => ({
     classe: {},
     classeLoaded: false,
+
     filhosHeaders: [
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", value: "titulo" }
@@ -463,14 +464,76 @@ export default {
   methods: {
     go: function(idClasse) {
       this.$router.push("/classes/consultar/c" + idClasse);
+    },
+    getLegislacao: function(response) {
+      
+      return new Promise(async (resolve, reject)=>{
+        this.classe = response.data;
+        console.log("hello")
+        for(let i = 0; i < this.classe.df.justificacao.length; i++){
+          for(let j = 0; i < this.classe.df.justificacao[i].legislacao.length; j++){
+            console.log(this.classe.df.justificacao[i].legislacao[j].legId)
+              await axios.get(lhost + "/api/legislacao/" + this.classe.df.justificacao[i].legislacao[j].legId)
+                         .then(response => {
+                           this.classe.df.justificacao[i].legislacao[j].tipo = response.data.tipo
+                           this.classe.df.justificacao[i].legislacao[j].numero = response.data.numero
+                         })
+          }
+        }
+
+        for(let i = 0; i < this.classe.pca.justificacao.length; i++){
+          for(let j = 0; i < this.classe.pca.justificacao[i].legislacao.length; j++){
+              await axios.get(lhost + "/api/legislacao/" + this.classe.pca.justificacao[i].legislacao[j].legId)
+                         .then(response => {
+                           this.classe.pca.justificacao[i].legislacao[j].tipo = response.data.tipo
+                           this.classe.pca.justificacao[i].legislacao[j].numero = response.data.numero
+                         })
+          }
+        }
+
+        resolve()
+      })
     }
   },
 
   mounted: function() {
     axios
       .get(lhost + "/api/classes/" + this.idc)
-      .then(response => {
+      .then( async response => {
+
         this.classe = response.data;
+
+        if(this.classe.df.justificacao){
+          for(let i = 0; i < this.classe.df.justificacao.length; i++){
+            if(this.classe.df.justificacao[i].legislacao){
+              for(let j = 0; j < this.classe.df.justificacao[i].legislacao.length; j++){
+                console.log("i", i)
+                console.log("j", j)
+                console.log(this.classe.df.justificacao[i].legislacao[j].legId)
+                await axios.get(lhost + "/api/legislacao/" + this.classe.df.justificacao[i].legislacao[j].legId)
+                         .then(response => {
+                           this.classe.df.justificacao[i].legislacao[j].tipo = response.data.tipo
+                           this.classe.df.justificacao[i].legislacao[j].numero = response.data.numero
+                         })
+              }
+            }
+          }
+        }
+        
+        if(this.classe.pca.justificacao){
+          for(let h = 0; h < this.classe.pca.justificacao.length; h++){
+            if(this.classe.pca.justificacao[h].legislacao){
+              for(let z = 0; z < this.classe.pca.justificacao[h].legislacao.length; z++){
+                await axios.get(lhost + "/api/legislacao/" + this.classe.pca.justificacao[h].legislacao[z].legId)
+                           .then(response => {
+                             this.classe.pca.justificacao[h].legislacao[z].tipo = response.data.tipo
+                             this.classe.pca.justificacao[h].legislacao[z].numero = response.data.numero
+                           })
+              }
+            }
+          }
+        }
+        
         this.classeLoaded = true;
       })
       .catch(error => {
@@ -479,9 +542,13 @@ export default {
   }
 };
 </script>
-.myPanelHeader { color: #304FFE; }
+
 
 <style>
+.myPanelHeader {
+  color: #304ffe;
+}
+
 .info-label {
   color: #1a237e;
   padding: 5px;

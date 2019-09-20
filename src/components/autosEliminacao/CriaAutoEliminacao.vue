@@ -105,6 +105,7 @@ export default {
         default:
           conversor(this.file)
           .then(res => {
+            console.warn(res.auto)
             axios.post(lhost + "/api/autosEliminacao/"+this.tipo, {auto: res.auto, token: this.$store.state.token})
               .then(r => {
                 this.snack = true
@@ -112,8 +113,9 @@ export default {
                 this.snackColor = "green"
               })
               .catch((err) => {
+                console.warn(err.response)
                 this.snack = true
-                this.mess = "Erro na atualização do AE"
+                this.mess = err.response.data
                 this.snackColor = "red"
               })
           })
