@@ -20,7 +20,7 @@
                   </td>
                   <td style="width:40%">
                     <v-radio-group row v-model="tipo" :mandatory="true">
-                        <v-radio xs4 sm4 label="PGD/LC" value="TS"></v-radio>
+                        <v-radio xs4 sm4 label="PGD/LC" value="PGD/LC"></v-radio>
                         <v-radio xs4 sm4 label="PGD" value="PGD"></v-radio>
                         <v-radio xs4 sm4 label="RADA" value="RADA"></v-radio>
                     </v-radio-group>
@@ -57,19 +57,50 @@
         {{ obj }}
       </v-flex>
     </v-layout>
-    <v-snackbar
-      v-model="snack"
-      :color="snackColor"
-    >
-      {{ mess }}
-      <v-btn
-        dark
-        text
-        @click="snack = false;"
-      >
-        Fechar
-      </v-btn>
-    </v-snackbar>
+    <v-dialog v-model="successDialog" width="950" persistent>
+      <v-card outlined>
+        <v-card-title class="teal darken-4 title white--text" dark>
+          Pedido de criação de auto de eliminação criado com sucesso
+        </v-card-title>
+
+        <v-card-text>
+          <span
+            class="subtitle-1"
+            style="white-space: pre-wrap"
+            v-html="success"
+          >
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="green darken-4" text @click="$router.push('/')">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="erroDialog" width="700" persistent>
+      <v-card outlined>
+        <v-card-title class="red darken-4 title white--text" dark>
+          Não foi possível criar o pedido de criação de tabela de seleção
+        </v-card-title>
+
+        <v-card-text>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro">
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="red darken-4" text @click="erroDialog = false">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -83,16 +114,20 @@ const conversorTS = require("@/plugins/conversor").excel2Json;
 export default {
   data: () => ({
     file: null,
-    tipo: "ts",
+    tipo: "PGD/LC",
     snack: false,
     snackColor: "green",
     mess: "",
     obj: "",
+    successDialog: false,
+    success: "",
+    erroDialog: false,
+    erro: ""
   }),
   methods: {
     submit: async function() {
       switch(this.tipo) {
-        case "ts": 
+        case "PGD/LC": 
           conversorTS(this.file)
             .then(res => {
               console.warn("TS")
@@ -105,18 +140,15 @@ export default {
         default:
           conversor(this.file)
           .then(res => {
-            console.warn(res.auto)
+
             axios.post(lhost + "/api/autosEliminacao/"+this.tipo, {auto: res.auto, token: this.$store.state.token})
               .then(r => {
-                this.snack = true
-                this.mess = r.data
-                this.snackColor = "green"
+                this.successDialog = true
+                this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(res.error)}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`
               })
-              .catch((err) => {
-                console.warn(err.response)
-                this.snack = true
-                this.mess = err.response.data
-                this.snackColor = "red"
+              .catch((e) => {
+                this.erro = e.response.data;
+                this.erroDialog = true;
               })
           })
           .catch(err => {
