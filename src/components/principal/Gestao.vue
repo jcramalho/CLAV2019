@@ -69,16 +69,6 @@ export default {
       panelHeaderColor: "indigo accent-4",
       operacoes: [
         {
-          entidade: "Indicação de representante da entidade",
-          texto: "É necessário que a Entidade identifique os seus representantes antes destes se registarem.",
-          ops:[
-            {
-              label: "Identificar representantes",
-              url: "/representantes/identificar"
-            }
-          ]
-        },
-        {
           entidade: "Pedidos",
           texto:
             "Pedidos de alteração ou de criação de novas instâncias que deram entrada na plataforma.",
@@ -134,12 +124,12 @@ export default {
           ]
         },
         {
-          entidade: "Chaves API",
-          texto: '',
+          entidade: "Vocabulários Controlados",
+          texto: help.VocabulariosControlados,
           ops: [
             {
-              label: "Consultar chaves API",
-              url: "/gestao/api/listagem",
+              label: "Consultar",
+              url: "/vocabularios",
               level: "public"
             }
           ]

@@ -1,6 +1,6 @@
 <template>
   <div class="ma-2">
-    <v-dialog v-model="erroDialog" width="700">
+    <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="red darken-4 title white--text" dark>
           Não foi possível criar o pedido de criação de tabela de seleção
@@ -20,7 +20,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="successDialog" width="700">
+    <v-dialog v-model="successDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="teal darken-4 title white--text" dark>
           Pedido de criação de tabela de seleção criado com sucesso
@@ -38,7 +38,7 @@
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="green darken-4" text @click="successDialog = false">
+          <v-btn color="green darken-4" text @click="$router.push('/')">
             Fechar
           </v-btn>
         </v-card-actions>

@@ -1,8 +1,15 @@
 <template>
-  <v-container fluid>
-    <v-layout row wrap ma-2>
-      <v-flex xs12>
-        <v-data-table :headers="headers" :items="pendentes" class="elevation-1">
+    <v-card class="ma-4">
+      <v-card-title class="title indigo darken-4 white--text" dark>
+        Lista de Trabalhos Pendentes
+      </v-card-title>
+      <v-card-text>
+        <v-data-table 
+          :headers="headers" 
+          :items="pendentes" 
+          class="ma-2 elevation-1"
+          :footer-props="procsFooterProps"
+        >
           <template v-slot:no-data>
             <v-alert :value="true" color="error" icon="warning">
               Não foi possível apresentar uma lista dos trabalhos guardados...
@@ -34,7 +41,7 @@
               <td class="subheading" v-else>{{ props.item.tipo }}</td>
               <td class="subheading">
                 <v-btn
-                  round
+                  rounded
                   color="indigo darken-3"
                   dark
                   @click="continuarTrabalho(props.item)"
@@ -44,10 +51,13 @@
               </td>
             </tr>
           </template>
+
+          <template v-slot:footer.page-text="props">
+            {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
+          </template>
         </v-data-table>
-      </v-flex>
-    </v-layout>
-  </v-container>
+      </v-card-text>
+    </v-card>
 </template>
 
 <script>
@@ -95,6 +105,11 @@ export default {
       },
       { text: "Ações", class: "title" }
     ],
+    procsFooterProps: {
+        "items-per-page-text": "Processos por página",
+        "items-per-page-options": [10, 20, 100, -1],
+        "items-per-page-all-text": "Todos"
+    },
     pendentes: []
   }),
   mounted: async function() {

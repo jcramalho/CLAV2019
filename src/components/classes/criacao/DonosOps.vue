@@ -1,24 +1,13 @@
 <template>
-  <v-row class="ma-2 teal lighten-5">
+  <v-row>
     <v-col cols="2">
-      <div class="info-label">Donos do processo</div>
+      <div class="info-label">Donos do processo:</div>
     </v-col>
     <v-col v-if="entidades.length > 0">
-      <v-data-table
-        :headers="headers"
-        :items="entidades"
-        class="elevation-1"
-        hide-default-footer
-      >
+      <v-data-table :headers="headers" :items="entidades" class="elevation-1" hide-default-footer>
         <template v-slot:header="props">
           <tr>
-            <th
-              v-for="h in props.headers"
-              :key="h.text"
-              class="subtitle-2"
-            >
-              {{ h.text }}
-            </th>
+            <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
           </tr>
         </template>
 
@@ -28,13 +17,7 @@
             <td>{{ props.item.designacao }}</td>
             <td>{{ props.item.tipo }}</td>
             <td>
-              <v-btn
-                small
-                color="red darken-2"
-                dark
-                rounded
-                @click="unselectEntidade(props.item)"
-              >
+              <v-btn small color="red darken-2" dark rounded @click="unselectEntidade(props.item)">
                 <v-icon dark>remove_circle</v-icon>
               </v-btn>
             </td>
@@ -43,9 +26,7 @@
       </v-data-table>
     </v-col>
     <v-col v-else>
-      <v-alert :value="true" type="warning">
-        Não tem donos selecionados...
-      </v-alert>
+      <v-alert :value="true" type="warning">Não tem donos selecionados...</v-alert>
     </v-col>
   </v-row>
 </template>
@@ -63,7 +44,7 @@ export default {
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
         { text: "Tipo", value: "tipo" },
-        { text: "Remover"}
+        { text: "Remover" }
       ]
     };
   },
@@ -81,12 +62,14 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #2e7d32; /* green darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8f5e9; /* green lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

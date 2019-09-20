@@ -103,6 +103,20 @@ export default {
           ]
         },
         {
+          entidade: "Autos de Eliminação",
+          texto: help.AutosEliminacao,
+          ops: [
+            {
+              label: "Consultar",
+              url: "/autosEliminacao"
+            },
+            {
+              label: "Adicionar",
+              url: "/autosEliminacao/criar"
+            }
+          ]
+        },
+        {
           entidade: "Entidades",
           texto: help.Entidades,
           ops: [
@@ -159,27 +173,13 @@ export default {
           ]
         },
         {
-          entidade: "Vocabulários Controlados",
-          texto: help.VocabulariosControlados,
+          entidade: "Chaves API",
+          texto: '',
           ops: [
             {
-              label: "Consultar",
-              url: "/vocabularios",
+              label: "Consultar chaves API",
+              url: "/gestao/api/listagem",
               level: "public"
-            }
-          ]
-        },
-        {
-          entidade: "Autos de Eliminação",
-          texto: help.AutosEliminacao,
-          ops: [
-            {
-              label: "Consultar",
-              url: "/autosEliminacao"
-            },
-            {
-              label: "Adicionar",
-              url: "/autosEliminacao/criar"
             }
           ]
         }

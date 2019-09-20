@@ -1,44 +1,42 @@
 <template>
   <!-- BLOCO DESCRITIVO -->
-  <v-expansion-panel popout>
-  <v-expansion-panel-header>
-    <div class="title teal darken-4 pa-2 white--text">Descritivo da Classe
-      <InfoBox
-        header="Descritivo da Classe"
-        :text="myhelp.Classe.BlocoDescritivo"
-        helpColor="#00695c"
-        dialogColor="#E0F2F1"
-      />
-    </div>
-  </v-expansion-panel-header>
-  <v-expansion-panel-content>
-    <v-row ma-2>
-      <!-- DESCRIÇÂO -->
-      <v-col cols="2">
-        <div class="info-label">
-          Descrição
-          <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
-        </div>
-      </v-col>
-      <v-col>
-        <v-text-field
-          v-model="c.descricao"
-          label="Descrição"
-          solo
-          clearable
-        ></v-text-field>
-      </v-col>
-    </v-row>
+  <v-expansion-panel popout focusable>
+    <v-expansion-panel-header class="expansion-panel-heading">
+      <div>
+        Descritivo da Classe
+        <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" />
+      </div>
+    </v-expansion-panel-header>
+    <v-expansion-panel-content>
+      <v-row>
+        <!-- DESCRIÇÂO -->
+        <v-col cols="2">
+          <div class="info-label">
+            Descrição:
+            <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field v-model="c.descricao" label="Descrição" solo clearable></v-text-field>
+        </v-col>
+      </v-row>
 
-    <hr />
-    <BlocoDescritivoNotasAp :c="c" />
-    <hr />
-    <BlocoDescritivoExemplosNotasAp :c="c" />
-    <hr />
-    <BlocoDescritivoNotasEx :c="c" />
-    <hr />
-    <TermosIndiceOps :c="c" v-if="c.nivel == 3 && !c.temSubclasses4Nivel" />
-  </v-expansion-panel-content>
+      <hr style="border-top: 1px dashed #dee2f8;" />
+
+      <BlocoDescritivoNotasAp :c="c" />
+
+      <hr style="border-top: 1px dashed #dee2f8;" />
+
+      <BlocoDescritivoExemplosNotasAp :c="c" />
+
+      <hr style="border-top: 1px dashed #dee2f8;" />
+
+      <BlocoDescritivoNotasEx :c="c" />
+
+      <hr style="border-top: 1px dashed #dee2f8;" />
+
+      <TermosIndiceOps :c="c" v-if="c.nivel == 3 && !c.temSubclasses4Nivel" />
+    </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
 
@@ -73,18 +71,21 @@ export default {
 
 <style>
 .info-label {
-  color: #00695c;
+  color: #2e7d32; /* green darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8f5e9; /* green lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+.expansion-panel-heading {
+  background-color: #1b5e20 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
 }
 
 .is-collapsed li:nth-child(n + 5) {

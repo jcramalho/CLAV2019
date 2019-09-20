@@ -131,7 +131,8 @@ export default {
     regraNIC: [
       v => !!v || "Número de Cartão de Cidadão é obrigatório.",
       v =>
-        /^[0-9]{7,}$/.test(v) || "Número de Cartão de Cidadão tem de ser válido."
+        /^[0-9]{7,}$/.test(v) ||
+        "Número de Cartão de Cidadão tem de ser válido."
     ],
     regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
     users: [],
@@ -168,7 +169,8 @@ export default {
     removerUtilizador(index) {
       this.users.splice(index, 1);
     },
-    registarUtilizadores() {
+    async registarUtilizadores() {
+      this.text = "";
       var valid = true;
 
       for (var i = 0; i < this.users.length; i++) {
@@ -180,10 +182,21 @@ export default {
       }
 
       if (valid) {
-        //TODO: Fazer pedido à API
+        try {
+          var response = await axios.post(
+            lhost + "/api/users/registarParaEntidade",
+            {
+              entidade: this.entidade,
+              users: this.users
+            }
+          );
 
-        this.color = "success";
-        this.text = "Utilizadores registados com sucesso!";
+          this.color = "success";
+          this.text = "Utilizadores registados com sucesso!";
+        } catch (e) {
+          this.color = "error";
+          this.text = e.response.data;
+        }
       }
     },
     cancelar() {

@@ -6,13 +6,10 @@
         Tipologias de entidade a que pertence
       </v-stepper-step>
       <v-stepper-content step="1">
+        <v-expansion-panels>
         <v-expansion-panel>
+          <v-expansion-panel-header>Selecione as Tipologias de Entidade a que pertence</v-expansion-panel-header>
           <v-expansion-panel-content class="expansion-panel-heading">
-            <template v-slot:header>
-              <div class="subheading font-weight-bold">
-                Selecione as Tipologias de Entidade a que pertence
-              </div>
-            </template>
             <v-card style="padding-top:30px;">
               <v-layout>
                 <v-flex xs2>
@@ -56,6 +53,7 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        </v-expansion-panels>
         <v-btn
           color="primary"
           @click="
@@ -87,7 +85,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 1;
             barra(0);
@@ -103,13 +101,10 @@
       <v-stepper-content step="3">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header>Selecione os Processos de Negócio Comuns</v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Selecione os Processos de Negócio Comuns
-                  </div>
-                </template>
                 <ListaProcessosComuns
                   v-if="listaProcComunsReady"
                   v-bind:lista="listaProcComuns"
@@ -124,6 +119,7 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-layout wrap>
@@ -166,7 +162,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 2;
             barra(16);
@@ -185,13 +181,10 @@
       <v-stepper-content step="4">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header>Selecione os Processos de Negócio Específicos</v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Selecione os Processos de Negócio Específicos
-                  </div>
-                </template>
                 <ListaProcessosEspecificos
                   v-if="listaProcEspReady"
                   v-bind:lista="listaProcEsp"
@@ -208,6 +201,7 @@
                 <div v-else>a carregar</div>
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-layout wrap>
@@ -248,7 +242,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 3;
             barra(32);
@@ -263,13 +257,10 @@
       <v-stepper-content step="5">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header>Selecione os Processos de Negócio Específicos Restantes</v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Selecione os Processos de Negócio Específicos Restantes
-                  </div>
-                </template>
                 <ListaProcessosEspRestantes
                   v-if="listaProcEspResReady"
                   v-bind:lista="listaProcEspRes"
@@ -288,6 +279,7 @@
                 <div v-else>a carregar</div>
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-layout wrap>
@@ -329,7 +321,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 4;
             barra(48);
@@ -348,13 +340,10 @@
       <v-stepper-content step="6">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header>Selecione os Processos de Negócio Restantes</v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Selecione os Processos de Negócio Restantes
-                  </div>
-                </template>
                 <ListaProcessosUltimos
                   v-if="listaProcUltReady"
                   v-bind:lista="listaProcUlt"
@@ -365,6 +354,7 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-layout wrap>
@@ -391,7 +381,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 5;
             barra(64);
@@ -411,20 +401,18 @@
       <v-stepper-content step="7">
         <v-layout wrap>
           <v-flex xs10>
+            <v-expansion-panels>
             <v-expansion-panel>
+              <v-expansion-panel-header>Lista de Processos selecionados</v-expansion-panel-header>
               <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Lista de Processos selecionados
-                  </div>
-                </template>
                 <ListaParteDescritiva
                   v-if="listaTotalProcSelReady"
                   v-bind:lista="listaTotalProcSel"
                   @listaTotalSelUpdate="listaTotalSelUpdate($event)"
                 />
-          </v-expansion-panel-content>
+              </v-expansion-panel-content>
             </v-expansion-panel>
+            </v-expansion-panels>
           </v-flex>
         </v-layout>
         <v-btn
@@ -436,7 +424,7 @@
           >Continuar</v-btn
         >
         <v-btn
-          flat
+          text
           @click="
             stepNo = 6;
             barra(64);
@@ -452,7 +440,7 @@
       <v-btn color="primary" v-else @click="guardarTrabalho()"
         >Guardar trabalho</v-btn
       >
-      <v-btn dark flat color="red darken-4" @click="eliminarTabela = true"
+      <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
         >Eliminar TS
             <v-dialog v-model="eliminarTabela" persistent max-width="290">
                 <v-card>
@@ -460,8 +448,8 @@
                     <v-card-text>Pretende eliminar todo o trabalho realizado?</v-card-text>
                     <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="red" flat @click="eliminarTabela = false">Cancelar</v-btn>
-                    <v-btn color="primary" flat @click="eliminarTS(); eliminarTabela=false;">Confirmar</v-btn>
+                    <v-btn color="red" text @click="eliminarTabela = false">Cancelar</v-btn>
+                    <v-btn color="primary" text @click="eliminarTS(); eliminarTabela=false;">Confirmar</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -471,7 +459,7 @@
 
     <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
       {{ mensagemPedidoCriadoOK }}
-      <v-btn dark flat @click="pedidoCriadoOK">
+      <v-btn dark text @click="pedidoCriadoOK">
         Fechar
       </v-btn>
     </v-snackbar>
@@ -483,7 +471,7 @@
       :top="true"
     >
       Trabalho guardado com sucesso.
-      <v-btn dark flat @click="pendenteGuardadoOK">
+      <v-btn dark text @click="pendenteGuardadoOK">
         Fechar
       </v-btn>
     </v-snackbar>
@@ -1150,18 +1138,32 @@ export default {
           lhost + "/api/users/listarToken/" + this.$store.state.token
         );
 
-        this.tabelaSelecao.tipologias = this.tipSel;
+        var tsObj = {
+          entidade: this.tabelaSelecao.idEntidade.split("_")[1],
+          designacao: this.tabelaSelecao.designacao,
+          tipologias: this.tipSel,
+          processos: this.listaTotalProcSel.map(p => {
+            return {
+              codigo: p.classe,
+              titulo: p.designacao,
+              dono: p.dono,
+              participante: p.participante ? p.participante : false
+            };
+          })
+        };
 
         var pedidoParams = {
           tipoPedido: "Criação",
           tipoObjeto: "TS Organizacional",
-          novoObjeto: this.tabelaSelecao,
+          novoObjeto: { ts: tsObj },
           user: { email: userBD.data.email },
+          entidade: userBD.data.entidade.split("_")[1],
           token: this.$store.state.token
         };
 
         var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
         this.mensagemPedidoCriadoOK += response.data.codigo;
+        response = await axios.delete(lhost + "/api/pendentes/" + this.obj._id)
         this.pedidoCriado = true;
       } catch (error) {
         return error;
@@ -1187,9 +1189,8 @@ export default {
           tipo: this.obj.tipo,
           objeto: this.tabelaSelecao,
           criadoPor: this.obj.criadoPor,
-          user: {
-            token: this.$store.state.token
-          }
+          user: { email: userBD.data.email },
+          token: this.$store.state.token
         };
         // console.log(pendenteParams.objeto);
         var response = await axios.put(
