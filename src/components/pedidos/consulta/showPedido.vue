@@ -90,7 +90,7 @@ import ShowAE from "@/components/pedidos/consulta/showAE.vue"
 export default {
   props: ["p"],
 
-  components: { ShowTSOrg, ShowClasse, ShowDefault },
+  components: { ShowTSOrg, ShowClasse, ShowDefault, ShowAE },
 
   data: () => ({
     headers: [
