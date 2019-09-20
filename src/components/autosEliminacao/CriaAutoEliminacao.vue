@@ -105,7 +105,7 @@ export default {
         default:
           conversor(this.file)
           .then(res => {
-            axios.post(lhost + "/api/autosEliminacao/"+this.tipo, res.auto)
+            axios.post(lhost + "/api/autosEliminacao/"+this.tipo, {auto: res.auto, token: this.$store.state.token})
               .then(r => {
                 this.snack = true
                 this.mess = r.data
