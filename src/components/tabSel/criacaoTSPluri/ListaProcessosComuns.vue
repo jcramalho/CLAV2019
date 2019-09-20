@@ -5,10 +5,9 @@
         :headers="headers"
         class="elevation-1"
         item-key="classe"
-        :rows-per-page-items="[10, 20, 100]"
-        rows-per-page-text="Mostrar"
+        :footer-props="procsFooterProps"
     >
-        <template v-slot:headers="props">
+        <template v-slot:header="props">
             <tr>
                 <th
                     v-for="h in props.headers"
@@ -147,7 +146,7 @@
                 </td>
             </tr>
         </template>
-        <template v-slot:pageText="props">
+        <template v-slot:footer.page-text="props">
             Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
             {{ props.itemsLength }}
         </template>
@@ -182,6 +181,11 @@ export default {
         value: "participante"
       }
     ],
+    procsFooterProps: {
+        "items-per-page-text": "Processos por página",
+        "items-per-page-options": [10, 20, 100, -1],
+        "items-per-page-all-text": "Todos"
+    },
     // Onde vão ficar armazenados as entidades donas de cada processo. Por ex: {proc1: [ent1,ent2]; proc2: [ent1,ent3]}
     entProcDono: [],
     // True quando a lista das entidades donas de cada processo estiver pronta

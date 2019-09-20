@@ -1052,14 +1052,14 @@ export default {
         var pedidoParams = {
           tipoPedido: "Criação",
           tipoObjeto: "TS Organizacional",
-          novoObjeto: {ts: tsObj},
-          user: {email: userBD.data.email},
-          entidade: userBD.data.entidade,
+          novoObjeto: { ts: tsObj },
+          user: { email: userBD.data.email },
+          entidade: userBD.data.entidade.split("_")[1],
           token: this.$store.state.token
-        }
+        };
 
         var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
-        this.mensagemPedidoCriadoOk += response.data.codigo;
+        this.mensagemPedidoCriadoOK += response.data.codigo;
         this.pedidoCriado = true;
       } catch (error) {
         return error;
