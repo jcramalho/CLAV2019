@@ -104,6 +104,38 @@
                           </v-col>
                         </v-row>
                         <v-row class="ma-1">
+                          <v-col cols="2">
+                            <div class="info-label">N.º de agregações</div>
+                          </v-col>
+                          <v-col>
+                            <div class="info-content">{{item.agregacoes.length}}</div>
+                          </v-col>
+                        </v-row>
+                        <v-row v-if="item.uiPapel" class="ma-1">
+                          <v-col cols="2">
+                            <div class="info-label">Medição das UI em papel (m.l.)</div>
+                          </v-col>
+                          <v-col>
+                            <div class="info-content">{{item.uiPapel}}</div>
+                          </v-col>
+                        </v-row>
+                        <v-row v-if="item.uiDigital" class="ma-1">
+                          <v-col cols="2">
+                            <div class="info-label">Medição das UI em digital (Gb)</div>
+                          </v-col>
+                          <v-col>
+                            <div class="info-content">{{item.uiDigital}}</div>
+                          </v-col>
+                        </v-row>
+                        <v-row v-if="item.uiOutros" class="ma-1">
+                          <v-col cols="2">
+                            <div class="info-label">Medição das UI noutros suportes</div>
+                          </v-col>
+                          <v-col>
+                            <div class="info-content">{{item.uiOutros}}</div>
+                          </v-col>
+                        </v-row>
+                        <v-row class="ma-1">
                             <div class="info-label">Zona de Agregações</div>
                         </v-row>
                             <v-list>
