@@ -22,7 +22,7 @@
           <v-card-actions>
 
           <v-btn
-            color="red darken-4"
+            class="red darken-4 white--text"
             rounded dark
             @click="dialog = false">Fechar</v-btn>
         </v-card-actions>
@@ -39,7 +39,7 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn class="red darken-1" text @click="dialogSemErros = false">Fechar</v-btn>
+                        <v-btn class="green darken-1 white--text" text @click="dialogSemErros = false">Fechar</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>

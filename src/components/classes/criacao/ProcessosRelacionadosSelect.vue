@@ -20,7 +20,7 @@
           :search="searchProcessos"
           item-key="id"
           class="elevation-1"
-          :pagination.sync="paginationProcessos"
+          :sort-by="['codigo']"
         >
           <template v-slot:item="props">
             <tr>
@@ -56,12 +56,9 @@
 </template>
 
 <script>
-import SelectValueFromList from "@/components/generic/SelectValueFromList.vue";
 
 export default {
   props: ["procReady", "processos"],
-
-  components: { SelectValueFromList },
 
   data: function() {
     return {
@@ -106,8 +103,9 @@ export default {
     },
     selectProcesso: function(id, relacao) {
       var index = this.processos.findIndex(p => p.id === id);
-      this.processos[index].relacao = relacao;
-      var selectedProcesso = this.processos[index];
+      var selectedProcesso = JSON.parse(JSON.stringify(this.processos[index]))
+      selectedProcesso.relacao = relacao;
+      this.processos[index].idRel = "Indefinido" 
       this.processos.splice(index, 1);
       this.$emit("selectProcesso", selectedProcesso);
     }

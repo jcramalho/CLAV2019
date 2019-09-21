@@ -20,7 +20,7 @@
           :search="searchEntidades"
           item-key="id"
           class="elevation-1"
-          rows-per-page-text="Linhas por página"
+          :footer-props="participantesFooterProps"
           :pagination.sync="paginationParticipantes"
         >
           <template v-slot:item="props">

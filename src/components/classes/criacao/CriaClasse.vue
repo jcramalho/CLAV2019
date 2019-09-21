@@ -590,7 +590,7 @@ export default {
             .map(function(item) {
               var formaID = item.termo.substring(item.termo.length - 6);
               return {
-                label: formaID + ": " + item.desc.substring(0, 70) + "...",
+                label: formaID + ": " + item.desc,
                 value: item.idtermo.split("#")[1]
               };
             })

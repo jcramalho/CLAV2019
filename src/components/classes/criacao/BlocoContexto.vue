@@ -79,11 +79,7 @@
           @unselectParticipante="unselectParticipante($event)"
         />
 
-        <v-row>
-          <v-col>
-            <hr style="border-top: 1px dashed green;" />
-          </v-col>
-        </v-row>
+        <hr style="border-top: 1px dashed green;" />
 
         <ParticipantesNew
           @newEntidade="newEntidade($event, c.participantes)"

@@ -267,7 +267,7 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{ mylabels.textoCriterioUtilidadeAdministrativa }}
+                                {{ c.conteudo }}
                                 <br>
                                 <br>
                                 <ul>
@@ -286,7 +286,7 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{ mylabels.textoCriterioLegal }}
+                                {{ c.conteudo }}
                                 <br>
                                 <br>
                                 <ul>
@@ -337,6 +337,16 @@
                     </v-col>
                   </v-row>
 
+                  <v-row v-if="classe.df.nota">
+                    <!-- NOTA ao DF -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">Nota</div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">{{ classe.df.nota }}</div>
+                    </v-col>
+                  </v-row>
+
                   <v-row v-if="classe.df.justificacao">
                     <!-- JUSTIFICAÇÂO -->
                     <v-col xs="2" sm="2">
@@ -360,7 +370,7 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{ mylabels.textoCriterioLegal }}
+                                {{ c.conteudo }}
                                 <br>
                                 <br>
                                 <ul>
