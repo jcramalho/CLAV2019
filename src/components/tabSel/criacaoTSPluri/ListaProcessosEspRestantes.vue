@@ -359,10 +359,6 @@ export default {
             var guardar = {}
             guardar['dono'] = this.entProcDono;
             this.$emit("guardarTSProcRes", guardar);
-            console.log("Guardei entProcDono!!")
-            console.log(this.entProcDono)
-            console.log("Processos selecionados")
-            console.log(this.procEspResSel)
         },
         selecTodasEnt: async function(entidades, proc){
             for( var i = 0; i < entidades.length; i++){
@@ -404,11 +400,6 @@ export default {
                     }
                 }
             }
-        
-            console.log("Guardei entProcPar!!")
-            console.log(this.entProcPar)
-            console.log("Processos selecionados")
-            console.log(this.procEspResSel)
         },
     },
     mounted: async function(){
