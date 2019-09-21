@@ -19,9 +19,11 @@
           item-key="id"
           :search="search"
           :filter="filter"
+          hoverable
         >
           <template slot="label" slot-scope="{ item }">
-            <a @click="go(item.id)"> {{ item.name }} </a>
+            <v-btn text depressed @click="$router.push('/classes/consultar/c' + item.id)">{{ item.name }}</v-btn>
+            <br>
           </template>
         </v-treeview>
       </div>
@@ -78,3 +80,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.v-btn:hover:before {
+  opacity: 0;
+  
+}
+</style>

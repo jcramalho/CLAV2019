@@ -2,10 +2,10 @@
   <v-container style="max-width:100%">
     <v-row>
       <!-- MENU LATERAL -->
-      <v-col xs="12" sm="2">
+      <v-col xs="12" sm="3">
         <ClassesArvoreLateral />
       </v-col>
-      <v-col xs="12" sm="10">
+      <v-col xs="12" sm="9">
         <!-- HEADER -->
         <v-card v-if="classeLoaded">
           <v-app-bar color="indigo darken-2" dark>
