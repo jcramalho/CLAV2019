@@ -1,19 +1,27 @@
 <template>
   <v-row class="ma-1">
     <v-col>
-      <!-- Header -->
       <v-card>
+        <!-- Header -->
         <v-app-bar color="green darken-4" dark>
           <v-toolbar-title class="card-heading">Novo Diploma</v-toolbar-title>
         </v-app-bar>
 
+        <!-- Content -->
         <v-card-text>
           <v-row>
             <v-col cols="2">
               <div class="info-label">Tipo de diploma:</div>
             </v-col>
             <v-col>
-              <v-select v-model="legislacao.tipo" :items="tiposDiploma" solo dense />
+              <v-select
+                item-color="green"
+                color="green"
+                v-model="legislacao.tipo"
+                :items="tiposDiploma"
+                solo
+                dense
+              />
             </v-col>
           </v-row>
 
@@ -25,6 +33,7 @@
               <v-text-field
                 solo
                 clearable
+                color="green"
                 counter="11"
                 single-line
                 v-model="legislacao.numero"
@@ -71,7 +80,14 @@
               <div class="info-label">Sumário:</div>
             </v-col>
             <v-col>
-              <v-text-field solo clearable counter="150" single-line v-model="legislacao.sumario"></v-text-field>
+              <v-text-field
+                solo
+                clearable
+                color="green"
+                counter="150"
+                single-line
+                v-model="legislacao.sumario"
+              ></v-text-field>
             </v-col>
           </v-row>
 
@@ -80,7 +96,7 @@
               <div class="info-label">Link:</div>
             </v-col>
             <v-col>
-              <v-text-field v-model="legislacao.link" solo clearable single-line></v-text-field>
+              <v-text-field v-model="legislacao.link" solo clearable color="green" single-line></v-text-field>
             </v-col>
           </v-row>
 
@@ -131,12 +147,13 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
+
+      <!-- Botão -->
       <v-row>
         <v-col class="text-center">
           <v-btn
             class="white--text"
             medium
-            centered
             rounded
             color="#388E3C"
             :disabled="!(legislacao.sumario && legislacao.numero)"
@@ -452,7 +469,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .expansion-panel-heading {
   background-color: #1b5e20 !important;
   color: #fff;
@@ -463,37 +480,6 @@ export default {
 .card-heading {
   font-size: x-large;
   font-weight: bold;
-}
-
-.panel-custom .panel-heading {
-  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
-}
-
-.panel-custom .page-header {
-  border: none;
-  margin: 0;
-  color: #1a237e;
-}
-
-.panel-custom .panel-default:hover {
-  border-color: #8c9eff;
-}
-
-.adicao tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.adicao td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
-}
-
-.adicao td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
 }
 
 .info-label {

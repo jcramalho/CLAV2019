@@ -4,9 +4,9 @@
       <v-flex xs12 sm20>
         <v-card class="panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
-            <v-toolbar-title class="page-header"
-              ><h1>Novo Auto de Eliminação</h1></v-toolbar-title
-            >
+            <v-toolbar-title class="page-header">
+              <h1>Novo Auto de Eliminação</h1>
+            </v-toolbar-title>
           </v-toolbar>
           <v-card-text class="panel-body">
             <div>
@@ -24,6 +24,8 @@
                         <v-radio xs4 sm4 label="PGD" value="PGD"></v-radio>
                         <v-radio xs4 sm4 label="RADA" value="RADA"></v-radio>
                     </v-radio-group>
+                    <a v-if="tipo==='PGD/LC'" :href="`${publicPath}documentos/Ficheiro_submissão_PGD_LC.xlsx`">Transferir ficheiro de submissão</a>
+                    <a v-else :href="`${publicPath}documentos/Ficheiro_submissão_${tipo}.xlsx`">Transferir ficheiro de submissão</a>
                   </td>
                 </tr>
                 <tr>
@@ -54,7 +56,6 @@
             >Submeter Auto de Eliminação</v-btn
           >
         </div>
-        {{ obj }}
       </v-flex>
     </v-layout>
     <v-dialog v-model="successDialog" width="950" persistent>
@@ -109,52 +110,37 @@
 import axios from "axios";
 const lhost = require("@/config/global").host;
 const conversor = require("@/plugins/conversor").excel2Json;
-const conversorTS = require("@/plugins/conversor").excel2Json;
+const conversorTS = require("@/plugins/conversor").excel2JsonTS;
 
 export default {
   data: () => ({
     file: null,
     tipo: "PGD/LC",
-    snack: false,
-    snackColor: "green",
-    mess: "",
-    obj: "",
     successDialog: false,
     success: "",
     erroDialog: false,
-    erro: ""
+    erro: "",
+    publicPath: process.env.BASE_URL
   }),
   methods: {
     submit: async function() {
-      switch(this.tipo) {
-        case "PGD/LC": 
-          conversorTS(this.file)
-            .then(res => {
-              console.warn("TS")
-              console.warn(res)
-            })
-            .catch(err => {
-              console.warn(err)
-            })
-          break;
-        default:
-          conversor(this.file)
-          .then(res => {
-
-            axios.post(lhost + "/api/autosEliminacao/"+this.tipo, {auto: res.auto, token: this.$store.state.token})
-              .then(r => {
-                this.successDialog = true
-                this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(res.error)}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`
-              })
-              .catch((e) => {
-                this.erro = e.response.data;
-                this.erroDialog = true;
-              })
+      conversor(this.file, this.tipo)
+      .then(res => {
+        console.warn(res)
+        axios.post(lhost + "/api/autosEliminacao/"+this.tipo, {auto: res.auto, token: this.$store.state.token})
+          .then(r => {
+            this.successDialog = true
+            this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(res.error)}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`
           })
-          .catch(err => {
-            console.warn(err)
+          .catch((e) => {
+            this.erro = e.response.data;
+            this.erroDialog = true;
           })
-      }
+      })
+      .catch(err => {
+          this.erro = err;
+          this.erroDialog = true;
+      })
     },
     previewFiles: function(ev) {
       const file = ev.target.files[0];
