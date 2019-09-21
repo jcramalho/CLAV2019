@@ -1066,8 +1066,13 @@ export default {
 
         var pedidoParams = {
           tipoPedido: "Criação",
-          tipoObjeto: "TS Pluriorganizacional",
-          novoObjeto: { ts: tsObj },
+          tipoObjeto: "TS Pluriorganizacional web",
+          novoObjeto: {
+            ts: {
+              processos: tsObj,
+              designacao: this.tabelaSelecao.designacao
+            }
+          },
           user: { email: userBD.data.email },
           entidade: userBD.data.entidade.split("_")[1],
           token: this.$store.state.token
