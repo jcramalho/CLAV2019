@@ -1,13 +1,9 @@
 <template>
   <v-row>
-    <v-col cols="12" xs="2" md="2">
-      <v-subheader
-        class="info-label"
-        style="border-color: white; border-style:solid; color: #1A237E;"
-        >Selecionar Tipologias de Entidade:</v-subheader
-      >
+    <v-col cols="2">
+      <v-subheader class="info-label">Selecionar Tipologias de Entidade:</v-subheader>
     </v-col>
-    <v-col xs="9" md="9" v-if="tipologiasReady">
+    <v-col v-if="tipologiasReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -38,13 +34,16 @@
             {{ props.itemsLength }}
           </template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            color="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-card>
     </v-col>
-    <v-col xs="9" md="9" v-else>
+    <v-col v-else>
       <v-subheader>A carregar tipologias...</v-subheader>
     </v-col>
   </v-row>
@@ -74,3 +73,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.info-label {
+  color: #2e7d32; /* green darken-3 */
+  padding: 5px;
+  font-weight: 400;
+  width: auto;
+  height: auto;
+  background-color: #e8f5e9; /* green lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+</style>

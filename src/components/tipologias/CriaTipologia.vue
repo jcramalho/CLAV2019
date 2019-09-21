@@ -1,93 +1,91 @@
 <template>
-  <v-container style="max-width:100%">
-    <v-row>
-      <v-col>
-        <v-card class="panel panel-default panel-custom">
-          <v-toolbar class="panel-heading">
-            <v-toolbar-title class="page-header">
-              <h1>Nova Tipologia</h1>
-            </v-toolbar-title>
-          </v-toolbar>
-          <v-card-text class="panel-body">
-            <div>
-              <table
-                class="adicao"
-                style="border-color: white; border-style:solid; margin-bottom:20px;"
-              >
-                <tr> 
-                  <td style="width:20%;">
-                    <div class="info-label">Designação:</div>
-                  </td>
-                  <td>
-                    <v-text-field
-                      solo
-                      clearable
-                      counter="50"
-                      single-line
-                      v-model="tipologia.designacao"
-                      maxlength="50"
-                    ></v-text-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">Sigla:</div>
-                  </td>
-                  <td>
-                    <v-text-field
-                      solo
-                      clearable
-                      counter="10"
-                      single-line
-                      v-model="tipologia.sigla"
-                      maxlength="10"
-                    ></v-text-field>
-                  </td>
-                </tr>
-              </table>
-              <v-expansion-panels>
-                <v-expansion-panel>
-                  <v-expansion-panel-header class="expansion-panel-heading">
-                    <div class="subheading font-weight-bold">Entidades</div>
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <v-card style="padding-top:30px;">
-                      <DesSelEnt
-                        :entidades="entSel"
-                        tipo="tipologias"
-                        @unselectEntidade="unselectEntidade($event)"
-                      />
+  <v-row class="ma-1">
+    <v-col>
+      <v-card>
+        <!-- Header -->
+        <v-app-bar color="green darken-4" dark>
+          <v-toolbar-title class="card-heading">Nova Tipologia</v-toolbar-title>
+        </v-app-bar>
 
-                      <hr style="border-top: 1px dashed #dee2f8;" />
+        <!-- Content -->
+        <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Designação:</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                solo
+                clearable
+                color="green"
+                counter="50"
+                single-line
+                v-model="tipologia.designacao"
+                maxlength="50"
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-                      <SelEnt
-                        :entidadesReady="entidadesReady"
-                        :entidades="entidades"
-                        @selectEntidade="selectEntidade($event)"
-                      />
-                    </v-card>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </div>
-          </v-card-text>
-          <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
-            {{ text }}
-            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-          </v-snackbar>
-        </v-card>
-        <br>
-        <div style="text-align:center">
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Sigla:</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                solo
+                clearable
+                color="green"
+                counter="10"
+                single-line
+                v-model="tipologia.sigla"
+                maxlength="10"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <!-- Blocos expansivos -->
+          <v-expansion-panels>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">Entidades</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <DesSelEnt
+                  :entidades="entSel"
+                  tipo="tipologias"
+                  @unselectEntidade="unselectEntidade($event)"
+                />
+
+                <hr style="border-top: 1px dashed #dee2f8;" />
+
+                <SelEnt
+                  :entidadesReady="entidadesReady"
+                  :entidades="entidades"
+                  @selectEntidade="selectEntidade($event)"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card-text>
+        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+          {{ text }}
+          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+        </v-snackbar>
+      </v-card>
+
+      <!-- Botão -->
+      <v-row>
+        <v-col class="text-center">
           <v-btn
+            class="white--text"
             medium
-            color="primary"
+            rounded
+            color="#388E3C"
             @click="submeter()"
             :disabled="!(tipologia.designacao && tipologia.sigla)"
           >Submeter Tipologia</v-btn>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -209,49 +207,27 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .expansion-panel-heading {
-  color: #1a237e !important;
-  background-image: linear-gradient(to bottom, #e8eaf6 0, #8c9eff 100%);
+  background-color: #1b5e20 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
 }
 
-.panel-custom .panel-heading {
-  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
-}
-
-.panel-custom .page-header {
-  border: none;
-  margin: 0;
-  color: #1a237e;
-}
-
-.panel-custom .panel-default:hover {
-  border-color: #8c9eff;
-}
-
-.adicao tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.adicao td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-}
-
-.adicao td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
+.card-heading {
+  font-size: x-large;
+  font-weight: bold;
 }
 
 .info-label {
-  color: #1a237e;
-  padding: 6px;
+  color: #2e7d32; /* green darken-3 */
+  padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #dee2f8;
+  background-color: #e8f5e9; /* green lighten-5 */
   font-weight: bold;
   margin: 5px;
+  border-radius: 3px;
 }
 </style>
