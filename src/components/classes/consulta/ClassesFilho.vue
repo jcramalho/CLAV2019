@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap ma-2>
+  <v-row ma-2>
     <!-- DESCENDÊNCIA -->
-    <v-flex xs2>
+    <v-col cols="12" xs="2" sm="2">
       <div class="info-label">
         Descendência
         <InfoBox
@@ -11,8 +11,8 @@
           dialogColor="#E0F2F1"
         />
       </div>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col xs="10" sm="10">
       <v-data-table
         :items="subclasses"
         class="elevation-1"
@@ -30,8 +30,8 @@
           </tr>
         </template>
       </v-data-table>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -42,13 +42,7 @@ export default {
   props: ["subclasses"],
   data: () => ({
     myhelp: help
-  }),
-  methods: {
-    go: function(idClasse) {
-      this.$router.push("/classes/c" + idClasse);
-      this.$router.go();
-    }
-  }
+  })
 };
 </script>
 

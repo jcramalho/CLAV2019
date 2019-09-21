@@ -16,13 +16,15 @@
       <div v-if="classesCarregadas">
         <v-treeview
           dense
+          hoverable
           :items="classesTree"
           item-key="id"
           :search="search"
           :filter="filter"
         >
           <template slot="label" slot-scope="{ item }">
-            <a @click="go(item.id)"> {{ item.name }} </a>
+            <v-btn text depressed @click="go(item.id)">{{ item.name }}</v-btn>
+            <br>
           </template>
         </v-treeview>
       </div>
@@ -80,3 +82,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.v-btn:hover:before {
+  opacity: 0;
+  
+}
+</style>

@@ -16,9 +16,9 @@
       <div class="info-content">
         <v-data-table :headers="headers" :items="legs" class="elevation-1" hide-default-footer>
           <template v-slot:item="props">
-            <tr @click="$router.push('/legislacao/' + props.item.idLeg)">
+            <tr>
               <td>{{ props.item.tipo }}</td>
-              <td>{{ props.item.numero }}</td>
+              <td><a :href="'/legislacao/' + props.item.idLeg"> {{ props.item.numero }}</a></td>
               <td>{{ props.item.sumario }}</td>
             </tr>
           </template>
