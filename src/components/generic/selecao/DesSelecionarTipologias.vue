@@ -1,20 +1,13 @@
 <template>
   <v-row>
-    <v-col cols="12" md="2">
-      <v-subheader
-        class="info-label"
-        style="border-color: white; border-style:solid; color: #1A237E;"
-      >Tipologias selecionadas:</v-subheader>
+    <v-col cols="2">
+      <v-subheader class="info-label">Tipologias selecionadas:</v-subheader>
     </v-col>
-    <v-col xs="9" md="9" v-if="tipologias.length > 0">
+    <v-col v-if="tipologias.length > 0">
       <v-data-table :headers="headers" :items="tipologias" class="elevation-1" hide-default-footer>
-         <template v-slot:headers="props">
+        <template v-slot:headers="props">
           <tr>
-            <th
-              v-for="h in props.headers"
-              :key="h.text"
-              style="color: #1A237E;"
-            >{{ h.text }}</th>
+            <th v-for="h in props.headers" :key="h.text">{{ h.text }}</th>
           </tr>
         </template>
 
@@ -24,15 +17,14 @@
             <td>{{ props.item.designacao }}</td>
             <td>
               <v-btn small color="red darken-2" dark rounded @click="unselectTipologia(props.item)">
-                <v-icon dark>remove_circle</v-icon>
+                <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
-          </tr> 
+          </tr>
         </template>
-        
       </v-data-table>
     </v-col>
-    <v-col xs="9" md="9" v-else>
+    <v-col v-else>
       <v-alert :value="true" type="warning">Não tem tipologias selecionadas...</v-alert>
     </v-col>
   </v-row>
@@ -59,4 +51,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.info-label {
+  color: #2e7d32; /* green darken-3 */
+  padding: 5px;
+  font-weight: 400;
+  width: auto;
+  height: auto;
+  background-color: #e8f5e9; /* green lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+</style>
 
