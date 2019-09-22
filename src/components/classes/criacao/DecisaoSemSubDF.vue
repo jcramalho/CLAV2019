@@ -97,7 +97,14 @@
 
           <v-col v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
             <div class="info-content" v-if="crit.legislacao.length > 0">
-              {{ crit.notas }}
+              <v-textarea
+                auto-grow
+                clearable
+                single-line
+                rows="1"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
               <span v-for="(l, i) in crit.legislacao" :key="l.id">
                 <a :href="'/legislacao/' + l.id">{{ l.tipo }} {{ l.numero }}</a>
                 <v-icon
