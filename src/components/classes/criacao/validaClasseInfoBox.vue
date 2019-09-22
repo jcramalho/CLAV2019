@@ -283,6 +283,11 @@ export default {
           this.mensagensErro.push({sobre: "PCA (subforma de contagem)", mensagem:"Quando a forma de contagem é \"Disposição legal\" a subforma não pode ser vazia."})
           this.numeroErros++
         }
+        // DF
+        if(((!this.c.df.valor)||(this.c.df.valor=="NE"))&&(this.c.df.notas=='')){
+          this.mensagensErro.push({sobre: "DF", mensagem:"Tem de indicar o DF ou preencher o campo da nota."})
+          this.numeroErros++
+        }
       }
       // Com subdivisão
       else if((this.c.nivel == 3)&&(this.c.temSubclasses4Nivel)){
@@ -305,6 +310,11 @@ export default {
           }
           else if((subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(subclasse.pca.subFormaContagem == "")){
             this.mensagensErro.push({sobre: "PCA (subforma de contagem) da subclasse " + subclasse.codigo, mensagem:"Quando a forma de contagem é \"Disposição legal\" a subforma não pode ser vazia."})
+            this.numeroErros++
+          }
+          // DF
+          if(((!subclasse.df.valor)||(subclasse.df.valor=="NE"))&&(subclasse.df.notas=='')){
+            this.mensagensErro.push({sobre: "DF", mensagem:"Tem de indicar o DF ou preencher o campo da nota."})
             this.numeroErros++
           }
         }

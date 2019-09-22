@@ -492,6 +492,10 @@ export default {
         else if((this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(this.c.pca.subFormaContagem == "")){
           this.numeroErros++
         }
+        // DF
+        if(((!this.c.df.valor)||(this.c.df.valor=="NE"))&&(this.c.df.notas=='')){
+          this.numeroErros++
+        }
       }
       // Com subdivisão
       else if((this.c.nivel == 3)&&(this.c.temSubclasses4Nivel)){
@@ -510,6 +514,10 @@ export default {
             this.numeroErros++
           }
           else if((subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal")&&(subclasse.pca.subFormaContagem == "")){
+            this.numeroErros++
+          }
+          // DF
+          if(((!subclasse.df.valor)||(subclasse.df.valor=="NE"))&&(subclasse.df.notas=='')){
             this.numeroErros++
           }
         }
