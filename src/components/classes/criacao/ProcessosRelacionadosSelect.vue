@@ -26,6 +26,7 @@
             <tr>
               <td>
                 <v-select
+                  :key="props.item.id"
                   item-text="label"
                   item-value="value"
                   v-model="props.item.idRel"
@@ -103,9 +104,8 @@ export default {
     },
     selectProcesso: function(id, relacao) {
       var index = this.processos.findIndex(p => p.id === id);
-      var selectedProcesso = JSON.parse(JSON.stringify(this.processos[index]))
+      var selectedProcesso = JSON.parse(JSON.stringify(this.processos[index]));
       selectedProcesso.relacao = relacao;
-      this.processos[index].idRel = "Indefinido" 
       this.processos.splice(index, 1);
       this.$emit("selectProcesso", selectedProcesso);
     }
