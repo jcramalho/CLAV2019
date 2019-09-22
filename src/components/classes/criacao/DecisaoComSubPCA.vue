@@ -53,7 +53,7 @@
         <v-col cols="2">
           <div class="info-label">Subforma de contagem</div>
         </v-col>
-        <v-col>
+        <v-col cols="10">
           <v-select
             item-text="label"
             item-value="value"
@@ -62,7 +62,15 @@
             label="Selecione uma subforma de contagem para o prazo"
             solo
             dense
-          />
+          >
+            <template v-slot:selection="{item}">
+              <p>{{ item.label }}</p>
+            </template>
+
+            <template v-slot:item="{item}">
+              <p>{{ item.label }}</p>
+            </template>
+          </v-select>
         </v-col>
       </v-row>
 
@@ -231,8 +239,7 @@ export default {
       if (indice == -1) {
         justificacao.push({
           tipo: tipo,
-          label,
-          label,
+          label: label,
           notas: notas,
           procRel: myProcRel,
           legislacao: myLeg

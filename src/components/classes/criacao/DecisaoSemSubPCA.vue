@@ -71,6 +71,10 @@
           solo
           dense
         >
+          <template v-slot:selection="{item}">
+            <p>{{ item.label }}</p>
+          </template>
+
           <template v-slot:item="{item}">
             <p>{{ item.label }}</p>
           </template>
