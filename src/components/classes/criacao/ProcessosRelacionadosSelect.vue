@@ -32,7 +32,7 @@
                   v-model="props.item.idRel"
                   :items="tiposRelacao"
                   solo
-                  dense
+                  return-object
                   @change="selectProcesso(props.item.id, $event)"
                 />
               </td>
@@ -82,18 +82,7 @@ export default {
         { label: "Sintetizado por", value: "eSintetizadoPor" },
         { label: "Suplemento de", value: "eSuplementoDe" },
         { label: "Suplemento para", value: "eSuplementoPara" }
-      ],
-
-      labels: {
-        eAntecessorDe: "É Antecessor de",
-        eComplementarDe: "É Complementar de",
-        eCruzadoCom: "É Cruzado com",
-        eSinteseDe: "É Síntese de",
-        eSintetizadoPor: "É Sintetizado por",
-        eSucessorDe: "É Sucessor de",
-        eSuplementoDe: "É Suplemento de",
-        eSuplementoPara: "É Suplemento para"
-      }
+      ]
     };
   },
 
@@ -105,7 +94,7 @@ export default {
     selectProcesso: function(id, relacao) {
       var index = this.processos.findIndex(p => p.id === id);
       var selectedProcesso = JSON.parse(JSON.stringify(this.processos[index]));
-      selectedProcesso.relacao = relacao;
+      selectedProcesso.relacao = relacao.value;
       this.processos.splice(index, 1);
       this.$emit("selectProcesso", selectedProcesso);
     }

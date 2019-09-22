@@ -61,7 +61,7 @@
       <v-col cols="2">
         <div class="info-label">Subforma de contagem:</div>
       </v-col>
-      <v-col>
+      <v-col cols="10">
         <v-select
           item-text="label"
           item-value="value"
@@ -70,7 +70,11 @@
           label="Selecione uma subforma de contagem para o prazo"
           solo
           dense
-        />
+        >
+          <template v-slot:item="{item}">
+            <p>{{ item.label }}</p>
+          </template>
+        </v-select>
       </v-col>
     </v-row>
 
@@ -94,7 +98,7 @@
                   c.pca.justificacao,
                   'CriterioJustificacaoGestionario',
                   'Critério Gestionário',
-                  textoCriterioGestionario,
+                  mylabels.textoCriterioJustificacaoGestionario,
                   [],
                   []
                 )
@@ -115,7 +119,7 @@
                   c.pca.justificacao,
                   'CriterioJustificacaoLegal',
                   'Critério Legal',
-                  textoCriterioLegal,
+                  mylabels.textoCriterioLegal,
                   [],
                   c.legislacao
                 )
@@ -143,7 +147,14 @@
 
           <v-col v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
             <div class="info-content">
-              {{ crit.notas }}
+              <v-textarea
+                auto-grow
+                clearable
+                single-line
+                rows="1"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
               <a
                 :href="'/classes/consultar/' + p.id"
                 v-for="(p, i) in crit.procRel"
@@ -158,7 +169,14 @@
 
           <v-col v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
             <div class="info-content" v-if="crit.legislacao.length > 0">
-              {{ crit.notas }}
+              <v-textarea
+                auto-grow
+                clearable
+                single-line
+                rows="1"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
               <span v-for="(l, i) in crit.legislacao" :key="l.id">
                 <a :href="'/legislacao/' + l.id">{{ l.tipo }} {{ l.numero }}</a>
                 <v-icon
@@ -178,7 +196,16 @@
           </v-col>
 
           <v-col v-else-if="crit.tipo == 'CriterioJustificacaoGestionario'">
-            <div class="info-content">{{ crit.notas }}</div>
+            <div class="info-content">
+              <v-textarea
+                auto-grow
+                clearable
+                single-line
+                rows="1"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
+            </div>
           </v-col>
 
           <hr
@@ -195,7 +222,8 @@
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 
-const help = require("@/config/help").help;
+const help = require("@/config/help").help
+const labels = require("@/config/labels").criterios
 
 import InfoBox from "@/components/generic/infoBox.vue";
 
@@ -209,12 +237,7 @@ export default {
   data: function() {
     return {
       myhelp: help,
-      textoCriterioGestionario:
-        "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
-        " escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para" +
-        " a definição do prazo o tempo do mandato de maior duração: 5 anos.",
-      textoCriterioLegal:
-        'Prazo prescricional estabelecido em "diplomas selecionados no contexto de avaliação": '
+      mylabels: labels
     };
   },
 
