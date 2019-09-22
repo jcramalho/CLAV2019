@@ -21,7 +21,7 @@
           item-key="id"
           class="elevation-1"
           :footer-props="participantesFooterProps"
-          :pagination.sync="paginationParticipantes"
+          :sort-by="['sigla']"
         >
           <template v-slot:item="props">
             <tr>
@@ -68,7 +68,6 @@ export default {
   data: function() {
     return {
       searchEntidades: "",
-      paginationParticipantes: { sortBy: "sigla" },
 
       participantesHeaders: [
         { text: "Intervenção", align: "left", value: "intervencao" },
