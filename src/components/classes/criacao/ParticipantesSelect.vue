@@ -27,6 +27,7 @@
             <tr>
               <td>
                 <v-select
+                  :key="props.item.id"
                   item-text="label"
                   item-value="value"
                   v-model="props.item.intervencao"
