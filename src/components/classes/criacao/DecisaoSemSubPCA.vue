@@ -61,7 +61,7 @@
       <v-col cols="2">
         <div class="info-label">Subforma de contagem:</div>
       </v-col>
-      <v-col>
+      <v-col cols="10">
         <v-select
           item-text="label"
           item-value="value"
@@ -70,7 +70,11 @@
           label="Selecione uma subforma de contagem para o prazo"
           solo
           dense
-        />
+        >
+          <template v-slot:item="{item}">
+            <p>{{ item.label }}</p>
+          </template>
+        </v-select>
       </v-col>
     </v-row>
 
