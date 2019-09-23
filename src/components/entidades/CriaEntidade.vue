@@ -102,6 +102,7 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
+      <PainelOpsEnt :e="entidade" />
       <v-row>
         <v-col class="text-center">
           <v-btn
@@ -121,6 +122,7 @@
 <script>
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
+import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
 
 import axios from "axios";
 const lhost = require("@/config/global").host;
@@ -150,7 +152,8 @@ export default {
   }),
   components: {
     DesSelTip,
-    SelTip
+    SelTip,
+    PainelOpsEnt
   },
   methods: {
     // Vai à API buscar todas as tipologias
