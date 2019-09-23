@@ -131,7 +131,7 @@
         </v-snackbar>
       </v-card>
       <!-- TODO: Corrigir este componente -->
-      <painel-operacoes :c="classe" />
+      <PainelOperacoes :c="classe" />
     </v-col>
   </v-row>
 </template>
