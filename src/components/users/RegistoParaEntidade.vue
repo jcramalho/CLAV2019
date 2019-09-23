@@ -14,6 +14,7 @@
               label="Entidade"
               v-model="entidade"
               prepend-icon="account_balance"
+              :rules="regraEntidade"
             >
             </v-select>
             <v-card class="elevation-0">
@@ -51,17 +52,18 @@
                     v-model="user.email"
                     label="Email"
                     type="email"
-                    :rules="regraEmail"
+                    :rules="regraEmail[index]"
+                    @input="isNotDuplicated('email')"
                     required
                   />
                   <v-text-field
-                    id="nic"
                     prepend-icon="credit_card"
                     name="nic"
                     v-model="user.nic"
                     label="Número do Cartão de Cidadão"
                     type="text"
-                    :rules="regraNIC"
+                    :rules="regraNIC[index]"
+                    @input="isNotDuplicated('nic')"
                     required
                   />
                   <v-select
@@ -124,17 +126,10 @@ export default {
       { text: "Representante Entidade", value: 1 }
     ],
     regraNome: [v => !!v || "Nome é obrigatório."],
-    regraEmail: [
-      v => !!v || "Email é obrigatório.",
-      v => /^.+@.+\..+$/.test(v) || "Email tem de ser válido."
-    ],
-    regraNIC: [
-      v => !!v || "Número de Cartão de Cidadão é obrigatório.",
-      v =>
-        /^[0-9]{7,}$/.test(v) ||
-        "Número de Cartão de Cidadão tem de ser válido."
-    ],
+    regraEntidade: [v => !!v || "Entidade é obrigatória."],
     regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
+    regraEmail: [],
+    regraNIC: [],
     users: [],
     entidades: [],
     entidade: "",
@@ -165,6 +160,16 @@ export default {
         type: ""
       };
       this.users.push(user);
+      this.regraEmail.push([
+        v => !!v || "Email é obrigatório.",
+        v => /^.+@.+\..+$/.test(v) || "Email tem de ser válido."
+      ]);
+      this.regraNIC.push([
+        v => !!v || "Número de Cartão de Cidadão é obrigatório.",
+        v =>
+          /^[0-9]{7,}$/.test(v) ||
+          "Número de Cartão de Cidadão tem de ser válido."
+      ]);
     },
     removerUtilizador(index) {
       this.users.splice(index, 1);
@@ -177,7 +182,7 @@ export default {
         if (!this.$refs.forms[i].validate()) {
           valid = false;
           this.color = "error";
-          this.text = "Por favor preencha todos os campos!";
+          this.text = "Por favor preencha todos os campos e corrija os que estão errados!";
         }
       }
 
@@ -201,6 +206,30 @@ export default {
     },
     cancelar() {
       this.$router.push("/");
+    },
+    isNotDuplicated(field) {
+      var reg = "";
+      if (field == "email") {
+        reg = "Email";
+      } else {
+        reg = "NIC";
+      }
+
+      for (var i = 0; i < this.users.length; i++) {
+        var aux = this.users[i][field];
+
+        if (this.users.filter(e => e[field] == aux).length > 1) {
+          if (this["regra" + reg][i].length == 2) {
+            this["regra" + reg][i] = this["regra" + reg][i].concat([
+              "o " + reg + " é igual ao de outro utilizador"
+            ]);
+          }
+        } else {
+          if (this["regra" + reg][i].length == 3) {
+            this["regra" + reg][i] = this["regra" + reg][i].slice(0, -1);
+          }
+        }
+      }
     }
   }
 };
