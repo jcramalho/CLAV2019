@@ -173,6 +173,8 @@ export default {
     },
     removerUtilizador(index) {
       this.users.splice(index, 1);
+      this.isNotDuplicated("nic");
+      this.isNotDuplicated("email");
     },
     async registarUtilizadores() {
       this.text = "";
@@ -182,7 +184,8 @@ export default {
         if (!this.$refs.forms[i].validate()) {
           valid = false;
           this.color = "error";
-          this.text = "Por favor preencha todos os campos e corrija os que estão errados!";
+          this.text =
+            "Por favor preencha todos os campos e corrija os que estão errados!";
         }
       }
 
