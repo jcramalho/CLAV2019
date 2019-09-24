@@ -1,17 +1,11 @@
 <template>
   <Consulta
-    tipo="Auto de Eliminação"
-    v-bind:objeto="autoEliminacao"
-    v-bind:titulo="titulo"
-    v-bind:listaProcD="processosDono"
-    v-bind:listaEnt="entidades"
-    v-bind:listaProcP="processosParticipa"
-    v-bind:parts="partsReady"
+    v-bind:p="autoEliminacao"
   />
 </template>
 
 <script>
-import Consulta from "@/components/generic/Consulta.vue";
+import Consulta from "@/components/pedidos/consulta/showAE.vue";
 import axios from "axios";
 const lhost = require("@/config/global").host;
 
