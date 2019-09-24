@@ -38,7 +38,7 @@ export default {
           myTree.push({
             id: listaAutosEliminacao[i].id.split("#")[1].replace('ae_',''),
             entidade: listaAutosEliminacao[i].entidade.split("#")[1].replace('ent_',''),
-            fonte: listaAutosEliminacao[i].tipo +" "+listaAutosEliminacao[i].num,
+            fonte: listaAutosEliminacao[i].legislacao,
             fundo: listaAutosEliminacao[i].fundo,
             data: listaAutosEliminacao[i].data
           });

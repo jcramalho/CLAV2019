@@ -1,17 +1,18 @@
 <template>
-  <Consulta
-    v-bind:p="autoEliminacao"
-  />
+  <v-container>
+  <ConsultarAE
+    v-bind:auto="autoEliminacao"
+  /></v-container>
 </template>
 
 <script>
-import Consulta from "@/components/pedidos/consulta/showAE.vue";
+import ConsultarAE from "@/components/autosEliminacao/ConsultarAutoEliminacao.vue";
 import axios from "axios";
 const lhost = require("@/config/global").host;
 
 export default {
   components: {
-    Consulta
+    ConsultarAE
   },
   data: () => ({
     idAE: "",
@@ -95,9 +96,7 @@ export default {
       var response = await axios.get(
         lhost + "/api/autosEliminacao/" + this.idAE
       );
-      this.titulo = response.data.id.replace('ae_','').replace(/_/g,'/');
-      this.autoEliminacao = await this.preparaAutos(response.data);
-      console.log(response)
+      this.autoEliminacao = response.data;
     } catch (e) {
       return e;
     }

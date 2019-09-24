@@ -65,7 +65,7 @@
                         </v-row>
                         <v-row v-if="item.referencia" class="ma-1">
                           <v-col cols="2">
-                            <div class="info-label">Referencia</div>
+                            <div class="info-label">Referência</div>
                           </v-col>
                           <v-col>
                             <div class="info-content">{{item.referencia}}</div>
