@@ -359,7 +359,8 @@ export default {
           // Bloco de decisão de avaliação: PCA e DF
 
           pca: {
-            valor: null,
+            valor: "",
+            notas: "",
             formaContagem: "",
             subFormaContagem: "",
             justificacao: [] // j = [criterio]
@@ -367,7 +368,7 @@ export default {
 
           df: {
             valor: "NE",
-            notas: null,
+            notas: "",
             justificacao: []
           }
         };
@@ -389,7 +390,8 @@ export default {
           // Bloco de decisão de avaliação: PCA e DF
 
           pca: {
-            valor: null,
+            valor: "",
+            notas: "",
             formaContagem: "",
             subFormaContagem: "",
             justificacao: []
@@ -397,7 +399,7 @@ export default {
 
           df: {
             valor: "NE",
-            notas: null,
+            notas: "",
             justificacao: []
           }
         };
@@ -760,6 +762,15 @@ export default {
           relacao: "eSinteseDe",
           relLabel: "é Síntese de"
         });
+        this.adicionarCriterio(
+            this.classe.subclasses[0].df.justificacao,
+            "CriterioJustificacaoDensidadeInfo",
+            "Critério de Densidade Informacional",
+            criteriosLabels.textoCriterioDensidadeSinDe,
+            [{codigo: this.classe.subclasses[1].codigo, titulo: this.classe.subclasses[1].titulo}],
+            []
+          );
+
         this.classe.subclasses[1].df.valor = "E";
         this.classe.subclasses[1].processosRelacionados.push({
           codigo: this.classe.subclasses[0].codigo,
@@ -767,6 +778,14 @@ export default {
           relacao: "eSintetizadoPor",
           relLabel: "é Sintetizado por"
         });
+        this.adicionarCriterio(
+            this.classe.subclasses[1].df.justificacao,
+            "CriterioJustificacaoDensidadeInfo",
+            "Critério de Densidade Informacional",
+            criteriosLabels.textoCriterioDensidadeSinPor,
+            [{codigo: this.classe.subclasses[0].codigo, titulo: this.classe.subclasses[0].titulo}],
+            []
+          );
       } else {
         this.classe.subclasses[0].df.valor = "E";
         this.classe.subclasses[0].processosRelacionados.push({
@@ -775,6 +794,15 @@ export default {
           relacao: "eSintetizadoPor",
           relLabel: "é Sintetizado por"
         });
+        this.adicionarCriterio(
+            this.classe.subclasses[0].df.justificacao,
+            "CriterioJustificacaoDensidadeInfo",
+            "Critério de Densidade Informacional",
+            criteriosLabels.textoCriterioDensidadeSinPor,
+            [{codigo: this.classe.subclasses[1].codigo, titulo: this.classe.subclasses[1].titulo}],
+            []
+          );
+
         this.classe.subclasses[1].df.valor = "C";
         this.classe.subclasses[1].processosRelacionados.push({
           codigo: this.classe.subclasses[0].codigo,
@@ -782,6 +810,14 @@ export default {
           relacao: "eSinteseDe",
           relLabel: "é Síntese de"
         });
+        this.adicionarCriterio(
+            this.classe.subclasses[1].df.justificacao,
+            "CriterioJustificacaoDensidadeInfo",
+            "Critério de Densidade Informacional",
+            criteriosLabels.textoCriterioDensidadeSinDe,
+            [{codigo: this.classe.subclasses[0].codigo, titulo: this.classe.subclasses[0].titulo}],
+            []
+          );
       }
     },
 
