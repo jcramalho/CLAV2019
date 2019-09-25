@@ -30,35 +30,24 @@
             seguintes métodos de autenticação.</p>
           </v-card-text>
           <v-card-actions>
-            <v-flex>
-              Cartão de Cidadão
-            </v-flex>
-            <v-flex class="text-xs-right">
+            <v-row>
+            <v-col cols="12" class="d-flex flex-row-reverse">
               <form action="https://preprod.autenticacao.gov.pt/fa/Default.aspx" method="POST">
                 <input type="hidden" name='SAMLRequest' v-bind:value="createSAML()">
-                <v-btn color="primary" type="submit">Login</v-btn>
+                <v-btn color="primary" type="submit">Cartão de Cidadão</v-btn>
               </form>
-            </v-flex>
-          </v-card-actions>
-          <v-card-actions>
-            <v-flex>
-              Chave Móvel Digital
-            </v-flex>
-            <v-flex class="text-xs-right">
+            </v-col>
+          
+            <v-col cols="12"  class="d-flex flex-row-reverse">
               <v-btn color="primary" disabled type="submit"
-                >Login</v-btn
-              >
-            </v-flex>
-          </v-card-actions>
-          <v-card-actions>
-            <v-flex>
-              Email pessoal institucional
-            </v-flex>
-            <v-flex class="text-xs-right">
+                >Chave Móvel Digital</v-btn>
+            </v-col>
+          
+            <v-col class="d-flex flex-row-reverse">
               <v-btn color="primary" type="submit" @click="loginEmail"
-                >Login</v-btn
-              >
-            </v-flex>
+                >Email pessoal institucional</v-btn>
+            </v-col>
+            </v-row>
           </v-card-actions>
         </v-card>
       </v-col>
