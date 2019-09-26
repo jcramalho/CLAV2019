@@ -106,7 +106,7 @@ const axios = require("axios");
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
 
 export default {
-  props: ["c"],
+  props: ["c", "pendenteId"],
   components: {
     ValidaClasseInfoBox
   },

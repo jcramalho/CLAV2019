@@ -27,7 +27,7 @@
               <td class="subheading">{{ props.item.numInterv }}</td>
               <td class="subheading">{{ props.item.criadoPor }}</td>
               <td class="subheading">{{ props.item.acao }}</td>
-              <td class="subheading" v-if="props.item.tipo == 'Classe'">
+              <!--td class="subheading" v-if="props.item.tipo == 'Classe'">
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" dark v-on="on">Classe</v-btn>
@@ -37,8 +37,8 @@
                     {{ props.item.objeto.titulo }}</span
                   >
                 </v-tooltip>
-              </td>
-              <td class="subheading" v-else>{{ props.item.tipo }}</td>
+              </td-->
+              <td class="subheading">{{ props.item.tipo }}</td>
               <td class="subheading">
                 <v-btn
                   rounded
@@ -71,42 +71,42 @@ export default {
         text: "Criado em",
         sortable: true,
         value: "dataCriacao",
-        class: "title"
+        class: "title indigo darken-1 white--text"
       },
       {
         text: "Atualizado em",
         sortable: true,
         value: "dataAtualizacao",
-        class: "title"
+        class: "title indigo darken-1 white--text"
       },
       {
         text: "Nº interv.",
         sortable: false,
         value: "numInterv",
-        class: "title"
+        class: "title indigo darken-1 white--text"
       },
       {
         text: "Criado por",
         value: "criadoPor",
         sortable: false,
-        class: "title"
+        class: "title indigo darken-1 white--text"
       },
       {
         text: "Tipo de operação",
         value: "acao",
         sortable: false,
-        class: "title"
+        class: "title indigo darken-1 white--text"
       },
       {
         text: "Tipo de objeto",
         value: "tipo",
         sortable: false,
-        class: "title"
+        class: "title indigo darken-1 white--text"
       },
-      { text: "Ações", class: "title" }
+      { text: "Ações", class: "title indigo darken-1 white--text" }
     ],
     procsFooterProps: {
-        "items-per-page-text": "Processos por página",
+        "items-per-page-text": "Pendentes por página",
         "items-per-page-options": [10, 20, 100, -1],
         "items-per-page-all-text": "Todos"
     },
@@ -130,5 +130,28 @@ export default {
   }
 };
 </script>
+<style>
+.myPanelHeader {
+  color: #304ffe;
+}
 
-<style></style>
+.info-label {
+  color: #1a237e;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #dee2f8;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
+}
+</style>
+

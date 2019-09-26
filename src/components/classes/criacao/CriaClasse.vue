@@ -131,7 +131,7 @@
         </v-snackbar>
       </v-card>
       <!-- TODO: Corrigir este componente -->
-      <PainelOperacoes :c="classe" />
+      <PainelOperacoes :c="classe"  :pendenteId="''"/>
     </v-col>
   </v-row>
 </template>
