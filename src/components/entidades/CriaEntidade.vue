@@ -51,7 +51,7 @@
               <v-select
                 v-model="entidade.internacional"
                 :items="['Sim', 'Não']"
-                label="Não"
+                label="Selecione uma opção"
                 item-color="green"
                 color="green"
                 solo

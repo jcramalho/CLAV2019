@@ -13,14 +13,81 @@
       <ValidarEntidadeInfoBox :e="e" />
 
       <v-col>
-        <!-- <v-btn dark rounded class="green darken-4" @click="criarEntidade">Criar Entidade</v-btn> -->
-        <v-btn dark rounded class="green darken-4">Criar Entidade</v-btn>
+        <v-btn rounded class="green darken-4 white--text" @click="criarEntidade">Criar Entidade</v-btn>
       </v-col>
 
       <v-col>
-        <!-- <v-btn dark rounded class="red darken-4" @click="eliminarEntidade">Cancelar Criação</v-btn> -->
-        <v-btn dark rounded class="red darken-4">Cancelar Criação</v-btn>
+        <v-btn dark rounded class="red darken-4" @click="eliminarEntidade">Cancelar Criação</v-btn>
       </v-col>
+
+      <!-- Trabalho pendente guardado com sucesso -->
+      <v-dialog v-model="pendenteGuardado" width="60%">
+        <v-card>
+          <v-card-title>Trabalho pendente guardado</v-card-title>
+          <v-card-text>
+            <p>Os seus dados foram guardados para que possa retomar o trabalho mais tarde.</p>
+            <p>{{ pendenteGuardadoInfo }}</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="green darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- Erros de Validação -->
+      <v-dialog v-model="errosValidacao" width="30%">
+        <v-card>
+          <v-card-title>Erros detetados na validação</v-card-title>
+          <v-card-text>
+            <p>Há erros de validação. Selecione "Validar" para ver extamente quais e proceder à sua correção.</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="red darken-4" dark @click="errosValidacao=false">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- Pedido de criação de classe submetido com sucesso -->
+      <v-dialog v-model="dialogEntidadeCriada" width="30%">
+        <v-card>
+          <v-card-title>Pedido de Criação de Classe Submetido</v-card-title>
+          <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" dark @click="criacaoEntidadeTerminada">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- Cancelamento da criação duma classe: confirmação -->
+      <v-dialog v-model="pedidoEliminado" width="35%">
+        <v-card>
+          <v-card-title>Cancelamento e eliminação do pedido de criação da entidade</v-card-title>
+          <v-card-text>
+            <p>Selecionou o cancelamento da criação da entidade.</p>
+            <p>Toda a informação introduzida será eliminada.</p>
+            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="green darken-1" text @click="cancelarCriacaoEntidade">Confirmo</v-btn>
+            <v-btn
+              color="red darken-1"
+              dark
+              @click="pedidoEliminado = false"
+            >Enganei-me, desejo continuar o trabalho</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
+    <v-row>
+      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+        {{ loginErrorMessage }}
+        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+      </v-snackbar>
     </v-row>
   </div>
 </template>
@@ -44,8 +111,16 @@ export default {
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,
       numeroErros: 0,
-      errosValidacao: false
+      errosValidacao: false,
+      mensagemPedidoCriadoOK: "",
+      pedidoEliminado: false
     };
+  },
+
+  watch: {
+    dialog: function(val) {
+      if (!val) this.limpaErros();
+    }
   },
 
   methods: {
@@ -76,10 +151,122 @@ export default {
       } catch (error) {
         return error;
       }
+    },
+
+    validarEntidade: async function() {
+      let i = 0;
+
+      // Designação
+      if (this.e.designacao == "") {
+        this.numeroErros++;
+      } else {
+        try {
+          let existeDesignacao = await axios.post(
+            lhost + "/api/entidades/verificarDesignacao",
+            { designacao: this.e.designacao }
+          );
+          if (existeDesignacao.data) {
+            this.numeroErros++;
+          }
+        } catch (err) {
+          this.numeroErros++;
+        }
+      }
+
+      // Sigla
+      if (this.e.sigla == "") {
+        this.numeroErros++;
+      } else {
+        try {
+          let existeSigla = await axios.post(
+            lhost + "/api/entidades/verificarSigla",
+            { sigla: this.e.sigla }
+          );
+          if (existeSigla.data) {
+            this.numeroErros++;
+          }
+        } catch (err) {
+          this.numeroErros++;
+        }
+      }
+
+      // Internacional
+      if (this.e.internacional == "") {
+        this.numeroErros++;
+      }
+
+      // Internacional
+      if (this.e.sioe == "") {
+        this.numeroErros++;
+      }
+
+      return this.numeroErros;
+    },
+
+    // Lança o pedido de criação da entidade no worflow
+    criarEntidade: async function() {
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          let erros = await this.validarEntidade();
+          if (erros == 0) {
+            let userBD = await axios.get(
+              lhost + "/api/users/listarToken/" + this.$store.state.token
+            );
+            let pedidoParams = {
+              tipoPedido: "Criação",
+              tipoObjeto: "Entidade",
+              novoObjeto: this.e,
+              user: { email: userBD.data.email },
+              entidade: userBD.data.entidade,
+              token: this.$store.state.token
+            };
+
+            var response = await axios.post(
+              lhost + "/api/pedidos",
+              pedidoParams
+            );
+            this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
+            this.dialogEntidadeCriada = true;
+          } else {
+            this.errosValidacao = true;
+          }
+        }
+      } catch (err) {
+        return err;
+      }
+    },
+
+    criacaoPendenteTerminada: function() {
+      this.$router.push("/");
+    },
+
+    criacaoEntidadeTerminada: function() {
+      this.$router.push("/");
+    },
+
+    // Cancela a criação da classe
+    eliminarEntidade: function() {
+      this.pedidoEliminado = true;
+    },
+
+    cancelarCriacaoEntidade: function() {
+      this.$router.push("/");
     }
   }
 };
 </script>
 
 <style scoped>
+.info-label {
+  color: #2e7d32; /* green darken-3 */
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #e8f5e9; /* green lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
 </style>
