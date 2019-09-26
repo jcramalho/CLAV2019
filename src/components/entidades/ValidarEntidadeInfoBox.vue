@@ -72,28 +72,27 @@ export default {
         });
         this.numeroErros++;
       }
-      // else {
-      //   // TODO: Criar rota na API
-      //   try {
-      //     let existeDesignacao = await axios.post(
-      //       lhost + "/api/entidades/verificarDesignacao",
-      //       { designacao: this.e.designacao }
-      //     );
-      //     if (existeDesignacao.data) {
-      //       this.mensagensErro.push({
-      //         sobre: "Designação",
-      //         mensagem: "Designação já existente na BD."
-      //       });
-      //       this.numeroErros++;
-      //     }
-      //   } catch (err) {
-      //     this.numeroErros++;
-      //     this.mensagensErro.push({
-      //       sobre: "Acesso à Ontologia",
-      //       mensagem: "Não consegui verificar a existência da designação."
-      //     });
-      //   }
-      // }
+      else {
+        try {
+          let existeDesignacao = await axios.post(
+            lhost + "/api/entidades/verificarDesignacao",
+            { designacao: this.e.designacao }
+          );
+          if (existeDesignacao.data) {
+            this.mensagensErro.push({
+              sobre: "Designação",
+              mensagem: "Designação já existente na BD."
+            });
+            this.numeroErros++;
+          }
+        } catch (err) {
+          this.numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação."
+          });
+        }
+      }
 
       // Sigla
       if (this.e.sigla == "") {
@@ -102,29 +101,27 @@ export default {
           mensagem: "A sigla não pode ser vazia."
         });
         this.numeroErros++;
+      } else {
+        try {
+          let existeSigla = await axios.post(
+            lhost + "/api/entidades/verificarSigla",
+            { sigla: this.e.sigla }
+          );
+          if (existeSigla.data) {
+            this.mensagensErro.push({
+              sobre: "Sigla",
+              mensagem: "Sigla já existente na BD."
+            });
+            this.numeroErros++;
+          }
+        } catch (err) {
+          this.numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da sigla."
+          });
+        }
       }
-      // else {
-      //   // TODO: Criar rota na API
-      //   try {
-      //     let existeSigla = await axios.post(
-      //       lhost + "/api/entidades/verificarSigla",
-      //       { sigla: this.e.sigla }
-      //     );
-      //     if (existeDesignacao.data) {
-      //       this.mensagensErro.push({
-      //         sobre: "Sigla",
-      //         mensagem: "Sigla já existente na BD."
-      //       });
-      //       this.numeroErros++;
-      //     }
-      //   } catch (err) {
-      //     this.numeroErros++;
-      //     this.mensagensErro.push({
-      //       sobre: "Acesso à Ontologia",
-      //       mensagem: "Não consegui verificar a existência da sigla."
-      //     });
-      //   }
-      // }
 
       // Internacional
       if (this.e.internacional == "") {
