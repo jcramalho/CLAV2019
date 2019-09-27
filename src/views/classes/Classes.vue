@@ -1,29 +1,38 @@
 <template>
   <v-card class="mx-auto">
     <v-sheet class="pa-3 indigo lighten-2">
-      <v-text-field
-        v-model="search"
-        label="Pesquisa por código ou título"
-        dark
-        text
-        solo-inverted
-        hide-details
-        clearable
-        clear-icon="mdi-close-circle-outline"
-      ></v-text-field>
+      <v-row align="center" no-gutters>
+        <v-col cols="12" xs="12" md="10" sm="10" lg="10" xl="10">
+          <v-text-field
+            v-model="search"
+            label="Pesquisa por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice"
+            text
+            dark
+            solo-inverted
+            hide-details
+            clearable
+            clear-icon="delete_forever"
+          ></v-text-field>
+        </v-col>
+        <v-col xs="12" md="2" sm="2" lg="2" xl="2">
+          <div class="text-center">
+            <v-btn @click="procuraProcesso()">
+              <v-icon left>search</v-icon>Pesquisar
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
     </v-sheet>
     <v-card-text>
       <div v-if="classesCarregadas">
-        <v-treeview
-          :items="classesTree"
-          item-key="id"
-          :search="search"
-          :filter="filter"
-          hoverable
-        >
+        <v-treeview :items="classesTree" item-key="id" hoverable>
           <template slot="label" slot-scope="{ item }">
-            <v-btn text depressed @click="$router.push('/classes/consultar/c' + item.id)">{{ item.name }}</v-btn>
-            <br>
+            <v-btn
+              text
+              depressed
+              @click="$router.push('/classes/consultar/c' + item.id)"
+            >{{ item.name }}</v-btn>
+            <br />
           </template>
         </v-treeview>
       </div>
@@ -40,6 +49,7 @@ export default {
     classesTree: [],
     classesCarregadas: false,
     search: null
+
   }),
 
   mounted: async function() {
@@ -47,15 +57,13 @@ export default {
       var response = await axios.get(lhost + "/api/classes");
       this.classesTree = await this.preparaTree(response.data);
       this.classesCarregadas = true;
+
     } catch (e) {
       console.log(e);
     }
   },
 
   methods: {
-    go: function(idClasse) {
-      this.$router.push("/classes/consultar/c" + idClasse);
-    },
     preparaTree: async function(lclasses) {
       try {
         var myTree = [];
@@ -70,12 +78,11 @@ export default {
       } catch (error) {
         return [];
       }
-    }
-  },
-
-  computed: {
-    filter() {
-      return (item, search, textKey) => item[textKey].indexOf(search) > -1;
+    },
+    procuraProcesso: function() {
+      if (this.search != null && this.search != "") {
+        this.$router.push('/classes/procurar/' + this.search)
+      }
     }
   }
 };
@@ -84,6 +91,5 @@ export default {
 <style scoped>
 .v-btn:hover:before {
   opacity: 0;
-  
 }
 </style>
