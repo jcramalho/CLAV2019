@@ -19,9 +19,6 @@
 import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "App",
   components: {
@@ -32,13 +29,20 @@ export default {
     async $route(to, from) {
       this.authenticated = false;
       //verifica se o utilizador tem de estar autenticado para aceder à rota
-      if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (to.matched.some(record => record.meta.level > 0)) {
         if (this.$store.state.token != "") {
           try {
-            var res = await axios.get(
-              lhost + "/api/users/verificaToken?token=" + this.$store.state.token
-            );
-            this.authenticated = true;
+            var res = await this.$request("get", "/api/users/verificaToken");
+            if (
+              to.matched.some(record => res.data.level >= record.meta.level)
+            ) {
+              this.authenticated = true;
+            } else {
+              this.text = "Não tem permissões para aceder a esta página!";
+              this.color = "error";
+              this.snackbar = true;
+              this.$router.push("/");
+            }
           } catch (erro) {
             this.text = "A sua sessão expirou! Por favor faça login novamente.";
             this.color = "error";
@@ -48,16 +52,24 @@ export default {
             this.$router.push("/users/autenticacao");
           }
         } else {
-          this.text = "Não tem permissões para aceder a esta página! Por favor faça login.";
+          this.text =
+            "Não tem permissões para aceder a esta página! Por favor faça login.";
           this.color = "error";
           this.snackbar = true;
           this.$router.push("/users/autenticacao");
         }
       } else {
+        if (this.$route.query.erro) {
+          this.text = this.$route.query.erro;
+          this.color = "error";
+          this.snackbar = true;
+          this.$router.push("/users/autenticacao");
+        }
         this.authenticated = true;
       }
     }
   },
+
   methods: {
     fecharSnackbar() {
       this.snackbar = false;
