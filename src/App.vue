@@ -31,8 +31,10 @@ export default {
       //verifica se o utilizador tem de estar autenticado para aceder à rota
       if (to.matched.some(record => record.meta.level > 0)) {
         if (this.$store.state.token != "") {
+          //verifica se o utilizador está autenticado
           try {
             var res = await this.$request("get", "/api/users/verificaToken");
+            //se está autenticado, verifica se tem permissões suficientes para a ceder a página
             if (
               to.matched.some(record => res.data.level >= record.meta.level)
             ) {
@@ -59,6 +61,7 @@ export default {
           this.$router.push("/users/autenticacao");
         }
       } else {
+        //verifica se há algum erro ao tentar realizar um pedido à API, em caso afirmativo amostra o erro
         if (this.$route.query.erro) {
           this.text = this.$route.query.erro;
           this.color = "error";

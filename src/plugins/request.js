@@ -1,12 +1,37 @@
 var axios = require("axios");
 const lhost = require("@/config/global").host;
 
-function getAuthToken(store) {
+async function getAuthToken(store) {
   var auth = "";
   if (store.state.token != "") {
     auth = "token " + store.state.token;
   } else {
-    auth = "apikey " + ""; //TODO: obter a chave API para a interface
+    var apikey;
+    var response;
+    try {
+      if (store.state.clavToken != "") {
+        var expDate = new Date(store.state.expClavToken * 1000);
+        var atualDate = new Date();
+
+        //verifica se o token ainda não expirou
+        if (expDate.getTime() >= atualDate.getTime()) {
+          apikey = store.state.clavToken;
+        } else {
+          response = await axios.get(lhost + "/api/chaves/clavToken");
+          apikey = response.data.token;
+          store.commit("guardaTokenCLAV", apikey);
+          store.commit("guardaExpTokenCLAV", response.data.exp);
+        }
+      } else {
+        response = await axios.get(lhost + "/api/chaves/clavToken");
+        apikey = response.data.token;
+        store.commit("guardaTokenCLAV", apikey);
+        store.commit("guardaExpTokenCLAV", response.data.exp);
+      }
+    } catch (erro) {
+      apikey = "";
+    }
+    auth = "apikey " + apikey;
   }
 
   return auth;
@@ -15,7 +40,7 @@ function getAuthToken(store) {
 async function exec(type, path, data, config, store, router) {
   config = config || null;
   data = data || null;
-  var authToken = getAuthToken(store);
+  var authToken = await getAuthToken(store);
   var url = lhost + path;
 
   if (config == null) {
