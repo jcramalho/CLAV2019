@@ -31,7 +31,9 @@
               text
               depressed
               @click="$router.push('/classes/consultar/c' + item.id)"
-            >{{ item.name }}</v-btn>
+            >
+              {{ item.name }}
+            </v-btn>
             <br />
           </template>
         </v-treeview>
@@ -41,23 +43,18 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   data: () => ({
     classesTree: [],
     classesCarregadas: false,
     search: null
-
   }),
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/classes");
+      var response = await this.$request("get", "/api/classes");
       this.classesTree = await this.preparaTree(response.data);
       this.classesCarregadas = true;
-
     } catch (e) {
       console.log(e);
     }
@@ -81,7 +78,7 @@ export default {
     },
     procuraProcesso: function() {
       if (this.search != null && this.search != "") {
-        this.$router.push('/classes/procurar/' + this.search)
+        this.$router.push("/classes/procurar/" + this.search);
       }
     }
   }

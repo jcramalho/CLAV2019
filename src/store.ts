@@ -7,10 +7,18 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     name: "",
-    token: ""
+    token: "",
+    clavToken: "",
+    expClavToken: ""
   },
   plugins: [createPersistedState()],
   mutations: {
+    guardaExpTokenCLAV(state, exp) {
+      state.expClavToken = exp;
+    },
+    guardaTokenCLAV(state, token) {
+      state.clavToken = token;
+    },
     guardaTokenUtilizador(state, token) {
       state.token = token;
     },

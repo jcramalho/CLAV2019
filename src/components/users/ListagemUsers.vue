@@ -254,7 +254,10 @@ export default {
     },
     async getUtilizadores(){
       try {
-        var response = await axios.get(lhost + "/api/users?formato=normalizado");
+        var response = await this.$request(
+          "get",
+          "/api/users?formato=normalizado"
+        );
         this.utilizadores = response.data;
       } catch (e) {
         return e;
