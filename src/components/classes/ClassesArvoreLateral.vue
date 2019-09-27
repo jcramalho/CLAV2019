@@ -33,9 +33,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   data: () => ({
     classesTree: [],
@@ -45,7 +42,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/classes");
+      var response = await this.$request("get", "/api/classes");
       this.classesTree = await this.preparaTree(response.data);
       this.classesCarregadas = true;
     } catch (e) {

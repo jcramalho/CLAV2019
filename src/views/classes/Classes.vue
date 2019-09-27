@@ -22,8 +22,14 @@
           hoverable
         >
           <template slot="label" slot-scope="{ item }">
-            <v-btn text depressed @click="$router.push('/classes/consultar/c' + item.id)">{{ item.name }}</v-btn>
-            <br>
+            <v-btn
+              text
+              depressed
+              @click="$router.push('/classes/consultar/c' + item.id)"
+            >
+              {{ item.name }}
+            </v-btn>
+            <br />
           </template>
         </v-treeview>
       </div>
@@ -32,9 +38,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   data: () => ({
     classesTree: [],
@@ -44,7 +47,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/classes");
+      var response = await this.$request("get", "/api/classes");
       this.classesTree = await this.preparaTree(response.data);
       this.classesCarregadas = true;
     } catch (e) {
@@ -84,6 +87,5 @@ export default {
 <style scoped>
 .v-btn:hover:before {
   opacity: 0;
-  
 }
 </style>
