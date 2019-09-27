@@ -63,7 +63,6 @@ export default {
           this.text = this.$route.query.erro;
           this.color = "error";
           this.snackbar = true;
-          this.$router.push("/users/autenticacao");
         }
         this.authenticated = true;
       }

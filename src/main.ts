@@ -5,12 +5,15 @@ import router from "./router";
 import store from "./store";
 import "./registerServiceWorker";
 import "bootstrap";
+import request from "./plugins/request";
 //import BootstrapVue from "bootstrap-vue";
 
 //Vue.use(BootstrapVue);
 
 import "bootstrap/dist/css/bootstrap.min.css";
 //import "bootstrap-vue/dist/bootstrap-vue.css";
+
+Vue.use(request);
 
 Vue.config.productionTip = false;
 
