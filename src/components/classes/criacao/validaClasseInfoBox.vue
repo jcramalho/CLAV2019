@@ -375,7 +375,7 @@ export default {
         // PCA: prazo
         for (i = 0; i < this.c.subclasses.length; i++) {
           subclasse = this.c.subclasses[i];
-          if (!subclasse.pca.valor && subclasse.pca.notas == "") {
+          if ((!subclasse.pca.valor || (subclasse.pca.valor == "")) && subclasse.pca.notas == "") {
             this.mensagensErro.push({
               sobre: "PCA (prazo) da subclasse " + subclasse.codigo,
               mensagem: "O prazo é de preenchimento obrigatório."

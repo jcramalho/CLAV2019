@@ -51,7 +51,7 @@
               <v-select
                 v-model="entidade.internacional"
                 :items="['Sim', 'Não']"
-                label="Não"
+                label="Selecione uma opção"
                 item-color="green"
                 color="green"
                 solo
@@ -102,18 +102,6 @@
         </v-snackbar>
       </v-card>
       <PainelOpsEnt :e="entidade" />
-      <v-row>
-        <v-col class="text-center">
-          <v-btn
-            class="white--text"
-            medium
-            rounded
-            color="#388E3C"
-            @click="submeter()"
-            :disabled="!(entidade.designacao && entidade.sigla)"
-          >Submeter Entidade</v-btn>
-        </v-col>
-      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -186,74 +174,6 @@ export default {
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    },
-    submeter: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.text = "Precisa de fazer login para criar a Entidade";
-          this.snackbar = true;
-          return false;
-        }
-
-        for (var i = 0; i < this.tipSel.length; i++) {
-          this.entidade.tipologiasSel[i] = this.tipSel[i].id;
-        }
-
-        if (this.entidade.internacional == "") {
-          this.entidade.internacional = "Não";
-        }
-
-        if (!/^[0-9]*$/.test(this.entidade.sioe)) {
-          this.text = "O campo 'SIOE' está no formato errado.";
-          this.snackbar = true;
-          return false;
-        }
-
-        var dataObj = this.entidade;
-
-        dataObj.codigo = "ent_" + this.entidade.sigla;
-
-        // console.log(dataObj);
-
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
-        );
-
-        var pedidoParams = {
-          tipoPedido: "Criação",
-          tipoObjeto: "Entidade",
-          novoObjeto: dataObj,
-          user: { email: userBD.data.email },
-          token: this.$store.state.token
-        };
-
-        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
-        this.$router.push("/pedidos/submissao");
-
-        /*axios
-          .post(lhost + "/api/entidades/", dataObj)
-          .then(res => {
-            this.$router.push("/pedidos/submissao");
-          })
-          .catch(err => {
-            if (err.response.status === 409) {
-              this.text =
-                "Já existe uma entidade com a sigla " +
-                this.entidade.sigla +
-                " ou designação " +
-                this.entidade.designacao;
-              this.color = "error";
-              this.snackbar = true;
-            }
-            if (err.response.status === 500) {
-              this.text = "Ocorreu um erro na criação desta entidade";
-              this.color = "error";
-              this.snackbar = true;
-            }
-          });*/
-      } catch (error) {
-        return error;
-      }
     }
   },
   created: function() {
