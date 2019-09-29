@@ -81,9 +81,14 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">Tipologias de Entidade</v-expansion-panel-header>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                Tipologias de Entidade
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <DesSelTip :tipologias="tipSel" @unselectTipologia="unselectTipologia($event)" />
+                <DesSelTip
+                  :tipologias="tipSel"
+                  @unselectTipologia="unselectTipologia($event)"
+                />
 
                 <hr style="border-top: 1px dashed #dee2f8;" />
 
@@ -96,7 +101,12 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-card-text>
-        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+        <v-snackbar
+          v-model="snackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
           {{ text }}
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
@@ -110,9 +120,6 @@
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
-
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
@@ -146,7 +153,7 @@ export default {
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
-        var response = await axios.get(lhost + "/api/tipologias/");
+        var response = await this.$request("get", "/api/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,

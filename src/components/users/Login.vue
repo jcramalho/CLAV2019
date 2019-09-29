@@ -54,9 +54,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "login",
   data() {
@@ -80,11 +77,10 @@ export default {
   methods: {
     loginUtilizador() {
       if (this.$refs.form.validate()) {
-        axios
-          .post(lhost + "/api/users/login", {
-            username: this.$data.form.email,
-            password: this.$data.form.password
-          })
+        this.$request("post", "/api/users/login", {
+          username: this.$data.form.email,
+          password: this.$data.form.password
+        })
           .then(res => {
             if (res.data.token != undefined && res.data.name != undefined) {
               // this.text = "Login efetuado com sucesso!";

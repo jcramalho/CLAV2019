@@ -18,35 +18,48 @@
         </template>
         <v-card>
           <v-card-title class="headline">
-            Adicionar novo Termo a Vocabulário Controlado ({{this.$route.params.idVC}})
+            Adicionar novo Termo a Vocabulário Controlado ({{
+              this.$route.params.idVC
+            }})
           </v-card-title>
           <v-card-text>
             <v-text-field
-                    v-model="novoTermo.idtermo"
-                    :rules="[v => !!v || 'Nome do Identificador Obrigatório']"
-                    label="Nome para Identificador"
-                    type="text"
-                    required
-                  ></v-text-field>
+              v-model="novoTermo.idtermo"
+              :rules="[v => !!v || 'Nome do Identificador Obrigatório']"
+              label="Nome para Identificador"
+              type="text"
+              required
+            ></v-text-field>
             <v-text-field
-                    v-model="novoTermo.termo"
-                    :rules="[v => !!v || 'Termo Obrigatória']"
-                    label="Termo"
-                    type="text"
-                    required
-                  ></v-text-field>
+              v-model="novoTermo.termo"
+              :rules="[v => !!v || 'Termo Obrigatória']"
+              label="Termo"
+              type="text"
+              required
+            ></v-text-field>
             <v-text-field
-                    v-model="novoTermo.desc"
-                    :rules="[v => !!v || 'Descrição Obrigatória']"
-                    label="Descrição"
-                    type="text"
-                    required
-                  ></v-text-field>
+              v-model="novoTermo.desc"
+              :rules="[v => !!v || 'Descrição Obrigatória']"
+              label="Descrição"
+              type="text"
+              required
+            ></v-text-field>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="novoTermo={}; dialog = false">Fechar</v-btn>
-            <v-btn color="green darken-1" text @click="criarTermo">Guardar</v-btn>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="
+                novoTermo = {};
+                dialog = false;
+              "
+            >
+              Fechar
+            </v-btn>
+            <v-btn color="green darken-1" text @click="criarTermo">
+              Guardar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -67,7 +80,11 @@
       </template>
       <template v-slot:item="props">
         <tr>
-          <td @click="go(props.item.id)" v-for="(campo, index) in props.item" v-bind:key="index">
+          <td
+            @click="go(props.item.id)"
+            v-for="(campo, index) in props.item"
+            v-bind:key="index"
+          >
             {{ campo }}
           </td>
           <td>
@@ -81,29 +98,37 @@
       </template>
     </v-data-table>
     <v-dialog v-model="dialog2" max-width="600px">
-        <v-card>
-          <v-card-title class="headline">Remover Termo de Vocabulário Controlado</v-card-title>
-          <v-card-text>
-            O termo <b>{{deleteTerm}}</b> será permanentemente apagado do Vocabulário Controlado.
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="deleteTerm=''; deleteIdTerm=''; dialog2 = false">Fechar</v-btn>
-            <v-btn color="red darken-1" text @click="apagarTermo(deleteIdTerm)">Apagar</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <v-card>
+        <v-card-title class="headline">
+          Remover Termo de Vocabulário Controlado
+        </v-card-title>
+        <v-card-text>
+          O termo <b>{{ deleteTerm }}</b> será permanentemente apagado do
+          Vocabulário Controlado.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="
+              deleteTerm = '';
+              deleteIdTerm = '';
+              dialog2 = false;
+            "
+          >
+            Fechar
+          </v-btn>
+          <v-btn color="red darken-1" text @click="apagarTermo(deleteIdTerm)">
+            Apagar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-    <v-snackbar
-      v-model="snack"
-      :color="snackColor"
-    >
+    <v-snackbar v-model="snack" :color="snackColor">
       {{ mess }}
-      <v-btn
-        dark
-        text
-        @click="snack = false"
-      >
+      <v-btn dark text @click="snack = false">
         Fechar
       </v-btn>
     </v-snackbar>
@@ -111,9 +136,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
   data: () => ({
@@ -129,57 +151,68 @@ export default {
     deleteTerm: "",
     deleteIdTerm: "",
     termosListaFooterProps: {
-        "items-per-page-text": "Termos por página",
-        "items-per-page-options": [10, 20, 100, -1],
-        "items-per-page-all-text": "Todos"
-      }
+      "items-per-page-text": "Termos por página",
+      "items-per-page-options": [10, 20, 100, -1],
+      "items-per-page-all-text": "Todos"
+    }
   }),
   methods: {
     eliminarProp: function(item) {
-      this.deleteTerm = item.termo
-      this.deleteIdTerm = item.idtermo
-      this.dialog2 = true
+      this.deleteTerm = item.termo;
+      this.deleteIdTerm = item.idtermo;
+      this.dialog2 = true;
     },
     criarTermo: async function() {
-      await axios.post(lhost + "/api/vocabularios/termo/"+this.$route.params.idVC, this.novoTermo)
+      await this.$request(
+        "post",
+        "/api/vocabularios/termo/" + this.$route.params.idVC,
+        this.novoTermo
+      )
         .then(res => {
-          this.snack = true
-          this.mess = res.data.mensagem
-          this.snackColor = "green"
-          this.novoTermo.idtermo = this.$route.params.idVC+"_"+this.novoTermo.idtermo
+          this.snack = true;
+          this.mess = res.data.mensagem;
+          this.snackColor = "green";
+          this.novoTermo.idtermo =
+            this.$route.params.idVC + "_" + this.novoTermo.idtermo;
           this.lista = this.lista.push({
             termo: this.novoTermo.termo,
             desc: this.novoTermo.desc,
             idtermo: this.novoTermo.idtermo
-          })
-          this.novoTermo = {}
-          this.dialog = false
+          });
+          this.novoTermo = {};
+          this.dialog = false;
         })
-        .catch((err) => {
-          this.snack = true
-          this.mess = "Erro na adição do "+this.novoTermo.termo+" ao Vocabulário Controlado "+this.$router.params.idVC
-          this.snackColor = "red"
-          this.novoTermo = {}
-          this.dialog = false
-        })
+        .catch(err => {
+          this.snack = true;
+          this.mess =
+            "Erro na adição do " +
+            this.novoTermo.termo +
+            " ao Vocabulário Controlado " +
+            this.$router.params.idVC;
+          this.snackColor = "red";
+          this.novoTermo = {};
+          this.dialog = false;
+        });
     },
     apagarTermo: async function(id) {
-      await axios.delete(lhost + "/api/vocabularios/termo/"+id)
+      await this.$request("delete", "/api/vocabularios/termo/" + id)
         .then(res => {
-          this.snack = true
-          this.mess = res.data.mensagem
-          this.snackColor = "green"
-          this.updateVC = {}
-          this.dialog2 = false
-          this.lista = this.lista.filter(function(obj){ return obj.idtermo != id})
+          this.snack = true;
+          this.mess = res.data.mensagem;
+          this.snackColor = "green";
+          this.updateVC = {};
+          this.dialog2 = false;
+          this.lista = this.lista.filter(function(obj) {
+            return obj.idtermo != id;
+          });
         })
-        .catch((err) => {
-          this.snack = true
-          this.mess = "Erro na remoção do Termo de VC"
-          this.snackColor = "red"
-          this.updateVC = {}
-          this.dialog2 = false
-        })
+        .catch(err => {
+          this.snack = true;
+          this.mess = "Erro na remoção do Termo de VC";
+          this.snackColor = "red";
+          this.updateVC = {};
+          this.dialog2 = false;
+        });
     }
   },
   mounted: async function() {
@@ -192,7 +225,7 @@ export default {
       }
       this.headers[i] = {
         text: "Ação"
-      }
+      };
     } catch (e) {
       return e;
     }

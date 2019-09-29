@@ -95,9 +95,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
   async mounted() {
@@ -130,8 +127,7 @@ export default {
   },
   methods: {
     async getEntidades() {
-      await axios
-        .get(lhost + "/api/entidades")
+      await this.$request("get", "/api/entidades")
         .then(res => {
           this.ent_list = res.data.map(ent => {
             return {
@@ -168,14 +164,13 @@ export default {
             parsedType = 1;
             break;
         }
-        axios
-          .post(lhost + "/api/users/registar", {
-            name: this.$data.form.name,
-            email: this.$data.form.email,
-            entidade: this.$data.form.entidade,
-            type: parsedType,
-            password: this.$data.form.password
-          })
+        this.$request("post", "/api/users/registar", {
+          name: this.$data.form.name,
+          email: this.$data.form.email,
+          entidade: this.$data.form.entidade,
+          type: parsedType,
+          password: this.$data.form.password
+        })
           .then(res => {
             this.text = res.data;
             this.color = "success";

@@ -7,8 +7,9 @@
             <v-toolbar-title>Recuperação</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            De modo a recuperar acesso à sua conta, por favor insira o email com o qual se registou na plataforma CLAV.
-            Um email será enviado com um endereço no qual pode inserir uma nova password para a sua conta.
+            De modo a recuperar acesso à sua conta, por favor insira o email com
+            o qual se registou na plataforma CLAV. Um email será enviado com um
+            endereço no qual pode inserir uma nova password para a sua conta.
             <v-form ref="form" lazy-validation>
               <v-text-field
                 prepend-icon="email"
@@ -26,7 +27,9 @@
               >Cancelar</v-btn
             >
             <v-spacer></v-spacer>
-            <v-btn color="primary" type="submit" @click="recuperarUtilizador">Recuperar</v-btn>
+            <v-btn color="primary" type="submit" @click="recuperarUtilizador">
+              Recuperar
+            </v-btn>
           </v-card-actions>
           <v-snackbar
             v-model="snackbar"
@@ -44,9 +47,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
   data() {
@@ -56,7 +56,7 @@ export default {
         v => /.+@.+/.test(v) || "Email tem de ser válido."
       ],
       form: {
-        email: "",
+        email: ""
       },
       snackbar: false,
       color: "",
@@ -66,12 +66,12 @@ export default {
     };
   },
   methods: {
-    recuperarUtilizador(){
+    recuperarUtilizador() {
       if (this.$refs.form.validate()) {
-        axios.post(lhost + "/api/users/recuperar", {
-            email: this.$data.form.email,
-            url: window.location.href
-          })
+        this.$request("post", "/api/users/recuperar", {
+          email: this.$data.form.email,
+          url: window.location.href
+        })
           .then(res => {
             this.text = res.data;
             this.color = "success";

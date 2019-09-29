@@ -111,9 +111,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   data: () => ({
     tipos: [
@@ -138,7 +135,7 @@ export default {
   }),
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/entidades");
+      var response = await this.$request("get", "/api/entidades");
       this.entidades = response.data.map(ent => {
         return {
           text: ent.sigla + " - " + ent.designacao,
@@ -191,8 +188,9 @@ export default {
 
       if (valid) {
         try {
-          var response = await axios.post(
-            lhost + "/api/users/registarParaEntidade",
+          var response = await this.$request(
+            "post",
+            "/api/users/registarParaEntidade",
             {
               entidade: this.entidade,
               users: this.users

@@ -1,12 +1,16 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="green darken-3" @click="validarEntidade">Validar Entidade</v-btn>
+    <v-btn dark rounded class="green darken-3" @click="validarEntidade">
+      Validar Entidade
+    </v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="80%">
       <v-card>
-        <v-card-title>Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
+        <v-card-title>
+          Erros detetados na validação: {{ mensagensErro.length }}
+        </v-card-title>
         <v-card-text>
           <v-row v-for="(m, i) in mensagensErro" :key="i">
             <v-col cols="2">
@@ -19,7 +23,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="dialog = false">Fechar</v-btn>
+          <v-btn class="red darken-4" dark @click="dialog = false">
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -33,7 +39,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="green darken-1" dark @click="dialogSemErros = false">Fechar</v-btn>
+          <v-btn class="green darken-1" dark @click="dialogSemErros = false">
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -41,9 +49,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-const axios = require("axios");
-
 export default {
   props: ["e"],
   data() {
@@ -75,8 +80,9 @@ export default {
         this.numeroErros++;
       } else {
         try {
-          let existeDesignacao = await axios.post(
-            lhost + "/api/entidades/verificarDesignacao",
+          let existeDesignacao = await this.$request(
+            "post",
+            "/api/entidades/verificarDesignacao",
             { designacao: this.e.designacao }
           );
           if (existeDesignacao.data) {
@@ -104,8 +110,9 @@ export default {
         this.numeroErros++;
       } else {
         try {
-          let existeSigla = await axios.post(
-            lhost + "/api/entidades/verificarSigla",
+          let existeSigla = await this.$request(
+            "post",
+            "/api/entidades/verificarSigla",
             { sigla: this.e.sigla }
           );
           if (existeSigla.data) {

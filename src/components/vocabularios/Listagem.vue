@@ -22,30 +22,39 @@
           </v-card-title>
           <v-card-text>
             <v-text-field
-                    v-model="novoVC.id"
-                    :rules="[v => !!v || 'Identificador Obrigatório']"
-                    label="Identificador"
-                    type="text"
-                    required
-                  ></v-text-field>
+              v-model="novoVC.id"
+              :rules="[v => !!v || 'Identificador Obrigatório']"
+              label="Identificador"
+              type="text"
+              required
+            ></v-text-field>
             <v-text-field
-                    v-model="novoVC.label"
-                    :rules="[v => !!v || 'Legenda Obrigatória']"
-                    label="Legenda"
-                    type="text"
-                    required
-                  ></v-text-field>
+              v-model="novoVC.label"
+              :rules="[v => !!v || 'Legenda Obrigatória']"
+              label="Legenda"
+              type="text"
+              required
+            ></v-text-field>
             <v-text-field
-                    v-model="novoVC.desc"
-                    :rules="[v => !!v || 'Descrição Obrigatória']"
-                    label="Descrição"
-                    type="text"
-                    required
-                  ></v-text-field>
+              v-model="novoVC.desc"
+              :rules="[v => !!v || 'Descrição Obrigatória']"
+              label="Descrição"
+              type="text"
+              required
+            ></v-text-field>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat @click="novoVC= {}; dialog = false">Fechar</v-btn>
+            <v-btn
+              color="green darken-1"
+              flat
+              @click="
+                novoVC = {};
+                dialog = false;
+              "
+            >
+              Fechar
+            </v-btn>
             <v-btn color="green darken-1" text @click="criarVC">Guardar</v-btn>
           </v-card-actions>
         </v-card>
@@ -67,7 +76,11 @@
       </template>
       <template v-slot:item="props">
         <tr>
-          <td @click="go(props.item.id)" v-for="(campo, index) in props.item" v-bind:key="index">
+          <td
+            @click="go(props.item.id)"
+            v-for="(campo, index) in props.item"
+            v-bind:key="index"
+          >
             {{ campo }}
           </td>
           <td>
@@ -81,50 +94,56 @@
       </template>
     </v-data-table>
     <v-dialog v-model="dialog2" max-width="600px">
-        <v-card>
-          <v-card-title class="headline">Edição de Vocabulário Controlado</v-card-title>
-          <v-card-text>
-            <v-text-field
-                    v-model="updateVC.id"
-                    :rules="[v => !!v || 'Identificador Obrigatório']"
-                    label="Identificador"
-                    type="text"
-                    disabled
-                    required
-                  ></v-text-field>
-            <v-text-field
-                    v-model="updateVC.label"
-                    :rules="[v => !!v || 'Legenda Obrigatória']"
-                    label="Legenda"
-                    type="text"
-                    required
-                  ></v-text-field>
-            <v-text-field
-                    v-model="updateVC.desc"
-                    :rules="[v => !!v || 'Descrição Obrigatória']"
-                    label="Descrição"
-                    type="text"
-                    required
-                  ></v-text-field>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="updateVC= {}; dialog2 = false">Fechar</v-btn>
-            <v-btn color="green darken-1" text @click="editarVC(updateVC.id)">Guardar</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <v-card>
+        <v-card-title class="headline">
+          Edição de Vocabulário Controlado
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="updateVC.id"
+            :rules="[v => !!v || 'Identificador Obrigatório']"
+            label="Identificador"
+            type="text"
+            disabled
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="updateVC.label"
+            :rules="[v => !!v || 'Legenda Obrigatória']"
+            label="Legenda"
+            type="text"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="updateVC.desc"
+            :rules="[v => !!v || 'Descrição Obrigatória']"
+            label="Descrição"
+            type="text"
+            required
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="
+              updateVC = {};
+              dialog2 = false;
+            "
+          >
+            Fechar
+          </v-btn>
+          <v-btn color="green darken-1" text @click="editarVC(updateVC.id)">
+            Guardar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-    <v-snackbar
-      v-model="snack"
-      :color="snackColor"
-    >
+    <v-snackbar v-model="snack" :color="snackColor">
       {{ mess }}
-      <v-btn
-        dark
-        text
-        @click="snack = false;"
-      >
+      <v-btn dark text @click="snack = false">
         Fechar
       </v-btn>
     </v-snackbar>
@@ -132,9 +151,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
   data: () => ({
@@ -149,10 +165,10 @@ export default {
     snackColor: "",
     updateVC: {},
     vocabulariosFooterProps: {
-        "items-per-page-text": "Vocabulários por página",
-        "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos"
-      }
+      "items-per-page-text": "Vocabulários por página",
+      "items-per-page-options": [5, 10, -1],
+      "items-per-page-all-text": "Todos"
+    }
   }),
   methods: {
     go: function(id) {
@@ -167,45 +183,49 @@ export default {
         id: item.id,
         label: item.label,
         desc: item.desc
-      }
-      this.dialog2 = true
+      };
+      this.dialog2 = true;
     },
     criarVC: async function() {
-      await axios.post(lhost + "/api/vocabularios/", this.novoVC)
+      await this.$request("post", "/api/vocabularios/", this.novoVC)
         .then(res => {
-          this.snack = true
-          this.mess = res.data.mensagem
-          this.snackColor = "green"
-          this.lista = this.lista.push(this.novoVC)
-          this.novoVC = {}
-          this.dialog = false
+          this.snack = true;
+          this.mess = res.data.mensagem;
+          this.snackColor = "green";
+          this.lista = this.lista.push(this.novoVC);
+          this.novoVC = {};
+          this.dialog = false;
         })
-        .catch((err) => {
-          this.snack = true
-          this.mess = "Erro na adição do VC"
-          this.snackColor = "red"
-          this.novoVC = {}
-          this.dialog = false
-        })
+        .catch(err => {
+          this.snack = true;
+          this.mess = "Erro na adição do VC";
+          this.snackColor = "red";
+          this.novoVC = {};
+          this.dialog = false;
+        });
     },
     editarVC: async function(id) {
-      await axios.put(lhost + "/api/vocabularios/"+id, this.updateVC)
+      await this.$request("put", "/api/vocabularios/" + id, this.updateVC)
         .then(res => {
-          this.snack = true
-          this.mess = res.data.mensagem
-          this.snackColor = "green"
-          this.lista[this.lista.findIndex(obj => obj.id == id)].label = this.updateVC.label
-          this.lista[this.lista.findIndex(obj => obj.id == id)].desc = this.updateVC.desc
-          this.updateVC = {}
-          this.dialog2 = false
+          this.snack = true;
+          this.mess = res.data.mensagem;
+          this.snackColor = "green";
+          this.lista[
+            this.lista.findIndex(obj => obj.id == id)
+          ].label = this.updateVC.label;
+          this.lista[
+            this.lista.findIndex(obj => obj.id == id)
+          ].desc = this.updateVC.desc;
+          this.updateVC = {};
+          this.dialog2 = false;
         })
-        .catch((err) => {
-          this.snack = true
-          this.mess = "Erro na atualização do VC"
-          this.snackColor = "red"
-          this.updateVC = {}
-          this.dialog2 = false
-        })
+        .catch(err => {
+          this.snack = true;
+          this.mess = "Erro na atualização do VC";
+          this.snackColor = "red";
+          this.updateVC = {};
+          this.dialog2 = false;
+        });
     }
   },
   mounted: async function() {
@@ -218,7 +238,7 @@ export default {
       }
       this.headers[i] = {
         text: "Ação"
-      }
+      };
     } catch (e) {
       return e;
     }

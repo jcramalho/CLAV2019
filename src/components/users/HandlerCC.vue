@@ -4,14 +4,16 @@
       <v-flex xs12 sm8 md4>
         <v-card class="elevation-12" v-if="successfullAuthentication">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Registo de utilizador via Cartão de Cidadão</v-toolbar-title>
+            <v-toolbar-title>
+              Registo de utilizador via Cartão de Cidadão
+            </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form ref="form" lazy-validation>
               <v-text-field
                 prepend-icon="person"
                 name="name"
-                :value=this.nomeCompleto
+                :value="this.nomeCompleto"
                 disabled
                 required
               />
@@ -79,16 +81,18 @@
         </v-card>
         <v-card class="elevation-12" v-if="!successfullAuthentication">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Registo de utilizador via Cartão de Cidadão</v-toolbar-title>
+            <v-toolbar-title>
+              Registo de utilizador via Cartão de Cidadão
+            </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            Ocorreu um erro durante a autenticação com o Cartão de Cidadão!
-            Por favor verifique se introduziu o PIN de autenticação corretamente.
+            Ocorreu um erro durante a autenticação com o Cartão de Cidadão! Por 
+            favor verifique se introduziu o PIN de autenticação corretamente.
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" type="submit" @click="cancelar()">
-                Voltar
+              Voltar
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -98,29 +102,36 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
   async mounted() {
-    if(this.$route.query.NIC!=undefined)
-      this.nic = Buffer.from(this.$route.query.NIC, 'base64').toString()
-    if(this.$route.query.Nome!=undefined)
-      this.nomeCompleto = Buffer.from(this.$route.query.Nome, 'base64').toString() 
-    if(this.$route.query.Token!=undefined)
-      this.token = this.$route.query.Token
-    if(this.$route.query.Entidade!=undefined)
-      this.entidade = Buffer.from(this.$route.query.Entidade, 'base64').toString()
+    if (this.$route.query.NIC != undefined)
+      this.nic = Buffer.from(this.$route.query.NIC, "base64").toString();
+    if (this.$route.query.Nome != undefined)
+      this.nomeCompleto = Buffer.from(
+        this.$route.query.Nome,
+        "base64"
+      ).toString();
+    if (this.$route.query.Token != undefined)
+      this.token = this.$route.query.Token;
+    if (this.$route.query.Entidade != undefined)
+      this.entidade = Buffer.from(
+        this.$route.query.Entidade,
+        "base64"
+      ).toString();
 
-    this.alreadyRegistered = this.token != undefined && this.nomeCompleto != undefined && this.entidade!=undefined
-    if(this.alreadyRegistered){
+    this.alreadyRegistered =
+      this.token != undefined &&
+      this.nomeCompleto != undefined &&
+      this.entidade != undefined;
+    if (this.alreadyRegistered) {
       this.$store.commit("guardaTokenUtilizador", this.token);
       this.$store.commit("guardaNomeUtilizador", this.nomeCompleto);
       this.$router.push("/");
     }
 
-    this.successfullAuthentication = this.nic != undefined && this.nomeCompleto != undefined
+    this.successfullAuthentication =
+      this.nic != undefined && this.nomeCompleto != undefined;
     await this.getEntidades();
   },
   data() {
@@ -140,7 +151,7 @@ export default {
       form: {
         email: "",
         entidade: "",
-        type: "",
+        type: ""
       },
       ent_list: [],
       snackbar: false,
@@ -152,8 +163,7 @@ export default {
   },
   methods: {
     async getEntidades() {
-      await axios
-        .get(lhost + "/api/entidades")
+      await this.$request("get", "/api/entidades")
         .then(res => {
           this.ent_list = res.data.map(ent => {
             return {
@@ -190,13 +200,14 @@ export default {
             parsedType = 1;
             break;
         }
-        axios.post(lhost + "/api/users/registarCC", {
-            nic: this.nic,
-            name: this.nomeCompleto,
-            email: this.$data.form.email,
-            entidade: this.$data.form.entidade,
-            type: parsedType
-          }).then(res => {
+        this.$request("post", "/api/users/registarCC", {
+          nic: this.nic,
+          name: this.nomeCompleto,
+          email: this.$data.form.email,
+          entidade: this.$data.form.entidade,
+          type: parsedType
+        })
+          .then(res => {
             this.text =
               "Utilizador registado com sucesso!\n Pode agora utilizar o login via cartão de cidadão para usufruir da plataforma CLAV!";
             this.color = "success";

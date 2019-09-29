@@ -49,23 +49,16 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
   async mounted() {
-    var res = await axios.get(lhost + "/api/users/listarToken/" + this.$route.query.jwt);
-    if (res.data.name == "TokenExpiredError") {
-      this.text = "Este link de recuperação expirou!";
-      this.color = "error";
-      this.snackbar = true;
-      this.done = true;
-    }else{
-      this.validJWT = true;
-      this.form.id = res.data._id;
-      this.form.name = res.data.name;
-    }
+    var res = this.$request(
+      "get",
+      "/api/users/listarToken/" + this.$route.query.jwt
+    );
+    this.validJWT = true;
+    this.form.id = res.data._id;
+    this.form.name = res.data.name;
   },
   data() {
     return {
@@ -83,12 +76,12 @@ export default {
     };
   },
   methods: {
-    alterarPW(){
+    alterarPW() {
       if (this.$refs.form.validate()) {
-        axios.put(lhost + "/api/users/alterarPassword", {
-            id: this.$data.form.id,
-            password: this.$data.form.password
-          })
+        this.$request("put", "/api/users/alterarPassword", {
+          id: this.$data.form.id,
+          password: this.$data.form.password
+        })
           .then(res => {
             this.text = res.data;
             this.color = "success";

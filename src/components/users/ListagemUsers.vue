@@ -34,7 +34,7 @@
         <template v-slot:item="props">
           <tr>
             <td class="subheading">{{ props.item.name }}</td>
-            <td class="subheading">{{format(props.item.entidade)}}</td>
+            <td class="subheading">{{ format(props.item.entidade) }}</td>
             <td class="subheading">{{ props.item.email }}</td>
             <td class="subheading">{{ props.item.level }}</td>
             <td class="subheading">
@@ -50,7 +50,8 @@
           </tr>
         </template>
         <template v-slot:pageText="props">
-          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
+          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+          {{ props.itemsLength }}
         </template>
       </v-data-table>
     </v-card>
@@ -63,14 +64,36 @@
             <template v-slot:activator="{ on }">
               <v-btn icon v-on="on" @click="confirmacaoDesativar = true">
                 <v-icon color="grey darken-2">lock</v-icon>
-                <v-dialog v-model="confirmacaoDesativar" persistent max-width="290">
+                <v-dialog
+                  v-model="confirmacaoDesativar"
+                  persistent
+                  max-width="290"
+                >
                   <v-card>
                     <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>Tem a certeza que pretende desativar o utilizador?</v-card-text>
+                    <v-card-text>
+                      Tem a certeza que pretende desativar o utilizador?
+                    </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="red" text @click="confirmacaoDesativar = false">Cancelar</v-btn>
-                      <v-btn color="primary" text @click="desativar(editedItem); confirmacaoDesativar=false; dialog = false">Confirmar</v-btn>
+                      <v-btn
+                        color="red"
+                        text
+                        @click="confirmacaoDesativar = false"
+                      >
+                        Cancelar
+                      </v-btn>
+                      <v-btn
+                        color="primary"
+                        text
+                        @click="
+                          desativar(editedItem);
+                          confirmacaoDesativar = false;
+                          dialog = false;
+                        "
+                      >
+                        Confirmar
+                      </v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -103,10 +126,22 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 sm6 md12>
-                  <v-text-field prepend-icon="person" v-model="editedItem.name" label="Nome de utilizador" :rules="regraNome" required></v-text-field>
+                  <v-text-field
+                    prepend-icon="person"
+                    v-model="editedItem.name"
+                    label="Nome de utilizador"
+                    :rules="regraNome"
+                    required
+                  ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
-                  <v-text-field prepend-icon="email" v-model="editedItem.email" label="Email" :rules="regraEmail" required></v-text-field>
+                  <v-text-field
+                    prepend-icon="email"
+                    v-model="editedItem.email"
+                    label="Email"
+                    :rules="regraEmail"
+                    required
+                  ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
                   <v-autocomplete
@@ -157,7 +192,7 @@
       :color="color"
       :timeout="timeout"
       :top="true"
-      >
+    >
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
@@ -165,9 +200,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   data: () => ({
     search: "",
@@ -180,10 +212,10 @@ export default {
     regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
     ent_list: [],
     usersFooterProps: {
-        "items-per-page-text": "Pedidos por página",
-        "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos"
-      },
+      "items-per-page-text": "Pedidos por página",
+      "items-per-page-options": [5, 10, -1],
+      "items-per-page-all-text": "Todos"
+    },
     headers: [
       {
         text: "Nome",
@@ -209,10 +241,10 @@ export default {
         value: "level",
         class: "title"
       },
-      { 
-        text: "Ações", 
+      {
+        text: "Ações",
         sortable: false,
-        value: '',
+        value: "",
         class: "title"
       }
     ],
@@ -221,10 +253,10 @@ export default {
     confirmacaoEliminar: false,
     editedIndex: -1,
     editedItem: {
-      nome: '',
-      entidade: '',
-      email: '',
-      level: ''
+      nome: "",
+      entidade: "",
+      email: "",
+      level: ""
     },
     utilizadores: [],
     entidades: [],
@@ -240,8 +272,7 @@ export default {
   },
   methods: {
     async getEntidades() {
-      await axios
-        .get(lhost + "/api/entidades")
+      this.$request("get", "/api/entidades")
         .then(res => {
           this.entidades = res.data.map(ent => {
             return {
@@ -252,7 +283,7 @@ export default {
         })
         .catch(error => alert(error));
     },
-    async getUtilizadores(){
+    async getUtilizadores() {
       try {
         var response = await this.$request(
           "get",
@@ -266,44 +297,48 @@ export default {
     editar(item) {
       this.editedIndex = this.utilizadores.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.editedItem.entidade = this.editedItem.entidade.split('_')[1];
+      this.editedItem.entidade = this.editedItem.entidade.split("_")[1];
       this.dialog = true;
     },
     desativar(item) {
-      axios.put(lhost + "/api/users/desativar", {
+      this.$request("put", "/api/users/desativar", {
         token: this.$store.state.token,
         id: item.id
-      }).then(res => {
-        this.text = res.data;
-        this.color = "success";
-        this.snackbar = true;
-        this.done = true;
-        this.getUtilizadores();
-      }).catch(err => {
-        this.text = err.response.data;
-        this.color = "error";
-        this.snackbar = true;
-        this.done = false;
-      });
+      })
+        .then(res => {
+          this.text = res.data;
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.getUtilizadores();
+        })
+        .catch(err => {
+          this.text = err.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        });
     },
     eliminar(item) {
-      axios.delete(lhost + "/api/users/eliminar", {
+      this.$request("delete", "/api/users/eliminar", {
         token: this.$store.state.token,
         id: item.id
-      }).then(res => {
-        this.text = res.data;
-        this.color = "success";
-        this.snackbar = true;
-        this.done = true;
-        this.getUtilizadores();
-      }).catch(err => {
-        this.text = err.response.data;
-        this.color = "error";
-        this.snackbar = true;
-        this.done = false;
-      });
+      })
+        .then(res => {
+          this.text = res.data;
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.getUtilizadores();
+        })
+        .catch(err => {
+          this.text = err.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        });
     },
-    guardar(){
+    guardar() {
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.editedItem.level) {
@@ -332,25 +367,27 @@ export default {
             parsedType = -1;
             break;
         }
-        axios.put(lhost + "/api/users/atualizarMultiplos", {
+        this.$request("put", "/api/users/atualizarMultiplos", {
           id: this.editedItem.id,
           nome: this.editedItem.name,
           email: this.editedItem.email,
-          entidade: 'ent_' + this.editedItem.entidade,
+          entidade: "ent_" + this.editedItem.entidade,
           level: parsedType
-        }).then(res => {
-          this.text = res.data;
-          this.color = "success";
-          this.snackbar = true;
-          this.done = true;
-          this.dialog = false;
-          this.getUtilizadores();
-        }).catch(err => {
-          this.text = err.response.data;
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        });
+        })
+          .then(res => {
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
+            this.dialog = false;
+            this.getUtilizadores();
+          })
+          .catch(err => {
+            this.text = err.response.data;
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          });
       } else {
         this.text = "Por favor verifique se preencheu todos os campos!";
         this.color = "error";
@@ -362,14 +399,14 @@ export default {
       this.snackbar = false;
       if (this.done == true) this.getUtilizadores();
     },
-    registo(){
-      this.$router.push('/users/registo')
+    registo() {
+      this.$router.push("/users/registo");
     },
-    format(entidade){
-      if(entidade!=undefined){
-        return entidade.split('_')[1];
-      }else{
-        return '';
+    format(entidade) {
+      if (entidade != undefined) {
+        return entidade.split("_")[1];
+      } else {
+        return "";
       }
     }
   }
