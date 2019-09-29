@@ -4,10 +4,18 @@
     <v-col cols="2">
       <div class="info-label">
         Notas de Aplicação:
-        <InfoBox header="Notas de Aplicação" :text="myhelp.Classe.Campos.NotasAp" />
+        <InfoBox
+          header="Notas de Aplicação"
+          :text="myhelp.Classe.Campos.NotasAp"
+        />
       </div>
 
-      <v-btn color="green darken-2" dark rounded @click="insereNovaNota(c.notasAp, 'na')">
+      <v-btn
+        color="green darken-2"
+        dark
+        rounded
+        @click="insereNovaNota(c.notasAp, 'na')"
+      >
         Nota aplicação
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
@@ -15,10 +23,21 @@
     <v-col>
       <v-row v-for="(nota, index) in c.notasAp" :key="index">
         <v-col cols="10">
-          <v-textarea v-model="nota.nota" auto-grow solo label="Nota de Aplicação" rows="1"></v-textarea>
+          <v-textarea
+            v-model="nota.nota"
+            auto-grow
+            solo
+            label="Nota de Aplicação"
+            rows="1"
+          ></v-textarea>
         </v-col>
         <v-col>
-          <v-btn color="red darken-2" dark rounded @click="c.notasAp.splice(index, 1)">
+          <v-btn
+            color="red darken-2"
+            dark
+            rounded
+            @click="c.notasAp.splice(index, 1)"
+          >
             Remover
             <v-icon dark right>remove_circle_outline</v-icon>
           </v-btn>
@@ -28,12 +47,12 @@
 
     <v-snackbar v-model="naVaziaFlag" :color="'warning'" :timeout="60000">
       {{ mensagemNAVazia }}
-      <v-btn dark text @click="naVaziaFlag=false">Fechar</v-btn>
+      <v-btn dark text @click="naVaziaFlag = false">Fechar</v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="naDuplicadaFlag" :color="'error'" :timeout="60000">
       {{ mensagemNADuplicada }}
-      <v-btn dark text @click="naDuplicadaFlag=false">Fechar</v-btn>
+      <v-btn dark text @click="naDuplicadaFlag = false">Fechar</v-btn>
     </v-snackbar>
   </v-row>
 </template>
@@ -41,8 +60,6 @@
 <script>
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
-const lhost = require("@/config/global").host;
-const axios = require("axios");
 
 import InfoBox from "@/components/generic/infoBox.vue";
 
