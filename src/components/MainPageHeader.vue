@@ -51,14 +51,14 @@
       <span class="font-weight-light" v-if="this.$store.state.name != ''">
         <v-btn icon>
           <notification-bell
-          :size="25"
-          :count="this.counter"
-          counterLocation="upperRight"
-          counterStyle="roundRectangle"
-          counterBackgroundColor="#FF0000"
-          counterTextColor="#FFFFFF"
-          iconColor="#3a88fe"
-        />
+            :size="25"
+            :count="this.counter"
+            counterLocation="upperRight"
+            counterStyle="roundRectangle"
+            counterBackgroundColor="#FF0000"
+            counterTextColor="#FFFFFF"
+            iconColor="#3a88fe"
+          />
         </v-btn>
         {{ this.$store.state.name }}</span
       >
@@ -69,11 +69,7 @@
       >
         Logout
       </v-btn>
-      <v-btn
-        color="red"
-        v-if="this.$store.state.name != ''"
-        @click="testJWT"
-      >
+      <v-btn color="red" v-if="this.$store.state.name != ''" @click="testJWT">
         JWT
       </v-btn>
     </v-toolbar-title>
@@ -81,9 +77,7 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-import NotificationBell from 'vue-notification-bell'
+import NotificationBell from "vue-notification-bell";
 
 export default {
   data() {
@@ -116,9 +110,7 @@ export default {
       this.snackbar = false;
     },
     async testJWT() {
-      var res = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
-      );
+      var res = await this.$request("get", "/api/users/listarToken");
       alert(JSON.stringify(res.data));
     }
   }
