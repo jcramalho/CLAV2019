@@ -14,11 +14,7 @@
                 <v-layout row wrap>
                   <v-flex xs4 sm4>
                     <v-text-field
-                      :value="
-                        pedido.objeto.acao +
-                          ' de ' +
-                          pedido.objeto.tipo
-                      "
+                      :value="pedido.objeto.acao + ' de ' + pedido.objeto.tipo"
                       label="Tipo de Pedido"
                       readonly
                     ></v-text-field>
@@ -62,8 +58,16 @@
                   </v-flex>
                 </v-layout>
 
-                <v-layout row wrap justify-center v-if="(pedido.objeto.tipo=='Legislação')&&(pedido.objeto.acao=='Criação')">
-                  <AnalisaCriarLeg :leg="pedido.objeto"/>
+                <v-layout
+                  row
+                  wrap
+                  justify-center
+                  v-if="
+                    pedido.objeto.tipo == 'Legislação' &&
+                      pedido.objeto.acao == 'Criação'
+                  "
+                >
+                  <AnalisaCriarLeg :leg="pedido.objeto" />
                 </v-layout>
               </v-container>
             </v-form>
@@ -77,9 +81,6 @@
 </template>
 
 <script>
-import axios from "axios"
-const lhost = require("@/config/global").host
-
 import AnalisaCriarLeg from "@/components/pedidos/analise/AnalisaCriarLeg.vue"; // @ is an alias to /src
 
 export default {
@@ -106,8 +107,7 @@ export default {
     }
   },
   mounted: function() {
-    axios
-      .get(lhost + "/api/pedidos/" + this.idp)
+    this.$request("get", "/api/pedidos/" + this.idp)
       .then(response => {
         this.pedido = response.data;
         this.pedidoLoaded = true;

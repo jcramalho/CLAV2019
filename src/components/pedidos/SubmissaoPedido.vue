@@ -50,9 +50,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   data: () => ({
     pedido: {}
@@ -64,7 +61,7 @@ export default {
   },
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/pedidos");
+      var response = await this.$request("get", "/api/pedidos");
       this.pedido = response.data[response.data.length - 1];
       this.pedido.data = this.pedido.data.split("T")[0];
     } catch (e) {

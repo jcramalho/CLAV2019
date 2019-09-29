@@ -100,9 +100,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   data: () => ({
     file: [],
@@ -118,7 +115,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/entidades");
+      var response = await this.$request("get", "/api/entidades");
       var entidades = response.data.map(ent => {
         return {
           text: ent.sigla + " - " + ent.designacao,
@@ -126,7 +123,7 @@ export default {
         };
       });
 
-      response = await axios.get(lhost + "/api/tipologias");
+      response = await this.$request("get", "/api/tipologias");
       var tipologias = response.data.map(tip => {
         return {
           text: tip.sigla + " - " + tip.designacao,
@@ -155,8 +152,9 @@ export default {
         var formData = new FormData();
         formData.append("file", this.file[0]);
 
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
+        var userBD = await this.$request(
+          "get",
+          "/api/users/listarToken/" + this.$store.state.token
         );
 
         formData.append("email", userBD.data.email);
@@ -164,8 +162,9 @@ export default {
         formData.append("entidade_ts", this.entidade_tipologia);
         formData.append("tipo_ts", "TS " + this.tipo);
 
-        var response = await axios.post(
-          lhost + "/api/tabelasSelecao/CSV",
+        var response = await this.$request(
+          "post",
+          "/api/tabelasSelecao/CSV",
           formData
         );
         this.loading = false;
