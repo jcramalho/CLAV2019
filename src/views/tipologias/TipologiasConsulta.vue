@@ -12,8 +12,6 @@
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   components: {
@@ -78,30 +76,31 @@ export default {
       this.idTipologia = window.location.pathname.split("/")[2];
 
       // Informações sobre a tipologia
-      var response = await axios.get(
-        lhost + "/api/tipologias/" + this.idTipologia
+      var response = await this.$request(
+        "get",
+        "/api/tipologias/" + this.idTipologia
       );
       this.titulo = response.data.designacao;
       this.tipologia = await this.preparaTipologia(response.data);
 
       // Processos cuja tipologia em questão é dona de
-      var processosDono = await axios.get(
-        lhost + "/api/tipologias/" + this.idTipologia + "/intervencao/dono"
+      var processosDono = await this.$request(
+        "get",
+        "/api/tipologias/" + this.idTipologia + "/intervencao/dono"
       );
       this.processosDono = processosDono.data;
 
       // Procesos em que a entidade participa
-      var processosParticipa = await axios.get(
-        lhost +
-          "/api/entidades/" +
-          this.idTipologia +
-          "/intervencao/participante"
+      var processosParticipa = await this.$request(
+        "get",
+        "/api/entidades/" + this.idTipologia + "/intervencao/participante"
       );
       await this.parseParticipacoes(processosParticipa.data);
 
       // Entidades que pertencem à tipologia em questão
-      var entidades = await axios.get(
-        lhost + "/api/tipologias/" + this.idTipologia + "/elementos"
+      var entidades = await this.$request(
+        "get",
+        "/api/tipologias/" + this.idTipologia + "/elementos"
       );
       this.entidades = entidades.data;
     } catch (e) {

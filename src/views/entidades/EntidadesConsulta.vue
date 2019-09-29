@@ -12,8 +12,6 @@
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   components: {
@@ -87,30 +85,31 @@ export default {
       this.idEntidade = window.location.pathname.split("/")[2];
 
       // Informações sobre a entidade
-      var response = await axios.get(
-        lhost + "/api/entidades/" + this.idEntidade
+      var response = await this.$request(
+        "get",
+        "/api/entidades/" + this.idEntidade
       );
       this.titulo = response.data.designacao;
       this.entidade = await this.preparaEntidade(response.data);
 
       // Tipologias onde a entidade se encontra
-      var tipologias = await axios.get(
-        lhost + "/api/entidades/" + this.idEntidade + "/tipologias"
+      var tipologias = await this.$request(
+        "get",
+        "/api/entidades/" + this.idEntidade + "/tipologias"
       );
       this.tipologias = tipologias.data;
 
       // Processos em que a entidade participa como dono
-      var processosDono = await axios.get(
-        lhost + "/api/entidades/" + this.idEntidade + "/intervencao/dono"
+      var processosDono = await this.$request(
+        "get",
+        "/api/entidades/" + this.idEntidade + "/intervencao/dono"
       );
       this.processosDono = processosDono.data;
 
       // Procesos em que a entidade participa
-      var processosParticipa = await axios.get(
-        lhost +
-          "/api/entidades/" +
-          this.idEntidade +
-          "/intervencao/participante"
+      var processosParticipa = await this.$request(
+        "get",
+        "/api/entidades/" + this.idEntidade + "/intervencao/participante"
       );
       await this.parseParticipacoes(processosParticipa.data);
     } catch (e) {

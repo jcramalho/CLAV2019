@@ -1,8 +1,8 @@
 <template>
   <div>
     <ContinuaClasse v-if="objLoaded && tipoClasse" :obj="objeto" />
-    <ContinuaTSOrg v-else-if="objLoaded && tipoTSOrg" :obj="objeto"/>
-    <ContinuaTSPluri v-else-if="objLoaded && tipoTSPluri" :obj="objeto"/>
+    <ContinuaTSOrg v-else-if="objLoaded && tipoTSOrg" :obj="objeto" />
+    <ContinuaTSPluri v-else-if="objLoaded && tipoTSPluri" :obj="objeto" />
     <ContinuaPendente v-else-if="objLoaded" :obj="objeto" />
     <v-alert v-else type="warning">
       Por algum motivo não foi possível carregar o trabalho pretendido. Contacte
@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
 import ContinuaClasse from "@/components/classes/criacao/ContinuaClasse"; // @ is an alias to /src
 import ContinuaPendente from "@/components/pendentes/ContinuaPendente";
 import ContinuaTSOrg from "@/components/tabSel/criacaoTSOrg/ContCriaTabSelOrg";
@@ -32,12 +30,11 @@ export default {
     objLoaded: false,
     tipoClasse: false,
     tipoTSOrg: false,
-    tipoTSPluri: false,
+    tipoTSPluri: false
   }),
 
   created: function() {
-    axios
-      .get(lhost + "/api/pendentes/" + this.$route.params.idPendente)
+    this.$request("get", "/api/pendentes/" + this.$route.params.idPendente)
       .then(response => {
         this.objeto = response.data;
         switch (this.objeto.tipo) {

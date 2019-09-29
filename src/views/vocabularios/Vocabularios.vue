@@ -9,8 +9,6 @@
 
 <script>
 import Listagem from "@/components/vocabularios/Listagem"; // @ is an alias to /src
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
@@ -23,7 +21,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + '/api/vocabularios');
+      var response = await this.$request("get", "/api/vocabularios");
       this.vocabulariosControlados = await this.preparaLista(response.data);
     } catch (e) {
       return e;
@@ -38,7 +36,7 @@ export default {
           myTree.push({
             label: listaTermos[i].label,
             desc: listaTermos[i].desc,
-            id: listaTermos[i].id.split('#')[1]
+            id: listaTermos[i].id.split("#")[1]
           });
         }
         return myTree;

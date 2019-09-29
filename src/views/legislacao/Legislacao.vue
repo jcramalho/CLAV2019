@@ -10,8 +10,6 @@
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
@@ -25,7 +23,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/legislacao");
+      var response = await this.$request("get", "/api/legislacao");
       this.legislacao = await this.preparaLista(response.data);
       this.ids = await this.preparaIds(response.data);
     } catch (e) {

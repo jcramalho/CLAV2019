@@ -10,8 +10,6 @@
 <script>
 import Listagem from "@/components/invariantes/Listagem.vue"; // @ is an alias to /src
 import ConsultaInvariante from "@/components/invariantes/ConsultaInvariante.vue"; // @ is an alias to /src
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({

@@ -9,8 +9,6 @@
 
 <script>
 import Listagem from "@/components/vocabularios/ListagemTermos.vue"; // @ is an alias to /src
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
@@ -23,7 +21,10 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + '/api/vocabularios/' + this.$route.params.idVC);
+      var response = await this.$request(
+        "get",
+        "/api/vocabularios/" + this.$route.params.idVC
+      );
       this.vocabulariosControladosContinuacao = await this.preparaLista(response.data);
     } catch (e) {
       return e;
@@ -38,7 +39,7 @@ export default {
           myTree.push({
             termo: listaTermos[i].termo,
             desc: listaTermos[i].desc,
-            idtermo: listaTermos[i].idtermo.split('#')[1]
+            idtermo: listaTermos[i].idtermo.split("#")[1]
           });
         }
         return myTree;

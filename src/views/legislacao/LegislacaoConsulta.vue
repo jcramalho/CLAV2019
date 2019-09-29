@@ -9,8 +9,6 @@
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   components: {
@@ -65,8 +63,9 @@ export default {
       this.idLegislacao = window.location.pathname.split("/")[2];
 
       // Informação sobre a legislação
-      var response = await axios.get(
-        lhost + "/api/legislacao/" + this.idLegislacao
+      var response = await this.$request(
+        "get",
+        "/api/legislacao/" + this.idLegislacao
       );
       this.legislacao = await this.preparaLegislacao(response.data);
       this.titulo =
@@ -77,8 +76,9 @@ export default {
         response.data.numero;
 
       // Processos de negócio que são regulados pela legislação em causa
-      var regulaProc = await axios.get(
-        lhost + "/api/legislacao/" + this.idLegislacao + "/regula"
+      var regulaProc = await this.$request(
+        "get",
+        "/api/legislacao/" + this.idLegislacao + "/regula"
       );
       this.regulaProc = regulaProc.data;
     } catch (e) {

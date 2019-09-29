@@ -1,14 +1,11 @@
 <template>
   <v-container>
-  <ConsultarAE
-    v-bind:auto="autoEliminacao"
-  /></v-container>
+    <ConsultarAE v-bind:auto="autoEliminacao" />
+  </v-container>
 </template>
 
 <script>
 import ConsultarAE from "@/components/autosEliminacao/ConsultarAutoEliminacao.vue";
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   components: {
@@ -36,7 +33,7 @@ export default {
         var myAuto = {
           numero: {
             campo: "Numero do Auto",
-            text: auto.id.replace('ae_','').replace(/_/g,'/')
+            text: auto.id.replace("ae_", "").replace(/_/g, "/")
           },
           data: {
             campo: "Data de Autenticação",
@@ -44,7 +41,7 @@ export default {
           },
           entidade: {
             campo: "Entidades",
-            text: auto.entidade.split("#")[1].replace('ent_','')
+            text: auto.entidade.split("#")[1].replace("ent_", "")
           },
           responsavel: {
             campo: "Identificação dos responsáveis",
@@ -93,8 +90,9 @@ export default {
       this.idAE = window.location.pathname.split("/")[2];
 
       // Informações sobre o Auto de Eliminação
-      var response = await axios.get(
-        lhost + "/api/autosEliminacao/" + this.idAE
+      var response = await this.$request(
+        "get",
+        "/api/autosEliminacao/" + this.idAE
       );
       this.autoEliminacao = response.data;
     } catch (e) {
