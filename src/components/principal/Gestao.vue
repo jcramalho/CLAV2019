@@ -78,11 +78,11 @@ export default {
               url: "/pedidos",
               level: "public"
             },
-            {
+            /*{
               label: "Criar pedido",
               url: "/pedidos/criar",
               level: "auth"
-            }
+            }*/
           ]
         },
         {
