@@ -70,7 +70,12 @@
                     :rules="regraData"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="date" no-title @input="open = false" :max="date"></v-date-picker>
+                <v-date-picker
+                  v-model="date"
+                  no-title
+                  @input="open = false"
+                  :max="date"
+                ></v-date-picker>
               </v-menu>
             </v-col>
           </v-row>
@@ -96,16 +101,22 @@
               <div class="info-label">Link:</div>
             </v-col>
             <v-col>
-              <v-text-field v-model="legislacao.link" solo clearable color="green" single-line></v-text-field>
+              <v-text-field
+                v-model="legislacao.link"
+                solo
+                clearable
+                color="green"
+                single-line
+              ></v-text-field>
             </v-col>
           </v-row>
 
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header
-                class="expansion-panel-heading"
-              >Entidade responsável pela publicação</v-expansion-panel-header>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                Entidade responsável pela publicação
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
                   :entidades="entSel"
@@ -125,11 +136,14 @@
 
             <!-- Segundo bloco expansivo -->
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header
-                class="expansion-panel-heading"
-              >Processos de negócio que regula ou enquadra</v-expansion-panel-header>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                Processos de negócio que regula ou enquadra
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <DesSelProc :processos="procSel" @unselectProcesso="unselectProcesso($event)" />
+                <DesSelProc
+                  :processos="procSel"
+                  @unselectProcesso="unselectProcesso($event)"
+                />
 
                 <hr style="border-top: 1px dashed #dee2f8;" />
 
@@ -142,7 +156,12 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-card-text>
-        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+        <v-snackbar
+          v-model="snackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
           {{ text }}
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
@@ -158,7 +177,9 @@
             color="#388E3C"
             :disabled="!(legislacao.sumario && legislacao.numero)"
             @click="submeter()"
-          >Submeter Diploma</v-btn>
+          >
+            Submeter Diploma
+          </v-btn>
         </v-col>
       </v-row>
     </v-col>
@@ -171,9 +192,6 @@ import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
 import DesSelProc from "@/components/generic/selecao/DesSelecionarPNs.vue";
 import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
-
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   data: vm => ({
@@ -253,8 +271,9 @@ export default {
     // Vai a API buscar todos os tipos de diplomas legislativos
     loadTipoDiploma: async function() {
       try {
-        var response = await axios.get(
-          lhost + "/api/vocabularios/vc_tipoDiplomaLegislativo"
+        var response = await this.$request(
+          "get",
+          "/api/vocabularios/vc_tipoDiplomaLegislativo"
         );
         for (var i = 0; i < response.data.length; i++) {
           this.tiposDiploma[i] = response.data[i].termo;
@@ -279,7 +298,7 @@ export default {
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-        var response = await axios.get(lhost + "/api/entidades");
+        var response = await this.$request("get", "/api/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -307,7 +326,7 @@ export default {
     // Vai à API buscar todas as classes de nivel 3
     loadClasses: async function() {
       try {
-        var response = await axios.get(lhost + "/api/classes?nivel=3");
+        var response = await this.$request("get", "/api/classes?nivel=3");
         this.processos = response.data.map(function(item) {
           return {
             codigo: item.codigo,
@@ -427,8 +446,9 @@ export default {
 
       var dataObj = this.legislacao;
 
-      var userBD = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
+      var userBD = await this.request(
+        "get",
+        "/api/users/listarToken/" + this.$store.state.token
       );
       var pedidoParams = {
         tipoPedido: "Criação",
@@ -438,11 +458,10 @@ export default {
         token: this.$store.state.token
       };
 
-      var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+      var response = await this.$request("post", "/api/pedidos", pedidoParams);
       this.$router.push("/pedidos/submissao");
 
-      /*axios
-        .post(lhost + "/api/legislacao/", dataObj)
+      /*this.$request("post", "/api/legislacao/", dataObj)
         .then(res => {
           this.$router.push("/pedidos/submissao");
         })

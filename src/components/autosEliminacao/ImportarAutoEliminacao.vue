@@ -20,12 +20,26 @@
                   </td>
                   <td style="width:40%">
                     <v-radio-group row v-model="tipo" :mandatory="true">
-                        <v-radio xs4 sm4 label="PGD/LC" value="PGD/LC"></v-radio>
-                        <v-radio xs4 sm4 label="PGD" value="PGD"></v-radio>
-                        <v-radio xs4 sm4 label="RADA" value="RADA"></v-radio>
+                      <v-radio xs4 sm4 label="PGD/LC" value="PGD/LC"></v-radio>
+                      <v-radio xs4 sm4 label="PGD" value="PGD"></v-radio>
+                      <v-radio xs4 sm4 label="RADA" value="RADA"></v-radio>
                     </v-radio-group>
-                    <a v-if="tipo==='PGD/LC'" :href="`${publicPath}documentos/Ficheiro_submissão_PGD_LC.xlsx`">Transferir ficheiro de submissão</a>
-                    <a v-else :href="`${publicPath}documentos/Ficheiro_submissão_${tipo}.xlsx`">Transferir ficheiro de submissão</a>
+                    <a
+                      v-if="tipo === 'PGD/LC'"
+                      :href="
+                        `${publicPath}documentos/Ficheiro_submissão_PGD_LC.xlsx`
+                      "
+                    >
+                      Transferir ficheiro de submissão
+                    </a>
+                    <a
+                      v-else
+                      :href="
+                        `${publicPath}documentos/Ficheiro_submissão_${tipo}.xlsx`
+                      "
+                    >
+                      Transferir ficheiro de submissão
+                    </a>
                   </td>
                 </tr>
                 <tr>
@@ -34,27 +48,23 @@
                   </td>
                   <td>
                     <div>
-                      <input 
-                        type="file" 
-                        id="file" 
-                        ref="myFiles" 
-                        @change="previewFiles">
+                      <input
+                        type="file"
+                        id="file"
+                        ref="myFiles"
+                        @change="previewFiles"
+                      />
                     </div>
                   </td>
-                  
                 </tr>
               </table>
             </div>
           </v-card-text>
         </v-card>
         <div style="text-align:center">
-          <v-btn
-            medium
-            color="primary"
-            @click="submit"
-            :disabled="!(file)"
-            >Submeter Auto de Eliminação</v-btn
-          >
+          <v-btn medium color="primary" @click="submit" :disabled="!file">
+            Submeter Auto de Eliminação
+          </v-btn>
         </div>
       </v-flex>
     </v-layout>
@@ -106,9 +116,6 @@
 </template>
 
 <script>
-
-import axios from "axios";
-const lhost = require("@/config/global").host;
 const conversor = require("@/plugins/conversor").excel2Json;
 const conversorTS = require("@/plugins/conversor").excel2JsonTS;
 
@@ -125,28 +132,33 @@ export default {
   methods: {
     submit: async function() {
       conversor(this.file, this.tipo)
-      .then(res => {
-        console.warn(res)
-        axios.post(lhost + "/api/autosEliminacao/"+this.tipo, {auto: res.auto, token: this.$store.state.token})
-          .then(r => {
-            this.successDialog = true
-            this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(res.error)}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`
+        .then(res => {
+          console.warn(res)
+          this.$request("post", "/api/autosEliminacao/" + this.tipo, {
+            auto: res.auto,
+            token: this.$store.state.token
           })
-          .catch((e) => {
-            this.erro = e.response.data;
-            this.erroDialog = true;
-          })
-      })
-      .catch(err => {
+            .then(r => {
+              this.successDialog = true;
+              this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(
+                res.error
+              )}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`;
+            })
+            .catch(e => {
+              this.erro = e.response.data;
+              this.erroDialog = true;
+            });
+        })
+        .catch(err => {
           this.erro = err;
           this.erroDialog = true;
-      })
+        });
     },
     previewFiles: function(ev) {
       const file = ev.target.files[0];
       const reader = new FileReader();
 
-      reader.onload = e => this.file = e.target.result;
+      reader.onload = e => (this.file = e.target.result);
       reader.readAsArrayBuffer(file);
     }
   }

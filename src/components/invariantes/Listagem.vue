@@ -59,8 +59,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
 import DialogQuery from "@/components/invariantes/DialogQuery.vue";
 
 export default {
@@ -75,7 +73,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/invariantes");
+      var response = this.$request("get", "/api/invariantes");
       this.invariantes = response.data;
     } catch (e) {
       this.erro =

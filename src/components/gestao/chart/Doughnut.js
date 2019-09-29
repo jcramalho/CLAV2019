@@ -1,6 +1,4 @@
 import { Doughnut } from "vue-chartjs";
-const lhost = require("@/config/global").host;
-import axios from "axios";
 
 export default {
   extends: Doughnut,
@@ -40,8 +38,7 @@ export default {
     };
   },
   async mounted() {
-    await axios
-      .get(lhost + "/api/users?formato=normalizado")
+    await this.$request("get", "/api/users?formato=normalizado")
       .then(res => {
         for (var i = 0; i < res.data.length; i++) {
           var index = this.info.labels.indexOf(res.data[i].level);

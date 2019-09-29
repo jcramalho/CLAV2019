@@ -73,9 +73,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
   async mounted() {
@@ -106,12 +103,12 @@ export default {
   methods: {
     registarChaveApi() {
       if (this.$refs.form.validate()) {
-        axios.post(lhost + "/api/chaves/registar", {
-            name: this.$data.form.name,
-            email: this.$data.form.email,
-            entidade: this.$data.form.entidade
-            // password: this.$data.form.password
-          })
+        this.$request("post", "/api/chaves/registar", {
+          name: this.$data.form.name,
+          email: this.$data.form.email,
+          entidade: this.$data.form.entidade
+          // password: this.$data.form.password
+        })
           .then(res => {
             if (res.data === "Chave API registada com sucesso!") {
               this.text = "Chave API registada com sucesso!";
@@ -119,7 +116,8 @@ export default {
               this.snackbar = true;
               this.done = true;
             } else if (res.data === "Email já em uso!") {
-              this.text = "Ocorreu um erro ao registar a chave API: Email já em uso!";
+              this.text =
+                "Ocorreu um erro ao registar a chave API: Email já em uso!";
               this.color = "error";
               this.snackbar = true;
               this.done = false;

@@ -36,8 +36,6 @@
 
 <script>
 import TabelaErros from "@/components/invariantes/TabelaErros.vue";
-const lhost = require("@/config/global").host;
-import axios from "axios";
 
 export default {
   data: () => ({
@@ -50,8 +48,7 @@ export default {
   },
 
   mounted: function() {
-    axios
-      .get(lhost + "/api/invariantes/testarTodos")
+    this.$request("get", "/api/invariantes/testarTodos")
       .then(response => {
         this.invs = response.data;
         this.loading = false;

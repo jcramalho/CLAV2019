@@ -7,9 +7,10 @@
             <v-toolbar-title>Renovação de Chave API</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            A sua chave API tem duração de 30 dias após a sua emissão.
-            Caso esses 30 dias tenham passado, pode requisitar aqui uma nova chave API, que será associada ao seu email já existente.
-            Receberá no seu email um link para realizar a renovação da mesma.
+            A sua chave API tem duração de 30 dias após a sua emissão. Caso
+            esses 30 dias tenham passado, pode requisitar aqui uma nova chave
+            API, que será associada ao seu email já existente. Receberá no seu
+            email um link para realizar a renovação da mesma.
             <v-form ref="form" lazy-validation>
               <v-text-field
                 prepend-icon="email"
@@ -27,7 +28,9 @@
               >Cancelar</v-btn
             >
             <v-spacer></v-spacer>
-            <v-btn color="primary" type="submit" @click="renovar">Renovar</v-btn>
+            <v-btn color="primary" type="submit" @click="renovar">
+              Renovar
+            </v-btn>
           </v-card-actions>
           <v-snackbar
             v-model="snackbar"
@@ -45,9 +48,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "renovar",
   data() {
@@ -57,7 +57,7 @@ export default {
         v => /.+@.+/.test(v) || "Email tem de ser válido."
       ],
       form: {
-        email: "",
+        email: ""
       },
       snackbar: false,
       color: "",
@@ -67,19 +67,21 @@ export default {
     };
   },
   methods: {
-    renovar(){
+    renovar() {
       if (this.$refs.form.validate()) {
-        axios.put(lhost + "/api/chaves/renovar", {
-            email: this.$data.form.email,
-            url: window.location.href
-          })
+        this.$request("put", "/api/chaves/renovar", {
+          email: this.$data.form.email,
+          url: window.location.href
+        })
           .then(res => {
-            if (res.data === "Não existe nenhuma chave API associada neste email!") {
+            if (
+              res.data === "Não existe nenhuma chave API associada neste email!"
+            ) {
               this.text = "Não existe nenhuma chave API associada neste email!";
               this.color = "error";
               this.snackbar = true;
               this.done = false;
-            }else{
+            } else {
               this.text = "Email enviado com sucesso!";
               this.color = "success";
               this.snackbar = true;

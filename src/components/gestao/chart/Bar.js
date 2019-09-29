@@ -1,6 +1,4 @@
 import { Bar } from "vue-chartjs";
-const lhost = require("@/config/global").host;
-import axios from "axios";
 
 export default {
   extends: Bar,
@@ -33,8 +31,7 @@ export default {
     };
   },
   mounted() {
-    axios
-      .get(lhost + "/api/stats")
+    this.$request("get", "/api/stats")
       .then(res => {
         for (var i = 0; i < res.data.length; i++) {
           if (

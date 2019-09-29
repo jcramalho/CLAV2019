@@ -15,8 +15,6 @@
 
 <script>
 import TabelaErros from "@/components/invariantes/TabelaErros.vue";
-const lhost = require("@/config/global").host;
-import axios from "axios";
 
 export default {
   props: ["idRel", "idInv"],
@@ -29,10 +27,10 @@ export default {
   },
 
   mounted: function() {
-    axios
-      .get(
-        lhost + "/api/invariantes?idRel=" + this.idRel + "&idInv=" + this.idInv
-      )
+    this.$request(
+      "get",
+      "/api/invariantes?idRel=" + this.idRel + "&idInv=" + this.idInv
+    )
       .then(response => {
         this.inv = response.data;
       })

@@ -46,7 +46,9 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">Entidades</v-expansion-panel-header>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                Entidades
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
                   :entidades="entSel"
@@ -65,7 +67,12 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-card-text>
-        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+        <v-snackbar
+          v-model="snackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
           {{ text }}
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
@@ -81,7 +88,9 @@
             color="#388E3C"
             @click="submeter()"
             :disabled="!(tipologia.designacao && tipologia.sigla)"
-          >Submeter Tipologia</v-btn>
+          >
+            Submeter Tipologia
+          </v-btn>
         </v-col>
       </v-row>
     </v-col>
@@ -91,9 +100,6 @@
 <script>
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
-
-import axios from "axios";
-const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
@@ -132,7 +138,7 @@ export default {
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-        var response = await axios.get(lhost + "/api/entidades");
+        var response = await this.$request("get", "/api/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -164,8 +170,9 @@ export default {
 
       dataObj.codigo = "tip_" + this.tipologia.sigla;
 
-      var userBD = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
+      var userBD = await this.$request(
+        "get",
+        "/api/users/listarToken/" + this.$store.state.token
       );
       var pedidoParams = {
         tipoPedido: "Criação",
@@ -175,11 +182,10 @@ export default {
         token: this.$store.state.token
       };
 
-      var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+      var response = await this.$request("post", "/api/pedidos", pedidoParams);
       this.$router.push("/pedidos/submissao");
 
-      /*axios
-        .post(lhost + "/api/tipologias/", dataObj)
+      /*this.$request("post", "/api/tipologias/", dataObj)
         .then(res => {
           this.$router.push("/pedidos/submissao");
         })
