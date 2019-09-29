@@ -19,6 +19,11 @@ export default new Router({
       component: () => import("./views/classes/Classes.vue")
     },
     {
+      path: "/classes/procurar/:id",
+      name: "procurarClasse",
+      component: () => import("./components/classes/MostraProcura.vue")
+    },
+    {
       path: "/classes/consultar/:idClasse",
       name: "consultaClasse",
       component: () => import("./views/classes/ClassesConsulta.vue")

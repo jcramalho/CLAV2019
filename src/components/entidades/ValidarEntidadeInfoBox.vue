@@ -133,15 +133,6 @@ export default {
         this.numeroErros++;
       }
 
-      // Internacional
-      if (this.e.sioe == "") {
-        this.mensagensErro.push({
-          sobre: "SIOE",
-          mensagem: "O campo SIOE não pode ser vazio."
-        });
-        this.numeroErros++;
-      }
-
       if (this.numeroErros > 0) {
         this.dialog = true;
       } else {

@@ -50,7 +50,7 @@
       </v-dialog>
 
       <!-- Pedido de criação de classe submetido com sucesso -->
-      <v-dialog v-model="dialogEntidadeCriada" width="30%">
+      <v-dialog v-model="dialogEntidadeCriada" width="40%">
         <v-card>
           <v-card-title>Pedido de Criação de Classe Submetido</v-card-title>
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
@@ -62,7 +62,7 @@
       </v-dialog>
 
       <!-- Cancelamento da criação duma classe: confirmação -->
-      <v-dialog v-model="pedidoEliminado" width="35%">
+      <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
           <v-card-title>Cancelamento e eliminação do pedido de criação da entidade</v-card-title>
           <v-card-text>
@@ -192,11 +192,6 @@ export default {
 
       // Internacional
       if (this.e.internacional == "") {
-        this.numeroErros++;
-      }
-
-      // Internacional
-      if (this.e.sioe == "") {
         this.numeroErros++;
       }
 
