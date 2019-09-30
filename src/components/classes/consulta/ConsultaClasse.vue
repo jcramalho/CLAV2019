@@ -16,13 +16,20 @@
           </v-app-bar>
 
           <v-card-text>
-            <ClassesFilho :subclasses="classe.filhos" v-if="classe.filhos.length > 0" />
+            <ClassesFilho
+              :subclasses="classe.filhos"
+              v-if="classe.filhos.length > 0"
+            />
 
             <v-expansion-panels>
               <v-expansion-panel popout>
                 <!-- DESCRITIVO DA CLASSE -->
                 <v-expansion-panel-header>
-                  <v-toolbar color="indigo darken-1 body-2 font-weight-bold" dark dense>
+                  <v-toolbar
+                    color="indigo darken-1 body-2 font-weight-bold"
+                    dark
+                    dense
+                  >
                     <v-toolbar-title>
                       Descritivo da Classe
                       <InfoBox
@@ -53,23 +60,36 @@
                     </v-col>
                   </v-row>
 
-                  <NotasAp :notas="classe.notasAp" v-if="classe.notasAp.length > 0" />
+                  <NotasAp
+                    :notas="classe.notasAp"
+                    v-if="classe.notasAp.length > 0"
+                  />
 
                   <ExemplosNotasAp
                     :exemplos="classe.exemplosNotasAp"
                     v-if="classe.exemplosNotasAp.length > 0"
                   />
 
-                  <NotasEx :notas="classe.notasEx" v-if="classe.notasEx.length > 0" />
+                  <NotasEx
+                    :notas="classe.notasEx"
+                    v-if="classe.notasEx.length > 0"
+                  />
 
-                  <TermosIndice :termos="classe.termosInd" v-if="classe.termosInd.length > 0" />
+                  <TermosIndice
+                    :termos="classe.termosInd"
+                    v-if="classe.termosInd.length > 0"
+                  />
                 </v-expansion-panel-content>
               </v-expansion-panel>
 
               <v-expansion-panel popout v-if="classe.nivel == 3">
                 <!-- CONTEXTO DA CLASSE -->
                 <v-expansion-panel-header>
-                  <v-toolbar color="indigo darken-1 body-2 font-weight-bold" dark dense>
+                  <v-toolbar
+                    color="indigo darken-1 body-2 font-weight-bold"
+                    dark
+                    dense
+                  >
                     <v-toolbar-title>
                       Contexto de Avaliação
                       <InfoBox
@@ -114,11 +134,16 @@
                       </div>
                     </v-col>
                     <v-col xs="10" sm="10">
-                      <div class="info-content">{{ classe.procTrans == "S" ? "Sim" : "Não" }}</div>
+                      <div class="info-content">
+                        {{ classe.procTrans == "S" ? "Sim" : "Não" }}
+                      </div>
                     </v-col>
                   </v-row>
 
-                  <Donos :entidades="classe.donos" v-if="classe.donos.length > 0" />
+                  <Donos
+                    :entidades="classe.donos"
+                    v-if="classe.donos.length > 0"
+                  />
 
                   <Participantes
                     :entidades="classe.participantes"
@@ -130,7 +155,10 @@
                     v-if="classe.processosRelacionados.length > 0"
                   />
 
-                  <Legislacao :legs="this.classe.legislacao" v-if="classe.legislacao.length > 0" />
+                  <Legislacao
+                    :legs="this.classe.legislacao"
+                    v-if="classe.legislacao.length > 0"
+                  />
                 </v-expansion-panel-content>
               </v-expansion-panel>
               <v-expansion-panel
@@ -140,7 +168,11 @@
                 "
               >
                 <v-expansion-panel-header>
-                  <v-toolbar color="indigo darken-1 body-2 font-weight-bold" dark dense>
+                  <v-toolbar
+                    color="indigo darken-1 body-2 font-weight-bold"
+                    dark
+                    dense
+                  >
                     <v-toolbar-title>
                       Decisões de Avaliação
                       <InfoBox
@@ -155,8 +187,14 @@
                 <v-expansion-panel-content>
                   <v-row>
                     <v-col xs="12" sm="12">
-                      <v-toolbar color="indigo font-weight-medium" dark height="30">
-                        <v-toolbar-title>Prazo de Conservação Administrativa</v-toolbar-title>
+                      <v-toolbar
+                        color="indigo font-weight-medium"
+                        dark
+                        height="30"
+                      >
+                        <v-toolbar-title>
+                          Prazo de Conservação Administrativa
+                        </v-toolbar-title>
                       </v-toolbar>
                     </v-col>
                   </v-row>
@@ -175,14 +213,15 @@
                       </div>
                     </v-col>
                     <v-col xs="10" sm="10">
-                      <div
-                        class="info-content"
-                        v-if="classe.pca.valores > 1"
-                      >{{ classe.pca.valores + " anos" }}</div>
+                      <div class="info-content" v-if="classe.pca.valores > 1">
+                        {{ classe.pca.valores + " anos" }}
+                      </div>
                       <div
                         class="info-content"
                         v-else-if="classe.pca.valores == 1"
-                      >{{ classe.pca.valores + " ano" }}</div>
+                      >
+                        {{ classe.pca.valores + " ano" }}
+                      </div>
                     </v-col>
                   </v-row>
 
@@ -210,7 +249,9 @@
                       </div>
                     </v-col>
                     <v-col xs="10" sm="10">
-                      <div class="info-content">{{ classe.pca.formaContagem }}</div>
+                      <div class="info-content">
+                        {{ classe.pca.formaContagem }}
+                      </div>
                     </v-col>
                   </v-row>
 
@@ -228,7 +269,9 @@
                       </div>
                     </v-col>
                     <v-col xs="10" sm="10">
-                      <div class="info-content">{{ classe.pca.subFormaContagem }}</div>
+                      <div class="info-content">
+                        {{ classe.pca.subFormaContagem }}
+                      </div>
                     </v-col>
                   </v-row>
 
@@ -247,32 +290,49 @@
                     </v-col>
                     <v-col xs="10" sm="10">
                       <div class="info-content">
-                        <div v-for="c in classe.pca.justificacao" :key="c.tipoId">
+                        <div
+                          v-for="c in classe.pca.justificacao"
+                          :key="c.tipoId"
+                        >
                           <!-- Critério Gestionário ...............................-->
-                          <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
+                          <v-row
+                            v-if="c.tipoId == 'CriterioJustificacaoGestionario'"
+                          >
                             <v-col xs="2" sm="2">
                               <div class="info-label">Critério Gestionário</div>
                             </v-col>
                             <v-col xs="10" sm="10">
-                              <div
-                                class="info-content"
-                              >{{ mylabels.textoCriterioJustificacaoGestionario }}</div>
+                              <div class="info-content">
+                                {{
+                                  mylabels.textoCriterioJustificacaoGestionario
+                                }}
+                              </div>
                             </v-col>
                           </v-row>
 
                           <!-- Critério Utilidade Administrativa .................-->
-                          <v-row v-if="c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'">
+                          <v-row
+                            v-if="
+                              c.tipoId ==
+                                'CriterioJustificacaoUtilidadeAdministrativa'
+                            "
+                          >
                             <v-col xs="2" sm="2">
-                              <div class="info-label">Critério de Utilidade Administrativa</div>
+                              <div class="info-label">
+                                Critério de Utilidade Administrativa
+                              </div>
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
                                 {{ c.conteudo }}
-                                <br>
-                                <br>
+                                <br />
+                                <br />
                                 <ul>
                                   <li v-for="p in c.processos" :key="p.procId">
-                                    <a :href="'/classes/consultar/' + p.procId">{{ p.procId.split('c')[1]}} - {{p.nome}}</a>
+                                    <a :href="'/classes/consultar/' + p.procId">
+                                      {{ p.procId.split("c")[1] }} -
+                                      {{ p.nome }}
+                                    </a>
                                   </li>
                                 </ul>
                               </div>
@@ -287,14 +347,13 @@
                             <v-col xs="10" sm="10">
                               <div class="info-content">
                                 {{ c.conteudo }}
-                                <br>
-                                <br>
+                                <br />
+                                <br />
                                 <ul>
-                                  <li
-                                    v-for="l in c.legislacao"
-                                    :key="l.legId"
-                                  >
-                                  <a :href="'/legislacao/' + l.legId ">{{l.tipo}} {{l.numero}}</a>
+                                  <li v-for="l in c.legislacao" :key="l.legId">
+                                    <a :href="'/legislacao/' + l.legId">
+                                      {{ l.tipo }} {{ l.numero }}
+                                    </a>
                                   </li>
                                 </ul>
                               </div>
@@ -309,7 +368,11 @@
 
                   <v-row>
                     <v-col xs="12" sm="12">
-                      <v-toolbar color="indigo font-weight-medium" dark height="30">
+                      <v-toolbar
+                        color="indigo font-weight-medium"
+                        dark
+                        height="30"
+                      >
                         <v-toolbar-title>Destino Final</v-toolbar-title>
                       </v-toolbar>
                     </v-col>
@@ -331,7 +394,9 @@
                     <v-col xs="10" sm="10">
                       <div class="info-content">
                         <span v-if="classe.df.valor == 'E'">Eliminação</span>
-                        <span v-else-if="classe.df.valor == 'C'">Conservação</span>
+                        <span v-else-if="classe.df.valor == 'C'">
+                          Conservação
+                        </span>
                         <span v-else>Não Especificado</span>
                       </div>
                     </v-col>
@@ -362,7 +427,10 @@
                     </v-col>
                     <v-col xs="10" sm="10">
                       <div class="info-content">
-                        <div v-for="c in classe.df.justificacao" :key="c.tipoId">
+                        <div
+                          v-for="c in classe.df.justificacao"
+                          :key="c.tipoId"
+                        >
                           <!-- Critério Legal ...................................-->
                           <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
                             <v-col xs="2" sm="2">
@@ -371,14 +439,13 @@
                             <v-col xs="10" sm="10">
                               <div class="info-content">
                                 {{ c.conteudo }}
-                                <br>
-                                <br>
+                                <br />
+                                <br />
                                 <ul>
-                                  <li
-                                    v-for="l in c.legislacao"
-                                    :key="l.legId"
-                                  >
-                                  <a :href="'/legislacao/' + l.legId ">{{l.tipo}} {{l.numero}}</a>
+                                  <li v-for="l in c.legislacao" :key="l.legId">
+                                    <a :href="'/legislacao/' + l.legId">
+                                      {{ l.tipo }} {{ l.numero }}
+                                    </a>
                                   </li>
                                 </ul>
                               </div>
@@ -386,38 +453,56 @@
                           </v-row>
 
                           <!-- Critério de Densidade Informacional ..............-->
-                          <v-row v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'">
+                          <v-row
+                            v-if="
+                              c.tipoId == 'CriterioJustificacaoDensidadeInfo'
+                            "
+                          >
                             <v-col xs="2" sm="2">
-                              <div class="info-label">Critério de Densidade Informacional</div>
+                              <div class="info-label">
+                                Critério de Densidade Informacional
+                              </div>
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
                                 {{ mylabels.textoCriterioDensidadeInfo }}
-                                <br>
-                                <br>
+                                <br />
+                                <br />
                                 <ul>
                                   <li v-for="p in c.processos" :key="p.procId">
-                                    <a :href="'/classes/consultar/' + p.procId">{{ p.procId.split('c')[1]}} - {{p.nome}}</a>
+                                    <a :href="'/classes/consultar/' + p.procId">
+                                      {{ p.procId.split("c")[1] }} -
+                                      {{ p.nome }}
+                                    </a>
                                   </li>
                                 </ul>
                               </div>
-                          
                             </v-col>
                           </v-row>
 
                           <!-- Critério de Complementaridade Informacional ..............-->
-                          <v-row v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'">
+                          <v-row
+                            v-if="
+                              c.tipoId ==
+                                'CriterioJustificacaoComplementaridadeInfo'
+                            "
+                          >
                             <v-col xs="2" sm="2">
-                              <div class="info-label">Critério de Complementaridade Informacional</div>
+                              <div class="info-label">
+                                Critério de Complementaridade Informacional
+                              </div>
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
                                 {{ mylabels.textoCriterioComplementaridade }}
-                                <br>
-                                <br>
+                                <br />
+                                <br />
                                 <ul>
                                   <li v-for="p in c.processos" :key="p.procId">
-                                    <a :href="'/classes/consultar/' + p.procId">{{ p.procId.split('c')[1]}} - {{p.nome}}</a>
+                                    <a :href="'/classes/consultar/' + p.procId">
+                                      {{ p.procId.split("c")[1] }} -
+                                      {{ p.nome }}
+                                    </a>
                                   </li>
                                 </ul>
                               </div>
@@ -440,9 +525,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-
-import axios from "axios";
 import ClassesFilho from "@/components/classes/consulta/ClassesFilho.vue";
 import NotasAp from "@/components/classes/consulta/NotasAp.vue";
 import NotasEx from "@/components/classes/consulta/NotasEx.vue";
@@ -487,64 +569,90 @@ export default {
   methods: {
     go: function(idClasse) {
       this.$router.push("/classes/consultar/c" + idClasse);
-    },
+    }
   },
   mounted: function() {
-    axios
-      .get(lhost + "/api/classes/" + this.idc)
-      .then( async response => {
+    this.$request("get", "/api/classes/" + this.idc)
+      .then(async response => {
         this.classe = response.data;
-        if(this.classe.df.justificacao){
-          
-          for(let i = 0; i < this.classe.df.justificacao.length; i++){
-            if(this.classe.df.justificacao[i].processos){
-                
-                for(let j = 0; j < this.classe.df.justificacao[i].processos.length; j++){
-                  
-                  let help = lhost + "/api/classes/" + this.classe.df.justificacao[i].processos[j].procId + "/meta"
-                  
-                  await axios.get(help)
-                         .then(response => {
-                            this.classe.df.justificacao[i].processos[j].nome = response.data[0].titulo
-                         })
-                  }
+        if (this.classe.df.justificacao) {
+          for (let i = 0; i < this.classe.df.justificacao.length; i++) {
+            if (this.classe.df.justificacao[i].processos) {
+              for (
+                let j = 0;
+                j < this.classe.df.justificacao[i].processos.length;
+                j++
+              ) {
+                let help =
+                  "/api/classes/" +
+                  this.classe.df.justificacao[i].processos[j].procId +
+                  "/meta";
+
+                await this.$request("get", help).then(response => {
+                  this.classe.df.justificacao[i].processos[j].nome =
+                    response.data[0].titulo;
+                });
+              }
             }
-            
-            if(this.classe.df.justificacao[i].legislacao){
-              for(let j = 0; j < this.classe.df.justificacao[i].legislacao.length; j++){
-                await axios.get(lhost + "/api/legislacao/" + this.classe.df.justificacao[i].legislacao[j].legId)
-                         .then(response => {
-                           this.classe.df.justificacao[i].legislacao[j].tipo = response.data.tipo
-                           this.classe.df.justificacao[i].legislacao[j].numero = response.data.numero
-                           
-                         })
+
+            if (this.classe.df.justificacao[i].legislacao) {
+              for (
+                let j = 0;
+                j < this.classe.df.justificacao[i].legislacao.length;
+                j++
+              ) {
+                await this.$request(
+                  "get",
+                  "/api/legislacao/" +
+                    this.classe.df.justificacao[i].legislacao[j].legId
+                ).then(response => {
+                  this.classe.df.justificacao[i].legislacao[j].tipo =
+                    response.data.tipo;
+                  this.classe.df.justificacao[i].legislacao[j].numero =
+                    response.data.numero;
+                });
               }
             }
           }
         }
-        if(this.classe.pca.justificacao){
-          for(let h = 0; h < this.classe.pca.justificacao.length; h++){
-            if(this.classe.pca.justificacao[h].processos){
-              
-              for(let z = 0; z < this.classe.pca.justificacao[h].processos.length; z++){
-                if(this.classe.pca.justificacao[h].processos[z].procId){
-                  await axios.get(lhost + "/api/classes/" + this.classe.pca.justificacao[h].processos[z].procId + "/meta")
-                          .then(response => {
-                            this.classe.pca.justificacao[h].processos[z].nome = response.data[0].titulo
-                          })
-                }   
+        if (this.classe.pca.justificacao) {
+          for (let h = 0; h < this.classe.pca.justificacao.length; h++) {
+            if (this.classe.pca.justificacao[h].processos) {
+              for (
+                let z = 0;
+                z < this.classe.pca.justificacao[h].processos.length;
+                z++
+              ) {
+                if (this.classe.pca.justificacao[h].processos[z].procId) {
+                  await this.$request(
+                    "get",
+                    "/api/classes/" +
+                      this.classe.pca.justificacao[h].processos[z].procId +
+                      "/meta"
+                  ).then(response => {
+                    this.classe.pca.justificacao[h].processos[z].nome =
+                      response.data[0].titulo;
+                  });
+                }
               }
-      
             }
-            
-            if(this.classe.pca.justificacao[h].legislacao){
-              for(let z = 0; z < this.classe.pca.justificacao[h].legislacao.length; z++){
-                await axios.get(lhost + "/api/legislacao/" + this.classe.pca.justificacao[h].legislacao[z].legId)
-                           .then(response => {
-                            
-                             this.classe.pca.justificacao[h].legislacao[z].tipo = response.data.tipo
-                             this.classe.pca.justificacao[h].legislacao[z].numero = response.data.numero
-                           })
+
+            if (this.classe.pca.justificacao[h].legislacao) {
+              for (
+                let z = 0;
+                z < this.classe.pca.justificacao[h].legislacao.length;
+                z++
+              ) {
+                await this.$request(
+                  "get",
+                  "/api/legislacao/" +
+                    this.classe.pca.justificacao[h].legislacao[z].legId
+                ).then(response => {
+                  this.classe.pca.justificacao[h].legislacao[z].tipo =
+                    response.data.tipo;
+                  this.classe.pca.justificacao[h].legislacao[z].numero =
+                    response.data.numero;
+                });
               }
             }
           }

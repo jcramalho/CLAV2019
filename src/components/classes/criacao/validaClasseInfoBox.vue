@@ -1,12 +1,16 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da VALIDAÇÂO -->
-    <v-btn dark rounded class="green darken-4" @click="validarClasse">Validar classe</v-btn>
+    <v-btn dark rounded class="green darken-4" @click="validarClasse">
+      Validar classe
+    </v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="80%">
       <v-card>
-        <v-card-title class="headline">Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
+        <v-card-title class="headline">
+          Erros detetados na validação: {{ mensagensErro.length }}
+        </v-card-title>
         <v-card-text>
           <v-row ma-2 v-for="(m, i) in mensagensErro" :key="i">
             <v-col cols="4">
@@ -18,7 +22,14 @@
           </v-row>
         </v-card-text>
         <v-card-actions>
-          <v-btn class="red darken-4 white--text" rounded dark @click="dialog = false">Fechar</v-btn>
+          <v-btn
+            class="red darken-4 white--text"
+            rounded
+            dark
+            @click="dialog = false"
+          >
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -33,7 +44,13 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn class="green darken-1 white--text" text @click="dialogSemErros = false">Fechar</v-btn>
+            <v-btn
+              class="green darken-1 white--text"
+              text
+              @click="dialogSemErros = false"
+            >
+              Fechar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -42,9 +59,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-const axios = require("axios");
-
 export default {
   props: ["c"],
   data() {
@@ -117,8 +131,9 @@ export default {
     // Verifica se o código introduzido pelo utilizador já existe na BD....................
 
     verificaExistenciaCodigo: async function(codigo) {
-      var response = await axios.get(
-        lhost + "/api/classes/verificar/" + codigo
+      var response = await this.$request(
+        "get",
+        "/api/classes/verificar/" + codigo
       );
       return response.data;
     },
@@ -191,8 +206,9 @@ export default {
         this.numeroErros++;
       } else {
         try {
-          var existeTitulo = await axios.post(
-            lhost + "/api/classes/verificarTitulo",
+          var existeTitulo = await this.$request(
+            "post",
+            "/api/classes/verificarTitulo",
             { titulo: this.c.titulo }
           );
           if (existeTitulo.data) {
@@ -223,8 +239,9 @@ export default {
       // Notas de Aplicação
       for (i = 0; i < this.c.notasAp.length; i++) {
         try {
-          var existeNotaAp = await axios.post(
-            lhost + "/api/classes/verificarNA",
+          var existeNotaAp = await this.$request(
+            "post",
+            "/api/classes/verificarNA",
             { na: this.c.notasAp[i].nota }
           );
           if (existeNotaAp.data) {
@@ -253,8 +270,9 @@ export default {
       // Exemplos de notas de Aplicação
       for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
-          var existeExemploNotaAp = await axios.post(
-            lhost + "/api/classes/verificarExemploNA",
+          var existeExemploNotaAp = await this.$request(
+            "post",
+            "/api/classes/verificarExemploNA",
             { exemplo: this.c.exemplosNotasAp[i].exemplo }
           );
           if (existeExemploNotaAp.data) {
@@ -295,9 +313,13 @@ export default {
       // Termos de Índice
       for (i = 0; i < this.c.termosInd.length; i++) {
         try {
-          var existeTI = await axios.post(lhost + "/api/classes/verificarTI", {
-            ti: this.c.termosInd[i].termo
-          });
+          var existeTI = await this.$request(
+            "post",
+            "/api/classes/verificarTI",
+            {
+              ti: this.c.termosInd[i].termo
+            }
+          );
           if (existeTI.data) {
             this.mensagensErro.push({
               sobre: "Termo de Índice(" + (i + 1) + ")",
@@ -375,7 +397,10 @@ export default {
         // PCA: prazo
         for (i = 0; i < this.c.subclasses.length; i++) {
           subclasse = this.c.subclasses[i];
-          if ((!subclasse.pca.valor || (subclasse.pca.valor == "")) && subclasse.pca.notas == "") {
+          if (
+            (!subclasse.pca.valor || subclasse.pca.valor == "") &&
+            subclasse.pca.notas == ""
+          ) {
             this.mensagensErro.push({
               sobre: "PCA (prazo) da subclasse " + subclasse.codigo,
               mensagem: "O prazo é de preenchimento obrigatório."

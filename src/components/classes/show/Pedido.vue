@@ -272,8 +272,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
 import ClassesFilho from "@/components/classes/consulta/ClassesFilho.vue";
 import NotasAp from "@/components/classes/consulta/NotasAp.vue";
 import NotasEx from "@/components/classes/consulta/NotasEx.vue";
@@ -314,8 +312,7 @@ export default {
   },
 
   created: function() {
-    axios
-      .get(lhost + "/api/pedidos/" + this.idp)
+    this.$request("get", "/api/pedidos/" + this.idp)
       .then(response => {
         this.classe = response.data.objeto.dados;
         this.classeLoaded = true;

@@ -8,16 +8,22 @@
           class="ma-2 teal darken-4"
           @click="guardarTrabalho"
           v-bind:disabled="c.codigo == ''"
-        >Guardar trabalho</v-btn>
+        >
+          Guardar trabalho
+        </v-btn>
       </v-col>
 
       <valida-classe-info-box :c="c" />
 
       <v-col>
-        <v-btn dark rounded class="ma-2 teal darken-4" @click="criarClasse">Criar classe</v-btn>
+        <v-btn dark rounded class="ma-2 teal darken-4" @click="criarClasse">
+          Criar classe
+        </v-btn>
       </v-col>
       <v-col>
-        <v-btn dark rounded class="ma-2 red darken-4" @click="eliminarClasse">Cancelar criação</v-btn>
+        <v-btn dark rounded class="ma-2 red darken-4" @click="eliminarClasse">
+          Cancelar criação
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -25,12 +31,24 @@
     <v-row justify-center>
       <v-dialog v-model="errosValidacao" width="60%">
         <v-card>
-          <v-card-title class="headline">Erros detetados na validação</v-card-title>
+          <v-card-title class="headline">
+            Erros detetados na validação
+          </v-card-title>
           <v-card-text>
-            <p>Há erros de validação. Selecione "Validar" para ver extamente quais e proceder à sua correção.</p>
+            <p>
+              Há erros de validação. Selecione "Validar" para ver extamente
+              quais e proceder à sua correção.
+            </p>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="red darken-4" round dark @click="errosValidacao=false">Fechar</v-btn>
+            <v-btn
+              color="red darken-4"
+              round
+              dark
+              @click="errosValidacao = false"
+            >
+              Fechar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -40,14 +58,25 @@
     <v-row justify-center>
       <v-dialog v-model="pendenteGuardado" persistent max-width="60%">
         <v-card>
-          <v-card-title class="headline">Trabalho pendente guardado</v-card-title>
+          <v-card-title class="headline">
+            Trabalho pendente guardado
+          </v-card-title>
           <v-card-text>
-            <p>Os seus dados foram guardados para que possa retomar o trabalho mais tarde.</p>
+            <p>
+              Os seus dados foram guardados para que possa retomar o trabalho
+              mais tarde.
+            </p>
             <p>{{ pendenteGuardadoInfo }}</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="criacaoPendenteTerminada">Fechar</v-btn>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="criacaoPendenteTerminada"
+            >
+              Fechar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -57,11 +86,15 @@
     <v-row justify-center>
       <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
         <v-card>
-          <v-card-title class="headline">Pedido de Criação de Classe Submetido</v-card-title>
+          <v-card-title class="headline">
+            Pedido de Criação de Classe Submetido
+          </v-card-title>
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="criacaoClasseTerminada">Fechar</v-btn>
+            <v-btn color="green darken-1" text @click="criacaoClasseTerminada">
+              Fechar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -71,27 +104,36 @@
     <v-row justify-center>
       <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
         <v-card>
-          <v-card-title class="headline">Cancelamento e eliminação do pedido de criação de classe</v-card-title>
+          <v-card-title class="headline">
+            Cancelamento e eliminação do pedido de criação de classe
+          </v-card-title>
           <v-card-text>
             <p>Selecionou o cancelamento da criação da classe.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
+            <p>
+              Confirme a decisão para ser reencaminhado para a página principal.
+            </p>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="cancelarCriacaoClasse">Confirmo</v-btn>
-            <v-btn
-              color="red darken-1"
-              text
-              @click="pedidoEliminado = false"
-            >Enganei-me, desejo continuar o trabalho</v-btn>
+            <v-btn color="green darken-1" text @click="cancelarCriacaoClasse">
+              Confirmo
+            </v-btn>
+            <v-btn color="red darken-1" text @click="pedidoEliminado = false">
+              Enganei-me, desejo continuar o trabalho
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
 
     <v-row>
-      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+      <v-snackbar
+        v-model="loginErrorSnackbar"
+        :timeout="8000"
+        color="error"
+        :top="true"
+      >
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -100,9 +142,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-const axios = require("axios");
-
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
 
 export default {
@@ -145,8 +184,9 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          var userBD = await axios.get(
-            lhost + "/api/users/listarToken/" + this.$store.state.token
+          var userBD = await this.$request(
+            "get",
+            "/api/users/listarToken/" + this.$store.state.token
           );
           var pendenteParams = {
             numInterv: 1,
@@ -157,8 +197,9 @@ export default {
             user: { email: userBD.data.email },
             token: this.$store.state.token
           };
-          var response = await axios.post(
-            lhost + "/api/pendentes",
+          var response = this.$request(
+            "post",
+            "/api/pendentes",
             pendenteParams
           );
           this.pendenteGuardado = true;
@@ -176,8 +217,9 @@ export default {
     // Verifica se o código introduzido pelo utilizador já existe na BD....................
 
     verificaExistenciaCodigo: async function(codigo) {
-      var response = await axios.get(
-        lhost + "/api/classes/verificar/" + codigo
+      var response = await this.$request(
+        "get",
+        "/api/classes/verificar/" + codigo
       );
       return response.data;
     },
@@ -256,8 +298,9 @@ export default {
       } else {
         try {
           alert("Existência de título");
-          var existeTitulo = await axios.post(
-            lhost + "/api/classes/verificarTitulo",
+          var existeTitulo = await this.$request(
+            "post",
+            "/api/classes/verificarTitulo",
             { titulo: this.c.titulo }
           );
           if (existeTitulo.data) {
@@ -276,8 +319,9 @@ export default {
       // Notas de Aplicação
       for (i = 0; i < this.c.notasAp.length; i++) {
         try {
-          var existeNotaAp = await axios.post(
-            lhost + "/api/classes/verificarNA",
+          var existeNotaAp = await this.$request(
+            "post",
+            "/api/classes/verificarNA",
             { na: this.c.notasAp[i].nota }
           );
           if (existeNotaAp.data) {
@@ -294,8 +338,9 @@ export default {
       // Exemplos de notas de Aplicação
       for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
-          var existeExemploNotaAp = await axios.post(
-            lhost + "/api/classes/verificarExemploNA",
+          var existeExemploNotaAp = await this.$request(
+            "post",
+            "/api/classes/verificarExemploNA",
             { exemplo: this.c.exemplosNotasAp[i].exemplo }
           );
           if (existeExemploNotaAp.data) {
@@ -317,9 +362,13 @@ export default {
       // Termos de Índice
       for (i = 0; i < this.c.termosInd.length; i++) {
         try {
-          var existeTI = await axios.post(lhost + "/api/classes/verificarTI", {
-            ti: this.c.termosInd[i].termo
-          });
+          var existeTI = await this.$request(
+            "post",
+            "/api/classes/verificarTI",
+            {
+              ti: this.c.termosInd[i].termo
+            }
+          );
           if (existeTI.data) {
             numeroErros++;
           }
@@ -417,8 +466,9 @@ export default {
         this.numeroErros++;
       } else {
         try {
-          var existeTitulo = await axios.post(
-            lhost + "/api/classes/verificarTitulo",
+          var existeTitulo = await this.$request(
+            "post",
+            "/api/classes/verificarTitulo",
             { titulo: this.c.titulo }
           );
           if (existeTitulo.data) {
@@ -437,8 +487,9 @@ export default {
       // Notas de Aplicação
       for (i = 0; i < this.c.notasAp.length; i++) {
         try {
-          var existeNotaAp = await axios.post(
-            lhost + "/api/classes/verificarNA",
+          var existeNotaAp = await this.$request(
+            "post",
+            "/api/classes/verificarNA",
             { na: this.c.notasAp[i].nota }
           );
           if (existeNotaAp.data) {
@@ -455,8 +506,9 @@ export default {
       // Exemplos de notas de Aplicação
       for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
-          var existeExemploNotaAp = await axios.post(
-            lhost + "/api/classes/verificarExemploNA",
+          var existeExemploNotaAp = await this.$request(
+            "post",
+            "/api/classes/verificarExemploNA",
             { exemplo: this.c.exemplosNotasAp[i].exemplo }
           );
           if (existeExemploNotaAp.data) {
@@ -478,9 +530,13 @@ export default {
       // Termos de Índice
       for (i = 0; i < this.c.termosInd.length; i++) {
         try {
-          var existeTI = await axios.post(lhost + "/api/classes/verificarTI", {
-            ti: this.c.termosInd[i].termo
-          });
+          var existeTI = await this.$request(
+            "post",
+            "/api/classes/verificarTI",
+            {
+              ti: this.c.termosInd[i].termo
+            }
+          );
           if (existeTI.data) {
             this.numeroErros++;
           }
@@ -560,8 +616,9 @@ export default {
         } else {
           var erros = await this.validarClasse2();
           if (erros == 0) {
-            var userBD = await axios.get(
-              lhost + "/api/users/listarToken/" + this.$store.state.token
+            var userBD = await this.$request(
+              "get",
+              "/api/users/listarToken/" + this.$store.state.token
             );
             var pedidoParams = {
               tipoPedido: "Criação",
@@ -572,8 +629,9 @@ export default {
               token: this.$store.state.token
             };
 
-            var response = await axios.post(
-              lhost + "/api/pedidos",
+            var response = await this.$request(
+              "post",
+              "/api/pedidos",
               pedidoParams
             );
             this.mensagemPedidoCriadoOK += JSON.stringify(response.data);

@@ -133,7 +133,7 @@ export default {
     submit: async function() {
       conversor(this.file, this.tipo)
         .then(res => {
-          console.warn(res)
+          console.warn(res);
           this.$request("post", "/api/autosEliminacao/" + this.tipo, {
             auto: res.auto,
             token: this.$store.state.token

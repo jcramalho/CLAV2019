@@ -51,11 +51,19 @@
             <v-col cols="2">
               <div class="info-label">
                 Código:
-                <InfoBox header="Código da Classe" :text="myhelp.Classe.Campos.Codigo" />
+                <InfoBox
+                  header="Código da Classe"
+                  :text="myhelp.Classe.Campos.Codigo"
+                />
               </div>
             </v-col>
             <v-col>
-              <v-text-field v-model="classe.codigo" label="Código" solo clearable></v-text-field>
+              <v-text-field
+                v-model="classe.codigo"
+                label="Código"
+                solo
+                clearable
+              ></v-text-field>
               <span style="color: red">{{ mensValCodigo }}</span>
             </v-col>
           </v-row>
@@ -65,11 +73,19 @@
             <v-col cols="2">
               <div class="info-label">
                 Título:
-                <InfoBox header="Título da Classe" :text="myhelp.Classe.Campos.Titulo" />
+                <InfoBox
+                  header="Título da Classe"
+                  :text="myhelp.Classe.Campos.Titulo"
+                />
               </div>
             </v-col>
             <v-col>
-              <v-text-field v-model="classe.titulo" label="Título" solo clearable></v-text-field>
+              <v-text-field
+                v-model="classe.titulo"
+                label="Título"
+                solo
+                clearable
+              ></v-text-field>
             </v-col>
           </v-row>
 
@@ -125,20 +141,23 @@
           </v-expansion-panels>
         </v-card-text>
 
-        <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+        <v-snackbar
+          v-model="loginErrorSnackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
           {{ loginErrorMessage }}
           <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
         </v-snackbar>
       </v-card>
       <!-- TODO: Corrigir este componente -->
-      <PainelOperacoes :c="classe"  :pendenteId="''"/>
+      <PainelOperacoes :c="classe" :pendenteId="''" />
     </v-col>
   </v-row>
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-const axios = require("axios");
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
@@ -440,8 +459,9 @@ export default {
 
     loadPais: async function() {
       try {
-        var response = await axios.get(
-          lhost + "/api/classes?nivel=" + (this.classe.nivel - 1)
+        var response = await this.$request(
+          "get",
+          "/api/classes?nivel=" + (this.classe.nivel - 1)
         );
         this.classesPai = response.data
           .map(function(item) {
@@ -462,7 +482,7 @@ export default {
 
     loadEntidades: async function() {
       try {
-        var response = await axios.get(lhost + "/api/entidades");
+        var response = await this.$request("get", "/api/entidades");
         this.entidadesD = response.data.map(function(item) {
           return {
             selected: false,
@@ -474,7 +494,7 @@ export default {
             estado: item.estado
           };
         });
-        response = await axios.get(lhost + "/api/tipologias");
+        response = await this.$request("get", "/api/tipologias");
         this.entidadesD = await this.entidadesD.concat(
           response.data.map(function(item) {
             return {
@@ -502,7 +522,7 @@ export default {
 
     loadProcessos: async function() {
       try {
-        var response = await axios.get(lhost + "/api/classes?nivel=3");
+        var response = await this.$request("get", "/api/classes?nivel=3");
         this.listaProcessos = response.data
           .map(function(item) {
             return {
@@ -527,7 +547,7 @@ export default {
 
     loadLegislacao: async function() {
       try {
-        var response = await axios.get(lhost + "/api/legislacao?estado=A");
+        var response = await this.$request("get", "/api/legislacao?estado=A");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {
@@ -559,8 +579,9 @@ export default {
 
     loadPCAFormasContagem: async function() {
       try {
-        var response = await axios.get(
-          lhost + "/api/vocabularios/vc_pcaFormaContagem"
+        var response = await this.$request(
+          "get",
+          "/api/vocabularios/vc_pcaFormaContagem"
         );
         this.pcaFormasContagem = this.pcaFormasContagem.concat(
           response.data
@@ -584,8 +605,9 @@ export default {
 
     loadPCASubFormasContagem: async function() {
       try {
-        var response = await axios.get(
-          lhost + "/api/vocabularios/vc_pcaSubformaContagem"
+        var response = await this.$request(
+          "get",
+          "/api/vocabularios/vc_pcaSubformaContagem"
         );
         this.pcaSubFormasContagem = this.pcaSubFormasContagem.concat(
           response.data
@@ -763,13 +785,18 @@ export default {
           relLabel: "é Síntese de"
         });
         this.adicionarCriterio(
-            this.classe.subclasses[0].df.justificacao,
-            "CriterioJustificacaoDensidadeInfo",
-            "Critério de Densidade Informacional",
-            criteriosLabels.textoCriterioDensidadeSinDe,
-            [{codigo: this.classe.subclasses[1].codigo, titulo: this.classe.subclasses[1].titulo}],
-            []
-          );
+          this.classe.subclasses[0].df.justificacao,
+          "CriterioJustificacaoDensidadeInfo",
+          "Critério de Densidade Informacional",
+          criteriosLabels.textoCriterioDensidadeSinDe,
+          [
+            {
+              codigo: this.classe.subclasses[1].codigo,
+              titulo: this.classe.subclasses[1].titulo
+            }
+          ],
+          []
+        );
 
         this.classe.subclasses[1].df.valor = "E";
         this.classe.subclasses[1].processosRelacionados.push({
@@ -779,13 +806,18 @@ export default {
           relLabel: "é Sintetizado por"
         });
         this.adicionarCriterio(
-            this.classe.subclasses[1].df.justificacao,
-            "CriterioJustificacaoDensidadeInfo",
-            "Critério de Densidade Informacional",
-            criteriosLabels.textoCriterioDensidadeSinPor,
-            [{codigo: this.classe.subclasses[0].codigo, titulo: this.classe.subclasses[0].titulo}],
-            []
-          );
+          this.classe.subclasses[1].df.justificacao,
+          "CriterioJustificacaoDensidadeInfo",
+          "Critério de Densidade Informacional",
+          criteriosLabels.textoCriterioDensidadeSinPor,
+          [
+            {
+              codigo: this.classe.subclasses[0].codigo,
+              titulo: this.classe.subclasses[0].titulo
+            }
+          ],
+          []
+        );
       } else {
         this.classe.subclasses[0].df.valor = "E";
         this.classe.subclasses[0].processosRelacionados.push({
@@ -795,13 +827,18 @@ export default {
           relLabel: "é Sintetizado por"
         });
         this.adicionarCriterio(
-            this.classe.subclasses[0].df.justificacao,
-            "CriterioJustificacaoDensidadeInfo",
-            "Critério de Densidade Informacional",
-            criteriosLabels.textoCriterioDensidadeSinPor,
-            [{codigo: this.classe.subclasses[1].codigo, titulo: this.classe.subclasses[1].titulo}],
-            []
-          );
+          this.classe.subclasses[0].df.justificacao,
+          "CriterioJustificacaoDensidadeInfo",
+          "Critério de Densidade Informacional",
+          criteriosLabels.textoCriterioDensidadeSinPor,
+          [
+            {
+              codigo: this.classe.subclasses[1].codigo,
+              titulo: this.classe.subclasses[1].titulo
+            }
+          ],
+          []
+        );
 
         this.classe.subclasses[1].df.valor = "C";
         this.classe.subclasses[1].processosRelacionados.push({
@@ -811,13 +848,18 @@ export default {
           relLabel: "é Síntese de"
         });
         this.adicionarCriterio(
-            this.classe.subclasses[1].df.justificacao,
-            "CriterioJustificacaoDensidadeInfo",
-            "Critério de Densidade Informacional",
-            criteriosLabels.textoCriterioDensidadeSinDe,
-            [{codigo: this.classe.subclasses[0].codigo, titulo: this.classe.subclasses[0].titulo}],
-            []
-          );
+          this.classe.subclasses[1].df.justificacao,
+          "CriterioJustificacaoDensidadeInfo",
+          "Critério de Densidade Informacional",
+          criteriosLabels.textoCriterioDensidadeSinDe,
+          [
+            {
+              codigo: this.classe.subclasses[0].codigo,
+              titulo: this.classe.subclasses[0].titulo
+            }
+          ],
+          []
+        );
       }
     },
 

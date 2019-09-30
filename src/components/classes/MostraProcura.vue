@@ -24,39 +24,73 @@
     <v-card-text>
       <div>
         <v-toolbar flat>
-          <v-toolbar-title><h4>Resultados da pesquisa para "<i>{{this.searchword}}</i>":</h4></v-toolbar-title>
+          <v-toolbar-title>
+            <h4>
+              Resultados da pesquisa para "
+              <i>{{ this.searchword }}</i>
+              ":
+            </h4>
+          </v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-list>
           <v-list-item-group color="primary" v-if="searchResult[0]">
             <v-list-item v-for="(item, i) in this.searchResult" :key="i">
-              <v-list-item-content @click="$router.push('/classes/consultar/' + item.codigo)">
-                <v-list-item-title><span class="indigo--text">{{item.codigo.split('c')[1]}}</span> - {{item.titulo}}</v-list-item-title>
+              <v-list-item-content
+                @click="$router.push('/classes/consultar/' + item.codigo)"
+              >
+                <v-list-item-title>
+                  <span class="indigo--text">
+                    {{ item.codigo.split("c")[1] }}
+                  </span>
+                  - {{ item.titulo }}
+                </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
           <v-list-item-group color="primary" v-else>
             <v-list-item>
               <v-list-item-content>
-                <v-list-item-title><br>Não foram encontrados resultados para a pesquisa...<br><br></v-list-item-title>
+                <v-list-item-title>
+                  <br />
+                  Não foram encontrados resultados para a pesquisa...
+                  <br />
+                  <br />
+                </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
         </v-list>
-        <br>
+        <br />
       </div>
       <div class="text-center">
-        <v-btn class="mx-2" dark medium color="indigo darken-4" @click="$router.go(-1);$router.go()">Voltar</v-btn>
-        <v-btn class="mx-2" dark medium color="indigo darken-4" @click="$router.push('/classes')">Consultar a Lista Consolidada</v-btn>
+        <v-btn
+          class="mx-2"
+          dark
+          medium
+          color="indigo darken-4"
+          @click="
+            $router.go(-1);
+            $router.go();
+          "
+        >
+          Voltar
+        </v-btn>
+        <v-btn
+          class="mx-2"
+          dark
+          medium
+          color="indigo darken-4"
+          @click="$router.push('/classes')"
+        >
+          Consultar a Lista Consolidada
+        </v-btn>
       </div>
     </v-card-text>
   </v-card>
-</template>        
+</template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   data: () => ({
     motorBusca: [],
@@ -70,14 +104,12 @@ export default {
   }),
 
   mounted: async function() {
-      
-    await axios.get(lhost + "/api/indiceInvertido").then(response => {
+    await this.$request("get", "/api/indiceInvertido").then(response => {
       this.motorBusca = response.data;
     });
 
-    
     this.search = this.$route.params.id;
-    this.searchword = this.search
+    this.searchword = this.search;
 
     this.searchResult = [];
 
@@ -95,12 +127,10 @@ export default {
         this.searchResult.push(this.motorBusca[i].processo);
       }
     }
-    
   },
   methods: {
     procuraProcesso: function() {
       if (this.search != "" && this.search != null) {
-  
         this.searchResult = [];
 
         for (let i = 0; i < this.motorBusca.length; i++) {
@@ -117,13 +147,11 @@ export default {
             this.searchResult.push(this.motorBusca[i].processo);
           }
         }
-        this.searchword = this.search
-        this.$router.push('/classes/procurar/' + this.search)
-        
+        this.searchword = this.search;
+        this.$router.push("/classes/procurar/" + this.search);
       } else {
-        this.$router.push('/classes')
+        this.$router.push("/classes");
       }
-      
     }
   }
 };

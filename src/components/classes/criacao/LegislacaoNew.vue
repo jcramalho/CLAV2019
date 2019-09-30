@@ -34,7 +34,11 @@
             </v-flex>
 
             <v-flex xs12 md3>
-              <v-text-field v-model="data" label="Data: AAAA-MM-DD" mask="####-##-##" />
+              <v-text-field
+                v-model="data"
+                label="Data: AAAA-MM-DD"
+                mask="####-##-##"
+              />
             </v-flex>
           </v-layout>
         </v-container>
@@ -49,9 +53,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-const axios = require("axios");
-
 export default {
   props: ["legislacao"],
 
@@ -70,8 +71,9 @@ export default {
 
   created: async function() {
     try {
-      var tipos = await axios.get(
-        lhost + "/api/vocabularios/vc_tipoDiplomaLegislativo"
+      var tipos = await this.$request(
+        "get",
+        "/api/vocabularios/vc_tipoDiplomaLegislativo"
       );
       this.listaTipos = tipos.data.map(t => {
         return { label: t.termo, value: t.termo };
@@ -111,7 +113,7 @@ export default {
 
     validaDups: async function(t, n) {
       try {
-        var legs = await axios.get(lhost + "/api/legislacao");
+        var legs = await this.$request("get", "/api/legislacao");
         var test = legs.data.filter(l => l.tipo == t && l.numero == n);
         if (test.length > 0) {
           this.mensagensErro.push(
