@@ -1,6 +1,15 @@
 <template>
-  <v-app-bar color="indigo darken-4" dark dense height="80px" style="max-height:80px">
-    <v-toolbar-title>DGLAB - Direção-Geral do Livro, dos Arquivos e das Bibliotecas</v-toolbar-title>
+  <v-app-bar
+    color="indigo darken-4"
+    dark
+    dense
+    height="80px"
+    style="max-height:80px"
+  >
+    <v-toolbar-title
+      >DGLAB - Direção-Geral do Livro, dos Arquivos e das
+      Bibliotecas</v-toolbar-title
+    >
     <v-spacer></v-spacer>
     <v-toolbar-title>
       <v-btn text depressed href="mailto:clav@dglab.gov.pt">Contactos</v-btn>

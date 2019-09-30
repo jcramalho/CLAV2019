@@ -25,7 +25,9 @@ export default {
         "get",
         "/api/vocabularios/" + this.$route.params.idVC
       );
-      this.vocabulariosControladosContinuacao = await this.preparaLista(response.data);
+      this.vocabulariosControladosContinuacao = await this.preparaLista(
+        response.data
+      );
     } catch (e) {
       return e;
     }

@@ -86,7 +86,7 @@
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            Ocorreu um erro durante a autenticação com o Cartão de Cidadão! Por 
+            Ocorreu um erro durante a autenticação com o Cartão de Cidadão! Por
             favor verifique se introduziu o PIN de autenticação corretamente.
           </v-card-text>
           <v-card-actions>

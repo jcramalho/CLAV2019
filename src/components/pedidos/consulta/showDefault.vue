@@ -14,7 +14,7 @@
 <script>
 export default {
   props: ["p"]
-}
+};
 </script>
 <style>
 .info-label {

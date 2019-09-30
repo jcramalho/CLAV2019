@@ -1,148 +1,165 @@
 <template>
-<v-expansion-panel popout>
-  <v-expansion-panel-header>
-    <div class="indigo darken-4 pa-2 white--text">
-      {{ titulo }}
-      <sup>
-        <v-badge color="red" bottom>
-          <template v-slot:badge>
-            <span>{{ pedidos.length }}</span>
-          </template>
-        </v-badge>
-      </sup>
-    </div>
-  </v-expansion-panel-header>
-  <v-expansion-panel-content>
-    <v-data-table
-          :headers="headers"
-          :items="pedidos"
-          class="elevation-1"
-          :footer-props="footer_props"
-        >
-          <template v-slot:no-data>
-            <v-alert :value="true" color="error" icon="warning">
-              Não existem pedidos neste estado...
-            </v-alert>
-          </template>
+  <v-expansion-panel popout>
+    <v-expansion-panel-header>
+      <div class="indigo darken-4 pa-2 white--text">
+        {{ titulo }}
+        <sup>
+          <v-badge color="red" bottom>
+            <template v-slot:badge>
+              <span>{{ pedidos.length }}</span>
+            </template>
+          </v-badge>
+        </sup>
+      </div>
+    </v-expansion-panel-header>
+    <v-expansion-panel-content>
+      <v-data-table
+        :headers="headers"
+        :items="pedidos"
+        class="elevation-1"
+        :footer-props="footer_props"
+      >
+        <template v-slot:no-data>
+          <v-alert :value="true" color="error" icon="warning">
+            Não existem pedidos neste estado...
+          </v-alert>
+        </template>
 
-          <template v-slot:footer.page-text="props">
-            {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
-          </template>
+        <template v-slot:footer.page-text="props">
+          {{ props.pageStart }} - {{ props.pageStop }} de
+          {{ props.itemsLength }}
+        </template>
 
-          <template slot="headerCell" slot-scope="props">
-            <span style="color: blue;">
-              {{ props.header.text }}
-            </span>
-          </template>
+        <template slot="headerCell" slot-scope="props">
+          <span style="color: blue;">
+            {{ props.header.text }}
+          </span>
+        </template>
 
-          <template v-slot:item="props">
-            <tr>
-              <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
-              <td class="subheading">{{ props.item.estado }}</td>
-              <td class="subheading">{{ props.item.codigo }}</td>
-              <td class="subheading">{{ props.item.criadoPor }}</td>
-              <td class="subheading">{{ props.item.entidade }}</td>
-              <td class="subheading">
-                {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
-              </td>
-              <td>
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                        <v-icon @click="showPedido(props.item)" color="indigo darken-2" v-on="on">visibility</v-icon>
-                    </template>
-                    <span>Ver pedido...</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                        <v-icon @click="distribuiPedido(props.item)" color="indigo darken-2" v-on="on">person</v-icon>
-                    </template>
-                    <span>Distribuir pedido...</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                        <v-icon @click="analisaPedido(props.item)" color="indigo darken-2" v-on="on">search</v-icon>
-                    </template>
-                    <span>Analisar pedido...</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                        <v-icon color="indigo darken-2" v-on="on">keyboard_return</v-icon>
-                    </template>
-                    <span>Devolver pedido...</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                        <v-icon color="indigo darken-2" v-on="on">check</v-icon>
-                    </template>
-                    <span>Validar pedido...</span>
-                </v-tooltip>
-              </td>
-            </tr>
-          </template>
+        <template v-slot:item="props">
+          <tr>
+            <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
+            <td class="subheading">{{ props.item.estado }}</td>
+            <td class="subheading">{{ props.item.codigo }}</td>
+            <td class="subheading">{{ props.item.criadoPor }}</td>
+            <td class="subheading">{{ props.item.entidade }}</td>
+            <td class="subheading">
+              {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
+            </td>
+            <td>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    @click="showPedido(props.item)"
+                    color="indigo darken-2"
+                    v-on="on"
+                    >visibility</v-icon
+                  >
+                </template>
+                <span>Ver pedido...</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    @click="distribuiPedido(props.item)"
+                    color="indigo darken-2"
+                    v-on="on"
+                    >person</v-icon
+                  >
+                </template>
+                <span>Distribuir pedido...</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    @click="analisaPedido(props.item)"
+                    color="indigo darken-2"
+                    v-on="on"
+                    >search</v-icon
+                  >
+                </template>
+                <span>Analisar pedido...</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon color="indigo darken-2" v-on="on"
+                    >keyboard_return</v-icon
+                  >
+                </template>
+                <span>Devolver pedido...</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon color="indigo darken-2" v-on="on">check</v-icon>
+                </template>
+                <span>Validar pedido...</span>
+              </v-tooltip>
+            </td>
+          </tr>
+        </template>
 
-          <template v-slot:pageText="props">
-            Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
-            {{ props.itemsLength }}
-          </template>
-        </v-data-table>
-  </v-expansion-panel-content>
-</v-expansion-panel>
+        <template v-slot:pageText="props">
+          Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
+          {{ props.itemsLength }}
+        </template>
+      </v-data-table>
+    </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script>
-
 export default {
   props: ["pedidos", "titulo"],
 
   data: () => {
     return {
       headers: [
-      {
-        text: "Data",
-        align: "left",
-        sortable: true,
-        value: "data",
-        class: "title"
-      },
-      {
-        text: "Estado",
-        align: "left",
-        sortable: false,
-        value: "estado",
-        class: "title"
-      },
-      { text: "Código", value: "codigo", sortable: false, class: "title" },
-      {
-        text: "Responsável",
-        value: "responsavel",
-        sortable: false,
-        class: "title"
-      },
-      { text: "Entidade", value: "entidade", sortable: true, class: "title" },
-      { text: "Tipo", value: "tipo", sortable: false, class: "title" },
-      { text: "Tarefa", sortable: false, class: "title" }
-    ],
+        {
+          text: "Data",
+          align: "left",
+          sortable: true,
+          value: "data",
+          class: "title"
+        },
+        {
+          text: "Estado",
+          align: "left",
+          sortable: false,
+          value: "estado",
+          class: "title"
+        },
+        { text: "Código", value: "codigo", sortable: false, class: "title" },
+        {
+          text: "Responsável",
+          value: "responsavel",
+          sortable: false,
+          class: "title"
+        },
+        { text: "Entidade", value: "entidade", sortable: true, class: "title" },
+        { text: "Tipo", value: "tipo", sortable: false, class: "title" },
+        { text: "Tarefa", sortable: false, class: "title" }
+      ],
 
-    footer_props: {
+      footer_props: {
         "items-per-page-text": "Pedidos por página",
         "items-per-page-options": [5, 10, -1],
         "items-per-page-all-text": "Todos"
       }
-    }
+    };
   },
 
   methods: {
-      distribuiPedido: function(pedido){
-          this.$emit('distribuir', pedido)
-      },
+    distribuiPedido: function(pedido) {
+      this.$emit("distribuir", pedido);
+    },
 
-      showPedido: function(pedido){
-          this.$router.push("/pedidos/" + pedido.codigo);
-      },
+    showPedido: function(pedido) {
+      this.$router.push("/pedidos/" + pedido.codigo);
+    },
 
-      analisaPedido: function(pedido){
-        this.$emit('analisar', pedido)
-      }
+    analisaPedido: function(pedido) {
+      this.$emit("analisar", pedido);
+    }
   }
 };
 </script>

@@ -1,12 +1,14 @@
 <template>
-    <v-card class="ma-4 pa-2" >
-      <v-toolbar :color="panelHeaderColor" dark>
-        <v-toolbar-title>Gestão da Plataforma</v-toolbar-title>
-      </v-toolbar>
-      <v-card-text>
-        <v-expansion-panels>
+  <v-card class="ma-4 pa-2">
+    <v-toolbar :color="panelHeaderColor" dark>
+      <v-toolbar-title>Gestão da Plataforma</v-toolbar-title>
+    </v-toolbar>
+    <v-card-text>
+      <v-expansion-panels>
         <v-expansion-panel v-for="(item, i) in fops" :key="i">
-          <v-expansion-panel-header>{{ item.entidade }}</v-expansion-panel-header>
+          <v-expansion-panel-header>{{
+            item.entidade
+          }}</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card>
               <v-card-text>
@@ -27,9 +29,9 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
-        </v-expansion-panels>
-      </v-card-text>
-    </v-card>
+      </v-expansion-panels>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -109,7 +111,7 @@ export default {
         },
         {
           entidade: "Utilizadores",
-          texto: '',
+          texto: "",
           ops: [
             {
               label: "Consultar utilizadores",
@@ -136,7 +138,7 @@ export default {
         },
         {
           entidade: "Métricas da plataforma",
-          texto: '',
+          texto: "",
           ops: [
             {
               label: "Consultar métrica",

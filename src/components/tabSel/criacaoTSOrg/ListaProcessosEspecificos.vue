@@ -199,7 +199,7 @@ export default {
       // newListaResRestantes: Nova lista dos processos resultantes restantes
       var newListaResRestantes = [];
       for (var i = 0; i < procSel.length; i++) {
-        if(this.listaProcResultado[procSel[i]]){
+        if (this.listaProcResultado[procSel[i]]) {
           for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
             if (
               (this.listaResEspecificos.includes(
@@ -210,7 +210,9 @@ export default {
                 this.listaProcResultado[procSel[i]][j]
               )
             ) {
-              newListaResEspecificos.push(this.listaProcResultado[procSel[i]][j]);
+              newListaResEspecificos.push(
+                this.listaProcResultado[procSel[i]][j]
+              );
             } else if (
               this.listaResRestantes.includes(
                 this.listaProcResultado[procSel[i]][j]

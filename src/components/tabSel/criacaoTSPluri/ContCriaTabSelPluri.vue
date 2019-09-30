@@ -1124,9 +1124,16 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await this.$request("post", "/api/pedidos", pedidoParams);
+        var response = await this.$request(
+          "post",
+          "/api/pedidos",
+          pedidoParams
+        );
         this.mensagemPedidoCriadoOK += response.data.codigo;
-        response = await this.$request("delete", "/api/pendentes/" + this.obj._id);
+        response = await this.$request(
+          "delete",
+          "/api/pendentes/" + this.obj._id
+        );
         this.pedidoCriado = true;
       } catch (error) {
         return error;

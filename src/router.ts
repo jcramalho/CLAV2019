@@ -148,13 +148,15 @@ export default new Router({
     {
       path: "/autosEliminacao/importar",
       name: "importarAutosEliminacao",
-      component: () => import("./views/autosEliminacao/AutosEliminacaoImportar.vue"),
+      component: () =>
+        import("./views/autosEliminacao/AutosEliminacaoImportar.vue"),
       meta: { level: 1 }
     },
     {
       path: "/autosEliminacao/:idAE",
       name: "consultaAutoEliminacao",
-      component: () => import("./views/autosEliminacao/AutosEliminacaoConsultar.vue"),
+      component: () =>
+        import("./views/autosEliminacao/AutosEliminacaoConsultar.vue"),
       meta: { level: 0 }
     },
     // Routes das tipologias

@@ -2,7 +2,7 @@
   <v-layout wrap row ma-2 :key="componentKey">
     <v-flex xs3>
       <div class="info-label">
-          Termos de Índice
+        Termos de Índice
       </div>
       <v-btn
         color="primary"
@@ -17,19 +17,17 @@
     <v-flex>
       <v-layout fluid row v-for="(ti, index) in lista.termosInd" :key="index">
         <v-flex xs10>
-          <v-textarea
-            v-model="ti.termo"
-            auto-grow
-            solo
-            rows="2"
-          ></v-textarea>
+          <v-textarea v-model="ti.termo" auto-grow solo rows="2"></v-textarea>
         </v-flex>
         <v-flex>
           <v-btn
             color="red darken-2"
             dark
             rounded
-            @click="lista.termosInd.splice(index, 1); forceRerender()"
+            @click="
+              lista.termosInd.splice(index, 1);
+              forceRerender();
+            "
           >
             <v-icon dark>clear</v-icon>
           </v-btn>
@@ -38,19 +36,22 @@
     </v-flex>
 
     <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
-        {{ "O Termo de Índice anterior encontra-se vazio. Por favor preencha antes de criar um novo." }}
-        <v-btn dark text @click="tiVazioFlag=false">
-          Fechar
-        </v-btn>
+      {{
+        "O Termo de Índice anterior encontra-se vazio. Por favor preencha antes de criar um novo."
+      }}
+      <v-btn dark text @click="tiVazioFlag = false">
+        Fechar
+      </v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
-        {{ "O último termo introduzido é um duplicado de outro já introduzido previamente!" }}
-        <v-btn dark text @click="tiDuplicadoFlag=false">
-          Fechar
-        </v-btn>
+      {{
+        "O último termo introduzido é um duplicado de outro já introduzido previamente!"
+      }}
+      <v-btn dark text @click="tiDuplicadoFlag = false">
+        Fechar
+      </v-btn>
     </v-snackbar>
-
   </v-layout>
 </template>
 
@@ -64,40 +65,36 @@ export default {
     return {
       tiVazioFlag: false,
       tiDuplicadoFlag: false,
-      componentKey: 0,
+      componentKey: 0
     };
   },
 
   methods: {
-    tiDuplicado: function(termos){
-      if(termos.length > 1){
-        var lastTermo = termos[0].termo
-        var duplicados = termos.filter(t => t.termo == lastTermo )
-        if(duplicados.length > 1){
-          return true
-        }
-        else return false
-      }
-      else{
-        return false
+    tiDuplicado: function(termos) {
+      if (termos.length > 1) {
+        var lastTermo = termos[0].termo;
+        var duplicados = termos.filter(t => t.termo == lastTermo);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
       }
     },
 
     insereNovoTI: function(termos) {
-      if((termos.length > 0) && (termos[0].termo == "")){
-        this.tiVazioFlag = true
-      }
-      else if(this.tiDuplicado(termos)){
-        this.tiDuplicadoFlag = true
-      }
-      else{
+      if (termos.length > 0 && termos[0].termo == "") {
+        this.tiVazioFlag = true;
+      } else if (this.tiDuplicado(termos)) {
+        this.tiDuplicadoFlag = true;
+      } else {
         var n = { idTi: "ti_" + nanoid(), termo: "", existe: false };
         termos.unshift(n);
         this.forceRerender();
       }
     },
     forceRerender: function() {
-        this.componentKey += 1;  
+      this.componentKey += 1;
     }
   }
 };

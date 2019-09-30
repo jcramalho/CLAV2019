@@ -12,7 +12,7 @@
           <div class="info-content">{{ c.conteudo }}</div>
         </v-col>
       </v-row>
-      
+
       <div>
         {{ JSON.stringify(p.objeto.dados) }}
       </div>
@@ -24,21 +24,21 @@
 export default {
   props: ["p"],
 
-  data () {
-      return {
-        headers: [
-          {text: 'Campo', value: 'campo'},
-          { text: 'Conteúdo', value: 'conteudo'}
-        ],
-        classeInfo: [
-          {campo: 'Nível', conteudo: this.p.objeto.dados.nivel},
-          {campo: 'Código', conteudo: this.p.objeto.dados.codigo},
-          {campo: 'Título', conteudo: this.p.objeto.dados.titulo},
-          {campo: 'Descrição', conteudo: this.p.objeto.dados.descricao},
-        ]
-      }
+  data() {
+    return {
+      headers: [
+        { text: "Campo", value: "campo" },
+        { text: "Conteúdo", value: "conteudo" }
+      ],
+      classeInfo: [
+        { campo: "Nível", conteudo: this.p.objeto.dados.nivel },
+        { campo: "Código", conteudo: this.p.objeto.dados.codigo },
+        { campo: "Título", conteudo: this.p.objeto.dados.titulo },
+        { campo: "Descrição", conteudo: this.p.objeto.dados.descricao }
+      ]
+    };
   }
-}
+};
 </script>
 
 <style>

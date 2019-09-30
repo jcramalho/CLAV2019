@@ -1,17 +1,17 @@
 <template>
-    <v-row>
-      <v-col>
-        <Info />
-        <Operacoes />
-        <Noticias />
-      </v-col>
+  <v-row>
+    <v-col>
+      <Info />
+      <Operacoes />
+      <Noticias />
+    </v-col>
 
-      <v-col>
-        <DocumentacaoApoio />
-        <Registo />
-        <Gestao v-if="this.$store.state.name != ''"/>
-      </v-col>
-    </v-row>
+    <v-col>
+      <DocumentacaoApoio />
+      <Registo />
+      <Gestao v-if="this.$store.state.name != ''" />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
