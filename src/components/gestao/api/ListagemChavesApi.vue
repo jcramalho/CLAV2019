@@ -402,9 +402,7 @@ export default {
       this.dialog = true;
     },
     desativar(item) {
-      this.$request("put", "/api/chaves/desativar", {
-        id: item.id
-      })
+      this.$request("put", "/api/chaves/desativar/" + item.id)
         .then(res => {
           if (res.data === "Chave API desativada com sucesso!") {
             this.text = "Chave API desativada com sucesso!";
@@ -427,9 +425,7 @@ export default {
         });
     },
     ativar(item) {
-      this.$request("put", "/api/chaves/ativar", {
-        id: item.id
-      })
+      this.$request("put", "/api/chaves/ativar/" + item.id)
         .then(res => {
           if (res.data === "Chave API ativada com sucesso!") {
             this.text = "Chave API ativada com sucesso!";
@@ -452,9 +448,7 @@ export default {
         });
     },
     eliminar(item) {
-      this.$request("delete", "/api/chaves/eliminar", {
-        id: item.id
-      })
+      this.$request("delete", "/api/chaves/eliminar/" + item.id)
         .then(res => {
           if (res.data === "Chave API eliminada com sucesso!") {
             this.text = "Chave API eliminada com sucesso!";
@@ -481,12 +475,15 @@ export default {
     },
     guardar() {
       if (this.$refs.form.validate()) {
-        this.$request("put", "/api/chaves/atualizarMultiplos", {
-          id: this.editedItem.id,
-          name: this.editedItem.name,
-          contactInfo: this.editedItem.contactInfo,
-          entity: this.editedItem.entity
-        })
+        this.$request(
+          "put",
+          "/api/chaves/atualizarMultiplos/" + this.editedItem.id,
+          {
+            name: this.editedItem.name,
+            contactInfo: this.editedItem.contactInfo,
+            entity: this.editedItem.entity
+          }
+        )
           .then(res => {
             if (res.data === "Chave API atualizada com sucesso!") {
               this.text = "Chave API atualizada com sucesso!";

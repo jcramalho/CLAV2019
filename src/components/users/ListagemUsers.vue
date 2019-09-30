@@ -301,10 +301,7 @@ export default {
       this.dialog = true;
     },
     desativar(item) {
-      this.$request("put", "/api/users/desativar", {
-        token: this.$store.state.token,
-        id: item.id
-      })
+      this.$request("put", "/api/users/desativar/" + item.id)
         .then(res => {
           this.text = res.data;
           this.color = "success";
@@ -320,10 +317,7 @@ export default {
         });
     },
     eliminar(item) {
-      this.$request("delete", "/api/users/eliminar", {
-        token: this.$store.state.token,
-        id: item.id
-      })
+      this.$request("delete", "/api/users/eliminar/" + item.id)
         .then(res => {
           this.text = res.data;
           this.color = "success";
@@ -367,13 +361,16 @@ export default {
             parsedType = -1;
             break;
         }
-        this.$request("put", "/api/users/atualizarMultiplos", {
-          id: this.editedItem.id,
-          nome: this.editedItem.name,
-          email: this.editedItem.email,
-          entidade: "ent_" + this.editedItem.entidade,
-          level: parsedType
-        })
+        this.$request(
+          "put",
+          "/api/users/atualizarMultiplos/" + this.editedItem.id,
+          {
+            nome: this.editedItem.name,
+            email: this.editedItem.email,
+            entidade: "ent_" + this.editedItem.entidade,
+            level: parsedType
+          }
+        )
           .then(res => {
             this.text = res.data;
             this.color = "success";

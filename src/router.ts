@@ -35,13 +35,13 @@ export default new Router({
       path: "/classes/showPedido/:idPedido",
       name: "showPedidoClasse",
       component: () => import("./views/classes/ClassesShowPedido.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/classes/criar",
       name: "criaClasse",
       component: () => import("./views/classes/ClassesCria.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     // Routes das entidades
     {
@@ -54,7 +54,7 @@ export default new Router({
       path: "/entidades/criar",
       name: "criaEntidade",
       component: () => import("./views/entidades/EntidadesCria.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/entidades/:idEntidade",
@@ -73,7 +73,7 @@ export default new Router({
       path: "/legislacao/criar",
       name: "criaLegislacao",
       component: () => import("./views/legislacao/LegislacaoCria.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/legislacao/:idLegislacao",
@@ -92,31 +92,31 @@ export default new Router({
       path: "/ts/criar",
       name: "criaTsTipo",
       component: () => import("./views/tabSel/TabSelCria.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/ts/criar/organizacional",
       name: "criaTsOrg",
       component: () => import("./views/tabSel/TabSelCriaOrg.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/ts/criar/pluriorganizacional",
       name: "criaTsPluri",
       component: () => import("./views/tabSel/TabSelCriaPluri.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/ts/passos",
       name: "passosTs",
       component: () => import("./views/tabSel/TabSelPassos.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/ts/importar/csv",
       name: "importaCSV",
       component: () => import("./views/tabSel/TabSelImportaCSV.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     // Routes dos termos de indice
     {
@@ -150,7 +150,7 @@ export default new Router({
       name: "importarAutosEliminacao",
       component: () =>
         import("./views/autosEliminacao/AutosEliminacaoImportar.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [3, 4, 5, 6, 7] }
     },
     {
       path: "/autosEliminacao/:idAE",
@@ -170,7 +170,7 @@ export default new Router({
       path: "/tipologias/criar",
       name: "criaTipologia",
       component: () => import("./views/tipologias/TipologiasCria.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/tipologias/:idTipologia",
@@ -183,38 +183,38 @@ export default new Router({
       path: "/pedidos",
       name: "pedidos",
       component: () => import("./views/pedidos/Pedidos.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/pedidos/submissao",
       name: "submissaoPedido",
       component: () => import("./views/pedidos/PedidosSubmissao.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/pedidos/:idPedido",
       name: "consultaPedido",
       component: () => import("./views/pedidos/PedidosConsulta.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/pedidos/analisar/:idPedido",
       name: "analisePedido",
       component: () => import("./views/pedidos/PedidosAnalise.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     // Routes dos pendentes (trabalho guardado)
     {
       path: "/pendentes",
       name: "pendentes",
       component: () => import("./views/pendentes/Pendentes.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     {
       path: "/pendentes/continuar/:idPendente",
       name: "continuaPendente",
       component: () => import("./views/pendentes/PendentesContinuacao.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 4, 5, 6, 7] }
     },
     // Routes da gestão de utilizadores
     {
@@ -227,7 +227,7 @@ export default new Router({
       path: "/users/registo",
       name: "registo",
       component: () => import("./views/users/Registo.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [6, 7] }
     },
     {
       path: "/users/login",
@@ -251,13 +251,13 @@ export default new Router({
       path: "/users/listagem",
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [6, 7] }
     },
     {
       path: "/users/registoParaEntidade",
       name: "registoParaEntidade",
       component: () => import("./views/users/RegistoParaEntidade.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [6, 7] }
     },
     //cartao cidadao
     {
@@ -271,14 +271,14 @@ export default new Router({
       path: "/gestao/metrica",
       name: "metrica",
       component: () => import("./views/gestao/Metrica.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [6, 7] }
     },
     //Chaves API
     {
       path: "/gestao/api/listagem",
       name: "listagemApi",
       component: () => import("./views/gestao/api/ListagemChavesApi.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [7] }
     },
     {
       path: "/gestao/api/registo",
@@ -303,13 +303,13 @@ export default new Router({
       path: "/invariantes",
       name: "invariantes",
       component: () => import("./views/invariantes/Invariantes.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [6, 7] }
     },
     {
       path: "/invariantes/testarTodos",
       name: "testarTodosInvariantes",
       component: () => import("./views/invariantes/TestarTodos.vue"),
-      meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
+      meta: { levels: [6, 7] }
     }
   ]
 });

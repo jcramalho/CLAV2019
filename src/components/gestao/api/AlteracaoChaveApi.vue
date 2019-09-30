@@ -45,9 +45,7 @@ export default {
       this.snackbar = true;
       this.done = true;
     } else {
-      await this.$request("put", "/api/chaves/atualizarChave/", {
-        id: res.data._id
-      })
+      await this.$request("put", "/api/chaves/atualizarChave/" + res.data._id)
         .then(res => {
           if (res.data === "Chave API renovada com sucesso!") {
             this.text = "Email enviado com sucesso!";
