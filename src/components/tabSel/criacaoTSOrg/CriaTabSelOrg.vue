@@ -31,44 +31,46 @@
       </v-stepper-step>
       <v-stepper-content step="1">
         <v-expansion-panels>
-        <v-expansion-panel>
-          <v-expansion-panel-header>Selecione as Tipologias de Entidade a que pertence</v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-card class="ma-4">
-              <v-row>
-                <v-col cols="2" class="info-label">
-                  Tipologias da entidade
-                </v-col>
-                <v-col>
-                  <v-data-table
-                    :items="tipEnt"
-                    class="elevation-1"
-                    hide-default-footer
-                  >
-                    <template v-slot:item="props">
-                      <tr>
-                        <td>{{ props.item.sigla }}</td>
-                        <td>{{ props.item.designacao }}</td>
-                      </tr>
-                    </template>
-                  </v-data-table>
-                </v-col>
-              </v-row>
-              <DesSelTip
-                :tipologias="tipSel"
-                @unselectTipologia="unselectTipologia($event)"
-              />
+          <v-expansion-panel>
+            <v-expansion-panel-header>
+              Selecione as Tipologias de Entidade a que pertence
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-card class="ma-4">
+                <v-row>
+                  <v-col cols="2" class="info-label">
+                    Tipologias da entidade
+                  </v-col>
+                  <v-col>
+                    <v-data-table
+                      :items="tipEnt"
+                      class="elevation-1"
+                      hide-default-footer
+                    >
+                      <template v-slot:item="props">
+                        <tr>
+                          <td>{{ props.item.sigla }}</td>
+                          <td>{{ props.item.designacao }}</td>
+                        </tr>
+                      </template>
+                    </v-data-table>
+                  </v-col>
+                </v-row>
+                <DesSelTip
+                  :tipologias="tipSel"
+                  @unselectTipologia="unselectTipologia($event)"
+                />
 
-              <hr style="border-top: 1px dashed #dee2f8;" />
+                <hr style="border-top: 1px dashed #dee2f8;" />
 
-              <SelTip
-                :tipologiasReady="tipologiasReady"
-                :tipologias="tipologias"
-                @selectTipologia="selectTipologia($event)"
-              />
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+                <SelTip
+                  :tipologiasReady="tipologiasReady"
+                  :tipologias="tipologias"
+                  @selectTipologia="selectTipologia($event)"
+                />
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
         </v-expansion-panels>
         <v-btn
           color="primary"
@@ -119,24 +121,26 @@
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header class="subtitle-1">
-                Selecione os Processos de Negócio Comuns
-              </v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaProcessosComuns
-                  v-if="listaProcComunsReady"
-                  v-bind:lista="listaProcComuns"
-                  @contadorProcSelCom="contadorProcSelCom($event)"
-                  @contadorProcPreSelCom="contadorProcPreSelCom($event)"
-                  @procPreSelResTravCom="procPreSelResTravCom($event)"
-                  @contadorProcSelComSistema="contadorProcSelComSistema($event)"
-                  @contadorProcSelComUtilizador="
-                    contadorProcSelComUtilizador($event)
-                  "
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="subtitle-1">
+                  Selecione os Processos de Negócio Comuns
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaProcessosComuns
+                    v-if="listaProcComunsReady"
+                    v-bind:lista="listaProcComuns"
+                    @contadorProcSelCom="contadorProcSelCom($event)"
+                    @contadorProcPreSelCom="contadorProcPreSelCom($event)"
+                    @procPreSelResTravCom="procPreSelResTravCom($event)"
+                    @contadorProcSelComSistema="
+                      contadorProcSelComSistema($event)
+                    "
+                    @contadorProcSelComUtilizador="
+                      contadorProcSelComUtilizador($event)
+                    "
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -200,26 +204,28 @@
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header class="subtitle-1">
-                Selecione os Processos de Negócio Específicos
-              </v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaProcessosEspecificos
-                  v-if="listaProcEspReady"
-                  v-bind:lista="listaProcEsp"
-                  v-bind:listaPreSel="procPreSelResTravComum"
-                  @contadorProcSelEsp="contadorProcSelEsp($event)"
-                  @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
-                  @procPreSelResTravEsp="procPreSelResTravEsp($event)"
-                  @contadorProcSelEspSistema="contadorProcSelEspSistema($event)"
-                  @contadorProcSelEspUtilizador="
-                    contadorProcSelEspUtilizador($event)
-                  "
-                />
-                <div v-else>a carregar</div>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="subtitle-1">
+                  Selecione os Processos de Negócio Específicos
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaProcessosEspecificos
+                    v-if="listaProcEspReady"
+                    v-bind:lista="listaProcEsp"
+                    v-bind:listaPreSel="procPreSelResTravComum"
+                    @contadorProcSelEsp="contadorProcSelEsp($event)"
+                    @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
+                    @procPreSelResTravEsp="procPreSelResTravEsp($event)"
+                    @contadorProcSelEspSistema="
+                      contadorProcSelEspSistema($event)
+                    "
+                    @contadorProcSelEspUtilizador="
+                      contadorProcSelEspUtilizador($event)
+                    "
+                  />
+                  <div v-else>a carregar</div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -277,28 +283,28 @@
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header class="subtitle-1">
-                Selecione os Processos de Negócio Específicos Restantes
-              </v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaProcessosEspRestantes
-                  v-if="listaProcEspResReady"
-                  v-bind:lista="listaProcEspRes"
-                  v-bind:listaPreSel="procPreSelEspRestantes"
-                  @contadorProcSelRes="contadorProcSelRes($event)"
-                  @procPreSelResTravRes="procPreSelResTravRes($event)"
-                  @contadorProcPreSelRes="contadorProcPreSelRes($event)"
-                  @contadorProcSelEspResSistema="
-                    contadorProcSelEspResSistema($event)
-                  "
-                  @contadorProcSelEspResUtilizador="
-                    contadorProcSelEspResUtilizador($event)
-                  "
-                />
-                <div v-else>a carregar</div>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="subtitle-1">
+                  Selecione os Processos de Negócio Específicos Restantes
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaProcessosEspRestantes
+                    v-if="listaProcEspResReady"
+                    v-bind:lista="listaProcEspRes"
+                    v-bind:listaPreSel="procPreSelEspRestantes"
+                    @contadorProcSelRes="contadorProcSelRes($event)"
+                    @procPreSelResTravRes="procPreSelResTravRes($event)"
+                    @contadorProcPreSelRes="contadorProcPreSelRes($event)"
+                    @contadorProcSelEspResSistema="
+                      contadorProcSelEspResSistema($event)
+                    "
+                    @contadorProcSelEspResUtilizador="
+                      contadorProcSelEspResUtilizador($event)
+                    "
+                  />
+                  <div v-else>a carregar</div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -361,20 +367,20 @@
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header class="subtitle-1">
-                Selecione os Processos de Negócio Restantes
-              </v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaProcessosUltimos
-                  v-if="listaProcUltReady"
-                  v-bind:lista="listaProcUlt"
-                  v-bind:listaPreSel="procPreSelUltimos"
-                  @contadorProcSelUlt="contadorProcSelUlt($event)"
-                  @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="subtitle-1">
+                  Selecione os Processos de Negócio Restantes
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaProcessosUltimos
+                    v-if="listaProcUltReady"
+                    v-bind:lista="listaProcUlt"
+                    v-bind:listaPreSel="procPreSelUltimos"
+                    @contadorProcSelUlt="contadorProcSelUlt($event)"
+                    @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -413,28 +419,28 @@
 
       <v-stepper-step :complete="stepNo > 7" step="7"
         >Alterações na parte descritiva
-        <small
-          >Adicionar, remover ou editar Notas de Aplicação (NA),
-          Exclusão (NE), Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) 
-          nos processos selecionados</small
-        >
+        <small>
+          Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão (NE),
+          Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) nos
+          processos selecionados
+        </small>
       </v-stepper-step>
       <v-stepper-content step="7">
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header class="subtitle-1">
-                Lista de Processos selecionados
-              </v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaParteDescritiva
-                  v-if="listaTotalProcSelReady"
-                  v-bind:lista="listaTotalProcSel"
-                  @listaTotalSelUpdate="listaTotalSelUpdate($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="subtitle-1">
+                  Lista de Processos selecionados
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaParteDescritiva
+                    v-if="listaTotalProcSelReady"
+                    v-bind:lista="listaTotalProcSel"
+                    @listaTotalSelUpdate="listaTotalSelUpdate($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -464,21 +470,31 @@
       >
       <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
         >Eliminar TS
-          <v-dialog v-model="eliminarTabela" persistent max-width="320">
-                <v-card>
-                    <v-card-title class="title">Eliminar Tabela</v-card-title>
-                    <v-card-text>
-                      <p>Pretende eliminar todo o trabalho realizado?</p>
-                    </v-card-text>
-                    <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="red" text @click="eliminarTabela = false">Cancelar</v-btn>
-                    <v-btn color="primary" text @click="eliminarTS(); eliminarTabela=false;">Confirmar</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-          </v-btn
-      >
+        <v-dialog v-model="eliminarTabela" persistent max-width="320">
+          <v-card>
+            <v-card-title class="title">Eliminar Tabela</v-card-title>
+            <v-card-text>
+              <p>Pretende eliminar todo o trabalho realizado?</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red" text @click="eliminarTabela = false">
+                Cancelar
+              </v-btn>
+              <v-btn
+                color="primary"
+                text
+                @click="
+                  eliminarTS();
+                  eliminarTabela = false;
+                "
+              >
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-btn>
     </v-stepper>
 
     <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
@@ -503,14 +519,11 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 import ListaProcessosComuns from "@/components/tabSel/criacaoTSOrg/ListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
-import ListaParteDescritiva from "@/components/tabSel/criacaoTSOrg/ListaProcSel.vue"
+import ListaParteDescritiva from "@/components/tabSel/criacaoTSOrg/ListaProcSel.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
@@ -542,7 +555,7 @@ export default {
       stepNo: null,
       // Valor da barra de progresso
       valorBarra: 0,
-      // Se a entidade do utilizador for a DGLAB, o primeiro passo deve ser a seleção 
+      // Se a entidade do utilizador for a DGLAB, o primeiro passo deve ser a seleção
       // da entidade que se quer fazer a TS. Pois a DGLAB irá fazer TS para outras entidades.
       entidadeDGLAB: false,
       entidades: [],
@@ -621,24 +634,25 @@ export default {
       // Lista de todos os processos selecionados em todos os passos
       listaTotalProcSel: [],
       listaTotalProcSelReady: false,
-      listaTotalProcSelUpdate: [],
+      listaTotalProcSelUpdate: []
     };
   },
   methods: {
     // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
     infoUserEnt: async function() {
-      var resUser = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
+      var resUser = await this.$request(
+        "get",
+        "/api/users/listarToken/" + this.$store.state.token
       );
-      var resEnt = await axios.get(
-        lhost + "/api/entidades/" + resUser.data.entidade
+      var resEnt = await this.$request(
+        "get",
+        "/api/entidades/" + resUser.data.entidade
       );
-      if(resUser.data.entidade === "ent_DGLAB"){
+      if (resUser.data.entidade === "ent_DGLAB") {
         this.stepNo = 0;
         this.entidadeDGLAB = true;
         this.loadEntidades();
-      }
-      else {
+      } else {
         this.tabelaSelecao.designacao = resEnt.data.designacao;
         this.tabelaSelecao.idEntidade = resUser.data.entidade;
         this.stepNo = 1;
@@ -646,12 +660,13 @@ export default {
       }
     },
     // Vai à API buscar todas as entidades
-    loadEntidades: async function(){
+    loadEntidades: async function() {
       try {
-        var response = await axios.get(lhost + "/api/entidades");
-        console.log(response.data)
+        var response = await this.$request("get", "/api/entidades");
+        console.log(response.data);
         for (var i = 0; i < response.data.length; i++) {
-          this.entidades[i] = response.data[i].sigla + " - " + response.data[i].designacao;
+          this.entidades[i] =
+            response.data[i].sigla + " - " + response.data[i].designacao;
         }
         this.entidades.sort();
         this.entidadesReady = true;
@@ -671,7 +686,7 @@ export default {
     // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
     loadTipologias: async function() {
       try {
-        var response = await axios.get(lhost + "/api/tipologias/");
+        var response = await this.$request("get", "/api/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -682,11 +697,9 @@ export default {
         this.tipologiasReady = true;
 
         // Tipologias onde a entidade se encontra
-        var tipologias = await axios.get(
-          lhost +
-            "/api/entidades/" +
-            this.tabelaSelecao.idEntidade +
-            "/tipologias"
+        var tipologias = await this.$request(
+          "get",
+          "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
         this.tipEnt = tipologias.data.map(function(item) {
           return {
@@ -710,7 +723,7 @@ export default {
     loadProcComuns: async function() {
       try {
         if (!this.listaProcComunsReady) {
-          var response = await axios.get(lhost + "/api/classes?tipo=comum");
+          var response = await this.$request("get", "/api/classes?tipo=comum");
           for (var i = 0; i < response.data.length; i++) {
             if (response.data[i].transversal === "S") {
               this.listaProcComuns.push({
@@ -756,7 +769,6 @@ export default {
         if (!this.listaProcEspReady) {
           this.tipSel = this.tipSel.concat(this.tipEnt);
           var url =
-            lhost +
             "/api/classes?tipo=especifico&ents=" +
             this.tabelaSelecao.idEntidade;
           if (this.tipSel.length || this.tipEnt.length) {
@@ -768,7 +780,7 @@ export default {
             }
             url += this.tipSel[i].id;
           }
-          var response = await axios.get(url);
+          var response = await this.$request("get", url);
           for (var x = 0; x < response.data.length; x++) {
             if (response.data[x].transversal === "S") {
               this.listaProcEsp.push({
@@ -829,8 +841,9 @@ export default {
     loadProcEspRestantes: async function() {
       try {
         if (!this.listaProcEspResReady) {
-          var response = await axios.get(
-            lhost + "/api/classes?tipo=especifico"
+          var response = await this.$request(
+            "get",
+            "/api/classes?tipo=especifico"
           );
           this.listaTotalProcEsp = response.data;
           for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
@@ -909,7 +922,7 @@ export default {
     // Contador dos processos selecionados restantes
     contadorProcSelRes: function(procSelec) {
       this.numProcSelRes = procSelec.length;
-      this.tabelaSelecao.procEspRestantes = procSelec
+      this.tabelaSelecao.procEspRestantes = procSelec;
     },
     // Lista dos processos pre selecionados especificos restantes, resultantes das travessias dos PNs especificos
     procPreSelResTravRes: function(procPreSelResTravRes) {
@@ -1018,10 +1031,12 @@ export default {
       this.numProcPreSelUlt = lista.length;
     },
     parseProcessosSel: function() {
-      if( !this.listaTotalProcSel.length ){
-        this.listaTotalProcSel = this.listaTotalProcSel.concat(this.tabelaSelecao.procComuns)
-          .concat(this.tabelaSelecao.procEspecificos).concat(this.tabelaSelecao.procEspRestantes)
-          .concat(this.tabelaSelecao.procUltimos)
+      if (!this.listaTotalProcSel.length) {
+        this.listaTotalProcSel = this.listaTotalProcSel
+          .concat(this.tabelaSelecao.procComuns)
+          .concat(this.tabelaSelecao.procEspecificos)
+          .concat(this.tabelaSelecao.procEspRestantes)
+          .concat(this.tabelaSelecao.procUltimos);
         this.listaTotalProcSelReady = true;
       }
     },
@@ -1031,8 +1046,9 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
+        var userBD = await this.$request(
+          "get",
+          "/api/users/listarToken/" + this.$store.state.token
         );
 
         var tsObj = {
@@ -1058,7 +1074,11 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+        var response = await this.$request(
+          "post",
+          "/api/pedidos",
+          pedidoParams
+        );
         this.mensagemPedidoCriadoOK += response.data.codigo;
         this.pedidoCriado = true;
       } catch (error) {
@@ -1072,17 +1092,20 @@ export default {
     // Guarda o trabalho de criação de uma TS
     guardarTrabalho: async function() {
       try {
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
+        var userBD = await this.$request(
+          "get",
+          "/api/users/listarToken/" + this.$store.state.token
         );
 
         this.tabelaSelecao.tipologias = this.tipSel.concat(this.tipEnt);
 
-        if(this.listaTotalProcSelUpdate.length){
-          this.listaTotalProcSel = this.listaTotalProcSelUpdate
+        if (this.listaTotalProcSelUpdate.length) {
+          this.listaTotalProcSel = this.listaTotalProcSelUpdate;
         }
 
-        this.tabelaSelecao.listaProcSel = JSON.stringify(this.listaTotalProcSel);
+        this.tabelaSelecao.listaProcSel = JSON.stringify(
+          this.listaTotalProcSel
+        );
 
         var pendenteParams = {
           numInterv: 1,
@@ -1095,8 +1118,9 @@ export default {
         };
         console.log(pendenteParams.objeto);
 
-        var response = await axios.post(
-          lhost + "/api/pendentes",
+        var response = await this.$request(
+          "post",
+          "/api/pendentes",
           pendenteParams
         );
         this.pendenteGuardado = true;

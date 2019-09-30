@@ -86,9 +86,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-const axios = require("axios");
-
 export default {
   props: ["lista", "listaPreSel"],
   data: () => ({
@@ -113,9 +110,9 @@ export default {
       }
     ],
     procsFooterProps: {
-        "items-per-page-text": "Processos por página",
-        "items-per-page-options": [10, 20, 100, -1],
-        "items-per-page-all-text": "Todos"
+      "items-per-page-text": "Processos por página",
+      "items-per-page-options": [10, 20, 100, -1],
+      "items-per-page-all-text": "Todos"
     },
     // Lista dos processos especificos resultantes das travessias
     listaResEspecificos: [],
@@ -253,7 +250,7 @@ export default {
       this.preSel = this.listaPreSel;
 
       // Vai a API de dados buscar todos os cálculos das travessias
-      var res = await axios.get(lhost + "/api/travessia");
+      var res = await this.$request("get", "/api/travessia");
       var trav = res.data;
       for (var j = 0; j < trav.length; j++) {
         this.travessias[trav[j].processo] = trav[j].travessia;

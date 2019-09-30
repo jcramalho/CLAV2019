@@ -7,52 +7,54 @@
       </v-stepper-step>
       <v-stepper-content step="1">
         <v-expansion-panels>
-        <v-expansion-panel>
-          <v-expansion-panel-header>Selecione as Tipologias de Entidade a que pertence</v-expansion-panel-header>
-          <v-expansion-panel-content class="expansion-panel-heading">
-            <v-card style="padding-top:30px;">
-              <v-layout>
-                <v-flex xs2>
-                  <v-subheader
-                    class="info-label"
-                    style="border-color: white; border-style:solid; color: #1A237E;"
-                    >Tipologias da entidade:</v-subheader
-                  >
-                </v-flex>
-                <v-flex xs9>
-                  <v-data-table
-                    :headers="[
-                      { text: 'Sigla', align: 'left', value: 'sigla' },
-                      { text: 'Designação', value: 'designacao' }
-                    ]"
-                    :items="tipEnt"
-                    class="elevation-1"
-                    hide-default-footer
-                  >
-                    <template v-slot:item="props">
-                      <tr>
-                        <td>{{ props.item.sigla }}</td>
-                        <td>{{ props.item.designacao }}</td>
-                      </tr>
-                    </template>
-                  </v-data-table>
-                </v-flex>
-              </v-layout>
-              <DesSelTip
-                :tipologias="tipSel"
-                @unselectTipologia="unselectTipologia($event)"
-              />
+          <v-expansion-panel>
+            <v-expansion-panel-header>
+              Selecione as Tipologias de Entidade a que pertence
+            </v-expansion-panel-header>
+            <v-expansion-panel-content class="expansion-panel-heading">
+              <v-card style="padding-top:30px;">
+                <v-layout>
+                  <v-flex xs2>
+                    <v-subheader
+                      class="info-label"
+                      style="border-color: white; border-style:solid; color: #1A237E;"
+                      >Tipologias da entidade:</v-subheader
+                    >
+                  </v-flex>
+                  <v-flex xs9>
+                    <v-data-table
+                      :headers="[
+                        { text: 'Sigla', align: 'left', value: 'sigla' },
+                        { text: 'Designação', value: 'designacao' }
+                      ]"
+                      :items="tipEnt"
+                      class="elevation-1"
+                      hide-default-footer
+                    >
+                      <template v-slot:item="props">
+                        <tr>
+                          <td>{{ props.item.sigla }}</td>
+                          <td>{{ props.item.designacao }}</td>
+                        </tr>
+                      </template>
+                    </v-data-table>
+                  </v-flex>
+                </v-layout>
+                <DesSelTip
+                  :tipologias="tipSel"
+                  @unselectTipologia="unselectTipologia($event)"
+                />
 
-              <hr style="border-top: 1px dashed #dee2f8;" />
+                <hr style="border-top: 1px dashed #dee2f8;" />
 
-              <SelTip
-                :tipologiasReady="tipologiasReady"
-                :tipologias="tipologias"
-                @selectTipologia="selectTipologia($event)"
-              />
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+                <SelTip
+                  :tipologiasReady="tipologiasReady"
+                  :tipologias="tipologias"
+                  @selectTipologia="selectTipologia($event)"
+                />
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
         </v-expansion-panels>
         <v-btn
           color="primary"
@@ -102,23 +104,27 @@
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header>Selecione os Processos de Negócio Comuns</v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaProcessosComuns
-                  v-if="listaProcComunsReady"
-                  v-bind:lista="listaProcComuns"
-                  tipo="Processos Comuns"
-                  @contadorProcSelCom="contadorProcSelCom($event)"
-                  @contadorProcPreSelCom="contadorProcPreSelCom($event)"
-                  @procPreSelResTravCom="procPreSelResTravCom($event)"
-                  @contadorProcSelComSistema="contadorProcSelComSistema($event)"
-                  @contadorProcSelComUtilizador="
-                    contadorProcSelComUtilizador($event)
-                  "
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  Selecione os Processos de Negócio Comuns
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaProcessosComuns
+                    v-if="listaProcComunsReady"
+                    v-bind:lista="listaProcComuns"
+                    tipo="Processos Comuns"
+                    @contadorProcSelCom="contadorProcSelCom($event)"
+                    @contadorProcPreSelCom="contadorProcPreSelCom($event)"
+                    @procPreSelResTravCom="procPreSelResTravCom($event)"
+                    @contadorProcSelComSistema="
+                      contadorProcSelComSistema($event)
+                    "
+                    @contadorProcSelComUtilizador="
+                      contadorProcSelComUtilizador($event)
+                    "
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -182,25 +188,29 @@
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header>Selecione os Processos de Negócio Específicos</v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaProcessosEspecificos
-                  v-if="listaProcEspReady"
-                  v-bind:lista="listaProcEsp"
-                  tipo="Processos Especificos"
-                  v-bind:listaPreSel="procPreSelResTravComum"
-                  @contadorProcSelEsp="contadorProcSelEsp($event)"
-                  @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
-                  @procPreSelResTravEsp="procPreSelResTravEsp($event)"
-                  @contadorProcSelEspSistema="contadorProcSelEspSistema($event)"
-                  @contadorProcSelEspUtilizador="
-                    contadorProcSelEspUtilizador($event)
-                  "
-                />
-                <div v-else>a carregar</div>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  Selecione os Processos de Negócio Específicos
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaProcessosEspecificos
+                    v-if="listaProcEspReady"
+                    v-bind:lista="listaProcEsp"
+                    tipo="Processos Especificos"
+                    v-bind:listaPreSel="procPreSelResTravComum"
+                    @contadorProcSelEsp="contadorProcSelEsp($event)"
+                    @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
+                    @procPreSelResTravEsp="procPreSelResTravEsp($event)"
+                    @contadorProcSelEspSistema="
+                      contadorProcSelEspSistema($event)
+                    "
+                    @contadorProcSelEspUtilizador="
+                      contadorProcSelEspUtilizador($event)
+                    "
+                  />
+                  <div v-else>a carregar</div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -258,27 +268,29 @@
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header>Selecione os Processos de Negócio Específicos Restantes</v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaProcessosEspRestantes
-                  v-if="listaProcEspResReady"
-                  v-bind:lista="listaProcEspRes"
-                  tipo="Processos Especificos"
-                  v-bind:listaPreSel="procPreSelEspRestantes"
-                  @contadorProcSelRes="contadorProcSelRes($event)"
-                  @procPreSelResTravRes="procPreSelResTravRes($event)"
-                  @contadorProcPreSelRes="contadorProcPreSelRes($event)"
-                  @contadorProcSelEspResSistema="
-                    contadorProcSelEspResSistema($event)
-                  "
-                  @contadorProcSelEspResUtilizador="
-                    contadorProcSelEspResUtilizador($event)
-                  "
-                />
-                <div v-else>a carregar</div>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  Selecione os Processos de Negócio Específicos Restantes
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaProcessosEspRestantes
+                    v-if="listaProcEspResReady"
+                    v-bind:lista="listaProcEspRes"
+                    tipo="Processos Especificos"
+                    v-bind:listaPreSel="procPreSelEspRestantes"
+                    @contadorProcSelRes="contadorProcSelRes($event)"
+                    @procPreSelResTravRes="procPreSelResTravRes($event)"
+                    @contadorProcPreSelRes="contadorProcPreSelRes($event)"
+                    @contadorProcSelEspResSistema="
+                      contadorProcSelEspResSistema($event)
+                    "
+                    @contadorProcSelEspResUtilizador="
+                      contadorProcSelEspResUtilizador($event)
+                    "
+                  />
+                  <div v-else>a carregar</div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -341,19 +353,21 @@
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header>Selecione os Processos de Negócio Restantes</v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaProcessosUltimos
-                  v-if="listaProcUltReady"
-                  v-bind:lista="listaProcUlt"
-                  tipo="Processos Ultimos"
-                  v-bind:listaPreSel="procPreSelUltimos"
-                  @contadorProcSelUlt="contadorProcSelUlt($event)"
-                  @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  Selecione os Processos de Negócio Restantes
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaProcessosUltimos
+                    v-if="listaProcUltReady"
+                    v-bind:lista="listaProcUlt"
+                    tipo="Processos Ultimos"
+                    v-bind:listaPreSel="procPreSelUltimos"
+                    @contadorProcSelUlt="contadorProcSelUlt($event)"
+                    @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -392,26 +406,28 @@
 
       <v-stepper-step :complete="stepNo > 7" step="7"
         >Alterações na parte descritiva
-        <small
-          >Adicionar, remover ou editar Notas de Aplicação (NA),
-          Exclusão (NE), Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) 
-          nos processos selecionados</small
-        >
+        <small>
+          Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão (NE),
+          Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) nos
+          processos selecionados
+        </small>
       </v-stepper-step>
       <v-stepper-content step="7">
         <v-layout wrap>
           <v-flex xs10>
             <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header>Lista de Processos selecionados</v-expansion-panel-header>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <ListaParteDescritiva
-                  v-if="listaTotalProcSelReady"
-                  v-bind:lista="listaTotalProcSel"
-                  @listaTotalSelUpdate="listaTotalSelUpdate($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  Lista de Processos selecionados
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="expansion-panel-heading">
+                  <ListaParteDescritiva
+                    v-if="listaTotalProcSelReady"
+                    v-bind:lista="listaTotalProcSel"
+                    @listaTotalSelUpdate="listaTotalSelUpdate($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
           </v-flex>
         </v-layout>
@@ -433,28 +449,39 @@
         >
       </v-stepper-content>
 
-
-      <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
-        >Submeter</v-btn
-      >
+      <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()">
+        Submeter
+      </v-btn>
       <v-btn color="primary" v-else @click="guardarTrabalho()"
         >Guardar trabalho</v-btn
       >
-      <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
-        >Eliminar TS
-            <v-dialog v-model="eliminarTabela" persistent max-width="290">
-                <v-card>
-                    <v-card-title class="headline">Eliminar Tabela</v-card-title>
-                    <v-card-text>Pretende eliminar todo o trabalho realizado?</v-card-text>
-                    <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="red" text @click="eliminarTabela = false">Cancelar</v-btn>
-                    <v-btn color="primary" text @click="eliminarTS(); eliminarTabela=false;">Confirmar</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-        </v-btn
-      >
+      <v-btn dark text color="red darken-4" @click="eliminarTabela = true">
+        Eliminar TS
+        <v-dialog v-model="eliminarTabela" persistent max-width="290">
+          <v-card>
+            <v-card-title class="headline">Eliminar Tabela</v-card-title>
+            <v-card-text>
+              Pretende eliminar todo o trabalho realizado?
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red" text @click="eliminarTabela = false">
+                Cancelar
+              </v-btn>
+              <v-btn
+                color="primary"
+                text
+                @click="
+                  eliminarTS();
+                  eliminarTabela = false;
+                "
+              >
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-btn>
     </v-stepper>
 
     <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
@@ -479,14 +506,11 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 import ListaProcessosComuns from "@/components/tabSel/criacaoTSOrg/ListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
-import ListaParteDescritiva from "@/components/tabSel/criacaoTSOrg/ListaProcSel.vue"
+import ListaParteDescritiva from "@/components/tabSel/criacaoTSOrg/ListaProcSel.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
@@ -585,7 +609,7 @@ export default {
       // Lista de todos os processos selecionados em todos os passos
       listaTotalProcSel: [],
       listaTotalProcSelReady: false,
-      listaTotalProcSelUpdate: [],
+      listaTotalProcSelUpdate: []
     };
   },
   methods: {
@@ -596,7 +620,7 @@ export default {
     // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
     loadTipologias: async function() {
       try {
-        var response = await axios.get(lhost + "/api/tipologias/");
+        var response = await this.$request("get", "/api/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -607,11 +631,9 @@ export default {
         this.tipologiasReady = true;
 
         // Tipologias onde a entidade se encontra
-        var tipologias = await axios.get(
-          lhost +
-            "/api/entidades/" +
-            this.tabelaSelecao.idEntidade +
-            "/tipologias"
+        var tipologias = await this.$request(
+          "get",
+          "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
         this.tipEnt = tipologias.data.map(function(item) {
           return {
@@ -643,49 +665,48 @@ export default {
     loadProcComuns: async function() {
       try {
         if (!this.listaProcComunsReady) {
-          var response = await axios.get(lhost + "/api/classes?tipo=comum");
+          var response = await this.$request("get", "/api/classes?tipo=comum");
           for (var i = 0; i < response.data.length; i++) {
-              for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
-                var estavaGuardado = false;
-                  if (
-                    this.tabelaSelecao.procComuns[j].classe ==
-                    response.data[i].codigo 
-                  ) {
-                    if(response.data[i].transversal === "S") {
-                      this.listaProcComuns.push({
-                        classe: this.tabelaSelecao.procComuns[j].classe,
-                        designacao: this.tabelaSelecao.procComuns[j].designacao,
-                        dono: this.tabelaSelecao.procComuns[j].dono,
-                        participante: this.tabelaSelecao.procComuns[j].participante
-                      });
-                    }
-                    else {
-                        this.listaProcComuns.push({
-                        classe: response.data[i].codigo,
-                        designacao: response.data[i].titulo,
-                        dono: this.tabelaSelecao.procComuns[j].dono,
-                      });
-                    }
-                    estavaGuardado = true;
-                    break;
-                  }
-              }
-              if (!estavaGuardado) {
-                if(response.data[i].transversal === "S") {
+            for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
+              var estavaGuardado = false;
+              if (
+                this.tabelaSelecao.procComuns[j].classe ==
+                response.data[i].codigo
+              ) {
+                if (response.data[i].transversal === "S") {
                   this.listaProcComuns.push({
-                    classe: response.data[i].codigo,
-                    designacao: response.data[i].titulo,
-                    dono: false,
-                    participante: false
+                    classe: this.tabelaSelecao.procComuns[j].classe,
+                    designacao: this.tabelaSelecao.procComuns[j].designacao,
+                    dono: this.tabelaSelecao.procComuns[j].dono,
+                    participante: this.tabelaSelecao.procComuns[j].participante
                   });
                 } else {
                   this.listaProcComuns.push({
                     classe: response.data[i].codigo,
                     designacao: response.data[i].titulo,
-                    dono: false
+                    dono: this.tabelaSelecao.procComuns[j].dono
                   });
                 }
+                estavaGuardado = true;
+                break;
               }
+            }
+            if (!estavaGuardado) {
+              if (response.data[i].transversal === "S") {
+                this.listaProcComuns.push({
+                  classe: response.data[i].codigo,
+                  designacao: response.data[i].titulo,
+                  dono: false,
+                  participante: false
+                });
+              } else {
+                this.listaProcComuns.push({
+                  classe: response.data[i].codigo,
+                  designacao: response.data[i].titulo,
+                  dono: false
+                });
+              }
+            }
           }
           this.listaProcComunsReady = true;
           return this.listaProcComuns;
@@ -716,7 +737,6 @@ export default {
         );
         if (!this.listaProcEspReady) {
           var url =
-            lhost +
             "/api/classes?tipo=especifico&ents=" +
             this.tabelaSelecao.idEntidade;
           if (this.tabelaSelecao.tipologias) {
@@ -726,56 +746,55 @@ export default {
             }
             url += this.tabelaSelecao.tipologias[i].id;
           }
-          var response = await axios.get(url);
+          var response = await this.$request("get", url);
           for (var x = 0; x < response.data.length; x++) {
-              for (
-                var j = 0;
-                j < this.tabelaSelecao.procEspecificos.length;
-                j++
+            for (
+              var j = 0;
+              j < this.tabelaSelecao.procEspecificos.length;
+              j++
+            ) {
+              var estavaGuardado = false;
+              if (
+                this.tabelaSelecao.procEspecificos[j].classe ==
+                response.data[x].codigo
               ) {
-                var estavaGuardado = false;
-                if (
-                  this.tabelaSelecao.procEspecificos[j].classe ==
-                  response.data[x].codigo 
-                ) {
-                  if(response.data[x].transversal === "S"){
-                    this.listaProcEsp.push({
-                      classe: this.tabelaSelecao.procEspecificos[j].classe,
-                      designacao: this.tabelaSelecao.procEspecificos[j]
-                        .designacao,
-                      dono: this.tabelaSelecao.procEspecificos[j].dono,
-                      participante: this.tabelaSelecao.procEspecificos[j]
-                        .participante
-                    });
-                  }
-                  else {
-                    this.listaProcEsp.push({
-                      classe: this.tabelaSelecao.procEspecificos[j].classe,
-                      designacao: this.tabelaSelecao.procEspecificos[j]
-                        .designacao,
-                      dono: this.tabelaSelecao.procEspecificos[j].dono,
-                    });
-                  }
-                  estavaGuardado = true;
-                  break;
-                }
-              }
-              if (!estavaGuardado) {
-                if(response.data[x].transversal === "S") {
+                if (response.data[x].transversal === "S") {
                   this.listaProcEsp.push({
-                    classe: response.data[x].codigo,
-                    designacao: response.data[x].titulo,
-                    dono: false,
-                    participante: false
+                    classe: this.tabelaSelecao.procEspecificos[j].classe,
+                    designacao: this.tabelaSelecao.procEspecificos[j]
+                      .designacao,
+                    dono: this.tabelaSelecao.procEspecificos[j].dono,
+                    participante: this.tabelaSelecao.procEspecificos[j]
+                      .participante
                   });
                 } else {
-                    this.listaProcEsp.push({
-                      classe: response.data[x].codigo,
-                      designacao: response.data[x].titulo,
-                      dono: false,
-                    });
-                  }
+                  this.listaProcEsp.push({
+                    classe: this.tabelaSelecao.procEspecificos[j].classe,
+                    designacao: this.tabelaSelecao.procEspecificos[j]
+                      .designacao,
+                    dono: this.tabelaSelecao.procEspecificos[j].dono
+                  });
+                }
+                estavaGuardado = true;
+                break;
               }
+            }
+            if (!estavaGuardado) {
+              if (response.data[x].transversal === "S") {
+                this.listaProcEsp.push({
+                  classe: response.data[x].codigo,
+                  designacao: response.data[x].titulo,
+                  dono: false,
+                  participante: false
+                });
+              } else {
+                this.listaProcEsp.push({
+                  classe: response.data[x].codigo,
+                  designacao: response.data[x].titulo,
+                  dono: false
+                });
+              }
+            }
           }
           return this.listaProcEsp;
         }
@@ -808,8 +827,9 @@ export default {
     loadProcEspRestantes: async function() {
       try {
         if (!this.listaProcEspResReady) {
-          var response = await axios.get(
-            lhost + "/api/classes?tipo=especifico"
+          var response = await this.$request(
+            "get",
+            "/api/classes?tipo=especifico"
           );
           this.listaTotalProcEsp = response.data;
           for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
@@ -823,17 +843,17 @@ export default {
               }
             }
             if (espEntTip === false) {
-                for (
-                  var j = 0;
-                  j < this.tabelaSelecao.procEspRestantes.length;
-                  j++
+              for (
+                var j = 0;
+                j < this.tabelaSelecao.procEspRestantes.length;
+                j++
+              ) {
+                var estavaGuardado = false;
+                if (
+                  this.tabelaSelecao.procEspRestantes[j].classe ==
+                  this.listaTotalProcEsp[i].codigo
                 ) {
-                  var estavaGuardado = false;
-                  if (
-                    this.tabelaSelecao.procEspRestantes[j].classe ==
-                    this.listaTotalProcEsp[i].codigo
-                  ) {
-                    if(this.listaTotalProcEsp[i].transversal === "S"){
+                  if (this.listaTotalProcEsp[i].transversal === "S") {
                     this.listaProcEspRes.push({
                       classe: this.tabelaSelecao.procEspRestantes[j].classe,
                       designacao: this.tabelaSelecao.procEspRestantes[j]
@@ -842,34 +862,34 @@ export default {
                       participante: this.tabelaSelecao.procEspRestantes[j]
                         .participante
                     });
-                    } else {
-                      this.listaProcEspRes.push({
-                        classe: this.tabelaSelecao.procEspRestantes[j].classe,
-                        designacao: this.tabelaSelecao.procEspRestantes[j]
-                          .designacao,
-                        dono: this.tabelaSelecao.procEspRestantes[j].dono
-                      });
-                    }
-                    estavaGuardado = true;
-                    break;
-                  }
-                }
-                if (!estavaGuardado) {
-                  if(this.listaTotalProcEsp[i].transversal === "S"){
-                    this.listaProcEspRes.push({
-                      classe: this.listaTotalProcEsp[i].codigo,
-                      designacao: this.listaTotalProcEsp[i].titulo,
-                      dono: false,
-                      participante: false
-                    });
                   } else {
                     this.listaProcEspRes.push({
-                      classe: this.listaTotalProcEsp[i].codigo,
-                      designacao: this.listaTotalProcEsp[i].titulo,
-                      dono: false,
+                      classe: this.tabelaSelecao.procEspRestantes[j].classe,
+                      designacao: this.tabelaSelecao.procEspRestantes[j]
+                        .designacao,
+                      dono: this.tabelaSelecao.procEspRestantes[j].dono
                     });
                   }
+                  estavaGuardado = true;
+                  break;
                 }
+              }
+              if (!estavaGuardado) {
+                if (this.listaTotalProcEsp[i].transversal === "S") {
+                  this.listaProcEspRes.push({
+                    classe: this.listaTotalProcEsp[i].codigo,
+                    designacao: this.listaTotalProcEsp[i].titulo,
+                    dono: false,
+                    participante: false
+                  });
+                } else {
+                  this.listaProcEspRes.push({
+                    classe: this.listaTotalProcEsp[i].codigo,
+                    designacao: this.listaTotalProcEsp[i].titulo,
+                    dono: false
+                  });
+                }
+              }
             }
           }
         }
@@ -1110,16 +1130,23 @@ export default {
       this.numProcPreSelUlt = lista.length;
     },
     parseProcessosSel: function() {
-      if( !this.listaTotalProcSel.length ){
-        this.listaTotalProcSel = this.listaTotalProcSel.concat(this.tabelaSelecao.procComuns)
-          .concat(this.tabelaSelecao.procEspecificos).concat(this.tabelaSelecao.procEspRestantes)
-          .concat(this.tabelaSelecao.procUltimos)
+      if (!this.listaTotalProcSel.length) {
+        this.listaTotalProcSel = this.listaTotalProcSel
+          .concat(this.tabelaSelecao.procComuns)
+          .concat(this.tabelaSelecao.procEspecificos)
+          .concat(this.tabelaSelecao.procEspRestantes)
+          .concat(this.tabelaSelecao.procUltimos);
       }
-      this.tabelaSelecao.listaProcSel = JSON.parse(this.tabelaSelecao.listaProcSel)
-      for(var i = 0; i < this.tabelaSelecao.listaProcSel.length; i++){
+      this.tabelaSelecao.listaProcSel = JSON.parse(
+        this.tabelaSelecao.listaProcSel
+      );
+      for (var i = 0; i < this.tabelaSelecao.listaProcSel.length; i++) {
         var jaSel = false;
-        for( var j = 0; j < this.listaTotalProcSel.length; j++){
-          if( this.tabelaSelecao.listaProcSel[i].classe == this.listaTotalProcSel[j].classe){
+        for (var j = 0; j < this.listaTotalProcSel.length; j++) {
+          if (
+            this.tabelaSelecao.listaProcSel[i].classe ==
+            this.listaTotalProcSel[j].classe
+          ) {
             this.listaTotalProcSel[j] = this.tabelaSelecao.listaProcSel[i];
             jaSel = true;
             break;
@@ -1134,8 +1161,9 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
+        var userBD = await this.$request(
+          "get",
+          "/api/users/listarToken/" + this.$store.state.token
         );
 
         var tsObj = {
@@ -1161,9 +1189,16 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+        var response = await this.$request(
+          "post",
+          "/api/pedidos",
+          pedidoParams
+        );
         this.mensagemPedidoCriadoOK += response.data.codigo;
-        response = await axios.delete(lhost + "/api/pendentes/" + this.obj._id);
+        response = await this.$request(
+          "delete",
+          "/api/pendentes/" + this.obj._id
+        );
         this.pedidoCriado = true;
       } catch (error) {
         return error;
@@ -1193,8 +1228,9 @@ export default {
           token: this.$store.state.token
         };
         // console.log(pendenteParams.objeto);
-        var response = await axios.put(
-          lhost + "/api/pendentes",
+        var response = await this.$request(
+          "put",
+          "/api/pendentes",
           pendenteParams
         );
         this.pendenteGuardado = true;
@@ -1208,8 +1244,8 @@ export default {
     },
     // Elimina todo o trabalho feito até o momento
     eliminarTS: async function() {
-      this.id = window.location.pathname.split('/')[3];
-      axios.delete(lhost + "/api/pendentes/" + this.id)
+      this.id = window.location.pathname.split("/")[3];
+      await this.$request("delete", "/api/pendentes/" + this.id);
       this.$router.push("/");
     }
   },
