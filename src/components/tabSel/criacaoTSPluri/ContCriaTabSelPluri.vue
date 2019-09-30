@@ -414,9 +414,6 @@
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
@@ -519,7 +516,7 @@ export default {
     // Faz load de todas as entidades
     loadEntidades: async function() {
       try {
-        var response = await axios.get(lhost + "/api/entidades");
+        var response = await this.$request("get", "/api/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -540,7 +537,9 @@ export default {
         this.entSel = this.tabelaSelecao.entidades;
 
         for (i = 0; i < this.tabelaSelecao.entidades.length; i++) {
-          if (this.tabelaSelecao.entidades[i].id === this.tabelaSelecao.idEntidade) {
+          if (
+            this.tabelaSelecao.entidades[i].id === this.tabelaSelecao.idEntidade
+          ) {
             this.entTip.push({
               sigla: this.tabelaSelecao.entidades[i].sigla,
               designacao: this.tabelaSelecao.entidades[i].designacao,
@@ -550,11 +549,15 @@ export default {
           }
         }
 
-        index = this.entidades.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
+        index = this.entidades.findIndex(
+          e => e.id === this.tabelaSelecao.idEntidade
+        );
         if (index != -1) {
           this.entidades.splice(index, 1);
         }
-        var index2 = this.entSel.findIndex(e => e.id === this.tabelaSelecao.idEntidade);
+        var index2 = this.entSel.findIndex(
+          e => e.id === this.tabelaSelecao.idEntidade
+        );
         if (index2 != -1) {
           this.entSel.splice(index2, 1);
         }
@@ -580,11 +583,18 @@ export default {
     loadProcComuns: async function() {
       try {
         if (!this.listaProcComunsReady) {
-          var response = await axios.get(lhost + "/api/classes?tipo=comum");
+          var response = await this.$request("get", "/api/classes?tipo=comum");
           for (var i = 0; i < response.data.length; i++) {
-            for (var j = 0; j < this.tabelaSelecao.listaProcSel.procSelComuns.length; j++) {
+            for (
+              var j = 0;
+              j < this.tabelaSelecao.listaProcSel.procSelComuns.length;
+              j++
+            ) {
               var estavaGuardado = false;
-              if (this.tabelaSelecao.listaProcSel.procSelComuns[j] == response.data[i].codigo) {
+              if (
+                this.tabelaSelecao.listaProcSel.procSelComuns[j] ==
+                response.data[i].codigo
+              ) {
                 this.listaProcComuns.push({
                   classe: response.data[i].codigo,
                   designacao: response.data[i].titulo,
@@ -628,11 +638,13 @@ export default {
     guardarTSProcComuns: function(procComuns) {
       if (Object.keys(procComuns) == "dono") {
         for (var i = 0; i < this.listaProcComuns.length; i++) {
-          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].dono = procComuns['dono'][this.listaProcComuns[i].classe];
+          this.tabelaSelecao.procComuns[this.listaProcComuns[i].classe].dono =
+            procComuns["dono"][this.listaProcComuns[i].classe];
         }
       } else {
         for (var j = 0; j < this.listaProcComuns.length; j++) {
-          this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe].part = procComuns['part'][this.listaProcComuns[j].classe];
+          this.tabelaSelecao.procComuns[this.listaProcComuns[j].classe].part =
+            procComuns["part"][this.listaProcComuns[j].classe];
         }
       }
     },
@@ -640,17 +652,24 @@ export default {
     loadProcEspecificos: async function() {
       try {
         if (!this.listaProcEspReady) {
-          var url = lhost + "/api/classes?tipo=especifico&ents=";
+          var url = "/api/classes?tipo=especifico&ents=";
           for (var i = 0; i < this.tabelaSelecao.entidades.length - 1; i++) {
             url += this.tabelaSelecao.entidades[i].id + ",";
           }
           url += this.tabelaSelecao.entidades[i].id;
         }
-        var response = await axios.get(url);
+        var response = await this.$request("get", url);
         for (var j = 0; j < response.data.length; j++) {
-          for (var k = 0; k < this.tabelaSelecao.listaProcSel.procSelEspecificos.length; k++) {
+          for (
+            var k = 0;
+            k < this.tabelaSelecao.listaProcSel.procSelEspecificos.length;
+            k++
+          ) {
             var estavaGuardado = false;
-            if (this.tabelaSelecao.listaProcSel.procSelEspecificos[k] == response.data[j].codigo) {
+            if (
+              this.tabelaSelecao.listaProcSel.procSelEspecificos[k] ==
+              response.data[j].codigo
+            ) {
               this.listaProcEsp.push({
                 classe: response.data[j].codigo,
                 designacao: response.data[j].titulo,
@@ -686,7 +705,9 @@ export default {
     procPreSelEspecificos: function() {
       if (!this.listaProcEspReady) {
         for (var i = 0; i < this.listaProcEsp.length; i++) {
-          if (this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)) {
+          if (
+            this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)
+          ) {
             this.numProcPreSelEsp += 1;
           }
         }
@@ -710,11 +731,13 @@ export default {
     guardarTSProcEsp: function(procEsp) {
       if (Object.keys(procEsp) == "dono") {
         for (var i = 0; i < this.listaProcEsp.length; i++) {
-          this.tabelaSelecao.procEspecificos[this.listaProcEsp[i].classe].dono = procEsp['dono'][this.listaProcEsp[i].classe];
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[i].classe].dono =
+            procEsp["dono"][this.listaProcEsp[i].classe];
         }
       } else {
         for (var j = 0; j < this.listaProcEsp.length; j++) {
-          this.tabelaSelecao.procEspecificos[this.listaProcEsp[j].classe].part = procEsp['part'][this.listaProcEsp[j].classe];
+          this.tabelaSelecao.procEspecificos[this.listaProcEsp[j].classe].part =
+            procEsp["part"][this.listaProcEsp[j].classe];
         }
       }
     },
@@ -722,8 +745,9 @@ export default {
     loadProcEspRestantes: async function() {
       try {
         if (!this.listaProcEspResReady) {
-          var response = await axios.get(
-            lhost + "/api/classes?tipo=especifico"
+          var response = await this.$request(
+            "get",
+            "/api/classes?tipo=especifico"
           );
           this.listaTotalProcEsp = response.data;
           for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
@@ -737,9 +761,16 @@ export default {
               }
             }
             if (espEntTip === false) {
-              for (var k = 0; k < this.tabelaSelecao.listaProcSel.procSelEspRestantes.length; k++) {
+              for (
+                var k = 0;
+                k < this.tabelaSelecao.listaProcSel.procSelEspRestantes.length;
+                k++
+              ) {
                 var estavaGuardado = false;
-                if (this.tabelaSelecao.listaProcSel.procSelEspRestantes[k] == this.listaTotalProcEsp[i].codigo) {
+                if (
+                  this.tabelaSelecao.listaProcSel.procSelEspRestantes[k] ==
+                  this.listaTotalProcEsp[i].codigo
+                ) {
                   this.listaProcEspRes.push({
                     classe: this.listaTotalProcEsp[i].codigo,
                     designacao: this.listaTotalProcEsp[i].titulo,
@@ -763,7 +794,9 @@ export default {
           if (JSON.stringify(this.tabelaSelecao.procEspRestantes) == "{}") {
             // coloca os ultimos processos prontos para receber a info da seleção
             for (var l = 0; l < this.listaProcEspRes.length; l++) {
-              this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[l].classe] = {
+              this.tabelaSelecao.procEspRestantes[
+                this.listaProcEspRes[l].classe
+              ] = {
                 dono: {},
                 part: {}
               };
@@ -810,11 +843,15 @@ export default {
     guardarTSProcRes: function(procEsp) {
       if (Object.keys(procEsp) == "dono") {
         for (var i = 0; i < this.listaProcEspRes.length; i++) {
-          this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[i].classe].dono = procEsp['dono'][this.listaProcEspRes[i].classe];
+          this.tabelaSelecao.procEspRestantes[
+            this.listaProcEspRes[i].classe
+          ].dono = procEsp["dono"][this.listaProcEspRes[i].classe];
         }
       } else {
         for (var j = 0; j < this.listaProcEspRes.length; j++) {
-          this.tabelaSelecao.procEspRestantes[this.listaProcEspRes[j].classe].part = procEsp['part'][this.listaProcEspRes[j].classe];
+          this.tabelaSelecao.procEspRestantes[
+            this.listaProcEspRes[j].classe
+          ].part = procEsp["part"][this.listaProcEspRes[j].classe];
         }
       }
     },
@@ -824,7 +861,11 @@ export default {
       var c;
       for (var i = 0; i < this.listaProcComuns.length; i++) {
         var procSelecionado = false;
-        for (var j = 0; j < this.tabelaSelecao.listaProcSel.procSelComuns.length; j++) {
+        for (
+          var j = 0;
+          j < this.tabelaSelecao.listaProcSel.procSelComuns.length;
+          j++
+        ) {
           if (
             this.listaProcComuns[i].classe ===
             this.tabelaSelecao.listaProcSel.procSelComuns[j]
@@ -981,19 +1022,22 @@ export default {
     guardarTSProcUlt: function(procUlt) {
       if (Object.keys(procUlt) == "dono") {
         for (var i = 0; i < this.listaProcUlt.length; i++) {
-          this.tabelaSelecao.procUltimos[this.listaProcUlt[i].classe].dono = procUlt['dono'][this.listaProcUlt[i].classe];
+          this.tabelaSelecao.procUltimos[this.listaProcUlt[i].classe].dono =
+            procUlt["dono"][this.listaProcUlt[i].classe];
         }
       } else {
         for (var j = 0; j < this.listaProcUlt.length; j++) {
-          this.tabelaSelecao.procUltimos[this.listaProcUlt[j].classe].part = procUlt['part'][this.listaProcUlt[j].classe];
+          this.tabelaSelecao.procUltimos[this.listaProcUlt[j].classe].part =
+            procUlt["part"][this.listaProcUlt[j].classe];
         }
       }
     },
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
+        var userBD = await this.$request(
+          "get",
+          "/api/users/listarToken/" + this.$store.state.token
         );
 
         var tsObj = [];
@@ -1034,7 +1078,7 @@ export default {
             }
 
             //Adicionar donos
-            var kr = k.replace(/Sel/g,"");
+            var kr = k.replace(/Sel/g, "");
             for (var ent in this.tabelaSelecao[kr][codigo].dono) {
               if (this.tabelaSelecao[kr][codigo].dono[ent]) {
                 p.entidades.push({
@@ -1049,7 +1093,9 @@ export default {
             for (ent in this.tabelaSelecao[kr][codigo].part) {
               index = p.entidades.findIndex(e => "ent_" + e.sigla == ent);
               if (index != -1) {
-                p.entidades[index].participante = this.tabelaSelecao[kr][codigo].part[ent];
+                p.entidades[index].participante = this.tabelaSelecao[kr][
+                  codigo
+                ].part[ent];
               } else {
                 if (this.tabelaSelecao[kr][codigo].part[ent]) {
                   p.entidades.push({
@@ -1078,9 +1124,9 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
+        var response = await this.$request("post", "/api/pedidos", pedidoParams);
         this.mensagemPedidoCriadoOK += response.data.codigo;
-        response = await axios.delete(lhost + "/api/pendentes/" + this.obj._id);
+        response = await this.$request("delete", "/api/pendentes/" + this.obj._id);
         this.pedidoCriado = true;
       } catch (error) {
         return error;
@@ -1097,10 +1143,18 @@ export default {
           this.tabelaSelecao.entidades = this.entTip.concat(this.entSel);
         }
 
-        this.tabelaSelecao.procComuns = JSON.stringify(this.tabelaSelecao.procComuns)
-        this.tabelaSelecao.procEspecificos = JSON.stringify(this.tabelaSelecao.procEspecificos)
-        this.tabelaSelecao.procEspRestantes = JSON.stringify(this.tabelaSelecao.procEspRestantes)
-        this.tabelaSelecao.procUltimos = JSON.stringify(this.tabelaSelecao.procUltimos)
+        this.tabelaSelecao.procComuns = JSON.stringify(
+          this.tabelaSelecao.procComuns
+        );
+        this.tabelaSelecao.procEspecificos = JSON.stringify(
+          this.tabelaSelecao.procEspecificos
+        );
+        this.tabelaSelecao.procEspRestantes = JSON.stringify(
+          this.tabelaSelecao.procEspRestantes
+        );
+        this.tabelaSelecao.procUltimos = JSON.stringify(
+          this.tabelaSelecao.procUltimos
+        );
 
         this.obj.numInterv++;
         var cDate = Date.now();
@@ -1118,8 +1172,9 @@ export default {
           }
         };
 
-        var response = await axios.put(
-          lhost + "/api/pendentes",
+        var response = await this.$request(
+          "put",
+          "/api/pendentes",
           pendenteParams
         );
         this.pendenteGuardado = true;
@@ -1134,7 +1189,7 @@ export default {
     // Elimina todo o trabalho feito até o momento
     eliminarTS: async function() {
       this.id = window.location.pathname.split("/")[3];
-      axios.delete(lhost + "/api/pendentes/" + this.id);
+      this.$request("delete", "/api/pendentes/" + this.id);
       this.$router.push("/");
     }
   },
@@ -1142,13 +1197,19 @@ export default {
     this.tabelaSelecao = this.obj.objeto;
     this.tabelaSelecao.procComuns = JSON.parse(this.tabelaSelecao.procComuns);
     if (this.tabelaSelecao.procEspecificos != {}) {
-      this.tabelaSelecao.procEspecificos = JSON.parse(this.tabelaSelecao.procEspecificos);
+      this.tabelaSelecao.procEspecificos = JSON.parse(
+        this.tabelaSelecao.procEspecificos
+      );
     }
     if (this.tabelaSelecao.procEspRestantes != {}) {
-      this.tabelaSelecao.procEspRestantes = JSON.parse(this.tabelaSelecao.procEspRestantes);
+      this.tabelaSelecao.procEspRestantes = JSON.parse(
+        this.tabelaSelecao.procEspRestantes
+      );
     }
     if (this.tabelaSelecao.procUltimos != {}) {
-      this.tabelaSelecao.procUltimos = JSON.parse(this.tabelaSelecao.procUltimos);
+      this.tabelaSelecao.procUltimos = JSON.parse(
+        this.tabelaSelecao.procUltimos
+      );
     }
     this.loadEntidades();
     this.loadProcComuns();

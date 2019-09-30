@@ -363,8 +363,8 @@ export default {
         if (!this.listaResEspRestantes.length) {
           if (this.preSel.length) {
             for (var l = 0; l < this.lista.length; l++) {
-            if (this.preSel.includes(this.lista[l].classe))
-              this.listaResEspRestantes.push(this.lista[l].classe);
+              if (this.preSel.includes(this.lista[l].classe))
+                this.listaResEspRestantes.push(this.lista[l].classe);
             }
           }
           this.preSel = [];
@@ -374,34 +374,34 @@ export default {
         // listaResEspRestantes:
         // listaResRestantes:
         for (var i = 0; i < this.travessias[processo].length; i++) {
-        var procEsp = false;
-        for (var j = 0; j < this.lista.length; j++) {
-          if (
-          this.lista[j].classe === this.travessias[processo][i] &&
-          !this.listaResEspRestantes.includes(this.travessias[processo][i])
-          ) {
-          this.listaResEspRestantes.push(this.travessias[processo][i]);
-          procEsp = true;
-          break;
+          var procEsp = false;
+          for (var j = 0; j < this.lista.length; j++) {
+            if (
+              this.lista[j].classe === this.travessias[processo][i] &&
+              !this.listaResEspRestantes.includes(this.travessias[processo][i])
+            ) {
+              this.listaResEspRestantes.push(this.travessias[processo][i]);
+              procEsp = true;
+              break;
+            }
           }
-        }
-        if (
-          !procEsp &&
-          !this.listaResRestantes.includes(this.travessias[processo][i]) &&
-          !this.listaResEspRestantes.includes(this.travessias[processo][i])
-        ) {
-          this.listaResRestantes.push(this.travessias[processo][i]);
-        }
+          if (
+            !procEsp &&
+            !this.listaResRestantes.includes(this.travessias[processo][i]) &&
+            !this.listaResEspRestantes.includes(this.travessias[processo][i])
+          ) {
+            this.listaResRestantes.push(this.travessias[processo][i]);
+          }
         }
         // retira aqueles processos que já estão selecionados
         var procSel = Object.keys(this.listaProcResultado);
         for (var x = 0; x < procSel.length; x++) {
-        if (this.listaResEspRestantes.includes(procSel[x])) {
-          this.listaResEspRestantes.splice(
-          this.listaResEspRestantes.indexOf(procSel[x]),
-          1
-          );
-        }
+          if (this.listaResEspRestantes.includes(procSel[x])) {
+            this.listaResEspRestantes.splice(
+              this.listaResEspRestantes.indexOf(procSel[x]),
+              1
+            );
+          }
         }
 
         this.$emit("procPreSelResTravRes", this.listaResRestantes);
@@ -409,51 +409,55 @@ export default {
       } catch (err) {
         return err;
       }
-      },
-      // Reverte a seleção
-      uncheck: async function(processo) {
-        // apaga o resultado da travessia desse processo
-        // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
-        delete this.listaProcResultado[processo];
+    },
+    // Reverte a seleção
+    uncheck: async function(processo) {
+      // apaga o resultado da travessia desse processo
+      // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
+      delete this.listaProcResultado[processo];
 
-        // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
-        var procSel = Object.keys(this.listaProcResultado);
-        // newListaResEspRestantes: Nova lista dos processos resultantes comuns
-        var newListaResEspRestantes = [];
-        // newListaResRestantes: Nova lista dos processos resultantes restantes
-        var newListaResRestantes = [];
-        for (var i = 0; i < procSel.length; i++) {
-          for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
+      // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
+      var procSel = Object.keys(this.listaProcResultado);
+      // newListaResEspRestantes: Nova lista dos processos resultantes comuns
+      var newListaResEspRestantes = [];
+      // newListaResRestantes: Nova lista dos processos resultantes restantes
+      var newListaResRestantes = [];
+      for (var i = 0; i < procSel.length; i++) {
+        for (var j = 0; j < this.listaProcResultado[procSel[i]].length; j++) {
           if (
             (this.listaResEspRestantes.includes(
-            this.listaProcResultado[procSel[i]][j]
+              this.listaProcResultado[procSel[i]][j]
             ) ||
-            this.listaProcResultado[procSel[i]][j] === processo) &&
-            !newListaResEspRestantes.includes(this.listaProcResultado[procSel[i]][j])
+              this.listaProcResultado[procSel[i]][j] === processo) &&
+            !newListaResEspRestantes.includes(
+              this.listaProcResultado[procSel[i]][j]
+            )
           ) {
-            newListaResEspRestantes.push(this.listaProcResultado[procSel[i]][j]);
+            newListaResEspRestantes.push(
+              this.listaProcResultado[procSel[i]][j]
+            );
           } else if (
             this.listaResRestantes.includes(
-            this.listaProcResultado[procSel[i]][j]
+              this.listaProcResultado[procSel[i]][j]
             ) &&
             !newListaResRestantes.includes(
-            this.listaProcResultado[procSel[i]][j]
+              this.listaProcResultado[procSel[i]][j]
             )
           ) {
             newListaResRestantes.push(this.listaProcResultado[procSel[i]][j]);
           }
-          }
         }
-        this.listaResEspRestantes = newListaResEspRestantes;
-        this.listaResRestantes = newListaResRestantes;
+      }
+      this.listaResEspRestantes = newListaResEspRestantes;
+      this.listaResRestantes = newListaResRestantes;
 
-        this.$emit("procPreSelResTravRes", this.listaResRestantes);
-        this.$emit("contadorProcPreSelRes", this.listaResEspRestantes);
-      },
-    guardaEntDonos: async function(proc){
-      for( var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++){
+      this.$emit("procPreSelResTravRes", this.listaResRestantes);
+      this.$emit("contadorProcPreSelRes", this.listaResEspRestantes);
+    },
+    guardaEntDonos: async function(proc) {
+      for (var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++) {
         var haDono = false;
-        if( this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]] ){
+        if (this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]]) {
           haDono = true;
           this.procSelDonos.push(proc);
           if (!this.procEspResSel.includes(proc)) {
@@ -464,72 +468,74 @@ export default {
           break;
         }
       }
-      if( !haDono ){
+      if (!haDono) {
+        var indexDono;
         if (Object.keys(this.entProcPar[proc]).length == 0) {
           var index = this.procEspResSel.indexOf(proc);
-          var indexDono = this.procSelDonos.indexOf(proc);
-          if( index != -1){
+          indexDono = this.procSelDonos.indexOf(proc);
+          if (index != -1) {
             this.procEspResSel.splice(index, 1);
             this.procSelDonos.splice(indexDono, 1);
             this.uncheck(proc);
             this.$emit("contadorProcSelRes", this.procEspResSel);
           }
-        }
-        else {
-          var indexDono = this.procSelDonos.indexOf(proc);
-          if( index != -1){
+        } else {
+          indexDono = this.procSelDonos.indexOf(proc);
+          if (index != -1) {
             this.procSelDonos.splice(indexDono, 1);
           }
         }
       }
 
-      var guardar = {}
-      guardar['dono'] = this.entProcDono;
+      var guardar = {};
+      guardar["dono"] = this.entProcDono;
       this.$emit("guardarTSProcRes", guardar);
     },
-    selecTodasEnt: async function(entidades, proc){
-      for( var i = 0; i < entidades.length; i++){
+    selecTodasEnt: async function(entidades, proc) {
+      for (var i = 0; i < entidades.length; i++) {
         this.entProcDono[proc][entidades[i].id] = true;
       }
-      this.procSelDonos.push(proc)
+      this.procSelDonos.push(proc);
       if (!this.procEspResSel.includes(proc)) {
-          this.procEspResSel.push(proc);
-          this.$emit("contadorProcSelRes", this.procEspResSel);
-          this.calcRel(proc);
-      }
-      var guardar = {}
-      guardar['dono'] = this.entProcDono;
-      this.$emit("guardarTSProcRes", guardar);
-    },
-    guardaEntPar: async function(proc){
-      var guardar = {}
-      guardar['part'] = this.entProcPar;
-      this.$emit("guardarTSProcRes", guardar);
-      if( !this.procEspResSel.includes(proc) && Object.keys(this.entProcPar[proc]).length ){
         this.procEspResSel.push(proc);
-        this.$emit("contadorProcSelRes", this.procEspResSel)
+        this.$emit("contadorProcSelRes", this.procEspResSel);
         this.calcRel(proc);
       }
-      else if (Object.keys(this.entProcPar[proc]).length == 0) {
+      var guardar = {};
+      guardar["dono"] = this.entProcDono;
+      this.$emit("guardarTSProcRes", guardar);
+    },
+    guardaEntPar: async function(proc) {
+      var guardar = {};
+      guardar["part"] = this.entProcPar;
+      this.$emit("guardarTSProcRes", guardar);
+      if (
+        !this.procEspResSel.includes(proc) &&
+        Object.keys(this.entProcPar[proc]).length
+      ) {
+        this.procEspResSel.push(proc);
+        this.$emit("contadorProcSelRes", this.procEspResSel);
+        this.calcRel(proc);
+      } else if (Object.keys(this.entProcPar[proc]).length == 0) {
         var haDono = false;
-        for( var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++){
-          if( this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]] ){
+        for (var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++) {
+          if (this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]]) {
             haDono = true;
             break;
-            }
+          }
         }
-        if( !haDono ){
+        if (!haDono) {
           var index = this.procEspResSel.indexOf(proc);
-          if( index != -1 ){
+          if (index != -1) {
             this.procEspResSel.splice(index, 1);
             this.uncheck(proc);
             this.$emit("contadorProcSelRes", this.procEspResSel);
           }
         }
       }
-    },
+    }
   },
-  mounted: async function(){
+  mounted: async function() {
     try {
       this.preSel = this.listaPreSel;
 
@@ -541,18 +547,18 @@ export default {
       }
 
       this.tipoPar();
-      for( var i = 0; i < this.lista.length; i++ ){
+      for (var i = 0; i < this.lista.length; i++) {
         this.entProcDono[this.lista[i].classe] = {};
-        for(var j = 0; j < this.entidades.length; j++){
-          this.entProcDono[this.lista[i].classe][this.entidades[j].id] = false
+        for (j = 0; j < this.entidades.length; j++) {
+          this.entProcDono[this.lista[i].classe][this.entidades[j].id] = false;
         }
       }
       this.entProcDonoReady = true;
-      for( var i = 0; i < this.lista.length; i++ ){
+      for (i = 0; i < this.lista.length; i++) {
         this.entProcPar[this.lista[i].classe] = {};
         var tempDialog = [];
-        for(var j = 0; j < this.entidades.length; j++){
-          tempDialog[this.entidades[j].id] = false
+        for (j = 0; j < this.entidades.length; j++) {
+          tempDialog[this.entidades[j].id] = false;
         }
         this.dialog[this.lista[i].classe] = tempDialog;
         tempDialog = [];
