@@ -1,8 +1,5 @@
 <template>
-  <v-container style="max-width:100%">
-    <v-row>
-      <v-col>
-        <v-card class="panel panel-default panel-custom">
+        <v-card class="ma-4 panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
             <v-toolbar-title class="page-header">
               <h1>{{ "Auto de Eliminação - "+ auto.id }}</h1>
@@ -221,9 +218,6 @@
             </div>
           </v-card-text>
         </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
 </template>
 
 <script>
@@ -233,7 +227,6 @@ import InfoBox from "@/components/generic/infoBox.vue";
 export default {
   props: ["auto"],
   components: {
-    InfoBox
   },
   data: () => ({
     domainCollapsed: true,
