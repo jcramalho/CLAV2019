@@ -29,14 +29,16 @@ export default {
     async $route(to, from) {
       this.authenticated = false;
       //verifica se o utilizador tem de estar autenticado para aceder à rota
-      if (to.matched.some(record => record.meta.level > 0)) {
+      if (to.matched.some(record => !record.meta.levels.includes(0))) {
         if (this.$store.state.token != "") {
           //verifica se o utilizador está autenticado
           try {
             var res = await this.$request("get", "/api/users/verificaToken");
             //se está autenticado, verifica se tem permissões suficientes para a ceder a página
             if (
-              to.matched.some(record => res.data.level >= record.meta.level)
+              to.matched.some(record =>
+                record.meta.levels.includes(res.data.level)
+              )
             ) {
               this.authenticated = true;
             } else {
