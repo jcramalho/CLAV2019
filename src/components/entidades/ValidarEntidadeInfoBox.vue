@@ -6,7 +6,7 @@
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="80%">
       <v-card>
-        <v-card-title class="headline">Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
+        <v-card-title>Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
         <v-card-text>
           <v-row v-for="(m, i) in mensagensErro" :key="i">
             <v-col cols="2">
@@ -18,7 +18,8 @@
           </v-row>
         </v-card-text>
         <v-card-actions>
-          <v-btn class="red darken-4" right rounded dark @click="dialog = false">Fechar</v-btn>
+          <v-spacer />
+          <v-btn class="red darken-4" dark @click="dialog = false">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -26,12 +27,13 @@
     <!-- Validação não detetou erros ........... -->
     <v-dialog v-model="dialogSemErros" width="30%">
       <v-card>
-        <v-card-title class="headline">Validação sem erros</v-card-title>
+        <v-card-title>Validação sem erros</v-card-title>
         <v-card-text>
           <p>A informação introduzida não apresenta erros.</p>
         </v-card-text>
         <v-card-actions>
-          <v-btn class="green darken-1" dark text @click="dialogSemErros = false">Fechar</v-btn>
+          <v-spacer />
+          <v-btn class="green darken-1" dark @click="dialogSemErros = false">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -71,29 +73,27 @@ export default {
           mensagem: "O nome da entidade não pode ser vazio."
         });
         this.numeroErros++;
+      } else {
+        try {
+          let existeDesignacao = await axios.post(
+            lhost + "/api/entidades/verificarDesignacao",
+            { designacao: this.e.designacao }
+          );
+          if (existeDesignacao.data) {
+            this.mensagensErro.push({
+              sobre: "Designação",
+              mensagem: "Designação já existente na BD."
+            });
+            this.numeroErros++;
+          }
+        } catch (err) {
+          this.numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação."
+          });
+        }
       }
-      // else {
-      //   // TODO: Criar rota na API
-      //   try {
-      //     let existeDesignacao = await axios.post(
-      //       lhost + "/api/entidades/verificarDesignacao",
-      //       { designacao: this.e.designacao }
-      //     );
-      //     if (existeDesignacao.data) {
-      //       this.mensagensErro.push({
-      //         sobre: "Designação",
-      //         mensagem: "Designação já existente na BD."
-      //       });
-      //       this.numeroErros++;
-      //     }
-      //   } catch (err) {
-      //     this.numeroErros++;
-      //     this.mensagensErro.push({
-      //       sobre: "Acesso à Ontologia",
-      //       mensagem: "Não consegui verificar a existência da designação."
-      //     });
-      //   }
-      // }
 
       // Sigla
       if (this.e.sigla == "") {
@@ -102,44 +102,33 @@ export default {
           mensagem: "A sigla não pode ser vazia."
         });
         this.numeroErros++;
+      } else {
+        try {
+          let existeSigla = await axios.post(
+            lhost + "/api/entidades/verificarSigla",
+            { sigla: this.e.sigla }
+          );
+          if (existeSigla.data) {
+            this.mensagensErro.push({
+              sobre: "Sigla",
+              mensagem: "Sigla já existente na BD."
+            });
+            this.numeroErros++;
+          }
+        } catch (err) {
+          this.numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da sigla."
+          });
+        }
       }
-      // else {
-      //   // TODO: Criar rota na API
-      //   try {
-      //     let existeSigla = await axios.post(
-      //       lhost + "/api/entidades/verificarSigla",
-      //       { sigla: this.e.sigla }
-      //     );
-      //     if (existeDesignacao.data) {
-      //       this.mensagensErro.push({
-      //         sobre: "Sigla",
-      //         mensagem: "Sigla já existente na BD."
-      //       });
-      //       this.numeroErros++;
-      //     }
-      //   } catch (err) {
-      //     this.numeroErros++;
-      //     this.mensagensErro.push({
-      //       sobre: "Acesso à Ontologia",
-      //       mensagem: "Não consegui verificar a existência da sigla."
-      //     });
-      //   }
-      // }
 
       // Internacional
       if (this.e.internacional == "") {
         this.mensagensErro.push({
           sobre: "Internacional",
           mensagem: "O campo internacional tem de ter uma opção."
-        });
-        this.numeroErros++;
-      }
-
-      // Internacional
-      if (this.e.sioe == "") {
-        this.mensagensErro.push({
-          sobre: "SIOE",
-          mensagem: "O campo SIOE não pode ser vazio."
         });
         this.numeroErros++;
       }
@@ -159,7 +148,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
   color: #2e7d32; /* green darken-3 */
   padding: 5px;
