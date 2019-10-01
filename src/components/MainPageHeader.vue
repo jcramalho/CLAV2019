@@ -110,7 +110,10 @@ export default {
       this.snackbar = false;
     },
     async testJWT() {
-      var res = await this.$request("get", "/api/users/listarToken");
+      var res = await this.$request(
+        "get",
+        "/api/users/listarToken/" + this.$store.state.token
+      );
       alert(JSON.stringify(res.data));
     }
   }

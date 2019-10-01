@@ -110,20 +110,12 @@ export default {
           // password: this.$data.form.password
         })
           .then(res => {
-            if (res.data === "Chave API registada com sucesso!") {
-              this.text = "Chave API registada com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            } else if (res.data === "Email já em uso!") {
-              this.text =
-                "Ocorreu um erro ao registar a chave API: Email já em uso!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }
+            this.text = "Chave API registada com sucesso!";
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
+          .catch(err => {
             this.text = err;
             this.color = "error";
             this.snackbar = true;

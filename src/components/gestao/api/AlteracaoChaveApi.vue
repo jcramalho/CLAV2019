@@ -47,20 +47,13 @@ export default {
     } else {
       await this.$request("put", "/api/chaves/atualizarChave/" + res.data._id)
         .then(res => {
-          if (res.data === "Chave API renovada com sucesso!") {
-            this.text = "Email enviado com sucesso!";
-            this.color = "success";
-            this.snackbar = true;
-            this.done = true;
-            this.validJWT = true;
-          } else {
-            this.text = "Ocorreu um erro ao renovar a sua chave API!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }
+          this.text = "Email enviado com sucesso!";
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.validJWT = true;
         })
-        .catch(function(err) {
+        .catch(err => {
           this.text = err;
           this.color = "error";
           this.snackbar = true;

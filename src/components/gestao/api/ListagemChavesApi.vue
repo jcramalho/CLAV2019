@@ -24,8 +24,8 @@
         :items="chaves"
         :search="search"
         class="elevation-1"
-        :rows-per-page-items="[10, 20, 50]"
-        rows-per-page-text="Mostrar"
+        footer-props.items-per-page-options="[10, 20, 50]"
+        footer-props.items-per-page-text="Mostrar"
       >
         <template v-slot:no-results>
           <v-alert :value="true" color="error" icon="warning">
@@ -84,14 +84,14 @@
                       <v-spacer></v-spacer>
                       <v-btn
                         color="red"
-                        flat
+                        text
                         @click="confirmacaoRenovar = false"
                       >
                         Cancelar
                       </v-btn>
                       <v-btn
                         color="primary"
-                        flat
+                        text
                         @click="
                           renovar(editedItem);
                           confirmacaoRenovar = false;
@@ -125,14 +125,14 @@
                       <v-spacer></v-spacer>
                       <v-btn
                         color="red"
-                        flat
+                        text
                         @click="confirmacaoDesativar = false"
                       >
                         Cancelar
                       </v-btn>
                       <v-btn
                         color="primary"
-                        flat
+                        text
                         @click="
                           desativar(editedItem);
                           confirmacaoDesativar = false;
@@ -166,14 +166,14 @@
                       <v-spacer></v-spacer>
                       <v-btn
                         color="red"
-                        flat
+                        text
                         @click="confirmacaoDesativar = false"
                       >
                         Cancelar
                       </v-btn>
                       <v-btn
                         color="primary"
-                        flat
+                        text
                         @click="
                           ativar(editedItem);
                           confirmacaoDesativar = false;
@@ -207,14 +207,14 @@
                       <v-spacer></v-spacer>
                       <v-btn
                         color="red"
-                        flat
+                        text
                         @click="confirmacaoEliminar = false"
                       >
                         Cancelar
                       </v-btn>
                       <v-btn
                         color="primary"
-                        flat
+                        text
                         @click="
                           eliminar(editedItem);
                           confirmacaoEliminar = false;
@@ -276,8 +276,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" flat @click="dialog = false">Cancelar</v-btn>
-          <v-btn color="primary" flat @click="guardar">Guardar</v-btn>
+          <v-btn color="red" text @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="primary" text @click="guardar">Guardar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -288,7 +288,7 @@
       :top="true"
     >
       {{ text }}
-      <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
   </v-content>
 </template>
@@ -390,7 +390,7 @@ export default {
   methods: {
     async getChavesApi() {
       try {
-        var response = this.$request("get", "/api/chaves/listagem");
+        var response = await this.$request("get", "/api/chaves/listagem");
         this.chaves = response.data;
       } catch (e) {
         return e;
@@ -404,21 +404,14 @@ export default {
     desativar(item) {
       this.$request("put", "/api/chaves/desativar/" + item.id)
         .then(res => {
-          if (res.data === "Chave API desativada com sucesso!") {
-            this.text = "Chave API desativada com sucesso!";
-            this.color = "success";
-            this.snackbar = true;
-            this.done = true;
-            this.getChavesApi();
-          } else {
-            this.text = "Ocorreu um erro ao desativar a chave API!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }
+          this.text = "Chave API desativada com sucesso!";
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.getChavesApi();
         })
-        .catch(function(err) {
-          this.text = err;
+        .catch(err => {
+          this.text = err.response.data;
           this.color = "error";
           this.snackbar = true;
           this.done = false;
@@ -427,21 +420,14 @@ export default {
     ativar(item) {
       this.$request("put", "/api/chaves/ativar/" + item.id)
         .then(res => {
-          if (res.data === "Chave API ativada com sucesso!") {
-            this.text = "Chave API ativada com sucesso!";
-            this.color = "success";
-            this.snackbar = true;
-            this.done = true;
-            this.getChavesApi();
-          } else {
-            this.text = "Ocorreu um erro ao ativar a chave API!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }
+          this.text = "Chave API ativada com sucesso!";
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.getChavesApi();
         })
-        .catch(function(err) {
-          this.text = err;
+        .catch(err => {
+          this.text = err.response.data;
           this.color = "error";
           this.snackbar = true;
           this.done = false;
@@ -450,21 +436,14 @@ export default {
     eliminar(item) {
       this.$request("delete", "/api/chaves/eliminar/" + item.id)
         .then(res => {
-          if (res.data === "Chave API eliminada com sucesso!") {
-            this.text = "Chave API eliminada com sucesso!";
-            this.color = "success";
-            this.snackbar = true;
-            this.done = true;
-            this.getChavesApi();
-          } else {
-            this.text = "Ocorreu um erro ao eliminar a chave API!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }
+          this.text = "Chave API eliminada com sucesso!";
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.getChavesApi();
         })
-        .catch(function(err) {
-          this.text = err;
+        .catch(err => {
+          this.text = err.response.data;
           this.color = "error";
           this.snackbar = true;
           this.done = false;
@@ -485,22 +464,15 @@ export default {
           }
         )
           .then(res => {
-            if (res.data === "Chave API atualizada com sucesso!") {
-              this.text = "Chave API atualizada com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-              this.dialog = false;
-              this.getChavesApi();
-            } else {
-              this.text = "Ocorreu um erro ao atualizar a chave API!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }
+            this.text = "Chave API atualizada com sucesso!";
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
+            this.dialog = false;
+            this.getChavesApi();
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text = err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;

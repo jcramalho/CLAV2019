@@ -74,21 +74,12 @@ export default {
           url: window.location.href
         })
           .then(res => {
-            if (
-              res.data === "Não existe nenhuma chave API associada neste email!"
-            ) {
-              this.text = "Não existe nenhuma chave API associada neste email!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            } else {
-              this.text = "Email enviado com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            }
+            this.text = "Email enviado com sucesso!";
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
+          .catch(err => {
             this.text = err;
             this.color = "error";
             this.snackbar = true;
