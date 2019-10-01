@@ -44,9 +44,9 @@
                   :items="[
                     'Administrador de Perfil Tecnológico',
                     'Administrador de Perfil Funcional',
+                    'Utilizador Decisor',
                     'Utilizador Validador',
                     'Utilizador Avançado',
-                    'Utilizador Decisor',
                     'Utilizador Simples',
                     'Representante Entidade'
                   ]"
@@ -148,13 +148,13 @@ export default {
           case "Administrador de Perfil Funcional":
             parsedType = 6;
             break;
-          case "Utilizador Validador":
+          case "Utilizador Decisor":
             parsedType = 5;
             break;
-          case "Utilizador Avançado":
+          case "Utilizador Validador":
             parsedType = 4;
             break;
-          case "Utilizador Decisor":
+          case "Utilizador Avançado":
             parsedType = 3;
             break;
           case "Utilizador Simples":
