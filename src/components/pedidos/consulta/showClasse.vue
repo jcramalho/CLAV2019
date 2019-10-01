@@ -26,10 +26,6 @@ export default {
 
   data() {
     return {
-      headers: [
-        { text: "Campo", value: "campo" },
-        { text: "Conteúdo", value: "conteudo" }
-      ],
       classeInfo: [
         { campo: "Nível", conteudo: this.p.objeto.dados.nivel },
         { campo: "Código", conteudo: this.p.objeto.dados.codigo },

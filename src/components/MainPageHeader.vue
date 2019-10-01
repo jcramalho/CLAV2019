@@ -48,18 +48,18 @@
           iconColor="primary"
         />
       </span> -->
-      <span class="font-weight-light" v-if="this.$store.state.name != ''">
-        <v-btn icon>
+      <span class="font-weight-light ma-2" v-if="this.$store.state.name != ''">
+        <!--v-btn icon>
           <notification-bell
-            :size="25"
-            :count="this.counter"
-            counterLocation="upperRight"
-            counterStyle="roundRectangle"
-            counterBackgroundColor="#FF0000"
-            counterTextColor="#FFFFFF"
-            iconColor="#3a88fe"
-          />
-        </v-btn>
+          :size="25"
+          :count="this.counter"
+          counterLocation="upperRight"
+          counterStyle="roundRectangle"
+          counterBackgroundColor="#FF0000"
+          counterTextColor="#FFFFFF"
+          iconColor="#3a88fe"
+        />
+        </v-btn-->
         {{ this.$store.state.name }}</span
       >
       <v-btn
@@ -69,9 +69,13 @@
       >
         Logout
       </v-btn>
-      <v-btn color="red" v-if="this.$store.state.name != ''" @click="testJWT">
+      <!--v-btn
+        color="red"
+        v-if="this.$store.state.name != ''"
+        @click="testJWT"
+      >
         JWT
-      </v-btn>
+      </v-btn-->
     </v-toolbar-title>
   </v-app-bar>
 </template>

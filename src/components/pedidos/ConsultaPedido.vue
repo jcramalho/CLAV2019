@@ -3,8 +3,9 @@
     <ShowPedido :p="selectedPedido" />
   </div>
 
-  <div v-else>
+  <div v-else style="text-align:center;" class="mt-4">
     <p>A carregar informação...</p>
+    <v-progress-circular indeterminate size="100" width="10" color="blue" />
   </div>
 </template>
 
@@ -33,5 +34,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

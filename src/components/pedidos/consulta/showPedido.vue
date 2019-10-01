@@ -1,10 +1,10 @@
 <template>
   <v-card class="ma-8">
-    <v-card-title class="pa-2 indigo darken-4 title white--text" dark
-      >Consulta do pedido: {{ p.codigo }}</v-card-title
-    >
+    <v-card-title class="pa-2 blue darken-4 title white--text" dark>
+      Consulta do pedido: {{ p.codigo }}
+    </v-card-title>
     <v-card-text>
-      <v-row class="ma-1">
+      <v-row class="mt-1">
         <v-col cols="2">
           <div class="info-label">Estado</div>
         </v-col>
@@ -12,7 +12,7 @@
           <div class="info-content">{{ p.estado }}</div>
         </v-col>
       </v-row>
-      <v-row class="ma-1">
+      <v-row class="mt-1">
         <v-col cols="2">
           <div class="info-label">Data</div>
         </v-col>
@@ -20,7 +20,7 @@
           <div class="info-content">{{ p.data.split("T")[0] }}</div>
         </v-col>
       </v-row>
-      <v-row class="ma-1" v-if="p.entidade">
+      <v-row class="mt-1" v-if="p.entidade">
         <v-col cols="2">
           <div class="info-label">Entidade</div>
         </v-col>
@@ -28,7 +28,7 @@
           <div class="info-content">{{ p.entidade }}</div>
         </v-col>
       </v-row>
-      <v-row class="ma-1">
+      <v-row class="mt-1">
         <v-col cols="2">
           <div class="info-label">Criado Por</div>
         </v-col>
@@ -36,7 +36,7 @@
           <div class="info-content">{{ p.criadoPor }}</div>
         </v-col>
       </v-row>
-      <v-row class="ma-1">
+      <v-row class="mt-1">
         <v-col cols="2">
           <div class="info-label">Tipo</div>
         </v-col>
@@ -47,7 +47,7 @@
         </v-col>
       </v-row>
 
-      <v-card>
+      <v-card class="mt-3">
         <v-card-title class="info-label title" dark>Distribuição</v-card-title>
         <v-card-text>
           <v-data-table
@@ -70,13 +70,12 @@
 
       <ShowTSOrg v-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
+      <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
       <ShowAE v-else-if="p.objeto.tipo.includes('AE ')" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
-      <v-btn color="indigo darken-4" rounded dark @click="voltar">
-        Voltar
-      </v-btn>
+      <v-btn color="blue darken-4" dark @click="voltar">Voltar</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -86,11 +85,12 @@ import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
 import ShowDefault from "@/components/pedidos/consulta/showDefault.vue";
 import ShowAE from "@/components/pedidos/consulta/showAE.vue";
+import ShowEntidade from "@/components/pedidos/consulta/showEntidade";
 
 export default {
   props: ["p"],
 
-  components: { ShowTSOrg, ShowClasse, ShowDefault, ShowAE },
+  components: { ShowTSOrg, ShowClasse, ShowDefault, ShowAE, ShowEntidade },
 
   data: () => ({
     headers: [
@@ -116,19 +116,20 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
-  color: #00695c;
-  padding: 5px;
+  color: #1565c0; /* blue darken-3 */
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e3f2fd; /* blue lighten-5 */
   font-weight: bold;
+  border-radius: 3px;
 }
 
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
+  border: 1px solid #1565c0;
+  border-radius: 3px;
 }
 </style>
