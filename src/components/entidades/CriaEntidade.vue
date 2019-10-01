@@ -101,6 +101,7 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
+
       <PainelOpsEnt :e="entidade" />
     </v-col>
   </v-row>
@@ -164,12 +165,16 @@ export default {
       this.tipologias.push(tipologia);
       var index = this.tipSel.findIndex(e => e.id === tipologia.id);
       this.tipSel.splice(index, 1);
+      this.entidade.tipologiasSel = this.tipSel;
+      console.log(this.entidade.tipologiasSel);
     },
     selectTipologia: function(tipologia) {
       this.tipSel.push(tipologia);
+      this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
       var index = this.tipologias.findIndex(e => e.id === tipologia.id);
       this.tipologias.splice(index, 1);
+      console.log(this.entidade.tipologiasSel);
     },
     // fechar o snackbar em caso de erro
     fecharSnackbar() {

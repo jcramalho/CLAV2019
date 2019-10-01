@@ -3,12 +3,20 @@
     <v-card-title class="info-label title" dark>{{ p.objeto.acao }} da Entidade</v-card-title>
     <v-card-text>
       <v-row v-for="e in entidadeInfo" :key="e.campo">
-        <v-col cols="2">
+        <v-col cols="2" v-if="e.conteudo != ''">
           <div class="info-label">{{ e.campo }}</div>
         </v-col>
 
-        <v-col>
-          <div class="info-content">{{ e.conteudo }}</div>
+        <v-col v-if="e.conteudo != ''">
+          <v-data-table
+            v-if="e.campo == 'Tipologias'"
+            :headers="headers"
+            :items="e.conteudo"
+            class="elevation-1"
+            hide-default-footer
+          ></v-data-table>
+
+          <div v-else class="info-content">{{ e.conteudo }}</div>
         </v-col>
       </v-row>
 
@@ -28,7 +36,14 @@ export default {
       entidadeInfo: [
         { campo: "Entidade", conteudo: this.p.objeto.dados.designacao },
         { campo: "Sigla", conteudo: this.p.objeto.dados.sigla },
-        { campo: "Internacional", conteudo: this.p.objeto.dados.internacional }
+        { campo: "Internacional", conteudo: this.p.objeto.dados.internacional },
+        { campo: "SIOE", conteudo: this.p.objeto.dados.sioe },
+        { campo: "Tipologias", conteudo: this.p.objeto.dados.tipologiasSel },
+        { campo: "Código", conteudo: this.p.objeto.dados.codigo }
+      ],
+      headers: [
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ]
     };
   }
