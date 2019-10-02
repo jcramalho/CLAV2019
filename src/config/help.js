@@ -22,7 +22,7 @@ module.exports.help = {
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
   AutosEliminacao:
-    "Autos de eliminação produzidos ao abrigo de tabela de seleção inserida em Portaria de gestão de documentos ou Relatório de avaliação de documentação acumulada e submetida à DGLAB para verificação de conformidade.",
+    "Autos de eliminação produzidos ao abrigo de tabela de seleção inserida em Portaria de gestão de documentos ou Relatório de avaliação de documentação acumulada e submetida à DGLAB para verificação de conformidade. Para submeter autos de eliminação deverá selecionar a opção IMPORTAR.",
   Invariantes:
     "Conjunto de invariantes que testam situações de erro e identificam os PNs onde estas ocorrem.",
   Classe: {
@@ -242,6 +242,18 @@ module.exports.help = {
         "Referência ao(s) diploma(s )que altera(m) o diploma referenciado.",
       RevogadoPor:
         "Referência ao(s) diploma(s) que altera(m) o diploma referenciado."
+    }
+  },
+  AutoEliminacao: {
+    Campos: {
+      FonteLegitimacao:
+        "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
+      PGD_LC:
+        "Portaria de Gestão de Documentos conforme à Lista Consolidada",
+      PGD:
+        "Portaria de Gestão de Documentos",
+      RADA:
+        "Relatório de Avaliação de Documentação Acumulada"
     }
   }
 };
