@@ -1,7 +1,7 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="green darken-3" @click="validarEntidade">Validar Entidade</v-btn>
+    <v-btn dark rounded class="green darken-3" @click="validarTipologia">Validar Tipologia</v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  props: ["e"],
+  props: ["t"],
   data() {
     return {
       dialog: false,
@@ -60,22 +60,22 @@ export default {
   },
 
   methods: {
-    validarEntidade: async function() {
+    validarTipologia: async function() {
       let i = 0;
 
       // Designação
-      if (this.e.designacao == "") {
+      if (this.t.designacao == "") {
         this.mensagensErro.push({
-          sobre: "Nome da Entidade",
-          mensagem: "O nome da entidade não pode ser vazio."
+          sobre: "Nome da Tipologia",
+          mensagem: "O nome da tipologia não pode ser vazio."
         });
         this.numeroErros++;
       } else {
         try {
           let existeDesignacao = await this.$request(
             "post",
-            "/api/entidades/verificarDesignacao",
-            { designacao: this.e.designacao }
+            "/api/tipologias/verificarDesignacao",
+            { designacao: this.t.designacao }
           );
           if (existeDesignacao.data) {
             this.mensagensErro.push({
@@ -94,7 +94,7 @@ export default {
       }
 
       // Sigla
-      if (this.e.sigla == "") {
+      if (this.t.sigla == "") {
         this.mensagensErro.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia."
@@ -104,8 +104,8 @@ export default {
         try {
           let existeSigla = await this.$request(
             "post",
-            "/api/entidades/verificarSigla",
-            { sigla: this.e.sigla }
+            "/api/tipologias/verificarSigla",
+            { sigla: this.t.sigla }
           );
           if (existeSigla.data) {
             this.mensagensErro.push({
@@ -121,15 +121,6 @@ export default {
             mensagem: "Não consegui verificar a existência da sigla."
           });
         }
-      }
-
-      // Internacional
-      if (this.e.internacional == "") {
-        this.mensagensErro.push({
-          sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção."
-        });
-        this.numeroErros++;
       }
 
       if (this.numeroErros > 0) {
