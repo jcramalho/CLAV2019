@@ -1,8 +1,9 @@
 <template>
   <v-card class="ma-8">
-    <v-card-title class="pa-2 blue darken-4 title white--text" dark>
-      Consulta do pedido: {{ p.codigo }}
-    </v-card-title>
+    <v-card-title
+      class="pa-2 blue darken-4 title white--text"
+      dark
+    >Consulta do pedido: {{ p.codigo }}</v-card-title>
     <v-card-text>
       <v-row class="mt-1">
         <v-col cols="2">
@@ -41,9 +42,7 @@
           <div class="info-label">Tipo</div>
         </v-col>
         <v-col>
-          <div class="info-content">
-            {{ p.objeto.acao }} - {{ p.objeto.tipo }}
-          </div>
+          <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
         </v-col>
       </v-row>
 
@@ -72,6 +71,7 @@
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
       <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
       <ShowAE v-else-if="p.objeto.tipo.includes('AE ')" :p="p" />
+      <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
@@ -86,11 +86,19 @@ import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
 import ShowDefault from "@/components/pedidos/consulta/showDefault.vue";
 import ShowAE from "@/components/pedidos/consulta/showAE.vue";
 import ShowEntidade from "@/components/pedidos/consulta/showEntidade";
+import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
 
 export default {
   props: ["p"],
 
-  components: { ShowTSOrg, ShowClasse, ShowDefault, ShowAE, ShowEntidade },
+  components: {
+    ShowTSOrg,
+    ShowClasse,
+    ShowDefault,
+    ShowAE,
+    ShowEntidade,
+    ShowTipologia
+  },
 
   data: () => ({
     headers: [

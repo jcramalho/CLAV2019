@@ -5,19 +5,19 @@
         <v-btn
           rounded
           class="green darken-3 white--text"
-          :disabled="!e.sigla"
+          :disabled="!t.sigla"
           @click="guardarTrabalho"
         >Guardar Trabalho</v-btn>
       </v-col>
 
-      <ValidarEntidadeInfoBox :e="e" />
+      <ValidarTipologiaInfoBox :t="t" />
 
       <v-col>
-        <v-btn rounded class="green darken-4 white--text" @click="criarEntidade">Criar Entidade</v-btn>
+        <v-btn rounded class="green darken-4 white--text" @click="criarTipologia">Criar Tipologia</v-btn>
       </v-col>
 
       <v-col>
-        <v-btn dark rounded class="red darken-4" @click="eliminarEntidade">Cancelar Criação</v-btn>
+        <v-btn dark rounded class="red darken-4" @click="eliminarTipologia">Cancelar Criação</v-btn>
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -55,30 +55,30 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de criação de entidade submetido com sucesso -->
-      <v-dialog v-model="dialogEntidadeCriada" width="40%">
+      <!-- Pedido de criação de tipologia submetido com sucesso -->
+      <v-dialog v-model="dialogTipologiaCriada" width="40%">
         <v-card>
-          <v-card-title>Pedido de Criação de Entidade Submetido</v-card-title>
+          <v-card-title>Pedido de Criação de Tipologia Submetido</v-card-title>
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" dark @click="criacaoEntidadeTerminada">Fechar</v-btn>
+            <v-btn color="green darken-1" dark @click="criacaoTipologiaTerminada">Fechar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
-      <!-- Cancelamento da criação de uma entidade: confirmação -->
+      <!-- Cancelamento da criação de uma tipologia: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title>Cancelamento e eliminação do pedido de criação da entidade</v-card-title>
+          <v-card-title>Cancelamento e eliminação do pedido de criação da tipologia</v-card-title>
           <v-card-text>
-            <p>Selecionou o cancelamento da criação da entidade.</p>
+            <p>Selecionou o cancelamento da criação da tipologia.</p>
             <p>Toda a informação introduzida será eliminada.</p>
             <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" text @click="cancelarCriacaoEntidade">Confirmo</v-btn>
+            <v-btn color="green darken-1" text @click="cancelarCriacaoTipologia">Confirmo</v-btn>
             <v-btn
               color="red darken-1"
               dark
@@ -99,20 +99,20 @@
 </template>
 
 <script>
-import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
+import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 
 export default {
-  props: ["e"],
+  props: ["t"],
   components: {
-    ValidarEntidadeInfoBox
+    ValidarTipologiaInfoBox
   },
   data() {
     return {
       pendenteGuardado: false,
       pendenteGuardadoInfo: "",
       loginErrorSnackbar: false,
-      loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
-      dialogEntidadeCriada: false,
+      loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
+      dialogTipologiaCriada: false,
       numeroErros: 0,
       errosValidacao: false,
       mensagemPedidoCriadoOK: "",
@@ -133,8 +133,8 @@ export default {
           var pendenteParams = {
             numInterv: 1,
             acao: "Criação",
-            tipo: "Entidade",
-            objeto: this.e,
+            tipo: "Tipologia",
+            objeto: this.t,
             criadoPor: userBD.data.email,
             user: { email: userBD.data.email },
             token: this.$store.state.token
@@ -152,18 +152,18 @@ export default {
       }
     },
 
-    validarEntidade: async function() {
+    validarTipologia: async function() {
       let i = 0;
 
       // Designação
-      if (this.e.designacao == "") {
+      if (this.t.designacao == "") {
         this.numeroErros++;
       } else {
         try {
           let existeDesignacao = await this.$request(
             "post",
-            "/api/entidades/verificarDesignacao",
-            { designacao: this.e.designacao }
+            "/api/tipologias/verificarDesignacao",
+            { designacao: this.t.designacao }
           );
           if (existeDesignacao.data) {
             this.numeroErros++;
@@ -174,14 +174,14 @@ export default {
       }
 
       // Sigla
-      if (this.e.sigla == "") {
+      if (this.t.sigla == "") {
         this.numeroErros++;
       } else {
         try {
           let existeSigla = await this.$request(
             "post",
-            "/api/entidades/verificarSigla",
-            { sigla: this.e.sigla }
+            "/api/tipologias/verificarSigla",
+            { sigla: this.t.sigla }
           );
           if (existeSigla.data) {
             this.numeroErros++;
@@ -191,31 +191,28 @@ export default {
         }
       }
 
-      // Internacional
-      if (this.e.internacional == "") {
-        this.numeroErros++;
-      }
-
       return this.numeroErros;
     },
 
-    // Lança o pedido de criação da entidade no worflow
-    criarEntidade: async function() {
+    // Lança o pedido de criação da tipologia no worflow
+    criarTipologia: async function() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          let erros = await this.validarEntidade();
+          let erros = await this.validarTipologia();
           if (erros == 0) {
             let userBD = await this.$request(
               "get",
               "/api/users/listarToken/" + this.$store.state.token
             );
-            let dataObj = this.e;
-            dataObj.codigo = "ent_" + this.e.sigla;
+
+            let dataObj = this.t;
+            dataObj.codigo = "tip_" + this.t.sigla;
+
             let pedidoParams = {
               tipoPedido: "Criação",
-              tipoObjeto: "Entidade",
+              tipoObjeto: "Tipologia",
               novoObjeto: dataObj,
               user: { email: userBD.data.email },
               entidade: userBD.data.entidade,
@@ -228,7 +225,7 @@ export default {
               pedidoParams
             );
             this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-            this.dialogEntidadeCriada = true;
+            this.dialogTipologiaCriada = true;
           } else {
             this.errosValidacao = true;
           }
@@ -242,16 +239,16 @@ export default {
       this.$router.push("/");
     },
 
-    criacaoEntidadeTerminada: function() {
+    criacaoTipologiaTerminada: function() {
       this.$router.push("/");
     },
 
-    // Cancela a criação da Entidade
-    eliminarEntidade: function() {
+    // Cancela a criação da Tipologia
+    eliminarTipologia: function() {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoEntidade: function() {
+    cancelarCriacaoTipologia: function() {
       this.$router.push("/");
     }
   }

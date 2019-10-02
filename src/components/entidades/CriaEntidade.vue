@@ -81,14 +81,9 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                Tipologias de Entidade
-              </v-expansion-panel-header>
+              <v-expansion-panel-header class="expansion-panel-heading">Tipologias de Entidade</v-expansion-panel-header>
               <v-expansion-panel-content>
-                <DesSelTip
-                  :tipologias="tipSel"
-                  @unselectTipologia="unselectTipologia($event)"
-                />
+                <DesSelTip :tipologias="tipSel" @unselectTipologia="unselectTipologia($event)" />
 
                 <hr style="border-top: 1px dashed #dee2f8;" />
 
@@ -101,12 +96,7 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
-        >
+        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
           {{ text }}
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
@@ -154,7 +144,7 @@ export default {
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
-        var response = await this.$request("get", "/api/tipologias/");
+        let response = await this.$request("get", "/api/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -167,27 +157,29 @@ export default {
         return error;
       }
     },
+
     unselectTipologia: function(tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
-      var index = this.tipSel.findIndex(e => e.id === tipologia.id);
+      let index = this.tipSel.findIndex(e => e.id === tipologia.id);
       this.tipSel.splice(index, 1);
       this.entidade.tipologiasSel = this.tipSel;
-      console.log(this.entidade.tipologiasSel);
     },
+
     selectTipologia: function(tipologia) {
       this.tipSel.push(tipologia);
       this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
-      var index = this.tipologias.findIndex(e => e.id === tipologia.id);
+      let index = this.tipologias.findIndex(e => e.id === tipologia.id);
       this.tipologias.splice(index, 1);
-      console.log(this.entidade.tipologiasSel);
     },
+
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
     }
   },
+
   created: function() {
     this.loadTipologias();
   }
