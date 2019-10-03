@@ -69,7 +69,7 @@ async function exec(type, path, data, config, store, router) {
   } catch (erro) {
     var httpStatus = erro.response.status;
 
-    if (httpStatus == 401) {
+    if (httpStatus == 401 && path != "/api/users/login") {
       store.commit("guardaTokenUtilizador", "");
       store.commit("guardaNomeUtilizador", "");
 
