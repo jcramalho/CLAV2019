@@ -73,7 +73,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = this.$request("get", "/api/invariantes");
+      var response = await this.$request("get", "/api/invariantes");
       this.invariantes = response.data;
     } catch (e) {
       this.erro =
