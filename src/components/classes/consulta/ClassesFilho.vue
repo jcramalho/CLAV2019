@@ -13,18 +13,11 @@
       </div>
     </v-col>
     <v-col xs="10" sm="10">
-      <v-data-table
-        :items="subclasses"
-        class="elevation-1"
-        hide-default-header
-        hide-default-footer
-      >
+      <v-data-table :items="subclasses" class="elevation-1" hide-default-header hide-default-footer :items-per-page="subclasses.length">
         <template v-slot:item="props">
           <tr>
             <td>
-              <a :href="'/classes/consultar/c' + props.item.codigo">
-                {{ props.item.codigo }}
-              </a>
+              <a :href="'/classes/consultar/c' + props.item.codigo">{{ props.item.codigo }}</a>
               - {{ props.item.titulo }}
             </td>
           </tr>
