@@ -154,7 +154,8 @@
                       </v-list-item-content>
                     </v-list-item>
                   </li>
-                  <li>As Orientações para a aplicação de tabela de seleção derivada da Lista Consolidada
+                  <li>As <a :href="`${publicPath}documentos/Orientacoes_aplicacao_TS_20191002.pdf`">Orientações para 
+                  a aplicação de tabela de seleção derivada da Lista Consolidada</a>
                     fornecem um conjunto de diretrizes e exemplos concretos para a utilização de uma 
                     Tabela de Seleção (TS) extraída da Lista Consolidada para a Classificação e 
                     Avaliação da Informação Arquivística (LC).</li>

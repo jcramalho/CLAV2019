@@ -12,7 +12,8 @@
           <v-expansion-panel-content>
             <v-card>
               <v-card-text>
-                <p>{{ item.texto }}</p>
+                <div v-if="item.html" v-html="item.texto" />
+                <p v-else>{{ item.texto }}</p>
                 <div>
                   <v-btn
                     v-for="op in item.ops"
@@ -88,6 +89,7 @@ export default {
         },
         {
           entidade: "Tabelas de Seleção",
+          html: true,
           texto: help.TabelasSelecao,
           ops: [
             {

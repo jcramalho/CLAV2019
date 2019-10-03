@@ -6,8 +6,11 @@ module.exports.help = {
     "Direção-Geral do Livro, dos Arquivos e das Bibliotecas (DGLAB) para a produção de " +
     "planos de classificação e de Tabelas de Seleção. ",
   TabelasSelecao:
-    "Tabelas de seleção submetidas pelas entidades e aprovadas pela Direção-Geral do Livro, " +
-    "dos Arquivos e das Bibliotecas (DGLAB), conformes à Lista Consolidada.",
+    "Encontram-se disponíveis duas formas para a submissão de tabelas de seleção através da CLAV, " +
+    "a criação assistida e a submissão de ficheiro previamente preenchido." +
+    "<ul><li>Para a criação assistida, selecione a opção <b>CRIAR</b>;</li>" +
+    "<li>Para a submissão de ficheiro selecione a opção <b>IMPORTAR CSV</b>.</li></ul>" +
+    "Os formulários encontram-se disponíveis na Plataforma em <b>Documentação técnica de apoio > Formulários</b>.",
   Entidades:
     "Entidades públicas que intervêm nos processos de negócio (classes de 3º nível) da " +
     "Lista Consolidada. Podem integrar uma ou mais tipologias de entidades.",
