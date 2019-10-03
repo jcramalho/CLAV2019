@@ -9,6 +9,12 @@
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text class="panel-body">
+            <div class="ma-3">
+              Para cada tipo de Fonte de Legitimação, o diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção, é disponibilizado um formulário diferente. 
+              <p>Selecione a Fonte de legitimação aplicável e transfira o formulário para preenchimento offline.</p>
+              
+              <p>Consulte <a :href="`${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`">aqui</a> as instruções de preenchimento.</p>
+            </div>
             <div>
               <table
                 class="adicao"
@@ -16,19 +22,64 @@
               >
                 <tr>
                   <td style="width:20%;">
-                    <div class="info-label">Fonte de Legitimação:</div>
+                    <div class="info-label">
+                      Fonte de Legitimação:
+                      <InfoBox
+                        header="Fonte de Legitimação"
+                        :text="myhelp.AutoEliminacao.Campos.FonteLegitimacao"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </div>
                   </td>
                   <td style="width:40%">
                     <v-radio-group row v-model="tipo" :mandatory="true">
-                      <v-radio xs4 sm4 label="PGD/LC" value="PGD/LC"></v-radio>
-                      <v-radio xs4 sm4 label="PGD" value="PGD"></v-radio>
-                      <v-radio xs4 sm4 label="RADA" value="RADA"></v-radio>
+                      <v-radio v-on="on" xs4 sm4 value="PGD/LC">
+                        <template v-slot:label>
+                          <div class="mt-2">
+                            PGD/LC
+                            <InfoBox
+                              header="Fonte de Legitimação - PGD/LC"
+                              :text="myhelp.AutoEliminacao.Campos.PGD_LC"
+                              helpColor="indigo darken-4"
+                              dialogColor="#E0F2F1"
+                            />
+                          </div>
+                        </template>
+                      </v-radio>
+                      <v-radio v-on="on" xs4 sm4 value="PGD">
+                        <template v-slot:label>
+                          <div class="mt-2">
+                            PGD
+                            <InfoBox
+                              header="Fonte de Legitimação - PGD"
+                              :text="myhelp.AutoEliminacao.Campos.PGD"
+                              helpColor="indigo darken-4"
+                              dialogColor="#E0F2F1"
+                            />
+                          </div>
+                        </template>
+                      </v-radio>
+                      <v-radio v-on="on" xs4 sm4 value="RADA">
+                        <template v-slot:label>
+                          <div class="mt-2">
+                            RADA
+                            <InfoBox
+                              header="Fonte de Legitimação - RADA"
+                              :text="myhelp.AutoEliminacao.Campos.RADA"
+                              helpColor="indigo darken-4"
+                              dialogColor="#E0F2F1"
+                            />
+                          </div>
+                        </template>
+                      </v-radio>
                     </v-radio-group>
                     <a
                       v-if="tipo === 'PGD/LC'"
                       :href="
                         `${publicPath}documentos/Ficheiro_submissão_PGD_LC.xlsx`
                       "
+                      download
                     >
                       Transferir ficheiro de submissão
                     </a>
@@ -37,16 +88,19 @@
                       :href="
                         `${publicPath}documentos/Ficheiro_submissão_${tipo}.xlsx`
                       "
+                      download
                     >
                       Transferir ficheiro de submissão
                     </a>
+                    <div style="width:100%">Para submeter um auto de eliminação, selecione o ficheiro que preencheu e guardou previamente.</div>
+                    <div>Em seguida, para concluir, execute o comando <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.</div>
                   </td>
                 </tr>
                 <tr>
                   <td style="width:20%;">
                     <div class="info-label">Ficheiro:</div>
                   </td>
-                  <td>
+                  <td style="width:40%">
                     <div>
                       <input
                         type="file"
@@ -118,8 +172,13 @@
 <script>
 const conversor = require("@/plugins/conversor").excel2Json;
 const conversorTS = require("@/plugins/conversor").excel2JsonTS;
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
 
 export default {
+  components: {
+    InfoBox
+  },
   data: () => ({
     file: null,
     tipo: "PGD/LC",
@@ -127,7 +186,8 @@ export default {
     success: "",
     erroDialog: false,
     erro: "",
-    publicPath: process.env.BASE_URL
+    publicPath: process.env.BASE_URL,
+    myhelp: help
   }),
   methods: {
     submit: async function() {
