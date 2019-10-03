@@ -47,6 +47,9 @@
               </v-card>
             </v-list-group>
           </v-list>
+          <v-alert :value="invariantes.length == 0" type="warning">
+            Não foram encontrados invariantes...
+          </v-alert>
         </v-card>
       </v-col>
       <v-col v-else>
