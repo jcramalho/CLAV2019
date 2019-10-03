@@ -47,6 +47,9 @@
               </v-card>
             </v-list-group>
           </v-list>
+          <v-alert :value="invariantes.length == 0" type="warning">
+            Não foram encontrados invariantes...
+          </v-alert>
         </v-card>
       </v-col>
       <v-col v-else>
@@ -73,7 +76,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = this.$request("get", "/api/invariantes");
+      var response = await this.$request("get", "/api/invariantes");
       this.invariantes = response.data;
     } catch (e) {
       this.erro =
