@@ -101,25 +101,47 @@
             </template>
             <span>Desativar utilizador</span>
           </v-tooltip>
-          <!-- <v-tooltip bottom>
+          <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn v-on="on" icon @click="confirmacaoEliminar = true">
                 <v-icon color="red">delete</v-icon>
-                <v-dialog v-model="confirmacaoEliminar" persistent max-width="290">
+                <v-dialog
+                  v-model="confirmacaoEliminar"
+                  persistent
+                  max-width="290"
+                >
                   <v-card>
                     <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>Tem a certeza que pretende eliminar o utilizador?</v-card-text>
+                    <v-card-text>
+                      Tem a certeza que pretende eliminar o utilizador?
+                    </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="red" text @click="confirmacaoEliminar = false">Cancelar</v-btn>
-                      <v-btn color="primary" text @click="eliminar(editedItem); confirmacaoEliminar=false; dialog = false">Confirmar</v-btn>
+                      <v-btn
+                        color="red"
+                        text
+                        @click="confirmacaoEliminar = false"
+                      >
+                        Cancelar
+                      </v-btn>
+                      <v-btn
+                        color="primary"
+                        text
+                        @click="
+                          eliminar(editedItem);
+                          confirmacaoEliminar = false;
+                          dialog = false;
+                        "
+                      >
+                        Confirmar
+                      </v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
               </v-btn>
-              </template>
+            </template>
             <span>Eliminar utilizador</span>
-          </v-tooltip> -->
+          </v-tooltip>
         </v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
