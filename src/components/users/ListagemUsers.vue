@@ -46,6 +46,22 @@
                 </template>
                 <span>Editar utilizador</span>
               </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click="desativarId = props.item.id">
+                    <v-icon color="grey darken-2">lock</v-icon>
+                  </v-btn>
+                </template>
+                <span>Desativar utilizador</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="eliminarId = props.item.id">
+                    <v-icon color="red">delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>Eliminar utilizador</span>
+              </v-tooltip>
             </td>
           </tr>
         </template>
@@ -59,89 +75,6 @@
       <v-card>
         <v-card-title class="headline">
           <span class="headline">Editar utilizador</span>
-          <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" @click="confirmacaoDesativar = true">
-                <v-icon color="grey darken-2">lock</v-icon>
-                <v-dialog
-                  v-model="confirmacaoDesativar"
-                  persistent
-                  max-width="290"
-                >
-                  <v-card>
-                    <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>
-                      Tem a certeza que pretende desativar o utilizador?
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="red"
-                        text
-                        @click="confirmacaoDesativar = false"
-                      >
-                        Cancelar
-                      </v-btn>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="
-                          desativar(editedItem);
-                          confirmacaoDesativar = false;
-                          dialog = false;
-                        "
-                      >
-                        Confirmar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-            </template>
-            <span>Desativar utilizador</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on" icon @click="confirmacaoEliminar = true">
-                <v-icon color="red">delete</v-icon>
-                <v-dialog
-                  v-model="confirmacaoEliminar"
-                  persistent
-                  max-width="290"
-                >
-                  <v-card>
-                    <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>
-                      Tem a certeza que pretende eliminar o utilizador?
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="red"
-                        text
-                        @click="confirmacaoEliminar = false"
-                      >
-                        Cancelar
-                      </v-btn>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="
-                          eliminar(editedItem);
-                          confirmacaoEliminar = false;
-                          dialog = false;
-                        "
-                      >
-                        Confirmar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-            </template>
-            <span>Eliminar utilizador</span>
-          </v-tooltip>
         </v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
@@ -209,6 +142,54 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog :value="desativarId != ''" persistent max-width="290">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende desativar o utilizador?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="desativarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="
+              desativar(desativarId);
+              desativarId = '';
+            "
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="eliminarId != ''" persistent max-width="290px">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende eliminar o utilizador?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="eliminarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="
+              eliminar(eliminarId);
+              eliminarId = '';
+            "
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-snackbar
       v-model="snackbar"
       :color="color"
@@ -271,8 +252,8 @@ export default {
       }
     ],
     dialog: false,
-    confirmacaoDesativar: false,
-    confirmacaoEliminar: false,
+    desativarId: "",
+    eliminarId: "",
     editedIndex: -1,
     editedItem: {
       nome: "",
@@ -322,8 +303,8 @@ export default {
       this.editedItem.entidade = this.editedItem.entidade.split("_")[1];
       this.dialog = true;
     },
-    desativar(item) {
-      this.$request("put", "/api/users/desativar/" + item.id)
+    desativar(id) {
+      this.$request("put", "/api/users/desativar/" + id)
         .then(res => {
           this.text = res.data;
           this.color = "success";
@@ -338,8 +319,8 @@ export default {
           this.done = false;
         });
     },
-    eliminar(item) {
-      this.$request("delete", "/api/users/eliminar/" + item.id)
+    eliminar(id) {
+      this.$request("delete", "/api/users/eliminar/" + id)
         .then(res => {
           this.text = res.data;
           this.color = "success";

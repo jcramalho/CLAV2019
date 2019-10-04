@@ -165,7 +165,7 @@ export default {
         })
         .catch(error => alert(error));
     },
-    registarUtilizador() {
+    async registarUtilizador() {
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.$data.form.type) {
@@ -191,25 +191,26 @@ export default {
             parsedType = 1;
             break;
         }
-        this.$request("post", "/api/users/registar", {
-          name: this.$data.form.name,
-          email: this.$data.form.email,
-          entidade: this.$data.form.entidade,
-          type: parsedType,
-          password: this.$data.form.password
-        })
-          .then(res => {
-            this.$router.push(
-              "/users/listagem?sucesso=" + encodeURIComponent(res.data)
-            );
-          })
-          .catch(err => {
-            this.text =
-              "Ocorreu um erro ao realizar o registo: " + err.response.data;
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
+
+        try {
+          var response = await this.$request("post", "/api/users/registar", {
+            name: this.$data.form.name,
+            email: this.$data.form.email,
+            entidade: this.$data.form.entidade,
+            type: parsedType,
+            password: this.$data.form.password
           });
+
+          this.$router.push(
+            "/users/listagem?sucesso=" + encodeURIComponent(response.data)
+          );
+        } catch (err) {
+          this.text =
+            "Ocorreu um erro ao realizar o registo: " + err.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        }
       } else {
         this.text = "Por favor preencha todos os campos!";
         this.color = "error";
