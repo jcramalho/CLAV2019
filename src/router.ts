@@ -227,7 +227,7 @@ export default new Router({
       path: "/users/registo",
       name: "registo",
       component: () => import("./views/users/Registo.vue"),
-      meta: { levels: [6, 7] }
+      meta: { levels: [5, 6, 7] }
     },
     {
       path: "/users/login",
@@ -251,13 +251,13 @@ export default new Router({
       path: "/users/listagem",
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue"),
-      meta: { levels: [6, 7] }
+      meta: { levels: [5, 6, 7] }
     },
     {
       path: "/users/registoParaEntidade",
       name: "registoParaEntidade",
       component: () => import("./views/users/RegistoParaEntidade.vue"),
-      meta: { levels: [6, 7] }
+      meta: { levels: [5, 6, 7] }
     },
     //cartao cidadao
     {
