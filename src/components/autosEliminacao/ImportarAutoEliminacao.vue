@@ -34,7 +34,7 @@
                   </td>
                   <td style="width:40%">
                     <v-radio-group row v-model="tipo" :mandatory="true">
-                      <v-radio xs4 sm4 value="PGD/LC">
+                      <v-radio xs4 sm4 value="PGD_LC">
                         <template v-slot:label>
                           <div class="mt-2">
                             PGD/LC
@@ -75,16 +75,6 @@
                       </v-radio>
                     </v-radio-group>
                     <a
-                      v-if="tipo === 'PGD/LC'"
-                      :href="
-                        `${publicPath}documentos/Formulario_AE_PGD_LC.xlsx`
-                      "
-                      download
-                    >
-                      Transferir ficheiro de submissão
-                    </a>
-                    <a
-                      v-else
                       :href="
                         `${publicPath}documentos/Formulario_AE_${tipo}.xlsx`
                       "
@@ -181,7 +171,7 @@ export default {
   },
   data: () => ({
     file: null,
-    tipo: "PGD/LC",
+    tipo: "PGD_LC",
     successDialog: false,
     success: "",
     erroDialog: false,
@@ -193,18 +183,14 @@ export default {
     submit: async function() {
       conversor(this.file, this.tipo)
         .then(res => {
-          console.warn(res);
-          this.$request("post", "/api/autosEliminacao/" + this.tipo, {
-            auto: res.auto,
-            token: this.$store.state.token
-          })
+          this.$request("post", "/api/autosEliminacao/" + this.tipo, { auto: res.auto })
             .then(r => {
               this.successDialog = true;
               this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(
                 res.error
               )}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`;
             })
-            .catch(e => {
+        .catch(e => {
               this.erro = e.response.data;
               this.erroDialog = true;
             });

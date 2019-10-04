@@ -47,7 +47,7 @@ var excel2Json = function(file, tipo) {
             index++;
             var conservacao;
             var codigo = row.getCell(1).text;
-            if (tipo === "PGD/LC") {
+            if (tipo === "PGD_LC") {
               auto.zonaControlo.push({
                 codigo: row.getCell(1).text,
                 titulo: row.getCell(2).text,
@@ -81,7 +81,7 @@ var excel2Json = function(file, tipo) {
 
             var agreg = wb.getWorksheet(3);
             agreg.eachRow(function(ag, agNumber) {
-              if (tipo === "PGD/LC") {
+              if (tipo === "PGD_LC") {
                 if (agNumber > 1 && ag.getCell(1).text === codigo) {
                   //Invariante da data de Conservacao
                   var dataContagem = ag.getCell(4).value;
