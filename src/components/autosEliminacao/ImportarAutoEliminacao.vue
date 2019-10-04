@@ -34,7 +34,7 @@
                   </td>
                   <td style="width:40%">
                     <v-radio-group row v-model="tipo" :mandatory="true">
-                      <v-radio v-on="on" xs4 sm4 value="PGD/LC">
+                      <v-radio xs4 sm4 value="PGD/LC">
                         <template v-slot:label>
                           <div class="mt-2">
                             PGD/LC
@@ -47,7 +47,7 @@
                           </div>
                         </template>
                       </v-radio>
-                      <v-radio v-on="on" xs4 sm4 value="PGD">
+                      <v-radio xs4 sm4 value="PGD">
                         <template v-slot:label>
                           <div class="mt-2">
                             PGD
@@ -60,7 +60,7 @@
                           </div>
                         </template>
                       </v-radio>
-                      <v-radio v-on="on" xs4 sm4 value="RADA">
+                      <v-radio xs4 sm4 value="RADA">
                         <template v-slot:label>
                           <div class="mt-2">
                             RADA
@@ -77,7 +77,7 @@
                     <a
                       v-if="tipo === 'PGD/LC'"
                       :href="
-                        `${publicPath}documentos/Ficheiro_submissão_PGD_LC.xlsx`
+                        `${publicPath}documentos/Formulario_AE_PGD_LC.xlsx`
                       "
                       download
                     >
@@ -86,7 +86,7 @@
                     <a
                       v-else
                       :href="
-                        `${publicPath}documentos/Ficheiro_submissão_${tipo}.xlsx`
+                        `${publicPath}documentos/Formulario_AE_${tipo}.xlsx`
                       "
                       download
                     >

@@ -27,7 +27,7 @@ var excel2Json = function(file, tipo) {
             .getCell(2).text,
           zonaControlo: []
         };
-        if (tipo === "PGD")
+        if (tipo !== "RADA")
           auto.legislacao =
             "Portaria " +
             wb
@@ -46,19 +46,18 @@ var excel2Json = function(file, tipo) {
             //Formatação do array dos AE
             index++;
             var conservacao;
+            var codigo = row.getCell(1).text;
             if (tipo === "PGD/LC") {
               auto.zonaControlo.push({
                 codigo: row.getCell(1).text,
                 titulo: row.getCell(2).text,
                 prazoConservacao: row.getCell(3).text,
                 destino: row.getCell(4).text,
-                ni: row.getCell(5).text,
-                dono: row.getCell(6).text,
-                dataInicio: row.getCell(7).text,
-                dataFim: row.getCell(8).text,
-                uiPapel: row.getCell(10).text,
-                uiDigital: row.getCell(11).text,
-                uiOutros: row.getCell(12).text,
+                dataInicio: row.getCell(5).text,
+                dataFim: row.getCell(6).text,
+                uiPapel: row.getCell(8).text,
+                uiDigital: row.getCell(9).text,
+                uiOutros: row.getCell(10).text,
                 agregacoes: []
               });
               conservacao = row.getCell(3).text;
@@ -76,33 +75,50 @@ var excel2Json = function(file, tipo) {
                 uiOutros: row.getCell(11).text,
                 agregacoes: []
               });
+              var referencia = row.getCell(2).text,
               conservacao = row.getCell(4).value;
             }
 
-            var codigo = row.getCell(1).text;
-
             var agreg = wb.getWorksheet(3);
             agreg.eachRow(function(ag, agNumber) {
-              var i;
-              if (tipo === "PGD/LC") i = 2;
-              else i = 3;
-
-              if (agNumber > 1 && ag.getCell(1).text === codigo) {
-                //Invariante da data de Conservacao
-                var dataContagem = ag.getCell(i + 2).value;
-                var res = parseInt(conservacao) + parseInt(dataContagem);
-                if (res <= currentTime.getFullYear()) {
-                  auto.zonaControlo[index].agregacoes.push({
-                    codigo: ag.getCell(i).text.replace(/[ -.,!/]/g, "_"),
-                    titulo: ag.getCell(i + 1).text,
-                    dataContagem: ag.getCell(i + 2).text,
-                    ni: ag.getCell(i + 3).text
-                  });
-                } else {
-                  err.push({
-                    codigo: codigo,
-                    agregacao: ag.getCell(i).text
-                  });
+              if (tipo === "PGD/LC") {
+                if (agNumber > 1 && ag.getCell(1).text === codigo) {
+                  //Invariante da data de Conservacao
+                  var dataContagem = ag.getCell(4).value;
+                  var res = parseInt(conservacao) + parseInt(dataContagem);
+                  if (res <= currentTime.getFullYear()) {
+                    auto.zonaControlo[index].agregacoes.push({
+                      codigo: ag.getCell(2).text.replace(/[ -.,!/]/g, "_"),
+                      titulo: ag.getCell(3).text,
+                      dataContagem: ag.getCell(4).text,
+                      ni: ag.getCell(5).text
+                    });
+                  } else {
+                    err.push({
+                      codigo: codigo,
+                      agregacao: ag.getCell(2).text
+                    });
+                  }
+                }
+              }
+              else {
+                if (agNumber > 1 && (ag.getCell(1).text === codigo && ag.getCell(2).text === referencia)) {
+                  //Invariante da data de Conservacao
+                  var dataContagem = ag.getCell(5).value;
+                  var res = parseInt(conservacao) + parseInt(dataContagem);
+                  if (res <= currentTime.getFullYear()) {
+                    auto.zonaControlo[index].agregacoes.push({
+                      codigo: ag.getCell(3).text.replace(/[ -.,!/]/g, "_"),
+                      titulo: ag.getCell(4).text,
+                      dataContagem: ag.getCell(5).text
+                    });
+                  } else {
+                    err.push({
+                      codigo: codigo,
+                      referencia: referencia,
+                      agregacao: ag.getCell(3).text
+                    });
+                  }
                 }
               }
             });
