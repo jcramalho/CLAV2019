@@ -17,6 +17,9 @@
         <v-treeview
           dense
           hoverable
+          activatable
+          :active="[classeId]"
+          :open="selectedParents"
           :items="classesTree"
           item-key="id"
           :search="search"
@@ -34,11 +37,22 @@
 
 <script>
 export default {
+  props: ["classeId"],
   data: () => ({
     classesTree: [],
     classesCarregadas: false,
-    search: null
+    search: null,
+    selectedParents: []
   }),
+
+  created: function(){
+    var levelIds = this.classeId.split('.')
+    var iteracoes = levelIds.length
+    for(var i=0; i < iteracoes; i++){
+      levelIds.splice(levelIds.length-1,1)
+      this.selectedParents.push(levelIds.join('.'))
+    }
+  },
 
   mounted: async function() {
     try {

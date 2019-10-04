@@ -3,7 +3,7 @@
     <v-row>
       <!-- MENU LATERAL -->
       <v-col xs="12" sm="3">
-        <ClassesArvoreLateral />
+        <ClassesArvoreLateral :classeId="idc.split('c')[1]"/>
       </v-col>
       <v-col xs="12" sm="9">
         <!-- HEADER -->
