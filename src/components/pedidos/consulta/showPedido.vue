@@ -66,13 +66,13 @@
           </v-data-table>
         </v-card-text>
       </v-card>
-
       <ShowTSOrg v-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
       <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
       <ShowAE v-else-if="p.objeto.tipo.includes('AE ')" :p="p" />
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowDefault v-else :p="p" />
+
     </v-card-text>
     <v-card-actions>
       <v-btn color="blue darken-4" dark @click="voltar">Voltar</v-btn>
