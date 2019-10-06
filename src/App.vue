@@ -63,13 +63,21 @@ export default {
           this.$router.push("/users/autenticacao");
         }
       } else {
-        //verifica se há algum erro ao tentar realizar um pedido à API, em caso afirmativo amostra o erro
-        if (this.$route.query.erro) {
-          this.text = this.$route.query.erro;
-          this.color = "error";
-          this.snackbar = true;
-        }
         this.authenticated = true;
+      }
+
+      if (this.$route.query.erro) {
+        //msg de erro
+        this.text = this.$route.query.erro;
+        this.color = "error";
+        this.snackbar = true;
+        this.$router.push(this.$route.path);
+      } else if (this.$route.query.sucesso) {
+        //msg de sucesso
+        this.text = this.$route.query.sucesso;
+        this.color = "success";
+        this.snackbar = true;
+        this.$router.push(this.$route.path);
       }
     }
   },

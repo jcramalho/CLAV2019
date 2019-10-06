@@ -66,6 +66,18 @@
                 label="Password"
                 type="password"
                 :rules="regraPassword"
+                @input="verificaPassword()"
+                required
+              />
+              <v-text-field
+                id="rep_password"
+                prepend-icon="lock"
+                name="rep_password"
+                v-model="form.rep_password"
+                label="Repita a Password"
+                type="password"
+                :rules="regraPassword"
+                @input="verificaPassword()"
                 required
               />
             </v-form>
@@ -105,7 +117,7 @@ export default {
       regraNome: [v => !!v || "Nome é obrigatório."],
       regraEmail: [
         v => !!v || "Email é obrigatório.",
-        v => /.+@.+/.test(v) || "Email tem de ser válido."
+        v => /^.+@.+\..+$/.test(v) || "Email tem de ser válido."
       ],
       regraEntidade: [v => !!v || "Entidade é obrigatório."],
       regraPassword: [v => !!v || "Password é obrigatório."],
@@ -115,7 +127,8 @@ export default {
         email: "",
         entidade: "",
         type: "",
-        password: ""
+        password: "",
+        rep_password: ""
       },
       ent_list: [],
       snackbar: false,
@@ -125,7 +138,21 @@ export default {
       text: ""
     };
   },
+
   methods: {
+    verificaPassword() {
+      if (this.form.password != this.form.rep_password) {
+        if (this.regraPassword.length == 1) {
+          this.regraPassword = this.regraPassword.concat([
+            "A password deve ser igual!"
+          ]);
+        }
+      } else {
+        if (this.regraPassword.length == 2) {
+          this.regraPassword = this.regraPassword.slice(0, 1);
+        }
+      }
+    },
     async getEntidades() {
       await this.$request("get", "/api/entidades")
         .then(res => {
@@ -138,7 +165,7 @@ export default {
         })
         .catch(error => alert(error));
     },
-    registarUtilizador() {
+    async registarUtilizador() {
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.$data.form.type) {
@@ -164,26 +191,26 @@ export default {
             parsedType = 1;
             break;
         }
-        this.$request("post", "/api/users/registar", {
-          name: this.$data.form.name,
-          email: this.$data.form.email,
-          entidade: this.$data.form.entidade,
-          type: parsedType,
-          password: this.$data.form.password
-        })
-          .then(res => {
-            this.text = res.data;
-            this.color = "success";
-            this.snackbar = true;
-            this.done = true;
-          })
-          .catch(err => {
-            this.text =
-              "Ocorreu um erro ao realizar o registo: " + err.response.data;
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
+
+        try {
+          var response = await this.$request("post", "/api/users/registar", {
+            name: this.$data.form.name,
+            email: this.$data.form.email,
+            entidade: this.$data.form.entidade,
+            type: parsedType,
+            password: this.$data.form.password
           });
+
+          this.$router.push(
+            "/users/listagem?sucesso=" + encodeURIComponent(response.data)
+          );
+        } catch (err) {
+          this.text =
+            "Ocorreu um erro ao realizar o registo: " + err.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        }
       } else {
         this.text = "Por favor preencha todos os campos!";
         this.color = "error";

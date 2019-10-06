@@ -72,6 +72,8 @@ async function exec(type, path, data, config, store, router) {
     if (httpStatus == 401 && path != "/api/users/login") {
       store.commit("guardaTokenUtilizador", "");
       store.commit("guardaNomeUtilizador", "");
+      store.commit("guardaTokenCLAV", "");
+      store.commit("guardaExpTokenCLAV", "");
 
       router.push(
         "/users/autenticacao?erro=" +

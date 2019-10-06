@@ -197,8 +197,10 @@ export default {
             }
           );
 
-          this.color = "success";
-          this.text = "Utilizadores registados com sucesso!";
+          this.$router.push(
+            "/users/listagem?sucesso=" +
+              encodeURIComponent("Utilizadores registados com sucesso!")
+          );
         } catch (e) {
           this.color = "error";
           this.text = e.response.data;
