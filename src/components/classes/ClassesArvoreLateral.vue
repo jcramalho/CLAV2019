@@ -59,7 +59,7 @@ export default {
   mounted: async function() {
     try {
       var myClasses = await this.$request("get", "/api/classes");
-      var myIndice = await this.$request("get", "/api/indiceInvertido")
+      var myIndice = await this.$request("get", "/api/indicePesquisa")
       this.classesTree = await this.preparaTree(myClasses.data, myIndice.data);
       this.classesCarregadas = true;
     } catch (e) {
