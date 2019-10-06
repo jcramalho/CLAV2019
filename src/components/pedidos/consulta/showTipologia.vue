@@ -19,10 +19,6 @@
           <div v-else class="info-content">{{ t.conteudo }}</div>
         </v-col>
       </v-row>
-
-      <v-card outlined class="mt-4">
-        <v-card-text>{{ JSON.stringify(p) }}</v-card-text>
-      </v-card>
     </v-card-text>
   </v-card>
 </template>
