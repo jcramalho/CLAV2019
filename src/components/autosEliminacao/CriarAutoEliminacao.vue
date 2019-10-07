@@ -1,38 +1,190 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12 sm20>
-        <v-card class="panel panel-default panel-custom">
-          <v-toolbar class="panel-heading">
-            <v-toolbar-title class="page-header">
-              <h1>Novo Auto de Eliminação</h1>
-            </v-toolbar-title>
-          </v-toolbar>
-          <v-card-text class="panel-body">
-            <v-autocomplete
-              label="Entidade"
-              :items="entidades"
-              v-model="entidade"
-            ></v-autocomplete>
-            <v-autocomplete
-              label="Legislação"
-              :items="portarias"
-              v-model="legislacao"
-            ></v-autocomplete>
-            <v-autocomplete
-              label="Fundo"
-              :items="entidades"
-              v-model="fundo"
-            ></v-autocomplete>
+  <v-row class="ma-1">
+    <v-col>
+      <v-card>
+        <v-app-bar color="green darken-4" dark>
+          <v-toolbar-title class="card-heading">Novo Auto de Eliminação</v-toolbar-title>
+        </v-app-bar>
+        
+        <v-card-text>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Entidade Responsável:</div>
+              </v-col>
+              <v-col>
+                <v-autocomplete
+                  label="Selecione a entidade responsável"
+                  :items="entidades"
+                  v-model="auto.entidade"
+                  solo
+                  dense
+                ></v-autocomplete>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Fonte de legitimação:</div>
+              </v-col>
+              <v-col>
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="portarias"
+                  v-model="auto.legislacao"
+                  solo
+                  dense
+                ></v-autocomplete>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Fundo:</div>
+              </v-col>
+              <v-col>
+                <v-autocomplete
+                  label="Selecione a entidade responsável pelo fundo"
+                  :items="entidades"
+                  v-model="auto.fundo"
+                  solo
+                  dense
+                ></v-autocomplete>
+              </v-col>
+            </v-row>
+
+            <v-expansion-panels>
+              <v-expansion-panel popout focusable>
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  <div>Adicionar Zona de Controlo</div>
+                </v-expansion-panel-header>
+
+                <v-expansion-panel-content>
+                  <v-row>
+                    <v-col cols="2">
+                      <div class="info-label">Codigo da Classe:</div>
+                    </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        label="Selecione a classe"
+                        :items="classes"
+                        v-model="zonaControlo.classe"
+                        :rules="value => !!value || 'Data Obrigatória'"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="2">
+                      <div class="info-label">Natureza de Intervenção:</div>
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        label="Selecione a classe"
+                        :items="natureza"
+                        v-model="zonaControlo.ni"
+                        :rules="value => !!value || 'Data Obrigatória'"
+                        solo
+                        dense
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="2">
+                      <div class="info-label">Dono PN:</div>
+                    </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        label="Selecione a entidade dona do processo"
+                        :items="entidades"
+                        v-model="zonaControlo.dono"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="2">
+                      <div class="info-label">Data de Início:</div>
+                    </v-col>
+                    <v-col>
+                      <v-text-field 
+                        hint="Exemplo: 1995" 
+                        :rules="rulesDate"
+                        v-model="zonaControlo.dataInicio"
+                      >
+                        Insira um ano
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="2">
+                      <div class="info-label">Data de Fim:</div>
+                    </v-col>
+                    <v-col>
+                      <v-text-field 
+                        hint="Exemplo: 1995" 
+                        :rules="rulesDate"
+                        v-model="zonaControlo.dataFim"
+                      >
+                        Insira um ano
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="2">
+                      <div class="info-label">Medição de UI em Papel:</div>
+                    </v-col>
+                    <v-col>
+                      <v-text-field 
+                        hint="Exemplo: 11.50" 
+                        :rules="rulesUI"
+                        v-model="zonaControlo.uiPapel"
+                      >
+                        Insira um ano
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="2">
+                      <div class="info-label">Medição de UI Digital:</div>
+                    </v-col>
+                    <v-col>
+                      <v-text-field 
+                        hint="Exemplo: 16.00" 
+                        :rules="rulesUI"
+                        v-model="zonaControlo.uiDigital"
+                      >
+                        Insira um ano
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="2">
+                      <div class="info-label">Medição de UI noutro Suporte:</div>
+                    </v-col>
+                    <v-col>
+                      <v-text-field 
+                        hint="Exemplo: 150.75" 
+                        :rules="rulesUI"
+                        v-model="zonaControlo.uiOutros"
+                      >
+                        Insira um ano
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row justify="end">
+                    <v-btn color="red darken-4" dark text>Limpar</v-btn>
+                    <v-btn color="green darken-4" dark text>Adicionar</v-btn>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-card-text>
         </v-card>
         <div style="text-align:center">
-          <v-btn medium color="primary" @click="submit" :disabled="!entidade && !legislacao && !fundo">
+          <v-btn medium color="primary" @click="submit" :disabled="!auto.entidade && !auto.legislacao && !auto.fundo">
             Submeter Auto de Eliminação
           </v-btn>
         </div>
-      </v-flex>
-    </v-layout>
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
         <v-card-title class="teal darken-4 title white--text" dark>
@@ -77,7 +229,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -87,71 +240,93 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["entidades","portarias"],
+  props: ["entidades","portarias","classes"],
   components: {
     InfoBox
   },
   data: () => ({
-    entidade: null,
-    legislacao: null,
-    fundo: null,
+    auto: {
+      entidade: null,
+      legislacao: null,
+      fundo: null,
+      zonaControlo: []
+    },
+    zonaControlo: {
+      classe: null,
+      ni: "Vazio",
+      dono: null,
+      dataInicio: "",
+      dataFim: "",
+    },
+    natureza: ["Vazio","Dono","Paticipante"],
+    rulesDate: [
+      value => !!value || 'Data Obrigatória',
+      value => {
+        const pattern = /[0-9]{4}/
+        return pattern.test(value) || 'Valor numérico com 4 dígitos'
+      }
+    ],
+    rulesUI: [
+      value => {
+        const pattern = /[0-9]+[.][0-9]{2}/
+        return pattern.test(value) || 'Input numérico com 2 casas decimais'
+      }
+    ],
     erro: null,
     erroDialog: false,
     success: null,
-    successDialog: false
+    successDialog: false,
   }),
   methods: {
+    filtraAuto: function(auto) {
+      this.auto.entidade = auto.entidade.split(" - ")[1]
+      this.auto.legislacao = "Portaria "+auto.legislacao.split(" ")[1]
+      this.auto.fundo = auto.fundo.split(" - ")[1]
+    },
+    adicionarZC: function() {
+      var codigo = this.zonaControlo.classe.split(" - ")[0]
+      var titulo = this.zonaControlo.classe.split(" - ")[1]
+
+    },
     submit: function() {
       this.erroDialog= true;
-      this.erro = this.entidade +"; "+this.legislacao+"; "+this.fundo
+      this.erro = JSON.stringify(this.auto)
     }
   }
 };
 </script>
 
 <style>
-.expansion-panel-heading {
-  color: #1a237e !important;
-  background-image: linear-gradient(to bottom, #e8eaf6 0, #8c9eff 100%);
-}
-
-.panel-custom .panel-heading {
-  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
-}
-
-.panel-custom .page-header {
-  border: none;
-  margin: 0;
-  color: #1a237e;
-}
-
-.panel-custom .panel-default:hover {
-  border-color: #8c9eff;
-}
-
-.adicao tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.adicao td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-}
-
-.adicao td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
-}
-
 .info-label {
-  color: #1a237e;
-  padding: 6px;
+  color: #2e7d32; /* green darken-3 */
+  padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #dee2f8;
+  background-color: #e8f5e9; /* green lighten-5 */
   font-weight: bold;
   margin: 5px;
+  border-radius: 3px;
+}
+
+.expansion-panel-heading {
+  background-color: #1b5e20 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+}
+
+.card-heading {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
 }
 </style>

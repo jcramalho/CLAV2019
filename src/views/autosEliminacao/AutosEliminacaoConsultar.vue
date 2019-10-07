@@ -1,7 +1,5 @@
 <template>
-  <v-container>
     <ConsultarAE v-bind:auto="autoEliminacao" />
-  </v-container>
 </template>
 
 <script>
