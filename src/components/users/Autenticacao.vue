@@ -69,27 +69,27 @@
           </v-row>
         </v-card-actions>
       </v-card>
-    </v-col>
-    <!--v-flex xs12 sm6 md12>
-    <v-card>
-      <v-card-actions>
+      <v-card>
+        <!--<v-card-actions>
       <v-flex>
         É a primeira vez que utiliza estes serviços?
       </v-flex>
       <v-flex class="text-xs-right">
         <v-btn color="primary" type="submit" @click="registarUtilizador">Registar</v-btn>
       </v-flex>
-      </v-card-actions>
-      <v-card-actions>
-      <v-flex>
-        Esqueceu a sua password?
-      </v-flex>
-      <v-flex class="text-xs-right">
-        <v-btn color="primary" type="submit" @click="recuperarPw">Recuperar</v-btn>
-      </v-flex>
-      </v-card-actions>
-    </v-card>
-    </v-flex-->
+      </v-card-actions>-->
+        <v-card-text>
+          Esqueceu a sua password?
+        </v-card-text>
+        <v-card-actions>
+          <v-flex class="d-flex flex-row-reverse">
+            <v-btn color="primary" type="submit" @click="recuperarPw">
+              Recuperar
+            </v-btn>
+          </v-flex>
+        </v-card-actions>
+      </v-card>
+    </v-col>
 
     <v-col cols="6">
       <v-card>

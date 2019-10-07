@@ -250,6 +250,12 @@ export default new Router({
       meta: { levels: [1, 2, 3, 4, 5, 6, 7] }
     },
     {
+      path: "/users/alteracaoPasswordRecuperacao",
+      name: "alteracaoPasswordRecuperacao",
+      component: () => import("./views/users/AlteracaoPasswordRecuperacao.vue"),
+      meta: { levels: [0, 1, 2, 3, 4, 5, 6, 7] }
+    },
+    {
       path: "/users/listagem",
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue"),
