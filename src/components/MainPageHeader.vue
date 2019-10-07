@@ -63,6 +63,14 @@
         {{ this.$store.state.name }}</span
       >
       <v-btn
+        class="mr-2"
+        color="indigo accent-4"
+        v-if="this.$store.state.name != ''"
+        @click="$router.push('/users/alteracaoPassword')"
+      >
+        Alterar Password
+      </v-btn>
+      <v-btn
         color="indigo accent-4"
         v-if="this.$store.state.name != ''"
         @click="logoutUtilizador"

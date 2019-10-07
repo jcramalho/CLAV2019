@@ -66,7 +66,10 @@ export default {
   mounted: async function() {
     var res = await this.$request(
       "get",
-      "/api/users/listarToken/" + this.$store.state.token
+      "/api/users/listarToken/" +
+        this.$route.query.jwt +
+        "?token=" +
+        this.$route.query.jwt
     );
     this.validJWT = true;
     this.form.id = res.data._id;
@@ -104,9 +107,16 @@ export default {
     },
     alterarPW() {
       if (this.$refs.form.validate()) {
-        this.$request("put", "/api/users/alterarPassword/" + this.form.id, {
-          password: this.$data.form.password
-        })
+        this.$request(
+          "put",
+          "/api/users/alterarPassword/" +
+            this.$data.form.id +
+            "?token=" +
+            this.$route.query.jwt,
+          {
+            password: this.$data.form.password
+          }
+        )
           .then(res => {
             this.text = res.data;
             this.color = "success";

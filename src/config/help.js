@@ -1,6 +1,6 @@
 module.exports.help = {
   ListaConsolidada:
-    "Estrutura hierárquica de classes que representam as funções (classes de 1º nível)," +
+    "Estrutura hierárquica de classes que representam as funções (classes de 1º nível), " +
     "as subfunções (2º nível) e os processos de negócio (3º e 4º nível) executados pela" +
     " Administração Pública. \nA Lista Consolidada é o referencial disponibilizado pela " +
     "Direção-Geral do Livro, dos Arquivos e das Bibliotecas (DGLAB) para a produção de " +
@@ -25,7 +25,10 @@ module.exports.help = {
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
   AutosEliminacao:
-    "Autos de eliminação produzidos ao abrigo de tabela de seleção inserida em Portaria de gestão de documentos ou Relatório de avaliação de documentação acumulada e submetida à DGLAB para verificação de conformidade. Para submeter autos de eliminação deverá selecionar a opção IMPORTAR.",
+    "Autos de eliminação produzidos ao abrigo de tabela de seleção inserida em Portaria de gestão"+
+    " de documentos ou Relatório de avaliação de documentação acumulada e submetida à <strong>DGLAB</strong> para verificação de conformidade."+
+    "<ul><li>Para a criação assistida de autos de eliminação, selecione a opção <strong>CRIAR</strong></li>"+
+    "<li>Para submeter autos de eliminação deverá selecionar a opção <strong>IMPORTAR</strong>.</li></ul>",
   Invariantes:
     "Conjunto de invariantes que testam situações de erro e identificam os PNs onde estas ocorrem.",
   Classe: {

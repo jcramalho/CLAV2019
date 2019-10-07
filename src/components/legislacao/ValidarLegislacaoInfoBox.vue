@@ -62,6 +62,8 @@ export default {
   methods: {
     validarLegislacao: async function() {
       let i = 0;
+      let parseAno = this.l.numero.split("/");
+      let anoDiploma = parseInt(parseAno[1]);
 
       //Tipo
       if (this.l.tipo == "") {
@@ -93,12 +95,28 @@ export default {
               mensagem: "O número do diploma já existente na BD."
             });
             this.numeroErros++;
+          } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
+            this.mensagensErro.push({
+              sobre: "Número do Diploma",
+              mensagem: "O número do diploma está no formato errado."
+            });
+            this.numeroErros++;
+          } else if (anoDiploma < 2000) {
+            if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
+              this.mensagensErro.push({
+                sobre: "Número do Diploma",
+                mensagem:
+                  "Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!"
+              });
+              this.numeroErros++;
+            }
           }
         } catch (err) {
           this.numeroErros++;
           this.mensagensErro.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação."
+            mensagem:
+              "Não consegui verificar a existência do número do diploma."
           });
         }
       }

@@ -5,7 +5,7 @@
         <v-card class="panel panel-default panel-custom">
           <v-toolbar class="panel-heading">
             <v-toolbar-title class="page-header">
-              <h1>Novo Auto de Eliminação</h1>
+              <h1>Importar Auto de Eliminação</h1>
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text class="panel-body">

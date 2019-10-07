@@ -108,11 +108,16 @@ export default {
         },
         {
           entidade: "Autos de Eliminação",
+          html: true,
           texto: help.AutosEliminacao,
           ops: [
             {
               label: "Consultar",
               url: "/autosEliminacao"
+            },
+            {
+              label: "Criar",
+              url: "/autosEliminacao/criar"
             },
             {
               label: "Importar",
