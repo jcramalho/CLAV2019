@@ -1,6 +1,6 @@
 <template>
     <v-card  class="ma-4 pa-2" >
-      <v-toolbar color="indigo accent-4" dark>
+      <v-toolbar color="indigo darken-4" dark>
         <v-toolbar-title>Registo na CLAV</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
