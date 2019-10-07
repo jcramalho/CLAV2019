@@ -265,9 +265,7 @@
 export default {
   props: ["p"],
 
-  data: () => ({
-    auto: p.objeto.dados.ae
-  })
+  data: () => ({})
 };
 </script>
 
