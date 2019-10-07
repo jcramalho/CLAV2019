@@ -141,6 +141,13 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 4, 5, 6, 7] }
     },
     {
+      path: "/autosEliminacao/criar",
+      name: "criarAutosEliminacao",
+      component: () =>
+        import("./views/autosEliminacao/AutosEliminacaoCriar.vue"),
+      meta: { levels: [3, 4, 5, 6, 7] }
+    },
+    {
       path: "/autosEliminacao/importar",
       name: "importarAutosEliminacao",
       component: () =>
