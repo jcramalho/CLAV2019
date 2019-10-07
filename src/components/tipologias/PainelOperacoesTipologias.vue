@@ -126,11 +126,11 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          var userBD = await this.$request(
+          let userBD = await this.$request(
             "get",
             "/api/users/listarToken/" + this.$store.state.token
           );
-          var pendenteParams = {
+          let pendenteParams = {
             numInterv: 1,
             acao: "Criação",
             tipo: "Tipologia",
@@ -139,7 +139,7 @@ export default {
             user: { email: userBD.data.email },
             token: this.$store.state.token
           };
-          var response = await this.$request(
+          let response = await this.$request(
             "post",
             "/api/pendentes",
             pendenteParams
@@ -219,7 +219,7 @@ export default {
               token: this.$store.state.token
             };
 
-            var response = await this.$request(
+            let response = await this.$request(
               "post",
               "/api/pedidos",
               pedidoParams
