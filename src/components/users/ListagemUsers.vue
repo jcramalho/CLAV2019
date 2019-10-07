@@ -48,6 +48,18 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    v-on="on"
+                    @click="alterarPasswordId = props.item.id"
+                  >
+                    <v-icon medium color="yellow">vpn_key</v-icon>
+                  </v-btn>
+                </template>
+                <span>Alterar password do utilizador</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
                   <v-btn icon v-on="on" @click="desativarId = props.item.id">
                     <v-icon color="grey darken-2">lock</v-icon>
                   </v-btn>
@@ -142,6 +154,48 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog :value="alterarPasswordId != ''" max-width="500px">
+      <v-card>
+        <v-card-title class="headline">
+          <span class="headline">Alterar password do utilizador</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form2" lazy-validation>
+            <v-text-field
+              id="password"
+              prepend-icon="lock"
+              name="password"
+              v-model="password"
+              label="Nova Password"
+              type="password"
+              :rules="regraPassword"
+              @input="verificaPassword()"
+              required
+            />
+            <v-text-field
+              id="rep_password"
+              prepend-icon="lock"
+              name="rep_password"
+              v-model="rep_password"
+              label="Repita a Password"
+              type="password"
+              :rules="regraPassword"
+              @input="verificaPassword()"
+              required
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="alterarPasswordId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" text @click="alterarPassword()">
+            Alterar Password
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog :value="desativarId != ''" persistent max-width="290">
       <v-card>
         <v-card-title class="headline">Confirmar ação</v-card-title>
@@ -153,14 +207,7 @@
           <v-btn color="red" text @click="desativarId = ''">
             Cancelar
           </v-btn>
-          <v-btn
-            color="primary"
-            text
-            @click="
-              desativar(desativarId);
-              desativarId = '';
-            "
-          >
+          <v-btn color="primary" text @click="desativar(desativarId)">
             Confirmar
           </v-btn>
         </v-card-actions>
@@ -177,14 +224,7 @@
           <v-btn color="red" text @click="eliminarId = ''">
             Cancelar
           </v-btn>
-          <v-btn
-            color="primary"
-            text
-            @click="
-              eliminar(eliminarId);
-              eliminarId = '';
-            "
-          >
+          <v-btn color="primary" text @click="eliminar(eliminarId)">
             Confirmar
           </v-btn>
         </v-card-actions>
@@ -213,6 +253,7 @@ export default {
       v => /^.+@.+\..+$/.test(v) || "Email tem de ser válido."
     ],
     regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
+    regraPassword: [v => !!v || "Password é obrigatório."],
     ent_list: [],
     usersFooterProps: {
       "items-per-page-text": "Pedidos por página",
@@ -252,6 +293,7 @@ export default {
       }
     ],
     dialog: false,
+    alterarPasswordId: "",
     desativarId: "",
     eliminarId: "",
     editedIndex: -1,
@@ -261,6 +303,8 @@ export default {
       email: "",
       level: ""
     },
+    password: "",
+    rep_password: "",
     utilizadores: [],
     entidades: [],
     snackbar: false,
@@ -297,11 +341,53 @@ export default {
         return e;
       }
     },
+    verificaPassword() {
+      if (this.password != this.rep_password) {
+        if (this.regraPassword.length == 1) {
+          this.regraPassword = this.regraPassword.concat([
+            "A password deve ser igual!"
+          ]);
+        }
+      } else {
+        if (this.regraPassword.length == 2) {
+          this.regraPassword = this.regraPassword.slice(0, 1);
+        }
+      }
+    },
     editar(item) {
       this.editedIndex = this.utilizadores.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.editedItem.entidade = this.editedItem.entidade.split("_")[1];
       this.dialog = true;
+    },
+    alterarPassword() {
+      if (this.$refs.form2.validate()) {
+        this.$request(
+          "put",
+          "/api/users/alterarPassword/" + this.alterarPasswordId,
+          {
+            password: this.password
+          }
+        )
+          .then(res => {
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.alterarPasswordId = "";
+            this.done = true;
+          })
+          .catch(err => {
+            this.text = "Ocorreu um erro ao atualizar a password.";
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          });
+      } else {
+        this.text = "Por favor preencha todos os campos!";
+        this.color = "error";
+        this.snackbar = true;
+        this.done = false;
+      }
     },
     desativar(id) {
       this.$request("put", "/api/users/desativar/" + id)
@@ -310,6 +396,7 @@ export default {
           this.color = "success";
           this.snackbar = true;
           this.done = true;
+          this.desativarId = "";
           this.getUtilizadores();
         })
         .catch(err => {
@@ -326,6 +413,7 @@ export default {
           this.color = "success";
           this.snackbar = true;
           this.done = true;
+          this.eliminarId = "";
           this.getUtilizadores();
         })
         .catch(err => {
