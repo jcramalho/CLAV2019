@@ -21,12 +21,6 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 4, 5, 6, 7] }
     },
     {
-      path: "/classes/procurar/:id",
-      name: "procurarClasse",
-      component: () => import("./components/classes/MostraProcura.vue"),
-      meta: { levels: [0, 1, 2, 3, 4, 5, 6, 7] }
-    },
-    {
       path: "/classes/consultar/:idClasse",
       name: "consultaClasse",
       component: () => import("./views/classes/ClassesConsulta.vue"),

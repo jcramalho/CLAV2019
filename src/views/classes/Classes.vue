@@ -1,24 +1,11 @@
 <template>
   <v-card class="mx-auto">
     <v-sheet class="pa-3 indigo lighten-2">
-      <v-row v-if="!searchType" align="center" no-gutters>
-        <v-col xs="12" md="12" sm="12" lg="12" xl="12">
-          <v-text-field
-            v-model="searchName"
-            label="Filtrar por código e título..."
-            dark
-            solo-inverted
-            hide-details
-            clearable
-            clear-icon="delete_forever"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row v-else align="center" no-gutters>
+      <v-row align="center" no-gutters>
         <v-col xs="12" md="10" sm="10" lg="10" xl="10">
           <v-text-field
             v-model="search"
-            label="Pesquisar por notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
+            label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
             text
             dark
             solo-inverted
@@ -40,27 +27,20 @@
       <v-col>
         <v-card-text>
           <div v-if="classesCarregadas">
-            <v-switch
-              @change="changeSearch()"
-              v-model="searchType"
-              class="ma-1"
-              :label="switchLabel"
-            ></v-switch>
-
             <v-treeview
+              multiple-active
+              :open="selectedParents"
               :items="classesTree"
               item-key="id"
-              :search="searchName"
               hoverable
+              :active="this.searchResult"
             >
               <template slot="label" slot-scope="{ item }">
                 <v-btn
                   text
                   depressed
                   @click="$router.push('/classes/consultar/c' + item.id)"
-                >
-                  {{ item.name }}
-                </v-btn>
+                >{{ item.name }}</v-btn>
                 <br />
               </template>
             </v-treeview>
@@ -74,23 +54,29 @@
 <script>
 export default {
   data: () => ({
-    switchLabel: "Pesquisar por NA, ENA ou TI.",
-    searchType: false,
     classesTree: [],
     classesCarregadas: false,
     search: null,
-    searchName: null
+    searchResult: [],
+    motorBusca: [],
+    selectedParents: []
   }),
   mounted: async function() {
-    try {
-      var response = await this.$request("get", "/api/classes");
-      this.classesTree = await this.preparaTree(response.data);
-      this.classesCarregadas = true;
-    } catch (e) {
-      console.log(e);
-    }
+    var response = await this.$request("get", "/api/classes");
+    this.classesTree = await this.preparaTree(response.data);
+
+    this.classesCarregadas = true;
   },
   methods: {
+    buscarpais: function(code) {
+      let levelIds = code.split(".");
+      let iter = levelIds.length;
+
+      for (let i = 0; i < iter; i++) {
+        levelIds.splice(levelIds.length - 1, 1);
+        this.selectedParents.push(levelIds.join("."));
+      }
+    },
     preparaTree: async function(lclasses) {
       try {
         var myTree = [];
@@ -106,16 +92,36 @@ export default {
         return [];
       }
     },
-    procuraProcesso: function() {
-      if (this.search != null && this.search != "") {
-        this.$router.push("/classes/procurar/" + this.search);
-      }
-    },
-    changeSearch: function() {
-      if (this.searchType) {
-        this.searchName = null;
+    procuraProcesso: async function() {
+      if (this.search != "" && this.search != null) {
+        
+        if (!this.motorBusca[0]) {
+          await this.$request("get", "/api/indiceInvertido").then(response => {
+            this.motorBusca = response.data;
+          });
+        }
+        this.searchResult = [];
+        this.selectedParents = [];
+
+        for (let i = 0; i < this.motorBusca.length; i++) {
+          
+          if (this.motorBusca[i].chave.toLowerCase().includes(this.search.toLowerCase())) {
+            
+            let code = this.motorBusca[i].processo.codigo.split("c");
+            
+            if (code[1]) {
+              this.searchResult.push(code[1]);
+              this.buscarpais(code[1]);
+            } else {
+              this.searchResult.push(code[0]);
+              this.buscarpais(code[0]);
+            }
+          }
+        }
+        
       } else {
-        this.search = null;
+        this.selectedParents = [];
+        this.searchResult = [];
       }
     }
   }

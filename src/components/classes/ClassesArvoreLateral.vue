@@ -40,7 +40,9 @@ export default {
   props: ["classeId"],
   data: () => ({
     classesTree: [],
+    indiceClasses: [],
     classesCarregadas: false,
+    indiceCarregado: false,
     search: null,
     selectedParents: []
   }),
@@ -56,8 +58,9 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/classes");
-      this.classesTree = await this.preparaTree(response.data);
+      var myClasses = await this.$request("get", "/api/classes");
+      var myIndice = await this.$request("get", "/api/indicePesquisa")
+      this.classesTree = await this.preparaTree(myClasses.data, myIndice.data);
       this.classesCarregadas = true;
     } catch (e) {
       console.log(e);
@@ -69,14 +72,19 @@ export default {
       this.$router.push("/classes/consultar/c" + idClasse);
       this.$router.go();
     },
-    preparaTree: async function(lclasses) {
+    preparaTree: async function(lclasses, linfo) {
       try {
         var myTree = [];
         for (var i = 0; i < lclasses.length; i++) {
+          var infoIndex = linfo.findIndex(c => c.codigo == lclasses[i].codigo)
           myTree.push({
             id: lclasses[i].codigo,
             name: lclasses[i].codigo,
-            children: await this.preparaTree(lclasses[i].filhos)
+            titulo: linfo[infoIndex].titulo.toLowerCase(),
+            notas: linfo[infoIndex].notas.join(' ').toLowerCase(),
+            exemplos: linfo[infoIndex].exemplos.join(' ').toLowerCase(),
+            tis: linfo[infoIndex].tis.join(' ').toLowerCase(),
+            children: await this.preparaTree(lclasses[i].filhos, linfo)
           });
         }
         return myTree;
@@ -88,7 +96,20 @@ export default {
 
   computed: {
     filter() {
-      return (item, search, textKey) => item[textKey].indexOf(search) > -1;
+      return (item, queryText, itemText) => {
+        const codigo = item.id
+        const titulo = item.titulo
+        const notas = item.notas
+        const exemplos = item.exemplos
+        const tis = item.tis
+        const searchText = queryText.toLowerCase()
+
+        return codigo.indexOf(searchText) > -1 ||
+                titulo.indexOf(searchText) > -1 ||
+                notas.indexOf(searchText) > -1 ||
+                exemplos.indexOf(searchText) > -1 ||
+                tis.indexOf(searchText) > -1
+      }
     }
   }
 };
