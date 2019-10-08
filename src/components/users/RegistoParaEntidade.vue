@@ -9,14 +9,14 @@
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-select
+            <v-autocomplete
               :items="entidades"
               label="Entidade"
               v-model="entidade"
               prepend-icon="account_balance"
               :rules="regraEntidade"
             >
-            </v-select>
+            </v-autocomplete>
             <v-card class="elevation-0">
               <v-card-title>
                 <span class="mr-2">Utilizadores</span>
