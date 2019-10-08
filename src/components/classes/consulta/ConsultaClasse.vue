@@ -303,8 +303,10 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{
-                                  mylabels.textoCriterioJustificacaoGestionario
+                                {{// texto normalizado:
+                                  // mylabels.textoCriterioJustificacaoGestionario
+                                  // texto proveniente da FRD:
+                                  c.conteudo
                                 }}
                               </div>
                             </v-col>
@@ -465,7 +467,11 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{ mylabels.textoCriterioDensidadeInfo }}
+                                {{ // texto normalizado: 
+                                   // mylabels.textoCriterioDensidadeInfo 
+                                   // texto proveniente da FRD:
+                                  c.conteudo
+                                }}
                                 <br />
                                 <br />
                                 <ul>
@@ -494,7 +500,11 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{ mylabels.textoCriterioComplementaridade }}
+                                {{ // texto normalizado:
+                                   // mylabels.textoCriterioComplementaridade 
+                                   // texto proveniente da FRD:
+                                   c.conteudo
+                                }}
                                 <br />
                                 <br />
                                 <ul>
