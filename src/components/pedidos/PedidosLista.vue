@@ -128,16 +128,16 @@ export default {
           value: "estado",
           class: "title"
         },
-        { text: "Código", value: "codigo", sortable: false, class: "title" },
+        { text: "Código", value: "codigo", sortable: true, class: "title" },
         {
           text: "Responsável",
           value: "responsavel",
-          sortable: false,
+          sortable: true,
           class: "title"
         },
         { text: "Entidade", value: "entidade", sortable: true, class: "title" },
-        { text: "Tipo", value: "tipo", sortable: false, class: "title" },
-        { text: "Tarefa", sortable: false, class: "title" }
+        { text: "Tipo", value: "tipo", sortable: true, class: "title" },
+        { text: "Tarefa", sortable: true, class: "title" }
       ],
 
       footer_props: {

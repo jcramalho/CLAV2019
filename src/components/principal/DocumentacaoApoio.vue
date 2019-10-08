@@ -164,6 +164,28 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
+
+        <v-expansion-panel>
+          <v-expansion-panel-header>Formulários e instruções</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-card>
+              <v-card-text>
+                <div class="subtitle">Formulários</div>
+                <ul>
+                  <li>
+                    <a :href="`${publicPath}documentos/Formulario_AE_PGD_LC.xlsx`">Auto de eliminação PGD/LC</a>
+                  </li>
+                  <li>
+                    <a :href="`${publicPath}documentos/Formulario_AE_PGD.xlsx`">Auto de eliminação PGD</a>
+                  </li>
+                  <li>
+                    <a :href="`${publicPath}documentos/Formulario_AE_RADA.xlsx`">Auto de eliminação RADA</a>
+                  </li>
+                </ul>
+              </v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
     </v-card-text>
   </v-card>

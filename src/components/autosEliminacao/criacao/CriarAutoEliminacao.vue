@@ -8,7 +8,7 @@
         
         <v-card-text>
             <v-row>
-              <v-col cols="2">
+              <v-col :md="2" >
                 <div class="info-label">Entidade Responsável:</div>
               </v-col>
               <v-col>
@@ -22,7 +22,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="2">
+              <v-col :md="2">
                 <div class="info-label">Fonte de legitimação:</div>
               </v-col>
               <v-col>
@@ -36,7 +36,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="2">
+              <v-col :md="2">
                 <div class="info-label">Fundo:</div>
               </v-col>
               <v-col>
@@ -50,14 +50,23 @@
               </v-col>
             </v-row>
 
-            <v-expansion-panels>
+            <v-expansion-panels multiple>
               <!-- Zonas de Controlo -->
               <v-expansion-panel v-if="this.auto.zonaControlo.length>0" popout focusable>
-                <div>{{ this.auto.zonaControlo[0] }}</div>
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  <div>Zonas de Controlo</div>
+                </v-expansion-panel-header>
+
+                <v-expansion-panel-content>
+                  <ListaZonasControlo 
+                    v-bind:auto="auto"
+                  />
+                </v-expansion-panel-content>
               </v-expansion-panel>
 
               <!-- Adicionar Zona Controlo -->
               <AdicionarZonaControlo 
+                class="ma-1"
                 v-bind:classes="classes"
                 v-bind:entidades="entidades"
                 v-bind:auto="auto"
@@ -66,7 +75,7 @@
           </v-card-text>
         </v-card>
         <div style="text-align:center">
-          <v-btn medium color="primary" @click="submit" :disabled="!auto.entidade && !auto.legislacao && !auto.fundo">
+          <v-btn medium color="primary" @click="submit" :disabled="!auto.entidade && !auto.legislacao && !auto.fundo" class="ma-2">
             Submeter Auto de Eliminação
           </v-btn>
         </div>
@@ -123,13 +132,15 @@ const conversor = require("@/plugins/conversor").excel2Json;
 const conversorTS = require("@/plugins/conversor").excel2JsonTS;
 import InfoBox from "@/components/generic/infoBox.vue";
 import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/AdicionarZonaControlo.vue"
+import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue"
 const help = require("@/config/help").help;
 
 export default {
   props: ["entidades","portarias","classes"],
   components: {
     InfoBox,
-    AdicionarZonaControlo
+    AdicionarZonaControlo,
+    ListaZonasControlo
   },
   data: () => ({
     auto: {

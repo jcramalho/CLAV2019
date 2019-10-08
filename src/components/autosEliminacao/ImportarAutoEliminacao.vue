@@ -106,7 +106,7 @@
           </v-card-text>
         </v-card>
         <div style="text-align:center">
-          <v-btn medium color="primary" @click="submit" :disabled="!file">
+          <v-btn medium color="primary" @click="submit" :disabled="!file" class="ma-2">
             Submeter Auto de Eliminação
           </v-btn>
         </div>

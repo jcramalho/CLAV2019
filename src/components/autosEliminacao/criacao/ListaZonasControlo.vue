@@ -1,109 +1,23 @@
 <template>
-    <v-expansion-panel popout focusable>
-        <v-expansion-panel-header class="expansion-panel-heading">
-            <div>Adicionar Zona de Controlo</div>
+    <div>
+    <v-expansion-panel 
+        class="ma-1" 
+        v-for="(item,index) of this.auto.zonaControlo"
+        :key="index"
+    >
+        <v-expansion-panel-header>
+            <v-row>
+                <v-col :md="2">
+                    <div class="info-label">Código da Classe:</div>
+                </v-col>
+                <v-col>
+                    <div class="info-content">{{ item.codigo }}</div>
+                </v-col>
+            </v-row>
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-            <v-row>
-            <v-col :md="2">
-                <div class="info-label">Código da Classe:</div>
-            </v-col>
-            <v-col>
-                <v-autocomplete
-                label="Selecione a classe"
-                :items="classes"
-                v-model="classe"
-                solo
-                dense
-                ></v-autocomplete>
-            </v-col>
-            </v-row>
-            <v-row>
-            <v-col>
-                <div class="info-label">Natureza de Intervenção:</div>
-            </v-col>
-            <v-col>
-                <v-select
-                label="Selecione a classe"
-                :items="natureza"
-                v-model="ni"
-                solo
-                dense
-                ></v-select>
-            </v-col>
-            <v-col>
-                <div class="info-label">Dono PN:</div>
-            </v-col>
-            <v-col>
-                <v-autocomplete
-                label="Selecione a entidade dona do processo"
-                :items="entidades"
-                v-model="dono"
-                solo
-                dense
-                ></v-autocomplete>
-            </v-col>
-            </v-row>
-            <v-row>
-            <v-col>
-                <div class="info-label">Data de Início:</div>
-            </v-col>
-            <v-col>
-                <v-text-field 
-                hint="Exemplo: 1995" 
-                v-model="dataInicio"
-                >
-                Insira um ano
-                </v-text-field>
-            </v-col>
-            <v-col>
-                <div class="info-label">Data de Fim:</div>
-            </v-col>
-            <v-col>
-                <v-text-field 
-                hint="Exemplo: 1995" 
-                v-model="dataFim"
-                >
-                Insira um ano
-                </v-text-field>
-            </v-col>
-            </v-row>
-            <v-row>
-            <v-col>
-                <div class="info-label">Medição de UI em Papel:</div>
-            </v-col>
-            <v-col>
-                <v-text-field 
-                hint="Exemplo: 11.50" 
-                v-model="uiPapel"
-                >
-                Insira um ano
-                </v-text-field>
-            </v-col>
-            <v-col>
-                <div class="info-label">Medição de UI Digital:</div>
-            </v-col>
-            <v-col>
-                <v-text-field 
-                hint="Exemplo: 16.00" 
-                v-model="uiDigital"
-                >
-                Insira um ano
-                </v-text-field>
-            </v-col>
-            <v-col>
-                <div class="info-label">Medição de UI noutro Suporte:</div>
-            </v-col>
-            <v-col>
-                <v-text-field 
-                hint="Exemplo: 150.75" 
-                v-model="uiOutros"
-                >
-                Insira um ano
-                </v-text-field>
-            </v-col>
-            </v-row>
+            <div>OLA</div>
             <v-row justify="end">
             <v-btn color="red darken-4" dark text @click="limparZC">Limpar</v-btn>
             <v-btn color="green darken-4" dark text @click="adicionarZC">Adicionar</v-btn>
@@ -130,6 +44,7 @@
             </v-card>
         </v-dialog>
         </v-expansion-panel>
+        </div>
 </template>
 <script>
 export default {
