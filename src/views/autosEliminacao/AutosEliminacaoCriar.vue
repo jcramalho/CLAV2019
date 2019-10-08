@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import CriarAuto from "@/components/autosEliminacao/CriarAutoEliminacao.vue";
+import CriarAuto from "@/components/autosEliminacao/criacao/CriarAutoEliminacao.vue";
 
 export default {
   components: {
