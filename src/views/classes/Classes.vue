@@ -16,7 +16,7 @@
         </v-col>
         <v-col xs="12" md="2" sm="2" lg="2" xl="2">
           <div class="text-center">
-            <v-btn @click="procuraProcesso()">
+            <v-btn @click="processaPesquisa()">
               <v-icon left>search</v-icon>Pesquisar
             </v-btn>
           </div>
@@ -28,12 +28,14 @@
         <v-card-text>
           <div v-if="classesCarregadas">
             <v-treeview
+              hoverable
               multiple-active
-              :open="selectedParents"
               :items="classesTree"
               item-key="id"
-              hoverable
-              :active="this.searchResult"
+              :search="realSearch"
+              :filter="filter"
+              :open="selectedParents"
+              :active="selected"
             >
               <template slot="label" slot-scope="{ item }">
                 <v-btn
@@ -57,17 +59,21 @@ export default {
     classesTree: [],
     classesCarregadas: false,
     search: null,
-    searchResult: [],
-    motorBusca: [],
+    realSearch: null,
+    myIndice: [],
+    selected: [],
     selectedParents: []
   }),
   mounted: async function() {
-    var response = await this.$request("get", "/api/classes");
-    this.classesTree = await this.preparaTree(response.data);
-
+    var myClasses = await this.$request("get", "/api/classes");
+    var myIndice = await this.$request("get", "/api/indicePesquisa");
+    this.classesTree = await this.preparaTree(myClasses.data, myIndice.data);
     this.classesCarregadas = true;
   },
   methods: {
+    addActive: function(code) {
+      this.selected.push(code);
+    },
     buscarpais: function(code) {
       let levelIds = code.split(".");
       let iter = levelIds.length;
@@ -77,52 +83,74 @@ export default {
         this.selectedParents.push(levelIds.join("."));
       }
     },
-    preparaTree: async function(lclasses) {
+    processaPesquisa: function() {
+      if (this.search != "" && this.search != null) {
+        this.selected = [];
+        this.selectedParents = [];
+        this.realSearch = this.search;
+      } else {
+        this.realSearch = null;
+      }
+    },
+    preparaTree: async function(lclasses, linfo) {
       try {
         var myTree = [];
         for (var i = 0; i < lclasses.length; i++) {
+          var infoIndex = linfo.findIndex(c => c.codigo == lclasses[i].codigo);
           myTree.push({
             id: lclasses[i].codigo,
-            name: lclasses[i].codigo + " - " + lclasses[i].titulo,
-            children: await this.preparaTree(lclasses[i].filhos)
+            name: lclasses[i].codigo + " - " + linfo[infoIndex].titulo,
+            titulo: linfo[infoIndex].titulo.toLowerCase(),
+            notas: linfo[infoIndex].notas.join(" ").toLowerCase(),
+            exemplos: linfo[infoIndex].exemplos.join(" ").toLowerCase(),
+            tis: linfo[infoIndex].tis.join(" ").toLowerCase(),
+            children: await this.preparaTree(lclasses[i].filhos, linfo)
           });
         }
         return myTree;
       } catch (error) {
         return [];
       }
-    },
-    procuraProcesso: async function() {
-      if (this.search != "" && this.search != null) {
-        
-        if (!this.motorBusca[0]) {
-          await this.$request("get", "/api/indiceInvertido").then(response => {
-            this.motorBusca = response.data;
-          });
-        }
-        this.searchResult = [];
+    }
+  },
+  watch: {
+    search: function(newValue) {
+      if (newValue == "" || newValue == null) {
+        this.selected = [];
         this.selectedParents = [];
-
-        for (let i = 0; i < this.motorBusca.length; i++) {
-          
-          if (this.motorBusca[i].chave.toLowerCase().includes(this.search.toLowerCase())) {
-            
-            let code = this.motorBusca[i].processo.codigo.split("c");
-            
-            if (code[1]) {
-              this.searchResult.push(code[1]);
-              this.buscarpais(code[1]);
-            } else {
-              this.searchResult.push(code[0]);
-              this.buscarpais(code[0]);
-            }
-          }
-        }
-        
-      } else {
-        this.selectedParents = [];
-        this.searchResult = [];
+        this.realSearch = null;
       }
+    }
+  },
+  computed: {
+    filter() {
+      return (item, queryText, itemText) => {
+        const codigo = item.id;
+        const titulo = item.titulo;
+        const notas = item.notas;
+        const exemplos = item.exemplos;
+        const tis = item.tis;
+        const searchText = queryText.toLowerCase();
+
+        if (
+          codigo.indexOf(searchText) > -1 ||
+          titulo.indexOf(searchText) > -1 ||
+          notas.indexOf(searchText) > -1 ||
+          exemplos.indexOf(searchText) > -1 ||
+          tis.indexOf(searchText) > -1
+        ) {
+          this.addActive(item.id);
+          this.buscarpais(item.id);
+
+          if (item.children[0]) {
+            return 0;
+          } else {
+            return 1;
+          }
+        } else {
+          return 0;
+        }
+      };
     }
   }
 };
