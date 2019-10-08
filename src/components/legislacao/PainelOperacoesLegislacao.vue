@@ -248,10 +248,15 @@ export default {
               "/api/users/listarToken/" + this.$store.state.token
             );
 
+            let randID = await this.$request("get", "/api/utils/id");
+
+            let dataObj = this.l;
+            dataObj.codigo = "leg_" + randID.data;
+
             let pedidoParams = {
               tipoPedido: "Criação",
               tipoObjeto: "Legislação",
-              novoObjeto: this.l,
+              novoObjeto: dataObj,
               user: { email: userBD.data.email },
               entidade: userBD.data.entidade,
               token: this.$store.state.token

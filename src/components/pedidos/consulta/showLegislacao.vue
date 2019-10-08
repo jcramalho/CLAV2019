@@ -43,6 +43,7 @@ export default {
         { campo: "Data", conteudo: this.p.objeto.dados.data },
         { campo: "Sumário", conteudo: this.p.objeto.dados.sumario },
         { campo: "Link", conteudo: this.p.objeto.dados.link },
+        { campo: "Código", conteudo: this.p.objeto.dados.codigo },
         { campo: "Entidades", conteudo: this.p.objeto.dados.entidadesSel },
         { campo: "Processos", conteudo: this.p.objeto.dados.processosSel }
       ],

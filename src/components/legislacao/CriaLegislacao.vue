@@ -173,7 +173,8 @@ export default {
       data: "",
       link: "",
       entidadesSel: [],
-      processosSel: []
+      processosSel: [],
+      codigo: ""
     },
 
     tiposDiploma: [],
