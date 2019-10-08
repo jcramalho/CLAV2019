@@ -149,20 +149,6 @@
         </v-snackbar>
       </v-card>
 
-      <!-- Botão -->
-      <v-row>
-        <v-col class="text-center">
-          <v-btn
-            class="white--text"
-            medium
-            rounded
-            color="#388E3C"
-            :disabled="!(legislacao.sumario && legislacao.numero)"
-            @click="submeter()"
-          >Submeter Diploma</v-btn>
-        </v-col>
-      </v-row>
-
       <!-- Painel Operações -->
       <PainelOpsLeg :l="legislacao" />
     </v-col>
@@ -186,8 +172,9 @@ export default {
       tipo: "",
       data: "",
       link: "",
-      entidades: [],
-      processos: []
+      entidadesSel: [],
+      processosSel: [],
+      codigo: ""
     },
 
     tiposDiploma: [],
@@ -263,11 +250,11 @@ export default {
     // Vai a API buscar todos os tipos de diplomas legislativos
     loadTipoDiploma: async function() {
       try {
-        var response = await this.$request(
+        let response = await this.$request(
           "get",
           "/api/vocabularios/vc_tipoDiplomaLegislativo"
         );
-        for (var i = 0; i < response.data.length; i++) {
+        for (let i = 0; i < response.data.length; i++) {
           this.tiposDiploma[i] = response.data[i].termo;
         }
         this.tiposDiploma.sort();
@@ -279,21 +266,23 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      var index = this.entSel.findIndex(e => e.id === entidade.id);
+      let index = this.entSel.findIndex(e => e.id === entidade.id);
       this.entSel.splice(index, 1);
+      this.legislacao.entidadesSel = this.entSel;
     },
 
     selectEntidade: function(entidade) {
       this.entSel.push(entidade);
+      this.legislacao.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      var index = this.entidades.findIndex(e => e.id === entidade.id);
+      let index = this.entidades.findIndex(e => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-        var response = await this.$request("get", "/api/entidades");
+        let response = await this.$request("get", "/api/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -310,21 +299,23 @@ export default {
     unselectProcesso: function(processo) {
       // Recoloca o processo nos selecionáveis
       this.processos.push(processo);
-      var index = this.procSel.findIndex(e => e.id === processo.id);
+      let index = this.procSel.findIndex(e => e.id === processo.id);
       this.procSel.splice(index, 1);
+      this.legislacao.processosSel = this.procSel;
     },
 
     selectProcesso: function(processo) {
       this.procSel.push(processo);
+      this.legislacao.processosSel = this.procSel;
       // Remove dos selecionáveis
-      var index = this.processos.findIndex(e => e.id === processo.id);
+      let index = this.processos.findIndex(e => e.id === processo.id);
       this.processos.splice(index, 1);
     },
 
     // Vai à API buscar todas as classes de nivel 3
     loadClasses: async function() {
       try {
-        var response = await this.$request("get", "/api/classes?nivel=3");
+        let response = await this.$request("get", "/api/classes?nivel=3");
         this.processos = response.data.map(function(item) {
           return {
             codigo: item.codigo,
@@ -341,143 +332,6 @@ export default {
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    },
-
-    submeter: async function() {
-      if (this.$store.state.name === "") {
-        this.text = "Precisa de fazer login para criar a Legislação";
-        this.snackbar = true;
-        return false;
-      }
-
-      for (var i = 0; i < this.entSel.length; i++) {
-        this.legislacao.entidades[i] = this.entSel[i].id;
-      }
-
-      for (var j = 0; j < this.procSel.length; j++) {
-        this.legislacao.processos[j] = this.procSel[j].id;
-      }
-
-      // testes aos campos numero e data
-      var parseAno = this.legislacao.numero.split("/");
-      var anoDiploma = parseInt(parseAno[1]);
-
-      if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.legislacao.numero)) {
-        this.text = "O campo 'Número' está no formato errado.";
-        this.snackbar = true;
-        return false;
-      }
-
-      if (anoDiploma < 2000) {
-        if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.legislacao.numero)) {
-          this.text =
-            "Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!";
-          this.snackbar = true;
-          return false;
-        }
-      }
-
-      this.legislacao.data = this.dateFormatted;
-
-      if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.legislacao.data)) {
-        this.text = "O campo 'Data' está no formato errado.";
-        this.snackbar = true;
-        return false;
-      }
-
-      var date = new Date();
-
-      var ano = parseInt(this.legislacao.data.slice(0, 4));
-      var mes = parseInt(this.legislacao.data.slice(5, 7));
-      var dia = parseInt(this.legislacao.data.slice(8, 10));
-
-      var dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-      if (mes > 12) {
-        this.text = "Mês inválido!";
-        this.snackbar = true;
-        return false;
-      }
-      if (dia > dias[mes - 1]) {
-        if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
-          this.text = "Dia do mês inválido!";
-          this.snackbar = true;
-          return false;
-        }
-      }
-
-      if (anoDiploma > parseInt(date.getFullYear())) {
-        this.text = "Ano de Diploma inválido!";
-        this.snackbar = true;
-        return false;
-      }
-      if (ano > parseInt(date.getFullYear())) {
-        this.text =
-          "Ano inválido! Por favor selecione uma data anterior à atual";
-        this.snackbar = true;
-        return false;
-      }
-      if (
-        ano == parseInt(date.getFullYear()) &&
-        mes > parseInt(date.getMonth() + 1)
-      ) {
-        this.text =
-          "Mês inválido! Por favor selecione uma data anterior à atual";
-        this.snackbar = true;
-        return false;
-      }
-      if (
-        ano == parseInt(date.getFullYear()) &&
-        mes == parseInt(date.getMonth() + 1) &&
-        dia > parseInt(date.getDate())
-      ) {
-        this.text =
-          "Dia inválido! Por favor selecione uma data anterior à atual";
-        this.snackbar = true;
-        return false;
-      }
-
-      if (
-        !/https?:\/\/.+/.test(this.legislacao.link) &&
-        this.legislacao.link != ""
-      ) {
-        this.legislacao.link = "http://" + this.legislacao.link;
-      }
-
-      var dataObj = this.legislacao;
-
-      var userBD = await this.request(
-        "get",
-        "/api/users/listarToken/" + this.$store.state.token
-      );
-      var pedidoParams = {
-        tipoPedido: "Criação",
-        tipoObjeto: "Legislação",
-        novoObjeto: dataObj,
-        user: { email: userBD.data.email },
-        token: this.$store.state.token
-      };
-
-      var response = await this.$request("post", "/api/pedidos", pedidoParams);
-      this.$router.push("/pedidos/submissao");
-
-      /*this.$request("post", "/api/legislacao/", dataObj)
-        .then(res => {
-          this.$router.push("/pedidos/submissao");
-        })
-        .catch(err => {
-          if (err.response.status === 409) {
-            this.text =
-              "Já existe uma legislação com o número" + this.legislacao.numero;
-            this.color = "error";
-            this.snackbar = true;
-          }
-          if (err.response.status === 500) {
-            this.text = "Ocorreu um erro na criação desta entidade";
-            this.color = "error";
-            this.snackbar = true;
-          }
-        });*/
     }
   },
 

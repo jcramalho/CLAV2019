@@ -23,7 +23,7 @@
             <td>{{ props.item.titulo }}</td>
             <td>
               <v-btn small color="red darken-2" dark rounded @click="unselectProcesso(props.item)">
-                <v-icon dark>remove_circle</v-icon>
+                <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
           </tr>

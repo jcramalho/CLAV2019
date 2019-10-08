@@ -91,7 +91,7 @@
 export default {
   data() {
     return {
-      panelHeaderColor: "indigo accent-4"
+      panelHeaderColor: "indigo darken-4"
     };
   }
 };

@@ -71,8 +71,8 @@
       <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
       <ShowAE v-else-if="p.objeto.tipo.includes('AE ')" :p="p" />
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
+      <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
       <ShowDefault v-else :p="p" />
-
     </v-card-text>
     <v-card-actions>
       <v-btn color="blue darken-4" dark @click="voltar">Voltar</v-btn>
@@ -87,6 +87,7 @@ import ShowDefault from "@/components/pedidos/consulta/showDefault.vue";
 import ShowAE from "@/components/pedidos/consulta/showAE.vue";
 import ShowEntidade from "@/components/pedidos/consulta/showEntidade";
 import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
+import ShowLegislacao from "@/components/pedidos/consulta/showLegislacao";
 
 export default {
   props: ["p"],
@@ -97,7 +98,8 @@ export default {
     ShowDefault,
     ShowAE,
     ShowEntidade,
-    ShowTipologia
+    ShowTipologia,
+    ShowLegislacao
   },
 
   data: () => ({

@@ -3,7 +3,7 @@
     <v-sheet class="indigo lighten-2">
       <v-text-field
         v-model="search"
-        label="Pesquisa por código ou título"
+        label="Filtrar por código, título, notas aplic., exemplos de notas ou termos de índice"
         dark
         text
         solo-inverted
