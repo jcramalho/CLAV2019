@@ -25,7 +25,7 @@
             </v-col>
             <v-col>
                 <v-select
-                label="Selecione a classe"
+                label="Selecione a Natureza de Intervenção"
                 :items="natureza"
                 v-model="ni"
                 solo
