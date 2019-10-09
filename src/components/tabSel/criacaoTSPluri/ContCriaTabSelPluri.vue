@@ -8,10 +8,10 @@
       <v-stepper-content step="1">
         <v-expansion-panels>
           <v-expansion-panel>
-            <v-expansion-panel-header>
-              Selecione as Entidades abrangidas pela TS
+            <v-expansion-panel-header class="expansion-panel-heading">
+              Selecione as entidades abrangidas pela TS
             </v-expansion-panel-header>
-            <v-expansion-panel-content class="expansion-panel-heading">
+            <v-expansion-panel-content>
               <v-card style="padding-top:30px;">
                 <v-layout>
                   <v-flex xs2>
@@ -70,7 +70,7 @@
 
       <v-stepper-step :complete="stepNo > 2" step="2"
         >Designação
-        <small>Designação da Nova Tabela de Seleção</small>
+        <small>Designação da nova tabela de seleção</small>
       </v-stepper-step>
       <v-stepper-content step="2">
         <v-flex xs12 sm6 md10>
@@ -113,10 +113,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
-                  Selecione os Processos de Negócio Comuns
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio comuns
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ContListaProcessosComuns
                     v-if="listaProcComunsReady && entSelReady"
                     v-bind:lista="listaProcComuns"
@@ -179,10 +179,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
-                  Selecione os Processos de Negócio Específicos
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio específicos
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ContListaProcessosEspecificos
                     v-if="listaProcEspReady"
                     v-bind:lista="listaProcEsp"
@@ -240,10 +240,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
-                  Selecione os Processos de Negócio Específicos Restantes
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio específicos restantes
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ContListaProcessosEspRestantes
                     v-if="listaProcEspResReady"
                     v-bind:lista="listaProcEspRes"
@@ -306,10 +306,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
-                  Selecione os Processos de Negócio Restantes
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio restantes
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ContListaProcessosUltimos
                     v-if="listaProcUltReady"
                     v-bind:lista="listaProcUlt"

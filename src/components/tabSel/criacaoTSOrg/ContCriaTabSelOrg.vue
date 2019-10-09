@@ -8,10 +8,10 @@
       <v-stepper-content step="1">
         <v-expansion-panels>
           <v-expansion-panel>
-            <v-expansion-panel-header>
-              Selecione as Tipologias de Entidade a que pertence
+            <v-expansion-panel-header class="expansion-panel-heading">
+              Selecione as tipologias de entidade a que pertence
             </v-expansion-panel-header>
-            <v-expansion-panel-content class="expansion-panel-heading">
+            <v-expansion-panel-content >
               <v-card style="padding-top:30px;">
                 <v-layout>
                   <v-flex xs2>
@@ -68,7 +68,7 @@
 
       <v-stepper-step :complete="stepNo > 2" step="2"
         >Designação
-        <small>Designação da Nova Tabela de Seleção</small>
+        <small>Designação da nova tabela de seleção</small>
       </v-stepper-step>
       <v-stepper-content step="2">
         <v-flex xs12 sm6 md10>
@@ -105,10 +105,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
+                <v-expansion-panel-header class="expansion-panel-heading">
                   Selecione os Processos de Negócio Comuns
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager >
                   <ListaProcessosComuns
                     v-if="listaProcComunsReady"
                     v-bind:lista="listaProcComuns"
@@ -189,10 +189,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
-                  Selecione os Processos de Negócio Específicos
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio específicos
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ListaProcessosEspecificos
                     v-if="listaProcEspReady"
                     v-bind:lista="listaProcEsp"
@@ -269,10 +269,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
-                  Selecione os Processos de Negócio Específicos Restantes
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio específicos restantes
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ListaProcessosEspRestantes
                     v-if="listaProcEspResReady"
                     v-bind:lista="listaProcEspRes"
@@ -354,10 +354,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
-                  Selecione os Processos de Negócio Restantes
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio restantes
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ListaProcessosUltimos
                     v-if="listaProcUltReady"
                     v-bind:lista="listaProcUlt"
@@ -417,10 +417,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
+                <v-expansion-panel-header class="expansion-panel-heading">
                   Lista de Processos selecionados
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content>
                   <ListaParteDescritiva
                     v-if="listaTotalProcSelReady"
                     v-bind:lista="listaTotalProcSel"
@@ -708,6 +708,7 @@ export default {
               }
             }
           }
+          console.log(this.listaProcComuns)
           this.listaProcComunsReady = true;
           return this.listaProcComuns;
         }
