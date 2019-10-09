@@ -2,7 +2,7 @@
   <v-row class="ma-8">
     <v-col cols="6">
       <v-card>
-        <v-card-title class="indigo accent-4 subtitle-1 white--text" dark>
+        <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>
           Como proceder à autenticação?
         </v-card-title>
         <v-card-text>
@@ -30,7 +30,7 @@
     </v-col>
     <v-col cols="6">
       <v-card>
-        <v-card-title class="indigo accent-4 subtitle-1 white--text" dark>
+        <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>
           Autenticação
         </v-card-title>
         <v-card-text>
@@ -93,6 +93,9 @@
 
     <v-col cols="6">
       <v-card>
+        <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>
+          Registo de chaves API
+        </v-card-title>
         <v-card-text>
           <p>É um fornecedor de serviços? Registe aqui a sua chave API</p>
         </v-card-text>
@@ -105,6 +108,9 @@
     </v-col>
     <v-col cols="6">
       <v-card>
+        <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>
+          Renovação de chaves API
+        </v-card-title>
         <v-card-text>
           <p>A sua chave API expirou? Peça aqui a renovação da sua chave API</p>
         </v-card-text>
