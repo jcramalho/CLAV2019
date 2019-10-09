@@ -14,33 +14,6 @@
             <v-expansion-panel-content>
               <v-card style="padding-top:30px;">
                 <v-card-text>
-                  <v-row>
-                    <v-col cols="2">
-                      <v-subheader
-                        class="info-label"
-                        style="border-color: white; border-style:solid; color: #1A237E;"
-                        >Entidades pré selecionadas:</v-subheader
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-data-table
-                        :headers="[
-                          { text: 'Sigla', align: 'left', value: 'sigla' },
-                          { text: 'Designação', value: 'designacao' }
-                        ]"
-                        :items="entTip"
-                        class="elevation-1"
-                        hide-default-footer
-                      >
-                        <template v-slot:item="props">
-                          <tr>
-                            <td>{{ props.item.sigla }}</td>
-                            <td>{{ props.item.designacao }}</td>
-                          </tr>
-                        </template>
-                      </v-data-table>
-                    </v-col>
-                  </v-row>
 
                   <DesSelEnt
                     :entidades="entSel"
@@ -64,7 +37,6 @@
           @click="
             stepNo = 2;
             barra(16);
-            tabelaSelecao.entidades = entSel.concat(entTip);
             entSelReady = true;
           "
           >Continuar</v-btn
@@ -451,8 +423,6 @@ export default {
       entidades: [],
       // Lista com as entidades selecionadas
       entSel: [],
-      // Lista das entidades
-      entTip: [],
       // True quando a lista de entidades estiver carregada
       entidadesReady: false,
       // Lista com todos os processos comuns
@@ -543,7 +513,7 @@ export default {
             "ent_" + this.entidades[i].sigla ===
             this.tabelaSelecao.idEntidade
           ) {
-            this.entTip.push({
+            this.entSel.push({
               sigla: this.entidades[i].sigla,
               designacao: this.entidades[i].designacao,
               id: this.entidades[i].id
@@ -556,8 +526,6 @@ export default {
           e => e.id === this.tabelaSelecao.idEntidade
         );
         this.entidades.splice(index, 1);
-
-        this.tabelaSelecao.entidades = this.entTip;
 
         this.entidadesReady = true;
       } catch (err) {
@@ -1023,7 +991,7 @@ export default {
         );
 
         if (this.stepNo < 2) {
-          this.tabelaSelecao.entidades = this.entTip.concat(this.entSel);
+          this.tabelaSelecao.entidades = this.entSel;
         }
 
         this.tabelaSelecao.procComuns = JSON.stringify(

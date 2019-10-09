@@ -39,7 +39,7 @@
               <v-card class="ma-4">
                 <v-row>
                   <v-col cols="2" class="info-label">
-                    Tipologias da entidade
+                    Tipologias da entidade selecionada
                   </v-col>
                   <v-col>
                     <v-data-table
