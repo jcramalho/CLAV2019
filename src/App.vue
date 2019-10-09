@@ -53,6 +53,7 @@ export default {
             this.snackbar = true;
             this.$store.commit("guardaTokenUtilizador", "");
             this.$store.commit("guardaNomeUtilizador", "");
+            this.$store.commit("guardaNivelUtilizador", "");
             this.$router.push("/users/autenticacao");
           }
         } else {

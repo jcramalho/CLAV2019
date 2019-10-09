@@ -8,39 +8,12 @@
       <v-stepper-content step="1">
         <v-expansion-panels>
           <v-expansion-panel>
-            <v-expansion-panel-header>
-              Selecione as Entidades abrangidas pela TS
+            <v-expansion-panel-header class="expansion-panel-heading">
+              Selecione as entidades abrangidas pela TS
             </v-expansion-panel-header>
-            <v-expansion-panel-content class="expansion-panel-heading">
+            <v-expansion-panel-content>
               <v-card style="padding-top:30px;">
                 <v-card-text>
-                  <v-row>
-                    <v-col cols="2">
-                      <v-subheader
-                        class="info-label"
-                        style="border-color: white; border-style:solid; color: #1A237E;"
-                        >Entidades pré selecionadas:</v-subheader
-                      >
-                    </v-col>
-                    <v-col>
-                      <v-data-table
-                        :headers="[
-                          { text: 'Sigla', align: 'left', value: 'sigla' },
-                          { text: 'Designação', value: 'designacao' }
-                        ]"
-                        :items="entTip"
-                        class="elevation-1"
-                        hide-default-footer
-                      >
-                        <template v-slot:item="props">
-                          <tr>
-                            <td>{{ props.item.sigla }}</td>
-                            <td>{{ props.item.designacao }}</td>
-                          </tr>
-                        </template>
-                      </v-data-table>
-                    </v-col>
-                  </v-row>
 
                   <DesSelEnt
                     :entidades="entSel"
@@ -64,7 +37,6 @@
           @click="
             stepNo = 2;
             barra(16);
-            tabelaSelecao.entidades = entSel.concat(entTip);
             entSelReady = true;
           "
           >Continuar</v-btn
@@ -73,7 +45,7 @@
 
       <v-stepper-step :complete="stepNo > 2" step="2"
         >Designação
-        <small>Designação da Nova Tabela de Seleção</small>
+        <small>Designação da nova tabela de seleção</small>
       </v-stepper-step>
       <v-stepper-content step="2">
         <v-flex xs12 sm6 md10>
@@ -110,10 +82,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header class="subtitle-1">
-                  Selecione os Processos de Negócio Comuns
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio comuns
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ListaProcessosComuns
                     v-if="listaProcComunsReady && entSelReady"
                     v-bind:lista="listaProcComuns"
@@ -175,10 +147,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header class="subtitle-1">
-                  Selecione os Processos de Negócio Específicos
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio específicos
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ListaProcessosEspecificos
                     v-if="listaProcEspReady"
                     v-bind:lista="listaProcEsp"
@@ -235,10 +207,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header class="subtitle-1">
-                  Selecione os Processos de Negócio Específicos Restantes
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio específicos restantes
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ListaProcessosEspRestantes
                     v-if="listaProcEspResReady"
                     v-bind:lista="listaProcEspRes"
@@ -300,10 +272,10 @@
           <v-flex xs10>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header class="subtitle-1">
-                  Selecione os Processos de Negócio Restantes
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Selecione os processos de negócio restantes
                 </v-expansion-panel-header>
-                <v-expansion-panel-content class="expansion-panel-heading">
+                <v-expansion-panel-content eager>
                   <ListaProcessosUltimos
                     v-if="listaProcUltReady"
                     v-bind:lista="listaProcUlt"
@@ -451,8 +423,6 @@ export default {
       entidades: [],
       // Lista com as entidades selecionadas
       entSel: [],
-      // Lista das entidades
-      entTip: [],
       // True quando a lista de entidades estiver carregada
       entidadesReady: false,
       // Lista com todos os processos comuns
@@ -543,7 +513,7 @@ export default {
             "ent_" + this.entidades[i].sigla ===
             this.tabelaSelecao.idEntidade
           ) {
-            this.entTip.push({
+            this.entSel.push({
               sigla: this.entidades[i].sigla,
               designacao: this.entidades[i].designacao,
               id: this.entidades[i].id
@@ -556,8 +526,6 @@ export default {
           e => e.id === this.tabelaSelecao.idEntidade
         );
         this.entidades.splice(index, 1);
-
-        this.tabelaSelecao.entidades = this.entTip;
 
         this.entidadesReady = true;
       } catch (err) {
@@ -864,7 +832,7 @@ export default {
           part: {}
         };
       }
-
+      this.listaProcUlt.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
       if (this.listaProcUlt.length) {
         this.listaProcUltReady = true;
       }
@@ -1023,7 +991,7 @@ export default {
         );
 
         if (this.stepNo < 2) {
-          this.tabelaSelecao.entidades = this.entTip.concat(this.entSel);
+          this.tabelaSelecao.entidades = this.entSel;
         }
 
         this.tabelaSelecao.procComuns = JSON.stringify(

@@ -16,7 +16,7 @@
                 <div>
                   <v-btn
                     v-for="op in item.ops"
-                    color="deep-purple darken-3"
+                    color="indigo accent-4"
                     dark
                     class="ma-2"
                     @click="go(op.url)"
@@ -121,6 +121,11 @@ export default {
             {
               label: "Registo de utilizadores para uma entidade",
               url: "/users/registoParaEntidade",
+              level: "public"
+            },
+            {
+              label: "Registo de acesso",
+              url: "/users/registoAcesso",
               level: "public"
             }
           ]

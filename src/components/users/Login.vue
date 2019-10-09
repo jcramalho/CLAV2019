@@ -89,6 +89,7 @@ export default {
               // this.done = true;
               this.$store.commit("guardaTokenUtilizador", res.data.token);
               this.$store.commit("guardaNomeUtilizador", res.data.name);
+              this.$store.commit("guardaNivelUtilizador", res.data.level);
               this.$router.push("/");
               // this.$store.state.name = res.data.name;
               // this.$store.state.token = res.data.token;

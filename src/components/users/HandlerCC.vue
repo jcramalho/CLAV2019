@@ -120,19 +120,25 @@ export default {
         this.$route.query.Entidade,
         "base64"
       ).toString();
+    if (this.$route.query.Nivel != undefined)
+      this.level = Buffer.from(this.$route.query.Nivel, "base64").toString();
 
     this.alreadyRegistered =
       this.token != undefined &&
       this.nomeCompleto != undefined &&
-      this.entidade != undefined;
+      this.entidade != undefined &&
+      this.level != undefined;
     if (this.alreadyRegistered) {
       this.$store.commit("guardaTokenUtilizador", this.token);
       this.$store.commit("guardaNomeUtilizador", this.nomeCompleto);
+      this.$store.commit("guardaNivelUtilizador", this.level);
       this.$router.push("/");
     }
 
     this.successfullAuthentication =
-      this.nic != undefined && this.nomeCompleto != undefined;
+      this.nic != undefined &&
+      this.nomeCompleto != undefined &&
+      this.level != undefined;
     await this.getEntidades();
   },
   data() {
@@ -143,6 +149,7 @@ export default {
       nomeCompleto: undefined,
       token: undefined,
       entidade: undefined,
+      level: undefined,
       regraEmail: [
         v => !!v || "Email é obrigatório.",
         v => /.+@.+/.test(v) || "Email tem de ser válido."

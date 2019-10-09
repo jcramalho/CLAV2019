@@ -267,6 +267,12 @@ export default new Router({
       component: () => import("./views/users/RegistoParaEntidade.vue"),
       meta: { levels: [5, 6, 7] }
     },
+    {
+      path: "/users/registoAcesso",
+      name: "registoDeAcesso",
+      component: () => import("./views/users/RegistoAcesso.vue"),
+      meta: { levels: [6, 7] }
+    },
     //cartao cidadao
     {
       path: "/users/handlerCC",
