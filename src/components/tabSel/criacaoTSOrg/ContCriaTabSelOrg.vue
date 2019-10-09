@@ -1097,6 +1097,7 @@ export default {
             }
           }
         }
+        this.listaProcUlt.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
         if (this.listaProcUlt.length) {
           this.listaProcUltReady = true;
         }
@@ -1137,6 +1138,7 @@ export default {
           .concat(this.tabelaSelecao.procEspecificos)
           .concat(this.tabelaSelecao.procEspRestantes)
           .concat(this.tabelaSelecao.procUltimos);
+        this.listaTotalProcSel.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
       }
       this.tabelaSelecao.listaProcSel = JSON.parse(
         this.tabelaSelecao.listaProcSel

@@ -864,7 +864,7 @@ export default {
           part: {}
         };
       }
-
+      this.listaProcUlt.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
       if (this.listaProcUlt.length) {
         this.listaProcUltReady = true;
       }
