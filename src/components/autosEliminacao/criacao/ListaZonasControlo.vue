@@ -12,7 +12,7 @@
             <v-list-item-title>
               <v-row>
                 <v-col :md="2">
-                  <div class="info-label">Código da Class:</div>
+                  <div class="info-label">Código da Classe:</div>
                 </v-col>
                 <v-col>
                   <div class="mt-2">{{item.codigo}}</div>
@@ -93,8 +93,23 @@
                 <td>{{ item.uiOutros }}</td>
               </tr>
             </table>
+            <!-- Lista de Agregacoes -->
+            <div v-if="item.agregacoes.length>0" class="ma-1">
+              <div class="info-label">Lista de Agregações:</div>
+              <v-data-table
+                :headers="cabecalho"
+                :items="item.agregacoes"
+                :items-per-page="5"
+                class="elevation-1 ma-4"
+                :footer-props="footer_props"
+              >
+              </v-data-table>
+            </div>
+            
+            <!--Adicionar Agregações-->
             <AdicionarAgregacao 
               v-bind:auto="auto"
+              v-bind:index="index"
             />
           </v-list-item-title>
         </v-list-item-content>
@@ -139,7 +154,15 @@ export default {
     uiOutros: null,
 
     natureza: ["Vazio", "Dono", "Paticipante"],
-
+    cabecalho: [
+      {text: 'Código', align: 'left', sortable: false, value: 'codigo'},
+      {text: 'Título', align: 'left', sortable: true, value: 'titulo'},
+      {text: 'Data de Contagem', align: 'center', sortable: true, value: 'dataContagem'},
+      {text: 'Natureza de Intervenção', align: 'center', sortable: true, value: 'ni'},
+    ],
+    footer_props: {
+      "items-per-page-text": "Mostrar"
+    },
     erro: null,
     erroDialog: false
   }),

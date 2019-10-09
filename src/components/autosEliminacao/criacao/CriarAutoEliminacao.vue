@@ -66,7 +66,7 @@
 
               <!-- Adicionar Zona Controlo -->
               <AdicionarZonaControlo 
-                class="ma-1"
+                class="ma-2"
                 v-bind:classes="classes"
                 v-bind:entidades="entidades"
                 v-bind:auto="auto"
