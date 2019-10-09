@@ -122,6 +122,11 @@ export default {
               label: "Registo de utilizadores para uma entidade",
               url: "/users/registoParaEntidade",
               level: "public"
+            },
+            {
+              label: "Registo de acesso",
+              url: "/users/registoAcesso",
+              level: "public"
             }
           ]
         },
