@@ -1,9 +1,6 @@
 <template>
   <v-card class="ma-8">
-    <v-card-title
-      class="pa-2 blue darken-4 title white--text"
-      dark
-    >Consulta do pedido: {{ p.codigo }}</v-card-title>
+    <v-card-title class="pa-2 indigo darken-4 title white--text">Consulta do pedido: {{ p.codigo }}</v-card-title>
     <v-card-text>
       <v-row class="mt-1">
         <v-col cols="2">
@@ -47,7 +44,7 @@
       </v-row>
 
       <v-card class="mt-3">
-        <v-card-title class="info-label title" dark>Distribuição</v-card-title>
+        <v-card-title class="pa-2 indigo darken-4 title white--text">Distribuição</v-card-title>
         <v-card-text>
           <v-data-table
             :headers="distHeaders"
@@ -72,10 +69,11 @@
       <ShowAE v-else-if="p.objeto.tipo.includes('AE ')" :p="p" />
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
+      <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
-      <v-btn color="blue darken-4" dark @click="voltar">Voltar</v-btn>
+      <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -88,6 +86,7 @@ import ShowAE from "@/components/pedidos/consulta/showAE.vue";
 import ShowEntidade from "@/components/pedidos/consulta/showEntidade";
 import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
 import ShowLegislacao from "@/components/pedidos/consulta/showLegislacao";
+import ShowTI from "@/components/pedidos/consulta/showTI";
 
 export default {
   props: ["p"],
@@ -99,7 +98,8 @@ export default {
     ShowAE,
     ShowEntidade,
     ShowTipologia,
-    ShowLegislacao
+    ShowLegislacao,
+    ShowTI
   },
 
   data: () => ({
@@ -128,10 +128,10 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #1565c0; /* blue darken-3 */
+  color: #1a237e; /* indigo darken-4 */
   font-weight: 400;
   width: 100%;
-  background-color: #e3f2fd; /* blue lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }
@@ -139,7 +139,7 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1565c0;
+  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 </style>
