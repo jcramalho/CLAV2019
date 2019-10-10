@@ -8,7 +8,6 @@ export default new Vuex.Store({
   state: {
     name: "",
     token: "",
-    level: "",
     clavToken: "",
     expClavToken: ""
   },
@@ -25,9 +24,6 @@ export default new Vuex.Store({
     },
     guardaNomeUtilizador(state, nome) {
       state.name = nome;
-    },
-    guardaNivelUtilizador(state, nivel) {
-      state.level = nivel;
     }
   },
   actions: {}
