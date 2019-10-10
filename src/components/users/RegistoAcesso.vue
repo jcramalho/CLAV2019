@@ -6,12 +6,42 @@
         :items="logs"
         item-key="_id"
         class="elevation-1 ma-10"
+        :search="search"
         show-group-by
+        multi-sort
       >
         <template v-slot:top>
           <v-toolbar flat color="indigo darken-4" dark>
             <v-toolbar-title>Registo de acesso</v-toolbar-title>
+            <div class="flex-grow-1"></div>
+            <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Filtrar"
+              single-line
+              hide-details
+            ></v-text-field>
           </v-toolbar>
+        </template>
+
+        <template v-slot:item.httpStatus="{ item }">
+          <v-chip
+            class="font-weight-bold"
+            :color="getColorStatus(item.httpStatus)"
+            dark
+          >
+            {{ item.httpStatus }}
+          </v-chip>
+        </template>
+
+        <template v-slot:item.method="{ item }">
+          <v-chip
+            class="font-weight-bold"
+            :color="getColorMethod(item.method)"
+            dark
+          >
+            {{ item.method }}
+          </v-chip>
         </template>
       </v-data-table>
       <v-snackbar :value="text != ''" :color="color" :top="true">
@@ -50,7 +80,7 @@ export default {
           this.logs[i].email = this.users[this.logs[i].id];
         }
 
-        this.logs[i].accessDate = new Date(this.logs[i].accessDate).toLocaleString();
+        this.logs[i].accessDate = this.getDateTime(this.logs[i].accessDate);
       }
     } catch (error) {
       this.color = "error";
@@ -70,10 +100,48 @@ export default {
       { text: "Acedido em", align: "center", value: "accessDate" }
     ],
     color: "",
-    text: ""
+    text: "",
+    search: ""
   }),
 
   methods: {
+    getDateTime(string) {
+      var dt = new Date(string);
+
+      var d = String(dt.getDate()).padStart(2, "0");
+      var m = String(dt.getMonth() + 1).padStart(2, "0");
+      var y = dt.getFullYear();
+      var date = y + "/" + m + "/" + d;
+
+      var h = String(dt.getHours()).padStart(2, "0");
+      var min = String(dt.getMinutes()).padStart(2, "0");
+      var s = String(dt.getSeconds()).padStart(2, "0");
+      var hour = h + ":" + min + ":" + s;
+
+      return date + ", " + hour;
+    },
+    getColorStatus(httpStatus) {
+      return httpStatus >= 500
+        ? "red"
+        : httpStatus >= 400
+        ? "yellow"
+        : httpStatus >= 300
+        ? "cyan"
+        : httpStatus >= 200
+        ? "green"
+        : "";
+    },
+    getColorMethod(method) {
+      return method == "GET"
+        ? "green"
+        : method == "POST"
+        ? "cyan"
+        : method == "PUT"
+        ? "orange"
+        : method >= "DELETE"
+        ? "red"
+        : "";
+    }
   }
 };
 </script>
