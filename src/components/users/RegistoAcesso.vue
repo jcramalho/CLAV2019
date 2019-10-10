@@ -1,12 +1,12 @@
 <template>
   <v-container fluid fill-height>
-    <v-layout align-center justify-center>
-      <v-flex xs12 sm12 md12>
+    <v-row align-center justify-center>
+      <v-col cols="12">
         <v-data-table
           :headers="headersUsers"
           :items="users"
-          :expanded.sync="expanded"
           item-key="_id"
+          :single-expand="true"
           show-expand
           class="elevation-1"
         >
@@ -15,27 +15,29 @@
               <v-toolbar-title>Registo de acesso</v-toolbar-title>
             </v-toolbar>
           </template>
-          <template v-slot:expanded-item="{ headersUsers }">
-            <v-data-table
-              :headers="headersRoutes"
-              :items="users"
-              :expanded.sync="expanded"
-              item-key="_id"
-              show-expand
-              class="elevation-1"
-            >
-              <template v-slot:expanded-item="{ headers }">
-                <td :colspan="headers.length">Peek-a-boo!</td>
-              </template>
-            </v-data-table>
+          <template v-slot:expanded-item="{ item, headers }">
+            <td :colspan="headers.length" class="pa-1">
+              <v-data-table
+                :headers="headersRoutes"
+                :items="item.logs"
+                item-key="id"
+                :single-expand="true"
+                show-expand
+                class="elevation-1"
+              >
+                <template v-slot:expanded-item>
+                  <td :colspan="headersUsers.length">Peek-a-boo!</td>
+                </template>
+              </v-data-table>
+            </td>
           </template>
         </v-data-table>
         <v-snackbar :value="text != ''" :color="color" :top="true">
           {{ text }}
           <v-btn text @click="text = ''">Fechar</v-btn>
         </v-snackbar>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -59,12 +61,15 @@ export default {
     }
   },
   data: () => ({
-    expanded: [],
-    logs: [],
     users: [],
     headersUsers: [
       { text: "Nome", align: "center", value: "name" },
       { text: "Email", align: "center", value: "email" },
+      { text: "", value: "data-table-expand" }
+    ],
+    headersRoutes: [
+      { text: "Rota", align: "center", value: "route" },
+      { text: "Método", align: "center", value: "method" },
       { text: "", value: "data-table-expand" }
     ],
     color: "",
