@@ -39,7 +39,7 @@
               <v-card class="ma-4">
                 <v-row>
                   <v-col cols="2" class="info-label">
-                    Tipologias da entidade
+                    Tipologias da entidade selecionada
                   </v-col>
                   <v-col>
                     <v-data-table
@@ -1002,6 +1002,7 @@ export default {
           }
         }
       }
+      this.listaProcUlt.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
       if (this.listaProcUlt.length) {
         this.listaProcUltReady = true;
       }
@@ -1037,6 +1038,7 @@ export default {
           .concat(this.tabelaSelecao.procEspecificos)
           .concat(this.tabelaSelecao.procEspRestantes)
           .concat(this.tabelaSelecao.procUltimos);
+        this.listaTotalProcSel.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
         this.listaTotalProcSelReady = true;
       }
     },
