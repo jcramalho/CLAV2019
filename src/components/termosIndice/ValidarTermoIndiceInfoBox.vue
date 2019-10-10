@@ -1,7 +1,7 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="green darken-3" @click="validarTipologia">Validar Tipologia</v-btn>
+    <v-btn dark rounded class="indigo darken-4" @click="validarTI">Validar Termo de Índice</v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
@@ -33,7 +33,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="green darken-1" dark @click="dialogSemErros = false">Fechar</v-btn>
+          <v-btn class="indigo accent-4" dark @click="dialogSemErros = false">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  props: ["t"],
+  props: ["ti"],
   data() {
     return {
       dialog: false,
@@ -60,27 +60,27 @@ export default {
   },
 
   methods: {
-    validarTipologia: async function() {
+    validarTI: async function() {
       let i = 0;
 
-      // Designação
-      if (this.t.designacao == "") {
+      // Termo
+      if (this.ti.termo == "") {
         this.mensagensErro.push({
-          sobre: "Nome da Tipologia",
-          mensagem: "O nome da tipologia não pode ser vazio."
+          sobre: "Termo de Índice",
+          mensagem: "O termo de índice não pode ser vazio."
         });
         this.numeroErros++;
       } else {
         try {
-          let existeDesignacao = await this.$request(
+          let existeTI = await this.$request(
             "post",
-            "/api/tipologias/verificarDesignacao",
-            { designacao: this.t.designacao }
+            "/api/termosIndice/verificarTermo",
+            { termo: this.ti.termo }
           );
-          if (existeDesignacao.data) {
+          if (existeTI.data) {
             this.mensagensErro.push({
-              sobre: "Designação",
-              mensagem: "Designação já existente na BD."
+              sobre: "Termo de Índice",
+              mensagem: "O termo de índice já existente na BD."
             });
             this.numeroErros++;
           }
@@ -93,34 +93,12 @@ export default {
         }
       }
 
-      // Sigla
-      if (this.t.sigla == "") {
+      if (this.ti.idClasse == "") {
         this.mensagensErro.push({
-          sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
+          sobre: "Processo",
+          mensagem: "Tem de selecionar um processo."
         });
         this.numeroErros++;
-      } else {
-        try {
-          let existeSigla = await this.$request(
-            "post",
-            "/api/tipologias/verificarSigla",
-            { sigla: this.t.sigla }
-          );
-          if (existeSigla.data) {
-            this.mensagensErro.push({
-              sobre: "Sigla",
-              mensagem: "Sigla já existente na BD."
-            });
-            this.numeroErros++;
-          }
-        } catch (err) {
-          this.numeroErros++;
-          this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da sigla."
-          });
-        }
       }
 
       if (this.numeroErros > 0) {
@@ -140,11 +118,11 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }
@@ -152,7 +130,7 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #2e7d32;
+  border: 1px solid #283593;
   border-radius: 3px;
 }
 </style>

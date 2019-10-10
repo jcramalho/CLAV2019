@@ -64,12 +64,12 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #1a237e; /* indigo darken-4 */
   padding: 5px;
   font-weight: 400;
   width: auto;
   height: auto;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
