@@ -7,6 +7,7 @@
         item-key="_id"
         class="elevation-1 ma-10"
         show-group-by
+        multi-sort
       >
         <template v-slot:top>
           <v-toolbar flat color="indigo darken-4" dark>
@@ -50,7 +51,7 @@ export default {
           this.logs[i].email = this.users[this.logs[i].id];
         }
 
-        this.logs[i].accessDate = new Date(this.logs[i].accessDate).toLocaleString();
+        this.logs[i].accessDate = this.getDateTime(this.logs[i].accessDate);
       }
     } catch (error) {
       this.color = "error";
@@ -74,6 +75,21 @@ export default {
   }),
 
   methods: {
+    getDateTime(string) {
+      var dt = new Date(string);
+
+      var d = String(dt.getDate()).padStart(2, "0");
+      var m = String(dt.getMonth() + 1).padStart(2, "0");
+      var y = dt.getFullYear();
+      var date = y + "/" + m + "/" + d;
+
+      var h = String(dt.getHours()).padStart(2, "0");
+      var min = String(dt.getMinutes()).padStart(2, "0");
+      var s = String(dt.getSeconds()).padStart(2, "0");
+      var hour = h + ":" + min + ":" + s;
+
+      return date + ", " + hour;
+    }
   }
 };
 </script>
