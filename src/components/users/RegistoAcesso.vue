@@ -6,13 +6,42 @@
         :items="logs"
         item-key="_id"
         class="elevation-1 ma-10"
+        :search="search"
         show-group-by
         multi-sort
       >
         <template v-slot:top>
           <v-toolbar flat color="indigo darken-4" dark>
             <v-toolbar-title>Registo de acesso</v-toolbar-title>
+            <div class="flex-grow-1"></div>
+            <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Filtrar"
+              single-line
+              hide-details
+            ></v-text-field>
           </v-toolbar>
+        </template>
+
+        <template v-slot:item.httpStatus="{ item }">
+          <v-chip
+            class="font-weight-bold"
+            :color="getColorStatus(item.httpStatus)"
+            dark
+          >
+            {{ item.httpStatus }}
+          </v-chip>
+        </template>
+
+        <template v-slot:item.method="{ item }">
+          <v-chip
+            class="font-weight-bold"
+            :color="getColorMethod(item.method)"
+            dark
+          >
+            {{ item.method }}
+          </v-chip>
         </template>
       </v-data-table>
       <v-snackbar :value="text != ''" :color="color" :top="true">
@@ -71,7 +100,8 @@ export default {
       { text: "Acedido em", align: "center", value: "accessDate" }
     ],
     color: "",
-    text: ""
+    text: "",
+    search: ""
   }),
 
   methods: {
@@ -89,6 +119,28 @@ export default {
       var hour = h + ":" + min + ":" + s;
 
       return date + ", " + hour;
+    },
+    getColorStatus(httpStatus) {
+      return httpStatus >= 500
+        ? "red"
+        : httpStatus >= 400
+        ? "yellow"
+        : httpStatus >= 300
+        ? "cyan"
+        : httpStatus >= 200
+        ? "green"
+        : "";
+    },
+    getColorMethod(method) {
+      return method == "GET"
+        ? "green"
+        : method == "POST"
+        ? "cyan"
+        : method == "PUT"
+        ? "orange"
+        : method >= "DELETE"
+        ? "red"
+        : "";
     }
   }
 };
