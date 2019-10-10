@@ -50,7 +50,7 @@
               </v-col>
             </v-row>
 
-            <v-expansion-panels multiple>
+            <v-expansion-panels>
               <!-- Zonas de Controlo -->
               <v-expansion-panel v-if="this.auto.zonaControlo.length>0" popout focusable>
                 <v-expansion-panel-header class="expansion-panel-heading">
@@ -66,7 +66,7 @@
 
               <!-- Adicionar Zona Controlo -->
               <AdicionarZonaControlo 
-                class="ma-1"
+                class="ma-2"
                 v-bind:classes="classes"
                 v-bind:entidades="entidades"
                 v-bind:auto="auto"
