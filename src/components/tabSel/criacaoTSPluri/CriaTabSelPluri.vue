@@ -37,6 +37,7 @@
           @click="
             stepNo = 2;
             barra(16);
+            tabelaSelecao.entidades = entSel;
             entSelReady = true;
           "
           >Continuar</v-btn
