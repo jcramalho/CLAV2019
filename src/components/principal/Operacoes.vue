@@ -6,9 +6,11 @@
     <v-card-text>
       <v-expansion-panels>
         <v-expansion-panel v-for="(item, i) in fops" :key="i">
-          <v-expansion-panel-header>{{
+          <v-expansion-panel-header>
+            {{
             item.entidade
-          }}</v-expansion-panel-header>
+            }}
+          </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card>
               <v-card-text>
@@ -22,9 +24,7 @@
                     class="ma-2"
                     @click="go(op.url)"
                     :key="op.url"
-                  >
-                    {{ op.label }}
-                  </v-btn>
+                  >{{ op.label }}</v-btn>
                 </div>
               </v-card-text>
             </v-card>
@@ -178,6 +178,10 @@ export default {
               label: "Consultar",
               url: "/termosIndice",
               level: "public"
+            },
+            {
+              label: "Adicionar",
+              url: "/termosIndice/criar"
             }
           ]
         },

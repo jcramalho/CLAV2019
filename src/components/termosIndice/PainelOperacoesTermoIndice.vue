@@ -4,20 +4,20 @@
       <v-col cols="3">
         <v-btn
           rounded
-          class="green darken-3 white--text"
-          :disabled="!t.sigla"
+          class="indigo darken-4 white--text"
+          :disabled="!ti.termo"
           @click="guardarTrabalho"
         >Guardar Trabalho</v-btn>
       </v-col>
 
-      <ValidarTipologiaInfoBox :t="t" />
+      <ValidarTIInfoBox :ti="ti" />
 
       <v-col>
-        <v-btn rounded class="green darken-4 white--text" @click="criarTipologia">Criar Tipologia</v-btn>
+        <v-btn rounded class="indigo accent-4 white--text" @click="criarTI">Criar Termo de Índice</v-btn>
       </v-col>
 
       <v-col>
-        <v-btn dark rounded class="red darken-4" @click="eliminarTipologia">Cancelar Criação</v-btn>
+        <v-btn dark rounded class="red darken-4" @click="eliminarTI">Cancelar Criação</v-btn>
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -44,7 +44,8 @@
           <v-card-title>Erros detetados na validação</v-card-title>
           <v-card-text>
             <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
+              Há erros de validação. Selecione
+              <b>Validar</b> para ver extamente
               quais e proceder à sua correção.
             </p>
           </v-card-text>
@@ -55,30 +56,30 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de criação de tipologia submetido com sucesso -->
-      <v-dialog v-model="dialogTipologiaCriada" width="40%">
+      <!-- Pedido de criação de termo de índice submetido com sucesso -->
+      <v-dialog v-model="dialogTICriado" width="40%">
         <v-card>
-          <v-card-title>Pedido de Criação de Tipologia Submetido</v-card-title>
+          <v-card-title>Pedido de Criação do Termo de Índice Submetido</v-card-title>
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" dark @click="criacaoTipologiaTerminada">Fechar</v-btn>
+            <v-btn color="green darken-1" dark @click="criacaoTITerminada">Fechar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
-      <!-- Cancelamento da criação de uma tipologia: confirmação -->
-      <v-dialog v-model="pedidoEliminado" width="50%">
+      <!-- Cancelamento da criação de uma termo de índice: confirmação -->
+      <v-dialog v-model="pedidoEliminado" width="55%">
         <v-card>
-          <v-card-title>Cancelamento e eliminação do pedido de criação da tipologia</v-card-title>
+          <v-card-title>Cancelamento e eliminação do pedido de criação do termo de índice</v-card-title>
           <v-card-text>
-            <p>Selecionou o cancelamento da criação da tipologia.</p>
+            <p>Selecionou o cancelamento da criação do termo de índice.</p>
             <p>Toda a informação introduzida será eliminada.</p>
             <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" text @click="cancelarCriacaoTipologia">Confirmo</v-btn>
+            <v-btn color="green darken-1" text @click="cancelarCriacaoTI">Confirmo</v-btn>
             <v-btn
               color="red darken-1"
               dark
@@ -99,20 +100,20 @@
 </template>
 
 <script>
-import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
+import ValidarTIInfoBox from "@/components/termosIndice/ValidarTermoIndiceInfoBox";
 
 export default {
-  props: ["t"],
+  props: ["ti"],
   components: {
-    ValidarTipologiaInfoBox
+    ValidarTIInfoBox
   },
   data() {
     return {
       pendenteGuardado: false,
       pendenteGuardadoInfo: "",
       loginErrorSnackbar: false,
-      loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
-      dialogTipologiaCriada: false,
+      loginErrorMessage: "Precisa de fazer login para criar o Termo de Índice!",
+      dialogTICriado: false,
       numeroErros: 0,
       errosValidacao: false,
       mensagemPedidoCriadoOK: "",
@@ -133,8 +134,8 @@ export default {
           var pendenteParams = {
             numInterv: 1,
             acao: "Criação",
-            tipo: "Tipologia",
-            objeto: this.t,
+            tipo: "Termo de Indice",
+            objeto: this.ti,
             criadoPor: userBD.data.email,
             user: { email: userBD.data.email },
             token: this.$store.state.token
@@ -152,20 +153,20 @@ export default {
       }
     },
 
-    validarTipologia: async function() {
+    validarTI: async function() {
       let i = 0;
 
-      // Designação
-      if (this.t.designacao == "") {
+      // Termo
+      if (this.ti.termo == "") {
         this.numeroErros++;
       } else {
         try {
-          let existeDesignacao = await this.$request(
+          let existeTI = await this.$request(
             "post",
-            "/api/tipologias/verificarDesignacao",
-            { designacao: this.t.designacao }
+            "/api/termosIndice/verificarTermo",
+            { termo: this.ti.termo }
           );
-          if (existeDesignacao.data) {
+          if (existeTI.data) {
             this.numeroErros++;
           }
         } catch (err) {
@@ -173,46 +174,34 @@ export default {
         }
       }
 
-      // Sigla
-      if (this.t.sigla == "") {
+      if (this.ti.idClasse == "") {
         this.numeroErros++;
-      } else {
-        try {
-          let existeSigla = await this.$request(
-            "post",
-            "/api/tipologias/verificarSigla",
-            { sigla: this.t.sigla }
-          );
-          if (existeSigla.data) {
-            this.numeroErros++;
-          }
-        } catch (err) {
-          this.numeroErros++;
-        }
       }
 
       return this.numeroErros;
     },
 
-    // Lança o pedido de criação da tipologia no worflow
-    criarTipologia: async function() {
+    // Lança o pedido de criação da termo de índice no worflow
+    criarTI: async function() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          let erros = await this.validarTipologia();
+          let erros = await this.validarTI();
           if (erros == 0) {
             let userBD = await this.$request(
               "get",
               "/api/users/listarToken/" + this.$store.state.token
             );
 
-            let dataObj = this.t;
-            dataObj.codigo = "tip_" + this.t.sigla;
+            let randID = await this.$request("get", "/api/utils/id");
+
+            let dataObj = this.ti;
+            dataObj.codigo = "ti_" + randID.data;
 
             let pedidoParams = {
               tipoPedido: "Criação",
-              tipoObjeto: "Tipologia",
+              tipoObjeto: "Termo de Indice",
               novoObjeto: dataObj,
               user: { email: userBD.data.email },
               entidade: userBD.data.entidade,
@@ -225,7 +214,7 @@ export default {
               pedidoParams
             );
             this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-            this.dialogTipologiaCriada = true;
+            this.dialogTICriado = true;
           } else {
             this.errosValidacao = true;
           }
@@ -239,16 +228,16 @@ export default {
       this.$router.push("/");
     },
 
-    criacaoTipologiaTerminada: function() {
+    criacaoTITerminada: function() {
       this.$router.push("/");
     },
 
-    // Cancela a criação da Tipologia
-    eliminarTipologia: function() {
+    // Cancela a criação da Termo de Índice
+    eliminarTI: function() {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoTipologia: function() {
+    cancelarCriacaoTI: function() {
       this.$router.push("/");
     }
   }
@@ -257,11 +246,11 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

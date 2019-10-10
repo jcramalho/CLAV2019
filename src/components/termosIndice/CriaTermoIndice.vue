@@ -3,8 +3,8 @@
     <v-col>
       <v-card>
         <!-- Header -->
-        <v-app-bar color="green darken-4" dark>
-          <v-toolbar-title class="card-heading">Nova Tipologia</v-toolbar-title>
+        <v-app-bar color="indigo darken-4" dark>
+          <v-toolbar-title class="card-heading">Novo Termo de Índice</v-toolbar-title>
         </v-app-bar>
 
         <!-- Content -->
@@ -17,28 +17,11 @@
               <v-text-field
                 solo
                 clearable
-                color="green"
+                color="indigo darken-4"
                 counter="50"
                 single-line
-                v-model="tipologia.designacao"
+                v-model="termoIndice.termo"
                 maxlength="50"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Sigla:</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="green"
-                counter="10"
-                single-line
-                v-model="tipologia.sigla"
-                maxlength="10"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -46,20 +29,19 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">Entidades</v-expansion-panel-header>
+              <v-expansion-panel-header
+                class="expansion-panel-heading"
+              >Processos de negócio que regula ou enquadra</v-expansion-panel-header>
               <v-expansion-panel-content>
-                <DesSelEnt
-                  :entidades="entSel"
-                  tipo="tipologias"
-                  @unselectEntidade="unselectEntidade($event)"
-                />
+                <DesSelProc :processos="procSel" @unselectProcesso="unselectProcesso($event)" />
 
-                <hr style="border-top: 1px dashed #dee2f8;" />
+                <hr v-if="!termoIndice.idClasse" style="border-top: 1px dashed #dee2f8;" />
 
-                <SelEnt
-                  :entidadesReady="entidadesReady"
-                  :entidades="entidades"
-                  @selectEntidade="selectEntidade($event)"
+                <SelProc
+                  v-if="!termoIndice.idClasse"
+                  :processosReady="processosReady"
+                  :processos="processos"
+                  @selectProcesso="selectProcesso($event)"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -72,70 +54,69 @@
       </v-card>
 
       <!-- Painel Operações -->
-      <PainelOpsTip :t="tipologia" />
+      <PainelOpsTI :ti="termoIndice" />
     </v-col>
   </v-row>
 </template>
 
 <script>
-import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
-import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
-import PainelOpsTip from "@/components/tipologias/PainelOperacoesTipologias";
+import DesSelProc from "@/components/generic/selecao/DesSelecionarPNs";
+import SelProc from "@/components/generic/selecao/SelecionarPNs";
+import PainelOpsTI from "@/components/termosIndice/PainelOperacoesTermoIndice";
 
 export default {
   data: () => ({
-    tipologia: {
-      designacao: "",
-      sigla: "",
-      entidadesSel: [],
+    termoIndice: {
+      termo: "",
+      idClasse: "",
       codigo: ""
     },
 
-    // Para o seletor
-    entidades: [],
-    entSel: [],
-    entidadesReady: false,
+    // Para o seletor de processos
+    processos: [],
+    procSel: [],
+    processosReady: false,
 
     snackbar: false,
     text: ""
   }),
   components: {
-    DesSelEnt,
-    SelEnt,
-    PainelOpsTip
+    DesSelProc,
+    SelProc,
+    PainelOpsTI
   },
   methods: {
-    // Vai à API buscar todas as entidades
-    loadEntidades: async function() {
+    unselectProcesso: function(processo) {
+      // Recoloca o processo nos selecionáveis
+      this.processos.push(processo);
+      let index = this.procSel.findIndex(e => e.id === processo.id);
+      this.procSel.splice(index, 1);
+      this.termoIndice.idClasse = "";
+    },
+
+    selectProcesso: function(processo) {
+      this.procSel.push(processo);
+      this.termoIndice.idClasse = processo.id;
+      // Remove dos selecionáveis
+      let index = this.processos.findIndex(e => e.id === processo.id);
+      this.processos.splice(index, 1);
+    },
+
+    // Vai à API buscar todas as classes de nivel 3
+    loadClasses: async function() {
       try {
-        let response = await this.$request("get", "/api/entidades");
-        this.entidades = response.data.map(function(item) {
+        let response = await this.$request("get", "/api/classes?nivel=3");
+        this.processos = response.data.map(function(item) {
           return {
-            sigla: item.sigla,
-            designacao: item.designacao,
-            id: item.id
+            codigo: item.codigo,
+            titulo: item.titulo,
+            id: item.codigo
           };
         });
-        this.entidadesReady = true;
+        this.processosReady = true;
       } catch (error) {
         return error;
       }
-    },
-
-    unselectEntidade: function(entidade) {
-      // Recoloca a entidade nos selecionáveis
-      this.entidades.push(entidade);
-      let index = this.entSel.findIndex(e => e.id === entidade.id);
-      this.entSel.splice(index, 1);
-      this.tipologia.entidadesSel = this.entSel;
-    },
-
-    selectEntidade: function(entidade) {
-      this.entSel.push(entidade);
-      this.tipologia.entidadesSel = this.entSel;
-      // Remove dos selecionáveis
-      let index = this.entidades.findIndex(e => e.id === entidade.id);
-      this.entidades.splice(index, 1);
     },
 
     // fechar o snackbar em caso de erro
@@ -145,14 +126,14 @@ export default {
   },
 
   created: function() {
-    this.loadEntidades();
+    this.loadClasses();
   }
 };
 </script>
 
 <style scoped>
 .expansion-panel-heading {
-  background-color: #1b5e20 !important;
+  background-color: #283593 !important;
   color: #fff;
   font-size: large;
   font-weight: bold;
@@ -164,11 +145,11 @@ export default {
 }
 
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

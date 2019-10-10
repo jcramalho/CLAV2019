@@ -43,8 +43,9 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <v-col v-else>
-      <v-subheader>A carregar processos...</v-subheader>
+    <v-col v-else style="text-align:center;">
+      <p>A carregar processos...</p>
+      <v-progress-circular indeterminate size="100" width="10" color="indigo accent-4" />
     </v-col>
   </v-row>
 </template>
