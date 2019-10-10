@@ -82,11 +82,7 @@ export default {
           password: this.$data.form.password
         })
           .then(res => {
-            if (
-              res.data.token != undefined &&
-              res.data.name != undefined &&
-              res.data.level != undefined
-            ) {
+            if (res.data.token != undefined && res.data.name != undefined) {
               // this.text = "Login efetuado com sucesso!";
               // this.color = "success";
               // this.snackbar = true;
