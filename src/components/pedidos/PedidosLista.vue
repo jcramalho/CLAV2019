@@ -94,6 +94,12 @@
                 </template>
                 <span>Validar pedido...</span>
               </v-tooltip>
+              <v-tooltip bottom v-if="false">
+                <template v-slot:activator="{ on }">
+                  <v-icon color="red darken-2" v-on="on">delete</v-icon>
+                </template>
+                <span>Apagar pedido</span>
+              </v-tooltip>
             </td>
           </tr>
         </template>
