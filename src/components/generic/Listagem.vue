@@ -1,7 +1,7 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <h1>{{ tipo }}</h1>
+  <v-card class="ma-8">
+    <v-card-title class="indigo darken-4 white--text" dark>
+      {{ tipo }}
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -9,8 +9,10 @@
         label="Filtrar"
         single-line
         hide-details
+        dark
       ></v-text-field>
     </v-card-title>
+
     <v-data-table
       :headers="headers"
       :items="lista"
@@ -20,30 +22,25 @@
       v-if="this.headers[this.cabecalho.length-1]"
     >
       <template v-slot:no-results>
-        <v-alert :value="true" color="error" icon="warning">
-          Não foram encontrados resultados para "{{ search }}" .
-        </v-alert>
+        <v-alert
+          :value="true"
+          color="error"
+          icon="warning"
+        >Não foram encontrados resultados para "{{ search }}" .</v-alert>
       </template>
       <template v-slot:item="props">
         <tr v-if="tipo == 'Termos de Índice'" @click="go(props.item.idClasse)">
-          <td v-for="(campo, index) in props.item" v-bind:key="index">
-            {{ campo }}
-          </td>
+          <td v-for="(campo, index) in props.item" v-bind:key="index">{{ campo }}</td>
         </tr>
         <tr v-else-if="tipo == 'Legislação'" @click="go(props.item.numero)">
           <td v-for="(campo, index) in props.item" v-bind:key="index">
             <div v-if="props.item">
               <div v-if="index === 'entidades'">
-                <div
-                  v-for="(ent, index) in campo.split(',')"
-                  v-bind:key="index"
-                >
-                  <a :href="'/entidades/ent_' + ent">{{ ent }} </a>
+                <div v-for="(ent, index) in campo.split(',')" v-bind:key="index">
+                  <a :href="'/entidades/ent_' + ent">{{ ent }}</a>
                 </div>
               </div>
-              <div v-else>
-                {{ campo }}
-              </div>
+              <div v-else>{{ campo }}</div>
             </div>
           </td>
         </tr>
@@ -51,18 +48,14 @@
           <td v-for="(campo, index) in props.item" v-bind:key="index">
             <div v-if="props.item">
               <div v-if="index === 'entidade'">
-                <a :href="'/entidades/ent_' + campo">{{ campo }} </a>
+                <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
               </div>
-              <div v-else>
-                {{ campo }}
-              </div>
+              <div v-else>{{ campo }}</div>
             </div>
           </td>
         </tr>
         <tr v-else @click="go(props.item.id)">
-          <td v-for="(campo, index) in props.item" v-bind:key="index">
-            {{ campo }}
-          </td>
+          <td v-for="(campo, index) in props.item" v-bind:key="index">{{ campo }}</td>
         </tr>
       </template>
       <template v-slot:pageText="props">
