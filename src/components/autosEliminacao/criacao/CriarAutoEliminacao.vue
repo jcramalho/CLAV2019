@@ -49,11 +49,11 @@
               </v-col>
             </v-row>
             <!-- Adicionar Zona Controlo -->
-              <AdicionarZonaControlo
-                v-bind:classes="classes"
-                v-bind:entidades="entidades"
-                v-bind:auto="auto"
-              />
+            <AdicionarZonaControlo
+              v-bind:classes="classes"
+              v-bind:entidades="entidades"
+              v-bind:auto="auto"
+            />
 
             <!-- Zonas de Controlo -->
             <v-expansion-panels class="my-2">
@@ -65,6 +65,8 @@
                 <v-expansion-panel-content>
                   <ListaZonasControlo 
                     v-bind:auto="auto"
+                    v-bind:classes="classes"
+                    v-bind:entidades="entidades"
                   />
                 </v-expansion-panel-content>
               </v-expansion-panel>
