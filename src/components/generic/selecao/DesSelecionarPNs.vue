@@ -5,18 +5,6 @@
     </v-col>
     <v-col v-if="processos.length > 0">
       <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
-        <!-- <template v-slot:headers="props">
-          <tr>
-            <th
-              v-for="h in props.headers"
-              :key="h.text"
-              class="body-2 font-weight-bold"
-              style="color: #1A237E;"
-            >{{ h.text }}</th>
-            <th style="color: #1A237E;">Remover</th>
-          </tr>
-        </template>-->
-
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.codigo }}</td>
@@ -69,12 +57,12 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #1a237e; /* indigo darken-4 */
   padding: 5px;
   font-weight: 400;
   width: auto;
   height: auto;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

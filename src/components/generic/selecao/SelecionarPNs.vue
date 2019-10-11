@@ -43,8 +43,9 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <v-col v-else>
-      <v-subheader>A carregar processos...</v-subheader>
+    <v-col v-else style="text-align:center;">
+      <p>A carregar processos...</p>
+      <v-progress-circular indeterminate size="100" width="10" color="indigo accent-4" />
     </v-col>
   </v-row>
 </template>
@@ -76,12 +77,12 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #1a237e; /* indigo darken-4 */
   padding: 5px;
   font-weight: 400;
   width: auto;
   height: auto;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
