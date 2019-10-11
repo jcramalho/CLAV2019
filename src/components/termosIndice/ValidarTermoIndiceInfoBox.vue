@@ -66,8 +66,8 @@ export default {
       // Termo
       if (this.ti.termo == "") {
         this.mensagensErro.push({
-          sobre: "Termo de Índice",
-          mensagem: "O termo de índice não pode ser vazio."
+          sobre: "Designação",
+          mensagem: "A designação do termo de índice não pode ser vazia."
         });
         this.numeroErros++;
       } else {
@@ -95,8 +95,8 @@ export default {
 
       if (this.ti.idClasse == "") {
         this.mensagensErro.push({
-          sobre: "Processo",
-          mensagem: "Tem de selecionar um processo."
+          sobre: "Processo Associado",
+          mensagem: "Tem de selecionar um processo associado."
         });
         this.numeroErros++;
       }

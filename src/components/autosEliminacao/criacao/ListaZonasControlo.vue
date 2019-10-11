@@ -23,6 +23,9 @@
         </template>
         <v-list-item-content>
           <v-list-item-title class="mx-2">
+            <v-row justify="end" class="mx-2">
+              <v-btn x-small @click="editarZC=true" style="color: #1a237e;" text>Editar Zona de Controlo</v-btn>
+            </v-row>
             <table class="consulta">
               <tr v-if="item.titulo">
                 <td style="width:20%;">
@@ -93,6 +96,11 @@
                 <td>{{ item.uiOutros }}</td>
               </tr>
             </table>
+            <!--Adicionar Agregações-->
+            <AdicionarAgregacao 
+              v-bind:auto="auto"
+              v-bind:index="index"
+            />
             <!-- Lista de Agregacoes -->
             <div v-if="item.agregacoes.length>0" class="ma-1">
               <div class="info-label">Lista de Agregações:</div>
@@ -106,13 +114,18 @@
               </v-data-table>
             </div>
             
-            <!--Adicionar Agregações-->
-            <AdicionarAgregacao 
-              v-bind:auto="auto"
-              v-bind:index="index"
-            />
           </v-list-item-title>
         </v-list-item-content>
+        <v-dialog v-model="editarZC">
+          <DialogZonaControlo 
+            v-bind:auto="auto"
+            v-bind:classes="classes"
+            v-bind:entidades="entidades"
+            v-bind:closeZC="closeZC"
+            v-bind:zona="auto.zonaControlo[index]"
+            v-bind:index="index"
+          />
+        </v-dialog>
       </v-list-group>
     </v-list>
     <v-dialog v-model="erroDialog" width="700" persistent>
@@ -137,11 +150,13 @@
 </template>
 <script>
 import AdicionarAgregacao from "@/components/autosEliminacao/criacao/AdicionarAgregacao.vue"
+import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaControlo.vue"
 
 export default {
   props: ["classes", "entidades", "auto"],
   components: {
-    AdicionarAgregacao
+    AdicionarAgregacao,
+    DialogZonaControlo
   },
   data: () => ({
     classe: null,
@@ -152,6 +167,8 @@ export default {
     uiPapel: null,
     uiDigital: null,
     uiOutros: null,
+
+    editarZC: false,
 
     natureza: ["Vazio", "Dono", "Paticipante"],
     cabecalho: [
@@ -167,120 +184,10 @@ export default {
     erroDialog: false
   }),
   methods: {
-    limparZC: function() {
-      this.classe = null;
-      this.ni = "Vazio";
-      this.dono = null;
-      this.dataInicio = null;
-      this.dataFim = null;
-      this.uiPapel = null;
-      this.uiDigital = null;
-      this.uiOutros = null;
-    },
-    adicionarZC: async function() {
-      const re = /\d{4}/;
-      const reUI = /^-?\d*(\.\d\d?)?$/;
-      if (!this.classe || !this.dataInicio || !this.dataFim) {
-        this.erro =
-          " Verifique se os campos <strong>Código da Classe," +
-          " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
-        this.erroDialog = true;
-      } else if (!re.test(this.dataInicio) || !re.test(this.dataFim)) {
-        this.erro =
-          " Verifique se os campos <strong>" +
-          " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
-        this.erroDialog = true;
-      } else {
-        var codigo = this.classe.split(" - ")[0];
-        var classe = await this.$request("get", "/api/classes/c" + codigo);
-        var titulo = classe.data.titulo;
-        var prazoConservacao = classe.data.pca.valores;
-        var destino = classe.data.df.valor;
-        var dataInicio = this.dataInicio;
-        var dataFim = this.dataFim;
-        if (this.ni == "Vazio") var ni = "";
-        else var ni = this.ni;
-        if (!this.dono) var dono = "";
-        else var dono = this.dono.split(" - ")[1];
-        if (!this.uiPapel || this.uiPapel == "0") var uiPapel = "";
-        else if (!reUI.test(this.uiPapel)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI em Papel</strong> se encontra devidamente preenchidos.";
-          this.erroDialog = true;
-        } else var uiPapel = this.uiPapel;
-        if (!this.uiDigital || this.uiDigital == "0") var uiDigital = "";
-        else if (!reUI.test(this.uiDigital)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI Digital</strong> se encontra devidamente preenchidos.";
-          this.erroDialog = true;
-        } else var uiDigital = this.uiDigital;
-        if (!this.uiOutros || this.uiOutros == "0") var uiOutros = "";
-        else if (!reUI.test(this.uiOutros)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI noutro Suporte</strong> se encontra devidamente preenchidos.";
-          this.erroDialog = true;
-        } else var uiOutros = this.uiOutros;
-
-        this.auto.zonaControlo.push({
-          codigo: codigo,
-          titulo: titulo,
-          prazoConservacao: prazoConservacao,
-          destino: destino,
-          ni: ni,
-          dono: dono,
-          dataInicio: dataInicio,
-          dataFim: dataFim,
-          uiPapel: uiPapel,
-          uiDigital: uiDigital,
-          uiOutros: uiOutros,
-          agregacoes: []
-        });
-
-        this.limparZC();
-      }
+    closeZC: function () {
+      this.editarZC = false
+      this.snackbar = true
     }
   }
 };
 </script>
-<style>
-.consulta tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.consulta td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
-}
-
-.consulta td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
-}
-
-.info-label {
-  color: #2e7d32; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #696969;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>

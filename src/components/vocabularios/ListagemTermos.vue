@@ -1,14 +1,16 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <h1>{{ tipo }}</h1>
+  <v-card class="ma-8">
+    <v-card-title class="indigo darken-4 white--text" dark>
+      <h5>{{ tipo }}</h5>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
         append-icon="search"
         label="Filtrar"
+        color="indigo darken-1"
         single-line
         hide-details
+        dark
       ></v-text-field>
       <v-dialog v-model="dialog" persistent max-width="600px">
         <template v-slot:activator="{ on }">
@@ -71,7 +73,6 @@
       class="elevation-1"
       :footer-props="termosListaFooterProps"
       v-if="listaReady"
-      :disable-initial-sort="true"
     >
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
@@ -81,7 +82,6 @@
       <template v-slot:item="props">
         <tr>
           <td
-            @click="go(props.item.id)"
             v-for="(campo, index) in props.item"
             v-bind:key="index"
           >

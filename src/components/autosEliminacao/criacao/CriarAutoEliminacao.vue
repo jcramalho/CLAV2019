@@ -1,8 +1,7 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <v-app-bar color="green darken-4" dark>
+  <div>
+      <v-card class="ma-4">
+        <v-app-bar color="expansion-panel-heading" dark>
           <v-toolbar-title class="card-heading">Novo Auto de Eliminação</v-toolbar-title>
         </v-app-bar>
         
@@ -49,9 +48,15 @@
                 ></v-autocomplete>
               </v-col>
             </v-row>
+            <!-- Adicionar Zona Controlo -->
+            <AdicionarZonaControlo
+              v-bind:classes="classes"
+              v-bind:entidades="entidades"
+              v-bind:auto="auto"
+            />
 
-            <v-expansion-panels>
-              <!-- Zonas de Controlo -->
+            <!-- Zonas de Controlo -->
+            <v-expansion-panels class="my-2">
               <v-expansion-panel v-if="this.auto.zonaControlo.length>0" popout focusable>
                 <v-expansion-panel-header class="expansion-panel-heading">
                   <div>Zonas de Controlo</div>
@@ -60,17 +65,12 @@
                 <v-expansion-panel-content>
                   <ListaZonasControlo 
                     v-bind:auto="auto"
+                    v-bind:classes="classes"
+                    v-bind:entidades="entidades"
                   />
                 </v-expansion-panel-content>
               </v-expansion-panel>
 
-              <!-- Adicionar Zona Controlo -->
-              <AdicionarZonaControlo 
-                class="ma-2"
-                v-bind:classes="classes"
-                v-bind:entidades="entidades"
-                v-bind:auto="auto"
-              />
             </v-expansion-panels>
           </v-card-text>
         </v-card>
@@ -123,8 +123,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    </v-col>
-  </v-row>
+    </div>
 </template>
 
 <script>
@@ -169,19 +168,41 @@ export default {
 </script>
 
 <style>
+.consulta tr {
+  vertical-align: top;
+  border-bottom: 1px solid #ddd;
+}
+
+.consulta td {
+  padding-left: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  align-content: center;
+}
+
+.consulta td:nth-of-type(2) {
+  vertical-align: middle;
+  padding-left: 15px;
+}
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #1a237e; /* green darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #dee2f8; /* green lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
 }
 
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #696969;
+}
+
 .expansion-panel-heading {
-  background-color: #1b5e20 !important;
+  background-color: #1a237e !important;
   color: #fff;
   font-size: large;
   font-weight: bold;
