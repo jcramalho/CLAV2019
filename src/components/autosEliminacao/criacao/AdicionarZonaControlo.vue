@@ -1,10 +1,14 @@
 <template>
-  <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="expansion-panel-heading">
-      <div>Adicionar Zona de Controlo</div>
-    </v-expansion-panel-header>
+  <div>
+    <v-row justify="end" class="mx-2">
+      <v-btn @click="addZC=true" style="color: #1a237e; background-color: #dee2f8;">Adicionar Zona de Controlo</v-btn>
+    </v-row>
+    <v-dialog v-model="addZC">
+      <v-card>
+        <v-card-title class="expansion-panel-heading">Adicionar Zona de Controlo</v-card-title>
 
-    <v-expansion-panel-content>
+        <v-card-text class="mt-4">
+
       <v-row>
         <v-col :md="2">
           <div class="info-label">Código da Classe:</div>
@@ -44,13 +48,13 @@
           <div class="info-label">Data de Início:</div>
         </v-col>
         <v-col>
-          <v-text-field hint="Exemplo: 1995" v-model="dataInicio" solo clearable>Insira um ano</v-text-field>
+          <v-text-field hint="Exemplo: 1995" label="Insira o ano de início" v-model="dataInicio" solo clearable>Insira um ano</v-text-field>
         </v-col>
         <v-col>
           <div class="info-label">Data de Fim:</div>
         </v-col>
         <v-col>
-          <v-text-field hint="Exemplo: 1995" v-model="dataFim" solo clearable>Insira um ano</v-text-field>
+          <v-text-field hint="Exemplo: 1995" label="Insira o ano de fim" v-model="dataFim" solo clearable>Insira um ano</v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -58,26 +62,28 @@
           <div class="info-label">Medição de UI em Papel:</div>
         </v-col>
         <v-col>
-          <v-text-field hint="Exemplo: 11.50" v-model="uiPapel" solo clearable>Insira um ano</v-text-field>
+          <v-text-field hint="Exemplo: 11.50" label="Insira a medição de UI" v-model="uiPapel" solo clearable>Insira um ano</v-text-field>
         </v-col>
         <v-col>
           <div class="info-label">Medição de UI Digital:</div>
         </v-col>
         <v-col>
-          <v-text-field hint="Exemplo: 16.00" v-model="uiDigital" solo clearable>Insira um ano</v-text-field>
+          <v-text-field hint="Exemplo: 16.00" label="Insira a medição de UI" v-model="uiDigital" solo clearable>Insira um ano</v-text-field>
         </v-col>
         <v-col>
           <div class="info-label">Medição de UI noutro Suporte:</div>
         </v-col>
         <v-col>
-          <v-text-field hint="Exemplo: 150.75" v-model="uiOutros" solo clearable>Insira um ano</v-text-field>
+          <v-text-field hint="Exemplo: 150.75" label="Insira a medição de UI" v-model="uiOutros" solo clearable>Insira um ano</v-text-field>
         </v-col>
       </v-row>
       <v-row justify="end">
         <v-btn color="red darken-4" dark text @click="limparZC">Limpar</v-btn>
         <v-btn color="green darken-4" dark text @click="adicionarZC">Adicionar</v-btn>
       </v-row>
-    </v-expansion-panel-content>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title
@@ -96,7 +102,20 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-expansion-panel>
+    <v-snackbar
+      v-model="snackbar"
+      color="success"
+    >
+      Zona de Controlo adicionada com sucesso
+      <v-btn
+        dark
+        text
+        @click="snackbar = false"
+      >
+        Fechar
+      </v-btn>
+    </v-snackbar>
+  </div>
 </template>
 <script>
 export default {
@@ -114,8 +133,10 @@ export default {
 
     natureza: ["Vazio", "Dono", "Paticipante"],
 
+    snackbar: false,
     erro: null,
-    erroDialog: false
+    erroDialog: false,
+    addZC: false,
   }),
   methods: {
     limparZC: function() {
@@ -131,15 +152,25 @@ export default {
     adicionarZC: async function() {
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
+      var result = this.auto.zonaControlo.filter(zc => zc.codigo == this.classe)
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro =
           " Verifique se os campos <strong>Código da Classe," +
           " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
         this.erroDialog = true;
+      } else if(result.length>0) {
+        this.erro =
+          "O <strong>Código da Agregação</strong> que tentou inserir já existe. ";
+        this.erroDialog = true;
       } else if (!re.test(this.dataInicio) || !re.test(this.dataFim)) {
         this.erro =
           " Verifique se os campos <strong>" +
           " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
+        this.erroDialog = true;
+      } else if(parseInt(this.dataInicio) > parseInt(this.dataFim)) {
+        this.erro =
+          " O campo <strong>Data de Início</strong> têm de ser <strong>menor"+
+          " ou igual</strong> ao campo <strong>Data de Fim</strong>.";
         this.erroDialog = true;
       } else {
         var codigo = this.classe.split(" - ")[0];
@@ -149,31 +180,34 @@ export default {
         var destino = classe.data.df.valor;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
-        if (this.ni == "Vazio") var ni = "";
-        else var ni = this.ni;
-        if (!this.dono) var dono = "";
-        else var dono = this.dono.split(" - ")[1];
-        if (!this.uiPapel || this.uiPapel == "0") var uiPapel = "";
+        var ni = "";
+        var dono = "";
+        var uiPapel;
+        var uiDigital;
+        var uiOutros;
+        if (!this.ni == "Vazio") ni = this.ni;
+        if (this.dono) dono = this.dono.split(" - ")[1];
+        if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else if (!reUI.test(this.uiPapel)) {
           this.erro =
             " Verifique se o campo <strong>" +
             "Medição de UI em Papel</strong> se encontra devidamente preenchido.";
           this.erroDialog = true;
-        } else var uiPapel = this.uiPapel;
-        if (!this.uiDigital || this.uiDigital == "0") var uiDigital = "";
+        } else uiPapel = this.uiPapel;
+        if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";
         else if (!reUI.test(this.uiDigital)) {
           this.erro =
             " Verifique se o campo <strong>" +
             "Medição de UI Digital</strong> se encontra devidamente preenchido.";
           this.erroDialog = true;
-        } else var uiDigital = this.uiDigital;
-        if (!this.uiOutros || this.uiOutros == "0") var uiOutros = "";
+        } else uiDigital = this.uiDigital;
+        if (!this.uiOutros || this.uiOutros == "0") uiOutros = "";
         else if (!reUI.test(this.uiOutros)) {
           this.erro =
             " Verifique se o campo <strong>" +
             "Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.";
           this.erroDialog = true;
-        } else var uiOutros = this.uiOutros;
+        } else uiOutros = this.uiOutros;
 
         this.auto.zonaControlo.push({
           codigo: codigo,
@@ -191,30 +225,10 @@ export default {
         });
 
         this.limparZC();
+        this.snackbar = true;
+        this.addZC = false;
       }
     }
   }
 };
 </script>
-<style>
-.info-label {
-  color: #2e7d32; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>

@@ -1,71 +1,72 @@
 <template>
   <div>
-    <v-list>
-      <v-list-group>
-        <template v-slot:activator>
-          <v-list-item-content>
-            <v-list-item-title class="info-label">Adicionar Agregação</v-list-item-title>
-          </v-list-item-content>
-        </template>
-        <v-list-item-content class="mx-4">
-          <v-list-item-title>
-            <v-row>
-              <v-col :md="2">
-                <div class="info-label">Código da Agregação:</div>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  hint="Exemplo: AS_DGLAB_1/2019"
-                  v-model="codigo"
-                  solo
-                  clearable
-                >Insira um codigo para a agregação</v-text-field>
-              </v-col>
-              <v-col :md="2">
-                <div class="info-label">Titulo da Agregação:</div>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  hint="Exemplo: Auditoria à Entidade A"
-                  v-model="titulo"
-                  solo
-                  clearable
-                >Insira um codigo para a agregação</v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col :md="2">
-                <div class="info-label">Data de Contagem do PCA:</div>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  hint="Exemplo: 2009"
-                  v-model="dataContagem"
-                  solo
-                  clearable
-                >Insira um codigo para a agregação</v-text-field>
-              </v-col>
-              <v-col :md="2">
-                <div class="info-label">Natureza de Intervenção:</div>
-              </v-col>
-              <v-col>
-                <v-select
-                  label="Selecione a Natureza de Intervenção"
-                  :items="natureza"
-                  v-model="ni"
-                  solo
-                  dense
-                ></v-select>
-              </v-col>
-            </v-row>
-            <v-row justify="end">
-              <v-btn color="red darken-4" dark text @click="limparAG">Limpar</v-btn>
-              <v-btn color="green darken-4" dark text @click="adicionarAG">Adicionar</v-btn>
-            </v-row>
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-group>
-    </v-list>
+    <v-row justify="end" class="ma-4">
+      <v-btn @click="addAG=true" style="color: #1a237e; background-color: #dee2f8;">Adicionar Agregação</v-btn>
+    </v-row>
+    <v-dialog v-model="addAG" max-width="80%">
+      <v-card>
+        <v-card-title class="expansion-panel-heading">Adicionar Agregação</v-card-title>
+
+        <v-card-text class="mt-4">
+          <v-row>
+            <v-col :md="2">
+              <div class="info-label">Código da Agregação:</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                hint="Exemplo: AS_DGLAB_1/2019"
+                label="Insira um código para a agregação"
+                v-model="codigo"
+                solo
+                clearable
+              >Insira um codigo para a agregação</v-text-field>
+            </v-col>
+            <v-col :md="2">
+              <div class="info-label">Titulo da Agregação:</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                hint="Exemplo: Auditoria à Entidade A"
+                label="Insira um título para a agregação"
+                v-model="titulo"
+                solo
+                clearable
+              >Insira um codigo para a agregação</v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col :md="2">
+              <div class="info-label">Data de Contagem do PCA:</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                hint="Exemplo: 2009"
+                label="Insira o ano de contagem do PCA"
+                v-model="dataContagem"
+                solo
+                clearable
+              >Insira um codigo para a agregação</v-text-field>
+            </v-col>
+            <v-col :md="2">
+              <div class="info-label">Natureza de Intervenção:</div>
+            </v-col>
+            <v-col>
+              <v-select
+                label="Selecione a Natureza de Intervenção"
+                :items="natureza"
+                v-model="ni"
+                solo
+                dense
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row justify="end">
+            <v-btn color="red darken-4" dark text @click="limparAG">Limpar</v-btn>
+            <v-btn color="green darken-4" dark text @click="adicionarAG">Adicionar</v-btn>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title
@@ -84,6 +85,19 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      v-model="snackbar"
+      color="success"
+    >
+      Agregação adicionada com sucesso
+      <v-btn
+        dark
+        text
+        @click="snackbar = false"
+      >
+        Fechar
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
 <script>
@@ -95,9 +109,13 @@ export default {
     titulo: null,
     dataContagem: null,
     ni: "Dono",
+
     natureza: ["Dono", "Participante"],
+
+    snackbar: false,
     erro: null,
     erroDialog: false,
+    addAG: false,
   }),
   methods: {
     limparAG: function () {
@@ -109,10 +127,15 @@ export default {
     adicionarAG: function () {
       const re = /\d{4}/;
       var currentTime = new Date();
+      var result = this.auto.zonaControlo[this.index].agregacoes.filter(ag => ag.codigo == this.codigo)
       if(!this.codigo || !this.titulo || !this.dataContagem) {
         this.erro = " Verifique se os campos <strong>Código da Agregação," +
                     " Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.";
         this.erroDialog = true
+      } else if(result.length>0) {
+        this.erro =
+          "O <strong>Código da Agregação</strong> que tentou inserir já existe. ";
+        this.erroDialog = true;
       } else if(!re.test(this.dataContagem)) {
         this.erro =
           " Verifique se o campo <strong>" +
@@ -132,7 +155,8 @@ export default {
             dataContagem: this.dataContagem,
             ni: this.ni
           })
-
+          this.addAG = false
+          this.snackbar = true
           this.limparAG()
         }
       }
@@ -140,42 +164,3 @@ export default {
   }
 };
 </script>
-<style>
-.consulta tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.consulta td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
-}
-
-.consulta td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
-}
-
-.info-label {
-  color: #2e7d32; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #696969;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>
