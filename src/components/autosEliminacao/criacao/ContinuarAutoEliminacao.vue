@@ -74,13 +74,16 @@
             </v-expansion-panels>
           </v-card-text>
         </v-card>
-        <div class="mx-2">
-          <v-btn rounded color="warning" @click="guardarTrabalho" :disabled="!auto.entidade || !auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 ma-2">
-            Guardar Auto de Eliminação
-          </v-btn>
-          <v-btn rounded color="primary" @click="submit" :disabled="!auto.entidade || !auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 ma-2">
-            Criar Auto de Eliminação
-          </v-btn>
+        <div>
+            <v-btn rounded color="warning" @click="guardarTrabalho" :disabled="!auto.entidade || !auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 mx-4 ma-1">
+              Guardar Auto de Eliminação
+            </v-btn>
+            <v-btn rounded color="primary" @click="submit" :disabled="!auto.entidade || !auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 mx-4">
+              Criar Auto de Eliminação
+            </v-btn>
+            <v-btn rounded color="error" @click="apagarAE=true" class="elevation-2 mx-4 ma-1">
+              Eliminar Auto de Eliminação
+            </v-btn>
         </div>
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
@@ -126,6 +129,31 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="apagarAE" width="700" persistent>
+      <v-card outlined>
+        <v-card-title class="red darken-4 title white--text" dark>
+          Eliminar Auto de Eliminação
+        </v-card-title>
+
+        <v-card-text>
+          <span class="subtitle-1" style="white-space: pre-wrap">
+            Este método remove <strong>permanentemente</strong> o Auto de Eliminação, assim como
+            as suas Zonas de Controlo e Agregações.
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="green darken-4" text @click="apagarAE = false">
+            Fechar
+          </v-btn>
+          <v-btn color="red darken-4" text @click="eliminarAE">
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <!-- Trabalho pendente guardado com sucesso -->
     <v-dialog v-model="pendenteGuardado" width="60%">
       <v-card>
@@ -152,18 +180,22 @@ import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasC
 const help = require("@/config/help").help;
 
 export default {
-  props: ["entidades","portarias","classes"],
+  props: ["obj"],
   components: {
     AdicionarZonaControlo,
     ListaZonasControlo
   },
   data: () => ({
+    entidades: [],
+    portarias: [],
+    classes: [],
     auto: {
       entidade: null,
       legislacao: null,
       fundo: null,
       zonaControlo: []
     },
+    apagarAE: false,
     erro: null,
     erroDialog: false,
     success: null,
@@ -171,13 +203,78 @@ export default {
     pendenteGuardado: false,
     pendenteGuardadoInfo: null,
   }),
+  created: async function() { 
+    try {
+      var response = await this.$request("get", "/api/entidades/")
+      this.entidades = await this.prepararEntidade(response.data)
+      
+      var response2 = await this.$request("get", "/api/legislacao/portarias")
+      this.portarias = await this.prepararLeg(response2.data)
+
+      var response3 = await this.$request("get", "/api/classes?nivel=3")
+      this.classes = await this.prepararClasses(response3.data)
+      
+      this.auto = this.obj.objeto;
+      this.pendenteID = this.obj._id;
+    }
+    catch (e) {
+      this.entidades = []
+      this.portarias = []
+      this.classes = []
+      
+      this.auto = this.obj.objeto;
+      this.pendenteID = this.obj._id;
+    }
+  },
   methods: {
+    prepararEntidade: async function(ent) {
+      try {
+        var myEntidades = []
+        for(var e of ent) {
+          myEntidades.push(e.sigla+" - "+e.designacao)
+        }
+        return myEntidades
+      }
+      catch (error) {
+        return []
+      }
+    },
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = []
+        for(var l of leg) {
+          myPortarias.push("Portaria "+l.numero+" \n "+l.sumario)
+        }
+        return myPortarias
+      }
+      catch (error) {
+        return []
+      }
+    },
+    prepararClasses: async function(classes) {
+      try {
+        var myClasses = []
+        for(var c of classes) {
+          myClasses.push(c.codigo+" - "+c.titulo)
+        }
+        return myClasses
+      }
+      catch (error) {
+        return []
+      }
+    },
+    eliminarAE: async function() {
+      this.apagarAE = false
+      this.$request("delete", "/api/pendentes/"+this.obj._id);
+      this.$router.push("/");
+    },
     submit: async function() {
       this.auto.entidade = this.auto.entidade.split(" - ")[1]
       this.auto.legislacao = "Portaria "+this.auto.legislacao.split(" ")[1]
       this.auto.fundo = this.auto.fundo.split(" - ")[1]
       this.$request("post", "/api/autosEliminacao/", {auto: this.auto})
         .then(r=> {
+          this.$request("delete", "/api/pendentes/"+this.obj._id);
           this.successDialog = true;
           this.success = `<b>Código do pedido:</b>\n${JSON.stringify(this.auto)}`;
         })
@@ -188,30 +285,29 @@ export default {
     },
     guardarTrabalho: async function() {
       try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          var userBD = await this.$request(
-            "get",
-            "/api/users/listarToken/" + this.$store.state.token
-          );
-          var pendenteParams = {
-            numInterv: 1,
-            acao: "Criação",
-            tipo: "Auto de Eliminação",
-            objeto: this.auto,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email },
+        this.obj.numInterv++;
+        var cDate = Date.now();
+
+        var pendenteParams = {
+          _id: this.obj._id,
+          dataAtualizacao: cDate,
+          numInterv: this.obj.numInterv,
+          acao: this.obj.acao,
+          tipo: this.obj.tipo,
+          objeto: this.auto,
+          criadoPor: this.obj.criadoPor,
+          user: {
             token: this.$store.state.token
-          };
-          var response = await this.$request(
-            "post",
-            "/api/pendentes",
-            pendenteParams
-          );
-          this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
-        }
+          }
+        };
+
+        var response = await this.$request(
+          "put",
+          "/api/pendentes",
+          pendenteParams
+        );
+        this.pendenteGuardado = true;
+        this.pendenteGuardadoInfo = JSON.stringify(response.data);
       } catch (error) {
         return error;
       }
@@ -261,7 +357,7 @@ export default {
   font-weight: bold;
 }
 
-.card-heading {
+.card-headingAE {
   font-size: x-large;
   font-weight: bold;
 }
