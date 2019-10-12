@@ -147,9 +147,9 @@ export default {
   }),
   created: function() {
     if(this.zona) {
-      console.log(this.zona)
       this.classe = this.zona.codigo + " - " + this.zona.titulo
-      this.ni = this.zona.ni
+      if(!this.zona.ni) this.ni = "Vazio"
+      else this.ni = this.zona.ni
       this.dono = this.zona.dono
       this.dataInicio = this.zona.dataInicio
       this.dataFim = this.zona.dataFim
@@ -173,7 +173,7 @@ export default {
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
-        zc => zc.codigo == this.classe
+        zc => (zc.codigo+" - "+zc.titulo) == this.classe
       );
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro =
@@ -184,7 +184,7 @@ export default {
         this.erro =
           "O <strong>Código da Agregação</strong> que tentou inserir já existe. ";
         this.erroDialog = true;
-      } else if (!re.test(this.dataInicio) || !re.test(this.dataFim)) {
+      } else if (!re.test(this.dataInicio) || !re.test(this.dataFim) || this.dataInicio.length!=4 || this.dataFim.length!=4) {
         this.erro =
           " Verifique se os campos <strong>" +
           " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
@@ -193,6 +193,21 @@ export default {
         this.erro =
           " O campo <strong>Data de Início</strong> têm de ser <strong>menor" +
           " ou igual</strong> ao campo <strong>Data de Fim</strong>.";
+        this.erroDialog = true;
+      } else if (this.uiPapel && !reUI.test(this.uiPapel)) {
+        this.erro =
+          " Verifique se o campo <strong>" +
+          "Medição de UI em Papel</strong> se encontra devidamente preenchido.";
+        this.erroDialog = true;
+      } else if (this.uiDigital && !reUI.test(this.uiDigital)) {
+        this.erro =
+          " Verifique se o campo <strong>" +
+          "Medição de UI Digital</strong> se encontra devidamente preenchido.";
+        this.erroDialog = true;
+      } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
+        this.erro =
+          " Verifique se o campo <strong>" +
+          "Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.";
         this.erroDialog = true;
       } else {
         var codigo = this.classe.split(" - ")[0];
@@ -210,26 +225,11 @@ export default {
         if (this.ni != "Vazio") ni = this.ni;
         if (this.dono) dono = this.dono.split(" - ")[1];
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
-        else if (!reUI.test(this.uiPapel)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI em Papel</strong> se encontra devidamente preenchido.";
-          this.erroDialog = true;
-        } else uiPapel = this.uiPapel;
+        else uiPapel = this.uiPapel;
         if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";
-        else if (!reUI.test(this.uiDigital)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI Digital</strong> se encontra devidamente preenchido.";
-          this.erroDialog = true;
-        } else uiDigital = this.uiDigital;
+        else uiDigital = this.uiDigital;
         if (!this.uiOutros || this.uiOutros == "0") uiOutros = "";
-        else if (!reUI.test(this.uiOutros)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.";
-          this.erroDialog = true;
-        } else uiOutros = this.uiOutros;
+        else uiOutros = this.uiOutros;
 
         this.auto.zonaControlo.push({
           codigo: codigo,
@@ -251,30 +251,54 @@ export default {
       }
     },
     editarZC: async function() {
+      var backup = this.auto.zonaControlo[this.index]
+      this.auto.zonaControlo[this.index] = {}
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
-        zc => zc.codigo == this.classe
+        zc => (zc.codigo+" - "+zc.titulo) == this.classe
       );
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro =
           " Verifique se os campos <strong>Código da Classe," +
           " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
         this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup
       } else if (result.length > 0) {
         this.erro =
           "O <strong>Código da Agregação</strong> que tentou inserir já existe. ";
         this.erroDialog = true;
-      } else if (!re.test(this.dataInicio) || !re.test(this.dataFim)) {
+        this.auto.zonaControlo[this.index] = backup
+      } else if (!re.test(this.dataInicio) || !re.test(this.dataFim) || this.dataInicio.length!=4 || this.dataFim.length!=4) {
         this.erro =
           " Verifique se os campos <strong>" +
           " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
         this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup
       } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
         this.erro =
           " O campo <strong>Data de Início</strong> têm de ser <strong>menor" +
           " ou igual</strong> ao campo <strong>Data de Fim</strong>.";
         this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup
+      } else if (this.uiPapel && !reUI.test(this.uiPapel)) {
+        this.erro =
+          " Verifique se o campo <strong>" +
+          "Medição de UI em Papel</strong> se encontra devidamente preenchido.";
+        this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup
+      } else if (this.uiDigital && !reUI.test(this.uiDigital)) {
+        this.erro =
+          " Verifique se o campo <strong>" +
+          "Medição de UI Digital</strong> se encontra devidamente preenchido.";
+        this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup
+      } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
+        this.erro =
+          " Verifique se o campo <strong>" +
+          "Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.";
+        this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup
       } else {
         var codigo = this.classe.split(" - ")[0];
         var classe = await this.$request("get", "/api/classes/c" + codigo);
@@ -291,28 +315,11 @@ export default {
         if (this.ni != "Vazio") ni = this.ni;
         if (this.dono) dono = this.dono.split(" - ")[1];
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
-        else if (!reUI.test(this.uiPapel)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI em Papel</strong> se encontra devidamente preenchido.";
-          this.erroDialog = true;
-        } else uiPapel = this.uiPapel;
+        else uiPapel = this.uiPapel;
         if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";
-        else if (!reUI.test(this.uiDigital)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI Digital</strong> se encontra devidamente preenchido.";
-          this.erroDialog = true;
-        } else uiDigital = this.uiDigital;
+        else uiDigital = this.uiDigital;
         if (!this.uiOutros || this.uiOutros == "0") uiOutros = "";
-        else if (!reUI.test(this.uiOutros)) {
-          this.erro =
-            " Verifique se o campo <strong>" +
-            "Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.";
-          this.erroDialog = true;
-        } else uiOutros = this.uiOutros;
-
-        var agregacoes = this.auto.zonaControlo[this.index].agregacoes
+        else uiOutros = this.uiOutros;
 
         this.auto.zonaControlo[this.index] = {
           codigo: codigo,
@@ -326,7 +333,7 @@ export default {
           uiPapel: uiPapel,
           uiDigital: uiDigital,
           uiOutros: uiOutros,
-          agregacoes: agregacoes
+          agregacoes: backup.agregacoes
         };
 
         this.closeZC();

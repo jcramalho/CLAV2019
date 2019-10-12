@@ -102,17 +102,10 @@
               v-bind:index="index"
             />
             <!-- Lista de Agregacoes -->
-            <div v-if="item.agregacoes.length>0" class="ma-1">
-              <div class="info-label">Lista de Agregações:</div>
-              <v-data-table
-                :headers="cabecalho"
-                :items="item.agregacoes"
-                :items-per-page="5"
-                class="elevation-1 ma-4"
-                :footer-props="footer_props"
-              >
-              </v-data-table>
-            </div>
+            <ListaAgregacoes
+              v-bind:auto="auto"
+              v-bind:index="index"
+            />
             
           </v-list-item-title>
         </v-list-item-content>
@@ -146,17 +139,32 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      v-model="snackbar"
+      color="success"
+    >
+      Zona de Controlo editada com sucesso!
+      <v-btn
+        dark
+        text
+        @click="snackbar = false"
+      >
+        Fechar
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
 <script>
 import AdicionarAgregacao from "@/components/autosEliminacao/criacao/AdicionarAgregacao.vue"
 import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaControlo.vue"
+import ListaAgregacoes from "@/components/autosEliminacao/criacao/ListaAgregacoes.vue"
 
 export default {
   props: ["classes", "entidades", "auto"],
   components: {
     AdicionarAgregacao,
-    DialogZonaControlo
+    DialogZonaControlo,
+    ListaAgregacoes
   },
   data: () => ({
     classe: null,
@@ -169,17 +177,10 @@ export default {
     uiOutros: null,
 
     editarZC: false,
+    snackbar: false,
 
     natureza: ["Vazio", "Dono", "Paticipante"],
-    cabecalho: [
-      {text: 'Código', align: 'left', sortable: false, value: 'codigo'},
-      {text: 'Título', align: 'left', sortable: true, value: 'titulo'},
-      {text: 'Data de Contagem', align: 'center', sortable: true, value: 'dataContagem'},
-      {text: 'Natureza de Intervenção', align: 'center', sortable: true, value: 'ni'},
-    ],
-    footer_props: {
-      "items-per-page-text": "Mostrar"
-    },
+    
     erro: null,
     erroDialog: false
   }),
