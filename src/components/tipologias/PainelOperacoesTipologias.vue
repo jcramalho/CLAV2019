@@ -153,8 +153,6 @@ export default {
     },
 
     validarTipologia: async function() {
-      let i = 0;
-
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {
         this.numeroErros++;

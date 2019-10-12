@@ -153,17 +153,16 @@ export default {
     },
 
     validarLegislacao: async function() {
-      let i = 0;
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
       //Tipo
-      if (this.l.tipo == "") {
+      if (this.l.tipo == "" || this.l.tipo == null) {
         this.numeroErros++;
       }
 
       // Número Diploma
-      if (this.l.numero == "") {
+      if (this.l.numero == "" || this.l.numero == null) {
         this.numeroErros++;
       } else {
         try {
@@ -188,7 +187,7 @@ export default {
       }
 
       // Data
-      if (this.l.data == "") {
+      if (this.l.data == "" || this.l.data == null) {
         this.numeroErros++;
       } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
         this.numeroErros++;
@@ -228,7 +227,7 @@ export default {
       }
 
       // Sumário
-      if (this.l.sumario == "") {
+      if (this.l.sumario == "" || this.l.sumario == null) {
         this.numeroErros++;
       }
 

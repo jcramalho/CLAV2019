@@ -154,8 +154,6 @@ export default {
     },
 
     validarTI: async function() {
-      let i = 0;
-
       // Termo
       if (this.ti.termo == "" || this.ti.termo == null) {
         this.numeroErros++;

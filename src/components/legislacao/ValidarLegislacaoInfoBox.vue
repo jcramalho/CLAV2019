@@ -61,12 +61,11 @@ export default {
 
   methods: {
     validarLegislacao: async function() {
-      let i = 0;
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
       //Tipo
-      if (this.l.tipo == "") {
+      if (this.l.tipo == "" || this.l.tipo == null) {
         this.mensagensErro.push({
           sobre: "Tipo do Diploma",
           mensagem: "O tipo do diploma não pode ser vazio."
@@ -75,7 +74,7 @@ export default {
       }
 
       // Número Diploma
-      if (this.l.numero == "") {
+      if (this.l.numero == "" || this.l.numero == null) {
         this.mensagensErro.push({
           sobre: "Número do Diploma",
           mensagem: "O número do diploma não pode ser vazio."
@@ -122,7 +121,7 @@ export default {
       }
 
       // Data
-      if (this.l.data == "") {
+      if (this.l.data == "" || this.l.data == null) {
         this.mensagensErro.push({
           sobre: "Data",
           mensagem: "A data não pode ser vazia."
@@ -197,7 +196,7 @@ export default {
       }
 
       // Sumário
-      if (this.l.sumario == "") {
+      if (this.l.sumario == "" || this.l.sumario == null) {
         this.mensagensErro.push({
           sobre: "Sumário",
           mensagem: "O sumário não pode ser vazio."

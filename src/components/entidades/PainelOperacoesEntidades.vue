@@ -153,10 +153,8 @@ export default {
     },
 
     validarEntidade: async function() {
-      let i = 0;
-
       // Designação
-      if (this.e.designacao == "") {
+      if (this.e.designacao == "" || this.e.designacao == null) {
         this.numeroErros++;
       } else {
         try {
@@ -174,7 +172,7 @@ export default {
       }
 
       // Sigla
-      if (this.e.sigla == "") {
+      if (this.e.sigla == "" || this.e.sigla == null) {
         this.numeroErros++;
       } else {
         try {
@@ -192,7 +190,7 @@ export default {
       }
 
       // Internacional
-      if (this.e.internacional == "") {
+      if (this.e.internacional == "" || this.e.internacional == null) {
         this.numeroErros++;
       }
 

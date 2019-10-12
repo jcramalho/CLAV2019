@@ -61,10 +61,8 @@ export default {
 
   methods: {
     validarEntidade: async function() {
-      let i = 0;
-
       // Designação
-      if (this.e.designacao == "") {
+      if (this.e.designacao == "" || this.e.designacao == null) {
         this.mensagensErro.push({
           sobre: "Nome da Entidade",
           mensagem: "O nome da entidade não pode ser vazio."
@@ -94,7 +92,7 @@ export default {
       }
 
       // Sigla
-      if (this.e.sigla == "") {
+      if (this.e.sigla == "" || this.e.sigla == null) {
         this.mensagensErro.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia."
@@ -124,7 +122,7 @@ export default {
       }
 
       // Internacional
-      if (this.e.internacional == "") {
+      if (this.e.internacional == "" || this.e.internacional == null) {
         this.mensagensErro.push({
           sobre: "Internacional",
           mensagem: "O campo internacional tem de ter uma opção."
