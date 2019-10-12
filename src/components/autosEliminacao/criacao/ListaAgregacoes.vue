@@ -21,19 +21,18 @@
       :search="search"
     >
       <template v-slot:item.action="{ item }">
-        <v-icon
-          small
-          class="mr-2"
-          @click="editAG = true"
-        >
-          edit
-        </v-icon>
-        <v-icon
-          small
-          @click="deleteObj=item; deleteDialog=true"
-        >
-          delete
-        </v-icon>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on" small class="mr-2" @click="editAG = true">edit</v-icon>
+          </template>
+          <span>Editar Agregação</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on" small @click="deleteObj=item; deleteDialog=true">delete</v-icon>
+          </template>
+          <span>Remover Agregação</span>
+        </v-tooltip>
         <v-dialog v-model="editAG" max-width="80%">
           <DialogAgregacao 
             v-bind:auto="auto"

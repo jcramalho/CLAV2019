@@ -23,8 +23,19 @@
         </template>
         <v-list-item-content>
           <v-list-item-title class="mx-2">
-            <v-row justify="end" class="mx-2">
-              <v-btn x-small @click="editarZC=true" style="color: #1a237e;" text>Editar Zona de Controlo</v-btn>
+            <v-row justify="end" class="mx-4">
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon v-on="on" class="mr-2" @click="editarZC=true">edit</v-icon>
+                </template>
+                <span>Editar Zona de Controlo</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon v-on="on" @click="deleteIndex=index; deleteDialog=true">delete</v-icon>
+                </template>
+                <span>Remover Zona de Controlo</span>
+              </v-tooltip>
             </v-row>
             <table class="consulta">
               <tr v-if="item.titulo">
@@ -119,6 +130,25 @@
             v-bind:index="index"
           />
         </v-dialog>
+        <v-dialog v-model="deleteDialog" width="700" persistent>
+          <v-card outlined>
+            <v-card-title
+              class="red darken-4 title white--text"
+              dark
+            >Comfirmação para remover de Zona de Controlo</v-card-title>
+
+            <v-card-text>
+              <div class="subtitle-1" style="white-space: pre-wrap">Este método remove <strong>permanentemente</strong> a zona de controlo, assim com todas as suas agregações.</div>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-btn color="green darken-4" text @click="deleteDialog = false">Fechar</v-btn>
+              <v-btn color="red darken-4" text @click="deleteZC">Confirmar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-list-group>
     </v-list>
     <v-dialog v-model="erroDialog" width="700" persistent>
@@ -178,6 +208,8 @@ export default {
 
     editarZC: false,
     snackbar: false,
+    deleteDialog: false,
+    deleteIndex: null,
 
     natureza: ["Vazio", "Dono", "Paticipante"],
     
@@ -185,6 +217,10 @@ export default {
     erroDialog: false
   }),
   methods: {
+    deleteZC: function () {
+      this.auto.zonaControlo.splice(this.deleteIndex,1)
+      this.deleteDialog = false;
+    },
     closeZC: function () {
       this.editarZC = false
       this.snackbar = true

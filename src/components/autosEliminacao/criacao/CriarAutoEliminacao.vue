@@ -75,7 +75,7 @@
           </v-card-text>
         </v-card>
         <div style="text-align:center">
-          <v-btn medium color="primary" @click="submit" :disabled="!auto.entidade && !auto.legislacao && !auto.fundo" class="ma-2">
+          <v-btn medium color="primary" @click="submit" :disabled="!auto.entidade || !auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="ma-2">
             Submeter Auto de Eliminação
           </v-btn>
         </div>
@@ -106,7 +106,7 @@
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="red darken-4 title white--text" dark>
-          Não foi possível criar o pedido de criação de tabela de seleção
+          Não foi possível criar o pedido de criação de auto de eliminação
         </v-card-title>
 
         <v-card-text>
@@ -154,14 +154,19 @@ export default {
     successDialog: false,
   }),
   methods: {
-    filtraAuto: function(auto) {
-      this.auto.entidade = auto.entidade.split(" - ")[1]
-      this.auto.legislacao = "Portaria "+auto.legislacao.split(" ")[1]
-      this.auto.fundo = auto.fundo.split(" - ")[1]
-    },
-    submit: function() {
-      this.erroDialog= true;
-      this.erro = JSON.stringify(this.auto)
+    submit: async function() {
+      this.auto.entidade = this.auto.entidade.split(" - ")[1]
+      this.auto.legislacao = "Portaria "+this.auto.legislacao.split(" ")[1]
+      this.auto.fundo = this.auto.fundo.split(" - ")[1]
+      this.$request("post", "/api/autosEliminacao/", {auto: this.auto})
+        .then(r=> {
+          this.successDialog = true;
+          this.success = `<b>Código do pedido:</b>\n${JSON.stringify(this.auto)}`;
+        })
+        .catch(e => {
+          this.erro = e.response.data;
+          this.erroDialog = true;
+        })
     }
   }
 };

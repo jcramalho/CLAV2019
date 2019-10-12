@@ -66,7 +66,7 @@
       <ShowTSOrg v-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
       <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
-      <ShowAE v-else-if="p.objeto.tipo.includes('AE ')" :p="p" />
+      <ShowAE v-else-if="p.objeto.tipo.includes('AE ') || p.objeto.tipo=='Auto de Eliminação'" :p="p" />
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
       <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />

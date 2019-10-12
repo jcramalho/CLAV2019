@@ -1,6 +1,6 @@
 <template>
 <v-card class="my-2 panel panel-default panel-custom">
-    <v-card-title class="info-label title" dark>
+    <v-card-title class="pa-2 indigo darken-4 title white--text" dark>
       {{ p.objeto.acao }} do Auto de Eliminação
     </v-card-title>
     <v-card-text class="panel-body">
@@ -30,7 +30,7 @@
 
         <v-expansion-panels popout>
           <v-expansion-panel class="ma-1">
-            <v-expansion-panel-header class="info-label"
+            <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
               >Zonas de Controlo</v-expansion-panel-header
             >
             <v-expansion-panel-content>
@@ -179,8 +179,8 @@
                       </table>
 
                       <v-expansion-panels>
-                        <v-expansion-panel class="ma-1">
-                          <v-expansion-panel-header class="info-label"
+                        <v-expansion-panel class="ma-2">
+                          <v-expansion-panel-header class="pa-4 indigo darken-4 title white--text"
                             >Zonas de Agregação</v-expansion-panel-header
                           >
                           <v-expansion-panel-content>
@@ -281,7 +281,7 @@ export default {
 }
 
 .panel-custom .panel-default:hover {
-  border-color: #8c9eff;
+  border-color: #1a237e;
 }
 
 .consulta tr {
@@ -302,11 +302,18 @@ export default {
 }
 
 .info-label {
-  color: #1565c0; /* blue darken-3 */
+  color: #1a237e; /* indigo darken-4 */
   font-weight: 400;
   width: 100%;
-  background-color: #e3f2fd; /* blue lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  border-radius: 3px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 
