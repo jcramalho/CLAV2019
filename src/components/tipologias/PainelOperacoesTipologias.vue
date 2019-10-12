@@ -4,7 +4,7 @@
       <v-col cols="3">
         <v-btn
           rounded
-          class="green darken-3 white--text"
+          class="indigo darken-3 white--text"
           :disabled="!t.sigla"
           @click="guardarTrabalho"
         >Guardar Trabalho</v-btn>
@@ -13,7 +13,7 @@
       <ValidarTipologiaInfoBox :t="t" />
 
       <v-col>
-        <v-btn rounded class="green darken-4 white--text" @click="criarTipologia">Criar Tipologia</v-btn>
+        <v-btn rounded class="indigo accent-4 white--text" @click="criarTipologia">Criar Tipologia</v-btn>
       </v-col>
 
       <v-col>
@@ -33,7 +33,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
+            <v-btn color="indigo darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -62,7 +62,7 @@
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" dark @click="criacaoTipologiaTerminada">Fechar</v-btn>
+            <v-btn color="indigo darken-1" dark @click="criacaoTipologiaTerminada">Fechar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -78,7 +78,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" text @click="cancelarCriacaoTipologia">Confirmo</v-btn>
+            <v-btn color="indigo darken-1" text @click="cancelarCriacaoTipologia">Confirmo</v-btn>
             <v-btn
               color="red darken-1"
               dark
@@ -153,10 +153,8 @@ export default {
     },
 
     validarTipologia: async function() {
-      let i = 0;
-
       // Designação
-      if (this.t.designacao == "") {
+      if (this.t.designacao == "" || this.t.designacao == null) {
         this.numeroErros++;
       } else {
         try {
@@ -174,7 +172,7 @@ export default {
       }
 
       // Sigla
-      if (this.t.sigla == "") {
+      if (this.t.sigla == "" || this.t.sigla == null) {
         this.numeroErros++;
       } else {
         try {
@@ -257,11 +255,11 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

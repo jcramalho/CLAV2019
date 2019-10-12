@@ -61,10 +61,8 @@ export default {
 
   methods: {
     validarTI: async function() {
-      let i = 0;
-
       // Termo
-      if (this.ti.termo == "") {
+      if (this.ti.termo == "" || this.ti.termo == null) {
         this.mensagensErro.push({
           sobre: "Designação",
           mensagem: "A designação do termo de índice não pode ser vazia."
@@ -93,7 +91,7 @@ export default {
         }
       }
 
-      if (this.ti.idClasse == "") {
+      if (this.ti.idClasse == "" || this.ti.idClasse == null) {
         this.mensagensErro.push({
           sobre: "Processo Associado",
           mensagem: "Tem de selecionar um processo associado."

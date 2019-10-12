@@ -3,7 +3,7 @@
     <v-col>
       <v-card>
         <!-- Header -->
-        <v-app-bar color="green darken-4" dark>
+        <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading">Nova Entidade</v-toolbar-title>
         </v-app-bar>
 
@@ -17,7 +17,7 @@
               <v-text-field
                 solo
                 clearable
-                color="green"
+                color="indigo"
                 counter="150"
                 single-line
                 v-model="entidade.designacao"
@@ -34,7 +34,7 @@
               <v-text-field
                 solo
                 clearable
-                color="green"
+                color="indigo"
                 counter="10"
                 single-line
                 v-model="entidade.sigla"
@@ -52,8 +52,8 @@
                 v-model="entidade.internacional"
                 :items="['Sim', 'Não']"
                 label="Selecione uma opção"
-                item-color="green"
-                color="green"
+                item-color="indigo"
+                color="indigo"
                 solo
                 dense
               />
@@ -68,7 +68,7 @@
               <v-text-field
                 solo
                 clearable
-                color="green"
+                color="indigo"
                 counter="12"
                 single-line
                 v-model="entidade.sioe"
@@ -188,7 +188,7 @@ export default {
 
 <style scoped>
 .expansion-panel-heading {
-  background-color: #1b5e20 !important;
+  background-color: #283593 !important;
   color: #fff;
   font-size: large;
   font-weight: bold;
@@ -200,11 +200,11 @@ export default {
 }
 
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

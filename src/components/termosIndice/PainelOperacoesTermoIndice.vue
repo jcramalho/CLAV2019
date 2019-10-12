@@ -33,7 +33,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
+            <v-btn color="indigo darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -63,7 +63,7 @@
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" dark @click="criacaoTITerminada">Fechar</v-btn>
+            <v-btn color="indigo darken-1" dark @click="criacaoTITerminada">Fechar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -79,7 +79,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" text @click="cancelarCriacaoTI">Confirmo</v-btn>
+            <v-btn color="indigo darken-1" text @click="cancelarCriacaoTI">Confirmo</v-btn>
             <v-btn
               color="red darken-1"
               dark
@@ -154,10 +154,8 @@ export default {
     },
 
     validarTI: async function() {
-      let i = 0;
-
       // Termo
-      if (this.ti.termo == "") {
+      if (this.ti.termo == "" || this.ti.termo == null) {
         this.numeroErros++;
       } else {
         try {
@@ -174,7 +172,7 @@ export default {
         }
       }
 
-      if (this.ti.idClasse == "") {
+      if (this.ti.idClasse == "" || this.ti.idClasse == null) {
         this.numeroErros++;
       }
 

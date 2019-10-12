@@ -4,7 +4,7 @@
       <v-col cols="3">
         <v-btn
           rounded
-          class="green darken-3 white--text"
+          class="indigo darken-3 white--text"
           :disabled="!l.numero"
           @click="guardarTrabalho"
         >Guardar Trabalho</v-btn>
@@ -13,7 +13,7 @@
       <ValidarLegislacaoInfoBox :l="l" />
 
       <v-col>
-        <v-btn rounded class="green darken-4 white--text" @click="criarLegislacao">Criar Diploma</v-btn>
+        <v-btn rounded class="indigo accent-4 white--text" @click="criarLegislacao">Criar Diploma</v-btn>
       </v-col>
 
       <v-col>
@@ -33,7 +33,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
+            <v-btn color="indigo darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -62,7 +62,7 @@
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" dark @click="criacaoLegislacaoTerminada">Fechar</v-btn>
+            <v-btn color="indigo darken-1" dark @click="criacaoLegislacaoTerminada">Fechar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -78,7 +78,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" text @click="cancelarCriacaoLegislacao">Confirmo</v-btn>
+            <v-btn color="indigo darken-1" text @click="cancelarCriacaoLegislacao">Confirmo</v-btn>
             <v-btn
               color="red darken-1"
               dark
@@ -153,17 +153,16 @@ export default {
     },
 
     validarLegislacao: async function() {
-      let i = 0;
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
       //Tipo
-      if (this.l.tipo == "") {
+      if (this.l.tipo == "" || this.l.tipo == null) {
         this.numeroErros++;
       }
 
       // Número Diploma
-      if (this.l.numero == "") {
+      if (this.l.numero == "" || this.l.numero == null) {
         this.numeroErros++;
       } else {
         try {
@@ -188,7 +187,7 @@ export default {
       }
 
       // Data
-      if (this.l.data == "") {
+      if (this.l.data == "" || this.l.data == null) {
         this.numeroErros++;
       } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
         this.numeroErros++;
@@ -228,7 +227,7 @@ export default {
       }
 
       // Sumário
-      if (this.l.sumario == "") {
+      if (this.l.sumario == "" || this.l.sumario == null) {
         this.numeroErros++;
       }
 
@@ -300,11 +299,11 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
