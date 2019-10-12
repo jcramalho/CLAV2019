@@ -3,7 +3,7 @@
     <v-col>
       <v-card>
         <!-- Header -->
-        <v-app-bar color="green darken-4" dark>
+        <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading">Novo Diploma</v-toolbar-title>
         </v-app-bar>
 
@@ -15,8 +15,8 @@
             </v-col>
             <v-col>
               <v-select
-                item-color="green"
-                color="green"
+                item-color="indigo"
+                color="indigo"
                 v-model="legislacao.tipo"
                 :items="tiposDiploma"
                 label="Selecione uma opção"
@@ -34,7 +34,7 @@
               <v-text-field
                 solo
                 clearable
-                color="green"
+                color="indigo"
                 counter="11"
                 single-line
                 v-model="legislacao.numero"
@@ -84,7 +84,7 @@
               <v-text-field
                 solo
                 clearable
-                color="green"
+                color="indigo"
                 counter="150"
                 single-line
                 v-model="legislacao.sumario"
@@ -97,7 +97,7 @@
               <div class="info-label">Link:</div>
             </v-col>
             <v-col>
-              <v-text-field v-model="legislacao.link" solo clearable color="green" single-line></v-text-field>
+              <v-text-field v-model="legislacao.link" solo clearable color="indigo" single-line></v-text-field>
             </v-col>
           </v-row>
 
@@ -346,7 +346,7 @@ export default {
 
 <style scoped>
 .expansion-panel-heading {
-  background-color: #1b5e20 !important;
+  background-color: #283593 !important;
   color: #fff;
   font-size: large;
   font-weight: bold;
@@ -358,11 +358,11 @@ export default {
 }
 
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

@@ -1,7 +1,7 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="green darken-3" @click="validarTipologia">Validar Tipologia</v-btn>
+    <v-btn dark rounded class="indigo darken-3" @click="validarTipologia">Validar Tipologia</v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
@@ -33,7 +33,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="green darken-1" dark @click="dialogSemErros = false">Fechar</v-btn>
+          <v-btn class="indigo accent-4" dark @click="dialogSemErros = false">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -61,10 +61,8 @@ export default {
 
   methods: {
     validarTipologia: async function() {
-      let i = 0;
-
       // Designação
-      if (this.t.designacao == "") {
+      if (this.t.designacao == "" || this.t.designacao == null) {
         this.mensagensErro.push({
           sobre: "Nome da Tipologia",
           mensagem: "O nome da tipologia não pode ser vazio."
@@ -94,7 +92,7 @@ export default {
       }
 
       // Sigla
-      if (this.t.sigla == "") {
+      if (this.t.sigla == "" || this.t.sigla == null) {
         this.mensagensErro.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia."
@@ -140,19 +138,20 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
   border-radius: 3px;
 }
 
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #2e7d32;
+  border: 1px solid #283593;
   border-radius: 3px;
 }
 </style>
