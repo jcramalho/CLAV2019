@@ -1,24 +1,31 @@
 <template>
-  <Listagem
-    v-bind:lista="legislacao"
-    tipo="Legislação"
-    v-bind:cabecalho="['Data', 'Tipo', 'Entidade(s)', 'Número', 'Sumário']"
-    v-bind:campos="['data', 'tipo', 'entidades', 'numero', 'sumario']"
-    v-bind:ids="ids"
-  />
+  <div>
+    <Loading v-if="!legislacaoReady" :message="'legislações'" />
+    <Listagem
+      v-else
+      v-bind:lista="legislacao"
+      tipo="Legislação"
+      v-bind:cabecalho="['Data', 'Tipo', 'Entidade(s)', 'Número', 'Sumário']"
+      v-bind:campos="['data', 'tipo', 'entidades', 'numero', 'sumario']"
+      v-bind:ids="ids"
+    />
+  </div>
 </template>
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
+import Loading from "@/components/generic/Loading";
 
 export default {
   data: () => ({
     legislacao: [],
     campos: [],
-    ids: []
+    ids: [],
+    legislacaoReady: false
   }),
   components: {
-    Listagem
+    Listagem,
+    Loading
   },
 
   mounted: async function() {
@@ -68,6 +75,7 @@ export default {
             id: listaLegislacao[i].id
           });
         }
+        this.legislacaoReady = true;
         return ids;
       } catch (e) {
         return e;
