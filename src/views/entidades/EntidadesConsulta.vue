@@ -1,21 +1,27 @@
 <template>
-  <Consulta
-    tipo="Entidades"
-    v-bind:objeto="entidade"
-    v-bind:listaTip="tipologias"
-    v-bind:titulo="titulo"
-    v-bind:listaProcD="processosDono"
-    v-bind:listaProcP="processosParticipa"
-    v-bind:parts="partsReady"
-  />
+  <div>
+    <Loading v-if="!entidadesReady" :message="'entidade'" />
+    <Consulta
+      v-else
+      tipo="Entidades"
+      v-bind:objeto="entidade"
+      v-bind:listaTip="tipologias"
+      v-bind:titulo="titulo"
+      v-bind:listaProcD="processosDono"
+      v-bind:listaProcP="processosParticipa"
+      v-bind:parts="partsReady"
+    />
+  </div>
 </template>
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
+import Loading from "@/components/generic/Loading";
 
 export default {
   components: {
-    Consulta
+    Consulta,
+    Loading
   },
   data: () => ({
     idEntidade: "",
@@ -32,7 +38,8 @@ export default {
       Executor: [],
       Iniciador: []
     },
-    partsReady: false
+    partsReady: false,
+    entidadesReady: false
   }),
   methods: {
     preparaEntidade: async function(ent) {
@@ -112,6 +119,7 @@ export default {
         "/api/entidades/" + this.idEntidade + "/intervencao/participante"
       );
       await this.parseParticipacoes(processosParticipa.data);
+      this.entidadesReady = true;
     } catch (e) {
       return e;
     }

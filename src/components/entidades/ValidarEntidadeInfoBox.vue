@@ -1,7 +1,7 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="green darken-3" @click="validarEntidade">Validar Entidade</v-btn>
+    <v-btn dark rounded class="indigo darken-3" @click="validarEntidade">Validar Entidade</v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
@@ -33,7 +33,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="green darken-1" dark @click="dialogSemErros = false">Fechar</v-btn>
+          <v-btn class="indigo darken-1" dark @click="dialogSemErros = false">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -61,10 +61,8 @@ export default {
 
   methods: {
     validarEntidade: async function() {
-      let i = 0;
-
       // Designação
-      if (this.e.designacao == "") {
+      if (this.e.designacao == "" || this.e.designacao == null) {
         this.mensagensErro.push({
           sobre: "Nome da Entidade",
           mensagem: "O nome da entidade não pode ser vazio."
@@ -94,7 +92,7 @@ export default {
       }
 
       // Sigla
-      if (this.e.sigla == "") {
+      if (this.e.sigla == "" || this.e.sigla == null) {
         this.mensagensErro.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia."
@@ -124,7 +122,7 @@ export default {
       }
 
       // Internacional
-      if (this.e.internacional == "") {
+      if (this.e.internacional == "" || this.e.internacional == null) {
         this.mensagensErro.push({
           sobre: "Internacional",
           mensagem: "O campo internacional tem de ter uma opção."
@@ -149,11 +147,11 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }
@@ -161,7 +159,7 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #2e7d32;
+  border: 1px solid #283593;
   border-radius: 3px;
 }
 </style>

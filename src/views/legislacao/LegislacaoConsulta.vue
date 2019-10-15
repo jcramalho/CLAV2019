@@ -1,24 +1,31 @@
 <template>
-  <Consulta
-    tipo="Legislação"
-    v-bind:objeto="legislacao"
-    v-bind:titulo="titulo"
-    v-bind:listaReg="regulaProc"
-  />
+  <div>
+    <Loading v-if="!legislacaoReady" :message="'legislação'" />
+    <Consulta
+      v-else
+      tipo="Legislação"
+      v-bind:objeto="legislacao"
+      v-bind:titulo="titulo"
+      v-bind:listaReg="regulaProc"
+    />
+  </div>
 </template>
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
+import Loading from "@/components/generic/Loading";
 
 export default {
   components: {
-    Consulta
+    Consulta,
+    Loading
   },
   data: () => ({
     idLegislacao: "",
     legislacao: {},
     titulo: "",
-    regulaProc: []
+    regulaProc: [],
+    legislacaoReady: false
   }),
   methods: {
     parseEntidades: async function(ent) {
@@ -81,6 +88,7 @@ export default {
         "/api/legislacao/" + this.idLegislacao + "/regula"
       );
       this.regulaProc = regulaProc.data;
+      this.legislacaoReady = true;
     } catch (e) {
       return e;
     }

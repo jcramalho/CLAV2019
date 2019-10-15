@@ -1,22 +1,29 @@
 <template>
-  <Listagem
-    v-bind:lista="tipologias"
-    tipo="Tipologias de Entidade"
-    v-bind:cabecalho="['Sigla', 'Designação']"
-    v-bind:campos="['id', 'designacao']"
-  />
+  <div>
+    <Loading v-if="!tipologiaReady" :message="'tipologias'" />
+    <Listagem
+      v-else
+      v-bind:lista="tipologias"
+      tipo="Tipologias de Entidade"
+      v-bind:cabecalho="['Sigla', 'Designação']"
+      v-bind:campos="['id', 'designacao']"
+    />
+  </div>
 </template>
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
+import Loading from "@/components/generic/Loading";
 
 export default {
   data: () => ({
     tipologias: [],
-    campos: []
+    campos: [],
+    tipologiaReady: false
   }),
   components: {
-    Listagem
+    Listagem,
+    Loading
   },
 
   mounted: async function() {
@@ -38,6 +45,7 @@ export default {
             designacao: listaTipologias[i].designacao
           });
         }
+        this.tipologiaReady = true;
         return myTree;
       } catch (error) {
         return [];

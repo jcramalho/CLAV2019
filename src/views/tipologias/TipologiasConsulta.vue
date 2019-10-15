@@ -1,21 +1,27 @@
 <template>
-  <Consulta
-    tipo="Tipologias"
-    v-bind:objeto="tipologia"
-    v-bind:titulo="titulo"
-    v-bind:listaProcD="processosDono"
-    v-bind:listaEnt="entidades"
-    v-bind:listaProcP="processosParticipa"
-    v-bind:parts="partsReady"
-  />
+  <div>
+    <Loading v-if="!tipologiaReady" :message="'a tipologia'" />
+    <Consulta
+      v-else
+      tipo="Tipologias"
+      v-bind:objeto="tipologia"
+      v-bind:titulo="titulo"
+      v-bind:listaProcD="processosDono"
+      v-bind:listaEnt="entidades"
+      v-bind:listaProcP="processosParticipa"
+      v-bind:parts="partsReady"
+    />
+  </div>
 </template>
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
+import Loading from "@/components/generic/Loading";
 
 export default {
   components: {
-    Consulta
+    Consulta,
+    Loading
   },
   data: () => ({
     idTipologia: "",
@@ -31,7 +37,8 @@ export default {
       Iniciador: []
     },
     partsReady: false,
-    entidades: []
+    entidades: [],
+    tipologiaReady: false
   }),
   methods: {
     preparaTipologia: async function(tip) {
@@ -103,6 +110,7 @@ export default {
         "/api/tipologias/" + this.idTipologia + "/elementos"
       );
       this.entidades = entidades.data;
+      this.tipologiaReady = true;
     } catch (e) {
       return e;
     }
