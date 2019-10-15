@@ -26,16 +26,17 @@
                 :rules="regraEmail"
                 required
               />
-              <v-text-field
+              <v-autocomplete
+                item-text="label"
+                item-value="value"
+                :items="ent_list"
+                :rules="regraEntidade"
                 prepend-icon="account_balance"
-                name="entidade"
                 v-model="form.entidade"
                 label="Entidade"
-                type="text"
-                :rules="regraEntidade"
                 required
               >
-              </v-text-field>
+              </v-autocomplete>
               <!-- <v-text-field
                 id="password"
                 prepend-icon="lock"
@@ -93,6 +94,7 @@ export default {
         entidade: "",
         password: ""
       },
+      ent_list: [],
       snackbar: false,
       color: "",
       done: false,
@@ -101,6 +103,18 @@ export default {
     };
   },
   methods: {
+    async getEntidades() {
+      await this.$request("get", "/api/entidades")
+        .then(res => {
+          this.ent_list = res.data.map(ent => {
+            return {
+              label: ent.sigla + " - " + ent.designacao,
+              value: "ent_" + ent.sigla
+            };
+          });
+        })
+        .catch(error => alert(error));
+    },
     registarChaveApi() {
       if (this.$refs.form.validate()) {
         this.$request("post", "/api/chaves/registar", {
@@ -116,7 +130,7 @@ export default {
             this.done = true;
           })
           .catch(err => {
-            this.text = err;
+            this.text = err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;

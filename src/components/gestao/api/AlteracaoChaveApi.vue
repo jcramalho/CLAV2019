@@ -35,17 +35,13 @@
 export default {
   name: "renovarApi",
   async mounted() {
-    var res = await this.$request(
-      "get",
-      "/api/chaves/listarToken/" + this.$route.query.jwt
-    );
-    if (res.data.name == "TokenExpiredError") {
-      this.text = "Este link de renovação expirou!";
-      this.color = "error";
-      this.snackbar = true;
-      this.done = true;
-    } else {
-      await this.$request("put", "/api/chaves/atualizarChave/" + res.data._id)
+    try {
+      var res = await this.$request(
+        "get",
+        "/api/chaves/verificaTokenRenovar/" + this.$route.query.jwt
+      );
+
+      await this.$request("put", "/api/chaves/atualizarChave/" + res.data.id)
         .then(res => {
           this.text = "Email enviado com sucesso!";
           this.color = "success";
@@ -54,11 +50,13 @@ export default {
           this.validJWT = true;
         })
         .catch(err => {
-          this.text = err;
+          this.text = err.response.data;
           this.color = "error";
           this.snackbar = true;
           this.done = false;
         });
+    } catch (err) {
+      this.$router.push("/users/autenticacao?erro=" + err.response.data);
     }
   },
   data() {
