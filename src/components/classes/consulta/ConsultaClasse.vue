@@ -583,7 +583,7 @@ export default {
   },
   mounted: function() {
     this.$request("get", "/api/classes/" + this.idc)
-      .then(async response => {
+      .then(response => {
         this.classe = response.data;
         if (this.classe.df.justificacao) {
           for (let i = 0; i < this.classe.df.justificacao.length; i++) {
@@ -598,7 +598,7 @@ export default {
                   this.classe.df.justificacao[i].processos[j].procId +
                   "/meta";
 
-                await this.$request("get", help).then(response => {
+                this.$request("get", help).then(response => {
                   this.classe.df.justificacao[i].processos[j].nome =
                     response.data[0].titulo;
                 });
@@ -611,7 +611,7 @@ export default {
                 j < this.classe.df.justificacao[i].legislacao.length;
                 j++
               ) {
-                await this.$request(
+                this.$request(
                   "get",
                   "/api/legislacao/" +
                     this.classe.df.justificacao[i].legislacao[j].legId
@@ -634,7 +634,7 @@ export default {
                 z++
               ) {
                 if (this.classe.pca.justificacao[h].processos[z].procId) {
-                  await this.$request(
+                  this.$request(
                     "get",
                     "/api/classes/" +
                       this.classe.pca.justificacao[h].processos[z].procId +
@@ -653,7 +653,7 @@ export default {
                 z < this.classe.pca.justificacao[h].legislacao.length;
                 z++
               ) {
-                await this.$request(
+                this.$request(
                   "get",
                   "/api/legislacao/" +
                     this.classe.pca.justificacao[h].legislacao[z].legId

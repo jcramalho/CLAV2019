@@ -52,6 +52,38 @@
                 </template>
                 <span>Editar chave API</span>
               </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click="renovarId = props.item.id">
+                    <v-icon medium color="primary">refresh</v-icon>
+                  </v-btn>
+                </template>
+                <span>Renovar chave API</span>
+              </v-tooltip>
+              <v-tooltip bottom v-if="props.item.active == 'Não'">
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click="ativarId = props.item.id">
+                    <v-icon medium color="grey darken-2">lock_open</v-icon>
+                  </v-btn>
+                </template>
+                <span>Ativar chave API</span>
+              </v-tooltip>
+              <v-tooltip bottom v-if="props.item.active == 'Sim'">
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click="desativarId = props.item.id">
+                    <v-icon medium color="grey darken-2">lock</v-icon>
+                  </v-btn>
+                </template>
+                <span>Desativar chave API</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click="eliminarId = props.item.id">
+                    <v-icon medium color="red">delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>Eliminar chave API</span>
+              </v-tooltip>
             </td>
           </tr>
         </template>
@@ -65,171 +97,6 @@
       <v-card>
         <v-card-title class="headline">
           <span class="headline">Editar Chave API</span>
-          <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on" icon @click="confirmacaoRenovar = true" disabled>
-                <v-icon color="primary">refresh</v-icon>
-                <v-dialog
-                  v-model="confirmacaoRenovar"
-                  persistent
-                  max-width="290"
-                >
-                  <v-card>
-                    <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>
-                      Tem a certeza que pretende renovar a chave API?
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="red"
-                        text
-                        @click="confirmacaoRenovar = false"
-                      >
-                        Cancelar
-                      </v-btn>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="
-                          renovar(editedItem);
-                          confirmacaoRenovar = false;
-                          dialog = false;
-                        "
-                      >
-                        Confirmar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-            </template>
-            <span>Renovar chave API</span>
-          </v-tooltip>
-          <v-tooltip bottom v-if="editedItem.active == 'Sim'">
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" @click="confirmacaoDesativar = true">
-                <v-icon color="grey darken-2">lock</v-icon>
-                <v-dialog
-                  v-model="confirmacaoDesativar"
-                  persistent
-                  max-width="290"
-                >
-                  <v-card>
-                    <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>
-                      Tem a certeza que pretende desativar a chave API?
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="red"
-                        text
-                        @click="confirmacaoDesativar = false"
-                      >
-                        Cancelar
-                      </v-btn>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="
-                          desativar(editedItem);
-                          confirmacaoDesativar = false;
-                          dialog = false;
-                        "
-                      >
-                        Confirmar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-            </template>
-            <span>Desativar chave API</span>
-          </v-tooltip>
-          <v-tooltip bottom v-if="editedItem.active == 'Não'">
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" @click="confirmacaoDesativar = true">
-                <v-icon color="grey darken-2">lock_open</v-icon>
-                <v-dialog
-                  v-model="confirmacaoDesativar"
-                  persistent
-                  max-width="290"
-                >
-                  <v-card>
-                    <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>
-                      Tem a certeza que pretende ativar a chave API?
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="red"
-                        text
-                        @click="confirmacaoDesativar = false"
-                      >
-                        Cancelar
-                      </v-btn>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="
-                          ativar(editedItem);
-                          confirmacaoDesativar = false;
-                          dialog = false;
-                        "
-                      >
-                        Confirmar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-            </template>
-            <span>Ativar chave API</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on" icon @click="confirmacaoEliminar = true">
-                <v-icon color="red">delete</v-icon>
-                <v-dialog
-                  v-model="confirmacaoEliminar"
-                  persistent
-                  max-width="290"
-                >
-                  <v-card>
-                    <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>
-                      Tem a certeza que pretende eliminar a chave API?
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="red"
-                        text
-                        @click="confirmacaoEliminar = false"
-                      >
-                        Cancelar
-                      </v-btn>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="
-                          eliminar(editedItem);
-                          confirmacaoEliminar = false;
-                          dialog = false;
-                        "
-                      >
-                        Confirmar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-            </template>
-            <span>Eliminar chave API</span>
-          </v-tooltip>
         </v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
@@ -262,13 +129,17 @@
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
-                  <v-text-field
+                  <v-autocomplete
+                    item-text="label"
+                    item-value="value"
+                    :items="ent_list"
+                    :rules="regraEntidade"
                     prepend-icon="account_balance"
                     v-model="editedItem.entity"
                     label="Entidade"
-                    :rules="regraEntidade"
                     required
-                  ></v-text-field>
+                  >
+                  </v-autocomplete>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -278,6 +149,102 @@
           <v-spacer></v-spacer>
           <v-btn color="red" text @click="dialog = false">Cancelar</v-btn>
           <v-btn color="primary" text @click="guardar">Guardar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="renovarId != ''" max-width="290">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende renovar a chave API?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="renovarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="
+              renovar(renovarId);
+              renovarId = '';
+            "
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="desativarId != ''" max-width="290">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende desativar a chave API?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="desativarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="
+              desativar(desativarId);
+              desativarId = '';
+            "
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="ativarId != ''" max-width="290">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende ativar a chave API?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="ativarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="
+              ativar(ativarId);
+              ativarId = '';
+            "
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="eliminarId != ''" max-width="290">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende eliminar a chave API?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="eliminarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="
+              eliminar(eliminarId);
+              eliminarId = '';
+            "
+          >
+            Confirmar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -374,10 +341,12 @@ export default {
       }
     ],
     dialog: false,
-    confirmacaoDesativar: false,
-    confirmacaoEliminar: false,
-    confirmacaoRenovar: false,
+    ativarId: "",
+    desativarId: "",
+    eliminarId: "",
+    renovarId: "",
     chaves: [],
+    ent_list: [],
     snackbar: false,
     color: "",
     done: false,
@@ -386,6 +355,7 @@ export default {
   }),
   async created() {
     await this.getChavesApi();
+    await this.getEntidades();
   },
   methods: {
     async getChavesApi() {
@@ -396,13 +366,25 @@ export default {
         return e;
       }
     },
+    async getEntidades() {
+      await this.$request("get", "/api/entidades")
+        .then(res => {
+          this.ent_list = res.data.map(ent => {
+            return {
+              label: ent.sigla + " - " + ent.designacao,
+              value: "ent_" + ent.sigla
+            };
+          });
+        })
+        .catch(error => alert(error));
+    },
     editar(item) {
       this.editedIndex = this.chaves.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
-    desativar(item) {
-      this.$request("put", "/api/chaves/desativar/" + item.id)
+    desativar(id) {
+      this.$request("put", "/api/chaves/desativar/" + id)
         .then(res => {
           this.text = "Chave API desativada com sucesso!";
           this.color = "success";
@@ -417,8 +399,8 @@ export default {
           this.done = false;
         });
     },
-    ativar(item) {
-      this.$request("put", "/api/chaves/ativar/" + item.id)
+    ativar(id) {
+      this.$request("put", "/api/chaves/ativar/" + id)
         .then(res => {
           this.text = "Chave API ativada com sucesso!";
           this.color = "success";
@@ -433,8 +415,8 @@ export default {
           this.done = false;
         });
     },
-    eliminar(item) {
-      this.$request("delete", "/api/chaves/eliminar/" + item.id)
+    eliminar(id) {
+      this.$request("delete", "/api/chaves/eliminar/" + id)
         .then(res => {
           this.text = "Chave API eliminada com sucesso!";
           this.color = "success";
@@ -449,8 +431,21 @@ export default {
           this.done = false;
         });
     },
-    renovar(item) {
-      alert("TODO");
+    renovar(id) {
+      this.$request("put", "/api/chaves/atualizarChave/" + id)
+        .then(res => {
+          this.text = "Chave API renovada com sucesso!";
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.getChavesApi();
+        })
+        .catch(err => {
+          this.text = err.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        });
     },
     guardar() {
       if (this.$refs.form.validate()) {
