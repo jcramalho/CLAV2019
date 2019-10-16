@@ -182,6 +182,12 @@
                     <a :href="`${publicPath}documentos/Formulario_AE_RADA.xlsx`">Auto de eliminação RADA</a>
                   </li>
                 </ul>
+                <div class="subtitle">Instruções</div>
+                <ul>
+                  <li>
+                    <a :href="`${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`">Importação de Autos de Eliminação</a>
+                  </li>
+                </ul>
               </v-card-text>
             </v-card>
           </v-expansion-panel-content>

@@ -59,7 +59,7 @@
                   </li>
                 </ul>
                 <p>
-                  Futuramente, estarão acessíveis novas funcionalidades::
+                  Futuramente, estarão acessíveis novas funcionalidades:
                 </p>
                 <ul>
                   <li>
