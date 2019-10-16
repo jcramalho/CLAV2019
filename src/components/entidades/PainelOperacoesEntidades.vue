@@ -13,11 +13,35 @@
       <ValidarEntidadeInfoBox :e="e" />
 
       <v-col>
-        <v-btn rounded class="indigo accent-4 white--text" @click="criarEntidade">Criar Entidade</v-btn>
+        <v-btn
+          v-if="this.acao == 'Criação'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarEntidade"
+        >Criar Entidade</v-btn>
+        <v-btn
+          v-else-if="this.acao == 'Alteração'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarEntidade"
+        >Alterar Entidade</v-btn>
       </v-col>
 
       <v-col>
-        <v-btn dark rounded class="red darken-4" @click="eliminarEntidade">Cancelar Criação</v-btn>
+        <v-btn
+          v-if="this.acao == 'Criação'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarEntidade"
+        >Cancelar Criação</v-btn>
+        <v-btn
+          v-else-if="this.acao == 'Alteração'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarEntidade"
+        >Cancelar Alteração</v-btn>
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -102,7 +126,7 @@
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
 
 export default {
-  props: ["e"],
+  props: ["e", "acao"],
   components: {
     ValidarEntidadeInfoBox
   },
@@ -132,7 +156,7 @@ export default {
           );
           var pendenteParams = {
             numInterv: 1,
-            acao: "Criação",
+            acao: this.acao,
             tipo: "Entidade",
             objeto: this.e,
             criadoPor: userBD.data.email,
@@ -212,7 +236,7 @@ export default {
             let dataObj = this.e;
             dataObj.codigo = "ent_" + this.e.sigla;
             let pedidoParams = {
-              tipoPedido: "Criação",
+              tipoPedido: this.acao,
               tipoObjeto: "Entidade",
               novoObjeto: dataObj,
               user: { email: userBD.data.email },
