@@ -29,6 +29,7 @@
             icon="warning"
           >Não foram encontrados resultados para "{{ search }}" .</v-alert>
         </template>
+
         <template v-slot:item="props">
           <tr v-if="tipo == 'Termos de Índice'" @click="go(props.item.idClasse)">
             <td v-for="(campo, index) in props.item" v-bind:key="index">{{ campo }}</td>
@@ -62,6 +63,7 @@
             <td v-for="(campo, index) in props.item" v-bind:key="index">{{ campo }}</td>
           </tr>
         </template>
+
         <template v-slot:pageText="props">
           Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
           {{ props.itemsLength }}

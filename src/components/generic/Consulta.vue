@@ -100,8 +100,8 @@
                 </li>
               </ul>
               <a @click="domainCollapsed = !domainCollapsed" v-if="listaProcD.length > 6">
-                <span v-if="domainCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
-                <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                <span v-if="domainCollapsed" style="color:#283593;">Mostrar mais...</span>
+                <span v-else style="color:#283593;">Mostrar menos...</span>
               </a>
             </v-col>
           </v-row>
@@ -137,8 +137,8 @@
                                 "
                     v-if="listaProcP[key].length > 6"
                   >
-                    <span v-if="partsCollapsed[key]" style="color:#4d94ff;">Mostrar mais...</span>
-                    <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                    <span v-if="partsCollapsed[key]" style="color:#283593;">Mostrar mais...</span>
+                    <span v-else style="color:#283593;">Mostrar menos...</span>
                   </a>
                 </li>
               </ul>
@@ -172,8 +172,8 @@
                 </li>
               </ul>
               <a @click="domainCollapsed = !domainCollapsed" v-if="listaProcD.length > 6">
-                <span v-if="domainCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
-                <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                <span v-if="domainCollapsed" style="color:#283593;">Mostrar mais...</span>
+                <span v-else style="color:#283593;">Mostrar menos...</span>
               </a>
             </v-col>
           </v-row>
@@ -207,8 +207,8 @@
                                 "
                     v-if="listaProcP[key].length > 6"
                   >
-                    <span v-if="partsCollapsed[key]" style="color:#4d94ff;">Mostrar mais...</span>
-                    <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+                    <span v-if="partsCollapsed[key]" style="color:#283593;">Mostrar mais...</span>
+                    <span v-else style="color:#283593;">Mostrar menos...</span>
                   </a>
                 </li>
               </ul>
@@ -234,8 +234,8 @@
             </li>
           </ul>
           <a @click="entCollapsed = !entCollapsed" v-if="listaEnt.length > 6">
-            <span v-if="entCollapsed" style="color:#4d94ff;">Mostrar mais...</span>
-            <span v-else style="color:#4d94ff;">Mostrar menos...</span>
+            <span v-if="entCollapsed" style="color:#283593;">Mostrar mais...</span>
+            <span v-else style="color:#283593;">Mostrar menos...</span>
           </a>
         </v-col>
       </v-row>
@@ -265,7 +265,7 @@
 
       <v-row>
         <v-col>
-          <v-btn class="indigo accent-4 white--text" @click="$router.go(-1)">Voltar</v-btn>
+          <v-btn class="indigo accent-4 white--text mr-4" @click="$router.go(-1)">Voltar</v-btn>
         </v-col>
       </v-row>
     </v-card-text>
@@ -331,63 +331,5 @@ export default {
   width: 100%;
   border: 1px solid #283593;
   border-radius: 3px;
-}
-
-.panel-custom .panel-heading {
-  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
-}
-
-.panel-custom .page-header {
-  border: none;
-  margin: 0;
-  color: #1a237e;
-}
-
-.panel-custom .panel-default:hover {
-  border-color: #8c9eff;
-}
-
-.consulta tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.consulta td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
-}
-
-.consulta td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
-}
-
-.panel-info-custom .panel-body {
-  font-size: 1pc;
-  font-family: "Times New Roman", Times, serif;
-}
-
-.panel-noticiabox .panel-body {
-  font-size: 1pc;
-}
-
-.panel-linkbox .panel-body {
-  padding-top: 5px !important;
-  padding-left: 30px !important;
-  padding-bottom: 10px;
-}
-
-li .panel-body {
-  padding: 0px;
-}
-
-li .panel-body li {
-  margin-left: 20px;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
 }
 </style>

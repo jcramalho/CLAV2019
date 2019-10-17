@@ -4,7 +4,7 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Nova Entidade</v-toolbar-title>
+          <v-toolbar-title class="card-heading">Editar Entidade</v-toolbar-title>
         </v-app-bar>
 
         <!-- Content -->
@@ -101,8 +101,7 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-
-      <PainelOpsEnt :e="entidade" :acao="'Criação'" />
+      <PainelOpsEnt :e="entidade" :acao="'Alteração'" />
     </v-col>
   </v-row>
 </template>
@@ -113,6 +112,13 @@ import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
 
 export default {
+  props: ["e"],
+  components: {
+    DesSelTip,
+    SelTip,
+    PainelOpsEnt
+  },
+
   data: () => ({
     entidade: {
       designacao: "",
@@ -135,16 +141,13 @@ export default {
     snackbar: false,
     text: ""
   }),
-  components: {
-    DesSelTip,
-    SelTip,
-    PainelOpsEnt
-  },
+
   methods: {
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
         let response = await this.$request("get", "/api/tipologias/");
+
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -152,6 +155,7 @@ export default {
             id: item.id
           };
         });
+
         this.tipologiasReady = true;
       } catch (error) {
         return error;
@@ -180,8 +184,22 @@ export default {
     }
   },
 
-  created: function() {
-    this.loadTipologias();
+  created: async function() {
+    this.entidade = this.e;
+
+    await this.loadTipologias();
+
+    try {
+      this.entidade.tipologiasSel.forEach(tip => {
+        this.tipSel.push(tip);
+        // Remove dos selecionáveis
+        let index = this.tipologias.findIndex(e => e.id === tip.id);
+        this.tipologias.splice(index, 1);
+      });
+    } catch (e) {
+      this.text = "Erro ao carregar os dados, por favor tente novamente";
+      this.snackbar = true;
+    }
   }
 };
 </script>
