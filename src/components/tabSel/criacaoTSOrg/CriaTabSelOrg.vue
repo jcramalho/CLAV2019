@@ -216,12 +216,6 @@
                     @contadorProcSelEsp="contadorProcSelEsp($event)"
                     @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
                     @procPreSelResTravEsp="procPreSelResTravEsp($event)"
-                    @contadorProcSelEspSistema="
-                      contadorProcSelEspSistema($event)
-                    "
-                    @contadorProcSelEspUtilizador="
-                      contadorProcSelEspUtilizador($event)
-                    "
                   />
                   <div v-else>a carregar</div>
                 </v-expansion-panel-content>
@@ -232,7 +226,7 @@
         <v-layout wrap>
           <v-flex xs4>
             <v-text-field
-              label="Nº de processos específicos selecionados total"
+              label="Nº de processos específicos selecionados"
               :value="numProcSelEsp"
             ></v-text-field>
           </v-flex>
@@ -240,20 +234,6 @@
             <v-text-field
               label="Nº de processos específicos pré selecionados"
               :value="numProcPreSelEsp"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-layout wrap>
-          <v-flex xs4>
-            <v-text-field
-              label="Nº de processos específicos selecionados pelo sistema"
-              :value="numProcSelEspSistema"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs5 style="padding-left:60px;">
-            <v-text-field
-              label="Nº de processos específicos selecionados pelo utilizador"
-              :value="numProcSelEspUtilizador"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -295,12 +275,6 @@
                     @contadorProcSelRes="contadorProcSelRes($event)"
                     @procPreSelResTravRes="procPreSelResTravRes($event)"
                     @contadorProcPreSelRes="contadorProcPreSelRes($event)"
-                    @contadorProcSelEspResSistema="
-                      contadorProcSelEspResSistema($event)
-                    "
-                    @contadorProcSelEspResUtilizador="
-                      contadorProcSelEspResUtilizador($event)
-                    "
                   />
                   <div v-else>a carregar</div>
                 </v-expansion-panel-content>
@@ -309,30 +283,16 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs5>
+          <v-flex xs4>
             <v-text-field
-              label="Nº de processos restantes selecionados total"
+              label="Nº de processos restantes selecionados"
               :value="numProcSelRes"
             ></v-text-field>
           </v-flex>
-          <v-flex xs6 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos restantes pré selecionados"
               :value="numProcPreSelRes"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-layout wrap>
-          <v-flex xs5>
-            <v-text-field
-              label="Nº de processos específicos restantes selecionados pelo sistema"
-              :value="numProcSelEspResSistema"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs6 style="padding-left:60px;">
-            <v-text-field
-              label="Nº de processos específicos restantes selecionados pelo utilizador"
-              :value="numProcSelEspResUtilizador"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -385,13 +345,13 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs3>
+          <v-flex xs4>
             <v-text-field
               label="Nº dos últimos processos selecionados"
               :value="numProcSelUlt"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº dos últimos processos pré selecionados"
               :value="numProcPreSelUlt"
@@ -597,10 +557,6 @@ export default {
       numProcSelEsp: 0,
       // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs especificos)
       procPreSelResTravEspecifico: [],
-      // Numero de processos especificos selecionados pelo sistema
-      numProcSelEspSistema: 0,
-      // Numero de processos especificos selecionados pelo utilizador
-      numProcSelEspUtilizador: 0,
       // Lista dos processos especificos restantes (que não são especificos da entidade nem da tipologia em causa)
       listaProcEspRes: [],
       // Numero de processos restantes que se encontram pré selecionados
@@ -611,10 +567,6 @@ export default {
       numProcSelRes: 0,
       // Lista dos processos pré selecionados restantes (resultado das travessias pos PNs especificos restantes)
       procPreSelResTravRestante: [],
-      // Numero de processos esp restantes selecionados pelo sistema
-      numProcSelEspResSistema: 0,
-      // Numero de processos esp restantes selecionados pelo utilizador
-      numProcSelEspResUtilizador: 0,
       // Lista de todos os processos que ainda não foram selecionados nas etapas anteriores
       listaProcUlt: [],
       // True quando a ultima lista estiver pronta
@@ -663,7 +615,6 @@ export default {
     loadEntidades: async function() {
       try {
         var response = await this.$request("get", "/api/entidades");
-        console.log(response.data);
         for (var i = 0; i < response.data.length; i++) {
           this.entidades[i] =
             response.data[i].sigla + " - " + response.data[i].designacao;
@@ -793,7 +744,7 @@ export default {
               this.listaProcEsp.push({
                 classe: response.data[x].codigo,
                 designacao: response.data[x].titulo,
-                dono: true
+                dono: false
               });
             }
           }
@@ -868,7 +819,7 @@ export default {
                 this.listaProcEspRes.push({
                   classe: this.listaTotalProcEsp[i].codigo,
                   designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: true
+                  dono: false
                 });
               }
             }
@@ -890,15 +841,6 @@ export default {
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs especificos
     procPreSelResTravEsp: function(procPreSelResTravEsp) {
       this.procPreSelResTravEspecifico = procPreSelResTravEsp;
-    },
-    // Contador dos processos selecionados pelo sistema
-    contadorProcSelEspSistema: function(procSelec) {
-      this.numProcSelEspSistema = procSelec.length;
-    },
-    // Contador dos processos selecionados pelo utilizador
-    contadorProcSelEspUtilizador: function(procSelec) {
-      this.numProcSelEspUtilizador =
-        procSelec.length - this.numProcSelEspSistema;
     },
     // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
     procPreSelRestantes: function() {
@@ -931,14 +873,6 @@ export default {
     // Contador dos processos pre selecionados restantes
     contadorProcPreSelRes: function(lista) {
       this.numProcPreSelRes = lista.length;
-    },
-    // Contador dos processos selecionados pelo sistema
-    contadorProcSelEspResSistema: function(procSelec) {
-      this.numProcSelEspResSistema = procSelec.length;
-    },
-    contadorProcSelEspResUtilizador: function(procSelec) {
-      this.numProcSelEspResUtilizador =
-        procSelec.length - this.numProcSelEspResSistema;
     },
     // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
     loadUltimosProcessos: function() {
@@ -1118,7 +1052,6 @@ export default {
           user: { email: userBD.data.email },
           token: this.$store.state.token
         };
-        console.log(pendenteParams.objeto);
 
         var response = await this.$request(
           "post",
