@@ -187,6 +187,12 @@ export default new Router({
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
     {
+      path: "/tipologias/editar/:idTipologia",
+      name: "editaTipologia",
+      component: () => import("./views/tipologias/TipologiasEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/tipologias/:idTipologia",
       name: "consultaTipologia",
       component: () => import("./views/tipologias/TipologiasConsulta.vue"),

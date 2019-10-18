@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Loading v-if="!entidadesReady" :message="'entidade'" />
+    <Loading v-if="!dadosReady" :message="'entidade'" />
     <EditaEntidade v-else :e="entidade" />
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
 
   data: () => ({
     entidade: {},
-    entidadesReady: false
+    dadosReady: false
   }),
 
   methods: {
@@ -56,7 +56,7 @@ export default {
         tipologias.data
       );
 
-      this.entidadesReady = true;
+      this.dadosReady = true;
     } catch (e) {
       return e;
     }
