@@ -38,8 +38,10 @@
             <v-expansion-panel-content>
               <v-card class="ma-4">
                 <v-row>
-                  <v-col cols="2" class="info-label">
-                    Tipologias da entidade selecionada
+                  <v-col cols="2">
+                    <v-subheader class="info-label">
+                      Tipologias da entidade selecionada
+                    </v-subheader>
                   </v-col>
                   <v-col>
                     <v-data-table
@@ -72,6 +74,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+        <hr style="border-top: 0px"/>
         <v-btn
           color="primary"
           @click="
@@ -138,6 +141,7 @@
                     @contadorProcSelComUtilizador="
                       contadorProcSelComUtilizador($event)
                     "
+                    @contadorComDecrementarSistema="contadorComDecrementarSistema($event)"
                   />
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -145,13 +149,13 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs4>
+          <v-flex xs5>
             <v-text-field
-              label="Nº de processos comuns selecionados total"
+              label="Nº total de processos comuns selecionados"
               :value="numProcSelCom"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos comuns pré selecionados"
               :value="numProcPreSelCom"
@@ -159,13 +163,13 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs4>
+          <v-flex xs5>
             <v-text-field
               label="Nº de processos comuns selecionados pelo sistema"
               :value="numProcSelComSistema"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos comuns selecionados pelo utilizador"
               :value="numProcSelComUtilizador"
@@ -216,6 +220,9 @@
                     @contadorProcSelEsp="contadorProcSelEsp($event)"
                     @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
                     @procPreSelResTravEsp="procPreSelResTravEsp($event)"
+                    @contadorProcSelEspSistema="contadorProcSelEspSistema($event)"
+                    @contadorProcSelEspUtilizador="contadorProcSelEspUtilizador($event)"
+                    @contadorEspDecrementarSistema="contadorEspDecrementarSistema($event)"
                   />
                   <div v-else>a carregar</div>
                 </v-expansion-panel-content>
@@ -224,9 +231,9 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs4>
+          <v-flex xs5>
             <v-text-field
-              label="Nº de processos específicos selecionados"
+              label="Nº total de processos específicos selecionados"
               :value="numProcSelEsp"
             ></v-text-field>
           </v-flex>
@@ -234,6 +241,20 @@
             <v-text-field
               label="Nº de processos específicos pré selecionados"
               :value="numProcPreSelEsp"
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout wrap>
+          <v-flex xs5>
+            <v-text-field
+              label="Nº de processos específicos selecionados pelo sistema"
+              :value="numProcSelEspSistema"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs5 style="padding-left:60px;">
+            <v-text-field
+              label="Nº de processos específicos selecionados pelo utilizador"
+              :value="numProcSelEspUtilizador"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -275,6 +296,9 @@
                     @contadorProcSelRes="contadorProcSelRes($event)"
                     @procPreSelResTravRes="procPreSelResTravRes($event)"
                     @contadorProcPreSelRes="contadorProcPreSelRes($event)"
+                    @contadorProcSelEspResSistema="contadorProcSelEspResSistema($event)"
+                    @contadorProcSelEspResUtilizador="contadorProcSelEspResUtilizador($event)"
+                    @contadorEspResDecrementarSistema="contadorEspResDecrementarSistema($event)"
                   />
                   <div v-else>a carregar</div>
                 </v-expansion-panel-content>
@@ -283,9 +307,9 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs4>
+          <v-flex xs5>
             <v-text-field
-              label="Nº de processos restantes selecionados"
+              label="Nº total de processos restantes selecionados"
               :value="numProcSelRes"
             ></v-text-field>
           </v-flex>
@@ -293,6 +317,20 @@
             <v-text-field
               label="Nº de processos restantes pré selecionados"
               :value="numProcPreSelRes"
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout wrap>
+          <v-flex xs5>
+            <v-text-field
+              label="Nº de processos específicos restantes selecionados pelo sistema"
+              :value="numProcSelEspResSistema"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs5 style="padding-left:60px;">
+            <v-text-field
+              label="Nº de processos específicos restantes selecionados pelo utilizador"
+              :value="numProcSelEspResUtilizador"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -404,14 +442,43 @@
             </v-expansion-panels>
           </v-flex>
         </v-layout>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 8;
-            barra(100);
-          "
-          >Continuar</v-btn
-        >
+        <hr style="border-top: 0px"/>
+        <v-btn color="primary" @click="finalizaUltPasso = true"
+        >Finalizar
+        <v-dialog v-model="finalizaUltPasso" persistent max-width="380">
+          <v-card>
+            <v-card-title class="title">Finalizar último passo?</v-card-title>
+            <v-card-text>
+              <p>Chegou ao fim do preenchimento do formulário de criação
+                da TS!
+              </p>
+              <p>
+                Caso pretenda finalizar o mesmo e submeter 
+                a TS, selecione "Confirmar".
+                Caso ainda pretenda realizar 
+                alguma alteração à TS, clique em "Voltar" e guarde o trabalho.
+              </p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red" text @click="finalizaUltPasso = false">
+                Voltar
+              </v-btn>
+              <v-btn
+                color="primary"
+                text
+                @click="
+                  stepNo = 8;
+                  barra(100);
+                  finalizaUltPasso = false;
+                "
+              >
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-btn>
         <v-btn
           text
           @click="
@@ -422,14 +489,39 @@
         >
       </v-stepper-content>
 
+      <hr style="border-top: 0px"/>
+
+      <v-row
+        align="center"
+        justify="center"
+      >
+
       <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
-        >Submeter</v-btn
+        >Submeter
+        </v-btn
       >
-      <v-btn color="primary" v-else @click="guardarTrabalho()"
-        >Guardar trabalho</v-btn
+      <v-btn color="primary" v-else-if="stepNo >= 1" @click="guardarTrabalho()"
+        >Guardar trabalho
+        <v-dialog v-model="pendenteGuardado" width="60%">
+          <v-card>
+            <v-card-title>Trabalho pendente guardado</v-card-title>
+            <v-card-text>
+              <p>
+                Os seus dados foram guardados para que possa retomar o trabalho
+                mais tarde.
+              </p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn color="primary" dark @click="$router.push('/')">Fechar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+    </v-btn
       >
+
       <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
-        >Eliminar TS
+        >Cancelar criação
         <v-dialog v-model="eliminarTabela" persistent max-width="320">
           <v-card>
             <v-card-title class="title">Eliminar Tabela</v-card-title>
@@ -455,26 +547,8 @@
           </v-card>
         </v-dialog>
       </v-btn>
+      </v-row>
     </v-stepper>
-
-    <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
-      {{ mensagemPedidoCriadoOK }}
-      <v-btn dark text @click="pedidoCriadoOK">
-        Fechar
-      </v-btn>
-    </v-snackbar>
-
-    <v-snackbar
-      v-model="pendenteGuardado"
-      color="primary"
-      :timeout="60000"
-      :top="true"
-    >
-      Trabalho guardado com sucesso.
-      <v-btn dark text @click="pendenteGuardadoOK">
-        Fechar
-      </v-btn>
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -557,6 +631,10 @@ export default {
       numProcSelEsp: 0,
       // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs especificos)
       procPreSelResTravEspecifico: [],
+      // Numero de processos especificos selecionados pelo sistema
+      numProcSelEspSistema: 0,
+      // Numero de processos especificos selecionados pelo utilizador
+      numProcSelEspUtilizador: 0,
       // Lista dos processos especificos restantes (que não são especificos da entidade nem da tipologia em causa)
       listaProcEspRes: [],
       // Numero de processos restantes que se encontram pré selecionados
@@ -567,6 +645,10 @@ export default {
       numProcSelRes: 0,
       // Lista dos processos pré selecionados restantes (resultado das travessias pos PNs especificos restantes)
       procPreSelResTravRestante: [],
+      // Numero de processos esp restantes selecionados pelo sistema
+      numProcSelEspResSistema: 0,
+      // Numero de processos esp restantes selecionados pelo utilizador
+      numProcSelEspResUtilizador: 0,
       // Lista de todos os processos que ainda não foram selecionados nas etapas anteriores
       listaProcUlt: [],
       // True quando a ultima lista estiver pronta
@@ -579,10 +661,10 @@ export default {
       numProcSelUlt: 0,
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
-      pedidoCriado: false,
-      mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
+      // Dialog de confirmação finalização de TS
+      finalizaUltPasso: false,
       // Lista de todos os processos selecionados em todos os passos
       listaTotalProcSel: [],
       listaTotalProcSelReady: false,
@@ -691,6 +773,7 @@ export default {
               });
             }
           }
+          this.listaProcComuns.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
           this.listaProcComunsReady = true;
           return this.listaProcComuns;
         }
@@ -744,10 +827,11 @@ export default {
               this.listaProcEsp.push({
                 classe: response.data[x].codigo,
                 designacao: response.data[x].titulo,
-                dono: false
+                dono: true
               });
             }
           }
+          this.listaProcEsp.sort((a, b) => (a.classe > b.classe) ? 1 : -1);
           return this.listaProcEsp;
         }
       } catch (error) {
@@ -770,6 +854,15 @@ export default {
     // Contador dos processos selecionados pelo sistema
     contadorProcSelComSistema: function(procSelec) {
       this.numProcSelComSistema = procSelec.length;
+    },
+    contadorComDecrementarSistema: function(listaDec){
+      this.numProcSelComSistema--;
+    },
+    contadorEspDecrementarSistema: function(listaDec){
+      this.numProcSelEspSistema--;
+    },
+    contadorEspResDecrementarSistema: function(listaDec){
+      this.numProcSelEspResSistema--;
     },
     contadorProcSelComUtilizador: function(procSelec) {
       this.numProcSelComUtilizador =
@@ -819,11 +912,12 @@ export default {
                 this.listaProcEspRes.push({
                   classe: this.listaTotalProcEsp[i].codigo,
                   designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: false
+                  dono: true
                 });
               }
             }
           }
+          this.listaProcEspRes.sort((a, b) => (a.classe > b.classe) ? 1 : -1);
         }
       } catch (error) {
         return error;
@@ -841,6 +935,15 @@ export default {
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs especificos
     procPreSelResTravEsp: function(procPreSelResTravEsp) {
       this.procPreSelResTravEspecifico = procPreSelResTravEsp;
+    },
+    // Contador dos processos selecionados pelo sistema
+    contadorProcSelEspSistema: function(procSelec) {
+      this.numProcSelEspSistema = procSelec.length;
+    },
+    // Contador dos processos selecionados pelo utilizador
+    contadorProcSelEspUtilizador: function(procSelec) {
+      this.numProcSelEspUtilizador =
+        procSelec.length - this.numProcSelEspSistema;
     },
     // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
     procPreSelRestantes: function() {
@@ -873,6 +976,14 @@ export default {
     // Contador dos processos pre selecionados restantes
     contadorProcPreSelRes: function(lista) {
       this.numProcPreSelRes = lista.length;
+    },
+    // Contador dos processos selecionados pelo sistema
+    contadorProcSelEspResSistema: function(procSelec) {
+      this.numProcSelEspResSistema = procSelec.length;
+    },
+    contadorProcSelEspResUtilizador: function(procSelec) {
+      this.numProcSelEspResUtilizador =
+        procSelec.length - this.numProcSelEspResSistema;
     },
     // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
     loadUltimosProcessos: function() {
@@ -1015,15 +1126,10 @@ export default {
           "/api/pedidos",
           pedidoParams
         );
-        this.mensagemPedidoCriadoOK += response.data.codigo;
-        this.pedidoCriado = true;
+        this.$router.push("/pedidos/submissao");
       } catch (error) {
         return error;
       }
-    },
-    pedidoCriadoOK: function() {
-      this.pedidoCriado = false;
-      this.$router.push("/");
     },
     // Guarda o trabalho de criação de uma TS
     guardarTrabalho: async function() {
@@ -1063,10 +1169,6 @@ export default {
         return err;
       }
     },
-    pendenteGuardadoOK: function() {
-      this.pendenteGuardado = false;
-      this.$router.push("/");
-    },
     // Elimina todo o trabalho feito até esse momento
     eliminarTS: async function() {
       this.$router.push("/");
@@ -1086,12 +1188,15 @@ export default {
 }
 
 .info-label {
-  color: #1a237e;
+  color: #1a237e !important; 
   padding: 5px;
   font-weight: 400;
-  width: 100%;
-  background-color: #dee2f8;
+  width: auto;
+  height: auto;
+  background-color: #e8eaf6; 
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

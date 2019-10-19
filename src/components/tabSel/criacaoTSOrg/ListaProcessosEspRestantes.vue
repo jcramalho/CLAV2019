@@ -47,7 +47,7 @@
                   : props.item.dono && props.item.participante
                   ? selProcRes(props.item)
                   : !props.item.dono && !props.item.participante
-                  ? (uncheck(props.item.classe), desSelProcRes(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante), desSelProcRes(props.item))
                   : null;
               }
             "
@@ -71,7 +71,7 @@
                   : props.item.participante && props.item.dono
                   ? selProcRes(props.item)
                   : !props.item.participante && !props.item.dono
-                  ? (uncheck(props.item.classe), desSelProcRes(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante), desSelProcRes(props.item))
                   : null;
               }
             "
@@ -125,7 +125,8 @@ export default {
     procEspSel: [],
     // Todas as travessias são carregadas para esta variável
     travessias: [],
-    preSel: []
+    preSel: [],
+    listaSistemaDecrementada: []
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro
@@ -188,7 +189,7 @@ export default {
     },
 
     // função para reverter a seleção
-    uncheck: async function(processo) {
+    uncheck: async function(processo, trans) {
       // apaga o resultado da travessia desse processo
       // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
       delete this.listaProcResultado[processo];
@@ -230,6 +231,12 @@ export default {
       this.listaResEspRestantes = newListaResEspRestantes;
       this.listaResRestantes = newListaResRestantes;
 
+      if(trans==null && !this.listaSistemaDecrementada.includes(processo)){
+        this.listaSistemaDecrementada.push(processo)
+        
+        this.$emit("contadorEspResDecrementarSistema", this.listaSistemaDecrementada);
+      };
+
       this.$emit("procPreSelResTravRes", this.listaResRestantes);
       this.$emit("contadorProcPreSelRes", this.listaResEspRestantes);
     },
@@ -258,14 +265,18 @@ export default {
       for (var j = 0; j < trav.length; j++) {
         this.travessias[trav[j].processo] = trav[j].travessia;
       }
-       // Faz os calculos iniciais dos processos já selecionados (quando se retoma o trabalho)
+       // Carrega os calculos iniciais dos processos já selecionados 
       for (var i = 0; i < this.lista.length; i++) {
         if (this.lista[i].dono || this.lista[i].participante) {
           await this.calcRel(this.lista[i].classe);
           if (!this.procEspSel.includes(this.lista[i])) {
             this.procEspSel.push(this.lista[i]);
             this.$emit("contadorProcSelRes", this.procEspSel);
+            this.$emit("contadorProcSelEspResSistema", this.procEspSel);
           }
+        }
+        else if (this.lista[i].participante==null){
+          this.listaSistemaDecrementada.push(this.lista[i].classe);
         }
       }
     } catch (e) {

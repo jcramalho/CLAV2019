@@ -32,6 +32,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+        <hr style="border-top: 0px"/>
         <v-btn
           color="primary"
           @click="
@@ -261,7 +262,7 @@
         >
       </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 6" step="6" v-if="listaProcUltReady"
+      <v-stepper-step :complete="stepNo > 6" step="6"
         >Outros processos
         <small
           >Revisão de processos de negócio não selecionados nas etapas
@@ -305,14 +306,43 @@
             ></v-text-field>
           </v-flex>
         </v-layout>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 7;
-            barra(100);
-          "
-          >Continuar</v-btn
-        >
+        <hr style="border-top: 0px"/>
+        <v-btn color="primary" @click="finalizaUltPasso = true"
+          >Finalizar
+          <v-dialog v-model="finalizaUltPasso" persistent max-width="380">
+            <v-card>
+              <v-card-title class="title">Finalizar último passo?</v-card-title>
+              <v-card-text>
+                <p>Chegou ao fim do preenchimento do formulário de criação
+                  da TS!
+                </p>
+                <p>
+                  Caso pretenda finalizar o mesmo e submeter 
+                  a TS, selecione "Confirmar".
+                  Caso ainda pretenda realizar 
+                  alguma alteração à TS, clique em "Voltar" e guarde o trabalho.
+                </p>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="red" text @click="finalizaUltPasso = false">
+                  Voltar
+                </v-btn>
+                <v-btn
+                  color="primary"
+                  text
+                  @click="
+                    stepNo = 8;
+                    barra(100);
+                    finalizaUltPasso = false;
+                  "
+                >
+                  Confirmar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-btn>
         <v-btn
           text
           @click="
@@ -323,14 +353,37 @@
         >
       </v-stepper-content>
 
+      <hr style="border-top: 0px"/>
+
+      <v-row
+        align="center"
+        justify="center"
+      >
+
       <v-btn color="primary" v-if="stepNo > 6" @click="submeterTS()"
         >Submeter</v-btn
       >
-      <v-btn color="primary" v-else @click="guardarTrabalho()"
-        >Guardar trabalho</v-btn
+      <v-btn color="primary" v-else-if="stepNo >= 1" @click="guardarTrabalho()"
+        >Guardar trabalho
+        <v-dialog v-model="pendenteGuardado" width="60%">
+          <v-card>
+            <v-card-title>Trabalho pendente guardado</v-card-title>
+            <v-card-text>
+              <p>
+                Os seus dados foram guardados para que possa retomar o trabalho
+                mais tarde.
+              </p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn color="primary" dark @click="$router.push('/')">Fechar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-btn
       >
       <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
-        >Eliminar TS
+        >Cancelar criação
         <v-dialog v-model="eliminarTabela" persistent max-width="320">
           <v-card>
             <v-card-title class="headline">Eliminar Tabela</v-card-title>
@@ -356,26 +409,8 @@
           </v-card>
         </v-dialog>
       </v-btn>
+      </v-row>
     </v-stepper>
-
-    <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
-      {{ mensagemPedidoCriadoOK }}
-      <v-btn dark text @click="pedidoCriadoOK">
-        Fechar
-      </v-btn>
-    </v-snackbar>
-
-    <v-snackbar
-      v-model="pendenteGuardado"
-      color="primary"
-      :timeout="60000"
-      :top="true"
-    >
-      Trabalho guardado com sucesso.
-      <v-btn dark text @click="pendenteGuardadoOK">
-        Fechar
-      </v-btn>
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -474,10 +509,10 @@ export default {
       procPreSelUltimos: [],
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
-      pedidoCriado: false,
-      mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
       // Dialog de confirmação de eliminação de TS
-      eliminarTabela: false
+      eliminarTabela: false,
+      // Dialog de confirmação finalização de TS
+      finalizaUltPasso: false,
     };
   },
   methods: {
@@ -567,6 +602,7 @@ export default {
               part: {}
             };
           }
+          this.listaProcComuns.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
           return this.listaProcComuns;
         }
       } catch (err) {
@@ -627,6 +663,7 @@ export default {
             part: {}
           };
         }
+        this.listaProcEsp.sort((a, b) => (a.classe > b.classe) ? 1 : -1);
       } catch (error) {
         return error;
       }
@@ -707,6 +744,7 @@ export default {
               part: {}
             };
           }
+          this.listaProcEspRes.sort((a, b) => (a.classe > b.classe) ? 1 : -1);
         }
       } catch (error) {
         return error;
@@ -973,15 +1011,10 @@ export default {
           "/api/pedidos",
           pedidoParams
         );
-        this.mensagemPedidoCriadoOK += response.data.codigo;
-        this.pedidoCriado = true;
+        this.$router.push("/pedidos/submissao");
       } catch (error) {
         return error;
       }
-    },
-    pedidoCriadoOK: function() {
-      this.pedidoCriado = false;
-      this.$router.push("/");
     },
     // Guarda o trabalho de criação de uma TS
     guardarTrabalho: async function() {
@@ -1027,10 +1060,6 @@ export default {
       } catch (err) {
         return err;
       }
-    },
-    pendenteGuardadoOK: function() {
-      this.pendenteGuardado = false;
-      this.$router.push("/");
     },
     // Elimina todo o trabalho feito até esse momento
     eliminarTS: async function() {
