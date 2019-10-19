@@ -77,6 +77,12 @@ export default new Router({
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
     {
+      path: "/legislacao/editar/:idLegislacao",
+      name: "editaLegislacao",
+      component: () => import("./views/legislacao/LegislacaoEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/legislacao/:idLegislacao",
       name: "consultaLegislacao",
       component: () => import("./views/legislacao/LegislacaoConsulta.vue"),

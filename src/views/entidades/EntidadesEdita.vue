@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Loading v-if="!dadosReady" :message="'entidade'" />
+    <Loading v-if="!dadosReady" :message="'a entidade'" />
     <EditaEntidade v-else :e="entidade" />
   </div>
 </template>
