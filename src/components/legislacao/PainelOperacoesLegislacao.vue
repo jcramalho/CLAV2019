@@ -13,11 +13,33 @@
       <ValidarLegislacaoInfoBox :l="l" />
 
       <v-col>
-        <v-btn rounded class="indigo accent-4 white--text" @click="criarLegislacao">Criar Diploma</v-btn>
+        <v-btn
+          v-if="this.acao == 'Criação'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarLegislacao"
+        >Criar Diploma</v-btn>
+        <v-btn
+          v-else-if="this.acao == 'Alteração'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarLegislacao"
+        >Alterar Diploma</v-btn>
       </v-col>
 
       <v-col>
-        <v-btn rounded class="red darken-4 white--text" @click="eliminarLegislacao">Cancelar Criação</v-btn>
+        <v-btn
+          v-if="this.acao == 'Criação'"
+          rounded
+          class="red darken-4 white--text"
+          @click="eliminarLegislacao"
+        >Cancelar Criação</v-btn>
+        <v-btn
+          v-else-if="this.acao == 'Alteração'"
+          rounded
+          class="red darken-4 white--text"
+          @click="eliminarLegislacao"
+        >Cancelar Alteração</v-btn>
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -102,7 +124,7 @@
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 
 export default {
-  props: ["l"],
+  props: ["l", "acao"],
   components: {
     ValidarLegislacaoInfoBox
   },
@@ -132,7 +154,7 @@ export default {
           );
           let pendenteParams = {
             numInterv: 1,
-            acao: "Criação",
+            acao: this.acao,
             tipo: "Legislação",
             objeto: this.l,
             criadoPor: userBD.data.email,
@@ -253,7 +275,7 @@ export default {
             dataObj.codigo = "leg_" + randID.data;
 
             let pedidoParams = {
-              tipoPedido: "Criação",
+              tipoPedido: this.acao,
               tipoObjeto: "Legislação",
               novoObjeto: dataObj,
               user: { email: userBD.data.email },

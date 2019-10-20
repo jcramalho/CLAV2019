@@ -150,7 +150,7 @@
       </v-card>
 
       <!-- Painel Operações -->
-      <PainelOpsLeg :l="legislacao" />
+      <PainelOpsLeg :l="legislacao" :acao="'Criação'" />
     </v-col>
   </v-row>
 </template>

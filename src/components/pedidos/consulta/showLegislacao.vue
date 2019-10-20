@@ -1,6 +1,6 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title class="info-label title" dark>{{ p.objeto.acao }} da Legislação</v-card-title>
+    <v-card-title class="indigo darken-4 white--text title">{{ p.objeto.acao }} da Legislação</v-card-title>
     <v-card-text>
       <v-row v-for="t in legislacaoInfo" :key="t.campo">
         <v-col cols="2" v-if="t.conteudo != ''">
@@ -62,10 +62,11 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #1565c0; /* blue darken-3 */
+  color: #283593; /* indigo darken-3 */
+  padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e3f2fd; /* blue lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }
@@ -73,7 +74,7 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1565c0;
+  border: 1px solid #283593;
   border-radius: 3px;
 }
 </style>

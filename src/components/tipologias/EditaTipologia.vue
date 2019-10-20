@@ -154,12 +154,14 @@ export default {
     await this.loadEntidades();
 
     try {
-      this.tipologia.entidadesSel.forEach(ent => {
-        this.entSel.push(ent);
-        // Remove dos selecionáveis
-        let index = this.entidades.findIndex(e => e.id === ent.id);
-        this.entidades.splice(index, 1);
-      });
+      if (this.tipologia.entidadesSel.length != 0) {
+        this.tipologia.entidadesSel.forEach(ent => {
+          this.entSel.push(ent);
+          // Remove dos selecionáveis
+          let index = this.entidades.findIndex(e => e.id === ent.id);
+          this.entidades.splice(index, 1);
+        });
+      }
     } catch (e) {
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;

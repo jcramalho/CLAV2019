@@ -138,6 +138,12 @@ export default new Router({
       component: () => import("./views/termosIndice/TermosIndiceCria.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
+    // {
+    //   path: "/termosIndice/editar/:idTermo",
+    //   name: "editaTermosIndice",
+    //   component: () => import("./views/termosIndice/TermosIndiceEdita.vue"),
+    //   meta: { levels: [4, 5, 6, 7] }
+    // },
     // Routes dos Vocabulários Controlados
     {
       path: "/vocabularios",

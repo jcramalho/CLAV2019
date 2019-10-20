@@ -17,10 +17,26 @@ export default {
 
   data: () => ({
     legislacao: {},
-    dadosReady: false
+    dadosReady: false,
+    entidades: null
   }),
 
   methods: {
+    loadEntidades: async function() {
+      try {
+        let response = await this.$request("get", "/api/entidades");
+        this.entidades = response.data.map(function(item) {
+          return {
+            sigla: item.sigla,
+            designacao: item.designacao,
+            id: item.id
+          };
+        });
+      } catch (error) {
+        return error;
+      }
+    },
+
     preparaLegislacao: async function(leg, proReg) {
       try {
         let myLegislacao = {
@@ -40,6 +56,8 @@ export default {
   },
 
   created: async function() {
+    await this.loadEntidades();
+
     try {
       let idLegislacao = this.$route.path.split("/")[3];
 
@@ -57,6 +75,15 @@ export default {
         infoLegislacao.data,
         processosRegula.data
       );
+
+      let newEnts = [];
+
+      this.legislacao.entidadesSel.forEach(ent => {
+        let index = this.entidades.findIndex(e => e.sigla === ent);
+        newEnts.push(this.entidades[index]);
+      });
+
+      this.legislacao.entidadesSel = newEnts;
 
       this.dadosReady = true;
     } catch (e) {

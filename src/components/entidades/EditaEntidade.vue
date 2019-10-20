@@ -190,12 +190,14 @@ export default {
     await this.loadTipologias();
 
     try {
-      this.entidade.tipologiasSel.forEach(tip => {
-        this.tipSel.push(tip);
-        // Remove dos selecionáveis
-        let index = this.tipologias.findIndex(t => t.id === tip.id);
-        this.tipologias.splice(index, 1);
-      });
+      if (this.entidade.tipologiasSel.length != 0) {
+        this.entidade.tipologiasSel.forEach(tip => {
+          this.tipSel.push(tip);
+          // Remove dos selecionáveis
+          let index = this.tipologias.findIndex(t => t.id === tip.id);
+          this.tipologias.splice(index, 1);
+        });
+      }
     } catch (e) {
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
