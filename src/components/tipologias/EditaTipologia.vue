@@ -72,7 +72,7 @@
       </v-card>
 
       <!-- Painel Operações -->
-      <PainelOpsTip :t="tipologia" :acao="'Criação'" />
+      <PainelOpsTip :t="tipologia" :acao="'Alteração'" />
     </v-col>
   </v-row>
 </template>
@@ -83,6 +83,7 @@ import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 import PainelOpsTip from "@/components/tipologias/PainelOperacoesTipologias";
 
 export default {
+  props: ["t"],
   data: () => ({
     tipologia: {
       designacao: "",
@@ -110,6 +111,7 @@ export default {
     loadEntidades: async function() {
       try {
         let response = await this.$request("get", "/api/entidades");
+
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -117,6 +119,7 @@ export default {
             id: item.id
           };
         });
+
         this.entidadesReady = true;
       } catch (error) {
         return error;
@@ -145,8 +148,24 @@ export default {
     }
   },
 
-  created: function() {
-    this.loadEntidades();
+  created: async function() {
+    this.tipologia = this.t;
+
+    await this.loadEntidades();
+
+    try {
+      if (this.tipologia.entidadesSel.length != 0) {
+        this.tipologia.entidadesSel.forEach(ent => {
+          this.entSel.push(ent);
+          // Remove dos selecionáveis
+          let index = this.entidades.findIndex(e => e.id === ent.id);
+          this.entidades.splice(index, 1);
+        });
+      }
+    } catch (e) {
+      this.text = "Erro ao carregar os dados, por favor tente novamente";
+      this.snackbar = true;
+    }
   }
 };
 </script>

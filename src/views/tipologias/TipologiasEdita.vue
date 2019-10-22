@@ -1,0 +1,63 @@
+<template>
+  <div>
+    <Loading v-if="!dadosReady" :message="'tipologia'" />
+    <EditaTipologia v-else :t="tipologia" />
+  </div>
+</template>
+
+<script>
+import EditaTipologia from "@/components/tipologias/EditaTipologia";
+import Loading from "@/components/generic/Loading";
+
+export default {
+  components: {
+    EditaTipologia,
+    Loading
+  },
+
+  data: () => ({
+    tipologia: {},
+    dadosReady: false
+  }),
+
+  methods: {
+    preparaTipologia: async function(tip, ent) {
+      try {
+        let myTipologia = {
+          designacao: tip.designacao,
+          sigla: tip.sigla,
+          entidadesSel: ent
+        };
+        return myTipologia;
+      } catch (e) {
+        return {};
+      }
+    }
+  },
+
+  created: async function() {
+    try {
+      let idTipologia = this.$route.path.split("/")[3];
+
+      let infoTipologia = await this.$request(
+        "get",
+        "/api/tipologias/" + idTipologia
+      );
+
+      let entidadesAssociadas = await this.$request(
+        "get",
+        "/api/tipologias/" + idTipologia + "/elementos"
+      );
+
+      this.tipologia = await this.preparaTipologia(
+        infoTipologia.data,
+        entidadesAssociadas.data
+      );
+
+      this.dadosReady = true;
+    } catch (e) {
+      return e;
+    }
+  }
+};
+</script>

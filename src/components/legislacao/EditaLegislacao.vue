@@ -4,7 +4,7 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Novo Diploma</v-toolbar-title>
+          <v-toolbar-title class="card-heading">Editar Diploma</v-toolbar-title>
         </v-app-bar>
 
         <!-- Content -->
@@ -15,6 +15,8 @@
             </v-col>
             <v-col>
               <v-select
+                :loading="tipoReady"
+                :disabled="tipoReady"
                 item-color="indigo"
                 color="indigo"
                 v-model="legislacao.tipo"
@@ -150,7 +152,7 @@
       </v-card>
 
       <!-- Painel Operações -->
-      <PainelOpsLeg :l="legislacao" :acao="'Criação'" />
+      <PainelOpsLeg :l="legislacao" :acao="'Alteração'" />
     </v-col>
   </v-row>
 </template>
@@ -165,6 +167,8 @@ import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
 import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 
 export default {
+  props: ["l"],
+
   data: vm => ({
     legislacao: {
       numero: "",
@@ -183,6 +187,8 @@ export default {
     entidades: [],
     entSel: [],
     entidadesReady: false,
+
+    tipoReady: true,
 
     // vuetify datepicker
     date: new Date().toISOString().substr(0, 10),
@@ -258,6 +264,7 @@ export default {
           this.tiposDiploma[i] = response.data[i].termo;
         }
         this.tiposDiploma.sort();
+        this.tipoReady = false;
       } catch (error) {
         return error;
       }
@@ -320,7 +327,7 @@ export default {
           return {
             codigo: item.codigo,
             titulo: item.titulo,
-            id: item.codigo
+            id: item.id.split("#")[1]
           };
         });
         this.processosReady = true;
@@ -335,11 +342,48 @@ export default {
     }
   },
 
-  created: function() {
-    this.legislacao.data = this.dateFormatted;
-    this.loadTipoDiploma();
-    this.loadEntidades();
-    this.loadClasses();
+  created: async function() {
+    this.legislacao = this.l;
+
+    let dia = this.l.data.split("/")[1];
+    let mes = this.l.data.split("/")[2];
+    let ano = this.l.data.split("/")[0];
+
+    this.legislacao.data = `${ano}/${mes}/${dia}`;
+    this.date = new Date(`${ano}-${mes}-${dia}`).toISOString().substr(0, 10);
+
+    await this.loadTipoDiploma();
+    await this.loadEntidades();
+    await this.loadClasses();
+
+    try {
+      if (this.legislacao.entidadesSel.length != 0) {
+        this.legislacao.entidadesSel.forEach(ent => {
+          this.entSel.push(ent);
+
+          // Remove dos selecionáveis
+          let index = this.entidades.findIndex(e => e.id === ent.id);
+          this.entidades.splice(index, 1);
+        });
+      }
+    } catch (e) {
+      this.text = "Erro ao carregar os dados, por favor tente novamente";
+      this.snackbar = true;
+    }
+
+    try {
+      if (this.legislacao.processosSel.length != 0) {
+        this.legislacao.processosSel.forEach(proc => {
+          this.procSel.push(proc);
+          // Remove dos selecionáveis
+          let index = this.processos.findIndex(p => p.id === proc.id);
+          this.processos.splice(index, 1);
+        });
+      }
+    } catch (e) {
+      this.text = "Erro ao carregar os dados, por favor tente novamente";
+      this.snackbar = true;
+    }
   }
 };
 </script>

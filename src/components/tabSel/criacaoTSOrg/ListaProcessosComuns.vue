@@ -45,7 +45,7 @@
                   : props.item.dono && props.item.participante
                   ? selProcComum(props.item)
                   : !props.item.dono && !props.item.participante
-                  ? (uncheck(props.item.classe), desSelProcComum(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante), desSelProcComum(props.item))
                   : null;
               }
             "
@@ -69,7 +69,7 @@
                   : props.item.participante && props.item.dono
                   ? selProcComum(props.item)
                   : !props.item.participante && !props.item.dono
-                  ? (uncheck(props.item.classe), desSelProcComum(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante), desSelProcComum(props.item))
                   : null;
               }
             "
@@ -123,7 +123,8 @@ export default {
     // Lista com os processos comuns selecionados
     procComunsSel: [],
     // Todas as travessias são carregadas para esta variável
-    travessias: []
+    travessias: [],
+    listaSistemaDecrementada: []
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
@@ -174,7 +175,7 @@ export default {
     },
 
     // Reverte a seleção
-    uncheck: async function(processo) {
+    uncheck: async function(processo, trans) {
       // apaga o resultado da travessia desse processo
       // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
       delete this.listaProcResultado[processo];
@@ -210,6 +211,14 @@ export default {
       this.listaResComuns = newListaResComuns;
       this.listaResRestantes = newListaResRestantes;
 
+      
+    
+      if(trans==null && !this.listaSistemaDecrementada.includes(processo)){
+        this.listaSistemaDecrementada.push(processo)
+        
+        this.$emit("contadorComDecrementarSistema", this.listaSistemaDecrementada);
+      };
+
       this.$emit("procPreSelResTravCom", this.listaResRestantes);
       this.$emit("contadorProcPreSelCom", this.listaResComuns);
     },
@@ -239,7 +248,7 @@ export default {
         this.travessias[trav[j].processo] = trav[j].travessia;
       }
 
-      // Faz os calculos iniciais dos processos selecionados por default como donos (não transversais)
+      // Faz os calculos iniciais dos processos já selecionados
       for (var i = 0; i < this.lista.length; i++) {
         if (this.lista[i].dono || this.lista[i].participante) {
           this.calcRel(this.lista[i].classe);
@@ -248,6 +257,9 @@ export default {
             this.$emit("contadorProcSelCom", this.procComunsSel);
             this.$emit("contadorProcSelComSistema", this.procComunsSel);
           }
+        }
+        else if (this.lista[i].participante==null){
+          this.listaSistemaDecrementada.push(this.lista[i].classe);
         }
       }
     } catch (e) {

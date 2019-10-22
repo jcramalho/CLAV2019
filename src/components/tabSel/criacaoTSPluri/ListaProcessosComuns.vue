@@ -67,6 +67,7 @@
               <v-divider></v-divider>
               <v-card-text style="height: 400px;">
                 <v-checkbox
+                  dense
                   v-for="e in entidades"
                   :key="e.id"
                   v-model="entProcDono[props.item.classe][e.id]"
@@ -218,7 +219,7 @@
                     <v-dialog
                       v-model="dialog[props.item.classe][e.id]"
                       persistent
-                      max-width="500px"
+                      max-width="800px"
                     >
                       <v-card>
                         <v-card-title>
@@ -229,14 +230,16 @@
                           <br />
                           {{ "No processo: " + props.item.classe }}
                         </v-card-title>
-                        <v-card-text>
-                          <v-select
-                            :items="tipoParticipacao"
+                        <v-divider></v-divider>
+                        <v-card-text style="height: 400px;">
+                          <v-checkbox
+                            v-for="t in tipoParticipacao"
+                            :key="t"
                             v-model="entProcPar[props.item.classe][e.id]"
-                            label="Tipo de intervenção"
-                            item-value="text"
-                          ></v-select>
+                            :label="t"
+                          ></v-checkbox>
                         </v-card-text>
+                        <v-divider></v-divider>
                         <v-card-actions>
                           <v-btn
                             color="primary"
@@ -247,6 +250,16 @@
                             "
                           >
                             Continuar
+                          </v-btn>
+                          <v-btn
+                            color="primary"
+                            text
+                            @click="
+                              delete entProcPar[props.item.classe][e.id];
+                              dialog[props.item.classe][e.id] = false;
+                            "
+                          >
+                            Cancelar tipo de participação
                           </v-btn>
                         </v-card-actions>
                       </v-card>

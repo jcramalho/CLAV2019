@@ -13,11 +13,35 @@
       <ValidarTipologiaInfoBox :t="t" />
 
       <v-col>
-        <v-btn rounded class="indigo accent-4 white--text" @click="criarTipologia">Criar Tipologia</v-btn>
+        <v-btn
+          v-if="this.acao == 'Criação'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarTipologia"
+        >Criar Tipologia</v-btn>
+        <v-btn
+          v-else-if="this.acao == 'Alteração'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarTipologia"
+        >Alterar Tipologia</v-btn>
       </v-col>
 
       <v-col>
-        <v-btn dark rounded class="red darken-4" @click="eliminarTipologia">Cancelar Criação</v-btn>
+        <v-btn
+          v-if="this.acao == 'Criação'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarTipologia"
+        >Cancelar Criação</v-btn>
+        <v-btn
+          v-else-if="this.acao == 'Alteração'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarTipologia"
+        >Cancelar Alteração</v-btn>
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -102,7 +126,7 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 
 export default {
-  props: ["t"],
+  props: ["t", "acao"],
   components: {
     ValidarTipologiaInfoBox
   },
@@ -132,7 +156,7 @@ export default {
           );
           let pendenteParams = {
             numInterv: 1,
-            acao: "Criação",
+            acao: this.acao,
             tipo: "Tipologia",
             objeto: this.t,
             criadoPor: userBD.data.email,
@@ -209,7 +233,7 @@ export default {
             dataObj.codigo = "tip_" + this.t.sigla;
 
             let pedidoParams = {
-              tipoPedido: "Criação",
+              tipoPedido: this.acao,
               tipoObjeto: "Tipologia",
               novoObjeto: dataObj,
               user: { email: userBD.data.email },

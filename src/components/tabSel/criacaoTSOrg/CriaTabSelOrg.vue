@@ -37,25 +37,6 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-card class="ma-4">
-                <v-row>
-                  <v-col cols="2" class="info-label">
-                    Tipologias da entidade selecionada
-                  </v-col>
-                  <v-col>
-                    <v-data-table
-                      :items="tipEnt"
-                      class="elevation-1"
-                      hide-default-footer
-                    >
-                      <template v-slot:item="props">
-                        <tr>
-                          <td>{{ props.item.sigla }}</td>
-                          <td>{{ props.item.designacao }}</td>
-                        </tr>
-                      </template>
-                    </v-data-table>
-                  </v-col>
-                </v-row>
                 <DesSelTip
                   :tipologias="tipSel"
                   @unselectTipologia="unselectTipologia($event)"
@@ -72,6 +53,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+        <hr style="border-top: 0px"/>
         <v-btn
           color="primary"
           @click="
@@ -138,6 +120,7 @@
                     @contadorProcSelComUtilizador="
                       contadorProcSelComUtilizador($event)
                     "
+                    @contadorComDecrementarSistema="contadorComDecrementarSistema($event)"
                   />
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -145,13 +128,13 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs4>
+          <v-flex xs5>
             <v-text-field
-              label="Nº de processos comuns selecionados total"
+              label="Nº total de processos comuns selecionados"
               :value="numProcSelCom"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos comuns pré selecionados"
               :value="numProcPreSelCom"
@@ -159,13 +142,13 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs4>
+          <v-flex xs5>
             <v-text-field
               label="Nº de processos comuns selecionados pelo sistema"
               :value="numProcSelComSistema"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos comuns selecionados pelo utilizador"
               :value="numProcSelComUtilizador"
@@ -216,12 +199,9 @@
                     @contadorProcSelEsp="contadorProcSelEsp($event)"
                     @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
                     @procPreSelResTravEsp="procPreSelResTravEsp($event)"
-                    @contadorProcSelEspSistema="
-                      contadorProcSelEspSistema($event)
-                    "
-                    @contadorProcSelEspUtilizador="
-                      contadorProcSelEspUtilizador($event)
-                    "
+                    @contadorProcSelEspSistema="contadorProcSelEspSistema($event)"
+                    @contadorProcSelEspUtilizador="contadorProcSelEspUtilizador($event)"
+                    @contadorEspDecrementarSistema="contadorEspDecrementarSistema($event)"
                   />
                   <div v-else>a carregar</div>
                 </v-expansion-panel-content>
@@ -230,9 +210,9 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs4>
+          <v-flex xs5>
             <v-text-field
-              label="Nº de processos específicos selecionados total"
+              label="Nº total de processos específicos selecionados"
               :value="numProcSelEsp"
             ></v-text-field>
           </v-flex>
@@ -244,7 +224,7 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs4>
+          <v-flex xs5>
             <v-text-field
               label="Nº de processos específicos selecionados pelo sistema"
               :value="numProcSelEspSistema"
@@ -295,12 +275,9 @@
                     @contadorProcSelRes="contadorProcSelRes($event)"
                     @procPreSelResTravRes="procPreSelResTravRes($event)"
                     @contadorProcPreSelRes="contadorProcPreSelRes($event)"
-                    @contadorProcSelEspResSistema="
-                      contadorProcSelEspResSistema($event)
-                    "
-                    @contadorProcSelEspResUtilizador="
-                      contadorProcSelEspResUtilizador($event)
-                    "
+                    @contadorProcSelEspResSistema="contadorProcSelEspResSistema($event)"
+                    @contadorProcSelEspResUtilizador="contadorProcSelEspResUtilizador($event)"
+                    @contadorEspResDecrementarSistema="contadorEspResDecrementarSistema($event)"
                   />
                   <div v-else>a carregar</div>
                 </v-expansion-panel-content>
@@ -311,11 +288,11 @@
         <v-layout wrap>
           <v-flex xs5>
             <v-text-field
-              label="Nº de processos restantes selecionados total"
+              label="Nº total de processos restantes selecionados"
               :value="numProcSelRes"
             ></v-text-field>
           </v-flex>
-          <v-flex xs6 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos restantes pré selecionados"
               :value="numProcPreSelRes"
@@ -329,7 +306,7 @@
               :value="numProcSelEspResSistema"
             ></v-text-field>
           </v-flex>
-          <v-flex xs6 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº de processos específicos restantes selecionados pelo utilizador"
               :value="numProcSelEspResUtilizador"
@@ -385,13 +362,13 @@
           </v-flex>
         </v-layout>
         <v-layout wrap>
-          <v-flex xs3>
+          <v-flex xs4>
             <v-text-field
               label="Nº dos últimos processos selecionados"
               :value="numProcSelUlt"
             ></v-text-field>
           </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
+          <v-flex xs5 style="padding-left:60px;">
             <v-text-field
               label="Nº dos últimos processos pré selecionados"
               :value="numProcPreSelUlt"
@@ -444,14 +421,43 @@
             </v-expansion-panels>
           </v-flex>
         </v-layout>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 8;
-            barra(100);
-          "
-          >Continuar</v-btn
-        >
+        <hr style="border-top: 0px"/>
+        <v-btn color="primary" @click="finalizaUltPasso = true"
+        >Finalizar
+        <v-dialog v-model="finalizaUltPasso" persistent max-width="380">
+          <v-card>
+            <v-card-title class="title">Finalizar último passo?</v-card-title>
+            <v-card-text>
+              <p>Chegou ao fim do preenchimento do formulário de criação
+                da TS!
+              </p>
+              <p>
+                Caso pretenda finalizar o mesmo e submeter 
+                a TS, selecione "Confirmar".
+                Caso ainda pretenda realizar 
+                alguma alteração à TS, clique em "Voltar" e guarde o trabalho.
+              </p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red" text @click="finalizaUltPasso = false">
+                Voltar
+              </v-btn>
+              <v-btn
+                color="primary"
+                text
+                @click="
+                  stepNo = 8;
+                  barra(100);
+                  finalizaUltPasso = false;
+                "
+              >
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-btn>
         <v-btn
           text
           @click="
@@ -462,14 +468,39 @@
         >
       </v-stepper-content>
 
+      <hr style="border-top: 0px"/>
+
+      <v-row
+        align="center"
+        justify="center"
+      >
+
       <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
-        >Submeter</v-btn
+        >Submeter
+        </v-btn
       >
-      <v-btn color="primary" v-else @click="guardarTrabalho()"
-        >Guardar trabalho</v-btn
+      <v-btn color="primary" v-else-if="stepNo >= 1" @click="guardarTrabalho()"
+        >Guardar trabalho
+        <v-dialog v-model="pendenteGuardado" width="60%">
+          <v-card>
+            <v-card-title>Trabalho pendente guardado</v-card-title>
+            <v-card-text>
+              <p>
+                Os seus dados foram guardados para que possa retomar o trabalho
+                mais tarde.
+              </p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn color="primary" dark @click="$router.push('/')">Fechar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+    </v-btn
       >
+
       <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
-        >Eliminar TS
+        >Cancelar criação
         <v-dialog v-model="eliminarTabela" persistent max-width="320">
           <v-card>
             <v-card-title class="title">Eliminar Tabela</v-card-title>
@@ -495,26 +526,8 @@
           </v-card>
         </v-dialog>
       </v-btn>
+      </v-row>
     </v-stepper>
-
-    <v-snackbar v-model="pedidoCriado" :color="'success'" :timeout="60000">
-      {{ mensagemPedidoCriadoOK }}
-      <v-btn dark text @click="pedidoCriadoOK">
-        Fechar
-      </v-btn>
-    </v-snackbar>
-
-    <v-snackbar
-      v-model="pendenteGuardado"
-      color="primary"
-      :timeout="60000"
-      :top="true"
-    >
-      Trabalho guardado com sucesso.
-      <v-btn dark text @click="pendenteGuardadoOK">
-        Fechar
-      </v-btn>
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -565,8 +578,6 @@ export default {
       tipologias: [],
       // True quando a lista de tipologias estiver carregada
       tipologiasReady: false,
-      // Lista das tipologias desta entidade
-      tipEnt: [],
       // Lista com as tipologias selecionadas
       tipSel: [],
       // Lista com todos os processos comuns
@@ -627,10 +638,10 @@ export default {
       numProcSelUlt: 0,
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
-      pedidoCriado: false,
-      mensagemPedidoCriadoOK: "Pedido criado com sucesso: ",
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
+      // Dialog de confirmação finalização de TS
+      finalizaUltPasso: false,
       // Lista de todos os processos selecionados em todos os passos
       listaTotalProcSel: [],
       listaTotalProcSelReady: false,
@@ -663,7 +674,6 @@ export default {
     loadEntidades: async function() {
       try {
         var response = await this.$request("get", "/api/entidades");
-        console.log(response.data);
         for (var i = 0; i < response.data.length; i++) {
           this.entidades[i] =
             response.data[i].sigla + " - " + response.data[i].designacao;
@@ -701,7 +711,7 @@ export default {
           "get",
           "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        this.tipEnt = tipologias.data.map(function(item) {
+        this.tipSel = tipologias.data.map(function(item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -709,9 +719,9 @@ export default {
           };
         });
         // Retira da lista de todas as tipologias as que já pertencem a esta entidade
-        for (var i = 0; i < this.tipEnt.length; i++) {
+        for (var i = 0; i < this.tipSel.length; i++) {
           var index = this.tipologias.findIndex(
-            e => e.id === this.tipEnt[i].id
+            e => e.id === this.tipSel[i].id
           );
           this.tipologias.splice(index, 1);
         }
@@ -740,6 +750,7 @@ export default {
               });
             }
           }
+          this.listaProcComuns.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
           this.listaProcComunsReady = true;
           return this.listaProcComuns;
         }
@@ -767,11 +778,10 @@ export default {
     loadProcEspecificos: async function() {
       try {
         if (!this.listaProcEspReady) {
-          this.tipSel = this.tipSel.concat(this.tipEnt);
           var url =
             "/api/classes?tipo=especifico&ents=" +
             this.tabelaSelecao.idEntidade;
-          if (this.tipSel.length || this.tipEnt.length) {
+          if (this.tipSel.length || this.tipSel.length) {
             url += "&tips=";
           }
           if (this.tipSel.length) {
@@ -797,6 +807,7 @@ export default {
               });
             }
           }
+          this.listaProcEsp.sort((a, b) => (a.classe > b.classe) ? 1 : -1);
           return this.listaProcEsp;
         }
       } catch (error) {
@@ -819,6 +830,15 @@ export default {
     // Contador dos processos selecionados pelo sistema
     contadorProcSelComSistema: function(procSelec) {
       this.numProcSelComSistema = procSelec.length;
+    },
+    contadorComDecrementarSistema: function(listaDec){
+      this.numProcSelComSistema--;
+    },
+    contadorEspDecrementarSistema: function(listaDec){
+      this.numProcSelEspSistema--;
+    },
+    contadorEspResDecrementarSistema: function(listaDec){
+      this.numProcSelEspResSistema--;
     },
     contadorProcSelComUtilizador: function(procSelec) {
       this.numProcSelComUtilizador =
@@ -873,6 +893,7 @@ export default {
               }
             }
           }
+          this.listaProcEspRes.sort((a, b) => (a.classe > b.classe) ? 1 : -1);
         }
       } catch (error) {
         return error;
@@ -1081,15 +1102,10 @@ export default {
           "/api/pedidos",
           pedidoParams
         );
-        this.mensagemPedidoCriadoOK += response.data.codigo;
-        this.pedidoCriado = true;
+        this.$router.push("/pedidos/submissao");
       } catch (error) {
         return error;
       }
-    },
-    pedidoCriadoOK: function() {
-      this.pedidoCriado = false;
-      this.$router.push("/");
     },
     // Guarda o trabalho de criação de uma TS
     guardarTrabalho: async function() {
@@ -1099,7 +1115,7 @@ export default {
           "/api/users/listarToken/" + this.$store.state.token
         );
 
-        this.tabelaSelecao.tipologias = this.tipSel.concat(this.tipEnt);
+        this.tabelaSelecao.tipologias = this.tipSel;
 
         if (this.listaTotalProcSelUpdate.length) {
           this.listaTotalProcSel = this.listaTotalProcSelUpdate;
@@ -1118,7 +1134,6 @@ export default {
           user: { email: userBD.data.email },
           token: this.$store.state.token
         };
-        console.log(pendenteParams.objeto);
 
         var response = await this.$request(
           "post",
@@ -1129,10 +1144,6 @@ export default {
       } catch (err) {
         return err;
       }
-    },
-    pendenteGuardadoOK: function() {
-      this.pendenteGuardado = false;
-      this.$router.push("/");
     },
     // Elimina todo o trabalho feito até esse momento
     eliminarTS: async function() {
@@ -1153,12 +1164,15 @@ export default {
 }
 
 .info-label {
-  color: #1a237e;
+  color: #1a237e !important; 
   padding: 5px;
   font-weight: 400;
-  width: 100%;
-  background-color: #dee2f8;
+  width: auto;
+  height: auto;
+  background-color: #e8eaf6; 
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {
