@@ -37,27 +37,6 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-card class="ma-4">
-                <v-row>
-                  <v-col cols="2">
-                    <v-subheader class="info-label">
-                      Tipologias da entidade selecionada
-                    </v-subheader>
-                  </v-col>
-                  <v-col>
-                    <v-data-table
-                      :items="tipEnt"
-                      class="elevation-1"
-                      hide-default-footer
-                    >
-                      <template v-slot:item="props">
-                        <tr>
-                          <td>{{ props.item.sigla }}</td>
-                          <td>{{ props.item.designacao }}</td>
-                        </tr>
-                      </template>
-                    </v-data-table>
-                  </v-col>
-                </v-row>
                 <DesSelTip
                   :tipologias="tipSel"
                   @unselectTipologia="unselectTipologia($event)"
@@ -599,8 +578,6 @@ export default {
       tipologias: [],
       // True quando a lista de tipologias estiver carregada
       tipologiasReady: false,
-      // Lista das tipologias desta entidade
-      tipEnt: [],
       // Lista com as tipologias selecionadas
       tipSel: [],
       // Lista com todos os processos comuns
@@ -734,7 +711,7 @@ export default {
           "get",
           "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        this.tipEnt = tipologias.data.map(function(item) {
+        this.tipSel = tipologias.data.map(function(item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -742,9 +719,9 @@ export default {
           };
         });
         // Retira da lista de todas as tipologias as que já pertencem a esta entidade
-        for (var i = 0; i < this.tipEnt.length; i++) {
+        for (var i = 0; i < this.tipSel.length; i++) {
           var index = this.tipologias.findIndex(
-            e => e.id === this.tipEnt[i].id
+            e => e.id === this.tipSel[i].id
           );
           this.tipologias.splice(index, 1);
         }
@@ -801,11 +778,10 @@ export default {
     loadProcEspecificos: async function() {
       try {
         if (!this.listaProcEspReady) {
-          this.tipSel = this.tipSel.concat(this.tipEnt);
           var url =
             "/api/classes?tipo=especifico&ents=" +
             this.tabelaSelecao.idEntidade;
-          if (this.tipSel.length || this.tipEnt.length) {
+          if (this.tipSel.length || this.tipSel.length) {
             url += "&tips=";
           }
           if (this.tipSel.length) {
@@ -1139,7 +1115,7 @@ export default {
           "/api/users/listarToken/" + this.$store.state.token
         );
 
-        this.tabelaSelecao.tipologias = this.tipSel.concat(this.tipEnt);
+        this.tabelaSelecao.tipologias = this.tipSel;
 
         if (this.listaTotalProcSelUpdate.length) {
           this.listaTotalProcSel = this.listaTotalProcSelUpdate;

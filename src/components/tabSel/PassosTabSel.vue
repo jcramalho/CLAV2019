@@ -1,174 +1,176 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12 sm20>
-        <v-card>
-          <v-toolbar class="header">
-            <v-toolbar-title
-              >Passos para a criação de uma Tabela de Seleção</v-toolbar-title
-            >
-          </v-toolbar>
-          <v-card-text>
-            <v-expansion-panel>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Tabela de Seleção Organizacional
-                  </div>
-                </template>
-                <v-card>
-                  <table>
-                    <tr>
-                      <td>
-                        <div class="infobox" style="text-align:center">
-                          <b>Passo 1</b>
-                        </div>
-                      </td>
-                      <td
-                        rowspan="3"
-                        width="30%"
-                        style="height:1px; padding-top:5px; padding-bottom:5px"
-                      >
-                        <div class="whitebox" style="height:100%;">
-                          Identificação da natureza de intervenção da sua
-                          entidade, como dono ou participante, em cada processo
-                          de negócio, a partir da lista de:
-                        </div>
-                      </td>
-                      <td>
-                        <div class="whitebox">
-                          Processos comuns (passíveis de existirem em qualquer
-                          entidade)
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>
-                        <div class="whitebox">
-                          Processos de negócio específicos da entidade e
-                          tipologia em que se enquadre
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>
-                        <div class="whitebox">
-                          Processos de negócio específicos restantes
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="infobox" style="text-align:center;">
-                          <b>Passo 2</b>
-                        </div>
-                      </td>
-                      <td colspan="2">
-                        <div class="whitebox">
-                          Alteração do conteúdo dos campos nos processos de
-                          negócio selecionados: Notas de aplicação; Exemplos de
-                          NA; Notas de exclusão; Termos de índice; Legislação.
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="infobox" style="text-align:center;">
-                          <b>Passo 3</b>
-                        </div>
-                      </td>
-                      <td colspan="2">
-                        <div class="whitebox">
-                          Proposta de novos processos de negócio
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </v-card>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel>
-              <v-expansion-panel-content class="expansion-panel-heading">
-                <template v-slot:header>
-                  <div class="subheading font-weight-bold">
-                    Tabela de Seleção Pluriorganizacional
-                  </div>
-                </template>
-                <v-card>
-                  <table>
-                    <tr>
-                      <td>
-                        <div class="infobox" style="text-align:center">
-                          <b>Passo 1</b>
-                        </div>
-                      </td>
-                      <td
-                        rowspan="2"
-                        width="30%"
-                        style="height:1px; padding-top:5px; padding-bottom:5px"
-                      >
-                        <div class="whitebox" style="height:100%;">
-                          Identificação da natureza de intervenção da sua
-                          entidade, como dono ou participante, em cada processo
-                          de negócio, a partir da lista de:
-                        </div>
-                      </td>
-                      <td>
-                        <div class="whitebox">
-                          Processos comuns (passíveis de existirem em qualquer
-                          entidade)
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>
-                        <div class="whitebox">
-                          Processos de negócio específicos da entidade e
-                          tipologia em que se enquadrem
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="infobox" style="text-align:center">
-                          <b>Passo 2</b>
-                        </div>
-                      </td>
-                      <td colspan="2">
-                        <div class="whitebox">
-                          Alteração do conteúdo dos campos nos processos de
-                          negócio selecionados: Notas de aplicação; Exemplos de
-                          NA; Notas de exclusão; Termos de índice; Legislação.
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="infobox" style="text-align:center">
-                          <b>Passo 3</b>
-                        </div>
-                      </td>
-                      <td colspan="2">
-                        <div class="whitebox">
-                          Proposta de novos processos de negócio
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </v-card>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-card-text>
-          <div style="text-align:center">
-            <v-btn medium color="primary" @click="voltar()">Voltar</v-btn>
-          </div>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-row class="ma-1">
+    <v-col>
+      <v-card>
+        <v-toolbar class="header">
+          <v-toolbar-title
+            >Passos para a criação de uma Tabela de Seleção</v-toolbar-title
+          >
+        </v-toolbar>
+        <v-card-text>
+          <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-header class="expansion-panel-heading">
+              Tabela de Seleção Organizacional
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-card>
+                <table>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center">
+                        <b>Passo 1</b>
+                      </div>
+                    </td>
+                    <td
+                      rowspan="3"
+                      width="30%"
+                      style="height:1px; padding-top:5px; padding-bottom:5px"
+                    >
+                      <div class="whitebox" style="height:100%;">
+                        Identificação da natureza de intervenção da sua
+                        entidade, como dono ou participante, em cada processo
+                        de negócio, a partir da lista de:
+                      </div>
+                    </td>
+                    <td>
+                      <div class="whitebox">
+                        Processos comuns (passíveis de existirem em qualquer
+                        entidade)
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <div class="whitebox">
+                        Processos de negócio específicos da entidade e
+                        tipologia em que se enquadre
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <div class="whitebox">
+                        Processos de negócio específicos restantes
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center;">
+                        <b>Passo 2</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Alteração do conteúdo dos campos nos processos de
+                        negócio selecionados: Notas de aplicação; Exemplos de
+                        NA; Notas de exclusão; Termos de índice; Legislação.
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center;">
+                        <b>Passo 3</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Proposta de novos processos de negócio
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          </v-expansion-panels>
+
+          <hr style="border-top: 0px"/>
+
+
+          <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-header class="expansion-panel-heading">
+              Tabela de Seleção Pluriorganizacional
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-card>
+                <table>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center">
+                        <b>Passo 1</b>
+                      </div>
+                    </td>
+                    <td
+                      rowspan="2"
+                      width="30%"
+                      style="height:1px; padding-top:5px; padding-bottom:5px"
+                    >
+                      <div class="whitebox" style="height:100%;">
+                        Identificação da natureza de intervenção da sua
+                        entidade, como dono ou participante, em cada processo
+                        de negócio, a partir da lista de:
+                      </div>
+                    </td>
+                    <td>
+                      <div class="whitebox">
+                        Processos comuns (passíveis de existirem em qualquer
+                        entidade)
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <div class="whitebox">
+                        Processos de negócio específicos da entidade e
+                        tipologia em que se enquadrem
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center">
+                        <b>Passo 2</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Alteração do conteúdo dos campos nos processos de
+                        negócio selecionados: Notas de aplicação; Exemplos de
+                        NA; Notas de exclusão; Termos de índice; Legislação.
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center">
+                        <b>Passo 3</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Proposta de novos processos de negócio
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card-text>
+        <div style="text-align:center">
+          <v-btn medium color="primary" @click="voltar()">Voltar</v-btn>
+        </div>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
