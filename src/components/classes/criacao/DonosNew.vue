@@ -1,8 +1,8 @@
 <template>
-  <v-row class="ma-2 green lighten-4">
+  <v-row class="ma-2 indigo lighten-5">
     <v-col cols="2">
       <div class="info-label">Entidade nova:</div>
-      <v-btn small dark rounded class="green darken-2" @click="newEntidade">
+      <v-btn small dark rounded class="indigo darken-2" @click="newEntidade">
         Adicionar
         <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
@@ -137,11 +137,11 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
