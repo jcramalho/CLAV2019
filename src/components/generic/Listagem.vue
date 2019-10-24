@@ -27,7 +27,7 @@
             :value="true"
             color="error"
             icon="warning"
-          >Não foram encontrados resultados para "{{ search }}" .</v-alert>
+          >Não foram encontrados resultados para "{{ search }}".</v-alert>
         </template>
 
         <template v-slot:item="props">
@@ -60,7 +60,12 @@
           </tr>
 
           <tr v-else @click="go(props.item.id)">
-            <td v-for="(campo, index) in props.item" v-bind:key="index">{{ campo }}</td>
+            <td v-for="(campo, index) in props.item" v-bind:key="index">
+              <div v-if="index == 'edit'">
+                <v-icon>edit</v-icon>
+              </div>
+              <div v-else>{{ campo }}</div>
+            </td>
           </tr>
         </template>
 
@@ -113,7 +118,7 @@ export default {
       }
     }
   },
-  mounted: function() {
+  created: function() {
     try {
       for (var i = 0; i < this.cabecalho.length; i++) {
         this.headers[i] = {
