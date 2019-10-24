@@ -41,14 +41,14 @@
         </v-col>
       </v-row>
 
-      <hr style="border: 3px solid green; border-radius: 2px;" />
+      <hr style="border: 3px solid indigo; border-radius: 2px;" />
 
       <!-- DONOS -->
       <DonosOps :entidades="c.donos" @unselectEntidade="unselectEntidade($event)" />
 
       <v-row>
         <v-col>
-          <hr style="border-top: 1px dashed green;" />
+          <hr style="border-top: 1px dashed indigo;" />
         </v-col>
       </v-row>
 
@@ -60,7 +60,7 @@
 
       <v-row>
         <v-col>
-          <hr style="border-top: 1px dashed green;" />
+          <hr style="border-top: 1px dashed indigo;" />
         </v-col>
       </v-row>
 
@@ -70,7 +70,7 @@
         @selectEntidade="selectEntidade($event)"
       />
 
-      <hr style="border: 3px solid green; border-radius: 2px;" />
+      <hr style="border: 3px solid indigo; border-radius: 2px;" />
 
       <!-- PARTICIPANTES -->
       <div v-if="c.procTrans != 'N'">
@@ -79,7 +79,7 @@
           @unselectParticipante="unselectParticipante($event)"
         />
 
-        <hr style="border-top: 1px dashed green;" />
+        <hr style="border-top: 1px dashed indigo;" />
 
         <ParticipantesNew
           @newEntidade="newEntidade($event, c.participantes)"
@@ -87,7 +87,7 @@
           :entidades="participantes"
         />
 
-        <hr style="border-top: 1px dashed green;" />
+        <hr style="border-top: 1px dashed indigo;" />
 
         <ParticipantesSelect
           :entidadesReady="semaforos.entidadesReady"
@@ -95,7 +95,7 @@
           @selectParticipante="selectParticipante($event)"
         />
 
-        <hr style="border: 3px solid green; border-radius: 2px;" />
+        <hr style="border: 3px solid indigo; border-radius: 2px;" />
       </div>
 
       <!-- PROCESSOS RELACIONADOS -->
@@ -104,7 +104,7 @@
         @unselectProcRel="unselectProcesso($event)"
       />
 
-      <hr style="border-top: 1px dashed green;" />
+      <hr style="border-top: 1px dashed indigo;" />
 
       <ProcessosRelacionadosSelect
         :procReady="semaforos.classesReady"
@@ -112,20 +112,20 @@
         @selectProcesso="selectProcesso($event)"
       />
 
-      <hr style="border: 3px solid green; border-radius: 2px;" />
+      <hr style="border: 3px solid indigo; border-radius: 2px;" />
 
       <!-- LEGISLAÇÂO -->
       <LegislacaoOps :legs="c.legislacao" @unselectDiploma="unselectDiploma($event)" />
 
       <v-row ma-2>
         <v-col>
-          <hr style="border-top: 1px dashed green;" />
+          <hr style="border-top: 1px dashed #1A237E;" />
         </v-col>
       </v-row>
 
       <LegislacaoNew :legislacao="c.legislacao" @newLegislacao="newEntidade($event, c.legislacao)" />
 
-      <hr style="border-top: 1px dashed green;" />
+      <hr style="border-top: 1px dashed #1A237E;" />
 
       <LegislacaoSelect
         :legs="legs"

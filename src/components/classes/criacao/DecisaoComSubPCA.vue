@@ -1,7 +1,7 @@
 <template>
   <!-- PCA -->
   <v-card class="ma-2" >
-    <v-card-title class="teal darken-4 subtitle-1 white--text" dark>Prazo de Conservação Administrativa</v-card-title>
+    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>Prazo de Conservação Administrativa</v-card-title>
     <v-card-text>
       <v-row class="ma-2">
         <v-col cols="2">
@@ -74,7 +74,7 @@
         </v-col>
       </v-row>
 
-      <hr style="border-top: 1px dashed green;" />
+      <hr style="border-top: 1px dashed #1A237E;" />
 
       <!-- JUSTIFICAÇÂO DO PCA -->
 
@@ -84,7 +84,7 @@
 
           <div class="ma-2">
             <v-btn
-              color="green darken-2"
+              color="indigo darken-2"
               dark
               rounded
               @click="adicionarCriterioGestionario( c.pca.justificacao, 'CriterioJustificacaoGestionario',
@@ -98,7 +98,7 @@
 
           <div class="ma-2">
             <v-btn
-              color="green darken-2"
+              color="indigo darken-2"
               dark
               rounded
               @click="adicionarCriterioLegalPCA( c.pca.justificacao, 'CriterioJustificacaoLegal',
@@ -192,7 +192,7 @@
 
             <hr
               v-if="cindex < c.pca.justificacao.length"
-              style="border-top: 2px dotted green; width: 100%;"
+              style="border-top: 2px dotted #1A237E; width: 100%;"
             />
           </v-row>
         </v-col>
@@ -325,12 +325,14 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {
