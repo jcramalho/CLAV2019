@@ -1,417 +1,428 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-stepper v-model="stepNo" vertical>
-      <v-progress-linear v-model="valorBarra"></v-progress-linear>
-      <v-stepper-step :complete="stepNo > 1" step="1">
-        Entidades abrangidas pela TS
-      </v-stepper-step>
-      <v-stepper-content step="1">
-        <v-expansion-panels>
-          <v-expansion-panel>
-            <v-expansion-panel-header class="expansion-panel-heading">
-              Selecione as entidades abrangidas pela TS
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-card style="padding-top:30px;">
-                <v-card-text>
+  <v-row class="ma-1">
+      <v-col>
+        <v-card>
+          <v-app-bar color="indigo darken-4" dark>
+                <v-toolbar-title class="card-heading">Nova Tabela de Seleção</v-toolbar-title>
+          </v-app-bar>
+          <v-card-text class="panel-body">
+            <v-container grid-list-md fluid>
+              <v-stepper v-model="stepNo" vertical>
+                <v-progress-linear v-model="valorBarra"></v-progress-linear>
+                <v-stepper-step :complete="stepNo > 1" step="1">
+                  Entidades abrangidas pela TS
+                </v-stepper-step>
+                <v-stepper-content step="1">
+                  <v-expansion-panels>
+                    <v-expansion-panel>
+                      <v-expansion-panel-header class="expansion-panel-heading">
+                        Selecione as entidades abrangidas pela TS
+                      </v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-card style="padding-top:30px;">
+                          <v-card-text>
 
-                  <DesSelEnt
-                    :entidades="entSel"
-                    @unselectEntidade="unselectEntidade($event)"
-                  />
+                            <DesSelEnt
+                              :entidades="entSel"
+                              @unselectEntidade="unselectEntidade($event)"
+                            />
 
-                  <hr style="border-top: 1px dashed #dee2f8;" />
+                            <hr style="border-top: 1px dashed #dee2f8;" />
 
-                  <SelEnt
-                    :entidadesReady="entidadesReady"
-                    :entidades="entidades"
-                    @selectEntidade="selectEntidade($event)"
-                  />
-                </v-card-text>
-              </v-card>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-        <hr style="border-top: 0px"/>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 2;
-            barra(16);
-            entSel.sort((a, b) => (a.designacao > b.designacao) ? 1 : -1);
-            tabelaSelecao.entidades = entSel;
-            entSelReady = true;
-          "
-          >Continuar</v-btn
-        >
-      </v-stepper-content>
+                            <SelEnt
+                              :entidadesReady="entidadesReady"
+                              :entidades="entidades"
+                              @selectEntidade="selectEntidade($event)"
+                            />
+                          </v-card-text>
+                        </v-card>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                  <hr style="border-top: 0px"/>
+                  <v-btn
+                    color="primary"
+                    @click="
+                      stepNo = 2;
+                      barra(16);
+                      entSel.sort((a, b) => (a.designacao > b.designacao) ? 1 : -1);
+                      tabelaSelecao.entidades = entSel;
+                      entSelReady = true;
+                    "
+                    >Continuar</v-btn
+                  >
+                </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 2" step="2"
-        >Designação
-        <small>Designação da nova tabela de seleção</small>
-      </v-stepper-step>
-      <v-stepper-content step="2">
-        <v-flex xs12 sm6 md10>
-          <v-text-field
-            placeholder="Designação da Nova Tabela de Seleção"
-            v-model="tabelaSelecao.designacao"
-          ></v-text-field>
-        </v-flex>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 3;
-            barra(32);
-            loadProcEspecificos();
-          "
-          >Continuar</v-btn
-        >
-      </v-stepper-content>
+                <v-stepper-step :complete="stepNo > 2" step="2"
+                  >Designação
+                  <small>Designação da nova tabela de seleção</small>
+                </v-stepper-step>
+                <v-stepper-content step="2">
+                  <v-flex xs12 sm6 md10>
+                    <v-text-field
+                      placeholder="Designação da Nova Tabela de Seleção"
+                      v-model="tabelaSelecao.designacao"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-btn
+                    color="primary"
+                    @click="
+                      stepNo = 3;
+                      barra(32);
+                      loadProcEspecificos();
+                    "
+                    >Continuar</v-btn
+                  >
+                </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 3" step="3"
-        >Processos Comuns
-        <small>Processos passíveis de existir em qualquer entidade</small>
-      </v-stepper-step>
-      <v-stepper-content step="3">
-        <v-layout wrap>
-          <v-flex xs10>
-            <v-expansion-panels>
-              <v-expansion-panel>
-                <v-expansion-panel-header class="expansion-panel-heading">
-                  Selecione os processos de negócio comuns
-                </v-expansion-panel-header>
-                <v-expansion-panel-content eager>
-                  <ListaProcessosComuns
-                    v-if="listaProcComunsReady && entSelReady"
-                    v-bind:lista="listaProcComuns"
-                    v-bind:entidades="tabelaSelecao.entidades"
-                    @contadorProcSelCom="contadorProcSelCom($event)"
-                    @contadorProcPreSelCom="contadorProcPreSelCom($event)"
-                    @procPreSelResTravCom="procPreSelResTravCom($event)"
-                    @guardarTSProcComuns="guardarTSProcComuns($event)"
-                  />
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-flex>
-        </v-layout>
-        <v-layout wrap>
-          <v-flex xs3>
-            <v-text-field
-              label="Nº de processos comuns selecionados"
-              :value="numProcSelCom"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
-            <v-text-field
-              label="Nº de processos comuns pré selecionados"
-              :value="numProcPreSelCom"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 4;
-            barra(48);
-            procPreSelEspecificos();
-            loadProcEspRestantes();
-          "
-          >Continuar</v-btn
-        >
-      </v-stepper-content>
+                <v-stepper-step :complete="stepNo > 3" step="3"
+                  >Processos Comuns
+                  <small>Processos passíveis de existir em qualquer entidade</small>
+                </v-stepper-step>
+                <v-stepper-content step="3">
+                  <v-layout wrap>
+                    <v-flex xs10>
+                      <v-expansion-panels>
+                        <v-expansion-panel>
+                          <v-expansion-panel-header class="expansion-panel-heading">
+                            Selecione os processos de negócio comuns
+                          </v-expansion-panel-header>
+                          <v-expansion-panel-content eager>
+                            <ListaProcessosComuns
+                              v-if="listaProcComunsReady && entSelReady"
+                              v-bind:lista="listaProcComuns"
+                              v-bind:entidades="tabelaSelecao.entidades"
+                              @contadorProcSelCom="contadorProcSelCom($event)"
+                              @contadorProcPreSelCom="contadorProcPreSelCom($event)"
+                              @procPreSelResTravCom="procPreSelResTravCom($event)"
+                              @guardarTSProcComuns="guardarTSProcComuns($event)"
+                            />
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout wrap>
+                    <v-flex xs3>
+                      <v-text-field
+                        label="Nº de processos comuns selecionados"
+                        :value="numProcSelCom"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs4 style="padding-left:60px;">
+                      <v-text-field
+                        label="Nº de processos comuns pré selecionados"
+                        :value="numProcPreSelCom"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <!-- apenas pode avançar se o num de proc pré selecionados estiver a 0 -->
+                  <v-btn
+                    color="primary"
+                    @click="
+                      stepNo = 4;
+                      barra(48);
+                      procPreSelEspecificos();
+                      loadProcEspRestantes();
+                    "
+                    >Continuar</v-btn
+                  >
+                </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 4" step="4"
-        >Processos Específicos
-        <small
-          >Processos específicos da entidade e tipologia em que se
-          enquadra</small
-        >
-      </v-stepper-step>
-      <v-stepper-content step="4">
-        <v-layout wrap>
-          <v-flex xs10>
-            <v-expansion-panels>
-              <v-expansion-panel>
-                <v-expansion-panel-header class="expansion-panel-heading">
-                  Selecione os processos de negócio específicos
-                </v-expansion-panel-header>
-                <v-expansion-panel-content eager>
-                  <ListaProcessosEspecificos
-                    v-if="listaProcEspReady"
-                    v-bind:lista="listaProcEsp"
-                    v-bind:listaPreSel="procPreSelResTravComum"
-                    v-bind:entidades="tabelaSelecao.entidades"
-                    @contadorProcSelEsp="contadorProcSelEsp($event)"
-                    @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
-                    @procPreSelResTravEsp="procPreSelResTravEsp($event)"
-                    @guardarTSProcEsp="guardarTSProcEsp($event)"
-                  />
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-flex>
-        </v-layout>
-        <v-layout wrap>
-          <v-flex xs3>
-            <v-text-field
-              label="Nº de processos específicos selecionados"
-              :value="numProcSelEsp"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
-            <v-text-field
-              label="Nº de processos específicos pré selecionados"
-              :value="numProcPreSelEsp"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 5;
-            barra(64);
-            procPreSelRestantes();
-          "
-          >Continuar</v-btn
-        >
-      </v-stepper-content>
+                <v-stepper-step :complete="stepNo > 4" step="4"
+                  >Processos Específicos
+                  <small
+                    >Processos específicos da entidade e tipologia em que se
+                    enquadra</small
+                  >
+                </v-stepper-step>
+                <v-stepper-content step="4">
+                  <v-layout wrap>
+                    <v-flex xs10>
+                      <v-expansion-panels>
+                        <v-expansion-panel>
+                          <v-expansion-panel-header class="expansion-panel-heading">
+                            Selecione os processos de negócio específicos
+                          </v-expansion-panel-header>
+                          <v-expansion-panel-content eager>
+                            <ListaProcessosEspecificos
+                              v-if="listaProcEspReady"
+                              v-bind:lista="listaProcEsp"
+                              v-bind:listaPreSel="procPreSelResTravComum"
+                              v-bind:entidades="tabelaSelecao.entidades"
+                              @contadorProcSelEsp="contadorProcSelEsp($event)"
+                              @contadorProcPreSelEsp="contadorProcPreSelEsp($event)"
+                              @procPreSelResTravEsp="procPreSelResTravEsp($event)"
+                              @guardarTSProcEsp="guardarTSProcEsp($event)"
+                            />
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout wrap>
+                    <v-flex xs3>
+                      <v-text-field
+                        label="Nº de processos específicos selecionados"
+                        :value="numProcSelEsp"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs4 style="padding-left:60px;">
+                      <v-text-field
+                        label="Nº de processos específicos pré selecionados"
+                        :value="numProcPreSelEsp"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-btn
+                    color="primary"
+                    @click="
+                      stepNo = 5;
+                      barra(64);
+                      procPreSelRestantes();
+                    "
+                    >Continuar</v-btn
+                  >
+                </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 5" step="5"
-        >Processos Específicos Restantes
-      </v-stepper-step>
-      <v-stepper-content step="5">
-        <v-layout wrap>
-          <v-flex xs10>
-            <v-expansion-panels>
-              <v-expansion-panel>
-                <v-expansion-panel-header class="expansion-panel-heading">
-                  Selecione os processos de negócio específicos restantes
-                </v-expansion-panel-header>
-                <v-expansion-panel-content eager>
-                  <ListaProcessosEspRestantes
-                    v-if="listaProcEspResReady"
-                    v-bind:lista="listaProcEspRes"
-                    v-bind:listaPreSel="procPreSelEspRestantes"
-                    v-bind:entidades="tabelaSelecao.entidades"
-                    @contadorProcSelRes="contadorProcSelRes($event)"
-                    @contadorProcPreSelRes="contadorProcPreSelRes($event)"
-                    @procPreSelResTravRes="procPreSelResTravRes($event)"
-                    @guardarTSProcRes="guardarTSProcRes($event)"
-                  />
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-flex>
-        </v-layout>
-        <v-layout wrap>
-          <v-flex xs3>
-            <v-text-field
-              label="Nº de processos restantes selecionados"
-              :value="numProcSelRes"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
-            <v-text-field
-              label="Nº de processos restantes pré selecionados"
-              :value="numProcPreSelRes"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 6;
-            barra(80);
-            loadUltimosProcessos();
-            procPreSelUlt();
-          "
-          >Continuar</v-btn
-        >
-      </v-stepper-content>
+                <v-stepper-step :complete="stepNo > 5" step="5"
+                  >Processos Específicos Restantes
+                </v-stepper-step>
+                <v-stepper-content step="5">
+                  <v-layout wrap>
+                    <v-flex xs10>
+                      <v-expansion-panels>
+                        <v-expansion-panel>
+                          <v-expansion-panel-header class="expansion-panel-heading">
+                            Selecione os processos de negócio específicos restantes
+                          </v-expansion-panel-header>
+                          <v-expansion-panel-content eager>
+                            <ListaProcessosEspRestantes
+                              v-if="listaProcEspResReady"
+                              v-bind:lista="listaProcEspRes"
+                              v-bind:listaPreSel="procPreSelEspRestantes"
+                              v-bind:entidades="tabelaSelecao.entidades"
+                              @contadorProcSelRes="contadorProcSelRes($event)"
+                              @contadorProcPreSelRes="contadorProcPreSelRes($event)"
+                              @procPreSelResTravRes="procPreSelResTravRes($event)"
+                              @guardarTSProcRes="guardarTSProcRes($event)"
+                            />
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout wrap>
+                    <v-flex xs3>
+                      <v-text-field
+                        label="Nº de processos restantes selecionados"
+                        :value="numProcSelRes"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs4 style="padding-left:60px;">
+                      <v-text-field
+                        label="Nº de processos restantes pré selecionados"
+                        :value="numProcPreSelRes"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-btn
+                    color="primary"
+                    @click="
+                      stepNo = 6;
+                      barra(80);
+                      loadUltimosProcessos();
+                      procPreSelUlt();
+                    "
+                    >Continuar</v-btn
+                  >
+                </v-stepper-content>
 
-      <v-stepper-step :complete="stepNo > 6" step="6"
-        >Outros processos
-        <small
-          >Revisão de processos de negócio não selecionados nas etapas
-          anteriores</small
-        >
-      </v-stepper-step>
-      <v-stepper-content step="6">
-        <v-layout wrap>
-          <v-flex xs10>
-            <v-expansion-panels>
-              <v-expansion-panel>
-                <v-expansion-panel-header class="expansion-panel-heading">
-                  Selecione os processos de negócio restantes
-                </v-expansion-panel-header>
-                <v-expansion-panel-content eager>
-                  <ListaProcessosUltimos
-                    v-if="listaProcUltReady"
-                    v-bind:lista="listaProcUlt"
-                    v-bind:listaPreSel="procPreSelUltimos"
-                    v-bind:entidades="tabelaSelecao.entidades"
-                    @contadorProcSelUlt="contadorProcSelUlt($event)"
-                    @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
-                    @guardarTSProcUlt="guardarTSProcUlt($event)"
-                  />
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-flex>
-        </v-layout>
-        <v-layout wrap>
-          <v-flex xs3>
-            <v-text-field
-              label="Nº dos últimos processos selecionados"
-              :value="numProcSelUlt"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs4 style="padding-left:60px;">
-            <v-text-field
-              label="Nº dos últimos processos pré selecionados"
-              :value="numProcPreSelUlt"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-btn
-          color="primary"
-          @click="
-            stepNo = 7;
-            barra(100);
-            parseProcessosSel();
-          "
-          >Continuar</v-btn
-        >
-      </v-stepper-content>
+                <v-stepper-step :complete="stepNo > 6" step="6"
+                  >Outros processos
+                  <small
+                    >Revisão de processos de negócio não selecionados nas etapas
+                    anteriores</small
+                  >
+                </v-stepper-step>
+                <v-stepper-content step="6">
+                  <v-layout wrap>
+                    <v-flex xs10>
+                      <v-expansion-panels>
+                        <v-expansion-panel>
+                          <v-expansion-panel-header class="expansion-panel-heading">
+                            Selecione os processos de negócio restantes
+                          </v-expansion-panel-header>
+                          <v-expansion-panel-content eager>
+                            <ListaProcessosUltimos
+                              v-if="listaProcUltReady"
+                              v-bind:lista="listaProcUlt"
+                              v-bind:listaPreSel="procPreSelUltimos"
+                              v-bind:entidades="tabelaSelecao.entidades"
+                              @contadorProcSelUlt="contadorProcSelUlt($event)"
+                              @contadorProcPreSelUlt="contadorProcPreSelUlt($event)"
+                              @guardarTSProcUlt="guardarTSProcUlt($event)"
+                            />
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout wrap>
+                    <v-flex xs3>
+                      <v-text-field
+                        label="Nº dos últimos processos selecionados"
+                        :value="numProcSelUlt"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs4 style="padding-left:60px;">
+                      <v-text-field
+                        label="Nº dos últimos processos pré selecionados"
+                        :value="numProcPreSelUlt"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-btn
+                    color="primary"
+                    @click="
+                      stepNo = 7;
+                      barra(100);
+                      parseProcessosSel();
+                    "
+                    >Continuar</v-btn
+                  >
+                </v-stepper-content>
 
 
-      <v-stepper-step :complete="stepNo > 7" step="7"
-        >Alterações na parte descritiva
-        <small>
-          Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão (NE),
-          Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) nos
-          processos selecionados
-        </small>
-      </v-stepper-step>
-      <v-stepper-content step="7">
-        <v-layout wrap>
-          <v-flex xs10>
-            <v-expansion-panels>
-              <v-expansion-panel>
-                <v-expansion-panel-header class="expansion-panel-heading">
-                  Lista de processos selecionados
-                </v-expansion-panel-header>
-                <v-expansion-panel-content >
-                  <ListaParteDescritiva
-                    v-if="listaTotalProcSelReady"
-                    v-bind:lista="listaTotalProcSel"
-                    @listaTotalSelUpdate="listaTotalSelUpdate($event)"
-                  />
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-flex>
-        </v-layout>
-        <hr style="border-top: 0px"/>
-        <v-btn color="primary" @click="finalizaUltPasso = true"
-          >Finalizar
-          <v-dialog v-model="finalizaUltPasso" persistent max-width="380">
-            <v-card>
-              <v-card-title class="title">Finalizar último passo?</v-card-title>
-              <v-card-text>
-                <p>Chegou ao fim do preenchimento do formulário de criação
-                  da TS!
-                </p>
-                <p>
-                  Caso pretenda finalizar o mesmo e submeter 
-                  a TS, selecione "Confirmar".
-                  Caso ainda pretenda realizar 
-                  alguma alteração à TS, clique em "Voltar" e guarde o trabalho.
-                </p>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="red" text @click="finalizaUltPasso = false">
-                  Voltar
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  text
-                  @click="
-                    stepNo = 8;
-                    barra(100);
-                    finalizaUltPasso = false;
-                  "
+                <v-stepper-step :complete="stepNo > 7" step="7"
+                  >Alterações na parte descritiva
+                  <small>
+                    Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão (NE),
+                    Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) nos
+                    processos selecionados
+                  </small>
+                </v-stepper-step>
+                <v-stepper-content step="7">
+                  <v-layout wrap>
+                    <v-flex xs10>
+                      <v-expansion-panels>
+                        <v-expansion-panel>
+                          <v-expansion-panel-header class="expansion-panel-heading">
+                            Lista de processos selecionados
+                          </v-expansion-panel-header>
+                          <v-expansion-panel-content >
+                            <ListaParteDescritiva
+                              v-if="listaTotalProcSelReady"
+                              v-bind:lista="listaTotalProcSel"
+                              @listaTotalSelUpdate="listaTotalSelUpdate($event)"
+                            />
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-flex>
+                  </v-layout>
+                  <hr style="border-top: 0px"/>
+                  <v-btn color="primary" @click="finalizaUltPasso = true"
+                    >Finalizar
+                    <v-dialog v-model="finalizaUltPasso" persistent max-width="380">
+                      <v-card>
+                        <v-card-title class="title">Finalizar último passo?</v-card-title>
+                        <v-card-text>
+                          <p>Chegou ao fim do preenchimento do formulário de criação
+                            da TS!
+                          </p>
+                          <p>
+                            Caso pretenda finalizar o mesmo e submeter 
+                            a TS, selecione "Confirmar".
+                            Caso ainda pretenda realizar 
+                            alguma alteração à TS, clique em "Voltar" e guarde o trabalho.
+                          </p>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="red" text @click="finalizaUltPasso = false">
+                            Voltar
+                          </v-btn>
+                          <v-btn
+                            color="primary"
+                            text
+                            @click="
+                              stepNo = 8;
+                              barra(100);
+                              finalizaUltPasso = false;
+                            "
+                          >
+                            Confirmar
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-btn>
+                </v-stepper-content>
+
+                <hr style="border-top: 0px"/>
+
+                <v-row
+                  align="center"
+                  justify="center"
                 >
-                  Confirmar
+
+                <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
+                  >Submeter</v-btn
+                >
+                <v-btn color="primary" v-else-if="stepNo >= 1" @click="guardarTrabalho()"
+                  >Guardar trabalho
+                  <v-dialog v-model="pendenteGuardado" width="60%">
+                    <v-card>
+                      <v-card-title>Trabalho pendente guardado</v-card-title>
+                      <v-card-text>
+                        <p>
+                          Os seus dados foram guardados para que possa retomar o trabalho
+                          mais tarde.
+                        </p>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer />
+                        <v-btn color="primary" dark @click="$router.push('/')">Fechar</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-btn
+                >
+                <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
+                  >Cancelar criação
+                  <v-dialog v-model="eliminarTabela" persistent max-width="320">
+                    <v-card>
+                      <v-card-title class="headline">Eliminar Tabela</v-card-title>
+                      <v-card-text>
+                        Pretende eliminar todo o trabalho realizado?
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red" text @click="eliminarTabela = false">
+                          Cancelar
+                        </v-btn>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="
+                            eliminarTS();
+                            eliminarTabela = false;
+                          "
+                        >
+                          Confirmar
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-btn>
-      </v-stepper-content>
-
-      <hr style="border-top: 0px"/>
-
-      <v-row
-        align="center"
-        justify="center"
-      >
-
-      <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
-        >Submeter</v-btn
-      >
-      <v-btn color="primary" v-else-if="stepNo >= 1" @click="guardarTrabalho()"
-        >Guardar trabalho
-        <v-dialog v-model="pendenteGuardado" width="60%">
-          <v-card>
-            <v-card-title>Trabalho pendente guardado</v-card-title>
-            <v-card-text>
-              <p>
-                Os seus dados foram guardados para que possa retomar o trabalho
-                mais tarde.
-              </p>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn color="primary" dark @click="$router.push('/')">Fechar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-btn
-      >
-      <v-btn dark text color="red darken-4" @click="eliminarTabela = true"
-        >Cancelar criação
-        <v-dialog v-model="eliminarTabela" persistent max-width="320">
-          <v-card>
-            <v-card-title class="headline">Eliminar Tabela</v-card-title>
-            <v-card-text>
-              Pretende eliminar todo o trabalho realizado?
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="red" text @click="eliminarTabela = false">
-                Cancelar
-              </v-btn>
-              <v-btn
-                color="primary"
-                text
-                @click="
-                  eliminarTS();
-                  eliminarTabela = false;
-                "
-              >
-                Confirmar
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-btn>
-      </v-row>
-    </v-stepper>
-  </v-container>
+                </v-row>
+              </v-stepper>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -1115,6 +1126,11 @@ export default {
   font-weight: 400;
   width: 100%;
   background-color: #dee2f8;
+  font-weight: bold;
+}
+
+.card-heading {
+  font-size: x-large;
   font-weight: bold;
 }
 </style>

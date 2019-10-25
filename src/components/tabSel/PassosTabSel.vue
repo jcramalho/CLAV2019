@@ -2,11 +2,9 @@
   <v-row class="ma-1">
     <v-col>
       <v-card>
-        <v-toolbar class="header">
-          <v-toolbar-title
-            >Passos para a criação de uma Tabela de Seleção</v-toolbar-title
-          >
-        </v-toolbar>
+        <v-app-bar color="indigo darken-4" dark>
+              <v-toolbar-title class="card-heading">Passos para a criação de uma Tabela de Seleção</v-toolbar-title>
+        </v-app-bar>
         <v-card-text>
           <v-expansion-panels>
           <v-expansion-panel>
@@ -210,5 +208,9 @@ export default {
 
 .panel-custom .panel-title {
   color: #1a237e;
+}
+
+.card-heading {
+  font-size: x-large;
 }
 </style>
