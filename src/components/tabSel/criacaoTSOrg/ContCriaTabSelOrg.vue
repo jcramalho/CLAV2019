@@ -12,34 +12,7 @@
               Selecione as tipologias de entidade a que pertence
             </v-expansion-panel-header>
             <v-expansion-panel-content >
-              <v-card style="padding-top:30px;">
-                <v-layout>
-                  <v-flex xs2>
-                    <v-subheader
-                      class="info-label"
-                      style="border-color: white; border-style:solid; color: #1A237E;"
-                      >Tipologias da entidade:</v-subheader
-                    >
-                  </v-flex>
-                  <v-flex xs9>
-                    <v-data-table
-                      :headers="[
-                        { text: 'Sigla', align: 'left', value: 'sigla' },
-                        { text: 'Designação', value: 'designacao' }
-                      ]"
-                      :items="tipEnt"
-                      class="elevation-1"
-                      hide-default-footer
-                    >
-                      <template v-slot:item="props">
-                        <tr>
-                          <td>{{ props.item.sigla }}</td>
-                          <td>{{ props.item.designacao }}</td>
-                        </tr>
-                      </template>
-                    </v-data-table>
-                  </v-flex>
-                </v-layout>
+              <v-card class="ma-4">
                 <DesSelTip
                   :tipologias="tipSel"
                   @unselectTipologia="unselectTipologia($event)"
@@ -86,14 +59,6 @@
             loadProcEspecificos();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          text
-          @click="
-            stepNo = 1;
-            barra(0);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -169,14 +134,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 2;
-            barra(16);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 4" step="4"
@@ -249,14 +206,6 @@
             procPreSelRestantes();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          text
-          @click="
-            stepNo = 3;
-            barra(32);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -332,14 +281,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 4;
-            barra(48);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 6" step="6"
@@ -393,14 +334,6 @@
             parseProcessosSel();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          text
-          @click="
-            stepNo = 5;
-            barra(64);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -469,14 +402,6 @@
             </v-card>
           </v-dialog>
         </v-btn>
-        <v-btn
-          text
-          @click="
-            stepNo = 6;
-            barra(64);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <hr style="border-top: 0px"/>
@@ -544,7 +469,7 @@ import ListaProcessosComuns from "@/components/tabSel/criacaoTSOrg/ListaProcesso
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
-import ListaParteDescritiva from "@/components/tabSel/criacaoTSOrg/ListaProcSel.vue";
+import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcSel.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
@@ -1275,7 +1200,6 @@ export default {
           user: { email: userBD.data.email },
           token: this.$store.state.token
         };
-        // console.log(pendenteParams.objeto);
         var response = await this.$request(
           "put",
           "/api/pendentes",

@@ -80,18 +80,9 @@
           @click="
             stepNo = 3;
             barra(32);
-            listaProcComunsReady = true;
             loadProcEspecificos();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          text
-          @click="
-            stepNo = 1;
-            barra(0);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -166,14 +157,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 2;
-            barra(16);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 4" step="4"
@@ -246,14 +229,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 3;
-            barra(32);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 5" step="5"
@@ -323,14 +298,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 4;
-            barra(48);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 6" step="6"
@@ -383,14 +350,6 @@
             parseProcessosSel();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          text
-          @click="
-            stepNo = 5;
-            barra(64);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -458,14 +417,6 @@
           </v-card>
         </v-dialog>
       </v-btn>
-        <v-btn
-          text
-          @click="
-            stepNo = 6;
-            barra(64);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <hr style="border-top: 0px"/>
@@ -536,7 +487,7 @@ import ListaProcessosComuns from "@/components/tabSel/criacaoTSOrg/ListaProcesso
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
-import ListaParteDescritiva from "@/components/tabSel/criacaoTSOrg/ListaProcSel.vue";
+import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcSel.vue";
 
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
@@ -963,6 +914,7 @@ export default {
     },
     // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
     loadUltimosProcessos: function() {
+      if(!this.listaProcUltReady){
       // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
       for (var i = 0; i < this.listaProcComuns.length; i++) {
         var procSelecionado = false;
@@ -1026,6 +978,7 @@ export default {
       this.listaProcUlt.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
       if (this.listaProcUlt.length) {
         this.listaProcUltReady = true;
+      }
       }
     },
     // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos

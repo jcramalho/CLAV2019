@@ -1,12 +1,8 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card class="panel panel-default panel-custom">
-        <v-toolbar class="panel-heading">
-          <v-toolbar-title class="page-header"
-            ><h1>Nova Tabela de Seleção</h1></v-toolbar-title
-          >
-        </v-toolbar>
+      <v-card class="ma-4">
+        <v-card-title class="indigo darken-4 white--text">
+          Nova Tabela de Seleção
+        </v-card-title>
         <v-card-text class="panel-body">
           <v-container fluid grid-list-xl>
             <v-layout wrap align-center>
@@ -58,8 +54,6 @@
           </div>
         </v-card-text>
       </v-card>
-    </v-col>
-  </v-row>
 </template>
 
 <script>

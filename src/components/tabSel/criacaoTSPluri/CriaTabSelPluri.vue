@@ -38,6 +38,7 @@
           @click="
             stepNo = 2;
             barra(16);
+            entSel.sort((a, b) => (a.designacao > b.designacao) ? 1 : -1);
             tabelaSelecao.entidades = entSel;
             entSelReady = true;
           "
@@ -64,14 +65,6 @@
             loadProcEspecificos();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          text
-          @click="
-            stepNo = 1;
-            barra(0);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -126,14 +119,6 @@
             loadProcEspRestantes();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          text
-          @click="
-            stepNo = 2;
-            barra(16);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -191,14 +176,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 3;
-            barra(32);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 5" step="5"
@@ -252,14 +229,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 4;
-            barra(48);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 6" step="6"
@@ -306,6 +275,45 @@
             ></v-text-field>
           </v-flex>
         </v-layout>
+        <v-btn
+          color="primary"
+          @click="
+            stepNo = 7;
+            barra(100);
+            parseProcessosSel();
+          "
+          >Continuar</v-btn
+        >
+      </v-stepper-content>
+
+
+      <v-stepper-step :complete="stepNo > 7" step="7"
+        >Alterações na parte descritiva
+        <small>
+          Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão (NE),
+          Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) nos
+          processos selecionados
+        </small>
+      </v-stepper-step>
+      <v-stepper-content step="7">
+        <v-layout wrap>
+          <v-flex xs10>
+            <v-expansion-panels>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Lista de processos selecionados
+                </v-expansion-panel-header>
+                <v-expansion-panel-content >
+                  <ListaParteDescritiva
+                    v-if="listaTotalProcSelReady"
+                    v-bind:lista="listaTotalProcSel"
+                    @listaTotalSelUpdate="listaTotalSelUpdate($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-flex>
+        </v-layout>
         <hr style="border-top: 0px"/>
         <v-btn color="primary" @click="finalizaUltPasso = true"
           >Finalizar
@@ -343,14 +351,6 @@
             </v-card>
           </v-dialog>
         </v-btn>
-        <v-btn
-          text
-          @click="
-            stepNo = 5;
-            barra(64);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <hr style="border-top: 0px"/>
@@ -360,7 +360,7 @@
         justify="center"
       >
 
-      <v-btn color="primary" v-if="stepNo > 6" @click="submeterTS()"
+      <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
         >Submeter</v-btn
       >
       <v-btn color="primary" v-else-if="stepNo >= 1" @click="guardarTrabalho()"
@@ -422,6 +422,7 @@ import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProces
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ListaProcessosUltimos.vue";
+import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcSel.vue";
 
 export default {
   components: {
@@ -430,7 +431,8 @@ export default {
     ListaProcessosComuns,
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
-    ListaProcessosUltimos
+    ListaProcessosUltimos,
+    ListaParteDescritiva
   },
   data() {
     return {
@@ -449,7 +451,8 @@ export default {
           procSelEspecificos: [],
           procSelEspRestantes: [],
           procSelUltimos: []
-        }
+        },
+        parteDescritivaUpdate: {}
       },
       // Numero do passo da criação de TS
       stepNo: 1,
@@ -513,6 +516,10 @@ export default {
       eliminarTabela: false,
       // Dialog de confirmação finalização de TS
       finalizaUltPasso: false,
+      // Lista de todos os processos selecionados em todos os passos
+      listaTotalProcSel: [],
+      listaTotalProcSelReady: false,
+      listaTotalProcSelUpdate: []
     };
   },
   methods: {
@@ -810,7 +817,7 @@ export default {
         ) {
           if (
             this.listaProcComuns[i].classe ===
-            this.tabelaSelecao.listaProcSel.procSelComuns[j]
+            this.tabelaSelecao.listaProcSel.procSelComuns[j].classe
           ) {
             procSelecionado = true;
             break;
@@ -839,7 +846,7 @@ export default {
       for (var f = 0; f < this.listaTotalProcEsp.length; f++) {
         procSelecionado = false;
         for (var m = 0; m < procSelecionados.length; m++) {
-          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m]) {
+          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m].classe) {
             procSelecionado = true;
             break;
           }
@@ -899,6 +906,20 @@ export default {
     // Contador dos ultimos processos pre selecionados
     contadorProcPreSelUlt: function(lista) {
       this.numProcPreSelUlt = lista.length;
+    },
+    parseProcessosSel: function() {
+      if (!this.listaTotalProcSel.length) {
+        this.listaTotalProcSel = this.listaTotalProcSel
+          .concat(this.tabelaSelecao.listaProcSel.procSelComuns)
+          .concat(this.tabelaSelecao.listaProcSel.procSelEspecificos)
+          .concat(this.tabelaSelecao.listaProcSel.procSelEspRestantes)
+          .concat(this.tabelaSelecao.listaProcSel.procSelUltimos);
+        this.listaTotalProcSel.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
+        this.listaTotalProcSelReady = true;
+      }
+    },
+    listaTotalSelUpdate: function(proc) {
+      this.listaTotalProcSelUpdate = proc;
     },
     // Guarda na tabela de seleção a lista dos ultimos processos, depois de selecionados no componente
     guardarTSProcUlt: function(procUlt) {
@@ -1039,6 +1060,14 @@ export default {
         );
         this.tabelaSelecao.procUltimos = JSON.stringify(
           this.tabelaSelecao.procUltimos
+        );
+
+        if (this.listaTotalProcSelUpdate.length) {
+          this.listaTotalProcSel = this.listaTotalProcSelUpdate;
+        }
+
+        this.tabelaSelecao.parteDescritivaUpdate = JSON.stringify(
+          this.listaTotalProcSel
         );
 
         var pendenteParams = {

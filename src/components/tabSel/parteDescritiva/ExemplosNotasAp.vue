@@ -1,6 +1,6 @@
 <template>
-  <v-layout wrap row ma-2 :key="componentKey">
-    <v-flex xs3>
+  <v-row class="ma-1" :key="componentKey">
+    <v-col cols="3">
       <div class="info-label">
         Exemplo(s) de NA:
         <InfoBox
@@ -8,41 +8,38 @@
           :text="myhelp.Classe.Campos.ExemplosNotasAp"
         />
       </div>
+      <hr style="border-top: 0px"/>
       <v-btn
         color="primary"
         dark
-        round
+        rounded
         @click="insereNovoExemplo(lista.exemplosNotasAp)"
       >
         Novo Exemplo
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-flex>
-    <v-flex>
-      <v-layout
+    </v-col>
+    <v-col>
+      <v-row
         fluid
-        row
         v-for="(ex, index) in lista.exemplosNotasAp"
         :key="index"
       >
-        <v-flex xs10>
-          <v-textarea v-model="ex.exemplo" auto-grow solo rows="1"></v-textarea>
-        </v-flex>
-        <v-flex>
-          <v-btn
-            color="red darken-2"
-            dark
-            round
-            @click="
-              lista.exemplosNotasAp.splice(index, 1);
-              forceRerender();
-            "
-          >
-            <v-icon dark>clear</v-icon>
-          </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+        <v-textarea v-model="ex.exemplo" auto-grow solo rows="1"></v-textarea>
+        <v-btn
+          class="ma-1"
+          color="red darken-2"
+          dark
+          rounded
+          @click="
+            lista.exemplosNotasAp.splice(index, 1);
+            forceRerender();
+          "
+        >
+          <v-icon dark>clear</v-icon>
+        </v-btn>
+      </v-row>
+    </v-col>
 
     <v-snackbar
       v-model="exemploNotaApVazioFlag"
@@ -69,7 +66,7 @@
         Fechar
       </v-btn>
     </v-snackbar>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

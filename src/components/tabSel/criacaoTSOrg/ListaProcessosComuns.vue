@@ -2,7 +2,7 @@
   <v-data-table
     :items="lista"
     :headers="headers"
-    class="elevation-1"
+    class="ma-1"
     item-key="classe"
     :footer-props="procsFooterProps"
   >
@@ -36,6 +36,7 @@
         <td>
           <v-checkbox
             v-model="props.item.dono"
+            class="ma-1"
             primary
             hide-details
             v-on:change="
@@ -60,6 +61,7 @@
                 props.item.participante != false
               )
             "
+            class="ma-1"
             primary
             hide-details
             v-on:change="
@@ -98,15 +100,17 @@ export default {
       {
         text: "Designação",
         value: "designacao",
-        width: "60%"
+        width: "55%"
       },
       {
         text: "Dono",
-        value: "dono"
+        value: "dono",
+        width: "10%"
       },
       {
         text: "Participante",
-        value: "participante"
+        value: "participante",
+        width: "15%"
       }
     ],
     procsFooterProps: {

@@ -2,7 +2,7 @@
   <v-data-table
     :items="lista"
     :headers="headers"
-    class="elevation-1"
+    class="ma-1"
     item-key="classe"
     :footer-props="procsFooterProps"
     :key="componentKey"
@@ -103,10 +103,10 @@
 </template>
 
 <script>
-import NotasAp from "@/components/tabSel/criacaoTSOrg/NotasAp.vue";
-import ExemplosNotasAp from "@/components/tabSel/criacaoTSOrg/ExemplosNotasAp.vue";
-import NotasEx from "@/components/tabSel/criacaoTSOrg/NotasEx.vue";
-import TermosIndice from "@/components/tabSel/criacaoTSOrg/TermosIndice.vue";
+import NotasAp from "@/components/tabSel/parteDescritiva/NotasAp.vue";
+import ExemplosNotasAp from "@/components/tabSel/parteDescritiva/ExemplosNotasAp.vue";
+import NotasEx from "@/components/tabSel/parteDescritiva/NotasEx.vue";
+import TermosIndice from "@/components/tabSel/parteDescritiva/TermosIndice.vue";
 
 export default {
   props: ["lista"],
@@ -121,16 +121,17 @@ export default {
       {
         text: "Classe",
         value: "classe",
-        width: "20%"
+        width: "10%"
       },
       {
         text: "Designação",
         value: "designacao",
-        width: "60%"
+        width: "65%"
       },
       {
         text: "Parte Descritiva",
-        value: "parteDescritiva"
+        value: "parteDescritiva",
+        width: "25%"
       }
     ],
     procsFooterProps: {

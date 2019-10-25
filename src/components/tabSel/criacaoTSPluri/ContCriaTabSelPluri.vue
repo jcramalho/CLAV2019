@@ -95,14 +95,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 1;
-            barra(0);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 3" step="3"
@@ -157,14 +149,6 @@
             loadProcEspRestantes();
           "
           >Continuar</v-btn
-        >
-        <v-btn
-          text
-          @click="
-            stepNo = 2;
-            barra(16);
-          "
-          >Voltar</v-btn
         >
       </v-stepper-content>
 
@@ -223,14 +207,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 3;
-            barra(32);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 5" step="5"
@@ -285,14 +261,6 @@
           "
           >Continuar</v-btn
         >
-        <v-btn
-          text
-          @click="
-            stepNo = 4;
-            barra(48);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <v-stepper-step :complete="stepNo > 6" step="6"
@@ -339,6 +307,44 @@
               :value="numProcPreSelUlt"
             ></v-text-field>
           </v-flex>
+          </v-layout>
+        <v-btn
+          color="primary"
+          @click="
+            stepNo = 7;
+            barra(100);
+            parseProcessosSel();
+          "
+          >Continuar</v-btn
+        >
+      </v-stepper-content>
+
+      <v-stepper-step :complete="stepNo > 7" step="7"
+        >Alterações na parte descritiva
+        <small>
+          Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão (NE),
+          Exemplos de Notas de Aplicação (ENA) e Termos de Ìndice (TI) nos
+          processos selecionados
+        </small>
+      </v-stepper-step>
+      <v-stepper-content step="7">
+        <v-layout wrap>
+          <v-flex xs10>
+            <v-expansion-panels>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="expansion-panel-heading">
+                  Lista de processos selecionados
+                </v-expansion-panel-header>
+                <v-expansion-panel-content >
+                  <ListaParteDescritiva
+                    v-if="listaTotalProcSelReady"
+                    v-bind:lista="listaTotalProcSel"
+                    @listaTotalSelUpdate="listaTotalSelUpdate($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-flex>
         </v-layout>
         <hr style="border-top: 0px"/>
         <v-btn color="primary" @click="finalizaUltPasso = true"
@@ -377,14 +383,6 @@
             </v-card>
           </v-dialog>
         </v-btn>
-        <v-btn
-          text
-          @click="
-            stepNo = 5;
-            barra(64);
-          "
-          >Voltar</v-btn
-        >
       </v-stepper-content>
 
       <hr style="border-top: 0px"/>
@@ -394,7 +392,7 @@
         justify="center"
       >
 
-      <v-btn color="primary" v-if="stepNo > 6" @click="submeterTS()"
+      <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
         >Submeter</v-btn
       >
       <v-btn color="primary" v-else-if="stepNo >= 1" @click="guardarTrabalho()"
@@ -456,6 +454,7 @@ import ContListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ContLis
 import ContListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ContListaProcessosEspecificos.vue";
 import ContListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ContListaProcessosEspRestantes.vue";
 import ContListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ContListaProcessosUltimos.vue";
+import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcSel.vue";
 
 export default {
   props: ["obj"],
@@ -465,7 +464,8 @@ export default {
     ContListaProcessosComuns,
     ContListaProcessosEspecificos,
     ContListaProcessosEspRestantes,
-    ContListaProcessosUltimos
+    ContListaProcessosUltimos,
+    ListaParteDescritiva
   },
   data() {
     return {
@@ -541,6 +541,9 @@ export default {
       eliminarTabela: false,
       // Dialog de confirmação finalização de TS
       finalizaUltPasso: false,
+      listaTotalProcSel: [],
+      listaTotalProcSelReady: false,
+      listaTotalProcSelUpdate: []
     };
   },
   methods: {
@@ -627,7 +630,7 @@ export default {
             ) {
               var estavaGuardado = false;
               if (
-                this.tabelaSelecao.listaProcSel.procSelComuns[j] ==
+                this.tabelaSelecao.listaProcSel.procSelComuns[j].classe ==
                 response.data[i].codigo
               ) {
                 this.listaProcComuns.push({
@@ -703,7 +706,7 @@ export default {
           ) {
             var estavaGuardado = false;
             if (
-              this.tabelaSelecao.listaProcSel.procSelEspecificos[k] ==
+              this.tabelaSelecao.listaProcSel.procSelEspecificos[k].classe ==
               response.data[j].codigo
             ) {
               this.listaProcEsp.push({
@@ -805,7 +808,7 @@ export default {
               ) {
                 var estavaGuardado = false;
                 if (
-                  this.tabelaSelecao.listaProcSel.procSelEspRestantes[k] ==
+                  this.tabelaSelecao.listaProcSel.procSelEspRestantes[k].classe ==
                   this.listaTotalProcEsp[i].codigo
                 ) {
                   this.listaProcEspRes.push({
@@ -906,7 +909,7 @@ export default {
         ) {
           if (
             this.listaProcComuns[i].classe ===
-            this.tabelaSelecao.listaProcSel.procSelComuns[j]
+            this.tabelaSelecao.listaProcSel.procSelComuns[j].classe
           ) {
             procSelecionado = true;
             break;
@@ -931,7 +934,7 @@ export default {
               ) {
                 var estavaGuardado = false;
                 if (
-                  this.tabelaSelecao.listaProcSel.procSelUltimos[c] ==
+                  this.tabelaSelecao.listaProcSel.procSelUltimos[c].classe ==
                   this.listaProcComuns[i].classe
                 ) {
                   this.listaProcUlt.push({
@@ -961,7 +964,7 @@ export default {
       for (var f = 0; f < this.listaTotalProcEsp.length; f++) {
         procSelecionado = false;
         for (var m = 0; m < procSelecionados.length; m++) {
-          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m]) {
+          if (this.listaTotalProcEsp[f].codigo === procSelecionados[m].classe) {
             procSelecionado = true;
             break;
           }
@@ -985,7 +988,7 @@ export default {
               ) {
                 estavaGuardado = false;
                 if (
-                  this.tabelaSelecao.listaProcSel.procSelUltimos[u] ==
+                  this.tabelaSelecao.listaProcSel.procSelUltimos[u].classe ==
                   this.listaTotalProcEsp[f].codigo
                 ) {
                   this.listaProcUlt.push({
@@ -1069,6 +1072,38 @@ export default {
             procUlt["part"][this.listaProcUlt[j].classe];
         }
       }
+    },
+    parseProcessosSel: function() {
+      if (!this.listaTotalProcSel.length) {
+        this.listaTotalProcSel = this.listaTotalProcSel
+          .concat(this.tabelaSelecao.listaProcSel.procSelComuns)
+          .concat(this.tabelaSelecao.listaProcSel.procSelEspecificos)
+          .concat(this.tabelaSelecao.listaProcSel.procSelEspRestantes)
+          .concat(this.tabelaSelecao.listaProcSel.procSelUltimos);
+        this.listaTotalProcSel.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
+      }
+      if (this.tabelaSelecao.parteDescritivaUpdate != {}) {
+        this.tabelaSelecao.parteDescritivaUpdate = JSON.parse(
+          this.tabelaSelecao.parteDescritivaUpdate
+        );
+      for (var i = 0; i < this.tabelaSelecao.parteDescritivaUpdate.length; i++) {
+        var jaSel = false;
+        for (var j = 0; j < this.listaTotalProcSel.length; j++) {
+          if (
+            this.tabelaSelecao.parteDescritivaUpdate[i].classe ==
+            this.listaTotalProcSel[j].classe
+          ) {
+            this.listaTotalProcSel[j] = this.tabelaSelecao.parteDescritivaUpdate[i];
+            jaSel = true;
+            break;
+          }
+        }
+        }
+      }
+      this.listaTotalProcSelReady = true;
+    },
+    listaTotalSelUpdate: function(proc) {
+      this.listaTotalProcSelUpdate = proc;
     },
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {

@@ -1,9 +1,10 @@
 <template>
-  <v-layout wrap row ma-2 :key="componentKey">
-    <v-flex xs3>
+  <v-row class="ma-1" :key="componentKey">
+    <v-col cols="3">
       <div class="info-label">
         Termos de Índice
       </div>
+      <hr style="border-top: 0px"/>
       <v-btn
         color="primary"
         dark
@@ -13,27 +14,24 @@
         Novo termo
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-flex>
-    <v-flex>
-      <v-layout fluid row v-for="(ti, index) in lista.termosInd" :key="index">
-        <v-flex xs10>
-          <v-textarea v-model="ti.termo" auto-grow solo rows="2"></v-textarea>
-        </v-flex>
-        <v-flex>
-          <v-btn
-            color="red darken-2"
-            dark
-            rounded
-            @click="
-              lista.termosInd.splice(index, 1);
-              forceRerender();
-            "
-          >
-            <v-icon dark>clear</v-icon>
-          </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+    </v-col>
+    <v-col>
+      <v-row fluid v-for="(ti, index) in lista.termosInd" :key="index">
+        <v-textarea v-model="ti.termo" auto-grow solo rows="1"></v-textarea>
+        <v-btn
+          class="ma-1"
+          color="red darken-2"
+          dark
+          rounded
+          @click="
+            lista.termosInd.splice(index, 1);
+            forceRerender();
+          "
+        >
+          <v-icon dark>clear</v-icon>
+        </v-btn>
+      </v-row>
+    </v-col>
 
     <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
       {{
@@ -52,7 +50,7 @@
         Fechar
       </v-btn>
     </v-snackbar>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>
