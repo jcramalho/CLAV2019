@@ -172,13 +172,13 @@
                       small
                       dark
                       @click="eliminarPart = true"
+                      class="ma-1"
                     >
                       <v-icon dark>remove</v-icon>
                       <v-dialog
                         v-model="eliminarPart"
                         persistent
                         max-width="290"
-                        class="ma-1"
                       >
                         <v-card>
                           <v-card-title class="headline">

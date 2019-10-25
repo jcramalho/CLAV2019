@@ -1,11 +1,10 @@
-<template>
+<template :key="componentKey">
   <v-data-table
     :items="lista"
     :headers="headers"
     class="ma-1"
     item-key="classe"
     :footer-props="procsFooterProps"
-    :key="componentKey"
   >
     <template v-slot:header="props">
       <tr>
@@ -43,7 +42,7 @@
             <v-card v-if="novaListaReady">
               <v-card-title>
                 <span class="headline">
-                  Parte descritiva do processo {{ props.item.classe }}
+                  Parte descritiva do processo {{ props.item.classe }} - {{ props.item.designacao }}
                 </span>
               </v-card-title>
               <v-divider></v-divider>

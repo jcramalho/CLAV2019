@@ -1,8 +1,10 @@
 <template>
-      <v-card class="ma-4">
-        <v-card-title class="indigo darken-4 white--text">
-          Nova Tabela de Seleção
-        </v-card-title>
+  <v-row class="ma-1">
+    <v-col>
+      <v-card>
+        <v-app-bar color="indigo darken-4" dark>
+              <v-toolbar-title class="card-heading">Nova Tabela de Seleção</v-toolbar-title>
+        </v-app-bar>
         <v-card-text class="panel-body">
           <v-container fluid grid-list-xl>
             <v-layout wrap align-center>
@@ -54,6 +56,8 @@
           </div>
         </v-card-text>
       </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -99,5 +103,10 @@ export default {
   border: none;
   margin: 0;
   color: #1a237e;
+}
+
+.card-heading {
+  font-size: x-large;
+  font-weight: bold;
 }
 </style>
