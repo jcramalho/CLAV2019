@@ -917,7 +917,6 @@ export default {
         this.listaTotalProcSel.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
         this.listaTotalProcSelReady = true;
       }
-      console.log(this.listaTotalProcSel)
     },
     listaTotalSelUpdate: function(proc) {
       this.listaTotalProcSelUpdate = proc;

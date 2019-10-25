@@ -624,8 +624,6 @@ export default {
     loadProcComuns: async function() {
       try {
         if (!this.listaProcComunsReady) {
-          console.log(this.tabelaSelecao.listaProcSel)
-          console.log(this.tabelaSelecao)
           var response = await this.$request("get", "/api/classes?tipo=comum");
           for (var i = 0; i < response.data.length; i++) {
             for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
@@ -1202,7 +1200,6 @@ export default {
           user: { email: userBD.data.email },
           token: this.$store.state.token
         };
-        // console.log(pendenteParams.objeto);
         var response = await this.$request(
           "put",
           "/api/pendentes",

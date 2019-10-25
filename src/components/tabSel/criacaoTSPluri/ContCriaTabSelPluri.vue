@@ -1082,7 +1082,6 @@ export default {
           .concat(this.tabelaSelecao.listaProcSel.procSelUltimos);
         this.listaTotalProcSel.sort((a, b) => (a.classe > b.classe) ? 1 : -1)
       }
-      console.log(this.tabelaSelecao.parteDescritivaUpdate)
       if (this.tabelaSelecao.parteDescritivaUpdate != {}) {
         this.tabelaSelecao.parteDescritivaUpdate = JSON.parse(
           this.tabelaSelecao.parteDescritivaUpdate
