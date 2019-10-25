@@ -1,9 +1,10 @@
 <template>
-  <v-layout wrap row ma-2 :key="componentKey">
-    <v-flex xs3>
+  <v-row class="ma-1" :key="componentKey">
+    <v-col cols="3">
       <div class="info-label">
         Notas de Exclusão
       </div>
+      <hr style="border-top: 0px"/>
       <v-btn
         color="primary"
         dark
@@ -13,27 +14,24 @@
         Nova Nota
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-flex>
-    <v-flex>
-      <v-layout fluid row v-for="(nota, index) in lista.notasEx" :key="index">
-        <v-flex xs10>
-          <v-textarea v-model="nota.nota" auto-grow solo rows="2"></v-textarea>
-        </v-flex>
-        <v-flex>
-          <v-btn
-            color="red darken-2"
-            dark
-            rounded
-            @click="
-              lista.notasEx.splice(index, 1);
-              forceRerender();
-            "
-          >
-            <v-icon dark>clear</v-icon>
-          </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+    </v-col>
+    <v-col>
+      <v-row fluid v-for="(nota, index) in lista.notasEx" :key="index">
+        <v-textarea v-model="nota.nota" auto-grow solo rows="1"></v-textarea>
+        <v-btn
+          class="ma-1"
+          color="red darken-2"
+          dark
+          rounded
+          @click="
+            lista.notasEx.splice(index, 1);
+            forceRerender();
+          "
+        >
+          <v-icon dark>clear</v-icon>
+        </v-btn>
+      </v-row>
+    </v-col>
 
     <v-snackbar v-model="neVaziaFlag" :color="'warning'" :timeout="60000">
       {{
@@ -52,7 +50,7 @@
         Fechar
       </v-btn>
     </v-snackbar>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

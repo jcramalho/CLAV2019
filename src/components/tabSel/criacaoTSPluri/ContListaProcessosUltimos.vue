@@ -3,7 +3,7 @@
     v-if="entProcDonoReady"
     :items="lista"
     :headers="headers"
-    class="elevation-1"
+    class="ma-1"
     item-key="classe"
     :footer-props="procsFooterProps"
   >
@@ -49,30 +49,33 @@
               v-slot:activator="{ on }"
               v-if="!procSelDonos.includes(props.item.classe)"
             >
-              <v-btn fab small color="primary" v-on="on">
+              <v-btn class="ma-1" fab small color="primary" v-on="on">
                 <v-icon>list</v-icon>
               </v-btn>
             </template>
             <template v-slot:activator="{ on }" v-else>
-              <v-btn fab small color="primary" v-on="on">
+              <v-btn class="ma-1" fab small color="primary" v-on="on">
                 <v-icon>check</v-icon>
               </v-btn>
             </template>
             <v-card>
               <v-card-title>
-                <span class="headline"
+                <span 
                   >Selecione as entidades donas do processo:
                   {{ props.item.classe }}
                 </span>
               </v-card-title>
               <v-divider></v-divider>
               <v-card-text style="height: 400px;">
-                <v-checkbox
-                  v-for="e in entidades"
-                  :key="e.id"
-                  v-model="entProcDono[props.item.classe][e.id]"
-                  :label="e.designacao + '  (' + e.sigla + ') '"
-                ></v-checkbox>
+                <v-row align="center" v-for="e in entidades" :key="e.id">
+                  <v-checkbox
+                    hide-details
+                    v-model="entProcDono[props.item.classe][e.id]"
+                    class="shrink mr-2 mt-0"
+                  ></v-checkbox>
+                  <b>{{ e.designacao + '  (' + e.sigla + ') ' }}</b>
+                  <hr style="border-top: 0px"/>
+                </v-row> 
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
@@ -81,7 +84,7 @@
                   text
                   @click="
                     props.item.dono = false;
-                    selecTodasEnt(entidades, props.item.classe);
+                    selecTodasEnt(entidades, props.item.classe, props.item.designacao);
                   "
                   >Selecionar todos</v-btn
                 >
@@ -90,7 +93,7 @@
                   text
                   @click="
                     props.item.dono = false;
-                    guardaEntDonos(props.item.classe);
+                    guardaEntDonos(props.item.classe, props.item.designacao);
                   "
                   >Continuar</v-btn
                 >
@@ -110,18 +113,18 @@
               v-slot:activator="{ on }"
               v-if="!Object.keys(entProcPar[props.item.classe]).length"
             >
-              <v-btn fab small color="primary" v-on="on">
+              <v-btn class="ma-1" fab small color="primary" v-on="on">
                 <v-icon>list</v-icon>
               </v-btn>
             </template>
             <template v-slot:activator="{ on }" v-else>
-              <v-btn fab small color="primary" v-on="on">
+              <v-btn class="ma-1" fab small color="primary" v-on="on">
                 <v-icon>check</v-icon>
               </v-btn>
             </template>
             <v-card>
               <v-card-title>
-                <span class="headline"
+                <span
                   >Selecione as entidades participante no processo:
                   {{ props.item.classe }}
                 </span>
@@ -144,7 +147,8 @@
                     >
                       <v-icon dark>add</v-icon>
                     </v-btn>
-                    {{ e.designacao + "  (" + e.sigla + ") " }}
+                    <b class="ma-4">{{ e.designacao + '  (' + e.sigla + ') ' }}</b>
+                    <hr style="border-top: 0px"/>
                   </template>
                   <template v-else>
                     <v-btn
@@ -167,6 +171,7 @@
                       small
                       dark
                       @click="eliminarPart = true"
+                      class="ma-1"
                     >
                       <v-icon dark>remove</v-icon>
                       <v-dialog
@@ -202,14 +207,8 @@
                         </v-card>
                       </v-dialog>
                     </v-btn>
-                    {{
-                      e.designacao +
-                        "  (" +
-                        e.sigla +
-                        ") " +
-                        ": " +
-                        entProcPar[props.item.classe][e.id]
-                    }}
+                    <b class="ma-4">{{ e.designacao + '  (' + e.sigla + ') ' + ": " + entProcPar[props.item.classe][e.id]}}</b>
+                    <hr style="border-top: 0px"/>
                   </template>
                   <div style="flex: 1 1 auto;">
                     <v-dialog
@@ -227,12 +226,16 @@
                           {{ "No processo: " + props.item.classe }}
                         </v-card-title>
                         <v-card-text>
-                          <v-select
-                            :items="tipoParticipacao"
-                            v-model="entProcPar[props.item.classe][e.id]"
-                            label="Tipo de intervenção"
-                            item-value="text"
-                          ></v-select>
+                          <v-container fluid>
+                            <v-radio-group v-model="entProcPar[props.item.classe][e.id]">
+                              <v-radio v-for="t in tipoParticipacao" :key="t"
+                              v-bind:value="t">
+                                <template v-slot:label>
+                                  <div class="shrink mr-6 mt-2">{{ t }}</div>
+                                </template>
+                              </v-radio>
+                            </v-radio-group>
+                          </v-container>
                         </v-card-text>
                         <v-card-actions>
                           <v-btn
@@ -257,7 +260,7 @@
                   text
                   @click="
                     props.item.participante = false;
-                    guardaEntPar(props.item.classe);
+                    guardaEntPar(props.item.classe, props.item.designacao);
                   "
                   >Continuar</v-btn
                 >
@@ -288,15 +291,17 @@ export default {
       {
         text: "Designação",
         value: "designacao",
-        width: "60%"
+        width: "55%"
       },
       {
         text: "Dono",
-        value: "dono"
+        value: "dono",
+        width: "10%"
       },
       {
         text: "Participante",
-        value: "participante"
+        value: "participante",
+        width: "15%"
       }
     ],
     procsFooterProps: {
@@ -417,14 +422,17 @@ export default {
 
       this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
     },
-    guardaEntDonos: async function(proc) {
+    guardaEntDonos: async function(proc, des) {
       for (var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++) {
         var haDono = false;
         if (this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]]) {
           haDono = true;
           this.procSelDonos.push(proc);
-          if (!this.procUltSel.includes(proc)) {
-            this.procUltSel.push(proc);
+          if (!this.procUltSel.find(x => x.classe === proc)) {
+            this.procUltSel.push({
+              classe: proc,
+              designacao: des
+            });
             this.$emit("contadorProcSelUlt", this.procUltSel);
             this.calcRel(proc);
           }
@@ -434,7 +442,7 @@ export default {
       if (!haDono) {
         var indexDono;
         if (Object.keys(this.entProcPar[proc]).length == 0) {
-          var index = this.procUltSel.indexOf(proc);
+          var index = this.procUltSel.indexOf(x => x.classe === proc);
           indexDono = this.procSelDonos.indexOf(proc);
           if (index != -1) {
             this.procUltSel.splice(index, 1);
@@ -454,13 +462,16 @@ export default {
       guardar["dono"] = this.entProcDono;
       this.$emit("guardarTSProcUlt", guardar);
     },
-    selecTodasEnt: async function(entidades, proc) {
+    selecTodasEnt: async function(entidades, proc, des) {
       for (var i = 0; i < entidades.length; i++) {
         this.entProcDono[proc][entidades[i].id] = true;
       }
       this.procSelDonos.push(proc);
-      if (!this.procUltSel.includes(proc)) {
-        this.procUltSel.push(proc);
+      if (!this.procUltSel.find(x => x.classe === proc)) {
+        this.procUltSel.push({
+          classe: proc,
+          designacao: des
+        });
         this.$emit("contadorProcSelUlt", this.procUltSel);
         this.calcRel(proc);
       }
@@ -468,15 +479,18 @@ export default {
       guardar["dono"] = this.entProcDono;
       this.$emit("guardarTSProcUlt", guardar);
     },
-    guardaEntPar: async function(proc) {
+    guardaEntPar: async function(proc, des) {
       var guardar = {};
       guardar["part"] = this.entProcPar;
       this.$emit("guardarTSProcUlt", guardar);
       if (
-        !this.procUltSel.includes(proc) &&
+        !this.procUltSel.find(x => x.classe === proc) &&
         Object.keys(this.entProcPar[proc]).length
       ) {
-        this.procUltSel.push(proc);
+        this.procUltSel.push({
+          classe: proc,
+          designacao: des
+        });
         this.$emit("contadorProcSelUlt", this.procUltSel);
         this.calcRel(proc);
       } else if (Object.keys(this.entProcPar[proc]).length == 0) {
@@ -488,7 +502,7 @@ export default {
           }
         }
         if (!haDono) {
-          var index = this.procUltSel.indexOf(proc);
+          var index = this.procUltSel.indexOf(x => x.classe ===proc);
           if (index != -1) {
             this.procUltSel.splice(index, 1);
             this.uncheck(proc);
@@ -523,9 +537,11 @@ export default {
               this.entidades[j].id
             ]
           ) {
-            console.log(this.procUltSel);
-            if (!this.procUltSel.includes(this.lista[i].classe)) {
-              this.procUltSel.push(this.lista[i].classe);
+            if (!this.procUltSel.find(x => x.classe === this.lista[i].classe)) {
+              this.procUltSel.push({
+                classe: this.lista[i].classe,
+                designacao: this.lista[i].designacao
+              });
               this.$emit("contadorProcSelUlt", this.procUltSel);
               this.procSelDonos.push(this.lista[i].classe);
               this.calcRel(this.lista[i].classe);
@@ -556,8 +572,11 @@ export default {
             JSON.stringify(this.procSelGuardados[this.lista[i].classe].part) !=
             "{}"
           ) {
-            if (!this.procUltSel.includes(this.lista[i].classe)) {
-              this.procUltSel.push(this.lista[i].classe);
+            if (!this.procUltSel.find(x => x.classe === this.lista[i].classe)) {
+              this.procUltSel.push({
+                classe: this.lista[i].classe,
+                designacao: this.lista[i].designacao
+              });
               this.$emit("contadorProcSelUlt", this.procUltSel);
               this.calcRel(this.lista[i].classe);
             }
