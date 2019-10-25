@@ -3,7 +3,7 @@
     <v-col>
       <!-- HEADER -->
       <v-card>
-        <v-app-bar color="green darken-4" dark>
+        <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading">Nova Classe</v-toolbar-title>
         </v-app-bar>
 
@@ -114,7 +114,7 @@
                 <!-- HÁ SUBDIVISÃO? -->
                 <Subdivisao3Nivel :c="classe" />
 
-                <hr style="border: 3px solid green; border-radius: 2px;" />
+                <hr style="border: 3px solid #1A237E; border-radius: 2px;" />
 
                 <!-- DECISÃO SEM SUBDIVISÃO -->
                 <DecisaoSemSubPCA
@@ -124,7 +124,7 @@
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
 
-                <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+                <hr style="border-top: 3px dashed #1A237E; border-radius: 2px;" />
 
                 <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
               </v-expansion-panel-content>
@@ -880,18 +880,18 @@ export default {
 
 <style>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
 }
 
 .expansion-panel-heading {
-  background-color: #1b5e20 !important;
+  background-color: #283593 !important;
   color: #fff;
   font-size: large;
   font-weight: bold;
@@ -912,3 +912,4 @@ export default {
   display: none;
 }
 </style>
+

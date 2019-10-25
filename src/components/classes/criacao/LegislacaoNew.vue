@@ -1,8 +1,8 @@
 <template>
-  <v-row class="ma-2 green lighten-4">
+  <v-row class="ma-2 indigo lighten-5">
     <v-col cols="2">
       <div class="info-label">Legislação nova:</div>
-      <v-btn small dark rounded color="green darken-2" @click="newLegislacao">
+      <v-btn small dark rounded color="indigo darken-2" @click="newLegislacao">
         Adicionar
         <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>

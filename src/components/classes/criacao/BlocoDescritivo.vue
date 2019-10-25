@@ -71,18 +71,18 @@ export default {
 
 <style>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
 }
 
 .expansion-panel-heading {
-  background-color: #1b5e20 !important;
+  background-color: #283593 !important;
   color: #fff;
   font-size: large;
   font-weight: bold;

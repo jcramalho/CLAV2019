@@ -1,7 +1,7 @@
 <template>
   <!-- DF -->
   <v-card class="ma-2" >
-    <v-card-title class="teal darken-4 subtitle-1 white--text" dark>Destino Final</v-card-title>
+    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>Destino Final</v-card-title>
     <v-card-text>
       <v-row class="ma-2">
         <v-col cols="2">
@@ -34,7 +34,7 @@
         </v-col>
       </v-row>
 
-      <hr style="border-top: 2px dashed green;" />
+      <hr style="border-top: 2px dashed #1A237E;" />
 
 
     </v-card-text>
@@ -46,7 +46,7 @@
 
           <div class="ma-2">
             <v-btn
-              color="green darken-2"
+              color="indigo darken-2"
               dark
               rounded
               @click="adicionarCriterioLegalPCA( c.df.justificacao, 'CriterioJustificacaoLegal',
@@ -120,7 +120,7 @@
 
             <hr
               v-if="cindex < c.df.justificacao.length"
-              style="border-top: 2px dotted green; width: 100%;"
+              style="border-top: 2px dotted #1A237E; width: 100%;"
             />
           </v-row>
         </v-col>

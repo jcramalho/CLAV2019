@@ -3,7 +3,7 @@
   <div v-if="!c.temSubclasses4Nivel">
     <v-row>
       <v-col>
-        <v-toolbar color="green darken-4 font-weight-medium" dark height="30">
+        <v-toolbar color="indigo darken-4 font-weight-medium" dark height="30">
           <v-toolbar-title>Prazo de Conservação Administrativa</v-toolbar-title>
         </v-toolbar>
       </v-col>
@@ -82,7 +82,7 @@
       </v-col>
     </v-row>
 
-    <hr style="border-top: 2px dashed green;" />
+    <hr style="border-top: 2px dashed #1A237E;" />
 
     <!-- JUSTIFICAÇÂO DO PCA -->
     <v-row class="ma-2">
@@ -94,7 +94,7 @@
 
         <div class="ma-2">
           <v-btn
-            color="green darken-2"
+            color="indigo darken-2"
             dark
             rounded
             @click="
@@ -115,7 +115,7 @@
         </div>
         <div class="ma-2">
           <v-btn
-            color="green darken-2"
+            color="indigo darken-2"
             dark
             rounded
             @click="
@@ -214,7 +214,7 @@
 
           <hr
             v-if="cindex < c.pca.justificacao.length"
-            style="border-top: 2px dotted green; width: 100%;"
+            style="border-top: 2px dotted #1A237E; width: 100%;"
           />
         </v-row>
       </v-col>
@@ -348,12 +348,14 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

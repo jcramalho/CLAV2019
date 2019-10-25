@@ -14,7 +14,7 @@
         <template v-slot:activator="{ on }">
           <v-btn
             v-on="on"
-            color="green darken-2"
+            color="indigo darken-2"
             dark
             rounded
             @click="insereNovoExemplo(c.exemplosNotasAp)"
@@ -111,12 +111,14 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

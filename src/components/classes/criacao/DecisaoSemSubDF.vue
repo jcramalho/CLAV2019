@@ -3,7 +3,7 @@
   <div v-if="!c.temSubclasses4Nivel">
     <v-row class="ma-2">
       <v-col>
-        <v-toolbar color="green darken-4 font-weight-medium" dark height="30">
+        <v-toolbar color="indigo darken-4 font-weight-medium" dark height="30">
           <v-toolbar-title>Destino Final</v-toolbar-title>
         </v-toolbar>
       </v-col>
@@ -34,7 +34,7 @@
       </v-col>
     </v-row>
 
-    <hr style="border-top: 2px dashed green;" />
+    <hr style="border-top: 2px dashed #1A237E;" />
 
     <!-- JUSTIFICAÇÂO DO DF -->
     <v-row class="ma-2">
@@ -43,7 +43,7 @@
 
         <div>
           <v-btn
-            color="green darken-2"
+            color="indigo darken-2"
             dark
             rounded
             @click="
@@ -169,7 +169,7 @@
             </div>
           </v-col>
 
-          <hr style="border-top: 2px dotted green; width: 100%;" />
+          <hr style="border-top: 2px dotted #1A237E; width: 100%;" />
         </v-row>
       </v-col>
     </v-row>

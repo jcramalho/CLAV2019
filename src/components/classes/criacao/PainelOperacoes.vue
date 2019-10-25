@@ -5,7 +5,7 @@
         <v-btn
           dark
           rounded
-          class="ma-2 teal darken-4"
+          class="ma-2 indigo darken-4"
           @click="guardarTrabalho"
           v-bind:disabled="c.codigo == ''"
         >
@@ -16,7 +16,7 @@
       <valida-classe-info-box :c="c" />
 
       <v-col>
-        <v-btn dark rounded class="ma-2 teal darken-4" @click="criarClasse">
+        <v-btn dark rounded class="ma-2 indigo darken-4" @click="criarClasse">
           Criar classe
         </v-btn>
       </v-col>
@@ -662,12 +662,14 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {
