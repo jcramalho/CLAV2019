@@ -7,6 +7,8 @@
         item-key="_id"
         class="elevation-1 ma-10"
         :search="search"
+        :loading="loading"
+        loading-text="A carregar o registo de acesso..."
         show-group-by
         multi-sort
       >
@@ -56,6 +58,7 @@
 export default {
   mounted: async function() {
     try {
+      this.loading = true;
       var response = await this.$request("get", "/api/users");
       this.users = {};
 
@@ -82,7 +85,10 @@ export default {
 
         this.logs[i].accessDate = this.getDateTime(this.logs[i].accessDate);
       }
+
+      this.loading = false;
     } catch (error) {
+      this.loading = false;
       this.color = "error";
       this.text = error.response.data;
     }
@@ -101,7 +107,8 @@ export default {
     ],
     color: "",
     text: "",
-    search: ""
+    search: "",
+    loading: false
   }),
 
   methods: {
