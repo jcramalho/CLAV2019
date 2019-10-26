@@ -151,6 +151,17 @@ export default {
               level: "public"
             }
           ]
+        },
+        {
+          entidade: "Administração",
+          texto: "",
+          ops: [
+            {
+              label: "Área de Administração",
+              url: "/gestao/administracao",
+              level: "public"
+            }
+          ]
         }
       ]
     };
