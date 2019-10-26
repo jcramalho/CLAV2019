@@ -59,12 +59,24 @@
             </td>
           </tr>
 
+          <tr v-else-if="tipo == 'Entidades'">
+            <td v-for="(campo, index) in props.item" v-bind:key="index">
+              <div v-if="index == 'operacoes'">
+                <v-row>
+                  <v-col cols="2" v-for="(operacao, i) in props.item.operacoes" :key="i">
+                    <v-icon
+                      @click="switchOperacao(operacao.descricao, props.item.id)"
+                    >{{ operacao.icon }}</v-icon>
+                  </v-col>
+                </v-row>
+              </div>
+              <div v-else @click="go(props.item.id)">{{ campo }}</div>
+            </td>
+          </tr>
+
           <tr v-else @click="go(props.item.id)">
             <td v-for="(campo, index) in props.item" v-bind:key="index">
-              <div v-if="index == 'edit'">
-                <v-icon>edit</v-icon>
-              </div>
-              <div v-else>{{ campo }}</div>
+              <div>{{ campo }}</div>
             </td>
           </tr>
         </template>
@@ -114,6 +126,50 @@ export default {
           break;
         case "Autos de Eliminação":
           this.$router.push("/autosEliminacao/ae_" + id);
+          break;
+      }
+    },
+
+    goEditar(id) {
+      switch (this.tipo) {
+        case "Entidades":
+          this.$router.push("/entidades/editar/ent_" + id);
+          break;
+        // case "Tipologias de Entidade":
+        //   this.$router.push("/tipologias/tip_" + id);
+        //   break;
+        // case "Legislação":
+        //   var idLeg = "";
+        //   for (var i = 0; i < this.ids.length; i++) {
+        //     if (this.ids[i].numero === id) {
+        //       idLeg = this.ids[i].id;
+        //       break;
+        //     }
+        //   }
+        //   this.$router.push("/legislacao/" + idLeg);
+        //   break;
+        // case "Termos de Índice":
+        //   this.$router.push("/classes/consultar/c" + id);
+        //   break;
+        // case "Autos de Eliminação":
+        //   this.$router.push("/autosEliminacao/ae_" + id);
+        //   break;
+        default:
+          this.$router.push("/");
+          break;
+      }
+    },
+
+    switchOperacao(op, id) {
+      switch (op) {
+        case "Alteração":
+          this.goEditar(id);
+          break;
+
+        case "Remoção":
+          break;
+
+        default:
           break;
       }
     }
