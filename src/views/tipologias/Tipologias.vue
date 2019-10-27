@@ -3,10 +3,10 @@
     <Loading v-if="!tipologiaReady" :message="'tipologias'" />
     <Listagem
       v-else
-      v-bind:lista="tipologias"
+      :lista="tipologias"
       tipo="Tipologias de Entidade"
-      v-bind:cabecalho="['Sigla', 'Designação']"
-      v-bind:campos="['id', 'designacao']"
+      :cabecalho="cabecalhos"
+      :campos="campos"
     />
   </div>
 </template>
@@ -20,8 +20,8 @@ import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 export default {
   data: () => ({
     tipologias: [],
-    campos: "",
-    cabecalhos: "",
+    campos: [],
+    cabecalhos: [],
     operacoes: [],
     tipologiaReady: false
   }),
@@ -32,27 +32,62 @@ export default {
   },
 
   methods: {
-    preparaLista: async function(listaTipologias) {
-      try {
-        var myTree = [];
-        for (var i = 0; i < listaTipologias.length; i++) {
+    preparaOperacoes(level) {
+      if (level >= NIVEL_MINIMO_ALTERAR) {
+        this.operacoes = [
+          { icon: "edit", descricao: "Alteração" }
+          // { icon: "delete_outline", descricao: "Remoção" }
+        ];
+      }
+    },
+
+    preparaCabecalhos(level) {
+      if (level >= NIVEL_MINIMO_ALTERAR) {
+        this.cabecalhos = ["Sigla", "Designação", "Operações"];
+        this.campos = ["id", "designacao", "operacoes"];
+      } else {
+        this.cabecalhos = ["Sigla", "Designação"];
+        this.campos = ["id", "designacao"];
+      }
+    },
+
+    preparaLista(listaTipologias) {
+      let myTree = [];
+
+      if (this.operacoes.length != 0) {
+        for (let i = 0; i < listaTipologias.length; i++) {
+          myTree.push({
+            id: listaTipologias[i].sigla,
+            designacao: listaTipologias[i].designacao,
+            operacoes: this.operacoes
+          });
+        }
+      } else {
+        for (let i = 0; i < listaTipologias.length; i++) {
           myTree.push({
             id: listaTipologias[i].sigla,
             designacao: listaTipologias[i].designacao
           });
         }
-        this.tipologiaReady = true;
-        return myTree;
-      } catch (error) {
-        return [];
       }
+
+      return myTree;
     }
   },
 
-  mounted: async function() {
+  created: async function() {
     try {
-      var response = await this.$request("get", "/api/tipologias");
+      let response = await this.$request("get", "/api/tipologias");
+
+      let level = await this.$userLevel(this.$store.state.token);
+
+      this.preparaCabecalhos(level);
+
+      this.preparaOperacoes(level);
+
       this.tipologias = await this.preparaLista(response.data);
+
+      this.tipologiaReady = true;
     } catch (e) {
       return e;
     }

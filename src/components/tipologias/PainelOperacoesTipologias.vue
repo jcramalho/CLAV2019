@@ -10,20 +10,20 @@
         >Guardar Trabalho</v-btn>
       </v-col>
 
-      <ValidarTipologiaInfoBox :t="t" />
+      <ValidarTipologiaInfoBox :t="t" :acao="acao" />
 
       <v-col>
         <v-btn
           v-if="this.acao == 'Criação'"
           rounded
           class="indigo accent-4 white--text"
-          @click="criarTipologia"
+          @click="criarAlterarTipologia"
         >Criar Tipologia</v-btn>
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
           class="indigo accent-4 white--text"
-          @click="criarTipologia"
+          @click="criarAlterarTipologia"
         >Alterar Tipologia</v-btn>
       </v-col>
 
@@ -176,7 +176,7 @@ export default {
       }
     },
 
-    validarTipologia: async function() {
+    validarTipologiaCriacao: async function() {
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {
         this.numeroErros++;
@@ -216,13 +216,41 @@ export default {
       return this.numeroErros;
     },
 
+    validarTipologiaAlteração() {
+      // Designação
+      if (this.t.designacao == "" || this.t.designacao == null) {
+        this.numeroErros++;
+      }
+
+      // Sigla
+      if (this.t.sigla == "" || this.t.sigla == null) {
+        this.numeroErros++;
+      }
+
+      return this.numeroErros;
+    },
+
     // Lança o pedido de criação da tipologia no worflow
-    criarTipologia: async function() {
+    criarAlterarTipologia: async function() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          let erros = await this.validarTipologia();
+          let erros = 0;
+
+          switch (this.acao) {
+            case "Criação":
+              erros = await this.validarTipologiaCriacao();
+              break;
+
+            case "Alteração":
+              erros = this.validarTipologiaAlteracao();
+              break;
+
+            default:
+              break;
+          }
+
           if (erros == 0) {
             let userBD = await this.$request(
               "get",

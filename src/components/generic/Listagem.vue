@@ -59,7 +59,7 @@
             </td>
           </tr>
 
-          <tr v-else-if="tipo == 'Entidades'">
+          <tr v-else-if="tipo == 'Entidades' || tipo == 'Tipologias de Entidade'">
             <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="index == 'operacoes'">
                 <v-row>
@@ -135,9 +135,9 @@ export default {
         case "Entidades":
           this.$router.push("/entidades/editar/ent_" + id);
           break;
-        // case "Tipologias de Entidade":
-        //   this.$router.push("/tipologias/tip_" + id);
-        //   break;
+        case "Tipologias de Entidade":
+          this.$router.push("/tipologias/editar/tip_" + id);
+          break;
         // case "Legislação":
         //   var idLeg = "";
         //   for (var i = 0; i < this.ids.length; i++) {
