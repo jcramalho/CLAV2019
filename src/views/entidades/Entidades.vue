@@ -15,38 +15,21 @@
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
 
-const NIVEL_MINIMO = 4;
-const OPERACOES = [
-  { icon: "edit", descricao: "Alteração" }
-  // { icon: "delete_outline", descricao: "Remoção" }
-];
+const NIVEL_MINIMO_ALTERAR = 4;
+// const NIVEL_MINIMO_REMOVER = "X"; // restantes restrições
 
 export default {
   data: () => ({
     entidades: [],
     campos: "",
     cabecalhos: "",
+    operacoes: [],
     entidadesReady: false
   }),
 
   components: {
     Listagem,
     Loading
-  },
-
-  created: async function() {
-    try {
-      let level = await this.verificaNivel();
-
-      let response = await this.$request("get", "/api/entidades");
-      this.entidades = await this.preparaLista(response.data, level);
-
-      await this.preparaCabecalhos(level);
-
-      this.entidadesReady = true;
-    } catch (e) {
-      return e;
-    }
   },
 
   methods: {
@@ -62,41 +45,64 @@ export default {
       }
     },
 
-    preparaLista: async function(listaEntidades, level) {
-      try {
-        let myTree = [];
-
-        if (level >= NIVEL_MINIMO) {
-          for (let i = 0; i < listaEntidades.length; i++) {
-            myTree.push({
-              id: listaEntidades[i].sigla,
-              designacao: listaEntidades[i].designacao,
-              operacoes: OPERACOES
-            });
-          }
-        } else {
-          for (let i = 0; i < listaEntidades.length; i++) {
-            myTree.push({
-              id: listaEntidades[i].sigla,
-              designacao: listaEntidades[i].designacao
-            });
-          }
-        }
-
-        return myTree;
-      } catch (error) {
-        return [];
+    preparaOperacoes(level) {
+      if (level >= NIVEL_MINIMO_ALTERAR) {
+        this.operacoes = [
+          { icon: "edit", descricao: "Alteração" }
+          // { icon: "delete_outline", descricao: "Remoção" }
+        ];
       }
     },
 
-    preparaCabecalhos: async function(level) {
-      if (level >= NIVEL_MINIMO) {
+    preparaLista(listaEntidades) {
+      let myTree = [];
+
+      if (this.operacoes.length != 0) {
+        for (let i = 0; i < listaEntidades.length; i++) {
+          myTree.push({
+            id: listaEntidades[i].sigla,
+            designacao: listaEntidades[i].designacao,
+            operacoes: this.operacoes
+          });
+        }
+      } else {
+        for (let i = 0; i < listaEntidades.length; i++) {
+          myTree.push({
+            id: listaEntidades[i].sigla,
+            designacao: listaEntidades[i].designacao
+          });
+        }
+      }
+
+      return myTree;
+    },
+
+    preparaCabecalhos(level) {
+      if (level >= NIVEL_MINIMO_ALTERAR) {
         this.cabecalhos = ["Sigla", "Designação", "Operações"];
         this.campos = ["id", "designacao", "operacoes"];
       } else {
         this.cabecalhos = ["Sigla", "Designação"];
         this.campos = ["id", "designacao"];
       }
+    }
+  },
+
+  created: async function() {
+    try {
+      let response = await this.$request("get", "/api/entidades");
+
+      let level = await this.verificaNivel();
+
+      this.preparaCabecalhos(level);
+
+      this.preparaOperacoes(level);
+
+      this.entidades = await this.preparaLista(response.data);
+
+      this.entidadesReady = true;
+    } catch (e) {
+      return e;
     }
   }
 };

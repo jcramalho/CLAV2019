@@ -7,24 +7,27 @@
           class="indigo darken-3 white--text"
           :disabled="!e.sigla"
           @click="guardarTrabalho"
-        >Guardar Trabalho</v-btn>
+          >Guardar Trabalho</v-btn
+        >
       </v-col>
 
-      <ValidarEntidadeInfoBox :e="e" />
+      <ValidarEntidadeInfoBox :e="e" :acao="acao" />
 
       <v-col>
         <v-btn
           v-if="this.acao == 'Criação'"
           rounded
           class="indigo accent-4 white--text"
-          @click="criarEntidade"
-        >Criar Entidade</v-btn>
+          @click="criarAlterarEntidade"
+          >Criar Entidade</v-btn
+        >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
           class="indigo accent-4 white--text"
-          @click="criarEntidade"
-        >Alterar Entidade</v-btn>
+          @click="criarAlterarEntidade"
+          >Alterar Entidade</v-btn
+        >
       </v-col>
 
       <v-col>
@@ -34,14 +37,16 @@
           rounded
           class="red darken-4"
           @click="eliminarEntidade"
-        >Cancelar Criação</v-btn>
+          >Cancelar Criação</v-btn
+        >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           dark
           rounded
           class="red darken-4"
           @click="eliminarEntidade"
-        >Cancelar Alteração</v-btn>
+          >Cancelar Alteração</v-btn
+        >
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -57,7 +62,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="indigo darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
+            <v-btn
+              color="indigo darken-1"
+              dark
+              @click="criacaoPendenteTerminada"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -74,7 +84,9 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="red darken-4" dark @click="errosValidacao = false">Fechar</v-btn>
+            <v-btn color="red darken-4" dark @click="errosValidacao = false"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -86,7 +98,12 @@
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="indigo darken-1" dark @click="criacaoEntidadeTerminada">Fechar</v-btn>
+            <v-btn
+              color="indigo darken-1"
+              dark
+              @click="criacaoEntidadeTerminada"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -94,27 +111,37 @@
       <!-- Cancelamento da criação de uma entidade: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title>Cancelamento e eliminação do pedido de criação da entidade</v-card-title>
+          <v-card-title
+            >Cancelamento e eliminação do pedido de criação da
+            entidade</v-card-title
+          >
           <v-card-text>
             <p>Selecionou o cancelamento da criação da entidade.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
+            <p>
+              Confirme a decisão para ser reencaminhado para a página principal.
+            </p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="indigo darken-1" text @click="cancelarCriacaoEntidade">Confirmo</v-btn>
-            <v-btn
-              color="red darken-1"
-              dark
-              @click="pedidoEliminado = false"
-            >Enganei-me, desejo continuar o trabalho</v-btn>
+            <v-btn color="indigo darken-1" text @click="cancelarCriacaoEntidade"
+              >Confirmo</v-btn
+            >
+            <v-btn color="red darken-1" dark @click="pedidoEliminado = false"
+              >Enganei-me, desejo continuar o trabalho</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
 
     <v-row>
-      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+      <v-snackbar
+        v-model="loginErrorSnackbar"
+        :timeout="8000"
+        color="error"
+        :top="true"
+      >
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -176,7 +203,7 @@ export default {
       }
     },
 
-    validarEntidade: async function() {
+    validarEntidadeCriacao: async function() {
       // Designação
       if (this.e.designacao == "" || this.e.designacao == null) {
         this.numeroErros++;
@@ -218,16 +245,62 @@ export default {
         this.numeroErros++;
       }
 
+      // SIOE
+      if (this.e.sioe != "" && this.e.sioe != null) {
+        if (this.e.sioe.length != 12) {
+          this.numeroErros++;
+        }
+      }
+
+      return this.numeroErros;
+    },
+
+    validarEntidadeAlteracao() {
+      // Designação
+      if (this.e.designacao == "" || this.e.designacao == null) {
+        this.numeroErros++;
+      }
+
+      // Sigla
+      if (this.e.sigla == "" || this.e.sigla == null) {
+        this.numeroErros++;
+      }
+
+      // Internacional
+      if (this.e.internacional == "" || this.e.internacional == null) {
+        this.numeroErros++;
+      }
+
+      // SIOE
+      if (this.e.sioe != "" && this.e.sioe != null) {
+        if (this.e.sioe.length != 12) {
+          this.numeroErros++;
+        }
+      }
+
       return this.numeroErros;
     },
 
     // Lança o pedido de criação da entidade no worflow
-    criarEntidade: async function() {
+    criarAlterarEntidade: async function() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          let erros = await this.validarEntidade();
+          let erros = 0;
+          switch (this.acao) {
+            case "Criação":
+              erros = await this.validarEntidadeCriacao();
+              break;
+
+            case "Alteração":
+              erros = this.validarEntidadeAlteracao();
+              break;
+
+            default:
+              break;
+          }
+
           if (erros == 0) {
             let userBD = await this.$request(
               "get",

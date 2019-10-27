@@ -1,12 +1,17 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="indigo darken-3" @click="validarEntidade">Validar Entidade</v-btn>
+    <v-btn dark rounded class="indigo darken-3" @click="validarEntidade"
+      >Validar Entidade</v-btn
+    >
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
       <v-card>
-        <v-card-title>Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
+        <v-card-title
+          >Erros detetados na validação:
+          {{ mensagensErro.length }}</v-card-title
+        >
         <v-card-text>
           <v-row v-for="(m, i) in mensagensErro" :key="i">
             <v-col cols="2">
@@ -19,7 +24,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="dialog = false">Fechar</v-btn>
+          <v-btn class="red darken-4" dark @click="dialog = false"
+            >Fechar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -33,7 +40,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="indigo darken-1" dark @click="dialogSemErros = false">Fechar</v-btn>
+          <v-btn class="indigo darken-1" dark @click="dialogSemErros = false"
+            >Fechar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -42,7 +51,7 @@
 
 <script>
 export default {
-  props: ["e"],
+  props: ["e", "acao"],
   data() {
     return {
       dialog: false,
@@ -60,7 +69,7 @@ export default {
   },
 
   methods: {
-    validarEntidade: async function() {
+    async validarEntidadeCriacao() {
       // Designação
       if (this.e.designacao == "" || this.e.designacao == null) {
         this.mensagensErro.push({
@@ -128,6 +137,72 @@ export default {
           mensagem: "O campo internacional tem de ter uma opção."
         });
         this.numeroErros++;
+      }
+
+      // SIOE
+      if (this.e.sioe != "" && this.e.sioe != null) {
+        if (this.e.sioe.length != 12) {
+          this.mensagensErro.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE tem de ter 12 digitos numéricos."
+          });
+          this.numeroErros++;
+        }
+      }
+    },
+
+    validarEntidadeAlteracao() {
+      // Designação
+      if (this.e.designacao == "" || this.e.designacao == null) {
+        this.mensagensErro.push({
+          sobre: "Nome da Entidade",
+          mensagem: "O nome da entidade não pode ser vazio."
+        });
+        this.numeroErros++;
+      }
+
+      // Sigla
+      if (this.e.sigla == "" || this.e.sigla == null) {
+        this.mensagensErro.push({
+          sobre: "Sigla",
+          mensagem: "A sigla não pode ser vazia."
+        });
+        this.numeroErros++;
+      }
+
+      // Internacional
+      if (this.e.internacional == "" || this.e.internacional == null) {
+        this.mensagensErro.push({
+          sobre: "Internacional",
+          mensagem: "O campo internacional tem de ter uma opção."
+        });
+        this.numeroErros++;
+      }
+
+      // SIOE
+      if (this.e.sioe != "" && this.e.sioe != null) {
+        if (this.e.sioe.length != 12) {
+          this.mensagensErro.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE tem de ter 12 digitos numéricos."
+          });
+          this.numeroErros++;
+        }
+      }
+    },
+
+    async validarEntidade() {
+      switch (this.acao) {
+        case "Criação":
+          await this.validarEntidadeCriacao();
+          break;
+
+        case "Alteração":
+          this.validarEntidadeAlteracao();
+          break;
+
+        default:
+          break;
       }
 
       if (this.numeroErros > 0) {
