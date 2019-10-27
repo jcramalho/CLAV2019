@@ -15,24 +15,20 @@
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
 
+import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
+
 export default {
   data: () => ({
     tipologias: [],
-    campos: [],
+    campos: "",
+    cabecalhos: "",
+    operacoes: [],
     tipologiaReady: false
   }),
+
   components: {
     Listagem,
     Loading
-  },
-
-  mounted: async function() {
-    try {
-      var response = await this.$request("get", "/api/tipologias");
-      this.tipologias = await this.preparaLista(response.data);
-    } catch (e) {
-      return e;
-    }
   },
 
   methods: {
@@ -50,6 +46,15 @@ export default {
       } catch (error) {
         return [];
       }
+    }
+  },
+
+  mounted: async function() {
+    try {
+      var response = await this.$request("get", "/api/tipologias");
+      this.tipologias = await this.preparaLista(response.data);
+    } catch (e) {
+      return e;
     }
   }
 };
