@@ -141,10 +141,10 @@ export default {
 
       // SIOE
       if (this.e.sioe != "" && this.e.sioe != null) {
-        if (this.e.sioe.length != 12) {
+        if (this.e.sioe.length > 12) {
           this.mensagensErro.push({
             sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter 12 digitos numéricos."
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
           });
           this.numeroErros++;
         }
@@ -181,10 +181,10 @@ export default {
 
       // SIOE
       if (this.e.sioe != "" && this.e.sioe != null) {
-        if (this.e.sioe.length != 12) {
+        if (this.e.sioe.length > 12) {
           this.mensagensErro.push({
             sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter 12 digitos numéricos."
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
           });
           this.numeroErros++;
         }

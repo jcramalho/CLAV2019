@@ -247,7 +247,7 @@ export default {
 
       // SIOE
       if (this.e.sioe != "" && this.e.sioe != null) {
-        if (this.e.sioe.length != 12) {
+        if (this.e.sioe.length > 12) {
           this.numeroErros++;
         }
       }
@@ -273,7 +273,7 @@ export default {
 
       // SIOE
       if (this.e.sioe != "" && this.e.sioe != null) {
-        if (this.e.sioe.length != 12) {
+        if (this.e.sioe.length > 12) {
           this.numeroErros++;
         }
       }
