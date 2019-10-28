@@ -1,12 +1,17 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="indigo darken-3" @click="validarLegislacao">Validar Diploma</v-btn>
+    <v-btn dark rounded class="indigo darken-3" @click="validarLegislacao"
+      >Validar Diploma</v-btn
+    >
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
       <v-card>
-        <v-card-title>Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
+        <v-card-title
+          >Erros detetados na validação:
+          {{ mensagensErro.length }}</v-card-title
+        >
         <v-card-text>
           <v-row v-for="(m, i) in mensagensErro" :key="i">
             <v-col cols="2">
@@ -19,7 +24,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="dialog = false">Fechar</v-btn>
+          <v-btn class="red darken-4" dark @click="dialog = false"
+            >Fechar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -33,7 +40,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="indigo darken-1" dark @click="dialogSemErros = false">Fechar</v-btn>
+          <v-btn class="indigo darken-1" dark @click="dialogSemErros = false"
+            >Fechar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -42,7 +51,8 @@
 
 <script>
 export default {
-  props: ["l"],
+  props: ["l", "acao"],
+
   data() {
     return {
       dialog: false,
@@ -60,7 +70,7 @@ export default {
   },
 
   methods: {
-    validarLegislacao: async function() {
+    async validarLegislacaoCriacao() {
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
@@ -202,6 +212,142 @@ export default {
           mensagem: "O sumário não pode ser vazio."
         });
         this.numeroErros++;
+      }
+    },
+
+    validarLegislacaoAlteracao() {
+      let parseAno = this.l.numero.split("/");
+      let anoDiploma = parseInt(parseAno[1]);
+
+      //Tipo
+      if (this.l.tipo == "" || this.l.tipo == null) {
+        this.mensagensErro.push({
+          sobre: "Tipo do Diploma",
+          mensagem: "O tipo do diploma não pode ser vazio."
+        });
+        this.numeroErros++;
+      }
+
+      // Número Diploma
+      if (this.l.numero == "" || this.l.numero == null) {
+        this.mensagensErro.push({
+          sobre: "Número do Diploma",
+          mensagem: "O número do diploma não pode ser vazio."
+        });
+        this.numeroErros++;
+      } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
+        this.mensagensErro.push({
+          sobre: "Número do Diploma",
+          mensagem: "O número do diploma está no formato errado."
+        });
+        this.numeroErros++;
+      } else if (anoDiploma < 2000) {
+        if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
+          this.mensagensErro.push({
+            sobre: "Número do Diploma",
+            mensagem:
+              "Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!"
+          });
+          this.numeroErros++;
+        }
+      }
+
+      // Data
+      if (this.l.data == "" || this.l.data == null) {
+        this.mensagensErro.push({
+          sobre: "Data",
+          mensagem: "A data não pode ser vazia."
+        });
+        this.numeroErros++;
+      } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
+        this.mensagensErro.push({
+          sobre: "Data",
+          mensagem: "A data está no formato errado."
+        });
+        this.numeroErros++;
+      } else {
+        let date = new Date();
+
+        let ano = parseInt(this.l.data.slice(0, 4));
+        let mes = parseInt(this.l.data.slice(5, 7));
+        let dia = parseInt(this.l.data.slice(8, 10));
+
+        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        if (mes > 12) {
+          this.mensagensErro.push({
+            sobre: "Data",
+            mensagem: "A data apresenta o mês errado."
+          });
+          this.numeroErros++;
+        } else if (dia > dias[mes - 1]) {
+          if (mes == 2) {
+            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
+              this.mensagensErro.push({
+                sobre: "Data",
+                mensagem: "A data apresenta o dia do mês errado."
+              });
+              this.numeroErros++;
+            }
+          } else {
+            this.mensagensErro.push({
+              sobre: "Data",
+              mensagem: "A data apresenta o dia do mês errado."
+            });
+            this.numeroErros++;
+          }
+        } else if (ano > parseInt(date.getFullYear())) {
+          this.mensagensErro.push({
+            sobre: "Data",
+            mensagem:
+              "Ano inválido! Por favor selecione uma data anterior à atual"
+          });
+          this.numeroErros++;
+        } else if (
+          ano == parseInt(date.getFullYear()) &&
+          mes > parseInt(date.getMonth() + 1)
+        ) {
+          this.mensagensErro.push({
+            sobre: "Data",
+            mensagem:
+              "Mês inválido! Por favor selecione uma data anterior à atual"
+          });
+          this.numeroErros++;
+        } else if (
+          ano == parseInt(date.getFullYear()) &&
+          mes == parseInt(date.getMonth() + 1) &&
+          dia > parseInt(date.getDate())
+        ) {
+          this.mensagensErro.push({
+            sobre: "Data",
+            mensagem:
+              "Dia inválido! Por favor selecione uma data anterior à atual"
+          });
+          this.numeroErros++;
+        }
+      }
+
+      // Sumário
+      if (this.l.sumario == "" || this.l.sumario == null) {
+        this.mensagensErro.push({
+          sobre: "Sumário",
+          mensagem: "O sumário não pode ser vazio."
+        });
+        this.numeroErros++;
+      }
+    },
+
+    async validarLegislacao() {
+      switch (this.acao) {
+        case "Criação":
+          await this.validarLegislacaoCriacao();
+          break;
+
+        case "Alteração":
+          this.validarLegislacaoAlteracao();
+
+        default:
+          break;
       }
 
       if (this.numeroErros > 0) {

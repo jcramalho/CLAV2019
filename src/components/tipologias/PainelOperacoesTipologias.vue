@@ -7,7 +7,8 @@
           class="indigo darken-3 white--text"
           :disabled="!t.sigla"
           @click="guardarTrabalho"
-        >Guardar Trabalho</v-btn>
+          >Guardar Trabalho</v-btn
+        >
       </v-col>
 
       <ValidarTipologiaInfoBox :t="t" :acao="acao" />
@@ -18,13 +19,15 @@
           rounded
           class="indigo accent-4 white--text"
           @click="criarAlterarTipologia"
-        >Criar Tipologia</v-btn>
+          >Criar Tipologia</v-btn
+        >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
           class="indigo accent-4 white--text"
           @click="criarAlterarTipologia"
-        >Alterar Tipologia</v-btn>
+          >Alterar Tipologia</v-btn
+        >
       </v-col>
 
       <v-col>
@@ -34,14 +37,16 @@
           rounded
           class="red darken-4"
           @click="eliminarTipologia"
-        >Cancelar Criação</v-btn>
+          >Cancelar Criação</v-btn
+        >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           dark
           rounded
           class="red darken-4"
           @click="eliminarTipologia"
-        >Cancelar Alteração</v-btn>
+          >Cancelar Alteração</v-btn
+        >
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -57,7 +62,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="indigo darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
+            <v-btn
+              color="indigo darken-1"
+              dark
+              @click="criacaoPendenteTerminada"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -74,7 +84,9 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="red darken-4" dark @click="errosValidacao = false">Fechar</v-btn>
+            <v-btn color="red darken-4" dark @click="errosValidacao = false"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -86,7 +98,12 @@
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="indigo darken-1" dark @click="criacaoTipologiaTerminada">Fechar</v-btn>
+            <v-btn
+              color="indigo darken-1"
+              dark
+              @click="criacaoTipologiaTerminada"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -94,27 +111,40 @@
       <!-- Cancelamento da criação de uma tipologia: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title>Cancelamento e eliminação do pedido de criação da tipologia</v-card-title>
+          <v-card-title
+            >Cancelamento e eliminação do pedido de criação da
+            tipologia</v-card-title
+          >
           <v-card-text>
             <p>Selecionou o cancelamento da criação da tipologia.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
+            <p>
+              Confirme a decisão para ser reencaminhado para a página principal.
+            </p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="indigo darken-1" text @click="cancelarCriacaoTipologia">Confirmo</v-btn>
             <v-btn
-              color="red darken-1"
-              dark
-              @click="pedidoEliminado = false"
-            >Enganei-me, desejo continuar o trabalho</v-btn>
+              color="indigo darken-1"
+              text
+              @click="cancelarCriacaoTipologia"
+              >Confirmo</v-btn
+            >
+            <v-btn color="red darken-1" dark @click="pedidoEliminado = false"
+              >Enganei-me, desejo continuar o trabalho</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
 
     <v-row>
-      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+      <v-snackbar
+        v-model="loginErrorSnackbar"
+        :timeout="8000"
+        color="error"
+        :top="true"
+      >
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -127,9 +157,11 @@ import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInf
 
 export default {
   props: ["t", "acao"],
+
   components: {
     ValidarTipologiaInfoBox
   },
+
   data() {
     return {
       pendenteGuardado: false,
@@ -176,7 +208,7 @@ export default {
       }
     },
 
-    validarTipologiaCriacao: async function() {
+    async validarTipologiaCriacao() {
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {
         this.numeroErros++;
@@ -216,7 +248,7 @@ export default {
       return this.numeroErros;
     },
 
-    validarTipologiaAlteração() {
+    validarTipologiaAlteracao() {
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {
         this.numeroErros++;
@@ -231,7 +263,7 @@ export default {
     },
 
     // Lança o pedido de criação da tipologia no worflow
-    criarAlterarTipologia: async function() {
+    async criarAlterarTipologia() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;

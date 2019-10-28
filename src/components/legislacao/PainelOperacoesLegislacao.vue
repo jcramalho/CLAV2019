@@ -7,24 +7,27 @@
           class="indigo darken-3 white--text"
           :disabled="!l.numero"
           @click="guardarTrabalho"
-        >Guardar Trabalho</v-btn>
+          >Guardar Trabalho</v-btn
+        >
       </v-col>
 
-      <ValidarLegislacaoInfoBox :l="l" />
+      <ValidarLegislacaoInfoBox :l="l" :acao="acao" />
 
       <v-col>
         <v-btn
           v-if="this.acao == 'Criação'"
           rounded
           class="indigo accent-4 white--text"
-          @click="criarLegislacao"
-        >Criar Diploma</v-btn>
+          @click="criarAlterarLegislacao"
+          >Criar Diploma</v-btn
+        >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
           class="indigo accent-4 white--text"
-          @click="criarLegislacao"
-        >Alterar Diploma</v-btn>
+          @click="criarAlterarLegislacao"
+          >Alterar Diploma</v-btn
+        >
       </v-col>
 
       <v-col>
@@ -33,13 +36,15 @@
           rounded
           class="red darken-4 white--text"
           @click="eliminarLegislacao"
-        >Cancelar Criação</v-btn>
+          >Cancelar Criação</v-btn
+        >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
           class="red darken-4 white--text"
           @click="eliminarLegislacao"
-        >Cancelar Alteração</v-btn>
+          >Cancelar Alteração</v-btn
+        >
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -55,7 +60,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="indigo darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
+            <v-btn
+              color="indigo darken-1"
+              dark
+              @click="criacaoPendenteTerminada"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -72,7 +82,9 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="red darken-4" dark @click="errosValidacao = false">Fechar</v-btn>
+            <v-btn color="red darken-4" dark @click="errosValidacao = false"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -84,7 +96,12 @@
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="indigo darken-1" dark @click="criacaoLegislacaoTerminada">Fechar</v-btn>
+            <v-btn
+              color="indigo darken-1"
+              dark
+              @click="criacaoLegislacaoTerminada"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -92,27 +109,40 @@
       <!-- Cancelamento da criação de uma legislacao: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title>Cancelamento e eliminação do pedido de criação do diploma</v-card-title>
+          <v-card-title
+            >Cancelamento e eliminação do pedido de criação do
+            diploma</v-card-title
+          >
           <v-card-text>
             <p>Selecionou o cancelamento da criação do diploma.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
+            <p>
+              Confirme a decisão para ser reencaminhado para a página principal.
+            </p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="indigo darken-1" text @click="cancelarCriacaoLegislacao">Confirmo</v-btn>
             <v-btn
-              color="red darken-1"
-              dark
-              @click="pedidoEliminado = false"
-            >Enganei-me, desejo continuar o trabalho</v-btn>
+              color="indigo darken-1"
+              text
+              @click="cancelarCriacaoLegislacao"
+              >Confirmo</v-btn
+            >
+            <v-btn color="red darken-1" dark @click="pedidoEliminado = false"
+              >Enganei-me, desejo continuar o trabalho</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
 
     <v-row>
-      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+      <v-snackbar
+        v-model="loginErrorSnackbar"
+        :timeout="8000"
+        color="error"
+        :top="true"
+      >
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -125,9 +155,11 @@ import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoI
 
 export default {
   props: ["l", "acao"],
+
   components: {
     ValidarLegislacaoInfoBox
   },
+
   data() {
     return {
       pendenteGuardado: false,
@@ -174,7 +206,7 @@ export default {
       }
     },
 
-    validarLegislacao: async function() {
+    async validarLegislacaoCriacao() {
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
@@ -256,13 +288,95 @@ export default {
       return this.numeroErros;
     },
 
+    validarLegislacaoAlteracao() {
+      let parseAno = this.l.numero.split("/");
+      let anoDiploma = parseInt(parseAno[1]);
+
+      //Tipo
+      if (this.l.tipo == "" || this.l.tipo == null) {
+        this.numeroErros++;
+      }
+
+      // Número Diploma
+      if (this.l.numero == "" || this.l.numero == null) {
+        this.numeroErros++;
+      } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
+        this.numeroErros++;
+      } else if (anoDiploma < 2000) {
+        if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
+          this.numeroErros++;
+        }
+      }
+
+      // Data
+      if (this.l.data == "" || this.l.data == null) {
+        this.numeroErros++;
+      } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
+        this.numeroErros++;
+      } else {
+        let date = new Date();
+
+        let ano = parseInt(this.l.data.slice(0, 4));
+        let mes = parseInt(this.l.data.slice(5, 7));
+        let dia = parseInt(this.l.data.slice(8, 10));
+
+        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        if (mes > 12) {
+          this.numeroErros++;
+        } else if (dia > dias[mes - 1]) {
+          if (mes == 2) {
+            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
+              this.numeroErros++;
+            }
+          } else {
+            this.numeroErros++;
+          }
+        } else if (ano > parseInt(date.getFullYear())) {
+          this.numeroErros++;
+        } else if (
+          ano == parseInt(date.getFullYear()) &&
+          mes > parseInt(date.getMonth() + 1)
+        ) {
+          this.numeroErros++;
+        } else if (
+          ano == parseInt(date.getFullYear()) &&
+          mes == parseInt(date.getMonth() + 1) &&
+          dia > parseInt(date.getDate())
+        ) {
+          this.numeroErros++;
+        }
+      }
+
+      // Sumário
+      if (this.l.sumario == "" || this.l.sumario == null) {
+        this.numeroErros++;
+      }
+
+      return this.numeroErros;
+    },
+
     // Lança o pedido de criação da legislacao no worflow
-    criarLegislacao: async function() {
+    async criarAlterarLegislacao() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          let erros = await this.validarLegislacao();
+          let erros = 0;
+
+          switch (this.acao) {
+            case "Criação":
+              erros = await this.validarLegislacaoCriacao();
+              break;
+
+            case "Alteração":
+              erros = this.validarLegislacaoAlteracao();
+              break;
+
+            default:
+              break;
+          }
+
           if (erros == 0) {
             let userBD = await this.$request(
               "get",
