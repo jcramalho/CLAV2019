@@ -16,8 +16,35 @@
                 <table>
                   <tr>
                     <td>
-                      <div class="infobox" style="text-align:center">
+                      <div class="infobox" style="text-align:center;">
                         <b>Passo 1</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Indicação das tipologias de entidade abrangidas pela Tabela
+                        (encontram-se automaticamente selecionadas aquelas 
+                        que fazem parte da entidade em causa)
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center;">
+                        <b>Passo 2</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Designação da nova Tabela de Seleção (por defeito é o nome da
+                        entidade para a qual se está a criar a Tabela)
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center">
+                        <b>Passo 3, 4 e 5</b>
                       </div>
                     </td>
                     <td
@@ -33,7 +60,7 @@
                     </td>
                     <td>
                       <div class="whitebox">
-                        Processos comuns (passíveis de existirem em qualquer
+                        Processos de negócio comuns (passíveis de existirem em qualquer
                         entidade)
                       </div>
                     </td>
@@ -42,8 +69,8 @@
                     <td></td>
                     <td>
                       <div class="whitebox">
-                        Processos de negócio específicos da entidade e
-                        tipologia em que se enquadre
+                        Processos de negócio específicos (da entidade e
+                        tipologia em que se enquadra)
                       </div>
                     </td>
                   </tr>
@@ -51,14 +78,27 @@
                     <td></td>
                     <td>
                       <div class="whitebox">
-                        Processos de negócio específicos restantes
+                        Processos de negócio específicos restantes (processos
+                        específicos mas não da entidade nem das tipologias em causa)
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <div class="infobox" style="text-align:center;">
-                        <b>Passo 2</b>
+                        <b>Passo 6</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Revisão dos de negócio não selecionados nos passos anteriores
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center;">
+                        <b>Passo 7</b>
                       </div>
                     </td>
                     <td colspan="2">
@@ -66,18 +106,6 @@
                         Alteração do conteúdo dos campos nos processos de
                         negócio selecionados: Notas de aplicação; Exemplos de
                         NA; Notas de exclusão; Termos de índice; Legislação.
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="infobox" style="text-align:center;">
-                        <b>Passo 3</b>
-                      </div>
-                    </td>
-                    <td colspan="2">
-                      <div class="whitebox">
-                        Proposta de novos processos de negócio
                       </div>
                     </td>
                   </tr>
@@ -104,14 +132,38 @@
                         <b>Passo 1</b>
                       </div>
                     </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Identificação das entidades abrangidas pela Tabela de Seleção
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center">
+                        <b>Passo 2</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Designação da nova Tabela de Seleção
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center">
+                        <b>Passo 3, 4 e 5</b>
+                      </div>
+                    </td>
                     <td
-                      rowspan="2"
+                      rowspan="3"
                       width="30%"
                       style="height:1px; padding-top:5px; padding-bottom:5px"
                     >
                       <div class="whitebox" style="height:100%;">
-                        Identificação da natureza de intervenção da sua
-                        entidade, como dono ou participante, em cada processo
+                        Identificação da natureza de intervenção das
+                        entidades, como dono ou participante, em cada processo
                         de negócio, a partir da lista de:
                       </div>
                     </td>
@@ -126,15 +178,36 @@
                     <td></td>
                     <td>
                       <div class="whitebox">
-                        Processos de negócio específicos da entidade e
-                        tipologia em que se enquadrem
+                        Processos de negócio específicos (da entidade e
+                        tipologia em que se enquadrem)
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <div class="whitebox">
+                        Processos de negócio específicos restantes (processos
+                        específicos mas não das entidades selecionadas)
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="infobox" style="text-align:center;">
+                        <b>Passo 6</b>
+                      </div>
+                    </td>
+                    <td colspan="2">
+                      <div class="whitebox">
+                        Revisão dos processos de negócio não selecionados nos passos anteriores
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <div class="infobox" style="text-align:center">
-                        <b>Passo 2</b>
+                        <b>Passo 7</b>
                       </div>
                     </td>
                     <td colspan="2">
@@ -145,27 +218,16 @@
                       </div>
                     </td>
                   </tr>
-                  <tr>
-                    <td>
-                      <div class="infobox" style="text-align:center">
-                        <b>Passo 3</b>
-                      </div>
-                    </td>
-                    <td colspan="2">
-                      <div class="whitebox">
-                        Proposta de novos processos de negócio
-                      </div>
-                    </td>
-                  </tr>
                 </table>
               </v-card>
             </v-expansion-panel-content>
           </v-expansion-panel>
           </v-expansion-panels>
+          <hr style="border-top: 0px"/>
+          <div style="text-align:center">
+            <v-btn medium color="primary" @click="voltar()">Voltar</v-btn>
+          </div>
         </v-card-text>
-        <div style="text-align:center">
-          <v-btn medium color="primary" @click="voltar()">Voltar</v-btn>
-        </div>
       </v-card>
     </v-col>
   </v-row>

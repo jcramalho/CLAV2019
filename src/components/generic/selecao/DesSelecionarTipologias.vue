@@ -4,7 +4,7 @@
       <v-subheader class="info-label">Tipologias selecionadas:</v-subheader>
     </v-col>
     <v-col v-if="tipologias.length > 0">
-      <v-data-table :headers="headers" :items="tipologias" class="elevation-1" hide-default-footer>
+      <v-data-table :headers="headers" :items="tipologias" :items-per-page="100" class="elevation-1" hide-default-footer>
         <template v-slot:headers="props">
           <tr>
             <th v-for="h in props.headers" :key="h.text">{{ h.text }}</th>
