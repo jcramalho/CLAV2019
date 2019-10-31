@@ -7,7 +7,7 @@
       <v-subheader class="info-label">Entidades selecionadas:</v-subheader>
     </v-col>
     <v-col v-if="entidades.length > 0">
-      <v-data-table :headers="headers" :items="entidades" class="elevation-1" hide-default-footer>
+      <v-data-table :headers="headers" :items="entidades" :items-per-page="100" class="elevation-1" hide-default-footer>
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.sigla }}</td>

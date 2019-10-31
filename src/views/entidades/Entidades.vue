@@ -1,13 +1,7 @@
 <template>
   <div>
     <Loading v-if="!entidadesReady" :message="'entidades'" />
-    <Listagem
-      v-if="entidadesReady"
-      :lista="entidades"
-      tipo="Entidades"
-      :cabecalho="cabecalhos"
-      :campos="campos"
-    />
+    <Listagem v-else :lista="entidades" tipo="Entidades" :cabecalho="cabecalhos" :campos="campos" />
   </div>
 </template>
 
@@ -15,14 +9,13 @@
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
 
-const NIVEL_MINIMO_ALTERAR = 4;
-// const NIVEL_MINIMO_REMOVER = "X"; // restantes restrições
+import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 
 export default {
   data: () => ({
     entidades: [],
-    campos: "",
-    cabecalhos: "",
+    campos: [],
+    cabecalhos: [],
     operacoes: [],
     entidadesReady: false
   }),
@@ -33,24 +26,22 @@ export default {
   },
 
   methods: {
-    verificaNivel: async function() {
-      try {
-        let userInfo = await this.$request(
-          "get",
-          `/api/users/listarToken/${this.$store.state.token}`
-        );
-        return userInfo.data.level;
-      } catch (e) {
-        return e;
-      }
-    },
-
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
           { icon: "edit", descricao: "Alteração" }
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
+      }
+    },
+
+    preparaCabecalhos(level) {
+      if (level >= NIVEL_MINIMO_ALTERAR) {
+        this.cabecalhos = ["Sigla", "Designação", "Operações"];
+        this.campos = ["id", "designacao", "operacoes"];
+      } else {
+        this.cabecalhos = ["Sigla", "Designação"];
+        this.campos = ["id", "designacao"];
       }
     },
 
@@ -75,16 +66,6 @@ export default {
       }
 
       return myTree;
-    },
-
-    preparaCabecalhos(level) {
-      if (level >= NIVEL_MINIMO_ALTERAR) {
-        this.cabecalhos = ["Sigla", "Designação", "Operações"];
-        this.campos = ["id", "designacao", "operacoes"];
-      } else {
-        this.cabecalhos = ["Sigla", "Designação"];
-        this.campos = ["id", "designacao"];
-      }
     }
   },
 
@@ -92,7 +73,7 @@ export default {
     try {
       let response = await this.$request("get", "/api/entidades");
 
-      let level = await this.verificaNivel();
+      let level = await this.$userLevel(this.$store.state.token);
 
       this.preparaCabecalhos(level);
 

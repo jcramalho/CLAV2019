@@ -1,5 +1,5 @@
 import Vue from "vue";
-import './plugins/axios'
+import "./plugins/axios";
 import vuetify from "./plugins/vuetify";
 import App from "./App.vue";
 import router from "./router";
@@ -7,6 +7,7 @@ import store from "./store";
 import "./registerServiceWorker";
 import "bootstrap";
 import request from "./plugins/request";
+import userLevel from "./plugins/userLevel";
 //import BootstrapVue from "bootstrap-vue";
 
 //Vue.use(BootstrapVue);
@@ -15,6 +16,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 //import "bootstrap-vue/dist/bootstrap-vue.css";
 
 Vue.use(request);
+Vue.use(userLevel);
 
 Vue.config.productionTip = false;
 

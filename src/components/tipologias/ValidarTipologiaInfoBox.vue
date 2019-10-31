@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  props: ["t"],
+  props: ["t", "acao"],
   data() {
     return {
       dialog: false,
@@ -60,7 +60,7 @@ export default {
   },
 
   methods: {
-    validarTipologia: async function() {
+    async validarTipologiaCriacao() {
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {
         this.mensagensErro.push({
@@ -119,6 +119,41 @@ export default {
             mensagem: "Não consegui verificar a existência da sigla."
           });
         }
+      }
+    },
+
+    validarTipologiaAlteracao() {
+      // Designação
+      if (this.t.designacao == "" || this.t.designacao == null) {
+        this.mensagensErro.push({
+          sobre: "Nome da Tipologia",
+          mensagem: "O nome da tipologia não pode ser vazio."
+        });
+        this.numeroErros++;
+      }
+
+      // Sigla
+      if (this.t.sigla == "" || this.t.sigla == null) {
+        this.mensagensErro.push({
+          sobre: "Sigla",
+          mensagem: "A sigla não pode ser vazia."
+        });
+        this.numeroErros++;
+      }
+    },
+
+    async validarTipologia() {
+      switch (this.acao) {
+        case "Criação":
+          await this.validarTipologiaCriacao();
+          break;
+
+        case "Alteração":
+          this.validarTipologiaAlteracao();
+          break;
+
+        default:
+          break;
       }
 
       if (this.numeroErros > 0) {
