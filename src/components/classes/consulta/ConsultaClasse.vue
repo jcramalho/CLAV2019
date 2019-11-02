@@ -222,6 +222,12 @@
                       >
                         {{ classe.pca.valores + " ano" }}
                       </div>
+                      <div
+                        class="info-content"
+                        v-else
+                      >
+                        Não especificado
+                      </div>
                     </v-col>
                   </v-row>
 
@@ -398,6 +404,9 @@
                         <span v-if="classe.df.valor == 'E'">Eliminação</span>
                         <span v-else-if="classe.df.valor == 'C'">
                           Conservação
+                        </span>
+                        <span v-else-if="classe.df.valor == 'CP'">
+                          Conservação Parcial
                         </span>
                         <span v-else>Não Especificado</span>
                       </div>
