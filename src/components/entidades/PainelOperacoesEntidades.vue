@@ -92,10 +92,67 @@
       </v-dialog>
 
       <!-- Pedido de criação de entidade submetido com sucesso -->
-      <v-dialog v-model="dialogEntidadeCriada" width="40%">
+      <v-dialog v-model="dialogEntidadeCriada" width="70%">
         <v-card>
-          <v-card-title>Pedido de Criação de Entidade Submetido</v-card-title>
-          <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
+          <v-card-title
+            >Pedido de {{ acao }} de Entidade Submetido</v-card-title
+          >
+          <v-card-text>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Nome da Entidade:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ e.designacao }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Sigla:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ e.sigla }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Internacional:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ e.internacional }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="e.sioe != '' && e.sioe != null">
+              <v-col cols="2">
+                <div class="info-label">SIOE:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ e.sioe }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="e.tipologiasSel.length > 0">
+              <v-col cols="2">
+                <div class="info-label">Tipologias:</div>
+              </v-col>
+
+              <v-col>
+                <v-data-table
+                  :headers="headers"
+                  :items="e.tipologiasSel"
+                  class="elevation-1"
+                  hide-default-footer
+                ></v-data-table>
+              </v-col>
+            </v-row>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
@@ -167,7 +224,11 @@ export default {
       numeroErros: 0,
       errosValidacao: false,
       mensagemPedidoCriadoOK: "",
-      pedidoEliminado: false
+      pedidoEliminado: false,
+      headers: [
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
+      ]
     };
   },
 
@@ -355,13 +416,19 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #2e7d32; /* indigo darken-3 */
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* indigo lighten-5 */
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  margin: 5px;
+  border-radius: 3px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 </style>
