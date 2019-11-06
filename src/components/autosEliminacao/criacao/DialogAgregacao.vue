@@ -131,7 +131,7 @@ export default {
       } else {
         var res = parseInt(this.auto.zonaControlo[this.index].prazoConservacao) + parseInt(this.dataContagem)
         var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
-        if(!(res<=currentTime.getFullYear())) {
+        if(res>=currentTime.getFullYear()) {
           this.erro =
             "Note que a <strong>Prazo de Conservação Administrativa</strong> sumado com "+
             "<strong>Data de Contagem do PCA</strong> têm que ser <strong>inferior ou igual</strong> à data atual";

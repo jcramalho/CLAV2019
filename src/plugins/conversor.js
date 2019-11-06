@@ -86,7 +86,7 @@ var excel2Json = function(file, tipo) {
                   //Invariante da data de Conservacao
                   var dataContagem = ag.getCell(4).value;
                   var res = parseInt(conservacao) + parseInt(dataContagem);
-                  if (res <= currentTime.getFullYear()) {
+                  if (res < currentTime.getFullYear()) {
                     auto.zonaControlo[index].agregacoes.push({
                       codigo: ag.getCell(2).text.replace(/[ -.,!/]/g, "_"),
                       titulo: ag.getCell(3).text,
@@ -106,7 +106,7 @@ var excel2Json = function(file, tipo) {
                   //Invariante da data de Conservacao
                   var dataContagem = ag.getCell(5).value;
                   var res = parseInt(conservacao) + parseInt(dataContagem);
-                  if (res <= currentTime.getFullYear()) {
+                  if (res < currentTime.getFullYear()) {
                     auto.zonaControlo[index].agregacoes.push({
                       codigo: ag.getCell(3).text.replace(/[ -.,!/]/g, "_"),
                       titulo: ag.getCell(4).text,
