@@ -133,12 +133,12 @@ export default {
         var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
         if(res>=currentTime.getFullYear()) {
           this.erro =
-            "Note que a <strong>Prazo de Conservação Administrativa</strong> sumado com "+
-            "<strong>Data de Contagem do PCA</strong> têm que ser <strong>inferior ou igual</strong> à data atual";
+            "Note que o <strong>Prazo de Conservação Administrativa</strong> somado com "+
+            "<strong>Data de Contagem do PCA</strong> têm que ser <strong>inferior</strong> à data atual";
           this.erroDialog = true;
         } else if(res2<0) {
           this.erro =
-            "Note que a <strong>Prazo de Contagem do PC</strong> "+
+            "Note que o <strong>Prazo de Contagem do PC</strong> "+
             "têm que ser <strong>superior ou igual</strong> à <strong>Data de Fim</strong>";
           this.erroDialog = true;
         } else {
@@ -180,13 +180,13 @@ export default {
         var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
         if(!(res<=currentTime.getFullYear())) {
           this.erro =
-            "Note que a <strong>Prazo de Conservação Administrativa</strong> sumado com "+
-            "<strong>Data de Contagem do PCA</strong> têm que ser <strong>inferior ou igual</strong> à data atual";
+            "Note que o <strong>Prazo de Conservação Administrativa</strong> somado com "+
+            "<strong>Data de Contagem do PCA</strong> têm que ser <strong>inferior</strong> à data atual";
           this.erroDialog = true;
           this.auto.zonaControlo[this.index].agregacoes[this.indexAg] = backup
         } else if(res2<0) {
           this.erro =
-            "Note que a <strong>Prazo de Contagem do PC</strong> "+
+            "Note que o <strong>Prazo de Contagem do PC</strong> "+
             "têm que ser <strong>superior ou igual</strong> à <strong>Data de Fim</strong>";
           this.erroDialog = true;
           this.auto.zonaControlo[this.index].agregacoes[this.indexAg] = backup
