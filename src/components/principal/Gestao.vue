@@ -38,6 +38,7 @@
 const help = require("@/config/help").help;
 
 export default {
+  props: ["level"],
   methods: {
     go: function(url) {
       this.$router.push(url);
@@ -46,11 +47,17 @@ export default {
     filtraOps: function(operacoes) {
       var filtered = [];
       for (var i = 0; i < operacoes.length; i++) {
-        filtered.push({
-          entidade: operacoes[i].entidade,
-          texto: operacoes[i].texto,
-          ops: operacoes[i].ops.filter(o => o.level == "public")
-        });
+        var levelsSet = new Set();
+        operacoes[i].ops.forEach(b => b.level.forEach(l => levelsSet.add(l)));
+        var levels = Array.from(levelsSet);
+
+        if (levels.includes(this.level)) {
+          filtered.push({
+            entidade: operacoes[i].entidade,
+            texto: operacoes[i].texto,
+            ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
+          });
+        }
       }
       return filtered;
     }
@@ -58,11 +65,7 @@ export default {
 
   computed: {
     fops: function() {
-      if (this.$store.state.name != "") {
-        return this.operacoes;
-      } else {
-        return this.filtraOps(this.operacoes);
-      }
+      return this.filtraOps(this.operacoes);
     }
   },
 
@@ -78,12 +81,12 @@ export default {
             {
               label: "Consultar",
               url: "/pedidos",
-              level: "public"
-            },
-            /*{
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            } /*,
+            {
               label: "Criar pedido",
               url: "/pedidos/criar",
-              level: "auth"
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }*/
           ]
         },
@@ -94,7 +97,8 @@ export default {
           ops: [
             {
               label: "Consultar",
-              url: "/pendentes"
+              url: "/pendentes",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -105,7 +109,7 @@ export default {
             {
               label: "Listar Invariantes",
               url: "/invariantes",
-              level: "public"
+              level: [6, 7]
             }
           ]
         },
@@ -116,17 +120,17 @@ export default {
             {
               label: "Consultar utilizadores",
               url: "/users/listagem",
-              level: "public"
+              level: [5, 6, 7]
             },
             {
               label: "Registo de utilizadores para uma entidade",
               url: "/users/registoParaEntidade",
-              level: "public"
+              level: [5, 6, 7]
             },
             {
               label: "Registo de acesso",
               url: "/users/registoAcesso",
-              level: "public"
+              level: [6, 7]
             }
           ]
         },
@@ -137,7 +141,7 @@ export default {
             {
               label: "Consultar",
               url: "/vocabularios",
-              level: "public"
+              level: [1, 2, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -148,7 +152,7 @@ export default {
             {
               label: "Consultar métrica",
               url: "/gestao/metrica",
-              level: "public"
+              level: [6, 7]
             }
           ]
         },
@@ -159,7 +163,7 @@ export default {
             {
               label: "Área de Administração",
               url: "/gestao/administracao",
-              level: "public"
+              level: [7]
             }
           ]
         }

@@ -2,14 +2,14 @@
   <v-row>
     <v-col>
       <Info />
-      <Operacoes />
+      <Operacoes :level="level" />
       <Noticias />
     </v-col>
 
     <v-col>
       <DocumentacaoApoio />
       <Registo />
-      <Gestao v-if="this.$store.state.name != ''" />
+      <Gestao v-if="level > 0" :level="level" />
     </v-col>
   </v-row>
 </template>
@@ -39,8 +39,12 @@ export default {
   },
   data() {
     return {
-      panelHeaderColor: "indigo accent-4"
+      panelHeaderColor: "indigo accent-4",
+      level: 0
     };
+  },
+  mounted: async function() {
+    this.level = await this.$userLevel(this.$store.state.token);
   }
 };
 </script>
