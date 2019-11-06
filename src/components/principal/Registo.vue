@@ -16,14 +16,16 @@
                 <li>Preenchimento do <a :href="`${publicPath}documentos/form-id-representante.docx`">
                 formulário disponibilizado para o efeito</a>, para cada representante designado;</li>
                 <li>O formulário deverá ser assinado por um dirigente superior da Entidade e autenticado 
-                  com assinatura digital, se o envio for feito por via eletrónica. Esta autorização autenticada 
-                  pelo dirigente superior é o equivalente a uma delegação de competências, uma vez que o 
-                  representante da entidade passa a ter capacidade para, em nome da entidade, submeter autos de 
-                  eliminação, propostas de tabelas de seleção e novas classes para a Lista Consolidada.;</li>
-                <li>O formulário deverá ser remetido à DGLAB por via postal ou eletrónica, para:
+                  com assinatura digital, se o envio for feito por via eletrónica (NB: não serão aceites 
+                  assinaturas do formulário por dirigentes intermédios). Esta autorização autenticada pelo 
+                  dirigente superior é o equivalente a uma delegação de competências, uma vez que o representante 
+                  da entidade passa a ter capacidade para, em nome da entidade, submeter autos de eliminação, 
+                  propostas de tabelas de seleção e novas classes para a Lista Consolidada;</li>
+                <li>O formulário deverá ser remetido à DGLAB por via postal ou eletrónica, respetivamente, para:
                     <ul>
-                        <li>DGLAB, Edifício da Torre do Tombo, Alameda da Universidade, 1649-010 Lisboa ou</li>
-                        <li><a href="mailto:clav@dglab.gov.pt">clav@dglab.gov.pt.</a></li>
+                        <li>DGLAB, Edifício da Torre do Tombo, Alameda da Universidade, 
+                          1649-010 Lisboa (formulário assinado manualmente) ou</li>
+                        <li><a href="mailto:clav@dglab.gov.pt">clav@dglab.gov.pt</a> (formulário com assinatura digital).</li>
                     </ul>
                 </li>
                 <li>Após receção do formulário, a DGLAB efetuará o(s) respetivo(s) registo(s)
