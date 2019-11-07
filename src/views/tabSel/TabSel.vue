@@ -1,7 +1,13 @@
 <template>
   <div>
-    <Loading v-if="!fontesReady" :message="'fontes de legitimação'" />
-    <Listagem v-else :lista="fontes" tipo="Fontes de Legitimação" :cabecalho="cabecalhos" :campos="campos" />
+    <div>
+      <Loading v-if="!fontesPGDReady" :message="'fontes de legitimação'" />
+      <Listagem v-else :lista="fontesPGD" tipo="Fontes de Legitimação (PGD)" :cabecalho="cabecalhos" :campos="campos" />
+    </div>
+    <div>
+      <Loading v-if="!fontesPGDLCReady" :message="'fontes de legitimação'" />
+      <Listagem v-else :lista="fontesPGDLC" tipo="Fontes de Legitimação (PGD/LC)" :cabecalho="cabecalhos" :campos="campos" />
+    </div>
   </div>
 </template>
 <script>
@@ -12,10 +18,12 @@ import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 
 export default {
   data: () => ({
-    fontes: [],
+    fontesPGD: [],
+    fontesPGDLC: [],
     campos: [],
     cabecalhos: [],
-    fontesReady: false
+    fontesPGDReady: false,
+    fontesPGDLCReady: false
   }),
 
   components: {
@@ -24,14 +32,21 @@ export default {
   },
 
   created: async function() {
+    this.cabecalhos = ["Data", "Tipo", "Número", "Sumário", "Acesso"];
+    this.campos = ["data", "tipo", "numero", "sumario", "link"];
+
     try {
       let response = await this.$request("get", "/api/legislacao?fonte=PGD");
-
-      this.cabecalhos = ["Data", "Tipo", "Número", "Sumário", "Acesso"];
-      this.campos = ["data", "tipo", "numero", "sumario", "link"];
-
-      this.fontes = response.data
-      this.fontesReady = true;
+      this.fontesPGD = response.data.map(f => { return {data: f.data, tipo: f.tipo, numero: f.numero, sumario: f.sumario, link: f.link}})
+      this.fontesPGDReady = true;
+    } 
+    catch (e) {
+      return e;
+    }
+    try {
+      let response2 = await this.$request("get", "/api/legislacao?fonte=PGD/LC");
+      this.fontesPGDLC = response2.data.map(f => { return {data: f.data, tipo: f.tipo, numero: f.numero, sumario: f.sumario, link: f.link}})
+      this.fontesPGDLCReady = true;
     } 
     catch (e) {
       return e;
