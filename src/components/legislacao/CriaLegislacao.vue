@@ -36,7 +36,6 @@
                 color="indigo"
                 v-model="legislacao.diplomaFonte"
                 :items="diplomaFonteTipo"
-                label="Selecione uma opção"
                 solo
                 dense
               />
@@ -209,7 +208,7 @@ export default {
       tipo: "",
       data: "",
       link: "",
-      diplomaFonte: "",
+      diplomaFonte: "Não especificada",
       entidadesSel: [],
       processosSel: [],
       codigo: ""
@@ -217,7 +216,7 @@ export default {
 
     tiposDiploma: [],
 
-    diplomaFonteTipo: ["PGD", "PGD/LC", "RADA"],
+    diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
 
     // Para o seletor de entidades
     entidades: [],

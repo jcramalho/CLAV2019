@@ -21,7 +21,6 @@
                 color="indigo"
                 v-model="legislacao.tipo"
                 :items="tiposDiploma"
-                label="Selecione uma opção"
                 solo
                 dense
               />
@@ -213,7 +212,7 @@ export default {
       tipo: "",
       data: "",
       link: "",
-      diplomaFonte: "",
+      diplomaFonte: "Não especificada",
       entidadesSel: [],
       processosSel: [],
       codigo: ""
@@ -221,7 +220,7 @@ export default {
 
     tiposDiploma: [],
 
-    diplomaFonteTipo: ["PGD", "PGD/LC", "RADA"],
+    diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
 
     // Para o seletor de entidades
     entidades: [],
@@ -384,6 +383,14 @@ export default {
 
   created: async function() {
     this.legislacao = this.l;
+
+    if (
+      this.legislacao.diplomaFonte === "" ||
+      this.legislacao.diplomaFonte === null ||
+      this.legislacao.diplomaFonte === undefined
+    ) {
+      this.legislacao.diplomaFonte = "Não especificada";
+    }
 
     let dia = 0;
     let mes = 0;
