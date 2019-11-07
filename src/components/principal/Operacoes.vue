@@ -39,6 +39,7 @@
 const help = require("@/config/help").help;
 
 export default {
+  props: ["level"],
   methods: {
     go: function(url) {
       this.$router.push(url);
@@ -47,11 +48,17 @@ export default {
     filtraOps: function(operacoes) {
       var filtered = [];
       for (var i = 0; i < operacoes.length; i++) {
-        filtered.push({
-          entidade: operacoes[i].entidade,
-          texto: operacoes[i].texto,
-          ops: operacoes[i].ops.filter(o => o.level == "public")
-        });
+        var levelsSet = new Set();
+        operacoes[i].ops.forEach(b => b.level.forEach(l => levelsSet.add(l)));
+        var levels = Array.from(levelsSet);
+
+        if (levels.includes(this.level)) {
+          filtered.push({
+            entidade: operacoes[i].entidade,
+            texto: operacoes[i].texto,
+            ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
+          });
+        }
       }
       return filtered;
     }
@@ -59,11 +66,7 @@ export default {
 
   computed: {
     fops: function() {
-      if (this.$store.state.name != "") {
-        return this.operacoes;
-      } else {
-        return this.filtraOps(this.operacoes);
-      }
+      return this.filtraOps(this.operacoes);
     }
   },
 
@@ -78,17 +81,12 @@ export default {
             {
               label: "Consultar",
               url: "/classes",
-              level: "public"
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar classe",
               url: "/classes/criar",
-              level: "auth"
-            },
-            {
-              label: "Alterar classe",
-              url: "/classes/editar",
-              level: "auth"
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -99,15 +97,18 @@ export default {
           ops: [
             {
               label: "Consultar",
-              url: "/ts"
+              url: "/ts",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar",
-              url: "/ts/criar"
+              url: "/ts/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Importar CSV",
-              url: "/ts/importar/csv"
+              url: "/ts/importar/csv",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -118,15 +119,18 @@ export default {
           ops: [
             {
               label: "Consultar",
-              url: "/autosEliminacao"
+              url: "/autosEliminacao",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar",
-              url: "/autosEliminacao/criar"
+              url: "/autosEliminacao/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Importar",
-              url: "/autosEliminacao/importar"
+              url: "/autosEliminacao/importar",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -137,11 +141,12 @@ export default {
             {
               label: "Consultar",
               url: "/entidades",
-              level: "public"
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
-              url: "/entidades/criar"
+              url: "/entidades/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -152,11 +157,12 @@ export default {
             {
               label: "Consultar",
               url: "/tipologias",
-              level: "public"
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
-              url: "/tipologias/criar"
+              url: "/tipologias/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -167,11 +173,12 @@ export default {
             {
               label: "Consultar",
               url: "/legislacao",
-              level: "public"
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
-              url: "/legislacao/criar"
+              url: "/legislacao/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -182,11 +189,12 @@ export default {
             {
               label: "Consultar",
               url: "/termosIndice",
-              level: "public"
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
-              url: "/termosIndice/criar"
+              url: "/termosIndice/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },
@@ -197,7 +205,7 @@ export default {
             {
               label: "Consultar chaves API",
               url: "/gestao/api/listagem",
-              level: "public"
+              level: [7]
             }
           ]
         }
