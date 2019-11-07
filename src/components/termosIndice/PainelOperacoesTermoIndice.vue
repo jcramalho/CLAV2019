@@ -7,17 +7,22 @@
           class="indigo darken-4 white--text"
           :disabled="!ti.termo"
           @click="guardarTrabalho"
-        >Guardar Trabalho</v-btn>
+          >Guardar Trabalho</v-btn
+        >
       </v-col>
 
       <ValidarTIInfoBox :ti="ti" />
 
       <v-col>
-        <v-btn rounded class="indigo accent-4 white--text" @click="criarTI">Criar Termo de Índice</v-btn>
+        <v-btn rounded class="indigo accent-4 white--text" @click="criarTI"
+          >Criar Termo de Índice</v-btn
+        >
       </v-col>
 
       <v-col>
-        <v-btn dark rounded class="red darken-4" @click="eliminarTI">Cancelar Criação</v-btn>
+        <v-btn dark rounded class="red darken-4" @click="eliminarTI"
+          >Cancelar Criação</v-btn
+        >
       </v-col>
 
       <!-- Trabalho pendente guardado com sucesso -->
@@ -33,7 +38,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="indigo darken-1" dark @click="criacaoPendenteTerminada">Fechar</v-btn>
+            <v-btn
+              color="indigo darken-1"
+              dark
+              @click="criacaoPendenteTerminada"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -45,25 +55,50 @@
           <v-card-text>
             <p>
               Há erros de validação. Selecione
-              <b>Validar</b> para ver extamente
-              quais e proceder à sua correção.
+              <b>Validar</b> para ver extamente quais e proceder à sua correção.
             </p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="red darken-4" dark @click="errosValidacao = false">Fechar</v-btn>
+            <v-btn color="red darken-4" dark @click="errosValidacao = false"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
 
       <!-- Pedido de criação de termo de índice submetido com sucesso -->
-      <v-dialog v-model="dialogTICriado" width="40%">
+      <v-dialog v-model="dialogTICriado" width="70%">
         <v-card>
-          <v-card-title>Pedido de Criação do Termo de Índice Submetido</v-card-title>
-          <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
+          <v-card-title
+            >Pedido de Criação de Termo de Índice Submetido</v-card-title
+          >
+          <v-card-text>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Designação:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ ti.termo }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Processo Associado:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ ti.idClasse }}</div>
+              </v-col>
+            </v-row>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="indigo darken-1" dark @click="criacaoTITerminada">Fechar</v-btn>
+            <v-btn color="indigo darken-1" dark @click="criacaoTITerminada"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -71,27 +106,37 @@
       <!-- Cancelamento da criação de uma termo de índice: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="55%">
         <v-card>
-          <v-card-title>Cancelamento e eliminação do pedido de criação do termo de índice</v-card-title>
+          <v-card-title
+            >Cancelamento e eliminação do pedido de criação do termo de
+            índice</v-card-title
+          >
           <v-card-text>
             <p>Selecionou o cancelamento da criação do termo de índice.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
+            <p>
+              Confirme a decisão para ser reencaminhado para a página principal.
+            </p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="indigo darken-1" text @click="cancelarCriacaoTI">Confirmo</v-btn>
-            <v-btn
-              color="red darken-1"
-              dark
-              @click="pedidoEliminado = false"
-            >Enganei-me, desejo continuar o trabalho</v-btn>
+            <v-btn color="indigo darken-1" text @click="cancelarCriacaoTI"
+              >Confirmo</v-btn
+            >
+            <v-btn color="red darken-1" dark @click="pedidoEliminado = false"
+              >Enganei-me, desejo continuar o trabalho</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
 
     <v-row>
-      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+      <v-snackbar
+        v-model="loginErrorSnackbar"
+        :timeout="8000"
+        color="error"
+        :top="true"
+      >
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -116,7 +161,6 @@ export default {
       dialogTICriado: false,
       numeroErros: 0,
       errosValidacao: false,
-      mensagemPedidoCriadoOK: "",
       pedidoEliminado: false
     };
   },
@@ -146,7 +190,6 @@ export default {
             pendenteParams
           );
           this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
         }
       } catch (error) {
         return error;
@@ -250,7 +293,13 @@ export default {
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  margin: 5px;
+  border-radius: 3px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 </style>

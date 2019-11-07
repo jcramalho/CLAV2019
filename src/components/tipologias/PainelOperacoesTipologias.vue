@@ -346,7 +346,6 @@ export default {
               "/api/pedidos",
               pedidoParams
             );
-            this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
             this.dialogTipologiaCriada = true;
           } else {
             this.errosValidacao = true;
