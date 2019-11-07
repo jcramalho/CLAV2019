@@ -1,6 +1,8 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title">{{ p.objeto.acao }} da Legislação</v-card-title>
+    <v-card-title class="indigo darken-4 white--text title"
+      >{{ p.objeto.acao }} da Legislação</v-card-title
+    >
     <v-card-text>
       <v-row v-for="t in legislacaoInfo" :key="t.campo">
         <v-col cols="2" v-if="t.conteudo != ''">
@@ -38,7 +40,11 @@ export default {
   data() {
     return {
       legislacaoInfo: [
-        { campo: "Tipo do Diploma", conteudo: this.p.objeto.dados.tipo },
+        { campo: "Tipo de Diploma", conteudo: this.p.objeto.dados.tipo },
+        {
+          campo: "Fonte do Diploma",
+          conteudo: this.p.objeto.dados.diplomaFonte
+        },
         { campo: "Número do Diploma", conteudo: this.p.objeto.dados.numero },
         { campo: "Data", conteudo: this.p.objeto.dados.data },
         { campo: "Sumário", conteudo: this.p.objeto.dados.sumario },

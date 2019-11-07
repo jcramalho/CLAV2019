@@ -90,10 +90,100 @@
       </v-dialog>
 
       <!-- Pedido de criação de legislacao submetido com sucesso -->
-      <v-dialog v-model="dialogLegislacaoCriada" width="40%">
+      <v-dialog v-model="dialogLegislacaoCriada" width="70%">
         <v-card>
-          <v-card-title>Pedido de Criação de Diploma Submetido</v-card-title>
-          <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
+          <v-card-title>Pedido de {{ acao }} de Diploma Submetido</v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Tipo de diploma:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ l.tipo }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Fonte do diploma:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ l.diplomaFonte }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Número de diploma:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ l.numero }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Data:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ l.data }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Sumário:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ l.sumario }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="l.link != '' && l.link != null">
+              <v-col cols="2">
+                <div class="info-label">Link:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ l.link }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="l.entidadesSel.length > 0">
+              <v-col cols="2">
+                <div class="info-label">Entidades:</div>
+              </v-col>
+
+              <v-col>
+                <v-data-table
+                  :headers="headersEntidades"
+                  :items="l.entidadesSel"
+                  class="elevation-1"
+                  hide-default-footer
+                ></v-data-table>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="l.processosSel.length > 0">
+              <v-col cols="2">
+                <div class="info-label">Processos:</div>
+              </v-col>
+
+              <v-col>
+                <v-data-table
+                  :headers="headersProcessos"
+                  :items="l.processosSel"
+                  class="elevation-1"
+                  hide-default-footer
+                ></v-data-table>
+              </v-col>
+            </v-row>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
@@ -170,7 +260,15 @@ export default {
       numeroErros: 0,
       errosValidacao: false,
       mensagemPedidoCriadoOK: "",
-      pedidoEliminado: false
+      pedidoEliminado: false,
+      headersEntidades: [
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
+      ],
+      headersProcessos: [
+        { text: "Código", value: "codigo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" }
+      ]
     };
   },
 
@@ -210,8 +308,13 @@ export default {
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
-      //Tipo
+      // Tipo
       if (this.l.tipo == "" || this.l.tipo == null) {
+        this.numeroErros++;
+      }
+
+      // Fonte diploma
+      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
         this.numeroErros++;
       }
 
@@ -292,8 +395,13 @@ export default {
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
-      //Tipo
+      // Tipo
       if (this.l.tipo == "" || this.l.tipo == null) {
+        this.numeroErros++;
+      }
+
+      // Fonte diploma
+      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
         this.numeroErros++;
       }
 
@@ -402,7 +510,6 @@ export default {
               "/api/pedidos",
               pedidoParams
             );
-            this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
             this.dialogLegislacaoCriada = true;
           } else {
             this.errosValidacao = true;
@@ -441,7 +548,13 @@ export default {
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  margin: 5px;
+  border-radius: 3px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 </style>
