@@ -83,6 +83,15 @@ export default {
         this.numeroErros++;
       }
 
+      // Fonte diploma
+      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
+        this.mensagensErro.push({
+          sobre: "Fonte do Diploma",
+          mensagem: "A fonte do diploma não pode ser vazio."
+        });
+        this.numeroErros++;
+      }
+
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
         this.mensagensErro.push({
@@ -224,6 +233,15 @@ export default {
         this.mensagensErro.push({
           sobre: "Tipo do Diploma",
           mensagem: "O tipo do diploma não pode ser vazio."
+        });
+        this.numeroErros++;
+      }
+
+      // Fonte diploma
+      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
+        this.mensagensErro.push({
+          sobre: "Fonte do Diploma",
+          mensagem: "A fonte do diploma não pode ser vazio."
         });
         this.numeroErros++;
       }

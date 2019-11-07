@@ -223,7 +223,6 @@ export default {
       dialogEntidadeCriada: false,
       numeroErros: 0,
       errosValidacao: false,
-      mensagemPedidoCriadoOK: "",
       pedidoEliminado: false,
       headers: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
@@ -383,7 +382,6 @@ export default {
               "/api/pedidos",
               pedidoParams
             );
-            this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
             this.dialogEntidadeCriada = true;
           } else {
             this.errosValidacao = true;

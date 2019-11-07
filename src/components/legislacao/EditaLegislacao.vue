@@ -30,6 +30,23 @@
 
           <v-row>
             <v-col cols="2">
+              <div class="info-label">Fonte do diploma:</div>
+            </v-col>
+            <v-col>
+              <v-select
+                item-color="indigo"
+                color="indigo"
+                v-model="legislacao.diplomaFonte"
+                :items="diplomaFonteTipo"
+                label="Selecione uma opção"
+                solo
+                dense
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
               <div class="info-label">Número de diploma:</div>
             </v-col>
             <v-col>
@@ -73,7 +90,12 @@
                     :rules="regraData"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="date" no-title @input="open = false" :max="date"></v-date-picker>
+                <v-date-picker
+                  v-model="date"
+                  no-title
+                  @input="open = false"
+                  :max="date"
+                ></v-date-picker>
               </v-menu>
             </v-col>
           </v-row>
@@ -99,16 +121,22 @@
               <div class="info-label">Link:</div>
             </v-col>
             <v-col>
-              <v-text-field v-model="legislacao.link" solo clearable color="indigo" single-line></v-text-field>
+              <v-text-field
+                v-model="legislacao.link"
+                solo
+                clearable
+                color="indigo"
+                single-line
+              ></v-text-field>
             </v-col>
           </v-row>
 
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header
-                class="expansion-panel-heading"
-              >Entidade responsável pela publicação</v-expansion-panel-header>
+              <v-expansion-panel-header class="expansion-panel-heading"
+                >Entidade responsável pela publicação</v-expansion-panel-header
+              >
               <v-expansion-panel-content>
                 <DesSelEnt
                   :entidades="entSel"
@@ -128,11 +156,15 @@
 
             <!-- Segundo bloco expansivo -->
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header
-                class="expansion-panel-heading"
-              >Processos de negócio que regula ou enquadra</v-expansion-panel-header>
+              <v-expansion-panel-header class="expansion-panel-heading"
+                >Processos de negócio que regula ou
+                enquadra</v-expansion-panel-header
+              >
               <v-expansion-panel-content>
-                <DesSelProc :processos="procSel" @unselectProcesso="unselectProcesso($event)" />
+                <DesSelProc
+                  :processos="procSel"
+                  @unselectProcesso="unselectProcesso($event)"
+                />
 
                 <hr style="border-top: 1px dashed #dee2f8;" />
 
@@ -145,7 +177,12 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-card-text>
-        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+        <v-snackbar
+          v-model="snackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
           {{ text }}
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
@@ -176,12 +213,15 @@ export default {
       tipo: "",
       data: "",
       link: "",
+      diplomaFonte: "",
       entidadesSel: [],
       processosSel: [],
       codigo: ""
     },
 
     tiposDiploma: [],
+
+    diplomaFonteTipo: ["PGD", "PGD/LC", "RADA"],
 
     // Para o seletor de entidades
     entidades: [],
