@@ -84,6 +84,11 @@ export default {
               label: "Criar classe",
               url: "/classes/criar",
               level: "auth"
+            },
+            {
+              label: "Alterar classe",
+              url: "/classes/editar",
+              level: "auth"
             }
           ]
         },
