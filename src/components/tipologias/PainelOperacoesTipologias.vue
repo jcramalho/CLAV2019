@@ -92,10 +92,47 @@
       </v-dialog>
 
       <!-- Pedido de criação de tipologia submetido com sucesso -->
-      <v-dialog v-model="dialogTipologiaCriada" width="40%">
+      <v-dialog v-model="dialogTipologiaCriada" width="70%">
         <v-card>
-          <v-card-title>Pedido de Criação de Tipologia Submetido</v-card-title>
-          <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
+          <v-card-title
+            >Pedido de {{ acao }} de Tipologia Submetido</v-card-title
+          >
+          <v-card-text>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Designação:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ t.designacao }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Sigla:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ t.sigla }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="t.entidadesSel.length > 0">
+              <v-col cols="2">
+                <div class="info-label">Entidades:</div>
+              </v-col>
+
+              <v-col>
+                <v-data-table
+                  :headers="headers"
+                  :items="t.entidadesSel"
+                  class="elevation-1"
+                  hide-default-footer
+                ></v-data-table>
+              </v-col>
+            </v-row>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
@@ -171,8 +208,11 @@ export default {
       dialogTipologiaCriada: false,
       numeroErros: 0,
       errosValidacao: false,
-      mensagemPedidoCriadoOK: "",
-      pedidoEliminado: false
+      pedidoEliminado: false,
+      headers: [
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+        { text: "Sigla", value: "sigla", class: "subtitle-1" }
+      ]
     };
   },
 
@@ -345,7 +385,13 @@ export default {
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  margin: 5px;
+  border-radius: 3px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 </style>

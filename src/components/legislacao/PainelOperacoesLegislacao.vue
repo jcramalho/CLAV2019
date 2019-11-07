@@ -259,7 +259,6 @@ export default {
       dialogLegislacaoCriada: false,
       numeroErros: 0,
       errosValidacao: false,
-      mensagemPedidoCriadoOK: "",
       pedidoEliminado: false,
       headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
