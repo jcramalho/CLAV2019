@@ -385,9 +385,19 @@ export default {
   created: async function() {
     this.legislacao = this.l;
 
-    let dia = this.l.data.split("/")[1];
-    let mes = this.l.data.split("/")[2];
-    let ano = this.l.data.split("/")[0];
+    let dia = 0;
+    let mes = 0;
+    let ano = 0;
+
+    if (this.l.data.indexOf("/") !== -1) {
+      dia = this.l.data.split("/")[1];
+      mes = this.l.data.split("/")[2];
+      ano = this.l.data.split("/")[0];
+    } else {
+      dia = this.l.data.split("-")[0];
+      mes = this.l.data.split("-")[1];
+      ano = this.l.data.split("-")[2];
+    }
 
     this.legislacao.data = `${ano}/${mes}/${dia}`;
     this.date = new Date(`${ano}-${mes}-${dia}`).toISOString().substr(0, 10);
