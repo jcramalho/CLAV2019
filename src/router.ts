@@ -21,6 +21,18 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
+      path: "/classes/editar",
+      name: "classesEditar",
+      component: () => import("./views/classes/ClassesEditar.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/classes/editar/:idClasse",
+      name: "editaClasse",
+      component: () => import("./views/classes/ClassesEdita.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
       path: "/classes/consultar/:idClasse",
       name: "consultaClasse",
       component: () => import("./views/classes/ClassesConsulta.vue"),
