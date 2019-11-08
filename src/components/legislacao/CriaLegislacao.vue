@@ -114,7 +114,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Fonte do diploma:</div>
+              <div class="info-label">Tipo de fonte de legitimação:</div>
             </v-col>
             <v-col>
               <v-select
