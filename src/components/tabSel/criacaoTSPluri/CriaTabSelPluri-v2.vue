@@ -3,7 +3,7 @@
       <v-col>
         <v-card>
           <v-app-bar color="indigo darken-4" dark>
-                <v-toolbar-title class="card-heading">Nova Tabela de Seleção</v-toolbar-title>
+                <v-toolbar-title class="card-heading">Nova Tabela de Seleção Pluriorganizacional</v-toolbar-title>
           </v-app-bar>
           <v-card-text class="panel-body">
             <v-container grid-list-md fluid>
@@ -64,15 +64,23 @@
                       v-model="tabelaSelecao.designacao"
                     ></v-text-field>
                   </v-flex>
-                  <v-btn
-                    color="primary"
-                    @click="
-                      stepNo = 3;
-                      barra(32);
-                      loadProcEspecificos();
-                    "
-                    >Continuar</v-btn
-                  >
+                  <v-row>
+                    <v-btn class="ma-2"
+                        color="primary"
+                        @click="
+                            stepNo = 3;
+                            barra(32);
+                            loadProcEspecificos();
+                        "
+                    >Continuar</v-btn>
+
+                    <v-btn color="primary" class="ma-2"
+                        @click="
+                            stepNo--;
+                        "
+                    >Sel. Entidades</v-btn>
+                  </v-row>
+                  
                 </v-stepper-content>
 
                 <v-stepper-step :complete="stepNo > 3" step="3"
@@ -948,19 +956,23 @@ export default {
     },
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
+      console.log('Entrei na submissão de TS...')
       try {
         var userBD = await this.$request(
           "get",
           "/api/users/listarToken/" + this.$store.state.token
         );
 
+      // console.log('User: ' + JSON.stringify(userBD))
+      console.log('TS: ' + JSON.stringify(this.tabelaSelecao))
+
         var tsObj = [];
 
         //Criação do objeto para enviar no pedido
         for (var k in this.tabelaSelecao.listaProcSel) {
-          this.tabelaSelecao.listaProcSel[k].forEach(c => {
+          this.tabelaSelecao.listaProcSel[k].forEach(codigo => {
             var p = {
-              codigo: c.classe,
+              codigo: codigo,
               entidades: []
             };
 
@@ -985,7 +997,7 @@ export default {
 
             var index;
             if (lista) {
-              index = this[lista].findIndex(e => e.classe == p.codigo);
+              index = this[lista].findIndex(e => e.classe == codigo);
               if (index != -1) {
                 p.titulo = this[lista][index].designacao;
               }
@@ -993,29 +1005,29 @@ export default {
 
             //Adicionar donos
             var kr = k.replace(/Sel/g, "");
-            for (var ent in this.tabelaSelecao[kr][p.codigo].dono) {
-              if (this.tabelaSelecao[kr][p.codigo].dono[ent]) {
+            for (var ent in this.tabelaSelecao[kr][codigo].dono) {
+              if (this.tabelaSelecao[kr][codigo].dono[ent]) {
                 p.entidades.push({
                   sigla: ent.split("_")[1],
-                  dono: this.tabelaSelecao[kr][p.codigo].dono[ent],
+                  dono: this.tabelaSelecao[kr][codigo].dono[ent],
                   participante: false
                 });
               }
             }
 
             //Adicionar participantes
-            for (ent in this.tabelaSelecao[kr][p.codigo].part) {
+            for (ent in this.tabelaSelecao[kr][codigo].part) {
               index = p.entidades.findIndex(e => "ent_" + e.sigla == ent);
               if (index != -1) {
                 p.entidades[index].participante = this.tabelaSelecao[kr][
-                  p.codigo
+                  codigo
                 ].part[ent];
               } else {
-                if (this.tabelaSelecao[kr][p.codigo].part[ent]) {
+                if (this.tabelaSelecao[kr][codigo].part[ent]) {
                   p.entidades.push({
                     sigla: ent.split("_")[1],
                     dono: false,
-                    participante: this.tabelaSelecao[kr][p.codigo].part[ent]
+                    participante: this.tabelaSelecao[kr][codigo].part[ent]
                   });
                 }
               }
@@ -1038,11 +1050,14 @@ export default {
           token: this.$store.state.token
         };
 
+        console.log('Vou fazer a criação do pedido...')
+
         var response = await this.$request(
           "post",
           "/api/pedidos",
           pedidoParams
         );
+        console.log(JSON.stringify('resposta: ' + JSON.stringify(response)))
 
         this.$router.push("/pedidos/submissao");
       } catch (error) {

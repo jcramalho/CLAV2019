@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import CriaTabSelPluri from "@/components/tabSel/criacaoTSPluri/CriaTabSelPluri-v2.vue";
+import CriaTabSelPluri from "@/components/tabSel/criacaoTSPluri/CriaTabSelPluri.vue";
 
 export default {
   components: {
