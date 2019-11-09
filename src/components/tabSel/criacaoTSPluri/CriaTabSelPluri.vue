@@ -948,11 +948,15 @@ export default {
     },
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
+      console.log('Entrei na submissão de TS...')
       try {
         var userBD = await this.$request(
           "get",
           "/api/users/listarToken/" + this.$store.state.token
         );
+
+      // console.log('User: ' + JSON.stringify(userBD))
+      console.log('TS: ' + JSON.stringify(this.tabelaSelecao))
 
         var tsObj = [];
 
@@ -1038,11 +1042,15 @@ export default {
           token: this.$store.state.token
         };
 
+        console.log('Vou fazer a criação do pedido...')
+
         var response = await this.$request(
           "post",
           "/api/pedidos",
           pedidoParams
         );
+        console.log(JSON.stringify('resposta: ' + JSON.stringify(response)))
+
         this.$router.push("/pedidos/submissao");
       } catch (error) {
         return error;

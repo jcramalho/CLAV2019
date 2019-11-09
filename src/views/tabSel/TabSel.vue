@@ -35,22 +35,19 @@ export default {
     this.cabecalhos = ["Data", "Tipo", "Número", "Sumário", "Acesso"];
     this.campos = ["data", "tipo", "numero", "sumario", "link"];
 
-    try {
-      let response = await this.$request("get", "/api/legislacao?fonte=PGD");
-      this.fontesPGD = response.data.map(f => { return {data: f.data, tipo: f.tipo, numero: f.numero, sumario: f.sumario, link: f.link}})
-      this.fontesPGDReady = true;
-    } 
-    catch (e) {
-      return e;
-    }
-    try {
-      let response2 = await this.$request("get", "/api/legislacao?fonte=PGD/LC");
-      this.fontesPGDLC = response2.data.map(f => { return {data: f.data, tipo: f.tipo, numero: f.numero, sumario: f.sumario, link: f.link}})
-      this.fontesPGDLCReady = true;
-    } 
-    catch (e) {
-      return e;
-    }
+    this.$request("get", "/api/legislacao?fonte=PGD/LC")
+      .then(response2 => {
+        this.fontesPGDLC = response2.data.map(f => { return {data: f.data, tipo: f.tipo, numero: f.numero, sumario: f.sumario, link: f.link}})
+        this.fontesPGDLCReady = true;
+      })
+      .catch(e => console.log('Erro no carregamento da legislação PGD/LC: ' + e))
+
+    this.$request("get", "/api/legislacao?fonte=PGD")
+      .then(response => {
+        this.fontesPGD = response.data.map(f => { return {data: f.data, tipo: f.tipo, numero: f.numero, sumario: f.sumario, link: f.link}})
+        this.fontesPGDReady = true;
+      })
+      .catch(e2 => console.log('Erro no carregamento da legislação PGD: ' + e2))
   }
 };
 </script>
