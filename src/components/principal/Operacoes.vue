@@ -197,17 +197,6 @@ export default {
               level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
-        },
-        {
-          entidade: "Chaves API",
-          texto: "",
-          ops: [
-            {
-              label: "Consultar chaves API",
-              url: "/gestao/api/listagem",
-              level: [7]
-            }
-          ]
         }
       ]
     };
