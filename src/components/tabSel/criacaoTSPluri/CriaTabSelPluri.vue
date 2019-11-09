@@ -958,9 +958,9 @@ export default {
 
         //Criação do objeto para enviar no pedido
         for (var k in this.tabelaSelecao.listaProcSel) {
-          this.tabelaSelecao.listaProcSel[k].forEach(codigo => {
+          this.tabelaSelecao.listaProcSel[k].forEach(c => {
             var p = {
-              codigo: codigo,
+              codigo: c.classe,
               entidades: []
             };
 
@@ -985,7 +985,7 @@ export default {
 
             var index;
             if (lista) {
-              index = this[lista].findIndex(e => e.classe == codigo);
+              index = this[lista].findIndex(e => e.classe == p.codigo);
               if (index != -1) {
                 p.titulo = this[lista][index].designacao;
               }
@@ -993,29 +993,29 @@ export default {
 
             //Adicionar donos
             var kr = k.replace(/Sel/g, "");
-            for (var ent in this.tabelaSelecao[kr][codigo].dono) {
-              if (this.tabelaSelecao[kr][codigo].dono[ent]) {
+            for (var ent in this.tabelaSelecao[kr][p.codigo].dono) {
+              if (this.tabelaSelecao[kr][p.codigo].dono[ent]) {
                 p.entidades.push({
                   sigla: ent.split("_")[1],
-                  dono: this.tabelaSelecao[kr][codigo].dono[ent],
+                  dono: this.tabelaSelecao[kr][p.codigo].dono[ent],
                   participante: false
                 });
               }
             }
 
             //Adicionar participantes
-            for (ent in this.tabelaSelecao[kr][codigo].part) {
+            for (ent in this.tabelaSelecao[kr][p.codigo].part) {
               index = p.entidades.findIndex(e => "ent_" + e.sigla == ent);
               if (index != -1) {
                 p.entidades[index].participante = this.tabelaSelecao[kr][
-                  codigo
+                  p.codigo
                 ].part[ent];
               } else {
-                if (this.tabelaSelecao[kr][codigo].part[ent]) {
+                if (this.tabelaSelecao[kr][p.codigo].part[ent]) {
                   p.entidades.push({
                     sigla: ent.split("_")[1],
                     dono: false,
-                    participante: this.tabelaSelecao[kr][codigo].part[ent]
+                    participante: this.tabelaSelecao[kr][p.codigo].part[ent]
                   });
                 }
               }

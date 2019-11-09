@@ -382,7 +382,7 @@ export default {
       guardar["dono"] = this.entProcDono;
       this.$emit("guardarTSProcComuns", guardar);
     },
-    selecTodasEnt: async function(entidades, proc) {
+    selecTodasEnt: async function(entidades, proc, des) {
       for (var i = 0; i < entidades.length; i++) {
         this.entProcDono[proc][entidades[i].id] = true;
       }
@@ -399,7 +399,7 @@ export default {
       guardar["dono"] = this.entProcDono;
       this.$emit("guardarTSProcComuns", guardar);
     },
-    guardaEntPar: async function(proc) {
+    guardaEntPar: async function(proc, des) {
       var guardar = {};
       guardar["part"] = this.entProcPar;
       this.$emit("guardarTSProcComuns", guardar);
