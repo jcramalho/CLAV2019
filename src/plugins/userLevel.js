@@ -20,7 +20,6 @@ const userLevel = {
           level = 0;
         }
       } else {
-        alert(level);
         level = 0;
       }
       return level;
