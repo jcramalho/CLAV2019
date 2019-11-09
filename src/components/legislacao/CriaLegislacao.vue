@@ -28,22 +28,6 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Fonte do diploma:</div>
-            </v-col>
-            <v-col>
-              <v-select
-                item-color="indigo"
-                color="indigo"
-                v-model="legislacao.diplomaFonte"
-                :items="diplomaFonteTipo"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
               <div class="info-label">Número de diploma:</div>
             </v-col>
             <v-col>
@@ -125,6 +109,22 @@
                 color="indigo"
                 single-line
               ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Tipo de fonte de legitimação:</div>
+            </v-col>
+            <v-col>
+              <v-select
+                item-color="indigo"
+                color="indigo"
+                v-model="legislacao.diplomaFonte"
+                :items="diplomaFonteTipo"
+                solo
+                dense
+              />
             </v-col>
           </v-row>
 

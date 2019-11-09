@@ -14,7 +14,7 @@
           <v-expansion-panel-content>
             <v-card>
               <v-card-text>
-                <div v-if="item.html" v-html="item.texto" />
+                <p v-if="item.html"><span v-html="item.texto"></span></p>
                 <p v-else>{{ item.texto }}</p>
                 <div>
                   <v-btn
@@ -55,6 +55,7 @@ export default {
         if (levels.includes(this.level)) {
           filtered.push({
             entidade: operacoes[i].entidade,
+            html: operacoes[i].html,
             texto: operacoes[i].texto,
             ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
           });
@@ -195,17 +196,6 @@ export default {
               label: "Adicionar",
               url: "/termosIndice/criar",
               level: [1, 3, 3.5, 4, 5, 6, 7]
-            }
-          ]
-        },
-        {
-          entidade: "Chaves API",
-          texto: "",
-          ops: [
-            {
-              label: "Consultar chaves API",
-              url: "/gestao/api/listagem",
-              level: [7]
             }
           ]
         }
