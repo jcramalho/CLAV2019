@@ -37,36 +37,8 @@ async function getAuthToken(store) {
   return auth;
 }
 
-async function exec(type, path, data, config, store, router) {
-  config = config || null;
-  data = data || null;
-  var authToken = await getAuthToken(store);
-  var url = lhost + path;
-
-  if (config == null) {
-    config = { headers: { Authorization: authToken } };
-  } else {
-    if (config.headers) {
-      config.headers.Authorization = authToken;
-    } else {
-      config.headers = { Authorization: authToken };
-    }
-  }
-
-  try {
-    switch (type) {
-      case "get":
-        return await axios.get(url, config);
-      case "post":
-        return await axios.post(url, data, config);
-      case "put":
-        return await axios.put(url, data, config);
-      case "delete":
-        return await axios.delete(url, config);
-      default:
-        throw "Wrong REST method or not supported!";
-    }
-  } catch (erro) {
+function parseError(erro, store, router) {
+  if (erro.response && erro.response.status) {
     var httpStatus = erro.response.status;
 
     if (httpStatus == 401 && path != "/api/users/login") {
@@ -91,13 +63,54 @@ async function exec(type, path, data, config, store, router) {
     } else {
       throw erro;
     }
+  } else {
+    throw erro;
+  }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function exec(type, path, data, config, store, router) {
+  config = config || null;
+  data = data || null;
+  var authToken = await getAuthToken(store);
+  var url = lhost + path;
+
+  if (config == null) {
+    config = { headers: { Authorization: authToken } };
+  } else {
+    if (config.headers) {
+      config.headers.Authorization = authToken;
+    } else {
+      config.headers = { Authorization: authToken };
+    }
+  }
+
+  await sleep(300);
+  try {
+    switch (type) {
+      case "get":
+        return await axios.get(url, config);
+      case "post":
+        return await axios.post(url, data, config);
+      case "put":
+        return await axios.put(url, data, config);
+      case "delete":
+        return await axios.delete(url, config);
+      default:
+        throw "Wrong REST method or not supported!";
+    }
+  } catch (erro) {
+    parseError(erro, store, router);
   }
 }
 
 const request = {
   install(Vue, options) {
-    Vue.prototype.$request = function(type, path, data, config) {
-      return exec(type, path, data, config, this.$store, this.$router);
+    Vue.prototype.$request = async function(type, path, data, config) {
+      return await exec(type, path, data, config, this.$store, this.$router);
     };
   }
 };
