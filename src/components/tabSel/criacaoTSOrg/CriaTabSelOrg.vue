@@ -26,7 +26,7 @@
                   color="primary"
                   @click="
                     stepNo = 1;
-                    barra(16);
+                    barra(0);
                     guardaEntidade();
                   "
                   >Continuar</v-btn
@@ -65,9 +65,17 @@
                   color="primary"
                   @click="
                     stepNo = 2;
-                    barra(16);
+                    barra(14);
                   "
                   >Continuar</v-btn
+                >
+                <v-btn
+                  text
+                  @click="
+                    stepNo = 0;
+                    barra(0);
+                  "
+                  >Voltar</v-btn
                 >
               </v-stepper-content>
 
@@ -86,10 +94,18 @@
                   color="primary"
                   @click="
                     stepNo = 3;
-                    barra(32);
+                    barra(28);
                     loadProcEspecificos();
                   "
                   >Continuar</v-btn
+                >
+                <v-btn
+                  text
+                  @click="
+                    stepNo = 1;
+                    barra(0);
+                  "
+                  >Voltar</v-btn
                 >
               </v-stepper-content>
 
@@ -158,11 +174,19 @@
                   color="primary"
                   @click="
                     stepNo = 4;
-                    barra(48);
+                    barra(42);
                     procPreSelEspecificos();
                     loadProcEspRestantes();
                   "
                   >Continuar</v-btn
+                >
+                <v-btn
+                  text
+                  @click="
+                    stepNo = 2;
+                    barra(14);
+                  "
+                  >Voltar</v-btn
                 >
               </v-stepper-content>
 
@@ -231,10 +255,18 @@
                   color="primary"
                   @click="
                     stepNo = 5;
-                    barra(64);
+                    barra(56);
                     procPreSelRestantes();
                   "
                   >Continuar</v-btn
+                >
+                <v-btn
+                  text
+                  @click="
+                    stepNo = 3;
+                    barra(28);
+                  "
+                  >Voltar</v-btn
                 >
               </v-stepper-content>
 
@@ -299,11 +331,19 @@
                   color="primary"
                   @click="
                     stepNo = 6;
-                    barra(80);
+                    barra(70);
                     loadUltimosProcessos();
                     procPreSelUlt();
                   "
                   >Continuar</v-btn
+                >
+                <v-btn
+                  text
+                  @click="
+                    stepNo = 4;
+                    barra(42);
+                  "
+                  >Voltar</v-btn
                 >
               </v-stepper-content>
 
@@ -353,10 +393,18 @@
                   color="primary"
                   @click="
                     stepNo = 7;
-                    barra(100);
+                    barra(84);
                     parseProcessosSel();
                   "
                   >Continuar</v-btn
+                >
+                <v-btn
+                  text
+                  @click="
+                    stepNo = 5;
+                    barra(56);
+                  "
+                  >Voltar</v-btn
                 >
               </v-stepper-content>
 
@@ -424,6 +472,14 @@
                   </v-card>
                 </v-dialog>
               </v-btn>
+              <v-btn
+                text
+                @click="
+                  stepNo = 6;
+                  barra(72);
+                "
+                >Voltar</v-btn
+              >
               </v-stepper-content>
 
               <hr style="border-top: 0px"/>
