@@ -1,35 +1,42 @@
 var axios = require("axios");
 const lhost = require("@/config/global").host;
 
+async function getCLAVToken(store) {
+  var apikey;
+
+  try {
+    var response = await axios.get(lhost + "/api/chaves/clavToken");
+    apikey = response.data.token;
+
+    store.commit("guardaTokenCLAV", apikey);
+    store.commit("guardaExpTokenCLAV", response.data.exp);
+  } catch (erro) {
+    apikey = "";
+  }
+
+  return apikey;
+}
+
 async function getAuthToken(store) {
   var auth = "";
+
   if (store.state.token != "") {
     auth = "token " + store.state.token;
   } else {
     var apikey;
-    var response;
-    try {
-      if (store.state.clavToken != "") {
-        var expDate = new Date(store.state.expClavToken * 1000);
-        var atualDate = new Date();
 
-        //verifica se o token ainda não expirou
-        if (expDate.getTime() >= atualDate.getTime()) {
-          apikey = store.state.clavToken;
-        } else {
-          response = await axios.get(lhost + "/api/chaves/clavToken");
-          apikey = response.data.token;
-          store.commit("guardaTokenCLAV", apikey);
-          store.commit("guardaExpTokenCLAV", response.data.exp);
-        }
+    if (store.state.clavToken != "") {
+      var expDate = new Date(store.state.expClavToken * 1000);
+      var atualDate = new Date();
+
+      //verifica se o token ainda não expirou
+      if (expDate.getTime() >= atualDate.getTime()) {
+        apikey = store.state.clavToken;
       } else {
-        response = await axios.get(lhost + "/api/chaves/clavToken");
-        apikey = response.data.token;
-        store.commit("guardaTokenCLAV", apikey);
-        store.commit("guardaExpTokenCLAV", response.data.exp);
+        apikey = await getCLAVToken(store);
       }
-    } catch (erro) {
-      apikey = "";
+    } else {
+      apikey = await getCLAVToken(store);
     }
     auth = "apikey " + apikey;
   }
@@ -37,7 +44,7 @@ async function getAuthToken(store) {
   return auth;
 }
 
-function parseError(erro, store, router) {
+function parseError(erro, path, store, router) {
   if (erro.response && erro.response.status) {
     var httpStatus = erro.response.status;
 
@@ -68,10 +75,6 @@ function parseError(erro, store, router) {
   }
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function exec(type, path, data, config, store, router) {
   config = config || null;
   data = data || null;
@@ -88,7 +91,6 @@ async function exec(type, path, data, config, store, router) {
     }
   }
 
-  await sleep(300);
   try {
     switch (type) {
       case "get":
@@ -103,7 +105,7 @@ async function exec(type, path, data, config, store, router) {
         throw "Wrong REST method or not supported!";
     }
   } catch (erro) {
-    parseError(erro, store, router);
+    parseError(erro, path, store, router);
   }
 }
 
