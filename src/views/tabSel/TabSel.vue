@@ -2,16 +2,16 @@
   <div>
     <div>
       <Loading v-if="!fontesPGDReady" :message="'fontes de legitimação'" />
-      <Listagem v-else :lista="fontesPGD" tipo="Fontes de Legitimação (PGD)" :cabecalho="cabecalhos" :campos="campos" />
+      <ListagemLeg v-else :lista="fontesPGD" tipo="Fontes de Legitimação (PGD)" :cabecalho="cabecalhos" :campos="campos" />
     </div>
     <div>
       <Loading v-if="!fontesPGDLCReady" :message="'fontes de legitimação'" />
-      <Listagem v-else :lista="fontesPGDLC" tipo="Fontes de Legitimação (PGD/LC)" :cabecalho="cabecalhos" :campos="campos" />
+      <ListagemLeg v-else :lista="fontesPGDLC" tipo="Fontes de Legitimação (PGD/LC)" :cabecalho="cabecalhos" :campos="campos" />
     </div>
   </div>
 </template>
 <script>
-import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
+import ListagemLeg from "@/components/tabSel/consulta/ListagemLeg.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
 
 import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
@@ -27,7 +27,7 @@ export default {
   }),
 
   components: {
-    Listagem,
+    ListagemLeg,
     Loading
   },
 
@@ -40,14 +40,14 @@ export default {
         this.fontesPGDLC = response2.data.map(f => { return {data: f.data, tipo: f.tipo, numero: f.numero, sumario: f.sumario, link: f.link}})
         this.fontesPGDLCReady = true;
       })
-      .catch(e => console.log('Erro no carregamento da legislação PGD/LC: ' + e))
+      .catch(e => {return e})
 
     this.$request("get", "/api/legislacao?fonte=PGD")
       .then(response => {
         this.fontesPGD = response.data.map(f => { return {data: f.data, tipo: f.tipo, numero: f.numero, sumario: f.sumario, link: f.link}})
         this.fontesPGDReady = true;
       })
-      .catch(e2 => console.log('Erro no carregamento da legislação PGD: ' + e2))
+      .catch(e2 => {return e2})
   }
 };
 </script>
