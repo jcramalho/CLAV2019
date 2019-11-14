@@ -450,6 +450,14 @@ export default {
     cancelar() {
       this.$router.push("/");
     },
+    click(element) {
+      element.style.display = "none";
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    },
     download(filename, content, format) {
       var element = document.createElement("a");
       element.setAttribute(
@@ -457,13 +465,20 @@ export default {
         "data:" + format + ";charset=utf-8," + encodeURIComponent(content)
       );
       element.setAttribute("download", filename);
+      this.click(element);
+    },
+    async downloadOntologia(path) {
+      var element = document.createElement("a");
+      var token = await this.$getAuthToken();
+      token = token.replace(" ", "=");
 
-      element.style.display = "none";
-      document.body.appendChild(element);
+      path = path.includes("?")
+        ? lhost + path + "&" + token
+        : lhost + path + "?" + token;
 
-      element.click();
-
-      document.body.removeChild(element);
+      element.setAttribute("href", path);
+      element.setAttribute("download", "");
+      this.click(element);
     },
     defineParams(content) {
       var filename = this.tipo.filename + ".";
@@ -523,7 +538,10 @@ export default {
 
           var q = [];
           for (var key in this.queriesSel) {
-            if (this.queriesSel[key] != "Por definir") {
+            if (
+              this.queriesSel[key] != "Por definir" &&
+              this.queriesSel[key] != ""
+            ) {
               q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
             }
           }
@@ -531,8 +549,8 @@ export default {
           path += q.join("&");
         }
 
-        //obter dados
         if (this.tipo.filename != "ontologia") {
+          //obter dados
           try {
             var response = await this.$request("get", path);
           } catch (erro) {
@@ -549,21 +567,7 @@ export default {
           var fcf = this.defineParams(response.data);
           this.download(fcf[0], fcf[1], fcf[2]);
         } else {
-          var element = document.createElement("a");
-          var token = await this.$getAuthToken();
-          token = token.replace(" ", "=");
-          path = path.includes("?")
-            ? lhost + path + "&" + token
-            : lhost + path + "?" + token;
-          element.setAttribute("href", path);
-          element.setAttribute("download", "");
-
-          element.style.display = "none";
-          document.body.appendChild(element);
-
-          element.click();
-
-          document.body.removeChild(element);
+          await this.downloadOntologia(path);
         }
 
         this.text = "Exportação realizada com sucesso!";
