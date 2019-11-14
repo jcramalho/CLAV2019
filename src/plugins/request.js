@@ -110,7 +110,7 @@ async function exec(type, path, data, config, store, router) {
 }
 
 const request = {
-  install(Vue, options) {
+  install(Vue) {
     Vue.prototype.$request = async function(type, path, data, config) {
       return await exec(type, path, data, config, this.$store, this.$router);
     };

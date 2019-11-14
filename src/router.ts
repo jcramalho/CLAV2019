@@ -373,6 +373,13 @@ export default new Router({
       name: "testarTodosInvariantes",
       component: () => import("./views/invariantes/TestarTodos.vue"),
       meta: { levels: [6, 7] }
+    },
+    //exportação
+    {
+      path: "/exportar",
+      name: "exportação",
+      component: () => import("./views/exportacao/Exportacao.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     }
   ]
 });

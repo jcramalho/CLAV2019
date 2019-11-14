@@ -198,6 +198,18 @@ export default {
               level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
+        },
+        {
+          entidade: "Exportação de Dados",
+          texto:
+            "Exportar dados das classes, entidades, tipologias, legislação e ontologia.",
+          ops: [
+            {
+              label: "Área de exportação",
+              url: "/exportar",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         }
       ]
     };

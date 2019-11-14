@@ -1,0 +1,375 @@
+<template>
+  <v-container fluid>
+    <v-row row wrap justify-center>
+      <v-col cols="12">
+        <v-card>
+          <v-toolbar color="indigo darken-4" dark>
+            <v-toolbar-title>Exportação de Dados</v-toolbar-title>
+          </v-toolbar>
+          <v-card-text>
+            <v-autocomplete
+              :items="exportacoesDisponiveis"
+              label="Dados a exportar"
+              v-model="tipo"
+              prepend-icon=""
+              :rules="regraTipo"
+              @change="queriesSel = {}"
+            >
+            </v-autocomplete>
+
+            <v-card v-if="tipo != ''">
+              <v-card-title class="indigo darken-4 white--text subtitle-1">
+                Defina as query strings a usar na exportação
+              </v-card-title>
+              <v-card-text>
+                <div
+                  v-for="(querystring, key) in queryStrings[tipo]"
+                  :key="key"
+                >
+                  <v-row>
+                    <v-col cols="1" class="d-flex justify-center">
+                      <InfoBox
+                        :header="querystring.label"
+                        :text="querystring.desc"
+                        helpColor="indigo darken-4"
+                        dialogColor="#E0F2F1"
+                      />
+                    </v-col>
+                    <v-col cols="11">
+                      <span v-if="querystring.enum.length > 0">
+                        <v-autocomplete
+                          :items="querystring.enum"
+                          :label="querystring.label"
+                          v-model="queriesSel[key]"
+                          prepend-icon=""
+                        >
+                        </v-autocomplete>
+                      </span>
+                      <span v-else>
+                        <v-text-field
+                          prepend-icon=""
+                          :name="key"
+                          v-model="queriesSel[key]"
+                          :label="querystring.label"
+                          type="text"
+                        />
+                      </span>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="indigo darken-4" dark @click="cancelar">
+                  Cancelar
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="indigo darken-4" dark @click="executar">
+                  Exportar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-alert :value="text != ''" :type="alertType">
+          {{ text }}
+        </v-alert>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import InfoBox from "@/components/generic/infoBox.vue";
+
+export default {
+  data: () => ({
+    exportacoesDisponiveis: [
+      "Classes",
+      "Classe",
+      "Entidades",
+      "Entidade",
+      "Tipologias",
+      "Tipologia",
+      "Legislações",
+      "Legislação"
+    ],
+    tipo: "",
+    queriesSel: {},
+    queryStrings: {
+      Classes: {
+        formato: {
+          label: "Formato",
+          desc:
+            "Formato da estrutura de saída. Pode ser em árvore ou em lista. Quanto nenhum parâmetro é definido (formato, tipo e nivel) o formato de saída em arvore é o predefinido.",
+          enum: ["Por definir", "arvore", "lista"]
+        },
+        tipo: {
+          label: "Tipo",
+          desc:
+            "Que tipo de processos são devolvidos numa lista. Podem ser comuns ou especificos.",
+          enum: ["Por definir", "comum", "especifico"]
+        },
+        nivel: {
+          label: "Nível",
+          desc:
+            "O nível dos processos devolvidos numa lista. Podem ser de 1º, 2º, 3º e 4º nível.",
+          enum: ["Por definir", "1", "2", "3", "4"]
+        },
+        ents: {
+          label: "Entidades",
+          desc:
+            "Obtém os processos especificos destas entidades. Este parâmetro só deve ser usado quando o tipo é especifico. Exemplo de input: 'ent_AAN,ent_SEF'",
+          enum: []
+        },
+        tips: {
+          label: "Tipologias",
+          desc:
+            "Obtém os processos especificos destas tipologias. Este parâmetro só deve ser usado quando o tipo é especifico. Exemplo de input: 'tip_AAC,tip_AF'",
+          enum: []
+        },
+        info: {
+          label: "Informação completa?",
+          desc:
+            "Pretende toda a informação das classes? Caso o valor desta query string não seja 'completa' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe.",
+          enum: ["Por definir", "completa"]
+        },
+        OF: {
+          label: "Formato de saída",
+          desc: "Formato de saída do resultado",
+          enum: [
+            "Por definir",
+            "application/json",
+            "json",
+            "application/xml",
+            "xml",
+            "text/csv",
+            "csv",
+            "excel/csv"
+          ]
+        }
+      },
+      Entidades: {
+        processos: {
+          label: "Processos",
+          desc:
+            "No caso de ser escolhido 'com' é listado as entidades com PNs associados. Já no caso de ser escolhido 'sem' é listado as entidades sem PNs associados. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
+          enum: ["Por definir", "com", "sem"]
+        },
+        sigla: {
+          label: "Filtrar por sigla",
+          desc:
+            "Permite filtrar as entidades que contém a sigla igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: AR)",
+          enum: []
+        },
+        designacao: {
+          label: "Filtrar por designação",
+          desc:
+            "Permite filtrar as entidades que contém a designacao igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: Assembleia     da República)",
+          enum: []
+        },
+        internacional: {
+          label: "Filtrar pelo campo internacional",
+          desc:
+            "Permite filtrar as entidades que contém internacional igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
+          enum: ["Sim", "Não"]
+        },
+        sioe: {
+          label: "Filtrar por SIOE",
+          desc:
+            "Permite filtrar as entidades que contém sioe igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: 875780390)",
+          enum: []
+        },
+        estado: {
+          label: "Filtrar por estado",
+          desc:
+            "Permite filtrar as entidades que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
+          enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
+        },
+        OF: {
+          label: "Formato de saída",
+          desc:
+            "Formato de saída do resultado. O resultado no formato CSV possui toda a informação das entidades",
+          enum: [
+            "Por definir",
+            "application/json",
+            "json",
+            "application/xml",
+            "xml",
+            "text/csv",
+            "csv",
+            "excel/csv"
+          ]
+        }
+      },
+      Tipologias: {
+        designacao: {
+          label: "Filtrar por designação",
+          desc:
+            "Permite filtrar as tipologias que contém a designacao igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: Assembleia     da República)",
+          enum: []
+        },
+        estado: {
+          label: "Filtrar por estado",
+          desc:
+            "Permite filtrar as tipologias que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
+          enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
+        },
+        OF: {
+          label: "Formato de saída",
+          desc:
+            "Formato de saída do resultado. O resultado no formato CSV possui toda a informação das tipologias",
+          enum: [
+            "Por definir",
+            "application/json",
+            "json",
+            "application/xml",
+            "xml",
+            "text/csv",
+            "csv",
+            "excel/csv"
+          ]
+        }
+      },
+      Legislações: {
+        processos: {
+          label: "Processos",
+          desc:
+            "No caso de ser escolhido 'com' é listado os documentos legislativos com PNs associados. Já no caso de ser escolhido 'sem' é listado os documentos legislativos sem PNs associados. Só funciona caso o parâmetro estado não seja definido.",
+          enum: ["Por definir", "com", "sem"]
+        },
+        estado: {
+          label: "Filtrar por estado",
+          desc:
+            "No caso de ser definido lista os documentos legislativos no estado A. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
+          enum: ["Por definir", "A"]
+        },
+        fonte: {
+          label: "Filtrar por fonte",
+          desc:
+            "No caso de ser definido lista os documentos legislativos de acordo com a fonte especificada. Só funciona caso os parâmetros estado e processos não sejam definidos.",
+          enum: ["Por definir", "PGD", "PGD/LC", "RADA"]
+        },
+        OF: {
+          label: "Formato de saída",
+          desc: "Formato de saída do resultado",
+          enum: [
+            "Por definir",
+            "application/json",
+            "json",
+            "application/xml",
+            "xml",
+            "text/csv",
+            "csv",
+            "excel/csv"
+          ]
+        }
+      }
+    },
+    regraTipo: [v => !!v || "Tipo de dados a exportar é obrigatório."],
+    text: "",
+    alertType: "success"
+  }),
+
+  components: {
+    InfoBox
+  },
+
+  methods: {
+    cancelar() {
+      this.$router.push("/");
+    },
+    download(filename, content, format) {
+      var element = document.createElement("a");
+      element.setAttribute(
+        "href",
+        "data:" + format + ";charset=utf-8," + encodeURIComponent(content)
+      );
+      element.setAttribute("download", filename);
+
+      element.style.display = "none";
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    },
+    async executar() {
+      this.text = "";
+      var filename = this.tipo.toLowerCase();
+      var path = "/api/" + this.tipo.toLowerCase();
+
+      if (Object.keys(this.queriesSel).length > 0) {
+        path += "?";
+
+        var q = [];
+        for (var key in this.queriesSel) {
+          q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
+        }
+
+        path += q.join("&");
+      }
+
+      try {
+        var response = await this.$request("get", path);
+      } catch (erro) {
+        if (erro.response && erro.response.data) {
+          this.text = erro.response.data;
+        } else {
+          this.text = erro;
+        }
+        this.alertType = "error";
+        return;
+      }
+      var content = response.data;
+
+      filename += ".";
+      var format;
+
+      if (!this.queriesSel.OF || this.queriesSel.OF == "Por definir") {
+        filename += "json";
+        content = JSON.stringify(content, null, 4);
+        format = "application/json";
+      } else {
+        switch (this.queriesSel.OF) {
+          case "application/json":
+            filename += "json";
+            content = JSON.stringify(content, null, 4);
+            break;
+          case "application/xml":
+            filename += "xml";
+            break;
+          case "text/csv":
+          case "excel/csv":
+            filename += "csv";
+            break;
+          default:
+            filename += this.queriesSel.OF;
+            break;
+        }
+
+        switch (this.queriesSel.OF) {
+          case "json":
+            content = JSON.stringify(content, null, 4);
+            format = "application/json";
+            break;
+          case "xml":
+            format = "application/xml";
+            break;
+          case "excel/csv":
+          case "csv":
+            format = "text/csv";
+            break;
+          default:
+            format = this.queriesSel.OF;
+            break;
+        }
+      }
+      this.download(filename, content, format);
+      this.text = "Exportação realizada com sucesso!";
+      this.alertType = "success";
+    }
+  }
+};
+</script>
