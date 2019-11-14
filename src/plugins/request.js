@@ -114,6 +114,9 @@ const request = {
     Vue.prototype.$request = async function(type, path, data, config) {
       return await exec(type, path, data, config, this.$store, this.$router);
     };
+    Vue.prototype.$getAuthToken = async function() {
+      return await getAuthToken(this.$store);
+    };
   }
 };
 

@@ -105,6 +105,7 @@
 
 <script>
 import InfoBox from "@/components/generic/infoBox.vue";
+const lhost = require("@/config/global").host;
 
 export default {
   data: () => ({
@@ -138,6 +139,10 @@ export default {
       {
         text: "Legislação",
         value: { filename: "legislacao", path: "legislacao/leg_" }
+      },
+      {
+        text: "Ontologia",
+        value: { filename: "ontologia", path: "ontologia" }
       }
     ],
     tipo: "",
@@ -383,6 +388,27 @@ export default {
             "excel/csv"
           ]
         }
+      },
+      ontologia: {
+        inferir: {
+          label: "Ontologia com dados inferidos?",
+          desc:
+            "Caso 'true' devolve todos os triplos incluindo os inferidos. Caso 'false' não inclui os inferidos.",
+          enum: ["false", "true"]
+        },
+        formato: {
+          label: "Formato de saída do ficheiro",
+          desc:
+            "Formato em que é devolvido os triplos. Pode ser um dos seguintes valores: turtle (text/turtle), json-ld (application/ld+json) ou rdf-xml (application/rdf+xml). No caso de não ser passado nenhum formato ou o que é colocado não é suportado é devolvido turtle. O formato também pode ser indicado na header 'Accept' sofrendo das mesmas restrições que se for indicado por query. Caso seja definido das duas formas a fornecida pela query string é a que é usada.",
+          enum: [
+            "turtle",
+            "text/turtle",
+            "json-ld",
+            "application/ld+json",
+            "rdf-xml",
+            "application/rdf+xml"
+          ]
+        }
       }
     },
     regraTipo: [v => !!v || "Tipo de dados a exportar é obrigatório."],
@@ -399,10 +425,13 @@ export default {
     try {
       var response = await this.$request("get", "/api/classes?formato=lista");
       this.classes = response.data.map(c => c.codigo);
+
       response = await this.$request("get", "/api/entidades");
       this.entidades = response.data.map(e => e.sigla);
+
       response = await this.$request("get", "/api/tipologias");
       this.tipologias = response.data.map(t => t.sigla);
+
       response = await this.$request("get", "/api/legislacao");
       this.legislacoes = response.data.map(l => {
         return { text: l.tipo + " " + l.numero, value: l.id.split("leg_")[1] };
@@ -436,78 +465,107 @@ export default {
 
       document.body.removeChild(element);
     },
+    defineParams(content) {
+      var filename = this.tipo.filename + ".";
+      var format;
+
+      if (!this.queriesSel.OF || this.queriesSel.OF == "Por definir") {
+        filename += "json";
+        content = JSON.stringify(content, null, 4);
+        format = "application/json";
+      } else {
+        switch (this.queriesSel.OF) {
+          case "application/json":
+            filename += "json";
+            content = JSON.stringify(content, null, 4);
+            break;
+          case "application/xml":
+            filename += "xml";
+            break;
+          case "text/csv":
+          case "excel/csv":
+            filename += "csv";
+            break;
+          default:
+            filename += this.queriesSel.OF;
+            break;
+        }
+
+        switch (this.queriesSel.OF) {
+          case "json":
+            content = JSON.stringify(content, null, 4);
+            format = "application/json";
+            break;
+          case "xml":
+            format = "application/xml";
+            break;
+          case "excel/csv":
+          case "csv":
+            format = "text/csv";
+            break;
+          default:
+            format = this.queriesSel.OF;
+            break;
+        }
+      }
+
+      return [filename, content, format];
+    },
     async executar() {
       this.text = "";
+
       if (!this.$refs.id || this.$refs.id.validate()) {
         var path = "/api/" + this.tipo.path + this.id;
 
+        //criar query string
         if (Object.keys(this.queriesSel).length > 0) {
           path += "?";
 
           var q = [];
           for (var key in this.queriesSel) {
-            q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
+            if (this.queriesSel[key] != "Por definir") {
+              q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
+            }
           }
 
           path += q.join("&");
         }
 
-        try {
-          var response = await this.$request("get", path);
-        } catch (erro) {
-          if (erro.response && erro.response.data) {
-            this.text = erro.response.data;
-          } else {
-            this.text = erro;
+        //obter dados
+        if (this.tipo.filename != "ontologia") {
+          try {
+            var response = await this.$request("get", path);
+          } catch (erro) {
+            if (erro.response && erro.response.data) {
+              this.text = erro.response.data;
+            } else {
+              this.text = erro;
+            }
+            this.alertType = "error";
+            return;
           }
-          this.alertType = "error";
-          return;
-        }
-        var content = response.data;
 
-        var filename = this.tipo.filename + ".";
-        var format;
-
-        if (!this.queriesSel.OF || this.queriesSel.OF == "Por definir") {
-          filename += "json";
-          content = JSON.stringify(content, null, 4);
-          format = "application/json";
+          //criar ficheiro e devolver ao user
+          var fcf = this.defineParams(response.data);
+          this.download(fcf[0], fcf[1], fcf[2]);
         } else {
-          switch (this.queriesSel.OF) {
-            case "application/json":
-              filename += "json";
-              content = JSON.stringify(content, null, 4);
-              break;
-            case "application/xml":
-              filename += "xml";
-              break;
-            case "text/csv":
-            case "excel/csv":
-              filename += "csv";
-              break;
-            default:
-              filename += this.queriesSel.OF;
-              break;
-          }
+          var element = document.createElement("a");
+          var token = await this.$getAuthToken();
+          token = token.replace(" ", "=");
+          path = path.includes("?")
+            ? lhost + path + "&" + token
+            : lhost + path + "?" + token;
+          element.setAttribute("href", path);
+          element.setAttribute("download", "");
 
-          switch (this.queriesSel.OF) {
-            case "json":
-              content = JSON.stringify(content, null, 4);
-              format = "application/json";
-              break;
-            case "xml":
-              format = "application/xml";
-              break;
-            case "excel/csv":
-            case "csv":
-              format = "text/csv";
-              break;
-            default:
-              format = this.queriesSel.OF;
-              break;
-          }
+          element.style.display = "none";
+          document.body.appendChild(element);
+
+          element.click();
+
+          document.body.removeChild(element);
         }
-        this.download(filename, content, format);
+
         this.text = "Exportação realizada com sucesso!";
         this.alertType = "success";
       }
