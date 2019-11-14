@@ -542,7 +542,15 @@ export default {
               this.queriesSel[key] != "Por definir" &&
               this.queriesSel[key] != ""
             ) {
-              q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
+              if (
+                this.tipo.filename == "entidades" &&
+                key == "internacional" &&
+                this.queriesSel[key] == "Não"
+              ) {
+                q.push(key + "=" + encodeURIComponent(""));
+              } else {
+                q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
+              }
             }
           }
 
