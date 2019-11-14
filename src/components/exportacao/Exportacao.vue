@@ -11,11 +11,36 @@
               :items="exportacoesDisponiveis"
               label="Dados a exportar"
               v-model="tipo"
-              prepend-icon=""
               :rules="regraTipo"
-              @change="queriesSel = {}"
+              required
+              @change="
+                queriesSel = {};
+                id = '';
+              "
             >
             </v-autocomplete>
+
+            <v-card v-if="tipo != '' && tipo.path.includes('/')" class="mb-4">
+              <v-card-title class="indigo darken-4 white--text subtitle-1">
+                Parâmetros do pedido
+              </v-card-title>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12">
+                    <v-form ref="id">
+                      <v-autocomplete
+                        :items="this[singToPlu(tipo.filename)]"
+                        label="Identificador"
+                        v-model="id"
+                        :rules="regraId"
+                        required
+                      >
+                      </v-autocomplete>
+                    </v-form>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
 
             <v-card v-if="tipo != ''">
               <v-card-title class="indigo darken-4 white--text subtitle-1">
@@ -23,7 +48,7 @@
               </v-card-title>
               <v-card-text>
                 <div
-                  v-for="(querystring, key) in queryStrings[tipo]"
+                  v-for="(querystring, key) in queryStrings[tipo.filename]"
                   :key="key"
                 >
                   <v-row>
@@ -41,13 +66,11 @@
                           :items="querystring.enum"
                           :label="querystring.label"
                           v-model="queriesSel[key]"
-                          prepend-icon=""
                         >
                         </v-autocomplete>
                       </span>
                       <span v-else>
                         <v-text-field
-                          prepend-icon=""
                           :name="key"
                           v-model="queriesSel[key]"
                           :label="querystring.label"
@@ -85,20 +108,43 @@ import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   data: () => ({
+    classes: [],
+    entidades: [],
+    tipologias: [],
+    legislacoes: [],
     exportacoesDisponiveis: [
-      "Classes",
-      "Classe",
-      "Entidades",
-      "Entidade",
-      "Tipologias",
-      "Tipologia",
-      "Legislações",
-      "Legislação"
+      { text: "Classes", value: { filename: "classes", path: "classes" } },
+      { text: "Classe", value: { filename: "classe", path: "classes/c" } },
+      {
+        text: "Entidades",
+        value: { filename: "entidades", path: "entidades" }
+      },
+      {
+        text: "Entidade",
+        value: { filename: "entidade", path: "entidades/ent_" }
+      },
+      {
+        text: "Tipologias",
+        value: { filename: "tipologias", path: "tipologias" }
+      },
+      {
+        text: "Tipologia",
+        value: { filename: "tipologia", path: "tipologias/tip_" }
+      },
+      {
+        text: "Legislações",
+        value: { filename: "legislacoes", path: "legislacao" }
+      },
+      {
+        text: "Legislação",
+        value: { filename: "legislacao", path: "legislacao/leg_" }
+      }
     ],
     tipo: "",
     queriesSel: {},
+    id: "",
     queryStrings: {
-      Classes: {
+      classes: {
         formato: {
           label: "Formato",
           desc:
@@ -150,7 +196,7 @@ export default {
           ]
         }
       },
-      Entidades: {
+      entidades: {
         processos: {
           label: "Processos",
           desc:
@@ -203,7 +249,7 @@ export default {
           ]
         }
       },
-      Tipologias: {
+      tipologias: {
         designacao: {
           label: "Filtrar por designação",
           desc:
@@ -232,7 +278,7 @@ export default {
           ]
         }
       },
-      Legislações: {
+      legislacoes: {
         processos: {
           label: "Processos",
           desc:
@@ -265,15 +311,110 @@ export default {
             "excel/csv"
           ]
         }
+      },
+      classe: {
+        tipo: {
+          label: "Tipo",
+          desc:
+            "Caso o valor deste campo seja 'subarvore' é devolvida a subarvore com raiz na classe com id igual ao do campo 'id'",
+          enum: ["Por definir", "subarvore"]
+        },
+        OF: {
+          label: "Formato de saída",
+          desc: "Formato de saída do resultado",
+          enum: [
+            "Por definir",
+            "application/json",
+            "json",
+            "application/xml",
+            "xml",
+            "text/csv",
+            "csv",
+            "excel/csv"
+          ]
+        }
+      },
+      entidade: {
+        OF: {
+          label: "Formato de saída",
+          desc:
+            "Formato de saída do resultado. O resultado no formato CSV possui toda a informação da entidade",
+          enum: [
+            "Por definir",
+            "application/json",
+            "json",
+            "application/xml",
+            "xml",
+            "text/csv",
+            "csv",
+            "excel/csv"
+          ]
+        }
+      },
+      tipologia: {
+        OF: {
+          label: "Formato de saída",
+          desc:
+            "Formato de saída do resultado. O resultado no formato CSV possui toda a informação da tipologia",
+          enum: [
+            "Por definir",
+            "application/json",
+            "json",
+            "application/xml",
+            "xml",
+            "text/csv",
+            "csv",
+            "excel/csv"
+          ]
+        }
+      },
+      legislacao: {
+        OF: {
+          label: "Formato de saída",
+          desc: "Formato de saída do resultado",
+          enum: [
+            "Por definir",
+            "application/json",
+            "json",
+            "application/xml",
+            "xml",
+            "text/csv",
+            "csv",
+            "excel/csv"
+          ]
+        }
       }
     },
     regraTipo: [v => !!v || "Tipo de dados a exportar é obrigatório."],
+    regraId: [v => !!v || "Identificador é obrigatório."],
     text: "",
     alertType: "success"
   }),
 
   components: {
     InfoBox
+  },
+
+  mounted: async function() {
+    try {
+      var response = await this.$request("get", "/api/classes?formato=lista");
+      this.classes = response.data.map(c => c.codigo);
+      response = await this.$request("get", "/api/entidades");
+      this.entidades = response.data.map(e => e.sigla);
+      response = await this.$request("get", "/api/tipologias");
+      this.tipologias = response.data.map(t => t.sigla);
+      response = await this.$request("get", "/api/legislacao");
+      this.legislacoes = response.data.map(l => {
+        return { text: l.tipo + " " + l.numero, value: l.id.split("leg_")[1] };
+      });
+    } catch (erro) {
+      if (erro.response && erro.response.data) {
+        this.text = erro.response.data;
+      } else {
+        this.text = erro;
+      }
+      this.alertType = "error";
+    }
   },
 
   methods: {
@@ -297,78 +438,93 @@ export default {
     },
     async executar() {
       this.text = "";
-      var filename = this.tipo.toLowerCase();
-      var path = "/api/" + this.tipo.toLowerCase();
+      if (!this.$refs.id || this.$refs.id.validate()) {
+        var path = "/api/" + this.tipo.path + this.id;
 
-      if (Object.keys(this.queriesSel).length > 0) {
-        path += "?";
+        if (Object.keys(this.queriesSel).length > 0) {
+          path += "?";
 
-        var q = [];
-        for (var key in this.queriesSel) {
-          q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
+          var q = [];
+          for (var key in this.queriesSel) {
+            q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
+          }
+
+          path += q.join("&");
         }
 
-        path += q.join("&");
-      }
+        try {
+          var response = await this.$request("get", path);
+        } catch (erro) {
+          if (erro.response && erro.response.data) {
+            this.text = erro.response.data;
+          } else {
+            this.text = erro;
+          }
+          this.alertType = "error";
+          return;
+        }
+        var content = response.data;
 
-      try {
-        var response = await this.$request("get", path);
-      } catch (erro) {
-        if (erro.response && erro.response.data) {
-          this.text = erro.response.data;
+        var filename = this.tipo.filename + ".";
+        var format;
+
+        if (!this.queriesSel.OF || this.queriesSel.OF == "Por definir") {
+          filename += "json";
+          content = JSON.stringify(content, null, 4);
+          format = "application/json";
         } else {
-          this.text = erro;
+          switch (this.queriesSel.OF) {
+            case "application/json":
+              filename += "json";
+              content = JSON.stringify(content, null, 4);
+              break;
+            case "application/xml":
+              filename += "xml";
+              break;
+            case "text/csv":
+            case "excel/csv":
+              filename += "csv";
+              break;
+            default:
+              filename += this.queriesSel.OF;
+              break;
+          }
+
+          switch (this.queriesSel.OF) {
+            case "json":
+              content = JSON.stringify(content, null, 4);
+              format = "application/json";
+              break;
+            case "xml":
+              format = "application/xml";
+              break;
+            case "excel/csv":
+            case "csv":
+              format = "text/csv";
+              break;
+            default:
+              format = this.queriesSel.OF;
+              break;
+          }
         }
-        this.alertType = "error";
-        return;
+        this.download(filename, content, format);
+        this.text = "Exportação realizada com sucesso!";
+        this.alertType = "success";
       }
-      var content = response.data;
+    },
+    singToPlu(word) {
+      var ret = "";
 
-      filename += ".";
-      var format;
-
-      if (!this.queriesSel.OF || this.queriesSel.OF == "Por definir") {
-        filename += "json";
-        content = JSON.stringify(content, null, 4);
-        format = "application/json";
-      } else {
-        switch (this.queriesSel.OF) {
-          case "application/json":
-            filename += "json";
-            content = JSON.stringify(content, null, 4);
-            break;
-          case "application/xml":
-            filename += "xml";
-            break;
-          case "text/csv":
-          case "excel/csv":
-            filename += "csv";
-            break;
-          default:
-            filename += this.queriesSel.OF;
-            break;
-        }
-
-        switch (this.queriesSel.OF) {
-          case "json":
-            content = JSON.stringify(content, null, 4);
-            format = "application/json";
-            break;
-          case "xml":
-            format = "application/xml";
-            break;
-          case "excel/csv":
-          case "csv":
-            format = "text/csv";
-            break;
-          default:
-            format = this.queriesSel.OF;
-            break;
-        }
+      switch (word) {
+        case "legislacao":
+          ret = "legislacoes";
+          break;
+        default:
+          ret = word + "s";
+          break;
       }
-      this.download(filename, content, format);
-      this.text = "Exportação realizada com sucesso!";
-      this.alertType = "success";
+
+      return ret;
     }
   }
 };
