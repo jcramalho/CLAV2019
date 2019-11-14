@@ -54,6 +54,7 @@ export default {
         if (levels.includes(this.level)) {
           filtered.push({
             entidade: operacoes[i].entidade,
+            html: operacoes[i].html,
             texto: operacoes[i].texto,
             ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
           });
