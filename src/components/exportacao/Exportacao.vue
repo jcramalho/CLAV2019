@@ -395,6 +395,7 @@ export default {
           desc:
             "Caso 'true' devolve todos os triplos incluindo os inferidos. Caso 'false' não inclui os inferidos.",
           enum: [
+            { text: "Por definir", value: "" },
             { text: "Não", value: "false" },
             { text: "Sim", value: "true" }
           ]
@@ -404,6 +405,7 @@ export default {
           desc:
             "Formato em que é devolvido os triplos. Pode ser um dos seguintes valores: turtle (text/turtle), json-ld (application/ld+json) ou rdf-xml (application/rdf+xml). No caso de não ser passado nenhum formato ou o que é colocado não é suportado é devolvido turtle. O formato também pode ser indicado na header 'Accept' sofrendo das mesmas restrições que se for indicado por query. Caso seja definido das duas formas a fornecida pela query string é a que é usada.",
           enum: [
+            "Por definir",
             "turtle",
             "text/turtle",
             "json-ld",
