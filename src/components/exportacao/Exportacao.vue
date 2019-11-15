@@ -394,7 +394,10 @@ export default {
           label: "Ontologia com dados inferidos?",
           desc:
             "Caso 'true' devolve todos os triplos incluindo os inferidos. Caso 'false' não inclui os inferidos.",
-          enum: ["false", "true"]
+          enum: [
+            { text: "Não", value: "false" },
+            { text: "Sim", value: "true" }
+          ]
         },
         formato: {
           label: "Formato de saída do ficheiro",
@@ -424,17 +427,29 @@ export default {
   mounted: async function() {
     try {
       var response = await this.$request("get", "/api/classes?formato=lista");
-      this.classes = response.data.map(c => c.codigo);
+      this.classes = response.data.map(c => {
+        return { text: c.codigo + " - " + c.titulo, value: c.codigo };
+      });
 
       response = await this.$request("get", "/api/entidades");
-      this.entidades = response.data.map(e => e.sigla);
+      this.entidades = response.data.map(e => {
+        return { text: e.sigla + " - " + e.designacao, value: e.sigla };
+      });
 
       response = await this.$request("get", "/api/tipologias");
-      this.tipologias = response.data.map(t => t.sigla);
+      this.tipologias = response.data.map(t => {
+        return { text: t.sigla + " - " + t.designacao, value: t.sigla };
+      });
 
       response = await this.$request("get", "/api/legislacao");
       this.legislacoes = response.data.map(l => {
-        return { text: l.tipo + " " + l.numero, value: l.id.split("leg_")[1] };
+        return {
+          text:
+            l.tipo + " " + l.numero +
+            " - " + l.sumario.substring(0, 100) +
+            (l.sumario.length > 100 ? "..." : ""),
+          value: l.id.split("leg_")[1]
+        };
       });
     } catch (erro) {
       if (erro.response && erro.response.data) {
