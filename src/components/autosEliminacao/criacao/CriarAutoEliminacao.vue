@@ -53,6 +53,7 @@
               v-bind:classes="classes"
               v-bind:entidades="entidades"
               v-bind:auto="auto"
+              v-bind:classesCompletas="classesCompletas"
             />
 
             <!-- Zonas de Controlo -->
@@ -152,7 +153,7 @@ import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasC
 const help = require("@/config/help").help;
 
 export default {
-  props: ["entidades","portarias","classes"],
+  props: ["entidades","portarias","classes","classesCompletas"],
   components: {
     AdicionarZonaControlo,
     ListaZonasControlo
