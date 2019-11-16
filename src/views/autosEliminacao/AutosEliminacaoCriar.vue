@@ -58,11 +58,12 @@ export default {
   },
   created: async function() {
     try {
+
+      var response2 = await this.$request("get", "/api/legislacao?fonte=PGD/LC")
+      this.portarias = await this.prepararLeg(response2.data)
+      console.warn(this.portarias)
       var response = await this.$request("get", "/api/entidades/")
       this.entidades = await this.prepararEntidade(response.data)
-      
-      var response2 = await this.$request("get", "/api/legislacao/portarias")
-      this.portarias = await this.prepararLeg(response2.data)
 
       var response3 = await this.$request("get", "/api/classes?nivel=3")
       this.classes = await this.prepararClasses(response3.data)

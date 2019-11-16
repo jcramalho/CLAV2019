@@ -1,15 +1,10 @@
 <template>
   <div>
-    <v-row justify="end" class="ma-4">
-      <v-btn @click="addAG=true" style="color: #1a237e; background-color: #dee2f8;">Adicionar Agregação</v-btn>
-    </v-row>
-    <v-dialog v-model="addAG" max-width="80%">
-      <DialogAgregacao 
-        v-bind:auto="auto"
-        v-bind:index="index"
-        v-bind:closeAg="closeAg"
-      />
-    </v-dialog>
+    <DialogAgregacao 
+      v-bind:auto="auto"
+      v-bind:index="index"
+      v-bind:closeAg="closeAg"
+    />
     
     <v-snackbar
       v-model="snackbar"
