@@ -8,7 +8,21 @@
           <div class="info-label">Código da Classe:</div>
         </v-col>
         <v-col>
-          <v-autocomplete label="Selecione a classe" :items="classes" v-model="classe" solo dense></v-autocomplete>
+          <v-autocomplete label="Selecione a classe" :items="classes" v-model="classe" @change="defClasse()" solo dense></v-autocomplete>
+        </v-col>
+      </v-row>
+      <v-row v-if="prazo && df">
+        <v-col :md="2">
+          <div class="info-label">Prazo de Conservação Administrativa</div>
+        </v-col>
+        <v-col>
+          <v-text-field :value="prazo" solo dense readonly></v-text-field>
+        </v-col>
+        <v-col :md="2">
+          <div class="info-label">Destino Final</div>
+        </v-col>
+        <v-col>
+          <v-text-field :value="df" solo dense readonly></v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -129,7 +143,7 @@
 </template>
 <script>
 export default {
-  props: ["classes", "entidades", "auto", "closeZC","zona","index"],
+  props: ["classes", "entidades", "auto", "closeZC","zona","index","classesCompletas"],
   data: () => ({
     classe: null,
     ni: "Vazio",
@@ -139,6 +153,9 @@ export default {
     uiPapel: null,
     uiDigital: null,
     uiOutros: null,
+
+    df: null,
+    prazo: null,
 
     natureza: ["Vazio", "Dono", "Paticipante"],
 
@@ -159,6 +176,15 @@ export default {
     }
   },
   methods: {
+    defClasse: async function() {
+      var c = this.classesCompletas.filter(c => c.codigo == this.classe.split(' - ')[0])
+      if(c[0]) {
+        this.prazo = c[0].pca.valores +" Anos"
+        if(c[0].df.valor === "C") this.df = "Conservação"
+        else if(c[0].df.valor === "E") this.df = "Eliminação"
+        else this.df = c[0].df.valor 
+      }
+    },
     limparZC: function() {
       this.classe = null;
       this.ni = "Vazio";

@@ -9,6 +9,7 @@
         v-bind:classes="classes"
         v-bind:entidades="entidades"
         v-bind:closeZC="closeZC"
+        v-bind:classesCompletas="classesCompletas"
       />
     </v-dialog>
     <v-snackbar
@@ -30,7 +31,7 @@
 import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaControlo.vue"
 
 export default {
-  props: ["classes", "entidades", "auto"],
+  props: ["classes", "entidades", "auto", "classesCompletas"],
   components: {
     DialogZonaControlo
   },

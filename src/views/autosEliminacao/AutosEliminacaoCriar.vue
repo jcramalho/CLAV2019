@@ -3,6 +3,7 @@
     v-bind:entidades="entidades"
     v-bind:portarias="portarias"
     v-bind:classes="classes"
+    v-bind:classesCompletas="classesCompletas"
   />
 </template>
 
@@ -16,7 +17,8 @@ export default {
   data: () => ({
     entidades: [],
     portarias: [],
-    classes: []
+    classes: [],
+    classesCompletas: []
   }),
   methods: {
     prepararEntidade: async function(ent) {
@@ -58,19 +60,22 @@ export default {
   },
   created: async function() {
     try {
+
+      var response2 = await this.$request("get", "/api/legislacao?fonte=PGD/LC")
+      this.portarias = await this.prepararLeg(response2.data)
+      
       var response = await this.$request("get", "/api/entidades/")
       this.entidades = await this.prepararEntidade(response.data)
-      
-      var response2 = await this.$request("get", "/api/legislacao/portarias")
-      this.portarias = await this.prepararLeg(response2.data)
 
-      var response3 = await this.$request("get", "/api/classes?nivel=3")
+      var response3 = await this.$request("get", "/api/classes?nivel=3&info=completa")
       this.classes = await this.prepararClasses(response3.data)
+      this.classesCompletas = response3.data
     }
     catch (e) {
       this.entidades = []
       this.portarias = []
       this.classes = []
+      this.classesCompletas = []
     }
   }
 };

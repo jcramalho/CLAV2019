@@ -1,8 +1,8 @@
 <template>
   <v-card>
-        <v-card-title class="expansion-panel-heading">Adicionar Agregação</v-card-title>
+        <v-card-title class="mt-2 expansion-panel-heading">Adicionar Agregação</v-card-title>
 
-        <v-card-text class="mt-4">
+        <v-card-text class="mt-2">
           <v-row>
             <v-col :md="2">
               <div class="info-label">Código da Agregação:</div>
@@ -16,7 +16,7 @@
                 clearable
               >Insira um codigo para a agregação</v-text-field>
             </v-col>
-            <v-col :md="2">
+            <v-col>
               <div class="info-label">Titulo da Agregação:</div>
             </v-col>
             <v-col>
@@ -42,7 +42,7 @@
                 clearable
               >Insira um codigo para a agregação</v-text-field>
             </v-col>
-            <v-col :md="2">
+            <v-col>
               <div class="info-label">Natureza de Intervenção:</div>
             </v-col>
             <v-col>
