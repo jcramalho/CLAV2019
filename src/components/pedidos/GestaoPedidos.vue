@@ -32,7 +32,7 @@
         </v-card-text>
       </v-card>
 
-      <v-dialog v-model="distribuir" width="60%">
+      <v-dialog v-model="distribuir" width="80%">
         <v-card>
           <v-card-title class="indigo darken-4 title white--text" dark>
             Distribuição do pedido
@@ -45,9 +45,18 @@
                 pedido (basta clicar na linha correspondente):
               </p>
 
+              <v-text-field
+                v-model="procuraUtilizador"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+
               <v-data-table
                 :headers="usersHeaders"
                 :items="usersRecords"
+                :search="procuraUtilizador"
                 class="elevation-1"
                 hide-default-footer
               >
@@ -61,18 +70,29 @@
             </div>
 
             <div v-else>
-              <p>
-                Tarefa atribuída a:
-                <b>{{ selectedUser.name }} ({{ selectedUser.entidade }})</b>.
-              </p>
-              <div class="info-label">Despacho</div>
-              <v-textarea
-                v-model="despacho"
-                auto-grow
-                solo
-                label="Introduza o texto para o despacho (opcional)..."
-                rows="1"
-              ></v-textarea>
+              <v-row>
+                <p>
+                  Tarefa atribuída a: <b>{{ selectedUser.name }}</b> (<b>{{
+                    selectedUser.entidade
+                  }}</b
+                  >)
+                </p>
+              </v-row>
+
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Despacho:</div>
+                </v-col>
+                <v-col>
+                  <v-textarea
+                    v-model="despacho"
+                    auto-grow
+                    solo
+                    label="Introduza o texto para o despacho (opcional)..."
+                    rows="1"
+                  ></v-textarea>
+                </v-col>
+              </v-row>
             </div>
           </v-card-text>
 
@@ -107,6 +127,7 @@ import PedidosLista from "@/components/pedidos/PedidosLista.vue";
 export default {
   components: { PedidosLista },
   data: () => ({
+    procuraUtilizador: "",
     pedidoParaDistribuir: {},
     distribuir: false,
     show: false,
@@ -211,12 +232,14 @@ export default {
 
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {
