@@ -1,17 +1,18 @@
 <template>
-  <v-expansion-panel popout>
-    <v-expansion-panel-header>
-      <div class="indigo darken-4 pa-2 white--text">
+  <v-expansion-panel popout focusable>
+    <v-expansion-panel-header class="expansion-panel-heading">
+      <div>
         {{ titulo }}
-        <sup>
-          <v-badge color="red" bottom>
+        <sup class="ml-1">
+          <v-badge color="red">
             <template v-slot:badge>
-              <span>{{ pedidos.length }}</span>
+              {{ pedidos.length }}
             </template>
           </v-badge>
         </sup>
       </div>
     </v-expansion-panel-header>
+
     <v-expansion-panel-content>
       <v-data-table
         :headers="headers"
@@ -170,22 +171,10 @@ export default {
 };
 </script>
 <style>
-.info-label {
-  color: #00695c;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e0f2f1;
+.expansion-panel-heading {
+  background-color: #283593 !important;
+  color: #fff;
+  font-size: large;
   font-weight: bold;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
 }
 </style>
