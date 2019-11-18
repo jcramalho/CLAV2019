@@ -1,108 +1,124 @@
 <template>
-  <div>
-    <v-card class="ma-2">
-      <v-card-title class="indigo darken-4 title white--text" dark>
-        Gestão de Pedidos
-      </v-card-title>
-      <v-card-text>
-        <v-expansion-panels>
-          <PedidosLista
-            :pedidos="pedidosSubmetidos"
-            titulo="Pedidos novos"
-            @distribuir="distribuiPedido($event)"
-          />
+  <v-row class="ma-1">
+    <v-col>
+      <v-card>
+        <v-card-title class="indigo darken-4 title white--text" dark>
+          Gestão de Pedidos
+        </v-card-title>
+        <v-card-text class="mt-4">
+          <v-expansion-panels>
+            <PedidosLista
+              :pedidos="pedidosSubmetidos"
+              titulo="Pedidos novos"
+              @distribuir="distribuiPedido($event)"
+            />
 
-          <v-expansion-panel popout>
             <PedidosLista
               :pedidos="pedidosDistribuidos"
               titulo="Pedidos em apreciação técnica"
               @analisar="analisaPedido($event)"
             />
-          </v-expansion-panel>
 
-          <v-expansion-panel popout>
             <PedidosLista
               :pedidos="pedidosValidados"
               titulo="Pedidos em validação"
             />
-          </v-expansion-panel>
 
-          <v-expansion-panel popout>
             <PedidosLista
               :pedidos="pedidosDevolvidos"
               titulo="Pedidos devolvidos"
             />
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-card-text>
-    </v-card>
-
-    <v-dialog v-model="distribuir" width="60%">
-      <v-card>
-        <v-card-title class="indigo darken-4 title white--text" dark>
-          Distribuição do pedido
-        </v-card-title>
-
-        <v-card-text>
-          <div v-if="!selectedUser.name">
-            <p>
-              Selecione o utilizador a quem deve ser atribuída a análise do
-              pedido (basta clicar na linha correspondente):
-            </p>
-
-            <v-data-table
-              :headers="usersHeaders"
-              :items="usersRecords"
-              class="elevation-1"
-              hide-default-footer
-            >
-              <template v-slot:item="props">
-                <tr @click="selectedUser = props.item">
-                  <td class="subheading">{{ props.item.name }}</td>
-                  <td class="subheading">{{ props.item.entidade }}</td>
-                </tr>
-              </template>
-            </v-data-table>
-          </div>
-
-          <div v-else>
-            <p>
-              Tarefa atribuída a:
-              <b>{{ selectedUser.name }} ({{ selectedUser.entidade }})</b>.
-            </p>
-            <div class="info-label">Despacho</div>
-            <v-textarea
-              v-model="despacho"
-              auto-grow
-              solo
-              label="Introduza o texto para o despacho (opcional)..."
-              rows="1"
-            ></v-textarea>
-          </div>
+          </v-expansion-panels>
         </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            color="indigo darken-4"
-            rounded
-            dark
-            @click="guardarDistribuicao"
-          >
-            Guardar
-          </v-btn>
-
-          <v-btn
-            color="red darken-4"
-            rounded
-            dark
-            @click="cancelarDistribuicao"
-          >
-            Cancelar
-          </v-btn>
-        </v-card-actions>
       </v-card>
-    </v-dialog>
-  </div>
+
+      <v-dialog v-model="distribuir" width="80%">
+        <v-card>
+          <v-card-title class="indigo darken-4 title white--text" dark>
+            Distribuição do pedido
+          </v-card-title>
+
+          <v-card-text>
+            <div v-if="!selectedUser.name">
+              <p>
+                Selecione o utilizador a quem deve ser atribuída a análise do
+                pedido (basta clicar na linha correspondente):
+              </p>
+
+              <v-text-field
+                v-model="procuraUtilizador"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+
+              <v-data-table
+                :headers="usersHeaders"
+                :items="usersRecords"
+                :search="procuraUtilizador"
+                class="elevation-1"
+                hide-default-footer
+              >
+                <template v-slot:item="props">
+                  <tr @click="selectedUser = props.item">
+                    <td class="subheading">{{ props.item.name }}</td>
+                    <td class="subheading">{{ props.item.entidade }}</td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </div>
+
+            <div v-else>
+              <v-row>
+                <p>
+                  Tarefa atribuída a: <b>{{ selectedUser.name }}</b> (<b>{{
+                    selectedUser.entidade
+                  }}</b
+                  >)
+                </p>
+              </v-row>
+
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Despacho:</div>
+                </v-col>
+                <v-col>
+                  <v-textarea
+                    v-model="despacho"
+                    auto-grow
+                    solo
+                    label="Introduza o texto para o despacho (opcional)..."
+                    rows="1"
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+            </div>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn
+              color="indigo darken-4"
+              rounded
+              dark
+              @click="guardarDistribuicao"
+            >
+              Guardar
+            </v-btn>
+
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              @click="cancelarDistribuicao"
+            >
+              Cancelar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -111,6 +127,7 @@ import PedidosLista from "@/components/pedidos/PedidosLista.vue";
 export default {
   components: { PedidosLista },
   data: () => ({
+    procuraUtilizador: "",
     pedidoParaDistribuir: {},
     distribuir: false,
     show: false,
@@ -215,12 +232,14 @@ export default {
 
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {
