@@ -239,6 +239,12 @@ export default {
             "Permite filtrar as entidades que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
           enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
         },
+        info: {
+          label: "Informação completa?",
+          desc:
+            "Pretende toda a informação das entidades? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada entidade. Caso o valor seja 'completa' devolve toda a informação de cada entidade.",
+          enum: ["Por definir", "completa"]
+        },
         OF: {
           label: "Formato de saída",
           desc:
@@ -267,6 +273,12 @@ export default {
           desc:
             "Permite filtrar as tipologias que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
           enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
+        },
+        info: {
+          label: "Informação completa?",
+          desc:
+            "Pretende toda a informação das tipologias? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada tipologia. Caso o valor seja 'completa' devolve toda a informação de cada tipologia.",
+          enum: ["Por definir", "completa"]
         },
         OF: {
           label: "Formato de saída",
@@ -302,6 +314,12 @@ export default {
           desc:
             "No caso de ser definido lista os documentos legislativos de acordo com a fonte especificada. Só funciona caso os parâmetros estado e processos não sejam definidos.",
           enum: ["Por definir", "PGD", "PGD/LC", "RADA"]
+        },
+        info: {
+          label: "Informação completa?",
+          desc:
+            "Pretende toda a informação dos documentos legislativos? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada documento legislativo. Caso o valor seja 'completa' devolve toda a informação de cada documento legislativo.",
+          enum: ["Por definir", "completa"]
         },
         OF: {
           label: "Formato de saída",
@@ -341,6 +359,12 @@ export default {
         }
       },
       entidade: {
+        info: {
+          label: "Informação completa?",
+          desc:
+            "Pretende toda a informação da entidade? Caso seja um valor que não 'completa' devolve apenas parte da informação da entidade. Caso o valor seja 'completa' devolve toda a informação da entidade.",
+          enum: ["Por definir", "completa"]
+        },
         OF: {
           label: "Formato de saída",
           desc:
@@ -358,6 +382,12 @@ export default {
         }
       },
       tipologia: {
+        info: {
+          label: "Informação completa?",
+          desc:
+            "Pretende toda a informação da tipologia? Caso seja um valor que não 'completa' devolve apenas parte da informação da tipologia. Caso o valor seja 'completa' devolve toda a informação da tipologia.",
+          enum: ["Por definir", "completa"]
+        },
         OF: {
           label: "Formato de saída",
           desc:
@@ -375,6 +405,12 @@ export default {
         }
       },
       legislacao: {
+        info: {
+          label: "Informação completa?",
+          desc:
+            "Pretende toda a informação do documento legislativo? Caso seja um valor que não 'completa' devolve apenas parte da informação do documento legislativo. Caso o valor seja 'completa' devolve toda a informação do documento legislativo.",
+          enum: ["Por definir", "completa"]
+        },
         OF: {
           label: "Formato de saída",
           desc: "Formato de saída do resultado",
