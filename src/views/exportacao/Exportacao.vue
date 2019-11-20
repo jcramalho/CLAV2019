@@ -508,25 +508,32 @@ export default {
     cancelar() {
       this.$router.push("/");
     },
-    click(element) {
+    download(path, filename) {
+      var element = document.createElement("a");
+
+      element.setAttribute("href", path);
+      element.setAttribute("download", filename);
       element.style.display = "none";
+
       document.body.appendChild(element);
-
       element.click();
-
       document.body.removeChild(element);
     },
-    download(filename, content, format) {
-      var element = document.createElement("a");
-      element.setAttribute(
-        "href",
-        "data:" + format + ";charset=utf-8," + encodeURIComponent(content)
-      );
-      element.setAttribute("download", filename);
-      this.click(element);
+    downloadData(filename, content, format) {
+      var blob = new Blob([content], {
+        type: format + ";charset=utf-8;"
+      });
+
+      if (window.navigator.msSaveBlob) {
+        // FOR IE BROWSER
+        navigator.msSaveBlob(blob, filename);
+      } else {
+        // FOR OTHER BROWSERS
+        var url = URL.createObjectURL(blob);
+        this.download(url, filename);
+      }
     },
-    async downloadOntologia(path) {
-      var element = document.createElement("a");
+    async downloadFile(path) {
       var token = await this.$getAuthToken();
       token = token.replace(" ", "=");
 
@@ -534,9 +541,7 @@ export default {
         ? lhost + path + "&" + token
         : lhost + path + "?" + token;
 
-      element.setAttribute("href", path);
-      element.setAttribute("download", "");
-      this.click(element);
+      this.download(path, "");
     },
     defineParams(content) {
       var filename = this.tipo.filename + ".";
@@ -631,9 +636,9 @@ export default {
 
           //criar ficheiro e devolver ao user
           var fcf = this.defineParams(response.data);
-          this.download(fcf[0], fcf[1], fcf[2]);
+          this.downloadData(fcf[0], fcf[1], fcf[2]);
         } else {
-          await this.downloadOntologia(path);
+          await this.downloadFile(path);
         }
 
         this.text = "Exportação realizada com sucesso!";
