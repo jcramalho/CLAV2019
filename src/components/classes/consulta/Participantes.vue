@@ -87,6 +87,26 @@ export default {
     go: function(idClasse) {
       this.$router.push("/entidades/" + idClasse);
       this.$router.go();
+    },
+
+    normaliza: function(tipo){
+      var res = ""
+      switch(tipo){
+        case "Assessor": res = "Assessorar";
+                                break;
+        case "Apreciador": res = "Apreciar";
+                                break;
+        case "Apreciador": res = "Apreciar";
+                                break; 
+        case "Comunicador": res = "Comunicar";
+                                break; 
+        case "Decisor": res = "Decidir";
+                                break; 
+        case "Executor": res = "Executar";
+                                break; 
+        default: res = "Desconhecido"                   
+      }
+      return res
     }
   },
 
@@ -100,7 +120,7 @@ export default {
       tipo = Object.keys(this.participPorTipo)[j];
       if (this.participPorTipo[tipo].length > 0) {
         this.myParticipantes.push({
-          label: tipo,
+          label: this.normaliza(tipo),
           participantes: this.participPorTipo[tipo]
         });
       }

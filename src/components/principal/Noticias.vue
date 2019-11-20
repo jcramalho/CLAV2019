@@ -7,6 +7,21 @@
       <v-expansion-panels>
         <v-expansion-panel>
           <v-expansion-panel-header class="blue lighten-5">
+            Sessão técnica sobre a Plataforma CLAV: 4 de dezembro de 2019
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <p>4 de dezembro de 2019</p>
+            <p><a :href="`${publicPath}documentos/Convite-pub-CLAV-20191204.pdf`">Convite</a> aberto para sessão técnica sobre a Plataforma para a classificação e a avaliação da 
+              informação pública (<a href="http://clav.dglab.gov.pt">http://clav.dglab.gov.pt</a>), a realizar no edifício da Torre do Tombo, no 
+              dia 4 de dezembro de 2019, entre as 14 e as 17 horas.</p>
+            <p><b>Destinatários</b>: Todas as empresas fornecedoras de software e de consultoria na área da gestão documental.</p>
+            <p>Entrada sujeita a confirmação de presença, até 29 de novembro para o mail clav@dglab.gov.pt, com a 
+              indicação do nome e contacto dos colaboradores presentes (máximo de 2).</p>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+
+        <v-expansion-panel>
+          <v-expansion-panel-header class="blue lighten-5">
             RGPD: A "Lista Consolidada para a classificação e avaliação da
             informação pública" como instrumento facilitador da sua aplicação
           </v-expansion-panel-header>
@@ -118,3 +133,13 @@
     </v-card-text>
   </v-card>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      publicPath: process.env.BASE_URL
+    };
+  }
+};
+</script>
