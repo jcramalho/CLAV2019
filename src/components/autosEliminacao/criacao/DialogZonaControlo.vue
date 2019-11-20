@@ -30,7 +30,10 @@
           <div class="info-label">Natureza de Intervenção:</div>
         </v-col>
         <v-col>
+          <v-text-field v-if="df=='Conservação'" :value="ni" solo dense readonly></v-text-field>
+          <v-text-field v-else-if="df=='Eliminação'" :value="ni" solo dense readonly></v-text-field>
           <v-select
+            v-else
             label="Selecione a Natureza de Intervenção"
             :items="natureza"
             v-model="ni"
@@ -180,8 +183,14 @@ export default {
       var c = this.classesCompletas.filter(c => c.codigo == this.classe.split(' - ')[0])
       if(c[0]) {
         this.prazo = c[0].pca.valores +" Anos"
-        if(c[0].df.valor === "C") this.df = "Conservação"
-        else if(c[0].df.valor === "E") this.df = "Eliminação"
+        if(c[0].df.valor === "C") {
+          this.df = "Conservação"
+          this.ni = "Participante"
+        }
+        else if(c[0].df.valor === "E") { 
+          this.df = "Eliminação"
+          this.ni = "Dono"
+        }
         else this.df = c[0].df.valor 
       }
     },
