@@ -182,10 +182,11 @@ export default {
           enum: []
         },
         info: {
-          label: "Informação completa?",
+          label:
+            "Informação completa? Ou pretende apenas o esqueleto para criar uma TS?",
           desc:
-            "Pretende toda a informação das classes? Caso o valor desta query string não seja 'completa' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe.",
-          enum: ["Por definir", "completa"]
+            "Pretende toda a informação das classes? Caso seja um valor que não 'completa' e 'esqueleto' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve num formato pronto a ser preenchido para a criação de uma Tabela de Seleção.",
+          enum: ["Por definir", "completa", "esqueleto"]
         },
         OF: {
           label: "Formato de saída",
