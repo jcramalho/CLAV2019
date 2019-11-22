@@ -3,7 +3,7 @@
     <!-- TERMOS DE ÍNDICE -->
     <v-col cols="2">
       <div class="info-label">Termos de Índice</div>
-      <v-btn color="green darken-2" dark rounded @click="insereNovoTI(c.termosInd)">
+      <v-btn color="indigo darken-2" dark rounded @click="insereNovoTI(c.termosInd)">
         Novo termo
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
