@@ -2,92 +2,17 @@
   <v-row class="ma-1">
     <v-col>
       <!-- HEADER -->
-      <v-card>
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Alteração de Classe</v-toolbar-title>
-        </v-app-bar>
+      <v-card v-if="semaforos.classeLoaded">
+
+        <v-app-bar color="indigo darken-2" dark>
+            <v-toolbar-title>
+              Alteração da Classe:
+              {{ classe.codigo }} - 
+              {{ classe.titulo }}
+            </v-toolbar-title>
+          </v-app-bar>
 
         <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nível:</div>
-            </v-col>
-            <v-col>
-              <v-select
-                item-text="label"
-                item-value="value"
-                v-model="classe.nivel"
-                :items="classeNiveis"
-                label="Selecione o nível da classe:"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
-
-          <!-- CLASSE PAI -->
-          <v-row v-if="classe.nivel > 1">
-            <v-col cols="2">
-              <div class="info-label">
-                Classe Pai:
-                <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
-              </div>
-            </v-col>
-            <v-col>
-              <v-select
-                item-text="label"
-                item-value="value"
-                v-model="classe.pai.codigo"
-                :items="classesPai"
-                label="Selecione uma classe de nível superior"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
-
-          <!-- CÓDIGO DA NOVA CLASSE -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
-            <v-col cols="2">
-              <div class="info-label">
-                Código:
-                <InfoBox
-                  header="Código da Classe"
-                  :text="myhelp.Classe.Campos.Codigo"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="classe.codigo"
-                label="Código"
-                solo
-                clearable
-              ></v-text-field>
-              <span style="color: red">{{ mensValCodigo }}</span>
-            </v-col>
-          </v-row>
-
-          <!-- TÍTULO -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
-            <v-col cols="2">
-              <div class="info-label">
-                Título:
-                <InfoBox
-                  header="Título da Classe"
-                  :text="myhelp.Classe.Campos.Titulo"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="classe.titulo"
-                label="Título"
-                solo
-                clearable
-              ></v-text-field>
-            </v-col>
-          </v-row>
 
           <v-expansion-panels>
             <!-- DESCRITIVO DA CLASSE -->
@@ -292,6 +217,7 @@ export default {
     pcaSubFormasContagem: [],
 
     semaforos: {
+      classeLoaded: false,
       paisReady: false,
       classesReady: false,
       entidadesReady: false,
@@ -309,17 +235,103 @@ export default {
     mensValCodigo: ""
   }),
 
-  watch: {
-    "classe.pai.codigo": function() {
-      // O código da classe depende da classe pai
-      this.classe.codigo = "";
-      if (this.classe.pai.codigo)
-        this.classe.codigo = this.classe.pai.codigo + ".";
-    },
-    "classe.nivel": function() {
-      // A classe pai depende do nível
-      this.classe.pai.codigo = "";
+  mounted: function() {
+    this.$request("get", "/api/classes/" + this.idc)
+      .then(async response => {
+        this.classe = response.data;
+        if (this.classe.df.justificacao) {
+          for (let i = 0; i < this.classe.df.justificacao.length; i++) {
+            if (this.classe.df.justificacao[i].processos) {
+              for (
+                let j = 0;
+                j < this.classe.df.justificacao[i].processos.length;
+                j++
+              ) {
+                let help =
+                  "/api/classes/" +
+                  this.classe.df.justificacao[i].processos[j].procId +
+                  "/meta";
 
+                await this.$request("get", help).then(response => {
+                  this.classe.df.justificacao[i].processos[j].nome =
+                    response.data[0].titulo;
+                });
+              }
+            }
+
+            if (this.classe.df.justificacao[i].legislacao) {
+              for (
+                let j = 0;
+                j < this.classe.df.justificacao[i].legislacao.length;
+                j++
+              ) {
+                await this.$request(
+                  "get",
+                  "/api/legislacao/" +
+                    this.classe.df.justificacao[i].legislacao[j].legId
+                ).then(response => {
+                  this.classe.df.justificacao[i].legislacao[j].tipo =
+                    response.data.tipo;
+                  this.classe.df.justificacao[i].legislacao[j].numero =
+                    response.data.numero;
+                });
+              }
+            }
+          }
+        }
+        if (this.classe.pca.justificacao) {
+          for (let h = 0; h < this.classe.pca.justificacao.length; h++) {
+            if (this.classe.pca.justificacao[h].processos) {
+              for (
+                let z = 0;
+                z < this.classe.pca.justificacao[h].processos.length;
+                z++
+              ) {
+                if (this.classe.pca.justificacao[h].processos[z].procId) {
+                  await this.$request(
+                    "get",
+                    "/api/classes/" +
+                      this.classe.pca.justificacao[h].processos[z].procId +
+                      "/meta"
+                  ).then(response => {
+                    this.classe.pca.justificacao[h].processos[z].nome =
+                      response.data[0].titulo;
+                  });
+                }
+              }
+            }
+
+            if (this.classe.pca.justificacao[h].legislacao) {
+              for (
+                let z = 0;
+                z < this.classe.pca.justificacao[h].legislacao.length;
+                z++
+              ) {
+                await this.$request(
+                  "get",
+                  "/api/legislacao/" +
+                    this.classe.pca.justificacao[h].legislacao[z].legId
+                ).then(response => {
+                  this.classe.pca.justificacao[h].legislacao[z].tipo =
+                    response.data.tipo;
+                  this.classe.pca.justificacao[h].legislacao[z].numero =
+                    response.data.numero;
+                });
+              }
+            }
+          }
+        }
+        this.semaforos.classeLoaded = true;
+        console.log(JSON.stringify(this.classe))
+      })
+      .catch(error => {
+        return error;
+      });
+  },
+
+  watch: {
+    
+    "classe.nivel": function() {
       if (this.classe.nivel > 1) {
         this.loadPais();
       }
@@ -334,27 +346,6 @@ export default {
       }
       if (this.classe.nivel >= 3) {
         this.loadPCA();
-      }
-    },
-
-    "classe.codigo": async function() {
-      try {
-        this.mensValCodigo = "";
-        if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
-          this.mensValCodigo =
-            "Formato de código inválido! Deve ser: " +
-            this.formatoCodigo[this.classe.nivel];
-        } else if (!this.classe.codigo.includes(this.classe.pai.codigo)) {
-          this.mensValCodigo =
-            "Não pode alterar o código do pai selecionado em cima...";
-        } else {
-          var existe = await this.verificaExistenciaCodigo(this.classe.codigo);
-          if (existe) {
-            this.mensValCodigo = "Código já existente na base de dados...";
-          }
-        }
-      } catch (erro) {
-        return erro;
       }
     },
 
