@@ -8,7 +8,7 @@
           :text="myhelp.Classe.Campos.NotasAp"
         />
       </div>
-      <hr style="border-top: 0px"/>
+      <hr style="border-top: 0px" />
       <v-btn
         color="primary"
         dark
@@ -21,19 +21,51 @@
     </v-col>
     <v-col>
       <v-row fluid v-for="(nota, index) in lista.notasAp" :key="index">
-          <v-textarea v-model="nota.nota" auto-grow solo rows="1"> </v-textarea>
-          <v-btn
-            class="ma-1"
-            color="red darken-2"
-            dark
-            rounded
-            @click="
-              lista.notasAp.splice(index, 1);
-              forceRerender();
-            "
-          >
-            <v-icon dark>clear</v-icon>
-          </v-btn>
+        <v-textarea
+          v-model="nota.nota"
+          v-if="nota.backgroundColor == 'transparent'"
+          auto-grow
+          solo
+          rows="1"
+          readonly
+          :backgroundColor="nota.backgroundColor"
+        >
+        </v-textarea>
+        <v-textarea
+          v-model="nota.nota"
+          v-else
+          auto-grow
+          solo
+          rows="1"
+          :backgroundColor="nota.backgroundColor"
+        >
+        </v-textarea>
+        <v-btn
+          class="ma-1"
+          color="primary"
+          dark
+          fab
+          small
+          @click="
+            forceRerenderEdit(nota.backgroundColor);
+            nota.backgroundColor = 'blue lighten-3';
+          "
+        >
+          <v-icon dark>edit</v-icon>
+        </v-btn>
+        <v-btn
+          class="ma-1"
+          color="red darken-2"
+          dark
+          fab
+          small
+          @click="
+            lista.notasAp.splice(index, 1);
+            forceRerender();
+          "
+        >
+          <v-icon dark>clear</v-icon>
+        </v-btn>
       </v-row>
     </v-col>
 
@@ -64,7 +96,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["lista"],
+  props: ["lista", "compKeyNA"],
 
   components: {
     InfoBox
@@ -77,6 +109,12 @@ export default {
       naDuplicadaFlag: false,
       componentKey: 0
     };
+  },
+
+  watch: {
+    compKeyNA: function() {
+      this.componentKey += 1;
+    }
   },
 
   methods: {
@@ -104,6 +142,11 @@ export default {
     },
     forceRerender: function() {
       this.componentKey += 1;
+    },
+    forceRerenderEdit: async function(color) {
+      if (color == "transparent") {
+        this.componentKey += 1;
+      }
     }
   }
 };

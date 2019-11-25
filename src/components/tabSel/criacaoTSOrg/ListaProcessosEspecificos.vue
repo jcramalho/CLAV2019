@@ -47,36 +47,48 @@
                   : props.item.dono && props.item.participante
                   ? selProcEsp(props.item)
                   : !props.item.dono && !props.item.participante
-                  ? (uncheck(props.item.classe, props.item.participante), desSelProcEsp(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante),
+                    desSelProcEsp(props.item))
                   : null;
               }
             "
           ></v-checkbox>
         </td>
         <td>
-          <v-checkbox
+          <v-select
             v-model="props.item.participante"
+            :items="tipoParticipacao"
+            class="ma-1"
+            primary
+            hide-details
+            placeholder="Por Sel."
             v-if="
               !(
-                props.item.participante != true &&
+                props.item.participante != 'Apreciar' &&
+                props.item.participante != 'Assessorar' &&
+                props.item.participante != 'Comunicar' &&
+                props.item.participante != 'Decidir' &&
+                props.item.participante != 'Executar' &&
+                props.item.participante != 'Iniciar' &&
+                props.item.participante != 'Não Sel' &&
                 props.item.participante != false
               )
             "
-            primary
-            class="ma-1"
-            hide-details
             v-on:change="
               {
                 props.item.participante && !props.item.dono
-                  ? (calcRel(props.item.classe), selProcEsp(props.item))
+                  ? (calcRel(props.item.classe),
+                    selProcEsp(props.item),
+                    verificaTipoPar(props.item.participante, props.item))
                   : props.item.participante && props.item.dono
                   ? selProcEsp(props.item)
                   : !props.item.participante && !props.item.dono
-                  ? (uncheck(props.item.classe, props.item.participante), desSelProcEsp(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante),
+                    desSelProcEsp(props.item))
                   : null;
               }
             "
-          ></v-checkbox>
+          />
         </td>
       </tr>
     </template>
@@ -89,13 +101,13 @@
 
 <script>
 export default {
-  props: ["lista", "listaPreSel"],
+  props: ["lista", "listaPreSel", "it"],
   data: () => ({
     headers: [
       {
         text: "Classe",
         value: "classe",
-        width: "20%"
+        width: "15%"
       },
       {
         text: "Designação",
@@ -110,7 +122,7 @@ export default {
       {
         text: "Participante",
         value: "participante",
-        width: "15%"
+        width: "20%"
       }
     ],
     procsFooterProps: {
@@ -129,7 +141,11 @@ export default {
     // Todas as travessias são carregadas para esta variável
     travessias: [],
     preSel: [],
-    listaSistemaDecrementada: []
+    listaSistemaDecrementada: [],
+    // Tipos de participação
+    tipoParticipacao: [],
+    // Processos pré selecionados das tabelas anteriores
+    procPreSel: []
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro
@@ -137,18 +153,6 @@ export default {
       try {
         // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
         this.listaProcResultado[processo] = this.travessias[processo];
-
-        // Coloca na lista de processos resultantes especificos os processos pré selecionados
-        // resultantes das travessias dos processos comuns
-        if (!this.listaResEspecificos.length) {
-          if (this.preSel.length) {
-            for (var l = 0; l < this.lista.length; l++) {
-              if (this.preSel.includes(this.lista[l].classe))
-                this.listaResEspecificos.push(this.lista[l].classe);
-            }
-          }
-          this.preSel = [];
-        }
 
         // separa o resultado da travessia em duas listas, uma com os processos especificos (que estão presentes na tabela) e os restantes
         // listaResEspecificos: Lista dos processos resultantes (das travessias) especificos
@@ -194,11 +198,13 @@ export default {
     // Reverte a seleção
     uncheck: async function(processo, trans) {
       // apaga o resultado da travessia desse processo
+      var resProc = this.listaProcResultado[processo];
       // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
       delete this.listaProcResultado[processo];
 
       // Vai rever se a lista de resultados de processos comuns contem processos iguais aos outros resultados de travessias.
       var procSel = Object.keys(this.listaProcResultado);
+
       // newListaResEspecificos: Nova lista dos processos resultantes especificos
       var newListaResEspecificos = [];
       // newListaResRestantes: Nova lista dos processos resultantes restantes
@@ -231,15 +237,33 @@ export default {
           }
         }
       }
-      this.listaResEspecificos = newListaResEspecificos;
-      this.listaResRestantes = newListaResRestantes;
+      if (procSel.length) {
+        this.listaResEspecificos = newListaResEspecificos;
+        this.listaResRestantes = newListaResRestantes;
+      } else {
+        for (var l = 0; l < resProc.length; l++) {
+          if (this.procPreSel.includes(resProc[l])) {
+            var index = this.listaResEspecificos.findIndex(
+              p => p.id === resProc[l]
+            );
+            this.listaResEspecificos.splice(index, 1);
+          }
+        }
+      }
 
-      if(trans==null && !this.listaSistemaDecrementada.includes(processo)){
-        this.listaSistemaDecrementada.push(processo)
-        
-        this.$emit("contadorEspDecrementarSistema", this.listaSistemaDecrementada);
-      };
-      
+      if (!procSel.length && this.preSel.includes(processo)) {
+        this.listaResEspecificos.push(processo);
+      }
+
+      if (trans == null && !this.listaSistemaDecrementada.includes(processo)) {
+        this.listaSistemaDecrementada.push(processo);
+
+        this.$emit(
+          "contadorEspDecrementarSistema",
+          this.listaSistemaDecrementada
+        );
+      }
+
       this.$emit("procPreSelResTravEsp", this.listaResRestantes);
       this.$emit("contadorProcPreSelEsp", this.listaResEspecificos);
     },
@@ -255,6 +279,25 @@ export default {
       var index = this.procEspSel.findIndex(e => e.classe === processo.classe);
       this.procEspSel.splice(index, 1);
       this.$emit("contadorProcSelEsp", this.procEspSel);
+      this.$emit("contadorProcSelEspUtilizador", this.procEspSel);
+    },
+    // Lista com todos os tipos de intervenção possíveis
+    tipoPar: async function() {
+      var resPar = await this.$request(
+        "get",
+        "/api/vocabularios/vc_processoTipoParticipacao"
+      );
+      for (var i = 0; i < resPar.data.length; i++) {
+        this.tipoParticipacao.push(resPar.data[i].termo);
+      }
+      this.tipoParticipacao.push("Não Sel");
+    },
+    verificaTipoPar: async function(part, item) {
+      if (item.participante == "Não Sel") {
+        item.participante = false;
+        this.uncheck(item.classe, item.participante);
+        this.desSelProcEsp(item.classe);
+      }
     }
   },
   mounted: async function() {
@@ -275,13 +318,28 @@ export default {
           if (!this.procEspSel.includes(this.lista[i])) {
             this.procEspSel.push(this.lista[i]);
             this.$emit("contadorProcSelEsp", this.procEspSel);
-            this.$emit("contadorProcSelEspSistema", this.procEspSel);
+            if (this.it == "1") {
+              this.$emit("contadorProcSelEspSistema", this.procEspSel);
+            }
           }
-        }
-        else if (this.lista[i].participante==null){
+        } else if (this.lista[i].participante == null) {
           this.listaSistemaDecrementada.push(this.lista[i].classe);
         }
       }
+
+      // Coloca na lista de processos resultantes especificos os processos pré selecionados
+      // resultantes das travessias dos processos comuns
+      if (!this.listaResEspecificos.length) {
+        if (this.preSel.length) {
+          for (var l = 0; l < this.lista.length; l++) {
+            if (this.preSel.includes(this.lista[l].classe))
+              this.listaResEspecificos.push(this.lista[l].classe);
+            this.procPreSel.push(this.lista[l].classe);
+          }
+        }
+      }
+
+      this.tipoPar();
     } catch (e) {
       return e;
     }

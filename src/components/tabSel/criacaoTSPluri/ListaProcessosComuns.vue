@@ -72,9 +72,9 @@
                     v-model="entProcDono[props.item.classe][e.id]"
                     class="shrink mr-2 mt-0"
                   ></v-checkbox>
-                  <b>{{ e.designacao + '  (' + e.sigla + ') ' }}</b>
-                  <hr style="border-top: 0px"/>
-                </v-row> 
+                  <b>{{ e.designacao + "  (" + e.sigla + ") " }}</b>
+                  <hr style="border-top: 0px" />
+                </v-row>
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
@@ -83,7 +83,11 @@
                   text
                   @click="
                     props.item.dono = false;
-                    selecTodasEnt(entidades, props.item.classe, props.item.designacao);
+                    selecTodasEnt(
+                      entidades,
+                      props.item.classe,
+                      props.item.designacao
+                    );
                   "
                 >
                   Selecionar todos
@@ -126,7 +130,7 @@
             <v-card>
               <v-card-title>
                 <span>
-                  Selecione as entidades participantes no processo: 
+                  Selecione as entidades participantes no processo:
                   {{ props.item.classe }}
                 </span>
               </v-card-title>
@@ -148,8 +152,10 @@
                     >
                       <v-icon dark>add</v-icon>
                     </v-btn>
-                    <b class="ma-4">{{ e.designacao + '  (' + e.sigla + ') ' }}</b>
-                    <hr style="border-top: 0px"/>
+                    <b class="ma-4">{{
+                      e.designacao + "  (" + e.sigla + ") "
+                    }}</b>
+                    <hr style="border-top: 0px" />
                   </template>
                   <template v-else>
                     <v-btn
@@ -210,8 +216,15 @@
                         </v-card>
                       </v-dialog>
                     </v-btn>
-                    <b class="ma-4">{{ e.designacao + '  (' + e.sigla + ') ' + ": " + entProcPar[props.item.classe][e.id]}}</b>
-                    <hr style="border-top: 0px"/>
+                    <b class="ma-4">{{
+                      e.designacao +
+                        "  (" +
+                        e.sigla +
+                        ") " +
+                        ": " +
+                        entProcPar[props.item.classe][e.id]
+                    }}</b>
+                    <hr style="border-top: 0px" />
                   </template>
                   <div style="flex: 1 1 auto;">
                     <v-dialog
@@ -231,9 +244,14 @@
                         <v-divider></v-divider>
                         <v-card-text style="height: 400px;">
                           <v-container fluid>
-                            <v-radio-group v-model="entProcPar[props.item.classe][e.id]">
-                              <v-radio v-for="t in tipoParticipacao" :key="t"
-                              v-bind:value="t">
+                            <v-radio-group
+                              v-model="entProcPar[props.item.classe][e.id]"
+                            >
+                              <v-radio
+                                v-for="t in tipoParticipacao"
+                                :key="t"
+                                v-bind:value="t"
+                              >
                                 <template v-slot:label>
                                   <div class="shrink mr-6 mt-2">{{ t }}</div>
                                 </template>
@@ -354,7 +372,7 @@ export default {
             this.procComunsSel.push({
               classe: proc,
               designacao: des
-              });
+            });
             this.$emit("contadorProcSelCom", this.procComunsSel);
             this.calcRel(proc);
           }
@@ -391,9 +409,9 @@ export default {
       this.procSelDonos.push(proc);
       if (!this.procComunsSel.find(x => x.classe === proc)) {
         this.procComunsSel.push({
-              classe: proc,
-              designacao: des
-              });
+          classe: proc,
+          designacao: des
+        });
         this.$emit("contadorProcSelCom", this.procComunsSel);
         this.calcRel(proc);
       }
@@ -410,9 +428,9 @@ export default {
         Object.keys(this.entProcPar[proc]).length
       ) {
         this.procComunsSel.push({
-              classe: proc,
-              designacao: des
-              });
+          classe: proc,
+          designacao: des
+        });
         this.$emit("contadorProcSelCom", this.procComunsSel);
         this.calcRel(proc);
       } else if (Object.keys(this.entProcPar[proc]).length == 0) {
@@ -436,6 +454,7 @@ export default {
     desselecionarPart: async function(classe, id) {
       delete this.entProcPar[classe][id];
     },
+    // Lista com todos os tipos de intervenção possíveis
     tipoPar: async function() {
       var resPar = await this.$request(
         "get",
