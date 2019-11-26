@@ -96,7 +96,7 @@ import Subdivisao3Nivel from "@/components/classes/criacao/Subdivisao3Nivel.vue"
 import DecisaoSemSubPCA from "@/components/classes/criacao/DecisaoSemSubPCA.vue";
 import DecisaoSemSubDF from "@/components/classes/criacao/DecisaoSemSubDF.vue";
 import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel.vue";
-import PainelOperacoes from "@/components/classes/criacao/PainelOperacoes.vue";
+import PainelOperacoes from "@/components/classes/edicao/PainelOperacoes.vue";
 
 export default {
   components: {
@@ -322,7 +322,6 @@ export default {
           }
         }
         this.semaforos.classeLoaded = true;
-        console.log(JSON.stringify(this.classe))
       })
       .catch(error => {
         return error;
