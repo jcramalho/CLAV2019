@@ -3,15 +3,15 @@
     <v-col>
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
-              <v-toolbar-title class="card-heading">Nova Tabela de Seleção</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Nova Tabela de Seleção</v-toolbar-title
+          >
         </v-app-bar>
         <v-card-text class="panel-body">
           <v-container fluid grid-list-xl>
             <v-layout wrap align-center>
               <v-flex xs3>
-                <v-subheader
-                  >Selecionar tipo de Tabela de Seleção:</v-subheader
-                >
+                <v-subheader>Selecionar tipo de Tabela de Seleção:</v-subheader>
               </v-flex>
               <v-flex xs12 sm4>
                 <v-select
@@ -19,26 +19,21 @@
                   label="Tipo"
                   v-model="tipo"
                 ></v-select>
-                </v-flex>
-                <v-flex xs12 sm4>
-                  <v-btn
-                    medium
-                    @click="infoButton = true"
-                    v-if="!infoButton"
-                    icon
-                    color="info"
-                  >
-                    <v-icon>info</v-icon>
-                  </v-btn>
-                  <v-btn
-                    medium
-                    v-if="infoButton"
-                    color="info"
-                    @click="passos()"
-                  >
-                    <v-icon left>info</v-icon>Info dos seguintes passos
-                  </v-btn>
-                </v-flex>
+              </v-flex>
+              <v-flex xs12 sm4>
+                <v-btn
+                  medium
+                  @click="infoButton = true"
+                  v-if="!infoButton"
+                  icon
+                  color="info"
+                >
+                  <v-icon>info</v-icon>
+                </v-btn>
+                <v-btn medium v-if="infoButton" color="info" @click="passos()">
+                  <v-icon left>info</v-icon>Info dos seguintes passos
+                </v-btn>
+              </v-flex>
             </v-layout>
           </v-container>
           <div class="text-xs-center">

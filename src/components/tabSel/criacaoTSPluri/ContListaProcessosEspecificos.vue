@@ -60,7 +60,7 @@
             </template>
             <v-card>
               <v-card-title>
-                <span 
+                <span
                   >Selecione as entidades donas do processo:
                   {{ props.item.classe }}
                 </span>
@@ -73,9 +73,9 @@
                     v-model="entProcDono[props.item.classe][e.id]"
                     class="shrink mr-2 mt-0"
                   ></v-checkbox>
-                  <b>{{ e.designacao + '  (' + e.sigla + ') ' }}</b>
-                  <hr style="border-top: 0px"/>
-                </v-row> 
+                  <b>{{ e.designacao + "  (" + e.sigla + ") " }}</b>
+                  <hr style="border-top: 0px" />
+                </v-row>
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
@@ -84,7 +84,11 @@
                   text
                   @click="
                     props.item.dono = false;
-                    selecTodasEnt(entidades, props.item.classe, props.item.designacao);
+                    selecTodasEnt(
+                      entidades,
+                      props.item.classe,
+                      props.item.designacao
+                    );
                   "
                   >Selecionar todos</v-btn
                 >
@@ -147,8 +151,10 @@
                     >
                       <v-icon dark>add</v-icon>
                     </v-btn>
-                    <b class="ma-4">{{ e.designacao + '  (' + e.sigla + ') ' }}</b>
-                    <hr style="border-top: 0px"/>
+                    <b class="ma-4">{{
+                      e.designacao + "  (" + e.sigla + ") "
+                    }}</b>
+                    <hr style="border-top: 0px" />
                   </template>
                   <template v-else>
                     <v-btn
@@ -207,8 +213,15 @@
                         </v-card>
                       </v-dialog>
                     </v-btn>
-                    <b class="ma-4">{{ e.designacao + '  (' + e.sigla + ') ' + ": " + entProcPar[props.item.classe][e.id]}}</b>
-                    <hr style="border-top: 0px"/>
+                    <b class="ma-4">{{
+                      e.designacao +
+                        "  (" +
+                        e.sigla +
+                        ") " +
+                        ": " +
+                        entProcPar[props.item.classe][e.id]
+                    }}</b>
+                    <hr style="border-top: 0px" />
                   </template>
                   <div style="flex: 1 1 auto;">
                     <v-dialog
@@ -227,9 +240,14 @@
                         </v-card-title>
                         <v-card-text>
                           <v-container fluid>
-                            <v-radio-group v-model="entProcPar[props.item.classe][e.id]">
-                              <v-radio v-for="t in tipoParticipacao" :key="t"
-                              v-bind:value="t">
+                            <v-radio-group
+                              v-model="entProcPar[props.item.classe][e.id]"
+                            >
+                              <v-radio
+                                v-for="t in tipoParticipacao"
+                                :key="t"
+                                v-bind:value="t"
+                              >
                                 <template v-slot:label>
                                   <div class="shrink mr-6 mt-2">{{ t }}</div>
                                 </template>
@@ -530,7 +548,7 @@ export default {
           }
         }
         if (!haDono) {
-          var index = this.procEspSel.indexOf(x => x.classe ===proc);
+          var index = this.procEspSel.indexOf(x => x.classe === proc);
           if (index != -1) {
             this.procEspSel.splice(index, 1);
             this.uncheck(proc);

@@ -48,36 +48,48 @@
                   : props.item.dono && props.item.participante
                   ? selProcRes(props.item)
                   : !props.item.dono && !props.item.participante
-                  ? (uncheck(props.item.classe, props.item.participante), desSelProcRes(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante),
+                    desSelProcRes(props.item))
                   : null;
               }
             "
           ></v-checkbox>
         </td>
         <td>
-          <v-checkbox
+          <v-select
             v-model="props.item.participante"
+            :items="tipoParticipacao"
+            class="ma-1"
+            primary
+            hide-details
+            placeholder="Por Sel."
             v-if="
               !(
-                props.item.participante != true &&
+                props.item.participante != 'Apreciar' &&
+                props.item.participante != 'Assessorar' &&
+                props.item.participante != 'Comunicar' &&
+                props.item.participante != 'Decidir' &&
+                props.item.participante != 'Executar' &&
+                props.item.participante != 'Iniciar' &&
+                props.item.participante != 'Não Sel' &&
                 props.item.participante != false
               )
             "
-            primary
-            class="ma-1"
-            hide-details
             v-on:change="
               {
                 props.item.participante && !props.item.dono
-                  ? (calcRel(props.item.classe), selProcRes(props.item))
+                  ? (calcRel(props.item.classe),
+                    selProcRes(props.item),
+                    verificaTipoPar(props.item.participante, props.item))
                   : props.item.participante && props.item.dono
                   ? selProcRes(props.item)
                   : !props.item.participante && !props.item.dono
-                  ? (uncheck(props.item.classe, props.item.participante), desSelProcRes(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante),
+                    desSelProcRes(props.item))
                   : null;
               }
             "
-          ></v-checkbox>
+          />
         </td>
       </tr>
     </template>
@@ -90,13 +102,13 @@
 
 <script>
 export default {
-  props: ["lista", "listaPreSel"],
+  props: ["lista", "listaPreSel", "it"],
   data: () => ({
     headers: [
       {
         text: "Classe",
         value: "classe",
-        width: "20%"
+        width: "15%"
       },
       {
         text: "Designação",
@@ -111,7 +123,7 @@ export default {
       {
         text: "Participante",
         value: "participante",
-        width: "15%"
+        width: "20%"
       }
     ],
     procsFooterProps: {
@@ -130,7 +142,11 @@ export default {
     // Todas as travessias são carregadas para esta variável
     travessias: [],
     preSel: [],
-    listaSistemaDecrementada: []
+    listaSistemaDecrementada: [],
+    // Tipos de participação
+    tipoParticipacao: [],
+    // Processos pré selecionados das tabelas anteriores
+    procPreSel: []
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro
@@ -138,18 +154,6 @@ export default {
       try {
         // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
         this.listaProcResultado[processo] = this.travessias[processo];
-
-        // Coloca na lista de processos resultantes especificos os processos pré selecionados
-        // resultantes das travessias dos processos comuns
-        if (!this.listaResEspRestantes.length) {
-          if (this.preSel.length) {
-            for (var l = 0; l < this.lista.length; l++) {
-              if (this.preSel.includes(this.lista[l].classe))
-                this.listaResEspRestantes.push(this.lista[l].classe);
-            }
-          }
-          this.preSel = [];
-        }
 
         // separa o resultado da travessia em duas listas, uma com os processos especificos (que estão presentes na tabela) e os restantes
         // listaResEspRestantes: Lista dos processos resultantes (das travessias) especificos
@@ -194,6 +198,7 @@ export default {
 
     // função para reverter a seleção
     uncheck: async function(processo, trans) {
+      var resProc = this.listaProcResultado[processo];
       // apaga o resultado da travessia desse processo
       // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
       delete this.listaProcResultado[processo];
@@ -232,14 +237,32 @@ export default {
           }
         }
       }
-      this.listaResEspRestantes = newListaResEspRestantes;
-      this.listaResRestantes = newListaResRestantes;
+      if (procSel.length) {
+        this.listaResEspRestantes = newListaResEspRestantes;
+        this.listaResRestantes = newListaResRestantes;
+      } else {
+        for (var l = 0; l < resProc.length; l++) {
+          if (this.procPreSel.includes(resProc[l])) {
+            var index = this.listaResRestantes.findIndex(
+              p => p.id === resProc[l]
+            );
+            this.listaResRestantes.splice(index, 1);
+          }
+        }
+      }
 
-      if(trans==null && !this.listaSistemaDecrementada.includes(processo)){
-        this.listaSistemaDecrementada.push(processo)
-        
-        this.$emit("contadorEspResDecrementarSistema", this.listaSistemaDecrementada);
-      };
+      if (!procSel.length && this.preSel.includes(processo)) {
+        this.listaResRestantes.push(processo);
+      }
+
+      if (trans == null && !this.listaSistemaDecrementada.includes(processo)) {
+        this.listaSistemaDecrementada.push(processo);
+
+        this.$emit(
+          "contadorEspResDecrementarSistema",
+          this.listaSistemaDecrementada
+        );
+      }
 
       this.$emit("procPreSelResTravRes", this.listaResRestantes);
       this.$emit("contadorProcPreSelRes", this.listaResEspRestantes);
@@ -257,6 +280,24 @@ export default {
       this.procEspSel.splice(index, 1);
       this.$emit("contadorProcSelRes", this.procEspSel);
       this.$emit("contadorProcSelEspResUtilizador", this.procEspSel);
+    },
+    // Lista com todos os tipos de intervenção possíveis
+    tipoPar: async function() {
+      var resPar = await this.$request(
+        "get",
+        "/api/vocabularios/vc_processoTipoParticipacao"
+      );
+      for (var i = 0; i < resPar.data.length; i++) {
+        this.tipoParticipacao.push(resPar.data[i].termo);
+      }
+      this.tipoParticipacao.push("Não Sel");
+    },
+    verificaTipoPar: async function(part, item) {
+      if (item.participante == "Não Sel") {
+        item.participante = false;
+        this.uncheck(item.classe, item.participante);
+        this.desSelProcRes(item.classe);
+      }
     }
   },
   mounted: async function() {
@@ -269,20 +310,35 @@ export default {
       for (var j = 0; j < trav.length; j++) {
         this.travessias[trav[j].processo] = trav[j].travessia;
       }
-       // Carrega os calculos iniciais dos processos já selecionados 
+      // Carrega os calculos iniciais dos processos já selecionados
       for (var i = 0; i < this.lista.length; i++) {
         if (this.lista[i].dono || this.lista[i].participante) {
           await this.calcRel(this.lista[i].classe);
           if (!this.procEspSel.includes(this.lista[i])) {
             this.procEspSel.push(this.lista[i]);
             this.$emit("contadorProcSelRes", this.procEspSel);
-            this.$emit("contadorProcSelEspResSistema", this.procEspSel);
+            if (this.it == "1") {
+              this.$emit("contadorProcSelEspResSistema", this.procEspSel);
+            }
           }
-        }
-        else if (this.lista[i].participante==null){
+        } else if (this.lista[i].participante == null) {
           this.listaSistemaDecrementada.push(this.lista[i].classe);
         }
       }
+
+      // Coloca na lista de processos resultantes especificos os processos pré selecionados
+      // resultantes das travessias dos processos comuns e especificos
+      if (!this.listaResEspRestantes.length) {
+        if (this.preSel.length) {
+          for (var l = 0; l < this.lista.length; l++) {
+            if (this.preSel.includes(this.lista[l].classe))
+              this.listaResEspRestantes.push(this.lista[l].classe);
+            this.procPreSel.push(this.lista[l].classe);
+          }
+        }
+      }
+
+      this.tipoPar();
     } catch (e) {
       return e;
     }
