@@ -2,7 +2,7 @@
   <v-expansion-panel popout focusable>
     <v-expansion-panel-header class="indigo darken-3 white--text" dark>
       <div>
-        <b>Pedidos Novos</b>
+        <b>Pedidos em Apreciação Técnica</b>
         <sup class="ml-1">
           <v-badge color="red">
             <template v-slot:badge>
@@ -58,6 +58,7 @@
                 </template>
                 <span>Ver pedido...</span>
               </v-tooltip>
+
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-icon
@@ -69,6 +70,19 @@
                 </template>
                 <span>Distribuir pedido...</span>
               </v-tooltip>
+
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    @click="analisaPedido(props.item)"
+                    color="indigo darken-2"
+                    v-on="on"
+                    >search</v-icon
+                  >
+                </template>
+                <span>Analisar pedido...</span>
+              </v-tooltip>
+
               <v-tooltip bottom v-if="false">
                 <template v-slot:activator="{ on }">
                   <v-icon color="red darken-2" v-on="on">delete</v-icon>

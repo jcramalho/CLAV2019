@@ -12,9 +12,8 @@
               @distribuir="distribuiPedido($event)"
             />
 
-            <PedidosLista
+            <PedidosAnalise
               :pedidos="pedidosDistribuidos"
-              titulo="Pedidos em apreciação técnica"
               @analisar="analisaPedido($event)"
             />
 
@@ -123,9 +122,10 @@
 <script>
 import PedidosLista from "@/components/pedidos/PedidosLista.vue";
 import PedidosNovos from "@/components/pedidos/PedidosNovos";
+import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
 
 export default {
-  components: { PedidosLista, PedidosNovos },
+  components: { PedidosLista, PedidosNovos, PedidosAnalise },
   data: () => ({
     procuraUtilizador: "",
     pedidoParaDistribuir: {},

@@ -1,8 +1,11 @@
 <template>
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="expansion-panel-heading">
+    <v-expansion-panel-header
+      class="indigo darken-3 bold--text white--text"
+      dark
+    >
       <div>
-        {{ titulo }}
+        <b>{{ titulo }}</b>
         <sup class="ml-1">
           <v-badge color="red">
             <template v-slot:badge>
@@ -187,11 +190,3 @@ export default {
   }
 };
 </script>
-<style>
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-</style>
