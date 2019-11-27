@@ -482,6 +482,7 @@
                           <ListaParteDescritiva
                             v-if="listaTotalProcSelReady"
                             v-bind:lista="listaTotalProcSel"
+                            it="1"
                             @listaTotalSelUpdate="listaTotalSelUpdate($event)"
                           />
                         </v-expansion-panel-content>
