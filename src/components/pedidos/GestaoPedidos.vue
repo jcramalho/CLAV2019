@@ -7,15 +7,13 @@
         </v-card-title>
         <v-card-text class="mt-4">
           <v-expansion-panels>
-            <PedidosLista
+            <PedidosNovos
               :pedidos="pedidosSubmetidos"
-              titulo="Pedidos novos"
               @distribuir="distribuiPedido($event)"
             />
 
-            <PedidosLista
+            <PedidosAnalise
               :pedidos="pedidosDistribuidos"
-              titulo="Pedidos em apreciação técnica"
               @analisar="analisaPedido($event)"
             />
 
@@ -123,9 +121,11 @@
 
 <script>
 import PedidosLista from "@/components/pedidos/PedidosLista.vue";
+import PedidosNovos from "@/components/pedidos/PedidosNovos";
+import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
 
 export default {
-  components: { PedidosLista },
+  components: { PedidosLista, PedidosNovos, PedidosAnalise },
   data: () => ({
     procuraUtilizador: "",
     pedidoParaDistribuir: {},

@@ -11,6 +11,11 @@
       Bibliotecas</v-toolbar-title
     >
     <v-spacer></v-spacer>
+
+    <div class="body-2">Versão: 20191127</div>
+
+    <v-spacer></v-spacer>
+
     <v-toolbar-title>
       <v-btn text depressed href="mailto:clav@dglab.gov.pt">Contactos</v-btn>
     </v-toolbar-title>

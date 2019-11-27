@@ -69,6 +69,12 @@
                 >
                   <AnalisaCriarLeg :leg="pedido.objeto" />
                 </v-layout>
+
+                <v-layout
+                  v-else-if="pedido.objeto.tipo == 'Auto de Eliminação'"
+                >
+                  <AnalisaCriarAE :ae="pedido.objeto" />
+                </v-layout>
               </v-container>
             </v-form>
           </v-card-text>
@@ -82,12 +88,14 @@
 
 <script>
 import AnalisaCriarLeg from "@/components/pedidos/analise/AnalisaCriarLeg.vue"; // @ is an alias to /src
+import AnalisaCriarAE from "@/components/pedidos/analise/AnalisaCriarAE.vue";
 
 export default {
   props: ["idp"],
 
   components: {
-    AnalisaCriarLeg
+    AnalisaCriarLeg,
+    AnalisaCriarAE
   },
 
   data: () => ({

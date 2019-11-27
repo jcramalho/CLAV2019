@@ -2,13 +2,13 @@
   <v-row class="ma-1" :key="componentKey">
     <v-col cols="3">
       <div class="info-label">
-        Exemplo(s) de NA:
+        Exemplo(s) de NA (ENA):
         <InfoBox
           header="Exemplo(s) de Nota(s) de Aplicação"
           :text="myhelp.Classe.Campos.ExemplosNotasAp"
         />
       </div>
-      <hr style="border-top: 0px"/>
+      <hr style="border-top: 0px" />
       <v-btn
         color="primary"
         dark
@@ -20,17 +20,45 @@
       </v-btn>
     </v-col>
     <v-col>
-      <v-row
-        fluid
-        v-for="(ex, index) in lista.exemplosNotasAp"
-        :key="index"
-      >
-        <v-textarea v-model="ex.exemplo" auto-grow solo rows="1"></v-textarea>
+      <v-row fluid v-for="(ex, index) in lista.exemplosNotasAp" :key="index">
+        <v-textarea
+          v-model="ex.exemplo"
+          v-if="ex.backgroundColor == 'transparent'"
+          auto-grow
+          solo
+          rows="1"
+          readonly
+          :backgroundColor="ex.backgroundColor"
+        >
+        </v-textarea>
+        <v-textarea
+          v-model="ex.exemplo"
+          v-else
+          auto-grow
+          solo
+          rows="1"
+          :backgroundColor="ex.backgroundColor"
+        >
+        </v-textarea>
+        <v-btn
+          class="ma-1"
+          color="primary"
+          dark
+          fab
+          small
+          @click="
+            forceRerenderEdit(ex.backgroundColor);
+            ex.backgroundColor = 'blue lighten-3';
+          "
+        >
+          <v-icon dark>edit</v-icon>
+        </v-btn>
         <v-btn
           class="ma-1"
           color="red darken-2"
           dark
-          rounded
+          fab
+          small
           @click="
             lista.exemplosNotasAp.splice(index, 1);
             forceRerender();
@@ -76,7 +104,7 @@ const help = require("@/config/help").help;
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
-  props: ["lista"],
+  props: ["lista", "compKeyENA"],
 
   components: {
     InfoBox
@@ -89,6 +117,12 @@ export default {
       exemploNotaApDuplicadoFlag: false,
       componentKey: 0
     };
+  },
+
+  watch: {
+    compKeyENA: function() {
+      this.componentKey += 1;
+    }
   },
 
   methods: {
@@ -116,6 +150,11 @@ export default {
     },
     forceRerender: function() {
       this.componentKey += 1;
+    },
+    forceRerenderEdit: async function(color) {
+      if (color == "transparent") {
+        this.componentKey += 1;
+      }
     }
   }
 };
