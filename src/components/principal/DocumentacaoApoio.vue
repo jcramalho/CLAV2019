@@ -186,7 +186,9 @@
                     <a href="#">Instruções para submissão de TS por exportação de Formulário pré-preenchido</a>
                   </li>
                   <li>
-                    <a href="#">Formulário pré-preenchido para submissão de TS</a>
+                    <a href="#" @click="getFormulario()">
+                      Formulário pré-preenchido para submissão de TS
+                    </a>
                   </li>
                 </ul>
 
@@ -225,6 +227,44 @@ export default {
       panelHeaderColor: "indigo darken-4",
       publicPath: process.env.BASE_URL
     };
+  },
+
+  methods: {
+    async getFormulario() {
+      var path = "/api/classes?info=esqueleto&OF=text/csv";
+      var filename = "formularioTS.csv";
+
+      try {
+        var response = await this.$request("get", path);
+        var blob = new Blob([response.data], {
+          type: "text/csv;charset=utf-8;"
+        });
+
+        if (window.navigator.msSaveBlob) {
+          // FOR IE BROWSER
+          navigator.msSaveBlob(blob, filename);
+        } else {
+          // FOR OTHER BROWSERS
+          var url = URL.createObjectURL(blob);
+          var element = document.createElement("a");
+
+          element.setAttribute("href", url);
+          element.setAttribute("download", filename);
+          element.style.display = "none";
+
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        }
+      } catch (erro) {
+        this.$router.push(
+          "/?erro=" +
+            encodeURIComponent(
+              "Não foi possível o obter o formulário pré-preenchido para a submissão de uma TS. Tente novamente mais tarde!"
+            )
+        );
+      }
+    }
   }
 };
 </script>
