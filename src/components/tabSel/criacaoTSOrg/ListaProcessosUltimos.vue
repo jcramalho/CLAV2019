@@ -54,23 +54,40 @@
           ></v-checkbox>
         </td>
         <td>
-          <v-checkbox
+          <v-select
             v-model="props.item.participante"
-            primary
+            :items="tipoParticipacao"
             class="ma-1"
+            primary
             hide-details
+            placeholder="Por Sel."
+            v-if="
+              !(
+                props.item.participante != 'Apreciar' &&
+                props.item.participante != 'Assessorar' &&
+                props.item.participante != 'Comunicar' &&
+                props.item.participante != 'Decidir' &&
+                props.item.participante != 'Executar' &&
+                props.item.participante != 'Iniciar' &&
+                props.item.participante != 'Não Sel' &&
+                props.item.participante != false
+              )
+            "
             v-on:change="
               {
                 props.item.participante && !props.item.dono
-                  ? (calcRel(props.item.classe), selProcUlt(props.item))
+                  ? (calcRel(props.item.classe),
+                    selProcUlt(props.item),
+                    verificaTipoPar(props.item.participante, props.item))
                   : props.item.participante && props.item.dono
                   ? selProcUlt(props.item)
                   : !props.item.participante && !props.item.dono
-                  ? (uncheck(props.item.classe), desSelProcUlt(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante),
+                    desSelProcUlt(props.item))
                   : null;
               }
             "
-          ></v-checkbox>
+          />
         </td>
       </tr>
     </template>
@@ -83,13 +100,13 @@
 
 <script>
 export default {
-  props: ["lista", "listaPreSel"],
+  props: ["lista", "listaPreSel", "it"],
   data: () => ({
     headers: [
       {
         text: "Classe",
         value: "classe",
-        width: "20%"
+        width: "15%"
       },
       {
         text: "Designação",
@@ -104,7 +121,7 @@ export default {
       {
         text: "Participante",
         value: "participante",
-        width: "15%"
+        width: "20%"
       }
     ],
     procsFooterProps: {
@@ -120,7 +137,11 @@ export default {
     procUltSel: [],
     // Todas as travessias são carregadas para esta variável
     travessias: [],
-    preSel: []
+    preSel: [],
+    // Tipos de participação
+    tipoParticipacao: [],
+    // Processos pré selecionados das tabelas anteriores
+    procPreSel: []
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro
@@ -128,18 +149,6 @@ export default {
       try {
         // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
         this.listaProcResultado[processo] = this.travessias[processo];
-
-        // Coloca na lista de processos resultantes ultimos os processos pré selecionados
-        // resultantes das travessias anteriores
-        if (!this.listaResUltimos.length) {
-          if (this.preSel.length) {
-            for (var l = 0; l < this.lista.length; l++) {
-              if (this.preSel.includes(this.lista[l].classe))
-                this.listaResUltimos.push(this.lista[l].classe);
-            }
-          }
-          this.preSel = [];
-        }
 
         // resultado da travessia
         // listaResUltimos: Lista dos processos resultantes (das travessias) dos ultimos
@@ -172,6 +181,7 @@ export default {
 
     // Reverte a seleção
     uncheck: async function(processo) {
+      var resProc = this.listaProcResultado[processo];
       // apaga o resultado da travessia desse processo
       // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
       delete this.listaProcResultado[processo];
@@ -193,7 +203,22 @@ export default {
           }
         }
       }
-      this.listaResUltimos = newListaResUltimos;
+      if (procSel.length) {
+        this.listaResUltimos = newListaResUltimos;
+      } else {
+        for (var l = 0; l < resProc.length; l++) {
+          if (this.procPreSel.includes(resProc[l])) {
+            var index = this.listaResUltimos.findIndex(
+              p => p.id === resProc[l]
+            );
+            this.listaResUltimos.splice(index, 1);
+          }
+        }
+      }
+
+      if (!procSel.length && this.preSel.includes(processo)) {
+        this.listaResUltimos.push(processo);
+      }
 
       this.$emit("contadorProcPreSelUlt", this.listaResUltimos);
     },
@@ -208,6 +233,24 @@ export default {
       var index = this.procUltSel.findIndex(e => e.classe === processo.classe);
       this.procUltSel.splice(index, 1);
       this.$emit("contadorProcSelUlt", this.procUltSel);
+    },
+    // Lista com todos os tipos de intervenção possíveis
+    tipoPar: async function() {
+      var resPar = await this.$request(
+        "get",
+        "/api/vocabularios/vc_processoTipoParticipacao"
+      );
+      for (var i = 0; i < resPar.data.length; i++) {
+        this.tipoParticipacao.push(resPar.data[i].termo);
+      }
+      this.tipoParticipacao.push("Não Sel");
+    },
+    verificaTipoPar: async function(part, item) {
+      if (item.participante == "Não Sel") {
+        item.participante = false;
+        this.uncheck(item.classe, item.participante);
+        this.desSelProcUlt(item.classe);
+      }
     }
   },
   mounted: async function() {
@@ -230,6 +273,20 @@ export default {
           }
         }
       }
+
+      // Coloca na lista de processos resultantes ultimos os processos pré selecionados
+      // resultantes das travessias anteriores
+      if (!this.listaResUltimos.length) {
+        if (this.preSel.length) {
+          for (var l = 0; l < this.lista.length; l++) {
+            if (this.preSel.includes(this.lista[l].classe))
+              this.listaResUltimos.push(this.lista[l].classe);
+            this.procPreSel.push(this.lista[l].classe);
+          }
+        }
+      }
+
+      this.tipoPar();
     } catch (error) {
       return error;
     }

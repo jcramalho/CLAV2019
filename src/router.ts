@@ -30,7 +30,7 @@ export default new Router({
       path: "/classes/editar/:idClasse",
       name: "editaClasse",
       component: () => import("./views/classes/ClassesEdita.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/classes/consultar/:idClasse",

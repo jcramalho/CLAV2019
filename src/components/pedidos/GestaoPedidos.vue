@@ -7,15 +7,13 @@
         </v-card-title>
         <v-card-text class="mt-4">
           <v-expansion-panels>
-            <PedidosLista
+            <PedidosNovos
               :pedidos="pedidosSubmetidos"
-              titulo="Pedidos novos"
               @distribuir="distribuiPedido($event)"
             />
 
-            <PedidosLista
+            <PedidosAnalise
               :pedidos="pedidosDistribuidos"
-              titulo="Pedidos em apreciação técnica"
               @analisar="analisaPedido($event)"
             />
 
@@ -58,7 +56,6 @@
                 :items="usersRecords"
                 :search="procuraUtilizador"
                 class="elevation-1"
-                hide-default-footer
               >
                 <template v-slot:item="props">
                   <tr @click="selectedUser = props.item">
@@ -123,9 +120,14 @@
 
 <script>
 import PedidosLista from "@/components/pedidos/PedidosLista.vue";
+import PedidosNovos from "@/components/pedidos/PedidosNovos";
+import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
+
+import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
+import { filtraNivel } from "@/utils/utils";
 
 export default {
-  components: { PedidosLista },
+  components: { PedidosLista, PedidosNovos, PedidosAnalise },
   data: () => ({
     procuraUtilizador: "",
     pedidoParaDistribuir: {},
@@ -175,7 +177,14 @@ export default {
     distribuiPedido: async function(pedido) {
       try {
         var response = await this.$request("get", "/api/users");
-        this.usersRecords = response.data;
+
+        const utilizadores = filtraNivel(
+          response.data,
+          NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS,
+          ">="
+        );
+
+        this.usersRecords = utilizadores;
         this.pedidoParaDistribuir = pedido;
         this.distribuir = true;
       } catch (e) {

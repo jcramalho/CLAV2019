@@ -2,9 +2,9 @@
   <v-row class="ma-1" :key="componentKey">
     <v-col cols="3">
       <div class="info-label">
-        Termos de Índice
+        Termos de Índice (TI):
       </div>
-      <hr style="border-top: 0px"/>
+      <hr style="border-top: 0px" />
       <v-btn
         color="primary"
         dark
@@ -17,12 +17,44 @@
     </v-col>
     <v-col>
       <v-row fluid v-for="(ti, index) in lista.termosInd" :key="index">
-        <v-textarea v-model="ti.termo" auto-grow solo rows="1"></v-textarea>
+        <v-textarea
+          v-model="ti.termo"
+          v-if="ti.backgroundColor == 'transparent'"
+          auto-grow
+          solo
+          rows="1"
+          readonly
+          :backgroundColor="ti.backgroundColor"
+        >
+        </v-textarea>
+        <v-textarea
+          v-model="ti.termo"
+          v-else
+          auto-grow
+          solo
+          rows="1"
+          :backgroundColor="ti.backgroundColor"
+        >
+        </v-textarea>
+        <v-btn
+          class="ma-1"
+          color="primary"
+          dark
+          fab
+          small
+          @click="
+            forceRerenderEdit(ti.backgroundColor);
+            ti.backgroundColor = 'blue lighten-3';
+          "
+        >
+          <v-icon dark>edit</v-icon>
+        </v-btn>
         <v-btn
           class="ma-1"
           color="red darken-2"
           dark
-          rounded
+          fab
+          small
           @click="
             lista.termosInd.splice(index, 1);
             forceRerender();
@@ -57,7 +89,7 @@
 const nanoid = require("nanoid");
 
 export default {
-  props: ["lista"],
+  props: ["lista", "compKeyTI"],
 
   data() {
     return {
@@ -65,6 +97,12 @@ export default {
       tiDuplicadoFlag: false,
       componentKey: 0
     };
+  },
+
+  watch: {
+    compKeyTI: function() {
+      this.componentKey += 1;
+    }
   },
 
   methods: {
@@ -93,6 +131,11 @@ export default {
     },
     forceRerender: function() {
       this.componentKey += 1;
+    },
+    forceRerenderEdit: async function(color) {
+      if (color == "transparent") {
+        this.componentKey += 1;
+      }
     }
   }
 };

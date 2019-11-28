@@ -166,27 +166,50 @@
         </v-expansion-panel>
 
         <v-expansion-panel>
-          <v-expansion-panel-header>Formulários e instruções</v-expansion-panel-header>
+          <v-expansion-panel-header>Formulários e instruções para a CLAV</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card>
               <v-card-text>
-                <div class="subtitle">Formulários</div>
+                <div class="subtitle">Lista Consolidada: novas classes</div>
                 <ul>
                   <li>
-                    <a :href="`${publicPath}documentos/Formulario_AE_PGD_LC.xlsx`">Auto de eliminação PGD/LC</a>
-                  </li>
-                  <li>
-                    <a :href="`${publicPath}documentos/Formulario_AE_PGD.xlsx`">Auto de eliminação PGD</a>
-                  </li>
-                  <li>
-                    <a :href="`${publicPath}documentos/Formulario_AE_RADA.xlsx`">Auto de eliminação RADA</a>
+                    <a :href="`${publicPath}documentos/Instrucoes-Criacao-Assistida-Classes-LC.pdf`">Instruções para criação assistida de classes na LC</a>
                   </li>
                 </ul>
-                <div class="subtitle">Instruções</div>
+
+                <div class="subtitle">Tabelas de seleção</div>
                 <ul>
                   <li>
-                    <a :href="`${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`">Importação de Autos de Eliminação</a>
+                    <a href="#">Instruções para criação assistida de TS na CLAV</a>
                   </li>
+                  <li>
+                    <a href="#">Instruções para submissão de TS por exportação de Formulário pré-preenchido</a>
+                  </li>
+                  <li>
+                    <a href="#" @click="getFormulario()">
+                      Formulário pré-preenchido para submissão de TS
+                    </a>
+                  </li>
+                </ul>
+
+                <div class="subtitle">Autos de eliminação</div>
+                <ul>
+                  <li>
+                    <a :href="`${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`">Instruções para criação assistida de Auto</a>
+                  </li>
+                  <li>
+                    <a :href="`${publicPath}documentos/Instrucoes-submissao-AE-por-exportacao-formulario.pdf`">Instruções para submissão de Auto por exportação de Formulário</a>
+                  </li>
+                  <li>
+                    <a :href="`${publicPath}documentos/Formulario_AE_PGD_LC.xlsx`">Formulário para submissão de auto de PGD/LC</a>
+                  </li>
+                  <li>
+                    <a :href="`${publicPath}documentos/Formulario_AE_PGD.xlsx`">Formulário para submissão de auto de PGD</a>
+                  </li>
+                  <li>
+                    <a :href="`${publicPath}documentos/Formulario_AE_RADA.xlsx`">Formulário para submissão de auto de RADA</a>
+                  </li>
+                  
                 </ul>
               </v-card-text>
             </v-card>
@@ -204,6 +227,44 @@ export default {
       panelHeaderColor: "indigo darken-4",
       publicPath: process.env.BASE_URL
     };
+  },
+
+  methods: {
+    async getFormulario() {
+      var path = "/api/classes?info=esqueleto&OF=text/csv";
+      var filename = "formularioTS.csv";
+
+      try {
+        var response = await this.$request("get", path);
+        var blob = new Blob([response.data], {
+          type: "text/csv;charset=utf-8;"
+        });
+
+        if (window.navigator.msSaveBlob) {
+          // FOR IE BROWSER
+          navigator.msSaveBlob(blob, filename);
+        } else {
+          // FOR OTHER BROWSERS
+          var url = URL.createObjectURL(blob);
+          var element = document.createElement("a");
+
+          element.setAttribute("href", url);
+          element.setAttribute("download", filename);
+          element.style.display = "none";
+
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        }
+      } catch (erro) {
+        this.$router.push(
+          "/?erro=" +
+            encodeURIComponent(
+              "Não foi possível o obter o formulário pré-preenchido para a submissão de uma TS. Tente novamente mais tarde!"
+            )
+        );
+      }
+    }
   }
 };
 </script>
