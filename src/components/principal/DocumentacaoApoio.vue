@@ -195,7 +195,7 @@
                 <div class="subtitle">Autos de eliminação</div>
                 <ul>
                   <li>
-                    <a :href="`${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`">Instruções para criação assistida de Auto</a>
+                    Instruções para criação assistida de Auto
                   </li>
                   <li>
                     <a :href="`${publicPath}documentos/Instrucoes-submissao-AE-por-exportacao-formulario.pdf`">Instruções para submissão de Auto por exportação de Formulário</a>
