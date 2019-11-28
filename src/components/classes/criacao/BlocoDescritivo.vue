@@ -27,7 +27,9 @@
 
       <hr style="border-top: 1px dashed #dee2f8;" />
 
-      <BlocoDescritivoExemplosNotasAp :c="c" />
+      <BlocoDescritivoExemplosNotasAp 
+        v-if="c.nivel > 2"
+        :c="c" />
 
       <hr style="border-top: 1px dashed #dee2f8;" />
 
