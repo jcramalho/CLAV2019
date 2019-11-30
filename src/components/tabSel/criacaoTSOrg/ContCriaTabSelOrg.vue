@@ -458,6 +458,7 @@
                           <ListaParteDescritiva
                             v-if="listaTotalProcSelReady"
                             v-bind:lista="listaTotalProcSel"
+                            it="2"
                             @listaTotalSelUpdate="listaTotalSelUpdate($event)"
                           />
                         </v-expansion-panel-content>
@@ -1372,7 +1373,15 @@ export default {
           "/api/users/listarToken/" + this.$store.state.token
         );
 
-        this.tabelaSelecao.tipologias = this.tipEnt.concat(this.tipSel);
+        this.tabelaSelecao.tipologias = this.tipSel;
+
+        if (this.listaTotalProcSelUpdate.length) {
+          this.listaTotalProcSel = this.listaTotalProcSelUpdate;
+        }
+
+        this.tabelaSelecao.listaProcSel = JSON.stringify(
+          this.listaTotalProcSel
+        );
 
         this.obj.numInterv++;
         var cDate = Date.now();

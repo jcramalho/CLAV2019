@@ -151,14 +151,6 @@ export default {
         this.loading = true;
         var formData = new FormData();
         formData.append("file", this.file[0]);
-
-        var userBD = await this.$request(
-          "get",
-          "/api/users/listarToken/" + this.$store.state.token
-        );
-
-        formData.append("email", userBD.data.email);
-        formData.append("entidade_user", userBD.data.entidade.split("_")[1]);
         formData.append("entidade_ts", this.entidade_tipologia);
         formData.append("tipo_ts", "TS " + this.tipo);
 

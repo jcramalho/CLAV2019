@@ -5,6 +5,7 @@
     class="ma-1"
     item-key="classe"
     :footer-props="procsFooterProps"
+    v-if="novaListaReady"
   >
     <template v-slot:header="props">
       <tr>
@@ -18,7 +19,7 @@
       </tr>
     </template>
     <template v-slot:item="props">
-      <tr>
+      <tr :style="{ backgroundColor: novaLista[props.item.classe].backgroundColor }">
         <td>
           {{ props.item.classe }}
         </td>
@@ -39,7 +40,7 @@
                 </v-icon>
               </v-btn>
             </template>
-            <v-card v-if="novaListaReady">
+            <v-card>
               <v-card-title>
                 <span class="headline">
                   Parte descritiva do processo {{ props.item.classe }} -
@@ -129,25 +130,18 @@
                 </v-dialog>
               </v-card-actions>
             </v-card>
-            <v-card v-else>
-              <v-card-title>
-                <span class="headline">
-                  A carregar a parte descritiva dos processos...
-                </span>
-                <div class="flex-grow-1"></div>
-                <v-progress-circular
-                  :size="50"
-                  :width="6"
-                  indeterminate
-                  color="primary"
-                ></v-progress-circular>
-              </v-card-title>
-            </v-card>
           </v-dialog>
         </td>
       </tr>
     </template>
   </v-data-table>
+  <v-data-table 
+    v-else
+    class="ma-1"
+    item-key="classe"
+    loading 
+    loading-text="A carregar... Por favor aguarde"
+  />
 </template>
 
 <script>
@@ -157,7 +151,7 @@ import NotasEx from "@/components/tabSel/parteDescritiva/NotasEx.vue";
 import TermosIndice from "@/components/tabSel/parteDescritiva/TermosIndice.vue";
 
 export default {
-  props: ["lista"],
+  props: ["lista", "it"],
   components: {
     NotasAp,
     ExemplosNotasAp,
@@ -207,6 +201,7 @@ export default {
       ].exemplosNotasAp.slice(0);
       this.notasEx[classe] = this.novaLista[classe].notasEx.slice(0);
       this.termosInd[classe] = this.novaLista[classe].termosInd.slice(0);
+      this.novaLista[classe].backgroundColor='orange';
       this.$emit("listaTotalSelUpdate", this.novaLista);
       this.componentKey += 1;
     },
@@ -247,7 +242,6 @@ export default {
               "transparent";
           }
           this.compKey += 1;
-          console.log(this.compKey)
           break;
         }
       }
@@ -263,6 +257,9 @@ export default {
 
       for (var i = 0; i < this.lista.length; i++) {
         this.novaLista[this.lista[i].classe] = this.lista[i];
+        if(this.it=="1"){
+          this.novaLista[this.lista[i].classe].backgroundColor = 'transparent'
+        }
 
         for (var j = 0; j < this.info.length; j++) {
           if (this.info[j].codigo == this.lista[i].classe) {
@@ -349,8 +346,10 @@ export default {
           this.lista[i].classe
         ].termosInd.slice(0);
       }
+      
       this.$emit("listaTotalSelUpdate", this.novaLista);
       this.novaListaReady = true;
+
     } catch (err) {
       return err;
     }
