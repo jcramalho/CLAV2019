@@ -1,11 +1,8 @@
 <template>
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header
-      class="indigo darken-3 bold--text white--text"
-      dark
-    >
+    <v-expansion-panel-header class="indigo darken-3 white--text" dark>
       <div>
-        <b>{{ titulo }}</b>
+        <b>Pedidos Novos</b>
         <sup class="ml-1">
           <v-badge color="red">
             <template v-slot:badge>
@@ -42,14 +39,13 @@
 
         <template v-slot:item="props">
           <tr>
-            <td class="subheading">{{ converteData(props.item.data) }}</td>
-            <td class="subheading">{{ props.item.estado }}</td>
             <td class="subheading">{{ props.item.codigo }}</td>
-            <td class="subheading">{{ props.item.criadoPor }}</td>
-            <td class="subheading">{{ props.item.entidade }}</td>
             <td class="subheading">
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
+            <td class="subheading">{{ props.item.entidade }}</td>
+            <td class="subheading">{{ props.item.criadoPor }}</td>
+            <td class="subheading">{{ converteData(props.item.data) }}</td>
             <td>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
@@ -72,31 +68,6 @@
                   >
                 </template>
                 <span>Distribuir pedido...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    @click="analisaPedido(props.item)"
-                    color="indigo darken-2"
-                    v-on="on"
-                    >search</v-icon
-                  >
-                </template>
-                <span>Analisar pedido...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon color="indigo darken-2" v-on="on"
-                    >keyboard_return</v-icon
-                  >
-                </template>
-                <span>Devolver pedido...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon color="indigo darken-2" v-on="on">check</v-icon>
-                </template>
-                <span>Validar pedido...</span>
               </v-tooltip>
               <v-tooltip bottom v-if="false">
                 <template v-slot:activator="{ on }">
@@ -124,6 +95,15 @@ export default {
   data: () => {
     return {
       headers: [
+        { text: "Código", value: "codigo", sortable: true, class: "title" },
+        { text: "Tipo", value: "tipo", sortable: true, class: "title" },
+        { text: "Entidade", value: "entidade", sortable: true, class: "title" },
+        {
+          text: "Responsável",
+          value: "responsavel",
+          sortable: true,
+          class: "title"
+        },
         {
           text: "Data",
           align: "left",
@@ -131,23 +111,7 @@ export default {
           value: "data",
           class: "title"
         },
-        {
-          text: "Estado",
-          align: "left",
-          sortable: false,
-          value: "estado",
-          class: "title"
-        },
-        { text: "Código", value: "codigo", sortable: true, class: "title" },
-        {
-          text: "Responsável",
-          value: "responsavel",
-          sortable: true,
-          class: "title"
-        },
-        { text: "Entidade", value: "entidade", sortable: true, class: "title" },
-        { text: "Tipo", value: "tipo", sortable: true, class: "title" },
-        { text: "Tarefa", sortable: true, class: "title" }
+        { text: "Tarefa", sortable: false, class: "title" }
       ],
 
       footer_props: {

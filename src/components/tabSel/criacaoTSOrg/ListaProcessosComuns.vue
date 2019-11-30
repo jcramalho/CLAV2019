@@ -46,36 +46,48 @@
                   : props.item.dono && props.item.participante
                   ? selProcComum(props.item)
                   : !props.item.dono && !props.item.participante
-                  ? (uncheck(props.item.classe, props.item.participante), desSelProcComum(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante),
+                    desSelProcComum(props.item))
                   : null;
               }
             "
           ></v-checkbox>
         </td>
         <td>
-          <v-checkbox
+          <v-select
             v-model="props.item.participante"
-            v-if="
-              !(
-                props.item.participante != true &&
-                props.item.participante != false
-              )
-            "
+            :items="tipoParticipacao"
             class="ma-1"
             primary
             hide-details
+            placeholder="Por Sel."
+            v-if="
+              !(
+                props.item.participante != 'Apreciar' &&
+                props.item.participante != 'Assessorar' &&
+                props.item.participante != 'Comunicar' &&
+                props.item.participante != 'Decidir' &&
+                props.item.participante != 'Executar' &&
+                props.item.participante != 'Iniciar' &&
+                props.item.participante != 'Não Sel' &&
+                props.item.participante != false
+              )
+            "
             v-on:change="
               {
                 props.item.participante && !props.item.dono
-                  ? (calcRel(props.item.classe), selProcComum(props.item))
+                  ? (calcRel(props.item.classe),
+                    selProcComum(props.item),
+                    verificaTipoPar(props.item.participante, props.item))
                   : props.item.participante && props.item.dono
                   ? selProcComum(props.item)
                   : !props.item.participante && !props.item.dono
-                  ? (uncheck(props.item.classe, props.item.participante), desSelProcComum(props.item))
+                  ? (uncheck(props.item.classe, props.item.participante),
+                    desSelProcComum(props.item))
                   : null;
               }
             "
-          ></v-checkbox>
+          />
         </td>
       </tr>
     </template>
@@ -88,14 +100,14 @@
 
 <script>
 export default {
-  props: ["lista"],
+  props: ["lista", "it"],
   data: () => ({
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
         text: "Classe",
         value: "classe",
-        width: "20%"
+        width: "15%"
       },
       {
         text: "Designação",
@@ -110,7 +122,7 @@ export default {
       {
         text: "Participante",
         value: "participante",
-        width: "15%"
+        width: "20%"
       }
     ],
     procsFooterProps: {
@@ -128,7 +140,9 @@ export default {
     procComunsSel: [],
     // Todas as travessias são carregadas para esta variável
     travessias: [],
-    listaSistemaDecrementada: []
+    listaSistemaDecrementada: [],
+    // Tipos de participação
+    tipoParticipacao: []
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
@@ -215,13 +229,14 @@ export default {
       this.listaResComuns = newListaResComuns;
       this.listaResRestantes = newListaResRestantes;
 
-      
-    
-      if(trans==null && !this.listaSistemaDecrementada.includes(processo)){
-        this.listaSistemaDecrementada.push(processo)
-        
-        this.$emit("contadorComDecrementarSistema", this.listaSistemaDecrementada);
-      };
+      if (trans == null && !this.listaSistemaDecrementada.includes(processo)) {
+        this.listaSistemaDecrementada.push(processo);
+
+        this.$emit(
+          "contadorComDecrementarSistema",
+          this.listaSistemaDecrementada
+        );
+      }
 
       this.$emit("procPreSelResTravCom", this.listaResRestantes);
       this.$emit("contadorProcPreSelCom", this.listaResComuns);
@@ -241,6 +256,24 @@ export default {
       this.procComunsSel.splice(index, 1);
       this.$emit("contadorProcSelCom", this.procComunsSel);
       this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
+    },
+    // Lista com todos os tipos de intervenção possíveis
+    tipoPar: async function() {
+      var resPar = await this.$request(
+        "get",
+        "/api/vocabularios/vc_processoTipoParticipacao"
+      );
+      for (var i = 0; i < resPar.data.length; i++) {
+        this.tipoParticipacao.push(resPar.data[i].termo);
+      }
+      this.tipoParticipacao.push("Não Sel");
+    },
+    verificaTipoPar: async function(part, item) {
+      if (item.participante == "Não Sel") {
+        item.participante = false;
+        this.uncheck(item.classe, item.participante);
+        this.desSelProcComum(item.classe);
+      }
     }
   },
   mounted: async function() {
@@ -259,13 +292,15 @@ export default {
           if (!this.procComunsSel.includes(this.lista[i])) {
             this.procComunsSel.push(this.lista[i]);
             this.$emit("contadorProcSelCom", this.procComunsSel);
-            this.$emit("contadorProcSelComSistema", this.procComunsSel);
+            if (this.it == "1") {
+              this.$emit("contadorProcSelComSistema", this.procComunsSel);
+            }
           }
-        }
-        else if (this.lista[i].participante==null){
+        } else if (this.lista[i].participante == null) {
           this.listaSistemaDecrementada.push(this.lista[i].classe);
         }
       }
+      this.tipoPar();
     } catch (e) {
       return e;
     }

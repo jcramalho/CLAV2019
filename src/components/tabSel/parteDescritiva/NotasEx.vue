@@ -2,9 +2,9 @@
   <v-row class="ma-1" :key="componentKey">
     <v-col cols="3">
       <div class="info-label">
-        Notas de Exclusão
+        Notas de Exclusão (NE):
       </div>
-      <hr style="border-top: 0px"/>
+      <hr style="border-top: 0px" />
       <v-btn
         color="primary"
         dark
@@ -17,12 +17,44 @@
     </v-col>
     <v-col>
       <v-row fluid v-for="(nota, index) in lista.notasEx" :key="index">
-        <v-textarea v-model="nota.nota" auto-grow solo rows="1"></v-textarea>
+        <v-textarea
+          v-model="nota.nota"
+          v-if="nota.backgroundColor == 'transparent'"
+          auto-grow
+          solo
+          rows="1"
+          readonly
+          :backgroundColor="nota.backgroundColor"
+        >
+        </v-textarea>
+        <v-textarea
+          v-model="nota.nota"
+          v-else
+          auto-grow
+          solo
+          rows="1"
+          :backgroundColor="nota.backgroundColor"
+        >
+        </v-textarea>
+        <v-btn
+          class="ma-1"
+          color="primary"
+          dark
+          fab
+          small
+          @click="
+            forceRerenderEdit(nota.backgroundColor);
+            nota.backgroundColor = 'blue lighten-3';
+          "
+        >
+          <v-icon dark>edit</v-icon>
+        </v-btn>
         <v-btn
           class="ma-1"
           color="red darken-2"
           dark
-          rounded
+          fab
+          small
           @click="
             lista.notasEx.splice(index, 1);
             forceRerender();
@@ -57,7 +89,7 @@
 const nanoid = require("nanoid");
 
 export default {
-  props: ["lista"],
+  props: ["lista", "compKeyNE"],
 
   data() {
     return {
@@ -65,6 +97,12 @@ export default {
       neDuplicadaFlag: false,
       componentKey: 0
     };
+  },
+
+  watch: {
+    compKeyNE: function() {
+      this.componentKey += 1;
+    }
   },
 
   methods: {
@@ -93,7 +131,15 @@ export default {
     },
     forceRerender: function() {
       this.componentKey += 1;
+    },
+    forceRerenderEdit: async function(color) {
+      if (color == "transparent") {
+        this.componentKey += 1;
+      }
     }
+  },
+  created: function(){
+    this.componentKey += 1;
   }
 };
 </script>
