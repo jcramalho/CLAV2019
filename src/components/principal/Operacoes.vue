@@ -119,6 +119,18 @@ export default {
           ]
         },
         {
+          entidade: "Relatórios de Avaliação de Documentação Acumulada",
+          texto: "Texto para os Rada.",
+          html: true,
+          ops: [
+            {
+              label: "Criar",
+              url: "/rada/criar",
+              level: [1, 2, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
+        },
+        {
           entidade: "Autos de Eliminação",
           html: true,
           texto: help.AutosEliminacao,
