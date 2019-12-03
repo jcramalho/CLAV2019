@@ -7,57 +7,33 @@
       <br />
       <v-stepper v-model="e1" vertical>
         <!-- Informação Geral -->
-        <v-stepper-step :key="1" :complete="e1 > 1" :step="1">
-          <h5>Informação Geral</h5>
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
+          <font size="4">
+            <b>Informação Geral</b>
+          </font>
         </v-stepper-step>
         <v-stepper-content step="1">
-          <v-card flat class="mb-12">
-            <v-row>
-              <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">Título:</div>
-              </v-col>
-              <v-col cols="12" xs="12" sm="9">
-                <v-text-field v-model="RADA.titulo" outlined></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">Entidades Responsáveis:</div>
-              </v-col>
-              <v-col cols="12" xs="12" sm="9">
-                <v-autocomplete
-                  v-model="RADA.entRes"
-                  :items="entidades"
-                  outlined
-                  dense
-                  placeholder="Selecione as Entidades Responsáveis."
-                  chips
-                  multiple
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-          </v-card>
-          <v-btn
-            :disabled="!RADA.titulo || !RADA.entRes[0]"
-            color="indigo darken-1"
-            @click="e1 = 2"
-          >Continuar</v-btn>
+          <InformacaoGeral @seguinte="changeE1" :RADA="RADA" />
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step :key="2" :complete="e1 > 2" :step="2">
-          <h5>Relatório Expositivo</h5>
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
+          <font size="4">
+            <b>Relatório Expositivo</b>
+          </font>
         </v-stepper-step>
         <v-stepper-content step="2">
-          <RelatorioExpositivo @voltar="changeE1" @relatorioExpositivo="changeRE" />
+          <RelatorioExpositivo @seguinte="changeE1" :RE="RADA.RE" />
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step :key="3" :complete="e1 > 3" :step="3">
-          <h5>Tabela de Seleção</h5>
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
+          <font size="4">
+            <b>Tabela de Seleção</b>
+          </font>
         </v-stepper-step>
         <v-stepper-content step="3">
-          <TSRada @tsrada="changeTSRada" @voltar="changeE1" />
+          <TSRada @done="done" @voltar="changeE1" :TS="RADA.tsRada"/>
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
@@ -79,11 +55,13 @@
 <script>
 import RelatorioExpositivo from "@/components/rada/criacao/RelatorioExpositivo.vue";
 import TSRada from "@/components/rada/criacao/TSRadaManual.vue";
+import InformacaoGeral from "@/components/rada/criacao/InformacaoGeral";
 
 export default {
   components: {
     RelatorioExpositivo,
-    TSRada
+    TSRada,
+    InformacaoGeral
   },
   data() {
     return {
@@ -93,23 +71,43 @@ export default {
       titulo: "",
       RADA: {
         titulo: "",
+        despachoAprovacao: null,
+        dataAprovacao: null,
+        despachoRevogacao: null,
+        dataRevogacao: null,
         entRes: [],
-        RE: null,
-        tsRada: null
+        RE: {
+          entidadesProd: [],
+          tipologiasProd: [],
+          dataInicial: "",
+          dataFinal: "",
+          dimSuporte: {
+            nSeries: 0,
+            nSubSeries: 0,
+            nUI: null,
+            medicaoUI_papel: 0,
+            medicaoUI_digital: 0,
+            medicaoUI_outros: 0
+          },
+          hist_admin: "",
+          hist_cust: "",
+          sist_org: "",
+          localizacao: "",
+          est_conser: ""
+        },
+        tsRada: {
+          titulo: "",
+          classes: []
+        }
       },
       entidades: []
     };
   },
   methods: {
-    changeRE: function(relatorioExpositivo) {
-      this.RADA.RE = relatorioExpositivo;
-      this.e1 = 3;
-    },
     changeE1: function(e) {
       this.e1 = e;
     },
-    changeTSRada: async function(tsRada) {
-      this.RADA.tsRada = tsRada;
+    done: async function() {
 
       let userBD = await this.$request(
         "get",
@@ -132,12 +130,6 @@ export default {
       this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
       this.dialogRADACriado = true;
     }
-  },
-  created: async function() {
-    let response = await this.$request("get", "/api/entidades");
-    this.entidades = response.data.map(item => {
-      return item.sigla + " - " + item.designacao;
-    });
   }
 };
 </script>
@@ -182,6 +174,7 @@ export default {
   color: #1a237e;
   padding: 6px;
   font-weight: 400;
+  height: 50%;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;
