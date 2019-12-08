@@ -54,7 +54,11 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on" @click="renovarId = props.item.id">
+                  <v-btn
+                    icon
+                    v-on="on"
+                    @click="renovarId = props.item.contactInfo"
+                  >
                     <v-icon medium color="primary">refresh</v-icon>
                   </v-btn>
                 </template>
@@ -153,7 +157,7 @@
       </v-card>
     </v-dialog>
     <v-dialog :value="renovarId != ''" max-width="290">
-      <v-card>
+      <v-card v-if="apikey == ''">
         <v-card-title class="headline">Confirmar ação</v-card-title>
         <v-card-text>
           Tem a certeza que pretende renovar a chave API?
@@ -163,16 +167,40 @@
           <v-btn color="red" text @click="renovarId = ''">
             Cancelar
           </v-btn>
+          <v-btn color="primary" text @click="renovar(renovarId)">
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+      <v-card v-else>
+        <v-card-title class="headline">Chave API renovada</v-card-title>
+        <v-card-text>
+          <p>
+            A chave API com email igual a '{{ renovarId }}' foi renovada com
+            sucesso!
+          </p>
+          <p>
+            O valor da chave API agora é:
+          </p>
+          <span class="subtitle-2" style="color: green">
+            <b>
+              {{ apikey }}
+            </b>
+          </span>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
           <v-btn
-            color="primary"
+            color="red"
             text
             @click="
-              renovar(renovarId);
+              apikey = '';
               renovarId = '';
             "
           >
-            Confirmar
+            Fechar
           </v-btn>
+          <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -345,6 +373,7 @@ export default {
     desativarId: "",
     eliminarId: "",
     renovarId: "",
+    apikey: "",
     chaves: [],
     ent_list: [],
     snackbar: false,
@@ -431,13 +460,14 @@ export default {
           this.done = false;
         });
     },
-    renovar(id) {
-      this.$request("put", "/api/chaves/atualizarChave/" + id)
+    renovar(email) {
+      this.$request("put", "/api/chaves/renovar", { email: email })
         .then(res => {
           this.text = "Chave API renovada com sucesso!";
           this.color = "success";
           this.snackbar = true;
           this.done = true;
+          this.apikey = res.data.apikey;
           this.getChavesApi();
         })
         .catch(err => {
@@ -449,15 +479,11 @@ export default {
     },
     guardar() {
       if (this.$refs.form.validate()) {
-        this.$request(
-          "put",
-          "/api/chaves/atualizarMultiplos/" + this.editedItem.id,
-          {
-            name: this.editedItem.name,
-            contactInfo: this.editedItem.contactInfo,
-            entity: this.editedItem.entity
-          }
-        )
+        this.$request("put", "/api/chaves/atualizar/" + this.editedItem.id, {
+          name: this.editedItem.name,
+          contactInfo: this.editedItem.contactInfo,
+          entity: this.editedItem.entity
+        })
           .then(res => {
             this.text = "Chave API atualizada com sucesso!";
             this.color = "success";
