@@ -169,6 +169,13 @@ export default new Router({
       component: () => import("./views/vocabularios/VocabulariosTermos.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
+    // Routes dos RADA
+    {
+      path: "/rada/criar",
+      name: "criarRada",
+      component: () => import("./views/rada/criarRada.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
     // Routes dos Autos de Eliminação
     {
       path: "/autosEliminacao",

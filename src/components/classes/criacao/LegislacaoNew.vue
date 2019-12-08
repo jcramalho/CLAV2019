@@ -140,12 +140,24 @@ export default {
       }
     },
 
+    validaData: function(d){
+      var date = new Date().toISOString().slice(0,10)
+      var res = true
+      if(d > date){
+        this.mensagensErro.push("A data não pode ser superior à data atual!")
+        this.data = ""
+        res = false
+      }
+      return res
+    },
+
     newLegislacao: async function() {
       if (
         this.validaTipo(this.tipo) &&
         this.validaNumero(this.numero) &&
         (await this.validaDups(this.tipo, this.numero)) &&
-        this.validaDupsLocais(this.tipo, this.numero)
+        this.validaDupsLocais(this.tipo, this.numero) &&
+        this.validaData(this.data)
       ) {
         var legislacao = {
           tipo: this.tipo,

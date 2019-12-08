@@ -180,10 +180,10 @@
                 <div class="subtitle">Tabelas de seleção</div>
                 <ul>
                   <li>
-                    <a href="#">Instruções para criação assistida de TS na CLAV</a>
+                    Instruções para criação assistida de TS na CLAV
                   </li>
                   <li>
-                    <a href="#">Instruções para submissão de TS por exportação de Formulário pré-preenchido</a>
+                    Instruções para submissão de TS por exportação de Formulário pré-preenchido
                   </li>
                   <li>
                     <a href="#" @click="getFormulario()">
