@@ -12,7 +12,7 @@
         <v-container>
           <v-row>
             <v-col>
-              <v-text-field v-model="sigla" :rules="siglaRules" label="Sigla" required></v-text-field>
+              <v-text-field v-model="sigla" label="Sigla" required></v-text-field>
             </v-col>
 
             <v-col>
@@ -22,7 +22,6 @@
             <v-col>
               <v-text-field
                 v-model="designacao"
-                :rules="designacaoRules"
                 label="Designação"
                 required
               ></v-text-field>

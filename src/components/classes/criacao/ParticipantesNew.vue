@@ -1,17 +1,17 @@
 <template>
-  <v-row class="ma-2 green lighten-4">
+  <v-row class="ma-2 indigo lighten-4">
     <v-col cols="2">
       <div class="info-label">Participante novo:</div>
-      <v-btn small dark rounded class="green darken-2" @click="newEntidade">
+      <v-btn small dark rounded class="ma-2 indigo darken-2" @click="newEntidade">
         Adicionar
         <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
     </v-col>
 
     <v-col>
-      <v-form v-model="valid">
-        <v-container>
+      <v-form v-model="valid" ref="form">
           <v-row>
+
             <v-col>
               <v-select
                 prefix="Intervenção: "
@@ -26,7 +26,12 @@
             </v-col>
 
             <v-col>
-              <v-text-field v-model="sigla" :rules="siglaRules" label="Sigla" required></v-text-field>
+              <v-text-field 
+                v-model="sigla" 
+                label="Sigla" 
+                :rules="siglaRules"
+                required>
+              </v-text-field>
             </v-col>
 
             <v-col>
@@ -36,8 +41,8 @@
             <v-col>
               <v-text-field
                 v-model="designacao"
-                :rules="designacaoRules"
                 label="Designação"
+                :rules="designacaoRules"
                 required
               ></v-text-field>
             </v-col>
@@ -49,13 +54,12 @@
                 item-value="value"
                 v-model="internacional"
                 :items="simNao"
-                label="Internacional"
                 solo
                 dense
               />
             </v-col>
           </v-row>
-        </v-container>
+       
       </v-form>
     </v-col>
 
@@ -134,10 +138,20 @@ export default {
       return res;
     },
 
+    validaIntervencao: function(i){
+      var res = true
+      if(i == "Indefinido"){
+        this.mensagensErro.push("Tem de definir um tipo de intervenção!");
+        res = false;
+      }
+      return res
+    },
+
     newEntidade: function() {
       if (
         this.validaSigla(this.sigla) &&
-        this.validaDesignacao(this.designacao)
+        this.validaDesignacao(this.designacao) &&
+        this.validaIntervencao(this.intervencao)
       ) {
         var entidade = {
           estado: "Nova",
@@ -153,6 +167,7 @@ export default {
         this.designacao = "";
         this.internacional = "Nao";
         this.intervencao = "Indefinido";
+        this.$refs.form.reset()
         this.$emit("newEntidade", entidade);
       } else {
         this.erroValidacao = true;
