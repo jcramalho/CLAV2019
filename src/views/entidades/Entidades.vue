@@ -1,7 +1,13 @@
 <template>
   <div>
     <Loading v-if="!entidadesReady" :message="'entidades'" />
-    <Listagem v-else :lista="entidades" tipo="Entidades" :cabecalho="cabecalhos" :campos="campos" />
+    <Listagem
+      v-else
+      :lista="entidades"
+      tipo="Entidades"
+      :cabecalho="cabecalhos"
+      :campos="campos"
+    />
   </div>
 </template>
 

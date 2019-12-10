@@ -62,18 +62,6 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-icon
-                    @click="distribuiPedido(props.item)"
-                    color="indigo darken-2"
-                    v-on="on"
-                    >person</v-icon
-                  >
-                </template>
-                <span>Distribuir pedido...</span>
-              </v-tooltip>
-
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon
                     @click="analisaPedido(props.item)"
                     color="indigo darken-2"
                     v-on="on"
@@ -152,10 +140,6 @@ export default {
       }
 
       return `${dia}-${mes}-${ano}`;
-    },
-
-    distribuiPedido: function(pedido) {
-      this.$emit("distribuir", pedido);
     },
 
     showPedido: function(pedido) {
