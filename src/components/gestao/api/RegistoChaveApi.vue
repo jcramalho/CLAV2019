@@ -124,7 +124,8 @@ export default {
           // password: this.$data.form.password
         })
           .then(res => {
-            this.text = "Chave API registada com sucesso!";
+            this.text =
+              "Chave API registada com sucesso! A chave API foi enviada para o seu email.";
             this.color = "success";
             this.snackbar = true;
             this.done = true;

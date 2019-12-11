@@ -10,8 +10,11 @@
             <td style="width:20%;">
               <div class="info-label">Entidade Responsável:</div>
             </td>
-            <td style="width:80%;">
+            <td style="width:80%;" v-if="p.objeto.dados.ae.entidade">
               {{ p.objeto.dados.ae.entidade }}
+            </td>
+            <td style="width:80%;" v-else>
+              {{ p.entidade }}
             </td>
           </tr>
           <tr>

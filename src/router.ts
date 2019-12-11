@@ -355,12 +355,6 @@ export default new Router({
       component: () => import("./views/gestao/api/RenovarChaveApi.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
-    {
-      path: "/gestao/api/alteracaoChaveApi",
-      name: "alteracaoChaveApi",
-      component: () => import("./views/gestao/api/AlteracaoChaveApi.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
-    },
     //Administração
     {
       path: "/gestao/administracao",
