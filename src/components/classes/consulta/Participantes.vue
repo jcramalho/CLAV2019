@@ -104,6 +104,8 @@ export default {
                                 break; 
         case "Executor": res = "Executar";
                                 break; 
+        case "Iniciador": res = "Iniciar";
+                                break;
         default: res = "Desconhecido"                   
       }
       return res
