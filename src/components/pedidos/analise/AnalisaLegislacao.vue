@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-for="t in legislacaoInfo" :key="t.campo">
+    <v-row v-for="(t, i) in legislacaoInfo" :key="i">
       <v-col cols="2" v-if="t.conteudo != ''">
         <div class="info-label">{{ t.campo }}</div>
       </v-col>
@@ -13,16 +13,12 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacoes="{ item }">
-            <v-icon color="green" @click="test(item)">check</v-icon>
-            <v-icon color="red" @click="test(item)">delete</v-icon>
+          <template v-slot:item.operacao="{ item }">
+            <v-icon color="red" @click="test(t)">delete</v-icon>
           </template>
 
           <template v-slot:top>
             <v-toolbar flat color="white">
-              <v-toolbar-title>Entidades</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical></v-divider>
-              <v-spacer></v-spacer>
               <v-dialog v-model="dialogEnditades" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn rounded class="indigo accent-4 white--text" v-on="on">
@@ -43,6 +39,8 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <v-spacer />
+              <v-icon color="green" @click="test(t)">check</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
@@ -54,16 +52,12 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacoes="{ item }">
-            <v-icon color="green" @click="test('check')">check</v-icon>
-            <v-icon color="red" @click="test('remove')">delete</v-icon>
+          <template v-slot:item.operacao="{ item }">
+            <v-icon color="red" @click="test(t)">delete</v-icon>
           </template>
 
           <template v-slot:top>
             <v-toolbar flat color="white">
-              <v-toolbar-title>Processos</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical></v-divider>
-              <v-spacer></v-spacer>
               <v-dialog v-model="dialogProcessos" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn rounded class="indigo accent-4 white--text" v-on="on">
@@ -84,6 +78,8 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <v-spacer />
+              <v-icon color="green" @click="test(t)">check</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
@@ -126,8 +122,8 @@ export default {
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
         {
-          text: "Operações",
-          value: "operacoes",
+          text: "Operação",
+          value: "operacao",
           class: "subtitle-1",
           sortable: false,
           width: "10%",
@@ -138,8 +134,8 @@ export default {
         { text: "Código", value: "codigo", class: "subtitle-1" },
         { text: "Título", value: "titulo", class: "subtitle-1" },
         {
-          text: "Operações",
-          value: "operacoes",
+          text: "Operação",
+          value: "operacao",
           class: "subtitle-1",
           sortable: false,
           width: "10%",
@@ -156,6 +152,7 @@ export default {
     },
 
     test(m) {
+      console.log("Dados-tamanho:", this.legislacaoInfo.length - 1);
       console.log("Dados: ", m);
     }
   }
