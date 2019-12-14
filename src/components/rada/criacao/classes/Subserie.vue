@@ -99,7 +99,8 @@ export default {
       justificacaoDF: "",
       notas: "",
       eFilhoDe: "",
-      tipo: "Subsérie"
+      tipo: "Subsérie",
+      children: []
     }
   }),
   methods: {
