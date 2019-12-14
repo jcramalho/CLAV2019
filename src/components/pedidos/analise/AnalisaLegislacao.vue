@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-for="t in legislacaoInfo" :key="t.campo">
+    <v-row v-for="(t, i) in legislacaoInfo" :key="i">
       <v-col cols="2" v-if="t.conteudo != ''">
         <div class="info-label">{{ t.campo }}</div>
       </v-col>
@@ -12,7 +12,38 @@
           :items="t.conteudo"
           class="elevation-1"
           hide-default-footer
-        ></v-data-table>
+        >
+          <template v-slot:item.operacao="{ item }">
+            <v-icon color="red" @click="test(t)">delete</v-icon>
+          </template>
+
+          <template v-slot:top>
+            <v-toolbar flat color="white">
+              <v-dialog v-model="dialogEnditades" max-width="500px">
+                <template v-slot:activator="{ on }">
+                  <v-btn rounded class="indigo accent-4 white--text" v-on="on">
+                    Adicionar em Falta
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Selecione uma Entidade</span>
+                  </v-card-title>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="indigo darken-1" text @click="close"
+                      >Fechar</v-btn
+                    >
+                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-spacer />
+              <v-icon color="green" @click="test(t)">check</v-icon>
+            </v-toolbar>
+          </template>
+        </v-data-table>
 
         <v-data-table
           v-else-if="t.campo == 'Processos'"
@@ -20,9 +51,46 @@
           :items="t.conteudo"
           class="elevation-1"
           hide-default-footer
-        ></v-data-table>
+        >
+          <template v-slot:item.operacao="{ item }">
+            <v-icon color="red" @click="test(t)">delete</v-icon>
+          </template>
 
-        <v-text-field v-else solo readonly :value="t.conteudo" />
+          <template v-slot:top>
+            <v-toolbar flat color="white">
+              <v-dialog v-model="dialogProcessos" max-width="500px">
+                <template v-slot:activator="{ on }">
+                  <v-btn rounded class="indigo accent-4 white--text" v-on="on">
+                    Adicionar em Falta
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Selecione um Processo</span>
+                  </v-card-title>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="indigo darken-1" text @click="close"
+                      >Fechar</v-btn
+                    >
+                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-spacer />
+              <v-icon color="green" @click="test(t)">check</v-icon>
+            </v-toolbar>
+          </template>
+        </v-data-table>
+
+        <v-text-field v-else solo readonly :value="t.conteudo">
+          <template slot="append">
+            <v-icon color="green" @click="test(t)">check</v-icon>
+            <v-icon color="red" @click="test(t)">clear</v-icon>
+            <v-icon @click="test(t)">create</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
     </v-row>
   </div>
@@ -34,6 +102,8 @@ export default {
 
   data() {
     return {
+      dialogEnditades: false,
+      dialogProcessos: false,
       legislacaoInfo: [
         { campo: "Tipo de Diploma", conteudo: this.p.objeto.dados.tipo },
         {
@@ -50,13 +120,41 @@ export default {
       ],
       headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+        {
+          text: "Operação",
+          value: "operacao",
+          class: "subtitle-1",
+          sortable: false,
+          width: "10%",
+          align: "center"
+        }
       ],
       headersProcessos: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" }
+        { text: "Título", value: "titulo", class: "subtitle-1" },
+        {
+          text: "Operação",
+          value: "operacao",
+          class: "subtitle-1",
+          sortable: false,
+          width: "10%",
+          align: "center"
+        }
       ]
     };
+  },
+
+  methods: {
+    close() {
+      this.dialogEnditades = false;
+      this.dialogProcessos = false;
+    },
+
+    test(m) {
+      console.log("Dados-tamanho:", this.legislacaoInfo.length - 1);
+      console.log("Dados: ", m);
+    }
   }
 };
 </script>

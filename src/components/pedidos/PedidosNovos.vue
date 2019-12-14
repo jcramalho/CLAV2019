@@ -18,6 +18,7 @@
         :headers="headers"
         :items="pedidos"
         class="elevation-1"
+        sort-by="data"
         :footer-props="footer_props"
       >
         <template v-slot:no-data>
