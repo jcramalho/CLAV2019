@@ -6,7 +6,13 @@
           <div class="info-label">Título:</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-text-field :rules="[v => !!v || 'Campo obrigatório é obrigatório!']" v-model="RADA.titulo" label="Título" solo clearable></v-text-field>
+          <v-text-field
+            :rules="[v => !!v || 'Campo obrigatório é obrigatório!']"
+            v-model="RADA.titulo"
+            label="Título"
+            solo
+            clearable
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -15,6 +21,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-autocomplete
+            deletable-chips
             :rules="[v => !!v[0] || 'Campo obrigatório é obrigatório!']"
             v-model="RADA.entRes"
             :items="entidades"
@@ -45,7 +52,7 @@ export default {
     },
     next: function() {
       if (this.$refs.form.validate()) {
-        this.$emit('seguinte', 2);
+        this.$emit("seguinte", 2);
       }
     }
   },

@@ -8,9 +8,10 @@
         <v-col xs="12" sm="9">
           <v-text-field
             :rules="[v => !!v || 'Campo obrigatório!']"
-            placeholder="Título da Tabela"
             v-model="TS.titulo"
-            outlined
+            label="Título"
+            solo
+            clearable
           ></v-text-field>
         </v-col>
       </v-row>
@@ -21,7 +22,7 @@
           <SubSerie :classes="TS.classes" />
         </v-col>
       </v-row>
-      <v-row justify="center">
+      <!-- <v-row justify="center">
         <v-col cols="12" xs="12" sm="12">
           <v-data-table
             :headers="headers"
@@ -30,14 +31,39 @@
             @update:items-per-page="TS.classes.length || 1"
           >
             <template v-slot:item.action="{ item }">
-              <!-- <v-icon small class="mr-2" @click="editItem(item)">edit</v-icon> -->
+              
               <v-icon small @click="deleteItem(item)">delete</v-icon>
             </template>
             <template v-slot:no-data>
               <br />
-              <v-alert :value="true" color="orange lighten-2" icon="warning">Sem Classes! É obrigatório adicionar.</v-alert>
+              <v-alert
+                :value="true"
+                color="orange lighten-2"
+                icon="warning"
+              >Sem Classes! É obrigatório adicionar.</v-alert>
             </template>
           </v-data-table>
+        </v-col>
+      </v-row>-->
+      <v-row>
+        <v-col cols="12" xs="12" sm="12">
+          <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
+            <template slot="label" slot-scope="{ item }">
+              <!-- <EditaOrgFunc :titulo="item.titulo" :classes="TS.classes" :itemCodigo="item.codigo"/> -->
+
+              <!-- <v-btn text depressed> -->
+                <b>{{ item.titulo }}</b>
+              <!-- </v-btn> -->
+            </template>
+          </v-treeview>
+          <v-alert
+            class="text-center"
+            v-else
+            :value="true"
+            color="amber accent-3"
+            icon="warning"
+          >Sem Classes! É obrigatório adicionar.</v-alert>
+          <br />
         </v-col>
       </v-row>
     </v-form>
@@ -53,9 +79,10 @@
 import AddOrgFunc from "@/components/rada/criacao/classes/OrganicaFunc";
 import Serie from "@/components/rada/criacao/classes/Serie";
 import SubSerie from "@/components/rada/criacao/classes/Subserie";
+// import EditaOrgFunc from "@/components/rada/alteracao/EditarOrganicaFunc";
 
 export default {
-  props: ['TS'],
+  props: ["TS"],
   components: {
     AddOrgFunc,
     Serie,
@@ -117,7 +144,44 @@ export default {
       }
     ]
   }),
+  computed: {
+    preparaTree() {
+      //Tem que retornar
+      var myTree = [];
+
+      for (var i = 0; i < this.TS.classes.length; i++) {
+        if (
+          this.TS.classes[i].eFilhoDe == null ||
+          this.TS.classes[i].eFilhoDe == ""
+        ) {
+          myTree.push({
+            codigo: this.TS.classes[i].codigo,
+            titulo:
+              this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
+            children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
+          });
+        }
+      }
+      return myTree;
+    }
+  },
   methods: {
+    preparaTreeFilhos: function(pai) {
+      let children = [];
+
+      for (let i = 0; i < this.TS.classes.length; i++) {
+        if (this.TS.classes[i].eFilhoDe == pai) {
+          children.push({
+            codigo: this.TS.classes[i].codigo,
+            titulo:
+              this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
+            children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
+          });
+        }
+      }
+
+      return children;
+    },
     apagar: function() {
       this.$refs.form.reset();
     },
