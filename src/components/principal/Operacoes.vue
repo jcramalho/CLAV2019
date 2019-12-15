@@ -48,7 +48,12 @@ export default {
   props: ["level"],
   methods: {
     go: function(url) {
-      this.$router.push(url);
+      if(url.startsWith('http')){
+        window.location.href = url
+      }
+      else{
+        this.$router.push(url)
+      }
     },
 
     filtraOps: function(operacoes) {
@@ -234,6 +239,17 @@ export default {
             {
               label: "Área de exportação",
               url: "/exportar",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
+        },
+        {
+          entidade: "API de dados",
+          texto: help.API,
+          ops: [
+            {
+              label: "Aceder",
+              url: "http://clav-api.dglab.gov.pt/docs",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             }
           ]

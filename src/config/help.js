@@ -45,6 +45,9 @@ module.exports.help = {
     "de conservação administrativa (PCA) e destino final (DF).",
   TermosIndice:
     "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação.",
+  API:
+    "Acesso à página de documentação da API de dados onde poderá consultar toda a informação sobre a mesma " +
+    "experimentar as várias operações (página gerada a partir da especificação em Swagger).",
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
   AutosEliminacao:
