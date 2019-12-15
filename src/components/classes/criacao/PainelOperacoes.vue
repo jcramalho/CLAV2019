@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-row class="justify-start align-start">
-      <v-col>
+
+      <v-col><!-- Guardar trabalho......................... -->
         <v-btn
           dark
           rounded
@@ -15,14 +16,25 @@
 
       <valida-classe-info-box :c="c" />
 
-      <v-col>
-        <v-btn dark rounded class="ma-2 indigo darken-4" @click="criarClasse">
-          Criar classe
+      <v-col> <!-- Criar classe......................... -->
+        <v-btn
+          v-bind:disabled="c.codigo == ''"
+          dark 
+          rounded 
+          class="ma-2 indigo darken-4" 
+          @click="criarClasse">
+            Criar classe
         </v-btn>
       </v-col>
-      <v-col>
-        <v-btn dark rounded class="ma-2 red darken-4" @click="eliminarClasse">
-          Cancelar criação
+
+      <v-col> <!-- Cancelar criação......................... -->
+        <v-btn 
+          v-bind:disabled="c.codigo == ''"
+          dark 
+          rounded 
+          class="ma-2 red darken-4" 
+          @click="eliminarClasse">
+            Cancelar criação
         </v-btn>
       </v-col>
     </v-row>

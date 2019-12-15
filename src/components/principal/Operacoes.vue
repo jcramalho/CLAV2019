@@ -6,10 +6,16 @@
     <v-card-text>
       <v-expansion-panels>
         <v-expansion-panel v-for="(item, i) in fops" :key="i">
-          <v-expansion-panel-header>
-            {{
-            item.entidade
-            }}
+          <v-expansion-panel-header v-if="item.tooltip">
+            <v-tooltip right>
+              <template v-slot:activator="{ on }">
+                <span v-on="on">{{ item.entidade }}</span>
+              </template>
+              <span>{{ item.tooltip }}</span>
+            </v-tooltip>
+          </v-expansion-panel-header>
+          <v-expansion-panel-header v-else>
+            {{ item.entidade }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card>
@@ -55,6 +61,7 @@ export default {
         if (levels.includes(this.level)) {
           filtered.push({
             entidade: operacoes[i].entidade,
+            tooltip: operacoes[i].tooltip,
             html: operacoes[i].html,
             texto: operacoes[i].texto,
             ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
@@ -77,6 +84,8 @@ export default {
       operacoes: [
         {
           entidade: "Lista Consolidada",
+          html: true,
+          tooltip: "para a classificação e avaliação da informação pública - Catálogo de processos de negócio da AP",
           texto: help.ListaConsolidada,
           ops: [
             {
@@ -85,12 +94,12 @@ export default {
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
-              label: "Criar",
+              label: "Criar Classe",
               url: "/classes/criar",
               level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
-              label: "Alterar",
+              label: "Alterar Classe",
               url: "/classes/editar",
               level: [1, 3, 3.5, 4, 5, 6, 7]
             }
@@ -99,6 +108,7 @@ export default {
         {
           entidade: "Tabelas de Seleção",
           html: true,
+          tooltip: "para a classificação e avaliação da informação",
           texto: help.TabelasSelecao,
           ops: [
             {
@@ -112,7 +122,7 @@ export default {
               level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
-              label: "Importar CSV",
+              label: "Importar Ficheiro",
               url: "/ts/importar/csv",
               level: [1, 3, 3.5, 4, 5, 6, 7]
             }
