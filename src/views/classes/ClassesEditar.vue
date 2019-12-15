@@ -1,5 +1,12 @@
 <template>
-  <v-card class="mx-auto">
+  <v-card class="mx-auto ma-2">
+    <v-toolbar
+      color="indigo darken-4"
+      dark
+    >
+      <v-toolbar-title>Alterar Classe</v-toolbar-title>
+    </v-toolbar>
+    <v-card-title class="title">Selecione a classe que pretende alterar</v-card-title>
     <v-sheet class="pa-3 indigo lighten-2">
       <v-row align="center" no-gutters>
         <v-col xs="12" md="10" sm="10" lg="10" xl="10">
