@@ -229,6 +229,13 @@ export default new Router({
       component: () => import("./views/tipologias/TipologiasConsulta.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
+    // Routes das notícias
+    {
+      path: "/noticias",
+      name: "noticias",
+      component: () => import("./views/noticias/Noticias.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
     // Routes dos pedidos
     {
       path: "/pedidos",

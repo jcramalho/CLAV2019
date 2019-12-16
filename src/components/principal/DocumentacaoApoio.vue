@@ -215,13 +215,22 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
+
+        <DocApoioProdTecCientifica />
+
       </v-expansion-panels>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import DocApoioProdTecCientifica from "@/components/principal/DocApoio-ProdTecCientifica.vue";
+
 export default {
+  components: {
+    DocApoioProdTecCientifica
+  },
+
   data() {
     return {
       panelHeaderColor: "indigo darken-4",
