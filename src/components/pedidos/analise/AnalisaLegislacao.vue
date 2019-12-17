@@ -1,11 +1,14 @@
 <template>
   <div>
     <v-row v-for="(t, i) in legislacaoInfo" :key="i">
+      <!-- Label -->
       <v-col cols="2" v-if="t.conteudo != ''">
         <div class="info-label">{{ t.campo }}</div>
       </v-col>
 
+      <!-- Conteudo -->
       <v-col v-if="t.conteudo != ''">
+        <!-- Se o conteudo for uma lista de entidades -->
         <v-data-table
           v-if="t.campo == 'Entidades'"
           :headers="headersEntidades"
@@ -14,11 +17,11 @@
           hide-default-footer
         >
           <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="test(t)">delete</v-icon>
+            <v-icon color="red" @click="">delete</v-icon>
           </template>
 
           <template v-slot:top>
-            <v-toolbar flat color="white">
+            <v-toolbar flat :color="t.cor">
               <v-dialog v-model="dialogEnditades" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn rounded class="indigo accent-4 white--text" v-on="on">
@@ -40,11 +43,12 @@
                 </v-card>
               </v-dialog>
               <v-spacer />
-              <v-icon color="green" @click="test(t)">check</v-icon>
+              <v-icon color="green" @click="verifica(t)">check</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
 
+        <!-- Se o conteudo for uma lista de processos -->
         <v-data-table
           v-else-if="t.campo == 'Processos'"
           :headers="headersProcessos"
@@ -53,11 +57,11 @@
           hide-default-footer
         >
           <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="test(t)">delete</v-icon>
+            <v-icon color="red" @click="">delete</v-icon>
           </template>
 
           <template v-slot:top>
-            <v-toolbar flat color="white">
+            <v-toolbar flat :color="t.cor">
               <v-dialog v-model="dialogProcessos" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn rounded class="indigo accent-4 white--text" v-on="on">
@@ -79,16 +83,23 @@
                 </v-card>
               </v-dialog>
               <v-spacer />
-              <v-icon color="green" @click="test(t)">check</v-icon>
+              <v-icon color="green" @click="verifica(t)">check</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
 
-        <v-text-field v-else solo readonly :value="t.conteudo">
+        <!-- Se o contudo for texto -->
+        <v-text-field
+          v-else
+          solo
+          readonly
+          :background-color="t.cor"
+          :value="t.conteudo"
+        >
           <template slot="append">
-            <v-icon color="green" @click="test(t)">check</v-icon>
-            <v-icon color="red" @click="test(t)">clear</v-icon>
-            <v-icon @click="test(t)">create</v-icon>
+            <v-icon color="green" @click="verifica(t)">check</v-icon>
+            <v-icon color="red" @click="anula(t)">clear</v-icon>
+            <v-icon @click="">create</v-icon>
           </template>
         </v-text-field>
       </v-col>
@@ -105,18 +116,35 @@ export default {
       dialogEnditades: false,
       dialogProcessos: false,
       legislacaoInfo: [
-        { campo: "Tipo de Diploma", conteudo: this.p.objeto.dados.tipo },
+        {
+          campo: "Tipo de Diploma",
+          conteudo: this.p.objeto.dados.tipo,
+          cor: null
+        },
         {
           campo: "Fonte do Diploma",
-          conteudo: this.p.objeto.dados.diplomaFonte
+          conteudo: this.p.objeto.dados.diplomaFonte,
+          cor: null
         },
-        { campo: "Número do Diploma", conteudo: this.p.objeto.dados.numero },
-        { campo: "Data", conteudo: this.p.objeto.dados.data },
-        { campo: "Sumário", conteudo: this.p.objeto.dados.sumario },
-        { campo: "Link", conteudo: this.p.objeto.dados.link },
-        { campo: "Código", conteudo: this.p.objeto.dados.codigo },
-        { campo: "Entidades", conteudo: this.p.objeto.dados.entidadesSel },
-        { campo: "Processos", conteudo: this.p.objeto.dados.processosSel }
+        {
+          campo: "Número do Diploma",
+          conteudo: this.p.objeto.dados.numero,
+          cor: null
+        },
+        { campo: "Data", conteudo: this.p.objeto.dados.data, cor: null },
+        { campo: "Sumário", conteudo: this.p.objeto.dados.sumario, cor: null },
+        { campo: "Link", conteudo: this.p.objeto.dados.link, cor: null },
+        { campo: "Código", conteudo: this.p.objeto.dados.codigo, cor: null },
+        {
+          campo: "Entidades",
+          conteudo: this.p.objeto.dados.entidadesSel,
+          cor: null
+        },
+        {
+          campo: "Processos",
+          conteudo: this.p.objeto.dados.processosSel,
+          cor: null
+        }
       ],
       headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
@@ -146,14 +174,19 @@ export default {
   },
 
   methods: {
+    verifica(obj) {
+      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
+      this.legislacaoInfo[i].cor = "green lighten-3";
+    },
+
+    anula(obj) {
+      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
+      this.legislacaoInfo[i].cor = "red lighten-3";
+    },
+
     close() {
       this.dialogEnditades = false;
       this.dialogProcessos = false;
-    },
-
-    test(m) {
-      console.log("Dados-tamanho:", this.legislacaoInfo.length - 1);
-      console.log("Dados: ", m);
     }
   }
 };
