@@ -7,20 +7,6 @@
         
         <v-card-text>
             <v-row>
-              <v-col :md="2" >
-                <div class="info-label">Entidade Responsável:</div>
-              </v-col>
-              <v-col>
-                <v-autocomplete
-                  label="Selecione a entidade responsável"
-                  :items="entidades"
-                  v-model="auto.entidade"
-                  solo
-                  dense
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-            <v-row>
               <v-col :md="2">
                 <div class="info-label">Fonte de legitimação:</div>
               </v-col>
@@ -45,6 +31,8 @@
                   v-model="auto.fundo"
                   solo
                   dense
+                  chips
+                  multiple
                 ></v-autocomplete>
               </v-col>
             </v-row>
@@ -76,10 +64,10 @@
           </v-card-text>
         </v-card>
         <div class="mx-2">
-          <v-btn rounded color="warning" @click="guardarTrabalho" :disabled="!auto.entidade || !auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 ma-2">
+          <v-btn rounded color="warning" @click="guardarTrabalho" :disabled="!auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 ma-2">
             Guardar Auto de Eliminação
           </v-btn>
-          <v-btn rounded color="primary" @click="submit" :disabled="!auto.entidade || !auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 ma-2">
+          <v-btn rounded color="primary" @click="submit" :disabled="!auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 ma-2">
             Criar Auto de Eliminação
           </v-btn>
         </div>
@@ -160,9 +148,8 @@ export default {
   },
   data: () => ({
     auto: {
-      entidade: null,
       legislacao: null,
-      fundo: null,
+      fundo: [],
       zonaControlo: []
     },
     erro: null,
@@ -174,9 +161,12 @@ export default {
   }),
   methods: {
     submit: async function() {
-      this.auto.entidade = this.auto.entidade.split(" - ")[1]
       this.auto.legislacao = "Portaria "+this.auto.legislacao.split(" ")[1]
-      this.auto.fundo = this.auto.fundo.split(" - ")[1]
+      var fundo = []
+      for(var f in this.auto.fundo) {
+        fundo.push(f.split(" - ")[1])
+      }
+      this.auto.fundo = fundo
       this.$request("post", "/api/autosEliminacao/", {auto: this.auto})
         .then(r=> {
           this.successDialog = true;

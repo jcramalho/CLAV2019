@@ -51,6 +51,8 @@
             v-model="dono"
             solo
             dense
+            chips
+            multiple
           ></v-autocomplete>
         </v-col>
       </v-row>
@@ -181,7 +183,7 @@ export default {
   methods: {
     defClasse: async function() {
       var c = this.classesCompletas.filter(c => c.codigo == this.classe.split(' - ')[0])
-      if(c[0]) {
+      if(c[0]){
         this.prazo = c[0].pca.valores +" Anos"
         if(c[0].df.valor === "C") {
           this.df = "Conservação"
@@ -253,12 +255,14 @@ export default {
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = "";
-        var dono = "";
+        var dono = [];
         var uiPapel;
         var uiDigital;
         var uiOutros;
         if (this.ni != "Vazio") ni = this.ni;
-        if (this.dono) dono = this.dono.split(" - ")[1];
+        if (this.dono) {
+          dono = this.dono
+        }
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
         if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";
@@ -348,7 +352,7 @@ export default {
         var uiDigital;
         var uiOutros;
         if (this.ni != "Vazio") ni = this.ni;
-        if (this.dono) dono = this.dono.split(" - ")[1];
+        if (this.dono) dono = this.dono;
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
         if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";

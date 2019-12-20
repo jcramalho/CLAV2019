@@ -68,7 +68,7 @@
                 <td style="width:20%;">
                   <div class="info-label">Dono do PN:</div>
                 </td>
-                <td>{{ item.dono }}</td>
+                <td><p v-for="d in item.dono" :key="d">{{ d }}</p></td>
               </tr>
               <tr>
                 <td style="width:20%;">
