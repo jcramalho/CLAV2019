@@ -34,7 +34,7 @@
                       Descritivo da Classe
                       <InfoBox
                         header="Descritivo da Classe"
-                        :text="myhelp.Classe.BlocoContexto"
+                        :text="myhelp.Classe.BlocoDescritivo"
                         helpColor="white"
                         dialogColor="#E0F2F1"
                       />
