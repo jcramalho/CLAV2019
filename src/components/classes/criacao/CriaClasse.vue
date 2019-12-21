@@ -4,7 +4,7 @@
       <!-- HEADER -->
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Nova Classe</v-toolbar-title>
+          <v-toolbar-title class="card-heading">Criar Classe</v-toolbar-title>
         </v-app-bar>
 
         <v-card-text>

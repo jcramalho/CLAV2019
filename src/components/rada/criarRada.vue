@@ -7,7 +7,7 @@
       <br />
       <v-stepper v-model="e1" vertical>
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
           <font size="4">
             <b>Informação Geral</b>
           </font>
@@ -17,7 +17,7 @@
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -27,13 +27,13 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
         </v-stepper-step>
         <v-stepper-content step="3">
-          <TSRada @done="done" @voltar="changeE1" :TS="RADA.tsRada"/>
+          <TSRada @done="done" @voltar="changeE1" :TS="RADA.tsRada" />
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
@@ -97,9 +97,32 @@ export default {
         },
         tsRada: {
           titulo: "",
-          classes: []
+          classes: [
+            // {
+            //   codigo: "01",
+            //   tipo: "N1",
+            //   titulo: "Reforma Agraria",
+            //   eFilhoDe: "",
+            //   descricao: "Descricaao 01"
+            // },
+            // {
+            //   codigo: "01.01",
+            //   tipo: "Série",
+            //   titulo: "Serie da Reforma Agraria",
+            //   eFilhoDe: "01",
+            //   descricao: "asjdbjahs"
+            // },
+            // {
+            //   codigo: "01.01.01",
+            //   tipo: "Subsérie",
+            //   titulo: "Subserie da Serie da Reforma Agraria",
+            //   eFilhoDe: "01.01",
+            //   descricao: "askpdoiapsodi"
+            // }
+          ]
         }
       },
+      userEmail: "",
       entidades: []
     };
   },
@@ -109,20 +132,15 @@ export default {
     },
     done: async function() {
 
-      let userBD = await this.$request(
-        "get",
-        "/api/users/listarToken/" + this.$store.state.token
-      );
-
       let pedidoParams = {
         tipoPedido: "Criação",
         tipoObjeto: "RADA",
         novoObjeto: this.RADA,
         user: {
-          email: userBD.data.email
+          email: this.userEmail
         },
         token: this.$store.state.token,
-        criadoPor: userBD.data.email
+        criadoPor: this.userEmail
       };
 
       let response = await this.$request("post", "/api/pedidos", pedidoParams);
@@ -130,6 +148,16 @@ export default {
       this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
       this.dialogRADACriado = true;
     }
+  },
+  mounted: async function () {
+    let userBD = await this.$request(
+        "get",
+        "/api/users/listarToken/" + this.$store.state.token
+      );
+      this.userEmail = userBD.data.email;
+
+      let userEntidade = await this.$request("get", "/api/entidades/" + userBD.data.entidade)
+      this.RADA.entRes.push(userEntidade.data.sigla + " - " + userEntidade.data.designacao)
   }
 };
 </script>

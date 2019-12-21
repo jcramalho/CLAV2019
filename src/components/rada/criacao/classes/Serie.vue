@@ -105,7 +105,8 @@ export default {
       justificacaoDF: "",
       notas: "",
       eFilhoDe: "",
-      tipo: "Série"
+      tipo: "Série",
+      children: []
     }
   }),
   methods: {

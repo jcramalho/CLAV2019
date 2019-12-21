@@ -174,7 +174,7 @@ export default new Router({
       path: "/rada/criar",
       name: "criarRada",
       component: () => import("./views/rada/criarRada.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [4, 5, 6, 7] }
     },
     // Routes dos Autos de Eliminação
     {
@@ -227,6 +227,13 @@ export default new Router({
       path: "/tipologias/:idTipologia",
       name: "consultaTipologia",
       component: () => import("./views/tipologias/TipologiasConsulta.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    // Routes das notícias
+    {
+      path: "/noticias",
+      name: "noticias",
+      component: () => import("./views/noticias/Noticias.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     // Routes dos pedidos

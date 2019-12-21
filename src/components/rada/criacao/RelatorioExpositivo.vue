@@ -7,6 +7,7 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
+            deletable-chips
             :rules="[v => !!v[0] || 'Campo obrigatório é obrigatório!']"
             v-model="RE.entidadesProd"
             :items="entidades"
@@ -22,6 +23,7 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
+            deletable-chips
             :rules="[v => !!v[0] || 'Campo obrigatório é obrigatório!']"
             v-model="RE.tipologiasProd"
             :items="tipologias"
@@ -99,12 +101,11 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-text-field
-          v-model="RE.dimSuporte.nUI"
-          placeholder="Nº de Unidades de Instalação."
-          :rules="[v => !isNaN(parseInt(v)) || 'Campo Obrigatório! Valor tem que ser inteiro.']"
-          single-line
-          type="number"
-
+            v-model="RE.dimSuporte.nUI"
+            placeholder="Nº de Unidades de Instalação."
+            :rules="[v => !isNaN(parseInt(v)) || 'Campo Obrigatório! Valor tem que ser inteiro.']"
+            single-line
+            type="number"
           />
         </v-col>
       </v-row>
@@ -228,7 +229,6 @@ export default {
       this.$refs.form.reset();
       this.isMultiple = false;
       this.panels = [0, 0, 0];
-      
     },
     next: function() {
       this.isMultiple = true;

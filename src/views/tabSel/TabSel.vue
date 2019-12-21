@@ -2,11 +2,11 @@
   <div>
     <div>
       <Loading v-if="!fontesPGDReady" :message="'fontes de legitimação'" />
-      <ListagemLeg v-else :lista="fontesPGD" tipo="Fontes de Legitimação (PGD)" :cabecalho="cabecalhos" :campos="campos" />
+      <ListagemLeg v-else :lista="fontesPGD" tipo="TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS" :cabecalho="cabecalhos" :campos="campos" />
     </div>
     <div>
       <Loading v-if="!fontesPGDLCReady" :message="'fontes de legitimação'" />
-      <ListagemLeg v-else :lista="fontesPGDLC" tipo="Fontes de Legitimação (PGD/LC)" :cabecalho="cabecalhos" :campos="campos" />
+      <ListagemLeg v-else :lista="fontesPGDLC" tipo="TABELAS DE SELEÇÃO (DERIVADAS DA LC) INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS" :cabecalho="cabecalhos" :campos="campos" />
     </div>
   </div>
 </template>

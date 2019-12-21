@@ -1,5 +1,5 @@
 <template>
-  <div class="ma-1" v-if="auto.zonaControlo[index].agregacoes.length>0">
+  <div class="ma-1">
     <v-row justify="space-between" class="info-label">
       <v-col>Lista de Agregações:</v-col>
       <v-col>

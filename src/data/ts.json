@@ -1,0 +1,48 @@
+{
+    "_id":"5ddda3b84edab51e87ee6fe0",
+    "codigo":"2019-14",
+    "estado":"Submetido",
+    "criadoPor":"jcr@di.uminho.pt",
+    "entidade":"A3ES",
+    "__v":0,
+    "distribuicao":[
+        {
+            "estado":"Submetido",
+            "responsavel":"jcr@di.uminho.pt",
+            "despacho":"Submissão inicial",
+            "_id":"5ddda3b84edab51e87ee6fe1",
+            "data":"2019-11-26T22:14:16.689Z"
+        }],
+    "objeto":
+        {
+            "dados":
+                {
+                    "ts":
+                        {
+                            "processos":
+                                [
+                                    {
+                                        "codigo":"100.10.001",
+                                        "entidades":[{"sigla":"AAN","dono":true,"participante":false}],
+                                        "titulo":"Produção e comunicação de atos legislativos"
+                                    },
+                                    {
+                                        "codigo":"100.10.200",
+                                        "entidades":[
+                                            {"sigla":"ACT","dono":false,"participante":"Assessorar"},
+                                            {"sigla":"AAN","dono":false,"participante":"Apreciar"}],
+                                        "titulo":"Produção e comunicação de atos regulamentares gerais"
+                                    },
+                                    {
+                                        "codigo":"100.10.600",
+                                        "entidades":[{"sigla":"ACT","dono":true,"participante":false}],
+                                        "titulo":"Produção e comunicação de regras institucionais"
+                                    }
+                                ],
+                            "designacao":"teste do jcr"
+                        }
+                },
+            "tipo":"TS Pluriorganizacional web",
+            "acao":"Criação"},
+            "data":"2019-11-26T22:14:16.688Z"
+}

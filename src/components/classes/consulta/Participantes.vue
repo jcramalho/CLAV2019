@@ -95,8 +95,6 @@ export default {
         case "Assessor": res = "Assessorar";
                                 break;
         case "Apreciador": res = "Apreciar";
-                                break;
-        case "Apreciador": res = "Apreciar";
                                 break; 
         case "Comunicador": res = "Comunicar";
                                 break; 
@@ -104,6 +102,8 @@ export default {
                                 break; 
         case "Executor": res = "Executar";
                                 break; 
+        case "Iniciador": res = "Iniciar";
+                                break;
         default: res = "Desconhecido"                   
       }
       return res

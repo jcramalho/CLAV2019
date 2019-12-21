@@ -1,8 +1,13 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da VALIDAÇÂO -->
-    <v-btn dark rounded class="indigo darken-4" @click="validarClasse">
-      Validar classe
+    <v-btn 
+      v-bind:disabled="c.codigo == ''"
+      dark 
+      rounded 
+      class="indigo darken-4" 
+      @click="validarClasse">
+        Validar classe
     </v-btn>
 
     <!-- Erros na Validação ....................... -->

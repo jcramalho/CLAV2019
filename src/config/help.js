@@ -1,16 +1,39 @@
 module.exports.help = {
   ListaConsolidada:
-    "Estrutura hierárquica de classes que representam as funções (classes de 1º nível), " +
-    "as subfunções (2º nível) e os processos de negócio (3º e 4º nível) executados pela" +
-    " Administração Pública. \nA Lista Consolidada é o referencial disponibilizado pela " +
-    "Direção-Geral do Livro, dos Arquivos e das Bibliotecas (DGLAB) para a produção de " +
-    "planos de classificação e de Tabelas de Seleção. ",
+    "<p>A \"Lista Consolidada para a classificação e avaliação da informação pública\" é o referencial disponibilizado " +
+    "pela Direção-Geral do Livro, dos Arquivos e das Bibliotecas para servir de base à elaboração de instrumentos de gestão " +
+    "da informação, nomeadamente planos de classificação e tabelas de seleção. " +
+    "Este referencial apresenta uma estrutura hierárquica de classes que representam as funções e atividades executadas pela " +
+    "Administração Pública. " +
+    "Os processos de negócio são representados como classes de 3º nível, enquadrados em funções (classes de 1º nível) e  " +
+    "subfunções (2º nível).  " +
+    "As classes são constituídas por elementos informativos, agrupados por zonas, que as identificam e descrevem. Nas " +
+    "classes de 3º e 4º nível (subdivisão do processo de negócio para efeitos de avaliação), estes elementos destinam-se " +
+    "também a contextualizar e avaliar a informação.</p>" +
+    "<p>Para aceder ao catálogo dos processos de negócio selecione a opção CONSULTAR.</p>" +
+    "<p>Para propor uma nova classe para a Lista Consolidada selecione a opção <b>CRIAR CLASSE</b>. " +
+    "Deve estar <b>registado na CLAV</b> para aceder a esta funcionalidade. Consulte as “Instruções para criação assistida de " +
+    "classes na LC em <b>Formulários e instruções para a CLAV</b>.</p>" +
+    "<p>Para <b>propor uma  alteração</b> a uma classe da Lista Consolidada selecione a opção <b>ALTERAR CLASSE</b>. " +
+    "Deve estar <b>registado na CLAV</b> para aceder a esta funcionalidade.</p>",
   TabelasSelecao:
-    "Encontram-se disponíveis duas formas para a submissão de tabelas de seleção através da CLAV, " +
-    "a criação assistida e a submissão de ficheiro previamente preenchido." +
-    "<ul><li>Para a criação assistida, selecione a opção <b>CRIAR</b>;</li>" +
-    "<li>Para a submissão de ficheiro selecione a opção <b>IMPORTAR CSV</b>.</li></ul>" +
-    "Os formulários encontram-se disponíveis na Plataforma em <b>Documentação técnica de apoio > Formulários</b>.",
+    "<p>Uma tabela de seleção é um instrumento utilizado pelas entidades para a gestão da informação. " +
+    "Permite organizar e estruturar a informação desde o momento da sua produção, através da atribuição de um código de " +
+    "classificação. A esse código de classificação estão associadas as decisões de avaliação, i.e., o período de tempo que " +
+    "deve manter a informação (prazo de conservação administrativa), o destino a aplicar findo esse prazo (conservação " +
+    "permanente ou eliminação) e a responsabilização pela guarda da informação de conservação permanente.</p>" +
+    "<p>As tabelas de seleção podem ser organizacionais (de uma entidade ou de uma tipologia de entidades) ou " +
+    "pluriorganizacionais (de um conjunto de entidades, por exemplo de âmbito ministerial). " +
+    "Constituem as fontes de legitimação para a eliminação da informação pública.</p>" +
+    "<p>Para aceder ao catálogo de tabelas de seleção aprovadas selecione a opção CONSULTAR. "+
+    "As tabelas de seleção encontram-se organizadas por fonte de legitimação: TS publicadas em Portaria de Gestão de " +
+    "Documentos (PGD)  ou proveniente de Relatório de Avaliação de Documentação Acumulada (RADA).</p>" +
+    "<p>Para propor uma tabela de seleção derivada da Lista Consolidada selecione uma das opções: " +
+    "<ul><li>CRIAR, para a criação assistida online;</li>" +
+    "<li>IMPORTAR FICHEIRO, para submeter uma tabela criada offline, a partir de um ficheiro pre-preenchido " +
+    "disponibilizado no separador Documentação técnica de apoio, em Formulários e instruções.</li></ul></p>" +
+    "<p><b>Deve estar registado na CLAV para aceder a estas funcionalidades.</b></p>" +
+    "<p><b>Consulte as instruções em Formulários e instruções</b></p>",
   Entidades:
     "Entidades públicas que intervêm nos processos de negócio (classes de 3º nível) da " +
     "Lista Consolidada. Podem integrar uma ou mais tipologias de entidades.",
@@ -22,6 +45,9 @@ module.exports.help = {
     "de conservação administrativa (PCA) e destino final (DF).",
   TermosIndice:
     "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação.",
+  API:
+    "Acesso à página de documentação da API de dados onde poderá consultar toda a informação sobre a mesma " +
+    "experimentar as várias operações (página gerada a partir da especificação em Swagger).",
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
   AutosEliminacao:
