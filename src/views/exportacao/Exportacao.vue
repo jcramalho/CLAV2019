@@ -109,356 +109,264 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const lhost = require("@/config/global").host;
 
 export default {
-  data: () => ({
-    classes: [],
-    entidades: [],
-    tipologias: [],
-    legislacoes: [],
-    exportacoesDisponiveis: [
-      { text: "Classes", value: { filename: "classes", path: "classes" } },
-      { text: "Classe", value: { filename: "classe", path: "classes/c" } },
-      {
-        text: "Entidades",
-        value: { filename: "entidades", path: "entidades" }
-      },
-      {
-        text: "Entidade",
-        value: { filename: "entidade", path: "entidades/ent_" }
-      },
-      {
-        text: "Tipologias",
-        value: { filename: "tipologias", path: "tipologias" }
-      },
-      {
-        text: "Tipologia",
-        value: { filename: "tipologia", path: "tipologias/tip_" }
-      },
-      {
-        text: "Legislações",
-        value: { filename: "legislacoes", path: "legislacao" }
-      },
-      {
-        text: "Legislação",
-        value: { filename: "legislacao", path: "legislacao/leg_" }
-      },
-      {
-        text: "Ontologia",
-        value: { filename: "ontologia", path: "ontologia" }
-      }
-    ],
-    tipo: "",
-    queriesSel: {},
-    id: "",
-    queryStrings: {
-      classes: {
-        formato: {
-          label: "Formato",
-          desc:
-            "Formato da estrutura de saída. Pode ser em árvore ou em lista. Quanto nenhum parâmetro é definido (formato, tipo e nivel) o formato de saída em arvore é o predefinido.",
-          enum: ["Por definir", "arvore", "lista"]
+  data: () => {
+    let fs = {
+      label: "Formato de saída",
+      desc: "Formato de saída do resultado",
+      enum: [
+        "Por definir",
+        "application/json",
+        "json",
+        "application/xml",
+        "xml",
+        "text/csv",
+        "csv",
+        "excel/csv"
+      ]
+    };
+    return {
+      classes: [],
+      entidades: [],
+      tipologias: [],
+      legislacoes: [],
+      exportacoesDisponiveis: [
+        { text: "Classes", value: { filename: "classes", path: "classes" } },
+        { text: "Classe", value: { filename: "classe", path: "classes/c" } },
+        {
+          text: "Entidades",
+          value: { filename: "entidades", path: "entidades" }
         },
-        tipo: {
-          label: "Tipo",
-          desc:
-            "Que tipo de processos são devolvidos numa lista. Podem ser comuns ou especificos.",
-          enum: ["Por definir", "comum", "especifico"]
+        {
+          text: "Entidade",
+          value: { filename: "entidade", path: "entidades/ent_" }
         },
-        nivel: {
-          label: "Nível",
-          desc:
-            "O nível dos processos devolvidos numa lista. Podem ser de 1º, 2º, 3º e 4º nível.",
-          enum: ["Por definir", "1", "2", "3", "4"]
+        {
+          text: "Tipologias",
+          value: { filename: "tipologias", path: "tipologias" }
         },
-        ents: {
-          label: "Entidades",
-          desc:
-            "Obtém os processos especificos destas entidades. Este parâmetro só deve ser usado quando o tipo é especifico. Exemplo de input: 'ent_AAN,ent_SEF'",
-          enum: []
+        {
+          text: "Tipologia",
+          value: { filename: "tipologia", path: "tipologias/tip_" }
         },
-        tips: {
-          label: "Tipologias",
-          desc:
-            "Obtém os processos especificos destas tipologias. Este parâmetro só deve ser usado quando o tipo é especifico. Exemplo de input: 'tip_AAC,tip_AF'",
-          enum: []
+        {
+          text: "Legislações",
+          value: { filename: "legislacoes", path: "legislacao" }
         },
-        info: {
-          label:
-            "Informação completa? Ou pretende apenas o esqueleto para criar uma TS?",
-          desc:
-            "Pretende toda a informação das classes? Caso seja um valor que não 'completa' e 'esqueleto' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve num formato pronto a ser preenchido para a criação de uma Tabela de Seleção.",
-          enum: ["Por definir", "completa", "esqueleto"]
+        {
+          text: "Legislação",
+          value: { filename: "legislacao", path: "legislacao/leg_" }
         },
-        fs: {
-          label: "Formato de saída",
-          desc: "Formato de saída do resultado",
-          enum: [
-            "Por definir",
-            "application/json",
-            "json",
-            "application/xml",
-            "xml",
-            "text/csv",
-            "csv",
-            "excel/csv"
-          ]
+        {
+          text: "Ontologia",
+          value: { filename: "ontologia", path: "ontologia" }
+        }
+      ],
+      tipo: "",
+      queriesSel: {},
+      id: "",
+      queryStrings: {
+        classes: {
+          estrutura: {
+            label: "Estrutura",
+            desc:
+              "Estrutura. Pode ser em árvore ou em lista. Quanto nenhum parâmetro é definido (formato, tipo e nivel) o formato de saída em arvore é o predefinido.",
+            enum: ["Por definir", "arvore", "lista"]
+          },
+          tipo: {
+            label: "Tipo",
+            desc:
+              "Devolve as classes de nível 3 (processos) filtrando pelo tipo de processo (comuns ou especificos).",
+            enum: ["Por definir", "comum", "especifico"]
+          },
+          nivel: {
+            label: "Nível",
+            desc:
+              "O nível dos processos devolvidos numa lista. Podem ser de 1º, 2º, 3º e 4º nível.",
+            enum: ["Por definir", "1", "2", "3", "4"]
+          },
+          ents: {
+            label: "Entidades",
+            desc:
+              "Obtém os processos especificos destas entidades. Este parâmetro só deve ser usado quando o tipo é especifico. Exemplo de input: 'ent_AAN,ent_SEF'",
+            enum: []
+          },
+          tips: {
+            label: "Tipologias",
+            desc:
+              "Obtém os processos especificos destas tipologias. Este parâmetro só deve ser usado quando o tipo é especifico. Exemplo de input: 'tip_AAC,tip_AF'",
+            enum: []
+          },
+          info: {
+            label:
+              "Informação completa? Ou pretende apenas o esqueleto para criar uma TS?",
+            desc:
+              "Caso seja um valor que não 'completa' e 'esqueleto' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve numa estrutura pronta a ser preenchida para a criação de uma Tabela de Seleção, devolve os campos: código, título, descrição, PCA, DF dono (a ser preenchido pelo utilizador) e participante (a ser preenchido pelo utilizador).",
+            enum: ["Por definir", "completa", "esqueleto"]
+          },
+          fs: fs
+        },
+        entidades: {
+          processos: {
+            label: "Processos",
+            desc:
+              "No caso de ser escolhido 'com' é listado as entidades com PNs associados. Já no caso de ser escolhido 'sem' é listado as entidades sem PNs associados. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
+            enum: ["Por definir", "com", "sem"]
+          },
+          sigla: {
+            label: "Filtrar por sigla",
+            desc:
+              "Permite filtrar as entidades que contém a sigla igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: AR)",
+            enum: []
+          },
+          designacao: {
+            label: "Filtrar por designação",
+            desc:
+              "Permite filtrar as entidades que contém a designacao igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: Assembleia da República)",
+            enum: []
+          },
+          internacional: {
+            label: "Filtrar pelo campo internacional",
+            desc:
+              "Permite filtrar as entidades que contém internacional igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
+            enum: ["Sim", "Não"]
+          },
+          sioe: {
+            label: "Filtrar por SIOE",
+            desc:
+              "Permite filtrar as entidades que contém sioe igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: 875780390)",
+            enum: []
+          },
+          estado: {
+            label: "Filtrar por estado",
+            desc:
+              "Permite filtrar as entidades que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
+            enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
+          },
+          info: {
+            label: "Informação completa?",
+            desc:
+              "Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada entidade. Caso o valor seja 'completa' devolve toda a informação de cada entidade.",
+            enum: ["Por definir", "completa"]
+          },
+          fs: fs
+        },
+        tipologias: {
+          designacao: {
+            label: "Filtrar por designação",
+            desc:
+              "Permite filtrar as tipologias que contém a designacao igual a este valor. (ex: Autoridades Administrativas Civis)",
+            enum: []
+          },
+          estado: {
+            label: "Filtrar por estado",
+            desc:
+              "Filtra as tipologias pelo estado das mesmas. O estado pode ser Ativa, Inativa ou Harmonização.",
+            enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
+          },
+          info: {
+            label: "Informação completa?",
+            desc:
+              "Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada tipologia. Caso o valor seja 'completa' devolve toda a informação de cada tipologia.",
+            enum: ["Por definir", "completa"]
+          },
+          fs: fs
+        },
+        legislacoes: {
+          processos: {
+            label: "Processos",
+            desc:
+              "No caso de ser escolhido 'com' é listado os documentos legislativos com PNs associados. Já no caso de ser escolhido 'sem' é listado os documentos legislativos sem PNs associados. Só funciona caso o parâmetro estado não seja definido.",
+            enum: ["Por definir", "com", "sem"]
+          },
+          estado: {
+            label: "Filtrar por estado",
+            desc:
+              "Os documentos legislativos tem dois estados possíveis, ativo ('A') ou revogado ('R'). Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
+            enum: ["Por definir", "A", "R"]
+          },
+          fonte: {
+            label: "Filtrar por fonte",
+            desc:
+              "No caso de ser definido lista os documentos legislativos de acordo com a fonte especificada. Só funciona caso os parâmetros estado e processos não sejam definidos.",
+            enum: ["Por definir", "PGD", "PGD/LC", "RADA"]
+          },
+          info: {
+            label: "Informação completa?",
+            desc:
+              "Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada documento legislativo. Caso o valor seja 'completa' devolve toda a informação de cada documento legislativo.",
+            enum: ["Por definir", "completa"]
+          },
+          fs: fs
+        },
+        classe: {
+          tipo: {
+            label: "Tipo",
+            desc:
+              "Caso o valor deste campo seja 'subarvore' é devolvida a subarvore com raiz na classe com id igual ao do campo 'id'",
+            enum: ["Por definir", "subarvore"]
+          },
+          fs: fs
+        },
+        entidade: {
+          info: {
+            label: "Informação completa?",
+            desc:
+              "Caso seja um valor que não 'completa' devolve apenas parte da informação da entidade. Caso o valor seja 'completa' devolve toda a informação da entidade.",
+            enum: ["Por definir", "completa"]
+          },
+          fs: fs
+        },
+        tipologia: {
+          info: {
+            label: "Informação completa?",
+            desc:
+              "Caso seja um valor que não 'completa' devolve apenas parte da informação da tipologia. Caso o valor seja 'completa' devolve toda a informação da tipologia.",
+            enum: ["Por definir", "completa"]
+          },
+          fs: fs
+        },
+        legislacao: {
+          info: {
+            label: "Informação completa?",
+            desc:
+              "Caso seja um valor que não 'completa' devolve apenas parte da informação do documento legislativo. Caso o valor seja 'completa' devolve toda a informação do documento legislativo.",
+            enum: ["Por definir", "completa"]
+          },
+          fs: fs
+        },
+        ontologia: {
+          inferencia: {
+            label: "Ontologia com dados inferidos?",
+            desc:
+              "Caso 'true' devolve todos os triplos incluindo os inferidos. Caso 'false' não inclui os inferidos.",
+            enum: [
+              { text: "Por definir", value: "" },
+              { text: "Não", value: "false" },
+              { text: "Sim", value: "true" }
+            ]
+          },
+          fs: {
+            label: "Formato de saída do ficheiro",
+            desc:
+              "Formato em que é devolvido os triplos. Pode ser um dos seguintes valores: turtle (text/turtle), json-ld (application/ld+json) ou rdf-xml (application/rdf+xml). No caso de não ser passado nenhum formato ou o que é colocado não é suportado é devolvido turtle. O formato também pode ser indicado na header 'Accept' sofrendo das mesmas restrições que se for indicado por query. Caso seja definido das duas formas a fornecida pela query string é a que é usada.",
+            enum: [
+              "Por definir",
+              "turtle",
+              "text/turtle",
+              "json-ld",
+              "application/ld+json",
+              "rdf-xml",
+              "application/rdf+xml"
+            ]
+          }
         }
       },
-      entidades: {
-        processos: {
-          label: "Processos",
-          desc:
-            "No caso de ser escolhido 'com' é listado as entidades com PNs associados. Já no caso de ser escolhido 'sem' é listado as entidades sem PNs associados. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
-          enum: ["Por definir", "com", "sem"]
-        },
-        sigla: {
-          label: "Filtrar por sigla",
-          desc:
-            "Permite filtrar as entidades que contém a sigla igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: AR)",
-          enum: []
-        },
-        designacao: {
-          label: "Filtrar por designação",
-          desc:
-            "Permite filtrar as entidades que contém a designacao igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: Assembleia     da República)",
-          enum: []
-        },
-        internacional: {
-          label: "Filtrar pelo campo internacional",
-          desc:
-            "Permite filtrar as entidades que contém internacional igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
-          enum: ["Sim", "Não"]
-        },
-        sioe: {
-          label: "Filtrar por SIOE",
-          desc:
-            "Permite filtrar as entidades que contém sioe igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: 875780390)",
-          enum: []
-        },
-        estado: {
-          label: "Filtrar por estado",
-          desc:
-            "Permite filtrar as entidades que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
-          enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
-        },
-        info: {
-          label: "Informação completa?",
-          desc:
-            "Pretende toda a informação das entidades? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada entidade. Caso o valor seja 'completa' devolve toda a informação de cada entidade.",
-          enum: ["Por definir", "completa"]
-        },
-        fs: {
-          label: "Formato de saída",
-          desc:
-            "Formato de saída do resultado. O resultado no formato CSV possui toda a informação das entidades",
-          enum: [
-            "Por definir",
-            "application/json",
-            "json",
-            "application/xml",
-            "xml",
-            "text/csv",
-            "csv",
-            "excel/csv"
-          ]
-        }
-      },
-      tipologias: {
-        designacao: {
-          label: "Filtrar por designação",
-          desc:
-            "Permite filtrar as tipologias que contém a designacao igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: Assembleia     da República)",
-          enum: []
-        },
-        estado: {
-          label: "Filtrar por estado",
-          desc:
-            "Permite filtrar as tipologias que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
-          enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
-        },
-        info: {
-          label: "Informação completa?",
-          desc:
-            "Pretende toda a informação das tipologias? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada tipologia. Caso o valor seja 'completa' devolve toda a informação de cada tipologia.",
-          enum: ["Por definir", "completa"]
-        },
-        fs: {
-          label: "Formato de saída",
-          desc:
-            "Formato de saída do resultado. O resultado no formato CSV possui toda a informação das tipologias",
-          enum: [
-            "Por definir",
-            "application/json",
-            "json",
-            "application/xml",
-            "xml",
-            "text/csv",
-            "csv",
-            "excel/csv"
-          ]
-        }
-      },
-      legislacoes: {
-        processos: {
-          label: "Processos",
-          desc:
-            "No caso de ser escolhido 'com' é listado os documentos legislativos com PNs associados. Já no caso de ser escolhido 'sem' é listado os documentos legislativos sem PNs associados. Só funciona caso o parâmetro estado não seja definido.",
-          enum: ["Por definir", "com", "sem"]
-        },
-        estado: {
-          label: "Filtrar por estado",
-          desc:
-            "No caso de ser definido lista os documentos legislativos no estado A. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
-          enum: ["Por definir", "A"]
-        },
-        fonte: {
-          label: "Filtrar por fonte",
-          desc:
-            "No caso de ser definido lista os documentos legislativos de acordo com a fonte especificada. Só funciona caso os parâmetros estado e processos não sejam definidos.",
-          enum: ["Por definir", "PGD", "PGD/LC", "RADA"]
-        },
-        info: {
-          label: "Informação completa?",
-          desc:
-            "Pretende toda a informação dos documentos legislativos? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada documento legislativo. Caso o valor seja 'completa' devolve toda a informação de cada documento legislativo.",
-          enum: ["Por definir", "completa"]
-        },
-        fs: {
-          label: "Formato de saída",
-          desc: "Formato de saída do resultado",
-          enum: [
-            "Por definir",
-            "application/json",
-            "json",
-            "application/xml",
-            "xml",
-            "text/csv",
-            "csv",
-            "excel/csv"
-          ]
-        }
-      },
-      classe: {
-        tipo: {
-          label: "Tipo",
-          desc:
-            "Caso o valor deste campo seja 'subarvore' é devolvida a subarvore com raiz na classe com id igual ao do campo 'id'",
-          enum: ["Por definir", "subarvore"]
-        },
-        fs: {
-          label: "Formato de saída",
-          desc: "Formato de saída do resultado",
-          enum: [
-            "Por definir",
-            "application/json",
-            "json",
-            "application/xml",
-            "xml",
-            "text/csv",
-            "csv",
-            "excel/csv"
-          ]
-        }
-      },
-      entidade: {
-        info: {
-          label: "Informação completa?",
-          desc:
-            "Pretende toda a informação da entidade? Caso seja um valor que não 'completa' devolve apenas parte da informação da entidade. Caso o valor seja 'completa' devolve toda a informação da entidade.",
-          enum: ["Por definir", "completa"]
-        },
-        fs: {
-          label: "Formato de saída",
-          desc:
-            "Formato de saída do resultado. O resultado no formato CSV possui toda a informação da entidade",
-          enum: [
-            "Por definir",
-            "application/json",
-            "json",
-            "application/xml",
-            "xml",
-            "text/csv",
-            "csv",
-            "excel/csv"
-          ]
-        }
-      },
-      tipologia: {
-        info: {
-          label: "Informação completa?",
-          desc:
-            "Pretende toda a informação da tipologia? Caso seja um valor que não 'completa' devolve apenas parte da informação da tipologia. Caso o valor seja 'completa' devolve toda a informação da tipologia.",
-          enum: ["Por definir", "completa"]
-        },
-        fs: {
-          label: "Formato de saída",
-          desc:
-            "Formato de saída do resultado. O resultado no formato CSV possui toda a informação da tipologia",
-          enum: [
-            "Por definir",
-            "application/json",
-            "json",
-            "application/xml",
-            "xml",
-            "text/csv",
-            "csv",
-            "excel/csv"
-          ]
-        }
-      },
-      legislacao: {
-        info: {
-          label: "Informação completa?",
-          desc:
-            "Pretende toda a informação do documento legislativo? Caso seja um valor que não 'completa' devolve apenas parte da informação do documento legislativo. Caso o valor seja 'completa' devolve toda a informação do documento legislativo.",
-          enum: ["Por definir", "completa"]
-        },
-        fs: {
-          label: "Formato de saída",
-          desc: "Formato de saída do resultado",
-          enum: [
-            "Por definir",
-            "application/json",
-            "json",
-            "application/xml",
-            "xml",
-            "text/csv",
-            "csv",
-            "excel/csv"
-          ]
-        }
-      },
-      ontologia: {
-        inferir: {
-          label: "Ontologia com dados inferidos?",
-          desc:
-            "Caso 'true' devolve todos os triplos incluindo os inferidos. Caso 'false' não inclui os inferidos.",
-          enum: [
-            { text: "Por definir", value: "" },
-            { text: "Não", value: "false" },
-            { text: "Sim", value: "true" }
-          ]
-        },
-        fs: {
-          label: "Formato de saída do ficheiro",
-          desc:
-            "Formato em que é devolvido os triplos. Pode ser um dos seguintes valores: turtle (text/turtle), json-ld (application/ld+json) ou rdf-xml (application/rdf+xml). No caso de não ser passado nenhum formato ou o que é colocado não é suportado é devolvido turtle. O formato também pode ser indicado na header 'Accept' sofrendo das mesmas restrições que se for indicado por query. Caso seja definido das duas formas a fornecida pela query string é a que é usada.",
-          enum: [
-            "Por definir",
-            "turtle",
-            "text/turtle",
-            "json-ld",
-            "application/ld+json",
-            "rdf-xml",
-            "application/rdf+xml"
-          ]
-        }
-      }
-    },
-    regraTipo: [v => !!v || "Tipo de dados a exportar é obrigatório."],
-    regraId: [v => !!v || "Identificador é obrigatório."],
-    text: "",
-    alertType: "success"
-  }),
+      regraTipo: [v => !!v || "Tipo de dados a exportar é obrigatório."],
+      regraId: [v => !!v || "Identificador é obrigatório."],
+      text: "",
+      alertType: "success"
+    };
+  },
 
   components: {
     InfoBox
