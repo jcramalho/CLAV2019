@@ -241,6 +241,7 @@
 </template>
 
 <script>
+import nanoid from "nanoid";
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 
 export default {
@@ -490,10 +491,8 @@ export default {
               "/api/users/" + this.$store.state.token + "/token"
             );
 
-            let randID = await this.$request("get", "/api/utils/id");
-
             let dataObj = this.l;
-            dataObj.codigo = "leg_" + randID.data;
+            dataObj.codigo = "leg_" + nanoid();
 
             let pedidoParams = {
               tipoPedido: this.acao,

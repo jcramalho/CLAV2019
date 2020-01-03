@@ -128,7 +128,7 @@ export default {
         .catch(error => alert(error));
     },
     async getNumeroChavesApi() {
-      await this.$request("get", "/api/chaves/listagem")
+      await this.$request("get", "/api/chaves/")
         .then(res => {
           this.numeroChavesApi = res.data.length;
           this.stats.push({

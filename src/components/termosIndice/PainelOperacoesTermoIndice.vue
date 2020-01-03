@@ -145,6 +145,7 @@
 </template>
 
 <script>
+import nanoid from "nanoid";
 import ValidarTIInfoBox from "@/components/termosIndice/ValidarTermoIndiceInfoBox";
 
 export default {
@@ -235,10 +236,8 @@ export default {
               "/api/users/" + this.$store.state.token + "/token"
             );
 
-            let randID = await this.$request("get", "/api/utils/id");
-
             let dataObj = this.ti;
-            dataObj.codigo = "ti_" + randID.data;
+            dataObj.codigo = "ti_" + nanoid();
 
             let pedidoParams = {
               tipoPedido: "Criação",
