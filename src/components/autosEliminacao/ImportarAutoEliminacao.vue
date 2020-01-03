@@ -183,7 +183,7 @@ export default {
     submit: async function() {
       conversor(this.file, this.tipo)
         .then(res => {
-          this.$request("post", "/api/autosEliminacao/" + this.tipo, { auto: res.auto })
+          this.$request("post", "/api/autosEliminacao?tipo=" + this.tipo, { auto: res.auto })
             .then(r => {
               this.successDialog = true;
               this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(

@@ -389,7 +389,7 @@ export default {
   methods: {
     async getChavesApi() {
       try {
-        var response = await this.$request("get", "/api/chaves/listagem");
+        var response = await this.$request("get", "/api/chaves");
         this.chaves = response.data;
       } catch (e) {
         return e;
@@ -413,7 +413,7 @@ export default {
       this.dialog = true;
     },
     desativar(id) {
-      this.$request("put", "/api/chaves/desativar/" + id)
+      this.$request("put", "/api/chaves/"+id+"/desativar")
         .then(res => {
           this.text = "Chave API desativada com sucesso!";
           this.color = "success";
@@ -429,7 +429,7 @@ export default {
         });
     },
     ativar(id) {
-      this.$request("put", "/api/chaves/ativar/" + id)
+      this.$request("put", "/api/chaves/"+id+"/ativar")
         .then(res => {
           this.text = "Chave API ativada com sucesso!";
           this.color = "success";
@@ -445,7 +445,7 @@ export default {
         });
     },
     eliminar(id) {
-      this.$request("delete", "/api/chaves/eliminar/" + id)
+      this.$request("delete", "/api/chaves/" + id)
         .then(res => {
           this.text = "Chave API eliminada com sucesso!";
           this.color = "success";
@@ -461,7 +461,11 @@ export default {
         });
     },
     renovar(email) {
-      this.$request("put", "/api/chaves/renovar", { email: email })
+      this.$request("put", "/api/chaves/renovar?email=" + email, {
+          headers: {
+            'Content-length': 0
+          }
+        })
         .then(res => {
           this.text = "Chave API renovada com sucesso!";
           this.color = "success";
@@ -479,7 +483,7 @@ export default {
     },
     guardar() {
       if (this.$refs.form.validate()) {
-        this.$request("put", "/api/chaves/atualizar/" + this.editedItem.id, {
+        this.$request("put", "/api/chaves/"+this.editedItem.id+"/atualizar/", {
           name: this.editedItem.name,
           contactInfo: this.editedItem.contactInfo,
           entity: this.editedItem.entity

@@ -365,7 +365,7 @@ export default {
       if (this.$refs.form2.validate()) {
         this.$request(
           "put",
-          "/api/users/alterarPassword/" + this.alterarPasswordId,
+          "/api/users/"+this.alterarPasswordId+"password/",
           {
             password: this.password
           }
@@ -391,7 +391,7 @@ export default {
       }
     },
     desativar(id) {
-      this.$request("put", "/api/users/desativar/" + id)
+      this.$request("put", "/api/users/"+id+"/desativar")
         .then(res => {
           this.text = res.data;
           this.color = "success";
@@ -408,7 +408,7 @@ export default {
         });
     },
     eliminar(id) {
-      this.$request("delete", "/api/users/eliminar/" + id)
+      this.$request("delete", "/api/users/" + id)
         .then(res => {
           this.text = res.data;
           this.color = "success";
@@ -458,7 +458,7 @@ export default {
         }
         this.$request(
           "put",
-          "/api/users/atualizarMultiplos/" + this.editedItem.id,
+          "/api/users/" + this.editedItem.id,
           {
             nome: this.editedItem.name,
             email: this.editedItem.email,

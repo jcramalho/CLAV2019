@@ -117,7 +117,7 @@ export default {
     },
     registarChaveApi() {
       if (this.$refs.form.validate()) {
-        this.$request("post", "/api/chaves/registar", {
+        this.$request("post", "/api/chaves", {
           name: this.$data.form.name,
           email: this.$data.form.email,
           entidade: this.$data.form.entidade

@@ -173,7 +173,7 @@ export default {
         } else {
           var userBD = await this.$request(
             "get",
-            "/api/users/listarToken/" + this.$store.state.token
+            "/api/users/" + this.$store.state.token + "/token"
           );
           var pendenteParams = {
             numInterv: 1,
@@ -232,7 +232,7 @@ export default {
           if (erros == 0) {
             let userBD = await this.$request(
               "get",
-              "/api/users/listarToken/" + this.$store.state.token
+              "/api/users/" + this.$store.state.token + "/token"
             );
 
             let randID = await this.$request("get", "/api/utils/id");

@@ -96,8 +96,10 @@ export default {
   methods: {
     renovar() {
       if (this.$refs.form.validate()) {
-        this.$request("put", "/api/chaves/renovar", {
-          email: this.$data.form.email
+        this.$request("put", "/api/chaves/renovar?email=" + this.$data.form.email, {
+          headers: {
+            'Content-length': 0
+          }
         })
           .then(res => {
             this.text = "Chave API renovada com sucesso!";

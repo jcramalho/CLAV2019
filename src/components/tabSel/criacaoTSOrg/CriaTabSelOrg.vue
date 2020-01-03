@@ -740,7 +740,7 @@ export default {
     infoUserEnt: async function() {
       var resUser = await this.$request(
         "get",
-        "/api/users/listarToken/" + this.$store.state.token
+        "/api/users/" + this.$store.state.token + "/token"
       );
       var resEnt = await this.$request(
         "get",
@@ -1162,7 +1162,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/api/users/listarToken/" + this.$store.state.token
+          "/api/users/" + this.$store.state.token + "/token"
         );
 
         var tsObj = {
@@ -1203,7 +1203,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/api/users/listarToken/" + this.$store.state.token
+          "/api/users/" + this.$store.state.token + "/token"
         );
 
         this.tabelaSelecao.tipologias = this.tipSel;

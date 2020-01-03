@@ -103,7 +103,7 @@ export default {
     async testJWT() {
       var res = await this.$request(
         "get",
-        "/api/users/listarToken/" + this.$store.state.token
+        "/api/users/" + this.$store.state.token + "/token"
       );
       alert(JSON.stringify(res.data));
     }

@@ -198,7 +198,7 @@ export default {
         } else {
           var userBD = await this.$request(
             "get",
-            "/api/users/listarToken/" + this.$store.state.token
+            "/api/users/" + this.$store.state.token + "/token"
           );
           var pendenteParams = {
             numInterv: 1,
@@ -630,7 +630,7 @@ export default {
           if (erros == 0) {
             var userBD = await this.$request(
               "get",
-              "/api/users/listarToken/" + this.$store.state.token
+              "/api/users/" + this.$store.state.token + "/token"
             );
             var pedidoParams = {
               tipoPedido: "Criação",

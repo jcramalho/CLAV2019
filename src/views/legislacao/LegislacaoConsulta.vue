@@ -85,7 +85,7 @@ export default {
       // Processos de negócio que são regulados pela legislação em causa
       var regulaProc = await this.$request(
         "get",
-        "/api/legislacao/" + this.idLegislacao + "/regula"
+        "/api/legislacao/" + this.idLegislacao + "/processos"
       );
       this.regulaProc = regulaProc.data;
       this.legislacaoReady = true;

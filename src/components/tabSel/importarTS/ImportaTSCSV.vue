@@ -156,7 +156,7 @@ export default {
 
         var response = await this.$request(
           "post",
-          "/api/tabelasSelecao/CSV",
+          "/api/tabelasSelecao/importar",
           formData
         );
         this.loading = false;

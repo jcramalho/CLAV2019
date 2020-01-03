@@ -33,7 +33,7 @@ export default {
         if (this.$store.state.token != "") {
           //verifica se o utilizador está autenticado
           try {
-            var res = await this.$request("get", "/api/users/verificaToken");
+            var res = await this.$request("get", "/api/users/token");
             //se está autenticado, verifica se tem permissões suficientes para a ceder a página
             if (
               to.matched.some(record =>

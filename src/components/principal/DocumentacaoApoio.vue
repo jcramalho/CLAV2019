@@ -240,7 +240,7 @@ export default {
 
   methods: {
     async getFormulario() {
-      var path = "/api/classes?info=esqueleto&OF=text/csv";
+      var path = "/api/classes?info=esqueleto&fs=text/csv";
       var filename = "formularioTS.csv";
 
       try {

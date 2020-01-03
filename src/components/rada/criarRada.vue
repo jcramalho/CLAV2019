@@ -152,7 +152,7 @@ export default {
   mounted: async function () {
     let userBD = await this.$request(
         "get",
-        "/api/users/listarToken/" + this.$store.state.token
+        "/api/users/" + this.$store.state.token + "/token"
       );
       this.userEmail = userBD.data.email;
 

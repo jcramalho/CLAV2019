@@ -68,7 +68,7 @@ export default {
 
       let processosRegula = await this.$request(
         "get",
-        "/api/legislacao/" + idLegislacao + "/regula"
+        "/api/legislacao/" + idLegislacao + "/processos"
       );
 
       this.legislacao = await this.preparaLegislacao(

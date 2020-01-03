@@ -66,14 +66,14 @@ export default {
         this.users[response.data[i]._id] = response.data[i].email;
       }
 
-      response = await this.$request("get", "/api/chaves/listagem");
+      response = await this.$request("get", "/api/chaves");
       this.keys = {};
 
       for (i = 0; i < response.data.length; i++) {
         this.keys[response.data[i].id] = response.data[i].contactInfo;
       }
 
-      response = await this.$request("get", "/api/calls");
+      response = await this.$request("get", "/api/logs");
       this.logs = response.data;
 
       for (i = 0; i < this.logs.length; i++) {

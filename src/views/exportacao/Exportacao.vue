@@ -188,7 +188,7 @@ export default {
             "Pretende toda a informação das classes? Caso seja um valor que não 'completa' e 'esqueleto' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve num formato pronto a ser preenchido para a criação de uma Tabela de Seleção.",
           enum: ["Por definir", "completa", "esqueleto"]
         },
-        OF: {
+        fs: {
           label: "Formato de saída",
           desc: "Formato de saída do resultado",
           enum: [
@@ -246,7 +246,7 @@ export default {
             "Pretende toda a informação das entidades? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada entidade. Caso o valor seja 'completa' devolve toda a informação de cada entidade.",
           enum: ["Por definir", "completa"]
         },
-        OF: {
+        fs: {
           label: "Formato de saída",
           desc:
             "Formato de saída do resultado. O resultado no formato CSV possui toda a informação das entidades",
@@ -281,7 +281,7 @@ export default {
             "Pretende toda a informação das tipologias? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada tipologia. Caso o valor seja 'completa' devolve toda a informação de cada tipologia.",
           enum: ["Por definir", "completa"]
         },
-        OF: {
+        fs: {
           label: "Formato de saída",
           desc:
             "Formato de saída do resultado. O resultado no formato CSV possui toda a informação das tipologias",
@@ -322,7 +322,7 @@ export default {
             "Pretende toda a informação dos documentos legislativos? Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada documento legislativo. Caso o valor seja 'completa' devolve toda a informação de cada documento legislativo.",
           enum: ["Por definir", "completa"]
         },
-        OF: {
+        fs: {
           label: "Formato de saída",
           desc: "Formato de saída do resultado",
           enum: [
@@ -344,7 +344,7 @@ export default {
             "Caso o valor deste campo seja 'subarvore' é devolvida a subarvore com raiz na classe com id igual ao do campo 'id'",
           enum: ["Por definir", "subarvore"]
         },
-        OF: {
+        fs: {
           label: "Formato de saída",
           desc: "Formato de saída do resultado",
           enum: [
@@ -366,7 +366,7 @@ export default {
             "Pretende toda a informação da entidade? Caso seja um valor que não 'completa' devolve apenas parte da informação da entidade. Caso o valor seja 'completa' devolve toda a informação da entidade.",
           enum: ["Por definir", "completa"]
         },
-        OF: {
+        fs: {
           label: "Formato de saída",
           desc:
             "Formato de saída do resultado. O resultado no formato CSV possui toda a informação da entidade",
@@ -389,7 +389,7 @@ export default {
             "Pretende toda a informação da tipologia? Caso seja um valor que não 'completa' devolve apenas parte da informação da tipologia. Caso o valor seja 'completa' devolve toda a informação da tipologia.",
           enum: ["Por definir", "completa"]
         },
-        OF: {
+        fs: {
           label: "Formato de saída",
           desc:
             "Formato de saída do resultado. O resultado no formato CSV possui toda a informação da tipologia",
@@ -412,7 +412,7 @@ export default {
             "Pretende toda a informação do documento legislativo? Caso seja um valor que não 'completa' devolve apenas parte da informação do documento legislativo. Caso o valor seja 'completa' devolve toda a informação do documento legislativo.",
           enum: ["Por definir", "completa"]
         },
-        OF: {
+        fs: {
           label: "Formato de saída",
           desc: "Formato de saída do resultado",
           enum: [
@@ -438,7 +438,7 @@ export default {
             { text: "Sim", value: "true" }
           ]
         },
-        formato: {
+        fs: {
           label: "Formato de saída do ficheiro",
           desc:
             "Formato em que é devolvido os triplos. Pode ser um dos seguintes valores: turtle (text/turtle), json-ld (application/ld+json) ou rdf-xml (application/rdf+xml). No caso de não ser passado nenhum formato ou o que é colocado não é suportado é devolvido turtle. O formato também pode ser indicado na header 'Accept' sofrendo das mesmas restrições que se for indicado por query. Caso seja definido das duas formas a fornecida pela query string é a que é usada.",
@@ -466,7 +466,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/classes?formato=lista");
+      var response = await this.$request("get", "/api/classes?estrutura=lista");
       this.classes = response.data.map(c => {
         return { text: c.codigo + " - " + c.titulo, value: c.codigo };
       });
@@ -547,12 +547,12 @@ export default {
       var filename = this.tipo.filename + ".";
       var format;
 
-      if (!this.queriesSel.OF || this.queriesSel.OF == "Por definir") {
+      if (!this.queriesSel.fs || this.queriesSel.fs == "Por definir") {
         filename += "json";
         content = JSON.stringify(content, null, 4);
         format = "application/json";
       } else {
-        switch (this.queriesSel.OF) {
+        switch (this.queriesSel.fs) {
           case "application/json":
             filename += "json";
             content = JSON.stringify(content, null, 4);
@@ -565,11 +565,11 @@ export default {
             filename += "csv";
             break;
           default:
-            filename += this.queriesSel.OF;
+            filename += this.queriesSel.fs;
             break;
         }
 
-        switch (this.queriesSel.OF) {
+        switch (this.queriesSel.fs) {
           case "json":
             content = JSON.stringify(content, null, 4);
             format = "application/json";
@@ -582,7 +582,7 @@ export default {
             format = "text/csv";
             break;
           default:
-            format = this.queriesSel.OF;
+            format = this.queriesSel.fs;
             break;
         }
       }
