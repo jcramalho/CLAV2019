@@ -365,7 +365,7 @@ export default {
       if (this.$refs.form2.validate()) {
         this.$request(
           "put",
-          "/api/users/"+this.alterarPasswordId+"password/",
+          "/api/users/" + this.alterarPasswordId + "/password",
           {
             password: this.password
           }
