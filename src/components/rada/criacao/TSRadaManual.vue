@@ -22,7 +22,7 @@
           <SubSerie :classes="TS.classes" />
         </v-col>
       </v-row>
-      <!-- <v-row justify="center">
+      <!-- <v-row justify="center"> 
         <v-col cols="12" xs="12" sm="12">
           <v-data-table
             :headers="headers"
