@@ -281,8 +281,8 @@ export default {
           estado: {
             label: "Filtrar por estado",
             desc:
-              "Os documentos legislativos tem dois estados possíveis, ativo ('A') ou revogado ('R'). Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
-            enum: ["Por definir", "A", "R"]
+              "Os documentos legislativos tem dois estados possíveis, Ativo ou Revogado. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
+            enum: ["Por definir", "Ativo", "Revogado"]
           },
           fonte: {
             label: "Filtrar por fonte",
