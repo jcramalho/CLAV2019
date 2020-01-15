@@ -12,7 +12,7 @@
     >
     <v-spacer></v-spacer>
 
-    <div class="body-2">Versão: 20200110</div>
+    <div class="body-2">Versão: 20200116</div>
 
     <v-spacer></v-spacer>
 

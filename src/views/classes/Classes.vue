@@ -2,7 +2,7 @@
   <v-card class="mx-auto">
     <v-sheet class="pa-3 indigo lighten-2">
       <v-row align="center" no-gutters>
-        <v-col xs="12" md="10" sm="10" lg="10" xl="10">
+        <v-col xs="12" md="7" sm="7" lg="7" xl="7">
           <v-text-field
             v-model="search"
             label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
@@ -18,6 +18,13 @@
           <div class="text-center">
             <v-btn @click="processaPesquisa()">
               <v-icon left>search</v-icon>Pesquisar
+            </v-btn>
+          </div>
+        </v-col>
+        <v-col xs="12" md="3" sm="3" lg="3" xl="3">
+          <div class="text-center">
+            <v-btn >
+              <v-icon left>search</v-icon>Pesquisa Avançada
             </v-btn>
           </div>
         </v-col>

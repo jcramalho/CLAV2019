@@ -121,7 +121,7 @@
               <v-select
                 item-color="indigo"
                 color="indigo"
-                v-model="legislacao.diplomaFonte"
+                v-model="legislacao.fonte"
                 :items="diplomaFonteTipo"
                 label="Selecione uma opção"
                 solo
@@ -212,7 +212,7 @@ export default {
       tipo: "",
       data: "",
       link: "",
-      diplomaFonte: "Não especificada",
+      fonte: "Não especificada",
       entidadesSel: [],
       processosSel: [],
       codigo: ""
@@ -385,11 +385,11 @@ export default {
     this.legislacao = this.l;
 
     if (
-      this.legislacao.diplomaFonte === "" ||
-      this.legislacao.diplomaFonte === null ||
-      this.legislacao.diplomaFonte === undefined
+      this.legislacao.fonte == "" ||
+      this.legislacao.fonte == null ||
+      this.legislacao.fonte == undefined
     ) {
-      this.legislacao.diplomaFonte = "Não especificada";
+      this.legislacao.fonte = "Não especificada";
     }
 
     let dia = 0;
