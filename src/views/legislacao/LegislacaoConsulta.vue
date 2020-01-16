@@ -1,9 +1,8 @@
 <template>
   <div>
     <Loading v-if="!legislacaoReady" :message="'legislação'" />
-    <Consulta
+    <ConsultaLeg
       v-else
-      tipo="Legislação"
       v-bind:objeto="legislacao"
       v-bind:titulo="titulo"
       v-bind:listaReg="regulaProc"
@@ -12,12 +11,12 @@
 </template>
 
 <script>
-import Consulta from "@/components/generic/Consulta.vue";
+import ConsultaLeg from "@/components/legislacao/consulta/ConsultaLeg";
 import Loading from "@/components/generic/Loading";
 
 export default {
   components: {
-    Consulta,
+    ConsultaLeg,
     Loading
   },
   data: () => ({
@@ -50,6 +49,10 @@ export default {
             campo: "Sumário",
             text: leg.sumario
           },
+          fonte: {
+            campo: "Fonte de legitimação",
+            text: leg.fonte
+          },
           link: {
             campo: "Link",
             text: leg.link
@@ -59,6 +62,18 @@ export default {
             text: await this.parseEntidades(leg.entidades)
           }
         };
+        if(leg.estado == 'Ativo'){
+          myLegislacao.estado = {
+            campo: "Estado",
+            text: "Em vigor"
+          }
+        }
+        else{
+          myLegislacao.estado = {
+            campo: "Estado",
+            text: leg.estado
+          }
+        }
         return myLegislacao;
       } catch (e) {
         return {};

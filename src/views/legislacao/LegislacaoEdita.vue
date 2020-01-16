@@ -45,6 +45,7 @@ export default {
           tipo: leg.tipo,
           data: leg.data,
           link: leg.link,
+          fonte: leg.fonte,
           entidadesSel: leg.entidades,
           processosSel: proReg
         };

@@ -103,7 +103,7 @@
           <v-text-field
             v-model="RE.dimSuporte.nUI"
             placeholder="Nº de Unidades de Instalação."
-            :rules="[v => !isNaN(parseInt(v)) || 'Campo Obrigatório! Valor tem que ser inteiro.']"
+            :rules="[v => !isNaN(parseInt(v)) && parseInt(v) >= 0 || 'Campo Obrigatório! Valor tem que ser inteiro.']"
             single-line
             type="number"
           />

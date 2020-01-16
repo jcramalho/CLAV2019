@@ -15,17 +15,33 @@
           <v-divider></v-divider>
           <Identificacao :newSerie="newSerie" />
 
-          <h5>Zona Descritiva</h5>
-          <v-divider></v-divider>
-          <ZonaDescritiva :newSerie="newSerie" />
-
-          <h5>Zona de Contexto de Avaliação</h5>
-          <v-divider></v-divider>
-          <ZonaContexto :newSerie="newSerie" />
-
-          <h5>Zona de Decisões de Avaliação</h5>
-          <v-divider></v-divider>
-          <ZonaDecisoesAvaliacao :newSerie="newSerie" />
+          <v-expansion-panels accordion>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona Descritiva</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaDescritiva :newSerie="newSerie" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona de Contexto de Avaliação</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaContexto :newSerie="newSerie" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona de Decisões de Avaliação</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaDecisoesAvaliacao :newSerie="newSerie" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+          <br/>
 
           <h5>Hierarquia</h5>
           <v-divider></v-divider>
@@ -37,14 +53,19 @@
                 :rules="RegrasHierarquia"
                 item-text="codigo"
                 item-value="codigo"
-                outlined
                 dense
+                solo
+                clearable
                 placeholder="Classe Pai"
                 chips
               >
                 <template v-slot:no-data>
                   <v-container fluid>
-                    <v-alert :value="true" color="red lighten-3" icon="warning">Sem classes Área Orgânico-Funcional! Adicione primeiro.</v-alert>
+                    <v-alert
+                      :value="true"
+                      color="red lighten-3"
+                      icon="warning"
+                    >Sem classes Área Orgânico-Funcional! Adicione primeiro.</v-alert>
                   </v-container>
                 </template>
               </v-autocomplete>
@@ -94,7 +115,7 @@ export default {
       tSerie: "",
       suporte: "",
       medicao: "",
-      localizacao: "",
+      localizacao: [],
       produtores: "",
       legislacao: "",
       relacoes: "",

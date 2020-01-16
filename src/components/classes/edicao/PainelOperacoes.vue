@@ -13,7 +13,7 @@
         </v-btn>
       </v-col>
 
-      <valida-classe-info-box :c="c" />
+      <valida-classe-info-box :c="c" :original="o"/>
 
       <v-col>
         <v-btn dark rounded class="ma-2 indigo darken-4" @click="alterarClasse">
@@ -116,7 +116,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="cancelarCriacaoClasse">
+            <v-btn color="green darken-1" text @click="cancelarAlteracao">
               Confirmo
             </v-btn>
             <v-btn color="red darken-1" text @click="pedidoEliminado = false">
@@ -142,10 +142,10 @@
 </template>
 
 <script>
-import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
+import ValidaClasseInfoBox from "@/components/classes/edicao/validaClasseInfoBox.vue";
 
 export default {
-  props: ["c", "pendenteId"],
+  props: ["c", "o", "pendenteId"],
   components: {
     ValidaClasseInfoBox
   },
@@ -161,6 +161,8 @@ export default {
       loginErrorMessage: "Precisa de fazer login para criar a Classe!",
       numeroErros: 0,
       errosValidacao: false,
+
+      classeOriginal: {},
 
       codeFormats: {
         1: /^[0-9]{3}$/,
@@ -303,7 +305,7 @@ export default {
       // Título
       if (this.c.titulo == "") {
         this.numeroErros++;
-      } else {
+      } else if(this.c.titulo != this.o.titulo){
         try {
           var existeTitulo = await this.$request(
             "post",
@@ -402,9 +404,9 @@ export default {
       return this.numeroErros;
     },
 
-    // Lança o pedido de criação da classe no worflow
+    // Lança o pedido de alteração da classe no worflow
 
-    criarClasse: async function() {
+    alterarClasse: async function() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
@@ -416,7 +418,7 @@ export default {
               "/api/users/" + this.$store.state.token + "/token"
             );
             var pedidoParams = {
-              tipoPedido: "Criação",
+              tipoPedido: "Alteração",
               tipoObjeto: "Classe",
               novoObjeto: this.c,
               user: { email: userBD.data.email },
@@ -449,7 +451,7 @@ export default {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoClasse: function() {
+    cancelarAlteracao: function() {
       this.$router.push("/");
     }
   }
