@@ -356,7 +356,7 @@ export default {
         if (!this.c.pca.valor && this.c.pca.notas == "") {
           this.mensagensErro.push({
             sobre: "PCA (prazo)",
-            mensagem: "Prazo é de preenchimento obrigatório."
+            mensagem: "Tem de indicar o PCA ou preencher o campo da nota."
           });
           this.numeroErros++;
         } else if (this.c.pca.valor < 0 || this.c.pca.valor > 200) {
