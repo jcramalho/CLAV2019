@@ -76,8 +76,8 @@
           <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      <!-- TODO: Corrigir este componente -->
-      <PainelOperacoes :c="classe" :pendenteId="''" />
+      
+      <PainelOperacoes :c="classe" :o="classeCopia" :pendenteId="''" />
     </v-col>
   </v-row>
 </template>
@@ -115,73 +115,8 @@ export default {
   data: () => ({
     // Objeto que guarda uma classe
 
-    classe: {
-      // Metainformação e campos da área de Descrição
-
-      nivel: 0,
-      pai: {
-        codigo: "",
-        titulo: ""
-      },
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      notasAp: [],
-      exemplosNotasAp: [],
-      notasEx: [],
-      termosInd: [],
-
-      temSubclasses4Nivel: false,
-      temSubclasses4NivelPCA: false,
-      temSubclasses4NivelDF: false,
-      subdivisao4Nivel01Sintetiza02: true,
-
-      // Campos da área do Contexto de Avaliação
-      // Tipo de processo
-
-      tipoProc: "PC",
-      procTrans: "N",
-
-      // Donos do processo: lista de entidades
-
-      donos: [],
-
-      // Participantes no processo: lista de entidades
-
-      participantes: [],
-
-      // Processos Relacionados
-
-      processosRelacionados: [],
-
-      // Legislação Associada
-
-      legislacao: [],
-
-      // Bloco de decisão de avaliação: PCA e DF
-
-      pca: {
-        valor: null,
-        notas: "",
-        formaContagem: "",
-        subFormaContagem: "",
-        justificacao: [] // j = [criterio]
-      }, // criterio = {tipo, notas, [proc], [leg]}
-
-      df: {
-        valor: "NE",
-        notas: "",
-        justificacao: []
-      },
-
-      // Bloco de subclasses de nível 4, caso haja desdobramento
-
-      subclasses: [],
-
-      user: {
-        token: ""
-      }
-    },
+    classe: {},
+    classeCopia: {},
 
     // Estruturas auxiliares
 
@@ -235,7 +170,7 @@ export default {
     mensValCodigo: ""
   }),
 
-  mounted: function() {
+  created: function() {
     this.$request("get", "/api/classes/" + this.idc)
       .then(async response => {
         this.classe = response.data;
@@ -321,6 +256,7 @@ export default {
             }
           }
         }
+        this.classeCopia = JSON.parse(JSON.stringify(this.classe))
         this.semaforos.classeLoaded = true;
       })
       .catch(error => {
@@ -351,7 +287,7 @@ export default {
     "classe.temSubclasses4Nivel": function() {
       // Se passou a verdade vamos criar um par de subclasses
       // Informação base:
-      if (this.classe.temSubclasses4Nivel) {
+      if (this.classe.temSubclasses4Nivel && (!this.classe.subclasses || (this.classe.subclasses.length == 0)) ) {
         var novaSubclasse1 = {
           nivel: 4,
           pai: this.classe.codigo,
@@ -423,7 +359,7 @@ export default {
       }
 
       // Se passou a falso vamos eliminar as subclasses
-      else {
+      else if(!this.classe.temSubclasses4Nivel){
         for (var j = 0; j < this.classe.subclasses.length; j++) {
           this.classe.subclasses[j].processosRelacionados.splice(
             0,
