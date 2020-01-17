@@ -10,7 +10,7 @@
             deletable-chips
             :rules="[v => !!v[0] || 'Campo obrigatório é obrigatório!']"
             v-model="RE.entidadesProd"
-            :items="entidades"
+            :items="entidadesProcessadas"
             placeholder="Selecione as Entidades Produtoras."
             chips
             multiple
@@ -215,6 +215,13 @@
 <script>
 export default {
   props: ["RE", "entidades", "tipologias"],
+  computed: {
+    entidadesProcessadas() {
+      return this.entidades.map(item => {
+        return item.sigla + " - " + item.designacao;
+      });
+    }
+  },
   data: () => ({
     panels: [0, 0, 0],
     menu1: false,

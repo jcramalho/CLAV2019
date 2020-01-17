@@ -24,7 +24,7 @@
             deletable-chips
             :rules="[v => !!v[0] || 'Campo obrigatório é obrigatório!']"
             v-model="RADA.entRes"
-            :items="entidades"
+            :items="entidadesProcessadas"
             placeholder="Selecione as Entidades Responsáveis."
             chips
             multiple
@@ -43,6 +43,13 @@
 <script>
 export default {
   props: ["RADA", "entidades"],
+  computed: {
+    entidadesProcessadas() {
+      return this.entidades.map(item => {
+        return item.sigla + " - " + item.designacao;
+      });
+    }
+  },
   methods: {
     apagar: function() {
       this.$refs.form.reset();

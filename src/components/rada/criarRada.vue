@@ -61,7 +61,7 @@ export default {
   components: {
     RelatorioExpositivo,
     TSRada,
-    InformacaoGeral,
+    InformacaoGeral
   },
   data() {
     return {
@@ -152,9 +152,7 @@ export default {
   },
   created: async function() {
     let response = await this.$request("get", "/api/entidades");
-    this.entidades = response.data.map(item => {
-      return item.sigla + " - " + item.designacao;
-    });
+    this.entidades = response.data;
 
     response = await this.$request("get", "/api/tipologias");
     this.tipologias = response.data.map(item => {
@@ -171,6 +169,7 @@ export default {
       "get",
       "/api/entidades/" + userBD.data.entidade
     );
+    
     this.RADA.entRes.push(
       userEntidade.data.sigla + " - " + userEntidade.data.designacao
     );

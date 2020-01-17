@@ -45,7 +45,7 @@
         >Não tem entidades produtoras selecionadas...</v-alert>
       </v-col>
     </v-row>
-    <NovaEntidade :entidades="entidades" :newSerie="newSerie" />
+    <NovaEntidade :entidades="entidades" :entidadesClone="entidadesClone" :newSerie="newSerie" />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
         <div class="info-label">Selecione a(s) entidade(s) produtora(s):</div>
@@ -61,7 +61,7 @@
         <v-data-table
           :search="search"
           :headers="headersSel"
-          :items="entidades"
+          :items="entidadesClone"
           item-key="id"
           class="elevation-1"
           :footer-props="footer_props"
@@ -94,13 +94,14 @@
 import NovaEntidade from "./NovaEntidade";
 
 export default {
-  props: ["newSerie"],
+  name: "EntidadesProdutores",
+  props: ["newSerie", "entidades"],
   components: {
     NovaEntidade
   },
   data: () => {
     return {
-      entidades: [],
+      entidadesClone: [],
       search: "",
       headersDes: [
         {
@@ -159,18 +160,20 @@ export default {
   methods: {
     selectEntidade: function(item) {
       this.newSerie.produtoras.push(item);
-      this.entidades = this.entidades.filter(e => e.sigla != item.sigla);
+      this.entidadesClone = this.entidadesClone.filter(
+        e => e.sigla != item.sigla
+      );
     },
     unselectEntidade: function(item) {
-      this.entidades.push(item);
+      this.entidadesClone.push(item);
       this.newSerie.produtoras = this.newSerie.produtoras.filter(
         e => e.sigla != item.sigla
       );
     }
   },
-  created: async function() {
-    let response = await this.$request("get", "/api/entidades");
-    this.entidades = response.data;
+  created: function() {
+    // Criação de array clone para fazer as seleções
+    this.entidadesClone = [...this.entidades];
   }
 };
 </script>

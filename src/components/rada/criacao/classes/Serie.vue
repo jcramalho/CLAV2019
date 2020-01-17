@@ -29,7 +29,7 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="newSerie" />
+                <ZonaContexto :newSerie="newSerie" :entidades="entidades" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>

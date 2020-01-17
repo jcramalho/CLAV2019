@@ -1,6 +1,6 @@
 <template>
   <div>
-    <EntidadesProdutoras :newSerie="newSerie"/>
+    <EntidadesProdutoras :newSerie="newSerie" :entidades="entidades"/>
     <hr style="border: 3px solid indigo; border-radius: 2px;" />
     <Legislacao :newSerie="newSerie"/>
     <hr style="border: 3px solid indigo; border-radius: 2px;" />
@@ -53,7 +53,7 @@ import Legislacao from "./../../Legislacao";
 // import RelacoesEntidades from "./../../RelacoesEntidades";
 
 export default {
-  props: ["newSerie"],
+  props: ["newSerie", "entidades"],
   components: {
     EntidadesProdutoras,
     Legislacao,

@@ -54,7 +54,7 @@
 
 <script>
 export default {
-  props: ["entidades", "newSerie"],
+  props: ["entidades", "newSerie", "entidadesClone"],
   data: function() {
     return {
       alertOn: false,
@@ -95,6 +95,7 @@ export default {
             internacional: this.internacional
           };
           this.novasEntidades.push(entidade);
+          this.entidadesClone.push(entidade);
           this.entidades.push(entidade);
           this.sucessOn = true;
           this.$refs.form.reset();
