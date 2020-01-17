@@ -42,10 +42,7 @@
 
 <script>
 export default {
-  props: ["RADA"],
-  data: () => ({
-    entidades: []
-  }),
+  props: ["RADA", "entidades"],
   methods: {
     apagar: function() {
       this.$refs.form.reset();
@@ -55,13 +52,6 @@ export default {
         this.$emit("seguinte", 2);
       }
     }
-  },
-  created: async function() {
-    //   @click="e1 = 2"
-    let response = await this.$request("get", "/api/entidades");
-    this.entidades = response.data.map(item => {
-      return item.sigla + " - " + item.designacao;
-    });
   }
 };
 </script>

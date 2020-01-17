@@ -214,14 +214,12 @@
 
 <script>
 export default {
-  props: ["RE"],
+  props: ["RE", "entidades", "tipologias"],
   data: () => ({
     panels: [0, 0, 0],
     menu1: false,
     menu2: false,
     isMultiple: false,
-    entidades: [],
-    tipologias: [],
     basicRule: [v => !!v || "Campo obrigatório!"]
   }),
   methods: {
@@ -239,17 +237,6 @@ export default {
         }
       }, 1);
     }
-  },
-  created: async function() {
-    let response = await this.$request("get", "/api/entidades");
-    this.entidades = response.data.map(item => {
-      return item.sigla + " - " + item.designacao;
-    });
-
-    response = await this.$request("get", "/api/tipologias");
-    this.tipologias = response.data.map(item => {
-      return item.sigla + " - " + item.designacao;
-    });
   }
 };
 </script>

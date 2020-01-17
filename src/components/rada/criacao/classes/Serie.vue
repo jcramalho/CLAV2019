@@ -100,7 +100,7 @@ export default {
     ZonaContexto,
     ZonaDecisoesAvaliacao
   },
-  props: ["classes"],
+  props: ["classes", "entidades"],
   data: () => ({
     dialog: false,
     classesFiltradas: [],
@@ -116,8 +116,8 @@ export default {
       suporte: "",
       medicao: "",
       localizacao: [],
-      produtores: "",
-      legislacao: "",
+      produtoras: [],
+      legislacao: [],
       relacoes: "",
       pca: "",
       formaContagem: "",
