@@ -1,15 +1,6 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <v-col cols="3">
-        <v-btn
-          rounded
-          class="indigo darken-3 white--text"
-          :disabled="!l.numero"
-          @click="guardarTrabalho"
-          >Guardar Trabalho</v-btn
-        >
-      </v-col>
 
       <ValidarLegislacaoInfoBox :l="l" :acao="acao" />
 
@@ -46,29 +37,6 @@
           >Cancelar Alteração</v-btn
         >
       </v-col>
-
-      <!-- Trabalho pendente guardado com sucesso -->
-      <v-dialog v-model="pendenteGuardado" width="60%">
-        <v-card>
-          <v-card-title>Trabalho pendente guardado</v-card-title>
-          <v-card-text>
-            <p>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
-            </p>
-            <p>{{ pendenteGuardadoInfo }}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              color="indigo darken-1"
-              dark
-              @click="criacaoPendenteTerminada"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
 
       <!-- Erros de Validação -->
       <v-dialog v-model="errosValidacao" width="30%">
@@ -273,36 +241,6 @@ export default {
   },
 
   methods: {
-    guardarTrabalho: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          let userBD = await this.$request(
-            "get",
-            "/api/users/" + this.$store.state.token + "/token"
-          );
-          let pendenteParams = {
-            numInterv: 1,
-            acao: this.acao,
-            tipo: "Legislação",
-            objeto: this.l,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email },
-            token: this.$store.state.token
-          };
-          let response = await this.$request(
-            "post",
-            "/api/pendentes",
-            pendenteParams
-          );
-          this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
-        }
-      } catch (error) {
-        return error;
-      }
-    },
 
     async validarLegislacaoCriacao() {
       let parseAno = this.l.numero.split("/");

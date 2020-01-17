@@ -1,9 +1,8 @@
 <template>
   <div>
     <Loading v-if="!legislacaoReady" :message="'legislação'" />
-    <Consulta
+    <ConsultaLeg
       v-else
-      tipo="Legislação"
       v-bind:objeto="legislacao"
       v-bind:titulo="titulo"
       v-bind:listaReg="regulaProc"
@@ -12,12 +11,12 @@
 </template>
 
 <script>
-import Consulta from "@/components/generic/Consulta.vue";
+import ConsultaLeg from "@/components/legislacao/consulta/ConsultaLeg";
 import Loading from "@/components/generic/Loading";
 
 export default {
   components: {
-    Consulta,
+    ConsultaLeg,
     Loading
   },
   data: () => ({
