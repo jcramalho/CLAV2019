@@ -1,71 +1,49 @@
 <template>
   <v-card flat class="ma-4">
-    <v-card-title class="indigo darken-4 white--text"
-      >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title
-    >
+    <v-card-title
+      class="indigo darken-4 white--text"
+    >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title>
     <v-card-text>
       <br />
       <v-stepper v-model="e1" vertical>
         <!-- Informação Geral -->
-        <v-stepper-step
-          color="amber accent-3"
-          :key="1"
-          :complete="e1 > 1"
-          :step="1"
-          editable
-        >
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
           <font size="4">
             <b>Informação Geral</b>
           </font>
         </v-stepper-step>
         <v-stepper-content step="1">
-          <InformacaoGeral @seguinte="changeE1" :RADA="RADA" />
+          <InformacaoGeral @seguinte="changeE1" :RADA="RADA" :entidades="entidades" />
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step
-          color="amber accent-3"
-          :key="2"
-          :complete="e1 > 2"
-          :step="2"
-          editable
-        >
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
         </v-stepper-step>
         <v-stepper-content step="2">
-          <RelatorioExpositivo @seguinte="changeE1" :RE="RADA.RE" />
+          <RelatorioExpositivo @seguinte="changeE1" :RE="RADA.RE" :entidades="entidades" :tipologias="tipologias" />
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step
-          color="amber accent-3"
-          :key="3"
-          :complete="e1 > 3"
-          :step="3"
-          editable
-        >
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
         </v-stepper-step>
         <v-stepper-content step="3">
-          <TSRada @done="done" @voltar="changeE1" :TS="RADA.tsRada" />
+          <TSRada @done="done" @voltar="changeE1" :TS="RADA.tsRada" :entidades="entidades"/>
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
         <v-dialog v-model="dialogRADACriado" persistent max-width="60%">
           <v-card>
-            <v-card-title class="headline"
-              >Pedido de Criação do RADA Submetido</v-card-title
-            >
+            <v-card-title class="headline">Pedido de Criação do RADA Submetido</v-card-title>
             <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/')"
-                >Fechar</v-btn
-              >
+              <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -89,6 +67,9 @@ export default {
     return {
       mensagemPedidoCriadoOK: "",
       dialogRADACriado: false,
+      entidades: [],
+      tipologias: [],
+      legislacao: [],
       e1: 1,
       titulo: "",
       RADA: {
@@ -144,8 +125,7 @@ export default {
           ]
         }
       },
-      userEmail: "",
-      entidades: []
+      userEmail: ""
     };
   },
   methods: {
@@ -170,7 +150,15 @@ export default {
       this.dialogRADACriado = true;
     }
   },
-  mounted: async function() {
+  created: async function() {
+    let response = await this.$request("get", "/api/entidades");
+    this.entidades = response.data;
+
+    response = await this.$request("get", "/api/tipologias");
+    this.tipologias = response.data.map(item => {
+      return item.sigla + " - " + item.designacao;
+    });
+
     let userBD = await this.$request(
       "get",
       "/api/users/" + this.$store.state.token + "/token"
@@ -181,6 +169,7 @@ export default {
       "get",
       "/api/entidades/" + userBD.data.entidade
     );
+    
     this.RADA.entRes.push(
       userEntidade.data.sigla + " - " + userEntidade.data.designacao
     );

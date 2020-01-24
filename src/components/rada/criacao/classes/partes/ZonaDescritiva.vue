@@ -156,6 +156,7 @@
             clearable
             v-model="newSerie.localizacao"
             chips
+            deletable-chips
             label="Localização"
           ></v-combobox>
         </v-col>
