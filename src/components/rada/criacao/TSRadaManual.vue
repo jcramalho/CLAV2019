@@ -18,42 +18,15 @@
       <v-row justify="center">
         <v-col cols="12" xs="12" sm="12">
           <AddOrgFunc :classes="TS.classes" />
-          <Serie :classes="TS.classes" />
+          <Serie :classes="TS.classes" :entidades="entidades" />
           <SubSerie :classes="TS.classes" />
         </v-col>
       </v-row>
-      <!-- <v-row justify="center"> 
-        <v-col cols="12" xs="12" sm="12">
-          <v-data-table
-            :headers="headers"
-            :items="TS.classes"
-            hide-default-footer
-            @update:items-per-page="TS.classes.length || 1"
-          >
-            <template v-slot:item.action="{ item }">
-              
-              <v-icon small @click="deleteItem(item)">delete</v-icon>
-            </template>
-            <template v-slot:no-data>
-              <br />
-              <v-alert
-                :value="true"
-                color="orange lighten-2"
-                icon="warning"
-              >Sem Classes! É obrigatório adicionar.</v-alert>
-            </template>
-          </v-data-table>
-        </v-col>
-      </v-row>-->
       <v-row>
         <v-col cols="12" xs="12" sm="12">
-          <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
+          <v-treeview color="amber" v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
             <template slot="label" slot-scope="{ item }">
-              <!-- <EditaOrgFunc :titulo="item.titulo" :classes="TS.classes" :itemCodigo="item.codigo"/> -->
-
-              <!-- <v-btn text depressed> -->
-                <b>{{ item.titulo }}</b>
-              <!-- </v-btn> -->
+              <b>{{ item.titulo }}</b>
             </template>
           </v-treeview>
           <v-alert
@@ -79,71 +52,14 @@
 import AddOrgFunc from "@/components/rada/criacao/classes/OrganicaFunc";
 import Serie from "@/components/rada/criacao/classes/Serie";
 import SubSerie from "@/components/rada/criacao/classes/Subserie";
-// import EditaOrgFunc from "@/components/rada/alteracao/EditarOrganicaFunc";
 
 export default {
-  props: ["TS"],
+  props: ["TS", "entidades"],
   components: {
     AddOrgFunc,
     Serie,
     SubSerie
   },
-  data: () => ({
-    headers: [
-      {
-        text: "Código",
-        value: "codigo",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Titulo",
-        value: "titulo",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Descrição",
-        value: "descricao",
-        sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "PCA",
-        value: "pca",
-        sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Destino Final",
-        value: "df",
-        sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Notas",
-        value: "notas",
-        sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Tipo",
-        value: "tipo",
-        sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Pai",
-        value: "eFilhoDe",
-        sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Ações",
-        value: "action",
-        sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
-  }),
   computed: {
     preparaTree() {
       //Tem que retornar

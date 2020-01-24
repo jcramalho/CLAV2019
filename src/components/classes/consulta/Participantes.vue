@@ -138,7 +138,7 @@ a:link {
 a:hover {
   color: white;
   background-color: #1a237e;
-}
+} 
 
 .info-label {
   color: #1a237e;
