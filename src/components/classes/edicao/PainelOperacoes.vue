@@ -29,29 +29,33 @@
 
     <!-- Erros de Validação .................................... -->
     <v-row justify-center>
-      <v-dialog v-model="errosValidacao" width="60%">
-        <v-card>
-          <v-card-title class="headline">
-            Erros detetados na validação
-          </v-card-title>
-          <v-card-text>
-            <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
-            </p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn
-              color="red darken-4"
-              round
-              dark
-              @click="errosValidacao = false"
-            >
-              Fechar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+    <v-dialog v-model="dialog" width="80%">
+      <v-card>
+        <v-card-title class="headline">
+          Erros detetados na validação: {{ mensagensErro.length }}
+        </v-card-title>
+        <v-card-text>
+          <v-row ma-2 v-for="(m, i) in mensagensErro" :key="i">
+            <v-col cols="4">
+              <div class="info-label">{{ m.sobre }}</div>
+            </v-col>
+            <v-col>
+              <div class="info-content">{{ m.mensagem }}</div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            class="red darken-4 white--text"
+            rounded
+            dark
+            @click="dialog = false"
+          >
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     </v-row>
 
     <!-- Trabalho pendente guardado com sucesso ........... -->
@@ -87,7 +91,7 @@
       <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
         <v-card>
           <v-card-title class="headline">
-            Pedido de Criação de Classe Submetido
+            Pedido de Alteração de Classe Submetido
           </v-card-title>
           <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
           <v-card-actions>
@@ -160,7 +164,10 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Classe!",
       numeroErros: 0,
+      mensagensErro: [],
       errosValidacao: false,
+      dialog: false,
+      dialogSemErros: false,
 
       classeOriginal: {},
 
@@ -216,133 +223,175 @@ export default {
       this.$router.push("/");
     },
 
-    // Valida a classe antes de a criar
+    // Valida a informação introduzida e verifica se a classe pode ser alterada
 
-    validaClasse: async function() {
-      var i = 0,
-        numeroErros = 0;
-
-      // Descrição
-      if (this.c.descricao == "") {
-        numeroErros++;
+    notaDuplicada: async function(notas) {
+      if (notas.length > 1) {
+        var lastNota = notas[notas.length - 1].nota;
+        var duplicados = notas.filter(n => n.nota == lastNota);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
       }
-
-      // Notas de Aplicação
-      if (this.notaDuplicada(this.c.notasAp)) {
-        numeroErros++;
-      }
-
-      // Exemplos de notas de Aplicação
-      if (this.exemploDuplicado(this.c.exemplosNotasAp)) {
-        numeroErros++;
-      }
-
-      // Notas de Exclusão
-      if (this.notaDuplicada(this.c.notasEx)) {
-        numeroErros++;
-      }
-
-      // Termos de Índice
-      if (this.tiDuplicado(this.c.termosInd)) {
-        numeroErros++;
-      }
-
-      // Decisões
-      // Sem subdivisão
-      if (this.c.nivel == 3 && !this.c.temSubclasses4Nivel) {
-        // PCA: prazo
-        if (
-          this.c.pca.valor < 0 ||
-          this.c.pca.valor > 200 ||
-          (!this.c.pca.valor && this.c.pca.notas == "")
-        ) {
-          numeroErros++;
-        }
-        // PCA: forma e subforma de contagem
-        if (this.c.pca.formaContagem == "") {
-          numeroErros++;
-        } else if (
-          this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal" &&
-          this.c.pca.subFormaContagem == ""
-        ) {
-          numeroErros++;
-        }
-      }
-      // Com subdivisão
-      else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
-        var subclasse = {};
-        // PCA: prazo
-        for (i = 0; i < this.c.subclasses.length; i++) {
-          subclasse = this.c.subclasses[i];
-          if (
-            subclasse.pca.valor < 0 ||
-            subclasse.pca.valor > 200 ||
-            (!subclasse.pca.valor && subclasse.pca.notas == "")
-          ) {
-            numeroErros++;
-          }
-          // PCA: forma e subforma de contagem
-          if (subclasse.pca.formaContagem == "") {
-            numeroErros++;
-          } else if (
-            subclasse.pca.formaContagem ==
-              "vc_pcaFormaContagem_disposicaoLegal" &&
-            subclasse.pca.subFormaContagem == ""
-          ) {
-            numeroErros++;
-          }
-        }
-      }
-      return numeroErros;
     },
 
-    // Valida a informação introduzida e verifica se a classe pode ser criada
+    exemploDuplicado: function(exemplos) {
+      if (exemplos.length > 1) {
+        var lastExemplo = exemplos[exemplos.length - 1].exemplo;
+        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
+      }
+    },
+
+    tiDuplicado: function(termos) {
+      if (termos.length > 1) {
+        var lastTermo = termos[termos.length - 1].termo;
+        var duplicados = termos.filter(t => t.termo == lastTermo);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
+      }
+    },
 
     validarClasse2: async function() {
-      var i = 0;
       this.numeroErros = 0;
 
-      // Título
-      if (this.c.titulo == "") {
-        this.numeroErros++;
-      } else if(this.c.titulo != this.o.titulo){
-        try {
-          var existeTitulo = await this.$request(
-            "post",
-            "/api/classes/verificarTitulo",
-            { titulo: this.c.titulo }
-          );
-          if (existeTitulo.data) {
-            this.numeroErros++;
-          }
-        } catch (e) {
-          this.numeroErros++;
-        }
-      }
+      // Título: não se altera
 
       // Descrição
       if (this.c.descricao == "") {
+        this.mensagensErro.push({
+          sobre: "Descrição",
+          mensagem: "A descrição não pode ser vazia."
+        });
         this.numeroErros++;
       }
 
       // Notas de Aplicação
-      if (this.notaDuplicada(this.c.notasAp)) {
+      for (let i = 0; i < this.c.notasAp.length; i++) {
+          let index = this.o.notasAp.findIndex(x => x.nota === this.c.notasAp[i].nota)
+             
+          if( index == -1){
+              try {
+                    var existeNotaAp = await this.$request(
+                        "post",
+                        "/api/classes/verificarNA",
+                        { na: this.c.notasAp[i].nota }
+                    );
+                    if (existeNotaAp.data) {
+                        this.mensagensErro.push({
+                            sobre: "Nota de Aplicação(" + (i + 1) + ")",
+                            mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
+                        });
+                        this.numeroErros++;
+                    }
+                } catch (e) {
+                    this.numeroErros++;
+                    this.mensagensErro.push({
+                        sobre: "Acesso à Ontologia",
+                        mensagem: "Não consegui verificar a existência da NotaAp."
+                    });
+                }
+          }
+      }
+      
+      if (await this.notaDuplicada(this.c.notasAp)) {
+        this.mensagensErro.push({
+          sobre: "Nota de Aplicação(" + (i + 1) + ")",
+          mensagem: "A última nota encontra-se duplicada."
+        });
         this.numeroErros++;
       }
-
+alert('after dups')
       // Exemplos de notas de Aplicação
+      for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
+          let index = this.o.exemplosNotasAp.findIndex(x => x.exemplo === this.c.exemplosNotasAp[i].exemplo)
+
+          if(index == -1){
+            try {
+                    var existeExemploNotaAp = await this.$request(
+                        "post",
+                        "/api/classes/verificarExemploNA",
+                        { exemplo: this.c.exemplosNotasAp[i].exemplo }
+                    );
+                    if (existeExemploNotaAp.data) {
+                        this.mensagensErro.push({
+                            sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
+                            mensagem:
+                                "[" +
+                                this.c.exemplosNotasAp[i].exemplo +
+                                "] já existente na BD."
+                        });
+                        this.numeroErros++;
+                    }
+            } catch (e) {
+                this.numeroErros++;
+                this.mensagensErro.push({
+                    sobre: "Acesso à Ontologia",
+                    mensagem: "Não consegui verificar a existência do exemploNotaAp."
+                });
+            }
+          }
+      }
       if (this.exemploDuplicado(this.c.exemplosNotasAp)) {
+        this.mensagensErro.push({
+          sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
+          mensagem: "O último exemplo encontra-se duplicado."
+        });
         this.numeroErros++;
       }
 
       // Notas de Exclusão
       if (this.notaDuplicada(this.c.notasEx)) {
+        this.mensagensErro.push({
+          sobre: "Nota de Exclusão(" + this.c.notasEx.length + ")",
+          mensagem: "A última nota encontra-se duplicada."
+        });
         this.numeroErros++;
       }
 
       // Termos de Índice
+      for (let i = 0; i < this.c.termosInd.length; i++) {
+          let index = this.o.termosInd.findIndex(x => x.termo === this.c.termosInd[i].termo)
+
+          if(index == -1){
+            try {
+                    var existeTI = await this.$request(
+                        "post",
+                        "/api/classes/verificarTI",
+                        {ti: this.c.termosInd[i].termo}
+                    );
+                    if (existeTI.data) {
+                        this.mensagensErro.push({
+                            sobre: "Termo de Índice(" + (i + 1) + ")",
+                            mensagem:
+                                "[" + this.c.termosInd[i].termo + "] já existente na BD."
+                        });
+                        this.numeroErros++;
+                    }
+            } catch (e) {
+                this.numeroErros++;
+                this.mensagensErro.push({
+                    sobre: "Acesso à Ontologia",
+                    mensagem: "Não consegui verificar a existência do Termo de índice."
+                });
+            }
+          }
+      }
       if (this.tiDuplicado(this.c.termosInd)) {
         this.numeroErros++;
+        this.mensagensErro.push({
+          sobre: "Termo de Índice(" + (i + 1) + ")",
+          mensagem: "O último ti encontra-se duplicado."
+        });
       }
 
       // Decisões
@@ -375,7 +424,7 @@ export default {
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
         // PCA: prazo
-        for (i = 0; i < this.c.subclasses.length; i++) {
+        for (let i = 0; i < this.c.subclasses.length; i++) {
           subclasse = this.c.subclasses[i];
           if (!subclasse.pca.valor && subclasse.pca.notas == "") {
             this.numeroErros++;
@@ -412,7 +461,11 @@ export default {
           this.loginErrorSnackbar = true;
         } else {
           var erros = await this.validarClasse2();
-          if (erros == 0) {
+          alert('validei')
+          if (erros > 0) {
+            this.dialog = true;
+          }
+          else{
             var userBD = await this.$request(
               "get",
               "/api/users/" + this.$store.state.token + "/token"
@@ -433,8 +486,6 @@ export default {
             );
             this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
             this.dialogClasseCriada = true;
-          } else {
-            this.errosValidacao = true;
           }
         }
       } catch (error) {
@@ -453,6 +504,11 @@ export default {
 
     cancelarAlteracao: function() {
       this.$router.push("/");
+    },
+
+    limpaErros: function() {
+      this.numeroErros = 0;
+      this.mensagensErro = [];
     }
   }
 };

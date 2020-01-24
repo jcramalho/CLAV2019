@@ -133,20 +133,9 @@ export default {
       }
     },
 
-    // Verifica se o código introduzido pelo utilizador já existe na BD....................
-
-    verificaExistenciaCodigo: async function(codigo) {
-      var response = await this.$request(
-        "get",
-        "/api/classes/verificar/" + codigo
-      );
-      return response.data;
-    },
-
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
     validarClasse: async function() {
-      var i = 0;
 
       // Codigo: não pode ser alterado
 
@@ -162,8 +151,10 @@ export default {
       }
 
       // Notas de Aplicação
-      for (i = 0; i < this.c.notasAp.length; i++) {
-          if(this.original.notasAp.findIndex(n => {n.nota == this.c.notasAp[i].nota}) == -1){
+      for (let i = 0; i < this.c.notasAp.length; i++) {
+          let index = this.original.notasAp.findIndex(x => x.nota === this.c.notasAp[i].nota)
+          
+          if(index == -1){
               try {
                     var existeNotaAp = await this.$request(
                         "post",
@@ -195,8 +186,11 @@ export default {
       }
 
       // Exemplos de notas de Aplicação
-      for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
-          if(this.c.exemplosNotasAp[i].exemplo != this.original.exemplosNotasAp[i].exemplo){
+      for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
+          let obj = this.original.exemplosNotasAp.find(x => x.exemplo === this.c.exemplosNotasAp[i].exemplo);
+          let index = this.original.exemplosNotasAp.indexOf(obj);
+
+          if(index == -1){
             try {
                     var existeExemploNotaAp = await this.$request(
                         "post",
@@ -240,8 +234,11 @@ export default {
       }
 
       // Termos de Índice
-      for (i = 0; i < this.c.termosInd.length; i++) {
-          if(this.c.termosInd[i].termo != this.original.termosInd[i].termo){
+      for (let i = 0; i < this.c.termosInd.length; i++) {
+          let obj = this.original.termosInd.find(x => x.termo === this.c.termosInd[i].termo);
+          let index = this.original.termosInd.indexOf(obj);
+
+          if(index == -1){
             try {
                     var existeTI = await this.$request(
                         "post",
@@ -324,7 +321,7 @@ export default {
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
         // PCA: prazo
-        for (i = 0; i < this.c.subclasses.length; i++) {
+        for (let i = 0; i < this.c.subclasses.length; i++) {
           subclasse = this.c.subclasses[i];
           if (
             (!subclasse.pca.valor || subclasse.pca.valor == "") &&
