@@ -51,6 +51,21 @@
                   <v-btn
                     icon
                     v-on="on"
+                    @click="
+                      alterarNICId = props.item.id;
+                      newNIC = props.item.id;
+                    "
+                  >
+                    <v-icon medium color="brown">credit_card</v-icon>
+                  </v-btn>
+                </template>
+                <span>Alterar NIC do utilizador</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    v-on="on"
                     @click="alterarPasswordId = props.item.id"
                   >
                     <v-icon medium color="yellow">vpn_key</v-icon>
@@ -155,7 +170,43 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog :value="alterarPasswordId != ''" max-width="500px">
+    <v-dialog :value="alterarNICId != ''" persistent max-width="500px">
+      <v-card>
+        <v-card-title class="headline">
+          <span class="headline">Alterar NIC do utilizador</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form3" lazy-validation>
+            <v-text-field
+              id="nic"
+              prepend-icon="credit_card"
+              name="NIC"
+              v-model="newNIC"
+              filled
+              label="Altere NIC"
+              type="text"
+              :rules="regraNIC"
+              required
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="alterarNICId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn
+            :disabled="alterarNICId == newNIC"
+            color="primary"
+            text
+            @click="alterarNIC()"
+          >
+            Alterar NIC
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="alterarPasswordId != ''" persistent max-width="500px">
       <v-card>
         <v-card-title class="headline">
           <span class="headline">Alterar password do utilizador</span>
@@ -255,6 +306,7 @@ export default {
     ],
     regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
     regraPassword: [v => !!v || "Password é obrigatório."],
+    regraNIC: [v => !!v || "NIC é obrigatório."],
     ent_list: [],
     usersFooterProps: {
       "items-per-page-text": "Pedidos por página",
@@ -294,6 +346,8 @@ export default {
       }
     ],
     dialog: false,
+    alterarNICId: "",
+    newNIC: "",
     alterarPasswordId: "",
     desativarId: "",
     eliminarId: "",
@@ -361,6 +415,32 @@ export default {
       this.editedItem.entidade = this.editedItem.entidade.split("_")[1];
       this.dialog = true;
     },
+    alterarNIC() {
+      if (this.$refs.form3.validate()) {
+        this.$request("put", "/api/users/" + this.alterarNICId + "/nic", {
+          nic: this.newNIC
+        })
+          .then(res => {
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.alterarNICId = "";
+            this.done = true;
+            this.getUtilizadores();
+          })
+          .catch(err => {
+            this.text = "Ocorreu um erro ao atualizar o NIC.";
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          });
+      } else {
+        this.text = "Por favor preencha todos os campos!";
+        this.color = "error";
+        this.snackbar = true;
+        this.done = false;
+      }
+    },
     alterarPassword() {
       if (this.$refs.form2.validate()) {
         this.$request(
@@ -391,7 +471,7 @@ export default {
       }
     },
     desativar(id) {
-      this.$request("put", "/api/users/"+id+"/desativar")
+      this.$request("put", "/api/users/" + id + "/desativar")
         .then(res => {
           this.text = res.data;
           this.color = "success";
@@ -456,16 +536,12 @@ export default {
             parsedType = -1;
             break;
         }
-        this.$request(
-          "put",
-          "/api/users/" + this.editedItem.id,
-          {
-            nome: this.editedItem.name,
-            email: this.editedItem.email,
-            entidade: "ent_" + this.editedItem.entidade,
-            level: parsedType
-          }
-        )
+        this.$request("put", "/api/users/" + this.editedItem.id, {
+          nome: this.editedItem.name,
+          email: this.editedItem.email,
+          entidade: "ent_" + this.editedItem.entidade,
+          level: parsedType
+        })
           .then(res => {
             this.text = res.data;
             this.color = "success";
