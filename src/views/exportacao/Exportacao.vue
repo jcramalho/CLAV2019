@@ -66,6 +66,7 @@
                           :items="querystring.enum"
                           :label="querystring.label"
                           v-model="queriesSel[key]"
+                          :multiple="querystring.multiple"
                         >
                         </v-autocomplete>
                       </span>
@@ -122,7 +123,8 @@ export default {
         "text/csv",
         "csv",
         "excel/csv"
-      ]
+      ],
+      multiple: false
     };
     return {
       classes: [],
@@ -131,14 +133,14 @@ export default {
       legislacoes: [],
       exportacoesDisponiveis: [
         { text: "Classes", value: { filename: "classes", path: "classes" } },
-        { text: "Classe", value: { filename: "classe", path: "classes/c" } },
+        { text: "Classe", value: { filename: "classe", path: "classes/" } },
         {
           text: "Entidades",
           value: { filename: "entidades", path: "entidades" }
         },
         {
           text: "Entidade",
-          value: { filename: "entidade", path: "entidades/ent_" }
+          value: { filename: "entidade", path: "entidades/" }
         },
         {
           text: "Tipologias",
@@ -146,7 +148,7 @@ export default {
         },
         {
           text: "Tipologia",
-          value: { filename: "tipologia", path: "tipologias/tip_" }
+          value: { filename: "tipologia", path: "tipologias/" }
         },
         {
           text: "Legislações",
@@ -154,7 +156,7 @@ export default {
         },
         {
           text: "Legislação",
-          value: { filename: "legislacao", path: "legislacao/leg_" }
+          value: { filename: "legislacao", path: "legislacao/" }
         },
         {
           text: "Ontologia",
@@ -170,38 +172,44 @@ export default {
             label: "Estrutura",
             desc:
               "Estrutura. Pode ser em árvore ou em lista. Quanto nenhum parâmetro é definido (formato, tipo e nivel) o formato de saída em arvore é o predefinido.",
-            enum: ["Por definir", "arvore", "lista"]
+            enum: ["Por definir", "arvore", "lista"],
+            multiple: false
           },
           tipo: {
             label: "Tipo",
             desc:
               "Devolve as classes de nível 3 (processos) filtrando pelo tipo de processo (comuns ou especificos).",
-            enum: ["Por definir", "comum", "especifico"]
+            enum: ["Por definir", "comum", "especifico"],
+            multiple: false
           },
           nivel: {
             label: "Nível",
             desc:
               "O nível dos processos devolvidos numa lista. Podem ser de 1º, 2º, 3º e 4º nível.",
-            enum: ["Por definir", "1", "2", "3", "4"]
+            enum: ["Por definir", "1", "2", "3", "4"],
+            multiple: false
           },
           ents: {
             label: "Entidades",
             desc:
-              "Obtém os processos especificos destas entidades. Este parâmetro só deve ser usado quando o tipo é especifico. Exemplo de input: 'ent_AAN,ent_SEF'",
-            enum: []
+              "Obtém os processos especificos destas entidades. Este parâmetro só deve ser usado quando o tipo é especifico.",
+            enum: [],
+            multiple: true
           },
           tips: {
             label: "Tipologias",
             desc:
-              "Obtém os processos especificos destas tipologias. Este parâmetro só deve ser usado quando o tipo é especifico. Exemplo de input: 'tip_AAC,tip_AF'",
-            enum: []
+              "Obtém os processos especificos destas tipologias. Este parâmetro só deve ser usado quando o tipo é especifico.",
+            enum: [],
+            multiple: true
           },
           info: {
             label:
               "Informação completa? Ou pretende apenas o esqueleto para criar uma TS?",
             desc:
               "Caso seja um valor que não 'completa' e 'esqueleto' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve numa estrutura pronta a ser preenchida para a criação de uma Tabela de Seleção, devolve os campos: código, título, descrição, PCA, DF dono (a ser preenchido pelo utilizador) e participante (a ser preenchido pelo utilizador).",
-            enum: ["Por definir", "completa", "esqueleto"]
+            enum: ["Por definir", "completa", "esqueleto"],
+            multiple: false
           },
           fs: fs
         },
@@ -210,43 +218,50 @@ export default {
             label: "Processos",
             desc:
               "No caso de ser escolhido 'com' é listado as entidades com PNs associados. Já no caso de ser escolhido 'sem' é listado as entidades sem PNs associados. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
-            enum: ["Por definir", "com", "sem"]
+            enum: ["Por definir", "com", "sem"],
+            multiple: false
           },
           sigla: {
             label: "Filtrar por sigla",
             desc:
               "Permite filtrar as entidades que contém a sigla igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: AR)",
-            enum: []
+            enum: [],
+            multiple: false
           },
           designacao: {
             label: "Filtrar por designação",
             desc:
               "Permite filtrar as entidades que contém a designacao igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: Assembleia da República)",
-            enum: []
+            enum: [],
+            multiple: false
           },
           internacional: {
             label: "Filtrar pelo campo internacional",
             desc:
               "Permite filtrar as entidades que contém internacional igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
-            enum: ["Sim", "Não"]
+            enum: ["Sim", "Não"],
+            multiple: false
           },
           sioe: {
             label: "Filtrar por SIOE",
             desc:
               "Permite filtrar as entidades que contém sioe igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: 875780390)",
-            enum: []
+            enum: [],
+            multiple: false
           },
           estado: {
             label: "Filtrar por estado",
             desc:
               "Permite filtrar as entidades que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
-            enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
+            enum: ["Por definir", "Ativa", "Inativa", "Harmonização"],
+            multiple: false
           },
           info: {
             label: "Informação completa?",
             desc:
               "Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada entidade. Caso o valor seja 'completa' devolve toda a informação de cada entidade.",
-            enum: ["Por definir", "completa"]
+            enum: ["Por definir", "completa"],
+            multiple: false
           },
           fs: fs
         },
@@ -255,19 +270,22 @@ export default {
             label: "Filtrar por designação",
             desc:
               "Permite filtrar as tipologias que contém a designacao igual a este valor. (ex: Autoridades Administrativas Civis)",
-            enum: []
+            enum: [],
+            multiple: false
           },
           estado: {
             label: "Filtrar por estado",
             desc:
               "Filtra as tipologias pelo estado das mesmas. O estado pode ser Ativa, Inativa ou Harmonização.",
-            enum: ["Por definir", "Ativa", "Inativa", "Harmonização"]
+            enum: ["Por definir", "Ativa", "Inativa", "Harmonização"],
+            multiple: false
           },
           info: {
             label: "Informação completa?",
             desc:
               "Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada tipologia. Caso o valor seja 'completa' devolve toda a informação de cada tipologia.",
-            enum: ["Por definir", "completa"]
+            enum: ["Por definir", "completa"],
+            multiple: false
           },
           fs: fs
         },
@@ -276,25 +294,29 @@ export default {
             label: "Processos",
             desc:
               "No caso de ser escolhido 'com' é listado os documentos legislativos com PNs associados. Já no caso de ser escolhido 'sem' é listado os documentos legislativos sem PNs associados. Só funciona caso o parâmetro estado não seja definido.",
-            enum: ["Por definir", "com", "sem"]
+            enum: ["Por definir", "com", "sem"],
+            multiple: false
           },
           estado: {
             label: "Filtrar por estado",
             desc:
               "Os documentos legislativos tem dois estados possíveis, Ativo ou Revogado. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
-            enum: ["Por definir", "Ativo", "Revogado"]
+            enum: ["Por definir", "Ativo", "Revogado"],
+            multiple: false
           },
           fonte: {
             label: "Filtrar por fonte",
             desc:
               "No caso de ser definido lista os documentos legislativos de acordo com a fonte especificada. Só funciona caso os parâmetros estado e processos não sejam definidos.",
-            enum: ["Por definir", "PGD", "PGD/LC", "RADA"]
+            enum: ["Por definir", "PGD", "PGD/LC", "RADA"],
+            multiple: false
           },
           info: {
             label: "Informação completa?",
             desc:
               "Caso o valor desta query string não seja 'completa' devolve apenas parte da informação de cada documento legislativo. Caso o valor seja 'completa' devolve toda a informação de cada documento legislativo.",
-            enum: ["Por definir", "completa"]
+            enum: ["Por definir", "completa"],
+            multiple: false
           },
           fs: fs
         },
@@ -303,7 +325,8 @@ export default {
             label: "Tipo",
             desc:
               "Caso o valor deste campo seja 'subarvore' é devolvida a subarvore com raiz na classe com id igual ao do campo 'id'",
-            enum: ["Por definir", "subarvore"]
+            enum: ["Por definir", "subarvore"],
+            multiple: false
           },
           fs: fs
         },
@@ -312,7 +335,8 @@ export default {
             label: "Informação completa?",
             desc:
               "Caso seja um valor que não 'completa' devolve apenas parte da informação da entidade. Caso o valor seja 'completa' devolve toda a informação da entidade.",
-            enum: ["Por definir", "completa"]
+            enum: ["Por definir", "completa"],
+            multiple: false
           },
           fs: fs
         },
@@ -321,7 +345,8 @@ export default {
             label: "Informação completa?",
             desc:
               "Caso seja um valor que não 'completa' devolve apenas parte da informação da tipologia. Caso o valor seja 'completa' devolve toda a informação da tipologia.",
-            enum: ["Por definir", "completa"]
+            enum: ["Por definir", "completa"],
+            multiple: false
           },
           fs: fs
         },
@@ -330,7 +355,8 @@ export default {
             label: "Informação completa?",
             desc:
               "Caso seja um valor que não 'completa' devolve apenas parte da informação do documento legislativo. Caso o valor seja 'completa' devolve toda a informação do documento legislativo.",
-            enum: ["Por definir", "completa"]
+            enum: ["Por definir", "completa"],
+            multiple: false
           },
           fs: fs
         },
@@ -343,7 +369,8 @@ export default {
               { text: "Por definir", value: "" },
               { text: "Não", value: "false" },
               { text: "Sim", value: "true" }
-            ]
+            ],
+            multiple: false
           },
           fs: {
             label: "Formato de saída do ficheiro",
@@ -357,7 +384,8 @@ export default {
               "application/ld+json",
               "rdf-xml",
               "application/rdf+xml"
-            ]
+            ],
+            multiple: false
           }
         }
       },
@@ -376,18 +404,26 @@ export default {
     try {
       var response = await this.$request("get", "/api/classes?estrutura=lista");
       this.classes = response.data.map(c => {
-        return { text: c.codigo + " - " + c.titulo, value: c.codigo };
+        return { text: c.codigo + " - " + c.titulo, value: "c" + c.codigo };
       });
 
       response = await this.$request("get", "/api/entidades");
       this.entidades = response.data.map(e => {
-        return { text: e.sigla + " - " + e.designacao, value: e.sigla };
+        return {
+          text: e.sigla + " - " + e.designacao,
+          value: e.id
+        };
       });
+      this.queryStrings.classes.ents.enum = this.entidades;
 
       response = await this.$request("get", "/api/tipologias");
       this.tipologias = response.data.map(t => {
-        return { text: t.sigla + " - " + t.designacao, value: t.sigla };
+        return {
+          text: t.sigla + " - " + t.designacao,
+          value: t.id
+        };
       });
+      this.queryStrings.classes.tips.enum = this.tipologias;
 
       response = await this.$request("get", "/api/legislacao");
       this.legislacoes = response.data.map(l => {
@@ -399,7 +435,7 @@ export default {
             " - " +
             l.sumario.substring(0, 100) +
             (l.sumario.length > 100 ? "..." : ""),
-          value: l.id.split("leg_")[1]
+          value: l.id
         };
       });
     } catch (erro) {
