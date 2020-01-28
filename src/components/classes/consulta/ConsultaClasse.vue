@@ -43,6 +43,20 @@
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-row>
+                    <!-- ESTADO -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Estado
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content" v-if="classe.status=='A'">Ativa</div>
+                      <div class="info-content" v-else-if="classe.status=='H'">Em revisão...</div>
+                      <div class="info-content" v-else>Inativa</div>
+                    </v-col>
+                  </v-row>
+
+                  <v-row>
                     <!-- DESCRIÇÂO -->
                     <v-col xs="2" sm="2">
                       <div class="info-label">
