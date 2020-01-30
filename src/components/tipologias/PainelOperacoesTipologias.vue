@@ -1,15 +1,6 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <v-col cols="3">
-        <v-btn
-          rounded
-          class="indigo darken-3 white--text"
-          :disabled="!t.sigla"
-          @click="guardarTrabalho"
-          >Guardar Trabalho</v-btn
-        >
-      </v-col>
 
       <ValidarTipologiaInfoBox :t="t" :acao="acao" />
 
@@ -217,37 +208,7 @@ export default {
   },
 
   methods: {
-    guardarTrabalho: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          let userBD = await this.$request(
-            "get",
-            "/api/users/" + this.$store.state.token + "/token"
-          );
-          let pendenteParams = {
-            numInterv: 1,
-            acao: this.acao,
-            tipo: "Tipologia",
-            objeto: this.t,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email },
-            token: this.$store.state.token
-          };
-          let response = await this.$request(
-            "post",
-            "/api/pendentes",
-            pendenteParams
-          );
-          this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
-        }
-      } catch (error) {
-        return error;
-      }
-    },
-
+    
     async validarTipologiaCriacao() {
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {

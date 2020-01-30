@@ -11,10 +11,10 @@
           <v-container grid-list-md fluid>
             <v-stepper v-model="stepNo" vertical>
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
-              <v-stepper-step :complete="stepNo > 0" step="0">
-                Identificação da Entidade da Tabela de Seleção
+              <v-stepper-step :complete="stepNo > 1" step="1">
+                Identificação da entidade da tabela de seleção
               </v-stepper-step>
-              <v-stepper-content step="0">
+              <v-stepper-content step="1">
                 <v-col>
                   <v-select
                     v-model="ent"
@@ -27,7 +27,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 1;
+                    stepNo = stepNo + 1;
                     barra(0);
                     guardaEntidade();
                   "
@@ -35,10 +35,10 @@
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 1" step="1">
+              <v-stepper-step :complete="stepNo > 2" step="2">
                 Tipologias de entidade a que pertence
               </v-stepper-step>
-              <v-stepper-content step="1">
+              <v-stepper-content step="2">
                 <v-expansion-panels>
                   <v-expansion-panel>
                     <v-expansion-panel-header class="expansion-panel-heading">
@@ -66,7 +66,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 2;
+                    stepNo = stepNo + 1;
                     barra(14);
                   "
                   >Continuar</v-btn
@@ -74,18 +74,18 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 0;
+                    stepNo = stepNo - 1;
                     barra(0);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 2" step="2"
-                >Designação
+              <v-stepper-step :complete="stepNo > 3" step="3"
+                >Designação da Tabela de Seleção
                 <small>Designação da nova tabela de seleção</small>
               </v-stepper-step>
-              <v-stepper-content step="2">
+              <v-stepper-content step="3">
                 <v-flex xs12 sm6 md10>
                   <v-text-field
                     :placeholder="tabelaSelecao.designacao"
@@ -95,7 +95,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 3;
+                    stepNo = stepNo + 1;
                     barra(28);
                     loadProcEspecificos();
                   "
@@ -104,20 +104,20 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 1;
+                    stepNo = stepNo - 1;
                     barra(0);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 3" step="3"
-                >Processos Comuns
+              <v-stepper-step :complete="stepNo > 4" step="4"
+                >Processos de negócio comuns
                 <small
                   >Processos passíveis de existir em qualquer entidade</small
                 >
               </v-stepper-step>
-              <v-stepper-content step="3">
+              <v-stepper-content step="4">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -188,7 +188,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 4;
+                    stepNo = stepNo + 1;
                     barra(42);
                     procPreSelEspecificos();
                     loadProcEspRestantes();
@@ -198,21 +198,21 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 2;
+                    stepNo = stepNo - 1;
                     barra(14);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 4" step="4"
-                >Processos Específicos
+              <v-stepper-step :complete="stepNo > 5" step="5"
+                >Processos de negócio específicos
                 <small
                   >Processos específicos da entidade e tipologia em que se
-                  enquadra</small
+                  enquadram</small
                 >
               </v-stepper-step>
-              <v-stepper-content step="4">
+              <v-stepper-content step="5">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -284,7 +284,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 5;
+                    stepNo = stepNo + 1;
                     barra(56);
                     procPreSelRestantes();
                   "
@@ -293,17 +293,17 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 3;
+                    stepNo = stepNo - 1;
                     barra(28);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 5" step="5"
-                >Processos Específicos Restantes
+              <v-stepper-step :complete="stepNo > 6" step="6"
+                >Processos de negócio específicos restantes
               </v-stepper-step>
-              <v-stepper-content step="5">
+              <v-stepper-content step="6">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -376,7 +376,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 6;
+                    stepNo = stepNo + 1;
                     barra(70);
                     loadUltimosProcessos();
                     procPreSelUlt();
@@ -386,21 +386,21 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 4;
+                    stepNo = stepNo - 1;
                     barra(42);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 6" step="6"
-                >Outros processos
+              <v-stepper-step :complete="stepNo > 7" step="7"
+                >Processos de negócio não selecionados anteriormente
                 <small
                   >Revisão de processos de negócio não selecionados nas etapas
                   anteriores</small
                 >
               </v-stepper-step>
-              <v-stepper-content step="6">
+              <v-stepper-content step="7">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -444,7 +444,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 7;
+                    stepNo = stepNo + 1;
                     barra(84);
                     parseProcessosSel();
                   "
@@ -453,14 +453,14 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 5;
+                    stepNo = stepNo - 1;
                     barra(56);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 7" step="7"
+              <v-stepper-step :complete="stepNo > 8" step="8"
                 >Alterações na parte descritiva
                 <small>
                   Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão
@@ -468,7 +468,7 @@
                   (TI) nos processos selecionados
                 </small>
               </v-stepper-step>
-              <v-stepper-content step="7">
+              <v-stepper-content step="8">
                 <v-layout wrap>
                   <v-flex xs10>
                     <v-expansion-panels>
@@ -519,7 +519,10 @@
                         <v-btn
                           color="red"
                           text
-                          @click="finalizaUltPasso = false"
+                          @click="
+                            finalizaUltPasso = false;
+                            stepNo = stepNo - 1;
+                          "
                         >
                           Voltar
                         </v-btn>
@@ -527,7 +530,7 @@
                           color="primary"
                           text
                           @click="
-                            stepNo = 8;
+                            stepNo = stepNo + 1;
                             barra(100);
                             finalizaUltPasso = false;
                           "
@@ -541,7 +544,7 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 6;
+                    stepNo = stepNo - 1;
                     barra(72);
                   "
                   >Voltar</v-btn
@@ -551,7 +554,7 @@
               <hr style="border-top: 0px" />
 
               <v-row align="center" justify="center">
-                <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()"
+                <v-btn color="primary" v-if="stepNo > 8" @click="submeterTS()"
                   >Submeter
                 </v-btn>
                 <v-btn
@@ -753,7 +756,7 @@ export default {
       } else {
         this.tabelaSelecao.designacao = resEnt.data.designacao;
         this.tabelaSelecao.idEntidade = resUser.data.entidade;
-        this.stepNo = 1;
+        this.stepNo = 2;
         await this.loadTipologias();
       }
     },

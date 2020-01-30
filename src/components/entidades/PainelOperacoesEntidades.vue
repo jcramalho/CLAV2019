@@ -1,15 +1,6 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <v-col cols="3">
-        <v-btn
-          rounded
-          class="indigo darken-3 white--text"
-          :disabled="!e.sigla"
-          @click="guardarTrabalho"
-          >Guardar Trabalho</v-btn
-        >
-      </v-col>
 
       <ValidarEntidadeInfoBox :e="e" :acao="acao" />
 
@@ -232,36 +223,6 @@ export default {
   },
 
   methods: {
-    guardarTrabalho: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          var userBD = await this.$request(
-            "get",
-            "/api/users/" + this.$store.state.token + "/token"
-          );
-          var pendenteParams = {
-            numInterv: 1,
-            acao: this.acao,
-            tipo: "Entidade",
-            objeto: this.e,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email },
-            token: this.$store.state.token
-          };
-          var response = await this.$request(
-            "post",
-            "/api/pendentes",
-            pendenteParams
-          );
-          this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
-        }
-      } catch (error) {
-        return error;
-      }
-    },
 
     validarEntidadeCriacao: async function() {
       // Designação

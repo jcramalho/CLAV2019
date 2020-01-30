@@ -11,7 +11,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nome da Entidade:</div>
+              <div class="info-label">Nome da Entidade</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -28,7 +28,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla:</div>
+              <div class="info-label">Sigla</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -45,7 +45,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Internacional:</div>
+              <div class="info-label">Internacional</div>
             </v-col>
             <v-col>
               <v-select
@@ -62,7 +62,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">SIOE:</div>
+              <div class="info-label">SIOE</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -72,7 +72,6 @@
                 counter="12"
                 single-line
                 v-model="entidade.sioe"
-                type="number"
                 :rules="regraSIOE"
               ></v-text-field>
             </v-col>
