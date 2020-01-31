@@ -124,22 +124,17 @@ export default {
         this.erro = help.AutoEliminacao.Erros.CodigoAg;
         this.erroDialog = true;
       } else if(!re.test(this.dataContagem)) {
-        this.erro =
-          " Verifique se o campo <strong>" +
-          "Data de Contagem do PCA</strong> se encontra devidamente preenchido.";
+        this.erro = help.AutoEliminacao.Erros.DataContagemP;
         this.erroDialog = true;
       } else {
         var res = parseInt(this.auto.zonaControlo[this.index].prazoConservacao) + parseInt(this.dataContagem)
-        var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
+        //var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
+        var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataInicio)
         if(res>=currentTime.getFullYear()) {
-          this.erro =
-            "Note que o <strong>Prazo de Conservação Administrativa</strong> somado com "+
-            "<strong>Data de Contagem do PCA</strong> têm que ser <strong>inferior</strong> à data atual";
+          this.erro = help.AutoEliminacao.Erros.DataContagem;
           this.erroDialog = true;
         } else if(res2<0) {
-          this.erro =
-            "Note que o <strong>Prazo de Contagem do PC</strong> "+
-            "têm que ser <strong>superior ou igual</strong> à <strong>Data de Fim</strong>";
+          this.erro = help.AutoEliminacao.Erros.DataContagem;
           this.erroDialog = true;
         } else {
           this.auto.zonaControlo[this.index].agregacoes.push({
@@ -160,34 +155,27 @@ export default {
       var currentTime = new Date();
       var result = this.auto.zonaControlo[this.index].agregacoes.filter(ag => ag.codigo == this.codigo)
       if(!this.codigo || !this.titulo || !this.dataContagem) {
-        this.erro = " Verifique se os campos <strong>Código da Agregação," +
-                    " Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.";
+        this.erro = help.AutoEliminacao.Erros.FaltaCamposAg;
         this.erroDialog = true
         this.auto.zonaControlo[this.index].agregacoes[this.indexAg] = backup
       } else if(result.length>0) {
-        this.erro =
-          "O <strong>Código da Agregação</strong> que tentou inserir já existe. ";
+        this.erro = help.AutoEliminacao.Erros.CodigoAg;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index].agregacoes[this.indexAg] = backup
       } else if(!re.test(this.dataContagem)) {
-        this.erro =
-          " Verifique se o campo <strong>" +
-          "Data de Contagem do PCA</strong> se encontra devidamente preenchido.";
+        this.erro = help.AutoEliminacao.Erros.DataContagemP;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index].agregacoes[this.indexAg] = backup
       } else {
         var res = parseInt(this.auto.zonaControlo[this.index].prazoConservacao) + parseInt(this.dataContagem)
-        var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
+        //var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
+        var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataInicio)
         if(!(res<=currentTime.getFullYear())) {
-          this.erro =
-            "Note que o <strong>Prazo de Conservação Administrativa</strong> somado com "+
-            "<strong>Data de Contagem do PCA</strong> têm que ser <strong>inferior</strong> à data atual";
+          this.erro = help.AutoEliminacao.Erros.DataContagem;
           this.erroDialog = true;
           this.auto.zonaControlo[this.index].agregacoes[this.indexAg] = backup
         } else if(res2<0) {
-          this.erro =
-            "Note que o <strong>Prazo de Contagem do PC</strong> "+
-            "têm que ser <strong>superior ou igual</strong> à <strong>Data de Fim</strong>";
+          this.erro = help.AutoEliminacao.Erros.DataContagem;
           this.erroDialog = true;
           this.auto.zonaControlo[this.index].agregacoes[this.indexAg] = backup
         } else {

@@ -286,7 +286,8 @@ module.exports.help = {
       MedicaoOutro: "Verifique se o campo <strong> Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.",
       FaltaCamposAg: "Verifique se os campos <strong>Código da Agregação, Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.",
       CodigoAg: "O <strong>Código da Agregação</strong> que introduziu já foi associado a esta Zona de Controlo.",
-
+      DataContagem: "A Data de Contagem do Prazo de Conservação Administrativa da agregação tem de ser igual ou superior à Data de Início somada ao Prazo de Conservação Administrativo colocadas na respetiva Zona de Controlo.",
+      DataContagemP: "Verifique se o campo <strong>Data de Contagem do PCA</strong> se devidamente preenchido."
     },
     Campos: {
       FonteLegitimacao:
