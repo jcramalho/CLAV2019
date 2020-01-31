@@ -241,7 +241,7 @@ export default {
   created: async function() {
     this.classe = this.obj.objeto;
     this.pendenteID = this.obj._id;
-    alert(JSON.stringify(this.pendenteID));
+    // alert(JSON.stringify(this.pendenteID));
     await this.loadPais();
   },
 

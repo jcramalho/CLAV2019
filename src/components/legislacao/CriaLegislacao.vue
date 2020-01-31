@@ -11,7 +11,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Tipo de diploma:</div>
+              <div class="info-label">Tipo de diploma</div>
             </v-col>
             <v-col>
               <v-select
@@ -28,7 +28,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Número de diploma:</div>
+              <div class="info-label">Número de diploma</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -47,7 +47,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Data:</div>
+              <div class="info-label">Data</div>
             </v-col>
             <v-col>
               <v-menu
@@ -83,14 +83,14 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sumário:</div>
+              <div class="info-label">Sumário</div>
             </v-col>
             <v-col>
               <v-text-field
                 solo
                 clearable
                 color="indigo"
-                counter="150"
+                counter="300"
                 single-line
                 v-model="legislacao.sumario"
               ></v-text-field>
@@ -99,7 +99,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Link:</div>
+              <div class="info-label">Link</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -114,7 +114,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Tipo de fonte de legitimação:</div>
+              <div class="info-label">Tipo de fonte de legitimação</div>
             </v-col>
             <v-col>
               <v-select
@@ -216,7 +216,7 @@ export default {
 
     tiposDiploma: [],
 
-    diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
+    diplomaFonteTipo: ["Não aplicável", "PGD", "PGD/LC", "RADA"],
 
     // Para o seletor de entidades
     entidades: [],

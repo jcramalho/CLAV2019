@@ -201,7 +201,7 @@ export default {
       ].exemplosNotasAp.slice(0);
       this.notasEx[classe] = this.novaLista[classe].notasEx.slice(0);
       this.termosInd[classe] = this.novaLista[classe].termosInd.slice(0);
-      this.novaLista[classe].backgroundColor='orange';
+      this.novaLista[classe].backgroundColor='#E8EAF6';
       this.$emit("listaTotalSelUpdate", this.novaLista);
       this.componentKey += 1;
     },
@@ -247,7 +247,7 @@ export default {
       }
     }
   },
-  mounted: async function() {
+  created: async function() {
     try {
       var res = await this.$request(
         "get",

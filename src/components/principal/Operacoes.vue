@@ -223,12 +223,12 @@ export default {
               label: "Consultar",
               url: "/termosIndice",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
-            },
+            }/*,
             {
               label: "Adicionar",
               url: "/termosIndice/criar",
               level: [1, 3, 3.5, 4, 5, 6, 7]
-            }
+            }*/
           ]
         },
         {
