@@ -12,7 +12,7 @@
             <v-list-item-title>
               <v-row>
                 <v-col :md="2">
-                  <div class="info-label">Código da Classe:</div>
+                  <div class="info-label">Código da Classe</div>
                 </v-col>
                 <v-col>
                   <div class="mt-2">{{item.codigo}}</div>
@@ -40,13 +40,13 @@
             <table class="consulta">
               <tr v-if="item.titulo">
                 <td style="width:20%;">
-                  <div class="info-label">Título:</div>
+                  <div class="info-label">Título</div>
                 </td>
                 <td>{{ item.titulo }}</td>
               </tr>
               <tr v-if="item.prazoConservacao">
                 <td style="width:20%;">
-                  <div class="info-label">Prazo de Conservação Administrativa:</div>
+                  <div class="info-label">Prazo de Conservação Administrativa</div>
                 </td>
                 <td>{{ item.prazoConservacao }} Anos</td>
               </tr>
@@ -60,49 +60,49 @@
               </tr>
               <tr v-if="item.ni">
                 <td style="width:20%;">
-                  <div class="info-label">Natureza de intervenção:</div>
+                  <div class="info-label">Natureza de intervenção</div>
                 </td>
                 <td>{{ item.ni }}</td>
               </tr>
               <tr v-if="item.dono">
                 <td style="width:20%;">
-                  <div class="info-label">Dono do PN:</div>
+                  <div class="info-label">Dono do PN</div>
                 </td>
                 <td><p v-for="d in item.dono" :key="d">{{ d }}</p></td>
               </tr>
               <tr>
                 <td style="width:20%;">
-                  <div class="info-label">Data de Início:</div>
+                  <div class="info-label">Data de Início</div>
                 </td>
                 <td>{{ item.dataInicio }}</td>
               </tr>
               <tr>
                 <td style="width:20%;">
-                  <div class="info-label">Data de Fim:</div>
+                  <div class="info-label">Data de Fim</div>
                 </td>
                 <td>{{ item.dataFim }}</td>
               </tr>
               <tr>
                 <td style="width:20%;">
-                  <div class="info-label">N.º de agregações:</div>
+                  <div class="info-label">N.º de agregações</div>
                 </td>
                 <td>{{ item.agregacoes.length }}</td>
               </tr>
               <tr v-if="item.uiPapel">
                 <td style="width:20%;">
-                  <div class="info-label">Medição das UI em papel (m.l.):</div>
+                  <div class="info-label">Medição das UI em papel (m.l.)</div>
                 </td>
                 <td>{{ item.uiPapel }}</td>
               </tr>
               <tr v-if="item.uiDigital">
                 <td style="width:20%;">
-                  <div class="info-label">Medição das UI em digital (Gb):</div>
+                  <div class="info-label">Medição das UI em digital (Gb)</div>
                 </td>
                 <td>{{ item.uiDigital }}</td>
               </tr>
               <tr v-if="item.uiOutros">
                 <td style="width:20%;">
-                  <div class="info-label">Medição das UI noutros suportes:</div>
+                  <div class="info-label">Medição das UI noutros suportes</div>
                 </td>
                 <td>{{ item.uiOutros }}</td>
               </tr>
@@ -135,10 +135,10 @@
             <v-card-title
               class="red darken-4 title white--text"
               dark
-            >Comfirmação para remover de Zona de Controlo</v-card-title>
+            >Eliminação de zona de controlo</v-card-title>
 
             <v-card-text>
-              <div class="subtitle-1" style="white-space: pre-wrap">Este método remove <strong>permanentemente</strong> a zona de controlo, assim com todas as suas agregações.</div>
+              <div class="subtitle-1" style="white-space: pre-wrap">Esta ação vai <strong>eliminar permanentemente</strong>a zona de controlo assim como todas as agregações que lhe estão associadas.</div>
             </v-card-text>
 
             <v-divider></v-divider>

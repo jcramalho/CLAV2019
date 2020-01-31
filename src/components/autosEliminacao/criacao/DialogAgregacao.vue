@@ -5,7 +5,7 @@
         <v-card-text class="mt-2">
           <v-row>
             <v-col :md="2">
-              <div class="info-label">Código da Agregação:</div>
+              <div class="info-label">Código da Agregação</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -17,7 +17,7 @@
               >Insira um codigo para a agregação</v-text-field>
             </v-col>
             <v-col>
-              <div class="info-label">Titulo da Agregação:</div>
+              <div class="info-label">Titulo da Agregação</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -31,7 +31,7 @@
           </v-row>
           <v-row>
             <v-col :md="2">
-              <div class="info-label">Data de Contagem do PCA:</div>
+              <div class="info-label">Data de Contagem do PCA</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -43,7 +43,7 @@
               >Insira um codigo para a agregação</v-text-field>
             </v-col>
             <v-col>
-              <div class="info-label">Natureza de Intervenção:</div>
+              <div class="info-label">Natureza de Intervenção</div>
             </v-col>
             <v-col>
               <v-select
@@ -82,6 +82,8 @@
       </v-card>
 </template>
 <script>
+const help = require("@/config/help").help;
+
 export default {
   props: ["auto","index","agregacao","indexAg","closeAg"],
   
@@ -116,12 +118,10 @@ export default {
       var currentTime = new Date();
       var result = this.auto.zonaControlo[this.index].agregacoes.filter(ag => ag.codigo == this.codigo)
       if(!this.codigo || !this.titulo || !this.dataContagem) {
-        this.erro = " Verifique se os campos <strong>Código da Agregação," +
-                    " Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.";
+        this.erro = help.AutoEliminacao.Erros.FaltaCamposAg;
         this.erroDialog = true
       } else if(result.length>0) {
-        this.erro =
-          "O <strong>Código da Agregação</strong> que tentou inserir já existe. ";
+        this.erro = help.AutoEliminacao.Erros.CodigoAg;
         this.erroDialog = true;
       } else if(!re.test(this.dataContagem)) {
         this.erro =

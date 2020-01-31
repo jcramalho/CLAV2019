@@ -8,7 +8,7 @@
         <v-card-text>
             <v-row>
               <v-col :md="2">
-                <div class="info-label">Fonte de legitimação:</div>
+                <div class="info-label">Fonte de legitimação</div>
               </v-col>
               <v-col>
                 <v-autocomplete
@@ -22,7 +22,7 @@
             </v-row>
             <v-row>
               <v-col :md="2">
-                <div class="info-label">Fundo:</div>
+                <div class="info-label">Fundo</div>
               </v-col>
               <v-col>
                 <v-autocomplete

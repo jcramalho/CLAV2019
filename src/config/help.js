@@ -277,6 +277,17 @@ module.exports.help = {
     }
   },
   AutoEliminacao: {
+    Erros: {
+      FaltaCampos: "Verifique se os campos <strong>Código da Classe, Data de Início e/ou Data de Fim</strong> se encontram preenchidos.",
+      CodigoClasse: "O <strong>Código de Classe</strong> que introduziu na Zona de Controlo já foi introduzido no Auto.",
+      DataInicio: "O campo <strong>Data de Início</strong> tem de conter uma data anterior ou igual ao campo <strong>Data de Fim</strong>.",
+      MedicaoPapel: "Verifique se o campo <strong> Medição de UI em Papel</strong> se encontra devidamente preenchido.",
+      MedicaoDigital: "Verifique se o campo <strong> Medição de UI Digital</strong> se encontra devidamente preenchido.",
+      MedicaoOutro: "Verifique se o campo <strong> Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.",
+      FaltaCamposAg: "Verifique se os campos <strong>Código da Agregação, Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.",
+      CodigoAg: "O <strong>Código da Agregação</strong> que introduziu já foi associado a esta Zona de Controlo.",
+
+    },
     Campos: {
       FonteLegitimacao:
         "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
