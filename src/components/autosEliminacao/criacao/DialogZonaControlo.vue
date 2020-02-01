@@ -222,9 +222,7 @@ export default {
         this.erro = help.AutoEliminacao.Erros.CodigoClasse;
         this.erroDialog = true;
       } else if (!re.test(this.dataInicio) || !re.test(this.dataFim) || this.dataInicio.length!=4 || this.dataFim.length!=4) {
-        this.erro =
-          " Verifique se os campos <strong>" +
-          " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
+        this.erro = help.AutoEliminacao.Erros.DatasExtremas;
         this.erroDialog = true;
       } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
         this.erro = help.AutoEliminacao.Erros.DataInicio;
@@ -298,9 +296,7 @@ export default {
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else if (!re.test(this.dataInicio) || !re.test(this.dataFim) || this.dataInicio.length!=4 || this.dataFim.length!=4) {
-        this.erro =
-          " Verifique se os campos <strong>" +
-          " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
+        this.erro = help.AutoEliminacao.Erros.DatasExtremas;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {

@@ -32,7 +32,7 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-icon v-on="on" @click="deleteIndex=index; deleteDialog=true">delete</v-icon>
+                  <v-icon v-on="on" @click="deleteIndex=index; ag=item.agregacoes.length; deleteDialog=true">delete</v-icon>
                 </template>
                 <span>Remover Zona de Controlo</span>
               </v-tooltip>
@@ -138,7 +138,10 @@
             >Eliminação de zona de controlo</v-card-title>
 
             <v-card-text>
-              <div class="subtitle-1" style="white-space: pre-wrap">Esta ação vai <strong>eliminar permanentemente</strong>a zona de controlo assim como todas as agregações que lhe estão associadas.</div>
+              <div v-if="ag>0" class="subtitle-1" style="white-space: pre-wrap">Esta ação vai <strong>eliminar permanentemente</strong> a zona de controlo assim como todas as agregações que lhe estão associadas.
+              </div>
+              <div v-else class="subtitle-1" style="white-space: pre-wrap">Esta ação vai <strong>eliminar permanentemente</strong> a zona de controlo.
+              </div>
             </v-card-text>
 
             <v-divider></v-divider>
@@ -185,6 +188,7 @@
   </div>
 </template>
 <script>
+const help = require("@/config/help").help;
 import AdicionarAgregacao from "@/components/autosEliminacao/criacao/AdicionarAgregacao.vue"
 import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaControlo.vue"
 import ListaAgregacoes from "@/components/autosEliminacao/criacao/ListaAgregacoes.vue"
@@ -205,7 +209,7 @@ export default {
     uiPapel: null,
     uiDigital: null,
     uiOutros: null,
-
+    ag: 0,
     editarZC: false,
     snackbar: false,
     deleteDialog: false,
