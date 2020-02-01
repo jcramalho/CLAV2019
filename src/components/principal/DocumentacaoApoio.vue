@@ -209,7 +209,9 @@
                   <li>
                     <a :href="`${publicPath}documentos/Formulario_AE_RADA.xlsx`">Formulário para submissão de auto de RADA</a>
                   </li>
-                  
+                  <li>
+                    <a :href="`${publicPath}documentos/xml_schema_pgd_lc.xlsx`">XML Schema para PGD pertencente à Lista Consolidada</a>"
+                  </li>
                 </ul>
               </v-card-text>
             </v-card>

@@ -43,11 +43,44 @@ export default {
         return [];
       }
     },
-    prepararClasses: async function(classes) {
+    prepararClasses: async function(classes,nivel4) {
       try {
         var myClasses = [];
         for (var c of classes) {
-          myClasses.push(c.codigo + " - " + c.titulo);
+          if(c.df.valor !== "NE" ) 
+            myClasses.push(c.codigo + " - " + c.titulo);
+          else {
+            var indexs = 0
+            for(var n of nivel4) {
+              if(n.codigo.includes(c.codigo)){
+                myClasses.push(n.codigo + " - " + n.titulo);
+                indexs++;
+              } else break;
+            }
+            nivel4.splice(0,indexs)
+          }
+        }
+        return myClasses;
+      } catch (error) {
+        return [];
+      }
+    },
+    prepararClassesCompletas: async function(classes,nivel4) {
+      try {
+        var myClasses = [];
+        for (var c of classes) {
+          if(c.df.valor !== "NE" ) 
+            myClasses.push(c);
+          else {
+            var indexs = 0
+            for(var n of nivel4) {
+              if(n.codigo.includes(c.codigo)){
+                myClasses.push(n);
+                indexs++;
+              } else break;
+            }
+            nivel4.splice(0,indexs)
+          }
         }
         return myClasses;
       } catch (error) {
@@ -67,8 +100,12 @@ export default {
         "get",
         "/api/classes?nivel=3&info=completa"
       );
-      this.classes = await this.prepararClasses(response3.data);
-      this.classesCompletas = response3.data;
+      var response4 = await this.$request(
+        "get",
+        "/api/classes?nivel=4&info=completa"
+      );
+      this.classes = await this.prepararClasses(response3.data,response4.data);
+      this.classesCompletas = await this.prepararClassesCompletas(response3.data,response4.data);
     } catch (e) {
       this.entidades = [];
       this.portarias = [];

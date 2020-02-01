@@ -1,7 +1,7 @@
 <template>
   <div class="ma-1">
     <v-row justify="space-between" class="info-label">
-      <v-col>Lista de Agregações:</v-col>
+      <v-col>Lista de Agregações</v-col>
       <v-col>
         <v-text-field
           v-model="search"
@@ -47,10 +47,10 @@
           <v-card-title
             class="red darken-4 title white--text"
             dark
-          >Comfirmação para remover Agregação</v-card-title>
+          >Eliminação de agregação</v-card-title>
 
           <v-card-text>
-            <div class="subtitle-1" style="white-space: pre-wrap">Este método remove <strong>permanentemente</strong> a agregação.</div>
+            <div class="subtitle-1" style="white-space: pre-wrap">Esta ação vai <strong>eliminar permanentemente</strong> a agregação.</div>
           </v-card-text>
 
           <v-divider></v-divider>

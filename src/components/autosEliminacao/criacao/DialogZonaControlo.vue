@@ -5,7 +5,7 @@
     <v-card-text class="mt-4">
       <v-row>
         <v-col :md="2">
-          <div class="info-label">Código da Classe:</div>
+          <div class="info-label">Código da Classe</div>
         </v-col>
         <v-col>
           <v-autocomplete label="Selecione a classe" :items="classes" v-model="classe" @change="defClasse()" solo dense></v-autocomplete>
@@ -27,7 +27,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Natureza de Intervenção:</div>
+          <div class="info-label">Natureza de Intervenção</div>
         </v-col>
         <v-col>
           <v-text-field v-if="df=='Conservação'" :value="ni" solo dense readonly></v-text-field>
@@ -58,7 +58,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Data de Início:</div>
+          <div class="info-label">Data de Início</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -70,7 +70,7 @@
           >Insira um ano</v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Data de Fim:</div>
+          <div class="info-label">Data de Fim</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -84,7 +84,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Medição de UI em Papel:</div>
+          <div class="info-label">Medição de UI em Papel</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -96,7 +96,7 @@
           >Insira um ano</v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI Digital:</div>
+          <div class="info-label">Medição de UI Digital</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -108,7 +108,7 @@
           >Insira um ano</v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI noutro Suporte:</div>
+          <div class="info-label">Medição de UI noutro Suporte</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -123,7 +123,7 @@
       <v-row justify="end">
         <v-btn color="red darken-4" dark text @click="limparZC">Limpar</v-btn>
         <v-btn v-if="!this.zona" color="green darken-4" dark text @click="adicionarZC">Adicionar</v-btn>
-        <v-btn v-else color="green darken-4" dark text @click="editarZC">Editar</v-btn>
+        <v-btn v-else color="green darken-4" dark text @click="editarZC">Guardar</v-btn>
       </v-row>
     </v-card-text>
     <v-dialog v-model="erroDialog" width="700" persistent>
@@ -147,6 +147,8 @@
   </v-card>
 </template>
 <script>
+const help = require("@/config/help").help;
+
 export default {
   props: ["classes", "entidades", "auto", "closeZC","zona","index","classesCompletas"],
   data: () => ({
@@ -162,7 +164,7 @@ export default {
     df: null,
     prazo: null,
 
-    natureza: ["Vazio", "Dono", "Paticipante"],
+    natureza: ["Dono", "Participante"],
 
     erro: null,
     erroDialog: false
@@ -170,8 +172,7 @@ export default {
   created: function() {
     if(this.zona) {
       this.classe = this.zona.codigo + " - " + this.zona.titulo
-      if(!this.zona.ni) this.ni = "Vazio"
-      else this.ni = this.zona.ni
+      this.ni = this.zona.ni
       this.dono = this.zona.dono
       this.dataInicio = this.zona.dataInicio
       this.dataFim = this.zona.dataFim
@@ -199,6 +200,8 @@ export default {
     limparZC: function() {
       this.classe = null;
       this.ni = "Vazio";
+      this.df = null;
+      this.prazo = null;
       this.dono = null;
       this.dataInicio = null;
       this.dataFim = null;
@@ -213,38 +216,25 @@ export default {
         zc => (zc.codigo+" - "+zc.titulo) == this.classe
       );
       if (!this.classe || !this.dataInicio || !this.dataFim) {
-        this.erro =
-          " Verifique se os campos <strong>Código da Classe," +
-          " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
+        this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
       } else if (result.length > 0) {
-        this.erro =
-          "O <strong>Código da Agregação</strong> que tentou inserir já existe. ";
+        this.erro = help.AutoEliminacao.Erros.CodigoClasse;
         this.erroDialog = true;
       } else if (!re.test(this.dataInicio) || !re.test(this.dataFim) || this.dataInicio.length!=4 || this.dataFim.length!=4) {
-        this.erro =
-          " Verifique se os campos <strong>" +
-          " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
+        this.erro = help.AutoEliminacao.Erros.DatasExtremas;
         this.erroDialog = true;
       } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
-        this.erro =
-          " O campo <strong>Data de Início</strong> têm de ser <strong>menor" +
-          " ou igual</strong> ao campo <strong>Data de Fim</strong>.";
+        this.erro = help.AutoEliminacao.Erros.DataInicio;
         this.erroDialog = true;
       } else if (this.uiPapel && !reUI.test(this.uiPapel)) {
-        this.erro =
-          " Verifique se o campo <strong>" +
-          "Medição de UI em Papel</strong> se encontra devidamente preenchido.";
+        this.erro = help.AutoEliminacao.Erros.MedicaoPapel;
         this.erroDialog = true;
       } else if (this.uiDigital && !reUI.test(this.uiDigital)) {
-        this.erro =
-          " Verifique se o campo <strong>" +
-          "Medição de UI Digital</strong> se encontra devidamente preenchido.";
+        this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
         this.erroDialog = true;
       } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
-        this.erro =
-          " Verifique se o campo <strong>" +
-          "Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.";
+        this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
       } else {
         var codigo = this.classe.split(" - ")[0];
@@ -254,12 +244,12 @@ export default {
         var destino = classe.data.df.valor;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
-        var ni = "";
+        var ni = this.ni;
         var dono = [];
         var uiPapel;
         var uiDigital;
         var uiOutros;
-        if (this.ni != "Vazio") ni = this.ni;
+        
         if (this.dono) {
           dono = this.dono
         }
@@ -298,44 +288,31 @@ export default {
         zc => (zc.codigo+" - "+zc.titulo) == this.classe
       );
       if (!this.classe || !this.dataInicio || !this.dataFim) {
-        this.erro =
-          " Verifique se os campos <strong>Código da Classe," +
-          " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
+        this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else if (result.length > 0) {
-        this.erro =
-          "O <strong>Código da Agregação</strong> que tentou inserir já existe. ";
+        this.erro = help.AutoEliminacao.Erros.CodigoClasse;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else if (!re.test(this.dataInicio) || !re.test(this.dataFim) || this.dataInicio.length!=4 || this.dataFim.length!=4) {
-        this.erro =
-          " Verifique se os campos <strong>" +
-          " Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.";
+        this.erro = help.AutoEliminacao.Erros.DatasExtremas;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
-        this.erro =
-          " O campo <strong>Data de Início</strong> têm de ser <strong>menor" +
-          " ou igual</strong> ao campo <strong>Data de Fim</strong>.";
+        this.erro = help.AutoEliminacao.Erros.DataInicio;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else if (this.uiPapel && !reUI.test(this.uiPapel)) {
-        this.erro =
-          " Verifique se o campo <strong>" +
-          "Medição de UI em Papel</strong> se encontra devidamente preenchido.";
+        this.erro = help.AutoEliminacao.Erros.MedicaoPapel;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else if (this.uiDigital && !reUI.test(this.uiDigital)) {
-        this.erro =
-          " Verifique se o campo <strong>" +
-          "Medição de UI Digital</strong> se encontra devidamente preenchido.";
+        this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
-        this.erro =
-          " Verifique se o campo <strong>" +
-          "Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.";
+        this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup
       } else {
@@ -346,12 +323,12 @@ export default {
         var destino = classe.data.df.valor;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
-        var ni = "";
+        var ni = this.ni;
         var dono = "";
         var uiPapel;
         var uiDigital;
         var uiOutros;
-        if (this.ni != "Vazio") ni = this.ni;
+
         if (this.dono) dono = this.dono;
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
