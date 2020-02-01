@@ -3,11 +3,11 @@
     <v-form ref="form" :lazy-validation="false">
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Título:</div>
+          <div class="info-label">Título</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
-            :rules="[v => !!v || 'Campo obrigatório é obrigatório!']"
+            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
             v-model="RADA.titulo"
             label="Título"
             solo
@@ -17,12 +17,12 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div style="padding-top:6px" class="info-label">Entidades Responsáveis:</div>
+          <div style="padding-top:6px" class="info-label">Entidades Responsáveis</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-autocomplete
             deletable-chips
-            :rules="[v => !!v[0] || 'Campo obrigatório é obrigatório!']"
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RADA.entRes"
             :items="entidadesProcessadas"
             placeholder="Selecione as Entidades Responsáveis."

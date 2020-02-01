@@ -7,7 +7,7 @@
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">Adicionar Classe Série</v-card-title>
-      <br />
+      <br /> 
 
       <v-card-text>
         <v-form ref="form" :lazy-validation="false">

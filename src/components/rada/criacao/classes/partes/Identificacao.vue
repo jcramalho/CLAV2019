@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col md="3" sm="3">
-        <div class="info-label">Código:</div>
+        <div class="info-label">Código</div>
       </v-col>
       <v-col sm="3" md="3">
         <v-text-field
@@ -14,7 +14,7 @@
         ></v-text-field>
       </v-col>
       <v-col md="3" sm="3">
-        <div class="info-label">Titulo:</div>
+        <div class="info-label">Titulo</div>
       </v-col>
       <v-col sm="3" md="3">
         <v-text-field
@@ -33,7 +33,7 @@
 export default {
   props: ["newSerie"],
   data: () => ({
-    regraCodigo: [v => !!v || "Campo é obrigatório!"]
+    regraCodigo: [v => !!v || 'Campo de preenchimento obrigatório!']
   })
 };
 </script>
