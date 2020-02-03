@@ -29,14 +29,15 @@
         </template>
 
         <template v-slot:item="props">
-          <tr
+          <ListagemTI v-if="tipo === 'Termos de Índice'" :item="props.item" />
+          <!-- <tr
             v-if="tipo == 'Termos de Índice'"
             @click="go(props.item.idClasse)"
           >
             <td v-for="(campo, index) in props.item" v-bind:key="index">
               {{ campo }}
             </td>
-          </tr>
+          </tr> -->
 
           <tr v-else-if="tipo == 'Legislação'">
             <td v-for="(campo, index) in props.item" v-bind:key="index">
@@ -123,8 +124,13 @@
 </template>
 
 <script>
+import ListagemTI from "@/components/generic/ListagemTI";
+
 export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
+  components: {
+    ListagemTI
+  },
   data: () => ({
     search: "",
     headers: [],
@@ -199,6 +205,9 @@ export default {
           break;
 
         case "Remoção":
+          break;
+
+        case "Extinção":
           break;
 
         default:
