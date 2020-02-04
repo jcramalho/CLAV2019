@@ -29,15 +29,20 @@
         </template>
 
         <template v-slot:item="props">
-          <ListagemTI v-if="tipo === 'Termos de Índice'" :item="props.item" />
-          <!-- <tr
-            v-if="tipo == 'Termos de Índice'"
-            @click="go(props.item.idClasse)"
-          >
-            <td v-for="(campo, index) in props.item" v-bind:key="index">
-              {{ campo }}
-            </td>
-          </tr> -->
+          <ListagemTI
+            v-if="tipo === 'Termos de Índice'"
+            :item="props.item"
+            @rowClicked="go($event.idClasse)"
+          />
+
+          <ListagemTE
+            v-else-if="tipo == 'Entidades' || tipo == 'Tipologias de Entidade'"
+            :item="props.item"
+            @rowClicked="go($event.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
+          />
 
           <tr v-else-if="tipo == 'Legislação'">
             <td v-for="(campo, index) in props.item" v-bind:key="index">
@@ -85,28 +90,6 @@
             </td>
           </tr>
 
-          <tr
-            v-else-if="tipo == 'Entidades' || tipo == 'Tipologias de Entidade'"
-          >
-            <td v-for="(campo, index) in props.item" v-bind:key="index">
-              <div v-if="index == 'operacoes'">
-                <v-row>
-                  <v-col
-                    cols="2"
-                    v-for="(operacao, i) in props.item.operacoes"
-                    :key="i"
-                  >
-                    <v-icon
-                      @click="switchOperacao(operacao.descricao, props.item.id)"
-                      >{{ operacao.icon }}</v-icon
-                    >
-                  </v-col>
-                </v-row>
-              </div>
-              <div v-else @click="go(props.item.id)">{{ campo }}</div>
-            </td>
-          </tr>
-
           <tr v-else @click="go(props.item.id)">
             <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div>{{ campo }}</div>
@@ -125,11 +108,13 @@
 
 <script>
 import ListagemTI from "@/components/generic/ListagemTI";
+import ListagemTE from "@/components/generic/ListagemTE";
 
 export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
   components: {
-    ListagemTI
+    ListagemTI,
+    ListagemTE
   },
   data: () => ({
     search: "",
@@ -142,6 +127,7 @@ export default {
   }),
   methods: {
     go(id) {
+      console.log("id :", id);
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/ent_" + id);
@@ -199,6 +185,8 @@ export default {
     },
 
     switchOperacao(op, id) {
+      console.log("op :", op);
+      console.log("id :", id);
       switch (op) {
         case "Alteração":
           this.goEditar(id);
