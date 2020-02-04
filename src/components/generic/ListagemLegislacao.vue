@@ -1,7 +1,14 @@
 <template>
   <tr @click="onRowClick(item)">
-    <td class="subheading">{{ item.id }}</td>
-    <td class="subheading">{{ item.designacao }}</td>
+    <td class="subheading">{{ item.data }}</td>
+    <td class="subheading">{{ item.tipo }}</td>
+    <td class="subheading">
+      <div v-for="(ent, index) in item.entidades.split(',')" :key="index">
+        <a :href="'/entidades/ent_' + ent">{{ ent }}</a>
+      </div>
+    </td>
+    <td class="subheading">{{ item.numero }}</td>
+    <td class="subheading">{{ item.sumario }}</td>
     <td @click.stop>
       <v-icon
         v-for="(operacao, index) in item.operacoes"

@@ -44,37 +44,14 @@
             "
           />
 
-          <tr v-else-if="tipo == 'Legislação'">
-            <td v-for="(campo, index) in props.item" v-bind:key="index">
-              <div v-if="index == 'entidades'">
-                <div
-                  v-for="(ent, index) in campo.split(',')"
-                  v-bind:key="index"
-                >
-                  <a :href="'/entidades/ent_' + ent">{{ ent }}</a>
-                </div>
-              </div>
-
-              <div v-else-if="index == 'operacoes'">
-                <v-row>
-                  <v-col
-                    cols="2"
-                    v-for="(operacao, i) in props.item.operacoes"
-                    :key="i"
-                  >
-                    <v-icon
-                      @click="
-                        switchOperacao(operacao.descricao, props.item.numero)
-                      "
-                      >{{ operacao.icon }}</v-icon
-                    >
-                  </v-col>
-                </v-row>
-              </div>
-
-              <div v-else @click="go(props.item.numero)">{{ campo }}</div>
-            </td>
-          </tr>
+          <ListagemLegislacao
+            v-else-if="tipo == 'Legislação'"
+            :item="props.item"
+            @rowClicked="go($event.numero)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.numero)
+            "
+          />
 
           <tr
             v-else-if="tipo == 'Autos de Eliminação'"
@@ -109,12 +86,14 @@
 <script>
 import ListagemTI from "@/components/generic/ListagemTI";
 import ListagemTE from "@/components/generic/ListagemTE";
+import ListagemLegislacao from "@/components/generic/ListagemLegislacao";
 
 export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
   components: {
     ListagemTI,
-    ListagemTE
+    ListagemTE,
+    ListagemLegislacao
   },
   data: () => ({
     search: "",
@@ -127,7 +106,6 @@ export default {
   }),
   methods: {
     go(id) {
-      console.log("id :", id);
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/ent_" + id);
