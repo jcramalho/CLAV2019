@@ -163,7 +163,7 @@ export default {
     submit: async function() {
       this.auto.legislacao = "Portaria "+this.auto.legislacao.split(" ")[1]
       var fundo = []
-      for(var f in this.auto.fundo) {
+      for(var f of this.auto.fundo) {
         fundo.push(f.split(" - ")[1])
       }
       this.auto.fundo = fundo

@@ -268,7 +268,6 @@ export default {
       this.titulo = item.titulo
       this.dataContagem = item.dataContagem
       this.ni = item.ni
-      this.editAG = null
     }
   }
 }
