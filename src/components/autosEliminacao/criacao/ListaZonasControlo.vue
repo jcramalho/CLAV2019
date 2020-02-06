@@ -107,11 +107,6 @@
                 <td>{{ item.uiOutros }}</td>
               </tr>
             </table>
-            <!--Adicionar Agregações-->
-            <AdicionarAgregacao 
-              v-bind:auto="auto"
-              v-bind:index="index"
-            />
             <!-- Lista de Agregacoes -->
             <ListaAgregacoes
               v-bind:auto="auto"
