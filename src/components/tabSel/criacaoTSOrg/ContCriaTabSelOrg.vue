@@ -11,10 +11,10 @@
           <v-container grid-list-md fluid>
             <v-stepper v-model="stepNo" vertical>
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
-              <v-stepper-step :complete="stepNo > 1" step="1">
+              <v-stepper-step :complete="stepNo > 2" step="2">
                 Tipologias de entidade a que pertence
               </v-stepper-step>
-              <v-stepper-content step="1">
+              <v-stepper-content step="2">
                 <v-expansion-panels>
                   <v-expansion-panel>
                     <v-expansion-panel-header class="expansion-panel-heading">
@@ -42,7 +42,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 2;
+                    stepNo++;
                     barra(14);
                   "
                   >Continuar</v-btn
@@ -50,18 +50,18 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 0;
+                    stepNo--;
                     barra(0);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 2" step="2"
+              <v-stepper-step :complete="stepNo > 3" step="3"
                 >Designação
-                <small>Designação da nova tabela de seleção</small>
+                <small>Designação da Tabela de Seleção</small>
               </v-stepper-step>
-              <v-stepper-content step="2">
+              <v-stepper-content step="3">
                 <v-flex xs12 sm6 md10>
                   <v-text-field
                     :placeholder="tabelaSelecao.designacao"
@@ -71,7 +71,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 3;
+                    stepNo++;
                     barra(28);
                     loadProcEspecificos();
                   "
@@ -80,20 +80,20 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 1;
+                    stepNo--;
                     barra(0);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 3" step="3"
+              <v-stepper-step :complete="stepNo > 4" step="4"
                 >Processos Comuns
                 <small
                   >Processos passíveis de existir em qualquer entidade</small
                 >
               </v-stepper-step>
-              <v-stepper-content step="3">
+              <v-stepper-content step="4">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -164,7 +164,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 4;
+                    stepNo++;
                     barra(42);
                     loadProcEspRestantes();
                     procPreSelEspecificos();
@@ -174,21 +174,21 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 2;
+                    stepNo--;
                     barra(14);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 4" step="4"
+              <v-stepper-step :complete="stepNo > 5" step="5"
                 >Processos Específicos
                 <small
                   >Processos específicos da entidade e tipologia em que se
                   enquadra</small
                 >
               </v-stepper-step>
-              <v-stepper-content step="4">
+              <v-stepper-content step="5">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -260,7 +260,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 5;
+                    stepNo++;
                     barra(56);
                     procPreSelRestantes();
                   "
@@ -269,17 +269,17 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 3;
+                    stepNo--;
                     barra(28);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 5" step="5"
+              <v-stepper-step :complete="stepNo > 6" step="6"
                 >Processos Específicos Restantes
               </v-stepper-step>
-              <v-stepper-content step="5">
+              <v-stepper-content step="6">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -352,7 +352,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 6;
+                    stepNo++;
                     barra(70);
                     loadUltimosProcessos();
                     procPreSelUlt();
@@ -362,21 +362,21 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 4;
+                    stepNo--;
                     barra(42);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 6" step="6"
+              <v-stepper-step :complete="stepNo > 7" step="7"
                 >Outros processos
                 <small
                   >Revisão de processos de negócio não selecionados nas etapas
                   anteriores</small
                 >
               </v-stepper-step>
-              <v-stepper-content step="6">
+              <v-stepper-content step="7">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -420,7 +420,7 @@
                 <v-btn
                   color="primary"
                   @click="
-                    stepNo = 7;
+                    stepNo++;
                     barra(84);
                     parseProcessosSel();
                   "
@@ -429,14 +429,14 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 5;
+                    stepNo--;
                     barra(56);
                   "
                   >Voltar</v-btn
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 7" step="7"
+              <v-stepper-step :complete="stepNo > 8" step="8"
                 >Alterações na parte descritiva
                 <small>
                   Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão
@@ -444,7 +444,7 @@
                   (TI) nos processos selecionados
                 </small>
               </v-stepper-step>
-              <v-stepper-content step="7">
+              <v-stepper-content step="8">
                 <v-layout wrap>
                   <v-flex>
                     <v-expansion-panels>
@@ -504,7 +504,7 @@
                           color="primary"
                           text
                           @click="
-                            stepNo = 8;
+                            stepNo++;
                             barra(100);
                             finalizaUltPasso = false;
                           "
@@ -518,7 +518,7 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 6;
+                    stepNo--;
                     barra(72);
                   "
                   >Voltar</v-btn
@@ -528,12 +528,12 @@
               <hr style="border-top: 0px" />
 
               <v-row align="center" justify="center">
-                <v-btn color="primary" v-if="stepNo > 7" @click="submeterTS()">
+                <v-btn color="primary" v-if="stepNo > 8" @click="submeterTS()">
                   Submeter
                 </v-btn>
                 <v-btn
                   color="primary"
-                  v-else-if="stepNo >= 1"
+                  v-else-if="stepNo >= 2"
                   @click="guardarTrabalho()"
                   >Guardar trabalho
                   <v-dialog v-model="pendenteGuardado" width="60%">

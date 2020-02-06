@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col md="3" sm="3">
-        <div class="info-label">Descrição:</div>
+        <div class="info-label">Descrição</div>
       </v-col>
       <v-col sm="9" md="9">
         <v-text-field
@@ -17,7 +17,7 @@
     <v-row>
       <!-- DATA INICIAL -->
       <v-col md="3" sm="3">
-        <div class="info-label">Data Inicial:</div>
+        <div class="info-label">Data Inicial</div>
       </v-col>
       <v-col sm="3" md="3">
         <v-menu
@@ -48,7 +48,7 @@
       </v-col>
       <!-- DATA FINAL -->
       <v-col md="3" sm="3">
-        <div class="info-label">Data Final:</div>
+        <div class="info-label">Data Final</div>
       </v-col>
       <v-col sm="3" md="3">
         <v-menu
@@ -82,7 +82,7 @@
       <v-row>
         <!-- TUArq -->
         <v-col md="3" sm="3">
-          <div class="info-label">Tipo de Unidade Arquivística:</div>
+          <div class="info-label">Tipo de Unidade Arquivística</div>
         </v-col>
         <v-col md="3" sm="3">
           <v-select
@@ -104,7 +104,7 @@
           </v-select>
         </v-col>
         <v-col md="3" sm="3">
-          <div class="info-label">Tipo de Série:</div>
+          <div class="info-label">Tipo de Série</div>
         </v-col>
         <v-col sm="3" md="3">
           <v-select
@@ -119,7 +119,7 @@
       </v-row>
       <v-row>
         <v-col md="3" sm="3">
-          <div class="info-label">Suporte:</div>
+          <div class="info-label">Suporte</div>
         </v-col>
         <v-col sm="3" md="3">
           <v-select
@@ -132,7 +132,7 @@
           ></v-select>
         </v-col>
         <v-col md="3" sm="3">
-          <div class="info-label">Medição:</div>
+          <div class="info-label">Medição</div>
         </v-col>
         <v-col sm="3" md="3">
           <v-text-field
@@ -146,7 +146,7 @@
       </v-row>
       <v-row>
         <v-col md="3" sm="3">
-          <div class="info-label">Localização:</div>
+          <div class="info-label">Localização</div>
         </v-col>
         <v-col sm="9" md="9">
           <v-combobox

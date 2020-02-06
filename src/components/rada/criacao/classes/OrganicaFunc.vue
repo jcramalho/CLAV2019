@@ -14,13 +14,13 @@
           <v-divider></v-divider>
           <v-row>
             <v-col md="3" sm="3">
-              <div class="info-label">Código:</div>
+              <div class="info-label">Código</div>
             </v-col>
             <v-col sm="3" md="3">
               <v-text-field v-model="newOrgFunc.codigo" :rules="[v => !!v || 'Campo obrigatório!']" label="Código" solo clearable></v-text-field>
             </v-col>
             <v-col xs="3" sm="3">
-              <div class="info-label">Título:</div>
+              <div class="info-label">Título</div>
             </v-col>
             <v-col sm="3" md="3">
               <v-text-field v-model="newOrgFunc.titulo" :rules="[v => !!v || 'Campo obrigatório!']" label="Título" solo clearable></v-text-field>
@@ -28,7 +28,7 @@
           </v-row>
           <v-row>
             <v-col md="3" sm="3">
-              <div class="info-label">Descrição:</div>
+              <div class="info-label">Descrição</div>
             </v-col>
             <v-col sm="9" md="9">
               <v-text-field v-model="newOrgFunc.descricao" :rules="[v => !!v || 'Campo obrigatório!']" label="Descrição" solo clearable></v-text-field>
@@ -39,7 +39,7 @@
           
           <v-row>
             <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai:</div>
+              <div class="info-label">Classe Pai</div>
             </v-col>
             <v-col sm="9" md="9">
               <v-autocomplete

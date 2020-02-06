@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="12" xs="12" sm="3">
-        <div class="info-label">Entidades Produtoras:</div>
+        <div class="info-label">Entidades Produtoras</div>
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-data-table
@@ -48,7 +48,7 @@
     <NovaEntidade :entidades="entidades" :entidadesClone="entidadesClone" :newSerie="newSerie" />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
-        <div class="info-label">Selecione a(s) entidade(s) produtora(s):</div>
+        <div class="info-label">Selecione a(s) entidade(s) produtora(s)</div>
       </v-col>
       <v-col xs="12" sm="9">
         <v-text-field

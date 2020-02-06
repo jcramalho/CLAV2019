@@ -7,9 +7,9 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-text-field
-            :rules="[v => !!v || 'Campo obrigatório!']"
+            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
             v-model="TS.titulo"
-            label="Título"
+            label="Título da TS"
             solo
             clearable
           ></v-text-field>

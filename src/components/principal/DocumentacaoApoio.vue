@@ -212,6 +212,9 @@
                   <li>
                     <a :href="`${publicPath}documentos/xml_schema_pgd_lc.xlsx`">XML Schema para PGD pertencente à Lista Consolidada</a>"
                   </li>
+                  <li>
+                    <a :href="`${publicPath}documentos/xml_schema_s_lc.xlsx`">XML Schema para PGD <b>não</b> pertencente à Lista Consolidada e RADA</a>"
+                  </li>
                 </ul>
               </v-card-text>
             </v-card>

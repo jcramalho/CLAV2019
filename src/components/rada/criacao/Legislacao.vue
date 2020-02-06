@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="12" xs="12" sm="3">
-        <div class="info-label">Legislação:</div>
+        <div class="info-label">Legislação</div>
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-data-table
@@ -49,7 +49,7 @@
     <Legislacao :legislacao="legislacao" :newSerie="newSerie" />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
-        <div class="info-label">Selecione a legislação:</div>
+        <div class="info-label">Selecione a legislação</div>
       </v-col>
       <v-col xs="12" sm="9">
         <v-text-field

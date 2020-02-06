@@ -1,14 +1,14 @@
 <template>
   <v-card flat class="mb-12">
     <v-form ref="form" :lazy-validation="false">
-      <v-row>
+      <v-row v-if="!RE.tipologiasProd[0]">
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Entidades Produtoras:</div>
+          <div class="info-label">Entidades Produtoras</div>
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
             deletable-chips
-            :rules="[v => !!v[0] || 'Campo obrigatório é obrigatório!']"
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RE.entidadesProd"
             :items="entidadesProcessadas"
             placeholder="Selecione as Entidades Produtoras."
@@ -17,14 +17,14 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="!RE.entidadesProd[0]">
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Tipologias das Entidades Produtoras:</div>
+          <div class="info-label">Tipologias das Entidades Produtoras</div>
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
             deletable-chips
-            :rules="[v => !!v[0] || 'Campo obrigatório é obrigatório!']"
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RE.tipologiasProd"
             :items="tipologias"
             chips
@@ -33,9 +33,10 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
+      <hr style="border: 2px solid indigo; border-radius: 1px;" />
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Data Inicial da Documentação:</div>
+          <div class="info-label">Data Inicial da Documentação</div>
         </v-col>
         <v-col xs="12" sm="9">
           <v-menu
@@ -49,7 +50,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                :rules="[v => !!v || 'Campo obrigatório!']"
+                :rules="basicRule"
                 v-model="RE.dataInicial"
                 label="Data Inicial"
                 prepend-icon="event"
@@ -65,7 +66,7 @@
           </v-menu>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Data Final da Documentação:</div>
+          <div class="info-label">Data Final da Documentação</div>
         </v-col>
         <v-col xs="12" sm="9">
           <v-menu
@@ -79,7 +80,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                :rules="[v => !!v || 'Campo obrigatório!']"
+                :rules="basicRule"
                 v-model="RE.dataFinal"
                 label="Data Final"
                 prepend-icon="event"
@@ -97,7 +98,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Número de Unidades de Instalação:</div>
+          <div class="info-label">Número de Unidades de Instalação</div>
         </v-col>
         <v-col xs="12" sm="9">
           <v-text-field
@@ -117,7 +118,7 @@
           <v-expansion-panel-content>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">História Administrativa/Biográfica:</div>
+                <div class="info-label">História Administrativa/Biográfica</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-text-field
@@ -131,7 +132,7 @@
             </v-row>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">História Custodial:</div>
+                <div class="info-label">História Custodial</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-text-field
@@ -152,7 +153,7 @@
           <v-expansion-panel-content>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">Sistema de Organização:</div>
+                <div class="info-label">Sistema de Organização</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-text-field
@@ -173,7 +174,7 @@
           <v-expansion-panel-content>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">Localização:</div>
+                <div class="info-label">Localização</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-text-field
@@ -187,7 +188,7 @@
             </v-row>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">Estado de Conservação:</div>
+                <div class="info-label">Estado de Conservação</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-text-field
@@ -227,7 +228,7 @@ export default {
     menu1: false,
     menu2: false,
     isMultiple: false,
-    basicRule: [v => !!v || "Campo obrigatório!"]
+    basicRule: [v => !!v || "Campo de preenchimento obrigatório!"]
   }),
   methods: {
     apagar: function() {

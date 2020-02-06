@@ -750,7 +750,7 @@ export default {
         "/api/entidades/" + resUser.data.entidade
       );
       if (resUser.data.entidade === "ent_DGLAB") {
-        this.stepNo = 0;
+        this.stepNo = 1;
         this.entidadeDGLAB = true;
         this.loadEntidades();
       } else {
