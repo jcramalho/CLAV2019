@@ -210,10 +210,10 @@
                     <a :href="`${publicPath}documentos/Formulario_AE_RADA.xlsx`">Formulário para submissão de auto de RADA</a>
                   </li>
                   <li>
-                    <a :href="`${publicPath}documentos/xml_schema_pgd_lc.xlsx`">XML Schema para PGD pertencente à Lista Consolidada</a>"
+                    <a :href="`${publicPath}documentos/xml_schema_pgd_lc.xsd`">XML Schema para PGD pertencente à Lista Consolidada</a>"
                   </li>
                   <li>
-                    <a :href="`${publicPath}documentos/xml_schema_s_lc.xlsx`">XML Schema para PGD <b>não</b> pertencente à Lista Consolidada e RADA</a>"
+                    <a :href="`${publicPath}documentos/xml_schema_s_lc.xsd`">XML Schema para PGD <b>não</b> pertencente à Lista Consolidada e RADA</a>"
                   </li>
                 </ul>
               </v-card-text>
