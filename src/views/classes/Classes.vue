@@ -23,14 +23,14 @@
         </v-col>
         <v-col xs="12" md="3" sm="3" lg="3" xl="3">
           <div class="text-center">
-            <v-btn >
-              <v-icon left>search</v-icon>Pesquisa Avançada
+            <v-btn @click="showClasses=false">
+              <v-icon left>filter_list</v-icon>Pesquisa Avançada
             </v-btn>
           </div>
         </v-col>
       </v-row>
     </v-sheet>
-    <v-row align="center" no-gutters>
+    <v-row align="center" no-gutters v-if="showClasses">
       <v-col>
         <v-card-text>
           <div v-if="classesCarregadas">
@@ -57,12 +57,62 @@
         </v-card-text>
       </v-col>
     </v-row>
+
+    <v-row v-else>
+      <v-col>
+        <v-card-text>
+          <v-row v-for="(campo, index) in camposUsados" :key="index">
+            <v-col cols="5">
+              <v-autocomplete :items="camposPesquisa" label="Campo a pesquisar" v-model="camposUsados[index].campo"/>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field v-model="camposUsados[index].valor"/>
+            </v-col>
+            <v-col>
+                <v-select :items="opLogicas" v-model="conetor" 
+                          @input="camposUsados.push({campo: '', valor: ''});
+                          opLogicas=[conetor]"/>
+            </v-col>
+            <v-col v-if="camposUsados.length>1">
+              <v-btn text @click="camposUsados.splice(index,1)">
+                <v-icon dark color="error">remove_circle_outline</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-spacer/>
+            <v-btn class="mx-2" dark color="indigo accent-4" @click="cancelarPesquisa">
+              Cancelar
+            </v-btn>
+            <v-btn class="mx-2" dark color="indigo accent-4" @click="pesquisaAvancada">
+              <v-icon left>search</v-icon>Pesquisar
+            </v-btn>
+          </v-row>
+        </v-card-text>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
 <script>
 export default {
   data: () => ({
+    showClasses: true,
+    conetor: "E",
+    opLogicas: ["E", "OU"],
+    camposUsados: [{campo: "", valor: ""}],
+    camposPesquisa: [
+      {text: "Código", value: "codigo"},
+      {text: "Título", value: "titulo"},
+      {text: "Estado", value: "classeStatus"},
+      {text: "Descrição", value: "descricao"},
+      {text: "Notas de Aplicação", value: "na"},
+      {text: "Exemplos de Notas de Aplicação", value: "exemploNa"},
+      {text: "Notas de Exclusão", value: "ne"},
+      {text: "Termos de Índice", value: "ti"},
+      {text: "PCA", value: "pca"},
+      {text: "DF", value: "df"}
+    ],
     classesTree: [],
     classesCarregadas: false,
     search: null,
@@ -71,8 +121,8 @@ export default {
     selected: [],
     selectedParents: []
   }),
-  mounted: async function() {
-    var myClasses = await this.$request("get", "/api/classes");
+  created: async function() {
+    var myClasses = await this.$request("get", "/api/classes?info=completa");
     var myIndice = await this.$request("get", "/api/indicePesquisa");
     this.classesTree = await this.preparaTree(myClasses.data, myIndice.data);
     this.classesCarregadas = true;
@@ -90,6 +140,24 @@ export default {
         this.selectedParents.push(levelIds.join("."));
       }
     },
+
+    cancelarPesquisa: function(){
+      this.camposUsados = [{campo: "", valor: ""}]
+      this.opLogicas = ["E", "OU"]
+      this.conetor = "E"
+      this.showClasses = true
+    },
+
+    pesquisaAvancada: function(){
+      var classesFiltradas = []
+      if(this.conetor == "E"){
+        for(let campo of this.camposUsados){
+          
+        }
+
+      }
+    },
+
     processaPesquisa: function() {
       if (this.search != "" && this.search != null) {
         this.selected = [];
