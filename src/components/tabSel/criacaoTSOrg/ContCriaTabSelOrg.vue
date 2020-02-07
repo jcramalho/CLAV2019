@@ -623,7 +623,7 @@ export default {
     return {
       tabelaSelecao: {},
       // Numero do passo da criação de TS
-      stepNo: 1,
+      stepNo: 2,
       // Valor da barra de progresso
       valorBarra: 0,
       // Lista de todas as tipologias existentes
@@ -745,10 +745,10 @@ export default {
 
         this.tipSel = this.tabelaSelecao.tipologias;
         // Para retirar da lista de tipologias selecionadas aquelas que por default já fazem parte da entidade
-        for (var j = 0; j < this.tipEnt.length; j++) {
+        /*for (var j = 0; j < this.tipEnt.length; j++) {
           index = this.tipSel.findIndex(e => e.id === this.tipEnt[j].id);
           this.tipSel.splice(index, 1);
-        }
+        }*/
       } catch (error) {
         return error;
       }
