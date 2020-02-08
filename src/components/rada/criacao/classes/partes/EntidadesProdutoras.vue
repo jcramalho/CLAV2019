@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 <template>
   <div>
     <v-row>
@@ -12,12 +13,6 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:header="props">
-            <tr>
-              <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
-            </tr>
-          </template>
-
           <template v-slot:item="props">
             <tr>
               <td>{{ props.item.sigla }}</td>
@@ -37,15 +32,12 @@
             </tr>
           </template>
         </v-data-table>
-        <v-alert
-          v-else
-          :value="true"
-          icon="warning"
-          color="amber accent-3"
-        >Não tem entidades produtoras selecionadas...</v-alert>
+        <v-alert v-else :value="true" icon="warning" color="amber accent-3"
+          >Não tem entidades produtoras selecionadas...</v-alert
+        >
       </v-col>
     </v-row>
-    <NovaEntidade :entidades="entidades" :entidadesClone="entidadesClone" :newSerie="newSerie" />
+    <NovaEntidade :entidades="entidades" :entidadesClone="entidadesClone" />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
         <div class="info-label">Selecione a(s) entidade(s) produtora(s)</div>
@@ -63,9 +55,10 @@
           :headers="headersSel"
           :items="entidadesClone"
           item-key="id"
-          class="elevation-1"
           :footer-props="footer_props"
+          :items-per-page="5"
         >
+          >
           <template v-slot:item="props">
             <tr @click="selectEntidade(props.item)">
               <td>{{ props.item.sigla }}</td>
@@ -74,16 +67,9 @@
             </tr>
           </template>
 
-          <template
-            v-slot:footer.page-text="props"
-          >{{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
-
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            class="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" class="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-col>
     </v-row>
@@ -153,9 +139,19 @@ export default {
       footer_props: {
         "items-per-page-text": "Entidades por página",
         "items-per-page-options": [5, 10, 20, -1],
-        "items-per-page-all-text": "Todas"
+        "items-per-page-all-text": "Todas",
+        "show-first-last-page": true,
+        "show-current-page": true
       }
     };
+  },
+  watch: {
+    // Voltar a colocar o array inteiro devido ao bug do reset() do form
+    "newSerie.produtoras": function(newValue, oldvalue) {
+      if (newValue.length == 0) {
+        this.entidadesClone = [...this.entidades];
+      }
+    }
   },
   methods: {
     selectEntidade: function(item) {

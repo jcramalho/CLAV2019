@@ -107,7 +107,7 @@ export default {
             //   titulo: "Reforma Agraria",
             //   eFilhoDe: "",
             //   descricao: "Descricaao 01"
-            // },
+            // }
             // {
             //   codigo: "01.01",
             //   tipo: "Série",

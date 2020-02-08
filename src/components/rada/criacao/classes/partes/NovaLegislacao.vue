@@ -21,36 +21,80 @@
                 label="Tipo"
               />
             </v-col>
-
             <v-col v-else>
-              <v-text-field :rules="rule" v-model="tipo" label="Tipo"></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-text-field :rules="rule" v-model="numero" label="Número"></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-text-field :rules="rule" v-model="sumario" label="Sumário"></v-text-field>
+              <v-text-field
+                :rules="rule"
+                v-model="tipo"
+                label="Tipo"
+              ></v-text-field>
             </v-col>
 
             <v-col>
               <v-text-field
                 :rules="rule"
+                v-model="numero"
+                label="Número"
+              ></v-text-field>
+            </v-col>
+
+            <v-col>
+              <v-text-field
+                :rules="rule"
+                v-model="sumario"
+                label="Sumário"
+              ></v-text-field>
+            </v-col>
+
+            <v-col>
+              <v-menu
+                ref="menu2"
+                v-model="data_menu"
+                :close-on-content-click="false"
+                :return-value.sync="data"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    :rules="[v => !!v || 'Campo obrigatório!']"
+                    v-model="data"
+                    label="Data"
+                    prepend-icon="event"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="data" no-title scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="data_menu = false"
+                    >Cancel</v-btn
+                  >
+                  <v-btn text color="primary" @click="$refs.menu2.save(data)"
+                    >OK</v-btn
+                  >
+                </v-date-picker>
+              </v-menu>
+              <!-- <v-text-field
+                :rules="rule"
                 v-model="data"
                 label="Data: AAAA-MM-DD"
                 mask="####-##-##"
-              />
+              /> -->
             </v-col>
           </v-row>
           <v-row v-if="!!alertOn">
             <v-col>
-              <v-alert dense text type="error">Legislação já existe!</v-alert>
+              <v-alert dismissible dense text type="error"
+                >Legislação já existe!</v-alert
+              >
             </v-col>
           </v-row>
           <v-row v-if="sucessOn">
             <v-col>
-              <v-alert dense text type="success">Legislação adicionada com sucesso!</v-alert>
+              <v-alert dismissible dense text type="success"
+                >Legislação adicionada com sucesso!</v-alert
+              >
             </v-col>
           </v-row>
         </v-container>
@@ -61,14 +105,13 @@
 
 <script>
 export default {
-  props: ["legislacao", "newSerie"],
+  props: ["legislacao", "legislacaoClone"],
   data: function() {
     return {
+      data_menu: false,
       rule: [v => !!v || "Campo é obrigatório."],
       listaTipos: [],
       novasLegislacao: [],
-      erroValidacao: false,
-      mensagensErro: [],
       alertOn: false,
       sucessOn: false,
       tipo: "",
@@ -108,6 +151,8 @@ export default {
 
           this.legislacao.push(legis);
           this.novasLegislacao.push(legis);
+          this.legislacaoClone.push(legis);
+
           this.sucessOn = true;
           this.$refs.form.reset();
         } else {
@@ -116,30 +161,22 @@ export default {
       }
     },
     validaLegislacao: function() {
-
       // Verificar se está na lista de legislacao por selecionar;
-      let onLegislacao = this.legislacao.some(el => {
+      return this.legislacao.some(el => {
         return el.tipo == this.tipo && el.numero == this.numero;
       });
-
-      // Verificar se está na lista de legislacao já adicionada;
-      let onNewSerie = this.newSerie.legislacao.some(el => {
-        return el.tipo == this.tipo && el.numero == this.numero;
-      });
-
-      return onLegislacao || onNewSerie;
-    },
-
-    validaData: function(d) {
-      var date = new Date().toISOString().slice(0, 10);
-      var res = true;
-      if (d > date) {
-        this.mensagensErro.push("A data não pode ser superior à data atual!");
-        this.data = "";
-        res = false;
-      }
-      return res;
     }
+
+    // validaData: function(d) {
+    //   var date = new Date().toISOString().slice(0, 10);
+    //   var res = true;
+    //   if (d > date) {
+    //     this.mensagensErro.push("A data não pode ser superior à data atual!");
+    //     this.data = "";
+    //     res = false;
+    //   }
+    //   return res;
+    // }
   }
 };
 </script>

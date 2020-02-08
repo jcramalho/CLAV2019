@@ -12,12 +12,6 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:header="props">
-            <tr>
-              <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
-            </tr>
-          </template>
-
           <template v-slot:item="props">
             <tr>
               <td>{{ props.item.tipo }}</td>
@@ -38,15 +32,12 @@
             </tr>
           </template>
         </v-data-table>
-        <v-alert
-          v-else
-          :value="true"
-          icon="warning"
-          color="amber accent-3"
-        >Não tem legislação selecionada...</v-alert>
+        <v-alert v-else :value="true" icon="warning" color="amber accent-3"
+          >Não tem legislação selecionada...</v-alert
+        >
       </v-col>
     </v-row>
-    <Legislacao :legislacao="legislacao" :newSerie="newSerie" />
+    <Legislacao :legislacao="legislacao" :legislacaoClone="legislacaoClone" />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
         <div class="info-label">Selecione a legislação</div>
@@ -62,10 +53,10 @@
         <v-data-table
           :search="search"
           :headers="headersSel"
-          :items="legislacao"
+          :items="legislacaoClone"
           item-key="id"
-          class="elevation-1"
           :footer-props="footer_props"
+          :items-per-page="5"
         >
           <template v-slot:item="props">
             <tr @click="selectLegislacao(props.item)">
@@ -76,16 +67,9 @@
             </tr>
           </template>
 
-          <template
-            v-slot:footer.page-text="props"
-          >{{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
-
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            class="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" class="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-col>
     </v-row>
@@ -103,6 +87,7 @@ export default {
   data: () => {
     return {
       legislacao: [],
+      legislacaoClone: [],
       search: "",
       headersDes: [
         {
@@ -167,19 +152,29 @@ export default {
       footer_props: {
         "items-per-page-text": "Legislação por página",
         "items-per-page-options": [5, 10, 20, -1],
-        "items-per-page-all-text": "Todas"
+        "items-per-page-all-text": "Todas",
+        "show-first-last-page": true,
+        "show-current-page": true
       }
     };
+  },
+  watch: {
+    // Voltar a colocar o array inteiro devido ao bug do reset() do form
+    "newSerie.legislacao": function(newValue, oldvalue) {
+      if (newValue.length == 0) {
+        this.legislacaoClone = [...this.legislacao];
+      }
+    }
   },
   methods: {
     selectLegislacao: function(item) {
       this.newSerie.legislacao.push(item);
-      this.legislacao = this.legislacao.filter(
+      this.legislacaoClone = this.legislacaoClone.filter(
         e => e.tipo != item.tipo && e.numero != item.numero
       );
     },
     unselectLegislacao: function(item) {
-      this.legislacao.push(item);
+      this.legislacaoClone.push(item);
       this.newSerie.legislacao = this.newSerie.legislacao.filter(
         e => e.numero != item.numero && e.tipo != item.tipo
       );
@@ -188,6 +183,7 @@ export default {
   created: async function() {
     let response = await this.$request("get", "/api/legislacao");
     this.legislacao = response.data;
+    this.legislacaoClone = [...response.data];
   }
 };
 </script>

@@ -38,12 +38,12 @@
           </v-row>
           <v-row v-if="!!alertOn">
             <v-col>
-              <v-alert dense text type="error">Entidade já existe!</v-alert>
+              <v-alert dismissible dense text type="error">Entidade já existe!</v-alert>
             </v-col>
           </v-row>
           <v-row v-if="sucessOn">
             <v-col>
-              <v-alert dense text type="success">Entidade adicionada com sucesso!</v-alert>
+              <v-alert dismissible dense text type="success">Entidade adicionada com sucesso!</v-alert>
             </v-col>
           </v-row>
         </v-container>
@@ -54,7 +54,7 @@
 
 <script>
 export default {
-  props: ["entidades", "newSerie", "entidadesClone"],
+  props: ["entidades", "entidadesClone"],
   data: function() {
     return {
       alertOn: false,
@@ -97,6 +97,7 @@ export default {
           this.novasEntidades.push(entidade);
           this.entidadesClone.push(entidade);
           this.entidades.push(entidade);
+          
           this.sucessOn = true;
           this.$refs.form.reset();
         } else {
@@ -105,25 +106,9 @@ export default {
       }
     },
     validaEntidade: async function() {
-      let siglaValida = await this.$request(
-        "post",
-        "/api/entidades/verificarSigla",
-        { sigla: this.sigla }
-      );
-
-      let descricaoValida = await this.$request(
-        "post",
-        "/api/entidades/verificarDesignacao",
-        { designacao: this.designacao }
-      );
-
-      return (
-        siglaValida.data ||
-        descricaoValida.data ||
-        this.novasEntidades.some(el => {
-          return el.sigla == this.sigla || el.designacao == this.designacao;
-        })
-      );
+      return this.entidades.some(el => {
+        return el.sigla == this.sigla || el.designacao == this.designacao;
+      });
     }
   }
 };

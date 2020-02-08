@@ -7,10 +7,10 @@
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">Adicionar Classe Série</v-card-title>
-      <br /> 
+      <br />
 
       <v-card-text>
-        <v-form ref="form" :lazy-validation="false">
+        <v-form ref="formSerie" :lazy-validation="false">
           <h5>Identificação</h5>
           <v-divider></v-divider>
           <Identificacao :newSerie="newSerie" />
@@ -41,7 +41,7 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-          <br/>
+          <br />
 
           <h5>Hierarquia</h5>
           <v-divider></v-divider>
@@ -129,16 +129,69 @@ export default {
       tipo: "Série",
       children: []
     }
+    // newSerie: {
+    //   codigo: "",
+    //   titulo: "",
+    //   descricao: "",
+    //   dataInicial: "",
+    //   dataFinal: "",
+    //   tUA: "",
+    //   tSerie: "",
+    //   suporte: "",
+    //   medicao: "",
+    //   localizacao: [],
+    //   produtoras: [],
+    //   legislacao: [],
+    //   relacoes: "",
+    //   pca: "",
+    //   formaContagem: "",
+    //   justicacaoPCA: "",
+    //   df: "",
+    //   justificacaoDF: "",
+    //   notas: "",
+    //   eFilhoDe: "",
+    //   tipo: "Série",
+    //   children: []
+    // }
   }),
   methods: {
     apagar: function() {
-      this.$refs.form.reset();
+      this.newSerie = {
+        // codigo: "01.01",
+        // titulo: "SERIE",
+        // descricao: "DESC SERIE",
+        // dataInicial: "2020-02-13",
+        // dataFinal: "2020-02-16",
+        codigo: "",
+        titulo: "",
+        descricao: "",
+        dataInicial: "",
+        dataFinal: "",
+        tUA: "",
+        tSerie: "",
+        suporte: "",
+        medicao: "",
+        localizacao: [],
+        produtoras: [],
+        legislacao: [],
+        relacoes: "",
+        pca: "",
+        formaContagem: "",
+        justicacaoPCA: "",
+        df: "",
+        justificacaoDF: "",
+        notas: "",
+        eFilhoDe: "",
+        tipo: "Série",
+        children: []
+      };
+      this.$refs.formSerie.resetValidation();
     },
     close: function() {
       this.dialog = false;
     },
     save: function() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.formSerie.validate()) {
         this.classes.push(Object.assign({}, this.newSerie));
         this.dialog = false;
         this.apagar();

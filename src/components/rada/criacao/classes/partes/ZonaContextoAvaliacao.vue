@@ -2,7 +2,7 @@
   <div>
     <EntidadesProdutoras :newSerie="newSerie" :entidades="entidades"/>
     <hr style="border: 3px solid indigo; border-radius: 2px;" />
-    <Legislacao :newSerie="newSerie"/>
+    <Legislacao :newSerie="newSerie" />
     <hr style="border: 3px solid indigo; border-radius: 2px;" />
     <!-- <RelacoesEntidades/> -->
     <!-- <v-row>
@@ -48,15 +48,15 @@
 </template>
 
 <script>
-import EntidadesProdutoras from "./../../EntidadesProdutoras";
-import Legislacao from "./../../Legislacao";
+import EntidadesProdutoras from "./EntidadesProdutoras";
+import Legislacao from "./Legislacao";
 // import RelacoesEntidades from "./../../RelacoesEntidades";
 
 export default {
   props: ["newSerie", "entidades"],
   components: {
     EntidadesProdutoras,
-    Legislacao,
+    Legislacao
     // RelacoesEntidades
   },
   data: () => {
