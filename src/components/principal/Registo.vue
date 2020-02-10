@@ -13,7 +13,7 @@
             <p>Para tal, deverão ser seguidos os seguinte passos:</p>
             <ol>
                 <li>Designação de representante(s) pela Entidade;</li>
-                <li>Preenchimento do <a :href="`${publicPath}documentos/form-id-representante.docx`">
+                <li>Preenchimento do <a :href="`${publicPath}documentos/form-id-representante.pdf`">
                 formulário disponibilizado para o efeito</a>, para cada representante designado;</li>
                 <li>O formulário deverá ser assinado por um dirigente superior da Entidade e autenticado 
                   com assinatura digital, se o envio for feito por via eletrónica (NB: não serão aceites 
@@ -40,7 +40,7 @@
           <v-expansion-panel-header>Indicação de representante da entidade</v-expansion-panel-header>
           <v-expansion-panel-content>
             <p>Para identificar os representantes que utilizarão os serviços CLAV a entidade deve preencher
-            <a :href="`${publicPath}documentos/form-id-representante.docx`">este formulário</a> e remetê-lo, por via postal ou eletrónica, para:
+            <a :href="`${publicPath}documentos/form-id-representante.pdf`">este formulário</a> e remetê-lo, por via postal ou eletrónica, para:
                 <ul>
                     <li>DGLAB, Edifício da Torre do Tombo, Alameda da Universidade, 1649-010 Lisboa;</li>
                     <li>clav@dglab.gov.pt</li>
