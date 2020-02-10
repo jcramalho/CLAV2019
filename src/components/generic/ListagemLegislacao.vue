@@ -9,7 +9,7 @@
     </td>
     <td class="subheading">{{ item.numero }}</td>
     <td class="subheading">{{ item.sumario }}</td>
-    <td @click.stop>
+    <td @click.stop align="right">
       <v-icon
         v-for="(operacao, index) in item.operacoes"
         @click="doOperation(item, operacao)"

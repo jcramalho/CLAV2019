@@ -2,7 +2,7 @@
   <tr @click="onRowClick(item)">
     <td class="subheading">{{ item.id }}</td>
     <td class="subheading">{{ item.designacao }}</td>
-    <td @click.stop>
+    <td @click.stop align="right">
       <v-icon
         v-for="(operacao, index) in item.operacoes"
         @click="doOperation(item, operacao)"

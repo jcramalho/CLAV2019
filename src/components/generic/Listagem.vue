@@ -106,6 +106,7 @@ export default {
   }),
   methods: {
     go(id) {
+      let idLeg = "";
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/ent_" + id);
@@ -114,7 +115,6 @@ export default {
           this.$router.push("/tipologias/tip_" + id);
           break;
         case "Legislação":
-          let idLeg = "";
           for (let i = 0; i < this.ids.length; i++) {
             if (this.ids[i].numero === id) {
               idLeg = this.ids[i].id;
@@ -133,6 +133,7 @@ export default {
     },
 
     goEditar(id) {
+      let idLeg = "";
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/editar/ent_" + id);
@@ -141,7 +142,6 @@ export default {
           this.$router.push("/tipologias/editar/tip_" + id);
           break;
         case "Legislação":
-          let idLeg = "";
           for (let i = 0; i < this.ids.length; i++) {
             if (this.ids[i].numero === id) {
               idLeg = this.ids[i].id;
@@ -163,8 +163,6 @@ export default {
     },
 
     switchOperacao(op, id) {
-      console.log("op :", op);
-      console.log("id :", id);
       switch (op) {
         case "Alteração":
           this.goEditar(id);
@@ -184,10 +182,17 @@ export default {
   created: function() {
     try {
       for (let i = 0; i < this.cabecalho.length; i++) {
-        this.headers[i] = {
-          text: this.cabecalho[i],
-          value: this.campos[i]
-        };
+        if (this.campos[i] === "operacoes")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "end"
+          };
+        else
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i]
+          };
       }
     } catch (e) {
       return e;
