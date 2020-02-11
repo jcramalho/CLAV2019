@@ -67,45 +67,55 @@
     <v-row v-else>
       <v-col>
         <v-card-text>
-          <v-row v-for="(campo, index) in camposUsados" :key="index">
-            <v-col cols="5">
-              <v-autocomplete
-                :items="camposPesquisa"
-                label="Campo a pesquisar"
-                v-model="camposUsados[index].campo"
-              />
-            </v-col>
-            <v-col cols="5" v-if="camposUsados[index].campo">
-              <div v-if="camposUsados[index].campo.enum.length > 0">
+          <v-form
+            v-for="(campo, index) in camposUsados"
+            :key="index"
+            ref="forms"
+            lazy-validation
+          >
+            <v-row>
+              <v-col cols="5">
                 <v-autocomplete
-                  :items="camposUsados[index].campo.enum"
-                  label="Valor a pesquisar"
-                  v-model="camposUsados[index].valor"
+                  :items="camposPesquisa"
+                  label="Campo a pesquisar"
+                  :rules="regraCampo"
+                  v-model="camposUsados[index].campo"
                 />
-              </div>
-              <div v-else>
-                <v-text-field
-                  label="Valor a pesquisar"
-                  v-model="camposUsados[index].valor"
+              </v-col>
+              <v-col cols="5" v-if="camposUsados[index].campo">
+                <div v-if="camposUsados[index].campo.enum.length > 0">
+                  <v-autocomplete
+                    :items="camposUsados[index].campo.enum"
+                    label="Valor a pesquisar"
+                    :rules="regraValor"
+                    v-model="camposUsados[index].valor"
+                  />
+                </div>
+                <div v-else>
+                  <v-text-field
+                    label="Valor a pesquisar"
+                    :rules="regraValor"
+                    v-model="camposUsados[index].valor"
+                  />
+                </div>
+              </v-col>
+              <v-col>
+                <v-select
+                  :items="opLogicas"
+                  v-model="conetor"
+                  @input="
+                    camposUsados.push({ campo: null, valor: '' });
+                    opLogicas = [conetor];
+                  "
                 />
-              </div>
-            </v-col>
-            <v-col>
-              <v-select
-                :items="opLogicas"
-                v-model="conetor"
-                @input="
-                  camposUsados.push({ campo: null, valor: '' });
-                  opLogicas = [conetor];
-                "
-              />
-            </v-col>
-            <v-col cols="1" v-if="camposUsados.length > 1">
-              <v-btn text @click="camposUsados.splice(index, 1)">
-                <v-icon dark color="error">remove_circle_outline</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
+              </v-col>
+              <v-col cols="1" v-if="camposUsados.length > 1">
+                <v-btn text @click="removerCampo(index)">
+                  <v-icon dark color="error">remove_circle_outline</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
           <v-row>
             <v-spacer />
             <v-btn
@@ -135,6 +145,8 @@
 export default {
   data: () => ({
     showClasses: true,
+    regraCampo: [v => !!v || "Campo a pesquisar é obrigatório."],
+    regraValor: [v => !!v || "Valor a pesquisar é obrigatório."],
     conetor: "E",
     opLogicas: ["E", "OU"],
     camposUsados: [{ campo: null, valor: "" }],
@@ -206,6 +218,13 @@ export default {
       }
     },
 
+    removerCampo: function(index) {
+      this.camposUsados.splice(index, 1);
+      if (this.camposUsados.length == 1) {
+        this.opLogicas = ["E", "OU"];
+      }
+    },
+
     cancelarPesquisa: function() {
       this.classesTree = this.classesOriginal;
       this.selected = [];
@@ -250,25 +269,35 @@ export default {
     },
 
     pesquisaAvancada: async function() {
-      var classesFiltradas = JSON.parse(JSON.stringify(this.classesOriginal));
-      this.selected = [];
-      this.selectedParents = [];
+      var valid = true;
 
-      for (let c of this.camposUsados) {
-        c.valor = c.valor.toLowerCase();
+      for (var i = 0; i < this.camposUsados.length; i++) {
+        if (!this.$refs.forms[i].validate()) {
+          valid = false;
+        }
       }
 
-      if (this.conetor == "E") {
-        classesFiltradas = await this.advancedFilter(classesFiltradas, true);
-      } else if (this.conetor == "OU") {
-        classesFiltradas = await this.advancedFilter(classesFiltradas, false);
-      }
+      if (valid) {
+        var classesFiltradas = JSON.parse(JSON.stringify(this.classesOriginal));
+        this.selected = [];
+        this.selectedParents = [];
 
-      this.classesTree = classesFiltradas;
-      this.camposUsados = [{ campo: null, valor: "" }];
-      this.opLogicas = ["E", "OU"];
-      this.conetor = "E";
-      this.showClasses = true;
+        for (let c of this.camposUsados) {
+          c.valor = c.valor.toLowerCase();
+        }
+
+        if (this.conetor == "E") {
+          classesFiltradas = await this.advancedFilter(classesFiltradas, true);
+        } else if (this.conetor == "OU") {
+          classesFiltradas = await this.advancedFilter(classesFiltradas, false);
+        }
+
+        this.classesTree = classesFiltradas;
+        this.camposUsados = [{ campo: null, valor: "" }];
+        this.opLogicas = ["E", "OU"];
+        this.conetor = "E";
+        this.showClasses = true;
+      }
     },
 
     simpleFilter: async function(classes, searchText) {
