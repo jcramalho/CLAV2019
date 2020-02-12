@@ -1,20 +1,25 @@
 <template>
   <v-card class="ma-4">
-    <v-card-title v-if="tipo === 'Legislação'" class="indigo darken-4 white--text">
-      {{titulo}}
+    <v-card-title
+      v-if="tipo === 'Legislação'"
+      class="indigo darken-4 white--text"
+    >
+      {{ titulo }}
       <InfoBox
         header="Tipo + Entidade + Número"
         :text="
-            myhelp.Legislacao.Campos.Tipo +
-              ' + ' +
-              myhelp.Legislacao.Campos.Entidades +
-              ' + ' +
-              myhelp.Legislacao.Campos.Numero
-          "
+          myhelp.Legislacao.Campos.Tipo +
+            ' + ' +
+            myhelp.Legislacao.Campos.Entidades +
+            ' + ' +
+            myhelp.Legislacao.Campos.Numero
+        "
       />
     </v-card-title>
 
-    <v-card-title v-else class="indigo darken-4 white--text">{{titulo}}</v-card-title>
+    <v-card-title v-else class="indigo darken-4 white--text">{{
+      titulo
+    }}</v-card-title>
 
     <v-card-text>
       <v-row v-for="(item, index) in objeto" v-bind:key="index">
@@ -49,7 +54,8 @@
                 v-for="(ent, index) in item.text.split(' ')"
                 v-bind:key="index"
                 :href="'/entidades/ent_' + ent"
-              >{{ ent }}</a>
+                >{{ ent }}</a
+              >
             </div>
             <div v-else class="info-content">{{ item.text }}</div>
           </div>
@@ -61,7 +67,10 @@
         <v-col cols="2">
           <div class="info-label">
             Tipologias de Entidade:
-            <InfoBox header="Tipologias de Entidade" :text="myhelp.Entidade.Campos.Tipologias" />
+            <InfoBox
+              header="Tipologias de Entidade"
+              :text="myhelp.Entidade.Campos.Tipologias"
+            />
           </div>
         </v-col>
         <v-col>
@@ -77,9 +86,9 @@
 
       <!-- Consulta de Entidade: Natureza de intervenção nos PNs -->
       <v-card v-if="tipo === 'Entidades' && listaProcD.length">
-        <v-card-title
-          class="indigo darken-4 white--text"
-        >Natureza de intervenção nos Processos de Negócio</v-card-title>
+        <v-card-title class="indigo darken-4 white--text"
+          >Natureza de intervenção nos Processos de Negócio</v-card-title
+        >
 
         <v-card-text>
           <v-row v-if="listaProcD.length">
@@ -93,14 +102,24 @@
               </div>
             </v-col>
             <v-col>
-              <ul class="info-content" :class="{ 'is-collapsed': domainCollapsed }">
+              <ul
+                class="info-content"
+                :class="{ 'is-collapsed': domainCollapsed }"
+              >
                 <li v-for="(l, index) in listaProcD" v-bind:key="index">
-                  <a :href="'/classes/consultar/c' + l.codigo">{{ l.codigo }}</a>
+                  <a :href="'/classes/consultar/c' + l.codigo">{{
+                    l.codigo
+                  }}</a>
                   - {{ l.titulo }}
                 </li>
               </ul>
-              <a @click="domainCollapsed = !domainCollapsed" v-if="listaProcD.length > 6">
-                <span v-if="domainCollapsed" style="color:#283593;">Mostrar mais...</span>
+              <a
+                @click="domainCollapsed = !domainCollapsed"
+                v-if="listaProcD.length > 6"
+              >
+                <span v-if="domainCollapsed" style="color:#283593;"
+                  >Mostrar mais...</span
+                >
                 <span v-else style="color:#283593;">Mostrar menos...</span>
               </a>
             </v-col>
@@ -124,20 +143,30 @@
                 style="padding-left:5px;"
               >
                 <li v-if="listaProcP[key].length > 0">
-                  <b v-if="listaProcP[key].length > 0">{{ participationsDic[key] }}:</b>
-                  <ul class="info-content" :class="{ 'is-collapsed': partsCollapsed[key] }">
-                    <li v-for="(p, index) in listaProcP[key]" v-bind:key="index">
-                      <a :href="'/classes/consultar/c' + p.codigo">{{ p.codigo }}</a>
+                  <b v-if="listaProcP[key].length > 0"
+                    >{{ participationsDic[key] }}:</b
+                  >
+                  <ul
+                    class="info-content"
+                    :class="{ 'is-collapsed': partsCollapsed[key] }"
+                  >
+                    <li
+                      v-for="(p, index) in listaProcP[key]"
+                      v-bind:key="index"
+                    >
+                      <a :href="'/classes/consultar/c' + p.codigo">{{
+                        p.codigo
+                      }}</a>
                       - {{ p.titulo }}
                     </li>
                   </ul>
                   <a
-                    @click="
-                                  partsCollapsed[key] = !partsCollapsed[key]
-                                "
+                    @click="partsCollapsed[key] = !partsCollapsed[key]"
                     v-if="listaProcP[key].length > 6"
                   >
-                    <span v-if="partsCollapsed[key]" style="color:#283593;">Mostrar mais...</span>
+                    <span v-if="partsCollapsed[key]" style="color:#283593;"
+                      >Mostrar mais...</span
+                    >
                     <span v-else style="color:#283593;">Mostrar menos...</span>
                   </a>
                 </li>
@@ -149,9 +178,9 @@
 
       <!-- Consulta de Tipologia: Natureza de intervenção nos PNs -->
       <v-card v-if="tipo === 'Tipologias' && listaProcD.length">
-        <v-card-title
-          class="indigo darken-4 white--text"
-        >Natureza de intervenção nos Processos de Negócio</v-card-title>
+        <v-card-title class="indigo darken-4 white--text"
+          >Natureza de intervenção nos Processos de Negócio</v-card-title
+        >
 
         <v-card-text>
           <v-row v-if="listaProcD.length">
@@ -165,14 +194,24 @@
               </div>
             </v-col>
             <v-col>
-              <ul class="info-content" :class="{ 'is-collapsed': domainCollapsed }">
+              <ul
+                class="info-content"
+                :class="{ 'is-collapsed': domainCollapsed }"
+              >
                 <li v-for="(l, index) in listaProcD" v-bind:key="index">
-                  <a :href="'/classes/consultar/c' + l.codigo">{{ l.codigo }}</a>
+                  <a :href="'/classes/consultar/c' + l.codigo">{{
+                    l.codigo
+                  }}</a>
                   - {{ l.titulo }}
                 </li>
               </ul>
-              <a @click="domainCollapsed = !domainCollapsed" v-if="listaProcD.length > 6">
-                <span v-if="domainCollapsed" style="color:#283593;">Mostrar mais...</span>
+              <a
+                @click="domainCollapsed = !domainCollapsed"
+                v-if="listaProcD.length > 6"
+              >
+                <span v-if="domainCollapsed" style="color:#283593;"
+                  >Mostrar mais...</span
+                >
                 <span v-else style="color:#283593;">Mostrar menos...</span>
               </a>
             </v-col>
@@ -184,30 +223,41 @@
                 Como Participante:
                 <InfoBox
                   header="Intervenção nos PNs como Participante"
-                  :text="
-                                myhelp.Tipologias.Intervencoes.Participante
-                              "
+                  :text="myhelp.Tipologias.Intervencoes.Participante"
                 />
               </div>
             </v-col>
 
             <v-col>
-              <ul v-for="(key, index) in Object.keys(listaProcP)" v-bind:key="index">
+              <ul
+                v-for="(key, index) in Object.keys(listaProcP)"
+                v-bind:key="index"
+              >
                 <li v-if="listaProcP[key].length > 0">
-                  <b v-if="listaProcP[key].length > 0">{{ participationsDic[key] }}:</b>
-                  <ul class="info-content" :class="{ 'is-collapsed': partsCollapsed[key] }">
-                    <li v-for="(p, index) in listaProcP[key]" v-bind:key="index">
-                      <a :href="'/classes/consultar/c' + p.codigo">{{ p.codigo }}</a>
+                  <b v-if="listaProcP[key].length > 0"
+                    >{{ participationsDic[key] }}:</b
+                  >
+                  <ul
+                    class="info-content"
+                    :class="{ 'is-collapsed': partsCollapsed[key] }"
+                  >
+                    <li
+                      v-for="(p, index) in listaProcP[key]"
+                      v-bind:key="index"
+                    >
+                      <a :href="'/classes/consultar/c' + p.codigo">{{
+                        p.codigo
+                      }}</a>
                       - {{ p.titulo }}
                     </li>
                   </ul>
                   <a
-                    @click="
-                                  partsCollapsed[key] = !partsCollapsed[key]
-                                "
+                    @click="partsCollapsed[key] = !partsCollapsed[key]"
                     v-if="listaProcP[key].length > 6"
                   >
-                    <span v-if="partsCollapsed[key]" style="color:#283593;">Mostrar mais...</span>
+                    <span v-if="partsCollapsed[key]" style="color:#283593;"
+                      >Mostrar mais...</span
+                    >
                     <span v-else style="color:#283593;">Mostrar menos...</span>
                   </a>
                 </li>
@@ -222,7 +272,10 @@
         <v-col cols="2">
           <div class="info-label">
             Entidades:
-            <InfoBox header="Entidades" :text="myhelp.Tipologias.Campos.Entidades" />
+            <InfoBox
+              header="Entidades"
+              :text="myhelp.Tipologias.Campos.Entidades"
+            />
           </div>
         </v-col>
         <v-col>
@@ -234,7 +287,9 @@
             </li>
           </ul>
           <a @click="entCollapsed = !entCollapsed" v-if="listaEnt.length > 6">
-            <span v-if="entCollapsed" style="color:#283593;">Mostrar mais...</span>
+            <span v-if="entCollapsed" style="color:#283593;"
+              >Mostrar mais...</span
+            >
             <span v-else style="color:#283593;">Mostrar menos...</span>
           </a>
         </v-col>
@@ -265,7 +320,11 @@
 
       <v-row>
         <v-col>
-          <v-btn class="indigo accent-4 white--text mr-4" @click="$router.go(-1)">Voltar</v-btn>
+          <v-btn
+            class="indigo accent-4 white--text mr-4"
+            @click="$router.go(-1)"
+            >Voltar</v-btn
+          >
         </v-col>
       </v-row>
     </v-card-text>

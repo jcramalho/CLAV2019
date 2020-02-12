@@ -30,10 +30,66 @@
                     class="ma-2"
                     @click="go(op.url)"
                     :key="op.url"
-                  >{{ op.label }}</v-btn>
+                    >{{ op.label }}</v-btn
+                  >
+                  <v-btn
+                    v-if="[1, 3, 3.5, 4, 5, 6, 7].includes(level)"
+                    color="indigo accent-4"
+                    dark
+                    class="ma-2"
+                    @click="extinguirDialog = true"
+                  >
+                    Extinguir</v-btn
+                  >
                 </div>
               </v-card-text>
             </v-card>
+
+            <!-- Selecionar Entidade a Extinguir -->
+            <v-dialog v-model="extinguirDialog" width="50%">
+              <v-card>
+                <v-card-title>Selecione a Entidade a extinguir</v-card-title>
+                <v-card-text>
+                  <v-row>
+                    <v-col v-if="entidadesReady">
+                      <v-autocomplete
+                        solo
+                        clearable
+                        color="indigo darken-4"
+                        label="Selecione uma entidade"
+                        :items="entidades"
+                        v-model="entidadeExtinguir"
+                      />
+                    </v-col>
+                    <v-col v-else style="text-align:center;">
+                      <p>A carregar entidades...</p>
+                      <v-progress-circular
+                        indeterminate
+                        size="100"
+                        width="10"
+                        color="indigo accent-4"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer />
+                  <v-btn
+                    color="red darken-4"
+                    dark
+                    @click="extinguirDialog = false"
+                    >Fechar</v-btn
+                  >
+                  <v-btn
+                    color="indigo accent-4"
+                    dark
+                    class="ma-2"
+                    @click="go(`/entidades/extinguir/ent_${entidadeExtinguir}`)"
+                    >Extinguir</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -48,11 +104,10 @@ export default {
   props: ["level"],
   methods: {
     go: function(url) {
-      if(url.startsWith('http')){
-        window.location.href = url
-      }
-      else{
-        this.$router.push(url)
+      if (url.startsWith("http")) {
+        window.location.href = url;
+      } else {
+        this.$router.push(url);
       }
     },
 
@@ -74,7 +129,18 @@ export default {
         }
       }
       return filtered;
+    },
+
+    preparaEntidades(entidades) {
+      this.entidades = entidades.map(entidade => entidade.sigla);
+      this.entidadesReady = true;
     }
+  },
+
+  async created() {
+    let response = await this.$request("get", "/api/entidades?processos=sem");
+
+    this.preparaEntidades(response.data);
   },
 
   computed: {
@@ -85,12 +151,17 @@ export default {
 
   data() {
     return {
+      extinguirDialog: false,
+      entidades: [],
+      entidadeExtinguir: null,
+      entidadesReady: false,
       panelHeaderColor: "indigo darken-4",
       operacoes: [
         {
           entidade: "Lista Consolidada",
           html: true,
-          tooltip: "para a classificação e avaliação da informação pública - Catálogo de processos de negócio da AP",
+          tooltip:
+            "para a classificação e avaliação da informação pública - Catálogo de processos de negócio da AP",
           texto: help.ListaConsolidada,
           ops: [
             {
@@ -223,7 +294,7 @@ export default {
               label: "Consultar",
               url: "/termosIndice",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
-            }/*,
+            } /*,
             {
               label: "Adicionar",
               url: "/termosIndice/criar",

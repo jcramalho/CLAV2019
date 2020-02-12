@@ -70,6 +70,12 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] }
     },
     {
+      path: "/entidades/extinguir/:idEntidade",
+      name: "extinguirEntidade",
+      component: () => import("./views/entidades/EntidadesExtinguir.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/entidades/:idEntidade",
       name: "consultaEntidade",
       component: () => import("./views/entidades/EntidadesConsulta.vue"),

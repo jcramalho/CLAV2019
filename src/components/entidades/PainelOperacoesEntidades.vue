@@ -1,8 +1,11 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-
-      <ValidarEntidadeInfoBox :e="e" :acao="acao" />
+      <ValidarEntidadeInfoBox
+        v-if="this.acao !== 'Extinção'"
+        :e="e"
+        :acao="acao"
+      />
 
       <v-col>
         <v-btn
@@ -18,6 +21,13 @@
           class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
           >Alterar Entidade</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Extinção'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarAlterarEntidade"
+          >Extinguir Entidade</v-btn
         >
       </v-col>
 
@@ -37,6 +47,14 @@
           class="red darken-4"
           @click="eliminarEntidade"
           >Cancelar Alteração</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Extinção'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarEntidade"
+          >Cancelar Extinção</v-btn
         >
       </v-col>
 
@@ -159,12 +177,9 @@
       <!-- Cancelamento da criação de uma entidade: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title
-            >Cancelamento e eliminação do pedido de criação da
-            entidade</v-card-title
-          >
+          <v-card-title>Cancelamento do pedido </v-card-title>
           <v-card-text>
-            <p>Selecionou o cancelamento da criação da entidade.</p>
+            <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
             <p>
               Confirme a decisão para ser reencaminhado para a página principal.
@@ -223,7 +238,6 @@ export default {
   },
 
   methods: {
-
     validarEntidadeCriacao: async function() {
       // Designação
       if (this.e.designacao == "" || this.e.designacao == null) {
