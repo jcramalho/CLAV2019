@@ -21,3 +21,5 @@ yarn-error.log*
 *.sw*
 
 codealike.json
+
+yarn.lock

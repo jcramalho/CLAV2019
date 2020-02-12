@@ -172,6 +172,7 @@ export default {
           break;
 
         case "Extinção":
+          this.$router.push("/entidades/extinguir/ent_" + id);
           break;
 
         default:
