@@ -33,7 +33,10 @@
                     >{{ op.label }}</v-btn
                   >
                   <v-btn
-                    v-if="[1, 3, 3.5, 4, 5, 6, 7].includes(level)"
+                    v-if="
+                      [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
+                        item.entidade === 'Entidades'
+                    "
                     color="indigo accent-4"
                     dark
                     class="ma-2"
