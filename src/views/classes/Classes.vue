@@ -93,8 +93,18 @@
                 </div>
                 <div v-else>
                   <v-text-field
+                    v-if="camposUsados[index].campo.mask"
                     label="Valor a pesquisar"
                     :rules="regraValor"
+                    :type="camposUsados[index].campo.type"
+                    v-mask="camposUsados[index].campo.mask"
+                    v-model="camposUsados[index].valor"
+                  />
+                  <v-text-field
+                    v-else
+                    label="Valor a pesquisar"
+                    :rules="regraValor"
+                    :type="camposUsados[index].campo.type"
                     v-model="camposUsados[index].valor"
                   />
                 </div>
@@ -151,12 +161,16 @@ export default {
     opLogicas: ["E", "OU"],
     camposUsados: [{ campo: null, valor: "" }],
     camposPesquisa: [
-      { text: "Código", value: { nome: "id", enum: [] } },
-      { text: "Título", value: { nome: "titulo", enum: [] } },
+      {
+        text: "Código",
+        value: { nome: "id", type: "text", mask: "###.##.###.##", enum: [] }
+      },
+      { text: "Título", value: { nome: "titulo", type: "text", enum: [] } },
       {
         text: "Estado",
         value: {
           nome: "status",
+          type: "text",
           enum: [
             { text: "Ativa", value: "A" },
             { text: "Inativa", value: "I" },
@@ -164,19 +178,35 @@ export default {
           ]
         }
       },
-      { text: "Descrição", value: { nome: "descricao", enum: [] } },
-      { text: "Notas de Aplicação", value: { nome: "na", enum: [] } },
+      {
+        text: "Descrição",
+        value: { nome: "descricao", type: "text", enum: [] }
+      },
+      {
+        text: "Notas de Aplicação",
+        value: { nome: "na", type: "text", enum: [] }
+      },
       {
         text: "Exemplos de Notas de Aplicação",
-        value: { nome: "exemploNa", enum: [] }
+        value: { nome: "exemploNa", type: "text", enum: [] }
       },
-      { text: "Notas de Exclusão", value: { nome: "ne", enum: [] } },
-      { text: "Termos de Índice", value: { nome: "ti", enum: [] } },
-      { text: "PCA", value: { nome: "pca", enum: [] } },
+      {
+        text: "Notas de Exclusão",
+        value: { nome: "ne", type: "text", enum: [] }
+      },
+      {
+        text: "Termos de Índice",
+        value: { nome: "ti", type: "text", enum: [] }
+      },
+      {
+        text: "PCA",
+        value: { nome: "pca", type: "text", mask: "#########", enum: [] }
+      },
       {
         text: "DF",
         value: {
           nome: "df",
+          type: "text",
           enum: [
             { text: "Conservação", value: "C" },
             { text: "Conservação Parcial", value: "CP" },
