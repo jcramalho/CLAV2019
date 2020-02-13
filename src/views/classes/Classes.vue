@@ -96,7 +96,6 @@
                     v-if="camposUsados[index].campo.mask"
                     label="Valor a pesquisar"
                     :rules="regraValor"
-                    :type="camposUsados[index].campo.type"
                     v-mask="camposUsados[index].campo.mask"
                     v-model="camposUsados[index].valor"
                   />
@@ -104,7 +103,6 @@
                     v-else
                     label="Valor a pesquisar"
                     :rules="regraValor"
-                    :type="camposUsados[index].campo.type"
                     v-model="camposUsados[index].valor"
                   />
                 </div>
@@ -163,50 +161,31 @@ export default {
     camposPesquisa: [
       {
         text: "Código",
-        value: { nome: "id", type: "text", mask: "###.##.###.##", enum: [] }
+        value: { nome: "id", mask: "###.##.###.##", enum: [] }
       },
-      { text: "Título", value: { nome: "titulo", type: "text", enum: [] } },
-      {
-        text: "Estado",
-        value: {
-          nome: "status",
-          type: "text",
-          enum: [
-            { text: "Ativa", value: "A" },
-            { text: "Inativa", value: "I" },
-            { text: "Harmonização", value: "H" }
-          ]
-        }
-      },
-      {
-        text: "Descrição",
-        value: { nome: "descricao", type: "text", enum: [] }
-      },
-      {
-        text: "Notas de Aplicação",
-        value: { nome: "na", type: "text", enum: [] }
-      },
+      { text: "Título", value: { nome: "titulo", enum: [] } },
+      { text: "Estado", value: { nome: "status", enum: [] } },
+      { text: "Descrição", value: { nome: "descricao", enum: [] } },
+      { text: "Notas de Aplicação", value: { nome: "na", enum: [] } },
       {
         text: "Exemplos de Notas de Aplicação",
-        value: { nome: "exemploNa", type: "text", enum: [] }
+        value: { nome: "exemploNa", enum: [] }
       },
-      {
-        text: "Notas de Exclusão",
-        value: { nome: "ne", type: "text", enum: [] }
-      },
+      { text: "Notas de Exclusão", value: { nome: "ne", enum: [] } },
       {
         text: "Termos de Índice",
-        value: { nome: "ti", type: "text", enum: [] }
+        value: { nome: "ti", enum: [] }
       },
+      { text: "PCA", value: { nome: "pca", mask: "#########", enum: [] } },
+      { text: "Forma de contagem do PCA", value: { nome: "fc_pca", enum: [] } },
       {
-        text: "PCA",
-        value: { nome: "pca", type: "text", mask: "#########", enum: [] }
+        text: "Subforma de contagem do PCA",
+        value: { nome: "sfc_pca", enum: [] }
       },
       {
         text: "DF",
         value: {
           nome: "df",
-          type: "text",
           enum: [
             { text: "Conservação", value: "C" },
             { text: "Conservação Parcial", value: "CP" },
@@ -226,9 +205,54 @@ export default {
     var myClasses = await this.$request("get", "/api/classes?info=completa");
     this.classesTree = await this.preparaTree(myClasses.data);
     this.classesOriginal = this.classesTree;
+
+    await this.loadStatus();
+    await this.loadPCAFormasContagem();
+    await this.loadPCASubFormasContagem();
     this.classesCarregadas = true;
   },
   methods: {
+    loadEnum: function(nomeCampo, n_enum) {
+      var found = false;
+
+      for (var i = 0; i < this.camposPesquisa.length && !found; i++) {
+        if (this.camposPesquisa[i].text == nomeCampo) {
+          this.camposPesquisa[i].value.enum = n_enum;
+          found = true;
+        }
+      }
+    },
+    loadStatus: async function() {
+      var response = await this.$request("get", "/api/vocabularios/vc_status");
+      var status = response.data
+        .map(item => {
+          return {
+            text: item.termo,
+            value: item.idtermo.split("#vc_status_")[1]
+          };
+        })
+        .sort((a, b) => a.text.localeCompare(b.text));
+
+      this.loadEnum("Estado", status);
+    },
+    loadPCAFormasContagem: async function() {
+      var response = await this.$request(
+        "get",
+        "/api/vocabularios/vc_pcaFormaContagem"
+      );
+
+      var pcaFormasContagem = response.data.map(item => item.termo).sort();
+      this.loadEnum("Forma de contagem do PCA", pcaFormasContagem);
+    },
+    loadPCASubFormasContagem: async function() {
+      var response = await this.$request(
+        "get",
+        "/api/vocabularios/vc_pcaSubformaContagem"
+      );
+
+      var pcaSubFormasContagem = response.data.map(item => item.desc).sort();
+      this.loadEnum("Subforma de contagem do PCA", pcaSubFormasContagem);
+    },
     addActive: function(code) {
       if (!this.selected.includes(code)) {
         this.selected.push(code);
@@ -401,6 +425,10 @@ export default {
               .join(" ")
               .toLowerCase(),
             pca: lclasses[i].pca.valores.toLowerCase(),
+            fc_pca: lclasses[i].pca.formaContagem.toLowerCase(),
+            sfc_pca: lclasses[i].pca.subFormaContagem
+              ? lclasses[i].pca.subFormaContagem.toLowerCase()
+              : "",
             df: lclasses[i].df.valor.toLowerCase(),
             children: await this.preparaTree(lclasses[i].filhos)
           });
