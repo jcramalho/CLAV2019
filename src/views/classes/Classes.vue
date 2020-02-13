@@ -83,28 +83,44 @@
                 />
               </v-col>
               <v-col cols="5" v-if="camposUsados[index].campo">
-                <div v-if="camposUsados[index].campo.enum.length > 0">
+                <div v-if="camposUsados[index].campo.label">
                   <v-autocomplete
                     :items="camposUsados[index].campo.enum"
-                    label="Valor a pesquisar"
-                    :rules="regraValor"
+                    label="É"
+                    :rules="regraV"
+                    v-model="camposUsados[index].campo.nome"
+                  />
+                  <v-autocomplete
+                    :items="entidades"
+                    :label="camposUsados[index].campo.label"
+                    :rules="regraV"
                     v-model="camposUsados[index].valor"
                   />
                 </div>
                 <div v-else>
-                  <v-text-field
-                    v-if="camposUsados[index].campo.mask"
-                    label="Valor a pesquisar"
-                    :rules="regraValor"
-                    v-mask="camposUsados[index].campo.mask"
-                    v-model="camposUsados[index].valor"
-                  />
-                  <v-text-field
-                    v-else
-                    label="Valor a pesquisar"
-                    :rules="regraValor"
-                    v-model="camposUsados[index].valor"
-                  />
+                  <div v-if="camposUsados[index].campo.enum.length > 0">
+                    <v-autocomplete
+                      :items="camposUsados[index].campo.enum"
+                      label="Valor a pesquisar"
+                      :rules="regraValor"
+                      v-model="camposUsados[index].valor"
+                    />
+                  </div>
+                  <div v-else>
+                    <v-text-field
+                      v-if="camposUsados[index].campo.mask"
+                      label="Valor a pesquisar"
+                      :rules="regraValor"
+                      v-mask="camposUsados[index].campo.mask"
+                      v-model="camposUsados[index].valor"
+                    />
+                    <v-text-field
+                      v-else
+                      label="Valor a pesquisar"
+                      :rules="regraValor"
+                      v-model="camposUsados[index].valor"
+                    />
+                  </div>
                 </div>
               </v-col>
               <v-col>
@@ -155,6 +171,7 @@ export default {
     showClasses: true,
     regraCampo: [v => !!v || "Campo a pesquisar é obrigatório."],
     regraValor: [v => !!v || "Valor a pesquisar é obrigatório."],
+    regraV: [v => !!v || "Obrigatório. Escolha um valor."],
     conetor: "E",
     opLogicas: ["E", "OU"],
     camposUsados: [{ campo: null, valor: "" }],
@@ -182,10 +199,7 @@ export default {
         text: "Subforma de contagem do PCA",
         value: { nome: "sfc_pca", enum: [] }
       },
-      {
-        text: "Justificação do PCA",
-        value: { nome: "crit_pca", enum: [] }
-      },
+      { text: "Justificação do PCA", value: { nome: "crit_pca", enum: [] } },
       {
         text: "DF",
         value: {
@@ -197,13 +211,22 @@ export default {
           ]
         }
       },
+      { text: "Justificação do DF", value: { nome: "crit_df", enum: [] } },
       {
-        text: "Justificação do DF",
-        value: { nome: "crit_df", enum: [] }
+        text: "Entidade",
+        value: {
+          nome: "",
+          label: "Entidade a pesquisar",
+          enum: [
+            { text: "Dona", value: "donos" },
+            { text: "Participante", value: "participantes" }
+          ]
+        }
       }
     ],
     classesTree: [],
     classesOriginal: [],
+    entidades: [],
     classesCarregadas: false,
     search: null,
     selected: [],
@@ -218,9 +241,22 @@ export default {
     await this.loadPCAFormasContagem();
     await this.loadPCASubFormasContagem();
     this.loadCriterios();
+
+    var entidades = await this.$request("get", "/api/entidades");
+    this.entidades = entidades.data.map(e => {
+      return { text: e.designacao, value: e.id };
+    });
     this.classesCarregadas = true;
   },
   methods: {
+    //Necessário para o caso especial de pesquisar com o campo Entidade
+    cleanNome: function() {
+      for (var i = 0; i < this.camposPesquisa.length; i++) {
+        if (this.camposPesquisa[i].text == "Entidade") {
+          this.camposPesquisa[i].value.nome = "";
+        }
+      }
+    },
     loadEnum: function(nomeCampo, n_enum) {
       var found = false;
 
@@ -320,6 +356,7 @@ export default {
       this.selected = [];
       this.selectedParents = [];
       this.camposUsados = [{ campo: null, valor: "" }];
+      this.cleanNome();
       this.opLogicas = ["E", "OU"];
       this.conetor = "E";
       this.showClasses = true;
@@ -388,6 +425,7 @@ export default {
 
         this.classesTree = classesFiltradas;
         this.camposUsados = [{ campo: null, valor: "" }];
+        this.cleanNome();
         this.opLogicas = ["E", "OU"];
         this.conetor = "E";
         this.showClasses = true;
@@ -475,6 +513,10 @@ export default {
             df: lclasses[i].df.valor.toLowerCase(),
             crit_df: lclasses[i].df.justificacao.map(j =>
               j.tipoId.toLowerCase()
+            ),
+            donos: lclasses[i].donos.map(e => e.idDono.toLowerCase()),
+            participantes: lclasses[i].participantes.map(e =>
+              e.idParticipante.toLowerCase()
             ),
             children: await this.preparaTree(lclasses[i].filhos)
           });
