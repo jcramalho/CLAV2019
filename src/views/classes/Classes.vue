@@ -183,6 +183,10 @@ export default {
         value: { nome: "sfc_pca", enum: [] }
       },
       {
+        text: "Justificação do PCA",
+        value: { nome: "crit_pca", enum: [] }
+      },
+      {
         text: "DF",
         value: {
           nome: "df",
@@ -192,6 +196,10 @@ export default {
             { text: "Eliminação", value: "E" }
           ]
         }
+      },
+      {
+        text: "Justificação do DF",
+        value: { nome: "crit_df", enum: [] }
       }
     ],
     classesTree: [],
@@ -209,6 +217,7 @@ export default {
     await this.loadStatus();
     await this.loadPCAFormasContagem();
     await this.loadPCASubFormasContagem();
+    this.loadCriterios();
     this.classesCarregadas = true;
   },
   methods: {
@@ -252,6 +261,33 @@ export default {
 
       var pcaSubFormasContagem = response.data.map(item => item.desc).sort();
       this.loadEnum("Subforma de contagem do PCA", pcaSubFormasContagem);
+    },
+    loadCriterios: function() {
+      var criterios = [
+        {
+          text: "Critério Legal",
+          value: "CriterioJustificacaoLegal"
+        },
+        {
+          text: "Critério Gestionário",
+          value: "CriterioJustificacaoGestionario"
+        },
+        {
+          text: "Critério de Utilidade Administrativa",
+          value: "CriterioJustificacaoUtilidadeAdministrativa"
+        },
+        {
+          text: "Critério de Densidade Informacional",
+          value: "CriterioJustificacaoDensidadeInfo"
+        },
+        {
+          text: "Critério de Complementaridade Informacional",
+          value: "CriterioJustificacaoComplementaridadeInfo"
+        }
+      ];
+
+      this.loadEnum("Justificação do PCA", criterios);
+      this.loadEnum("Justificação do DF", criterios);
     },
     addActive: function(code) {
       if (!this.selected.includes(code)) {
@@ -302,7 +338,11 @@ export default {
         for (let c of this.camposUsados) {
           var statAux;
           if (c.campo.enum.length > 0) {
-            statAux = classes[i][c.campo.nome] == c.valor;
+            if (classes[i][c.campo.nome] instanceof Array) {
+              statAux = classes[i][c.campo.nome].includes(c.valor);
+            } else {
+              statAux = classes[i][c.campo.nome] == c.valor;
+            }
           } else {
             statAux = classes[i][c.campo.nome].indexOf(c.valor) > -1;
           }
@@ -429,7 +469,13 @@ export default {
             sfc_pca: lclasses[i].pca.subFormaContagem
               ? lclasses[i].pca.subFormaContagem.toLowerCase()
               : "",
+            crit_pca: lclasses[i].pca.justificacao.map(j =>
+              j.tipoId.toLowerCase()
+            ),
             df: lclasses[i].df.valor.toLowerCase(),
+            crit_df: lclasses[i].df.justificacao.map(j =>
+              j.tipoId.toLowerCase()
+            ),
             children: await this.preparaTree(lclasses[i].filhos)
           });
         }
