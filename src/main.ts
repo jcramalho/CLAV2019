@@ -8,6 +8,7 @@ import "./registerServiceWorker";
 import "bootstrap";
 import request from "./plugins/request";
 import userLevel from "./plugins/userLevel";
+import { VueMaskDirective } from "v-mask";
 //import BootstrapVue from "bootstrap-vue";
 
 //Vue.use(BootstrapVue);
@@ -17,6 +18,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 Vue.use(request);
 Vue.use(userLevel);
+Vue.directive("mask", VueMaskDirective);
 
 Vue.config.productionTip = false;
 
