@@ -58,7 +58,7 @@
         >
       </v-col>
 
-      <!-- Trabalho pendente guardado com sucesso -->
+      <!-- Trabalho pendente guardado com sucesso
       <v-dialog v-model="pendenteGuardado" width="60%">
         <v-card>
           <v-card-title>Trabalho pendente guardado</v-card-title>
@@ -79,7 +79,7 @@
             >
           </v-card-actions>
         </v-card>
-      </v-dialog>
+      </v-dialog> -->
 
       <!-- Erros de Validação -->
       <v-dialog v-model="errosValidacao" width="30%">
@@ -100,14 +100,14 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de criação de entidade submetido com sucesso -->
+      <!-- Pedido de "Ação" de entidade submetido com sucesso -->
       <v-dialog v-model="dialogEntidadeCriada" width="70%">
         <v-card>
           <v-card-title
             >Pedido de {{ acao }} de Entidade Submetido</v-card-title
           >
           <v-card-text>
-            <v-row>
+            <v-row v-if="e.designacao">
               <v-col cols="2">
                 <div class="info-label">Nome da Entidade:</div>
               </v-col>
@@ -117,7 +117,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="e.sigla">
               <v-col cols="2">
                 <div class="info-label">Sigla:</div>
               </v-col>
@@ -127,7 +127,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="e.internacional">
               <v-col cols="2">
                 <div class="info-label">Internacional:</div>
               </v-col>
@@ -137,7 +137,7 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="e.sioe != '' && e.sioe != null">
+            <v-row v-if="e.sioe">
               <v-col cols="2">
                 <div class="info-label">SIOE:</div>
               </v-col>

@@ -4,7 +4,7 @@
     <hr style="border: 3px solid indigo; border-radius: 2px;" />
     <Legislacao :newSerie="newSerie" />
     <hr style="border: 3px solid indigo; border-radius: 2px;" />
-    <!-- <RelacoesEntidades/> -->
+    <RelacoesEntidades :newSerie="newSerie" :classes="classes"/>
     <!-- <v-row>
       <v-col md="12" sm="12" xs="12">
         <NovaEntidade />
@@ -50,24 +50,14 @@
 <script>
 import EntidadesProdutoras from "./EntidadesProdutoras";
 import Legislacao from "./Legislacao";
-// import RelacoesEntidades from "./../../RelacoesEntidades";
+import RelacoesEntidades from "./RelacoesClasse";
 
 export default {
-  props: ["newSerie", "entidades"],
+  props: ["newSerie", "entidades", "classes"],
   components: {
     EntidadesProdutoras,
-    Legislacao
-    // RelacoesEntidades
-  },
-  data: () => {
-    return {
-      headers: [
-        { text: "Sigla", align: "left", value: "sigla" },
-        { text: "Designação", value: "designacao" },
-        { text: "Tipo", value: "estado" },
-        { text: "Remover" }
-      ]
-    };
+    Legislacao,
+    RelacoesEntidades
   }
 };
 </script>
