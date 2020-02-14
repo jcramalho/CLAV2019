@@ -87,16 +87,7 @@ export default {
   },
 
   data: vm => ({
-    entidade: {
-      designacao: "",
-      sigla: "",
-      internacional: "",
-      sioe: "",
-      tipologiasSel: [],
-      codigo: "",
-      dataExtincao: ""
-    },
-
+    entidade: null,
     // vuetify datepicker
     date: null,
     dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
@@ -148,8 +139,8 @@ export default {
 
   created: function() {
     this.date = new Date().toISOString().substr(0, 10);
-    this.entidade.dataExtincao = this.dateFormatted;
     this.entidade = this.e;
+    this.entidade.dataExtincao = this.dateFormatted;
   }
 };
 </script>
