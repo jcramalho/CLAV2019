@@ -2,7 +2,7 @@
   <v-row class="ma-2 indigo lighten-5">
     <v-col cols="2">
       <div class="info-label">Entidade nova:</div>
-      <v-btn small dark rounded class="indigo darken-2" @click="newEntidade">
+      <v-btn small dark rounded class="indigo darken-2" @click="newDono">
         Adicionar
         <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
@@ -12,10 +12,17 @@
         <v-container>
           <v-row>
             <v-col>
-              <v-text-field v-model="sigla" label="Sigla" required></v-text-field>
+              <v-radio-group v-model="tipo" :mandatory="false">
+                <v-radio label="Entidade" value="Entidade" color="indigo darken-2"></v-radio>
+                <v-radio label="Tipologia" value="Tipologia"  color="indigo darken-2"></v-radio>
+              </v-radio-group>
             </v-col>
 
             <v-col>
+              <v-text-field v-model="sigla" label="Sigla" required></v-text-field>
+            </v-col>
+
+            <v-col v-if="tipo=='Entidade'">
               <v-text-field v-model="sioe" label="SIOE"></v-text-field>
             </v-col>
 
@@ -27,7 +34,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col>
+            <v-col  v-if="tipo=='Entidade'">
               <v-select
                 prefix="Internacional: "
                 item-text="label"
@@ -60,6 +67,7 @@ export default {
       erroValidacao: false,
       mensagensErro: [],
       valid: false,
+      tipo: "Entidade",
       sigla: "",
       sioe: "",
       siglaRules: [v => !!v || "A Sigla é um campo obrigatório."],
@@ -74,6 +82,16 @@ export default {
         {
           label: "Não",
           value: "Nao"
+        }
+      ],
+      tipos: [
+        {
+          label: "Entidade",
+          value: "Entidade"
+        },
+        {
+          label: "Tipologia",
+          value: "Tipologia"
         }
       ]
     };
@@ -109,28 +127,38 @@ export default {
       return res;
     },
 
-    newEntidade: function() {
-      if (
+    newDono: function() {
+      if(this.tipo == 'Entidade'){
+        if (
         this.validaSigla(this.sigla) &&
         this.validaDesignacao(this.designacao)
-      ) {
-        var entidade = {
-          estado: "Nova",
-          id: "ent_" + this.sigla,
-          sigla: this.sigla,
-          sioe: this.sioe,
-          designacao: this.designacao,
-          internacional: this.internacional
-        };
-        this.sigla = "";
-        this.sioe = "";
-        this.designacao = "";
-        this.internacional = "Nao";
-        this.$emit("newEntidade", entidade);
-      } else {
-        this.erroValidacao = true;
+        ) {
+            var entidade = {
+                estado: "Nova",
+                id: "ent_" + this.sigla,
+                sigla: this.sigla,
+                sioe: this.sioe,
+                designacao: this.designacao,
+                internacional: this.internacional
+            };
+            this.sigla = "";
+            this.sioe = "";
+            this.designacao = "";
+            this.internacional = "Nao";
+            this.$emit("newEntidade", entidade);
+          } else {
+            this.erroValidacao = true;
+        }
       }
-    }
+      else {
+        var tipologia = {
+            estado: "Nova",
+            id: "tip_" + this.sigla,
+            sigla: this.sigla,
+            designacao: this.designacao
+          };
+        }
+      }
   }
 };
 </script>
