@@ -60,7 +60,7 @@
                     prepend-icon="credit_card"
                     name="nic"
                     v-model="user.nic"
-                    label="Número do Cartão de Cidadão"
+                    label="Número do Cartão de Cidadão*"
                     type="text"
                     :rules="regraNIC[index]"
                     @input="isNotDuplicated('nic')"
@@ -75,6 +75,10 @@
                     required
                   >
                   </v-select>
+                  <v-alert color="blue">
+                    * Tenha atenção à correta inserção dos dígitos, nomeadamente
+                    a inserção de zeros à esquerda.
+                  </v-alert>
                   <v-btn
                     class="ma-2"
                     color="error"

@@ -37,7 +37,7 @@
               <v-text-field
                 v-model="data"
                 label="Data: AAAA-MM-DD"
-                mask="####-##-##"
+                v-mask="'####-##-##'"
               />
             </v-flex>
           </v-layout>

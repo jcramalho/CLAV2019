@@ -77,6 +77,39 @@
             </v-col>
           </v-row>
 
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Data de criação</div>
+            </v-col>
+            <v-col>
+              <v-menu
+                ref="menu1"
+                v-model="menu1"
+                :close-on-content-click="false"
+                :return-value.sync="entidade.dataCriacao"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="entidade.dataCriacao"
+                    label="Data de criação"
+                    prepend-icon="event"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+
+                <v-date-picker v-model="entidade.dataCriacao" no-title scrollable locale="pt">
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menu1 = false">Cancel</v-btn>
+                  <v-btn text color="primary" @click="$refs.menu1.save(entidade.dataCriacao)">OK</v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
@@ -123,13 +156,15 @@ import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
 
 export default {
   data: () => ({
+    menu1: false,
     entidade: {
       designacao: "",
       sigla: "",
       internacional: "",
       sioe: "",
       tipologiasSel: [],
-      codigo: ""
+      codigo: "",
+      dataCriacao: ""
     },
 
     // Para o seletor de processos

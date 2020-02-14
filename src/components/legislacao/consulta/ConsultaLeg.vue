@@ -1,16 +1,16 @@
 <template>
   <v-card class="ma-4">
     <v-card-title class="indigo darken-4 white--text">
-      {{titulo}}
+      {{ titulo }}
       <InfoBox
         header="Tipo + Entidade + Número"
         :text="
-            myhelp.Legislacao.Campos.Tipo +
-              ' + ' +
-              myhelp.Legislacao.Campos.Entidades +
-              ' + ' +
-              myhelp.Legislacao.Campos.Numero
-          "
+          myhelp.Legislacao.Campos.Tipo +
+            ' + ' +
+            myhelp.Legislacao.Campos.Entidades +
+            ' + ' +
+            myhelp.Legislacao.Campos.Numero
+        "
       />
     </v-card-title>
 
@@ -19,9 +19,9 @@
         <v-col cols="2" v-if="item.text">
           <div class="info-label">
             {{ item.campo }}:
-            
+
             <InfoBox
-              v-if="tipo === 'Legislação'"
+              v-if="item.tipo === 'Legislação'"
               :header="item.campo"
               :text="myhelp.Legislacao.Campos[item.campo]"
             />
@@ -38,7 +38,8 @@
                 v-for="(ent, index) in item.text.split(' ')"
                 v-bind:key="index"
                 :href="'/entidades/ent_' + ent"
-              >{{ ent }}</a>
+                >{{ ent }}</a
+              >
             </div>
             <div v-else class="info-content">{{ item.text }}</div>
           </div>
@@ -70,7 +71,11 @@
 
       <v-row>
         <v-col>
-          <v-btn class="indigo accent-4 white--text mr-4" @click="$router.go(-1)">Voltar</v-btn>
+          <v-btn
+            class="indigo accent-4 white--text mr-4"
+            @click="$router.go(-1)"
+            >Voltar</v-btn
+          >
         </v-col>
       </v-row>
     </v-card-text>

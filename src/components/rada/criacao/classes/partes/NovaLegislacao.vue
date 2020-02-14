@@ -79,7 +79,7 @@
                 :rules="rule"
                 v-model="data"
                 label="Data: AAAA-MM-DD"
-                mask="####-##-##"
+                v-mask="'####-##-##'"
               /> -->
             </v-col>
           </v-row>

@@ -29,46 +29,29 @@
         </template>
 
         <template v-slot:item="props">
-          <tr
-            v-if="tipo == 'Termos de Índice'"
-            @click="go(props.item.idClasse)"
-          >
-            <td v-for="(campo, index) in props.item" v-bind:key="index">
-              {{ campo }}
-            </td>
-          </tr>
+          <ListagemTI
+            v-if="tipo === 'Termos de Índice'"
+            :item="props.item"
+            @rowClicked="go($event.idClasse)"
+          />
 
-          <tr v-else-if="tipo == 'Legislação'">
-            <td v-for="(campo, index) in props.item" v-bind:key="index">
-              <div v-if="index == 'entidades'">
-                <div
-                  v-for="(ent, index) in campo.split(',')"
-                  v-bind:key="index"
-                >
-                  <a :href="'/entidades/ent_' + ent">{{ ent }}</a>
-                </div>
-              </div>
+          <ListagemTE
+            v-else-if="tipo == 'Entidades' || tipo == 'Tipologias de Entidade'"
+            :item="props.item"
+            @rowClicked="go($event.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
+          />
 
-              <div v-else-if="index == 'operacoes'">
-                <v-row>
-                  <v-col
-                    cols="2"
-                    v-for="(operacao, i) in props.item.operacoes"
-                    :key="i"
-                  >
-                    <v-icon
-                      @click="
-                        switchOperacao(operacao.descricao, props.item.numero)
-                      "
-                      >{{ operacao.icon }}</v-icon
-                    >
-                  </v-col>
-                </v-row>
-              </div>
-
-              <div v-else @click="go(props.item.numero)">{{ campo }}</div>
-            </td>
-          </tr>
+          <ListagemLegislacao
+            v-else-if="tipo == 'Legislação'"
+            :item="props.item"
+            @rowClicked="go($event.numero)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.numero)
+            "
+          />
 
           <tr
             v-else-if="tipo == 'Autos de Eliminação'"
@@ -81,28 +64,6 @@
                 </div>
                 <div v-else>{{ campo }}</div>
               </div>
-            </td>
-          </tr>
-
-          <tr
-            v-else-if="tipo == 'Entidades' || tipo == 'Tipologias de Entidade'"
-          >
-            <td v-for="(campo, index) in props.item" v-bind:key="index">
-              <div v-if="index == 'operacoes'">
-                <v-row>
-                  <v-col
-                    cols="2"
-                    v-for="(operacao, i) in props.item.operacoes"
-                    :key="i"
-                  >
-                    <v-icon
-                      @click="switchOperacao(operacao.descricao, props.item.id)"
-                      >{{ operacao.icon }}</v-icon
-                    >
-                  </v-col>
-                </v-row>
-              </div>
-              <div v-else @click="go(props.item.id)">{{ campo }}</div>
             </td>
           </tr>
 
@@ -123,8 +84,17 @@
 </template>
 
 <script>
+import ListagemTI from "@/components/generic/ListagemTI";
+import ListagemTE from "@/components/generic/ListagemTE";
+import ListagemLegislacao from "@/components/generic/ListagemLegislacao";
+
 export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
+  components: {
+    ListagemTI,
+    ListagemTE,
+    ListagemLegislacao
+  },
   data: () => ({
     search: "",
     headers: [],
@@ -136,6 +106,7 @@ export default {
   }),
   methods: {
     go(id) {
+      let idLeg = "";
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/ent_" + id);
@@ -144,7 +115,6 @@ export default {
           this.$router.push("/tipologias/tip_" + id);
           break;
         case "Legislação":
-          let idLeg = "";
           for (let i = 0; i < this.ids.length; i++) {
             if (this.ids[i].numero === id) {
               idLeg = this.ids[i].id;
@@ -163,6 +133,7 @@ export default {
     },
 
     goEditar(id) {
+      let idLeg = "";
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/editar/ent_" + id);
@@ -171,7 +142,6 @@ export default {
           this.$router.push("/tipologias/editar/tip_" + id);
           break;
         case "Legislação":
-          let idLeg = "";
           for (let i = 0; i < this.ids.length; i++) {
             if (this.ids[i].numero === id) {
               idLeg = this.ids[i].id;
@@ -201,6 +171,10 @@ export default {
         case "Remoção":
           break;
 
+        case "Extinção":
+          this.$router.push("/entidades/extinguir/ent_" + id);
+          break;
+
         default:
           break;
       }
@@ -209,10 +183,17 @@ export default {
   created: function() {
     try {
       for (let i = 0; i < this.cabecalho.length; i++) {
-        this.headers[i] = {
-          text: this.cabecalho[i],
-          value: this.campos[i]
-        };
+        if (this.campos[i] === "operacoes")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "end"
+          };
+        else
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i]
+          };
       }
     } catch (e) {
       return e;
