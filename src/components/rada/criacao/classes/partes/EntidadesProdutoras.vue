@@ -110,7 +110,6 @@ export default {
           class: ["table-header", "body-2", "font-weight-bold"]
         },
         {
-          text: "Remover",
           width: "10%",
           class: ["table-header", "body-2", "font-weight-bold"]
         }

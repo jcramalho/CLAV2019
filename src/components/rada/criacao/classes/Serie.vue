@@ -29,7 +29,7 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="newSerie" :entidades="entidades" />
+                <ZonaContexto :newSerie="newSerie" :entidades="entidades" :classes="classesNomes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -104,8 +104,14 @@ export default {
   data: () => ({
     dialog: false,
     classesFiltradas: [],
+    classesNomes: [],
     RegrasHierarquia: [v => !!v || "Este campo é obrigatório."],
     newSerie: {
+      // codigo: "01.01",
+      // titulo: "SERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
       codigo: "",
       titulo: "",
       descricao: "",
@@ -118,7 +124,7 @@ export default {
       localizacao: [],
       produtoras: [],
       legislacao: [],
-      relacoes: "",
+      relacoes: [],
       pca: "",
       formaContagem: "",
       justicacaoPCA: "",
@@ -157,11 +163,6 @@ export default {
   methods: {
     apagar: function() {
       this.newSerie = {
-        // codigo: "01.01",
-        // titulo: "SERIE",
-        // descricao: "DESC SERIE",
-        // dataInicial: "2020-02-13",
-        // dataFinal: "2020-02-16",
         codigo: "",
         titulo: "",
         descricao: "",
@@ -201,6 +202,8 @@ export default {
       this.classesFiltradas = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
+
+      this.classesNomes = this.classes.map(e => e.codigo + " - " + e.titulo);
     }
   }
 };
