@@ -71,9 +71,8 @@ export default {
       } else {
         try {
           let existeTI = await this.$request(
-            "post",
-            "/api/termosIndice/verificarTermo",
-            { termo: this.ti.termo }
+            "get",
+            "/api/termosIndice?existe=" + encodeURIComponent(this.ti.termo)
           );
           if (existeTI.data) {
             this.mensagensErro.push({

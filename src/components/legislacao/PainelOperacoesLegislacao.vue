@@ -262,9 +262,8 @@ export default {
       } else {
         try {
           let existeNumero = await this.$request(
-            "post",
-            "/api/legislacao/verificarNumero",
-            { numero: this.l.numero }
+            "get",
+            "/api/legislacao?existeNumero=" + encodeURIComponent(this.l.numero)
           );
 
           if (existeNumero.data) {

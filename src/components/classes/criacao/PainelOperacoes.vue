@@ -231,7 +231,7 @@ export default {
     verificaExistenciaCodigo: async function(codigo) {
       var response = await this.$request(
         "get",
-        "/api/classes/verificar/" + codigo
+        "/api/classes?existeCodigo=" + encodeURIComponent(codigo)
       );
       return response.data;
     },
@@ -311,9 +311,8 @@ export default {
         try {
           alert("Existência de título");
           var existeTitulo = await this.$request(
-            "post",
-            "/api/classes/verificarTitulo",
-            { titulo: this.c.titulo }
+            "get",
+            "/api/classes?existeTitulo=" + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             numeroErros++;
@@ -332,9 +331,8 @@ export default {
       for (i = 0; i < this.c.notasAp.length; i++) {
         try {
           var existeNotaAp = await this.$request(
-            "post",
-            "/api/classes/verificarNA",
-            { na: this.c.notasAp[i].nota }
+            "get",
+            "/api/notasAp?existe=" + encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             numeroErros++;
@@ -351,9 +349,9 @@ export default {
       for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(
-            "post",
-            "/api/classes/verificarExemploNA",
-            { exemplo: this.c.exemplosNotasAp[i].exemplo }
+            "get",
+            "/api/exemplosNotasAp?existe=" +
+              encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
             numeroErros++;
@@ -375,11 +373,9 @@ export default {
       for (i = 0; i < this.c.termosInd.length; i++) {
         try {
           var existeTI = await this.$request(
-            "post",
-            "/api/classes/verificarTI",
-            {
-              ti: this.c.termosInd[i].termo
-            }
+            "get",
+            "/api/termosIndice?existe=" +
+              encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
             numeroErros++;
@@ -479,9 +475,8 @@ export default {
       } else {
         try {
           var existeTitulo = await this.$request(
-            "post",
-            "/api/classes/verificarTitulo",
-            { titulo: this.c.titulo }
+            "get",
+            "/api/classes?existeTitulo=" + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             this.numeroErros++;
@@ -500,9 +495,8 @@ export default {
       for (i = 0; i < this.c.notasAp.length; i++) {
         try {
           var existeNotaAp = await this.$request(
-            "post",
-            "/api/classes/verificarNA",
-            { na: this.c.notasAp[i].nota }
+            "get",
+            "/api/notasAp?existe=" + encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             this.numeroErros++;
@@ -519,9 +513,9 @@ export default {
       for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(
-            "post",
-            "/api/classes/verificarExemploNA",
-            { exemplo: this.c.exemplosNotasAp[i].exemplo }
+            "get",
+            "/api/exemplosNotasAp?existe=" +
+              encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
             this.numeroErros++;
@@ -543,11 +537,9 @@ export default {
       for (i = 0; i < this.c.termosInd.length; i++) {
         try {
           var existeTI = await this.$request(
-            "post",
-            "/api/classes/verificarTI",
-            {
-              ti: this.c.termosInd[i].termo
-            }
+            "get",
+            "/api/termosIndice?existe=" +
+              encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
             this.numeroErros++;

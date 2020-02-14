@@ -245,9 +245,9 @@ export default {
       } else {
         try {
           let existeDesignacao = await this.$request(
-            "post",
-            "/api/entidades/verificarDesignacao",
-            { designacao: this.e.designacao }
+            "get",
+            "/api/entidades?existeDesignacao=" +
+              encodeURIComponent(this.e.designacao)
           );
           if (existeDesignacao.data) {
             this.numeroErros++;
@@ -263,9 +263,8 @@ export default {
       } else {
         try {
           let existeSigla = await this.$request(
-            "post",
-            "/api/entidades/verificarSigla",
-            { sigla: this.e.sigla }
+            "get",
+            "/api/entidades?existeSigla=" + encodeURIComponent(this.e.sigla)
           );
           if (existeSigla.data) {
             this.numeroErros++;

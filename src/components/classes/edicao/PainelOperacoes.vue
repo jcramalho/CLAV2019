@@ -282,9 +282,9 @@ export default {
           if( index == -1){
               try {
                     var existeNotaAp = await this.$request(
-                        "post",
-                        "/api/classes/verificarNA",
-                        { na: this.c.notasAp[i].nota }
+                        "get",
+                        "/api/notasAp?existe=" +
+                          encodeURIComponent(this.c.notasAp[i].nota)
                     );
                     if (existeNotaAp.data) {
                         this.mensagensErro.push({
@@ -318,9 +318,9 @@ alert('after dups')
           if(index == -1){
             try {
                     var existeExemploNotaAp = await this.$request(
-                        "post",
-                        "/api/classes/verificarExemploNA",
-                        { exemplo: this.c.exemplosNotasAp[i].exemplo }
+                        "get",
+                        "/api/exemplosNotasAp?existe=" +
+                          encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
                     );
                     if (existeExemploNotaAp.data) {
                         this.mensagensErro.push({
@@ -365,9 +365,9 @@ alert('after dups')
           if(index == -1){
             try {
                     var existeTI = await this.$request(
-                        "post",
-                        "/api/classes/verificarTI",
-                        {ti: this.c.termosInd[i].termo}
+                        "get",
+                        "/api/termosIndice?existe=" +
+                          encodeURIComponent(this.c.termosInd[i].termo)
                     );
                     if (existeTI.data) {
                         this.mensagensErro.push({

@@ -71,9 +71,9 @@ export default {
       } else {
         try {
           let existeDesignacao = await this.$request(
-            "post",
-            "/api/tipologias/verificarDesignacao",
-            { designacao: this.t.designacao }
+            "get",
+            "/api/tipologias?existeDesignacao=" +
+              encodeURIComponent(this.t.designacao)
           );
           if (existeDesignacao.data) {
             this.mensagensErro.push({
@@ -101,9 +101,8 @@ export default {
       } else {
         try {
           let existeSigla = await this.$request(
-            "post",
-            "/api/tipologias/verificarSigla",
-            { sigla: this.t.sigla }
+            "get",
+            "/api/tipologias?existeSigla=" + encodeURIComponent(this.t.sigla)
           );
           if (existeSigla.data) {
             this.mensagensErro.push({
