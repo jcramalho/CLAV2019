@@ -216,7 +216,7 @@ export default {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/api/tipologias?existeDesignacao=" +
+            "/api/tipologias/designacao/" +
               encodeURIComponent(this.t.designacao)
           );
           if (existeDesignacao.data) {
@@ -234,7 +234,7 @@ export default {
         try {
           let existeSigla = await this.$request(
             "get",
-            "/api/tipologias?existeSigla=" + encodeURIComponent(this.t.sigla)
+            "/api/tipologias/sigla/" + encodeURIComponent(this.t.sigla)
           );
           if (existeSigla.data) {
             this.numeroErros++;

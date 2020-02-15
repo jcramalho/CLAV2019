@@ -103,7 +103,7 @@ export default {
         try {
           let existeNumero = await this.$request(
             "get",
-            "/api/legislacao?existeNumero=" + encodeURIComponent(this.l.numero)
+            "/api/legislacao/numero/" + encodeURIComponent(this.l.numero)
           );
 
           if (existeNumero.data) {

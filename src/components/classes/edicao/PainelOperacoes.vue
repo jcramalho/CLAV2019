@@ -283,8 +283,7 @@ export default {
               try {
                     var existeNotaAp = await this.$request(
                         "get",
-                        "/api/notasAp?existe=" +
-                          encodeURIComponent(this.c.notasAp[i].nota)
+                        "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
                     );
                     if (existeNotaAp.data) {
                         this.mensagensErro.push({
@@ -319,8 +318,7 @@ alert('after dups')
             try {
                     var existeExemploNotaAp = await this.$request(
                         "get",
-                        "/api/exemplosNotasAp?existe=" +
-                          encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
+                        "/api/exemplosNotasAp/" + encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
                     );
                     if (existeExemploNotaAp.data) {
                         this.mensagensErro.push({
@@ -366,7 +364,7 @@ alert('after dups')
             try {
                     var existeTI = await this.$request(
                         "get",
-                        "/api/termosIndice?existe=" +
+                        "/api/termosIndice/" +
                           encodeURIComponent(this.c.termosInd[i].termo)
                     );
                     if (existeTI.data) {

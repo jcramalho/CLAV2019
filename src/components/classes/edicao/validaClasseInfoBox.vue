@@ -158,8 +158,7 @@ export default {
               try {
                     var existeNotaAp = await this.$request(
                         "get",
-                        "/api/notasAp?existe=" +
-                          encodeURIComponent(this.c.notasAp[i].nota)
+                        "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
                     );
                     if (existeNotaAp.data) {
                         this.mensagensErro.push({
@@ -194,7 +193,7 @@ export default {
             try {
                     var existeExemploNotaAp = await this.$request(
                         "get",
-                        "/api/exemplosNotasAp?existe=" +
+                        "/api/exemplosNotasAp/" +
                           encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
                     );
                     if (existeExemploNotaAp.data) {
@@ -242,7 +241,7 @@ export default {
             try {
                     var existeTI = await this.$request(
                         "get",
-                        "/api/termosIndice?existe=" +
+                        "/api/termosIndice/" +
                           encodeURIComponent(this.c.termosInd[i].termo)
                     );
                     if (existeTI.data) {

@@ -231,7 +231,7 @@ export default {
     verificaExistenciaCodigo: async function(codigo) {
       var response = await this.$request(
         "get",
-        "/api/classes?existeCodigo=" + encodeURIComponent(codigo)
+        "/api/classes/codigo/" + encodeURIComponent(codigo)
       );
       return response.data;
     },
@@ -312,7 +312,7 @@ export default {
           alert("Existência de título");
           var existeTitulo = await this.$request(
             "get",
-            "/api/classes?existeTitulo=" + encodeURIComponent(this.c.titulo)
+            "/api/classes/titulo/" + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             numeroErros++;
@@ -332,7 +332,7 @@ export default {
         try {
           var existeNotaAp = await this.$request(
             "get",
-            "/api/notasAp?existe=" + encodeURIComponent(this.c.notasAp[i].nota)
+            "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             numeroErros++;
@@ -350,7 +350,7 @@ export default {
         try {
           var existeExemploNotaAp = await this.$request(
             "get",
-            "/api/exemplosNotasAp?existe=" +
+            "/api/exemplosNotasAp/" +
               encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
@@ -374,8 +374,7 @@ export default {
         try {
           var existeTI = await this.$request(
             "get",
-            "/api/termosIndice?existe=" +
-              encodeURIComponent(this.c.termosInd[i].termo)
+            "/api/termosIndice/" + encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
             numeroErros++;
@@ -476,7 +475,7 @@ export default {
         try {
           var existeTitulo = await this.$request(
             "get",
-            "/api/classes?existeTitulo=" + encodeURIComponent(this.c.titulo)
+            "/api/classes/titulo/" + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             this.numeroErros++;
@@ -496,7 +495,7 @@ export default {
         try {
           var existeNotaAp = await this.$request(
             "get",
-            "/api/notasAp?existe=" + encodeURIComponent(this.c.notasAp[i].nota)
+            "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             this.numeroErros++;
@@ -514,7 +513,7 @@ export default {
         try {
           var existeExemploNotaAp = await this.$request(
             "get",
-            "/api/exemplosNotasAp?existe=" +
+            "/api/exemplosNotasAp/" +
               encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
@@ -538,8 +537,7 @@ export default {
         try {
           var existeTI = await this.$request(
             "get",
-            "/api/termosIndice?existe=" +
-              encodeURIComponent(this.c.termosInd[i].termo)
+            "/api/termosIndice/" + encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
             this.numeroErros++;
