@@ -6,8 +6,8 @@
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-row>
-          <v-col sm="12" xs="12" v-if="relacoes[0]">
-            <v-data-table :headers="headers" :items="relacoes" hide-default-footer>
+          <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
+            <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>
               <template v-slot:item.relacao="props">{{ props.item.relacao }}</template>
 
               <template v-slot:item.edicao="props">
@@ -23,20 +23,8 @@
           <v-row>
             <v-col sm="5" xs="12">
               <v-autocomplete :rules="[v => !!v || 'Campo obrigatório!']" v-model="rel" :items="listaRelacoes" label="Relação"></v-autocomplete>
-              <!-- <v-select
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                v-model="rel"
-                :items="listaRelacoes"
-                label="Relação"
-              /> -->
             </v-col>
             <v-col sm="6" xs="12">
-              <!-- <v-text-field
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                v-model="classerel"
-                label="Com a classe"
-                single-line
-              ></v-text-field>-->
               <v-combobox
                 :rules="[v => !!v || 'Campo obrigatório!']"
                 v-model="classerel"
@@ -79,24 +67,6 @@ export default {
         "Suplemento de",
         "Suplemento para"
       ],
-      relacoes: [
-        // {
-        //   relacao: "ST",
-        //   serieRelacionada: "123.123"
-        // },
-        // {
-        //   relacao: "12",
-        //   serieRelacionada: "122dasd.123"
-        // },
-        // {
-        //   relacao: "23",
-        //   serieRelacionada: "12sdsadas3.123"
-        // },
-        // {
-        //   relacao: "56",
-        //   serieRelacionada: "123.111123123"
-        // }
-      ],
       headers: [
         {
           text: "Relação",
@@ -122,11 +92,8 @@ export default {
     };
   },
   methods: {
-    adicionaRelacao: function() {
-      this.relacoes.push({ relacao: "", serieRelacionada: "" });
-    },
     remove: function(item) {
-      this.relacoes = this.relacoes.filter(e => {
+      this.newSerie.relacoes = this.newSerie.relacoes.filter(e => {
         return (
           e.relacao != item.relacao ||
           e.serieRelacionada != item.serieRelacionada
@@ -138,7 +105,7 @@ export default {
 
       if (this.$refs.addRel.validate()) {
         if (!(await this.validateRelacao())) {
-          this.relacoes.push({
+          this.newSerie.relacoes.push({
             relacao: this.rel,
             serieRelacionada: this.classerel
           });
@@ -149,7 +116,7 @@ export default {
       }
     },
     validateRelacao: function() {
-      return this.relacoes.some(el => {
+      return this.newSerie.relacoes.some(el => {
         return el.relacao == this.rel && el.serieRelacionada == this.classerel;
       });
     }

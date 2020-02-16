@@ -39,7 +39,7 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="newSerie.dataInicial" no-title scrollable>
+          <v-date-picker v-model="newSerie.dataInicial" no-title scrollable locale="pt">
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="data_inicial_menu = false">Cancel</v-btn>
             <v-btn text color="primary" @click="$refs.menu1.save(newSerie.dataInicial)">OK</v-btn>
@@ -70,7 +70,7 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="newSerie.dataFinal" no-title scrollable>
+          <v-date-picker v-model="newSerie.dataFinal" no-title scrollable locale="pt">
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="data_final_menu = false">Cancel</v-btn>
             <v-btn text color="primary" @click="$refs.menu2.save(newSerie.dataFinal)">OK</v-btn>

@@ -11,8 +11,8 @@
 
       <v-card-text>
         <v-form ref="formSerie" :lazy-validation="false">
-          <h5>Identificação</h5>
-          <v-divider></v-divider>
+          <!-- <h5>Identificação</h5>
+          <v-divider></v-divider>-->
           <Identificacao :newSerie="newSerie" />
 
           <v-expansion-panels accordion>
@@ -46,11 +46,14 @@
           <h5>Hierarquia</h5>
           <v-divider></v-divider>
           <v-row>
-            <v-col cols="12" sm="12" md="12">
+            <v-col md="3" sm="3">
+              <div class="info-label">Classe Pai</div>
+            </v-col>
+            <v-col sm="9" md="9">
               <v-autocomplete
                 v-model="newSerie.eFilhoDe"
                 :items="classesFiltradas"
-                :rules="RegrasHierarquia"
+                :rules="[v => !!v || 'Campo obrigatório!']"
                 item-text="codigo"
                 item-value="codigo"
                 dense
@@ -105,7 +108,6 @@ export default {
     dialog: false,
     classesFiltradas: [],
     classesNomes: [],
-    RegrasHierarquia: [v => !!v || "Este campo é obrigatório."],
     newSerie: {
       // codigo: "01.01",
       // titulo: "SERIE",
@@ -135,30 +137,6 @@ export default {
       tipo: "Série",
       children: []
     }
-    // newSerie: {
-    //   codigo: "",
-    //   titulo: "",
-    //   descricao: "",
-    //   dataInicial: "",
-    //   dataFinal: "",
-    //   tUA: "",
-    //   tSerie: "",
-    //   suporte: "",
-    //   medicao: "",
-    //   localizacao: [],
-    //   produtoras: [],
-    //   legislacao: [],
-    //   relacoes: "",
-    //   pca: "",
-    //   formaContagem: "",
-    //   justicacaoPCA: "",
-    //   df: "",
-    //   justificacaoDF: "",
-    //   notas: "",
-    //   eFilhoDe: "",
-    //   tipo: "Série",
-    //   children: []
-    // }
   }),
   methods: {
     apagar: function() {

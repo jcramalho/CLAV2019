@@ -58,7 +58,7 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="RE.dataInicial" no-title scrollable>
+            <v-date-picker v-model="RE.dataInicial" no-title scrollable locale="pt">
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu1 = false">Cancel</v-btn>
               <v-btn text color="primary" @click="$refs.menu1.save(RE.dataInicial)">OK</v-btn>
@@ -88,7 +88,7 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="RE.dataFinal" no-title scrollable>
+            <v-date-picker v-model="RE.dataFinal" no-title scrollable locale="pt">
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu2 = false">Cancel</v-btn>
               <v-btn text color="primary" @click="$refs.menu2.save(RE.dataFinal)">OK</v-btn>

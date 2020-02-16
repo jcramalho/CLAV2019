@@ -5,7 +5,7 @@
     >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title>
     <v-card-text>
       <br />
-      <v-stepper v-model="e1" vertical>
+      <v-stepper v-model="e1" vertical class="elevation-0">
         <!-- Informação Geral -->
         <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
           <font size="4">
@@ -23,7 +23,12 @@
           </font>
         </v-stepper-step>
         <v-stepper-content step="2">
-          <RelatorioExpositivo @seguinte="changeE1" :RE="RADA.RE" :entidades="entidades" :tipologias="tipologias" />
+          <RelatorioExpositivo
+            @seguinte="changeE1"
+            :RE="RADA.RE"
+            :entidades="entidades"
+            :tipologias="tipologias"
+          />
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
@@ -33,7 +38,7 @@
           </font>
         </v-stepper-step>
         <v-stepper-content step="3">
-          <TSRada @done="done" @voltar="changeE1" :TS="RADA.tsRada" :entidades="entidades"/>
+          <TSRada @done="done" @voltar="changeE1" :TS="RADA.tsRada" :entidades="entidades" />
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
@@ -121,6 +126,27 @@ export default {
             //   titulo: "Subserie da Serie da Reforma Agraria",
             //   eFilhoDe: "01.01",
             //   descricao: "askpdoiapsodi"
+            // },
+            // {
+            //   codigo: "02",
+            //   tipo: "N1",
+            //   titulo: "Reforma Agraria",
+            //   eFilhoDe: "",
+            //   descricao: "Descricaao 01"
+            // },
+            // {
+            //   codigo: "02.01",
+            //   tipo: "Série",
+            //   titulo: "Serie da Reforma Agraria",
+            //   eFilhoDe: "02",
+            //   descricao: "asjdbjahs"
+            // },
+            // {
+            //   codigo: "02.01.01",
+            //   tipo: "Subsérie",
+            //   titulo: "Subserie da Serie da Reforma Agraria",
+            //   eFilhoDe: "02.01",
+            //   descricao: "askpdoiapsodi"
             // }
           ]
         }
@@ -169,7 +195,7 @@ export default {
       "get",
       "/api/entidades/" + userBD.data.entidade
     );
-    
+
     this.RADA.entRes.push(
       userEntidade.data.sigla + " - " + userEntidade.data.designacao
     );
@@ -197,27 +223,11 @@ export default {
   border-color: #8c9eff;
 }
 
-.adicao tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.adicao td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-}
-
-.adicao td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
-}
-
 .info-label {
   color: #1a237e;
   padding: 6px;
   font-weight: 400;
-  height: 50%;
+  height: 35px;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;

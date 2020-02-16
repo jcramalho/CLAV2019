@@ -24,7 +24,13 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="12">
-          <v-treeview color="amber" v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
+          <v-treeview
+            color="amber"
+            v-if="TS.classes.length > 0"
+            hoverable
+            :items="preparaTree"
+            item-key="titulo"
+          >
             <template slot="label" slot-scope="{ item }">
               <b>{{ item.titulo }}</b>
             </template>
@@ -120,11 +126,8 @@ export default {
 };
 </script>
 
-<style>
-.table-header {
-  color: #1a237e;
-  font-weight: 400;
-  background-color: #dee2f8;
-  font-weight: bold;
+<style scoped>
+::v-deep .v-treeview-node {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 </style>
