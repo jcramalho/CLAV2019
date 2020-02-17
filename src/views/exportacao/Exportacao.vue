@@ -192,14 +192,14 @@ export default {
           ents: {
             label: "Entidades",
             desc:
-              "Obtém os processos especificos destas entidades. Este parâmetro só deve ser usado quando o tipo é especifico.",
+              "Obtém os processos destas entidades. Quando usado em conjunto com o parâmetro tipo com valor igual a especifico devolve os processos especificos destas entidades.",
             enum: [],
             multiple: true
           },
           tips: {
             label: "Tipologias",
             desc:
-              "Obtém os processos especificos destas tipologias. Este parâmetro só deve ser usado quando o tipo é especifico.",
+              "Obtém os processos destas tipologias. Quando usado em conjunto com o parâmetro tipo com valor igual a especifico devolve os processos especificos destas tipologias.",
             enum: [],
             multiple: true
           },
@@ -214,45 +214,52 @@ export default {
           fs: fs
         },
         entidades: {
+          ents: {
+            label: "Entidades",
+            desc:
+              "Devolve a informação destas entidades. Exemplo de input: 'ent_AAN,ent_SEF'",
+            enum: [],
+            multiple: true
+          },
           processos: {
             label: "Processos",
             desc:
-              "No caso de ser escolhido 'com' é listado as entidades com PNs associados. Já no caso de ser escolhido 'sem' é listado as entidades sem PNs associados. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
+              "No caso de ser escolhido 'com' é listado as entidades com PNs associados. Já no caso de ser escolhido 'sem' é listado as entidades sem PNs associados.",
             enum: ["Por definir", "com", "sem"],
             multiple: false
           },
           sigla: {
             label: "Filtrar por sigla",
             desc:
-              "Permite filtrar as entidades que contém a sigla igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: AR)",
+              "Permite filtrar as entidades que contém a sigla igual a este valor. (ex: AR)",
             enum: [],
             multiple: false
           },
           designacao: {
             label: "Filtrar por designação",
             desc:
-              "Permite filtrar as entidades que contém a designacao igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: Assembleia da República)",
+              "Permite filtrar as entidades que contém a designacao igual a este valor. (ex: Assembleia da República)",
             enum: [],
             multiple: false
           },
           internacional: {
             label: "Filtrar pelo campo internacional",
             desc:
-              "Permite filtrar as entidades que contém internacional igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
+              "Permite filtrar as entidades que contém internacional igual a este valor.",
             enum: ["Sim", "Não"],
             multiple: false
           },
           sioe: {
             label: "Filtrar por SIOE",
             desc:
-              "Permite filtrar as entidades que contém sioe igual a este valor. Só funciona caso o parâmetro processos não seja definido. (ex: 875780390)",
+              "Permite filtrar as entidades que contém sioe igual a este valor. (ex: 875780390)",
             enum: [],
             multiple: false
           },
           estado: {
             label: "Filtrar por estado",
             desc:
-              "Permite filtrar as entidades que contém o estado igual a este valor. Só funciona caso o parâmetro processos não seja definido.",
+              "Permite filtrar as entidades que contém o estado igual a este valor.",
             enum: ["Por definir", "Ativa", "Inativa", "Harmonização"],
             multiple: false
           },
@@ -266,6 +273,12 @@ export default {
           fs: fs
         },
         tipologias: {
+          tips: {
+            label: "Tipologias",
+            desc: "Devolve a informação destas tipologias.",
+            enum: [],
+            multiple: true
+          },
           designacao: {
             label: "Filtrar por designação",
             desc:
@@ -415,6 +428,7 @@ export default {
         };
       });
       this.queryStrings.classes.ents.enum = this.entidades;
+      this.queryStrings.entidades.ents.enum = this.entidades;
 
       response = await this.$request("get", "/api/tipologias");
       this.tipologias = response.data.map(t => {
@@ -424,6 +438,7 @@ export default {
         };
       });
       this.queryStrings.classes.tips.enum = this.tipologias;
+      this.queryStrings.tipologias.tips.enum = this.tipologias;
 
       response = await this.$request("get", "/api/legislacao");
       this.legislacoes = response.data.map(l => {
