@@ -12,7 +12,11 @@
     >
     <v-spacer></v-spacer>
 
-    <div class="body-2">Versão: 20200217</div>
+    <div class="body-2">Versão: 2020-02-18</div>
+
+    <v-spacer></v-spacer>
+
+    <div v-if="ontoReady" class="body-2">Ontologia: {{ontologia}}</div>
 
     <v-spacer></v-spacer>
 
@@ -23,6 +27,27 @@
     <v-img :src="require('./../assets/feder.png')" aspect-ratio="4.8600" />
   </v-app-bar>
 </template>
+
+<script>
+export default {
+  data: function() {
+    return {
+      ontoReady: false,
+      ontologia: "",
+    }
+  },
+
+  created: async function(){
+    try {
+        let response = await this.$request("get", "/api/ontologia/data");
+        this.ontologia = response.data
+        this.ontoReady = true
+    } catch (error) {
+        return error;
+      }
+  }
+}
+</script>
 
 <style scoped>
 .v-btn:hover:before {

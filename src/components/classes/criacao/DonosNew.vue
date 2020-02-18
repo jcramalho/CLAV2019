@@ -11,7 +11,7 @@
       <v-form v-model="valid">
         <v-container>
           <v-row>
-            <v-col>
+            <v-col v-if="false">
               <v-radio-group v-model="tipo" :mandatory="false">
                 <v-radio label="Entidade" value="Entidade" color="indigo darken-2"></v-radio>
                 <v-radio label="Tipologia" value="Tipologia"  color="indigo darken-2"></v-radio>
