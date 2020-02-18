@@ -303,7 +303,9 @@ export default {
         {
           text: "Critério Legal",
           value: "CriterioJustificacaoLegal"
-        },
+        }
+      ];
+      var criteriosPCA = criterios.concat([
         {
           text: "Critério Gestionário",
           value: "CriterioJustificacaoGestionario"
@@ -311,7 +313,9 @@ export default {
         {
           text: "Critério de Utilidade Administrativa",
           value: "CriterioJustificacaoUtilidadeAdministrativa"
-        },
+        }
+      ]);
+      var criteriosDF = criterios.concat([
         {
           text: "Critério de Densidade Informacional",
           value: "CriterioJustificacaoDensidadeInfo"
@@ -320,10 +324,10 @@ export default {
           text: "Critério de Complementaridade Informacional",
           value: "CriterioJustificacaoComplementaridadeInfo"
         }
-      ];
+      ]);
 
-      this.loadEnum("Justificação do PCA", criterios);
-      this.loadEnum("Justificação do DF", criterios);
+      this.loadEnum("Justificação do PCA", criteriosPCA);
+      this.loadEnum("Justificação do DF", criteriosDF);
     },
     addActive: function(code) {
       if (!this.selected.includes(code)) {
