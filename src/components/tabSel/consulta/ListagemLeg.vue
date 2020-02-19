@@ -32,7 +32,7 @@
           <tr>
             <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="index == 'link'">
-                  <a :href="campo">{{ campo }}</a>
+                <a :href="campo">{{ campo }}</a>
               </div>
 
               <div v-else>{{ campo }}</div>
