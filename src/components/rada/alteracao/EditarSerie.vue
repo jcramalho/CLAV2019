@@ -1,14 +1,15 @@
 <template>
   <v-dialog v-model="dialog">
     <template v-slot:activator="{ on }">
-      <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
+      <b text depressed v-on="on">{{ treeview_object.titulo }}</b>
+      <!-- @click="filterSeries" -->
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
-        <b>{{ 'Alterar a classe: ' + treeview_object.titulo }}</b>
+        <b>{{ 'Alterar a série: ' + treeview_object.titulo }}</b>
       </v-card-title>
       <br />
-      <v-card-text>
+      <!-- <v-card-text>
         <v-form ref="form" :lazy-validation="false">
           <v-row>
             <v-col md="3" sm="3">
@@ -76,39 +77,22 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <!-- <v-btn color="indigo darken-4" text @click="apagar">
+         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
-        </v-btn>-->
+      </v-btn>
         <v-btn color="indigo darken-4" outlined text @click="dialog = false">Cancelar</v-btn>
 
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
-      </v-card-actions>
+      </v-card-actions>-->
     </v-card>
   </v-dialog>
 </template>
 
 <script>
 export default {
-  props: ["treeview_object", "classes"],
+  props: ["treeview_object"],
   data: () => ({
-    dialog: false,
-    classesFiltradas: [],
-    classe: {}
-  }),
-  methods: {
-    filterSeries: function() {
-      this.classesFiltradas = this.classes.filter(
-        classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
-      );
-      this.classe = Object.assign(
-        {},
-        this.classes.find(e => e.codigo == this.treeview_object.codigo)
-      );
-    },
-    save: function() {
-      this.$emit("atualizacao", this.classe);
-      this.dialog = false;
-    }
-  }
+    dialog: false
+  })
 };
 </script>

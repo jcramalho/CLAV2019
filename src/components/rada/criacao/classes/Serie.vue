@@ -109,7 +109,7 @@ export default {
     classesFiltradas: [],
     classesNomes: [],
     newSerie: {
-      // codigo: "01.01",
+      // codigo: "02.02",
       // titulo: "SERIE",
       // descricao: "DESC SERIE",
       // dataInicial: "2020-02-13",
@@ -161,16 +161,17 @@ export default {
         justificacaoDF: "",
         notas: "",
         eFilhoDe: "",
-        tipo: "Série",
-        children: []
+        tipo: "Série"
       };
       this.$refs.formSerie.resetValidation();
     },
     close: function() {
       this.dialog = false;
     },
-    save: function() {
+    save: async function() {
       if (this.$refs.formSerie.validate()) {
+        await this.relacoes_simetricas();
+
         this.classes.push(Object.assign({}, this.newSerie));
         this.dialog = false;
         this.apagar();
@@ -181,7 +182,70 @@ export default {
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
 
-      this.classesNomes = this.classes.map(e => e.codigo + " - " + e.titulo);
+      this.classesNomes = this.classes
+        .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
+        .map(e => e.codigo + " - " + e.titulo);
+    },
+    relacoes_simetricas: async function() {
+      for (let i = 0; i < this.newSerie.relacoes.length; i++) {
+        /*
+        
+          Ver qual é a série relacionada, ir encontrar e adicionar a relação oposta;
+
+        */
+
+        let classe_relacionada = await this.classes.find(
+          e =>
+            e.codigo == this.newSerie.relacoes[i].serieRelacionada.split(" ")[0]
+        );
+
+        let relacao_inversa = "";
+
+        switch (this.newSerie.relacoes[i].relacao) {
+          case "Antecessora de":
+            relacao_inversa = "Sucessora de";
+            break;
+          case "Sucessora de":
+            relacao_inversa = "Antecessora de";
+            break;
+          case "Complementar de":
+            relacao_inversa = "Complementar de";
+            break;
+          case "Sintetizado por":
+            relacao_inversa = "Síntese de";
+            break;
+          case "Síntese de":
+            relacao_inversa = "Sintetizado por";
+            break;
+          case "Suplemento de":
+            relacao_inversa = "Suplemento para";
+            break;
+          case "Suplemento para":
+            relacao_inversa = "Suplemento de";
+            break;
+        }
+
+        /*
+        
+        Adicionar as relações simétricas verificando se essa relação já existe
+        
+        */
+
+        let existe_repetida = await classe_relacionada.relacoes.find(
+          e =>
+            e.relacao == relacao_inversa &&
+            e.serieRelacionada ==
+              this.newSerie.codigo + " - " + this.newSerie.titulo
+        );
+
+        if (existe_repetida == undefined) {
+          classe_relacionada.relacoes.push({
+            relacao: relacao_inversa,
+            serieRelacionada:
+              this.newSerie.codigo + " - " + this.newSerie.titulo
+          });
+        }
+      }
     }
   }
 };
