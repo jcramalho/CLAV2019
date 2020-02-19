@@ -5,7 +5,7 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading">
-            Revogar Legislação: {{ l.sigla }}
+            Revogar Legislação: {{ legislacao.numero }}
           </v-toolbar-title>
         </v-app-bar>
 
@@ -87,7 +87,7 @@ export default {
   },
 
   data: vm => ({
-    entidade: null,
+    legislacao: null,
     // vuetify datepicker
     date: null,
     dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
@@ -140,6 +140,7 @@ export default {
   created() {
     this.date = new Date().toISOString().substr(0, 10);
     this.legislacao = this.l;
+    this.legislacao.estado = "Revogado";
     this.legislacao.dataRevogacao = this.dateFormatted;
   }
 };

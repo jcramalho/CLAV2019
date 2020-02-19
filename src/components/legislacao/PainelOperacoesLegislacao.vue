@@ -79,7 +79,7 @@
         <v-card>
           <v-card-title>Pedido de {{ acao }} de Diploma Submetido</v-card-title>
           <v-card-text>
-            <v-row>
+            <v-row v-if="l.tipo">
               <v-col cols="2">
                 <div class="info-label">Tipo de diploma:</div>
               </v-col>
@@ -89,7 +89,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="l.diplomaFonte">
               <v-col cols="2">
                 <div class="info-label">Fonte do diploma:</div>
               </v-col>
@@ -99,7 +99,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="l.numero">
               <v-col cols="2">
                 <div class="info-label">Número de diploma:</div>
               </v-col>
@@ -109,7 +109,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="l.data">
               <v-col cols="2">
                 <div class="info-label">Data:</div>
               </v-col>
@@ -119,7 +119,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="l.Sumário">
               <v-col cols="2">
                 <div class="info-label">Sumário:</div>
               </v-col>
@@ -166,6 +166,16 @@
                   class="elevation-1"
                   hide-default-footer
                 ></v-data-table>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="l.dataRevogacao">
+              <v-col cols="2">
+                <div class="info-label">Data de Revogação:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ l.dataRevogacao }}</div>
               </v-col>
             </v-row>
           </v-card-text>

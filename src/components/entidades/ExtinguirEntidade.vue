@@ -140,6 +140,7 @@ export default {
   created: function() {
     this.date = new Date().toISOString().substr(0, 10);
     this.entidade = this.e;
+    this.entidade.estado = "Extinto";
     this.entidade.dataExtincao = this.dateFormatted;
   }
 };

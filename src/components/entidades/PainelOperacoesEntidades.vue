@@ -161,6 +161,16 @@
                 ></v-data-table>
               </v-col>
             </v-row>
+
+            <v-row v-if="e.dataExtincao">
+              <v-col cols="2">
+                <div class="info-label">Data de Extinção:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ e.dataExtincao }}</div>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
