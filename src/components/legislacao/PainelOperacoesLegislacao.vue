@@ -1,8 +1,11 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-
-      <ValidarLegislacaoInfoBox :l="l" :acao="acao" />
+      <ValidarLegislacaoInfoBox
+        v-if="acao !== 'Revogação'"
+        :l="l"
+        :acao="acao"
+      />
 
       <v-col>
         <v-btn
@@ -18,6 +21,13 @@
           class="indigo accent-4 white--text"
           @click="criarAlterarLegislacao"
           >Alterar Diploma</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Revogação'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarAlterarLegislacao"
+          >Revogar Diploma</v-btn
         >
       </v-col>
 
@@ -35,6 +45,13 @@
           class="red darken-4 white--text"
           @click="eliminarLegislacao"
           >Cancelar Alteração</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Revogação'"
+          rounded
+          class="red darken-4 white--text"
+          @click="eliminarLegislacao"
+          >Cancelar Revogação</v-btn
         >
       </v-col>
 
@@ -167,12 +184,9 @@
       <!-- Cancelamento da criação de uma legislacao: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title
-            >Cancelamento e eliminação do pedido de criação do
-            diploma</v-card-title
-          >
+          <v-card-title>Cancelamento do pedido.</v-card-title>
           <v-card-text>
-            <p>Selecionou o cancelamento da criação do diploma.</p>
+            <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
             <p>
               Confirme a decisão para ser reencaminhado para a página principal.
@@ -241,7 +255,6 @@ export default {
   },
 
   methods: {
-
     async validarLegislacaoCriacao() {
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);

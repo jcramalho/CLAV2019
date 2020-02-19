@@ -177,7 +177,7 @@
       <!-- Cancelamento da criação de uma entidade: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title>Cancelamento do pedido </v-card-title>
+          <v-card-title>Cancelamento do pedido.</v-card-title>
           <v-card-text>
             <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
