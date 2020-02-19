@@ -22,7 +22,12 @@
         <v-form ref="addRel" :lazy-validation="false">
           <v-row>
             <v-col sm="5" xs="12">
-              <v-autocomplete :rules="[v => !!v || 'Campo obrigatório!']" v-model="rel" :items="listaRelacoes" label="Relação"></v-autocomplete>
+              <v-autocomplete
+                :rules="[v => !!v || 'Campo obrigatório!']"
+                v-model="rel"
+                :items="listaRelacoes"
+                label="Relação"
+              ></v-autocomplete>
             </v-col>
             <v-col sm="6" xs="12">
               <v-combobox
@@ -109,6 +114,7 @@ export default {
             relacao: this.rel,
             serieRelacionada: this.classerel
           });
+          // console.log("DONEEE");
           this.$refs.addRel.reset();
         } else {
           this.alertOn = true;

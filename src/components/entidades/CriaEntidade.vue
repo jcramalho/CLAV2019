@@ -101,10 +101,22 @@
                   ></v-text-field>
                 </template>
 
-                <v-date-picker v-model="entidade.dataCriacao" no-title scrollable locale="pt">
+                <v-date-picker
+                  v-model="entidade.dataCriacao"
+                  no-title
+                  scrollable
+                  locale="pt"
+                >
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu1 = false">Cancel</v-btn>
-                  <v-btn text color="primary" @click="$refs.menu1.save(entidade.dataCriacao)">OK</v-btn>
+                  <v-btn text color="primary" @click="menu1 = false"
+                    >Cancel</v-btn
+                  >
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.menu1.save(entidade.dataCriacao)"
+                    >OK</v-btn
+                  >
                 </v-date-picker>
               </v-menu>
             </v-col>
@@ -164,7 +176,8 @@ export default {
       sioe: "",
       tipologiasSel: [],
       codigo: "",
-      dataCriacao: ""
+      dataCriacao: "",
+      estado: "Ativa"
     },
 
     // Para o seletor de processos

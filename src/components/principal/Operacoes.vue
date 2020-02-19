@@ -44,6 +44,18 @@
                   >
                     Extinguir</v-btn
                   >
+                  <v-btn
+                    v-if="
+                      [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
+                        item.entidade === 'Legislação'
+                    "
+                    color="indigo accent-4"
+                    dark
+                    class="ma-2"
+                    @click="revogarDialog = true"
+                  >
+                    Revogar</v-btn
+                  >
                 </div>
               </v-card-text>
             </v-card>
@@ -93,6 +105,52 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
+
+            <!-- Selecionar Legislação a Revogar-->
+            <v-dialog v-model="revogarDialog" width="50%">
+              <v-card>
+                <v-card-title>Selecione a Legislação a revogar</v-card-title>
+                <v-card-text>
+                  <v-row>
+                    <v-col v-if="entidadesReady">
+                      <v-autocomplete
+                        solo
+                        clearable
+                        color="indigo darken-4"
+                        label="Selecione uma legislaçao"
+                        :items="legislacoesNumero"
+                        v-model="legislacaoRevogar"
+                      />
+                    </v-col>
+                    <v-col v-else style="text-align:center;">
+                      <p>A carregar legislações...</p>
+                      <v-progress-circular
+                        indeterminate
+                        size="100"
+                        width="10"
+                        color="indigo accent-4"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer />
+                  <v-btn
+                    color="red darken-4"
+                    dark
+                    @click="revogarDialog = false"
+                    >Fechar</v-btn
+                  >
+                  <v-btn
+                    color="indigo accent-4"
+                    dark
+                    class="ma-2"
+                    @click="revogar()"
+                    >Revogar</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -112,6 +170,14 @@ export default {
       } else {
         this.$router.push(url);
       }
+    },
+
+    revogar() {
+      const leg = this.legislacoes.find(
+        legislacao => legislacao.numero === this.legislacaoRevogar
+      );
+
+      this.go(`/legislacao/revogar/${leg.id}`);
     },
 
     filtraOps: function(operacoes) {
@@ -137,13 +203,24 @@ export default {
     preparaEntidades(entidades) {
       this.entidades = entidades.map(entidade => entidade.sigla);
       this.entidadesReady = true;
+    },
+
+    preparaLegislacoes(legislacoes) {
+      this.legislacoes = JSON.parse(JSON.stringify(legislacoes));
+      this.legislacoesNumero = legislacoes.map(legislacao => legislacao.numero);
+      this.legislacaoReady = true;
     }
   },
 
   async created() {
-    let response = await this.$request("get", "/api/entidades?processos=sem");
+    let responseEntidades = await this.$request(
+      "get",
+      "/api/entidades?processos=sem"
+    );
+    let responseLegislacoes = await this.$request("get", "/api/legislacao");
 
-    this.preparaEntidades(response.data);
+    this.preparaEntidades(responseEntidades.data);
+    this.preparaLegislacoes(responseLegislacoes.data);
   },
 
   computed: {
@@ -158,6 +235,11 @@ export default {
       entidades: [],
       entidadeExtinguir: null,
       entidadesReady: false,
+      revogarDialog: false,
+      legislacoes: [],
+      legislacoesNumero: [],
+      legislacaoRevogar: null,
+      legislacaoReady: false,
       panelHeaderColor: "indigo darken-4",
       operacoes: [
         {

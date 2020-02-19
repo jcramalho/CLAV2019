@@ -101,6 +101,12 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] }
     },
     {
+      path: "/legislacao/revogar/:idLegislacao",
+      name: "revogarLegislacao",
+      component: () => import("./views/legislacao/LegislacaoRevogar.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/legislacao/:idLegislacao",
       name: "consultaLegislacao",
       component: () => import("./views/legislacao/LegislacaoConsulta.vue"),

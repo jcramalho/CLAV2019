@@ -24,15 +24,16 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="12">
-          <v-treeview
-            color="amber"
-            v-if="TS.classes.length > 0"
-            hoverable
-            :items="preparaTree"
-            item-key="titulo"
-          >
-            <template slot="label" slot-scope="{ item }">
-              <b>{{ item.titulo }}</b>
+          <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
+            <template v-slot:label="{ item }">
+              <EditarSerie v-if="item.tipo == 'Série'" :treeview_object="item" />
+              <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
+              <EditarOrganicaFunc
+                v-else
+                @atualizacao="atualizacao_area_organico"
+                :classes="TS.classes"
+                :treeview_object="item"
+              />
             </template>
           </v-treeview>
           <v-alert
@@ -58,13 +59,19 @@
 import AddOrgFunc from "@/components/rada/criacao/classes/OrganicaFunc";
 import Serie from "@/components/rada/criacao/classes/Serie";
 import SubSerie from "@/components/rada/criacao/classes/Subserie";
+import EditarOrganicaFunc from "@/components/rada/alteracao/EditarOrganicaFunc";
+import EditarSerie from "@/components/rada/alteracao/EditarSerie";
+import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
 
 export default {
   props: ["TS", "entidades"],
   components: {
     AddOrgFunc,
     Serie,
-    SubSerie
+    SubSerie,
+    EditarOrganicaFunc,
+    EditarSubserie,
+    EditarSerie
   },
   computed: {
     preparaTree() {
@@ -80,6 +87,7 @@ export default {
             codigo: this.TS.classes[i].codigo,
             titulo:
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
+            tipo: this.TS.classes[i].tipo,
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -97,6 +105,7 @@ export default {
             codigo: this.TS.classes[i].codigo,
             titulo:
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
+            tipo: this.TS.classes[i].tipo,
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -121,6 +130,11 @@ export default {
       const index = this.TS.classes.indexOf(item);
       confirm("Are you sure you want to delete this item?") &&
         this.TS.classes.splice(index, 1);
+    },
+    atualizacao_area_organico(c) {
+      let area_organico = this.TS.classes.find(e => e.codigo == c.codigo);
+
+      area_organico.descricao = c.descricao;
     }
   }
 };

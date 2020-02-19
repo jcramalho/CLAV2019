@@ -1,8 +1,11 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-
-      <ValidarLegislacaoInfoBox :l="l" :acao="acao" />
+      <ValidarLegislacaoInfoBox
+        v-if="acao !== 'Revogação'"
+        :l="l"
+        :acao="acao"
+      />
 
       <v-col>
         <v-btn
@@ -18,6 +21,13 @@
           class="indigo accent-4 white--text"
           @click="criarAlterarLegislacao"
           >Alterar Diploma</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Revogação'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarAlterarLegislacao"
+          >Revogar Diploma</v-btn
         >
       </v-col>
 
@@ -35,6 +45,13 @@
           class="red darken-4 white--text"
           @click="eliminarLegislacao"
           >Cancelar Alteração</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Revogação'"
+          rounded
+          class="red darken-4 white--text"
+          @click="eliminarLegislacao"
+          >Cancelar Revogação</v-btn
         >
       </v-col>
 
@@ -62,7 +79,7 @@
         <v-card>
           <v-card-title>Pedido de {{ acao }} de Diploma Submetido</v-card-title>
           <v-card-text>
-            <v-row>
+            <v-row v-if="l.tipo">
               <v-col cols="2">
                 <div class="info-label">Tipo de diploma:</div>
               </v-col>
@@ -72,7 +89,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="l.diplomaFonte">
               <v-col cols="2">
                 <div class="info-label">Fonte do diploma:</div>
               </v-col>
@@ -82,7 +99,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="l.numero">
               <v-col cols="2">
                 <div class="info-label">Número de diploma:</div>
               </v-col>
@@ -92,7 +109,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="l.data">
               <v-col cols="2">
                 <div class="info-label">Data:</div>
               </v-col>
@@ -102,7 +119,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="l.Sumário">
               <v-col cols="2">
                 <div class="info-label">Sumário:</div>
               </v-col>
@@ -151,6 +168,16 @@
                 ></v-data-table>
               </v-col>
             </v-row>
+
+            <v-row v-if="l.dataRevogacao">
+              <v-col cols="2">
+                <div class="info-label">Data de Revogação:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ l.dataRevogacao }}</div>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -167,12 +194,9 @@
       <!-- Cancelamento da criação de uma legislacao: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title
-            >Cancelamento e eliminação do pedido de criação do
-            diploma</v-card-title
-          >
+          <v-card-title>Cancelamento do pedido.</v-card-title>
           <v-card-text>
-            <p>Selecionou o cancelamento da criação do diploma.</p>
+            <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
             <p>
               Confirme a decisão para ser reencaminhado para a página principal.
@@ -241,7 +265,6 @@ export default {
   },
 
   methods: {
-
     async validarLegislacaoCriacao() {
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);

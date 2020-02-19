@@ -114,18 +114,27 @@ export default {
             //   descricao: "Descricaao 01"
             // },
             // {
+            //   codigo: "01.02",
+            //   tipo: "N2",
+            //   titulo: "Reforma Agraria N2",
+            //   eFilhoDe: "01",
+            //   descricao: "Descricaao 01"
+            // },
+            // {
             //   codigo: "01.01",
             //   tipo: "Série",
             //   titulo: "Serie da Reforma Agraria",
             //   eFilhoDe: "01",
-            //   descricao: "asjdbjahs"
+            //   descricao: "asjdbjahs",
+            //   relacoes: []
             // },
             // {
             //   codigo: "01.01.01",
             //   tipo: "Subsérie",
             //   titulo: "Subserie da Serie da Reforma Agraria",
             //   eFilhoDe: "01.01",
-            //   descricao: "askpdoiapsodi"
+            //   descricao: "askpdoiapsodi",
+            //   relacoes: []
             // },
             // {
             //   codigo: "02",
@@ -139,14 +148,16 @@ export default {
             //   tipo: "Série",
             //   titulo: "Serie da Reforma Agraria",
             //   eFilhoDe: "02",
-            //   descricao: "asjdbjahs"
+            //   descricao: "asjdbjahs",
+            //   relacoes: []
             // },
             // {
             //   codigo: "02.01.01",
             //   tipo: "Subsérie",
             //   titulo: "Subserie da Serie da Reforma Agraria",
             //   eFilhoDe: "02.01",
-            //   descricao: "askpdoiapsodi"
+            //   descricao: "askpdoiapsodi",
+            //   relacoes: []
             // }
           ]
         }

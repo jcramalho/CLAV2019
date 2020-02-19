@@ -161,6 +161,16 @@
                 ></v-data-table>
               </v-col>
             </v-row>
+
+            <v-row v-if="e.dataExtincao">
+              <v-col cols="2">
+                <div class="info-label">Data de Extinção:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ e.dataExtincao }}</div>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -177,7 +187,7 @@
       <!-- Cancelamento da criação de uma entidade: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title>Cancelamento do pedido </v-card-title>
+          <v-card-title>Cancelamento do pedido.</v-card-title>
           <v-card-text>
             <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>

@@ -5,7 +5,7 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading">
-            Extinguir Entidade: {{ entidade.sigla }}
+            Revogar Legislação: {{ legislacao.numero }}
           </v-toolbar-title>
         </v-app-bar>
 
@@ -13,7 +13,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nome da Entidade:</div>
+              <div class="info-label">Número da Legislação:</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -21,7 +21,7 @@
                 solo
                 color="indigo"
                 single-line
-                v-model="entidade.designacao"
+                v-model="legislacao.numero"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -44,7 +44,7 @@
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     solo
-                    v-model="entidade.dataExtincao"
+                    v-model="legislacao.dataExtincao"
                     hint="AAAA/MM/DD"
                     persistent-hint
                     @blur="date = parseDate(dateFormatted)"
@@ -72,22 +72,22 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      <PainelOpsEnt :e="entidade" :acao="'Extinção'" />
+      <PainelOpsLeg :l="legislacao" :acao="'Revogação'" />
     </v-col>
   </v-row>
 </template>
 
 <script>
-import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
+import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 
 export default {
-  props: ["e"],
+  props: ["l"],
   components: {
-    PainelOpsEnt
+    PainelOpsLeg
   },
 
   data: vm => ({
-    entidade: null,
+    legislacao: null,
     // vuetify datepicker
     date: null,
     dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
@@ -111,7 +111,7 @@ export default {
 
   watch: {
     date(val) {
-      this.entidade.dataExtincao = this.formatDate(this.date);
+      this.legislacao.dataExtincao = this.formatDate(this.date);
       this.dateFormatted = this.formatDate(this.date);
     }
   },
@@ -137,11 +137,11 @@ export default {
     }
   },
 
-  created: function() {
+  created() {
     this.date = new Date().toISOString().substr(0, 10);
-    this.entidade = this.e;
-    this.entidade.estado = "Extinto";
-    this.entidade.dataExtincao = this.dateFormatted;
+    this.legislacao = this.l;
+    this.legislacao.estado = "Revogado";
+    this.legislacao.dataRevogacao = this.dateFormatted;
   }
 };
 </script>

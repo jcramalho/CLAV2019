@@ -36,7 +36,8 @@ export default {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" }
+          { icon: "edit", descricao: "Alteração" },
+          { icon: "gavel", descricao: "Revogação" }
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }
@@ -89,8 +90,8 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
-            operacoes: this.operacoes
-            //id: listaLegislacao[i].id
+            operacoes: this.operacoes,
+            id: listaLegislacao[i].id
           });
         }
       } else {
@@ -112,8 +113,8 @@ export default {
             tipo: listaLegislacao[i].tipo,
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
-            sumario: listaLegislacao[i].sumario
-            //id: listaLegislacao[i].id
+            sumario: listaLegislacao[i].sumario,
+            id: listaLegislacao[i].id
           });
         }
       }

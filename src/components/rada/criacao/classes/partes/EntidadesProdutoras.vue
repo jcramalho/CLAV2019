@@ -173,7 +173,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .table-header {
   color: #1a237e;
   font-weight: 400;
