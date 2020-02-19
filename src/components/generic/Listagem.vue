@@ -49,7 +49,7 @@
             :item="props.item"
             @rowClicked="go($event.numero)"
             @iconClicked="
-              switchOperacao($event.operacao.descricao, $event.item.numero)
+              switchOperacao($event.operacao.descricao, $event.item.id)
             "
           />
 
@@ -175,6 +175,10 @@ export default {
           this.$router.push("/entidades/extinguir/ent_" + id);
           break;
 
+        case "Revogação":
+          this.$router.push("/legislacao/revogar/" + id);
+          break;
+
         default:
           break;
       }
@@ -187,7 +191,8 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "end"
+            align: "end",
+            width: "10%"
           };
         else
           this.headers[i] = {

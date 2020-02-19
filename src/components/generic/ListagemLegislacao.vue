@@ -15,6 +15,7 @@
         @click="doOperation(item, operacao)"
         color="indigo darken-2"
         :key="index"
+        class="mr-2"
         >{{ operacao.icon }}</v-icon
       >
     </td>
