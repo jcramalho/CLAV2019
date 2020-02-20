@@ -28,6 +28,36 @@
 
           <v-row>
             <v-col cols="2">
+              <div class="info-label">Tipo:</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                readonly
+                solo
+                color="indigo"
+                single-line
+                v-model="legislacao.tipo"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Sumário:</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                readonly
+                solo
+                color="indigo"
+                single-line
+                v-model="legislacao.sumario"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
               <div class="info-label">Data de Extinção:</div>
             </v-col>
             <v-col>

@@ -107,7 +107,7 @@
             </v-dialog>
 
             <!-- Selecionar Legislação a Revogar-->
-            <v-dialog v-model="revogarDialog" width="50%">
+            <v-dialog v-model="revogarDialog" width="90%">
               <v-card>
                 <v-card-title>Selecione a Legislação a revogar</v-card-title>
                 <v-card-text>
@@ -216,7 +216,8 @@ export default {
     preparaLegislacoes(legislacoes) {
       this.legislacoes = JSON.parse(JSON.stringify(legislacoes));
       this.legislacoesNumero = legislacoes.map(
-        legislacao => `${legislacao.numero} - ${legislacao.sumario}`
+        legislacao =>
+          `${legislacao.numero} - ${legislacao.sumario} - ${legislacao.tipo}`
       );
       this.legislacaoReady = true;
     }
