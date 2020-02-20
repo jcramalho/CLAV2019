@@ -18,7 +18,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="150"
                 single-line
                 v-model="entidade.designacao"
                 maxlength="150"
@@ -35,7 +34,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="10"
                 single-line
                 v-model="entidade.sigla"
                 maxlength="10"
@@ -69,7 +67,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="12"
                 single-line
                 v-model="entidade.sioe"
                 :rules="regraSIOE"

@@ -99,7 +99,7 @@
                     color="indigo accent-4"
                     dark
                     class="ma-2"
-                    @click="go(`/entidades/extinguir/ent_${entidadeExtinguir}`)"
+                    @click="extinguir()"
                     >Extinguir</v-btn
                   >
                 </v-card-actions>
@@ -174,10 +174,16 @@ export default {
 
     revogar() {
       const leg = this.legislacoes.find(
-        legislacao => legislacao.numero === this.legislacaoRevogar
+        legislacao => legislacao.numero === this.legislacaoRevogar.split(" ")[0]
       );
 
       this.go(`/legislacao/revogar/${leg.id}`);
+    },
+
+    extinguir() {
+      this.go(
+        `/entidades/extinguir/ent_${this.entidadeExtinguir.split(" ")[0]}`
+      );
     },
 
     filtraOps: function(operacoes) {
@@ -201,13 +207,17 @@ export default {
     },
 
     preparaEntidades(entidades) {
-      this.entidades = entidades.map(entidade => entidade.sigla);
+      this.entidades = entidades.map(
+        entidade => `${entidade.sigla} - ${entidade.designacao}`
+      );
       this.entidadesReady = true;
     },
 
     preparaLegislacoes(legislacoes) {
       this.legislacoes = JSON.parse(JSON.stringify(legislacoes));
-      this.legislacoesNumero = legislacoes.map(legislacao => legislacao.numero);
+      this.legislacoesNumero = legislacoes.map(
+        legislacao => `${legislacao.numero} - ${legislacao.sumario}`
+      );
       this.legislacaoReady = true;
     }
   },

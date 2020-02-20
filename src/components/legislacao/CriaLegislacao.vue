@@ -35,7 +35,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="11"
                 single-line
                 v-model="legislacao.numero"
                 maxlength="11"
@@ -90,7 +89,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="300"
                 single-line
                 v-model="legislacao.sumario"
               ></v-text-field>

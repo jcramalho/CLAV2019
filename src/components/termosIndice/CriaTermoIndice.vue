@@ -4,7 +4,9 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Novo Termo de Índice</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Novo Termo de Índice</v-toolbar-title
+          >
         </v-app-bar>
 
         <!-- Content -->
@@ -18,7 +20,6 @@
                 solo
                 clearable
                 color="indigo darken-4"
-                counter="50"
                 single-line
                 v-model="termoIndice.termo"
                 maxlength="50"
@@ -42,11 +43,21 @@
             </v-col>
             <v-col v-else style="text-align:center;">
               <p>A carregar processos...</p>
-              <v-progress-circular indeterminate size="100" width="10" color="indigo accent-4" />
+              <v-progress-circular
+                indeterminate
+                size="100"
+                width="10"
+                color="indigo accent-4"
+              />
             </v-col>
           </v-row>
         </v-card-text>
-        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+        <v-snackbar
+          v-model="snackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
           {{ text }}
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
