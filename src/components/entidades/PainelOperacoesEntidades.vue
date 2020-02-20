@@ -1,11 +1,7 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <ValidarEntidadeInfoBox
-        v-if="this.acao !== 'Extinção'"
-        :e="e"
-        :acao="acao"
-      />
+      <ValidarEntidadeInfoBox :e="e" :acao="acao" />
 
       <v-col>
         <v-btn
@@ -21,13 +17,6 @@
           class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
           >Alterar Entidade</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Extinção'"
-          rounded
-          class="indigo accent-4 white--text"
-          @click="criarAlterarEntidade"
-          >Extinguir Entidade</v-btn
         >
       </v-col>
 
@@ -47,14 +36,6 @@
           class="red darken-4"
           @click="eliminarEntidade"
           >Cancelar Alteração</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Extinção'"
-          dark
-          rounded
-          class="red darken-4"
-          @click="eliminarEntidade"
-          >Cancelar Extinção</v-btn
         >
       </v-col>
 
@@ -344,7 +325,7 @@ export default {
               break;
           }
 
-          if (erros == 0) {
+          if (erros === 0) {
             let userBD = await this.$request(
               "get",
               "/api/users/" + this.$store.state.token + "/token"

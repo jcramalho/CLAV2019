@@ -40,10 +40,11 @@
                     color="indigo accent-4"
                     dark
                     class="ma-2"
-                    @click="extinguirDialog = true"
+                    @click="entidadesDialog = true"
                   >
-                    Extinguir</v-btn
+                    Editar</v-btn
                   >
+
                   <v-btn
                     v-if="
                       [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
@@ -52,28 +53,40 @@
                     color="indigo accent-4"
                     dark
                     class="ma-2"
-                    @click="revogarDialog = true"
+                    @click="legislacaoDialog = true"
                   >
-                    Revogar</v-btn
+                    Editar</v-btn
+                  >
+
+                  <v-btn
+                    v-if="
+                      [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
+                        item.entidade === 'Tipologias de Entidades'
+                    "
+                    color="indigo accent-4"
+                    dark
+                    class="ma-2"
+                    @click="tipologiasDialog = true"
+                  >
+                    Editar</v-btn
                   >
                 </div>
               </v-card-text>
             </v-card>
 
-            <!-- Selecionar Entidade a Extinguir -->
-            <v-dialog v-model="extinguirDialog" width="50%">
+            <!-- Selecionar Entidade a Editar-->
+            <v-dialog v-model="entidadesDialog" width="60%">
               <v-card>
-                <v-card-title>Selecione a Entidade a extinguir</v-card-title>
+                <v-card-title>Selecione a Entidade a editar</v-card-title>
                 <v-card-text>
                   <v-row>
-                    <v-col v-if="entidadesReady">
+                    <v-col v-if="entidades.ready">
                       <v-autocomplete
-                        solo
                         clearable
                         color="indigo darken-4"
                         label="Selecione uma entidade"
-                        :items="entidades"
-                        v-model="entidadeExtinguir"
+                        :items="entidades.entidades"
+                        v-model="dadosEditar"
                       />
                     </v-col>
                     <v-col v-else style="text-align:center;">
@@ -92,34 +105,36 @@
                   <v-btn
                     color="red darken-4"
                     dark
-                    @click="extinguirDialog = false"
+                    @click="
+                      entidadesDialog = false;
+                      dadosEditar = null;
+                    "
                     >Fechar</v-btn
                   >
                   <v-btn
                     color="indigo accent-4"
                     dark
                     class="ma-2"
-                    @click="extinguir()"
-                    >Extinguir</v-btn
+                    @click="editar('Entidade')"
+                    >Editar</v-btn
                   >
                 </v-card-actions>
               </v-card>
             </v-dialog>
 
-            <!-- Selecionar Legislação a Revogar-->
-            <v-dialog v-model="revogarDialog" width="50%">
+            <!-- Selecionar Legislação a Editar-->
+            <v-dialog v-model="legislacaoDialog" width="90%">
               <v-card>
-                <v-card-title>Selecione a Legislação a revogar</v-card-title>
+                <v-card-title>Selecione a Legislação a editar</v-card-title>
                 <v-card-text>
                   <v-row>
-                    <v-col v-if="entidadesReady">
+                    <v-col v-if="legislacao.ready">
                       <v-autocomplete
-                        solo
                         clearable
                         color="indigo darken-4"
                         label="Selecione uma legislaçao"
-                        :items="legislacoesNumero"
-                        v-model="legislacaoRevogar"
+                        :items="legislacao.legislacaoItems"
+                        v-model="dadosEditar"
                       />
                     </v-col>
                     <v-col v-else style="text-align:center;">
@@ -138,15 +153,66 @@
                   <v-btn
                     color="red darken-4"
                     dark
-                    @click="revogarDialog = false"
+                    @click="
+                      legislacaoDialog = false;
+                      dadosEditar = null;
+                    "
                     >Fechar</v-btn
                   >
                   <v-btn
                     color="indigo accent-4"
                     dark
                     class="ma-2"
-                    @click="revogar()"
-                    >Revogar</v-btn
+                    @click="editar('Legislação')"
+                    >Editar</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            <!-- Selecionar Tipologia a Editar-->
+            <v-dialog v-model="tipologiasDialog" width="50%">
+              <v-card>
+                <v-card-title>Selecione a Tipologia a editar</v-card-title>
+                <v-card-text>
+                  <v-row>
+                    <v-col v-if="tipologias.ready">
+                      <v-autocomplete
+                        clearable
+                        color="indigo darken-4"
+                        label="Selecione uma legislaçao"
+                        :items="tipologias.tipologias"
+                        v-model="dadosEditar"
+                      />
+                    </v-col>
+                    <v-col v-else style="text-align:center;">
+                      <p>A carregar tipologias...</p>
+                      <v-progress-circular
+                        indeterminate
+                        size="100"
+                        width="10"
+                        color="indigo accent-4"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer />
+                  <v-btn
+                    color="red darken-4"
+                    dark
+                    @click="
+                      tipologiasDialog = false;
+                      dadosEditar = null;
+                    "
+                    >Fechar</v-btn
+                  >
+                  <v-btn
+                    color="indigo accent-4"
+                    dark
+                    class="ma-2"
+                    @click="editar('Tipologia')"
+                    >Editar</v-btn
                   >
                 </v-card-actions>
               </v-card>
@@ -172,18 +238,30 @@ export default {
       }
     },
 
-    revogar() {
-      const leg = this.legislacoes.find(
-        legislacao => legislacao.numero === this.legislacaoRevogar.split(" ")[0]
-      );
+    editar(tipo) {
+      let leg = null;
+      if (tipo === "Legislação") {
+        leg = this.legislacao.legislacao.find(
+          legislacao => legislacao.numero === this.dadosEditar.split(" ")[0]
+        );
+      }
 
-      this.go(`/legislacao/revogar/${leg.id}`);
-    },
+      switch (tipo) {
+        case "Entidade":
+          this.go(`/entidades/editar/ent_${this.dadosEditar.split(" ")[0]}`);
+          break;
 
-    extinguir() {
-      this.go(
-        `/entidades/extinguir/ent_${this.entidadeExtinguir.split(" ")[0]}`
-      );
+        case "Legislação":
+          this.go(`/legislacao/editar/${leg.id}`);
+          break;
+
+        case "Tipologia":
+          this.go(`/tipologias/editar/tip_${this.dadosEditar.split(" ")[0]}`);
+          break;
+
+        default:
+          break;
+      }
     },
 
     filtraOps: function(operacoes) {
@@ -206,19 +284,27 @@ export default {
       return filtered;
     },
 
-    preparaEntidades(entidades) {
-      this.entidades = entidades.map(
-        entidade => `${entidade.sigla} - ${entidade.designacao}`
+    preparaEntidades(dados, entOuTip) {
+      const dadosTratados = dados.map(
+        dado => `${dado.sigla} - ${dado.designacao}`
       );
-      this.entidadesReady = true;
+
+      if (entOuTip === "Entidades") {
+        this.entidades.entidades = dadosTratados;
+        this.entidades.ready = true;
+      } else {
+        this.tipologias.tipologias = dadosTratados;
+        this.tipologias.ready = true;
+      }
     },
 
     preparaLegislacoes(legislacoes) {
-      this.legislacoes = JSON.parse(JSON.stringify(legislacoes));
-      this.legislacoesNumero = legislacoes.map(
-        legislacao => `${legislacao.numero} - ${legislacao.sumario}`
+      this.legislacao.legislacao = JSON.parse(JSON.stringify(legislacoes));
+      this.legislacao.legislacaoItems = legislacoes.map(
+        legislacao =>
+          `${legislacao.numero} - ${legislacao.sumario} - ${legislacao.tipo}`
       );
-      this.legislacaoReady = true;
+      this.legislacao.ready = true;
     }
   },
 
@@ -227,10 +313,14 @@ export default {
       "get",
       "/api/entidades?processos=sem"
     );
+
     let responseLegislacoes = await this.$request("get", "/api/legislacao");
 
-    this.preparaEntidades(responseEntidades.data);
+    let responseTipologias = await this.$request("get", "/api/tipologias");
+
+    this.preparaEntidades(responseEntidades.data, "Entidades");
     this.preparaLegislacoes(responseLegislacoes.data);
+    this.preparaEntidades(responseTipologias.data, "Tipologias");
   },
 
   computed: {
@@ -241,15 +331,23 @@ export default {
 
   data() {
     return {
-      extinguirDialog: false,
-      entidades: [],
-      entidadeExtinguir: null,
-      entidadesReady: false,
-      revogarDialog: false,
-      legislacoes: [],
-      legislacoesNumero: [],
-      legislacaoRevogar: null,
-      legislacaoReady: false,
+      entidadesDialog: false,
+      legislacaoDialog: false,
+      tipologiasDialog: false,
+      tipologias: {
+        tipologias: [],
+        ready: false
+      },
+      entidades: {
+        entidades: [],
+        ready: false
+      },
+      legislacao: {
+        legislacao: [],
+        legislacaoItems: [],
+        ready: false
+      },
+      dadosEditar: null,
       panelHeaderColor: "indigo darken-4",
       operacoes: [
         {

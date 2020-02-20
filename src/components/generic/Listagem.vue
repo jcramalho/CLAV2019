@@ -171,14 +171,6 @@ export default {
         case "Remoção":
           break;
 
-        case "Extinção":
-          this.$router.push("/entidades/extinguir/ent_" + id);
-          break;
-
-        case "Revogação":
-          this.$router.push("/legislacao/revogar/" + id);
-          break;
-
         default:
           break;
       }

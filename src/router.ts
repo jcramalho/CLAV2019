@@ -70,12 +70,6 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] }
     },
     {
-      path: "/entidades/extinguir/:idEntidade",
-      name: "extinguirEntidade",
-      component: () => import("./views/entidades/EntidadesExtinguir.vue"),
-      meta: { levels: [4, 5, 6, 7] }
-    },
-    {
       path: "/entidades/:idEntidade",
       name: "consultaEntidade",
       component: () => import("./views/entidades/EntidadesConsulta.vue"),
@@ -98,12 +92,6 @@ export default new Router({
       path: "/legislacao/editar/:idLegislacao",
       name: "editaLegislacao",
       component: () => import("./views/legislacao/LegislacaoEdita.vue"),
-      meta: { levels: [4, 5, 6, 7] }
-    },
-    {
-      path: "/legislacao/revogar/:idLegislacao",
-      name: "revogarLegislacao",
-      component: () => import("./views/legislacao/LegislacaoRevogar.vue"),
       meta: { levels: [4, 5, 6, 7] }
     },
     {
