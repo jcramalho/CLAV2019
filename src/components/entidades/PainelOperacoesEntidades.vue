@@ -1,10 +1,7 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <ValidarEntidadeInfoBox
-        :e="e"
-        :acao="acao"
-      />
+      <ValidarEntidadeInfoBox :e="e" :acao="acao" />
 
       <v-col>
         <v-btn
@@ -328,7 +325,7 @@ export default {
               break;
           }
 
-          if (erros == 0) {
+          if (erros === 0) {
             let userBD = await this.$request(
               "get",
               "/api/users/" + this.$store.state.token + "/token"
