@@ -84,7 +84,7 @@ export default {
       }
 
       // Fonte diploma
-      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
+      if (this.l.fonte == "" || this.l.fonte == null) {
         this.mensagensErro.push({
           sobre: "Fonte do Diploma",
           mensagem: "A fonte do diploma não pode ser vazio."
@@ -237,7 +237,7 @@ export default {
       }
 
       // Fonte diploma
-      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
+      if (this.l.fonte == "" || this.l.fonte == null) {
         this.mensagensErro.push({
           sobre: "Fonte do Diploma",
           mensagem: "A fonte do diploma não pode ser vazio."

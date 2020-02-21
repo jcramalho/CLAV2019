@@ -14,11 +14,20 @@
     </v-col>
     <v-col xs="10" sm="10">
       <div class="info-content">
-        <v-data-table :headers="headers" :items="legs" class="elevation-1" hide-default-footer>
+        <v-data-table
+          :headers="headers"
+          :items="legs"
+          class="elevation-1"
+          hide-default-footer
+        >
           <template v-slot:item="props">
             <tr>
               <td>{{ props.item.tipo }}</td>
-              <td><a :href="'/legislacao/' + props.item.idLeg"> {{ props.item.numero }}</a></td>
+              <td>
+                <a :href="'/legislacao/' + props.item.idLeg">
+                  {{ props.item.numero }}</a
+                >
+              </td>
               <td>{{ props.item.sumario }}</td>
             </tr>
           </template>

@@ -80,7 +80,7 @@
           <v-row>
             <v-col cols="2">
               <div class="info-label">
-                Data de Extinção:
+                Data de extinção:
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <v-icon v-on="on" color="warning">info</v-icon>
