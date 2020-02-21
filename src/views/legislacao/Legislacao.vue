@@ -36,8 +36,7 @@ export default {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" },
-          { icon: "gavel", descricao: "Revogação" }
+          { icon: "edit", descricao: "Alteração" }
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }

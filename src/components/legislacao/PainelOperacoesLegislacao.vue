@@ -2,7 +2,6 @@
   <div>
     <v-row class="ma-2 text-center">
       <ValidarLegislacaoInfoBox
-        v-if="acao !== 'Revogação'"
         :l="l"
         :acao="acao"
       />
@@ -22,13 +21,6 @@
           @click="criarAlterarLegislacao"
           >Alterar Diploma</v-btn
         >
-        <v-btn
-          v-else-if="this.acao == 'Revogação'"
-          rounded
-          class="indigo accent-4 white--text"
-          @click="criarAlterarLegislacao"
-          >Revogar Diploma</v-btn
-        >
       </v-col>
 
       <v-col>
@@ -45,13 +37,6 @@
           class="red darken-4 white--text"
           @click="eliminarLegislacao"
           >Cancelar Alteração</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Revogação'"
-          rounded
-          class="red darken-4 white--text"
-          @click="eliminarLegislacao"
-          >Cancelar Revogação</v-btn
         >
       </v-col>
 
