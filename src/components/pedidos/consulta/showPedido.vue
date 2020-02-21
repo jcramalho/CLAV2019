@@ -1,6 +1,8 @@
 <template>
   <v-card class="ma-8">
-    <v-card-title class="pa-2 indigo darken-4 title white--text">Consulta do pedido: {{ p.codigo }}</v-card-title>
+    <v-card-title class="pa-2 indigo darken-4 title white--text"
+      >Consulta do pedido: {{ p.codigo }}</v-card-title
+    >
     <v-card-text>
       <v-row class="mt-1">
         <v-col cols="2">
@@ -39,12 +41,16 @@
           <div class="info-label">Tipo</div>
         </v-col>
         <v-col>
-          <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
+          <div class="info-content">
+            {{ p.objeto.acao }} - {{ p.objeto.tipo }}
+          </div>
         </v-col>
       </v-row>
 
       <v-card class="mt-3">
-        <v-card-title class="pa-2 indigo darken-4 title white--text">Distribuição</v-card-title>
+        <v-card-title class="pa-2 indigo darken-4 title white--text"
+          >Distribuição</v-card-title
+        >
         <v-card-text>
           <v-data-table
             :headers="distHeaders"
@@ -66,7 +72,12 @@
       <ShowTSOrg v-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
       <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
-      <ShowAE v-else-if="p.objeto.tipo.includes('AE ') || p.objeto.tipo=='Auto de Eliminação'" :p="p" />
+      <ShowAE
+        v-else-if="
+          p.objeto.tipo.includes('AE ') || p.objeto.tipo == 'Auto de Eliminação'
+        "
+        :p="p"
+      />
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
       <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />

@@ -495,7 +495,6 @@ export default {
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
-    console.log("this.legislacao :", this.legislacao);
   }
 };
 </script>
