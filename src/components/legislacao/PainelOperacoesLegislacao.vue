@@ -1,10 +1,7 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <ValidarLegislacaoInfoBox
-        :l="l"
-        :acao="acao"
-      />
+      <ValidarLegislacaoInfoBox :l="l" :acao="acao" />
 
       <v-col>
         <v-btn
@@ -74,13 +71,13 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="l.diplomaFonte">
+            <v-row v-if="l.fonte">
               <v-col cols="2">
                 <div class="info-label">Fonte do diploma:</div>
               </v-col>
 
               <v-col>
-                <div class="info-content">{{ l.diplomaFonte }}</div>
+                <div class="info-content">{{ l.fonte }}</div>
               </v-col>
             </v-row>
 
@@ -235,7 +232,6 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar o Diploma!",
       dialogLegislacaoCriada: false,
-      numeroErros: 0,
       errosValidacao: false,
       pedidoEliminado: false,
       headersEntidades: [
@@ -251,22 +247,23 @@ export default {
 
   methods: {
     async validarLegislacaoCriacao() {
+      let numeroErros = 0;
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
       // Tipo
       if (this.l.tipo == "" || this.l.tipo == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // Fonte diploma
-      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
-        this.numeroErros++;
+      if (this.l.fonte == "" || this.l.fonte == null) {
+        numeroErros++;
       }
 
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeNumero = await this.$request(
@@ -275,24 +272,24 @@ export default {
           );
 
           if (existeNumero.data) {
-            this.numeroErros++;
+            numeroErros++;
           } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
-            this.numeroErros++;
+            numeroErros++;
           } else if (anoDiploma < 2000) {
             if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
-              this.numeroErros++;
+              numeroErros++;
             }
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Data
       if (this.l.data == "" || this.l.data == null) {
-        this.numeroErros++;
+        numeroErros++;
       } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
-        this.numeroErros++;
+        numeroErros++;
       } else {
         let date = new Date();
 
@@ -303,69 +300,70 @@ export default {
         let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
         if (mes > 12) {
-          this.numeroErros++;
+          numeroErros++;
         } else if (dia > dias[mes - 1]) {
           if (mes == 2) {
             if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
-              this.numeroErros++;
+              numeroErros++;
             }
           } else {
-            this.numeroErros++;
+            numeroErros++;
           }
         } else if (ano > parseInt(date.getFullYear())) {
-          this.numeroErros++;
+          numeroErros++;
         } else if (
           ano == parseInt(date.getFullYear()) &&
           mes > parseInt(date.getMonth() + 1)
         ) {
-          this.numeroErros++;
+          numeroErros++;
         } else if (
           ano == parseInt(date.getFullYear()) &&
           mes == parseInt(date.getMonth() + 1) &&
           dia > parseInt(date.getDate())
         ) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Sumário
       if (this.l.sumario == "" || this.l.sumario == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
-      return this.numeroErros;
+      return numeroErros;
     },
 
     validarLegislacaoAlteracao() {
+      let numeroErros = 0;
       let parseAno = this.l.numero.split("/");
       let anoDiploma = parseInt(parseAno[1]);
 
       // Tipo
       if (this.l.tipo == "" || this.l.tipo == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // Fonte diploma
-      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
-        this.numeroErros++;
+      if (this.l.fonte == "" || this.l.fonte == null) {
+        numeroErros++;
       }
 
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
-        this.numeroErros++;
+        numeroErros++;
       } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
-        this.numeroErros++;
+        numeroErros++;
       } else if (anoDiploma < 2000) {
         if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Data
       if (this.l.data == "" || this.l.data == null) {
-        this.numeroErros++;
+        numeroErros++;
       } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
-        this.numeroErros++;
+        numeroErros++;
       } else {
         let date = new Date();
 
@@ -376,37 +374,37 @@ export default {
         let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
         if (mes > 12) {
-          this.numeroErros++;
+          numeroErros++;
         } else if (dia > dias[mes - 1]) {
           if (mes == 2) {
             if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
-              this.numeroErros++;
+              numeroErros++;
             }
           } else {
-            this.numeroErros++;
+            numeroErros++;
           }
         } else if (ano > parseInt(date.getFullYear())) {
-          this.numeroErros++;
+          numeroErros++;
         } else if (
           ano == parseInt(date.getFullYear()) &&
           mes > parseInt(date.getMonth() + 1)
         ) {
-          this.numeroErros++;
+          numeroErros++;
         } else if (
           ano == parseInt(date.getFullYear()) &&
           mes == parseInt(date.getMonth() + 1) &&
           dia > parseInt(date.getDate())
         ) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Sumário
       if (this.l.sumario == "" || this.l.sumario == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
-      return this.numeroErros;
+      return numeroErros;
     },
 
     // Lança o pedido de criação da legislacao no worflow

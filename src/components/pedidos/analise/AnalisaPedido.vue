@@ -9,11 +9,19 @@
             {{ pedido.objeto.tipo }}
           </v-card-title>
           <v-card-text>
-            <AnalisaLeg :p="this.pedido" />
+            <AnalisaEntidade
+              v-if="pedido.objeto.tipo === 'Entidade'"
+              :p="pedido"
+            />
+            <AnalisaLeg
+              v-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+
     <v-snackbar
       v-model="snackbar.visivel"
       color="warning"
@@ -31,15 +39,14 @@
 
 <script>
 import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
+import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
+
 import Loading from "@/components/generic/Loading";
 
 export default {
   props: ["idp"],
 
-  components: {
-    AnalisaLeg,
-    Loading
-  },
+  components: { AnalisaEntidade, AnalisaLeg, Loading },
 
   data() {
     return {
