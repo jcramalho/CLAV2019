@@ -54,14 +54,16 @@
                 v-model="newSubSerie.eFilhoDe"
                 :items="classesFiltradas"
                 :rules="[v => !!v || 'Este campo é obrigatório.']"
-                item-text="titulo"
                 item-value="codigo"
                 dense
                 solo
                 clearable
                 placeholder="Classe Pai"
-                chips
               >
+                <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
+                <template v-slot:selection="{ item }">
+                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
+                </template>
                 <template v-slot:no-data>
                   <v-container fluid>
                     <v-alert
@@ -108,16 +110,16 @@ export default {
     classesFiltradas: [],
     classesNomes: [],
     newSubSerie: {
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: "",
-      dataFinal: "",
-      // codigo: "02.01.02",
-      // titulo: "SUBSERIESERIE",
-      // descricao: "DESC SERIE",
-      // dataInicial: "2020-02-13",
-      // dataFinal: "2020-02-16",
+      // codigo: "",
+      // titulo: "",
+      // descricao: "",
+      // dataInicial: "",
+      // dataFinal: "",
+      codigo: "02.01.02",
+      titulo: "SUBSERIESERIE",
+      descricao: "DESC SERIE",
+      dataInicial: "2020-02-13",
+      dataFinal: "2020-02-16",
       relacoes: [],
       pca: "",
       formaContagem: "",
@@ -139,9 +141,11 @@ export default {
     },
     save: async function() {
       if (this.$refs.form.validate()) {
-        await this.relacoes_simetricas();
+        let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
-        this.classes.push(Object.assign({}, this.newSubSerie));
+        await this.relacoes_simetricas(clone_newSubserie);
+
+        this.classes.push(clone_newSubserie);
         this.dialog = false;
         this.apagar();
       }
@@ -151,27 +155,23 @@ export default {
         classe => classe.tipo == "Série"
       );
 
-      this.classesNomes = this.classes
-        .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
-        .map(e => e.codigo + " - " + e.titulo);
+      this.classesNomes = this.classes.filter(
+        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      );
+      // .map(e => e.codigo + " - " + e.titulo);
     },
-    relacoes_simetricas: async function() {
-      for (let i = 0; i < this.newSubSerie.relacoes.length; i++) {
+    relacoes_simetricas: async function(clone_newSubserie) {
+      for (let i = 0; i < clone_newSubserie.relacoes.length; i++) {
         /*
         
           Ver qual é a série relacionada, ir encontrar e adicionar a relação oposta;
 
         */
 
-        let classe_relacionada = await this.classes.find(
-          e =>
-            e.codigo ==
-            this.newSubSerie.relacoes[i].serieRelacionada.split(" ")[0]
-        );
-
+        let classe_relacionada = clone_newSubserie.relacoes[i].serieRelacionada;
         let relacao_inversa = "";
 
-        switch (this.newSubSerie.relacoes[i].relacao) {
+        switch (clone_newSubserie.relacoes[i].relacao) {
           case "Antecessora de":
             relacao_inversa = "Sucessora de";
             break;
@@ -204,15 +204,13 @@ export default {
         let existe_repetida = await classe_relacionada.relacoes.find(
           e =>
             e.relacao == relacao_inversa &&
-            e.serieRelacionada ==
-              this.newSubSerie.codigo + " - " + this.newSubSerie.titulo
+            e.serieRelacionada == clone_newSubserie.codigo
         );
 
         if (existe_repetida == undefined) {
           classe_relacionada.relacoes.push({
             relacao: relacao_inversa,
-            serieRelacionada:
-              this.newSubSerie.codigo + " - " + this.newSubSerie.titulo
+            serieRelacionada: clone_newSubserie
           });
         }
       }

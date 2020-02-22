@@ -26,7 +26,13 @@
         <v-col cols="12" xs="12" sm="12">
           <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
             <template v-slot:label="{ item }">
-              <EditarSerie v-if="item.tipo == 'Série'" :treeview_object="item" />
+              <EditarSerie
+                v-if="item.tipo == 'Série'"
+                @atualizacao="atualizacao_serie"
+                :treeview_object="item"
+                :classes="TS.classes"
+                :entidades="entidades"
+              />
               <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
               <EditarOrganicaFunc
                 v-else
@@ -121,11 +127,6 @@ export default {
         this.$emit("done");
       }
     },
-    editItem(item) {
-      this.editedIndex = this.TS.classes.indexOf(item);
-      this.dialog = true;
-    },
-
     deleteItem(item) {
       const index = this.TS.classes.indexOf(item);
       confirm("Are you sure you want to delete this item?") &&
@@ -135,6 +136,34 @@ export default {
       let area_organico = this.TS.classes.find(e => e.codigo == c.codigo);
 
       area_organico.descricao = c.descricao;
+    },
+    atualizacao_serie(c) {
+      let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
+      // FAZER LIGAÇÕES
+
+      serie_classe.titulo = c.titulo;
+      // codigo: "",
+      //   titulo: "",
+      //   descricao: "",
+      //   dataInicial: "",
+      //   dataFinal: "",
+      //   tUA: "",
+      //   tSerie: "",
+      //   suporte: "",
+      //   medicao: "",
+      //   localizacao: [],
+      //   produtoras: [],
+      //   legislacao: [],
+      //   relacoes: [],
+      //   pca: "",
+      //   formaContagem: "",
+      //   justicacaoPCA: "",
+      //   df: "",
+      //   justificacaoDF: "",
+      //   notas: "",
+      //   eFilhoDe: "",
+      //   tipo: "Série"
+      console.log(serie_classe, c);
     }
   }
 };

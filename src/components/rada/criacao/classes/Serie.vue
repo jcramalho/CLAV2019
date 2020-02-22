@@ -54,14 +54,17 @@
                 v-model="newSerie.eFilhoDe"
                 :items="classesFiltradas"
                 :rules="[v => !!v || 'Campo obrigatório!']"
-                item-text="codigo"
                 item-value="codigo"
                 dense
                 solo
                 clearable
                 placeholder="Classe Pai"
-                chips
               >
+                <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
+                <template v-slot:selection="{ item }">
+                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
+                </template>
+
                 <template v-slot:no-data>
                   <v-container fluid>
                     <v-alert
@@ -109,16 +112,16 @@ export default {
     classesFiltradas: [],
     classesNomes: [],
     newSerie: {
-      // codigo: "02.02",
-      // titulo: "SERIE",
-      // descricao: "DESC SERIE",
-      // dataInicial: "2020-02-13",
-      // dataFinal: "2020-02-16",
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: "",
-      dataFinal: "",
+      codigo: "02.02",
+      titulo: "SERIE",
+      descricao: "DESC SERIE",
+      dataInicial: "2020-02-13",
+      dataFinal: "2020-02-16",
+      // codigo: "",
+      // titulo: "",
+      // descricao: "",
+      // dataInicial: "",
+      // dataFinal: "",
       tUA: "",
       tSerie: "",
       suporte: "",
@@ -153,7 +156,7 @@ export default {
         localizacao: [],
         produtoras: [],
         legislacao: [],
-        relacoes: "",
+        relacoes: [],
         pca: "",
         formaContagem: "",
         justicacaoPCA: "",
@@ -169,10 +172,13 @@ export default {
       this.dialog = false;
     },
     save: async function() {
+      // console.log(this.newSerie.eFilhoDe);
       if (this.$refs.formSerie.validate()) {
-        await this.relacoes_simetricas();
+        let clone_newSerie = Object.assign({}, this.newSerie);
 
-        this.classes.push(Object.assign({}, this.newSerie));
+        await this.relacoes_simetricas(clone_newSerie);
+
+        this.classes.push(clone_newSerie);
         this.dialog = false;
         this.apagar();
       }
@@ -182,26 +188,33 @@ export default {
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
 
-      this.classesNomes = this.classes
-        .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
-        .map(e => e.codigo + " - " + e.titulo);
+      this.classesNomes = this.classes.filter(
+        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      );
+      // .map(e => {
+      //   return {
+      //     codigo: e.codigo,
+      //     titulo: e.titulo
+      //   };
+      // });
     },
-    relacoes_simetricas: async function() {
-      for (let i = 0; i < this.newSerie.relacoes.length; i++) {
+    relacoes_simetricas: async function(clone_newSerie) {
+      for (let i = 0; i < clone_newSerie.relacoes.length; i++) {
         /*
         
           Ver qual é a série relacionada, ir encontrar e adicionar a relação oposta;
 
         */
 
-        let classe_relacionada = await this.classes.find(
-          e =>
-            e.codigo == this.newSerie.relacoes[i].serieRelacionada.split(" ")[0]
-        );
+        // let classe_relacionada = await this.classes.find(
+        //   e => e.codigo == this.newSerie.relacoes[i].serieRelacionada.codigo
+        // );
+
+        let classe_relacionada = clone_newSerie.relacoes[i].serieRelacionada;
 
         let relacao_inversa = "";
 
-        switch (this.newSerie.relacoes[i].relacao) {
+        switch (clone_newSerie.relacoes[i].relacao) {
           case "Antecessora de":
             relacao_inversa = "Sucessora de";
             break;
@@ -234,15 +247,13 @@ export default {
         let existe_repetida = await classe_relacionada.relacoes.find(
           e =>
             e.relacao == relacao_inversa &&
-            e.serieRelacionada ==
-              this.newSerie.codigo + " - " + this.newSerie.titulo
+            e.serieRelacionada.codigo == clone_newSerie.codigo
         );
 
         if (existe_repetida == undefined) {
           classe_relacionada.relacoes.push({
             relacao: relacao_inversa,
-            serieRelacionada:
-              this.newSerie.codigo + " - " + this.newSerie.titulo
+            serieRelacionada: clone_newSerie
           });
         }
       }
