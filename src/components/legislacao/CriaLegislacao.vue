@@ -206,7 +206,7 @@ export default {
       tipo: "",
       data: "",
       link: "",
-      diplomaFonte: "Não especificada",
+      diplomaFonte: "Não aplicável",
       entidadesSel: [],
       processosSel: [],
       codigo: ""
