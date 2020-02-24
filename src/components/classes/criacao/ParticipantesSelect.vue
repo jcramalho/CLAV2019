@@ -57,7 +57,7 @@
       </v-card>
     </v-col>
     <v-col v-else>
-      <v-subheader>A carregar entidades e tipologias...</v-subheader>
+      <v-subheader>{{ mylabels.participantes }}</v-subheader>
     </v-col>
   </v-row>
 </template>
@@ -69,6 +69,7 @@ export default {
   data: function() {
     return {
       searchEntidades: "",
+      mylabels: require("@/config/labels").mensagensEspera,
 
       participantesHeaders: [
         { text: "Intervenção", align: "left", value: "intervencao" },

@@ -45,7 +45,7 @@
       </v-card>
     </v-col>
     <v-col v-else>
-      <v-subheader>A carregar entidades...</v-subheader>
+      <v-subheader>{{ mylabels.legislacao }}</v-subheader>
     </v-col>
   </v-row>
 </template>
@@ -57,6 +57,7 @@ export default {
   data: function() {
     return {
       searchDiplomas: "",
+      mylabels: require("@/config/labels").mensagensEspera,
 
       headers: [
         { text: "Tipo", align: "left", value: "tipo", sortable: false },

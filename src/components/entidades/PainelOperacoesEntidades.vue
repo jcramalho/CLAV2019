@@ -218,7 +218,6 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,
-      numeroErros: 0,
       errosValidacao: false,
       pedidoEliminado: false,
       headers: [
@@ -230,9 +229,10 @@ export default {
 
   methods: {
     validarEntidadeCriacao: async function() {
+      let numeroErros = 0;
       // Designação
       if (this.e.designacao == "" || this.e.designacao == null) {
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeDesignacao = await this.$request(
@@ -241,16 +241,16 @@ export default {
               encodeURIComponent(this.e.designacao)
           );
           if (existeDesignacao.data) {
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Sigla
       if (this.e.sigla == "" || this.e.sigla == null) {
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeSigla = await this.$request(
@@ -258,52 +258,53 @@ export default {
             "/api/entidades/sigla?valor=" + encodeURIComponent(this.e.sigla)
           );
           if (existeSigla.data) {
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Internacional
       if (this.e.internacional == "" || this.e.internacional == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // SIOE
       if (this.e.sioe != "" && this.e.sioe != null) {
         if (this.e.sioe.length > 12) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
-      return this.numeroErros;
+      return numeroErros;
     },
 
     validarEntidadeAlteracao() {
+      let numeroErros = 0;
       // Designação
       if (this.e.designacao == "" || this.e.designacao == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // Sigla
       if (this.e.sigla == "" || this.e.sigla == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // Internacional
       if (this.e.internacional == "" || this.e.internacional == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // SIOE
       if (this.e.sioe != "" && this.e.sioe != null) {
         if (this.e.sioe.length > 12) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
-      return this.numeroErros;
+      return numeroErros;
     },
 
     // Lança o pedido de criação da entidade no worflow
@@ -315,7 +316,7 @@ export default {
           let erros = 0;
           switch (this.acao) {
             case "Criação":
-              erros = await this.validarEntidadeCriacao();
+              erros = this.validarEntidadeCriacao();
               break;
 
             case "Alteração":
