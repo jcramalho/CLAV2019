@@ -71,13 +71,13 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="l.fonte">
+            <v-row v-if="l.diplomaFonte">
               <v-col cols="2">
                 <div class="info-label">Fonte do diploma:</div>
               </v-col>
 
               <v-col>
-                <div class="info-content">{{ l.fonte }}</div>
+                <div class="info-content">{{ l.diplomaFonte }}</div>
               </v-col>
             </v-row>
 
@@ -256,10 +256,10 @@ export default {
         numeroErros++;
       }
 
-      // Fonte diploma
-      if (this.l.fonte == "" || this.l.fonte == null) {
-        numeroErros++;
-      }
+      // // Fonte diploma
+      // if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
+      //   numeroErros++;
+      // }
 
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
@@ -343,10 +343,10 @@ export default {
         numeroErros++;
       }
 
-      // Fonte diploma
-      if (this.l.fonte == "" || this.l.fonte == null) {
-        numeroErros++;
-      }
+      // // Fonte diploma
+      // if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
+      //   numeroErros++;
+      // }
 
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
