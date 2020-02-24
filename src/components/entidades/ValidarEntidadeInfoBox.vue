@@ -81,7 +81,8 @@ export default {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/api/entidades/designacao/" + encodeURIComponent(this.e.designacao)
+            "/api/entidades/designacao?valor=" +
+              encodeURIComponent(this.e.designacao)
           );
           if (existeDesignacao.data) {
             this.mensagensErro.push({
@@ -110,7 +111,7 @@ export default {
         try {
           let existeSigla = await this.$request(
             "get",
-            "/api/entidades/sigla/" + encodeURIComponent(this.e.sigla)
+            "/api/entidades/sigla?valor=" + encodeURIComponent(this.e.sigla)
           );
           if (existeSigla.data) {
             this.mensagensErro.push({
