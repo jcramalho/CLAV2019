@@ -129,10 +129,10 @@ export default {
   },
 
   methods: {
-    despacho(evento) {
+    async despacho(evento) {
       switch (evento.tipoOperacao) {
         case "Devolver":
-          console.log("this.p :", this.p);
+          await this.despacharPedido("Devolvido", evento.mensagem);
           break;
 
         case "Encaminhar":
@@ -141,42 +141,38 @@ export default {
         default:
           break;
       }
-      console.log("evento :", evento);
     },
 
-    // guardarDistribuicao: async function() {
-    //   var novaDistribuicao = {
-    //     estado: "Distribuído",
-    //     responsavel: this.selectedUser.email,
-    //     data: new Date(),
-    //     despacho: this.despacho
-    //   };
-    //   this.pedidoParaDistribuir.estado = "Distribuído";
-    //   this.pedidoParaDistribuir.token = this.$store.state.token;
+    async despacharPedido(estado, mensagem) {
+      try {
+        let dadosUtilizador = await this.$request(
+          "get",
+          "/api/users/" + this.$store.state.token + "/token"
+        );
 
-    //   this.$request("put", "/api/pedidos", {
-    //     pedido: this.pedidoParaDistribuir,
-    //     distribuicao: novaDistribuicao
-    //   })
-    //     .then(response => {
-    //       var index = this.pedidosSubmetidos.findIndex(
-    //         p => p.codigo == this.pedidoParaDistribuir.codigo
-    //       );
-    //       if (index != -1) {
-    //         this.pedidosSubmetidos.splice(index, 1);
-    //       }
-    //       this.pedidosDistribuidos.push(this.pedidoParaDistribuir);
+        dadosUtilizador = dadosUtilizador.data;
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: mensagem
+        };
 
-    //       this.distribuir = false;
-    //       this.selectedUser = {};
-    //       this.despacho = "";
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
-    //       return response.data;
-    //     })
-    //     .catch(e => {
-    //       return e;
-    //     });
-    // },
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        await this.$request("put", "/api/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        console.log("e :", e);
+      }
+    },
 
     verifica(obj) {
       const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
