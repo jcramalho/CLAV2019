@@ -51,7 +51,7 @@
       </v-card>
     </v-col>
     <v-col v-else>
-      <v-subheader>A carregar entidades e tipologias...</v-subheader>
+      <v-subheader>{{ mylabels.procRel }}</v-subheader>
     </v-col>
   </v-row>
 </template>
@@ -65,6 +65,7 @@ export default {
     return {
       searchProcessos: "",
       paginationProcessos: { sortBy: "codigo" },
+      mylabels: require("@/config/labels").mensagensEspera,
 
       processosRelacionadosHeaders: [
         { text: "Relação", align: "left", value: "relacao" },
