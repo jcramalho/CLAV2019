@@ -231,7 +231,7 @@ export default {
     validarEntidadeCriacao: async function() {
       let numeroErros = 0;
       // Designação
-      if (this.e.designacao == "" || this.e.designacao == null) {
+      if (this.e.designacao === "" || this.e.designacao === null) {
         numeroErros++;
       } else {
         try {
@@ -249,7 +249,7 @@ export default {
       }
 
       // Sigla
-      if (this.e.sigla == "" || this.e.sigla == null) {
+      if (this.e.sigla === "" || this.e.sigla === null) {
         numeroErros++;
       } else {
         try {
@@ -266,12 +266,12 @@ export default {
       }
 
       // Internacional
-      if (this.e.internacional == "" || this.e.internacional == null) {
+      if (this.e.internacional === "" || this.e.internacional === null) {
         numeroErros++;
       }
 
       // SIOE
-      if (this.e.sioe != "" && this.e.sioe != null) {
+      if (this.e.sioe !== "" && this.e.sioe !== null) {
         if (this.e.sioe.length > 12) {
           numeroErros++;
         }
@@ -316,7 +316,7 @@ export default {
           let erros = 0;
           switch (this.acao) {
             case "Criação":
-              erros = this.validarEntidadeCriacao();
+              erros = await this.validarEntidadeCriacao();
               break;
 
             case "Alteração":
