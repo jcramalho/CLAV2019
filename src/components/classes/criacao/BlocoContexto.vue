@@ -58,6 +58,11 @@
         :entidades="donos"
       />
 
+      <v-snackbar v-model="erroEntidadeDuplicada" :color="'error'" :timeout="60000">
+        {{ mensagemEntidadeDuplicada }}
+        <v-btn dark text @click="erroEntidadeDuplicada = false">Fechar</v-btn>
+      </v-snackbar>
+
       <v-row>
         <v-col>
           <hr style="border-top: 1px dashed indigo;" />
@@ -94,6 +99,11 @@
           :entidades="participantes"
           @selectParticipante="selectParticipante($event)"
         />
+
+        <v-snackbar v-model="erroIntervencaoIndefinida" :color="'error'" :timeout="60000">
+          {{ mensagemIntervencaoIndefinida }}
+          <v-btn dark text @click="erroIntervencaoIndefinida = false">Fechar</v-btn>
+        </v-snackbar>
 
         <hr style="border: 3px solid indigo; border-radius: 2px;" />
       </div>
@@ -175,6 +185,12 @@ export default {
         { label: "Processo Específico", value: "PE" }
       ],
 
+      erroEntidadeDuplicada: false,
+      mensagemEntidadeDuplicada: "Entidade duplicada! Não será adicionada.",
+
+      erroIntervencaoIndefinida: false,
+      mensagemIntervencaoIndefinida: "Tem de selecionar uma intervanção para o participante!",
+
       simNao: [{ label: "Não", value: "N" }, { label: "Sim", value: "S" }],
 
       textoCriterioUtilidadeAdministrativa:
@@ -209,7 +225,11 @@ export default {
     },
 
     newEntidade: function(entidade, lista) {
-      lista.push(entidade);
+      var index = lista.findIndex(e => e.id === entidade.id);
+      if(index == -1)
+        lista.push(entidade);
+      else
+        this.erroEntidadeDuplicada = true;
     },
 
     unselectParticipante: function(entidade) {
@@ -221,7 +241,11 @@ export default {
     },
 
     selectParticipante: function(entidade) {
-      this.c.participantes.push(entidade);
+      if(entidade.intervencao == "Indefinido")
+        this.erroIntervencaoIndefinida = true
+      else{
+        this.c.participantes.push(entidade);
+      }
     },
 
     verificaCriteriosPCA: function(proc) {

@@ -120,6 +120,7 @@ export default {
             estado: "Nova",
             id: "ent_" + this.sigla,
             sigla: this.sigla,
+            tipo: "Entidade",
             sioe: this.sioe,
             designacao: this.designacao,
             internacional: this.internacional

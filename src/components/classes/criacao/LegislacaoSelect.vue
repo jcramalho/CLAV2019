@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Selecione os diplomas:</div>
+      <div class="info-label">Selecione a legislação</div>
     </v-col>
     <v-col v-if="legislacaoReady">
       <v-card>

@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Legislação: diplomas jurídico-normativos</div>
+      <div class="info-label">Legislação</div>
     </v-col>
     <v-col v-if="legs.length > 0">
       <v-data-table
