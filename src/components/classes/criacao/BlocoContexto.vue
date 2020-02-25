@@ -133,7 +133,7 @@
         </v-col>
       </v-row>
 
-      <LegislacaoNew :legislacao="c.legislacao" @newLegislacao="newEntidade($event, c.legislacao)" />
+      <LegislacaoNew :legislacao="c.legislacao" @newLegislacao="newLegislacao($event, c.legislacao)" />
 
       <hr style="border-top: 1px dashed #1A237E;" />
 
@@ -230,6 +230,10 @@ export default {
         lista.push(entidade);
       else
         this.erroEntidadeDuplicada = true;
+    },
+
+    newLegislacao: function(leg, lista) {
+      lista.push(leg);
     },
 
     unselectParticipante: function(entidade) {
