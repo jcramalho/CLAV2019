@@ -10,8 +10,6 @@
       <br />
       <v-card-text>
         <v-form ref="formSerie" :lazy-validation="false">
-          <!-- <h5>Identificação</h5>
-          <v-divider></v-divider>-->
           <Identificacao :newSerie="serie" />
 
           <v-expansion-panels accordion>
@@ -28,7 +26,12 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="serie" :entidades="entidades" :classes="classesNomes" />
+                <ZonaContexto
+                  :newSerie="serie"
+                  :entidades="entidades"
+                  :classes="classesNomes"
+                  :legislacao="legislacao"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -99,7 +102,7 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "entidades"],
+  props: ["treeview_object", "classes", "entidades", "legislacao"],
   components: {
     Identificacao,
     ZonaDescritiva,
@@ -113,23 +116,32 @@ export default {
     classesNomes: []
   }),
   methods: {
-    filterSeries: function() {
-      this.serie = Object.assign(
-        {},
-        this.classes.find(e => e.codigo == this.treeview_object.codigo)
+    filterSeries: async function() {
+      // ir buscar o verdadeiro objeto
+      let serie_real = this.classes.find(
+        e => e.codigo == this.treeview_object.codigo
       );
 
+      // DEEP CLONE do objetos
+      this.serie = Object.assign({}, serie_real);
+      this.serie.relacoes = [...serie_real.relacoes];
+      this.serie.produtoras = [...serie_real.produtoras];
+      this.serie.legislacao = [...serie_real.legislacao];
+      this.serie.localizacao = [...serie_real.localizacao];
+
+      // Classes para definir a hierarquia
       this.classesFiltradas = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
 
+      // Classes para as relações
       this.classesNomes = this.classes.filter(
         e => e.tipo == "Série" || e.tipo == "Subsérie"
       );
-      // .map(e => e.codigo + " - " + e.titulo);
     },
     save: function() {
       this.$emit("atualizacao", this.serie);
+      this.dialog = false;
     }
   }
 };

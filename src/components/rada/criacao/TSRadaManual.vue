@@ -18,7 +18,7 @@
       <v-row justify="center">
         <v-col cols="12" xs="12" sm="12">
           <AddOrgFunc :classes="TS.classes" />
-          <Serie :classes="TS.classes" :entidades="entidades" />
+          <Serie :classes="TS.classes" :entidades="entidades" :legislacao="legislacao" />
           <SubSerie :classes="TS.classes" />
         </v-col>
       </v-row>
@@ -32,6 +32,7 @@
                 :treeview_object="item"
                 :classes="TS.classes"
                 :entidades="entidades"
+                :legislacao="legislacao"
               />
               <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
               <EditarOrganicaFunc
@@ -79,9 +80,13 @@ export default {
     EditarSubserie,
     EditarSerie
   },
+  data: () => {
+    return {
+      legislacao: []
+    };
+  },
   computed: {
     preparaTree() {
-      //Tem que retornar
       var myTree = [];
 
       for (var i = 0; i < this.TS.classes.length; i++) {
@@ -100,6 +105,10 @@ export default {
       }
       return myTree;
     }
+  },
+  created: async function() {
+    let response = await this.$request("get", "/api/legislacao");
+    this.legislacao = response.data;
   },
   methods: {
     preparaTreeFilhos: function(pai) {
@@ -163,7 +172,7 @@ export default {
       //   notas: "",
       //   eFilhoDe: "",
       //   tipo: "Série"
-      console.log(serie_classe, c);
+      // console.log(serie_classe, c);
     }
   }
 };

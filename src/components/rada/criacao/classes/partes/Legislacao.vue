@@ -37,7 +37,7 @@
         >
       </v-col>
     </v-row>
-    <Legislacao :legislacao="legislacao" :legislacaoClone="legislacaoClone" />
+    <NovaLegislacao :legislacao="legislacao" />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
         <div class="info-label">Selecione a legislação</div>
@@ -53,7 +53,7 @@
         <v-data-table
           :search="search"
           :headers="headersSel"
-          :items="legislacaoClone"
+          :items="filterLegislacao"
           item-key="id"
           :footer-props="footer_props"
           :items-per-page="5"
@@ -77,17 +77,15 @@
 </template>
 
 <script>
-import Legislacao from "./NovaLegislacao";
+import NovaLegislacao from "./NovaLegislacao";
 
 export default {
-  props: ["newSerie"],
+  props: ["newSerie", "legislacao"],
   components: {
-    Legislacao
+    NovaLegislacao
   },
   data: () => {
     return {
-      legislacao: [],
-      legislacaoClone: [],
       search: "",
       headersDes: [
         {
@@ -157,32 +155,24 @@ export default {
       }
     };
   },
-  watch: {
-    // Voltar a colocar o array inteiro devido ao bug do reset() do form
-    "newSerie.legislacao": function(newValue, oldvalue) {
-      if (newValue.length == 0) {
-        this.legislacaoClone = [...this.legislacao];
-      }
+  computed: {
+    filterLegislacao() {
+      return this.legislacao.filter(leg => {
+        return !this.newSerie.legislacao.some(
+          e => e.tipo == leg.tipo && e.numero == leg.numero
+        );
+      });
     }
   },
   methods: {
     selectLegislacao: function(item) {
       this.newSerie.legislacao.push(item);
-      this.legislacaoClone = this.legislacaoClone.filter(
-        e => e.tipo != item.tipo && e.numero != item.numero
-      );
     },
     unselectLegislacao: function(item) {
-      this.legislacaoClone.push(item);
       this.newSerie.legislacao = this.newSerie.legislacao.filter(
         e => e.numero != item.numero && e.tipo != item.tipo
       );
     }
-  },
-  created: async function() {
-    let response = await this.$request("get", "/api/legislacao");
-    this.legislacao = response.data;
-    this.legislacaoClone = [...response.data];
   }
 };
 </script>

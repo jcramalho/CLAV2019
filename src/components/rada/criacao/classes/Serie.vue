@@ -29,7 +29,12 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="newSerie" :entidades="entidades" :classes="classesNomes" />
+                <ZonaContexto
+                  :newSerie="newSerie"
+                  :entidades="entidades"
+                  :classes="classesNomes"
+                  :legislacao="legislacao"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -106,7 +111,7 @@ export default {
     ZonaContexto,
     ZonaDecisoesAvaliacao
   },
-  props: ["classes", "entidades"],
+  props: ["classes", "entidades", "legislacao"],
   data: () => ({
     dialog: false,
     classesFiltradas: [],
