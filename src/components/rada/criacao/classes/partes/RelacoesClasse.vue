@@ -7,7 +7,11 @@
       <v-col cols="12" xs="12" sm="9">
         <v-row>
           <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
-            <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>
+            <v-data-table
+              :headers="headers"
+              :items="newSerie.relacoes"
+              hide-default-footer
+            >
               <template v-slot:item.relacao="props">{{ props.item.relacao }}</template>
               <template v-slot:item.edicao="props">
                 <td>

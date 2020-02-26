@@ -117,16 +117,16 @@ export default {
     classesFiltradas: [],
     classesNomes: [],
     newSerie: {
-      codigo: "02.02",
-      titulo: "SERIE",
-      descricao: "DESC SERIE",
-      dataInicial: "2020-02-13",
-      dataFinal: "2020-02-16",
-      // codigo: "",
-      // titulo: "",
-      // descricao: "",
-      // dataInicial: "",
-      // dataFinal: "",
+      // codigo: "02.02",
+      // titulo: "SERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: "",
+      dataFinal: "",
       tUA: "",
       tSerie: "",
       suporte: "",
@@ -177,7 +177,7 @@ export default {
       this.dialog = false;
     },
     save: async function() {
-      // console.log(this.newSerie.eFilhoDe);
+    
       if (this.$refs.formSerie.validate()) {
         let clone_newSerie = Object.assign({}, this.newSerie);
 
@@ -196,12 +196,6 @@ export default {
       this.classesNomes = this.classes.filter(
         e => e.tipo == "Série" || e.tipo == "Subsérie"
       );
-      // .map(e => {
-      //   return {
-      //     codigo: e.codigo,
-      //     titulo: e.titulo
-      //   };
-      // });
     },
     relacoes_simetricas: async function(clone_newSerie) {
       for (let i = 0; i < clone_newSerie.relacoes.length; i++) {
@@ -210,11 +204,6 @@ export default {
           Ver qual é a série relacionada, ir encontrar e adicionar a relação oposta;
 
         */
-
-        // let classe_relacionada = await this.classes.find(
-        //   e => e.codigo == this.newSerie.relacoes[i].serieRelacionada.codigo
-        // );
-
         let classe_relacionada = clone_newSerie.relacoes[i].serieRelacionada;
 
         let relacao_inversa = "";

@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import Identificacao from "./serie/Identificacao";
+import Identificacao from "./partes/Identificacao";
 import ZonaDescritiva from "../criacao/classes/partes/ZonaDescritiva";
 import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
@@ -139,7 +139,7 @@ export default {
         e => e.tipo == "Série" || e.tipo == "Subsérie"
       );
     },
-    save: function() {
+    save: async function() {
       this.$emit("atualizacao", this.serie);
       this.dialog = false;
     }
