@@ -447,7 +447,7 @@ export default {
           "put",
           "/api/users/" + this.alterarPasswordId + "/password",
           {
-            password: this.password
+            novaPassword: this.password
           }
         )
           .then(res => {

@@ -10,8 +10,8 @@
     <v-col>
       <v-form v-model="valid">
         <v-container>
-          <v-layout>
-            <v-flex xs12 md3 v-if="listaTipos.length > 0">
+          <v-row>
+            <v-col xs12 md3 v-if="listaTipos.length > 0">
               <v-select
                 item-text="label"
                 item-value="value"
@@ -19,28 +19,24 @@
                 :items="listaTipos"
                 label="Tipo"
               />
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3 v-else>
+            <v-col xs12 md3 v-else>
               <v-text-field v-model="tipo" label="Tipo"></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
+            <v-col xs12 md3>
               <v-text-field v-model="numero" label="Número"></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
+            <v-col xs12 md3>
               <v-text-field v-model="sumario" label="Sumário"></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
-              <v-text-field
-                v-model="data"
-                label="Data: AAAA-MM-DD"
-                v-mask="'####-##-##'"
-              />
-            </v-flex>
-          </v-layout>
+            <v-col xs12 md3>
+              <SelecionarData :d="data" @dataSelecionada = "data = $event"/>
+            </v-col>
+          </v-row>
         </v-container>
       </v-form>
     </v-col>
@@ -53,8 +49,12 @@
 </template>
 
 <script>
+import SelecionarData from "@/components/generic/SelecionarData";
+
 export default {
   props: ["legislacao"],
+
+  components: { SelecionarData },
 
   data: function() {
     return {
@@ -84,6 +84,7 @@ export default {
   },
 
   methods: {
+
     fecharErros: function() {
       this.mensagensErro = [];
       this.erroValidacao = false;
@@ -141,14 +142,13 @@ export default {
     },
 
     validaData: function(d){
-      var date = new Date().toISOString().slice(0,10)
-      var res = true
-      if(d > date){
-        this.mensagensErro.push("A data não pode ser superior à data atual!")
-        this.data = ""
-        res = false
+      if(d != "") return true;
+      else{
+        this.mensagensErro.push(
+          "A data não pode ficar vazia!"
+        );
+        return false;
       }
-      return res
     },
 
     newLegislacao: async function() {

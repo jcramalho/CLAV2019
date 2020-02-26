@@ -5,7 +5,7 @@
       <div class="info-label">Notas de Exclusão:</div>
 
       <v-btn color="indigo darken-2" dark rounded @click="insereNovaNota(c.notasEx, 'ne')">
-        Nota Exclusão
+        Nota de exclusão
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
     </v-col>

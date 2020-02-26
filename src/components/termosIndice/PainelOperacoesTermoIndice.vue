@@ -205,7 +205,8 @@ export default {
         try {
           let existeTI = await this.$request(
             "get",
-            "/api/termosIndice/" + encodeURIComponent(this.ti.termo)
+            "/api/termosIndice/termoIndice?valor=" +
+              encodeURIComponent(this.ti.termo)
           );
           if (existeTI.data) {
             this.numeroErros++;

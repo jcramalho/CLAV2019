@@ -44,7 +44,7 @@
       </v-card>
     </v-col>
     <v-col v-else>
-      <v-subheader>A carregar entidades...</v-subheader>
+      <v-subheader>{{ mylabels.donos }}</v-subheader>
     </v-col>
   </v-row>
 </template>
@@ -56,6 +56,7 @@ export default {
   data: function() {
     return {
       searchEntidades: "",
+      mylabels: require("@/config/labels").mensagensEspera,
 
       entidadesHeaders: [
         { text: "Sigla", align: "left", value: "sigla" },

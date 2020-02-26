@@ -83,14 +83,14 @@ export default {
         this.numeroErros++;
       }
 
-      // Fonte diploma
-      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
-        this.mensagensErro.push({
-          sobre: "Fonte do Diploma",
-          mensagem: "A fonte do diploma não pode ser vazio."
-        });
-        this.numeroErros++;
-      }
+      // // Fonte diploma
+      // if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
+      //   this.mensagensErro.push({
+      //     sobre: "Fonte do Diploma",
+      //     mensagem: "A fonte do diploma não pode ser vazio."
+      //   });
+      //   this.numeroErros++;
+      // }
 
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
@@ -103,7 +103,7 @@ export default {
         try {
           let existeNumero = await this.$request(
             "get",
-            "/api/legislacao/numero/" + encodeURIComponent(this.l.numero)
+            "/api/legislacao/numero?valor=" + encodeURIComponent(this.l.numero)
           );
 
           if (existeNumero.data) {
@@ -236,14 +236,14 @@ export default {
         this.numeroErros++;
       }
 
-      // Fonte diploma
-      if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
-        this.mensagensErro.push({
-          sobre: "Fonte do Diploma",
-          mensagem: "A fonte do diploma não pode ser vazio."
-        });
-        this.numeroErros++;
-      }
+      // // Fonte diploma
+      // if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
+      //   this.mensagensErro.push({
+      //     sobre: "Fonte do Diploma",
+      //     mensagem: "A fonte do diploma não pode ser vazio."
+      //   });
+      //   this.numeroErros++;
+      // }
 
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {

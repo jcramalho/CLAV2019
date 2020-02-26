@@ -1,6 +1,8 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title">{{ p.objeto.acao }} da Entidade</v-card-title>
+    <v-card-title class="indigo darken-4 white--text title"
+      >{{ p.objeto.acao }} da Entidade</v-card-title
+    >
     <v-card-text>
       <v-row v-for="e in entidadeInfo" :key="e.campo">
         <v-col cols="2" v-if="e.conteudo != ''">

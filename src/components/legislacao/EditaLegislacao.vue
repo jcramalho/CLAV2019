@@ -36,7 +36,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="11"
                 single-line
                 v-model="legislacao.numero"
                 maxlength="11"
@@ -91,7 +90,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="150"
                 single-line
                 v-model="legislacao.sumario"
               ></v-text-field>
@@ -127,6 +125,52 @@
                 solo
                 dense
               />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">
+                Data de revogação:
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon v-on="on" color="warning">info</v-icon>
+                  </template>
+                  <span
+                    >Ao clicar neste campo adiciona uma data de revogação ao
+                    diploma!</span
+                  >
+                </v-tooltip>
+              </div>
+            </v-col>
+            <v-col>
+              <v-menu
+                v-model="openRevogar"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    solo
+                    v-model="legislacao.dataRevogacao"
+                    hint="AAAA/MM/DD"
+                    persistent-hint
+                    @blur="date2 = parseDate(dateFormatted2)"
+                    v-on="on"
+                    :rules="regraData"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date2"
+                  no-title
+                  @input="openRevogar = false"
+                  :max="new Date().toISOString().substr(0, 10)"
+                ></v-date-picker>
+              </v-menu>
             </v-col>
           </v-row>
 
@@ -215,7 +259,8 @@ export default {
       fonte: "Não especificada",
       entidadesSel: [],
       processosSel: [],
-      codigo: ""
+      codigo: "",
+      dataRevogacao: ""
     },
 
     tiposDiploma: [],
@@ -233,6 +278,10 @@ export default {
     date: new Date().toISOString().substr(0, 10),
     dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
     open: false,
+
+    date2: new Date().toISOString().substr(0, 10),
+    dateFormatted2: vm.formatDate(new Date().toISOString().substr(0, 10)),
+    openRevogar: false,
 
     // Para o seletor de processos
     processos: [],
@@ -273,6 +322,11 @@ export default {
     date(val) {
       this.legislacao.data = this.formatDate(this.date);
       this.dateFormatted = this.formatDate(this.date);
+    },
+
+    date2(val) {
+      this.legislacao.dataRevogacao = this.formatDate(this.date2);
+      this.dateFormatted2 = this.formatDate(this.date2);
     }
   },
 
@@ -385,9 +439,9 @@ export default {
     this.legislacao = this.l;
 
     if (
-      this.legislacao.fonte == "" ||
-      this.legislacao.fonte == null ||
-      this.legislacao.fonte == undefined
+      this.legislacao.fonte === "" ||
+      this.legislacao.fonte === null ||
+      this.legislacao.fonte === undefined
     ) {
       this.legislacao.fonte = "Não especificada";
     }

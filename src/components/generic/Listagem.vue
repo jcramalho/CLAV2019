@@ -133,7 +133,6 @@ export default {
     },
 
     goEditar(id) {
-      let idLeg = "";
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/editar/ent_" + id);
@@ -142,13 +141,7 @@ export default {
           this.$router.push("/tipologias/editar/tip_" + id);
           break;
         case "Legislação":
-          for (let i = 0; i < this.ids.length; i++) {
-            if (this.ids[i].numero === id) {
-              idLeg = this.ids[i].id;
-              break;
-            }
-          }
-          this.$router.push("/legislacao/editar/" + idLeg);
+          this.$router.push("/legislacao/editar/" + id);
           break;
         // case "Termos de Índice":
         //   this.$router.push("/classes/consultar/c" + id);
@@ -169,14 +162,6 @@ export default {
           break;
 
         case "Remoção":
-          break;
-
-        case "Extinção":
-          this.$router.push("/entidades/extinguir/ent_" + id);
-          break;
-
-        case "Revogação":
-          this.$router.push("/legislacao/revogar/" + id);
           break;
 
         default:

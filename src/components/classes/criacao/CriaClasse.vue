@@ -13,7 +13,7 @@
               <div class="info-label">Nível:</div>
             </v-col>
             <v-col>
-              <v-select
+              <!--v-select
                 item-text="label"
                 item-value="value"
                 v-model="classe.nivel"
@@ -21,7 +21,13 @@
                 label="Selecione o nível da classe:"
                 solo
                 dense
-              />
+              /-->
+
+              <v-radio-group v-model="classe.nivel" row>
+                <v-radio v-for="(n,i) in classeNiveis" :key="i" :label="n.label" :value="n.value" color="indigo darken-3"></v-radio>
+                <!--v-radio label="Nível 2" value="2" color="indigo darken-3"></v-radio>
+                <v-radio label="Nível 3" value="3" color="indigo darken-3"></v-radio-->
+              </v-radio-group>
             </v-col>
           </v-row>
 
