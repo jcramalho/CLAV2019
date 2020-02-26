@@ -13,18 +13,13 @@
             :key="subClasse.codigo"
             ripple
           >{{ subClasse.codigo }}</v-tab>
-          <v-tab>
-            <v-btn rounded @click="addSubclasse">
-              Adicionar subclasse
-              <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
-          </v-tab>
-          <v-tab>
-            <v-btn rounded @click="showSubs">
-              show me
-            </v-btn>
-          </v-tab>
         </v-tabs>
+        
+        <v-btn depressed x-small color="primary" @click="addSubclasse">
+          Adicionar subclasse
+          <v-icon dark right>add_circle_outline</v-icon>
+        </v-btn>
+         
         </v-col>
         <v-col>
         <v-tabs-items v-model="active">
