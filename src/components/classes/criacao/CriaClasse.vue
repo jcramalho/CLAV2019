@@ -392,6 +392,13 @@ export default {
             valor: "NE",
             notas: "",
             justificacao: []
+          },
+
+          // Contexto para controlar a interface de cada subclasse
+          semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
           }
         };
         var novaSubclasse2 = {
@@ -423,6 +430,13 @@ export default {
             valor: "NE",
             notas: "",
             justificacao: []
+          },
+
+          // Contexto para controlar a interface de cada subclasse
+          semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
           }
         };
 
@@ -868,12 +882,19 @@ export default {
 
     remSintese4Nivel: function(subclasses) {
       var index = -1;
+      var cindex = -1;
       for (var i = 0; i < subclasses.length; i++) {
         if (subclasses[i].processosRelacionados.length > 0) {
+          // Remover as relações das subclasses
           index = subclasses[i].processosRelacionados.findIndex(
             p => p.relacao == "eSintetizadoPor" || p.relacao == "eSinteseDe"
           );
           if (index != -1) subclasses[i].processosRelacionados.splice(index, 1);
+        }
+        // Remover o critério de densidade das subclasses
+        if(subclasses[i].df.justificacao.length > 0){
+          cindex = subclasses[i].df.justificacao.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo");
+          if (cindex != -1) subclasses[i].df.justificacao.splice(cindex, 1);
         }
       }
     }
