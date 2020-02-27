@@ -68,7 +68,10 @@
 
     <v-row>
       <v-spacer />
-      <PO @mensagemDespacho="despacho($event)" />
+      <PO
+        @avancarPedido="despacho($event)"
+        @mensagemDespacho="despacho($event)"
+      />
     </v-row>
   </div>
 </template>
@@ -136,6 +139,7 @@ export default {
           break;
 
         case "Encaminhar":
+          await this.encaminharPedido("Encaminhado", evento);
           break;
 
         default:
@@ -172,6 +176,32 @@ export default {
       } catch (e) {
         console.log("e :", e);
       }
+    },
+
+    async encaminharPedido(estado, dados) {
+      // try {
+      //   let dadosUtilizador = await this.$request(
+      //     "get",
+      //     "/api/users/" + this.$store.state.token + "/token"
+      //   );
+      //   dadosUtilizador = dadosUtilizador.data;
+      //   const novaDistribuicao = {
+      //     estado: estado,
+      //     responsavel: dadosUtilizador.email,
+      //     data: new Date(),
+      //     despacho: mensagem
+      //   };
+      //   let pedido = JSON.parse(JSON.stringify(this.p));
+      //   pedido.estado = estado;
+      //   pedido.token = this.$store.state.token;
+      //   await this.$request("put", "/api/pedidos", {
+      //     pedido: pedido,
+      //     distribuicao: novaDistribuicao
+      //   });
+      //   this.$router.go(-1);
+      // } catch (e) {
+      //   console.log("e :", e);
+      // }
     },
 
     verifica(obj) {

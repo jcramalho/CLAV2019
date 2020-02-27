@@ -23,7 +23,7 @@
           class="indigo accent-4 white--text"
           @click="
             mensagemDespacho = '';
-            dialog = true;
+            avancarPedidoDialog = true;
             textoOperacao = 'encaminhamento';
             textoBotao = 'Encaminhar';
           "
@@ -32,6 +32,20 @@
         </v-btn>
       </v-col>
     </v-row>
+
+    <!-- Dialog Avançar Pedido -->
+    <v-dialog v-model="avancarPedidoDialog" width="60%">
+      <AvancarPedido
+        :utilizadores="utilizadores"
+        :texto="{
+          textoTitulo: 'Encaminhamento',
+          textoAlert: 'validação',
+          textoBotao: 'Encaminhar'
+        }"
+        @fecharDialog="fecharDialog()"
+        @avancarPedido="avancarPedido($event)"
+      />
+    </v-dialog>
 
     <!-- Campo despacho -->
     <v-dialog v-model="dialog" width="60%">
@@ -58,10 +72,11 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="red darken-4" dark rounded text @click="dialog = false">
-            Fechar
+            Cancelar
           </v-btn>
+
           <v-btn
-            class="indigo accent-4 white--text"
+            class="indigo accent-4"
             rounded
             dark
             @click="
@@ -78,17 +93,34 @@
 </template>
 
 <script>
+import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 export default {
+  components: {
+    AvancarPedido
+  },
+
   data() {
     return {
+      avancarPedidoDialog: false,
+      devolverPedidoDialog: false,
       dialog: false,
       textoOperacao: null,
       textoBotao: null,
-      mensagemDespacho: ""
+      mensagemDespacho: "",
+      utilizadores: []
     };
   },
 
   methods: {
+    fecharDialog() {
+      this.avancarPedidoDialog = false;
+      this.devolverPedidoDialog = false;
+    },
+
+    avancarPedido(dados) {
+      this.$emit("avancarPedido", dados);
+    },
+
     despacho() {
       this.dialog = true;
 
@@ -96,6 +128,15 @@ export default {
         tipoOperacao: this.textoBotao,
         mensagem: this.mensagemDespacho
       });
+    }
+  },
+
+  async created() {
+    try {
+      const response = await this.$request("get", "/api/users");
+      this.utilizadores = response.data;
+    } catch (e) {
+      return e;
     }
   }
 };
