@@ -135,7 +135,6 @@
             </v-expansion-panel>
 
             <!-- DECISÃO COM SUBDIVISÃO -->
-            <!-- TODO: Corrigir este componente com o novo layout -->
             <Subclasses4Nivel
               :c="classe"
               :semaforos="semaforos"

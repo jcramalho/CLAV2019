@@ -142,6 +142,28 @@ export default {
     SelectValueFromList
   },
 
+  created: function(){
+    // Vou ordenar os processos relacionados no critério de densidade
+    var res = 0;
+    for(var i=0; i < this.c.df.justificacao.length; i++){
+      if(this.c.df.justificacao[i].tipo == 'CriterioJustificacaoDensidadeInfo'){
+        this.c.df.justificacao[i].procRel.sort((p1, p2) => {
+          var p1Nivel = p1.codigo.split('.').length;
+          var p2Nivel = p2.codigo.split('.').length;
+          if(p1Nivel == p2Nivel){
+            if(p1.codigo < p2.codigo) res = -1;
+            else res = 1;
+          }
+          else if(p1Nivel > p2Nivel) 
+            res = -1;
+          else
+            res = 1;
+          return res;
+        })
+      }
+    }
+  },
+
   data: function() {
     return {
       destinoFinalTipos: [
