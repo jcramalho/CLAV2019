@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-for="(t, i) in legislacaoInfo" :key="i">
+    <v-row v-for="(t, i) in tipologiaInfo" :key="i">
       <!-- Label -->
       <v-col cols="2" v-if="t.conteudo !== '' && t.conteudo !== undefined">
         <div class="info-label">{{ t.campo }}</div>
@@ -10,7 +10,7 @@
       <v-col v-if="t.conteudo !== '' && t.conteudo !== undefined">
         <!-- Se o conteudo for uma lista de tipologias-->
         <v-data-table
-          v-if="t.campo == 'Tipologias'"
+          v-if="t.campo == 'Entidades'"
           :headers="headersTipologias"
           :items="t.conteudo"
           class="elevation-1"
@@ -88,7 +88,7 @@ export default {
   data() {
     return {
       dialogTipologias: false,
-      legislacaoInfo: [
+      tipologiaInfo: [
         {
           campo: "Sigla",
           conteudo: this.p.objeto.dados.sigla,
@@ -100,19 +100,13 @@ export default {
           cor: null
         },
         {
-          campo: "Internacional",
-          conteudo: this.p.objeto.dados.internacional,
-          cor: null
-        },
-        { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
-        {
-          campo: "Tipologias",
-          conteudo: this.p.objeto.dados.tipologiasSel,
+          campo: "Entidades",
+          conteudo: this.p.objeto.dados.entidadesSel,
           cor: null
         },
         {
-          campo: "Data Extinção",
-          conteudo: this.p.objeto.dados.dataExtincao,
+          campo: "Código",
+          conteudo: this.p.objeto.dados.codigo,
           cor: null
         }
       ],
@@ -206,18 +200,17 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "green lighten-3";
+      const i = this.tipologiaInfo.findIndex(o => o.campo == obj.campo);
+      this.tipologiaInfo[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "red lighten-3";
+      const i = this.tipologiaInfo.findIndex(o => o.campo == obj.campo);
+      this.tipologiaInfo[i].cor = "red lighten-3";
     },
 
     close() {
       this.dialogtipologias = false;
-      this.dialogProcessos = false;
     }
   }
 };

@@ -102,11 +102,11 @@ export default {
       this.$router.go();
     },
     selectParticipante: function(id, intervencao) {
-      var index = this.entidades.findIndex(e => e.id === id);
-      this.entidades[index].intervencao = intervencao;
-      var selectedEntidade = this.entidades[index];
-      this.entidades.splice(index, 1);
-      this.$emit("selectParticipante", selectedEntidade);
+        var index = this.entidades.findIndex(e => e.id === id);
+        this.entidades[index].intervencao = intervencao;
+        var selectedEntidade = JSON.parse(JSON.stringify(this.entidades[index]));
+        this.entidades.splice(index, 1);
+        this.$emit("selectParticipante", selectedEntidade);
     }
   }
 };

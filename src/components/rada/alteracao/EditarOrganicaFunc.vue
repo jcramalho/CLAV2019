@@ -59,6 +59,9 @@
                 chips
               >
                 <template v-slot:item="{ item }">{{ item.codigo }} - {{ item.titulo }}</template>
+                <template v-slot:selection="{ item }">
+                  <v-chip>{{ item.codigo }} - {{ item.titulo }}</v-chip>
+                </template>
                 <template v-slot:no-data>
                   <v-container fluid>
                     <v-alert

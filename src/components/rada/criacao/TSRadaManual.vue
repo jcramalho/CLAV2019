@@ -18,7 +18,7 @@
       <v-row justify="center">
         <v-col cols="12" xs="12" sm="12">
           <AddOrgFunc :classes="TS.classes" />
-          <Serie :classes="TS.classes" :entidades="entidades" />
+          <Serie :classes="TS.classes" :entidades="entidades" :legislacao="legislacao" />
           <SubSerie :classes="TS.classes" />
         </v-col>
       </v-row>
@@ -26,7 +26,14 @@
         <v-col cols="12" xs="12" sm="12">
           <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
             <template v-slot:label="{ item }">
-              <EditarSerie v-if="item.tipo == 'Série'" :treeview_object="item" />
+              <EditarSerie
+                v-if="item.tipo == 'Série'"
+                @atualizacao="atualizacao_serie"
+                :treeview_object="item"
+                :classes="TS.classes"
+                :entidades="entidades"
+                :legislacao="legislacao"
+              />
               <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
               <EditarOrganicaFunc
                 v-else
@@ -73,9 +80,13 @@ export default {
     EditarSubserie,
     EditarSerie
   },
+  data: () => {
+    return {
+      legislacao: []
+    };
+  },
   computed: {
     preparaTree() {
-      //Tem que retornar
       var myTree = [];
 
       for (var i = 0; i < this.TS.classes.length; i++) {
@@ -94,6 +105,10 @@ export default {
       }
       return myTree;
     }
+  },
+  created: async function() {
+    let response = await this.$request("get", "/api/legislacao");
+    this.legislacao = response.data;
   },
   methods: {
     preparaTreeFilhos: function(pai) {
@@ -121,11 +136,6 @@ export default {
         this.$emit("done");
       }
     },
-    editItem(item) {
-      this.editedIndex = this.TS.classes.indexOf(item);
-      this.dialog = true;
-    },
-
     deleteItem(item) {
       const index = this.TS.classes.indexOf(item);
       confirm("Are you sure you want to delete this item?") &&
@@ -135,6 +145,164 @@ export default {
       let area_organico = this.TS.classes.find(e => e.codigo == c.codigo);
 
       area_organico.descricao = c.descricao;
+    },
+    async atualizacao_serie(c) {
+      let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
+      // FAZER LIGAÇÕES
+      serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
+
+      serie_classe.titulo = c.titulo;
+      serie_classe.descricao = c.descricao;
+      serie_classe.dataInicial = c.dataInicial;
+      serie_classe.dataFinal = c.dataFinal;
+      serie_classe.tUA = c.tUA;
+      serie_classe.tSerie = c.tSerie;
+      serie_classe.suporte = c.suporte;
+      serie_classe.localizacao = c.localizacao;
+      serie_classe.produtoras = c.produtoras;
+      serie_classe.legislacao = c.legislacao;
+      serie_classe.pca = c.pca;
+      serie_classe.formaContagem = c.formaContagem;
+      serie_classe.notas = c.notas;
+      serie_classe.justicacaoPCA = c.justicacaoPCA;
+      serie_classe.df = c.df;
+      serie_classe.justificacaoDF = c.justificacaoDF;
+    },
+    async editaRelacoes(serie_classe, c) {
+      let novo_relacoes = [];
+
+      /*
+      
+        Iterar o array alterado pelo utilizador
+
+      */
+      for (let i = 0; i < c.relacoes.length; i++) {
+        let relacao_igual = serie_classe.relacoes.find(
+          rel =>
+            rel.relacao == c.relacoes[i].relacao &&
+            rel.serieRelacionada.codigo == c.relacoes[i].serieRelacionada.codigo
+        );
+
+        if (relacao_igual != undefined) {
+          novo_relacoes.push(relacao_igual);
+        } else {
+          await this.adicionaRelacoesInversas(c.relacoes[i], serie_classe);
+          novo_relacoes.push(c.relacoes[i]);
+        }
+      }
+
+      /*
+      
+        Iterar o array original de relacoes
+
+      */
+      for (let j = 0; j < serie_classe.relacoes.length; j++) {
+        let relacao_igual = c.relacoes.find(
+          rel =>
+            rel.relacao == serie_classe.relacoes[j].relacao &&
+            rel.serieRelacionada.codigo ==
+              serie_classe.relacoes[j].serieRelacionada.codigo
+        );
+
+        if (relacao_igual == undefined) {
+          await this.removeRelacoesInversas(
+            serie_classe.relacoes[j],
+            serie_classe
+          );
+        }
+      }
+      return novo_relacoes;
+    },
+    async adicionaRelacoesInversas(relacao, serie_classe) {
+      let classe_relacionada = await this.TS.classes.find(
+        e => e.codigo == relacao.serieRelacionada.codigo
+      );
+
+      let relacao_inversa = "";
+
+      switch (relacao.relacao) {
+        case "Antecessora de":
+          relacao_inversa = "Sucessora de";
+          break;
+        case "Sucessora de":
+          relacao_inversa = "Antecessora de";
+          break;
+        case "Complementar de":
+          relacao_inversa = "Complementar de";
+          break;
+        case "Sintetizado por":
+          relacao_inversa = "Síntese de";
+          break;
+        case "Síntese de":
+          relacao_inversa = "Sintetizado por";
+          break;
+        case "Suplemento de":
+          relacao_inversa = "Suplemento para";
+          break;
+        case "Suplemento para":
+          relacao_inversa = "Suplemento de";
+          break;
+      }
+
+      let existe_repetida = await classe_relacionada.relacoes.find(
+        e =>
+          e.relacao == relacao_inversa &&
+          e.serieRelacionada.codigo == serie_classe.codigo
+      );
+
+      if (existe_repetida == undefined) {
+        classe_relacionada.relacoes.push({
+          relacao: relacao_inversa,
+          serieRelacionada: serie_classe
+        });
+      }
+    },
+    async removeRelacoesInversas(relacao, serie_classe) {
+      let classe_relacionada = await this.TS.classes.find(
+        e => e.codigo == relacao.serieRelacionada.codigo
+      );
+
+      let relacao_inversa = "";
+
+      switch (relacao.relacao) {
+        case "Antecessora de":
+          relacao_inversa = "Sucessora de";
+          break;
+        case "Sucessora de":
+          relacao_inversa = "Antecessora de";
+          break;
+        case "Complementar de":
+          relacao_inversa = "Complementar de";
+          break;
+        case "Sintetizado por":
+          relacao_inversa = "Síntese de";
+          break;
+        case "Síntese de":
+          relacao_inversa = "Sintetizado por";
+          break;
+        case "Suplemento de":
+          relacao_inversa = "Suplemento para";
+          break;
+        case "Suplemento para":
+          relacao_inversa = "Suplemento de";
+          break;
+      }
+
+      // console.log(JSON.stringify(classe_relacionada.relacoes));
+      classe_relacionada.relacoes = await classe_relacionada.relacoes.filter(
+        e => {
+          // console.log(relacao_inversa)
+          // console.log(serie_classe.codigo)
+          // console.log(
+          //   e.relacao != relacao_inversa &&
+          //     e.serieRelacionada.codigo != serie_classe.codigo
+          // );
+          return (
+            e.relacao != relacao_inversa ||
+            e.serieRelacionada.codigo != serie_classe.codigo
+          );
+        }
+      );
     }
   }
 };

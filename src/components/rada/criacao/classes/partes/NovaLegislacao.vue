@@ -105,7 +105,7 @@
 
 <script>
 export default {
-  props: ["legislacao", "legislacaoClone"],
+  props: ["legislacao"],
   data: function() {
     return {
       data_menu: false,
@@ -151,7 +151,6 @@ export default {
 
           this.legislacao.push(legis);
           this.novasLegislacao.push(legis);
-          this.legislacaoClone.push(legis);
 
           this.sucessOn = true;
           this.$refs.form.reset();

@@ -74,7 +74,7 @@
                   v-model="date"
                   no-title
                   @input="open = false"
-                  :max="date"
+                  :max="dateCurrent"
                 ></v-date-picker>
               </v-menu>
             </v-col>
@@ -223,6 +223,7 @@ export default {
 
     // vuetify datepicker
     date: new Date().toISOString().substr(0, 10),
+    dateCurrent: new Date().toISOString().substr(0, 10),
     dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
     open: false,
 

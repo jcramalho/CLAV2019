@@ -32,7 +32,6 @@
                   v-model="props.item.idRel"
                   :items="tiposRelacao"
                   solo
-                  return-object
                   @change="selectProcesso(props.item.id, $event)"
                 />
               </td>
@@ -94,8 +93,8 @@ export default {
     },
     selectProcesso: function(id, relacao) {
       var index = this.processos.findIndex(p => p.id === id);
+      this.processos[index].relacao = relacao;
       var selectedProcesso = JSON.parse(JSON.stringify(this.processos[index]));
-      selectedProcesso.relacao = relacao.value;
       this.processos.splice(index, 1);
       this.$emit("selectProcesso", selectedProcesso);
     }

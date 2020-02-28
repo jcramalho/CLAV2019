@@ -32,12 +32,15 @@
             </tr>
           </template>
         </v-data-table>
-        <v-alert v-else :value="true" icon="warning" color="amber accent-3"
-          >Não tem entidades produtoras selecionadas...</v-alert
-        >
+        <v-alert
+          v-else
+          :value="true"
+          icon="warning"
+          color="amber accent-3"
+        >Não tem entidades produtoras selecionadas...</v-alert>
       </v-col>
     </v-row>
-    <NovaEntidade :entidades="entidades" :entidadesClone="entidadesClone" />
+    <NovaEntidade :entidades="entidades" />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
         <div class="info-label">Selecione a(s) entidade(s) produtora(s)</div>
@@ -53,7 +56,7 @@
         <v-data-table
           :search="search"
           :headers="headersSel"
-          :items="entidadesClone"
+          :items="filterEntidades"
           item-key="id"
           :footer-props="footer_props"
           :items-per-page="5"
@@ -67,9 +70,12 @@
             </tr>
           </template>
 
-          <v-alert v-slot:no-results :value="true" class="error" icon="warning"
-            >A procura por "{{ search }}" não deu resultados.</v-alert
-          >
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            class="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-col>
     </v-row>
@@ -87,7 +93,6 @@ export default {
   },
   data: () => {
     return {
-      entidadesClone: [],
       search: "",
       headersDes: [
         {
@@ -144,31 +149,22 @@ export default {
       }
     };
   },
-  watch: {
-    // Voltar a colocar o array inteiro devido ao bug do reset() do form
-    "newSerie.produtoras": function(newValue, oldvalue) {
-      if (newValue.length == 0) {
-        this.entidadesClone = [...this.entidades];
-      }
+  computed: {
+    filterEntidades() {
+      return this.entidades.filter(ent => {
+        return !this.newSerie.produtoras.some(e => ent.id == e.id);
+      });
     }
   },
   methods: {
     selectEntidade: function(item) {
       this.newSerie.produtoras.push(item);
-      this.entidadesClone = this.entidadesClone.filter(
-        e => e.sigla != item.sigla
-      );
     },
     unselectEntidade: function(item) {
-      this.entidadesClone.push(item);
       this.newSerie.produtoras = this.newSerie.produtoras.filter(
         e => e.sigla != item.sigla
       );
     }
-  },
-  created: function() {
-    // Criação de array clone para fazer as seleções
-    this.entidadesClone = [...this.entidades];
   }
 };
 </script>

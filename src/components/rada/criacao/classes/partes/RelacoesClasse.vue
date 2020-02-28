@@ -7,15 +7,20 @@
       <v-col cols="12" xs="12" sm="9">
         <v-row>
           <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
-            <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>
+            <v-data-table
+              :headers="headers"
+              :items="newSerie.relacoes"
+              hide-default-footer
+            >
               <template v-slot:item.relacao="props">{{ props.item.relacao }}</template>
-
               <template v-slot:item.edicao="props">
                 <td>
                   <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
                 </td>
               </template>
-              <template v-slot:item.serieRelacionada="props">{{ props.item.serieRelacionada }}</template>
+              <template
+                v-slot:item.serieRelacionada="props"
+              >{{ props.item.serieRelacionada.codigo + ' - ' + props.item.serieRelacionada.titulo}}</template>
             </v-data-table>
           </v-col>
         </v-row>
@@ -35,7 +40,10 @@
                 v-model="classerel"
                 :items="classes"
                 label="Com a classe"
-              ></v-combobox>
+              >
+                <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
+                <template v-slot:selection="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
+              </v-combobox>
             </v-col>
             <v-col sm="1" xs="12">
               <v-btn text rounded @click="add()">
@@ -101,7 +109,7 @@ export default {
       this.newSerie.relacoes = this.newSerie.relacoes.filter(e => {
         return (
           e.relacao != item.relacao ||
-          e.serieRelacionada != item.serieRelacionada
+          e.serieRelacionada.codigo != item.serieRelacionada.codigo
         );
       });
     },
@@ -114,7 +122,6 @@ export default {
             relacao: this.rel,
             serieRelacionada: this.classerel
           });
-          // console.log("DONEEE");
           this.$refs.addRel.reset();
         } else {
           this.alertOn = true;
@@ -123,7 +130,10 @@ export default {
     },
     validateRelacao: function() {
       return this.newSerie.relacoes.some(el => {
-        return el.relacao == this.rel && el.serieRelacionada == this.classerel;
+        return (
+          el.relacao == this.rel &&
+          el.serieRelacionada.codigo == this.classerel.codigo
+        );
       });
     }
   }

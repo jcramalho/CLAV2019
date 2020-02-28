@@ -126,7 +126,23 @@ export default {
             //   titulo: "Serie da Reforma Agraria",
             //   eFilhoDe: "01",
             //   descricao: "asjdbjahs",
-            //   relacoes: []
+            //   relacoes: [],
+            //   dataInicial: "",
+            //   dataFinal: "",
+            //   tUA: "",
+            //   tSerie: "",
+            //   suporte: "",
+            //   medicao: "",
+            //   localizacao: [],
+            //   produtoras: [],
+            //   legislacao: [],
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: "",
+            //   children: []
             // },
             // {
             //   codigo: "01.01.01",
@@ -134,7 +150,15 @@ export default {
             //   titulo: "Subserie da Serie da Reforma Agraria",
             //   eFilhoDe: "01.01",
             //   descricao: "askpdoiapsodi",
-            //   relacoes: []
+            //   relacoes: [],
+            //   dataInicial: "",
+            //   dataFinal: "",
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: ""
             // },
             // {
             //   codigo: "02",
@@ -149,7 +173,23 @@ export default {
             //   titulo: "Serie da Reforma Agraria",
             //   eFilhoDe: "02",
             //   descricao: "asjdbjahs",
-            //   relacoes: []
+            //   relacoes: [],
+            //   dataInicial: "",
+            //   dataFinal: "",
+            //   tUA: "",
+            //   tSerie: "",
+            //   suporte: "",
+            //   medicao: "",
+            //   localizacao: [],
+            //   produtoras: [],
+            //   legislacao: [],
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: "",
+            //   children: []
             // },
             // {
             //   codigo: "02.01.01",
@@ -157,7 +197,15 @@ export default {
             //   titulo: "Subserie da Serie da Reforma Agraria",
             //   eFilhoDe: "02.01",
             //   descricao: "askpdoiapsodi",
-            //   relacoes: []
+            //   relacoes: [],
+            //   dataInicial: "",
+            //   dataFinal: "",
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: ""
             // }
           ]
         }

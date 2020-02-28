@@ -49,9 +49,9 @@
               color="indigo darken-2"
               dark
               rounded
-              @click="adicionarCriterioLegalPCA( c.df.justificacao, 'CriterioJustificacaoLegal',
+              @click="adicionarCriterioLegalDF( c.df.justificacao, 'CriterioJustificacaoLegal',
                                                   'Critério Legal', '', [], c.legislacao )"
-              v-if="!semaforos.critLegalAdicionadoDF"
+              v-if="!c.semaforos.critLegalAdicionadoDF"
             >
               Critério Legal
               <v-icon dark right>add_circle_outline</v-icon>
@@ -62,9 +62,11 @@
         <v-col>
           <v-row class="ma-2" v-for="(crit, cindex) in c.df.justificacao" :key="cindex">
             <v-col cols="3">
+              <!-- O critério de densidade não pode ser removido -->
               <div class="info-label">
                 {{ crit.label }}
                 <v-icon
+                  v-if="crit.tipo != 'CriterioJustificacaoDensidadeInfo'"
                   color="red darken-2"
                   dark
                   small
@@ -142,6 +144,28 @@ export default {
     SelectValueFromList
   },
 
+  created: function(){
+    // Vou ordenar os processos relacionados no critério de densidade
+    var res = 0;
+    for(var i=0; i < this.c.df.justificacao.length; i++){
+      if(this.c.df.justificacao[i].tipo == 'CriterioJustificacaoDensidadeInfo'){
+        this.c.df.justificacao[i].procRel.sort((p1, p2) => {
+          var p1Nivel = p1.codigo.split('.').length;
+          var p2Nivel = p2.codigo.split('.').length;
+          if(p1Nivel == p2Nivel){
+            if(p1.codigo < p2.codigo) res = -1;
+            else res = 1;
+          }
+          else if(p1Nivel > p2Nivel) 
+            res = -1;
+          else
+            res = 1;
+          return res;
+        })
+      }
+    }
+  },
+
   data: function() {
     return {
       destinoFinalTipos: [
@@ -212,7 +236,7 @@ export default {
       this.semaforos.critLegalAdicionadoPCA = true;
     },
 
-    adicionarCriterioGestionario: function(
+    adicionarCriterioLegalDF: function(
       justificacao,
       tipo,
       label,
@@ -228,7 +252,7 @@ export default {
         procRel,
         legislacao
       );
-      this.semaforos.critGestionarioAdicionado = true;
+      this.c.semaforos.critLegalAdicionadoDF = true;
     },
 
     // Remove um critério completo duma vez
@@ -240,10 +264,10 @@ export default {
     // Atualiza as flags que controlam os botões de adicionar e remover critérios
     atualizaFlagsCriterios(tipo, PCAouDF) {
       if (tipo == "CriterioJustificacaoLegal") {
-        if (PCAouDF == "PCA") this.semaforos.critLegalAdicionadoPCA = false;
-        else this.semaforos.critLegalAdicionadoDF = false;
+        if (PCAouDF == "PCA") this.c.semaforos.critLegalAdicionadoPCA = false;
+        else this.c.semaforos.critLegalAdicionadoDF = false;
       } else if (tipo == "CriterioJustificacaoGestionario") {
-        this.semaforos.critGestionarioAdicionado = false;
+        this.c.semaforos.critGestionarioAdicionado = false;
       }
     },
 

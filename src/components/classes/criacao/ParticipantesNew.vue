@@ -26,12 +26,7 @@
             </v-col>
 
             <v-col>
-              <v-text-field 
-                v-model="sigla" 
-                label="Sigla" 
-                :rules="siglaRules"
-                required>
-              </v-text-field>
+              <v-text-field v-model="sigla" label="Sigla"></v-text-field>
             </v-col>
 
             <v-col>
@@ -39,12 +34,7 @@
             </v-col>
 
             <v-col>
-              <v-text-field
-                v-model="designacao"
-                label="Designação"
-                :rules="designacaoRules"
-                required
-              ></v-text-field>
+              <v-text-field v-model="designacao" label="Designação"></v-text-field>
             </v-col>
 
             <v-col>
@@ -81,9 +71,7 @@ export default {
       valid: false,
       sigla: "",
       sioe: "",
-      siglaRules: [v => !!v || "A Sigla é um campo obrigatório."],
       designacao: "",
-      designacaoRules: [v => !!v || "A Designação é obrigatória."],
       internacional: "Nao",
       intervencao: "Indefinido",
       tiposIntervencao: [
@@ -157,6 +145,7 @@ export default {
           estado: "Nova",
           id: "ent_" + this.sigla,
           sigla: this.sigla,
+          tipo: "Entidade",
           sioe: this.sioe,
           designacao: this.designacao,
           internacional: this.internacional,
@@ -167,7 +156,6 @@ export default {
         this.designacao = "";
         this.internacional = "Nao";
         this.intervencao = "Indefinido";
-        this.$refs.form.reset()
         this.$emit("newEntidade", entidade);
       } else {
         this.erroValidacao = true;
