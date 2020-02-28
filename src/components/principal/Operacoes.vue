@@ -226,6 +226,7 @@
 
 <script>
 const help = require("@/config/help").help;
+const lhost = require("@/config/global").host;
 
 export default {
   props: ["level"],
@@ -513,7 +514,7 @@ export default {
           ops: [
             {
               label: "Aceder",
-              url: "http://clav-api.dglab.gov.pt/docs",
+              url: lhost + "/docs",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             }
           ]
