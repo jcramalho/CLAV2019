@@ -179,7 +179,6 @@ export default {
     },
 
     async encaminharPedido(estado, dados) {
-      console.log("estado :", estado);
       try {
         let dadosUtilizador = dados.utilizadorSelecionado;
 
