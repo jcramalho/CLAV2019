@@ -208,7 +208,7 @@ export default {
       try {
         let dadosUtilizador = await this.$request(
           "get",
-          "/api/users/" + this.$store.state.token + "/token"
+          "/users/" + this.$store.state.token + "/token"
         );
 
         dadosUtilizador = dadosUtilizador.data;
@@ -224,7 +224,7 @@ export default {
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
-        await this.$request("put", "/api/pedidos", {
+        await this.$request("put", "/pedidos", {
           pedido: pedido,
           distribuicao: novaDistribuicao
         });
@@ -250,7 +250,7 @@ export default {
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
-        await this.$request("put", "/api/pedidos", {
+        await this.$request("put", "/pedidos", {
           pedido: pedido,
           distribuicao: novaDistribuicao
         });
