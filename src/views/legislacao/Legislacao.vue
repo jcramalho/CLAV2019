@@ -137,7 +137,7 @@ export default {
 
   created: async function() {
     try {
-      let response = await this.$request("get", "/api/legislacao");
+      let response = await this.$request("get", "/legislacao");
 
       let level = await this.$userLevel(this.$store.state.token);
 

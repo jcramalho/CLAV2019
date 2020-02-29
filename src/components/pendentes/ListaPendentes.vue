@@ -112,7 +112,7 @@ export default {
   }),
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/pendentes");
+      var response = await this.$request("get", "/pendentes");
       this.pendentes = response.data;
     } catch (e) {
       return e;

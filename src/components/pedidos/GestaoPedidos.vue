@@ -151,7 +151,7 @@ export default {
 
   created: async function() {
     try {
-      var response = await this.$request("get", "/api/pedidos");
+      var response = await this.$request("get", "/pedidos");
       this.pedidos = response.data;
       this.pedidosSubmetidos = this.pedidos.filter(
         p => p.estado == "Submetido"
@@ -179,7 +179,7 @@ export default {
 
     distribuiPedido: async function(pedido) {
       try {
-        var response = await this.$request("get", "/api/users");
+        var response = await this.$request("get", "/users");
 
         const utilizadores = filtraNivel(
           response.data,
@@ -219,7 +219,7 @@ export default {
       this.pedidoParaDistribuir.estado = "Distribuído";
       this.pedidoParaDistribuir.token = this.$store.state.token;
 
-      this.$request("put", "/api/pedidos", {
+      this.$request("put", "/pedidos", {
         pedido: this.pedidoParaDistribuir,
         distribuicao: novaDistribuicao
       })

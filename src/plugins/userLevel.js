@@ -7,7 +7,7 @@ const userLevel = {
       var level;
       if (this.$store.state.token != "") {
         try {
-          let userInfo = await axios.get(`${host}/api/users/${token}/token`, {
+          let userInfo = await axios.get(`${host}/users/${token}/token`, {
             headers: {
               Authorization: `token ${token}`
             }

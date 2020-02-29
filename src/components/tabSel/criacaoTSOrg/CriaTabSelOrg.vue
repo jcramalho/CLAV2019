@@ -743,11 +743,11 @@ export default {
     infoUserEnt: async function() {
       var resUser = await this.$request(
         "get",
-        "/api/users/" + this.$store.state.token + "/token"
+        "/users/" + this.$store.state.token + "/token"
       );
       var resEnt = await this.$request(
         "get",
-        "/api/entidades/" + resUser.data.entidade
+        "/entidades/" + resUser.data.entidade
       );
       if (resUser.data.entidade === "ent_DGLAB") {
         this.stepNo = 1;
@@ -763,7 +763,7 @@ export default {
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-        var response = await this.$request("get", "/api/entidades");
+        var response = await this.$request("get", "/entidades");
         for (var i = 0; i < response.data.length; i++) {
           this.entidades[i] =
             response.data[i].sigla + " - " + response.data[i].designacao;
@@ -786,7 +786,7 @@ export default {
     // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
     loadTipologias: async function() {
       try {
-        var response = await this.$request("get", "/api/tipologias/");
+        var response = await this.$request("get", "/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -799,7 +799,7 @@ export default {
         // Tipologias onde a entidade se encontra
         var tipologias = await this.$request(
           "get",
-          "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
+          "/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
         this.tipSel = tipologias.data.map(function(item) {
           return {
@@ -823,7 +823,7 @@ export default {
     loadProcComuns: async function() {
       try {
         if (!this.listaProcComunsReady) {
-          var response = await this.$request("get", "/api/classes?tipo=comum");
+          var response = await this.$request("get", "/classes?tipo=comum");
           for (var i = 0; i < response.data.length; i++) {
             if (response.data[i].transversal === "S") {
               this.listaProcComuns.push({
@@ -869,8 +869,7 @@ export default {
       try {
         if (!this.listaProcEspReady) {
           var url =
-            "/api/classes?tipo=especifico&ents=" +
-            this.tabelaSelecao.idEntidade;
+            "/classes?tipo=especifico&ents=" + this.tabelaSelecao.idEntidade;
           if (this.tipSel.length || this.tipSel.length) {
             url += "&tips=";
           }
@@ -951,10 +950,7 @@ export default {
     loadProcEspRestantes: async function() {
       try {
         if (!this.listaProcEspResReady) {
-          var response = await this.$request(
-            "get",
-            "/api/classes?tipo=especifico"
-          );
+          var response = await this.$request("get", "/classes?tipo=especifico");
           this.listaTotalProcEsp = response.data;
           for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
             var espEntTip = false;
@@ -1165,7 +1161,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/api/users/" + this.$store.state.token + "/token"
+          "/users/" + this.$store.state.token + "/token"
         );
 
         var tsObj = {
@@ -1191,11 +1187,7 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await this.$request(
-          "post",
-          "/api/pedidos",
-          pedidoParams
-        );
+        var response = await this.$request("post", "/pedidos", pedidoParams);
         this.$router.push("/pedidos/submissao");
       } catch (error) {
         return error;
@@ -1206,7 +1198,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/api/users/" + this.$store.state.token + "/token"
+          "/users/" + this.$store.state.token + "/token"
         );
 
         this.tabelaSelecao.tipologias = this.tipSel;
@@ -1231,7 +1223,7 @@ export default {
 
         var response = await this.$request(
           "post",
-          "/api/pendentes",
+          "/pendentes",
           pendenteParams
         );
         this.pendenteGuardado = true;

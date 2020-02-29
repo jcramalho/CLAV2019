@@ -24,7 +24,7 @@ export default {
   methods: {
     loadEntidades: async function() {
       try {
-        let response = await this.$request("get", "/api/entidades");
+        let response = await this.$request("get", "/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -64,12 +64,12 @@ export default {
 
       let infoLegislacao = await this.$request(
         "get",
-        "/api/legislacao/" + idLegislacao
+        "/legislacao/" + idLegislacao
       );
 
       let processosRegula = await this.$request(
         "get",
-        "/api/legislacao/" + idLegislacao + "/processos"
+        "/legislacao/" + idLegislacao + "/processos"
       );
 
       this.legislacao = await this.preparaLegislacao(

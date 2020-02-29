@@ -23,7 +23,7 @@ export default {
     try {
       var response = await this.$request(
         "get",
-        "/api/vocabularios/" + this.$route.params.idVC
+        "/vocabularios/" + this.$route.params.idVC
       );
       this.vocabulariosControladosContinuacao = await this.preparaLista(
         response.data

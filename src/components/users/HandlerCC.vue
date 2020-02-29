@@ -202,7 +202,7 @@ export default {
   },
   methods: {
     /*async getEntidades() {
-      await this.$request("get", "/api/entidades")
+      await this.$request("get", "/entidades")
         .then(res => {
           this.ent_list = res.data.map(ent => {
             return {
@@ -242,7 +242,7 @@ export default {
             parsedType = 1;
             break;
         }
-        this.$request("post", "/api/users/registarCC", {
+        this.$request("post", "/users/registarCC", {
           nic: this.nic,
           name: this.nomeCompleto,
           email: this.$data.form.email,

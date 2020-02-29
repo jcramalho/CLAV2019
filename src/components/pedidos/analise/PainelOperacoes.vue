@@ -133,7 +133,7 @@ export default {
 
   async created() {
     try {
-      const response = await this.$request("get", "/api/users");
+      const response = await this.$request("get", "/users");
       this.utilizadores = response.data;
     } catch (e) {
       return e;

@@ -34,11 +34,11 @@ export default {
     tipoClasse: false,
     tipoTSOrg: false,
     tipoTSPluri: false,
-    tipoAE: false,
+    tipoAE: false
   }),
 
   created: function() {
-    this.$request("get", "/api/pendentes/" + this.$route.params.idPendente)
+    this.$request("get", "/pendentes/" + this.$route.params.idPendente)
       .then(response => {
         this.objeto = response.data;
         switch (this.objeto.tipo) {
@@ -57,7 +57,7 @@ export default {
         }
         this.objLoaded = true;
         // Apaga-se o pendente
-        this.$request("delete", "/api/pendentes/" + this.$route.params.idPendente)
+        this.$request("delete", "/pendentes/" + this.$route.params.idPendente)
           .then(response => {
             console.log('Pendente removido: ' + this.$route.params.idPendente)
           })

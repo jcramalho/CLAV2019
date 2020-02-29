@@ -415,12 +415,12 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/classes?estrutura=lista");
+      var response = await this.$request("get", "/classes?estrutura=lista");
       this.classes = response.data.map(c => {
         return { text: c.codigo + " - " + c.titulo, value: "c" + c.codigo };
       });
 
-      response = await this.$request("get", "/api/entidades");
+      response = await this.$request("get", "/entidades");
       this.entidades = response.data.map(e => {
         return {
           text: e.sigla + " - " + e.designacao,
@@ -430,7 +430,7 @@ export default {
       this.queryStrings.classes.ents.enum = this.entidades;
       this.queryStrings.entidades.ents.enum = this.entidades;
 
-      response = await this.$request("get", "/api/tipologias");
+      response = await this.$request("get", "/tipologias");
       this.tipologias = response.data.map(t => {
         return {
           text: t.sigla + " - " + t.designacao,
@@ -440,7 +440,7 @@ export default {
       this.queryStrings.classes.tips.enum = this.tipologias;
       this.queryStrings.tipologias.tips.enum = this.tipologias;
 
-      response = await this.$request("get", "/api/legislacao");
+      response = await this.$request("get", "/legislacao");
       this.legislacoes = response.data.map(l => {
         return {
           text:
@@ -552,7 +552,7 @@ export default {
       this.text = "";
 
       if (!this.$refs.id || this.$refs.id.validate()) {
-        var path = "/api/" + this.tipo.path + this.id;
+        var path = "/" + this.tipo.path + this.id;
 
         //criar query string
         if (Object.keys(this.queriesSel).length > 0) {

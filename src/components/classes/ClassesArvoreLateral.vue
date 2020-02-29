@@ -27,7 +27,7 @@
         >
           <template slot="label" slot-scope="{ item }">
             <v-btn text depressed @click="go(item.id)">{{ item.name }}</v-btn>
-            <br>
+            <br />
           </template>
         </v-treeview>
       </div>
@@ -47,19 +47,19 @@ export default {
     selectedParents: []
   }),
 
-  created: function(){
-    var levelIds = this.classeId.split('.')
-    var iteracoes = levelIds.length
-    for(var i=0; i < iteracoes; i++){
-      levelIds.splice(levelIds.length-1,1)
-      this.selectedParents.push(levelIds.join('.'))
+  created: function() {
+    var levelIds = this.classeId.split(".");
+    var iteracoes = levelIds.length;
+    for (var i = 0; i < iteracoes; i++) {
+      levelIds.splice(levelIds.length - 1, 1);
+      this.selectedParents.push(levelIds.join("."));
     }
   },
 
   mounted: async function() {
     try {
-      var myClasses = await this.$request("get", "/api/classes");
-      var myIndice = await this.$request("get", "/api/indicePesquisa")
+      var myClasses = await this.$request("get", "/classes");
+      var myIndice = await this.$request("get", "/indicePesquisa");
       this.classesTree = await this.preparaTree(myClasses.data, myIndice.data);
       this.classesCarregadas = true;
     } catch (e) {
@@ -76,14 +76,14 @@ export default {
       try {
         var myTree = [];
         for (var i = 0; i < lclasses.length; i++) {
-          var infoIndex = linfo.findIndex(c => c.codigo == lclasses[i].codigo)
+          var infoIndex = linfo.findIndex(c => c.codigo == lclasses[i].codigo);
           myTree.push({
             id: lclasses[i].codigo,
             name: lclasses[i].codigo,
             titulo: linfo[infoIndex].titulo.toLowerCase(),
-            notas: linfo[infoIndex].notas.join(' ').toLowerCase(),
-            exemplos: linfo[infoIndex].exemplos.join(' ').toLowerCase(),
-            tis: linfo[infoIndex].tis.join(' ').toLowerCase(),
+            notas: linfo[infoIndex].notas.join(" ").toLowerCase(),
+            exemplos: linfo[infoIndex].exemplos.join(" ").toLowerCase(),
+            tis: linfo[infoIndex].tis.join(" ").toLowerCase(),
             children: await this.preparaTree(lclasses[i].filhos, linfo)
           });
         }
@@ -97,19 +97,21 @@ export default {
   computed: {
     filter() {
       return (item, queryText, itemText) => {
-        const codigo = item.id
-        const titulo = item.titulo
-        const notas = item.notas
-        const exemplos = item.exemplos
-        const tis = item.tis
-        const searchText = queryText.toLowerCase()
+        const codigo = item.id;
+        const titulo = item.titulo;
+        const notas = item.notas;
+        const exemplos = item.exemplos;
+        const tis = item.tis;
+        const searchText = queryText.toLowerCase();
 
-        return codigo.indexOf(searchText) > -1 ||
-                titulo.indexOf(searchText) > -1 ||
-                notas.indexOf(searchText) > -1 ||
-                exemplos.indexOf(searchText) > -1 ||
-                tis.indexOf(searchText) > -1
-      }
+        return (
+          codigo.indexOf(searchText) > -1 ||
+          titulo.indexOf(searchText) > -1 ||
+          notas.indexOf(searchText) > -1 ||
+          exemplos.indexOf(searchText) > -1 ||
+          tis.indexOf(searchText) > -1
+        );
+      };
     }
   }
 };
@@ -118,6 +120,5 @@ export default {
 <style scoped>
 .v-btn:hover:before {
   opacity: 0;
-  
 }
 </style>

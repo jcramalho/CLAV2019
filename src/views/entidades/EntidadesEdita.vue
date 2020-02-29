@@ -41,14 +41,11 @@ export default {
     try {
       let idEntidade = this.$route.path.split("/")[3];
 
-      let infoEntidade = await this.$request(
-        "get",
-        "/api/entidades/" + idEntidade
-      );
+      let infoEntidade = await this.$request("get", "/entidades/" + idEntidade);
 
       let tipologias = await this.$request(
         "get",
-        "/api/entidades/" + idEntidade + "/tipologias"
+        "/entidades/" + idEntidade + "/tipologias"
       );
 
       this.entidade = await this.preparaEntidade(

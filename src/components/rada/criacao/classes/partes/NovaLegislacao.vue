@@ -125,7 +125,7 @@ export default {
     try {
       var tipos = await this.$request(
         "get",
-        "/api/vocabularios/vc_tipoDiplomaLegislativo"
+        "/vocabularios/vc_tipoDiplomaLegislativo"
       );
       this.listaTipos = tipos.data.map(t => {
         return { label: t.termo, value: t.termo };
