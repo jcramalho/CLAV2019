@@ -12,7 +12,7 @@
         <v-form ref="form" :lazy-validation="false">
           <!-- <h5>Identificação</h5>
           <v-divider></v-divider>-->
-          <Identificacao :newSerie="newSubSerie" />
+          <Identificacao :newSerie="newSubSerie" :classes="classes"  />
 
           <v-expansion-panels accordion>
             <v-expansion-panel popout focusable>
@@ -110,16 +110,16 @@ export default {
     classesFiltradas: [],
     classesNomes: [],
     newSubSerie: {
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: "",
-      dataFinal: "",
-      // codigo: "02.01.02",
-      // titulo: "SUBSERIESERIE",
-      // descricao: "DESC SERIE",
-      // dataInicial: "2020-02-13",
-      // dataFinal: "2020-02-16",
+      // codigo: "",
+      // titulo: "",
+      // descricao: "",
+      // dataInicial: "",
+      // dataFinal: "",
+      codigo: "02.01.02",
+      titulo: "SUBSERIESERIE",
+      descricao: "DESC SERIE",
+      dataInicial: "2020-02-13",
+      dataFinal: "2020-02-16",
       relacoes: [],
       pca: "",
       formaContagem: "",

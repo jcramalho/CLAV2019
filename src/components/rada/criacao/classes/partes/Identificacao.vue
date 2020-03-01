@@ -6,7 +6,7 @@
       </v-col>
       <v-col sm="3" md="3">
         <v-text-field
-          :rules="regraCodigo"
+          :rules="[v => verificaCodigo(v) || !!v || 'Campo de preenchimento obrigatório!']"
           solo
           clearable
           v-model="newSerie.codigo"
@@ -18,7 +18,7 @@
       </v-col>
       <v-col sm="3" md="3">
         <v-text-field
-          :rules="regraCodigo"
+          :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
           solo
           clearable
           v-model="newSerie.titulo"
@@ -31,9 +31,15 @@
 
 <script>
 export default {
-  props: ["newSerie"],
-  data: () => ({
-    regraCodigo: [v => !!v || 'Campo de preenchimento obrigatório!']
-  })
+  props: ["newSerie", "classes"],
+  methods: {
+    verificaCodigo(v) {
+      if (this.classes.some(e => e.codigo == v)) {
+        return "Código já existente!";
+      } else {
+        return false;
+      }
+    }
+  }
 };
 </script>

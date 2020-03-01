@@ -13,7 +13,7 @@
         <v-form ref="formSerie" :lazy-validation="false">
           <!-- <h5>Identificação</h5>
           <v-divider></v-divider>-->
-          <Identificacao :newSerie="newSerie" />
+          <Identificacao :newSerie="newSerie" :classes="classes" />
 
           <v-expansion-panels accordion>
             <v-expansion-panel popout focusable>
@@ -117,16 +117,16 @@ export default {
     classesFiltradas: [],
     classesNomes: [],
     newSerie: {
-      // codigo: "02.02",
-      // titulo: "SERIE",
-      // descricao: "DESC SERIE",
-      // dataInicial: "2020-02-13",
-      // dataFinal: "2020-02-16",
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: "",
-      dataFinal: "",
+      codigo: "02.02",
+      titulo: "SERIE",
+      descricao: "DESC SERIE",
+      dataInicial: "2020-02-13",
+      dataFinal: "2020-02-16",
+      // codigo: "",
+      // titulo: "",
+      // descricao: "",
+      // dataInicial: "",
+      // dataFinal: "",
       tUA: "",
       tSerie: "",
       suporte: "",
@@ -177,7 +177,6 @@ export default {
       this.dialog = false;
     },
     save: async function() {
-    
       if (this.$refs.formSerie.validate()) {
         let clone_newSerie = Object.assign({}, this.newSerie);
 

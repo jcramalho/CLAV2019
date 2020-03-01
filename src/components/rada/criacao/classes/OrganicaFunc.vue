@@ -21,7 +21,7 @@
             <v-col sm="3" md="3">
               <v-text-field
                 v-model="newOrgFunc.codigo"
-                :rules="[v => !!v || 'Campo obrigatório!']"
+                :rules="[v => verificaCodigo(v) || !!v || 'Campo obrigatório!']"
                 label="Código"
                 solo
                 clearable
@@ -143,6 +143,13 @@ export default {
       this.classesFiltradas = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
+    },
+    verificaCodigo(v) {
+      if (this.classes.some(e => e.codigo == v)) {
+        return "Código já existente!";
+      } else {
+        return false;
+      }
     }
   }
 };
