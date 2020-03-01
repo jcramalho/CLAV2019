@@ -37,7 +37,7 @@
         >
       </v-col>
     </v-row>
-    <NovaLegislacao :legislacao="legislacao" />
+    <NovaLegislacao :legislacao="legislacao" :newSerie="newSerie" />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
         <div class="info-label">Selecione a legislação</div>

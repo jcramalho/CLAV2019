@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 <template>
-  <div>
+  <div v-if="RE.entidadesProd.length > 0">
     <v-row>
       <v-col cols="12" xs="12" sm="3">
         <div class="info-label">Entidades Produtoras</div>
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-data-table
-          v-if="!!newSerie.produtoras[0]"
+          v-if="!!newSerie.entProdutoras[0]"
           :headers="headersDes"
-          :items="newSerie.produtoras"
+          :items="newSerie.entProdutoras"
           class="elevation-1"
           hide-default-footer
         >
@@ -40,8 +40,7 @@
         >Não tem entidades produtoras selecionadas...</v-alert>
       </v-col>
     </v-row>
-    <NovaEntidade :entidades="entidades" />
-    <v-row>
+    <v-row v-if="filterEntidades.length > 0">
       <v-col cols="12" xs="12" sm="3">
         <div class="info-label">Selecione a(s) entidade(s) produtora(s)</div>
       </v-col>
@@ -80,17 +79,91 @@
       </v-col>
     </v-row>
   </div>
+  <div v-else>
+    <v-row>
+      <v-col cols="12" xs="12" sm="3">
+        <div class="info-label">Tipologias das Entidades Produtoras</div>
+      </v-col>
+      <v-col cols="12" xs="12" sm="9">
+        <v-data-table
+          v-if="!!newSerie.tipologiasProdutoras[0]"
+          :headers="headersDes"
+          :items="newSerie.tipologiasProdutoras"
+          class="elevation-1"
+          hide-default-footer
+        >
+          <template v-slot:item="props">
+            <tr>
+              <td>{{ props.item.sigla }}</td>
+              <td>{{ props.item.designacao }}</td>
+              <td>{{ props.item.estado }}</td>
+              <td>
+                <v-btn
+                  small
+                  color="red darken-2"
+                  dark
+                  rounded
+                  @click="unselectTipologia(props.item)"
+                >
+                  <v-icon dark>remove_circle</v-icon>
+                </v-btn>
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+        <v-alert
+          v-else
+          :value="true"
+          icon="warning"
+          color="amber accent-3"
+        >Não tem entidades produtoras selecionadas...</v-alert>
+      </v-col>
+    </v-row>
+    <v-row v-if="filterTipologias.length > 0">
+      <v-col cols="12" xs="12" sm="3">
+        <div class="info-label">Selecione a(s) tipologia(s) produtora(s)</div>
+      </v-col>
+      <v-col xs="12" sm="9">
+        <v-text-field
+          v-model="search"
+          append-icon="search"
+          label="Procurar por entidades"
+          single-line
+          hide-details
+        ></v-text-field>
+        <v-data-table
+          :search="search"
+          :headers="headersSel"
+          :items="filterTipologias"
+          item-key="id"
+          :footer-props="footer_props"
+          :items-per-page="5"
+        >
+          >
+          <template v-slot:item="props">
+            <tr @click="selectTipologia(props.item)">
+              <td>{{ props.item.sigla }}</td>
+              <td>{{ props.item.designacao }}</td>
+              <td>{{ props.item.estado }}</td>
+            </tr>
+          </template>
+
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            class="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
+        </v-data-table>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
-import NovaEntidade from "./NovaEntidade";
-
 export default {
   name: "EntidadesProdutores",
-  props: ["newSerie", "entidades"],
-  components: {
-    NovaEntidade
-  },
+  props: ["newSerie", "RE"],
   data: () => {
     return {
       search: "",
@@ -151,17 +224,30 @@ export default {
   },
   computed: {
     filterEntidades() {
-      return this.entidades.filter(ent => {
-        return !this.newSerie.produtoras.some(e => ent.id == e.id);
+      return this.RE.entidadesProd.filter(ent => {
+        return !this.newSerie.entProdutoras.some(e => ent.id == e.id);
+      });
+    },
+    filterTipologias() {
+      return this.RE.tipologiasProd.filter(ent => {
+        return !this.newSerie.tipologiasProdutoras.some(e => ent.id == e.id);
       });
     }
   },
   methods: {
     selectEntidade: function(item) {
-      this.newSerie.produtoras.push(item);
+      this.newSerie.entProdutoras.push(item);
     },
     unselectEntidade: function(item) {
-      this.newSerie.produtoras = this.newSerie.produtoras.filter(
+      this.newSerie.entProdutoras = this.newSerie.entProdutoras.filter(
+        e => e.sigla != item.sigla
+      );
+    },
+    selectTipologia: function(item) {
+      this.newSerie.tipologiasProdutoras.push(item);
+    },
+    unselectTipologia: function(item) {
+      this.newSerie.tipologiasProdutoras = this.newSerie.tipologiasProdutoras.filter(
         e => e.sigla != item.sigla
       );
     }

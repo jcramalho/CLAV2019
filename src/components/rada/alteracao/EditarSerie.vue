@@ -28,9 +28,9 @@
               <v-expansion-panel-content>
                 <ZonaContexto
                   :newSerie="serie"
-                  :entidades="entidades"
                   :classes="classesNomes"
                   :legislacao="legislacao"
+                  :RE="RE"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -102,7 +102,7 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "entidades", "legislacao"],
+  props: ["treeview_object", "classes", "legislacao", "RE"],
   components: {
     Identificacao,
     ZonaDescritiva,
@@ -125,7 +125,8 @@ export default {
       // DEEP CLONE do objetos
       this.serie = Object.assign({}, serie_real);
       this.serie.relacoes = [...serie_real.relacoes];
-      this.serie.produtoras = [...serie_real.produtoras];
+      this.serie.entProdutoras = [...serie_real.entProdutoras];
+      this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
       this.serie.legislacao = [...serie_real.legislacao];
       this.serie.localizacao = [...serie_real.localizacao];
 

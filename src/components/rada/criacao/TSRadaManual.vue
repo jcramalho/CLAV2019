@@ -18,35 +18,23 @@
       <v-row justify="center">
         <v-col cols="12" xs="12" sm="12">
           <AddOrgFunc :classes="TS.classes" />
-          <Serie
-            :classes="TS.classes"
-            :entidades="entidades"
-            :legislacao="legislacao"
-          />
+          <Serie :classes="TS.classes" :legislacao="legislacao" :RE="RE" />
           <SubSerie :classes="TS.classes" />
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="12">
-          <v-treeview
-            v-if="TS.classes.length > 0"
-            hoverable
-            :items="preparaTree"
-            item-key="titulo"
-          >
+          <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
             <template v-slot:label="{ item }">
               <EditarSerie
                 v-if="item.tipo == 'Série'"
                 @atualizacao="atualizacao_serie"
                 :treeview_object="item"
                 :classes="TS.classes"
-                :entidades="entidades"
                 :legislacao="legislacao"
+                :RE="RE"
               />
-              <EditarSubserie
-                v-else-if="item.tipo == 'Subsérie'"
-                :treeview_object="item"
-              />
+              <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
               <EditarOrganicaFunc
                 v-else
                 @atualizacao="atualizacao_area_organico"
@@ -61,9 +49,7 @@
             :value="true"
             color="amber accent-3"
             icon="warning"
-          >
-            Sem Classes! É obrigatório adicionar.
-          </v-alert>
+          >Sem Classes! É obrigatório adicionar.</v-alert>
           <br />
         </v-col>
       </v-row>
@@ -85,7 +71,7 @@ import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
 
 export default {
-  props: ["TS", "entidades"],
+  props: ["TS", "entidades", "RE"],
   components: {
     AddOrgFunc,
     Serie,
@@ -173,7 +159,8 @@ export default {
       serie_classe.tSerie = c.tSerie;
       serie_classe.suporte = c.suporte;
       serie_classe.localizacao = c.localizacao;
-      serie_classe.produtoras = c.produtoras;
+      serie_classe.entProdutoras = c.entProdutoras;
+      serie_classe.tipologiasProdutoras = c.tipologiasProdutoras;
       serie_classe.legislacao = c.legislacao;
       serie_classe.pca = c.pca;
       serie_classe.formaContagem = c.formaContagem;

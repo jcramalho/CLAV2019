@@ -31,9 +31,9 @@
               <v-expansion-panel-content>
                 <ZonaContexto
                   :newSerie="newSerie"
-                  :entidades="entidades"
                   :classes="classesNomes"
                   :legislacao="legislacao"
+                  :RE="RE"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -111,7 +111,7 @@ export default {
     ZonaContexto,
     ZonaDecisoesAvaliacao
   },
-  props: ["classes", "entidades", "legislacao"],
+  props: ["classes", "legislacao", "RE"],
   data: () => ({
     dialog: false,
     classesFiltradas: [],
@@ -132,7 +132,8 @@ export default {
       suporte: "",
       medicao: "",
       localizacao: [],
-      produtoras: [],
+      entProdutoras: [],
+      tipologiasProdutoras: [],
       legislacao: [],
       relacoes: [],
       pca: "",
@@ -159,7 +160,8 @@ export default {
         suporte: "",
         medicao: "",
         localizacao: [],
-        produtoras: [],
+        entProdutoras: [],
+        tipologiasProdutoras: [],
         legislacao: [],
         relacoes: [],
         pca: "",

@@ -80,7 +80,7 @@
                 v-model="data"
                 label="Data: AAAA-MM-DD"
                 v-mask="'####-##-##'"
-              /> -->
+              />-->
             </v-col>
           </v-row>
           <v-row v-if="!!alertOn">
@@ -105,7 +105,7 @@
 
 <script>
 export default {
-  props: ["legislacao"],
+  props: ["legislacao", "newSerie"],
   data: function() {
     return {
       data_menu: false,
@@ -151,7 +151,7 @@ export default {
 
           this.legislacao.push(legis);
           this.novasLegislacao.push(legis);
-
+          this.newSerie.legislacao.push(legis);
           this.sucessOn = true;
           this.$refs.form.reset();
         } else {
