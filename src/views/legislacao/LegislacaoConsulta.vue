@@ -62,17 +62,16 @@ export default {
             text: await this.parseEntidades(leg.entidades)
           }
         };
-        if(leg.estado == 'Ativo'){
+        if (leg.estado == "Ativo") {
           myLegislacao.estado = {
             campo: "Estado",
             text: "Em vigor"
-          }
-        }
-        else{
+          };
+        } else {
           myLegislacao.estado = {
             campo: "Estado",
             text: leg.estado
-          }
+          };
         }
         return myLegislacao;
       } catch (e) {
@@ -87,7 +86,7 @@ export default {
       // Informação sobre a legislação
       var response = await this.$request(
         "get",
-        "/api/legislacao/" + this.idLegislacao
+        "/legislacao/" + this.idLegislacao
       );
       this.legislacao = await this.preparaLegislacao(response.data);
       this.titulo =
@@ -100,7 +99,7 @@ export default {
       // Processos de negócio que são regulados pela legislação em causa
       var regulaProc = await this.$request(
         "get",
-        "/api/legislacao/" + this.idLegislacao + "/processos"
+        "/legislacao/" + this.idLegislacao + "/processos"
       );
       this.regulaProc = regulaProc.data;
       this.legislacaoReady = true;

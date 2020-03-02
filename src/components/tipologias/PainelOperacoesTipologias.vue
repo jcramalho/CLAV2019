@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-
       <ValidarTipologiaInfoBox :t="t" :acao="acao" />
 
       <v-col>
@@ -216,7 +215,7 @@ export default {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/api/tipologias/designacao?valor=" +
+            "/tipologias/designacao?valor=" +
               encodeURIComponent(this.t.designacao)
           );
           if (existeDesignacao.data) {
@@ -234,7 +233,7 @@ export default {
         try {
           let existeSigla = await this.$request(
             "get",
-            "/api/tipologias/sigla?valor=" + encodeURIComponent(this.t.sigla)
+            "/tipologias/sigla?valor=" + encodeURIComponent(this.t.sigla)
           );
           if (existeSigla.data) {
             this.numeroErros++;
@@ -285,7 +284,7 @@ export default {
           if (erros == 0) {
             let userBD = await this.$request(
               "get",
-              "/api/users/" + this.$store.state.token + "/token"
+              "/users/" + this.$store.state.token + "/token"
             );
 
             let dataObj = this.t;
@@ -302,7 +301,7 @@ export default {
 
             let response = await this.$request(
               "post",
-              "/api/pedidos",
+              "/pedidos",
               pedidoParams
             );
             this.dialogTipologiaCriada = true;

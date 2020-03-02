@@ -77,7 +77,7 @@ export default {
 
   created: async function() {
     try {
-      let response = await this.$request("get", "/api/tipologias");
+      let response = await this.$request("get", "/tipologias");
 
       let level = await this.$userLevel(this.$store.state.token);
 

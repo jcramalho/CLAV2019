@@ -374,7 +374,7 @@ export default {
   },
   methods: {
     async getEntidades() {
-      this.$request("get", "/api/entidades")
+      this.$request("get", "/entidades")
         .then(res => {
           this.entidades = res.data.map(ent => {
             return {
@@ -387,10 +387,7 @@ export default {
     },
     async getUtilizadores() {
       try {
-        var response = await this.$request(
-          "get",
-          "/api/users?formato=normalizado"
-        );
+        var response = await this.$request("get", "/users?formato=normalizado");
         this.utilizadores = response.data;
       } catch (e) {
         return e;
@@ -417,7 +414,7 @@ export default {
     },
     alterarNIC() {
       if (this.$refs.form3.validate()) {
-        this.$request("put", "/api/users/" + this.alterarNICId + "/nic", {
+        this.$request("put", "/users/" + this.alterarNICId + "/nic", {
           nic: this.newNIC
         })
           .then(res => {
@@ -443,13 +440,9 @@ export default {
     },
     alterarPassword() {
       if (this.$refs.form2.validate()) {
-        this.$request(
-          "put",
-          "/api/users/" + this.alterarPasswordId + "/password",
-          {
-            novaPassword: this.password
-          }
-        )
+        this.$request("put", "/users/" + this.alterarPasswordId + "/password", {
+          novaPassword: this.password
+        })
           .then(res => {
             this.text = res.data;
             this.color = "success";
@@ -471,7 +464,7 @@ export default {
       }
     },
     desativar(id) {
-      this.$request("put", "/api/users/" + id + "/desativar")
+      this.$request("put", "/users/" + id + "/desativar")
         .then(res => {
           this.text = res.data;
           this.color = "success";
@@ -488,7 +481,7 @@ export default {
         });
     },
     eliminar(id) {
-      this.$request("delete", "/api/users/" + id)
+      this.$request("delete", "/users/" + id)
         .then(res => {
           this.text = res.data;
           this.color = "success";
@@ -536,7 +529,7 @@ export default {
             parsedType = -1;
             break;
         }
-        this.$request("put", "/api/users/" + this.editedItem.id, {
+        this.$request("put", "/users/" + this.editedItem.id, {
           nome: this.editedItem.name,
           email: this.editedItem.email,
           entidade: "ent_" + this.editedItem.entidade,

@@ -59,21 +59,21 @@ export default {
   mounted: async function() {
     try {
       this.loading = true;
-      var response = await this.$request("get", "/api/users");
+      var response = await this.$request("get", "/users");
       this.users = {};
 
       for (var i = 0; i < response.data.length; i++) {
         this.users[response.data[i]._id] = response.data[i].email;
       }
 
-      response = await this.$request("get", "/api/chaves");
+      response = await this.$request("get", "/chaves");
       this.keys = {};
 
       for (i = 0; i < response.data.length; i++) {
         this.keys[response.data[i].id] = response.data[i].contactInfo;
       }
 
-      response = await this.$request("get", "/api/logs");
+      response = await this.$request("get", "/logs");
       this.logs = response.data;
 
       for (i = 0; i < this.logs.length; i++) {

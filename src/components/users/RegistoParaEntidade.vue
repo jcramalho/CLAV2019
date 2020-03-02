@@ -139,7 +139,7 @@ export default {
   }),
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/entidades");
+      var response = await this.$request("get", "/entidades");
       this.entidades = response.data.map(ent => {
         return {
           text: ent.sigla + " - " + ent.designacao,
@@ -194,7 +194,7 @@ export default {
         try {
           var response = await this.$request(
             "post",
-            "/api/users/registarParaEntidade",
+            "/users/registarParaEntidade",
             {
               entidade: this.entidade,
               users: this.users

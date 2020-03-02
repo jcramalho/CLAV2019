@@ -66,7 +66,7 @@ export default {
   mounted: async function() {
     var res = await this.$request(
       "get",
-      "/api/users/" +
+      "/users/" +
         this.$route.query.jwt +
         "/token?token=" +
         this.$route.query.jwt
@@ -109,7 +109,7 @@ export default {
       if (this.$refs.form.validate()) {
         this.$request(
           "put",
-          "/api/users/" +
+          "/users/" +
             this.$data.form.id +
             "/password?token=" +
             this.$route.query.jwt,
@@ -124,7 +124,6 @@ export default {
             this.done = true;
           })
           .catch(err => {
-            alert(JSON.stringify(err))
             this.text = "Ocorreu um erro ao atualizar a sua password.";
             this.color = "error";
             this.snackbar = true;

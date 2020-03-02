@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     async getEntidades() {
-      await this.$request("get", "/api/entidades")
+      await this.$request("get", "/entidades")
         .then(res => {
           this.ent_list = res.data.map(ent => {
             return {
@@ -117,7 +117,7 @@ export default {
     },
     registarChaveApi() {
       if (this.$refs.form.validate()) {
-        this.$request("post", "/api/chaves", {
+        this.$request("post", "/chaves", {
           name: this.$data.form.name,
           email: this.$data.form.email,
           entidade: this.$data.form.entidade

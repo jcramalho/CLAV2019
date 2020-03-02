@@ -38,7 +38,7 @@ export default {
     };
   },
   async mounted() {
-    await this.$request("get", "/api/users?formato=normalizado")
+    await this.$request("get", "/users?formato=normalizado")
       .then(res => {
         for (var i = 0; i < res.data.length; i++) {
           var index = this.info.labels.indexOf(res.data[i].level);

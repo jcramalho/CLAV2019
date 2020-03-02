@@ -94,7 +94,7 @@ export default {
     // Vai à API buscar todas as classes de nivel 3
     loadClasses: async function() {
       try {
-        let response = await this.$request("get", "/api/classes?nivel=3");
+        let response = await this.$request("get", "/classes?nivel=3");
         this.processos = response.data.map(function(item) {
           return item.codigo;
         });

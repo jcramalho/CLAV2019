@@ -1,5 +1,5 @@
 <template>
-    <ConsultarAE v-bind:auto="autoEliminacao" />
+  <ConsultarAE v-bind:auto="autoEliminacao" />
 </template>
 
 <script>
@@ -20,7 +20,7 @@ export default {
       // Informações sobre o Auto de Eliminação
       var response = await this.$request(
         "get",
-        "/api/autosEliminacao/" + this.idAE
+        "/autosEliminacao/" + this.idAE
       );
       this.autoEliminacao = response.data;
     } catch (e) {

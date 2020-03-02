@@ -198,7 +198,7 @@ export default {
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
-        let response = await this.$request("get", "/api/tipologias/");
+        let response = await this.$request("get", "/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,

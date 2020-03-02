@@ -312,12 +312,12 @@ export default {
   async created() {
     let responseEntidades = await this.$request(
       "get",
-      "/api/entidades?processos=sem"
+      "/entidades?processos=sem"
     );
 
-    let responseLegislacoes = await this.$request("get", "/api/legislacao");
+    let responseLegislacoes = await this.$request("get", "/legislacao");
 
-    let responseTipologias = await this.$request("get", "/api/tipologias");
+    let responseTipologias = await this.$request("get", "/tipologias");
 
     this.preparaEntidades(responseEntidades.data, "Entidades");
     this.preparaLegislacoes(responseLegislacoes.data);

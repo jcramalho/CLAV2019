@@ -31,14 +31,14 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/api/stats")
+    this.$request("get", "/stats")
       .then(res => {
         for (var i = 0; i < res.data.length; i++) {
           if (
             res.data[i]._id != "" &&
             res.data[i]._id != "unknown route" &&
-            res.data[i]._id != "/api/stats" &&
-            res.data[i]._id != "/api/chaves"
+            res.data[i]._id != "/stats" &&
+            res.data[i]._id != "/chaves"
           ) {
             // alert(JSON.stringify(res.data[i]))
             this.info.labels.push(res.data[i]._id);

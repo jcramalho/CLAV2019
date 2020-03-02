@@ -84,12 +84,12 @@ export default {
   mounted: async function() {
     var res = await this.$request(
       "get",
-      "/api/users/" + this.$store.state.token + "/token"
+      "/users/" + this.$store.state.token + "/token"
     );
     this.form.id = res.data._id;
     this.form.name = res.data.name;
 
-    res = await this.$request("get", "/api/users/" + this.form.id);
+    res = await this.$request("get", "/users/" + this.form.id);
     this.temPass = res.data.local;
     this.validJWT = true;
   },
@@ -137,7 +137,7 @@ export default {
         } else {
           obj = { novaPassword: this.form.password };
         }
-        this.$request("put", "/api/users/" + this.form.id + "/password", obj)
+        this.$request("put", "/users/" + this.form.id + "/password", obj)
           .then(res => {
             this.text = res.data;
             this.color = "success";

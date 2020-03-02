@@ -18,13 +18,22 @@
       <v-row justify="center">
         <v-col cols="12" xs="12" sm="12">
           <AddOrgFunc :classes="TS.classes" />
-          <Serie :classes="TS.classes" :entidades="entidades" :legislacao="legislacao" />
+          <Serie
+            :classes="TS.classes"
+            :entidades="entidades"
+            :legislacao="legislacao"
+          />
           <SubSerie :classes="TS.classes" />
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="12">
-          <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
+          <v-treeview
+            v-if="TS.classes.length > 0"
+            hoverable
+            :items="preparaTree"
+            item-key="titulo"
+          >
             <template v-slot:label="{ item }">
               <EditarSerie
                 v-if="item.tipo == 'Série'"
@@ -34,7 +43,10 @@
                 :entidades="entidades"
                 :legislacao="legislacao"
               />
-              <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
+              <EditarSubserie
+                v-else-if="item.tipo == 'Subsérie'"
+                :treeview_object="item"
+              />
               <EditarOrganicaFunc
                 v-else
                 @atualizacao="atualizacao_area_organico"
@@ -49,7 +61,9 @@
             :value="true"
             color="amber accent-3"
             icon="warning"
-          >Sem Classes! É obrigatório adicionar.</v-alert>
+          >
+            Sem Classes! É obrigatório adicionar.
+          </v-alert>
           <br />
         </v-col>
       </v-row>
@@ -107,7 +121,7 @@ export default {
     }
   },
   created: async function() {
-    let response = await this.$request("get", "/api/legislacao");
+    let response = await this.$request("get", "/legislacao");
     this.legislacao = response.data;
   },
   methods: {

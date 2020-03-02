@@ -155,7 +155,7 @@ export default {
       }
     },
     async getEntidades() {
-      await this.$request("get", "/api/entidades")
+      await this.$request("get", "/entidades")
         .then(res => {
           this.ent_list = res.data.map(ent => {
             return {
@@ -197,7 +197,7 @@ export default {
         }
 
         try {
-          var response = await this.$request("post", "/api/users/registar", {
+          var response = await this.$request("post", "/users/registar", {
             name: this.$data.form.name,
             email: this.$data.form.email,
             entidade: this.$data.form.entidade,

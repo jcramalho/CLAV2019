@@ -81,10 +81,7 @@
       </template>
       <template v-slot:item="props">
         <tr>
-          <td
-            v-for="(campo, index) in props.item"
-            v-bind:key="index"
-          >
+          <td v-for="(campo, index) in props.item" v-bind:key="index">
             {{ campo }}
           </td>
           <td>
@@ -165,7 +162,7 @@ export default {
     criarTermo: async function() {
       await this.$request(
         "post",
-        "/api/vocabularios/termo/" + this.$route.params.idVC,
+        "/vocabularios/termo/" + this.$route.params.idVC,
         this.novoTermo
       )
         .then(res => {
@@ -195,7 +192,7 @@ export default {
         });
     },
     apagarTermo: async function(id) {
-      await this.$request("delete", "/api/vocabularios/termo/" + id)
+      await this.$request("delete", "/vocabularios/termo/" + id)
         .then(res => {
           this.snack = true;
           this.mess = res.data.mensagem;

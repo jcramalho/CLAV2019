@@ -29,7 +29,7 @@ export default {
   mounted: function() {
     this.$request(
       "get",
-      "/api/invariantes?idRel=" + this.idRel + "&idInv=" + this.idInv
+      "/invariantes?idRel=" + this.idRel + "&idInv=" + this.idInv
     )
       .then(response => {
         this.inv = response.data;

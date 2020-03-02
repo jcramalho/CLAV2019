@@ -96,9 +96,9 @@ export default {
   methods: {
     renovar() {
       if (this.$refs.form.validate()) {
-        this.$request("put", "/api/chaves/renovar?email=" + this.$data.form.email, {
+        this.$request("put", "/chaves/renovar?email=" + this.$data.form.email, {
           headers: {
-            'Content-length': 0
+            "Content-length": 0
           }
         })
           .then(res => {

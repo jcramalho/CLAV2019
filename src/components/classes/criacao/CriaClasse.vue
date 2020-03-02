@@ -24,7 +24,13 @@
               /-->
 
               <v-radio-group v-model="classe.nivel" row>
-                <v-radio v-for="(n,i) in classeNiveis" :key="i" :label="n.label" :value="n.value" color="indigo darken-3"></v-radio>
+                <v-radio
+                  v-for="(n, i) in classeNiveis"
+                  :key="i"
+                  :label="n.label"
+                  :value="n.value"
+                  color="indigo darken-3"
+                ></v-radio>
               </v-radio-group>
             </v-col>
           </v-row>
@@ -128,7 +134,9 @@
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
 
-                <hr style="border-top: 3px dashed #1A237E; border-radius: 2px;" />
+                <hr
+                  style="border-top: 3px dashed #1A237E; border-radius: 2px;"
+                />
 
                 <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
               </v-expansion-panel-content>
@@ -478,7 +486,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/classes?nivel=" + (this.classe.nivel - 1)
+          "/classes?nivel=" + (this.classe.nivel - 1)
         );
         this.classesPai = response.data
           .map(function(item) {
@@ -499,7 +507,7 @@ export default {
 
     loadEntidades: async function() {
       try {
-        var response = await this.$request("get", "/api/entidades");
+        var response = await this.$request("get", "/entidades");
         this.entidadesD = response.data.map(function(item) {
           return {
             selected: false,
@@ -511,7 +519,7 @@ export default {
             estado: item.estado
           };
         });
-        response = await this.$request("get", "/api/tipologias");
+        response = await this.$request("get", "/tipologias");
         this.entidadesD = await this.entidadesD.concat(
           response.data.map(function(item) {
             return {
@@ -539,7 +547,7 @@ export default {
 
     loadProcessos: async function() {
       try {
-        var response = await this.$request("get", "/api/classes?nivel=3");
+        var response = await this.$request("get", "/classes?nivel=3");
         this.listaProcessos = response.data
           .map(function(item) {
             return {
@@ -564,7 +572,7 @@ export default {
 
     loadLegislacao: async function() {
       try {
-        var response = await this.$request("get", "/api/legislacao?estado=A");
+        var response = await this.$request("get", "/legislacao?estado=A");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {
@@ -598,7 +606,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/vocabularios/vc_pcaFormaContagem"
+          "/vocabularios/vc_pcaFormaContagem"
         );
         this.pcaFormasContagem = this.pcaFormasContagem.concat(
           response.data
@@ -624,7 +632,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/vocabularios/vc_pcaSubformaContagem"
+          "/vocabularios/vc_pcaSubformaContagem"
         );
         this.pcaSubFormasContagem = this.pcaSubFormasContagem.concat(
           response.data
@@ -892,8 +900,10 @@ export default {
           if (index != -1) subclasses[i].processosRelacionados.splice(index, 1);
         }
         // Remover o critério de densidade das subclasses
-        if(subclasses[i].df.justificacao.length > 0){
-          cindex = subclasses[i].df.justificacao.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo");
+        if (subclasses[i].df.justificacao.length > 0) {
+          cindex = subclasses[i].df.justificacao.findIndex(
+            c => c.tipo == "CriterioJustificacaoDensidadeInfo"
+          );
           if (cindex != -1) subclasses[i].df.justificacao.splice(cindex, 1);
         }
       }
@@ -936,4 +946,3 @@ export default {
   display: none;
 }
 </style>
-

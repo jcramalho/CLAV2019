@@ -115,7 +115,7 @@ export default {
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-        let response = await this.$request("get", "/api/entidades");
+        let response = await this.$request("get", "/entidades");
 
         this.entidades = response.data.map(function(item) {
           return {

@@ -34,7 +34,7 @@
             </v-col>
 
             <v-col xs12 md3>
-              <SelecionarData :d="data" @dataSelecionada = "data = $event"/>
+              <SelecionarData :d="data" @dataSelecionada="data = $event" />
             </v-col>
           </v-row>
         </v-container>
@@ -73,7 +73,7 @@ export default {
     try {
       var tipos = await this.$request(
         "get",
-        "/api/vocabularios/vc_tipoDiplomaLegislativo"
+        "/vocabularios/vc_tipoDiplomaLegislativo"
       );
       this.listaTipos = tipos.data.map(t => {
         return { label: t.termo, value: t.termo };
@@ -84,7 +84,6 @@ export default {
   },
 
   methods: {
-
     fecharErros: function() {
       this.mensagensErro = [];
       this.erroValidacao = false;
@@ -114,7 +113,7 @@ export default {
 
     validaDups: async function(t, n) {
       try {
-        var legs = await this.$request("get", "/api/legislacao");
+        var legs = await this.$request("get", "/legislacao");
         var test = legs.data.filter(l => l.tipo == t && l.numero == n);
         if (test.length > 0) {
           this.mensagensErro.push(
@@ -141,12 +140,10 @@ export default {
       }
     },
 
-    validaData: function(d){
-      if(d != "") return true;
-      else{
-        this.mensagensErro.push(
-          "A data não pode ficar vazia!"
-        );
+    validaData: function(d) {
+      if (d != "") return true;
+      else {
+        this.mensagensErro.push("A data não pode ficar vazia!");
         return false;
       }
     },

@@ -164,7 +164,7 @@ export default {
   }),
   created: async function() {
     try {
-      var response = await this.$request("get", "/api/pedidos");
+      var response = await this.$request("get", "/pedidos");
       this.pedidos = response.data;
     } catch (e) {
       return e;
@@ -182,7 +182,7 @@ export default {
     distribuirPedido: async function(pedido) {
       try {
         this.pedidoParaDistribuir = pedido;
-        var response = await this.$request("get", "/api/users");
+        var response = await this.$request("get", "/users");
         this.usersRecords = response.data;
         this.distribuir = true;
       } catch (e) {
@@ -206,7 +206,7 @@ export default {
         };
         this.pedidoParaDistribuir.estado = "Distribuído";
         this.pedidoParaDistribuir.user = { token: this.$store.state.token };
-        var response = await this.$request("put", "/api/pedidos", {
+        var response = await this.$request("put", "/pedidos", {
           pedido: this.pedidoParaDistribuir,
           distribuicao: novaDistribuicao
         });

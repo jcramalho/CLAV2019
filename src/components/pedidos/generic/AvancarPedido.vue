@@ -40,7 +40,9 @@
           Tarefa atribuída a:
           <b>
             {{
-              `${this.utilizadorSelecionado.name} (${this.utilizadorSelecionado.entidade})`
+              `${this.utilizadorSelecionado.name} (${
+                this.utilizadorSelecionado.entidade
+              })`
             }}
           </b>
         </v-alert>
@@ -122,7 +124,7 @@ export default {
         };
         this.pedidoParaDistribuir.estado = "Distribuído";
         this.pedidoParaDistribuir.user = { token: this.$store.state.token };
-        var response = await this.$request("put", "/api/pedidos", {
+        var response = await this.$request("put", "/pedidos", {
           pedido: this.pedidoParaDistribuir,
           distribuicao: novaDistribuicao
         });

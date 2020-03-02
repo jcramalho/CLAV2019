@@ -79,7 +79,7 @@ export default {
 
   async mounted() {
     try {
-      const { data } = await this.$request("get", "/api/pedidos/" + this.idp);
+      const { data } = await this.$request("get", "/pedidos/" + this.idp);
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;
