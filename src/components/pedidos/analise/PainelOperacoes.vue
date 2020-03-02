@@ -6,12 +6,7 @@
           dark
           rounded
           class="red darken-4"
-          @click="
-            mensagemDespacho = '';
-            dialog = true;
-            textoOperacao = 'devolução';
-            textoBotao = 'Devolver';
-          "
+          @click="devolverPedidoDialog = true"
         >
           Devolver
         </v-btn>
@@ -21,12 +16,7 @@
         <v-btn
           rounded
           class="indigo accent-4 white--text"
-          @click="
-            mensagemDespacho = '';
-            avancarPedidoDialog = true;
-            textoOperacao = 'encaminhamento';
-            textoBotao = 'Encaminhar';
-          "
+          @click="avancarPedidoDialog = true"
         >
           Encaminhar
         </v-btn>
@@ -48,65 +38,29 @@
     </v-dialog>
 
     <!-- Campo despacho -->
-    <v-dialog v-model="dialog" width="60%">
-      <v-card>
-        <v-card-title>Insira uma mensagem de {{ textoOperacao }}</v-card-title>
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Mensagem:</div>
-            </v-col>
-
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                hide-details
-                color="indigo"
-                :label="`Mensagem de ${textoOperacao}`"
-                v-model="mensagemDespacho"
-              />
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="red darken-4" dark rounded text @click="dialog = false">
-            Cancelar
-          </v-btn>
-
-          <v-btn
-            class="indigo accent-4"
-            rounded
-            dark
-            @click="
-              dialog = false;
-              despacho();
-            "
-          >
-            {{ textoBotao }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+    <v-dialog v-model="devolverPedidoDialog" width="60%">
+      <DevolverPedido
+        @fecharDialog="fecharDialog()"
+        @devolverPedido="devolverPedido($event)"
+      />
     </v-dialog>
   </div>
 </template>
 
 <script>
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
+import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
+
 export default {
   components: {
-    AvancarPedido
+    AvancarPedido,
+    DevolverPedido
   },
 
   data() {
     return {
       avancarPedidoDialog: false,
       devolverPedidoDialog: false,
-      dialog: false,
-      textoOperacao: null,
-      textoBotao: null,
-      mensagemDespacho: "",
       utilizadores: []
     };
   },
@@ -121,13 +75,8 @@ export default {
       this.$emit("avancarPedido", dados);
     },
 
-    despacho() {
-      this.dialog = true;
-
-      this.$emit("mensagemDespacho", {
-        tipoOperacao: this.textoBotao,
-        mensagem: this.mensagemDespacho
-      });
+    devolverPedido(dados) {
+      this.$emit("devolverPedido", dados);
     }
   },
 

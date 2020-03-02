@@ -69,8 +69,8 @@
     <v-row>
       <v-spacer />
       <PO
-        @avancarPedido="despacho($event)"
-        @mensagemDespacho="despacho($event)"
+        @avancarPedido="encaminharPedido($event)"
+        @devolverPedido="despacharPedido($event)"
       />
     </v-row>
   </div>
@@ -132,23 +132,10 @@ export default {
   },
 
   methods: {
-    async despacho(evento) {
-      switch (evento.tipoOperacao) {
-        case "Devolver":
-          await this.despacharPedido("Devolvido", evento.mensagem);
-          break;
-
-        case "Encaminhar":
-          await this.encaminharPedido("Apreciado", evento);
-          break;
-
-        default:
-          break;
-      }
-    },
-
-    async despacharPedido(estado, mensagem) {
+    async despacharPedido(dados) {
       try {
+        const estado = "Devolvido";
+
         let dadosUtilizador = await this.$request(
           "get",
           "/users/" + this.$store.state.token + "/token"
@@ -159,7 +146,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: mensagem
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -178,8 +165,10 @@ export default {
       }
     },
 
-    async encaminharPedido(estado, dados) {
+    async encaminharPedido(dados) {
       try {
+        const estado = "Apreciado";
+
         let dadosUtilizador = dados.utilizadorSelecionado;
 
         const novaDistribuicao = {
