@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
     </template>

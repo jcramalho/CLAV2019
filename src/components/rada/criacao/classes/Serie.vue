@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
         <v-icon dark left>add</v-icon>Série
@@ -117,16 +117,16 @@ export default {
     classesFiltradas: [],
     classesNomes: [],
     newSerie: {
-      codigo: "02.02",
-      titulo: "SERIE",
-      descricao: "DESC SERIE",
-      dataInicial: "2020-02-13",
-      dataFinal: "2020-02-16",
-      // codigo: "",
-      // titulo: "",
-      // descricao: "",
-      // dataInicial: "",
-      // dataFinal: "",
+      // codigo: "02.02",
+      // titulo: "SERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: "",
+      dataFinal: "",
       tUA: "",
       tSerie: "",
       suporte: "",

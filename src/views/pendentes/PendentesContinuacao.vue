@@ -4,6 +4,7 @@
     <ContinuaTSOrg v-else-if="objLoaded && tipoTSOrg" :obj="objeto" />
     <ContinuaTSPluri v-else-if="objLoaded && tipoTSPluri" :obj="objeto" />
     <ContinuaAutoEliminacao v-else-if="objLoaded && tipoAE" :obj="objeto" />
+    <ContinuaRADA v-else-if="objLoaded && tipoRADA" :obj="objeto" />
     <ContinuaPendente v-else-if="objLoaded" :obj="objeto" />
     <v-alert v-else type="warning">
       Por algum motivo não foi possível carregar o trabalho pretendido. Contacte
@@ -18,6 +19,7 @@ import ContinuaPendente from "@/components/pendentes/ContinuaPendente";
 import ContinuaTSOrg from "@/components/tabSel/criacaoTSOrg/ContCriaTabSelOrg";
 import ContinuaTSPluri from "@/components/tabSel/criacaoTSPluri/ContCriaTabSelPluri";
 import ContinuaAutoEliminacao from "@/components/autosEliminacao/criacao/ContinuarAutoEliminacao";
+import ContinuaRADA from "@/components/rada/pendenteRada";
 
 export default {
   components: {
@@ -25,7 +27,8 @@ export default {
     ContinuaClasse,
     ContinuaTSOrg,
     ContinuaTSPluri,
-    ContinuaAutoEliminacao
+    ContinuaAutoEliminacao,
+    ContinuaRADA
   },
 
   data: () => ({
@@ -34,7 +37,8 @@ export default {
     tipoClasse: false,
     tipoTSOrg: false,
     tipoTSPluri: false,
-    tipoAE: false
+    tipoAE: false,
+    tipoRADA: false
   }),
 
   created: function() {
@@ -54,16 +58,19 @@ export default {
           case "Auto de Eliminação":
             this.tipoAE = true;
             break;
+          case "RADA":
+            this.tipoRADA = true;
+            break;
         }
         this.objLoaded = true;
         // Apaga-se o pendente
-        this.$request("delete", "/pendentes/" + this.$route.params.idPendente)
-          .then(response => {
-            console.log('Pendente removido: ' + this.$route.params.idPendente)
-          })
-          .catch(error => {
-            console.log('Erro ao apagar o pendente: ' + error)
-          });
+        // this.$request("delete", "/pendentes/" + this.$route.params.idPendente)
+        //   .then(response => {
+        //     console.log("Pendente removido: " + this.$route.params.idPendente);
+        //   })
+        //   .catch(error => {
+        //     console.log("Erro ao apagar o pendente: " + error);
+        //   });
       })
       .catch(error => {
         return error;

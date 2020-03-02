@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
         <v-icon dark left>add</v-icon>Subsérie
@@ -110,16 +110,16 @@ export default {
     classesFiltradas: [],
     classesNomes: [],
     newSubSerie: {
-      // codigo: "",
-      // titulo: "",
-      // descricao: "",
-      // dataInicial: "",
-      // dataFinal: "",
-      codigo: "02.01.02",
-      titulo: "SUBSERIESERIE",
-      descricao: "DESC SERIE",
-      dataInicial: "2020-02-13",
-      dataFinal: "2020-02-16",
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: "",
+      dataFinal: "",
+      // codigo: "02.01.02",
+      // titulo: "SUBSERIESERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
       relacoes: [],
       pca: "",
       formaContagem: "",

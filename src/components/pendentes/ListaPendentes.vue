@@ -11,6 +11,7 @@
         :footer-props="procsFooterProps"
       >
         <template v-slot:no-data>
+          <br/>
           <v-alert :value="true" color="error" icon="warning">
             Não foi possível apresentar uma lista dos trabalhos guardados...
           </v-alert>
