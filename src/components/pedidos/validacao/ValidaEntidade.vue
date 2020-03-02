@@ -25,28 +25,9 @@
 
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
-              <v-dialog v-model="dialogTipologias" max-width="500px">
-                <template v-slot:activator="{ on }">
-                  <v-btn rounded class="indigo accent-4 white--text" v-on="on">
-                    Adicionar em Falta
-                  </v-btn>
-                </template>
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Selecione uma Tipologia</span>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="indigo darken-1" text @click="close"
-                      >Fechar</v-btn
-                    >
-                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
               <v-spacer />
               <v-icon color="green" @click="verifica(info)">check</v-icon>
+              <v-icon color="red" @click="anula(info)">clear</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
@@ -63,7 +44,6 @@
           <template slot="append">
             <v-icon color="green" @click="verifica(info)">check</v-icon>
             <v-icon color="red" @click="anula(info)">clear</v-icon>
-            <v-icon @click="">create</v-icon>
           </template>
         </v-text-field>
       </v-col>
@@ -72,9 +52,9 @@
     <v-row>
       <v-spacer />
       <PO
-        operacao="Analisar"
+        operacao="Validar"
         @avancarPedido="encaminharPedido($event)"
-        @devolverPedido="despacharPedido($event)"
+        @finalizarPedido="finalizarPedido()"
       />
     </v-row>
   </div>
@@ -190,6 +170,42 @@ export default {
           pedido: pedido,
           distribuicao: novaDistribuicao
         });
+
+        this.$router.go(-1);
+      } catch (e) {
+        console.log("e :", e);
+      }
+    },
+
+    async finalizarPedido() {
+      try {
+        const estado = "Validado";
+
+        let dadosUtilizador = await this.$request(
+          "get",
+          "/users/" + this.$store.state.token + "/token"
+        );
+
+        dadosUtilizador = dadosUtilizador.data;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date()
+          // despacho: dados.mensagemDespacho
+        };
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        // TODO: Fica assim?
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao
+        });
+
+        await this.$request("post", "/entidades", pedido.objeto.dados);
 
         this.$router.go(-1);
       } catch (e) {

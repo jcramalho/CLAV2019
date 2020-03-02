@@ -40,9 +40,7 @@
           Tarefa atribuída a:
           <b>
             {{
-              `${this.utilizadorSelecionado.name} (${
-                this.utilizadorSelecionado.entidade
-              })`
+              `${this.utilizadorSelecionado.name} (${this.utilizadorSelecionado.entidade})`
             }}
           </b>
         </v-alert>
@@ -109,34 +107,8 @@ export default {
     avancar() {
       this.$emit("avancarPedido", {
         utilizadorSelecionado: this.utilizadorSelecionado,
-        mensagemDespacho: this.mensagemDespacho,
-        tipoOperacao: "Encaminhar"
+        mensagemDespacho: this.mensagemDespacho
       });
-    },
-
-    guardarDistribuicao: async function() {
-      try {
-        var novaDistribuicao = {
-          estado: "Distribuído",
-          responsavel: this.selectedUser.email,
-          data: new Date(),
-          despacho: this.despacho
-        };
-        this.pedidoParaDistribuir.estado = "Distribuído";
-        this.pedidoParaDistribuir.user = { token: this.$store.state.token };
-        var response = await this.$request("put", "/pedidos", {
-          pedido: this.pedidoParaDistribuir,
-          distribuicao: novaDistribuicao
-        });
-
-        this.distribuir = false;
-        this.selectedUser = {};
-        this.despacho = "";
-
-        return this.pedidoParaDistribuir;
-      } catch (e) {
-        return e;
-      }
     }
   }
 };

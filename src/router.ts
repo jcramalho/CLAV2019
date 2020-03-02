@@ -261,6 +261,12 @@ export default new Router({
       component: () => import("./views/pedidos/PedidosAnalise.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
+    {
+      path: "/pedidos/validar/:idPedido",
+      name: "validarPedido",
+      component: () => import("./views/pedidos/PedidosValidacao.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+    },
     // Routes dos pendentes (trabalho guardado)
     {
       path: "/pendentes",
