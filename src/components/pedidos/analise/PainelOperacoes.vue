@@ -14,11 +14,21 @@
 
       <v-col>
         <v-btn
+          v-if="operacao === 'Analisar'"
           rounded
           class="indigo accent-4 white--text"
           @click="avancarPedidoDialog = true"
         >
           Encaminhar
+        </v-btn>
+
+        <v-btn
+          v-else
+          rounded
+          class="indigo accent-4 white--text"
+          @click="finalizarPedidoDialog = true"
+        >
+          Finalizar
         </v-btn>
       </v-col>
     </v-row>
@@ -44,6 +54,47 @@
         @devolverPedido="devolverPedido($event)"
       />
     </v-dialog>
+
+    <!-- Dialog de Confirmação de Operação -->
+    <v-dialog v-model="finalizarPedidoDialog" width="50%">
+      <v-card>
+        <v-card-title class="warning title white--text" dark>
+          <v-icon color="white" class="ma-1">warning</v-icon>
+          Aviso
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <h4>Deseja mesmo finalizar o pedido?</h4>
+            <br />
+            <h6>
+              Ao clicar em Sim está a introduzir toda a informação validada no
+              sistema.
+            </h6>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="red darken-4"
+            dark
+            rounded
+            text
+            @click="finalizarPedidoDialog = false"
+          >
+            Não
+          </v-btn>
+
+          <v-btn
+            class="indigo accent-4"
+            rounded
+            dark
+            @click="finalizarPedido()"
+          >
+            Sim
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -52,6 +103,8 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 
 export default {
+  props: ["operacao"],
+
   components: {
     AvancarPedido,
     DevolverPedido
@@ -61,6 +114,7 @@ export default {
     return {
       avancarPedidoDialog: false,
       devolverPedidoDialog: false,
+      finalizarPedidoDialog: false,
       utilizadores: []
     };
   },
@@ -77,6 +131,10 @@ export default {
 
     devolverPedido(dados) {
       this.$emit("devolverPedido", dados);
+    },
+
+    finalizarPedido() {
+      this.$emit("finalizarPedido");
     }
   },
 
