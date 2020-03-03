@@ -30,6 +30,7 @@
         <v-stepper-content step="2">
           <RelatorioExpositivo
             @seguinte="changeE1"
+            :classes="RADA.tsRada.classes"
             :RE="RADA.RE"
             :entidades="entidades"
             :tipologias="tipologias"
@@ -46,6 +47,7 @@
           <TSRada
             @done="done"
             @voltar="changeE1"
+            :legislacao="legislacao"
             :RE="RADA.RE"
             :TS="RADA.tsRada"
             :entidades="entidades"
@@ -260,7 +262,11 @@ export default {
         numInterv: 1,
         acao: "Criação",
         tipo: "RADA",
-        objeto: this.RADA,
+        objeto: {
+          rada: this.RADA,
+          entidades: this.entidades.filter(e => e.estado == "Nova"),
+          legislacao: this.legislacao.filter(e => e.estado == "Nova")
+        },
         criadoPor: this.userEmail,
         user: { email: this.userEmail },
         token: this.$store.state.token
@@ -288,12 +294,15 @@ export default {
       };
 
       let response = await this.$request("post", "/pedidos", pedidoParams);
-      
+
       this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
       this.dialogRADACriado = true;
     }
   },
   created: async function() {
+    let l = await this.$request("get", "/legislacao");
+    this.legislacao = l.data;
+
     let response = await this.$request("get", "/entidades");
     this.entidades = response.data;
 

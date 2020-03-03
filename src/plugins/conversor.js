@@ -135,4 +135,50 @@ var excel2Json = function(file, tipo) {
   });
 };
 
-export { excel2Json };
+var csv2Json = function(fileSerie, fileAgreg, tipo) {
+  return new Promise(function(resolve, reject) {
+    var enc = new TextDecoder("utf-8");
+    var series = enc.decode(fileSerie).split("\n")
+    var agregacoes = enc.decode(fileAgreg).split("\n")
+    series.shift()
+    agregacoes.shift()
+    var auto = {
+      tipo: tipo,
+      zonaControlo: []
+    };
+    series.forEach(s => {
+
+      var serie = s.split(/[;,]/)
+      if(serie[0]) {
+        var zc = {
+          codigo: serie[0],
+          referencia: serie[1],
+          titulo: serie[2],
+          dataInicio: serie[3],
+          dataFim: serie[4],
+          uiPapel: serie[6],
+          uiDigital: serie[7],
+          uiOutros: serie[8],
+          agregacoes: []
+        }
+        agregacoes.forEach(a => {
+          var agregacao = a.split(/[;,]/)
+          if(agregacao[0]==zc.codigo && agregacao[1]==zc.referencia) {
+            var ag = {
+              codigo: agregacao[2].replace(/[ -.,!/]/g, "_"),
+              titulo: agregacao[3],
+              dataContagem: agregacao[4],
+              ni: agregacao[5]
+            }
+            zc.agregacoes.push(ag)
+          }
+        })
+        auto.zonaControlo.push(zc)
+      }
+      else return;
+    })
+    resolve({auto: auto})
+  });
+};
+
+export { csv2Json };

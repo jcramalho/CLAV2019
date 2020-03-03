@@ -32,8 +32,7 @@
                 <v-chip
                   v-bind="data.attrs"
                   :input-value="data.selected"
-                  close
-                  @click="data.select"
+                  :close="produtoraEntidadeClasse(data.item.sigla, data.item.designacao)"
                   @click:close="removeEnt(data.item)"
                 >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
               </template>
@@ -72,7 +71,7 @@
               <v-chip
                 v-bind="data.attrs"
                 :input-value="data.selected"
-                close
+                :close="produtoraTipologiaClasse(data.item.sigla, data.item.designacao)"
                 @click="data.select"
                 @click:close="removeTip(data.item)"
               >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
@@ -267,7 +266,7 @@
 import NovaEntidade from "./classes/partes/NovaEntidade";
 
 export default {
-  props: ["RE", "entidades", "tipologias"],
+  props: ["RE", "entidades", "tipologias", "classes"],
   components: {
     NovaEntidade
   },
@@ -318,6 +317,36 @@ export default {
         i => i.sigla === item.sigla
       );
       if (index >= 0) this.RE.tipologiasProd.splice(index, 1);
+    },
+    produtoraEntidadeClasse(sigla, desi) {
+      let classes = this.classes.filter(e => e.tipo == "Série");
+
+      for (let i = 0; i < classes.length; i++) {
+        for (let j = 0; j < classes[i].entProdutoras.length; j++) {
+          if (
+            classes[i].entProdutoras[j].sigla == sigla &&
+            classes[i].entProdutoras[j].designacao == desi
+          ) {
+            return false;
+          }
+        }
+      }
+      return true;
+    },
+    produtoraTipologiaClasse(sigla, desi) {
+      let classes = this.classes.filter(e => e.tipo == "Série");
+
+      for (let i = 0; i < classes.length; i++) {
+        for (let j = 0; j < classes[i].tipologiasProdutoras.length; j++) {
+          if (
+            classes[i].tipologiasProdutoras[j].sigla == sigla &&
+            classes[i].tipologiasProdutoras[j].designacao == desi
+          ) {
+            return false;
+          }
+        }
+      }
+      return true;
     }
   }
 };

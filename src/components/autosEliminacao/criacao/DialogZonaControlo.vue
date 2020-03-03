@@ -1,9 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="expansion-panel-heading">
-      Adicionar Zona de Controlo
-    </v-card-title>
-
+    <v-card-title class="expansion-panel-heading">Classe / Série</v-card-title>
     <v-card-text class="mt-4">
       <v-row>
         <v-col :md="2">
