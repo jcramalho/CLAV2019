@@ -9,11 +9,23 @@
             {{ pedido.objeto.tipo }}
           </v-card-title>
           <v-card-text>
-            <AnalisaLeg :p="this.pedido" />
+            <AnalisaEntidade
+              v-if="pedido.objeto.tipo === 'Entidade'"
+              :p="pedido"
+            />
+            <AnalisaLeg
+              v-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
+            <AnalisaTipologiaEntidade
+              v-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+
     <v-snackbar
       v-model="snackbar.visivel"
       color="warning"
@@ -31,14 +43,19 @@
 
 <script>
 import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
+import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
+import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
+
 import Loading from "@/components/generic/Loading";
 
 export default {
   props: ["idp"],
 
   components: {
+    AnalisaEntidade,
     AnalisaLeg,
-    Loading
+    Loading,
+    AnalisaTipologiaEntidade
   },
 
   data() {
@@ -62,7 +79,7 @@ export default {
 
   async mounted() {
     try {
-      const { data } = await this.$request("get", "/api/pedidos/" + this.idp);
+      const { data } = await this.$request("get", "/pedidos/" + this.idp);
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;

@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-row class="justify-start align-start">
-
-      <v-col><!-- Guardar trabalho......................... -->
+      <!-- Guardar trabalho......................... -->
+      <v-col>
         <v-btn
           dark
           rounded
@@ -16,25 +16,29 @@
 
       <valida-classe-info-box :c="c" />
 
-      <v-col> <!-- Criar classe......................... -->
+      <!-- Criar classe......................... -->
+      <v-col>
         <v-btn
           v-bind:disabled="c.codigo == ''"
-          dark 
-          rounded 
-          class="ma-2 indigo darken-4" 
-          @click="criarClasse">
-            Criar classe
+          dark
+          rounded
+          class="ma-2 indigo darken-4"
+          @click="criarClasse"
+        >
+          Criar classe
         </v-btn>
       </v-col>
 
-      <v-col> <!-- Cancelar criação......................... -->
-        <v-btn 
+      <!-- Cancelar criação......................... -->
+      <v-col>
+        <v-btn
           v-bind:disabled="c.codigo == ''"
-          dark 
-          rounded 
-          class="ma-2 red darken-4" 
-          @click="eliminarClasse">
-            Cancelar criação
+          dark
+          rounded
+          class="ma-2 red darken-4"
+          @click="eliminarClasse"
+        >
+          Cancelar criação
         </v-btn>
       </v-col>
     </v-row>
@@ -198,7 +202,7 @@ export default {
         } else {
           var userBD = await this.$request(
             "get",
-            "/api/users/" + this.$store.state.token + "/token"
+            "/users/" + this.$store.state.token + "/token"
           );
           var pendenteParams = {
             numInterv: 1,
@@ -209,11 +213,7 @@ export default {
             user: { email: userBD.data.email },
             token: this.$store.state.token
           };
-          var response = this.$request(
-            "post",
-            "/api/pendentes",
-            pendenteParams
-          );
+          var response = this.$request("post", "/pendentes", pendenteParams);
           this.pendenteGuardado = true;
           this.pendenteGuardadoInfo = JSON.stringify(response.data);
         }
@@ -231,7 +231,7 @@ export default {
     verificaExistenciaCodigo: async function(codigo) {
       var response = await this.$request(
         "get",
-        "/api/classes/codigo/" + encodeURIComponent(codigo)
+        "/classes/codigo?valor=" + encodeURIComponent(codigo)
       );
       return response.data;
     },
@@ -312,7 +312,7 @@ export default {
           alert("Existência de título");
           var existeTitulo = await this.$request(
             "get",
-            "/api/classes/titulo/" + encodeURIComponent(this.c.titulo)
+            "/classes/titulo?valor=" + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             numeroErros++;
@@ -332,7 +332,8 @@ export default {
         try {
           var existeNotaAp = await this.$request(
             "get",
-            "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
+            "/notasAp/notaAp?valor=" +
+              encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             numeroErros++;
@@ -350,7 +351,7 @@ export default {
         try {
           var existeExemploNotaAp = await this.$request(
             "get",
-            "/api/exemplosNotasAp/" +
+            "/exemplosNotasAp/exemploNotaAp?valor=" +
               encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
@@ -374,7 +375,8 @@ export default {
         try {
           var existeTI = await this.$request(
             "get",
-            "/api/termosIndice/" + encodeURIComponent(this.c.termosInd[i].termo)
+            "/termosIndice/termoIndice?valor=" +
+              encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
             numeroErros++;
@@ -475,7 +477,7 @@ export default {
         try {
           var existeTitulo = await this.$request(
             "get",
-            "/api/classes/titulo/" + encodeURIComponent(this.c.titulo)
+            "/classes/titulo?valor=" + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             this.numeroErros++;
@@ -495,7 +497,8 @@ export default {
         try {
           var existeNotaAp = await this.$request(
             "get",
-            "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
+            "/notasAp/notaAp?valor=" +
+              encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             this.numeroErros++;
@@ -513,7 +516,7 @@ export default {
         try {
           var existeExemploNotaAp = await this.$request(
             "get",
-            "/api/exemplosNotasAp/" +
+            "/exemplosNotasAp/exemploNotaAp?valor=" +
               encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
@@ -537,7 +540,8 @@ export default {
         try {
           var existeTI = await this.$request(
             "get",
-            "/api/termosIndice/" + encodeURIComponent(this.c.termosInd[i].termo)
+            "/termosIndice/termoIndice?valor=" +
+              encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
             this.numeroErros++;
@@ -620,7 +624,7 @@ export default {
           if (erros == 0) {
             var userBD = await this.$request(
               "get",
-              "/api/users/" + this.$store.state.token + "/token"
+              "/users/" + this.$store.state.token + "/token"
             );
             var pedidoParams = {
               tipoPedido: "Criação",
@@ -633,7 +637,7 @@ export default {
 
             var response = await this.$request(
               "post",
-              "/api/pedidos",
+              "/pedidos",
               pedidoParams
             );
             this.mensagemPedidoCriadoOK += JSON.stringify(response.data);

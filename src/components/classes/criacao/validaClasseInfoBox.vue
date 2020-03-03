@@ -1,13 +1,14 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da VALIDAÇÂO -->
-    <v-btn 
+    <v-btn
       v-bind:disabled="c.codigo == ''"
-      dark 
-      rounded 
-      class="indigo darken-4" 
-      @click="validarClasse">
-        Validar classe
+      dark
+      rounded
+      class="indigo darken-4"
+      @click="validarClasse"
+    >
+      Validar classe
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
@@ -138,7 +139,7 @@ export default {
     verificaExistenciaCodigo: async function(codigo) {
       var response = await this.$request(
         "get",
-        "/api/classes/codigo/" + encodeURIComponent(codigo)
+        "/classes/codigo?valor=" + encodeURIComponent(codigo)
       );
       return response.data;
     },
@@ -213,7 +214,7 @@ export default {
         try {
           var existeTitulo = await this.$request(
             "get",
-            "/api/classes/titulo/" + encodeURIComponent(this.c.titulo)
+            "/classes/titulo?valor=" + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             this.mensagensErro.push({
@@ -245,7 +246,8 @@ export default {
         try {
           var existeNotaAp = await this.$request(
             "get",
-            "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
+            "/notasAp/notaAp?valor=" +
+              encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             this.mensagensErro.push({
@@ -275,7 +277,7 @@ export default {
         try {
           var existeExemploNotaAp = await this.$request(
             "get",
-            "/api/exemplosNotasAp/" +
+            "/exemplosNotasAp/exemploNotaAp?valor=" +
               encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
@@ -318,7 +320,8 @@ export default {
         try {
           var existeTI = await this.$request(
             "get",
-            "/api/termosIndice/" + encodeURIComponent(this.c.termosInd[i].termo)
+            "/termosIndice/termoIndice?valor=" +
+              encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
             this.mensagensErro.push({

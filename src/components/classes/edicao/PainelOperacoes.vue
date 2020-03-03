@@ -13,7 +13,7 @@
         </v-btn>
       </v-col>
 
-      <valida-classe-info-box :c="c" :original="o"/>
+      <valida-classe-info-box :c="c" :original="o" />
 
       <v-col>
         <v-btn dark rounded class="ma-2 indigo darken-4" @click="alterarClasse">
@@ -21,7 +21,12 @@
         </v-btn>
       </v-col>
       <v-col>
-        <v-btn dark rounded class="ma-2 red darken-4" @click="cancelarAlteracao">
+        <v-btn
+          dark
+          rounded
+          class="ma-2 red darken-4"
+          @click="cancelarAlteracao"
+        >
           Cancelar alteração
         </v-btn>
       </v-col>
@@ -29,33 +34,33 @@
 
     <!-- Erros de Validação .................................... -->
     <v-row justify-center>
-    <v-dialog v-model="dialog" width="80%">
-      <v-card>
-        <v-card-title class="headline">
-          Erros detetados na validação: {{ mensagensErro.length }}
-        </v-card-title>
-        <v-card-text>
-          <v-row ma-2 v-for="(m, i) in mensagensErro" :key="i">
-            <v-col cols="4">
-              <div class="info-label">{{ m.sobre }}</div>
-            </v-col>
-            <v-col>
-              <div class="info-content">{{ m.mensagem }}</div>
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            class="red darken-4 white--text"
-            rounded
-            dark
-            @click="dialog = false"
-          >
-            Fechar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <v-dialog v-model="dialog" width="80%">
+        <v-card>
+          <v-card-title class="headline">
+            Erros detetados na validação: {{ mensagensErro.length }}
+          </v-card-title>
+          <v-card-text>
+            <v-row ma-2 v-for="(m, i) in mensagensErro" :key="i">
+              <v-col cols="4">
+                <div class="info-label">{{ m.sobre }}</div>
+              </v-col>
+              <v-col>
+                <div class="info-content">{{ m.mensagem }}</div>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              class="red darken-4 white--text"
+              rounded
+              dark
+              @click="dialog = false"
+            >
+              Fechar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
 
     <!-- Trabalho pendente guardado com sucesso ........... -->
@@ -195,7 +200,7 @@ export default {
         } else {
           var userBD = await this.$request(
             "get",
-            "/api/users/" + this.$store.state.token + "/token"
+            "/users/" + this.$store.state.token + "/token"
           );
           var pendenteParams = {
             numInterv: 1,
@@ -206,11 +211,7 @@ export default {
             user: { email: userBD.data.email },
             token: this.$store.state.token
           };
-          var response = this.$request(
-            "post",
-            "/api/pendentes",
-            pendenteParams
-          );
+          var response = this.$request("post", "/pendentes", pendenteParams);
           this.pendenteGuardado = true;
           this.pendenteGuardadoInfo = JSON.stringify(response.data);
         }
@@ -277,31 +278,34 @@ export default {
 
       // Notas de Aplicação
       for (let i = 0; i < this.c.notasAp.length; i++) {
-          let index = this.o.notasAp.findIndex(x => x.nota === this.c.notasAp[i].nota)
-             
-          if( index == -1){
-              try {
-                    var existeNotaAp = await this.$request(
-                        "get",
-                        "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
-                    );
-                    if (existeNotaAp.data) {
-                        this.mensagensErro.push({
-                            sobre: "Nota de Aplicação(" + (i + 1) + ")",
-                            mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
-                        });
-                        this.numeroErros++;
-                    }
-                } catch (e) {
-                    this.numeroErros++;
-                    this.mensagensErro.push({
-                        sobre: "Acesso à Ontologia",
-                        mensagem: "Não consegui verificar a existência da NotaAp."
-                    });
-                }
+        let index = this.o.notasAp.findIndex(
+          x => x.nota === this.c.notasAp[i].nota
+        );
+
+        if (index == -1) {
+          try {
+            var existeNotaAp = await this.$request(
+              "get",
+              "/notasAp/notaAp?valor=" +
+                encodeURIComponent(this.c.notasAp[i].nota)
+            );
+            if (existeNotaAp.data) {
+              this.mensagensErro.push({
+                sobre: "Nota de Aplicação(" + (i + 1) + ")",
+                mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
+              });
+              this.numeroErros++;
+            }
+          } catch (e) {
+            this.numeroErros++;
+            this.mensagensErro.push({
+              sobre: "Acesso à Ontologia",
+              mensagem: "Não consegui verificar a existência da NotaAp."
+            });
           }
+        }
       }
-      
+
       if (await this.notaDuplicada(this.c.notasAp)) {
         this.mensagensErro.push({
           sobre: "Nota de Aplicação(" + (i + 1) + ")",
@@ -309,35 +313,38 @@ export default {
         });
         this.numeroErros++;
       }
-alert('after dups')
+      alert("after dups");
       // Exemplos de notas de Aplicação
       for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
-          let index = this.o.exemplosNotasAp.findIndex(x => x.exemplo === this.c.exemplosNotasAp[i].exemplo)
+        let index = this.o.exemplosNotasAp.findIndex(
+          x => x.exemplo === this.c.exemplosNotasAp[i].exemplo
+        );
 
-          if(index == -1){
-            try {
-                    var existeExemploNotaAp = await this.$request(
-                        "get",
-                        "/api/exemplosNotasAp/" + encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
-                    );
-                    if (existeExemploNotaAp.data) {
-                        this.mensagensErro.push({
-                            sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
-                            mensagem:
-                                "[" +
-                                this.c.exemplosNotasAp[i].exemplo +
-                                "] já existente na BD."
-                        });
-                        this.numeroErros++;
-                    }
-            } catch (e) {
-                this.numeroErros++;
-                this.mensagensErro.push({
-                    sobre: "Acesso à Ontologia",
-                    mensagem: "Não consegui verificar a existência do exemploNotaAp."
-                });
+        if (index == -1) {
+          try {
+            var existeExemploNotaAp = await this.$request(
+              "get",
+              "/exemplosNotasAp/exemploNotaAp?valor=" +
+                encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
+            );
+            if (existeExemploNotaAp.data) {
+              this.mensagensErro.push({
+                sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
+                mensagem:
+                  "[" +
+                  this.c.exemplosNotasAp[i].exemplo +
+                  "] já existente na BD."
+              });
+              this.numeroErros++;
             }
+          } catch (e) {
+            this.numeroErros++;
+            this.mensagensErro.push({
+              sobre: "Acesso à Ontologia",
+              mensagem: "Não consegui verificar a existência do exemploNotaAp."
+            });
           }
+        }
       }
       if (this.exemploDuplicado(this.c.exemplosNotasAp)) {
         this.mensagensErro.push({
@@ -358,31 +365,34 @@ alert('after dups')
 
       // Termos de Índice
       for (let i = 0; i < this.c.termosInd.length; i++) {
-          let index = this.o.termosInd.findIndex(x => x.termo === this.c.termosInd[i].termo)
+        let index = this.o.termosInd.findIndex(
+          x => x.termo === this.c.termosInd[i].termo
+        );
 
-          if(index == -1){
-            try {
-                    var existeTI = await this.$request(
-                        "get",
-                        "/api/termosIndice/" +
-                          encodeURIComponent(this.c.termosInd[i].termo)
-                    );
-                    if (existeTI.data) {
-                        this.mensagensErro.push({
-                            sobre: "Termo de Índice(" + (i + 1) + ")",
-                            mensagem:
-                                "[" + this.c.termosInd[i].termo + "] já existente na BD."
-                        });
-                        this.numeroErros++;
-                    }
-            } catch (e) {
-                this.numeroErros++;
-                this.mensagensErro.push({
-                    sobre: "Acesso à Ontologia",
-                    mensagem: "Não consegui verificar a existência do Termo de índice."
-                });
+        if (index == -1) {
+          try {
+            var existeTI = await this.$request(
+              "get",
+              "/termosIndice/termoIndice?valor=" +
+                encodeURIComponent(this.c.termosInd[i].termo)
+            );
+            if (existeTI.data) {
+              this.mensagensErro.push({
+                sobre: "Termo de Índice(" + (i + 1) + ")",
+                mensagem:
+                  "[" + this.c.termosInd[i].termo + "] já existente na BD."
+              });
+              this.numeroErros++;
             }
+          } catch (e) {
+            this.numeroErros++;
+            this.mensagensErro.push({
+              sobre: "Acesso à Ontologia",
+              mensagem:
+                "Não consegui verificar a existência do Termo de índice."
+            });
           }
+        }
       }
       if (this.tiDuplicado(this.c.termosInd)) {
         this.numeroErros++;
@@ -459,14 +469,13 @@ alert('after dups')
           this.loginErrorSnackbar = true;
         } else {
           var erros = await this.validarClasse2();
-          alert('validei')
+          alert("validei");
           if (erros > 0) {
             this.dialog = true;
-          }
-          else{
+          } else {
             var userBD = await this.$request(
               "get",
-              "/api/users/" + this.$store.state.token + "/token"
+              "/users/" + this.$store.state.token + "/token"
             );
             var pedidoParams = {
               tipoPedido: "Alteração",
@@ -479,7 +488,7 @@ alert('after dups')
 
             var response = await this.$request(
               "post",
-              "/api/pedidos",
+              "/pedidos",
               pedidoParams
             );
             this.mensagemPedidoCriadoOK += JSON.stringify(response.data);

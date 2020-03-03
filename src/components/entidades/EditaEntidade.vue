@@ -20,7 +20,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="150"
                 single-line
                 v-model="entidade.designacao"
                 maxlength="150"
@@ -37,7 +36,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="10"
                 single-line
                 v-model="entidade.sigla"
                 maxlength="10"
@@ -71,12 +69,58 @@
                 solo
                 clearable
                 color="indigo"
-                counter="12"
                 single-line
                 v-model="entidade.sioe"
                 type="number"
                 :rules="regraSIOE"
               ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">
+                Data de extinção:
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-icon v-on="on" color="warning">info</v-icon>
+                  </template>
+                  <span
+                    >Ao clicar neste campo adiciona uma data de extinção à
+                    entidade!</span
+                  >
+                </v-tooltip>
+              </div>
+            </v-col>
+            <v-col>
+              <v-menu
+                ref="open"
+                v-model="open"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    solo
+                    v-model="entidade.dataExtincao"
+                    hint="AAAA/MM/DD"
+                    persistent-hint
+                    @blur="date = parseDate(dateFormatted)"
+                    v-on="on"
+                    :rules="regraData"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  no-title
+                  @input="open = false"
+                  :max="new Date().toISOString().substr(0, 10)"
+                ></v-date-picker>
+              </v-menu>
             </v-col>
           </v-row>
 
@@ -131,15 +175,21 @@ export default {
     PainelOpsEnt
   },
 
-  data: () => ({
+  data: vm => ({
     entidade: {
       designacao: "",
       sigla: "",
       internacional: "",
       sioe: "",
       tipologiasSel: [],
-      codigo: ""
+      codigo: "",
+      dataExtincao: ""
     },
+
+    // vuetify datepicker
+    date: new Date().toISOString().substr(0, 10),
+    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+    open: false,
 
     // Para o seletor de processos
     tipologias: [],
@@ -149,16 +199,49 @@ export default {
     regraSIOE: [
       v => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos."
     ],
+    regraData: [
+      v =>
+        /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || "Este campo está no formato errado."
+    ],
 
     snackbar: false,
     text: ""
   }),
 
+  // vuetify datepicker
+  computed: {
+    computedDateFormatted() {
+      return this.formatDate(this.date);
+    }
+  },
+
+  watch: {
+    date(val) {
+      this.entidade.dataExtincao = this.formatDate(this.date);
+      this.dateFormatted = this.formatDate(this.date);
+    }
+  },
+
   methods: {
+    // vuetify datepicker
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${year}/${month}/${day}`;
+    },
+
+    parseDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
+
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
-        let response = await this.$request("get", "/api/tipologias/");
+        let response = await this.$request("get", "/tipologias/");
 
         this.tipologias = response.data.map(function(item) {
           return {

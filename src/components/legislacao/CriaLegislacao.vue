@@ -35,7 +35,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="11"
                 single-line
                 v-model="legislacao.numero"
                 maxlength="11"
@@ -75,7 +74,7 @@
                   v-model="date"
                   no-title
                   @input="open = false"
-                  :max="date"
+                  :max="dateCurrent"
                 ></v-date-picker>
               </v-menu>
             </v-col>
@@ -90,7 +89,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="300"
                 single-line
                 v-model="legislacao.sumario"
               ></v-text-field>
@@ -208,7 +206,7 @@ export default {
       tipo: "",
       data: "",
       link: "",
-      diplomaFonte: "Não especificada",
+      diplomaFonte: "Não aplicável",
       entidadesSel: [],
       processosSel: [],
       codigo: ""
@@ -225,6 +223,7 @@ export default {
 
     // vuetify datepicker
     date: new Date().toISOString().substr(0, 10),
+    dateCurrent: new Date().toISOString().substr(0, 10),
     dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
     open: false,
 
@@ -291,7 +290,7 @@ export default {
       try {
         let response = await this.$request(
           "get",
-          "/api/vocabularios/vc_tipoDiplomaLegislativo"
+          "/vocabularios/vc_tipoDiplomaLegislativo"
         );
         for (let i = 0; i < response.data.length; i++) {
           this.tiposDiploma[i] = response.data[i].termo;
@@ -321,7 +320,7 @@ export default {
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-        let response = await this.$request("get", "/api/entidades");
+        let response = await this.$request("get", "/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -354,7 +353,7 @@ export default {
     // Vai à API buscar todas as classes de nivel 3
     loadClasses: async function() {
       try {
-        let response = await this.$request("get", "/api/classes?nivel=3");
+        let response = await this.$request("get", "/classes?nivel=3");
         this.processos = response.data.map(function(item) {
           return {
             codigo: item.codigo,

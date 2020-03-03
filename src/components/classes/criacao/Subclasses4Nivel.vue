@@ -6,12 +6,23 @@
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row>
-        <v-tabs v-model="active" vertical outlined>
+        <v-col cols="2">
+        <v-tabs vertical outlined v-model="active" >
           <v-tab
             v-for="subClasse in c.subclasses"
             :key="subClasse.codigo"
             ripple
           >{{ subClasse.codigo }}</v-tab>
+        </v-tabs>
+        
+        <v-btn depressed x-small color="primary" @click="addSubclasse">
+          Adicionar subclasse
+          <v-icon dark right>add_circle_outline</v-icon>
+        </v-btn>
+         
+        </v-col>
+        <v-col>
+        <v-tabs-items v-model="active">
           <v-tab-item v-for="subClasse in c.subclasses" :key="subClasse.codigo" class="ma-2 pa-2">
             <v-row>
               <v-col cols="2">
@@ -55,13 +66,8 @@
               :pcaSubFormasContagem="pcaSubFormasContagem"
             />
           </v-tab-item>
-          <v-tab>
-            <v-btn rounded @click="addSubclasse">
-              Adicionar subclasse
-              <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
-          </v-tab>
-        </v-tabs>
+        </v-tabs-items>
+        </v-col>
       </v-row>
     </v-expansion-panel-content>
   </v-expansion-panel>
@@ -283,11 +289,21 @@ export default {
       }
     },
 
+    pad: function (num, size) {
+      var s = num+"";
+      while (s.length < size) s = "0" + s;
+      return s;
+    },
+
+    showSubs: function(){
+      alert(JSON.stringify(this.c.subclasses))
+    },
+
     addSubclasse: function() {
       var novaSubclasse = {
         nivel: 4,
         pai: this.c.codigo,
-        codigo: this.c.codigo + (this.c.subclasses.length + 1).toString(),
+        codigo: this.c.codigo + "." + this.pad(this.c.subclasses.length + 1, 2),
         titulo: this.c.titulo + ": ",
         descricao: "",
         termosInd: JSON.parse(JSON.stringify(this.c.termosInd)),

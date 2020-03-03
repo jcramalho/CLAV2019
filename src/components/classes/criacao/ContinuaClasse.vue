@@ -382,7 +382,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/classes?nivel=" + (this.classe.nivel - 1)
+          "/classes?nivel=" + (this.classe.nivel - 1)
         );
         this.classesPai = response.data
           .map(function(item) {
@@ -403,7 +403,7 @@ export default {
 
     loadEntidades: async function() {
       try {
-        var response = await this.$request("get", "/api/entidades");
+        var response = await this.$request("get", "/entidades");
         this.entidadesD = response.data.map(function(item) {
           return {
             selected: false,
@@ -415,7 +415,7 @@ export default {
             estado: item.estado
           };
         });
-        response = await this.$request("get", "/api/tipologias");
+        response = await this.$request("get", "/tipologias");
         this.entidadesD = await this.entidadesD.concat(
           response.data.map(function(item) {
             return {
@@ -443,7 +443,7 @@ export default {
 
     loadProcessos: async function() {
       try {
-        var response = await this.$request("get", "/api/classes?nivel=3");
+        var response = await this.$request("get", "/classes?nivel=3");
         this.listaProcessos = response.data
           .map(function(item) {
             return {
@@ -468,7 +468,7 @@ export default {
 
     loadLegislacao: async function() {
       try {
-        var response = await this.$request("get", "/api/legislacao?estado=A");
+        var response = await this.$request("get", "/legislacao?estado=A");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {
@@ -502,7 +502,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/vocabularios/vc_pcaFormaContagem"
+          "/vocabularios/vc_pcaFormaContagem"
         );
         this.pcaFormasContagem = this.pcaFormasContagem.concat(
           response.data
@@ -528,7 +528,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/vocabularios/vc_pcaSubformaContagem"
+          "/vocabularios/vc_pcaSubformaContagem"
         );
         this.pcaSubFormasContagem = this.pcaSubFormasContagem.concat(
           response.data

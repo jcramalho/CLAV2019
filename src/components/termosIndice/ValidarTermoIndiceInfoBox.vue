@@ -1,12 +1,16 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="indigo darken-4" @click="validarTI">Validar Termo de Índice</v-btn>
+    <v-btn dark rounded class="indigo darken-4" @click="validarTI">
+      Validar Termo de Índice
+    </v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
       <v-card>
-        <v-card-title>Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
+        <v-card-title>
+          Erros detetados na validação: {{ mensagensErro.length }}
+        </v-card-title>
         <v-card-text>
           <v-row v-for="(m, i) in mensagensErro" :key="i">
             <v-col cols="2">
@@ -19,7 +23,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="dialog = false">Fechar</v-btn>
+          <v-btn class="red darken-4" dark @click="dialog = false">
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -33,7 +39,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="indigo accent-4" dark @click="dialogSemErros = false">Fechar</v-btn>
+          <v-btn class="indigo accent-4" dark @click="dialogSemErros = false">
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -72,7 +80,8 @@ export default {
         try {
           let existeTI = await this.$request(
             "get",
-            "/api/termosIndice/" + encodeURIComponent(this.ti.termo)
+            "/termosIndice/termoIndice?valor=" +
+              encodeURIComponent(this.ti.termo)
           );
           if (existeTI.data) {
             this.mensagensErro.push({

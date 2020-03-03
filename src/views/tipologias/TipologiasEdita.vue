@@ -41,12 +41,12 @@ export default {
 
       let infoTipologia = await this.$request(
         "get",
-        "/api/tipologias/" + idTipologia
+        "/tipologias/" + idTipologia
       );
 
       let entidadesAssociadas = await this.$request(
         "get",
-        "/api/tipologias/" + idTipologia + "/elementos"
+        "/tipologias/" + idTipologia + "/elementos"
       );
 
       this.tipologia = await this.preparaTipologia(

@@ -89,8 +89,8 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
-            operacoes: this.operacoes
-            //id: listaLegislacao[i].id
+            operacoes: this.operacoes,
+            id: listaLegislacao[i].id
           });
         }
       } else {
@@ -112,8 +112,8 @@ export default {
             tipo: listaLegislacao[i].tipo,
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
-            sumario: listaLegislacao[i].sumario
-            //id: listaLegislacao[i].id
+            sumario: listaLegislacao[i].sumario,
+            id: listaLegislacao[i].id
           });
         }
       }
@@ -137,7 +137,7 @@ export default {
 
   created: async function() {
     try {
-      let response = await this.$request("get", "/api/legislacao");
+      let response = await this.$request("get", "/legislacao");
 
       let level = await this.$userLevel(this.$store.state.token);
 

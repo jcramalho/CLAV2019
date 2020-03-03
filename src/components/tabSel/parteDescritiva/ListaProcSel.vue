@@ -19,7 +19,11 @@
       </tr>
     </template>
     <template v-slot:item="props">
-      <tr :style="{ backgroundColor: novaLista[props.item.classe].backgroundColor }">
+      <tr
+        :style="{
+          backgroundColor: novaLista[props.item.classe].backgroundColor
+        }"
+      >
         <td>
           {{ props.item.classe }}
         </td>
@@ -34,7 +38,7 @@
             width="1000px"
           >
             <template v-slot:activator="{ on }">
-              <v-btn small color="primary" v-on="on" @click="compKey+=1">
+              <v-btn small color="primary" v-on="on" @click="compKey += 1">
                 <v-icon>
                   edit
                 </v-icon>
@@ -135,11 +139,11 @@
       </tr>
     </template>
   </v-data-table>
-  <v-data-table 
+  <v-data-table
     v-else
     class="ma-1"
     item-key="classe"
-    loading 
+    loading
     loading-text="A carregar... Por favor aguarde"
   />
 </template>
@@ -201,15 +205,12 @@ export default {
       ].exemplosNotasAp.slice(0);
       this.notasEx[classe] = this.novaLista[classe].notasEx.slice(0);
       this.termosInd[classe] = this.novaLista[classe].termosInd.slice(0);
-      this.novaLista[classe].backgroundColor='#E8EAF6';
+      this.novaLista[classe].backgroundColor = "#E8EAF6";
       this.$emit("listaTotalSelUpdate", this.novaLista);
       this.componentKey += 1;
     },
     cancelar: async function(classe) {
-      var res = await this.$request(
-        "get",
-        "/api/classes?nivel=3&info=completa"
-      );
+      var res = await this.$request("get", "/classes?nivel=3&info=completa");
 
       for (var j = 0; j < res.data.length; j++) {
         if (res.data[j].codigo == classe) {
@@ -249,16 +250,13 @@ export default {
   },
   created: async function() {
     try {
-      var res = await this.$request(
-        "get",
-        "/api/classes?nivel=3&info=completa"
-      );
+      var res = await this.$request("get", "/classes?nivel=3&info=completa");
       this.info = res.data;
 
       for (var i = 0; i < this.lista.length; i++) {
         this.novaLista[this.lista[i].classe] = this.lista[i];
-        if(this.it=="1"){
-          this.novaLista[this.lista[i].classe].backgroundColor = 'transparent'
+        if (this.it == "1") {
+          this.novaLista[this.lista[i].classe].backgroundColor = "transparent";
         }
 
         for (var j = 0; j < this.info.length; j++) {
@@ -346,10 +344,9 @@ export default {
           this.lista[i].classe
         ].termosInd.slice(0);
       }
-      
+
       this.$emit("listaTotalSelUpdate", this.novaLista);
       this.novaListaReady = true;
-
     } catch (err) {
       return err;
     }

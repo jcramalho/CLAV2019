@@ -32,7 +32,6 @@
                   v-model="props.item.idRel"
                   :items="tiposRelacao"
                   solo
-                  return-object
                   @change="selectProcesso(props.item.id, $event)"
                 />
               </td>
@@ -51,7 +50,7 @@
       </v-card>
     </v-col>
     <v-col v-else>
-      <v-subheader>A carregar entidades e tipologias...</v-subheader>
+      <v-subheader>{{ mylabels.procRel }}</v-subheader>
     </v-col>
   </v-row>
 </template>
@@ -65,6 +64,7 @@ export default {
     return {
       searchProcessos: "",
       paginationProcessos: { sortBy: "codigo" },
+      mylabels: require("@/config/labels").mensagensEspera,
 
       processosRelacionadosHeaders: [
         { text: "Relação", align: "left", value: "relacao" },
@@ -93,8 +93,8 @@ export default {
     },
     selectProcesso: function(id, relacao) {
       var index = this.processos.findIndex(p => p.id === id);
+      this.processos[index].relacao = relacao;
       var selectedProcesso = JSON.parse(JSON.stringify(this.processos[index]));
-      selectedProcesso.relacao = relacao.value;
       this.processos.splice(index, 1);
       this.$emit("selectProcesso", selectedProcesso);
     }

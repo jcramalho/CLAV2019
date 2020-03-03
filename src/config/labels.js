@@ -21,3 +21,10 @@ export const criterios = {
   textoCriterioDensidadeInfo:
     "Informação sintetizada em, ou sintetiza a informação de:"
 };
+
+export const mensagensEspera = {
+  donos: "A carregar catálogo de entidades...",
+  participantes: "A carregar catálogo de entidades e tipos de intervenção...",
+  procRel: "A carregar lista de processos e tipos de relação...",
+  legislacao: "A carregar catálogo de legislação..."
+};

@@ -21,7 +21,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/vocabularios");
+      var response = await this.$request("get", "/vocabularios");
       this.vocabulariosControlados = await this.preparaLista(response.data);
     } catch (e) {
       return e;

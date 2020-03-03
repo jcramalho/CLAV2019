@@ -48,7 +48,7 @@ export default {
   },
 
   mounted: function() {
-    this.$request("get", "/api/invariantes/testarTodos")
+    this.$request("get", "/invariantes/testarTodos")
       .then(response => {
         this.invs = response.data;
         this.loading = false;

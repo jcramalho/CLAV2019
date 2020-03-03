@@ -19,7 +19,7 @@
             rounded
             @click="insereNovoExemplo(c.exemplosNotasAp)"
           >
-            Exemplo N. A.
+            Exemplo de N. A.
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
         </template>

@@ -70,12 +70,6 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] }
     },
     {
-      path: "/entidades/extinguir/:idEntidade",
-      name: "extinguirEntidade",
-      component: () => import("./views/entidades/EntidadesExtinguir.vue"),
-      meta: { levels: [4, 5, 6, 7] }
-    },
-    {
       path: "/entidades/:idEntidade",
       name: "consultaEntidade",
       component: () => import("./views/entidades/EntidadesConsulta.vue"),
@@ -265,6 +259,12 @@ export default new Router({
       path: "/pedidos/analisar/:idPedido",
       name: "analisePedido",
       component: () => import("./views/pedidos/PedidosAnalise.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
+      path: "/pedidos/validar/:idPedido",
+      name: "validarPedido",
+      component: () => import("./views/pedidos/PedidosValidacao.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
     // Routes dos pendentes (trabalho guardado)

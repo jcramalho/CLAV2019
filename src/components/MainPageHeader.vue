@@ -30,7 +30,7 @@
       >
         Iniciar Sessão
       </v-btn>
-      
+
       <span class="font-weight-light ma-2" v-if="this.$store.state.name != ''">
         {{ this.$store.state.name }}</span
       >
@@ -103,7 +103,7 @@ export default {
     async testJWT() {
       var res = await this.$request(
         "get",
-        "/api/users/" + this.$store.state.token + "/token"
+        "/users/" + this.$store.state.token + "/token"
       );
       alert(JSON.stringify(res.data));
     }

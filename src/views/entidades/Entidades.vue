@@ -35,8 +35,7 @@ export default {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" },
-          { icon: "lock", descricao: "Extinção" }
+          { icon: "edit", descricao: "Alteração" }
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }
@@ -78,7 +77,7 @@ export default {
 
   created: async function() {
     try {
-      let response = await this.$request("get", "/api/entidades");
+      let response = await this.$request("get", "/entidades");
 
       let level = await this.$userLevel(this.$store.state.token);
 

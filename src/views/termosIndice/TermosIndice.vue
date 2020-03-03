@@ -28,7 +28,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/termosIndice");
+      var response = await this.$request("get", "/termosIndice");
       this.termosIndice = await this.preparaLista(response.data);
     } catch (e) {
       return e;

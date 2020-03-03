@@ -66,7 +66,10 @@ export default {
   mounted: async function() {
     var res = await this.$request(
       "get",
-      "/api/users/"+ this.$route.query.jwt + "/token"
+      "/users/" +
+        this.$route.query.jwt +
+        "/token?token=" +
+        this.$route.query.jwt
     );
     this.validJWT = true;
     this.form.id = res.data._id;
@@ -106,9 +109,12 @@ export default {
       if (this.$refs.form.validate()) {
         this.$request(
           "put",
-          "/api/users/"+this.$data.form.id+"/password/",
+          "/users/" +
+            this.$data.form.id +
+            "/password?token=" +
+            this.$route.query.jwt,
           {
-            password: this.$data.form.password
+            novaPassword: this.$data.form.password
           }
         )
           .then(res => {

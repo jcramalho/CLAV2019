@@ -1,13 +1,14 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da VALIDAÇÂO -->
-    <v-btn 
+    <v-btn
       v-bind:disabled="c.codigo == ''"
-      dark 
-      rounded 
-      class="ma-2 indigo darken-4" 
-      @click="validarClasse">
-        Validar classe
+      dark
+      rounded
+      class="ma-2 indigo darken-4"
+      @click="validarClasse"
+    >
+      Validar classe
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
@@ -65,7 +66,7 @@
 
 <script>
 export default {
-  props: ["c","original"],
+  props: ["c", "original"],
   data() {
     return {
       dialog: false,
@@ -136,7 +137,6 @@ export default {
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
     validarClasse: async function() {
-
       // Codigo: não pode ser alterado
 
       // Título: não pode ser alterado
@@ -152,29 +152,32 @@ export default {
 
       // Notas de Aplicação
       for (let i = 0; i < this.c.notasAp.length; i++) {
-          let index = this.original.notasAp.findIndex(x => x.nota === this.c.notasAp[i].nota)
-          
-          if(index == -1){
-              try {
-                    var existeNotaAp = await this.$request(
-                        "get",
-                        "/api/notasAp/" + encodeURIComponent(this.c.notasAp[i].nota)
-                    );
-                    if (existeNotaAp.data) {
-                        this.mensagensErro.push({
-                            sobre: "Nota de Aplicação(" + (i + 1) + ")",
-                            mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
-                        });
-                        this.numeroErros++;
-                    }
-                } catch (e) {
-                    this.numeroErros++;
-                    this.mensagensErro.push({
-                        sobre: "Acesso à Ontologia",
-                        mensagem: "Não consegui verificar a existência da NotaAp."
-                    });
-                }
+        let index = this.original.notasAp.findIndex(
+          x => x.nota === this.c.notasAp[i].nota
+        );
+
+        if (index == -1) {
+          try {
+            var existeNotaAp = await this.$request(
+              "get",
+              "/notasAp/notaAp?valor=" +
+                encodeURIComponent(this.c.notasAp[i].nota)
+            );
+            if (existeNotaAp.data) {
+              this.mensagensErro.push({
+                sobre: "Nota de Aplicação(" + (i + 1) + ")",
+                mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
+              });
+              this.numeroErros++;
+            }
+          } catch (e) {
+            this.numeroErros++;
+            this.mensagensErro.push({
+              sobre: "Acesso à Ontologia",
+              mensagem: "Não consegui verificar a existência da NotaAp."
+            });
           }
+        }
       }
       if (this.notaDuplicada(this.c.notasAp)) {
         this.mensagensErro.push({
@@ -186,34 +189,36 @@ export default {
 
       // Exemplos de notas de Aplicação
       for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
-          let obj = this.original.exemplosNotasAp.find(x => x.exemplo === this.c.exemplosNotasAp[i].exemplo);
-          let index = this.original.exemplosNotasAp.indexOf(obj);
+        let obj = this.original.exemplosNotasAp.find(
+          x => x.exemplo === this.c.exemplosNotasAp[i].exemplo
+        );
+        let index = this.original.exemplosNotasAp.indexOf(obj);
 
-          if(index == -1){
-            try {
-                    var existeExemploNotaAp = await this.$request(
-                        "get",
-                        "/api/exemplosNotasAp/" +
-                          encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
-                    );
-                    if (existeExemploNotaAp.data) {
-                        this.mensagensErro.push({
-                            sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
-                            mensagem:
-                                "[" +
-                                this.c.exemplosNotasAp[i].exemplo +
-                                "] já existente na BD."
-                        });
-                        this.numeroErros++;
-                    }
-            } catch (e) {
-                this.numeroErros++;
-                this.mensagensErro.push({
-                    sobre: "Acesso à Ontologia",
-                    mensagem: "Não consegui verificar a existência do exemploNotaAp."
-                });
+        if (index == -1) {
+          try {
+            var existeExemploNotaAp = await this.$request(
+              "get",
+              "/exemplosNotasAp/exemploNotaAp?valor=" +
+                encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
+            );
+            if (existeExemploNotaAp.data) {
+              this.mensagensErro.push({
+                sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
+                mensagem:
+                  "[" +
+                  this.c.exemplosNotasAp[i].exemplo +
+                  "] já existente na BD."
+              });
+              this.numeroErros++;
             }
+          } catch (e) {
+            this.numeroErros++;
+            this.mensagensErro.push({
+              sobre: "Acesso à Ontologia",
+              mensagem: "Não consegui verificar a existência do exemploNotaAp."
+            });
           }
+        }
       }
       if (this.exemploDuplicado(this.c.exemplosNotasAp)) {
         this.mensagensErro.push({
@@ -234,32 +239,35 @@ export default {
 
       // Termos de Índice
       for (let i = 0; i < this.c.termosInd.length; i++) {
-          let obj = this.original.termosInd.find(x => x.termo === this.c.termosInd[i].termo);
-          let index = this.original.termosInd.indexOf(obj);
+        let obj = this.original.termosInd.find(
+          x => x.termo === this.c.termosInd[i].termo
+        );
+        let index = this.original.termosInd.indexOf(obj);
 
-          if(index == -1){
-            try {
-                    var existeTI = await this.$request(
-                        "get",
-                        "/api/termosIndice/" +
-                          encodeURIComponent(this.c.termosInd[i].termo)
-                    );
-                    if (existeTI.data) {
-                        this.mensagensErro.push({
-                            sobre: "Termo de Índice(" + (i + 1) + ")",
-                            mensagem:
-                                "[" + this.c.termosInd[i].termo + "] já existente na BD."
-                        });
-                        this.numeroErros++;
-                    }
-            } catch (e) {
-                this.numeroErros++;
-                this.mensagensErro.push({
-                    sobre: "Acesso à Ontologia",
-                    mensagem: "Não consegui verificar a existência do Termo de índice."
-                });
+        if (index == -1) {
+          try {
+            var existeTI = await this.$request(
+              "get",
+              "/termosIndice/termoIndice?valor=" +
+                encodeURIComponent(this.c.termosInd[i].termo)
+            );
+            if (existeTI.data) {
+              this.mensagensErro.push({
+                sobre: "Termo de Índice(" + (i + 1) + ")",
+                mensagem:
+                  "[" + this.c.termosInd[i].termo + "] já existente na BD."
+              });
+              this.numeroErros++;
             }
+          } catch (e) {
+            this.numeroErros++;
+            this.mensagensErro.push({
+              sobre: "Acesso à Ontologia",
+              mensagem:
+                "Não consegui verificar a existência do Termo de índice."
+            });
           }
+        }
       }
       if (this.tiDuplicado(this.c.termosInd)) {
         this.numeroErros++;

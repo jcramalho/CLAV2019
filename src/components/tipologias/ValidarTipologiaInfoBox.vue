@@ -1,12 +1,16 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="indigo darken-3" @click="validarTipologia">Validar Tipologia</v-btn>
+    <v-btn dark rounded class="indigo darken-3" @click="validarTipologia">
+      Validar Tipologia
+    </v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
       <v-card>
-        <v-card-title>Erros detetados na validação: {{ mensagensErro.length }}</v-card-title>
+        <v-card-title>
+          Erros detetados na validação: {{ mensagensErro.length }}
+        </v-card-title>
         <v-card-text>
           <v-row v-for="(m, i) in mensagensErro" :key="i">
             <v-col cols="2">
@@ -19,7 +23,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="dialog = false">Fechar</v-btn>
+          <v-btn class="red darken-4" dark @click="dialog = false">
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -33,7 +39,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="indigo accent-4" dark @click="dialogSemErros = false">Fechar</v-btn>
+          <v-btn class="indigo accent-4" dark @click="dialogSemErros = false">
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -72,7 +80,7 @@ export default {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/api/tipologias/designacao/" +
+            "/tipologias/designacao?valor=" +
               encodeURIComponent(this.t.designacao)
           );
           if (existeDesignacao.data) {
@@ -102,7 +110,7 @@ export default {
         try {
           let existeSigla = await this.$request(
             "get",
-            "/api/tipologias/sigla/" + encodeURIComponent(this.t.sigla)
+            "/tipologias/sigla?valor=" + encodeURIComponent(this.t.sigla)
           );
           if (existeSigla.data) {
             this.mensagensErro.push({

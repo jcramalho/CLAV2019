@@ -3,17 +3,15 @@
     <v-col>
       <!-- HEADER -->
       <v-card v-if="semaforos.classeLoaded">
-
         <v-app-bar color="indigo darken-2" dark>
-            <v-toolbar-title>
-              Alteração da Classe:
-              {{ classe.codigo }} - 
-              {{ classe.titulo }}
-            </v-toolbar-title>
-          </v-app-bar>
+          <v-toolbar-title>
+            Alteração da Classe:
+            {{ classe.codigo }} -
+            {{ classe.titulo }}
+          </v-toolbar-title>
+        </v-app-bar>
 
         <v-card-text>
-
           <v-expansion-panels>
             <!-- DESCRITIVO DA CLASSE -->
             <BlocoDescritivo :c="classe" />
@@ -49,7 +47,9 @@
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
 
-                <hr style="border-top: 3px dashed #1A237E; border-radius: 2px;" />
+                <hr
+                  style="border-top: 3px dashed #1A237E; border-radius: 2px;"
+                />
 
                 <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
               </v-expansion-panel-content>
@@ -76,7 +76,6 @@
           <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      
       <PainelOperacoes :c="classe" :o="classeCopia" :pendenteId="''" />
     </v-col>
   </v-row>
@@ -171,7 +170,7 @@ export default {
   }),
 
   created: function() {
-    this.$request("get", "/api/classes/" + this.idc)
+    this.$request("get", "/classes/" + this.idc)
       .then(async response => {
         this.classe = response.data;
         if (this.classe.df.justificacao) {
@@ -183,7 +182,7 @@ export default {
                 j++
               ) {
                 let help =
-                  "/api/classes/" +
+                  "/classes/" +
                   this.classe.df.justificacao[i].processos[j].procId +
                   "/meta";
 
@@ -202,7 +201,7 @@ export default {
               ) {
                 await this.$request(
                   "get",
-                  "/api/legislacao/" +
+                  "/legislacao/" +
                     this.classe.df.justificacao[i].legislacao[j].legId
                 ).then(response => {
                   this.classe.df.justificacao[i].legislacao[j].tipo =
@@ -225,7 +224,7 @@ export default {
                 if (this.classe.pca.justificacao[h].processos[z].procId) {
                   await this.$request(
                     "get",
-                    "/api/classes/" +
+                    "/classes/" +
                       this.classe.pca.justificacao[h].processos[z].procId +
                       "/meta"
                   ).then(response => {
@@ -244,7 +243,7 @@ export default {
               ) {
                 await this.$request(
                   "get",
-                  "/api/legislacao/" +
+                  "/legislacao/" +
                     this.classe.pca.justificacao[h].legislacao[z].legId
                 ).then(response => {
                   this.classe.pca.justificacao[h].legislacao[z].tipo =
@@ -256,7 +255,7 @@ export default {
             }
           }
         }
-        this.classeCopia = JSON.parse(JSON.stringify(this.classe))
+        this.classeCopia = JSON.parse(JSON.stringify(this.classe));
         this.semaforos.classeLoaded = true;
       })
       .catch(error => {
@@ -265,7 +264,6 @@ export default {
   },
 
   watch: {
-    
     "classe.nivel": function() {
       if (this.classe.nivel > 1) {
         this.loadPais();
@@ -287,7 +285,10 @@ export default {
     "classe.temSubclasses4Nivel": function() {
       // Se passou a verdade vamos criar um par de subclasses
       // Informação base:
-      if (this.classe.temSubclasses4Nivel && (!this.classe.subclasses || (this.classe.subclasses.length == 0)) ) {
+      if (
+        this.classe.temSubclasses4Nivel &&
+        (!this.classe.subclasses || this.classe.subclasses.length == 0)
+      ) {
         var novaSubclasse1 = {
           nivel: 4,
           pai: this.classe.codigo,
@@ -359,7 +360,7 @@ export default {
       }
 
       // Se passou a falso vamos eliminar as subclasses
-      else if(!this.classe.temSubclasses4Nivel){
+      else if (!this.classe.temSubclasses4Nivel) {
         for (var j = 0; j < this.classe.subclasses.length; j++) {
           this.classe.subclasses[j].processosRelacionados.splice(
             0,
@@ -389,7 +390,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/classes?nivel=" + (this.classe.nivel - 1)
+          "/classes?nivel=" + (this.classe.nivel - 1)
         );
         this.classesPai = response.data
           .map(function(item) {
@@ -410,7 +411,7 @@ export default {
 
     loadEntidades: async function() {
       try {
-        var response = await this.$request("get", "/api/entidades");
+        var response = await this.$request("get", "/entidades");
         this.entidadesD = response.data.map(function(item) {
           return {
             selected: false,
@@ -422,7 +423,7 @@ export default {
             estado: item.estado
           };
         });
-        response = await this.$request("get", "/api/tipologias");
+        response = await this.$request("get", "/tipologias");
         this.entidadesD = await this.entidadesD.concat(
           response.data.map(function(item) {
             return {
@@ -450,7 +451,7 @@ export default {
 
     loadProcessos: async function() {
       try {
-        var response = await this.$request("get", "/api/classes?nivel=3");
+        var response = await this.$request("get", "/classes?nivel=3");
         this.listaProcessos = response.data
           .map(function(item) {
             return {
@@ -475,7 +476,7 @@ export default {
 
     loadLegislacao: async function() {
       try {
-        var response = await this.$request("get", "/api/legislacao?estado=A");
+        var response = await this.$request("get", "/legislacao?estado=A");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {
@@ -509,7 +510,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/vocabularios/vc_pcaFormaContagem"
+          "/vocabularios/vc_pcaFormaContagem"
         );
         this.pcaFormasContagem = this.pcaFormasContagem.concat(
           response.data
@@ -535,7 +536,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/vocabularios/vc_pcaSubformaContagem"
+          "/vocabularios/vc_pcaSubformaContagem"
         );
         this.pcaSubFormasContagem = this.pcaSubFormasContagem.concat(
           response.data
@@ -840,4 +841,3 @@ export default {
   display: none;
 }
 </style>
-

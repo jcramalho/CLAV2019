@@ -23,7 +23,7 @@ export default {
   }),
 
   mounted: function() {
-    this.$request("get", "/api/pedidos/" + this.idp)
+    this.$request("get", "/pedidos/" + this.idp)
       .then(response => {
         this.selectedPedido = response.data;
         this.pedidoLoaded = true;

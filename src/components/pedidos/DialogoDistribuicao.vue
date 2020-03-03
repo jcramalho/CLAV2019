@@ -91,7 +91,7 @@ export default {
   methods: {
     created: async function(pedido) {
       try {
-        var response = await this.$request("get", "/api/users");
+        var response = await this.$request("get", "/users");
         this.usersRecords = response.data;
       } catch (e) {
         return e;
@@ -114,7 +114,7 @@ export default {
         };
         this.pedidoParaDistribuir.estado = "Distribuído";
         this.pedidoParaDistribuir.user = { token: this.$store.state.token };
-        var response = await this.$request("put", "/api/pedidos", {
+        var response = await this.$request("put", "/pedidos", {
           pedido: this.pedidoParaDistribuir,
           distribuicao: novaDistribuicao
         });

@@ -80,7 +80,7 @@
                 v-model="data"
                 label="Data: AAAA-MM-DD"
                 v-mask="'####-##-##'"
-              /> -->
+              />-->
             </v-col>
           </v-row>
           <v-row v-if="!!alertOn">
@@ -105,7 +105,7 @@
 
 <script>
 export default {
-  props: ["legislacao", "legislacaoClone"],
+  props: ["legislacao", "newSerie"],
   data: function() {
     return {
       data_menu: false,
@@ -125,7 +125,7 @@ export default {
     try {
       var tipos = await this.$request(
         "get",
-        "/api/vocabularios/vc_tipoDiplomaLegislativo"
+        "/vocabularios/vc_tipoDiplomaLegislativo"
       );
       this.listaTipos = tipos.data.map(t => {
         return { label: t.termo, value: t.termo };
@@ -151,8 +151,7 @@ export default {
 
           this.legislacao.push(legis);
           this.novasLegislacao.push(legis);
-          this.legislacaoClone.push(legis);
-
+          this.newSerie.legislacao.push(legis);
           this.sucessOn = true;
           this.$refs.form.reset();
         } else {

@@ -1,22 +1,46 @@
 <template>
   <v-card flat class="mb-12">
     <v-form ref="form" :lazy-validation="false">
-      <v-row v-if="!RE.tipologiasProd[0]">
-        <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Entidades Produtoras</div>
-        </v-col>
-        <v-col xs="12" sm="9">
-          <v-autocomplete
-            deletable-chips
-            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
-            v-model="RE.entidadesProd"
-            :items="entidadesProcessadas"
-            placeholder="Selecione as Entidades Produtoras."
-            chips
-            multiple
-          ></v-autocomplete>
-        </v-col>
-      </v-row>
+      <div v-if="!RE.tipologiasProd[0]">
+        <v-row>
+          <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Entidades Produtoras</div>
+          </v-col>
+          <v-col xs="12" sm="9">
+            <v-autocomplete
+              deletable-chips
+              :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
+              v-model="RE.entidadesProd"
+              :items="entidadesProcessadas"
+              item-text="searchField"
+              placeholder="Selecione as Entidades Produtoras."
+              chips
+              multiple
+              return-object
+            >
+              <template v-slot:no-data>
+                <v-list-item>
+                  <v-list-item-title>
+                    <strong>Entidade</strong> em questão não existe!
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+              <template v-slot:item="{ item }">
+                <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
+              </template>
+              <template v-slot:selection="data">
+                <v-chip
+                  v-bind="data.attrs"
+                  :input-value="data.selected"
+                  :close="produtoraEntidadeClasse(data.item.sigla, data.item.designacao)"
+                  @click:close="removeEnt(data.item)"
+                >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
+              </template>
+            </v-autocomplete>
+          </v-col>
+        </v-row>
+        <NovaEntidade :entidades="entidades" />
+      </div>
       <v-row v-if="!RE.entidadesProd[0]">
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Tipologias das Entidades Produtoras</div>
@@ -26,11 +50,36 @@
             deletable-chips
             :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RE.tipologiasProd"
-            :items="tipologias"
+            :items="tipologiasProcessadas"
+            item-text="searchField"
             chips
+            return-object
             placeholder="Selecione as Tipologias das Entidades Produtoras."
             multiple
-          ></v-autocomplete>
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-title>
+                  <strong>Tipologia</strong> em questão não existe!
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+            <template v-slot:item="{ item }">
+              <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
+            </template>
+            <template v-slot:selection="data">
+              <v-chip
+                v-bind="data.attrs"
+                :input-value="data.selected"
+                :close="produtoraTipologiaClasse(data.item.sigla, data.item.designacao)"
+                @click="data.select"
+                @click:close="removeTip(data.item)"
+              >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
+            </template>
+            <!-- <template v-slot:selection="{ item }">
+              <v-chip>{{ item.sigla + ' - ' + item.designacao}}</v-chip>
+            </template>-->
+          </v-autocomplete>
         </v-col>
       </v-row>
       <hr style="border: 2px solid indigo; border-radius: 1px;" />
@@ -214,12 +263,24 @@
 </template>
 
 <script>
+import NovaEntidade from "./classes/partes/NovaEntidade";
+
 export default {
-  props: ["RE", "entidades", "tipologias"],
+  props: ["RE", "entidades", "tipologias", "classes"],
+  components: {
+    NovaEntidade
+  },
   computed: {
     entidadesProcessadas() {
       return this.entidades.map(item => {
-        return item.sigla + " - " + item.designacao;
+        item["searchField"] = item.sigla + " - " + item.designacao;
+        return item;
+      });
+    },
+    tipologiasProcessadas() {
+      return this.tipologias.map(item => {
+        item["searchField"] = item.sigla + " - " + item.designacao;
+        return item;
       });
     }
   },
@@ -244,6 +305,48 @@ export default {
           this.$emit("seguinte", 3);
         }
       }, 1);
+    },
+    removeEnt: function(item) {
+      const index = this.RE.entidadesProd.findIndex(
+        i => i.sigla === item.sigla
+      );
+      if (index >= 0) this.RE.entidadesProd.splice(index, 1);
+    },
+    removeTip: function(item) {
+      const index = this.RE.tipologiasProd.findIndex(
+        i => i.sigla === item.sigla
+      );
+      if (index >= 0) this.RE.tipologiasProd.splice(index, 1);
+    },
+    produtoraEntidadeClasse(sigla, desi) {
+      let classes = this.classes.filter(e => e.tipo == "Série");
+
+      for (let i = 0; i < classes.length; i++) {
+        for (let j = 0; j < classes[i].entProdutoras.length; j++) {
+          if (
+            classes[i].entProdutoras[j].sigla == sigla &&
+            classes[i].entProdutoras[j].designacao == desi
+          ) {
+            return false;
+          }
+        }
+      }
+      return true;
+    },
+    produtoraTipologiaClasse(sigla, desi) {
+      let classes = this.classes.filter(e => e.tipo == "Série");
+
+      for (let i = 0; i < classes.length; i++) {
+        for (let j = 0; j < classes[i].tipologiasProdutoras.length; j++) {
+          if (
+            classes[i].tipologiasProdutoras[j].sigla == sigla &&
+            classes[i].tipologiasProdutoras[j].designacao == desi
+          ) {
+            return false;
+          }
+        }
+      }
+      return true;
     }
   }
 };

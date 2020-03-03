@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Selecione os diplomas:</div>
+      <div class="info-label">Selecione a legislação</div>
     </v-col>
     <v-col v-if="legislacaoReady">
       <v-card>
@@ -45,7 +45,7 @@
       </v-card>
     </v-col>
     <v-col v-else>
-      <v-subheader>A carregar entidades...</v-subheader>
+      <v-subheader>{{ mylabels.legislacao }}</v-subheader>
     </v-col>
   </v-row>
 </template>
@@ -57,6 +57,7 @@ export default {
   data: function() {
     return {
       searchDiplomas: "",
+      mylabels: require("@/config/labels").mensagensEspera,
 
       headers: [
         { text: "Tipo", align: "left", value: "tipo", sortable: false },

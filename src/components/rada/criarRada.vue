@@ -1,13 +1,18 @@
 <template>
   <v-card flat class="ma-4">
-    <v-card-title
-      class="indigo darken-4 white--text"
-    >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title>
+    <v-card-title class="indigo darken-4 white--text">
+      Criar Relatório de Avaliação de Documentação Acumulada
+      <v-spacer />
+      <v-btn v-if="guardar" style="background-color: #1a237e;" dark @click="guardarTrabalho">
+        Guardar Trabalho
+        <v-icon right>save</v-icon>
+      </v-btn>
+    </v-card-title>
     <v-card-text>
       <br />
       <v-stepper v-model="e1" vertical class="elevation-0">
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
           <font size="4">
             <b>Informação Geral</b>
           </font>
@@ -17,7 +22,7 @@
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -25,6 +30,7 @@
         <v-stepper-content step="2">
           <RelatorioExpositivo
             @seguinte="changeE1"
+            :classes="RADA.tsRada.classes"
             :RE="RADA.RE"
             :entidades="entidades"
             :tipologias="tipologias"
@@ -32,15 +38,39 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
         </v-stepper-step>
         <v-stepper-content step="3">
-          <TSRada @done="done" @voltar="changeE1" :TS="RADA.tsRada" :entidades="entidades" />
+          <TSRada
+            @done="done"
+            @voltar="changeE1"
+            :RE="RADA.RE"
+            :TS="RADA.tsRada"
+            :entidades="entidades"
+          />
         </v-stepper-content>
       </v-stepper>
+      <v-row justify-center>
+        <v-dialog v-model="dialogRADAPendente" persistent max-width="60%">
+          <v-card>
+            <v-card-title class="headline">Trabalho pendente guardado</v-card-title>
+            <v-card-text>
+              <p>
+                Os seus dados foram guardados para que possa retomar o trabalho
+                mais tarde.
+              </p>
+              <!-- <p>{{ mensagemPendenteCriadoOK }}</p> -->
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
       <v-row justify-center>
         <v-dialog v-model="dialogRADACriado" persistent max-width="60%">
           <v-card>
@@ -70,6 +100,8 @@ export default {
   },
   data() {
     return {
+      mensagemPendenteCriadoOK: "",
+      dialogRADAPendente: false,
       mensagemPedidoCriadoOK: "",
       dialogRADACriado: false,
       entidades: [],
@@ -77,6 +109,7 @@ export default {
       legislacao: [],
       e1: 1,
       titulo: "",
+      guardar: false,
       RADA: {
         titulo: "",
         despachoAprovacao: null,
@@ -114,18 +147,52 @@ export default {
             //   descricao: "Descricaao 01"
             // },
             // {
+            //   codigo: "01.02",
+            //   tipo: "N2",
+            //   titulo: "Reforma Agraria N2",
+            //   eFilhoDe: "01",
+            //   descricao: "Descricaao 01"
+            // },
+            // {
             //   codigo: "01.01",
             //   tipo: "Série",
             //   titulo: "Serie da Reforma Agraria",
             //   eFilhoDe: "01",
-            //   descricao: "asjdbjahs"
+            //   descricao: "asjdbjahs",
+            //   relacoes: [],
+            //   dataInicial: "",
+            //   dataFinal: "",
+            //   tUA: "",
+            //   tSerie: "",
+            //   suporte: "",
+            //   medicao: "",
+            //   localizacao: [],
+            //   entProdutoras: [],
+            //   tipologiasProdutoras: [],
+            //   legislacao: [],
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: "",
+            //   children: []
             // },
             // {
             //   codigo: "01.01.01",
             //   tipo: "Subsérie",
             //   titulo: "Subserie da Serie da Reforma Agraria",
             //   eFilhoDe: "01.01",
-            //   descricao: "askpdoiapsodi"
+            //   descricao: "askpdoiapsodi",
+            //   relacoes: [],
+            //   dataInicial: "",
+            //   dataFinal: "",
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: ""
             // },
             // {
             //   codigo: "02",
@@ -139,14 +206,41 @@ export default {
             //   tipo: "Série",
             //   titulo: "Serie da Reforma Agraria",
             //   eFilhoDe: "02",
-            //   descricao: "asjdbjahs"
+            //   descricao: "asjdbjahs",
+            //   relacoes: [],
+            //   dataInicial: "",
+            //   dataFinal: "",
+            //   tUA: "",
+            //   tSerie: "",
+            //   suporte: "",
+            //   medicao: "",
+            //   localizacao: [],
+            //   entProdutoras: [],
+            //   tipologiasProdutoras: [],
+            //   legislacao: [],
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: "",
+            //   children: []
             // },
             // {
             //   codigo: "02.01.01",
             //   tipo: "Subsérie",
             //   titulo: "Subserie da Serie da Reforma Agraria",
             //   eFilhoDe: "02.01",
-            //   descricao: "askpdoiapsodi"
+            //   descricao: "askpdoiapsodi",
+            //   relacoes: [],
+            //   dataInicial: "",
+            //   dataFinal: "",
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: ""
             // }
           ]
         }
@@ -154,7 +248,31 @@ export default {
       userEmail: ""
     };
   },
+  watch: {
+    e1(v) {
+      if (v > 1 && !this.guardar) {
+        this.guardar = true;
+      }
+    }
+  },
   methods: {
+    guardarTrabalho: function() {
+      let pendenteParams = {
+        numInterv: 1,
+        acao: "Criação",
+        tipo: "RADA",
+        objeto: this.RADA,
+        criadoPor: this.userEmail,
+        user: { email: this.userEmail },
+        token: this.$store.state.token
+      };
+
+      let response = this.$request("post", "/pendentes", pendenteParams);
+
+      response.then(resp => {
+        this.dialogRADAPendente = true;
+      });
+    },
     changeE1: function(e) {
       this.e1 = e;
     },
@@ -170,30 +288,28 @@ export default {
         criadoPor: this.userEmail
       };
 
-      let response = await this.$request("post", "/api/pedidos", pedidoParams);
-
+      let response = await this.$request("post", "/pedidos", pedidoParams);
+      
       this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
       this.dialogRADACriado = true;
     }
   },
   created: async function() {
-    let response = await this.$request("get", "/api/entidades");
+    let response = await this.$request("get", "/entidades");
     this.entidades = response.data;
 
-    response = await this.$request("get", "/api/tipologias");
-    this.tipologias = response.data.map(item => {
-      return item.sigla + " - " + item.designacao;
-    });
+    response = await this.$request("get", "/tipologias");
+    this.tipologias = response.data;
 
     let userBD = await this.$request(
       "get",
-      "/api/users/" + this.$store.state.token + "/token"
+      "/users/" + this.$store.state.token + "/token"
     );
     this.userEmail = userBD.data.email;
 
     let userEntidade = await this.$request(
       "get",
-      "/api/entidades/" + userBD.data.entidade
+      "/entidades/" + userBD.data.entidade
     );
 
     this.RADA.entRes.push(

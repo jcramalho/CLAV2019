@@ -4,7 +4,11 @@
       <v-flex xs12 sm8 md4>
         <v-card class="elevation-12">
           <v-toolbar dark color="primary" v-if="validJWT">
-            <v-toolbar-title>Alteração de password</v-toolbar-title>
+            <v-toolbar-title>
+              <span v-if="temPass">Alteração</span>
+              <span v-else>Definição</span>
+              de password
+            </v-toolbar-title>
           </v-toolbar>
           <v-card-text v-if="validJWT">
             <v-form ref="form" lazy-validation>
@@ -15,6 +19,18 @@
                 v-model="form.name"
                 disabled
               />
+              <div v-if="temPass">
+                <v-text-field
+                  id="password"
+                  prepend-icon="lock"
+                  name="password"
+                  v-model="form.atualPassword"
+                  label="Password Atual"
+                  type="password"
+                  :rules="regraAtualPassword"
+                  required
+                />
+              </div>
               <v-text-field
                 id="password"
                 prepend-icon="lock"
@@ -41,9 +57,11 @@
           </v-card-text>
           <v-card-actions v-if="validJWT">
             <v-spacer></v-spacer>
-            <v-btn color="primary" type="submit" @click="alterarPW"
-              >Alterar password</v-btn
-            >
+            <v-btn color="primary" type="submit" @click="alterarPW">
+              <span v-if="temPass">Alterar</span>
+              <span v-else>Definir</span>
+              password
+            </v-btn>
           </v-card-actions>
           <v-snackbar
             v-model="snackbar"
@@ -66,17 +84,22 @@ export default {
   mounted: async function() {
     var res = await this.$request(
       "get",
-      "/api/users/" + this.$store.state.token + "/token"
+      "/users/" + this.$store.state.token + "/token"
     );
-    this.validJWT = true;
     this.form.id = res.data._id;
     this.form.name = res.data.name;
+
+    res = await this.$request("get", "/users/" + this.form.id);
+    this.temPass = res.data.local;
+    this.validJWT = true;
   },
   data() {
     return {
+      regraAtualPassword: [v => !!v || "Password atual é obrigatório."],
       regraPassword: [v => !!v || "Password é obrigatório."],
       form: {
         name: "",
+        atualPassword: "",
         password: "",
         rep_password: ""
       },
@@ -85,7 +108,8 @@ export default {
       color: "",
       done: false,
       timeout: 4000,
-      text: ""
+      text: "",
+      temPass: false
     };
   },
   methods: {
@@ -104,9 +128,16 @@ export default {
     },
     alterarPW() {
       if (this.$refs.form.validate()) {
-        this.$request("put", "/api/users/"+this.form.id+"/password", {
-          password: this.$data.form.password
-        })
+        var obj;
+        if (this.temPass) {
+          obj = {
+            atualPassword: this.form.atualPassword,
+            novaPassword: this.form.password
+          };
+        } else {
+          obj = { novaPassword: this.form.password };
+        }
+        this.$request("put", "/users/" + this.form.id + "/password", obj)
           .then(res => {
             this.text = res.data;
             this.color = "success";
@@ -114,7 +145,8 @@ export default {
             this.done = true;
           })
           .catch(err => {
-            this.text = "Ocorreu um erro ao atualizar a sua password.";
+            this.text =
+              "Ocorreu um erro ao atualizar a sua password. Introduziu corretamente a password atual?";
             this.color = "error";
             this.snackbar = true;
             this.done = false;

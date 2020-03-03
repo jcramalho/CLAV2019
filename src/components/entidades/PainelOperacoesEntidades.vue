@@ -1,11 +1,7 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <ValidarEntidadeInfoBox
-        v-if="this.acao !== 'Extinção'"
-        :e="e"
-        :acao="acao"
-      />
+      <ValidarEntidadeInfoBox :e="e" :acao="acao" />
 
       <v-col>
         <v-btn
@@ -21,13 +17,6 @@
           class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
           >Alterar Entidade</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Extinção'"
-          rounded
-          class="indigo accent-4 white--text"
-          @click="criarAlterarEntidade"
-          >Extinguir Entidade</v-btn
         >
       </v-col>
 
@@ -47,14 +36,6 @@
           class="red darken-4"
           @click="eliminarEntidade"
           >Cancelar Alteração</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Extinção'"
-          dark
-          rounded
-          class="red darken-4"
-          @click="eliminarEntidade"
-          >Cancelar Extinção</v-btn
         >
       </v-col>
 
@@ -161,6 +142,16 @@
                 ></v-data-table>
               </v-col>
             </v-row>
+
+            <v-row v-if="e.dataExtincao">
+              <v-col cols="2">
+                <div class="info-label">Data de Extinção:</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ e.dataExtincao }}</div>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -177,7 +168,7 @@
       <!-- Cancelamento da criação de uma entidade: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title>Cancelamento do pedido </v-card-title>
+          <v-card-title>Cancelamento do pedido.</v-card-title>
           <v-card-text>
             <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
@@ -227,7 +218,6 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,
-      numeroErros: 0,
       errosValidacao: false,
       pedidoEliminado: false,
       headers: [
@@ -239,79 +229,82 @@ export default {
 
   methods: {
     validarEntidadeCriacao: async function() {
+      let numeroErros = 0;
       // Designação
-      if (this.e.designacao == "" || this.e.designacao == null) {
-        this.numeroErros++;
+      if (this.e.designacao === "" || this.e.designacao === null) {
+        numeroErros++;
       } else {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/api/entidades/designacao/" + encodeURIComponent(this.e.designacao)
+            "/entidades/designacao?valor=" +
+              encodeURIComponent(this.e.designacao)
           );
           if (existeDesignacao.data) {
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Sigla
-      if (this.e.sigla == "" || this.e.sigla == null) {
-        this.numeroErros++;
+      if (this.e.sigla === "" || this.e.sigla === null) {
+        numeroErros++;
       } else {
         try {
           let existeSigla = await this.$request(
             "get",
-            "/api/entidades/sigla/" + encodeURIComponent(this.e.sigla)
+            "/entidades/sigla?valor=" + encodeURIComponent(this.e.sigla)
           );
           if (existeSigla.data) {
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Internacional
-      if (this.e.internacional == "" || this.e.internacional == null) {
-        this.numeroErros++;
+      if (this.e.internacional === "" || this.e.internacional === null) {
+        numeroErros++;
       }
 
       // SIOE
-      if (this.e.sioe != "" && this.e.sioe != null) {
+      if (this.e.sioe !== "" && this.e.sioe !== null) {
         if (this.e.sioe.length > 12) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
-      return this.numeroErros;
+      return numeroErros;
     },
 
     validarEntidadeAlteracao() {
+      let numeroErros = 0;
       // Designação
       if (this.e.designacao == "" || this.e.designacao == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // Sigla
       if (this.e.sigla == "" || this.e.sigla == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // Internacional
       if (this.e.internacional == "" || this.e.internacional == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // SIOE
       if (this.e.sioe != "" && this.e.sioe != null) {
         if (this.e.sioe.length > 12) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
-      return this.numeroErros;
+      return numeroErros;
     },
 
     // Lança o pedido de criação da entidade no worflow
@@ -334,10 +327,10 @@ export default {
               break;
           }
 
-          if (erros == 0) {
+          if (erros === 0) {
             let userBD = await this.$request(
               "get",
-              "/api/users/" + this.$store.state.token + "/token"
+              "/users/" + this.$store.state.token + "/token"
             );
             let dataObj = this.e;
             dataObj.codigo = "ent_" + this.e.sigla;
@@ -352,7 +345,7 @@ export default {
 
             var response = await this.$request(
               "post",
-              "/api/pedidos",
+              "/pedidos",
               pedidoParams
             );
             this.dialogEntidadeCriada = true;

@@ -18,7 +18,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="50"
                 single-line
                 v-model="tipologia.designacao"
                 maxlength="50"
@@ -35,7 +34,6 @@
                 solo
                 clearable
                 color="indigo"
-                counter="10"
                 single-line
                 v-model="tipologia.sigla"
                 maxlength="10"
@@ -46,7 +44,9 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">Entidades</v-expansion-panel-header>
+              <v-expansion-panel-header class="expansion-panel-heading"
+                >Entidades</v-expansion-panel-header
+              >
               <v-expansion-panel-content>
                 <DesSelEnt
                   :entidades="entSel"
@@ -65,7 +65,12 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-card-text>
-        <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+        <v-snackbar
+          v-model="snackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
           {{ text }}
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
@@ -109,7 +114,7 @@ export default {
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-        let response = await this.$request("get", "/api/entidades");
+        let response = await this.$request("get", "/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,

@@ -174,7 +174,7 @@ export default {
         } else {
           var userBD = await this.$request(
             "get",
-            "/api/users/" + this.$store.state.token + "/token"
+            "/users/" + this.$store.state.token + "/token"
           );
           var pendenteParams = {
             numInterv: 1,
@@ -187,7 +187,7 @@ export default {
           };
           var response = await this.$request(
             "post",
-            "/api/pendentes",
+            "/pendentes",
             pendenteParams
           );
           this.pendenteGuardado = true;
@@ -205,7 +205,8 @@ export default {
         try {
           let existeTI = await this.$request(
             "get",
-            "/api/termosIndice/" + encodeURIComponent(this.ti.termo)
+            "/termosIndice/termoIndice?valor=" +
+              encodeURIComponent(this.ti.termo)
           );
           if (existeTI.data) {
             this.numeroErros++;
@@ -232,7 +233,7 @@ export default {
           if (erros == 0) {
             let userBD = await this.$request(
               "get",
-              "/api/users/" + this.$store.state.token + "/token"
+              "/users/" + this.$store.state.token + "/token"
             );
 
             let dataObj = this.ti;
@@ -249,7 +250,7 @@ export default {
 
             var response = await this.$request(
               "post",
-              "/api/pedidos",
+              "/pedidos",
               pedidoParams
             );
             this.mensagemPedidoCriadoOK += JSON.stringify(response.data);

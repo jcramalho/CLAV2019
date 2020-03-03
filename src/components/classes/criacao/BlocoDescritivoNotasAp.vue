@@ -16,7 +16,7 @@
         rounded
         @click="insereNovaNota(c.notasAp, 'na')"
       >
-        Nota aplicação
+        Nota de aplicação
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
     </v-col>

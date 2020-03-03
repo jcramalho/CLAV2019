@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
         <v-icon dark left>add</v-icon>Subsérie
@@ -12,7 +12,7 @@
         <v-form ref="form" :lazy-validation="false">
           <!-- <h5>Identificação</h5>
           <v-divider></v-divider>-->
-          <Identificacao :newSerie="newSubSerie" />
+          <Identificacao :newSerie="newSubSerie" :classes="classes"  />
 
           <v-expansion-panels accordion>
             <v-expansion-panel popout focusable>
@@ -54,14 +54,16 @@
                 v-model="newSubSerie.eFilhoDe"
                 :items="classesFiltradas"
                 :rules="[v => !!v || 'Este campo é obrigatório.']"
-                item-text="codigo"
                 item-value="codigo"
                 dense
                 solo
                 clearable
                 placeholder="Classe Pai"
-                chips
               >
+                <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
+                <template v-slot:selection="{ item }">
+                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
+                </template>
                 <template v-slot:no-data>
                   <v-container fluid>
                     <v-alert
@@ -113,6 +115,11 @@ export default {
       descricao: "",
       dataInicial: "",
       dataFinal: "",
+      // codigo: "02.01.02",
+      // titulo: "SUBSERIESERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
       relacoes: [],
       pca: "",
       formaContagem: "",
@@ -121,20 +128,24 @@ export default {
       justificacaoDF: "",
       notas: "",
       eFilhoDe: "",
-      tipo: "Subsérie",
-      children: []
+      tipo: "Subsérie"
     }
   }),
   methods: {
     apagar: function() {
+      this.newSubSerie.relacoes = [];
       this.$refs.form.reset();
     },
     close: function() {
       this.dialog = false;
     },
-    save: function() {
+    save: async function() {
       if (this.$refs.form.validate()) {
-        this.classes.push(Object.assign({}, this.newSubSerie));
+        let clone_newSubserie = Object.assign({}, this.newSubSerie);
+
+        await this.relacoes_simetricas(clone_newSubserie);
+
+        this.classes.push(clone_newSubserie);
         this.dialog = false;
         this.apagar();
       }
@@ -144,7 +155,65 @@ export default {
         classe => classe.tipo == "Série"
       );
 
-      this.classesNomes = this.classes.map(e => e.codigo + " - " + e.titulo);
+      this.classesNomes = this.classes.filter(
+        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      );
+      // .map(e => e.codigo + " - " + e.titulo);
+    },
+    relacoes_simetricas: async function(clone_newSubserie) {
+      for (let i = 0; i < clone_newSubserie.relacoes.length; i++) {
+        /*
+        
+          Ver qual é a série relacionada, ir encontrar e adicionar a relação oposta;
+
+        */
+
+        let classe_relacionada = clone_newSubserie.relacoes[i].serieRelacionada;
+        let relacao_inversa = "";
+
+        switch (clone_newSubserie.relacoes[i].relacao) {
+          case "Antecessora de":
+            relacao_inversa = "Sucessora de";
+            break;
+          case "Sucessora de":
+            relacao_inversa = "Antecessora de";
+            break;
+          case "Complementar de":
+            relacao_inversa = "Complementar de";
+            break;
+          case "Sintetizado por":
+            relacao_inversa = "Síntese de";
+            break;
+          case "Síntese de":
+            relacao_inversa = "Sintetizado por";
+            break;
+          case "Suplemento de":
+            relacao_inversa = "Suplemento para";
+            break;
+          case "Suplemento para":
+            relacao_inversa = "Suplemento de";
+            break;
+        }
+
+        /*
+        
+        Adicionar as relações simétricas verificando se essa relação já existe
+        
+        */
+
+        let existe_repetida = await classe_relacionada.relacoes.find(
+          e =>
+            e.relacao == relacao_inversa &&
+            e.serieRelacionada == clone_newSubserie.codigo
+        );
+
+        if (existe_repetida == undefined) {
+          classe_relacionada.relacoes.push({
+            relacao: relacao_inversa,
+            serieRelacionada: clone_newSubserie
+          });
+        }
+      }
     }
   }
 };

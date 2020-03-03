@@ -49,7 +49,7 @@
             :item="props.item"
             @rowClicked="go($event.numero)"
             @iconClicked="
-              switchOperacao($event.operacao.descricao, $event.item.numero)
+              switchOperacao($event.operacao.descricao, $event.item.id)
             "
           />
 
@@ -133,7 +133,6 @@ export default {
     },
 
     goEditar(id) {
-      let idLeg = "";
       switch (this.tipo) {
         case "Entidades":
           this.$router.push("/entidades/editar/ent_" + id);
@@ -142,13 +141,7 @@ export default {
           this.$router.push("/tipologias/editar/tip_" + id);
           break;
         case "Legislação":
-          for (let i = 0; i < this.ids.length; i++) {
-            if (this.ids[i].numero === id) {
-              idLeg = this.ids[i].id;
-              break;
-            }
-          }
-          this.$router.push("/legislacao/editar/" + idLeg);
+          this.$router.push("/legislacao/editar/" + id);
           break;
         // case "Termos de Índice":
         //   this.$router.push("/classes/consultar/c" + id);
@@ -171,10 +164,6 @@ export default {
         case "Remoção":
           break;
 
-        case "Extinção":
-          this.$router.push("/entidades/extinguir/ent_" + id);
-          break;
-
         default:
           break;
       }
@@ -187,7 +176,8 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "end"
+            align: "end",
+            width: "10%"
           };
         else
           this.headers[i] = {
