@@ -42,9 +42,9 @@ export default {
   },
   created: async function() {
     try {
-      var response = await this.$request("get", "/api/legislacao/portarias");
+      var response = await this.$request("get", "/legislacao/portarias");
       this.portarias = await this.prepararLeg(response.data);
-      var response2 = await this.$request("get", "/api/entidades/");
+      var response2 = await this.$request("get", "/entidades/");
       this.entidades = await this.prepararEntidade(response2.data);
     } catch (e) {
       this.portarias = [];
