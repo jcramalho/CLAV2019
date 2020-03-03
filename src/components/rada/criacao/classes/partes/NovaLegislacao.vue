@@ -142,6 +142,7 @@ export default {
       if (this.$refs.form.validate()) {
         if (!(await this.validaLegislacao())) {
           let legis = {
+            estado: "Nova",
             tipo: this.tipo,
             id: "...",
             numero: this.numero,
