@@ -27,7 +27,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/autosEliminacao");
+      var response = await this.$request("get", "/autosEliminacao");
       this.autosEliminacao = await this.preparaLista(response.data);
     } catch (e) {
       return e;

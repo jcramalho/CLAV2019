@@ -93,6 +93,7 @@
           v-else
           solo
           readonly
+          hide-details
           :background-color="t.cor"
           :value="t.conteudo"
         >
@@ -104,12 +105,26 @@
         </v-text-field>
       </v-col>
     </v-row>
+
+    <v-row>
+      <v-spacer />
+      <PO
+        @avancarPedido="despacho($event)"
+        @mensagemDespacho="despacho($event)"
+      />
+    </v-row>
   </div>
 </template>
 
 <script>
+import PO from "@/components/pedidos/analise/PainelOperacoes";
+
 export default {
   props: ["p"],
+
+  components: {
+    PO
+  },
 
   data() {
     return {
@@ -123,7 +138,7 @@ export default {
         },
         {
           campo: "Fonte do Diploma",
-          conteudo: this.p.objeto.dados.diplomaFonte,
+          conteudo: this.p.objeto.dados.fonte,
           cor: null
         },
         {
@@ -174,6 +189,78 @@ export default {
   },
 
   methods: {
+    async despacho(evento) {
+      switch (evento.tipoOperacao) {
+        case "Devolver":
+          await this.despacharPedido("Devolvido", evento.mensagem);
+          break;
+
+        case "Encaminhar":
+          await this.encaminharPedido("Apreciado", evento);
+          break;
+
+        default:
+          break;
+      }
+    },
+
+    async despacharPedido(estado, mensagem) {
+      try {
+        let dadosUtilizador = await this.$request(
+          "get",
+          "/users/" + this.$store.state.token + "/token"
+        );
+
+        dadosUtilizador = dadosUtilizador.data;
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: mensagem
+        };
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        console.log("e :", e);
+      }
+    },
+
+    async encaminharPedido(estado, dados) {
+      try {
+        let dadosUtilizador = dados.utilizadorSelecionado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho
+        };
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        console.log("e :", e);
+      }
+    },
+
     verifica(obj) {
       const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
       this.legislacaoInfo[i].cor = "green lighten-3";

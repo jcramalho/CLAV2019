@@ -5,7 +5,7 @@ async function getCLAVToken(store) {
   var apikey;
 
   try {
-    var response = await axios.get(lhost + "/api/chaves/clavToken");
+    var response = await axios.get(lhost + "/chaves/clavToken");
     apikey = response.data.token;
 
     store.commit("guardaTokenCLAV", apikey);
@@ -48,7 +48,7 @@ function parseError(erro, path, store, router) {
   if (erro.response && erro.response.status) {
     var httpStatus = erro.response.status;
 
-    if (httpStatus == 401 && path != "/api/users/login") {
+    if (httpStatus == 401 && path != "/users/login") {
       store.commit("guardaTokenUtilizador", "");
       store.commit("guardaNomeUtilizador", "");
       store.commit("guardaTokenCLAV", "");

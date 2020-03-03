@@ -1,14 +1,20 @@
 <template>
   <v-card>
     <v-card-title class="expansion-panel-heading">Classe / Série</v-card-title>
-
     <v-card-text class="mt-4">
       <v-row>
         <v-col :md="2">
           <div class="info-label">Código da Classe</div>
         </v-col>
         <v-col>
-          <v-autocomplete label="Selecione a classe" :items="classes" v-model="classe" @change="defClasse()" solo dense></v-autocomplete>
+          <v-autocomplete
+            label="Selecione a classe"
+            :items="classes"
+            v-model="classe"
+            @change="defClasse()"
+            solo
+            dense
+          ></v-autocomplete>
         </v-col>
       </v-row>
       <v-row v-if="prazo && df">
@@ -30,8 +36,20 @@
           <div class="info-label">Natureza de Intervenção</div>
         </v-col>
         <v-col>
-          <v-text-field v-if="df=='Conservação'" :value="ni" solo dense readonly></v-text-field>
-          <v-text-field v-else-if="df=='Eliminação'" :value="ni" solo dense readonly></v-text-field>
+          <v-text-field
+            v-if="df == 'Conservação'"
+            :value="ni"
+            solo
+            dense
+            readonly
+          ></v-text-field>
+          <v-text-field
+            v-else-if="df == 'Eliminação'"
+            :value="ni"
+            solo
+            dense
+            readonly
+          ></v-text-field>
           <v-select
             v-else
             label="Selecione a Natureza de Intervenção"
@@ -67,7 +85,9 @@
             v-model="dataInicio"
             solo
             clearable
-          >Insira um ano</v-text-field>
+          >
+            Insira um ano
+          </v-text-field>
         </v-col>
         <v-col>
           <div class="info-label">Data de Fim</div>
@@ -79,7 +99,9 @@
             v-model="dataFim"
             solo
             clearable
-          >Insira um ano</v-text-field>
+          >
+            Insira um ano
+          </v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -93,7 +115,9 @@
             v-model="uiPapel"
             solo
             clearable
-          >Insira um ano</v-text-field>
+          >
+            Insira um ano
+          </v-text-field>
         </v-col>
         <v-col>
           <div class="info-label">Medição de UI Digital</div>
@@ -105,7 +129,9 @@
             v-model="uiDigital"
             solo
             clearable
-          >Insira um ano</v-text-field>
+          >
+            Insira um ano
+          </v-text-field>
         </v-col>
         <v-col>
           <div class="info-label">Medição de UI noutro Suporte</div>
@@ -117,30 +143,44 @@
             v-model="uiOutros"
             solo
             clearable
-          >Insira um ano</v-text-field>
+          >
+            Insira um ano
+          </v-text-field>
         </v-col>
       </v-row>
       <v-row justify="end">
         <v-btn color="red darken-4" dark text @click="limparZC">Limpar</v-btn>
-        <v-btn v-if="!this.zona" color="green darken-4" dark text @click="adicionarZC">Adicionar</v-btn>
-        <v-btn v-else color="green darken-4" dark text @click="editarZC">Guardar</v-btn>
+        <v-btn
+          v-if="!this.zona"
+          color="green darken-4"
+          dark
+          text
+          @click="adicionarZC"
+        >
+          Adicionar
+        </v-btn>
+        <v-btn v-else color="green darken-4" dark text @click="editarZC">
+          Guardar
+        </v-btn>
       </v-row>
     </v-card-text>
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
-        <v-card-title
-          class="red darken-4 title white--text"
-          dark
-        >Erro: Não foi possível adicionar a Zona de Controlo</v-card-title>
+        <v-card-title class="red darken-4 title white--text" dark>
+          Erro: Não foi possível adicionar a Zona de Controlo
+        </v-card-title>
 
         <v-card-text>
-          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro"></span>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro">
+          </span>
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="red darken-4" text @click="erroDialog = false">Fechar</v-btn>
+          <v-btn color="red darken-4" text @click="erroDialog = false">
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -150,7 +190,15 @@
 const help = require("@/config/help").help;
 
 export default {
-  props: ["classes", "entidades", "auto", "closeZC","zona","index","classesCompletas"],
+  props: [
+    "classes",
+    "entidades",
+    "auto",
+    "closeZC",
+    "zona",
+    "index",
+    "classesCompletas"
+  ],
   data: () => ({
     classe: null,
     ni: "Vazio",
@@ -170,31 +218,31 @@ export default {
     erroDialog: false
   }),
   created: function() {
-    if(this.zona) {
-      this.classe = this.zona.codigo + " - " + this.zona.titulo
-      this.ni = this.zona.ni
-      this.dono = this.zona.dono
-      this.dataInicio = this.zona.dataInicio
-      this.dataFim = this.zona.dataFim
-      this.uiPapel = this.zona.uiPapel
-      this.uiDigital = this.zona.uiDigital
-      this.uiOutros = this.zona.uiOutros
+    if (this.zona) {
+      this.classe = this.zona.codigo + " - " + this.zona.titulo;
+      this.ni = this.zona.ni;
+      this.dono = this.zona.dono;
+      this.dataInicio = this.zona.dataInicio;
+      this.dataFim = this.zona.dataFim;
+      this.uiPapel = this.zona.uiPapel;
+      this.uiDigital = this.zona.uiDigital;
+      this.uiOutros = this.zona.uiOutros;
     }
   },
   methods: {
     defClasse: async function() {
-      var c = this.classesCompletas.filter(c => c.codigo == this.classe.split(' - ')[0])
-      if(c[0]){
-        this.prazo = c[0].pca.valores +" Anos"
-        if(c[0].df.valor === "C") {
-          this.df = "Conservação"
-          this.ni = "Participante"
-        }
-        else if(c[0].df.valor === "E") { 
-          this.df = "Eliminação"
-          this.ni = "Dono"
-        }
-        else this.df = c[0].df.valor 
+      var c = this.classesCompletas.filter(
+        c => c.codigo == this.classe.split(" - ")[0]
+      );
+      if (c[0]) {
+        this.prazo = c[0].pca.valores + " Anos";
+        if (c[0].df.valor === "C") {
+          this.df = "Conservação";
+          this.ni = "Participante";
+        } else if (c[0].df.valor === "E") {
+          this.df = "Eliminação";
+          this.ni = "Dono";
+        } else this.df = c[0].df.valor;
       }
     },
     limparZC: function() {
@@ -213,7 +261,7 @@ export default {
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
-        zc => (zc.codigo+" - "+zc.titulo) == this.classe
+        zc => zc.codigo + " - " + zc.titulo == this.classe
       );
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro = help.AutoEliminacao.Erros.FaltaCampos;
@@ -221,7 +269,12 @@ export default {
       } else if (result.length > 0) {
         this.erro = help.AutoEliminacao.Erros.CodigoClasse;
         this.erroDialog = true;
-      } else if (!re.test(this.dataInicio) || !re.test(this.dataFim) || this.dataInicio.length!=4 || this.dataFim.length!=4) {
+      } else if (
+        !re.test(this.dataInicio) ||
+        !re.test(this.dataFim) ||
+        this.dataInicio.length != 4 ||
+        this.dataFim.length != 4
+      ) {
         this.erro = help.AutoEliminacao.Erros.DatasExtremas;
         this.erroDialog = true;
       } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
@@ -238,7 +291,7 @@ export default {
         this.erroDialog = true;
       } else {
         var codigo = this.classe.split(" - ")[0];
-        var classe = await this.$request("get", "/api/classes/c" + codigo);
+        var classe = await this.$request("get", "/classes/c" + codigo);
         var titulo = classe.data.titulo;
         var prazoConservacao = classe.data.pca.valores;
         var destino = classe.data.df.valor;
@@ -249,9 +302,9 @@ export default {
         var uiPapel;
         var uiDigital;
         var uiOutros;
-        
+
         if (this.dono) {
-          dono = this.dono
+          dono = this.dono;
         }
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
@@ -280,44 +333,49 @@ export default {
       }
     },
     editarZC: async function() {
-      var backup = this.auto.zonaControlo[this.index]
-      this.auto.zonaControlo[this.index] = {}
+      var backup = this.auto.zonaControlo[this.index];
+      this.auto.zonaControlo[this.index] = {};
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
-        zc => (zc.codigo+" - "+zc.titulo) == this.classe
+        zc => zc.codigo + " - " + zc.titulo == this.classe
       );
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
-        this.auto.zonaControlo[this.index] = backup
+        this.auto.zonaControlo[this.index] = backup;
       } else if (result.length > 0) {
         this.erro = help.AutoEliminacao.Erros.CodigoClasse;
         this.erroDialog = true;
-        this.auto.zonaControlo[this.index] = backup
-      } else if (!re.test(this.dataInicio) || !re.test(this.dataFim) || this.dataInicio.length!=4 || this.dataFim.length!=4) {
+        this.auto.zonaControlo[this.index] = backup;
+      } else if (
+        !re.test(this.dataInicio) ||
+        !re.test(this.dataFim) ||
+        this.dataInicio.length != 4 ||
+        this.dataFim.length != 4
+      ) {
         this.erro = help.AutoEliminacao.Erros.DatasExtremas;
         this.erroDialog = true;
-        this.auto.zonaControlo[this.index] = backup
+        this.auto.zonaControlo[this.index] = backup;
       } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
         this.erro = help.AutoEliminacao.Erros.DataInicio;
         this.erroDialog = true;
-        this.auto.zonaControlo[this.index] = backup
+        this.auto.zonaControlo[this.index] = backup;
       } else if (this.uiPapel && !reUI.test(this.uiPapel)) {
         this.erro = help.AutoEliminacao.Erros.MedicaoPapel;
         this.erroDialog = true;
-        this.auto.zonaControlo[this.index] = backup
+        this.auto.zonaControlo[this.index] = backup;
       } else if (this.uiDigital && !reUI.test(this.uiDigital)) {
         this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
         this.erroDialog = true;
-        this.auto.zonaControlo[this.index] = backup
+        this.auto.zonaControlo[this.index] = backup;
       } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
-        this.auto.zonaControlo[this.index] = backup
+        this.auto.zonaControlo[this.index] = backup;
       } else {
         var codigo = this.classe.split(" - ")[0];
-        var classe = await this.$request("get", "/api/classes/c" + codigo);
+        var classe = await this.$request("get", "/classes/c" + codigo);
         var titulo = classe.data.titulo;
         var prazoConservacao = classe.data.pca.valores;
         var destino = classe.data.df.valor;

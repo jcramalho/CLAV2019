@@ -1,76 +1,97 @@
 <template>
   <div>
-      <v-card class="ma-4">
-        <v-app-bar color="expansion-panel-heading" dark>
-          <v-toolbar-title class="card-heading">Novo Auto de Eliminação</v-toolbar-title>
-        </v-app-bar>
-        
-        <v-card-text>
-            <v-row>
-              <v-col :md="2">
-                <div class="info-label">Fonte de legitimação</div>
-              </v-col>
-              <v-col>
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="portarias"
-                  v-model="auto.legislacao"
-                  solo
-                  dense
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col :md="2">
-                <div class="info-label">Fundo</div>
-              </v-col>
-              <v-col>
-                <v-autocomplete
-                  label="Selecione a entidade responsável pelo fundo"
-                  :items="entidades"
-                  v-model="auto.fundo"
-                  solo
-                  dense
-                  chips
-                  multiple
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-            <!-- Adicionar Zona Controlo -->
-            <AdicionarZonaControlo
-              v-bind:classes="classes"
-              v-bind:entidades="entidades"
-              v-bind:auto="auto"
-              v-bind:classesCompletas="classesCompletas"
-            />
+    <v-card class="ma-4">
+      <v-app-bar color="expansion-panel-heading" dark>
+        <v-toolbar-title class="card-heading">
+          Novo Auto de Eliminação
+        </v-toolbar-title>
+      </v-app-bar>
 
-            <!-- Zonas de Controlo -->
-            <v-expansion-panels class="my-2">
-              <v-expansion-panel v-if="this.auto.zonaControlo.length>0" popout focusable>
-                <v-expansion-panel-header class="expansion-panel-heading">
-                  <div>Zonas de Controlo</div>
-                </v-expansion-panel-header>
+      <v-card-text>
+        <v-row>
+          <v-col :md="2">
+            <div class="info-label">Fonte de legitimação</div>
+          </v-col>
+          <v-col>
+            <v-autocomplete
+              label="Selecione a fonte de legitimação"
+              :items="portarias"
+              v-model="auto.legislacao"
+              solo
+              dense
+            ></v-autocomplete>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :md="2">
+            <div class="info-label">Fundo</div>
+          </v-col>
+          <v-col>
+            <v-autocomplete
+              label="Selecione a entidade responsável pelo fundo"
+              :items="entidades"
+              v-model="auto.fundo"
+              solo
+              dense
+              chips
+              multiple
+            ></v-autocomplete>
+          </v-col>
+        </v-row>
+        <!-- Adicionar Zona Controlo -->
+        <AdicionarZonaControlo
+          v-bind:classes="classes"
+          v-bind:entidades="entidades"
+          v-bind:auto="auto"
+          v-bind:classesCompletas="classesCompletas"
+        />
 
-                <v-expansion-panel-content>
-                  <ListaZonasControlo 
-                    v-bind:auto="auto"
-                    v-bind:classes="classes"
-                    v-bind:entidades="entidades"
-                  />
-                </v-expansion-panel-content>
-              </v-expansion-panel>
+        <!-- Zonas de Controlo -->
+        <v-expansion-panels class="my-2">
+          <v-expansion-panel
+            v-if="this.auto.zonaControlo.length > 0"
+            popout
+            focusable
+          >
+            <v-expansion-panel-header class="expansion-panel-heading">
+              <div>Zonas de Controlo</div>
+            </v-expansion-panel-header>
 
-            </v-expansion-panels>
-          </v-card-text>
-        </v-card>
-        <div class="mx-2">
-          <v-btn rounded color="warning" @click="guardarTrabalho" :disabled="!auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 ma-2">
-            Guardar Auto de Eliminação
-          </v-btn>
-          <v-btn rounded color="primary" @click="submit" :disabled="!auto.legislacao || !auto.fundo || auto.zonaControlo.length==0" class="elevation-2 ma-2">
-            Criar Auto de Eliminação
-          </v-btn>
-        </div>
+            <v-expansion-panel-content>
+              <ListaZonasControlo
+                v-bind:auto="auto"
+                v-bind:classes="classes"
+                v-bind:entidades="entidades"
+              />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-card-text>
+    </v-card>
+    <div class="mx-2">
+      <v-btn
+        rounded
+        color="warning"
+        @click="guardarTrabalho"
+        :disabled="
+          !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+        "
+        class="elevation-2 ma-2"
+      >
+        Guardar Auto de Eliminação
+      </v-btn>
+      <v-btn
+        rounded
+        color="primary"
+        @click="submit"
+        :disabled="
+          !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+        "
+        class="elevation-2 ma-2"
+      >
+        Criar Auto de Eliminação
+      </v-btn>
+    </div>
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
         <v-card-title class="teal darken-4 title white--text" dark>
@@ -121,14 +142,16 @@
         <v-card-title>Trabalho pendente guardado</v-card-title>
         <v-card-text>
           <p>
-            Os seus dados foram guardados para que possa retomar o trabalho
-            mais tarde.
+            Os seus dados foram guardados para que possa retomar o trabalho mais
+            tarde.
           </p>
           <p>{{ pendenteGuardadoInfo }}</p>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="green darken-1" dark @click="$router.push('/')">Fechar</v-btn>
+          <v-btn color="green darken-1" dark @click="$router.push('/')">
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -136,12 +159,12 @@
 </template>
 
 <script>
-import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/AdicionarZonaControlo.vue"
-import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue"
+import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/AdicionarZonaControlo.vue";
+import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["entidades","portarias","classes","classesCompletas"],
+  props: ["entidades", "portarias", "classes", "classesCompletas"],
   components: {
     AdicionarZonaControlo,
     ListaZonasControlo
@@ -157,25 +180,27 @@ export default {
     success: null,
     successDialog: false,
     pendenteGuardado: false,
-    pendenteGuardadoInfo: null,
+    pendenteGuardadoInfo: null
   }),
   methods: {
     submit: async function() {
-      this.auto.legislacao = "Portaria "+this.auto.legislacao.split(" ")[1]
-      var fundo = []
-      for(var f of this.auto.fundo) {
-        fundo.push(f.split(" - ")[1])
+      this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
+      var fundo = [];
+      for (var f of this.auto.fundo) {
+        fundo.push(f.split(" - ")[1]);
       }
-      this.auto.fundo = fundo
-      this.$request("post", "/api/autosEliminacao/", {auto: this.auto})
-        .then(r=> {
+      this.auto.fundo = fundo;
+      this.$request("post", "/autosEliminacao/", { auto: this.auto })
+        .then(r => {
           this.successDialog = true;
-          this.success = `<b>Código do pedido:</b>\n${JSON.stringify(this.auto)}`;
+          this.success = `<b>Código do pedido:</b>\n${JSON.stringify(
+            this.auto
+          )}`;
         })
         .catch(e => {
           this.erro = e.response.data;
           this.erroDialog = true;
-        })
+        });
     },
     guardarTrabalho: async function() {
       try {
@@ -184,7 +209,7 @@ export default {
         } else {
           var userBD = await this.$request(
             "get",
-            "/api/users/" + this.$store.state.token + "/token"
+            "/users/" + this.$store.state.token + "/token"
           );
           var pendenteParams = {
             numInterv: 1,
@@ -197,7 +222,7 @@ export default {
           };
           var response = await this.$request(
             "post",
-            "/api/pendentes",
+            "/pendentes",
             pendenteParams
           );
           this.pendenteGuardado = true;

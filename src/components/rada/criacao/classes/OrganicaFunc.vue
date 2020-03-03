@@ -1,29 +1,43 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
         <v-icon dark left>add</v-icon>área orgânico-funcional
       </v-btn>
     </template>
     <v-card>
-      <v-card-title class="indigo darken-1 white--text"><b>Adicionar Classe Área Orgânico-Funcional</b></v-card-title>
+      <v-card-title class="indigo darken-1 white--text">
+        <b>Adicionar Classe Área Orgânico-Funcional</b>
+      </v-card-title>
       <br />
       <v-card-text>
         <v-form ref="form" :lazy-validation="false">
           <!-- <h5>Identificação</h5>
-          <v-divider></v-divider> -->
+          <v-divider></v-divider>-->
           <v-row>
             <v-col md="3" sm="3">
               <div class="info-label">Código</div>
             </v-col>
             <v-col sm="3" md="3">
-              <v-text-field v-model="newOrgFunc.codigo" :rules="[v => !!v || 'Campo obrigatório!']" label="Código" solo clearable></v-text-field>
+              <v-text-field
+                v-model="newOrgFunc.codigo"
+                :rules="[v => verificaCodigo(v) || !!v || 'Campo obrigatório!']"
+                label="Código"
+                solo
+                clearable
+              ></v-text-field>
             </v-col>
             <v-col xs="3" sm="3">
               <div class="info-label">Título</div>
             </v-col>
             <v-col sm="3" md="3">
-              <v-text-field v-model="newOrgFunc.titulo" :rules="[v => !!v || 'Campo obrigatório!']" label="Título" solo clearable></v-text-field>
+              <v-text-field
+                v-model="newOrgFunc.titulo"
+                :rules="[v => !!v || 'Campo obrigatório!']"
+                label="Título"
+                solo
+                clearable
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -31,12 +45,18 @@
               <div class="info-label">Descrição</div>
             </v-col>
             <v-col sm="9" md="9">
-              <v-text-field v-model="newOrgFunc.descricao" :rules="[v => !!v || 'Campo obrigatório!']" label="Descrição" solo clearable></v-text-field>
+              <v-text-field
+                v-model="newOrgFunc.descricao"
+                :rules="[v => !!v || 'Campo obrigatório!']"
+                label="Descrição"
+                solo
+                clearable
+              ></v-text-field>
             </v-col>
           </v-row>
           <h5>Hierarquia</h5>
           <v-divider></v-divider>
-          
+
           <v-row>
             <v-col md="3" sm="3">
               <div class="info-label">Classe Pai</div>
@@ -45,7 +65,6 @@
               <v-autocomplete
                 v-model="newOrgFunc.eFilhoDe"
                 :items="classesFiltradas"
-                item-text="titulo"
                 item-value="codigo"
                 dense
                 solo
@@ -53,8 +72,9 @@
                 placeholder="Classe Pai"
                 chips
               >
-                <template v-slot:item="{ item }">
-                  {{item.codigo}} - {{ item.titulo }}
+                <template v-slot:item="{ item }">{{item.codigo}} - {{ item.titulo }}</template>
+                <template v-slot:selection="{ item }">
+                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
                 </template>
                 <template v-slot:no-data>
                   <v-container fluid>
@@ -123,7 +143,13 @@ export default {
       this.classesFiltradas = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
-
+    },
+    verificaCodigo(v) {
+      if (this.classes.some(e => e.codigo == v)) {
+        return "Código já existente!";
+      } else {
+        return false;
+      }
     }
   }
 };

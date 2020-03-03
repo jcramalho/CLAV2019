@@ -455,7 +455,7 @@ export default {
     tipoPar: async function() {
       var resPar = await this.$request(
         "get",
-        "/api/vocabularios/vc_processoTipoParticipacao"
+        "/vocabularios/vc_processoTipoParticipacao"
       );
       for (var i = 0; i < resPar.data.length; i++) {
         this.tipoParticipacao.push(resPar.data[i].termo);
@@ -551,7 +551,7 @@ export default {
   mounted: async function() {
     try {
       // Vai a API de dados buscar todos os cálculos das travessias
-      var res = await this.$request("get", "/api/travessia");
+      var res = await this.$request("get", "/travessia");
       var trav = res.data;
       for (var j = 0; j < trav.length; j++) {
         this.travessias[trav[j].processo] = trav[j].travessia;

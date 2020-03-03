@@ -43,21 +43,20 @@ export default {
         return [];
       }
     },
-    prepararClasses: async function(classes,nivel4) {
+    prepararClasses: async function(classes, nivel4) {
       try {
         var myClasses = [];
         for (var c of classes) {
-          if(c.df.valor !== "NE" ) 
-            myClasses.push(c.codigo + " - " + c.titulo);
+          if (c.df.valor !== "NE") myClasses.push(c.codigo + " - " + c.titulo);
           else {
-            var indexs = 0
-            for(var n of nivel4) {
-              if(n.codigo.includes(c.codigo)){
+            var indexs = 0;
+            for (var n of nivel4) {
+              if (n.codigo.includes(c.codigo)) {
                 myClasses.push(n.codigo + " - " + n.titulo);
                 indexs++;
               } else break;
             }
-            nivel4.splice(0,indexs)
+            nivel4.splice(0, indexs);
           }
         }
         return myClasses;
@@ -65,21 +64,20 @@ export default {
         return [];
       }
     },
-    prepararClassesCompletas: async function(classes,nivel4) {
+    prepararClassesCompletas: async function(classes, nivel4) {
       try {
         var myClasses = [];
         for (var c of classes) {
-          if(c.df.valor !== "NE" ) 
-            myClasses.push(c);
+          if (c.df.valor !== "NE") myClasses.push(c);
           else {
-            var indexs = 0
-            for(var n of nivel4) {
-              if(n.codigo.includes(c.codigo)){
+            var indexs = 0;
+            for (var n of nivel4) {
+              if (n.codigo.includes(c.codigo)) {
                 myClasses.push(n);
                 indexs++;
               } else break;
             }
-            nivel4.splice(0,indexs)
+            nivel4.splice(0, indexs);
           }
         }
         return myClasses;
@@ -90,22 +88,25 @@ export default {
   },
   created: async function() {
     try {
-      var response2 = await this.$request("get", "/api/legislacao/portarias");
+      var response2 = await this.$request("get", "/legislacao/portarias");
       this.portarias = await this.prepararLeg(response2.data);
 
-      var response = await this.$request("get", "/api/entidades/");
+      var response = await this.$request("get", "/entidades/");
       this.entidades = await this.prepararEntidade(response.data);
 
       var response3 = await this.$request(
         "get",
-        "/api/classes?nivel=3&info=completa"
+        "/classes?nivel=3&info=completa"
       );
       var response4 = await this.$request(
         "get",
-        "/api/classes?nivel=4&info=completa"
+        "/classes?nivel=4&info=completa"
       );
-      this.classes = await this.prepararClasses(response3.data,response4.data);
-      this.classesCompletas = await this.prepararClassesCompletas(response3.data,response4.data);
+      this.classes = await this.prepararClasses(response3.data, response4.data);
+      this.classesCompletas = await this.prepararClassesCompletas(
+        response3.data,
+        response4.data
+      );
     } catch (e) {
       this.entidades = [];
       this.portarias = [];

@@ -1,6 +1,6 @@
 module.exports.help = {
   ListaConsolidada:
-    "<p>A \"Lista Consolidada para a classificação e avaliação da informação pública\" é o referencial disponibilizado " +
+    '<p>A "Lista Consolidada para a classificação e avaliação da informação pública" é o referencial disponibilizado ' +
     "pela Direção-Geral do Livro, dos Arquivos e das Bibliotecas para servir de base à elaboração de instrumentos de gestão " +
     "da informação, nomeadamente planos de classificação e tabelas de seleção. " +
     "Este referencial apresenta uma estrutura hierárquica de classes que representam as funções e atividades executadas pela " +
@@ -25,7 +25,7 @@ module.exports.help = {
     "<p>As tabelas de seleção podem ser organizacionais (de uma entidade ou de uma tipologia de entidades) ou " +
     "pluriorganizacionais (de um conjunto de entidades, por exemplo de âmbito ministerial). " +
     "Constituem as fontes de legitimação para a eliminação da informação pública.</p>" +
-    "<p>Para aceder ao catálogo de tabelas de seleção aprovadas selecione a opção CONSULTAR. "+
+    "<p>Para aceder ao catálogo de tabelas de seleção aprovadas selecione a opção CONSULTAR. " +
     "As tabelas de seleção encontram-se organizadas por fonte de legitimação: TS publicadas em Portaria de Gestão de " +
     "Documentos (PGD)  ou proveniente de Relatório de Avaliação de Documentação Acumulada (RADA).</p>" +
     "<p>Para propor uma tabela de seleção derivada da Lista Consolidada selecione uma das opções: " +
@@ -51,9 +51,9 @@ module.exports.help = {
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
   AutosEliminacao:
-    "Autos de eliminação produzidos ao abrigo de tabela de seleção inserida em Portaria de gestão"+
-    " de documentos ou Relatório de avaliação de documentação acumulada e submetida à <strong>DGLAB</strong> para verificação de conformidade."+
-    "<ul><li>Para a criação assistida de autos de eliminação, selecione a opção <strong>CRIAR</strong></li>"+
+    "Autos de eliminação produzidos ao abrigo de tabela de seleção inserida em Portaria de gestão" +
+    " de documentos ou Relatório de avaliação de documentação acumulada e submetida à <strong>DGLAB</strong> para verificação de conformidade." +
+    "<ul><li>Para a criação assistida de autos de eliminação, selecione a opção <strong>CRIAR</strong></li>" +
     "<li>Para submeter autos de eliminação deverá selecionar a opção <strong>IMPORTAR</strong>.</li></ul>",
   Invariantes:
     "Conjunto de invariantes que testam situações de erro e identificam os PNs onde estas ocorrem.",
@@ -278,27 +278,35 @@ module.exports.help = {
   },
   AutoEliminacao: {
     Erros: {
-      FaltaCampos: "Verifique se os campos <strong>Código da Classe, Data de Início e/ou Data de Fim</strong> se encontram preenchidos.",
-      CodigoClasse: "O <strong>Código de Classe</strong> que introduziu na Zona de Controlo já foi introduzido no Auto.",
-      DatasExtremas: "Verifique se os campos <strong>Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.",
-      DataInicio: "O campo <strong>Data de Início</strong> tem de conter uma data anterior ou igual ao campo <strong>Data de Fim</strong>.",
-      MedicaoPapel: "Verifique se o campo <strong> Medição de UI em Papel</strong> se encontra devidamente preenchido.",
-      MedicaoDigital: "Verifique se o campo <strong> Medição de UI Digital</strong> se encontra devidamente preenchido.",
-      MedicaoOutro: "Verifique se o campo <strong> Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.",
-      FaltaCamposAg: "Verifique se os campos <strong>Código da Agregação, Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.",
-      CodigoAg: "O <strong>Código da Agregação</strong> que introduziu já foi associado a esta Zona de Controlo.",
-      DataContagem: "A Data de Contagem do Prazo de Conservação Administrativa da agregação tem de ser igual ou superior à Data de Início somada ao Prazo de Conservação Administrativo colocadas na respetiva Zona de Controlo.",
-      DataContagemP: "Verifique se o campo <strong>Data de Contagem do PCA</strong> se encontra devidamente preenchido."
+      FaltaCampos:
+        "Verifique se os campos <strong>Código da Classe, Data de Início e/ou Data de Fim</strong> se encontram preenchidos.",
+      CodigoClasse:
+        "O <strong>Código de Classe</strong> que introduziu na Zona de Controlo já foi introduzido no Auto.",
+      DatasExtremas:
+        "Verifique se os campos <strong>Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.",
+      DataInicio:
+        "O campo <strong>Data de Início</strong> tem de conter uma data anterior ou igual ao campo <strong>Data de Fim</strong>.",
+      MedicaoPapel:
+        "Verifique se o campo <strong> Medição de UI em Papel</strong> se encontra devidamente preenchido.",
+      MedicaoDigital:
+        "Verifique se o campo <strong> Medição de UI Digital</strong> se encontra devidamente preenchido.",
+      MedicaoOutro:
+        "Verifique se o campo <strong> Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.",
+      FaltaCamposAg:
+        "Verifique se os campos <strong>Código da Agregação, Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.",
+      CodigoAg:
+        "O <strong>Código da Agregação</strong> que introduziu já foi associado a esta Zona de Controlo.",
+      DataContagem:
+        "A Data de Contagem do Prazo de Conservação Administrativa da agregação tem de ser igual ou superior à Data de Início somada ao Prazo de Conservação Administrativo colocadas na respetiva Zona de Controlo.",
+      DataContagemP:
+        "Verifique se o campo <strong>Data de Contagem do PCA</strong> se encontra devidamente preenchido."
     },
     Campos: {
       FonteLegitimacao:
         "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
-      PGD_LC:
-        "Portaria de Gestão de Documentos conforme à Lista Consolidada",
-      PGD:
-        "Portaria de Gestão de Documentos",
-      RADA:
-        "Relatório de Avaliação de Documentação Acumulada"
+      PGD_LC: "Portaria de Gestão de Documentos conforme à Lista Consolidada",
+      PGD: "Portaria de Gestão de Documentos",
+      RADA: "Relatório de Avaliação de Documentação Acumulada"
     }
   }
 };

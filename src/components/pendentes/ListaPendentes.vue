@@ -11,6 +11,7 @@
         :footer-props="procsFooterProps"
       >
         <template v-slot:no-data>
+          <br/>
           <v-alert :value="true" color="error" icon="warning">
             Não foi possível apresentar uma lista dos trabalhos guardados...
           </v-alert>
@@ -112,7 +113,7 @@ export default {
   }),
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/pendentes");
+      var response = await this.$request("get", "/pendentes");
       this.pendentes = response.data;
     } catch (e) {
       return e;

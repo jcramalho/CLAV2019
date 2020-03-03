@@ -3,7 +3,7 @@
     <v-row>
       <!-- MENU LATERAL -->
       <v-col xs="12" sm="3">
-        <ClassesArvoreLateral :classeId="idc.split('c')[1]"/>
+        <ClassesArvoreLateral :classeId="idc.split('c')[1]" />
       </v-col>
       <v-col xs="12" sm="9">
         <!-- HEADER -->
@@ -222,10 +222,7 @@
                       >
                         {{ classe.pca.valores + " ano" }}
                       </div>
-                      <div
-                        class="info-content"
-                        v-else
-                      >
+                      <div class="info-content" v-else>
                         Não especificado
                       </div>
                     </v-col>
@@ -309,7 +306,8 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{// texto normalizado:
+                                {{
+                                  // texto normalizado:
                                   // mylabels.textoCriterioJustificacaoGestionario
                                   // texto proveniente da FRD:
                                   c.conteudo
@@ -476,9 +474,10 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{ // texto normalizado: 
-                                   // mylabels.textoCriterioDensidadeInfo 
-                                   // texto proveniente da FRD:
+                                {{
+                                  // texto normalizado:
+                                  // mylabels.textoCriterioDensidadeInfo
+                                  // texto proveniente da FRD:
                                   c.conteudo
                                 }}
                                 <br />
@@ -509,10 +508,11 @@
                             </v-col>
                             <v-col xs="10" sm="10">
                               <div class="info-content">
-                                {{ // texto normalizado:
-                                   // mylabels.textoCriterioComplementaridade 
-                                   // texto proveniente da FRD:
-                                   c.conteudo
+                                {{
+                                  // texto normalizado:
+                                  // mylabels.textoCriterioComplementaridade
+                                  // texto proveniente da FRD:
+                                  c.conteudo
                                 }}
                                 <br />
                                 <br />
@@ -591,7 +591,7 @@ export default {
     }
   },
   mounted: function() {
-    this.$request("get", "/api/classes/" + this.idc)
+    this.$request("get", "/classes/" + this.idc)
       .then(async response => {
         this.classe = response.data;
         if (this.classe.df.justificacao) {
@@ -603,7 +603,7 @@ export default {
                 j++
               ) {
                 let help =
-                  "/api/classes/" +
+                  "/classes/" +
                   this.classe.df.justificacao[i].processos[j].procId +
                   "/meta";
 
@@ -622,7 +622,7 @@ export default {
               ) {
                 await this.$request(
                   "get",
-                  "/api/legislacao/" +
+                  "/legislacao/" +
                     this.classe.df.justificacao[i].legislacao[j].legId
                 ).then(response => {
                   this.classe.df.justificacao[i].legislacao[j].tipo =
@@ -645,7 +645,7 @@ export default {
                 if (this.classe.pca.justificacao[h].processos[z].procId) {
                   await this.$request(
                     "get",
-                    "/api/classes/" +
+                    "/classes/" +
                       this.classe.pca.justificacao[h].processos[z].procId +
                       "/meta"
                   ).then(response => {
@@ -664,7 +664,7 @@ export default {
               ) {
                 await this.$request(
                   "get",
-                  "/api/legislacao/" +
+                  "/legislacao/" +
                     this.classe.pca.justificacao[h].legislacao[z].legId
                 ).then(response => {
                   this.classe.pca.justificacao[h].legislacao[z].tipo =

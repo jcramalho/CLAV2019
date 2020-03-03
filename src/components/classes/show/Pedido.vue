@@ -312,7 +312,7 @@ export default {
   },
 
   created: function() {
-    this.$request("get", "/api/pedidos/" + this.idp)
+    this.$request("get", "/pedidos/" + this.idp)
       .then(response => {
         this.classe = response.data.objeto.dados;
         this.classeLoaded = true;

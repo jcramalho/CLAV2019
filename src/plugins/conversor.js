@@ -75,17 +75,19 @@ var excel2Json = function(file, tipo) {
                 uiOutros: row.getCell(11).text,
                 agregacoes: []
               });
-              var referencia = row.getCell(2).text,
+              var referencia = row.getCell(2).text;
               conservacao = row.getCell(4).value;
             }
 
             var agreg = wb.getWorksheet(3);
+            var dataContagem;
+            var res;
             agreg.eachRow(function(ag, agNumber) {
               if (tipo === "PGD_LC") {
                 if (agNumber > 1 && ag.getCell(1).text === codigo) {
                   //Invariante da data de Conservacao
-                  var dataContagem = ag.getCell(4).value;
-                  var res = parseInt(conservacao) + parseInt(dataContagem);
+                  dataContagem = ag.getCell(4).value;
+                  res = parseInt(conservacao) + parseInt(dataContagem);
                   if (res < currentTime.getFullYear()) {
                     auto.zonaControlo[index].agregacoes.push({
                       codigo: ag.getCell(2).text.replace(/[ -.,!/]/g, "_"),
@@ -100,12 +102,15 @@ var excel2Json = function(file, tipo) {
                     });
                   }
                 }
-              }
-              else {
-                if (agNumber > 1 && (ag.getCell(1).text === codigo && ag.getCell(2).text === referencia)) {
+              } else {
+                if (
+                  agNumber > 1 &&
+                  (ag.getCell(1).text === codigo &&
+                    ag.getCell(2).text === referencia)
+                ) {
                   //Invariante da data de Conservacao
-                  var dataContagem = ag.getCell(5).value;
-                  var res = parseInt(conservacao) + parseInt(dataContagem);
+                  dataContagem = ag.getCell(5).value;
+                  res = parseInt(conservacao) + parseInt(dataContagem);
                   if (res < currentTime.getFullYear()) {
                     auto.zonaControlo[index].agregacoes.push({
                       codigo: ag.getCell(3).text.replace(/[ -.,!/]/g, "_"),

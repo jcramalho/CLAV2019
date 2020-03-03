@@ -103,7 +103,7 @@ export default {
         try {
           let existeNumero = await this.$request(
             "get",
-            "/api/legislacao/numero?valor=" + encodeURIComponent(this.l.numero)
+            "/legislacao/numero?valor=" + encodeURIComponent(this.l.numero)
           );
 
           if (existeNumero.data) {
@@ -362,6 +362,7 @@ export default {
 
         case "Alteração":
           this.validarLegislacaoAlteracao();
+          break;
 
         default:
           break;

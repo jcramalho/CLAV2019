@@ -226,6 +226,7 @@
 
 <script>
 const help = require("@/config/help").help;
+const lhost = require("@/config/global").host;
 
 export default {
   props: ["level"],
@@ -311,12 +312,12 @@ export default {
   async created() {
     let responseEntidades = await this.$request(
       "get",
-      "/api/entidades?processos=sem"
+      "/entidades?processos=sem"
     );
 
-    let responseLegislacoes = await this.$request("get", "/api/legislacao");
+    let responseLegislacoes = await this.$request("get", "/legislacao");
 
-    let responseTipologias = await this.$request("get", "/api/tipologias");
+    let responseTipologias = await this.$request("get", "/tipologias");
 
     this.preparaEntidades(responseEntidades.data, "Entidades");
     this.preparaLegislacoes(responseLegislacoes.data);
@@ -513,7 +514,7 @@ export default {
           ops: [
             {
               label: "Aceder",
-              url: "http://clav-api.dglab.gov.pt/docs",
+              url: lhost + "/docs",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             }
           ]

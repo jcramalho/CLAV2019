@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     async getNumeroEntidades() {
-      await this.$request("get", "/api/entidades")
+      await this.$request("get", "/entidades")
         .then(res => {
           this.stats.push({
             bgColor: "primary",
@@ -95,7 +95,7 @@ export default {
         .catch(error => alert(error));
     },
     async getNumeroUtilizadores() {
-      await this.$request("get", "/api/users")
+      await this.$request("get", "/users")
         .then(res => {
           this.numeroUtilizadores = res.data.length;
           this.stats.push({
@@ -112,7 +112,7 @@ export default {
         .catch(error => alert(error));
     },
     async getApiCalls() {
-      await this.$request("get", "/api/stats/total")
+      await this.$request("get", "/stats/total")
         .then(res => {
           this.stats.push({
             bgColor: "primary",
@@ -128,7 +128,7 @@ export default {
         .catch(error => alert(error));
     },
     async getNumeroChavesApi() {
-      await this.$request("get", "/api/chaves/")
+      await this.$request("get", "/chaves/")
         .then(res => {
           this.numeroChavesApi = res.data.length;
           this.stats.push({

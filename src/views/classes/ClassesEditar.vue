@@ -1,12 +1,11 @@
 <template>
   <v-card class="mx-auto ma-2">
-    <v-toolbar
-      color="indigo darken-4"
-      dark
-    >
+    <v-toolbar color="indigo darken-4" dark>
       <v-toolbar-title>Alterar Classe</v-toolbar-title>
     </v-toolbar>
-    <v-card-title class="title">Selecione a classe que pretende alterar</v-card-title>
+    <v-card-title class="title">
+      Selecione a classe que pretende alterar
+    </v-card-title>
     <v-sheet class="pa-3 indigo lighten-2">
       <v-row align="center" no-gutters>
         <v-col xs="12" md="10" sm="10" lg="10" xl="10">
@@ -49,7 +48,9 @@
                   text
                   depressed
                   @click="$router.push('/classes/editar/c' + item.id)"
-                >{{ item.name }}</v-btn>
+                >
+                  {{ item.name }}
+                </v-btn>
                 <br />
               </template>
             </v-treeview>
@@ -72,8 +73,8 @@ export default {
     selectedParents: []
   }),
   mounted: async function() {
-    var myClasses = await this.$request("get", "/api/classes");
-    var myIndice = await this.$request("get", "/api/indicePesquisa");
+    var myClasses = await this.$request("get", "/classes");
+    var myIndice = await this.$request("get", "/indicePesquisa");
     this.classesTree = await this.preparaTree(myClasses.data, myIndice.data);
     this.classesCarregadas = true;
   },

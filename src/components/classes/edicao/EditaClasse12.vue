@@ -3,15 +3,13 @@
     <v-col>
       <!-- HEADER -->
       <v-card v-if="semaforos.classeLoaded">
-
         <v-app-bar color="indigo darken-2" dark>
-            <v-toolbar-title>
-              Alteração da Classe: {{ classe.codigo }} - {{ classe.titulo }}
-            </v-toolbar-title>
+          <v-toolbar-title>
+            Alteração da Classe: {{ classe.codigo }} - {{ classe.titulo }}
+          </v-toolbar-title>
         </v-app-bar>
 
         <v-card-text>
-
           <v-expansion-panels>
             <!-- DESCRITIVO DA CLASSE -->
             <BlocoDescritivo :c="classe" />
@@ -28,7 +26,6 @@
           <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      
       <PainelOperacoes :c="classe" :o="classeCopia" :pendenteId="''" />
     </v-col>
   </v-row>
@@ -61,12 +58,12 @@ export default {
 
     codeFormats: {
       1: /^[0-9]{3}$/,
-      2: /^[0-9]{3}\.[0-9]{2}$/,
+      2: /^[0-9]{3}\.[0-9]{2}$/
     },
 
     formatoCodigo: {
       1: "ddd (d - digito)",
-      2: "ddd.dd (d - digito)",
+      2: "ddd.dd (d - digito)"
     },
 
     classeNiveis: [
@@ -95,10 +92,10 @@ export default {
   }),
 
   created: function() {
-    this.$request("get", "/api/classes/" + this.idc)
+    this.$request("get", "/classes/" + this.idc)
       .then(async response => {
         this.classe = response.data;
-        this.classeCopia = JSON.parse(JSON.stringify(this.classe))
+        this.classeCopia = JSON.parse(JSON.stringify(this.classe));
         this.semaforos.classeLoaded = true;
       })
       .catch(error => {
@@ -113,7 +110,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/classes?nivel=" + (this.classe.nivel - 1)
+          "/classes?nivel=" + (this.classe.nivel - 1)
         );
         this.classesPai = response.data
           .map(function(item) {
@@ -167,4 +164,3 @@ export default {
   display: none;
 }
 </style>
-

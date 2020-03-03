@@ -712,7 +712,7 @@ export default {
     // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
     loadTipologias: async function() {
       try {
-        var response = await this.$request("get", "/api/tipologias/");
+        var response = await this.$request("get", "/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -725,7 +725,7 @@ export default {
         // Tipologias onde a entidade se encontra
         var tipologias = await this.$request(
           "get",
-          "/api/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
+          "/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
         this.tipEnt = tipologias.data.map(function(item) {
           return {
@@ -759,7 +759,7 @@ export default {
         if (!this.listaProcComunsReady) {
           var procSelSistema = 0;
           var procSelUtilizador = 0;
-          var response = await this.$request("get", "/api/classes?tipo=comum");
+          var response = await this.$request("get", "/classes?tipo=comum");
           for (var i = 0; i < response.data.length; i++) {
             for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
               var estavaGuardado = false;
@@ -850,8 +850,7 @@ export default {
           var procSelSistema = 0;
           var procSelUtilizador = 0;
           var url =
-            "/api/classes?tipo=especifico&ents=" +
-            this.tabelaSelecao.idEntidade;
+            "/classes?tipo=especifico&ents=" + this.tabelaSelecao.idEntidade;
           if (this.tabelaSelecao.tipologias) {
             url += "&tips=";
             for (var i = 0; i < this.tabelaSelecao.tipologias.length - 1; i++) {
@@ -969,10 +968,7 @@ export default {
         if (!this.listaProcEspResReady) {
           var procSelSistema = 0;
           var procSelUtilizador = 0;
-          var response = await this.$request(
-            "get",
-            "/api/classes?tipo=especifico"
-          );
+          var response = await this.$request("get", "/classes?tipo=especifico");
           this.listaTotalProcEsp = response.data;
           for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
             var espEntTip = false;
@@ -1325,7 +1321,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/api/users/" + this.$store.state.token + "/token"
+          "/users/" + this.$store.state.token + "/token"
         );
 
         var tsObj = {
@@ -1351,15 +1347,8 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await this.$request(
-          "post",
-          "/api/pedidos",
-          pedidoParams
-        );
-        response = await this.$request(
-          "delete",
-          "/api/pendentes/" + this.obj._id
-        );
+        var response = await this.$request("post", "/pedidos", pedidoParams);
+        response = await this.$request("delete", "/pendentes/" + this.obj._id);
         this.$router.push("/pedidos/submissao");
       } catch (error) {
         return error;
@@ -1370,7 +1359,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/api/users/" + this.$store.state.token + "/token"
+          "/users/" + this.$store.state.token + "/token"
         );
 
         this.tabelaSelecao.tipologias = this.tipSel;
@@ -1399,7 +1388,7 @@ export default {
         };
         var response = await this.$request(
           "post",
-          "/api/pendentes",
+          "/pendentes",
           pendenteParams
         );
         this.pendenteGuardado = true;
@@ -1410,7 +1399,7 @@ export default {
     // Elimina todo o trabalho feito até o momento
     eliminarTS: async function() {
       this.id = window.location.pathname.split("/")[3];
-      await this.$request("delete", "/api/pendentes/" + this.id);
+      await this.$request("delete", "/pendentes/" + this.id);
       this.$router.push("/");
     }
   },

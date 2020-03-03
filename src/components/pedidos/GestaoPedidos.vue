@@ -17,9 +17,9 @@
               @analisar="analisaPedido($event)"
             />
 
-            <PedidosLista
+            <PedidosValidacao
               :pedidos="pedidosValidados"
-              titulo="Pedidos em validação"
+              @validar="validaPedido($event)"
             />
 
             <PedidosLista
@@ -122,12 +122,13 @@
 import PedidosLista from "@/components/pedidos/PedidosLista.vue";
 import PedidosNovos from "@/components/pedidos/PedidosNovos";
 import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
+import PedidosValidacao from "@/components/pedidos/PedidosValidacao";
 
 import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
 import { filtraNivel } from "@/utils/utils";
 
 export default {
-  components: { PedidosLista, PedidosNovos, PedidosAnalise },
+  components: { PedidosLista, PedidosNovos, PedidosAnalise, PedidosValidacao },
   data: () => ({
     procuraUtilizador: "",
     pedidoParaDistribuir: {},
@@ -147,9 +148,10 @@ export default {
     pedidosValidados: [],
     pedidosDevolvidos: []
   }),
+
   created: async function() {
     try {
-      var response = await this.$request("get", "/api/pedidos");
+      var response = await this.$request("get", "/pedidos");
       this.pedidos = response.data;
       this.pedidosSubmetidos = this.pedidos.filter(
         p => p.estado == "Submetido"
@@ -157,7 +159,7 @@ export default {
       this.pedidosDistribuidos = this.pedidos.filter(
         p => p.estado == "Distribuído"
       );
-      this.pedidosValidados = this.pedidos.filter(p => p.estado == "Validado");
+      this.pedidosValidados = this.pedidos.filter(p => p.estado == "Apreciado");
       this.pedidosDevolvidos = this.pedidos.filter(
         p => p.estado == "Devolvido"
       );
@@ -165,6 +167,7 @@ export default {
       return e;
     }
   },
+
   methods: {
     rowClicked: function(item) {
       this.$emit("pedidoSelected", item);
@@ -176,7 +179,7 @@ export default {
 
     distribuiPedido: async function(pedido) {
       try {
-        var response = await this.$request("get", "/api/users");
+        var response = await this.$request("get", "/users");
 
         const utilizadores = filtraNivel(
           response.data,
@@ -192,8 +195,12 @@ export default {
       }
     },
 
-    analisaPedido: function(pedido) {
+    analisaPedido(pedido) {
       this.$router.push("/pedidos/analisar/" + pedido.codigo);
+    },
+
+    validaPedido(pedido) {
+      this.$router.push("/pedidos/validar/" + pedido.codigo);
     },
 
     cancelarDistribuicao: function() {
@@ -212,7 +219,7 @@ export default {
       this.pedidoParaDistribuir.estado = "Distribuído";
       this.pedidoParaDistribuir.token = this.$store.state.token;
 
-      this.$request("put", "/api/pedidos", {
+      this.$request("put", "/pedidos", {
         pedido: this.pedidoParaDistribuir,
         distribuicao: novaDistribuicao
       })

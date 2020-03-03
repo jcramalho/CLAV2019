@@ -68,7 +68,7 @@ export default {
   methods: {
     recuperarUtilizador() {
       if (this.$refs.form.validate()) {
-        this.$request("post", "/api/users/recuperar", {
+        this.$request("post", "/users/recuperar", {
           email: this.$data.form.email,
           url: window.location.href
         })

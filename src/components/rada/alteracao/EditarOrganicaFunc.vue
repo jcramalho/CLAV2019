@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
     </template>
@@ -59,6 +59,9 @@
                 chips
               >
                 <template v-slot:item="{ item }">{{ item.codigo }} - {{ item.titulo }}</template>
+                <template v-slot:selection="{ item }">
+                  <v-chip>{{ item.codigo }} - {{ item.titulo }}</v-chip>
+                </template>
                 <template v-slot:no-data>
                   <v-container fluid>
                     <v-alert

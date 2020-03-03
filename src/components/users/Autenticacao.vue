@@ -168,7 +168,7 @@ export default {
               "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
             "@ProtocolBinding":
               "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-            "@AssertionConsumerServiceURL": lhost + "/api/users/callback",
+            "@AssertionConsumerServiceURL": lhost + "/users/callback",
             "@ProviderName": "CLAV",
             "@xmlns": "urn:oasis:names:tc:SAML:2.0:protocol",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -201,7 +201,7 @@ export default {
         })
         .end();
 
-      this.$request("post", "/api/auth/adicionar", {
+      this.$request("post", "/auth/adicionar", {
         id: uuid,
         url: window.location.protocol + "//" + window.location.host
       });

@@ -233,7 +233,7 @@ export default {
     selectedParents: []
   }),
   created: async function() {
-    var myClasses = await this.$request("get", "/api/classes?info=completa");
+    var myClasses = await this.$request("get", "/classes?info=completa");
     this.classesTree = await this.preparaTree(myClasses.data);
     this.classesOriginal = this.classesTree;
 
@@ -242,7 +242,7 @@ export default {
     await this.loadPCASubFormasContagem();
     this.loadCriterios();
 
-    var entidades = await this.$request("get", "/api/entidades");
+    var entidades = await this.$request("get", "/entidades");
     this.entidades = entidades.data.map(e => {
       return { text: e.designacao, value: e.id };
     });
@@ -268,7 +268,7 @@ export default {
       }
     },
     loadStatus: async function() {
-      var response = await this.$request("get", "/api/vocabularios/vc_status");
+      var response = await this.$request("get", "/vocabularios/vc_status");
       var status = response.data
         .map(item => {
           return {
@@ -283,7 +283,7 @@ export default {
     loadPCAFormasContagem: async function() {
       var response = await this.$request(
         "get",
-        "/api/vocabularios/vc_pcaFormaContagem"
+        "/vocabularios/vc_pcaFormaContagem"
       );
 
       var pcaFormasContagem = response.data.map(item => item.termo).sort();
@@ -292,7 +292,7 @@ export default {
     loadPCASubFormasContagem: async function() {
       var response = await this.$request(
         "get",
-        "/api/vocabularios/vc_pcaSubformaContagem"
+        "/vocabularios/vc_pcaSubformaContagem"
       );
 
       var pcaSubFormasContagem = response.data.map(item => item.desc).sort();

@@ -115,7 +115,7 @@ export default {
 
   mounted: async function() {
     try {
-      var response = await this.$request("get", "/api/entidades");
+      var response = await this.$request("get", "/entidades");
       var entidades = response.data.map(ent => {
         return {
           text: ent.sigla + " - " + ent.designacao,
@@ -123,7 +123,7 @@ export default {
         };
       });
 
-      response = await this.$request("get", "/api/tipologias");
+      response = await this.$request("get", "/tipologias");
       var tipologias = response.data.map(tip => {
         return {
           text: tip.sigla + " - " + tip.designacao,
@@ -156,7 +156,7 @@ export default {
 
         var response = await this.$request(
           "post",
-          "/api/tabelasSelecao/importar",
+          "/tabelasSelecao/importar",
           formData
         );
         this.loading = false;

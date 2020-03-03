@@ -90,7 +90,7 @@
               @click="adicionarCriterioGestionario( c.pca.justificacao, 'CriterioJustificacaoGestionario',
                                                     'Critério Gestionário', textoCriterioGestionario,
                                                     [], [])"
-              v-if="!semaforos.critGestionarioAdicionado"
+              v-if="!c.semaforos.critGestionarioAdicionado"
             >Critério Gestionário
               <v-icon dark right>add_circle_outline</v-icon>
             </v-btn>
@@ -103,7 +103,7 @@
               rounded
               @click="adicionarCriterioLegalPCA( c.pca.justificacao, 'CriterioJustificacaoLegal',
                                                   'Critério Legal', '', [], c.legislacao )"
-              v-if="!semaforos.critLegalAdicionadoPCA"
+              v-if="!c.semaforos.critLegalAdicionadoPCA"
             >
               Critério Legal
               <v-icon dark right>add_circle_outline</v-icon>
@@ -270,7 +270,7 @@ export default {
         procRel,
         legislacao
       );
-      this.semaforos.critLegalAdicionadoPCA = true;
+      this.c.semaforos.critLegalAdicionadoPCA = true;
     },
 
     adicionarCriterioGestionario: function(
@@ -289,7 +289,7 @@ export default {
         procRel,
         legislacao
       );
-      this.semaforos.critGestionarioAdicionado = true;
+      this.c.semaforos.critGestionarioAdicionado = true;
     },
 
     // Remove um critério completo duma vez
@@ -301,10 +301,10 @@ export default {
     // Atualiza as flags que controlam os botões de adicionar e remover critérios
     atualizaFlagsCriterios(tipo, PCAouDF) {
       if (tipo == "CriterioJustificacaoLegal") {
-        if (PCAouDF == "PCA") this.semaforos.critLegalAdicionadoPCA = false;
-        else this.semaforos.critLegalAdicionadoDF = false;
+        if (PCAouDF == "PCA") this.c.semaforos.critLegalAdicionadoPCA = false;
+        else this.c.semaforos.critLegalAdicionadoDF = false;
       } else if (tipo == "CriterioJustificacaoGestionario") {
-        this.semaforos.critGestionarioAdicionado = false;
+        this.c.semaforos.critGestionarioAdicionado = false;
       }
     },
 

@@ -268,7 +268,7 @@ export default {
         try {
           let existeNumero = await this.$request(
             "get",
-            "/api/legislacao/numero?valor=" + encodeURIComponent(this.l.numero)
+            "/legislacao/numero?valor=" + encodeURIComponent(this.l.numero)
           );
 
           if (existeNumero.data) {
@@ -431,7 +431,7 @@ export default {
           if (erros == 0) {
             let userBD = await this.$request(
               "get",
-              "/api/users/" + this.$store.state.token + "/token"
+              "/users/" + this.$store.state.token + "/token"
             );
 
             let dataObj = this.l;
@@ -448,7 +448,7 @@ export default {
 
             let response = await this.$request(
               "post",
-              "/api/pedidos",
+              "/pedidos",
               pedidoParams
             );
             this.dialogLegislacaoCriada = true;

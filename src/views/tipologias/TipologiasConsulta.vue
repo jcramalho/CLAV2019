@@ -85,7 +85,7 @@ export default {
       // Informações sobre a tipologia
       var response = await this.$request(
         "get",
-        "/api/tipologias/" + this.idTipologia
+        "/tipologias/" + this.idTipologia
       );
       this.titulo = response.data.designacao;
       this.tipologia = await this.preparaTipologia(response.data);
@@ -93,21 +93,21 @@ export default {
       // Processos cuja tipologia em questão é dona de
       var processosDono = await this.$request(
         "get",
-        "/api/tipologias/" + this.idTipologia + "/intervencao/dono"
+        "/tipologias/" + this.idTipologia + "/intervencao/dono"
       );
       this.processosDono = processosDono.data;
 
       // Procesos em que a entidade participa
       var processosParticipa = await this.$request(
         "get",
-        "/api/entidades/" + this.idTipologia + "/intervencao/participante"
+        "/entidades/" + this.idTipologia + "/intervencao/participante"
       );
       await this.parseParticipacoes(processosParticipa.data);
 
       // Entidades que pertencem à tipologia em questão
       var entidades = await this.$request(
         "get",
-        "/api/tipologias/" + this.idTipologia + "/elementos"
+        "/tipologias/" + this.idTipologia + "/elementos"
       );
       this.entidades = entidades.data;
       this.tipologiaReady = true;

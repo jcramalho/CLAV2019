@@ -290,7 +290,7 @@ export default {
       try {
         let response = await this.$request(
           "get",
-          "/api/vocabularios/vc_tipoDiplomaLegislativo"
+          "/vocabularios/vc_tipoDiplomaLegislativo"
         );
         for (let i = 0; i < response.data.length; i++) {
           this.tiposDiploma[i] = response.data[i].termo;
@@ -320,7 +320,7 @@ export default {
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-        let response = await this.$request("get", "/api/entidades");
+        let response = await this.$request("get", "/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -353,7 +353,7 @@ export default {
     // Vai à API buscar todas as classes de nivel 3
     loadClasses: async function() {
       try {
-        let response = await this.$request("get", "/api/classes?nivel=3");
+        let response = await this.$request("get", "/classes?nivel=3");
         this.processos = response.data.map(function(item) {
           return {
             codigo: item.codigo,

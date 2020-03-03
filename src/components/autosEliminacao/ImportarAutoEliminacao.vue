@@ -10,10 +10,25 @@
           </v-toolbar>
           <v-card-text class="panel-body">
             <div class="ma-3">
-              Para cada tipo de Fonte de Legitimação, o diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção, é disponibilizado um formulário diferente. 
-              <p>Selecione a Fonte de legitimação aplicável e transfira o formulário para preenchimento offline.</p>
-              
-              <p>Consulte <a :href="`${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`">aqui</a> as instruções de preenchimento.</p>
+              Para cada tipo de Fonte de Legitimação, o diploma ou ato
+              administrativo que autoriza e legitima uma Tabela de Seleção, é
+              disponibilizado um formulário diferente.
+              <p>
+                Selecione a Fonte de legitimação aplicável e transfira o
+                formulário para preenchimento offline.
+              </p>
+
+              <p>
+                Consulte
+                <a
+                  :href="
+                    `${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`
+                  "
+                >
+                  aqui
+                </a>
+                as instruções de preenchimento.
+              </p>
             </div>
             <div>
               <table
@@ -82,8 +97,14 @@
                     >
                       Transferir ficheiro de submissão
                     </a>
-                    <div style="width:100%">Para submeter um auto de eliminação, selecione o ficheiro que preencheu e guardou previamente.</div>
-                    <div>Em seguida, para concluir, execute o comando <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.</div>
+                    <div style="width:100%">
+                      Para submeter um auto de eliminação, selecione o ficheiro
+                      que preencheu e guardou previamente.
+                    </div>
+                    <div>
+                      Em seguida, para concluir, execute o comando
+                      <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -106,7 +127,13 @@
           </v-card-text>
         </v-card>
         <div style="text-align:center">
-          <v-btn medium color="primary" @click="submit" :disabled="!file" class="ma-2">
+          <v-btn
+            medium
+            color="primary"
+            @click="submit"
+            :disabled="!file"
+            class="ma-2"
+          >
             Submeter Auto de Eliminação
           </v-btn>
         </div>
@@ -183,14 +210,16 @@ export default {
     submit: async function() {
       conversor(this.file, this.tipo)
         .then(res => {
-          this.$request("post", "/api/autosEliminacao?tipo=" + this.tipo, { auto: res.auto })
+          this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
+            auto: res.auto
+          })
             .then(r => {
               this.successDialog = true;
               this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(
                 res.error
               )}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`;
             })
-        .catch(e => {
+            .catch(e => {
               this.erro = e.response.data;
               this.erroDialog = true;
             });

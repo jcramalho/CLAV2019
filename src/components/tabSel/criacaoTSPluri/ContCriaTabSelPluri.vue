@@ -643,7 +643,7 @@ export default {
     // Faz load de todas as entidades
     loadEntidades: async function() {
       try {
-        var response = await this.$request("get", "/api/entidades");
+        var response = await this.$request("get", "/entidades");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -710,7 +710,7 @@ export default {
     loadProcComuns: async function() {
       try {
         if (!this.listaProcComunsReady) {
-          var response = await this.$request("get", "/api/classes?tipo=comum");
+          var response = await this.$request("get", "/classes?tipo=comum");
           for (var i = 0; i < response.data.length; i++) {
             for (
               var j = 0;
@@ -780,7 +780,7 @@ export default {
     loadProcEspecificos: async function() {
       try {
         if (!this.listaProcEspReady) {
-          var url = "/api/classes?tipo=especifico&ents=";
+          var url = "/classes?tipo=especifico&ents=";
           for (var i = 0; i < this.tabelaSelecao.entidades.length - 1; i++) {
             url += this.tabelaSelecao.entidades[i].id + ",";
           }
@@ -874,10 +874,7 @@ export default {
     loadProcEspRestantes: async function() {
       try {
         if (!this.listaProcEspResReady) {
-          var response = await this.$request(
-            "get",
-            "/api/classes?tipo=especifico"
-          );
+          var response = await this.$request("get", "/classes?tipo=especifico");
           this.listaTotalProcEsp = response.data;
           for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
             var espEntTip = false;
@@ -1205,7 +1202,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/api/users/" + this.$store.state.token + "/token"
+          "/users/" + this.$store.state.token + "/token"
         );
 
         var tsObj = [];
@@ -1292,15 +1289,8 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await this.$request(
-          "post",
-          "/api/pedidos",
-          pedidoParams
-        );
-        response = await this.$request(
-          "delete",
-          "/api/pendentes/" + this.obj._id
-        );
+        var response = await this.$request("post", "/pedidos", pedidoParams);
+        response = await this.$request("delete", "/pendentes/" + this.obj._id);
         this.$router.push("/pedidos/submissao");
       } catch (error) {
         return error;
@@ -1352,7 +1342,7 @@ export default {
 
         var response = await this.$request(
           "post",
-          "/api/pendentes",
+          "/pendentes",
           pendenteParams
         );
         this.pendenteGuardado = true;
@@ -1363,7 +1353,7 @@ export default {
     // Elimina todo o trabalho feito até o momento
     eliminarTS: async function() {
       this.id = window.location.pathname.split("/")[3];
-      this.$request("delete", "/api/pendentes/" + this.id);
+      this.$request("delete", "/pendentes/" + this.id);
       this.$router.push("/");
     }
   },

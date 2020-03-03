@@ -278,7 +278,7 @@ export default {
       this.reloadAlert = false;
 
       try {
-        var response = await this.$request("get", "/api/reload/cache");
+        var response = await this.$request("get", "/reload/cache");
         this.text = response.data;
         this.type = "success";
       } catch (erro) {
@@ -291,7 +291,7 @@ export default {
 
     loadProcessos: async function() {
       try {
-        var response = await this.$request("get", "/api/classes?nivel=3");
+        var response = await this.$request("get", "/classes?nivel=3");
         this.listaProcessos = response.data.map(e => e.id.split("#c")[1]);
         //garantir que a lista com os códigos das classes está ordenada
         this.listaProcessos.sort();
@@ -304,7 +304,7 @@ export default {
       try {
         var response = await this.$request(
           "get",
-          "/api/classes/c" + p + "/procRel/" + relacao
+          "/classes/c" + p + "/procRel/" + relacao
         );
         return response.data.map(e => e.codigo);
       } catch (erro) {
@@ -396,7 +396,7 @@ export default {
       try {
         var response = await this.$request(
           "post",
-          "/api/travessia",
+          "/travessia",
           this.resultadosJSON
         );
       } catch (e) {
@@ -422,7 +422,7 @@ export default {
       this.loadAlert = false;
 
       try {
-        var response = await this.$request("get", "/api/travessia/reset");
+        var response = await this.$request("get", "/travessia/reset");
         this.text = response.data;
         this.type = "success";
       } catch (e) {

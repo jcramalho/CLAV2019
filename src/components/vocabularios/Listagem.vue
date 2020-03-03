@@ -188,7 +188,7 @@ export default {
       this.dialog2 = true;
     },
     criarVC: async function() {
-      await this.$request("post", "/api/vocabularios/", this.novoVC)
+      await this.$request("post", "/vocabularios/", this.novoVC)
         .then(res => {
           this.snack = true;
           this.mess = res.data.mensagem;
@@ -206,7 +206,7 @@ export default {
         });
     },
     editarVC: async function(id) {
-      await this.$request("put", "/api/vocabularios/" + id, this.updateVC)
+      await this.$request("put", "/vocabularios/" + id, this.updateVC)
         .then(res => {
           this.snack = true;
           this.mess = res.data.mensagem;
