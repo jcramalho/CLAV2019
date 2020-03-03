@@ -30,6 +30,7 @@
         <v-stepper-content step="2">
           <RelatorioExpositivo
             @seguinte="changeE1"
+            :classes="RADA.tsRada.classes"
             :RE="RADA.RE"
             :entidades="entidades"
             :tipologias="tipologias"
