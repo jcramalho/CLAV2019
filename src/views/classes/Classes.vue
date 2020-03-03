@@ -491,37 +491,55 @@ export default {
             titulo: lclasses[i].titulo.toLowerCase(),
             status: lclasses[i].status.toLowerCase(),
             na: lclasses[i].notasAp
-              .map(n => n.nota)
-              .join(" ")
-              .toLowerCase(),
+              ? lclasses[i].notasAp
+                  .map(n => n.nota)
+                  .join(" ")
+                  .toLowerCase()
+              : [],
             exemploNa: lclasses[i].exemplosNotasAp
-              .map(e => e.exemplo)
-              .join(" ")
-              .toLowerCase(),
+              ? lclasses[i].exemplosNotasAp
+                  .map(e => e.exemplo)
+                  .join(" ")
+                  .toLowerCase()
+              : [],
             ne: lclasses[i].notasEx
-              .map(n => n.nota)
-              .join(" ")
-              .toLowerCase(),
+              ? lclasses[i].notasEx
+                  .map(n => n.nota)
+                  .join(" ")
+                  .toLowerCase()
+              : [],
             ti: lclasses[i].termosInd
-              .map(t => t.termo)
-              .join(" ")
-              .toLowerCase(),
-            pca: lclasses[i].pca.valores.toLowerCase(),
-            fc_pca: lclasses[i].pca.formaContagem.toLowerCase(),
+              ? lclasses[i].termosInd
+                  .map(t => t.termo)
+                  .join(" ")
+                  .toLowerCase()
+              : [],
+            pca: lclasses[i].pca.valores
+              ? lclasses[i].pca.valores.toLowerCase()
+              : "",
+            fc_pca: lclasses[i].pca.formaContagem
+              ? lclasses[i].pca.formaContagem.toLowerCase()
+              : "",
             sfc_pca: lclasses[i].pca.subFormaContagem
               ? lclasses[i].pca.subFormaContagem.toLowerCase()
               : "",
-            crit_pca: lclasses[i].pca.justificacao.map(j =>
-              j.tipoId.toLowerCase()
-            ),
-            df: lclasses[i].df.valor.toLowerCase(),
-            crit_df: lclasses[i].df.justificacao.map(j =>
-              j.tipoId.toLowerCase()
-            ),
-            donos: lclasses[i].donos.map(e => e.idDono.toLowerCase()),
-            participantes: lclasses[i].participantes.map(e =>
-              e.idParticipante.toLowerCase()
-            ),
+            crit_pca: lclasses[i].pca.justificacao
+              ? lclasses[i].pca.justificacao.map(j => j.tipoId.toLowerCase())
+              : [],
+            df: lclasses[i].df.valor
+              ? lclasses[i].df.valor.toLowerCase()
+              : "NE",
+            crit_df: lclasses[i].df.justificacao
+              ? lclasses[i].df.justificacao.map(j => j.tipoId.toLowerCase())
+              : [],
+            donos: lclasses[i].donos
+              ? lclasses[i].donos.map(e => e.idDono.toLowerCase())
+              : [],
+            participantes: lclasses[i].participantes
+              ? lclasses[i].participantes.map(e =>
+                  e.idParticipante.toLowerCase()
+                )
+              : [],
             children: await this.preparaTree(lclasses[i].filhos)
           });
         }
