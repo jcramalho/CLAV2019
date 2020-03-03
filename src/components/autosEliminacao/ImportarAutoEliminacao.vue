@@ -109,6 +109,43 @@
                 </tr>
                 <tr>
                   <td style="width:20%;">
+                    <div class="info-label">Fonte de legitimação:</div>
+                  </td>
+                  <td style="width:40%;">
+                    <div v-if="tipo=='PGD_LC'">
+                      <v-autocomplete
+                        label="Selecione a fonte de legitimação"
+                        :items="portarias"
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                    </div>
+                    <div v-else>
+                      <v-text-field :value="auto.legislacao" solo dense label="Indique a fonte de legitimação"></v-text-field>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%;">
+                    <div class="info-label">Fundo:</div>
+                  </td>
+                  <td style="width:40%;">
+                    <div>
+                      <v-autocomplete
+                        label="Selecione a entidade responsável pelo fundo"
+                        :items="entidades"
+                        v-model="auto.fundo"
+                        solo
+                        dense
+                        chips
+                        multiple
+                      ></v-autocomplete>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%;">
                     <div class="info-label">Ficheiro:</div>
                   </td>
                   <td style="width:40%">
@@ -193,10 +230,16 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
+  props: ["portarias","entidades"],
   components: {
     InfoBox
   },
   data: () => ({
+    auto: {
+      legislacao: "",
+      fundo: [],
+      zonaControlo: []
+    },
     file: null,
     tipo: "PGD_LC",
     successDialog: false,
