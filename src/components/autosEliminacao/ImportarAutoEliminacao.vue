@@ -183,7 +183,7 @@
             medium
             color="primary"
             @click="submit"
-            :disabled="!fileSerie || !fileAgreg"
+            :disabled="!fileSerie || !fileAgreg || !auto.fundo || !auto.legislacao"
             class="ma-2"
           >
             Submeter Auto de Eliminação
@@ -218,7 +218,7 @@
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="red darken-4 title white--text" dark>
-          Não foi possível criar o pedido de criação de tabela de seleção
+          Não foi possível criar o pedido de criação de auto de eliminação
         </v-card-title>
 
         <v-card-text>
@@ -245,7 +245,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["portarias","entidades"],
+  props: ["portarias","entidades","classes"],
   components: {
     InfoBox
   },
@@ -258,6 +258,7 @@ export default {
     fileSerie: null,
     fileAgreg: null,
     tipo: "PGD_LC",
+    flagAE: false,
     successDialog: false,
     success: "",
     erroDialog: false,
@@ -269,7 +270,38 @@ export default {
     submit: async function() {
       conversor(this.fileSerie, this.fileAgreg, this.tipo)
         .then(res => {
-          console.log(res)
+          const eliminacao = res.auto
+          eliminacao.fundo = this.auto.fundo
+          eliminacao.legislacao = this.auto.legislacao
+          if(this.tipo=="PGD_LC") {
+            eliminacao.zonaControlo.forEach( zc => {
+              var classe = this.classes.find(elem => elem.codigo == zc.codigo) 
+              if(!classe) {
+                this.flagAE = true;
+                this.erro = "Codigo da classe <b>"+zc.codigo+"</b> não foi encontrado na Lista Consolidada"
+                return; //ERROS
+              }
+
+              delete zc["referencia"]
+              zc.titulo = classe.titulo
+              zc.prazoConservacao = classe.pca.valores
+              zc.destino = classe.df.valor
+            })
+            console.log(eliminacao)
+            if(this.flagAE) this.erroDialog = true
+            else 
+              this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
+                auto: eliminacao
+              })
+              .then(r => {
+                this.successDialog = true;
+                this.success = `<b>Código do pedido:</b>\n${JSON.stringify(eliminacao)}`;
+              })
+              .catch(e => {
+                this.erro = e.response.data;
+                this.erroDialog = true;
+              });
+          }
         })
         .catch(err => {
           this.erro = err;

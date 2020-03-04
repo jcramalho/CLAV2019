@@ -1,57 +1,113 @@
 <template>
-  <v-row align-center justify-center>
-    <v-col cols="12">
-      <v-data-table
-        :headers="headers"
-        :items="logs"
-        item-key="_id"
-        class="elevation-1 ma-10"
-        :search="search"
-        :loading="loading"
-        loading-text="A carregar o registo de acesso..."
-        show-group-by
-        multi-sort
-      >
-        <template v-slot:top>
-          <v-toolbar flat color="indigo darken-4" dark>
-            <v-toolbar-title>Registo de acesso</v-toolbar-title>
-            <div class="flex-grow-1"></div>
-            <v-text-field
-              v-model="search"
-              append-icon="search"
-              label="Filtrar"
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-toolbar>
-        </template>
+  <div ma-2>
+    <v-row row wrap>
+      <v-col cols="12">
+        <v-data-table
+          :headers="headersLogs"
+          :items="logs"
+          item-key="_id"
+          class="elevation-1 ma-10"
+          :search="searchLog"
+          :loading="loading"
+          loading-text="A carregar o registo de acesso..."
+          show-group-by
+          multi-sort
+        >
+          <template v-slot:top>
+            <v-toolbar flat color="indigo darken-4" dark>
+              <v-toolbar-title>
+                Registo de acesso nos últimos 30 dias
+              </v-toolbar-title>
+              <div class="flex-grow-1"></div>
+              <v-text-field
+                v-model="searchLog"
+                append-icon="search"
+                label="Filtrar"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-toolbar>
+          </template>
 
-        <template v-slot:item.httpStatus="{ item }">
-          <v-chip
-            class="font-weight-bold"
-            :color="getColorStatus(item.httpStatus)"
-            dark
-          >
-            {{ item.httpStatus }}
-          </v-chip>
-        </template>
+          <template v-slot:item.httpStatus="{ item }">
+            <v-chip
+              class="font-weight-bold"
+              :color="getColorStatus(item.httpStatus)"
+              dark
+            >
+              {{ item.httpStatus }}
+            </v-chip>
+          </template>
 
-        <template v-slot:item.method="{ item }">
-          <v-chip
-            class="font-weight-bold"
-            :color="getColorMethod(item.method)"
-            dark
-          >
-            {{ item.method }}
-          </v-chip>
-        </template>
-      </v-data-table>
-      <v-snackbar :value="text != ''" :color="color" :top="true">
-        {{ text }}
-        <v-btn text @click="text = ''">Fechar</v-btn>
-      </v-snackbar>
-    </v-col>
-  </v-row>
+          <template v-slot:item.method="{ item }">
+            <v-chip
+              class="font-weight-bold"
+              :color="getColorMethod(item.method)"
+              dark
+            >
+              {{ item.method }}
+            </v-chip>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+    <v-row row wrap>
+      <v-col cols="12">
+        <v-data-table
+          :headers="headersAggLogs"
+          :items="aggregateLogs"
+          item-key="_id"
+          class="elevation-1 ma-10"
+          :search="searchAggLog"
+          :loading="loading"
+          loading-text="A carregar o sumário do registo de acesso..."
+          multi-sort
+        >
+          <template v-slot:top>
+            <v-toolbar flat color="indigo darken-4" dark>
+              <v-toolbar-title>Sumário do registo de acesso</v-toolbar-title>
+              <div class="flex-grow-1"></div>
+              <v-text-field
+                v-model="searchAggLog"
+                append-icon="search"
+                label="Filtrar"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-toolbar>
+          </template>
+
+          <template v-slot:item.nGETs="{ item }">
+            <v-chip class="font-weight-bold" color="green" dark>
+              {{ item.nGETs }}
+            </v-chip>
+          </template>
+
+          <template v-slot:item.nPOSTs="{ item }">
+            <v-chip class="font-weight-bold" color="cyan" dark>
+              {{ item.nPOSTs }}
+            </v-chip>
+          </template>
+
+          <template v-slot:item.nPUTs="{ item }">
+            <v-chip class="font-weight-bold" color="orange" dark>
+              {{ item.nPUTs }}
+            </v-chip>
+          </template>
+
+          <template v-slot:item.nDELETEs="{ item }">
+            <v-chip class="font-weight-bold" color="red" dark>
+              {{ item.nDELETEs }}
+            </v-chip>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+    <v-snackbar :value="text != ''" :color="color" :top="true">
+      {{ text }}
+      <v-btn text @click="text = ''">Fechar</v-btn>
+    </v-snackbar>
+  </div>
 </template>
 
 <script>
@@ -86,6 +142,21 @@ export default {
         this.logs[i].accessDate = this.getDateTime(this.logs[i].accessDate);
       }
 
+      response = await this.$request("get", "/logsAgregados");
+      this.aggregateLogs = response.data;
+
+      for (i = 0; i < this.aggregateLogs.length; i++) {
+        if (this.aggregateLogs[i].type == "Chave") {
+          this.aggregateLogs[i].email = this.keys[this.aggregateLogs[i].id];
+        } else {
+          this.aggregateLogs[i].email = this.users[this.aggregateLogs[i].id];
+        }
+
+        this.aggregateLogs[i].lastAccess = this.getDateTime(
+          this.aggregateLogs[i].lastAccess
+        );
+      }
+
       this.loading = false;
     } catch (error) {
       this.loading = false;
@@ -97,7 +168,8 @@ export default {
     users: {},
     keys: {},
     logs: [],
-    headers: [
+    aggregateLogs: [],
+    headersLogs: [
       { text: "Email", align: "center", value: "email" },
       { text: "Tipo", align: "center", value: "type" },
       { text: "Rota", align: "center", value: "route" },
@@ -105,9 +177,19 @@ export default {
       { text: "Status HTTP", align: "center", value: "httpStatus" },
       { text: "Acedido em", align: "center", value: "accessDate" }
     ],
+    headersAggLogs: [
+      { text: "Email", align: "center", value: "email" },
+      { text: "Tipo", align: "center", value: "type" },
+      { text: "Número de pedidos GET", align: "center", value: "nGETs" },
+      { text: "Número de pedidos POST", align: "center", value: "nPOSTs" },
+      { text: "Número de pedidos PUT", align: "center", value: "nPUTs" },
+      { text: "Número de pedidos DELETE", align: "center", value: "nDELETEs" },
+      { text: "Último Acesso", align: "center", value: "lastAccess" }
+    ],
     color: "",
     text: "",
-    search: "",
+    searchLog: "",
+    searchAggLog: "",
     loading: false
   }),
 
