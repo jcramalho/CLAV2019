@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-for="(info, i) in legislacaoInfo" :key="i">
+    <v-row v-for="(info, i) in infoPedido" :key="i">
       <!-- Label -->
       <v-col
         cols="2"
@@ -13,7 +13,7 @@
       <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
         <!-- Se o conteudo for uma lista de tipologias-->
         <v-data-table
-          v-if="info.campo == 'Tipologias'"
+          v-if="info.campo === 'Tipologias'"
           :headers="headersTipologias"
           :items="info.conteudo"
           class="elevation-1"
@@ -92,7 +92,7 @@ export default {
   data() {
     return {
       dialogTipologias: false,
-      legislacaoInfo: [
+      infoPedido: [
         {
           campo: "Sigla",
           conteudo: this.p.objeto.dados.sigla,
@@ -173,7 +173,17 @@ export default {
       try {
         const estado = "Apreciado";
 
-        let dadosUtilizador = dados.utilizadorSelecionado;
+        let dadosUtilizador = await this.$request(
+          "get",
+          "/users/" + this.$store.state.token + "/token"
+        );
+
+        dadosUtilizador = dadosUtilizador.data;
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
 
         const novaDistribuicao = {
           estado: estado,
@@ -181,10 +191,6 @@ export default {
           data: new Date(),
           despacho: dados.mensagemDespacho
         };
-
-        let pedido = JSON.parse(JSON.stringify(this.p));
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -198,13 +204,13 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "green lighten-3";
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "red lighten-3";
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      this.infoPedido[i].cor = "red lighten-3";
     },
 
     close() {
