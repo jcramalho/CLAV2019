@@ -14,11 +14,13 @@
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
             />
-            <!-- <AnalisaLeg
+
+            <ValidaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
             />
-            <AnalisaTipologiaEntidade
+
+            <!-- <AnalisaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
             /> -->
@@ -30,9 +32,8 @@
 </template>
 
 <script>
-// import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
 import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
-// import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
+import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 
 import Loading from "@/components/generic/Loading";
 
@@ -41,9 +42,8 @@ export default {
 
   components: {
     ValidaEntidade,
-    // AnalisaLeg,
+    ValidaLegislacao,
     Loading
-    // AnalisaTipologiaEntidade
   },
 
   data() {
@@ -67,9 +67,8 @@ export default {
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;
-    } catch (err) {
-      this.snackbar.visivel = true;
-      this.snackbar.texto = "Erro ao carregar dados da base de dados";
+    } catch (e) {
+      console.log("e :", e);
     }
   }
 };

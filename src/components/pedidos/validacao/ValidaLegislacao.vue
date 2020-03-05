@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-for="(info, i) in legislacaoInfo" :key="i">
+    <v-row v-for="(info, i) in infoPedido" :key="i">
       <!-- Label -->
       <v-col
         cols="2"
@@ -11,10 +11,10 @@
 
       <!-- Conteudo -->
       <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
-        <!-- Se o conteudo for uma lista de tipologias-->
+        <!-- Se o conteudo for uma lista de entidades -->
         <v-data-table
-          v-if="info.campo == 'Tipologias'"
-          :headers="headersTipologias"
+          v-if="info.campo === 'Entidades'"
+          :headers="headersEntidades"
           :items="info.conteudo"
           class="elevation-1"
           hide-default-footer
@@ -25,14 +25,63 @@
 
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
+              <v-dialog v-model="dialogEnditades" max-width="500px">
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Selecione uma Entidade</span>
+                  </v-card-title>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="indigo darken-1" text @click="close"
+                      >Fechar</v-btn
+                    >
+                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
               <v-spacer />
               <v-icon color="green" @click="verifica(info)">check</v-icon>
-              <v-icon color="red" @click="anula(info)">clear</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
 
-        <!-- Se o conteudo for texto -->
+        <!-- Se o conteudo for uma lista de processos -->
+        <v-data-table
+          v-else-if="info.campo === 'Processos'"
+          :headers="headersProcessos"
+          :items="info.conteudo"
+          class="elevation-1"
+          hide-default-footer
+        >
+          <template v-slot:item.operacao="{ item }">
+            <v-icon color="red" @click="">delete</v-icon>
+          </template>
+
+          <template v-slot:top>
+            <v-toolbar flat :color="info.cor">
+              <v-dialog v-model="dialogProcessos" max-width="500px">
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Selecione um Processo</span>
+                  </v-card-title>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="indigo darken-1" text @click="close"
+                      >Fechar</v-btn
+                    >
+                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-spacer />
+              <v-icon color="green" @click="verifica(info)">check</v-icon>
+            </v-toolbar>
+          </template>
+        </v-data-table>
+
+        <!-- Se o contudo for texto -->
         <v-text-field
           v-else
           solo
@@ -62,6 +111,7 @@
 
 <script>
 import PO from "@/components/pedidos/analise/PainelOperacoes";
+
 export default {
   props: ["p"],
 
@@ -71,38 +121,54 @@ export default {
 
   data() {
     return {
-      dialogTipologias: false,
-      legislacaoInfo: [
+      dialogEnditades: false,
+      dialogProcessos: false,
+      infoPedido: [
         {
-          campo: "Sigla",
-          conteudo: this.p.objeto.dados.sigla,
+          campo: "Tipo de Diploma",
+          conteudo: this.p.objeto.dados.tipo,
           cor: null
         },
         {
-          campo: "Designação",
-          conteudo: this.p.objeto.dados.designacao,
+          campo: "Fonte do Diploma",
+          conteudo: this.p.objeto.dados.diplomaFonte,
           cor: null
         },
         {
-          campo: "Internacional",
-          conteudo: this.p.objeto.dados.internacional,
+          campo: "Número do Diploma",
+          conteudo: this.p.objeto.dados.numero,
           cor: null
         },
-        { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
+        { campo: "Data", conteudo: this.p.objeto.dados.data, cor: null },
+        { campo: "Sumário", conteudo: this.p.objeto.dados.sumario, cor: null },
+        { campo: "Link", conteudo: this.p.objeto.dados.link, cor: null },
+        { campo: "Código", conteudo: this.p.objeto.dados.codigo, cor: null },
         {
-          campo: "Tipologias",
-          conteudo: this.p.objeto.dados.tipologiasSel,
+          campo: "Entidades",
+          conteudo: this.p.objeto.dados.entidadesSel,
           cor: null
         },
         {
-          campo: "Data Extinção",
-          conteudo: this.p.objeto.dados.dataExtincao,
+          campo: "Processos",
+          conteudo: this.p.objeto.dados.processosSel,
           cor: null
         }
       ],
-      headersTipologias: [
+      headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
+        {
+          text: "Operação",
+          value: "operacao",
+          class: "subtitle-1",
+          sortable: false,
+          width: "10%",
+          align: "center"
+        }
+      ],
+      headersProcessos: [
+        { text: "Código", value: "codigo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" },
         {
           text: "Operação",
           value: "operacao",
@@ -177,7 +243,7 @@ export default {
           distribuicao: novaDistribuicao
         });
 
-        await this.$request("post", "/entidades", pedido.objeto.dados);
+        await this.$request("post", "/legislacao", pedido.objeto.dados);
 
         this.$router.go(-1);
       } catch (e) {
@@ -196,7 +262,7 @@ export default {
     },
 
     close() {
-      this.dialogtipologias = false;
+      this.dialogEnditades = false;
       this.dialogProcessos = false;
     }
   }
