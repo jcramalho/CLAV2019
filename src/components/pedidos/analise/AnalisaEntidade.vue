@@ -47,6 +47,7 @@
               </v-dialog>
               <v-spacer />
               <v-icon color="green" @click="verifica(info)">check</v-icon>
+              <v-icon color="red" @click="anula(info)">clear</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>

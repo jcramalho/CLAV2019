@@ -1,18 +1,21 @@
 <template>
   <div>
-    <v-row v-for="(t, i) in tipologiaInfo" :key="i">
+    <v-row v-for="(info, i) in infoPedido" :key="i">
       <!-- Label -->
-      <v-col cols="2" v-if="t.conteudo !== '' && t.conteudo !== undefined">
-        <div class="info-label">{{ t.campo }}</div>
+      <v-col
+        cols="2"
+        v-if="info.conteudo !== '' && info.conteudo !== undefined"
+      >
+        <div class="info-label">{{ info.campo }}</div>
       </v-col>
 
       <!-- Conteudo -->
-      <v-col v-if="t.conteudo !== '' && t.conteudo !== undefined">
+      <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
         <!-- Se o conteudo for uma lista de tipologias-->
         <v-data-table
-          v-if="t.campo == 'Entidades'"
+          v-if="info.campo == 'Entidades'"
           :headers="headersTipologias"
-          :items="t.conteudo"
+          :items="info.conteudo"
           class="elevation-1"
           hide-default-footer
         >
@@ -21,7 +24,7 @@
           </template>
 
           <template v-slot:top>
-            <v-toolbar flat :color="t.cor">
+            <v-toolbar flat :color="info.cor">
               <v-dialog v-model="dialogTipologias" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn rounded class="indigo accent-4 white--text" v-on="on">
@@ -43,7 +46,8 @@
                 </v-card>
               </v-dialog>
               <v-spacer />
-              <v-icon color="green" @click="verifica(t)">check</v-icon>
+              <v-icon color="green" @click="verifica(info)">check</v-icon>
+              <v-icon color="red" @click="anula(info)">clear</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
@@ -54,12 +58,12 @@
           solo
           readonly
           hide-details
-          :background-color="t.cor"
-          :value="t.conteudo"
+          :background-color="info.cor"
+          :value="info.conteudo"
         >
           <template slot="append">
-            <v-icon color="green" @click="verifica(t)">check</v-icon>
-            <v-icon color="red" @click="anula(t)">clear</v-icon>
+            <v-icon color="green" @click="verifica(info)">check</v-icon>
+            <v-icon color="red" @click="anula(info)">clear</v-icon>
             <v-icon @click="">create</v-icon>
           </template>
         </v-text-field>
@@ -69,8 +73,9 @@
     <v-row>
       <v-spacer />
       <PO
-        @avancarPedido="despacho($event)"
-        @mensagemDespacho="despacho($event)"
+        operacao="Analisar"
+        @avancarPedido="encaminharPedido($event)"
+        @devolverPedido="despacharPedido($event)"
       />
     </v-row>
   </div>
@@ -88,7 +93,7 @@ export default {
   data() {
     return {
       dialogTipologias: false,
-      tipologiaInfo: [
+      infoPedido: [
         {
           campo: "Sigla",
           conteudo: this.p.objeto.dados.sigla,
@@ -126,23 +131,10 @@ export default {
   },
 
   methods: {
-    async despacho(evento) {
-      switch (evento.tipoOperacao) {
-        case "Devolver":
-          await this.despacharPedido("Devolvido", evento.mensagem);
-          break;
-
-        case "Encaminhar":
-          await this.encaminharPedido("Apreciado", evento);
-          break;
-
-        default:
-          break;
-      }
-    },
-
-    async despacharPedido(estado, mensagem) {
+    async despacharPedido(dados) {
       try {
+        const estado = "Devolvido";
+
         let dadosUtilizador = await this.$request(
           "get",
           "/users/" + this.$store.state.token + "/token"
@@ -153,7 +145,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: mensagem
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -172,9 +164,21 @@ export default {
       }
     },
 
-    async encaminharPedido(estado, dados) {
+    async encaminharPedido(dados) {
       try {
-        let dadosUtilizador = dados.utilizadorSelecionado;
+        const estado = "Apreciado";
+
+        let dadosUtilizador = await this.$request(
+          "get",
+          "/users/" + this.$store.state.token + "/token"
+        );
+
+        dadosUtilizador = dadosUtilizador.data;
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
 
         const novaDistribuicao = {
           estado: estado,
@@ -182,10 +186,6 @@ export default {
           data: new Date(),
           despacho: dados.mensagemDespacho
         };
-
-        let pedido = JSON.parse(JSON.stringify(this.p));
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -199,13 +199,13 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.tipologiaInfo.findIndex(o => o.campo == obj.campo);
-      this.tipologiaInfo[i].cor = "green lighten-3";
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.tipologiaInfo.findIndex(o => o.campo == obj.campo);
-      this.tipologiaInfo[i].cor = "red lighten-3";
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      this.infoPedido[i].cor = "red lighten-3";
     },
 
     close() {

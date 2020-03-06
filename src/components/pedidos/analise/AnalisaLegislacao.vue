@@ -47,6 +47,7 @@
               </v-dialog>
               <v-spacer />
               <v-icon color="green" @click="verifica(info)">check</v-icon>
+              <v-icon color="red" @click="anula(info)">clear</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
@@ -87,6 +88,7 @@
               </v-dialog>
               <v-spacer />
               <v-icon color="green" @click="verifica(info)">check</v-icon>
+              <v-icon color="red" @click="anula(info)">clear</v-icon>
             </v-toolbar>
           </template>
         </v-data-table>
@@ -261,13 +263,13 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "green lighten-3";
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "red lighten-3";
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      this.infoPedido[i].cor = "red lighten-3";
     },
 
     close() {

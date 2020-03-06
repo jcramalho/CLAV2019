@@ -11,46 +11,10 @@
 
       <!-- Conteudo -->
       <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
-        <!-- Se o conteudo for uma lista de entidades -->
+        <!-- Se o conteudo for uma lista de tipologias-->
         <v-data-table
-          v-if="info.campo === 'Entidades'"
-          :headers="headersEntidades"
-          :items="info.conteudo"
-          class="elevation-1"
-          hide-default-footer
-        >
-          <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
-          </template>
-
-          <template v-slot:top>
-            <v-toolbar flat :color="info.cor">
-              <v-dialog v-model="dialogEnditades" max-width="500px">
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Selecione uma Entidade</span>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="indigo darken-1" text @click="close"
-                      >Fechar</v-btn
-                    >
-                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-              <v-spacer />
-              <v-icon color="green" @click="verifica(info)">check</v-icon>
-              <v-icon color="red" @click="anula(info)">clear</v-icon>
-            </v-toolbar>
-          </template>
-        </v-data-table>
-
-        <!-- Se o conteudo for uma lista de processos -->
-        <v-data-table
-          v-else-if="info.campo === 'Processos'"
-          :headers="headersProcessos"
+          v-if="info.campo == 'Entidades'"
+          :headers="headersEntidade"
           :items="info.conteudo"
           class="elevation-1"
           hide-default-footer
@@ -64,7 +28,7 @@
           </template>
         </v-data-table>
 
-        <!-- Se o contudo for texto -->
+        <!-- Se o conteudo for texto -->
         <v-text-field
           v-else
           solo
@@ -94,7 +58,6 @@
 
 <script>
 import PO from "@/components/pedidos/analise/PainelOperacoes";
-
 export default {
   props: ["p"],
 
@@ -104,46 +67,38 @@ export default {
 
   data() {
     return {
-      dialogEnditades: false,
-      dialogProcessos: false,
+      dialogTipologias: false,
       infoPedido: [
         {
-          campo: "Tipo de Diploma",
-          conteudo: this.p.objeto.dados.tipo,
+          campo: "Sigla",
+          conteudo: this.p.objeto.dados.sigla,
           cor: null
         },
         {
-          campo: "Fonte do Diploma",
-          conteudo: this.p.objeto.dados.diplomaFonte,
+          campo: "Designação",
+          conteudo: this.p.objeto.dados.designacao,
           cor: null
         },
         {
-          campo: "Número do Diploma",
-          conteudo: this.p.objeto.dados.numero,
+          campo: "Internacional",
+          conteudo: this.p.objeto.dados.internacional,
           cor: null
         },
-        { campo: "Data", conteudo: this.p.objeto.dados.data, cor: null },
-        { campo: "Sumário", conteudo: this.p.objeto.dados.sumario, cor: null },
-        { campo: "Link", conteudo: this.p.objeto.dados.link, cor: null },
-        { campo: "Código", conteudo: this.p.objeto.dados.codigo, cor: null },
+        { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
         {
           campo: "Entidades",
           conteudo: this.p.objeto.dados.entidadesSel,
           cor: null
         },
         {
-          campo: "Processos",
-          conteudo: this.p.objeto.dados.processosSel,
+          campo: "Data Extinção",
+          conteudo: this.p.objeto.dados.dataExtincao,
           cor: null
         }
       ],
-      headersEntidades: [
+      headersEntidade: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" }
-      ],
-      headersProcessos: [
-        { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" }
       ]
     };
   },
@@ -210,7 +165,7 @@ export default {
           distribuicao: novaDistribuicao
         });
 
-        await this.$request("post", "/legislacao", pedido.objeto.dados);
+        await this.$request("post", "/tipologias", pedido.objeto.dados);
 
         this.$router.go(-1);
       } catch (e) {
@@ -229,7 +184,7 @@ export default {
     },
 
     close() {
-      this.dialogEnditades = false;
+      this.dialogtipologias = false;
       this.dialogProcessos = false;
     }
   }

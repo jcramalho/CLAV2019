@@ -20,10 +20,10 @@
               :p="pedido"
             />
 
-            <!-- <AnalisaTipologiaEntidade
+            <ValidaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
-            /> -->
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -34,6 +34,7 @@
 <script>
 import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
+import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 
 import Loading from "@/components/generic/Loading";
 
@@ -43,6 +44,7 @@ export default {
   components: {
     ValidaEntidade,
     ValidaLegislacao,
+    ValidaTipologiaEntidade,
     Loading
   },
 

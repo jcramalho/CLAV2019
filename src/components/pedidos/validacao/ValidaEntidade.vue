@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-for="(info, i) in legislacaoInfo" :key="i">
+    <v-row v-for="(info, i) in infoPedido" :key="i">
       <!-- Label -->
       <v-col
         cols="2"
@@ -19,10 +19,6 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
-          </template>
-
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
               <v-spacer />
@@ -72,7 +68,7 @@ export default {
   data() {
     return {
       dialogTipologias: false,
-      legislacaoInfo: [
+      infoPedido: [
         {
           campo: "Sigla",
           conteudo: this.p.objeto.dados.sigla,
@@ -102,15 +98,7 @@ export default {
       ],
       headersTipologias: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center"
-        }
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ]
     };
   },
@@ -186,13 +174,13 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "green lighten-3";
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "red lighten-3";
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      this.infoPedido[i].cor = "red lighten-3";
     },
 
     close() {
