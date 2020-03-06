@@ -54,7 +54,7 @@
             focusable
           >
             <v-expansion-panel-header class="expansion-panel-heading">
-              <div>Zonas de Controlo</div>
+              <div>Classes</div>
             </v-expansion-panel-header>
 
             <v-expansion-panel-content>
@@ -62,6 +62,7 @@
                 v-bind:auto="auto"
                 v-bind:classes="classes"
                 v-bind:entidades="entidades"
+                v-bind:classesCompletas="classesCompletas"
               />
             </v-expansion-panel-content>
           </v-expansion-panel>

@@ -10,13 +10,12 @@
           </v-toolbar>
           <v-card-text class="panel-body">
             <div class="ma-3">
-              Para cada tipo de Fonte de Legitimação, o diploma ou ato
-              administrativo que autoriza e legitima uma Tabela de Seleção, é
-              disponibilizado um formulário diferente.
-              <p>
-                Selecione a Fonte de legitimação aplicável e transfira o
-                formulário para preenchimento offline.
-              </p>
+              A Plataforma CLAV permite a submissão de Autos de Eliminação (AE) através da
+              importação de ficheiros. Para tal são disponibilizados dois tipos de formulários que
+              devem ser preenchidos previamente offline:
+
+              <li>Um formulário para as séries (veja <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download>aqui</a>)</li>
+              <li>um formulário para as agregações simples / unidades de instalação (veja <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download>aqui</a>)</li>
 
               <p>
                 Consulte
@@ -89,29 +88,6 @@
                         </template>
                       </v-radio>
                     </v-radio-group>
-                    <a
-                      :href="
-                        `${publicPath}documentos/Formulario_AE_${tipo}.xlsx`
-                      "
-                      download
-                    >
-                      Transferir ficheiro de submissão
-                    </a>
-                    <div style="width:100%">
-                      Para submeter um auto de eliminação, selecione os ficheiros
-                      que preencheu e guardou previamente.
-                    </div>
-                    <div>
-                      Em seguida, para concluir, execute o comando
-                      <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">Fonte de legitimação</div>
-                  </td>
-                  <td style="width:40%;">
                     <div v-if="tipo=='PGD_LC'">
                       <v-autocomplete
                         label="Selecione a fonte de legitimação"
@@ -123,6 +99,14 @@
                     </div>
                     <div v-else>
                       <v-text-field :value="auto.legislacao" solo dense label="Indique a fonte de legitimação"></v-text-field>
+                    </div>
+                    <div style="width:100%">
+                      Para submeter um auto de eliminação, selecione os ficheiros
+                      que preencheu e guardou previamente.
+                    </div>
+                    <div>
+                      Em seguida, para concluir, execute o comando
+                      <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
                     </div>
                   </td>
                 </tr>
