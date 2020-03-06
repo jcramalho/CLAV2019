@@ -43,22 +43,11 @@ export default {
         return [];
       }
     },
-    prepararClasses: async function(classes, nivel4) {
+    prepararClasses: async function(classes) {
       try {
         var myClasses = [];
-        for (var c of classes) {
-          if (c.df.valor !== "NE") myClasses.push(c.codigo + " - " + c.titulo);
-          else {
-            var indexs = 0;
-            for (var n of nivel4) {
-              if (n.codigo.includes(c.codigo)) {
-                myClasses.push(n.codigo + " - " + n.titulo);
-                indexs++;
-              } else break;
-            }
-            nivel4.splice(0, indexs);
-          }
-        }
+        for (var c of classes)
+          myClasses.push(c.codigo + " - " + c.titulo);
         return myClasses;
       } catch (error) {
         return [];
@@ -80,6 +69,7 @@ export default {
             nivel4.splice(0, indexs);
           }
         }
+        
         return myClasses;
       } catch (error) {
         return [];
@@ -102,11 +92,11 @@ export default {
         "get",
         "/classes?nivel=4&info=completa"
       );
-      this.classes = await this.prepararClasses(response3.data, response4.data);
       this.classesCompletas = await this.prepararClassesCompletas(
         response3.data,
         response4.data
       );
+      this.classes = await this.prepararClasses(this.classesCompletas);
     } catch (e) {
       this.entidades = [];
       this.portarias = [];

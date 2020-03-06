@@ -13,8 +13,8 @@
       <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
         <!-- Se o conteudo for uma lista de tipologias-->
         <v-data-table
-          v-if="info.campo == 'Tipologias'"
-          :headers="headersTipologias"
+          v-if="info.campo == 'Entidades'"
+          :headers="headersEntidade"
           :items="info.conteudo"
           class="elevation-1"
           hide-default-footer
@@ -86,8 +86,8 @@ export default {
         },
         { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
         {
-          campo: "Tipologias",
-          conteudo: this.p.objeto.dados.tipologiasSel,
+          campo: "Entidades",
+          conteudo: this.p.objeto.dados.entidadesSel,
           cor: null
         },
         {
@@ -96,7 +96,7 @@ export default {
           cor: null
         }
       ],
-      headersTipologias: [
+      headersEntidade: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" }
       ]
@@ -165,7 +165,7 @@ export default {
           distribuicao: novaDistribuicao
         });
 
-        await this.$request("post", "/entidades", pedido.objeto.dados);
+        await this.$request("post", "/tipologias", pedido.objeto.dados);
 
         this.$router.go(-1);
       } catch (e) {

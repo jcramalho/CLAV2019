@@ -12,10 +12,10 @@
             <v-list-item-title>
               <v-row>
                 <v-col :md="2">
-                  <div class="info-label">Código da Classe</div>
+                  <div class="info-label">Classe</div>
                 </v-col>
                 <v-col>
-                  <div class="mt-2">{{item.codigo}}</div>
+                  <div class="mt-2">{{item.codigo}} - {{item.titulo}}</div>
                 </v-col>
               </v-row>
             </v-list-item-title>
@@ -26,24 +26,18 @@
             <v-row justify="end" class="mx-4">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon v-on="on" class="mr-2" @click="editarZC=true">edit</v-icon>
+                  <v-icon v-on="on" class="mr-2" @click="editarIndex=index; editarZC=true">edit</v-icon>
                 </template>
-                <span>Editar Zona de Controlo</span>
+                <span>Editar Classe</span>
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-icon v-on="on" @click="deleteIndex=index; ag=item.agregacoes.length; deleteDialog=true">delete</v-icon>
                 </template>
-                <span>Remover Zona de Controlo</span>
+                <span>Remover Classe</span>
               </v-tooltip>
             </v-row>
             <table class="consulta">
-              <tr v-if="item.titulo">
-                <td style="width:20%;">
-                  <div class="info-label">Título</div>
-                </td>
-                <td>{{ item.titulo }}</td>
-              </tr>
               <tr v-if="item.prazoConservacao">
                 <td style="width:20%;">
                   <div class="info-label">Prazo de Conservação Administrativa</div>
@@ -58,13 +52,13 @@
                 <td v-else-if="item.destino === 'C'">Conservação</td>
                 <td v-else>{{ item.destino }}</td>
               </tr>
-              <tr v-if="item.ni">
+              <tr v-if="item.ni  && item.df!='Eliminação'">
                 <td style="width:20%;">
                   <div class="info-label">Natureza de intervenção</div>
                 </td>
                 <td>{{ item.ni }}</td>
               </tr>
-              <tr v-if="item.dono">
+              <tr v-if="item.dono.length>0">
                 <td style="width:20%;">
                   <div class="info-label">Dono do PN</div>
                 </td>
@@ -121,8 +115,9 @@
             v-bind:classes="classes"
             v-bind:entidades="entidades"
             v-bind:closeZC="closeZC"
-            v-bind:zona="auto.zonaControlo[index]"
-            v-bind:index="index"
+            v-bind:zona="auto.zonaControlo[editarIndex]"
+            v-bind:index="editarIndex"
+            v-bind:classesCompletas="classesCompletas"
           />
         </v-dialog>
         <v-dialog v-model="deleteDialog" width="700" persistent>
@@ -130,7 +125,7 @@
             <v-card-title
               class="red darken-4 title white--text"
               dark
-            >Eliminação de zona de controlo</v-card-title>
+            >Eliminação de Classe</v-card-title>
 
             <v-card-text>
               <div v-if="ag>0" class="subtitle-1" style="white-space: pre-wrap">Esta ação vai <strong>eliminar permanentemente</strong> a zona de controlo assim como todas as agregações que lhe estão associadas.
@@ -154,7 +149,7 @@
         <v-card-title
           class="red darken-4 title white--text"
           dark
-        >Erro: Não foi possível adicionar a Zona de Controlo</v-card-title>
+        >Erro: Não foi possível adicionar a Classe</v-card-title>
 
         <v-card-text>
           <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro"></span>
@@ -171,7 +166,7 @@
       v-model="snackbar"
       color="success"
     >
-      Zona de Controlo editada com sucesso!
+      Classe editada com sucesso!
       <v-btn
         dark
         text
@@ -189,9 +184,8 @@ import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaC
 import ListaAgregacoes from "@/components/autosEliminacao/criacao/ListaAgregacoes.vue"
 
 export default {
-  props: ["classes", "entidades", "auto"],
+  props: ["classes", "entidades", "auto", "classesCompletas"],
   components: {
-    AdicionarAgregacao,
     DialogZonaControlo,
     ListaAgregacoes
   },
@@ -206,9 +200,11 @@ export default {
     uiOutros: null,
     ag: 0,
     editarZC: false,
+    editarIndex: null,
     snackbar: false,
     deleteDialog: false,
     deleteIndex: null,
+
 
     natureza: ["Vazio", "Dono", "Paticipante"],
     

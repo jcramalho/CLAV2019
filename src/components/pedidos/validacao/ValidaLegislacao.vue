@@ -26,11 +26,6 @@
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
               <v-dialog v-model="dialogEnditades" max-width="500px">
-                <template v-slot:activator="{ on }">
-                  <v-btn rounded class="indigo accent-4 white--text" v-on="on">
-                    Adicionar em Falta
-                  </v-btn>
-                </template>
                 <v-card>
                   <v-card-title>
                     <span class="headline">Selecione uma Entidade</span>
@@ -60,32 +55,8 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
-          </template>
-
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
-              <v-dialog v-model="dialogProcessos" max-width="500px">
-                <template v-slot:activator="{ on }">
-                  <v-btn rounded class="indigo accent-4 white--text" v-on="on">
-                    Adicionar em Falta
-                  </v-btn>
-                </template>
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Selecione um Processo</span>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="indigo darken-1" text @click="close"
-                      >Fechar</v-btn
-                    >
-                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
               <v-spacer />
               <v-icon color="green" @click="verifica(info)">check</v-icon>
               <v-icon color="red" @click="anula(info)">clear</v-icon>
@@ -105,7 +76,6 @@
           <template slot="append">
             <v-icon color="green" @click="verifica(info)">check</v-icon>
             <v-icon color="red" @click="anula(info)">clear</v-icon>
-            <v-icon @click="">create</v-icon>
           </template>
         </v-text-field>
       </v-col>
@@ -114,8 +84,8 @@
     <v-row>
       <v-spacer />
       <PO
-        operacao="Analisar"
-        @avancarPedido="encaminharPedido($event)"
+        operacao="Validar"
+        @finalizarPedido="finalizarPedido()"
         @devolverPedido="despacharPedido($event)"
       />
     </v-row>
@@ -169,27 +139,11 @@ export default {
       ],
       headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center"
-        }
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ],
       headersProcessos: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center"
-        }
+        { text: "Título", value: "titulo", class: "subtitle-1" }
       ]
     };
   },
@@ -228,9 +182,9 @@ export default {
       }
     },
 
-    async encaminharPedido(dados) {
+    async finalizarPedido() {
       try {
-        const estado = "Apreciado";
+        const estado = "Validado";
 
         let dadosUtilizador = await this.$request(
           "get",
@@ -239,22 +193,24 @@ export default {
 
         dadosUtilizador = dadosUtilizador.data;
 
-        let pedido = JSON.parse(JSON.stringify(this.p));
-
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
-
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho
+          data: new Date()
+          // despacho: dados.mensagemDespacho
         };
 
+        let pedido = JSON.parse(JSON.stringify(this.p));
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        // TODO: Adicionar despacho
         await this.$request("put", "/pedidos", {
           pedido: pedido,
           distribuicao: novaDistribuicao
         });
+
+        await this.$request("post", "/legislacao", pedido.objeto.dados);
 
         this.$router.go(-1);
       } catch (e) {
