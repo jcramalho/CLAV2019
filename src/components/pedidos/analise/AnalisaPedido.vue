@@ -13,10 +13,12 @@
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
             />
+
             <AnalisaLeg
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
             />
+
             <AnalisaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"

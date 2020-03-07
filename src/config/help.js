@@ -192,10 +192,16 @@ module.exports.help = {
     Campos: {
       Sigla: "Sigla da entidade.",
       Estado:
-        "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
+            "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
+      SIOE: "Registo do código SIOE da entidade. O SIOE, ou o <i>Sistema de Informação e Organização " +
+            "do Estado</i>, é um sistema de informação sobre a caracterização das entidades públicas do" +
+            " universo das contas nacionais, bem como a atividade social dos empregadores públicos. " +
+            "O SIOE atribui um código, composto por uma sequência de dígitos numéricos, a todas as entidades públicas.",
       Internacional: "Indicação do caráter internacional da entidade.",
-      DataCriacao: "Data de criação da entidade.",
-      DataExtincao: "Data de extinção da entidade.",
+      DataCriacao: "Registo da data de criação da entidade. No caso das entidades públicas esta data consta num " +
+            "diploma legal.",
+      DataExtincao: "Registo da data de extinção da entidade. No caso das entidades públicas esta data consta num " +
+      "diploma legal.",
       Tipologias: "Indicação das tipologias de entidade a que pertence."
     },
     Intervencoes: {
@@ -292,14 +298,18 @@ module.exports.help = {
         "Verifique se o campo <strong> Medição de UI Digital</strong> se encontra devidamente preenchido.",
       MedicaoOutro:
         "Verifique se o campo <strong> Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.",
+      Medicoes:
+        "Pelo menos um dos campos de <strong>Medições de UI</strong> deve estar preenchido.",
       FaltaCamposAg:
         "Verifique se os campos <strong>Código da Agregação, Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.",
       CodigoAg:
         "O <strong>Código da Agregação</strong> que introduziu já foi associado a esta Zona de Controlo.",
       DataContagem:
-        "A Data de Contagem do Prazo de Conservação Administrativa da agregação tem de ser igual ou superior à Data de Início somada ao Prazo de Conservação Administrativo colocadas na respetiva Zona de Controlo.",
+        "A Data de inicio da contagem deve ser igual ou inferior à subtração do Prazo de conservação administrativa ao ano corrente. Para garantia de cumprimento integral do PCA é aconselhável adicionar a este valor um ano.",
       DataContagemP:
-        "Verifique se o campo <strong>Data de Contagem do PCA</strong> se encontra devidamente preenchido."
+        "Verifique se o campo <strong>Data de Contagem do PCA</strong> se encontra devidamente preenchido.",
+      DonoPN:
+        "Quando o Destino Final da classe é <strong>Conservação</strong>, é obrigatório o preenchimento do campo <strong>Dono do PN</strong>"
     },
     Campos: {
       FonteLegitimacao:

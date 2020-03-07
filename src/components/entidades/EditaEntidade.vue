@@ -13,7 +13,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nome da Entidade:</div>
+              <div class="info-label">Nome da Entidade</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -29,7 +29,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla:</div>
+              <div class="info-label">Sigla</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -45,7 +45,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Internacional:</div>
+              <div class="info-label">Internacional</div>
             </v-col>
             <v-col>
               <v-select
@@ -62,7 +62,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">SIOE:</div>
+              <div class="info-label">SIOE</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -71,7 +71,6 @@
                 color="indigo"
                 single-line
                 v-model="entidade.sioe"
-                type="number"
                 :rules="regraSIOE"
               ></v-text-field>
             </v-col>
@@ -79,48 +78,19 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">
-                Data de extinção:
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" color="warning">info</v-icon>
-                  </template>
-                  <span
-                    >Ao clicar neste campo adiciona uma data de extinção à
-                    entidade!</span
-                  >
-                </v-tooltip>
-              </div>
+              <div class="info-label">Data de criação</div>
             </v-col>
             <v-col>
-              <v-menu
-                ref="open"
-                v-model="open"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    solo
-                    v-model="entidade.dataExtincao"
-                    hint="AAAA/MM/DD"
-                    persistent-hint
-                    @blur="date = parseDate(dateFormatted)"
-                    v-on="on"
-                    :rules="regraData"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="date"
-                  no-title
-                  @input="open = false"
-                  :max="new Date().toISOString().substr(0, 10)"
-                ></v-date-picker>
-              </v-menu>
+              <SelecionarData :d="entidade.dataCriacao" @dataSelecionada="entidade.dataCriacao = $event" />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Data de extinção</div>
+            </v-col>
+            <v-col>
+              <SelecionarData :d="entidade.dataExtincao" @dataSelecionada="entidade.dataExtincao = $event" />
             </v-col>
           </v-row>
 
@@ -166,13 +136,15 @@
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
+import SelecionarData from "@/components/generic/SelecionarData";
 
 export default {
   props: ["e"],
   components: {
     DesSelTip,
     SelTip,
-    PainelOpsEnt
+    PainelOpsEnt,
+    SelecionarData
   },
 
   data: vm => ({
@@ -183,6 +155,7 @@ export default {
       sioe: "",
       tipologiasSel: [],
       codigo: "",
+      dataCriacao: "",
       dataExtincao: ""
     },
 

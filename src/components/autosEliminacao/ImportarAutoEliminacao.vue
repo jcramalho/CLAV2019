@@ -10,13 +10,12 @@
           </v-toolbar>
           <v-card-text class="panel-body">
             <div class="ma-3">
-              Para cada tipo de Fonte de Legitimação, o diploma ou ato
-              administrativo que autoriza e legitima uma Tabela de Seleção, é
-              disponibilizado um formulário diferente.
-              <p>
-                Selecione a Fonte de legitimação aplicável e transfira o
-                formulário para preenchimento offline.
-              </p>
+              A Plataforma CLAV permite a submissão de Autos de Eliminação (AE) através da
+              importação de ficheiros. Para tal são disponibilizados dois tipos de formulários que
+              devem ser preenchidos previamente offline:
+
+              <li>Um formulário para as séries (veja <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download>aqui</a>)</li>
+              <li>um formulário para as agregações simples / unidades de instalação (veja <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download>aqui</a>)</li>
 
               <p>
                 Consulte
@@ -38,7 +37,7 @@
                 <tr>
                   <td style="width:20%;">
                     <div class="info-label">
-                      Fonte de Legitimação:
+                      Fonte de Legitimação
                       <InfoBox
                         header="Fonte de Legitimação"
                         :text="myhelp.AutoEliminacao.Campos.FonteLegitimacao"
@@ -89,29 +88,6 @@
                         </template>
                       </v-radio>
                     </v-radio-group>
-                    <a
-                      :href="
-                        `${publicPath}documentos/Formulario_AE_${tipo}.xlsx`
-                      "
-                      download
-                    >
-                      Transferir ficheiro de submissão
-                    </a>
-                    <div style="width:100%">
-                      Para submeter um auto de eliminação, selecione o ficheiro
-                      que preencheu e guardou previamente.
-                    </div>
-                    <div>
-                      Em seguida, para concluir, execute o comando
-                      <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">Fonte de legitimação:</div>
-                  </td>
-                  <td style="width:40%;">
                     <div v-if="tipo=='PGD_LC'">
                       <v-autocomplete
                         label="Selecione a fonte de legitimação"
@@ -124,11 +100,19 @@
                     <div v-else>
                       <v-text-field :value="auto.legislacao" solo dense label="Indique a fonte de legitimação"></v-text-field>
                     </div>
+                    <div style="width:100%">
+                      Para submeter um auto de eliminação, selecione os ficheiros
+                      que preencheu e guardou previamente.
+                    </div>
+                    <div>
+                      Em seguida, para concluir, execute o comando
+                      <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
+                    </div>
                   </td>
                 </tr>
                 <tr>
                   <td style="width:20%;">
-                    <div class="info-label">Fundo:</div>
+                    <div class="info-label">Fundo</div>
                   </td>
                   <td style="width:40%;">
                     <div>
@@ -146,15 +130,30 @@
                 </tr>
                 <tr>
                   <td style="width:20%;">
-                    <div class="info-label">Ficheiro:</div>
+                    <div class="info-label">Ficheiro série</div>
                   </td>
                   <td style="width:40%">
                     <div>
                       <input
                         type="file"
-                        id="file"
+                        id="fileSerie"
                         ref="myFiles"
-                        @change="previewFiles"
+                        @change="previewFileSerie"
+                      />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%;">
+                    <div class="info-label">Ficheiro Agregações / Unidades de instalação</div>
+                  </td>
+                  <td style="width:40%">
+                    <div>
+                      <input
+                        type="file"
+                        id="fileAgreg"
+                        ref="myFiles"
+                        @change="previewFileAgreg"
                       />
                     </div>
                   </td>
@@ -168,7 +167,7 @@
             medium
             color="primary"
             @click="submit"
-            :disabled="!file"
+            :disabled="!fileSerie || !fileAgreg || !auto.fundo || !auto.legislacao"
             class="ma-2"
           >
             Submeter Auto de Eliminação
@@ -203,7 +202,7 @@
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="red darken-4 title white--text" dark>
-          Não foi possível criar o pedido de criação de tabela de seleção
+          Não foi possível criar o pedido de criação de auto de eliminação
         </v-card-title>
 
         <v-card-text>
@@ -224,13 +223,13 @@
 </template>
 
 <script>
-const conversor = require("@/plugins/conversor").excel2Json;
+const conversor = require("@/plugins/conversor").csv2Json;
 const conversorTS = require("@/plugins/conversor").excel2JsonTS;
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["portarias","entidades"],
+  props: ["portarias","entidades","classes"],
   components: {
     InfoBox
   },
@@ -240,8 +239,10 @@ export default {
       fundo: [],
       zonaControlo: []
     },
-    file: null,
+    fileSerie: null,
+    fileAgreg: null,
     tipo: "PGD_LC",
+    flagAE: false,
     successDialog: false,
     success: "",
     erroDialog: false,
@@ -251,32 +252,58 @@ export default {
   }),
   methods: {
     submit: async function() {
-      conversor(this.file, this.tipo)
+      conversor(this.fileSerie, this.fileAgreg, this.tipo)
         .then(res => {
-          this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
-            auto: res.auto
-          })
-            .then(r => {
-              this.successDialog = true;
-              this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(
-                res.error
-              )}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`;
+          const eliminacao = res.auto
+          eliminacao.fundo = this.auto.fundo
+          eliminacao.legislacao = this.auto.legislacao
+          if(this.tipo=="PGD_LC") {
+            eliminacao.zonaControlo.forEach( zc => {
+              var classe = this.classes.find(elem => elem.codigo == zc.codigo) 
+              if(!classe) {
+                this.flagAE = true;
+                this.erro = "Codigo da classe <b>"+zc.codigo+"</b> não foi encontrado na Lista Consolidada"
+                return; //ERROS
+              }
+
+              delete zc["referencia"]
+              zc.titulo = classe.titulo
+              zc.prazoConservacao = classe.pca.valores
+              zc.destino = classe.df.valor
             })
-            .catch(e => {
-              this.erro = e.response.data;
-              this.erroDialog = true;
-            });
+            console.log(eliminacao)
+            if(this.flagAE) this.erroDialog = true
+            else 
+              this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
+                auto: eliminacao
+              })
+              .then(r => {
+                this.successDialog = true;
+                this.success = `<b>Código do pedido:</b>\n${JSON.stringify(eliminacao)}`;
+              })
+              .catch(e => {
+                this.erro = e.response.data;
+                this.erroDialog = true;
+              });
+          }
         })
         .catch(err => {
           this.erro = err;
           this.erroDialog = true;
         });
     },
-    previewFiles: function(ev) {
+    previewFileSerie: function(ev) {
       const file = ev.target.files[0];
       const reader = new FileReader();
 
-      reader.onload = e => (this.file = e.target.result);
+      reader.onload = e => (this.fileSerie = e.target.result);
+      reader.readAsArrayBuffer(file);
+    },
+    previewFileAgreg: function(ev) {
+      const file = ev.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = e => (this.fileAgreg = e.target.result);
       reader.readAsArrayBuffer(file);
     }
   }

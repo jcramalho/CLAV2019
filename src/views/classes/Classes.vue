@@ -233,7 +233,7 @@ export default {
     selectedParents: []
   }),
   created: async function() {
-    var myClasses = await this.$request("get", "/classes?info=completa");
+    var myClasses = await this.$request("get", "/classes?info=pesquisa");
     this.classesTree = await this.preparaTree(myClasses.data);
     this.classesOriginal = this.classesTree;
 
@@ -481,54 +481,30 @@ export default {
       this.classesTree = classesFiltradas;
       this.showClasses = true;
     },
-    preparaTree: async function(lclasses) {
-      try {
-        var myTree = [];
-        for (var i = 0; i < lclasses.length; i++) {
-          myTree.push({
-            id: lclasses[i].codigo,
-            name: lclasses[i].codigo + " - " + lclasses[i].titulo,
-            titulo: lclasses[i].titulo.toLowerCase(),
-            status: lclasses[i].status.toLowerCase(),
-            na: lclasses[i].notasAp
-              .map(n => n.nota)
-              .join(" ")
-              .toLowerCase(),
-            exemploNa: lclasses[i].exemplosNotasAp
-              .map(e => e.exemplo)
-              .join(" ")
-              .toLowerCase(),
-            ne: lclasses[i].notasEx
-              .map(n => n.nota)
-              .join(" ")
-              .toLowerCase(),
-            ti: lclasses[i].termosInd
-              .map(t => t.termo)
-              .join(" ")
-              .toLowerCase(),
-            pca: lclasses[i].pca.valores.toLowerCase(),
-            fc_pca: lclasses[i].pca.formaContagem.toLowerCase(),
-            sfc_pca: lclasses[i].pca.subFormaContagem
-              ? lclasses[i].pca.subFormaContagem.toLowerCase()
-              : "",
-            crit_pca: lclasses[i].pca.justificacao.map(j =>
-              j.tipoId.toLowerCase()
-            ),
-            df: lclasses[i].df.valor.toLowerCase(),
-            crit_df: lclasses[i].df.justificacao.map(j =>
-              j.tipoId.toLowerCase()
-            ),
-            donos: lclasses[i].donos.map(e => e.idDono.toLowerCase()),
-            participantes: lclasses[i].participantes.map(e =>
-              e.idParticipante.toLowerCase()
-            ),
-            children: await this.preparaTree(lclasses[i].filhos)
-          });
-        }
-        return myTree;
-      } catch (error) {
-        return [];
+    preparaTree: function(lclasses) {
+      var myTree = [];
+      for (var i = 0; i < lclasses.length; i++) {
+        myTree.push({
+          id: lclasses[i].id,
+          name: lclasses[i].nome,
+          titulo: lclasses[i].titulo.toLowerCase(),
+          status: lclasses[i].status.toLowerCase(),
+          na: lclasses[i].na.toLowerCase(),
+          exemploNa: lclasses[i].exemploNa.toLowerCase(),
+          ne: lclasses[i].ne.toLowerCase(),
+          ti: lclasses[i].ti.toLowerCase(),
+          pca: lclasses[i].pca.toLowerCase(),
+          fc_pca: lclasses[i].fc_pca.toLowerCase(),
+          sfc_pca: lclasses[i].sfc_pca.toLowerCase(),
+          crit_pca: lclasses[i].crit_pca.map(j => j.toLowerCase()),
+          df: lclasses[i].df.toLowerCase(),
+          crit_df: lclasses[i].crit_df.map(j => j.toLowerCase()),
+          donos: lclasses[i].donos.map(d => d.toLowerCase()),
+          participantes: lclasses[i].participantes.map(p => p.toLowerCase()),
+          children: this.preparaTree(lclasses[i].filhos)
+        });
       }
+      return myTree;
     }
   },
   watch: {
