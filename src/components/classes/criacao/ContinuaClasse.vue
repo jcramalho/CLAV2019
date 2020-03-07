@@ -488,7 +488,7 @@ export default {
         return error;
       }
     },
-
+ 
     // Carrega a informação contextual relativa ao PCA: formas de contagem, etc....................
 
     loadPCA: function() {

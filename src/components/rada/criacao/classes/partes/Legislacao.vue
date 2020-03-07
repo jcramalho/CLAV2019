@@ -170,7 +170,7 @@ export default {
     },
     unselectLegislacao: function(item) {
       this.newSerie.legislacao = this.newSerie.legislacao.filter(
-        e => e.numero != item.numero && e.tipo != item.tipo
+        e => e.id != item.id
       );
     }
   }
