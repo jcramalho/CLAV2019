@@ -25,7 +25,7 @@
       <v-row v-for="(item, index) in objeto" v-bind:key="index">
         <v-col cols="2" v-if="item.text">
           <div class="info-label">
-            {{ item.campo }}:
+            {{ item.campo }}
             <InfoBox
               v-if="tipo === 'Entidades'"
               :header="item.campo"
@@ -66,7 +66,7 @@
       <v-row v-if="tipo == 'Entidades' && listaTip.length">
         <v-col cols="2">
           <div class="info-label">
-            Tipologias de Entidade:
+            Tipologias de Entidade
             <InfoBox
               header="Tipologias de Entidade"
               :text="myhelp.Entidade.Campos.Tipologias"
@@ -94,7 +94,7 @@
           <v-row v-if="listaProcD.length">
             <v-col cols="2">
               <div class="info-label">
-                Como Dono:
+                Como Dono
                 <InfoBox
                   header="Intervenção nos PNs como Dono"
                   :text="myhelp.Entidade.Intervencoes.Dono"
@@ -128,7 +128,7 @@
           <v-row v-if="parts">
             <v-col cols="2">
               <div class="info-label">
-                Como Participante:
+                Como Participante
                 <InfoBox
                   header="Intervenção nos PNs como Participante"
                   :text="myhelp.Entidade.Intervencoes.Participante"
@@ -186,7 +186,7 @@
           <v-row v-if="listaProcD.length">
             <v-col cols="2">
               <div class="info-label">
-                Como Dono:
+                Como Dono
                 <InfoBox
                   header="Intervenção nos PNs como Dono"
                   :text="myhelp.Tipologias.Intervencoes.Dono"
@@ -220,7 +220,7 @@
           <v-row v-if="parts">
             <v-col cols="2">
               <div class="info-label">
-                Como Participante:
+                Como Participante
                 <InfoBox
                   header="Intervenção nos PNs como Participante"
                   :text="myhelp.Tipologias.Intervencoes.Participante"
@@ -271,7 +271,7 @@
       <v-row v-if="tipo === 'Tipologias' && listaEnt.length">
         <v-col cols="2">
           <div class="info-label">
-            Entidades:
+            Entidades
             <InfoBox
               header="Entidades"
               :text="myhelp.Tipologias.Campos.Entidades"
@@ -299,7 +299,7 @@
       <v-row v-if="tipo === 'Legislação' && listaReg.length">
         <v-col cols="2">
           <div class="info-label">
-            Processos de negócio que regula ou enquadra:
+            Processos de negócio que regula ou enquadra
             <InfoBox
               header="Processos de negócio que regula ou enquadra"
               :text="myhelp.Legislacao.Campos.ProcessosRegulados"

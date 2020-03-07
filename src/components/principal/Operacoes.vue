@@ -77,14 +77,14 @@
             <!-- Selecionar Entidade a Editar-->
             <v-dialog v-model="entidadesDialog" width="60%">
               <v-card>
-                <v-card-title>Selecione a Entidade a editar</v-card-title>
+                <v-card-title>SELECIONE A ENTIDADE</v-card-title>
                 <v-card-text>
                   <v-row>
                     <v-col v-if="entidades.ready">
                       <v-autocomplete
                         clearable
                         color="indigo darken-4"
-                        label="Selecione uma entidade"
+                        label="SELECIONE A ENTIDADE"
                         :items="entidades.entidades"
                         v-model="dadosEditar"
                       />
