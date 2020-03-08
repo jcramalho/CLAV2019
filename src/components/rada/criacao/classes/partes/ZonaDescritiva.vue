@@ -89,7 +89,7 @@
             :rules="[v => !!v || 'Campo obrigatório!']"
             v-if="newSerie.tipo != 'Subsérie'"
             label="Tipo de Unidade Arquivística"
-            v-model="newSerie.tUa"
+            v-model="newSerie.tUA"
             :items="tiposUA"
             chips
             solo
