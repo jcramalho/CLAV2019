@@ -98,7 +98,7 @@
                       ></v-autocomplete>
                     </div>
                     <div v-else>
-                      <v-text-field :value="auto.legislacao" solo dense label="Indique a fonte de legitimação"></v-text-field>
+                      <v-text-field v-model="auto.legislacao" solo dense label="Indique a fonte de legitimação"></v-text-field>
                     </div>
                     <div style="width:100%">
                       Para submeter um auto de eliminação, selecione os ficheiros
@@ -172,6 +172,15 @@
           >
             Submeter Auto de Eliminação
           </v-btn>
+          <v-btn
+            medium
+            color="warning"
+            @click="validar"
+            :disabled="!fileSerie || !fileAgreg"
+            class="ma-2"
+          >
+            Validar Auto de Eliminação
+          </v-btn>
         </div>
       </v-flex>
     </v-layout>
@@ -194,6 +203,62 @@
 
         <v-card-actions>
           <v-btn color="green darken-4" text @click="$router.push('/')">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="valDialog" width="950" persistent>
+      <v-card outlined>
+        <v-card-title class="teal darken-4 title white--text" dark>
+          Validação de auto de eliminação executada com sucesso
+        </v-card-title>
+
+        <v-card-text>
+          <span
+            class="subtitle-1"
+            style="white-space: pre-wrap"
+            v-html="success"
+          >
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="green darken-4" text @click="valDialog=false">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="errosValDialog" width="700" persistent>
+      <v-card outlined>
+        <v-card-title class="title" dark>
+          Ficheiros anexo com {{errosVal.numErros}} erros
+        </v-card-title>
+
+        <v-card-text v-if="errosVal.erros">
+          <v-row ma-2 v-for="(m, i) in errosVal.erros" :key="i">
+            <v-col cols="4">
+              <div class="info-label">{{ m.sobre }}</div>
+            </v-col>
+            <v-col class="info-content">
+              <div>{{ m.mensagem }}</div>
+              <div></div>
+              <div v-if="m.linhasSerie && m.linhasSerie.length>0">Erro em ficheiro Classe / Série nas linhas: <span v-for="l in m.linhasSerie" :key="l">{{l}}; </span></div>
+              <div v-if="m.linhasUI && m.linhasUI.length>0">Erro em ficheiro Agregações / UI nas linhas: <span v-for="l in m.linhasUI" :key="l">{{l}}; </span></div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-text v-else>
+          <div>{{errosVal.msg}}</div>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="red darken-4" text @click="errosValDialog = false">
             Fechar
           </v-btn>
         </v-card-actions>
@@ -225,6 +290,7 @@
 <script>
 const conversor = require("@/plugins/conversor").csv2Json;
 const conversorTS = require("@/plugins/conversor").excel2JsonTS;
+const validador = require("@/plugins/conversor").validarCSVs;
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
@@ -247,31 +313,51 @@ export default {
     success: "",
     erroDialog: false,
     erro: "",
+    errosValDialog: false,
+    errosVal: {
+      erros: [],
+      numErros: 0
+    },
+    valDialog: false,
     publicPath: process.env.BASE_URL,
     myhelp: help
   }),
   methods: {
-    submit: async function() {
-      conversor(this.fileSerie, this.fileAgreg, this.tipo)
+    validar: async function() {
+      validador(this.fileSerie, this.fileAgreg, this.tipo)
         .then(res => {
-          const eliminacao = res.auto
-          eliminacao.fundo = this.auto.fundo
-          eliminacao.legislacao = this.auto.legislacao
-          if(this.tipo=="PGD_LC") {
-            eliminacao.zonaControlo.forEach( zc => {
-              var classe = this.classes.find(elem => elem.codigo == zc.codigo) 
-              if(!classe) {
-                this.flagAE = true;
-                this.erro = "Codigo da classe <b>"+zc.codigo+"</b> não foi encontrado na Lista Consolidada"
-                return; //ERROS
-              }
+          this.valDialog = true;
+          this.success = res;
+        })
+        .catch(err => {
+          this.errosVal = err;
+          this.errosValDialog = true;
+        })
+    },
+    submit: async function() {
+      validador(this.fileSerie, this.fileAgreg, this.tipo)
+        .then(()=> {
+          conversor(this.fileSerie, this.fileAgreg, this.tipo)
+          .then(res => {
+            const eliminacao = res.auto
+            eliminacao.fundo = this.auto.fundo
+            eliminacao.legislacao = this.auto.legislacao
+            if(this.tipo=="PGD_LC") {
+              //VERIFICA AS CLASSES DA LC
+              eliminacao.zonaControlo.forEach( zc => {
+                var classe = this.classes.find(elem => elem.codigo == zc.codigo) 
+                if(!classe) {
+                  this.flagAE = true;
+                  this.erro = "Codigo da classe <b>"+zc.codigo+"</b> não foi encontrado na Lista Consolidada"
+                  return; //ERROS
+                }
 
-              delete zc["referencia"]
-              zc.titulo = classe.titulo
-              zc.prazoConservacao = classe.pca.valores
-              zc.destino = classe.df.valor
-            })
-            console.log(eliminacao)
+                delete zc["referencia"]
+                zc.titulo = classe.titulo
+                zc.prazoConservacao = classe.pca.valores
+                zc.destino = classe.df.valor
+              })
+            }
             if(this.flagAE) this.erroDialog = true
             else 
               this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
@@ -285,26 +371,47 @@ export default {
                 this.erro = e.response.data;
                 this.erroDialog = true;
               });
-          }
+          })
+          .catch(err => {
+            this.erro = err;
+            this.erroDialog = true;
+          });
         })
         .catch(err => {
-          this.erro = err;
-          this.erroDialog = true;
-        });
+          this.errosVal = err;
+          this.errosValDialog = true;
+        })
     },
     previewFileSerie: function(ev) {
       const file = ev.target.files[0];
-      const reader = new FileReader();
+      var fileName = file.name.split(".")
+      if(fileName[fileName.length-1] == "csv") {
+        const reader = new FileReader();
+        reader.onload = e => (this.fileSerie = e.target.result);
+        reader.readAsArrayBuffer(file);
+      }
+      else {
+        ev.target.value = ""
+        this.erro = "Porfavor verifique se o ficheiro está no formato <strong>.csv</strong>"
+        this.erroDialog = true;
+        this.fileSerie = null;
+      }
 
-      reader.onload = e => (this.fileSerie = e.target.result);
-      reader.readAsArrayBuffer(file);
     },
     previewFileAgreg: function(ev) {
       const file = ev.target.files[0];
-      const reader = new FileReader();
-
-      reader.onload = e => (this.fileAgreg = e.target.result);
-      reader.readAsArrayBuffer(file);
+      var fileName = file.name.split(".")
+      if(fileName[fileName.length-1] == "csv") {
+        const reader = new FileReader();
+        reader.onload = e => (this.fileAgreg = e.target.result);
+        reader.readAsArrayBuffer(file);
+      }
+      else {
+        ev.target.value = ""
+        this.erro = "Porfavor verifique se o ficheiro está no formato <strong>.csv</strong>"
+        this.erroDialog = true;
+        this.fileAgreg = null;
+      }
     }
   }
 };
