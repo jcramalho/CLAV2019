@@ -37,46 +37,16 @@
                 color="indigo"
                 single-line
                 v-model="legislacao.numero"
-                maxlength="11"
-                placeholder=" NNNNNN/AAAA"
-                :rules="regraNumero"
               ></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Data</div>
+              <div class="info-label">Data do diploma</div>
             </v-col>
             <v-col>
-              <v-menu
-                ref="open"
-                v-model="open"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    solo
-                    v-model="legislacao.data"
-                    hint="AAAA/MM/DD"
-                    persistent-hint
-                    @blur="date = parseDate(dateFormatted)"
-                    v-on="on"
-                    :rules="regraData"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="date"
-                  no-title
-                  @input="open = false"
-                  :max="dateCurrent"
-                ></v-date-picker>
-              </v-menu>
+              <SelecionarData :d="legislacao.data" @dataSelecionada="legislacao.data = $event" />
             </v-col>
           </v-row>
 
@@ -129,9 +99,11 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Entidade responsável pela publicação</v-expansion-panel-header
-              >
+              <v-expansion-panel-header>
+                <div class="info-label">
+                  Entidade responsável pela publicação
+                </div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
                   :entidades="entSel"
@@ -151,10 +123,11 @@
 
             <!-- Segundo bloco expansivo -->
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Processos de negócio que regula ou
-                enquadra</v-expansion-panel-header
-              >
+              <v-expansion-panel-header>
+                <div class="info-label">
+                  Processos de negócio que regula ou enquadra
+                </div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelProc
                   :processos="procSel"
@@ -190,6 +163,7 @@
 </template>
 
 <script>
+import SelecionarData from "@/components/generic/SelecionarData";
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
@@ -221,12 +195,6 @@ export default {
     entSel: [],
     entidadesReady: false,
 
-    // vuetify datepicker
-    date: new Date().toISOString().substr(0, 10),
-    dateCurrent: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-    open: false,
-
     // Para o seletor de processos
     processos: [],
     procSel: [],
@@ -236,10 +204,6 @@ export default {
     regraNumero: [
       v =>
         /[0-9]+(-\w)?\/[0-9]+$/.test(v) || "Este campo está no formato errado."
-    ],
-    regraData: [
-      v =>
-        /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || "Este campo está no formato errado."
     ],
 
     // para mostrar mensagens de erro
@@ -252,38 +216,11 @@ export default {
     SelEnt,
     DesSelProc,
     SelProc,
-    PainelOpsLeg
-  },
-
-  // vuetify datepicker
-  computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date);
-    }
-  },
-
-  watch: {
-    date(val) {
-      this.legislacao.data = this.formatDate(this.date);
-      this.dateFormatted = this.formatDate(this.date);
-    }
+    PainelOpsLeg,
+    SelecionarData
   },
 
   methods: {
-    // vuetify datepicker
-    formatDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("-");
-      return `${year}/${month}/${day}`;
-    },
-
-    parseDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
 
     // Vai a API buscar todos os tipos de diplomas legislativos
     loadTipoDiploma: async function() {
@@ -374,7 +311,6 @@ export default {
   },
 
   created: function() {
-    this.legislacao.data = this.dateFormatted;
     this.loadTipoDiploma();
     this.loadEntidades();
     this.loadClasses();

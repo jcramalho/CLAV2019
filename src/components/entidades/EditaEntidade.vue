@@ -97,9 +97,9 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Tipologias de Entidade</v-expansion-panel-header
-              >
+              <v-expansion-panel-header>
+                <div class="info-label">Tipologias de Entidade</div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelTip
                   :tipologias="tipSel"

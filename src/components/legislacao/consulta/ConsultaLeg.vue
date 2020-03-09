@@ -2,23 +2,13 @@
   <v-card class="ma-4">
     <v-card-title class="indigo darken-4 white--text">
       {{ titulo }}
-      <InfoBox
-        header="Tipo + Entidade + Número"
-        :text="
-          myhelp.Legislacao.Campos.Tipo +
-            ' + ' +
-            myhelp.Legislacao.Campos.Entidades +
-            ' + ' +
-            myhelp.Legislacao.Campos.Numero
-        "
-      />
     </v-card-title>
 
     <v-card-text>
       <v-row v-for="(item, index) in objeto" v-bind:key="index">
         <v-col cols="2" v-if="item.text">
           <div class="info-label">
-            {{ item.campo }}:
+            {{ item.campo }}
 
             <InfoBox
               v-if="item.tipo === 'Legislação'"

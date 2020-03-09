@@ -125,14 +125,14 @@
             <!-- Selecionar Legislação a Editar-->
             <v-dialog v-model="legislacaoDialog" width="90%">
               <v-card>
-                <v-card-title>Selecione a Legislação a editar</v-card-title>
+                <v-card-title>SELECIONE A LEGISLAÇÃO</v-card-title>
                 <v-card-text>
                   <v-row>
                     <v-col v-if="legislacao.ready">
                       <v-autocomplete
                         clearable
                         color="indigo darken-4"
-                        label="Selecione uma legislaçao"
+                        label="SELECIONE A LEGISLAÇÃO"
                         :items="legislacao.legislacaoItems"
                         v-model="dadosEditar"
                       />
@@ -173,14 +173,14 @@
             <!-- Selecionar Tipologia a Editar-->
             <v-dialog v-model="tipologiasDialog" width="50%">
               <v-card>
-                <v-card-title>Selecione a Tipologia a editar</v-card-title>
+                <v-card-title>SELECIONE A TIPOLOGIA DE ENTIDADE</v-card-title>
                 <v-card-text>
                   <v-row>
                     <v-col v-if="tipologias.ready">
                       <v-autocomplete
                         clearable
                         color="indigo darken-4"
-                        label="Selecione uma legislaçao"
+                        label="SELECIONE A TIPOLOGIA DE ENTIDADE"
                         :items="tipologias.tipologias"
                         v-model="dadosEditar"
                       />
