@@ -12,7 +12,7 @@
         <v-form ref="form" :lazy-validation="false">
           <!-- <h5>Identificação</h5>
           <v-divider></v-divider>-->
-          <Identificacao :newSerie="newSubSerie" :classes="classes"  />
+          <Identificacao :newSerie="newSubSerie" :classes="classes" />
 
           <v-expansion-panels accordion>
             <v-expansion-panel popout focusable>
@@ -168,7 +168,21 @@ export default {
 
         */
 
-        let classe_relacionada = clone_newSubserie.relacoes[i].serieRelacionada;
+        let classe_relacionada = await this.classes.find(
+          e => e.codigo == clone_newSubserie.relacoes[i].serieRelacionada.codigo
+        );
+
+        if (classe_relacionada == undefined) {
+          classe_relacionada = {
+            codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
+            titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
+            eFilhoDe: "",
+            relacoes: [],
+            tipo: ""
+          };
+          this.classes.push(classe_relacionada);
+        }
+
         let relacao_inversa = "";
 
         switch (clone_newSubserie.relacoes[i].relacao) {
@@ -204,13 +218,16 @@ export default {
         let existe_repetida = await classe_relacionada.relacoes.find(
           e =>
             e.relacao == relacao_inversa &&
-            e.serieRelacionada == clone_newSubserie.codigo
+            e.serieRelacionada.codigo == clone_newSubserie.codigo
         );
 
         if (existe_repetida == undefined) {
           classe_relacionada.relacoes.push({
             relacao: relacao_inversa,
-            serieRelacionada: clone_newSubserie
+            serieRelacionada: {
+              codigo: clone_newSubserie.codigo,
+              titulo: clone_newSubserie.titulo
+            }
           });
         }
       }

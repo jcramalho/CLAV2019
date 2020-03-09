@@ -285,9 +285,9 @@ export default {
       var result = this.auto.zonaControlo.filter(
         zc => zc.codigo + " - " + zc.titulo == this.classe
       );
-      var uiPapel = parseInt(this.uiPapel) || 0;
-      var uiDigital = parseInt(this.uiDigital) || 0;
-      var uiOutros = parseInt(this.uiOutros) || 0;
+      var uiPapel = parseFloat(this.uiPapel) || 0;
+      var uiDigital = parseFloat(this.uiDigital) || 0;
+      var uiOutros = parseFloat(this.uiOutros) || 0;
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
