@@ -4,7 +4,9 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading">Nova tipologia de entidade</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Nova tipologia de entidade</v-toolbar-title
+          >
         </v-app-bar>
 
         <!-- Content -->
@@ -94,6 +96,7 @@ export default {
     tipologia: {
       designacao: "",
       sigla: "",
+      estado: "Ativa",
       entidadesSel: [],
       codigo: ""
     },
