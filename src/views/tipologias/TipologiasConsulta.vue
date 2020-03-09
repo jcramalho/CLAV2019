@@ -45,7 +45,7 @@ export default {
       try {
         var myTipologia = {
           nome: {
-            campo: "Nome",
+            campo: "Designação",
             text: tip.designacao
           },
           sigla: {

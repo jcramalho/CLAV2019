@@ -142,7 +142,6 @@ import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
 import SelecionarData from "@/components/generic/SelecionarData";
 
 const help = require("@/config/help").help;
-import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   data: () => ({
@@ -176,8 +175,7 @@ export default {
     DesSelTip,
     SelTip,
     PainelOpsEnt,
-    SelecionarData,
-    InfoBox
+    SelecionarData
   },
   methods: {
     // Vai à API buscar todas as tipologias
