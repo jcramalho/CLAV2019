@@ -17,6 +17,7 @@
         <v-data-table
           :headers="headers"
           :items="legs"
+          :items-per-page="5"
           :search="searchDiplomas"
           item-key="id"
           class="elevation-1"

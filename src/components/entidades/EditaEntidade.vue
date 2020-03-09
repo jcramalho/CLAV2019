@@ -159,11 +159,6 @@ export default {
       dataExtincao: ""
     },
 
-    // vuetify datepicker
-    date: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-    open: false,
-
     // Para o seletor de processos
     tipologias: [],
     tipSel: [],
@@ -172,45 +167,12 @@ export default {
     regraSIOE: [
       v => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos."
     ],
-    regraData: [
-      v =>
-        /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || "Este campo está no formato errado."
-    ],
 
     snackbar: false,
     text: ""
   }),
 
-  // vuetify datepicker
-  computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date);
-    }
-  },
-
-  watch: {
-    date(val) {
-      this.entidade.dataExtincao = this.formatDate(this.date);
-      this.dateFormatted = this.formatDate(this.date);
-    }
-  },
-
   methods: {
-    // vuetify datepicker
-    formatDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("-");
-      return `${year}/${month}/${day}`;
-    },
-
-    parseDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
-
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {

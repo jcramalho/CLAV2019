@@ -3,7 +3,7 @@
   <div v-if="!c.temSubclasses4Nivel">
     <v-row class="ma-2">
       <v-col>
-        <v-toolbar color="indigo darken-4 font-weight-medium" dark height="30">
+        <v-toolbar color="indigo darken-2 font-weight-regular" dark height="30">
           <v-toolbar-title>Destino Final</v-toolbar-title>
         </v-toolbar>
       </v-col>
@@ -11,7 +11,7 @@
 
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Destino:</div>
+        <div class="info-label">Destino</div>
       </v-col>
       <v-col>
         <SelectValueFromList
@@ -27,7 +27,7 @@
 
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Notas:</div>
+        <div class="info-label">Notas</div>
       </v-col>
       <v-col>
         <v-textarea solo label="Notas ao destino final" v-model="c.df.notas" rows="2"></v-textarea>
@@ -39,7 +39,7 @@
     <!-- JUSTIFICAÇÂO DO DF -->
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Justificação do DF:</div>
+        <div class="info-label">Justificação do DF</div>
 
         <div>
           <v-btn

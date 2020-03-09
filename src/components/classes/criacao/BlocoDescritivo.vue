@@ -1,8 +1,8 @@
 <template>
   <!-- BLOCO DESCRITIVO -->
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="expansion-panel-heading">
-      <div>
+    <v-expansion-panel-header>
+      <div class="info-label">
         Descritivo da Classe
         <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" />
       </div>
@@ -12,7 +12,7 @@
         <!-- DESCRIÇÂO -->
         <v-col cols="2">
           <div class="info-label">
-            Descrição:
+            Descrição
             <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
           </div>
         </v-col>

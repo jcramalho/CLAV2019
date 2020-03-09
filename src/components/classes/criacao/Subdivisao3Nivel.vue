@@ -13,17 +13,19 @@
           negócio (classe de 3º nível) devem ser criadas classes de 4.º nível.
         </p>
 
-        <h4>Esta classe de 3º nível irá ter subclasses de 4º nível?</h4>
-        <v-radio-group v-model="c.temSubclasses4Nivel">
-          <v-radio label="Sim" v-bind:value="true" color="#1A237E"></v-radio>
-          <v-radio label="Não" v-bind:value="false" color="red"></v-radio>
-        </v-radio-group>
+        <div class="subtitle-1 font-weight-black">Esta classe de 3º nível irá ter subclasses de 4º nível?</div>
+          <v-radio-group v-model="c.temSubclasses4Nivel" row>
+              <v-radio label="Sim" v-bind:value="true" color="#1A237E"></v-radio>
+              <v-radio label="Não" v-bind:value="false" color="red"></v-radio>
+          </v-radio-group>
+          
+
       </v-col>
     </v-row>
 
     <v-row v-if="c.temSubclasses4Nivel">
       <v-col>
-        <h4>Selecione o(s) motivo(s) da subdivisão em 4ºs níveis:</h4>
+        <div class="subtitle-1 font-weight-black">Selecione o(s) motivo(s) da subdivisão em 4ºs níveis:</div>
         <v-checkbox
           v-model="c.temSubclasses4NivelPCA"
           hide-details

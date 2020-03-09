@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Selecione o(s) dono(s) do processo:</div>
+      <div class="info-label">Selecione o(s) dono(s) do processo</div>
     </v-col>
     <v-col v-if="entidadesReady">
       <v-card>
@@ -17,6 +17,7 @@
         <v-data-table
           :headers="entidadesHeaders"
           :items="entidades"
+          :items-per-page="5"
           :search="searchEntidades"
           item-key="id"
           class="elevation-1"

@@ -44,7 +44,8 @@ module.exports.help = {
     "Legislação que regula os processos de negócio e enquadra os respetivos prazos " +
     "de conservação administrativa (PCA) e destino final (DF).",
   TermosIndice:
-    "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação.",
+    "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação." +
+    " Aplica-se às classes de 3º e 4º nível.",
   API:
     "Acesso à página de documentação da API de dados onde poderá consultar toda a informação sobre a mesma " +
     "experimentar as várias operações (página gerada a partir da especificação em Swagger).",
@@ -91,7 +92,8 @@ module.exports.help = {
       TipoProcesso:
         "Indicação do tipo de processo: processo comum  (ocorre em qualquer entidade pública) ou específico (só ocorre em algumas entidades). Aplica-se  às classes de 3º nível.",
       ProcessoTransversal:
-        "Indicação do tipo de processo: processo comum  (ocorre em qualquer entidade pública) ou específico (só ocorre em algumas entidades). Aplica-se  às classes de 3º nível.",
+        "Indicação da transversalidade, ou não, do processo, isto é, se resulta da intervenção de várias entidades" +
+        " ou se decorre numa só entidade, Aplica-se às classes de 3º nível.",
       Donos:
         "Nome da(s) entidade(s) responsável(eis) pela condução  do processo de negócio, pelo respetivo produto final e pela guarda do produto final. Aplica-se às classes de 3º nível.",
       Participantes:
@@ -130,10 +132,12 @@ module.exports.help = {
         "isto é, contém informação que o segundo vai necessitar de recolher e analisar.<dd></dl></p>",
       Legislacao:
         "Legislação que regula os processos de negócio e enquadra os respetivos prazos de conservação administrativa " +
-        "(PCA) e destino final (DF). Aplica-se às classes de 3º e 4º nível.",
+        "(PCA) e destino final (DF). Aplica-se às classes de 3º.",
       Prazo:
         "Prazo de conservação administrativa (PCA), período de tempo, registado em anos, durante o qual a informação " +
         "/ documentação tem de ser conservada. Aplica-se às classes de 3º ou 4º nível.",
+      Notas: 
+        "Informação específica para PN cujo PCA reflete o do PN que o origina. Aplica-se às classes de 3º e 4º nível.",
       FormaContagem:
         "<p>Instrução relativa à ação / momento que origina a contagem do prazo. Aplica-se às classes de 3º " +
         "ou 4º nível.</p>" +
@@ -160,7 +164,7 @@ module.exports.help = {
         "afetação, da reserva de uso, do direito de superfície, do arrendamento ou cedência.</dd>" +
         "</dl></p>",
       SubformaContagem:
-        "Informação complementar da forma de contagem do prazo  Conforme disposição legal (F01) " +
+        "Informação complementar da forma de contagem do prazo  <i>Conforme disposição legal (F01)</i> " +
         "referente às datas ou à ação que determina o momento a partir do qual é iniciada a contagem do " +
         "prazo de conservação administrativa fixado na tabela. Aplica-se às classes de 3º ou 4º nível.",
       JustificacaoPCA:
