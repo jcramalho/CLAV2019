@@ -81,7 +81,10 @@
               <div class="info-label">Data de criação</div>
             </v-col>
             <v-col>
-              <SelecionarData :d="entidade.dataCriacao" @dataSelecionada="entidade.dataCriacao = $event" />
+              <SelecionarData
+                :d="entidade.dataCriacao"
+                @dataSelecionada="entidade.dataCriacao = $event"
+              />
             </v-col>
           </v-row>
 
@@ -90,15 +93,18 @@
               <div class="info-label">Data de extinção</div>
             </v-col>
             <v-col>
-              <SelecionarData :d="entidade.dataExtincao" @dataSelecionada="entidade.dataExtincao = $event" />
+              <SelecionarData
+                :d="entidade.dataExtincao"
+                @dataSelecionada="entidade.dataExtincao = $event"
+              />
             </v-col>
           </v-row>
 
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header>
-                <div class="info-label">Tipologias de Entidade</div>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>Tipologias de Entidade</div>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelTip

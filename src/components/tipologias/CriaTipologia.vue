@@ -46,8 +46,8 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header>
-                <div class="info-label">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
                   Entidades
                 </div>
               </v-expansion-panel-header>

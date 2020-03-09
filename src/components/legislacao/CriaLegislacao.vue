@@ -46,7 +46,10 @@
               <div class="info-label">Data do diploma</div>
             </v-col>
             <v-col>
-              <SelecionarData :d="legislacao.data" @dataSelecionada="legislacao.data = $event" />
+              <SelecionarData
+                :d="legislacao.data"
+                @dataSelecionada="legislacao.data = $event"
+              />
             </v-col>
           </v-row>
 
@@ -99,8 +102,8 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header>
-                <div class="info-label">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
                   Entidade responsável pela publicação
                 </div>
               </v-expansion-panel-header>
@@ -123,8 +126,8 @@
 
             <!-- Segundo bloco expansivo -->
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header>
-                <div class="info-label">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
                   Processos de negócio que regula ou enquadra
                 </div>
               </v-expansion-panel-header>
@@ -221,7 +224,6 @@ export default {
   },
 
   methods: {
-
     // Vai a API buscar todos os tipos de diplomas legislativos
     loadTipoDiploma: async function() {
       try {

@@ -4,7 +4,9 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading">Editar tipologia de entidade</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Editar tipologia de entidade</v-toolbar-title
+          >
         </v-app-bar>
 
         <!-- Content -->
@@ -44,8 +46,8 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header>
-                <div class="info-label">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
                   Entidades
                 </div>
               </v-expansion-panel-header>
