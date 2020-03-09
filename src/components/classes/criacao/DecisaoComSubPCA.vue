@@ -5,7 +5,10 @@
     <v-card-text>
       <v-row class="ma-2">
         <v-col cols="2">
-          <div class="info-label">Prazo</div>
+          <div class="info-label">
+            Prazo
+            <InfoBox header="Prazo de Conservação Administrativa" :text="myhelp.Classe.Campos.Prazo" />
+          </div>
         </v-col>
         <v-col>
           <v-text-field
@@ -20,7 +23,10 @@
 
       <v-row class="ma-2">
         <v-col cols="2">
-          <div class="info-label">Notas</div>
+          <div class="info-label">
+            Notas
+            <InfoBox header="Notas" :text="myhelp.Classe.Campos.Notas" />
+          </div>
         </v-col>
         <v-col>
           <v-textarea
@@ -34,7 +40,10 @@
 
       <v-row class="ma-2" v-if="semaforos.pcaFormasContagemReady">
         <v-col cols="2">
-          <div class="info-label">Forma de Contagem</div>
+          <div class="info-label">
+            Forma de Contagem
+            <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
+          </div>
         </v-col>
         <v-col>
           <v-select
@@ -51,7 +60,10 @@
 
       <v-row class="ma-2" v-if="semaforos.pcaSubFormasContagemReady && c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'">
         <v-col cols="2">
-          <div class="info-label">Subforma de contagem</div>
+          <div class="info-label">
+            Subforma de contagem
+            <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.SubformaContagem" />
+          </div>
         </v-col>
         <v-col cols="10">
           <v-select
@@ -80,7 +92,10 @@
 
       <v-row class="ma-2">
         <v-col cols="3">
-          <div class="ma-2 info-label">Justificação do PCA</div>
+          <div class="ma-2 info-label">
+            Justificação do PCA
+            <InfoBox header="Justificação do PCA" :text="myhelp.Classe.Campos.JustificacaoPCA" />
+          </div>
 
           <div class="ma-2">
             <v-btn
@@ -202,19 +217,24 @@
 </template>
 
 <script>
+const help = require("@/config/help").help
+
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
 
   components: {
     ProcessosRelacionadosOps,
-    LegislacaoOps
+    LegislacaoOps,
+    InfoBox
   },
 
   data: function() {
     return {
+      myhelp: help,
       textoCriterioGestionario:
         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
         " escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para" +

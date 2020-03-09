@@ -180,6 +180,8 @@ module.exports.help = {
         "Indicação do destino final (DF) da informação / documentação, depois de cumprido o prazo de conservação " +
         "administrativo, podendo ser: Conservação (C), Conservação parcial (CP), Eliminação  (E) e Não especificado " +
         "(NE). Aplica-se às classes de 3º ou 4º nível.",
+      NotasDF:
+        "Informação específica para PN cujo DF reflete o do PN que o origina. Aplica-se às classes de 3º ou 4º nível.",
       JustificacaoDF:
         "<p>Indicação dos critérios que fundamentam o destino final (DF). Aplica-se às classes de 3º ou 4º " +
         "nível.</p>" +
