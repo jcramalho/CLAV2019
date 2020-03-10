@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog v-model="dialog" persistent fullscreen>
     <template v-slot:activator="{ on }">
       <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
         <v-icon dark left>add</v-icon>área orgânico-funcional
@@ -96,7 +96,7 @@
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close">Cancelar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="close">Voltar</v-btn>
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
         <v-btn color="success" class="mr-4" @click="save">Guardar</v-btn>
       </v-card-actions>
