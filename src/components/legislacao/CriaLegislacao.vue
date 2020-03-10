@@ -186,7 +186,8 @@ export default {
       diplomaFonte: "Não aplicável",
       entidadesSel: [],
       processosSel: [],
-      codigo: ""
+      codigo: "",
+      estado: "Ativo"
     },
 
     tiposDiploma: [],
