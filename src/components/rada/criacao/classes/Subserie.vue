@@ -181,13 +181,50 @@ export default {
         );
 
         if (classe_relacionada == undefined) {
-          classe_relacionada = {
-            codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
-            titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
-            eFilhoDe: "",
-            relacoes: [],
-            tipo: ""
-          };
+          if (clone_newSubserie.relacoes[i].serieRelacionada.tipo == "Série") {
+            classe_relacionada = {
+              codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
+              titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
+              descricao: "",
+              dataInicial: "",
+              dataFinal: "",
+              tUA: "",
+              tSerie: "",
+              suporte: "",
+              medicao: "",
+              localizacao: [],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [],
+              relacoes: [],
+              pca: "",
+              formaContagem: "",
+              justicacaoPCA: "",
+              df: "",
+              justificacaoDF: "",
+              notas: "",
+              eFilhoDe: "",
+              tipo: "Série"
+            };
+          } else {
+            classe_relacionada = {
+              codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
+              titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
+              descricao: "",
+              dataInicial: "",
+              dataFinal: "",
+              relacoes: [],
+              pca: "",
+              formaContagem: "",
+              justicacaoPCA: "",
+              df: "",
+              justificacaoDF: "",
+              notas: "",
+              eFilhoDe: "",
+              tipo: "Subsérie"
+            };
+          }
+
           this.classes.push(classe_relacionada);
         }
 

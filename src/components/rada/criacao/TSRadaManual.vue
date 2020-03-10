@@ -34,7 +34,12 @@
                 :legislacao="legislacao"
                 :RE="RE"
               />
-              <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
+              <EditarSubserie
+                v-else-if="item.tipo == 'Subsérie'"
+                @atualizacao="atualizacao_subserie"
+                :treeview_object="item"
+                :classes="TS.classes"
+              />
               <!-- <Editar
                 v-else-if="item.tipo == ''"
                 :treeview_object="item"
@@ -172,6 +177,23 @@ export default {
       serie_classe.df = c.df;
       serie_classe.justificacaoDF = c.justificacaoDF;
       serie_classe.eFilhoDe = c.eFilhoDe;
+    },
+    async atualizacao_subserie(c) {
+      let subserie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
+
+      subserie_classe.relacoes = await this.editaRelacoes(subserie_classe, c);
+
+      subserie_classe.titulo = c.titulo;
+      subserie_classe.descricao = c.descricao;
+      subserie_classe.dataInicial = c.dataInicial;
+      subserie_classe.dataFinal = c.dataFinal;
+      subserie_classe.pca = c.pca;
+      subserie_classe.formaContagem = c.formaContagem;
+      subserie_classe.notas = c.notas;
+      subserie_classe.justicacaoPCA = c.justicacaoPCA;
+      subserie_classe.df = c.df;
+      subserie_classe.justificacaoDF = c.justificacaoDF;
+      subserie_classe.eFilhoDe = c.eFilhoDe;
     },
     async editaRelacoes(serie_classe, c) {
       let novo_relacoes = [];

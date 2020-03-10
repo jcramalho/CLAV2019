@@ -1,67 +1,68 @@
 <template>
   <v-dialog v-model="dialog" fullscreen>
     <template v-slot:activator="{ on }">
-      <b text depressed v-on="on">{{ treeview_object.titulo }}</b>
-      <!-- @click="filterSeries" -->
+      <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
+      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">(POR COMPLETAR)</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ 'Alterar a subsérie: ' + treeview_object.titulo }}</b>
       </v-card-title>
       <br />
-      <!-- <v-card-text>
-        <v-form ref="form" :lazy-validation="false">
-          <v-row>
-            <v-col md="3" sm="3">
-              <div class="info-label">Código</div>
-            </v-col>
-            <v-col sm="3" md="3">
-              <v-text-field disabled v-model="classe.codigo" solo></v-text-field>
-            </v-col>
-            <v-col xs="3" sm="3">
-              <div class="info-label">Título</div>
-            </v-col>
-            <v-col sm="3" md="3">
-              <v-text-field disabled v-model="classe.titulo" solo></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col md="3" sm="3">
-              <div class="info-label">Descrição</div>
-            </v-col>
-            <v-col sm="9" md="9">
-              <v-text-field
-                v-model="classe.descricao"
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                label="Descrição"
-                solo
-                clearable
-              ></v-text-field>
-            </v-col>
-          </v-row>
+      <v-card-text>
+        <v-form ref="formSubserie" :lazy-validation="false">
+          <!-- <h5>Identificação</h5>
+          <v-divider></v-divider>-->
+          <Identificacao :newSerie="subserie" :classes="classes" />
+
+          <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona Descritiva</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaDescritiva :newSerie="subserie" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona de Contexto de Avaliação</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaContexto :newSerie="subserie" :classes="classesRelacoes" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona de Decisões de Avaliação</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaDecisoesAvaliacao :newSerie="subserie" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+          <br />
+
           <h5>Hierarquia</h5>
           <v-divider></v-divider>
-
           <v-row>
             <v-col md="3" sm="3">
               <div class="info-label">Classe Pai</div>
             </v-col>
-            <v-col sm="9" md="9">
+            <v-col cols="12" sm="9" md="0">
               <v-autocomplete
-                disabled
-                v-model="classe.eFilhoDe"
-                :items="classesFiltradas"
-                item-text="titulo"
+                v-model="subserie.eFilhoDe"
+                :items="classesHierarquia"
+                :rules="[v => !!v || 'Este campo é obrigatório.']"
                 item-value="codigo"
                 dense
                 solo
                 clearable
                 placeholder="Classe Pai"
-                chips
-              > 
-              <template v-slot:item="{ item }">{{ item.codigo }} - {{ item.titulo }}</template>
+              >
+                <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
                 <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo }} - {{ item.titulo }}</v-chip>
+                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
                 </template>
                 <template v-slot:no-data>
                   <v-container fluid>
@@ -69,7 +70,7 @@
                       :value="true"
                       color="red lighten-3"
                       icon="warning"
-                    >Sem classes mais Área Orgânico-Funcional!</v-alert>
+                    >Sem classes Série! Adicione primeiro.</v-alert>
                   </v-container>
                 </template>
               </v-autocomplete>
@@ -77,25 +78,67 @@
           </v-row>
         </v-form>
       </v-card-text>
-
       <v-card-actions>
         <v-spacer></v-spacer>
-         <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-      </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Cancelar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
 
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
-      </v-card-actions>-->
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import Identificacao from "./partes/Identificacao";
+import ZonaDescritiva from "../criacao/classes/partes/ZonaDescritiva";
+import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
+import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
+
 export default {
-  props: ["treeview_object"],
+  props: ["treeview_object", "classes"],
   data: () => ({
-    dialog: false
-  })
+    dialog: false,
+    subserie: {},
+    panels: [0, 0, 0],
+    isMultiple: false,
+    classesRelacoes: [],
+    classesHierarquia: []
+  }),
+  components: {
+    Identificacao,
+    ZonaDescritiva,
+    ZonaContexto,
+    ZonaDecisoesAvaliacao
+  },
+  methods: {
+    filterSeries: async function() {
+      // ir buscar o verdadeiro objeto
+      let subserie_real = this.classes.find(
+        e => e.codigo == this.treeview_object.codigo
+      );
+
+      // DEEP CLONE do objetos
+      this.subserie = Object.assign({}, subserie_real);
+      this.subserie.relacoes = [...subserie_real.relacoes];
+
+      // Classes para definir a hierarquia
+      this.classesHierarquia = this.classes.filter(classe => classe.tipo == "Série");
+
+      // Classes para as relações
+      this.classesRelacoes = this.classes.filter(
+        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      );
+    },
+    save: async function() {
+      this.isMultiple = true;
+      this.panels = [0, 1, 2];
+      setTimeout(() => {
+        if (this.$refs.formSubserie.validate()) {
+          this.$emit("atualizacao", this.subserie);
+          this.dialog = false;
+        }
+      }, 1);
+    }
+  }
 };
 </script>

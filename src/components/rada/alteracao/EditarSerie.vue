@@ -33,7 +33,7 @@
               <v-expansion-panel-content>
                 <ZonaContexto
                   :newSerie="serie"
-                  :classes="classesNomes"
+                  :classes="classesRelacoes"
                   :legislacao="legislacao"
                   :RE="RE"
                 />
@@ -59,7 +59,7 @@
             <v-col sm="9" md="9">
               <v-autocomplete
                 v-model="serie.eFilhoDe"
-                :items="classesFiltradas"
+                :items="classesHierarquia"
                 :rules="[v => !!v || 'Campo obrigatório!']"
                 item-value="codigo"
                 dense
@@ -115,8 +115,8 @@ export default {
     isMultiple: false,
     dialogSerie: false,
     serie: {},
-    classesFiltradas: [],
-    classesNomes: []
+    classesHierarquia: [],
+    classesRelacoes: []
   }),
   methods: {
     filterSeries: async function() {
@@ -142,12 +142,12 @@ export default {
       this.serie.relacoes = [...serie_real.relacoes];
 
       // Classes para definir a hierarquia
-      this.classesFiltradas = this.classes.filter(
+      this.classesHierarquia = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
 
       // Classes para as relações
-      this.classesNomes = this.classes.filter(
+      this.classesRelacoes = this.classes.filter(
         e => e.tipo == "Série" || e.tipo == "Subsérie"
       );
     },
