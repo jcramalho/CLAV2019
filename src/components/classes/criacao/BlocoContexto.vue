@@ -2,7 +2,7 @@
   <v-expansion-panel popout focusable>
     <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
     <v-expansion-panel-header>
-      <div class="info-label">
+      <div class="separador">
         Contexto de Avaliação
         <InfoBox header="Contexto de Avaliação" :text="myhelp.Classe.BlocoContexto" />
       </div>
@@ -667,11 +667,23 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #2e7d32; 
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8f5e9; 
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

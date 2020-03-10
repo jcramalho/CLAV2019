@@ -44,6 +44,7 @@
             <InfoBox
               header="Processos de negócio que regula ou enquadra"
               :text="myhelp.Legislacao.Campos.ProcessosRegulados"
+              helpColor="indigo darken-4"
             />
           </div>
         </v-col>

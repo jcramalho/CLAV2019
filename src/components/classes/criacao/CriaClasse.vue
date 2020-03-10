@@ -107,7 +107,7 @@
             <!-- DECISÕES DE AVALIAÇÂO -->
             <v-expansion-panel popout focusable v-if="classe.nivel == 3">
               <v-expansion-panel-header>
-                <div class="info-label">
+                <div class="separador">
                   Decisões de Avaliação
                   <InfoBox header="Decisões de Avaliação" :text="myhelp.Classe.BlocoDecisoes" />
                 </div>
@@ -906,6 +906,18 @@ export default {
 </script>
 
 <style>
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .info-label {
   color: #283593; /* indigo darken-3 */
   padding: 5px;

@@ -1,8 +1,8 @@
 <template>
   <v-expansion-panel v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF">
     <!-- SUBCLASSES 4º NÍVEL -->
-    <v-expansion-panel-header class="expansion-panel-heading">
-      <div>Subclasses de nível 4</div>
+    <v-expansion-panel-header>
+      <div  class="separador">Subclasses de nível 4</div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row>
@@ -338,6 +338,18 @@ export default {
 };
 </script>
 <style>
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .info-label {
   color: #00695c;
   padding: 5px;

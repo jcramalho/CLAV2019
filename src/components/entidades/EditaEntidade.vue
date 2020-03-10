@@ -103,8 +103,8 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>Tipologias de Entidade</div>
+              <v-expansion-panel-header>
+                <div class="separador">Tipologias de Entidade</div>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelTip
@@ -243,6 +243,18 @@ export default {
 </script>
 
 <style scoped>
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;
