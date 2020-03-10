@@ -1,10 +1,7 @@
 <template>
   <v-row>
-    <v-col cols="2" v-if="tipo === 'legislacao' && entidades.length === 0">
-      <v-subheader class="info-label">Entidade responsável pela publicação:</v-subheader>
-    </v-col>
-    <v-col cols="2" v-else>
-      <v-subheader class="info-label">Entidades selecionadas:</v-subheader>
+    <v-col cols="2">
+      <v-subheader class="info-label">Entidades selecionadas</v-subheader>
     </v-col>
     <v-col v-if="entidades.length > 0">
       <v-data-table :headers="headers" :items="entidades" :items-per-page="100" class="elevation-1" hide-default-footer>

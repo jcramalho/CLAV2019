@@ -1,7 +1,10 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Legislação</div>
+      <div class="info-label">
+        Legislação
+        <InfoBox header="Legislação" :text="myhelp.Classe.Campos.Legislacao" />
+      </div>
     </v-col>
     <v-col v-if="legs.length > 0">
       <v-data-table
@@ -48,11 +51,20 @@
 </template>
 
 <script>
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
+
 export default {
   props: ["legs"],
 
+  components: {
+    InfoBox
+  },
+
   data: function() {
     return {
+      myhelp: help,
       headers: [
         { text: "Tipo", align: "left", value: "tipo" },
         { text: "Número", value: "numero" },

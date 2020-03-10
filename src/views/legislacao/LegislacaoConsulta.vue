@@ -42,7 +42,7 @@ export default {
       try {
         var myLegislacao = {
           data: {
-            campo: "Data",
+            campo: "Data do diploma",
             text: leg.data
           },
           sumario: {

@@ -1,7 +1,7 @@
 <template>
   <v-row class="ma-2 indigo lighten-4">
     <v-col cols="2">
-      <div class="info-label">Participante novo:</div>
+      <div class="info-label">Participante novo</div>
       <v-btn small dark rounded class="ma-2 indigo darken-2" @click="newEntidade">
         Adicionar
         <v-icon small dark right>add_circle_outline</v-icon>

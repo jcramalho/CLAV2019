@@ -4,14 +4,16 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading">Nova Tipologia</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Editar tipologia de entidade</v-toolbar-title
+          >
         </v-app-bar>
 
         <!-- Content -->
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Designação:</div>
+              <div class="info-label">Designação</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -27,7 +29,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla:</div>
+              <div class="info-label">Sigla</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -44,9 +46,11 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Entidades</v-expansion-panel-header
-              >
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
+                  Entidades
+                </div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
                   :entidades="entSel"

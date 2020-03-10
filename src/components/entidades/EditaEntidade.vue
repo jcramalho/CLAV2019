@@ -81,7 +81,10 @@
               <div class="info-label">Data de criação</div>
             </v-col>
             <v-col>
-              <SelecionarData :d="entidade.dataCriacao" @dataSelecionada="entidade.dataCriacao = $event" />
+              <SelecionarData
+                :d="entidade.dataCriacao"
+                @dataSelecionada="entidade.dataCriacao = $event"
+              />
             </v-col>
           </v-row>
 
@@ -90,16 +93,19 @@
               <div class="info-label">Data de extinção</div>
             </v-col>
             <v-col>
-              <SelecionarData :d="entidade.dataExtincao" @dataSelecionada="entidade.dataExtincao = $event" />
+              <SelecionarData
+                :d="entidade.dataExtincao"
+                @dataSelecionada="entidade.dataExtincao = $event"
+              />
             </v-col>
           </v-row>
 
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Tipologias de Entidade</v-expansion-panel-header
-              >
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>Tipologias de Entidade</div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelTip
                   :tipologias="tipSel"
@@ -159,11 +165,6 @@ export default {
       dataExtincao: ""
     },
 
-    // vuetify datepicker
-    date: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-    open: false,
-
     // Para o seletor de processos
     tipologias: [],
     tipSel: [],
@@ -172,45 +173,12 @@ export default {
     regraSIOE: [
       v => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos."
     ],
-    regraData: [
-      v =>
-        /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || "Este campo está no formato errado."
-    ],
 
     snackbar: false,
     text: ""
   }),
 
-  // vuetify datepicker
-  computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date);
-    }
-  },
-
-  watch: {
-    date(val) {
-      this.entidade.dataExtincao = this.formatDate(this.date);
-      this.dateFormatted = this.formatDate(this.date);
-    }
-  },
-
   methods: {
-    // vuetify datepicker
-    formatDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("-");
-      return `${year}/${month}/${day}`;
-    },
-
-    parseDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
-
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
