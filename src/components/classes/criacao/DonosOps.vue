@@ -4,10 +4,17 @@
       <div class="info-label">Donos do processo:</div>
     </v-col>
     <v-col v-if="entidades.length > 0">
-      <v-data-table :headers="headers" :items="entidades" class="elevation-1" hide-default-footer>
+      <v-data-table
+        :headers="headers"
+        :items="entidades"
+        class="elevation-1"
+        hide-default-footer
+      >
         <template v-slot:header="props">
           <tr>
-            <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+            <th v-for="h in props.headers" :key="h.text" class="subtitle-2">
+              {{ h.text }}
+            </th>
           </tr>
         </template>
 
@@ -17,7 +24,13 @@
             <td>{{ props.item.designacao }}</td>
             <td>{{ props.item.tipo }}</td>
             <td>
-              <v-btn small color="red darken-2" dark rounded @click="unselectEntidade(props.item)">
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                rounded
+                @click="unselectEntidade(props.item)"
+              >
                 <v-icon dark>remove_circle</v-icon>
               </v-btn>
             </td>
@@ -26,7 +39,9 @@
       </v-data-table>
     </v-col>
     <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem donos selecionados...</v-alert>
+      <v-alert :value="true" type="warning"
+        >Não tem donos selecionados...</v-alert
+      >
     </v-col>
   </v-row>
 </template>

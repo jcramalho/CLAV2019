@@ -12,15 +12,21 @@
               :items="newSerie.relacoes"
               hide-default-footer
             >
-              <template v-slot:item.relacao="props">{{ props.item.relacao }}</template>
+              <template v-slot:item.relacao="props">{{
+                props.item.relacao
+              }}</template>
               <template v-slot:item.edicao="props">
                 <td>
-                  <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
+                  <v-icon color="red darken-2" dark @click="remove(props.item)"
+                    >remove_circle</v-icon
+                  >
                 </td>
               </template>
-              <template
-                v-slot:item.serieRelacionada="props"
-              >{{ props.item.serieRelacionada.codigo + ' - ' + props.item.serieRelacionada.titulo}}</template>
+              <template v-slot:item.serieRelacionada="props">{{
+                props.item.serieRelacionada.codigo +
+                  " - " +
+                  props.item.serieRelacionada.titulo
+              }}</template>
             </v-data-table>
           </v-col>
         </v-row>
@@ -41,8 +47,12 @@
                 :items="classes"
                 label="Com a classe"
               >
-                <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
-                <template v-slot:selection="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
+                <template v-slot:item="{ item }">{{
+                  item.codigo + " - " + item.titulo
+                }}</template>
+                <template v-slot:selection="{ item }">{{
+                  item.codigo + " - " + item.titulo
+                }}</template>
               </v-combobox>
             </v-col>
             <v-col sm="1" xs="12">
@@ -53,7 +63,9 @@
           </v-row>
           <v-row v-if="!!alertOn">
             <v-col>
-              <v-alert dismissible dense text type="error">Relação já existente!</v-alert>
+              <v-alert dismissible dense text type="error"
+                >Relação já existente!</v-alert
+              >
             </v-col>
           </v-row>
         </v-form>

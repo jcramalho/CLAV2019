@@ -4,10 +4,17 @@
       <div class="info-label">Processos Relacionados:</div>
     </v-col>
     <v-col v-if="processos.length > 0">
-      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
+      <v-data-table
+        :headers="headers"
+        :items="processos"
+        class="elevation-1"
+        hide-default-footer
+      >
         <template v-slot:header="props">
           <tr>
-            <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+            <th v-for="h in props.headers" :key="h.text" class="subtitle-2">
+              {{ h.text }}
+            </th>
           </tr>
         </template>
 
@@ -17,7 +24,13 @@
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
-              <v-btn small color="red darken-2" dark rounded @click="unselectProcRel(props.item)">
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                rounded
+                @click="unselectProcRel(props.item)"
+              >
                 <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
@@ -26,7 +39,9 @@
       </v-data-table>
     </v-col>
     <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem processos relacionados...</v-alert>
+      <v-alert :value="true" type="warning"
+        >Não tem processos relacionados...</v-alert
+      >
     </v-col>
   </v-row>
 </template>

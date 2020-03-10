@@ -2,7 +2,13 @@
   <v-row class="ma-2 indigo lighten-4">
     <v-col cols="2">
       <div class="info-label">Participante novo:</div>
-      <v-btn small dark rounded class="ma-2 indigo darken-2" @click="newEntidade">
+      <v-btn
+        small
+        dark
+        rounded
+        class="ma-2 indigo darken-2"
+        @click="newEntidade"
+      >
         Adicionar
         <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
@@ -10,46 +16,47 @@
 
     <v-col>
       <v-form v-model="valid" ref="form">
-          <v-row>
+        <v-row>
+          <v-col>
+            <v-select
+              prefix="Intervenção: "
+              item-text="label"
+              item-value="value"
+              v-model="intervencao"
+              :items="tiposIntervencao"
+              label="Intervenção"
+              solo
+              dense
+            />
+          </v-col>
 
-            <v-col>
-              <v-select
-                prefix="Intervenção: "
-                item-text="label"
-                item-value="value"
-                v-model="intervencao"
-                :items="tiposIntervencao"
-                label="Intervenção"
-                solo
-                dense
-              />
-            </v-col>
+          <v-col>
+            <v-text-field v-model="sigla" label="Sigla"></v-text-field>
+          </v-col>
 
-            <v-col>
-              <v-text-field v-model="sigla" label="Sigla"></v-text-field>
-            </v-col>
+          <v-col>
+            <v-text-field v-model="sioe" label="SIOE"></v-text-field>
+          </v-col>
 
-            <v-col>
-              <v-text-field v-model="sioe" label="SIOE"></v-text-field>
-            </v-col>
+          <v-col>
+            <v-text-field
+              v-model="designacao"
+              label="Designação"
+            ></v-text-field>
+          </v-col>
 
-            <v-col>
-              <v-text-field v-model="designacao" label="Designação"></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-select
-                prefix="Internacional: "
-                item-text="label"
-                item-value="value"
-                v-model="internacional"
-                :items="simNao"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
-       
+          <v-col>
+            <v-select
+              prefix="Internacional: "
+              item-text="label"
+              item-value="value"
+              v-model="internacional"
+              :items="simNao"
+              solo
+              dense
+            />
+          </v-col>
+        </v-row>
       </v-form>
     </v-col>
 
@@ -126,13 +133,13 @@ export default {
       return res;
     },
 
-    validaIntervencao: function(i){
-      var res = true
-      if(i == "Indefinido"){
+    validaIntervencao: function(i) {
+      var res = true;
+      if (i == "Indefinido") {
         this.mensagensErro.push("Tem de definir um tipo de intervenção!");
         res = false;
       }
-      return res
+      return res;
     },
 
     newEntidade: function() {

@@ -15,7 +15,7 @@
     <v-col xs="10" sm="10">
       <div class="info-content">
         <ul>
-          <li v-for="n in notas" :key="n.idNota" v-html="analisaRefs(n.nota)"/>
+          <li v-for="n in notas" :key="n.idNota" v-html="analisaRefs(n.nota)" />
         </ul>
       </div>
     </v-col>
@@ -34,13 +34,19 @@ export default {
     codeFormats: {
       2: /[0-9]{3}\.[0-9]{2}(?!\.)/,
       3: /[0-9]{3}\.[0-9]{2}\.[0-9]{3}(?!\.)/
-    },
+    }
   }),
   methods: {
-    analisaRefs: function(nota){
-      var notaHtml = nota.replace(this.codeFormats[3], '<a href=\"/classes/consultar/c$&\">$&</a>')
-      notaHtml = notaHtml.replace(this.codeFormats[2], '<a href=\"/classes/consultar/c$&\">$&</a>')
-      return notaHtml
+    analisaRefs: function(nota) {
+      var notaHtml = nota.replace(
+        this.codeFormats[3],
+        '<a href="/classes/consultar/c$&">$&</a>'
+      );
+      notaHtml = notaHtml.replace(
+        this.codeFormats[2],
+        '<a href="/classes/consultar/c$&">$&</a>'
+      );
+      return notaHtml;
     }
   }
 };

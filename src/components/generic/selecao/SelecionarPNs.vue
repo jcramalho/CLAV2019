@@ -1,7 +1,9 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <v-subheader class="info-label">Selecionar Processos de Negócio</v-subheader>
+      <v-subheader class="info-label"
+        >Selecionar Processos de Negócio</v-subheader
+      >
     </v-col>
     <v-col v-if="processosReady">
       <v-card>
@@ -34,18 +36,20 @@
             {{ props.itemsLength }}
           </template>
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            color="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" color="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-card>
     </v-col>
     <v-col v-else style="text-align:center;">
       <p>A carregar processos...</p>
-      <v-progress-circular indeterminate size="100" width="10" color="indigo accent-4" />
+      <v-progress-circular
+        indeterminate
+        size="100"
+        width="10"
+        color="indigo accent-4"
+      />
     </v-col>
   </v-row>
 </template>

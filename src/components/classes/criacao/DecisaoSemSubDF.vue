@@ -30,7 +30,12 @@
         <div class="info-label">Notas:</div>
       </v-col>
       <v-col>
-        <v-textarea solo label="Notas ao destino final" v-model="c.df.notas" rows="2"></v-textarea>
+        <v-textarea
+          solo
+          label="Notas ao destino final"
+          v-model="c.df.notas"
+          rows="2"
+        ></v-textarea>
       </v-col>
     </v-row>
 
@@ -47,15 +52,15 @@
             dark
             rounded
             @click="
-                adicionarCriterioLegalPCA(
-                  c.df.justificacao,
-                  'CriterioJustificacaoLegal',
-                  'Critério Legal',
-                  textoCriterioLegal,
-                  [],
-                  c.legislacao
-                )
-              "
+              adicionarCriterioLegalPCA(
+                c.df.justificacao,
+                'CriterioJustificacaoLegal',
+                'Critério Legal',
+                textoCriterioLegal,
+                [],
+                c.legislacao
+              )
+            "
             v-if="!semaforos.critLegalAdicionadoDF"
           >
             Critério Legal
@@ -74,21 +79,27 @@
                 dark
                 small
                 @click="removerCriterioTodo(c.df.justificacao, cindex, 'DF')"
-              >remove_circle_outline</v-icon>
+                >remove_circle_outline</v-icon
+              >
             </div>
           </v-col>
 
-          <v-col v-if="crit.tipo == 'CriterioJustificacaoComplementaridadeInfo'">
+          <v-col
+            v-if="crit.tipo == 'CriterioJustificacaoComplementaridadeInfo'"
+          >
             <div class="info-content">
               {{ crit.notas }}
               <span v-for="(p, i) in crit.procRel" :key="p.id">
-                <a :href="'/classes/consultar/' + p.id">{{ p.codigo }}: {{ p.titulo }}</a>
+                <a :href="'/classes/consultar/' + p.id"
+                  >{{ p.codigo }}: {{ p.titulo }}</a
+                >
                 <v-icon
                   color="red darken-2"
                   dark
                   small
                   @click="crit.procRel.splice(i, 1)"
-                >remove_circle_outline</v-icon>
+                  >remove_circle_outline</v-icon
+                >
                 <span v-if="i == crit.procRel.length - 1">.</span>
                 <span v-else>,</span>
               </span>
@@ -112,7 +123,8 @@
                   dark
                   small
                   @click="crit.legislacao.splice(i, 1)"
-                >remove_circle_outline</v-icon>
+                  >remove_circle_outline</v-icon
+                >
                 <span v-if="i == crit.legislacao.length - 1">.</span>
                 <span v-else>,</span>
               </span>
@@ -125,7 +137,11 @@
 
           <v-col v-if="crit.tipo == 'CriterioJustificacaoDensidadeInfo'">
             <div class="info-content">
-              <p v-if="crit.procRel.filter(p => p.relacao == 'eSinteseDe').length > 0">
+              <p
+                v-if="
+                  crit.procRel.filter(p => p.relacao == 'eSinteseDe').length > 0
+                "
+              >
                 <span>
                   Informação pertinente não recuperável noutro PN. Sintetiza a
                   informação de:
@@ -136,18 +152,26 @@
                   )"
                   :key="p.id"
                 >
-                  <a :href="'/classes/consultar/' + p.id">{{ p.codigo }}: {{ p.titulo }}</a>
+                  <a :href="'/classes/consultar/' + p.id"
+                    >{{ p.codigo }}: {{ p.titulo }}</a
+                  >
                   <v-icon
                     color="red darken-2"
                     dark
                     small
                     @click="crit.procRel.splice(i, 1)"
-                  >remove_circle_outline</v-icon>
+                    >remove_circle_outline</v-icon
+                  >
                   <span v-if="i == crit.procRel.length - 1">.</span>
                   <span v-else>,</span>
                 </span>
               </p>
-              <p v-if="crit.procRel.filter(p => p.relacao == 'eSintetizadoPor').length > 0">
+              <p
+                v-if="
+                  crit.procRel.filter(p => p.relacao == 'eSintetizadoPor')
+                    .length > 0
+                "
+              >
                 <span>Informação sintetizada em:</span>
                 <span
                   v-for="(p, i) in crit.procRel.filter(
@@ -155,13 +179,16 @@
                   )"
                   :key="p.id"
                 >
-                  <a :href="'/classes/consultar/' + p.id">{{ p.codigo }}: {{ p.titulo }}</a>
+                  <a :href="'/classes/consultar/' + p.id"
+                    >{{ p.codigo }}: {{ p.titulo }}</a
+                  >
                   <v-icon
                     color="red darken-2"
                     dark
                     small
                     @click="crit.procRel.splice(i, 1)"
-                  >remove_circle_outline</v-icon>
+                    >remove_circle_outline</v-icon
+                  >
                   <span v-if="i == crit.procRel.length - 1">.</span>
                   <span v-else>,</span>
                 </span>

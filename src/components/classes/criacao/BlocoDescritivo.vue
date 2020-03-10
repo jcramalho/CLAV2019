@@ -4,7 +4,10 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         Descritivo da Classe
-        <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" />
+        <InfoBox
+          header="Descritivo da Classe"
+          :text="myhelp.Classe.BlocoDescritivo"
+        />
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
@@ -13,11 +16,19 @@
         <v-col cols="2">
           <div class="info-label">
             Descrição:
-            <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
+            <InfoBox
+              header="Descrição"
+              :text="myhelp.Classe.Campos.Descricao"
+            />
           </div>
         </v-col>
         <v-col>
-          <v-text-field v-model="c.descricao" label="Descrição" solo clearable></v-text-field>
+          <v-text-field
+            v-model="c.descricao"
+            label="Descrição"
+            solo
+            clearable
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -27,9 +38,7 @@
 
       <hr style="border-top: 1px dashed #dee2f8;" />
 
-      <BlocoDescritivoExemplosNotasAp 
-        v-if="c.nivel > 2"
-        :c="c" />
+      <BlocoDescritivoExemplosNotasAp v-if="c.nivel > 2" :c="c" />
 
       <hr style="border-top: 1px dashed #dee2f8;" />
 

@@ -11,9 +11,12 @@
       <v-form v-model="valid">
         <v-container>
           <v-row>
-
             <v-col>
-              <v-text-field v-model="sigla" label="Sigla" required></v-text-field>
+              <v-text-field
+                v-model="sigla"
+                label="Sigla"
+                required
+              ></v-text-field>
             </v-col>
 
             <v-col>
@@ -114,16 +117,15 @@ export default {
       if (
         this.validaSigla(this.sigla) &&
         this.validaDesignacao(this.designacao)
-        ) 
-      {
+      ) {
         var entidade = {
-            estado: "Nova",
-            id: "ent_" + this.sigla,
-            sigla: this.sigla,
-            tipo: "Entidade",
-            sioe: this.sioe,
-            designacao: this.designacao,
-            internacional: this.internacional
+          estado: "Nova",
+          id: "ent_" + this.sigla,
+          sigla: this.sigla,
+          tipo: "Entidade",
+          sioe: this.sioe,
+          designacao: this.designacao,
+          internacional: this.internacional
         };
         this.sigla = "";
         this.sioe = "";

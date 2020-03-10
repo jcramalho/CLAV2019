@@ -7,66 +7,80 @@
     <v-expansion-panel-content>
       <v-row>
         <v-col cols="2">
-        <v-tabs vertical outlined v-model="active" >
-          <v-tab
-            v-for="subClasse in c.subclasses"
-            :key="subClasse.codigo"
-            ripple
-          >{{ subClasse.codigo }}</v-tab>
-        </v-tabs>
-        
-        <v-btn depressed x-small color="primary" @click="addSubclasse">
-          Adicionar subclasse
-          <v-icon dark right>add_circle_outline</v-icon>
-        </v-btn>
-         
+          <v-tabs vertical outlined v-model="active">
+            <v-tab
+              v-for="subClasse in c.subclasses"
+              :key="subClasse.codigo"
+              ripple
+              >{{ subClasse.codigo }}</v-tab
+            >
+          </v-tabs>
+
+          <v-btn depressed x-small color="primary" @click="addSubclasse">
+            Adicionar subclasse
+            <v-icon dark right>add_circle_outline</v-icon>
+          </v-btn>
         </v-col>
         <v-col>
-        <v-tabs-items v-model="active">
-          <v-tab-item v-for="subClasse in c.subclasses" :key="subClasse.codigo" class="ma-2 pa-2">
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Código:</div>
-              </v-col>
-              <v-col>{{ subClasse.codigo }}</v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Código do pai:</div>
-              </v-col>
-              <v-col>{{ c.codigo }}</v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Título:</div>
-              </v-col>
-              <v-col>
-                <v-text-field v-model="subClasse.titulo" label="Título" solo clearable></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Descrição:</div>
-              </v-col>
-              <v-col>
-                <v-text-field v-model="subClasse.descricao" label="Descrição" solo clearable></v-text-field>
-              </v-col>
-            </v-row>
+          <v-tabs-items v-model="active">
+            <v-tab-item
+              v-for="subClasse in c.subclasses"
+              :key="subClasse.codigo"
+              class="ma-2 pa-2"
+            >
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Código:</div>
+                </v-col>
+                <v-col>{{ subClasse.codigo }}</v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Código do pai:</div>
+                </v-col>
+                <v-col>{{ c.codigo }}</v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Título:</div>
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    v-model="subClasse.titulo"
+                    label="Título"
+                    solo
+                    clearable
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Descrição:</div>
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    v-model="subClasse.descricao"
+                    label="Descrição"
+                    solo
+                    clearable
+                  ></v-text-field>
+                </v-col>
+              </v-row>
 
-            <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+              <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
-            <TermosIndiceOps :c="c" />
+              <TermosIndiceOps :c="c" />
 
-            <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+              <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
-            <BlocoDecisoes4Nivel
-              :c="subClasse"
-              :semaforos="semaforos"
-              :pcaFormasContagem="pcaFormasContagem"
-              :pcaSubFormasContagem="pcaSubFormasContagem"
-            />
-          </v-tab-item>
-        </v-tabs-items>
+              <BlocoDecisoes4Nivel
+                :c="subClasse"
+                :semaforos="semaforos"
+                :pcaFormasContagem="pcaFormasContagem"
+                :pcaSubFormasContagem="pcaSubFormasContagem"
+              />
+            </v-tab-item>
+          </v-tabs-items>
         </v-col>
       </v-row>
     </v-expansion-panel-content>
@@ -289,14 +303,14 @@ export default {
       }
     },
 
-    pad: function (num, size) {
-      var s = num+"";
+    pad: function(num, size) {
+      var s = num + "";
       while (s.length < size) s = "0" + s;
       return s;
     },
 
-    showSubs: function(){
-      alert(JSON.stringify(this.c.subclasses))
+    showSubs: function() {
+      alert(JSON.stringify(this.c.subclasses));
     },
 
     addSubclasse: function() {

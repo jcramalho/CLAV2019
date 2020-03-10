@@ -4,7 +4,12 @@
     <v-col cols="2">
       <div class="info-label">Notas de Exclusão:</div>
 
-      <v-btn color="indigo darken-2" dark rounded @click="insereNovaNota(c.notasEx, 'ne')">
+      <v-btn
+        color="indigo darken-2"
+        dark
+        rounded
+        @click="insereNovaNota(c.notasEx, 'ne')"
+      >
         Nota de exclusão
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
@@ -12,10 +17,21 @@
     <v-col>
       <v-row v-for="(nota, index) in c.notasEx" :key="index">
         <v-col cols="10">
-          <v-textarea v-model="nota.nota" auto-grow solo label="Nota de Exclusão" rows="1"></v-textarea>
+          <v-textarea
+            v-model="nota.nota"
+            auto-grow
+            solo
+            label="Nota de Exclusão"
+            rows="1"
+          ></v-textarea>
         </v-col>
         <v-col>
-          <v-btn color="red darken-2" dark rounded @click="c.notasEx.splice(index, 1)">
+          <v-btn
+            color="red darken-2"
+            dark
+            rounded
+            @click="c.notasEx.splice(index, 1)"
+          >
             Remover
             <v-icon dark right>remove_circle_outline</v-icon>
           </v-btn>
@@ -25,12 +41,12 @@
 
     <v-snackbar v-model="neVaziaFlag" :color="'warning'" :timeout="60000">
       {{ mensagemNEVazia }}
-      <v-btn dark text @click="neVaziaFlag=false">Fechar</v-btn>
+      <v-btn dark text @click="neVaziaFlag = false">Fechar</v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="neDuplicadaFlag" :color="'error'" :timeout="60000">
       {{ mensagemNEDuplicada }}
-      <v-btn dark text @click="neDuplicadaFlag=false">Fechar</v-btn>
+      <v-btn dark text @click="neDuplicadaFlag = false">Fechar</v-btn>
     </v-snackbar>
   </v-row>
 </template>

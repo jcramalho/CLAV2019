@@ -43,16 +43,14 @@
             </tr>
           </template>
 
-          <template
-            v-slot:footer.page-text="props"
-          >{{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
+          <template v-slot:footer.page-text="props"
+            >{{ props.pageStart }} - {{ props.pageStop }} de
+            {{ props.itemsLength }}</template
+          >
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            color="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" color="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-card>
     </v-col>
@@ -102,11 +100,11 @@ export default {
       this.$router.go();
     },
     selectParticipante: function(id, intervencao) {
-        var index = this.entidades.findIndex(e => e.id === id);
-        this.entidades[index].intervencao = intervencao;
-        var selectedEntidade = JSON.parse(JSON.stringify(this.entidades[index]));
-        this.entidades.splice(index, 1);
-        this.$emit("selectParticipante", selectedEntidade);
+      var index = this.entidades.findIndex(e => e.id === id);
+      this.entidades[index].intervencao = intervencao;
+      var selectedEntidade = JSON.parse(JSON.stringify(this.entidades[index]));
+      this.entidades.splice(index, 1);
+      this.$emit("selectParticipante", selectedEntidade);
     }
   }
 };

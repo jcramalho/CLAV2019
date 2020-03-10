@@ -6,7 +6,10 @@
       </v-col>
       <v-col sm="3" md="3">
         <v-text-field
-          :rules="[v => verificaCodigo(v) || !!v || 'Campo de preenchimento obrigatório!']"
+          :rules="[
+            v =>
+              verificaCodigo(v) || !!v || 'Campo de preenchimento obrigatório!'
+          ]"
           solo
           clearable
           v-model="newSerie.codigo"

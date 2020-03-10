@@ -1,8 +1,8 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title
-      class="pa-2 indigo darken-4 title white--text"
-    >{{ p.objeto.acao }} do Termo de Índice</v-card-title>
+    <v-card-title class="pa-2 indigo darken-4 title white--text"
+      >{{ p.objeto.acao }} do Termo de Índice</v-card-title
+    >
     <v-card-text>
       <v-row v-for="t in legislacaoInfo" :key="t.campo">
         <v-col cols="2" v-if="t.conteudo != ''">

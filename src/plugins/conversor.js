@@ -105,8 +105,8 @@ var excel2Json = function(file, tipo) {
               } else {
                 if (
                   agNumber > 1 &&
-                  (ag.getCell(1).text === codigo &&
-                    ag.getCell(2).text === referencia)
+                  ag.getCell(1).text === codigo &&
+                  ag.getCell(2).text === referencia
                 ) {
                   //Invariante da data de Conservacao
                   dataContagem = ag.getCell(5).value;

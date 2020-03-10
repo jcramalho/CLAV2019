@@ -24,7 +24,12 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="12">
-          <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
+          <v-treeview
+            v-if="TS.classes.length > 0"
+            hoverable
+            :items="preparaTree"
+            item-key="titulo"
+          >
             <template v-slot:label="{ item }">
               <EditarSerie
                 v-if="item.tipo == 'Série'"
@@ -34,7 +39,10 @@
                 :legislacao="legislacao"
                 :RE="RE"
               />
-              <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
+              <EditarSubserie
+                v-else-if="item.tipo == 'Subsérie'"
+                :treeview_object="item"
+              />
               <EditarOrganicaFunc
                 v-else
                 @atualizacao="atualizacao_area_organico"
@@ -49,7 +57,8 @@
             :value="true"
             color="amber accent-3"
             icon="warning"
-          >Sem Classes! É obrigatório adicionar.</v-alert>
+            >Sem Classes! É obrigatório adicionar.</v-alert
+          >
           <br />
         </v-col>
       </v-row>

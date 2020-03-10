@@ -1,6 +1,8 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title">{{ p.objeto.acao }} da Tipologia</v-card-title>
+    <v-card-title class="indigo darken-4 white--text title"
+      >{{ p.objeto.acao }} da Tipologia</v-card-title
+    >
     <v-card-text>
       <v-row v-for="t in tipologiaInfo" :key="t.campo">
         <v-col cols="2" v-if="t.conteudo != ''">

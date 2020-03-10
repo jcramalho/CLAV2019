@@ -40,7 +40,9 @@
           Tarefa atribuída a:
           <b>
             {{
-              `${this.utilizadorSelecionado.name} (${this.utilizadorSelecionado.entidade})`
+              `${this.utilizadorSelecionado.name} (${
+                this.utilizadorSelecionado.entidade
+              })`
             }}
           </b>
         </v-alert>

@@ -8,38 +8,65 @@
         <v-icon right>save</v-icon>
       </v-btn>
 
-      <v-icon dark color="red" @click="toDelete = true" right>delete_sweep</v-icon>
+      <v-icon dark color="red" @click="toDelete = true" right
+        >delete_sweep</v-icon
+      >
     </v-card-title>
     <v-card-text>
       <!-- {{ obj }} -->
       <v-dialog v-model="toDelete" width="500">
         <v-card>
-          <v-card-title
-            class="headline grey lighten-2"
-            primary-title
-          >Pretende mesmo eliminar o trabalho?</v-card-title>
+          <v-card-title class="headline grey lighten-2" primary-title
+            >Pretende mesmo eliminar o trabalho?</v-card-title
+          >
 
           <v-card-text align="center">
             <br />
-            <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
-            <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarTrabalho">Sim</v-btn>
+            <v-btn
+              class="ma-3 pa-3"
+              color="indigo lighten-3"
+              @click="toDelete = false"
+              >Voltar</v-btn
+            >
+            <v-btn
+              class="ma-3 pa-5"
+              color="red lighten-1"
+              @click="eliminarTrabalho"
+              >Sim</v-btn
+            >
           </v-card-text>
         </v-card>
       </v-dialog>
       <br />
       <v-stepper v-model="e1" vertical class="elevation-0">
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
+        <v-stepper-step
+          color="amber accent-3"
+          :key="1"
+          :complete="e1 > 1"
+          :step="1"
+          editable
+        >
           <font size="4">
             <b>Informação Geral</b>
           </font>
         </v-stepper-step>
         <v-stepper-content step="1">
-          <InformacaoGeral @seguinte="changeE1" :RADA="RADA" :entidades="entidades" />
+          <InformacaoGeral
+            @seguinte="changeE1"
+            :RADA="RADA"
+            :entidades="entidades"
+          />
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
+        <v-stepper-step
+          color="amber accent-3"
+          :key="2"
+          :complete="e1 > 2"
+          :step="2"
+          editable
+        >
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -54,7 +81,13 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
+        <v-stepper-step
+          color="amber accent-3"
+          :key="3"
+          :complete="e1 > 3"
+          :step="3"
+          editable
+        >
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
@@ -72,7 +105,9 @@
       <v-row justify-center>
         <v-dialog v-model="dialogRADAPendente" persistent max-width="60%">
           <v-card>
-            <v-card-title class="headline">Trabalho pendente guardado</v-card-title>
+            <v-card-title class="headline"
+              >Trabalho pendente guardado</v-card-title
+            >
             <v-card-text>
               <p>
                 Os seus dados foram guardados para que possa retomar o trabalho
@@ -82,7 +117,12 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/pendentes')">Fechar</v-btn>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="$router.push('/pendentes')"
+                >Fechar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -90,11 +130,15 @@
       <v-row justify-center>
         <v-dialog v-model="dialogRADACriado" persistent max-width="60%">
           <v-card>
-            <v-card-title class="headline">Pedido de Criação do RADA Submetido</v-card-title>
+            <v-card-title class="headline"
+              >Pedido de Criação do RADA Submetido</v-card-title
+            >
             <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+              <v-btn color="green darken-1" text @click="$router.push('/')"
+                >Fechar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>

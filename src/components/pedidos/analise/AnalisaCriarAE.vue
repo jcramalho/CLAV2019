@@ -1,6 +1,6 @@
 <template>
   <v-flex xs12>
-    {{ae}}
+    {{ ae }}
     <div v-if="valida">
       Conformidades
       Total de agregações conformes para eliminação
@@ -17,7 +17,7 @@ export default {
   props: ["ae"],
 
   data: () => ({
-    valida: true,
+    valida: true
   }),
 
   mounted: function() {

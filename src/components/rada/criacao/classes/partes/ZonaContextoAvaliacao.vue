@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="newSerie.tipo != 'Subsérie'">
-      <EntidadesProdutoras :newSerie="newSerie" :RE="RE"/>
+      <EntidadesProdutoras :newSerie="newSerie" :RE="RE" />
       <hr style="border: 3px solid indigo; border-radius: 2px;" />
       <Legislacao :newSerie="newSerie" :legislacao="legislacao" />
       <hr style="border: 3px solid indigo; border-radius: 2px;" />
@@ -19,7 +19,7 @@ export default {
   props: ["newSerie", "classes", "legislacao", "RE"],
   components: {
     EntidadesProdutoras,
-    Legislacao,
+    Legislacao
     // RelacoesEntidades
   }
 };

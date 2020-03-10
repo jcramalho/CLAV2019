@@ -1,5 +1,5 @@
 <template>
-<v-card class="my-2 panel panel-default panel-custom">
+  <v-card class="my-2 panel panel-default panel-custom">
     <v-card-title class="pa-2 indigo darken-4 title white--text" dark>
       {{ p.objeto.acao }} do Auto de Eliminação
     </v-card-title>
@@ -33,7 +33,8 @@
 
         <v-expansion-panels popout>
           <v-expansion-panel class="ma-1">
-            <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
+            <v-expansion-panel-header
+              class="pa-2 indigo darken-4 title white--text"
               >Zonas de Controlo</v-expansion-panel-header
             >
             <v-expansion-panel-content>
@@ -99,7 +100,9 @@
                         </tr>
                         <tr v-if="item.prazoConservacao">
                           <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa:</div>
+                            <div class="info-label">
+                              Prazo de Conservação Administrativa:
+                            </div>
                           </td>
                           <td style="width:80%;">
                             {{ item.prazoConservacao }} Anos
@@ -112,7 +115,10 @@
                           <td v-if="item.destino === 'E'" style="width:80%;">
                             Eliminação
                           </td>
-                          <td v-else-if="item.destino === 'C'" style="width:80%;">
+                          <td
+                            v-else-if="item.destino === 'C'"
+                            style="width:80%;"
+                          >
                             Conservação
                           </td>
                           <td v-else style="width:80%;">
@@ -153,7 +159,9 @@
                               N.º de agregações:
                             </div>
                           </td>
-                          <td style="width:80%;">{{ item.agregacoes.length }}</td>
+                          <td style="width:80%;">
+                            {{ item.agregacoes.length }}
+                          </td>
                         </tr>
                         <tr v-if="item.uiPapel">
                           <td style="width:20%;">
@@ -183,7 +191,8 @@
 
                       <v-expansion-panels>
                         <v-expansion-panel class="ma-2">
-                          <v-expansion-panel-header class="pa-4 indigo darken-4 title white--text"
+                          <v-expansion-panel-header
+                            class="pa-4 indigo darken-4 title white--text"
                             >Zonas de Agregação</v-expansion-panel-header
                           >
                           <v-expansion-panel-content>

@@ -163,7 +163,7 @@
                             <span
                               style="white-space: pre-wrap"
                               class="card grey darken-4 text-white pa-2"
-                            >{{ JSON.stringify(resultadosJSON, null, 4) }}
+                              >{{ JSON.stringify(resultadosJSON, null, 4) }}
                             </span>
                           </v-col>
                         </v-row>

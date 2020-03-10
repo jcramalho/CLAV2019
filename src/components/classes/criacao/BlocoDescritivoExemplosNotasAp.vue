@@ -38,7 +38,12 @@
           ></v-textarea>
         </v-col>
         <v-col>
-          <v-btn color="red darken-2" dark rounded @click="c.exemplosNotasAp.splice(index, 1)">
+          <v-btn
+            color="red darken-2"
+            dark
+            rounded
+            @click="c.exemplosNotasAp.splice(index, 1)"
+          >
             Remover
             <v-icon dark right>remove_circle_outline</v-icon>
           </v-btn>
@@ -46,14 +51,24 @@
       </v-row>
     </v-col>
 
-    <v-snackbar v-model="exemploNotaApVazioFlag" :color="'warning'" :timeout="60000">
+    <v-snackbar
+      v-model="exemploNotaApVazioFlag"
+      :color="'warning'"
+      :timeout="60000"
+    >
       {{ mensagemExemploNotaApVazio }}
-      <v-btn dark text @click="exemploNotaApVazioFlag=false">Fechar</v-btn>
+      <v-btn dark text @click="exemploNotaApVazioFlag = false">Fechar</v-btn>
     </v-snackbar>
 
-    <v-snackbar v-model="exemploNotaApDuplicadoFlag" :color="'error'" :timeout="60000">
+    <v-snackbar
+      v-model="exemploNotaApDuplicadoFlag"
+      :color="'error'"
+      :timeout="60000"
+    >
       {{ mensagemExemploNotaApDuplicado }}
-      <v-btn dark text @click="exemploNotaApDuplicadoFlag=false">Fechar</v-btn>
+      <v-btn dark text @click="exemploNotaApDuplicadoFlag = false"
+        >Fechar</v-btn
+      >
     </v-snackbar>
   </v-row>
 </template>

@@ -12,7 +12,11 @@
         <v-container>
           <v-row>
             <v-col>
-              <v-text-field :rules="siglaRules" v-model="sigla" label="Sigla"></v-text-field>
+              <v-text-field
+                :rules="siglaRules"
+                v-model="sigla"
+                label="Sigla"
+              ></v-text-field>
             </v-col>
 
             <v-col>
@@ -20,7 +24,11 @@
             </v-col>
 
             <v-col>
-              <v-text-field :rules="designacaoRules" v-model="designacao" label="Designação"></v-text-field>
+              <v-text-field
+                :rules="designacaoRules"
+                v-model="designacao"
+                label="Designação"
+              ></v-text-field>
             </v-col>
 
             <v-col>
@@ -38,12 +46,16 @@
           </v-row>
           <v-row v-if="!!alertOn">
             <v-col>
-              <v-alert dismissible dense text type="error">Entidade já existe!</v-alert>
+              <v-alert dismissible dense text type="error"
+                >Entidade já existe!</v-alert
+              >
             </v-col>
           </v-row>
           <v-row v-if="sucessOn">
             <v-col>
-              <v-alert dismissible dense text type="success">Entidade adicionada com sucesso!</v-alert>
+              <v-alert dismissible dense text type="success"
+                >Entidade adicionada com sucesso!</v-alert
+              >
             </v-col>
           </v-row>
         </v-container>

@@ -39,10 +39,22 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="newSerie.dataInicial" no-title scrollable locale="pt">
+          <v-date-picker
+            v-model="newSerie.dataInicial"
+            no-title
+            scrollable
+            locale="pt"
+          >
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="data_inicial_menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu1.save(newSerie.dataInicial)">OK</v-btn>
+            <v-btn text color="primary" @click="data_inicial_menu = false"
+              >Cancel</v-btn
+            >
+            <v-btn
+              text
+              color="primary"
+              @click="$refs.menu1.save(newSerie.dataInicial)"
+              >OK</v-btn
+            >
           </v-date-picker>
         </v-menu>
       </v-col>
@@ -70,10 +82,22 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="newSerie.dataFinal" no-title scrollable locale="pt">
+          <v-date-picker
+            v-model="newSerie.dataFinal"
+            no-title
+            scrollable
+            locale="pt"
+          >
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="data_final_menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu2.save(newSerie.dataFinal)">OK</v-btn>
+            <v-btn text color="primary" @click="data_final_menu = false"
+              >Cancel</v-btn
+            >
+            <v-btn
+              text
+              color="primary"
+              @click="$refs.menu2.save(newSerie.dataFinal)"
+              >OK</v-btn
+            >
           </v-date-picker>
         </v-menu>
       </v-col>
@@ -97,7 +121,9 @@
           >
             <template v-slot:selection="data">
               <v-chip>
-                <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                <v-avatar left color="amber accent-3">{{
+                  data.item[0]
+                }}</v-avatar>
                 {{ data.item }}
               </v-chip>
             </template>
@@ -136,7 +162,11 @@
         </v-col>
         <v-col sm="3" md="3">
           <v-text-field
-            :rules="[v => !isNaN(parseInt(v)) && parseInt(v) > 0 || 'Campo Obrigatório! Valor tem que ser um número positivo.']"
+            :rules="[
+              v =>
+                (!isNaN(parseInt(v)) && parseInt(v) > 0) ||
+                'Campo Obrigatório! Valor tem que ser um número positivo.'
+            ]"
             solo
             clearable
             v-model="newSerie.medicao"

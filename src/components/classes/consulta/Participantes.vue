@@ -64,11 +64,13 @@ export default {
           align: "left",
           sortable: false,
           value: "label",
-          class: ['table-header', 'body-2', 'font-weight-bold']
-
+          class: ["table-header", "body-2", "font-weight-bold"]
         },
-        { text: "Participantes", value: "participantes",
-        class: ['table-header', 'body-2', 'font-weight-bold']}
+        {
+          text: "Participantes",
+          value: "participantes",
+          class: ["table-header", "body-2", "font-weight-bold"]
+        }
       ],
       participPorTipo: {
         Apreciador: [],
@@ -89,24 +91,31 @@ export default {
       this.$router.go();
     },
 
-    normaliza: function(tipo){
-      var res = ""
-      switch(tipo){
-        case "Assessor": res = "Assessorar";
-                                break;
-        case "Apreciador": res = "Apreciar";
-                                break; 
-        case "Comunicador": res = "Comunicar";
-                                break; 
-        case "Decisor": res = "Decidir";
-                                break; 
-        case "Executor": res = "Executar";
-                                break; 
-        case "Iniciador": res = "Iniciar";
-                                break;
-        default: res = "Desconhecido"                   
+    normaliza: function(tipo) {
+      var res = "";
+      switch (tipo) {
+        case "Assessor":
+          res = "Assessorar";
+          break;
+        case "Apreciador":
+          res = "Apreciar";
+          break;
+        case "Comunicador":
+          res = "Comunicar";
+          break;
+        case "Decisor":
+          res = "Decidir";
+          break;
+        case "Executor":
+          res = "Executar";
+          break;
+        case "Iniciador":
+          res = "Iniciar";
+          break;
+        default:
+          res = "Desconhecido";
       }
-      return res
+      return res;
     }
   },
 
@@ -138,7 +147,7 @@ a:link {
 a:hover {
   color: white;
   background-color: #1a237e;
-} 
+}
 
 .info-label {
   color: #1a237e;

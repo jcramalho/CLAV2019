@@ -44,7 +44,10 @@
       <hr style="border: 3px solid indigo; border-radius: 2px;" />
 
       <!-- DONOS -->
-      <DonosOps :entidades="c.donos" @unselectEntidade="unselectEntidade($event)" />
+      <DonosOps
+        :entidades="c.donos"
+        @unselectEntidade="unselectEntidade($event)"
+      />
 
       <v-row>
         <v-col>
@@ -58,7 +61,11 @@
         :entidades="donos"
       />
 
-      <v-snackbar v-model="erroEntidadeDuplicada" :color="'error'" :timeout="60000">
+      <v-snackbar
+        v-model="erroEntidadeDuplicada"
+        :color="'error'"
+        :timeout="60000"
+      >
         {{ mensagemEntidadeDuplicada }}
         <v-btn dark text @click="erroEntidadeDuplicada = false">Fechar</v-btn>
       </v-snackbar>
@@ -100,9 +107,15 @@
           @selectParticipante="selectParticipante($event)"
         />
 
-        <v-snackbar v-model="erroIntervencaoIndefinida" :color="'error'" :timeout="60000">
+        <v-snackbar
+          v-model="erroIntervencaoIndefinida"
+          :color="'error'"
+          :timeout="60000"
+        >
           {{ mensagemIntervencaoIndefinida }}
-          <v-btn dark text @click="erroIntervencaoIndefinida = false">Fechar</v-btn>
+          <v-btn dark text @click="erroIntervencaoIndefinida = false"
+            >Fechar</v-btn
+          >
         </v-snackbar>
 
         <hr style="border: 3px solid indigo; border-radius: 2px;" />
@@ -125,7 +138,10 @@
       <hr style="border: 3px solid indigo; border-radius: 2px;" />
 
       <!-- LEGISLAÇÂO -->
-      <LegislacaoOps :legs="c.legislacao" @unselectDiploma="unselectDiploma($event)" />
+      <LegislacaoOps
+        :legs="c.legislacao"
+        @unselectDiploma="unselectDiploma($event)"
+      />
 
       <v-row ma-2>
         <v-col>
@@ -133,7 +149,10 @@
         </v-col>
       </v-row>
 
-      <LegislacaoNew :legislacao="c.legislacao" @newLegislacao="newLegislacao($event, c.legislacao)" />
+      <LegislacaoNew
+        :legislacao="c.legislacao"
+        @newLegislacao="newLegislacao($event, c.legislacao)"
+      />
 
       <hr style="border-top: 1px dashed #1A237E;" />
 
@@ -189,7 +208,8 @@ export default {
       mensagemEntidadeDuplicada: "Entidade duplicada! Não será adicionada.",
 
       erroIntervencaoIndefinida: false,
-      mensagemIntervencaoIndefinida: "Tem de selecionar uma intervanção para o participante!",
+      mensagemIntervencaoIndefinida:
+        "Tem de selecionar uma intervanção para o participante!",
 
       simNao: [{ label: "Não", value: "N" }, { label: "Sim", value: "S" }],
 
@@ -226,10 +246,8 @@ export default {
 
     newEntidade: function(entidade, lista) {
       var index = lista.findIndex(e => e.id === entidade.id);
-      if(index == -1)
-        lista.push(entidade);
-      else
-        this.erroEntidadeDuplicada = true;
+      if (index == -1) lista.push(entidade);
+      else this.erroEntidadeDuplicada = true;
     },
 
     newLegislacao: function(leg, lista) {
@@ -245,9 +263,9 @@ export default {
     },
 
     selectParticipante: function(entidade) {
-      if(entidade.intervencao == "Indefinido")
-        this.erroIntervencaoIndefinida = true
-      else{
+      if (entidade.intervencao == "Indefinido")
+        this.erroIntervencaoIndefinida = true;
+      else {
         this.c.participantes.push(entidade);
       }
     },

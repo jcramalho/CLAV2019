@@ -583,7 +583,6 @@ export default {
   data: () => ({
     classe: {},
     classeLoaded: false,
-
     filhosHeaders: [
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", value: "titulo" }

@@ -32,12 +32,9 @@
             </tr>
           </template>
         </v-data-table>
-        <v-alert
-          v-else
-          :value="true"
-          icon="warning"
-          color="amber accent-3"
-        >Não tem entidades produtoras selecionadas...</v-alert>
+        <v-alert v-else :value="true" icon="warning" color="amber accent-3"
+          >Não tem entidades produtoras selecionadas...</v-alert
+        >
       </v-col>
     </v-row>
     <v-row v-if="filterEntidades.length > 0">
@@ -69,12 +66,9 @@
             </tr>
           </template>
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            class="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" class="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-col>
     </v-row>
@@ -111,12 +105,9 @@
             </tr>
           </template>
         </v-data-table>
-        <v-alert
-          v-else
-          :value="true"
-          icon="warning"
-          color="amber accent-3"
-        >Não tem entidades produtoras selecionadas...</v-alert>
+        <v-alert v-else :value="true" icon="warning" color="amber accent-3"
+          >Não tem entidades produtoras selecionadas...</v-alert
+        >
       </v-col>
     </v-row>
     <v-row v-if="filterTipologias.length > 0">
@@ -148,12 +139,9 @@
             </tr>
           </template>
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            class="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" class="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-col>
     </v-row>

@@ -1,16 +1,29 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <v-subheader class="info-label">Regula os Processos de Negócio</v-subheader>
+      <v-subheader class="info-label"
+        >Regula os Processos de Negócio</v-subheader
+      >
     </v-col>
     <v-col v-if="processos.length > 0">
-      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
+      <v-data-table
+        :headers="headers"
+        :items="processos"
+        class="elevation-1"
+        hide-default-footer
+      >
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
-              <v-btn small color="red darken-2" dark rounded @click="unselectProcesso(props.item)">
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                rounded
+                @click="unselectProcesso(props.item)"
+              >
                 <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
@@ -19,7 +32,9 @@
       </v-data-table>
     </v-col>
     <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem processos selecionados...</v-alert>
+      <v-alert :value="true" type="warning"
+        >Não tem processos selecionados...</v-alert
+      >
     </v-col>
   </v-row>
 </template>

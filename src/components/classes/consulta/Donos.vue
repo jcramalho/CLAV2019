@@ -16,10 +16,7 @@
       <div class="info-content">
         <ul>
           <li v-for="p in entidades" :key="p.idDono">
-            <a
-              v-if="p.idTipo == 'Entidade'"
-              :href="'/entidades/' + p.idDono"
-            >
+            <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idDono">
               {{ p.sigla }}:
               {{ p.designacao }}
               ({{ p.tipo.split("#")[1] }})
@@ -52,7 +49,7 @@ export default {
         { text: "Tipo", value: "tipo" }
       ],
       myhelp: help
-    }
+    };
   },
 
   methods: {

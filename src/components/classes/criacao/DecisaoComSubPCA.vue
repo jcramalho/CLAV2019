@@ -1,7 +1,9 @@
 <template>
   <!-- PCA -->
-  <v-card class="ma-2" >
-    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>Prazo de Conservação Administrativa</v-card-title>
+  <v-card class="ma-2">
+    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark
+      >Prazo de Conservação Administrativa</v-card-title
+    >
     <v-card-text>
       <v-row class="ma-2">
         <v-col cols="2">
@@ -9,12 +11,12 @@
         </v-col>
         <v-col>
           <v-text-field
-          v-model="c.pca.valor"
-          label="Prazo em anos: 0 a 199"
-          v-mask="'###'"
-          solo
-          clearable
-        ></v-text-field>
+            v-model="c.pca.valor"
+            label="Prazo em anos: 0 a 199"
+            v-mask="'###'"
+            solo
+            clearable
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -24,11 +26,11 @@
         </v-col>
         <v-col>
           <v-textarea
-          solo
-          label="Notas ao PCA"
-          v-model="c.pca.notas"
-          rows="2"
-        ></v-textarea>
+            solo
+            label="Notas ao PCA"
+            v-model="c.pca.notas"
+            rows="2"
+          ></v-textarea>
         </v-col>
       </v-row>
 
@@ -49,7 +51,13 @@
         </v-col>
       </v-row>
 
-      <v-row class="ma-2" v-if="semaforos.pcaSubFormasContagemReady && c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'">
+      <v-row
+        class="ma-2"
+        v-if="
+          semaforos.pcaSubFormasContagemReady &&
+            c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'
+        "
+      >
         <v-col cols="2">
           <div class="info-label">Subforma de contagem</div>
         </v-col>
@@ -63,11 +71,11 @@
             solo
             dense
           >
-            <template v-slot:selection="{item}">
+            <template v-slot:selection="{ item }">
               <p>{{ item.label }}</p>
             </template>
 
-            <template v-slot:item="{item}">
+            <template v-slot:item="{ item }">
               <p>{{ item.label }}</p>
             </template>
           </v-select>
@@ -87,11 +95,18 @@
               color="indigo darken-2"
               dark
               rounded
-              @click="adicionarCriterioGestionario( c.pca.justificacao, 'CriterioJustificacaoGestionario',
-                                                    'Critério Gestionário', textoCriterioGestionario,
-                                                    [], [])"
+              @click="
+                adicionarCriterioGestionario(
+                  c.pca.justificacao,
+                  'CriterioJustificacaoGestionario',
+                  'Critério Gestionário',
+                  textoCriterioGestionario,
+                  [],
+                  []
+                )
+              "
               v-if="!c.semaforos.critGestionarioAdicionado"
-            >Critério Gestionário
+              >Critério Gestionário
               <v-icon dark right>add_circle_outline</v-icon>
             </v-btn>
           </div>
@@ -101,8 +116,16 @@
               color="indigo darken-2"
               dark
               rounded
-              @click="adicionarCriterioLegalPCA( c.pca.justificacao, 'CriterioJustificacaoLegal',
-                                                  'Critério Legal', '', [], c.legislacao )"
+              @click="
+                adicionarCriterioLegalPCA(
+                  c.pca.justificacao,
+                  'CriterioJustificacaoLegal',
+                  'Critério Legal',
+                  '',
+                  [],
+                  c.legislacao
+                )
+              "
               v-if="!c.semaforos.critLegalAdicionadoPCA"
             >
               Critério Legal
@@ -112,7 +135,11 @@
         </v-col>
 
         <v-col>
-          <v-row class="ma-2" v-for="(crit, cindex) in c.pca.justificacao" :key="cindex">
+          <v-row
+            class="ma-2"
+            v-for="(crit, cindex) in c.pca.justificacao"
+            :key="cindex"
+          >
             <v-col cols="3">
               <div class="info-label">
                 {{ crit.label }}
@@ -120,12 +147,17 @@
                   color="red darken-2"
                   dark
                   small
-                  @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
-                  >remove_circle</v-icon>
+                  @click="
+                    removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')
+                  "
+                  >remove_circle</v-icon
+                >
               </div>
             </v-col>
             <!-- Se existir um critério de Utilidade Administrativa ........................-->
-            <v-col v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
+            <v-col
+              v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'"
+            >
               <div class="info-content">
                 <v-textarea
                   auto-grow
@@ -166,7 +198,8 @@
                     dark
                     small
                     @click="crit.legislacao.splice(i, 1)"
-                    >remove_circle</v-icon>
+                    >remove_circle</v-icon
+                  >
                   <span v-if="i == crit.legislacao.length - 1">.</span>
                   <span v-else>, </span>
                 </span>
@@ -316,8 +349,8 @@ export default {
     unselectDiploma: function(diploma, listaLeg) {
       var index = listaLeg.findIndex(e => e.id === diploma.id);
       listaLeg.splice(index, 1);
-      if(listaLeg.length == 0){
-        this.semaforos.critLegalAdicionadoPCA = false
+      if (listaLeg.length == 0) {
+        this.semaforos.critLegalAdicionadoPCA = false;
       }
     }
   }

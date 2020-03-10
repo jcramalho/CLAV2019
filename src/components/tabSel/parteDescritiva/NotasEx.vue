@@ -138,7 +138,7 @@ export default {
       }
     }
   },
-  created: function(){
+  created: function() {
     this.componentKey += 1;
   }
 };

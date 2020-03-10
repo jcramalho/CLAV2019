@@ -62,7 +62,8 @@
                 v-if="data.item != 'Conservação Parcial'"
                 left
                 color="amber accent-3"
-              >{{ data.item[0] }}</v-avatar>
+                >{{ data.item[0] }}</v-avatar
+              >
               <v-avatar v-else left color="amber accent-3">CP</v-avatar>
               {{ data.item }}
             </v-chip>
@@ -88,7 +89,12 @@
         <div class="info-label">Notas</div>
       </v-col>
       <v-col sm="9" md="9">
-        <v-text-field solo clearable v-model="newSerie.notas" label="Notas"></v-text-field>
+        <v-text-field
+          solo
+          clearable
+          v-model="newSerie.notas"
+          label="Notas"
+        ></v-text-field>
       </v-col>
     </v-row>
   </div>

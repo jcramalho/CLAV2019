@@ -6,7 +6,7 @@
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
-        <b>{{ 'Alterar a subsérie: ' + treeview_object.titulo }}</b>
+        <b>{{ "Alterar a subsérie: " + treeview_object.titulo }}</b>
       </v-card-title>
       <br />
       <!-- <v-card-text>

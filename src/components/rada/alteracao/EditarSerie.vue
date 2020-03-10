@@ -1,11 +1,13 @@
 <template>
   <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
-      <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
+      <b text depressed @click="filterSeries" v-on="on">{{
+        treeview_object.titulo
+      }}</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
-        <b>{{ 'Alterar a série: ' + treeview_object.titulo }}</b>
+        <b>{{ "Alterar a série: " + treeview_object.titulo }}</b>
       </v-card-title>
       <br />
       <v-card-text>
@@ -63,17 +65,18 @@
                 clearable
                 placeholder="Classe Pai"
               >
-                <template v-slot:item="{ item }">{{ item.codigo }} - {{ item.titulo }}</template>
+                <template v-slot:item="{ item }"
+                  >{{ item.codigo }} - {{ item.titulo }}</template
+                >
                 <template v-slot:selection="{ item }">
                   <v-chip>{{ item.codigo }} - {{ item.titulo }}</v-chip>
                 </template>
                 <template v-slot:no-data>
                   <v-container fluid>
-                    <v-alert
-                      :value="true"
-                      color="red lighten-3"
-                      icon="warning"
-                    >Sem classes Área Orgânico-Funcional! Adicione primeiro.</v-alert>
+                    <v-alert :value="true" color="red lighten-3" icon="warning"
+                      >Sem classes Área Orgânico-Funcional! Adicione
+                      primeiro.</v-alert
+                    >
                   </v-container>
                 </template>
               </v-autocomplete>
@@ -87,7 +90,9 @@
         <!-- <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>-->
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Cancelar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialog = false"
+          >Cancelar</v-btn
+        >
 
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
       </v-card-actions>

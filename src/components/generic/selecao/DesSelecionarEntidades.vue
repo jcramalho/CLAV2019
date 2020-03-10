@@ -1,19 +1,33 @@
 <template>
   <v-row>
     <v-col cols="2" v-if="tipo === 'legislacao' && entidades.length === 0">
-      <v-subheader class="info-label">Entidade responsável pela publicação:</v-subheader>
+      <v-subheader class="info-label"
+        >Entidade responsável pela publicação:</v-subheader
+      >
     </v-col>
     <v-col cols="2" v-else>
       <v-subheader class="info-label">Entidades selecionadas:</v-subheader>
     </v-col>
     <v-col v-if="entidades.length > 0">
-      <v-data-table :headers="headers" :items="entidades" :items-per-page="100" class="elevation-1" hide-default-footer>
+      <v-data-table
+        :headers="headers"
+        :items="entidades"
+        :items-per-page="100"
+        class="elevation-1"
+        hide-default-footer
+      >
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.sigla }}</td>
             <td>{{ props.item.designacao }}</td>
             <td>
-              <v-btn small color="red darken-2" dark rounded @click="unselectEntidade(props.item)">
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                rounded
+                @click="unselectEntidade(props.item)"
+              >
                 <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
@@ -22,7 +36,9 @@
       </v-data-table>
     </v-col>
     <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem entidades selecionadas...</v-alert>
+      <v-alert :value="true" type="warning"
+        >Não tem entidades selecionadas...</v-alert
+      >
     </v-col>
   </v-row>
 </template>

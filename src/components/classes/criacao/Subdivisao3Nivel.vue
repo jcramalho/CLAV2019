@@ -9,8 +9,9 @@
         </p>
         <p>
           Quando existe necessidade de diferenciar prazos de conservação e/ou
-          destinos finais da informação produzida no âmbito de um mesmo processo de
-          negócio (classe de 3º nível) devem ser criadas classes de 4.º nível.
+          destinos finais da informação produzida no âmbito de um mesmo processo
+          de negócio (classe de 3º nível) devem ser criadas classes de 4.º
+          nível.
         </p>
 
         <h4>Esta classe de 3º nível irá ter subclasses de 4º nível?</h4>

@@ -28,7 +28,12 @@
         <div class="info-label">Notas:</div>
       </v-col>
       <v-col>
-        <v-textarea solo label="Notas ao PCA" v-model="c.pca.notas" rows="2"></v-textarea>
+        <v-textarea
+          solo
+          label="Notas ao PCA"
+          v-model="c.pca.notas"
+          rows="2"
+        ></v-textarea>
       </v-col>
     </v-row>
 
@@ -36,7 +41,10 @@
       <v-col cols="2">
         <div class="info-label">
           Forma de Contagem:
-          <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
+          <InfoBox
+            header="Forma de Contagem do PCA"
+            :text="myhelp.Classe.Campos.FormaContagem"
+          />
         </div>
       </v-col>
       <v-col>
@@ -71,11 +79,11 @@
           solo
           dense
         >
-          <template v-slot:selection="{item}">
+          <template v-slot:selection="{ item }">
             <p>{{ item.label }}</p>
           </template>
 
-          <template v-slot:item="{item}">
+          <template v-slot:item="{ item }">
             <p>{{ item.label }}</p>
           </template>
         </v-select>
@@ -89,7 +97,10 @@
       <v-col cols="3">
         <div class="info-label">
           Justificação do PCA:
-          <InfoBox header="Justificação do PCA" :text="myhelp.Classe.Campos.JustificacaoPCA" />
+          <InfoBox
+            header="Justificação do PCA"
+            :text="myhelp.Classe.Campos.JustificacaoPCA"
+          />
         </div>
 
         <div class="ma-2">
@@ -98,15 +109,15 @@
             dark
             rounded
             @click="
-                adicionarCriterioGestionario(
-                  c.pca.justificacao,
-                  'CriterioJustificacaoGestionario',
-                  'Critério Gestionário',
-                  mylabels.textoCriterioJustificacaoGestionario,
-                  [],
-                  []
-                )
-              "
+              adicionarCriterioGestionario(
+                c.pca.justificacao,
+                'CriterioJustificacaoGestionario',
+                'Critério Gestionário',
+                mylabels.textoCriterioJustificacaoGestionario,
+                [],
+                []
+              )
+            "
             v-if="!semaforos.critGestionarioAdicionado"
           >
             Critério Gestionário
@@ -119,15 +130,15 @@
             dark
             rounded
             @click="
-                adicionarCriterioLegalPCA(
-                  c.pca.justificacao,
-                  'CriterioJustificacaoLegal',
-                  'Critério Legal',
-                  mylabels.textoCriterioLegal,
-                  [],
-                  c.legislacao
-                )
-              "
+              adicionarCriterioLegalPCA(
+                c.pca.justificacao,
+                'CriterioJustificacaoLegal',
+                'Critério Legal',
+                mylabels.textoCriterioLegal,
+                [],
+                c.legislacao
+              )
+            "
             v-if="!semaforos.critLegalAdicionadoPCA"
           >
             Critério Legal
@@ -145,11 +156,14 @@
                 dark
                 small
                 @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
-              >remove_circle_outline</v-icon>
+                >remove_circle_outline</v-icon
+              >
             </div>
           </v-col>
 
-          <v-col v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
+          <v-col
+            v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'"
+          >
             <div class="info-content">
               <v-textarea
                 auto-grow
@@ -188,7 +202,8 @@
                   dark
                   small
                   @click="crit.legislacao.splice(i, 1)"
-                >remove_circle_outline</v-icon>
+                  >remove_circle_outline</v-icon
+                >
                 <span v-if="i == crit.legislacao.length - 1">.</span>
                 <span v-else>,</span>
               </span>
@@ -226,8 +241,8 @@
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 
-const help = require("@/config/help").help
-const labels = require("@/config/labels").criterios
+const help = require("@/config/help").help;
+const labels = require("@/config/labels").criterios;
 
 import InfoBox from "@/components/generic/infoBox.vue";
 

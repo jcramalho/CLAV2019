@@ -1,18 +1,26 @@
 <template>
   <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
-      <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
+      <v-btn
+        color="indigo lighten-2"
+        dark
+        class="ma-2"
+        @click="filterSeries"
+        v-on="on"
+      >
         <v-icon dark left>add</v-icon>Subsérie
       </v-btn>
     </template>
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">Adicionar Classe Subsérie</v-card-title>
+      <v-card-title class="indigo darken-1 white--text"
+        >Adicionar Classe Subsérie</v-card-title
+      >
       <br />
       <v-card-text>
         <v-form ref="form" :lazy-validation="false">
           <!-- <h5>Identificação</h5>
           <v-divider></v-divider>-->
-          <Identificacao :newSerie="newSubSerie" :classes="classes"  />
+          <Identificacao :newSerie="newSubSerie" :classes="classes" />
 
           <v-expansion-panels accordion>
             <v-expansion-panel popout focusable>
@@ -60,17 +68,17 @@
                 clearable
                 placeholder="Classe Pai"
               >
-                <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
+                <template v-slot:item="{ item }">{{
+                  item.codigo + " - " + item.titulo
+                }}</template>
                 <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
+                  <v-chip>{{ item.codigo + " - " + item.titulo }}</v-chip>
                 </template>
                 <template v-slot:no-data>
                   <v-container fluid>
-                    <v-alert
-                      :value="true"
-                      color="red lighten-3"
-                      icon="warning"
-                    >Sem classes Série! Adicione primeiro.</v-alert>
+                    <v-alert :value="true" color="red lighten-3" icon="warning"
+                      >Sem classes Série! Adicione primeiro.</v-alert
+                    >
                   </v-container>
                 </template>
               </v-autocomplete>
@@ -83,7 +91,9 @@
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close">Cancelar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="close"
+          >Cancelar</v-btn
+        >
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
         <v-btn color="success" class="mr-4" @click="save">Guardar</v-btn>
       </v-card-actions>

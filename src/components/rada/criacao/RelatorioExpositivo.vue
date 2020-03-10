@@ -26,15 +26,23 @@
                 </v-list-item>
               </template>
               <template v-slot:item="{ item }">
-                <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
+                <v-list-item-title>{{
+                  item.sigla + " - " + item.designacao
+                }}</v-list-item-title>
               </template>
               <template v-slot:selection="data">
                 <v-chip
                   v-bind="data.attrs"
                   :input-value="data.selected"
-                  :close="produtoraEntidadeClasse(data.item.sigla, data.item.designacao)"
+                  :close="
+                    produtoraEntidadeClasse(
+                      data.item.sigla,
+                      data.item.designacao
+                    )
+                  "
                   @click:close="removeEnt(data.item)"
-                >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
+                  >{{ data.item.sigla + " - " + data.item.designacao }}</v-chip
+                >
               </template>
             </v-autocomplete>
           </v-col>
@@ -65,16 +73,24 @@
               </v-list-item>
             </template>
             <template v-slot:item="{ item }">
-              <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
+              <v-list-item-title>{{
+                item.sigla + " - " + item.designacao
+              }}</v-list-item-title>
             </template>
             <template v-slot:selection="data">
               <v-chip
                 v-bind="data.attrs"
                 :input-value="data.selected"
-                :close="produtoraTipologiaClasse(data.item.sigla, data.item.designacao)"
+                :close="
+                  produtoraTipologiaClasse(
+                    data.item.sigla,
+                    data.item.designacao
+                  )
+                "
                 @click="data.select"
                 @click:close="removeTip(data.item)"
-              >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
+                >{{ data.item.sigla + " - " + data.item.designacao }}</v-chip
+              >
             </template>
             <!-- <template v-slot:selection="{ item }">
               <v-chip>{{ item.sigla + ' - ' + item.designacao}}</v-chip>
@@ -107,10 +123,20 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="RE.dataInicial" no-title scrollable locale="pt">
+            <v-date-picker
+              v-model="RE.dataInicial"
+              no-title
+              scrollable
+              locale="pt"
+            >
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu1 = false">Cancel</v-btn>
-              <v-btn text color="primary" @click="$refs.menu1.save(RE.dataInicial)">OK</v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="$refs.menu1.save(RE.dataInicial)"
+                >OK</v-btn
+              >
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -137,10 +163,20 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="RE.dataFinal" no-title scrollable locale="pt">
+            <v-date-picker
+              v-model="RE.dataFinal"
+              no-title
+              scrollable
+              locale="pt"
+            >
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu2 = false">Cancel</v-btn>
-              <v-btn text color="primary" @click="$refs.menu2.save(RE.dataFinal)">OK</v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="$refs.menu2.save(RE.dataFinal)"
+                >OK</v-btn
+              >
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -153,7 +189,11 @@
           <v-text-field
             v-model="RE.dimSuporte.nUI"
             placeholder="Nº de Unidades de Instalação."
-            :rules="[v => !isNaN(parseInt(v)) && parseInt(v) >= 0 || 'Campo Obrigatório! Valor tem que ser inteiro.']"
+            :rules="[
+              v =>
+                (!isNaN(parseInt(v)) && parseInt(v) >= 0) ||
+                'Campo Obrigatório! Valor tem que ser inteiro.'
+            ]"
             single-line
             type="number"
           />

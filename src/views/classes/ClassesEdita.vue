@@ -9,14 +9,15 @@ import EditaClasse12 from "@/components/classes/edicao/EditaClasse12.vue";
 
 export default {
   components: {
-    EditaClasse, EditaClasse12
+    EditaClasse,
+    EditaClasse12
   },
 
   data: () => ({
     nivel: 0
   }),
 
-  created: function(){
+  created: function() {
     this.nivel = this.$route.params.idClasse.split(".").length;
   }
 };

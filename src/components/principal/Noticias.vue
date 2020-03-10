@@ -11,7 +11,7 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <p>{{ n.data }}</p>
-            <p v-html="n.desc"/>
+            <p v-html="n.desc" />
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-const nlista = require('@/data/noticias').noticias
+const nlista = require("@/data/noticias").noticias;
 export default {
   data() {
     return {
