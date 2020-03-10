@@ -127,18 +127,10 @@ export default {
 
       // DEEP CLONE do objetos
       this.serie = Object.assign({}, serie_real);
-      if (this.serie.eFilhoDe != "") {
-        this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
-        this.serie.entProdutoras = [...serie_real.entProdutoras];
-        this.serie.legislacao = [...serie_real.legislacao];
-        this.serie.localizacao = [...serie_real.localizacao];
-      } else {
-        this.serie.tipologiasProdutoras = [];
-        this.serie.entProdutoras = [];
-        this.serie.legislacao = [];
-        this.serie.localizacao = [];
-      }
-
+      this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
+      this.serie.entProdutoras = [...serie_real.entProdutoras];
+      this.serie.legislacao = [...serie_real.legislacao];
+      this.serie.localizacao = [...serie_real.localizacao];
       this.serie.relacoes = [...serie_real.relacoes];
 
       // Classes para definir a hierarquia
@@ -148,7 +140,9 @@ export default {
 
       // Classes para as relações
       this.classesRelacoes = this.classes.filter(
-        e => e.tipo == "Série" || e.tipo == "Subsérie"
+        e =>
+          (e.tipo == "Série" || e.tipo == "Subsérie") &&
+          e.codigo != serie_real.codigo
       );
     },
     save: async function() {

@@ -28,7 +28,7 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="newSubSerie" :classes="classesNomes" />
+                <ZonaContexto :newSerie="newSubSerie" :classes="classesRelacoes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -52,7 +52,7 @@
             <v-col cols="12" sm="9" md="0">
               <v-autocomplete
                 v-model="newSubSerie.eFilhoDe"
-                :items="classesFiltradas"
+                :items="classesHierarquia"
                 :rules="[v => !!v || 'Este campo é obrigatório.']"
                 item-value="codigo"
                 dense
@@ -109,8 +109,8 @@ export default {
     panels: [0, 0, 0],
     isMultiple: false,
     dialog: false,
-    classesFiltradas: [],
-    classesNomes: [],
+    classesHierarquia: [],
+    classesRelacoes: [],
     newSubSerie: {
       codigo: "",
       titulo: "",
@@ -159,11 +159,11 @@ export default {
       }, 1);
     },
     filterSeries: function() {
-      this.classesFiltradas = this.classes.filter(
+      this.classesHierarquia = this.classes.filter(
         classe => classe.tipo == "Série"
       );
 
-      this.classesNomes = this.classes.filter(
+      this.classesRelacoes = this.classes.filter(
         e => e.tipo == "Série" || e.tipo == "Subsérie"
       );
       // .map(e => e.codigo + " - " + e.titulo);

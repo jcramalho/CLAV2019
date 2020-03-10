@@ -152,6 +152,7 @@ export default {
       let area_organico = this.TS.classes.find(e => e.codigo == c.codigo);
 
       area_organico.descricao = c.descricao;
+      area_organico.titulo = c.titulo;
     },
     async atualizacao_serie(c) {
       let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);

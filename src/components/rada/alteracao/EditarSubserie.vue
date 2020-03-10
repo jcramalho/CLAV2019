@@ -122,11 +122,15 @@ export default {
       this.subserie.relacoes = [...subserie_real.relacoes];
 
       // Classes para definir a hierarquia
-      this.classesHierarquia = this.classes.filter(classe => classe.tipo == "Série");
+      this.classesHierarquia = this.classes.filter(
+        classe => classe.tipo == "Série"
+      );
 
       // Classes para as relações
       this.classesRelacoes = this.classes.filter(
-        e => e.tipo == "Série" || e.tipo == "Subsérie"
+        e =>
+          (e.tipo == "Série" || e.tipo == "Subsérie") &&
+          e.codigo != subserie_real.codigo
       );
     },
     save: async function() {

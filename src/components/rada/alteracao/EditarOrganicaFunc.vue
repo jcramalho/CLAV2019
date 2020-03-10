@@ -21,7 +21,7 @@
               <div class="info-label">Título</div>
             </v-col>
             <v-col sm="3" md="3">
-              <v-text-field disabled v-model="classe.titulo" solo></v-text-field>
+              <v-text-field v-model="classe.titulo" solo></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -49,7 +49,7 @@
               <v-autocomplete
                 disabled
                 v-model="classe.eFilhoDe"
-                :items="classesFiltradas"
+                :items="classesHierarquia"
                 item-text="titulo"
                 item-value="codigo"
                 dense
@@ -95,17 +95,24 @@ export default {
   props: ["treeview_object", "classes"],
   data: () => ({
     dialog: false,
-    classesFiltradas: [],
+    classesHierarquia: [],
     classe: {}
   }),
   methods: {
     filterSeries: function() {
-      this.classesFiltradas = this.classes.filter(
-        classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
+      // ir buscar o verdadeiro objeto
+      let classe_area_organico = this.classes.find(
+        e => e.codigo == this.treeview_object.codigo
       );
-      this.classe = Object.assign(
-        {},
-        this.classes.find(e => e.codigo == this.treeview_object.codigo)
+
+      // Clone
+      this.classe = Object.assign({}, classe_area_organico);
+
+      this.classesHierarquia = this.classes.filter(
+        classe =>
+          classe.tipo != "Série" &&
+          classe.tipo != "Subsérie" &&
+          classe.codigo != classe_area_organico.codigo
       );
     },
     save: function() {

@@ -31,7 +31,7 @@
               <v-expansion-panel-content>
                 <ZonaContexto
                   :newSerie="newSerie"
-                  :classes="classesNomes"
+                  :classes="classesRelacoes"
                   :legislacao="legislacao"
                   :RE="RE"
                 />
@@ -57,7 +57,7 @@
             <v-col sm="9" md="9">
               <v-autocomplete
                 v-model="newSerie.eFilhoDe"
-                :items="classesFiltradas"
+                :items="classesHierarquia"
                 :rules="[v => !!v || 'Campo obrigatório!']"
                 item-value="codigo"
                 dense
@@ -116,8 +116,8 @@ export default {
     panels: [0, 0, 0],
     isMultiple: false,
     dialog: false,
-    classesFiltradas: [],
-    classesNomes: [],
+    classesHierarquia: [],
+    classesRelacoes: [],
     newSerie: {
       // codigo: "02.02",
       // titulo: "SERIE",
@@ -199,11 +199,11 @@ export default {
       }, 1);
     },
     filterSeries: function() {
-      this.classesFiltradas = this.classes.filter(
+      this.classesHierarquia = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
 
-      this.classesNomes = this.classes.filter(
+      this.classesRelacoes = this.classes.filter(
         e => e.tipo == "Série" || e.tipo == "Subsérie"
       );
     },
