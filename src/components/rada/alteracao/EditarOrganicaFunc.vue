@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog v-model="dialog" persistent fullscreen>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
     </template>
@@ -82,7 +82,7 @@
         <!-- <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>-->
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Cancelar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
 
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
       </v-card-actions>

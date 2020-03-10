@@ -103,6 +103,7 @@ export default {
             titulo:
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
+            eFilhoDe: this.TS.classes[i].eFilhoDe,
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -121,6 +122,7 @@ export default {
             titulo:
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
+            eFilhoDe: this.TS.classes[i].eFilhoDe,
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -306,7 +308,8 @@ export default {
           relacao: relacao_inversa,
           serieRelacionada: {
             codigo: serie_classe.codigo,
-            titulo: serie_classe.titulo
+            titulo: serie_classe.titulo,
+            tipo: serie_classe.tipo
           }
         });
       }

@@ -1,11 +1,12 @@
 <template>
-  <v-dialog v-model="dialogSerie" persistent>
+  <v-dialog v-model="dialogSerie" persistent fullscreen>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
         {{
         treeview_object.titulo
         }}
       </b>
+      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">(POR COMPLETAR)</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
@@ -16,7 +17,7 @@
         <v-form ref="formSerie" :lazy-validation="false">
           <Identificacao :newSerie="serie" />
 
-          <v-expansion-panels accordion>
+          <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
                 <b>Zona Descritiva</b>
@@ -87,7 +88,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogSerie = false">Cancelar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogSerie = false">Voltar</v-btn>
 
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
       </v-card-actions>
@@ -110,6 +111,8 @@ export default {
     ZonaDecisoesAvaliacao
   },
   data: () => ({
+    panels: [0, 0, 0],
+    isMultiple: false,
     dialogSerie: false,
     serie: {},
     classesFiltradas: [],
@@ -125,20 +128,19 @@ export default {
       // DEEP CLONE do objetos
       this.serie = Object.assign({}, serie_real);
       if (this.serie.eFilhoDe != "") {
-        this.serie.relacoes = [...serie_real.relacoes];
         this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
+        this.serie.entProdutoras = [...serie_real.entProdutoras];
         this.serie.legislacao = [...serie_real.legislacao];
         this.serie.localizacao = [...serie_real.localizacao];
       } else {
-        this.serie.relacoes = [];
         this.serie.tipologiasProdutoras = [];
+        this.serie.entProdutoras = [];
         this.serie.legislacao = [];
         this.serie.localizacao = [];
       }
 
-      this.serie.entProdutoras = [...serie_real.entProdutoras];
+      this.serie.relacoes = [...serie_real.relacoes];
 
-      
       // Classes para definir a hierarquia
       this.classesFiltradas = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
@@ -150,10 +152,14 @@ export default {
       );
     },
     save: async function() {
-      if (this.$refs.formSerie.validate()) {
-        this.$emit("atualizacao", this.serie);
-        this.dialogSerie = false;
-      }
+      this.isMultiple = true;
+      this.panels = [0, 1];
+      setTimeout(() => {
+        if (this.$refs.formSerie.validate()) {
+          this.$emit("atualizacao", this.serie);
+          this.dialogSerie = false;
+        }
+      }, 1);
     }
   }
 };

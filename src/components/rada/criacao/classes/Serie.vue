@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog v-model="dialog" persistent fullscreen>
     <template v-slot:activator="{ on }">
       <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
         <v-icon dark left>add</v-icon>Série
@@ -15,7 +15,7 @@
           <v-divider></v-divider>-->
           <Identificacao :newSerie="newSerie" :classes="classes" />
 
-          <v-expansion-panels accordion>
+          <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
                 <b>Zona Descritiva</b>
@@ -90,7 +90,7 @@
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close">Cancelar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="close">Voltar</v-btn>
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
         <v-btn color="success" class="mr-4" @click="save">Guardar</v-btn>
       </v-card-actions>
@@ -113,6 +113,8 @@ export default {
   },
   props: ["classes", "legislacao", "RE"],
   data: () => ({
+    panels: [0, 0, 0],
+    isMultiple: false,
     dialog: false,
     classesFiltradas: [],
     classesNomes: [],
@@ -149,6 +151,9 @@ export default {
   }),
   methods: {
     apagar: function() {
+      this.isMultiple = false;
+      this.panels = [0, 0, 0];
+
       this.newSerie = {
         codigo: "",
         titulo: "",
@@ -179,15 +184,19 @@ export default {
       this.dialog = false;
     },
     save: async function() {
-      if (this.$refs.formSerie.validate()) {
-        let clone_newSerie = Object.assign({}, this.newSerie);
+      this.isMultiple = true;
+      this.panels = [0, 1];
+      setTimeout(async () => {
+        if (this.$refs.formSerie.validate()) {
+          let clone_newSerie = Object.assign({}, this.newSerie);
 
-        await this.relacoes_simetricas(clone_newSerie);
+          await this.relacoes_simetricas(clone_newSerie);
 
-        this.classes.push(clone_newSerie);
-        this.dialog = false;
-        this.apagar();
-      }
+          this.classes.push(clone_newSerie);
+          this.dialog = false;
+          this.apagar();
+        }
+      }, 1);
     },
     filterSeries: function() {
       this.classesFiltradas = this.classes.filter(

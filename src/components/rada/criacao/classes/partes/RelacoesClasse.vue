@@ -158,6 +158,7 @@ export default {
         },
         {
           value: "edicao",
+          align: "center",
           sortable: false,
           width: "5%",
           class: ["table-header", "body-2", "font-weight-bold"]
