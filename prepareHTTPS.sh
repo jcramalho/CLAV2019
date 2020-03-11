@@ -5,8 +5,7 @@
 NAME=acme.sh
 FOLDER=~/.acme.sh
 EXEC=$FOLDER/$NAME
-#DOMAINS=('clav.dglab.gov.pt' 'epl.di.uminho.pt')
-DOMAINS=('clav.ddns.net')
+DOMAINS=('clav.dglab.gov.pt' 'epl.di.uminho.pt')
 WEBDIR=/var/www/html
 CERT_FOLDER=/etc/nginx/acme.sh
 
