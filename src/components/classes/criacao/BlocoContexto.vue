@@ -211,7 +211,10 @@ export default {
       mensagemIntervencaoIndefinida:
         "Tem de selecionar uma intervanção para o participante!",
 
-      simNao: [{ label: "Não", value: "N" }, { label: "Sim", value: "S" }],
+      simNao: [
+        { label: "Não", value: "N" },
+        { label: "Sim", value: "S" }
+      ],
 
       textoCriterioUtilidadeAdministrativa:
         "Prazo decorrente da necessidade de consulta para apuramento da " +
