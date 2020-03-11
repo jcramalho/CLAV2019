@@ -32,8 +32,9 @@
       </v-btn>
 
       <span class="font-weight-light ma-2" v-if="this.$store.state.name != ''">
-        {{ this.$store.state.name }}</span
-      >
+        {{ this.$store.state.entidade.split('_')[1] + " | " + this.$store.state.name }}
+      </span>
+
       <v-btn
         class="mr-2"
         color="indigo accent-4"
