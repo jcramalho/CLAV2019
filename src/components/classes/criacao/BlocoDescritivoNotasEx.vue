@@ -2,7 +2,14 @@
   <v-row>
     <!-- Notas de Exclusão -->
     <v-col cols="2">
-      <div class="info-label">Notas de Exclusão:</div>
+      <div class="info-label">
+        Notas de Exclusão
+        <InfoBox
+          header="Notas de Exclusão"
+          :text="myhelp.Classe.Campos.NotasEx"
+          helpColor="indigo darken-4"
+        />
+      </div>
 
       <v-btn
         color="indigo darken-2"
@@ -53,12 +60,20 @@
 
 <script>
 const nanoid = require("nanoid");
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["c"],
 
+  components: {
+    InfoBox
+  },
+
   data() {
     return {
+      myhelp: help,
       neVaziaFlag: false,
       neDuplicadaFlag: false,
       mensagemNEVazia:

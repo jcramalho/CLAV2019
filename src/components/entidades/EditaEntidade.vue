@@ -13,7 +13,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nome da Entidade:</div>
+              <div class="info-label">Nome da Entidade</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -29,7 +29,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla:</div>
+              <div class="info-label">Sigla</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -45,7 +45,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Internacional:</div>
+              <div class="info-label">Internacional</div>
             </v-col>
             <v-col>
               <v-select
@@ -62,7 +62,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">SIOE:</div>
+              <div class="info-label">SIOE</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -71,7 +71,6 @@
                 color="indigo"
                 single-line
                 v-model="entidade.sioe"
-                type="number"
                 :rules="regraSIOE"
               ></v-text-field>
             </v-col>
@@ -79,57 +78,34 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">
-                Data de extinção:
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" color="warning">info</v-icon>
-                  </template>
-                  <span
-                    >Ao clicar neste campo adiciona uma data de extinção à
-                    entidade!</span
-                  >
-                </v-tooltip>
-              </div>
+              <div class="info-label">Data de criação</div>
             </v-col>
             <v-col>
-              <v-menu
-                ref="open"
-                v-model="open"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    solo
-                    v-model="entidade.dataExtincao"
-                    hint="AAAA/MM/DD"
-                    persistent-hint
-                    @blur="date = parseDate(dateFormatted)"
-                    v-on="on"
-                    :rules="regraData"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="date"
-                  no-title
-                  @input="open = false"
-                  :max="new Date().toISOString().substr(0, 10)"
-                ></v-date-picker>
-              </v-menu>
+              <SelecionarData
+                :d="entidade.dataCriacao"
+                @dataSelecionada="entidade.dataCriacao = $event"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Data de extinção</div>
+            </v-col>
+            <v-col>
+              <SelecionarData
+                :d="entidade.dataExtincao"
+                @dataSelecionada="entidade.dataExtincao = $event"
+              />
             </v-col>
           </v-row>
 
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Tipologias de Entidade</v-expansion-panel-header
-              >
+              <v-expansion-panel-header>
+                <div class="separador">Tipologias de Entidade</div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelTip
                   :tipologias="tipSel"
@@ -166,13 +142,15 @@
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
+import SelecionarData from "@/components/generic/SelecionarData";
 
 export default {
   props: ["e"],
   components: {
     DesSelTip,
     SelTip,
-    PainelOpsEnt
+    PainelOpsEnt,
+    SelecionarData
   },
 
   data: vm => ({
@@ -183,13 +161,9 @@ export default {
       sioe: "",
       tipologiasSel: [],
       codigo: "",
+      dataCriacao: "",
       dataExtincao: ""
     },
-
-    // vuetify datepicker
-    date: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-    open: false,
 
     // Para o seletor de processos
     tipologias: [],
@@ -199,45 +173,12 @@ export default {
     regraSIOE: [
       v => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos."
     ],
-    regraData: [
-      v =>
-        /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || "Este campo está no formato errado."
-    ],
 
     snackbar: false,
     text: ""
   }),
 
-  // vuetify datepicker
-  computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date);
-    }
-  },
-
-  watch: {
-    date(val) {
-      this.entidade.dataExtincao = this.formatDate(this.date);
-      this.dateFormatted = this.formatDate(this.date);
-    }
-  },
-
   methods: {
-    // vuetify datepicker
-    formatDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("-");
-      return `${year}/${month}/${day}`;
-    },
-
-    parseDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
-
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
@@ -302,6 +243,18 @@ export default {
 </script>
 
 <style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

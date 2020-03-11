@@ -10,19 +10,9 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nível:</div>
+              <div class="info-label">Nível</div>
             </v-col>
             <v-col>
-              <!--v-select
-                item-text="label"
-                item-value="value"
-                v-model="classe.nivel"
-                :items="classeNiveis"
-                label="Selecione o nível da classe:"
-                solo
-                dense
-              /-->
-
               <v-radio-group v-model="classe.nivel" row>
                 <v-radio
                   v-for="(n, i) in classeNiveis"
@@ -39,7 +29,7 @@
           <v-row v-if="classe.nivel > 1">
             <v-col cols="2">
               <div class="info-label">
-                Classe Pai:
+                Classe Pai
                 <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
               </div>
             </v-col>
@@ -60,7 +50,7 @@
           <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
             <v-col cols="2">
               <div class="info-label">
-                Código:
+                Código
                 <InfoBox
                   header="Código da Classe"
                   :text="myhelp.Classe.Campos.Codigo"
@@ -82,7 +72,7 @@
           <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
             <v-col cols="2">
               <div class="info-label">
-                Título:
+                Título
                 <InfoBox
                   header="Título da Classe"
                   :text="myhelp.Classe.Campos.Titulo"
@@ -116,8 +106,15 @@
 
             <!-- DECISÕES DE AVALIAÇÂO -->
             <v-expansion-panel popout focusable v-if="classe.nivel == 3">
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>Decisões de Avaliação</div>
+              <v-expansion-panel-header>
+                <div class="separador">
+                  Decisões de Avaliação
+                  <InfoBox
+                    header="Decisões de Avaliação"
+                    :text="myhelp.Classe.BlocoDecisoes"
+                    helpColor="white"
+                  />
+                </div>
               </v-expansion-panel-header>
 
               <v-expansion-panel-content>
@@ -913,6 +910,18 @@ export default {
 </script>
 
 <style>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .info-label {
   color: #283593; /* indigo darken-3 */
   padding: 5px;

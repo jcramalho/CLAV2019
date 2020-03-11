@@ -1,5 +1,5 @@
 <template>
-  <ImportarAuto 
+  <ImportarAuto
     v-bind:portarias="portarias"
     v-bind:entidades="entidades"
     v-bind:classes="classes"

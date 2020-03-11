@@ -1,9 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <v-subheader class="info-label"
-        >Regula os Processos de Negócio</v-subheader
-      >
+      <v-subheader class="info-label">Processos selecionados</v-subheader>
     </v-col>
     <v-col v-if="processos.length > 0">
       <v-data-table

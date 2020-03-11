@@ -186,10 +186,18 @@ export default {
             //   eFilhoDe: "01",
             //   descricao: "Descricaao 01"
             // },
+            // // {
+            // //   codigo: "OLA",
+            // //   tipo: "Série",
+            // //   titulo: "MUNDOOO",
+            // //   eFilhoDe: "",
+            // //   descricao: "",
+            // //   relacoes: []
+            // // },
             // {
             //   codigo: "01.01",
             //   tipo: "Série",
-            //   titulo: "Serie da Reforma Agraria",
+            //   titulo: "Serie da Reforma Agraria - 1",
             //   eFilhoDe: "01",
             //   descricao: "asjdbjahs",
             //   relacoes: [],
@@ -214,7 +222,7 @@ export default {
             // {
             //   codigo: "01.01.01",
             //   tipo: "Subsérie",
-            //   titulo: "Subserie da Serie da Reforma Agraria",
+            //   titulo: "Subserie da Serie da Reforma Agraria - 1",
             //   eFilhoDe: "01.01",
             //   descricao: "askpdoiapsodi",
             //   relacoes: [],
@@ -237,7 +245,7 @@ export default {
             // {
             //   codigo: "02.01",
             //   tipo: "Série",
-            //   titulo: "Serie da Reforma Agraria",
+            //   titulo: "Serie da Reforma Agraria - 2",
             //   eFilhoDe: "02",
             //   descricao: "asjdbjahs",
             //   relacoes: [],
@@ -262,7 +270,7 @@ export default {
             // {
             //   codigo: "02.01.01",
             //   tipo: "Subsérie",
-            //   titulo: "Subserie da Serie da Reforma Agraria",
+            //   titulo: "Subserie da Serie da Reforma Agraria - 2",
             //   eFilhoDe: "02.01",
             //   descricao: "askpdoiapsodi",
             //   relacoes: [],

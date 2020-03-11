@@ -45,7 +45,7 @@ export default {
     preparaCabecalhos(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.cabecalhos = [
-          "Data",
+          "Data do diploma",
           "Tipo",
           "Entidade(s)",
           "Número",
@@ -61,7 +61,13 @@ export default {
           "operacoes"
         ];
       } else {
-        this.cabecalhos = ["Data", "Tipo", "Entidade(s)", "Número", "Sumário"];
+        this.cabecalhos = [
+          "Data do diploma",
+          "Tipo",
+          "Entidade(s)",
+          "Número",
+          "Sumário"
+        ];
         this.campos = ["data", "tipo", "entidades", "numero", "sumario"];
       }
     },

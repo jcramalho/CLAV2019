@@ -4,7 +4,7 @@
       <v-btn
         @click="addZC = true"
         style="color: #1a237e; background-color: #dee2f8;"
-        >Adicionar Zona de Controlo</v-btn
+        >Adicionar Classe</v-btn
       >
     </v-row>
     <v-dialog v-model="addZC">
@@ -17,7 +17,7 @@
       />
     </v-dialog>
     <v-snackbar v-model="snackbar" color="success">
-      Zona de Controlo adicionada com sucesso!
+      Classe adicionada com sucesso!
       <v-btn dark text @click="snackbar = false">
         Fechar
       </v-btn>

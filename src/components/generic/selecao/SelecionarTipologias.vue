@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="2">
       <v-subheader class="info-label"
-        >Selecionar Tipologias de Entidade:</v-subheader
+        >Selecionar Tipologias de Entidade</v-subheader
       >
     </v-col>
     <v-col v-if="tipologiasReady">
@@ -56,7 +56,7 @@ export default {
     return {
       searchTipologias: "",
       footer_props: {
-        "items-per-page-text": "Linhas por página"
+        "items-per-page-text": "Tipologias por página"
       },
       tipologiasHeaders: [
         { text: "Sigla", align: "left", value: "sigla" },

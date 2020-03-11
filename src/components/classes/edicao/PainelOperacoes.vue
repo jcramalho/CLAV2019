@@ -7,7 +7,6 @@
           rounded
           class="ma-2 indigo darken-4"
           @click="guardarTrabalho"
-          v-bind:disabled="c.codigo == ''"
         >
           Guardar trabalho
         </v-btn>
@@ -264,6 +263,7 @@ export default {
 
     validarClasse2: async function() {
       this.numeroErros = 0;
+      this.mensagensErro = [];
 
       // Título: não se altera
 
@@ -313,7 +313,7 @@ export default {
         });
         this.numeroErros++;
       }
-      alert("after dups");
+
       // Exemplos de notas de Aplicação
       for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
         let index = this.o.exemplosNotasAp.findIndex(
@@ -355,7 +355,7 @@ export default {
       }
 
       // Notas de Exclusão
-      if (this.notaDuplicada(this.c.notasEx)) {
+      if (await this.notaDuplicada(this.c.notasEx)) {
         this.mensagensErro.push({
           sobre: "Nota de Exclusão(" + this.c.notasEx.length + ")",
           mensagem: "A última nota encontra-se duplicada."
@@ -469,7 +469,7 @@ export default {
           this.loginErrorSnackbar = true;
         } else {
           var erros = await this.validarClasse2();
-          alert("validei");
+
           if (erros > 0) {
             this.dialog = true;
           } else {

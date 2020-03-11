@@ -261,8 +261,8 @@ export default {
       //   numeroErros++;
       // }
 
-      // Número Diploma
-      if (this.l.numero == "" || this.l.numero == null) {
+      // Número Diploma: esta validação foi desligada a pedido em 2020-03-09
+      /*if (this.l.numero == "" || this.l.numero == null) {
         numeroErros++;
       } else {
         try {
@@ -283,12 +283,12 @@ export default {
         } catch (err) {
           numeroErros++;
         }
-      }
+      }*/
 
       // Data
       if (this.l.data == "" || this.l.data == null) {
         numeroErros++;
-      } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
         numeroErros++;
       } else {
         let date = new Date();

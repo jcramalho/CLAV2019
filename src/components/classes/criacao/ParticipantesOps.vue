@@ -2,7 +2,11 @@
   <v-row>
     <v-col cols="2">
       <div class="info-label">
-        Participantes no processo e respetivas intervenções:
+        Participantes no processo e respetivas intervenções
+        <InfoBox
+          header="Participantes no processo e respetivas intervenções"
+          :text="myhelp.Classe.Campos.Participantes"
+        />
       </div>
     </v-col>
     <v-col v-if="entidades.length > 0">
@@ -54,11 +58,20 @@
 </template>
 
 <script>
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
+
 export default {
   props: ["entidades"],
 
+  components: {
+    InfoBox
+  },
+
   data: function() {
     return {
+      myhelp: help,
       headers: [
         {
           text: "Tipo de Intervenção",

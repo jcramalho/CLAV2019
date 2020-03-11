@@ -11,7 +11,9 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nome da Entidade</div>
+              <div class="info-label">
+                Nome da Entidade
+              </div>
             </v-col>
             <v-col>
               <v-text-field
@@ -27,7 +29,9 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla</div>
+              <div class="info-label">
+                Sigla
+              </div>
             </v-col>
             <v-col>
               <v-text-field
@@ -79,52 +83,31 @@
               <div class="info-label">Data de criação</div>
             </v-col>
             <v-col>
-              <v-menu
-                ref="menu1"
-                v-model="menu1"
-                :close-on-content-click="false"
-                :return-value.sync="entidade.dataCriacao"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="entidade.dataCriacao"
-                    label="Data de criação"
-                    prepend-icon="event"
-                    readonly
-                    v-on="on"
-                  ></v-text-field>
-                </template>
+              <SelecionarData
+                :d="entidade.dataCriacao"
+                @dataSelecionada="entidade.dataCriacao = $event"
+              />
+            </v-col>
+          </v-row>
 
-                <v-date-picker
-                  v-model="entidade.dataCriacao"
-                  no-title
-                  scrollable
-                  locale="pt"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu1 = false"
-                    >Cancel</v-btn
-                  >
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.menu1.save(entidade.dataCriacao)"
-                    >OK</v-btn
-                  >
-                </v-date-picker>
-              </v-menu>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Data de extinção</div>
+            </v-col>
+            <v-col>
+              <SelecionarData
+                :d="entidade.dataExtincao"
+                @dataSelecionada="entidade.dataExtincao = $event"
+              />
             </v-col>
           </v-row>
 
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Tipologias de Entidade</v-expansion-panel-header
-              >
+              <v-expansion-panel-header>
+                <div class="separador">Tipologias de Entidade</div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelTip
                   :tipologias="tipSel"
@@ -162,10 +145,14 @@
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
+import SelecionarData from "@/components/generic/SelecionarData";
+
+const help = require("@/config/help").help;
 
 export default {
   data: () => ({
     menu1: false,
+    myhelp: help,
     entidade: {
       designacao: "",
       sigla: "",
@@ -174,6 +161,7 @@ export default {
       tipologiasSel: [],
       codigo: "",
       dataCriacao: "",
+      dataExtincao: "",
       estado: "Ativa"
     },
 
@@ -192,7 +180,8 @@ export default {
   components: {
     DesSelTip,
     SelTip,
-    PainelOpsEnt
+    PainelOpsEnt,
+    SelecionarData
   },
   methods: {
     // Vai à API buscar todas as tipologias
@@ -241,6 +230,18 @@ export default {
 </script>
 
 <style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

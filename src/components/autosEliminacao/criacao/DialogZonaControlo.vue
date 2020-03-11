@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="expansion-panel-heading">Classe / Série</v-card-title>
+    <v-card-title class="expansion-panel-heading">Classe</v-card-title>
     <v-card-text class="mt-4">
       <v-row>
         <v-col :md="2">
@@ -31,7 +31,7 @@
           <v-text-field :value="df" solo dense readonly></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="df != 'Eliminação'">
         <v-col>
           <div class="info-label">Natureza de Intervenção</div>
         </v-col>
@@ -149,7 +149,17 @@
         </v-col>
       </v-row>
       <v-row justify="end">
-        <v-btn color="red darken-4" dark text @click="limparZC">Limpar</v-btn>
+        <v-btn
+          color="red darken-4"
+          v-if="!this.zona"
+          dark
+          text
+          @click="limparZC"
+          >Limpar</v-btn
+        >
+        <v-btn color="red darken-4" v-else dark text @click="closeZC"
+          >Fechar</v-btn
+        >
         <v-btn
           v-if="!this.zona"
           color="green darken-4"
@@ -167,7 +177,7 @@
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="red darken-4 title white--text" dark>
-          Erro: Não foi possível adicionar a Zona de Controlo
+          Erro: Não foi possível adicionar a Classe
         </v-card-title>
 
         <v-card-text>
@@ -201,8 +211,8 @@ export default {
   ],
   data: () => ({
     classe: null,
-    ni: "Vazio",
-    dono: null,
+    ni: null,
+    dono: [],
     dataInicio: null,
     dataFim: null,
     uiPapel: null,
@@ -217,9 +227,29 @@ export default {
     erro: null,
     erroDialog: false
   }),
+  watch: {
+    index: function() {
+      if (this.zona) {
+        this.classe = this.zona.codigo + " - " + this.zona.titulo;
+        if (this.zona.destino == "C") this.df = "Conservação";
+        else this.df = "Eliminação";
+        this.prazo = this.zona.prazoConservacao;
+        this.ni = this.zona.ni;
+        this.dono = this.zona.dono;
+        this.dataInicio = this.zona.dataInicio;
+        this.dataFim = this.zona.dataFim;
+        this.uiPapel = this.zona.uiPapel;
+        this.uiDigital = this.zona.uiDigital;
+        this.uiOutros = this.zona.uiOutros;
+      }
+    }
+  },
   created: function() {
     if (this.zona) {
       this.classe = this.zona.codigo + " - " + this.zona.titulo;
+      if (this.zona.destino == "C") this.df = "Conservação";
+      else this.df = "Eliminação";
+      this.prazo = this.zona.prazoConservacao + " Anos";
       this.ni = this.zona.ni;
       this.dono = this.zona.dono;
       this.dataInicio = this.zona.dataInicio;
@@ -241,7 +271,8 @@ export default {
           this.ni = "Participante";
         } else if (c[0].df.valor === "E") {
           this.df = "Eliminação";
-          this.ni = "Dono";
+          this.ni = null;
+          this.dono = [];
         } else this.df = c[0].df.valor;
       }
     },
@@ -263,6 +294,9 @@ export default {
       var result = this.auto.zonaControlo.filter(
         zc => zc.codigo + " - " + zc.titulo == this.classe
       );
+      var uiPapel = parseFloat(this.uiPapel) || 0;
+      var uiDigital = parseFloat(this.uiDigital) || 0;
+      var uiOutros = parseFloat(this.uiOutros) || 0;
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
@@ -289,7 +323,14 @@ export default {
       } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
+      } else if (this.df == "Conservação" && this.dono.length == 0) {
+        this.erro = help.AutoEliminacao.Erros.DonoPN;
+        this.erroDialog = true;
+      } else if (uiPapel + uiDigital + uiOutros <= 0) {
+        this.erro = help.AutoEliminacao.Erros.Medicoes;
+        this.erroDialog = true;
       } else {
+        console.log(parseInt);
         var codigo = this.classe.split(" - ")[0];
         var classe = await this.$request("get", "/classes/c" + codigo);
         var titulo = classe.data.titulo;
@@ -298,14 +339,11 @@ export default {
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = this.ni;
-        var dono = [];
+        var dono = this.dono;
         var uiPapel;
         var uiDigital;
         var uiOutros;
 
-        if (this.dono) {
-          dono = this.dono;
-        }
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
         if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";
@@ -340,6 +378,9 @@ export default {
       var result = this.auto.zonaControlo.filter(
         zc => zc.codigo + " - " + zc.titulo == this.classe
       );
+      var uiPapel = parseInt(this.uiPapel) || 0;
+      var uiDigital = parseInt(this.uiDigital) || 0;
+      var uiOutros = parseInt(this.uiOutros) || 0;
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
@@ -373,6 +414,13 @@ export default {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup;
+      } else if (this.df == "Conservação" && this.dono.length == 0) {
+        this.erro = help.AutoEliminacao.Erros.DonoPN;
+        this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup;
+      } else if (uiPapel + uiDigital + uiOutros <= 0) {
+        this.erro = help.AutoEliminacao.Erros.Medicoes;
+        this.erroDialog = true;
       } else {
         var codigo = this.classe.split(" - ")[0];
         var classe = await this.$request("get", "/classes/c" + codigo);
@@ -382,12 +430,11 @@ export default {
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = this.ni;
-        var dono = "";
+        var dono = this.dono;
         var uiPapel;
         var uiDigital;
         var uiOutros;
 
-        if (this.dono) dono = this.dono;
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
         if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";

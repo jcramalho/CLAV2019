@@ -3,14 +3,20 @@
   <div v-if="!c.temSubclasses4Nivel">
     <v-row>
       <v-col>
-        <v-toolbar color="indigo darken-4 font-weight-medium" dark height="30">
+        <v-toolbar color="indigo darken-2 font-weight-regular" dark height="30">
           <v-toolbar-title>Prazo de Conservação Administrativa</v-toolbar-title>
         </v-toolbar>
       </v-col>
     </v-row>
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Prazo:</div>
+        <div class="info-label">
+          Prazo
+          <InfoBox
+            header="Prazo de Conservação Administrativa"
+            :text="myhelp.Classe.Campos.Prazo"
+          />
+        </div>
       </v-col>
       <v-col>
         <v-text-field
@@ -25,7 +31,10 @@
 
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Notas:</div>
+        <div class="info-label">
+          Notas
+          <InfoBox header="Notas" :text="myhelp.Classe.Campos.Notas" />
+        </div>
       </v-col>
       <v-col>
         <v-textarea
@@ -40,7 +49,7 @@
     <v-row class="ma-2" v-if="semaforos.pcaFormasContagemReady">
       <v-col cols="2">
         <div class="info-label">
-          Forma de Contagem:
+          Forma de Contagem
           <InfoBox
             header="Forma de Contagem do PCA"
             :text="myhelp.Classe.Campos.FormaContagem"
@@ -67,7 +76,13 @@
       "
     >
       <v-col cols="2">
-        <div class="info-label">Subforma de contagem:</div>
+        <div class="info-label">
+          Subforma de contagem
+          <InfoBox
+            header="Forma de Contagem do PCA"
+            :text="myhelp.Classe.Campos.SubformaContagem"
+          />
+        </div>
       </v-col>
       <v-col cols="10">
         <v-select
@@ -96,7 +111,7 @@
     <v-row class="ma-2">
       <v-col cols="3">
         <div class="info-label">
-          Justificação do PCA:
+          Justificação do PCA
           <InfoBox
             header="Justificação do PCA"
             :text="myhelp.Classe.Campos.JustificacaoPCA"

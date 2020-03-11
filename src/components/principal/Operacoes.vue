@@ -77,14 +77,16 @@
             <!-- Selecionar Entidade a Editar-->
             <v-dialog v-model="entidadesDialog" width="60%">
               <v-card>
-                <v-card-title>Selecione a Entidade a editar</v-card-title>
+                <v-card-title class="expansion-panel-heading"
+                  >SELECIONE A ENTIDADE</v-card-title
+                >
                 <v-card-text>
                   <v-row>
                     <v-col v-if="entidades.ready">
                       <v-autocomplete
                         clearable
                         color="indigo darken-4"
-                        label="Selecione uma entidade"
+                        label="SELECIONE A ENTIDADE"
                         :items="entidades.entidades"
                         v-model="dadosEditar"
                       />
@@ -125,14 +127,16 @@
             <!-- Selecionar Legislação a Editar-->
             <v-dialog v-model="legislacaoDialog" width="90%">
               <v-card>
-                <v-card-title>Selecione a Legislação a editar</v-card-title>
+                <v-card-title class="expansion-panel-heading"
+                  >SELECIONE A LEGISLAÇÃO</v-card-title
+                >
                 <v-card-text>
                   <v-row>
                     <v-col v-if="legislacao.ready">
                       <v-autocomplete
                         clearable
                         color="indigo darken-4"
-                        label="Selecione uma legislaçao"
+                        label="SELECIONE A LEGISLAÇÃO"
                         :items="legislacao.legislacaoItems"
                         v-model="dadosEditar"
                       />
@@ -173,14 +177,16 @@
             <!-- Selecionar Tipologia a Editar-->
             <v-dialog v-model="tipologiasDialog" width="50%">
               <v-card>
-                <v-card-title>Selecione a Tipologia a editar</v-card-title>
+                <v-card-title class="expansion-panel-heading"
+                  >SELECIONE A TIPOLOGIA DE ENTIDADE</v-card-title
+                >
                 <v-card-text>
                   <v-row>
                     <v-col v-if="tipologias.ready">
                       <v-autocomplete
                         clearable
                         color="indigo darken-4"
-                        label="Selecione uma legislaçao"
+                        label="SELECIONE A TIPOLOGIA DE ENTIDADE"
                         :items="tipologias.tipologias"
                         v-model="dadosEditar"
                       />
@@ -524,3 +530,12 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.expansion-panel-heading {
+  background-color: #283593 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+}
+</style>

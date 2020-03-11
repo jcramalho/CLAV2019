@@ -90,7 +90,7 @@
           <v-card-text>
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Designação:</div>
+                <div class="info-label">Designação</div>
               </v-col>
 
               <v-col>
@@ -100,7 +100,7 @@
 
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Sigla:</div>
+                <div class="info-label">Sigla</div>
               </v-col>
 
               <v-col>
@@ -196,7 +196,6 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
       dialogTipologiaCriada: false,
-      numeroErros: 0,
       errosValidacao: false,
       pedidoEliminado: false,
       headers: [
@@ -208,9 +207,10 @@ export default {
 
   methods: {
     async validarTipologiaCriacao() {
+      let numeroErros = 0;
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeDesignacao = await this.$request(
@@ -219,16 +219,16 @@ export default {
               encodeURIComponent(this.t.designacao)
           );
           if (existeDesignacao.data) {
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Sigla
       if (this.t.sigla == "" || this.t.sigla == null) {
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeSigla = await this.$request(
@@ -236,28 +236,29 @@ export default {
             "/tipologias/sigla?valor=" + encodeURIComponent(this.t.sigla)
           );
           if (existeSigla.data) {
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
-      return this.numeroErros;
+      return numeroErros;
     },
 
     validarTipologiaAlteracao() {
+      let numeroErros = 0;
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // Sigla
       if (this.t.sigla == "" || this.t.sigla == null) {
-        this.numeroErros++;
+        numeroErros++;
       }
 
-      return this.numeroErros;
+      return numeroErros;
     },
 
     // Lança o pedido de criação da tipologia no worflow

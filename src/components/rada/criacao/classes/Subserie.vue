@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog v-model="dialog" persistent fullscreen>
     <template v-slot:activator="{ on }">
       <v-btn
         color="indigo lighten-2"
@@ -22,7 +22,7 @@
           <v-divider></v-divider>-->
           <Identificacao :newSerie="newSubSerie" :classes="classes" />
 
-          <v-expansion-panels accordion>
+          <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
                 <b>Zona Descritiva</b>
@@ -92,7 +92,7 @@
           <v-icon>delete_sweep</v-icon>
         </v-btn>
         <v-btn color="indigo darken-4" outlined text @click="close"
-          >Cancelar</v-btn
+          >Voltar</v-btn
         >
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
         <v-btn color="success" class="mr-4" @click="save">Guardar</v-btn>
@@ -116,6 +116,8 @@ export default {
   },
   props: ["classes"],
   data: () => ({
+    panels: [0, 0, 0],
+    isMultiple: false,
     dialog: false,
     classesFiltradas: [],
     classesNomes: [],
@@ -143,6 +145,8 @@ export default {
   }),
   methods: {
     apagar: function() {
+      this.isMultiple = false;
+      this.panels = [0, 0, 0];
       this.newSubSerie.relacoes = [];
       this.$refs.form.reset();
     },
@@ -150,15 +154,19 @@ export default {
       this.dialog = false;
     },
     save: async function() {
-      if (this.$refs.form.validate()) {
-        let clone_newSubserie = Object.assign({}, this.newSubSerie);
+      this.isMultiple = true;
+      this.panels = [0, 1, 2];
+      setTimeout(async () => {
+        if (this.$refs.form.validate()) {
+          let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
-        await this.relacoes_simetricas(clone_newSubserie);
+          await this.relacoes_simetricas(clone_newSubserie);
 
-        this.classes.push(clone_newSubserie);
-        this.dialog = false;
-        this.apagar();
-      }
+          this.classes.push(clone_newSubserie);
+          this.dialog = false;
+          this.apagar();
+        }
+      }, 1);
     },
     filterSeries: function() {
       this.classesFiltradas = this.classes.filter(
@@ -178,7 +186,21 @@ export default {
 
         */
 
-        let classe_relacionada = clone_newSubserie.relacoes[i].serieRelacionada;
+        let classe_relacionada = await this.classes.find(
+          e => e.codigo == clone_newSubserie.relacoes[i].serieRelacionada.codigo
+        );
+
+        if (classe_relacionada == undefined) {
+          classe_relacionada = {
+            codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
+            titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
+            eFilhoDe: "",
+            relacoes: [],
+            tipo: ""
+          };
+          this.classes.push(classe_relacionada);
+        }
+
         let relacao_inversa = "";
 
         switch (clone_newSubserie.relacoes[i].relacao) {
@@ -214,13 +236,16 @@ export default {
         let existe_repetida = await classe_relacionada.relacoes.find(
           e =>
             e.relacao == relacao_inversa &&
-            e.serieRelacionada == clone_newSubserie.codigo
+            e.serieRelacionada.codigo == clone_newSubserie.codigo
         );
 
         if (existe_repetida == undefined) {
           classe_relacionada.relacoes.push({
             relacao: relacao_inversa,
-            serieRelacionada: clone_newSubserie
+            serieRelacionada: {
+              codigo: clone_newSubserie.codigo,
+              titulo: clone_newSubserie.titulo
+            }
           });
         }
       }

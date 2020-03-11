@@ -219,7 +219,7 @@ export default {
     codigo: null,
     titulo: null,
     dataContagem: null,
-    ni: "Dono",
+    ni: null,
     natureza: ["Dono", "Participante"],
 
     editAG: null,
@@ -241,6 +241,12 @@ export default {
     erro: null,
     erroDialog: false
   }),
+  created: function() {
+    if (this.auto.zonaControlo[this.index].destino == "C") {
+      this.ni = "Participante";
+      this.natureza = ["Participante"];
+    }
+  },
   methods: {
     limparAG: function() {
       this.codigo = null;
@@ -284,12 +290,13 @@ export default {
       } else {
         var res =
           parseInt(this.auto.zonaControlo[this.index].prazoConservacao) +
-          parseInt(this.dataContagem);
+          parseInt(this.dataContagem) +
+          1;
         //var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
         var res2 =
           parseInt(this.dataContagem) -
           parseInt(this.auto.zonaControlo[this.index].dataInicio);
-        if (res >= currentTime.getFullYear()) {
+        if (res > currentTime.getFullYear()) {
           this.erro = help.AutoEliminacao.Erros.DataContagem;
           this.erroDialog = true;
         } else if (res2 < 0) {

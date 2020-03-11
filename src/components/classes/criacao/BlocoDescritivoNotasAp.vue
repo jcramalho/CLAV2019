@@ -3,10 +3,11 @@
     <!-- Notas de Aplicação -->
     <v-col cols="2">
       <div class="info-label">
-        Notas de Aplicação:
+        Notas de Aplicação
         <InfoBox
           header="Notas de Aplicação"
           :text="myhelp.Classe.Campos.NotasAp"
+          helpColor="indigo darken-4"
         />
       </div>
 

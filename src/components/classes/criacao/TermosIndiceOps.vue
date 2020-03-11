@@ -2,7 +2,14 @@
   <v-row ma-2>
     <!-- TERMOS DE ÍNDICE -->
     <v-col cols="2">
-      <div class="info-label">Termos de Índice</div>
+      <div class="info-label">
+        Termos de Índice
+        <InfoBox
+          header="Termos de Índice"
+          :text="myhelp.Classe.Campos.TermosIndice"
+          helpColor="indigo darken-4"
+        />
+      </div>
       <v-btn
         color="indigo darken-2"
         dark
@@ -52,12 +59,21 @@
 
 <script>
 const nanoid = require("nanoid");
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["c"],
 
+  components: {
+    InfoBox
+  },
+
   data() {
     return {
+      myhelp: help,
+
       tiVazioFlag: false,
       tiDuplicadoFlag: false,
       mensagemTIVazio:

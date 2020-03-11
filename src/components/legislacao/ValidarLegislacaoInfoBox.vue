@@ -112,7 +112,7 @@ export default {
               mensagem: "O número do diploma já existente na BD."
             });
             this.numeroErros++;
-          } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
+          } /*else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
             this.mensagensErro.push({
               sobre: "Número do Diploma",
               mensagem: "O número do diploma está no formato errado."
@@ -127,7 +127,7 @@ export default {
               });
               this.numeroErros++;
             }
-          }
+          }*/
         } catch (err) {
           this.numeroErros++;
           this.mensagensErro.push({
@@ -145,7 +145,7 @@ export default {
           mensagem: "A data não pode ser vazia."
         });
         this.numeroErros++;
-      } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
         this.mensagensErro.push({
           sobre: "Data",
           mensagem: "A data está no formato errado."

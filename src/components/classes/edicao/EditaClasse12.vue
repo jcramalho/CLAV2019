@@ -3,7 +3,7 @@
     <v-col>
       <!-- HEADER -->
       <v-card v-if="semaforos.classeLoaded">
-        <v-app-bar color="indigo darken-2" dark>
+        <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title>
             Alteração da Classe: {{ classe.codigo }} - {{ classe.titulo }}
           </v-toolbar-title>
@@ -101,31 +101,6 @@ export default {
       .catch(error => {
         return error;
       });
-  },
-
-  methods: {
-    // Carrega os potenciais pais da BD, quando alguém muda o nível para >1....................
-
-    loadPais: async function() {
-      try {
-        var response = await this.$request(
-          "get",
-          "/classes?nivel=" + (this.classe.nivel - 1)
-        );
-        this.classesPai = response.data
-          .map(function(item) {
-            return {
-              label: item.codigo + " - " + item.titulo,
-              value: item.id.split("#c")[1]
-            };
-          })
-          .sort(function(a, b) {
-            return a.label.localeCompare(b.label);
-          });
-      } catch (erro) {
-        return erro;
-      }
-    }
   }
 };
 </script>

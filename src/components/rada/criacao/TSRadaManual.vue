@@ -43,6 +43,13 @@
                 v-else-if="item.tipo == 'Subsérie'"
                 :treeview_object="item"
               />
+              <!-- <Editar
+                v-else-if="item.tipo == ''"
+                :treeview_object="item"
+                :classes="TS.classes"
+                :legislacao="legislacao"
+                :RE="RE"
+              />-->
               <EditarOrganicaFunc
                 v-else
                 @atualizacao="atualizacao_area_organico"
@@ -78,6 +85,7 @@ import SubSerie from "@/components/rada/criacao/classes/Subserie";
 import EditarOrganicaFunc from "@/components/rada/alteracao/EditarOrganicaFunc";
 import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
+// import Editar from "@/components/rada/alteracao/Editar";
 
 export default {
   props: ["TS", "entidades", "RE", "legislacao"],
@@ -88,6 +96,7 @@ export default {
     EditarOrganicaFunc,
     EditarSubserie,
     EditarSerie
+    // Editar
   },
   computed: {
     preparaTree() {
@@ -103,6 +112,7 @@ export default {
             titulo:
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
+            eFilhoDe: this.TS.classes[i].eFilhoDe,
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -121,6 +131,7 @@ export default {
             titulo:
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
+            eFilhoDe: this.TS.classes[i].eFilhoDe,
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -158,6 +169,7 @@ export default {
       serie_classe.tUA = c.tUA;
       serie_classe.tSerie = c.tSerie;
       serie_classe.suporte = c.suporte;
+      serie_classe.medicao = c.medicao;
       serie_classe.localizacao = c.localizacao;
       serie_classe.entProdutoras = c.entProdutoras;
       serie_classe.tipologiasProdutoras = c.tipologiasProdutoras;
@@ -168,6 +180,7 @@ export default {
       serie_classe.justicacaoPCA = c.justicacaoPCA;
       serie_classe.df = c.df;
       serie_classe.justificacaoDF = c.justificacaoDF;
+      serie_classe.eFilhoDe = c.eFilhoDe;
     },
     async editaRelacoes(serie_classe, c) {
       let novo_relacoes = [];
@@ -219,6 +232,54 @@ export default {
         e => e.codigo == relacao.serieRelacionada.codigo
       );
 
+      if (classe_relacionada == undefined) {
+        if (relacao.serieRelacionada.tipo == "Série") {
+          classe_relacionada = {
+            codigo: relacao.serieRelacionada.codigo,
+            titulo: relacao.serieRelacionada.titulo,
+            descricao: "",
+            dataInicial: "",
+            dataFinal: "",
+            tUA: "",
+            tSerie: "",
+            suporte: "",
+            medicao: "",
+            localizacao: [],
+            entProdutoras: [],
+            tipologiasProdutoras: [],
+            legislacao: [],
+            relacoes: [],
+            pca: "",
+            formaContagem: "",
+            justicacaoPCA: "",
+            df: "",
+            justificacaoDF: "",
+            notas: "",
+            eFilhoDe: "",
+            tipo: "Série"
+          };
+        } else {
+          classe_relacionada = {
+            codigo: relacao.serieRelacionada.codigo,
+            titulo: relacao.serieRelacionada.titulo,
+            descricao: "",
+            dataInicial: "",
+            dataFinal: "",
+            relacoes: [],
+            pca: "",
+            formaContagem: "",
+            justicacaoPCA: "",
+            df: "",
+            justificacaoDF: "",
+            notas: "",
+            eFilhoDe: "",
+            tipo: "Subsérie"
+          };
+        }
+
+        this.TS.classes.push(classe_relacionada);
+      }
+
       let relacao_inversa = "";
 
       switch (relacao.relacao) {
@@ -254,7 +315,11 @@ export default {
       if (existe_repetida == undefined) {
         classe_relacionada.relacoes.push({
           relacao: relacao_inversa,
-          serieRelacionada: serie_classe
+          serieRelacionada: {
+            codigo: serie_classe.codigo,
+            titulo: serie_classe.titulo,
+            tipo: serie_classe.tipo
+          }
         });
       }
     },
@@ -311,6 +376,7 @@ export default {
 
 <style scoped>
 ::v-deep .v-treeview-node {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(240, 163, 10, 0.2);
+  /* background-color: rgba(0, 0, 0, 0.1); */
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog v-model="dialog" persistent fullscreen>
     <template v-slot:activator="{ on }">
       <v-btn
         color="indigo lighten-2"
@@ -103,7 +103,7 @@
           <v-icon>delete_sweep</v-icon>
         </v-btn>
         <v-btn color="indigo darken-4" outlined text @click="close"
-          >Cancelar</v-btn
+          >Voltar</v-btn
         >
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
         <v-btn color="success" class="mr-4" @click="save">Guardar</v-btn>

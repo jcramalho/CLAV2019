@@ -1,12 +1,13 @@
 <template>
   <!-- BLOCO DESCRITIVO -->
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="expansion-panel-heading">
-      <div>
+    <v-expansion-panel-header>
+      <div class="separador">
         Descritivo da Classe
         <InfoBox
           header="Descritivo da Classe"
           :text="myhelp.Classe.BlocoDescritivo"
+          helpColor="white"
         />
       </div>
     </v-expansion-panel-header>
@@ -15,10 +16,11 @@
         <!-- DESCRIÇÂO -->
         <v-col cols="2">
           <div class="info-label">
-            Descrição:
+            Descrição
             <InfoBox
               header="Descrição"
               :text="myhelp.Classe.Campos.Descricao"
+              helpColor="indigo darken-4"
             />
           </div>
         </v-col>
@@ -87,6 +89,18 @@ export default {
   font-weight: 400;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

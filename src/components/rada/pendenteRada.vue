@@ -181,6 +181,7 @@ export default {
     };
   },
   methods: {
+    //ATUALIZAR O PENDENTE
     guardarTrabalho: function() {
       let updatePendente = {
         _id: this.obj._id,
@@ -200,6 +201,7 @@ export default {
     changeE1: function(e) {
       this.e1 = e;
     },
+    //ELIMINAR O PENDENTE
     eliminarTrabalho: function() {
       this.$request("delete", "/pendentes/" + this.obj._id).then(response => {
         this.$router.push("/pendentes");
@@ -219,6 +221,7 @@ export default {
 
       let response = await this.$request("post", "/pedidos", pedidoParams);
 
+      // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
       await this.$request("delete", "/pendentes/" + this.obj._id);
 
       this.mensagemPedidoCriadoOK += JSON.stringify(response.data);

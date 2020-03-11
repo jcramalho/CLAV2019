@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Selecione o(s) participante(s) no processo:</div>
+      <div class="info-label">Selecione o(s) participante(s) no processo</div>
     </v-col>
     <v-col v-if="entidadesReady">
       <v-card>
