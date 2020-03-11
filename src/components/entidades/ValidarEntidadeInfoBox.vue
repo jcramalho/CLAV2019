@@ -160,15 +160,6 @@ export default {
         this.numeroErros++;
       }
 
-      // Sigla
-      if (this.e.sigla == "" || this.e.sigla == null) {
-        this.mensagensErro.push({
-          sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
-        });
-        this.numeroErros++;
-      }
-
       // Internacional
       if (this.e.internacional == "" || this.e.internacional == null) {
         this.mensagensErro.push({

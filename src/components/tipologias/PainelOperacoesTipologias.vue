@@ -39,29 +39,6 @@
         >
       </v-col>
 
-      <!-- Trabalho pendente guardado com sucesso -->
-      <v-dialog v-model="pendenteGuardado" width="60%">
-        <v-card>
-          <v-card-title>Trabalho pendente guardado</v-card-title>
-          <v-card-text>
-            <p>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
-            </p>
-            <p>{{ pendenteGuardadoInfo }}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              color="indigo darken-1"
-              dark
-              @click="criacaoPendenteTerminada"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
       <!-- Erros de Validação -->
       <v-dialog v-model="errosValidacao" width="30%">
         <v-card>
@@ -138,12 +115,11 @@
       <!-- Cancelamento da criação de uma tipologia: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title
-            >Cancelamento e eliminação do pedido de criação da
-            tipologia</v-card-title
-          >
+          <v-card-title>
+            Cancelamento e eliminação do pedido
+          </v-card-title>
           <v-card-text>
-            <p>Selecionou o cancelamento da criação da tipologia.</p>
+            <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
             <p>
               Confirme a decisão para ser reencaminhado para a página principal.
@@ -191,8 +167,6 @@ export default {
 
   data() {
     return {
-      pendenteGuardado: false,
-      pendenteGuardadoInfo: "",
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
       dialogTipologiaCriada: false,
@@ -250,11 +224,6 @@ export default {
       let numeroErros = 0;
       // Designação
       if (this.t.designacao == "" || this.t.designacao == null) {
-        numeroErros++;
-      }
-
-      // Sigla
-      if (this.t.sigla == "" || this.t.sigla == null) {
         numeroErros++;
       }
 
