@@ -4,7 +4,7 @@
     <v-expansion-panel-header>
       <div class="separador">
         Descritivo da Classe
-        <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" />
+        <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
@@ -13,7 +13,7 @@
         <v-col cols="2">
           <div class="info-label">
             Descrição
-            <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
+            <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" helpColor="indigo darken-4"/>
           </div>
         </v-col>
         <v-col>

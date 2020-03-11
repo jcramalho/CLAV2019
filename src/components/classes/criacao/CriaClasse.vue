@@ -109,7 +109,7 @@
               <v-expansion-panel-header>
                 <div class="separador">
                   Decisões de Avaliação
-                  <InfoBox header="Decisões de Avaliação" :text="myhelp.Classe.BlocoDecisoes" />
+                  <InfoBox header="Decisões de Avaliação" :text="myhelp.Classe.BlocoDecisoes"  helpColor="white"/>
                 </div>
               </v-expansion-panel-header>
 

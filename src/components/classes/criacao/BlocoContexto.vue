@@ -4,7 +4,7 @@
     <v-expansion-panel-header>
       <div class="separador">
         Contexto de Avaliação
-        <InfoBox header="Contexto de Avaliação" :text="myhelp.Classe.BlocoContexto" />
+        <InfoBox header="Contexto de Avaliação" :text="myhelp.Classe.BlocoContexto"  helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content v-if="c.nivel == 3">

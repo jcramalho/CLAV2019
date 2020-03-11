@@ -4,7 +4,7 @@
     <v-col cols="2">
       <div class="info-label">
         Termos de Índice
-        <InfoBox header="Termos de Índice" :text="myhelp.Classe.Campos.TermosIndice" />
+        <InfoBox header="Termos de Índice" :text="myhelp.Classe.Campos.TermosIndice" helpColor="indigo darken-4"/>
       </div>
       <v-btn color="indigo darken-2" dark rounded @click="insereNovoTI(c.termosInd)">
         Novo termo

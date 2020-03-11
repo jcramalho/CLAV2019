@@ -98,7 +98,7 @@ export default {
   },
 
   methods: {
-    notaDuplicada: function(notas) {
+    notaDuplicada: async function(notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
         var duplicados = notas.filter(n => n.nota == lastNota);
@@ -110,7 +110,7 @@ export default {
       }
     },
 
-    exemploDuplicado: function(exemplos) {
+    exemploDuplicado: async function(exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
         var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
@@ -151,7 +151,7 @@ export default {
       }
 
       // Notas de Aplicação
-      for (let i = 0; i < this.c.notasAp.length; i++) {
+      for (var i = 0; i < this.c.notasAp.length; i++) {
         let index = this.original.notasAp.findIndex(
           x => x.nota === this.c.notasAp[i].nota
         );
@@ -179,7 +179,7 @@ export default {
           }
         }
       }
-      if (this.notaDuplicada(this.c.notasAp)) {
+      if (await this.notaDuplicada(this.c.notasAp)) {
         this.mensagensErro.push({
           sobre: "Nota de Aplicação(" + (i + 1) + ")",
           mensagem: "A última nota encontra-se duplicada."
@@ -188,7 +188,7 @@ export default {
       }
 
       // Exemplos de notas de Aplicação
-      for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
+      for (var i = 0; i < this.c.exemplosNotasAp.length; i++) {
         let obj = this.original.exemplosNotasAp.find(
           x => x.exemplo === this.c.exemplosNotasAp[i].exemplo
         );
@@ -220,7 +220,7 @@ export default {
           }
         }
       }
-      if (this.exemploDuplicado(this.c.exemplosNotasAp)) {
+      if (await this.exemploDuplicado(this.c.exemplosNotasAp)) {
         this.mensagensErro.push({
           sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
           mensagem: "O último exemplo encontra-se duplicado."
@@ -229,7 +229,7 @@ export default {
       }
 
       // Notas de Exclusão
-      if (this.notaDuplicada(this.c.notasEx)) {
+      if (await this.notaDuplicada(this.c.notasEx)) {
         this.mensagensErro.push({
           sobre: "Nota de Exclusão(" + this.c.notasEx.length + ")",
           mensagem: "A última nota encontra-se duplicada."
@@ -238,7 +238,7 @@ export default {
       }
 
       // Termos de Índice
-      for (let i = 0; i < this.c.termosInd.length; i++) {
+      for (var i = 0; i < this.c.termosInd.length; i++) {
         let obj = this.original.termosInd.find(
           x => x.termo === this.c.termosInd[i].termo
         );

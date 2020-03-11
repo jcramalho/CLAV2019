@@ -7,6 +7,7 @@
         <InfoBox
           header="Notas de Exclusão"
           :text="myhelp.Classe.Campos.NotasEx"
+          helpColor="indigo darken-4"
         />
       </div>
 
