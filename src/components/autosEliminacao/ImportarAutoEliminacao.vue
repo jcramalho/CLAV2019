@@ -38,7 +38,7 @@
                 <tr>
                   <td style="width:20%;">
                     <div class="info-label">
-                      Fonte de Legitimação:
+                      Fonte de Legitimação
                       <InfoBox
                         header="Fonte de Legitimação"
                         :text="myhelp.AutoEliminacao.Campos.FonteLegitimacao"
@@ -98,7 +98,7 @@
                       Transferir ficheiro de submissão
                     </a>
                     <div style="width:100%">
-                      Para submeter um auto de eliminação, selecione o ficheiro
+                      Para submeter um auto de eliminação, selecione os ficheiros
                       que preencheu e guardou previamente.
                     </div>
                     <div>
@@ -109,15 +109,67 @@
                 </tr>
                 <tr>
                   <td style="width:20%;">
-                    <div class="info-label">Ficheiro:</div>
+                    <div class="info-label">Fonte de legitimação</div>
+                  </td>
+                  <td style="width:40%;">
+                    <div v-if="tipo=='PGD_LC'">
+                      <v-autocomplete
+                        label="Selecione a fonte de legitimação"
+                        :items="portarias"
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                    </div>
+                    <div v-else>
+                      <v-text-field :value="auto.legislacao" solo dense label="Indique a fonte de legitimação"></v-text-field>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%;">
+                    <div class="info-label">Fundo</div>
+                  </td>
+                  <td style="width:40%;">
+                    <div>
+                      <v-autocomplete
+                        label="Selecione a entidade responsável pelo fundo"
+                        :items="entidades"
+                        v-model="auto.fundo"
+                        solo
+                        dense
+                        chips
+                        multiple
+                      ></v-autocomplete>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%;">
+                    <div class="info-label">Ficheiro série</div>
                   </td>
                   <td style="width:40%">
                     <div>
                       <input
                         type="file"
-                        id="file"
+                        id="fileSerie"
                         ref="myFiles"
-                        @change="previewFiles"
+                        @change="previewFileSerie"
+                      />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%;">
+                    <div class="info-label">Ficheiro Agregações / Unidades de instalação</div>
+                  </td>
+                  <td style="width:40%">
+                    <div>
+                      <input
+                        type="file"
+                        id="fileAgreg"
+                        ref="myFiles"
+                        @change="previewFileAgreg"
                       />
                     </div>
                   </td>
@@ -131,7 +183,7 @@
             medium
             color="primary"
             @click="submit"
-            :disabled="!file"
+            :disabled="!fileSerie || !fileAgreg || !auto.fundo || !auto.legislacao"
             class="ma-2"
           >
             Submeter Auto de Eliminação
@@ -166,7 +218,7 @@
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="red darken-4 title white--text" dark>
-          Não foi possível criar o pedido de criação de tabela de seleção
+          Não foi possível criar o pedido de criação de auto de eliminação
         </v-card-title>
 
         <v-card-text>
@@ -187,18 +239,26 @@
 </template>
 
 <script>
-const conversor = require("@/plugins/conversor").excel2Json;
+const conversor = require("@/plugins/conversor").csv2Json;
 const conversorTS = require("@/plugins/conversor").excel2JsonTS;
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
+  props: ["portarias","entidades","classes"],
   components: {
     InfoBox
   },
   data: () => ({
-    file: null,
+    auto: {
+      legislacao: "",
+      fundo: [],
+      zonaControlo: []
+    },
+    fileSerie: null,
+    fileAgreg: null,
     tipo: "PGD_LC",
+    flagAE: false,
     successDialog: false,
     success: "",
     erroDialog: false,
@@ -208,32 +268,58 @@ export default {
   }),
   methods: {
     submit: async function() {
-      conversor(this.file, this.tipo)
+      conversor(this.fileSerie, this.fileAgreg, this.tipo)
         .then(res => {
-          this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
-            auto: res.auto
-          })
-            .then(r => {
-              this.successDialog = true;
-              this.success = `<b>Agregações não adicionadas devido a data contagem inferior à data atual:</b>\n${JSON.stringify(
-                res.error
-              )}\n\n<b>Código do pedido:</b>\n${JSON.stringify(res.auto)}`;
+          const eliminacao = res.auto
+          eliminacao.fundo = this.auto.fundo
+          eliminacao.legislacao = this.auto.legislacao
+          if(this.tipo=="PGD_LC") {
+            eliminacao.zonaControlo.forEach( zc => {
+              var classe = this.classes.find(elem => elem.codigo == zc.codigo) 
+              if(!classe) {
+                this.flagAE = true;
+                this.erro = "Codigo da classe <b>"+zc.codigo+"</b> não foi encontrado na Lista Consolidada"
+                return; //ERROS
+              }
+
+              delete zc["referencia"]
+              zc.titulo = classe.titulo
+              zc.prazoConservacao = classe.pca.valores
+              zc.destino = classe.df.valor
             })
-            .catch(e => {
-              this.erro = e.response.data;
-              this.erroDialog = true;
-            });
+            console.log(eliminacao)
+            if(this.flagAE) this.erroDialog = true
+            else 
+              this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
+                auto: eliminacao
+              })
+              .then(r => {
+                this.successDialog = true;
+                this.success = `<b>Código do pedido:</b>\n${JSON.stringify(eliminacao)}`;
+              })
+              .catch(e => {
+                this.erro = e.response.data;
+                this.erroDialog = true;
+              });
+          }
         })
         .catch(err => {
           this.erro = err;
           this.erroDialog = true;
         });
     },
-    previewFiles: function(ev) {
+    previewFileSerie: function(ev) {
       const file = ev.target.files[0];
       const reader = new FileReader();
 
-      reader.onload = e => (this.file = e.target.result);
+      reader.onload = e => (this.fileSerie = e.target.result);
+      reader.readAsArrayBuffer(file);
+    },
+    previewFileAgreg: function(ev) {
+      const file = ev.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = e => (this.fileAgreg = e.target.result);
       reader.readAsArrayBuffer(file);
     }
   }

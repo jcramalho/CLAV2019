@@ -80,7 +80,7 @@ import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
 
 export default {
-  props: ["TS", "entidades", "RE"],
+  props: ["TS", "entidades", "RE", "legislacao"],
   components: {
     AddOrgFunc,
     Serie,
@@ -88,11 +88,6 @@ export default {
     EditarOrganicaFunc,
     EditarSubserie,
     EditarSerie
-  },
-  data: () => {
-    return {
-      legislacao: []
-    };
   },
   computed: {
     preparaTree() {
@@ -114,10 +109,6 @@ export default {
       }
       return myTree;
     }
-  },
-  created: async function() {
-    let response = await this.$request("get", "/legislacao");
-    this.legislacao = response.data;
   },
   methods: {
     preparaTreeFilhos: function(pai) {

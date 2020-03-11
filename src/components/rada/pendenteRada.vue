@@ -13,6 +13,8 @@
       >
     </v-card-title>
     <v-card-text>
+      <!-- {{ obj.objeto.entidades}}
+      {{ obj.objeto.legislacao}} -->
       <!-- {{ obj }} -->
       <v-dialog v-model="toDelete" width="500">
         <v-card>
@@ -75,6 +77,7 @@
           <RelatorioExpositivo
             @seguinte="changeE1"
             :RE="RADA.RE"
+            :classes="RADA.tsRada.classes"
             :entidades="entidades"
             :tipologias="tipologias"
           />
@@ -96,6 +99,7 @@
           <TSRada
             @done="done"
             @voltar="changeE1"
+            :legislacao="legislacao"
             :RE="RADA.RE"
             :TS="RADA.tsRada"
             :entidades="entidades"
@@ -173,14 +177,18 @@ export default {
       titulo: "",
       guardar: false,
       userEmail: "",
-      RADA: this.obj.objeto
+      RADA: this.obj.objeto.rada
     };
   },
   methods: {
     guardarTrabalho: function() {
       let updatePendente = {
         _id: this.obj._id,
-        objeto: this.RADA
+        objeto: {
+          rada: this.RADA,
+          entidades: this.entidades.filter(e => e.estado == "Nova"),
+          legislacao: this.legislacao.filter(e => e.estado == "Nova")
+        }
       };
 
       let response = this.$request("put", "/pendentes", updatePendente);
@@ -218,8 +226,37 @@ export default {
     }
   },
   created: async function() {
+    let l = await this.$request("get", "/legislacao");
+    this.legislacao = l.data;
+
+    // Inserir as legislações que foram criadas na sessão antiga
+    for (let i = 0; i < this.obj.objeto.legislacao.length; i++) {
+      if (
+        !this.legislacao.some(
+          e =>
+            e.tipo == this.obj.objeto.legislacao[i].tipo &&
+            e.numero == this.obj.objeto.legislacao[i].numero
+        )
+      ) {
+        this.legislacao.push(this.obj.objeto.legislacao[i]);
+      }
+    }
+
     let response = await this.$request("get", "/entidades");
     this.entidades = response.data;
+
+    // Inserir as entidades que foram criadas na sessão antiga
+    for (let j = 0; j < this.obj.objeto.entidades.length; j++) {
+      if (
+        !this.entidades.some(
+          e =>
+            e.sigla == this.obj.objeto.entidades[j].sigla &&
+            e.designacao == this.obj.objeto.entidades[j].designacao
+        )
+      ) {
+        this.entidades.push(this.obj.objeto.entidades[j]);
+      }
+    }
 
     response = await this.$request("get", "/tipologias");
     this.tipologias = response.data;
