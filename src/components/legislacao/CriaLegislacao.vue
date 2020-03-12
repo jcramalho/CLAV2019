@@ -106,6 +106,10 @@
                 <div>
                   Entidade responsável pela publicação
                 </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
@@ -130,6 +134,10 @@
                 <div>
                   Processos de negócio que regula ou enquadra
                 </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelProc
@@ -186,7 +194,8 @@ export default {
       diplomaFonte: "Não aplicável",
       entidadesSel: [],
       processosSel: [],
-      codigo: ""
+      codigo: "",
+      estado: "Ativo"
     },
 
     tiposDiploma: [],
@@ -321,6 +330,18 @@ export default {
 </script>
 
 <style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

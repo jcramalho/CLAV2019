@@ -7,6 +7,7 @@
         <InfoBox
           header="Exemplo(s) de Nota(s) de Aplicação"
           :text="myhelp.Classe.Campos.ExemplosNotasAp"
+          helpColor="indigo darken-4"
         />
       </div>
 

@@ -29,22 +29,6 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.sigla"
-                maxlength="10"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
               <div class="info-label">Internacional</div>
             </v-col>
             <v-col>
@@ -105,6 +89,10 @@
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
                 <div>Tipologias de Entidade</div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelTip
@@ -243,6 +231,18 @@ export default {
 </script>
 
 <style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

@@ -30,16 +30,19 @@
               v-if="tipo === 'Entidades'"
               :header="item.campo"
               :text="myhelp.Entidade.Campos[item.campo]"
+              helpColor="indigo darken-4"
             />
             <InfoBox
               v-if="tipo === 'Tipologias'"
               :header="item.campo"
               :text="myhelp.Tipologias.Campos[item.campo]"
+              helpColor="indigo darken-4"
             />
             <InfoBox
               v-if="tipo === 'Legislação'"
               :header="item.campo"
               :text="myhelp.Legislacao.Campos[item.campo]"
+              helpColor="indigo darken-4"
             />
           </div>
         </v-col>
@@ -70,6 +73,7 @@
             <InfoBox
               header="Tipologias de Entidade"
               :text="myhelp.Entidade.Campos.Tipologias"
+              helpColor="indigo darken-4"
             />
           </div>
         </v-col>
@@ -98,6 +102,7 @@
                 <InfoBox
                   header="Intervenção nos PNs como Dono"
                   :text="myhelp.Entidade.Intervencoes.Dono"
+                  helpColor="indigo darken-4"
                 />
               </div>
             </v-col>
@@ -132,6 +137,7 @@
                 <InfoBox
                   header="Intervenção nos PNs como Participante"
                   :text="myhelp.Entidade.Intervencoes.Participante"
+                  helpColor="indigo darken-4"
                 />
               </div>
             </v-col>
@@ -190,6 +196,7 @@
                 <InfoBox
                   header="Intervenção nos PNs como Dono"
                   :text="myhelp.Tipologias.Intervencoes.Dono"
+                  helpColor="indigo darken-4"
                 />
               </div>
             </v-col>
@@ -224,6 +231,7 @@
                 <InfoBox
                   header="Intervenção nos PNs como Participante"
                   :text="myhelp.Tipologias.Intervencoes.Participante"
+                  helpColor="indigo darken-4"
                 />
               </div>
             </v-col>
@@ -275,6 +283,7 @@
             <InfoBox
               header="Entidades"
               :text="myhelp.Tipologias.Campos.Entidades"
+              helpColor="indigo darken-4"
             />
           </div>
         </v-col>
@@ -303,6 +312,7 @@
             <InfoBox
               header="Processos de negócio que regula ou enquadra"
               :text="myhelp.Legislacao.Campos.ProcessosRegulados"
+              helpColor="indigo darken-4"
             />
           </div>
         </v-col>

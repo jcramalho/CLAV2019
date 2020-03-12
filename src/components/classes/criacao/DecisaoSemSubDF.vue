@@ -11,7 +11,10 @@
 
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Destino</div>
+        <div class="info-label">
+          Destino
+          <InfoBox header="Destino" :text="myhelp.Classe.Campos.DF" />
+        </div>
       </v-col>
       <v-col>
         <SelectValueFromList
@@ -27,7 +30,10 @@
 
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Notas</div>
+        <div class="info-label">
+          Notas
+          <InfoBox header="Notas" :text="myhelp.Classe.Campos.NotasDF" />
+        </div>
       </v-col>
       <v-col>
         <v-textarea solo label="Notas ao destino final" v-model="c.df.notas" rows="2"></v-textarea>
@@ -39,7 +45,10 @@
     <!-- JUSTIFICAÇÂO DO DF -->
     <v-row class="ma-2">
       <v-col cols="2">
-        <div class="info-label">Justificação do DF</div>
+        <div class="info-label">
+          Justificação do DF
+          <InfoBox header="Justificação do DF" :text="myhelp.Classe.Campos.JustificacaoDF" />
+        </div>
 
         <div>
           <v-btn
@@ -177,17 +186,23 @@
 </template>
 
 <script>
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
 import SelectValueFromList from "@/components/generic/SelectValueFromList.vue";
 
 export default {
   props: ["c", "semaforos"],
 
   components: {
-    SelectValueFromList
+    SelectValueFromList,
+    InfoBox
   },
 
   data: function() {
     return {
+      myhelp: help,
+
       destinoFinalTipos: [
         { label: "Não Especificado", value: "NE" },
         { label: "Conservação", value: "C" },

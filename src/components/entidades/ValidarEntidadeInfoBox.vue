@@ -86,8 +86,8 @@ export default {
           );
           if (existeDesignacao.data) {
             this.mensagensErro.push({
-              sobre: "Designação",
-              mensagem: "Designação já existente na BD."
+              sobre: "Nome da Entidade",
+              mensagem: "Nome da entidade já existente na BD."
             });
             this.numeroErros++;
           }
@@ -156,15 +156,6 @@ export default {
         this.mensagensErro.push({
           sobre: "Nome da Entidade",
           mensagem: "O nome da entidade não pode ser vazio."
-        });
-        this.numeroErros++;
-      }
-
-      // Sigla
-      if (this.e.sigla == "" || this.e.sigla == null) {
-        this.mensagensErro.push({
-          sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
         });
         this.numeroErros++;
       }

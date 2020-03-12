@@ -122,6 +122,10 @@
                 <div>
                   Entidade responsável pela publicação
                 </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
@@ -146,6 +150,10 @@
                 <div>
                   Processos de negócio que regula ou enquadra
                 </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelProc

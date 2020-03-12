@@ -13,7 +13,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Designação</div>
+              <div class="info-label">Nome da Tipologia</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -27,22 +27,6 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Sigla</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="tipologia.sigla"
-                maxlength="10"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
@@ -50,6 +34,10 @@
                 <div>
                   Entidades
                 </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
@@ -180,6 +168,18 @@ export default {
 </script>
 
 <style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

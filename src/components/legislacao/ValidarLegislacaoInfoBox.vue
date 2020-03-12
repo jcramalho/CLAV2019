@@ -77,8 +77,8 @@ export default {
       //Tipo
       if (this.l.tipo == "" || this.l.tipo == null) {
         this.mensagensErro.push({
-          sobre: "Tipo do Diploma",
-          mensagem: "O tipo do diploma não pode ser vazio."
+          sobre: "Tipo de Diploma",
+          mensagem: "O tipo de diploma não pode ser vazio."
         });
         this.numeroErros++;
       }
@@ -95,8 +95,8 @@ export default {
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
         this.mensagensErro.push({
-          sobre: "Número do Diploma",
-          mensagem: "O número do diploma não pode ser vazio."
+          sobre: "Número de Diploma",
+          mensagem: "O número de diploma não pode ser vazio."
         });
         this.numeroErros++;
       } else {
@@ -108,8 +108,8 @@ export default {
 
           if (existeNumero.data) {
             this.mensagensErro.push({
-              sobre: "Número do Diploma",
-              mensagem: "O número do diploma já existente na BD."
+              sobre: "Número de Diploma",
+              mensagem: "O número de diploma já existente na BD."
             });
             this.numeroErros++;
           } /*else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
@@ -248,20 +248,20 @@ export default {
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
         this.mensagensErro.push({
-          sobre: "Número do Diploma",
-          mensagem: "O número do diploma não pode ser vazio."
+          sobre: "Número de Diploma",
+          mensagem: "O número de diploma não pode ser vazio."
         });
         this.numeroErros++;
       } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
         this.mensagensErro.push({
-          sobre: "Número do Diploma",
-          mensagem: "O número do diploma está no formato errado."
+          sobre: "Número de Diploma",
+          mensagem: "O número de diploma está no formato errado."
         });
         this.numeroErros++;
       } else if (anoDiploma < 2000) {
         if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
           this.mensagensErro.push({
-            sobre: "Número do Diploma",
+            sobre: "Número de Diploma",
             mensagem:
               "Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!"
           });

@@ -11,6 +11,10 @@
           </v-badge>
         </sup>
       </div>
+
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
     </v-expansion-panel-header>
 
     <v-expansion-panel-content>
