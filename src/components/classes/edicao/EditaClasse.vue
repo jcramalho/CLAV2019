@@ -165,7 +165,7 @@ export default {
 
     loginErrorSnackbar: false,
 
-    loginErrorMessage: "Precisa de fazer login para criar a Classe!",
+    loginErrorMessage: "Precisa de fazer login para alterar a Classe!",
     mensValCodigo: ""
   }),
 
