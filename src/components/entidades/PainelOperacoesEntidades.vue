@@ -287,11 +287,6 @@ export default {
         numeroErros++;
       }
 
-      // Sigla
-      if (this.e.sigla == "" || this.e.sigla == null) {
-        numeroErros++;
-      }
-
       // Internacional
       if (this.e.internacional == "" || this.e.internacional == null) {
         numeroErros++;

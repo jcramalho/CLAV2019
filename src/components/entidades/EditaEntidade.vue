@@ -29,22 +29,6 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.sigla"
-                maxlength="10"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
               <div class="info-label">Internacional</div>
             </v-col>
             <v-col>

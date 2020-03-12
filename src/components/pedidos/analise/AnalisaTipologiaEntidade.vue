@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import PO from "@/components/pedidos/analise/PainelOperacoes";
+import PO from "@/components/pedidos/generic/PainelOperacoes";
 export default {
   props: ["p"],
 

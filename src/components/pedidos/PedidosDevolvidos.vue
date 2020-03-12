@@ -1,8 +1,11 @@
 <template>
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="indigo darken-3 white--text" dark>
+    <v-expansion-panel-header
+      class="indigo darken-3 bold--text white--text"
+      dark
+    >
       <div>
-        <b>Pedidos em Apreciação Técnica</b>
+        <b>Pedidos Devolvidos</b>
         <sup class="ml-1">
           <v-badge color="red">
             <template v-slot:badge>
@@ -11,7 +14,7 @@
           </v-badge>
         </sup>
       </div>
-
+      
       <template v-slot:actions>
         <v-icon color="white">$expand</v-icon>
       </template>
@@ -43,13 +46,15 @@
 
         <template v-slot:item="props">
           <tr>
+            <td class="subheading">{{ converteData(props.item.data) }}</td>
+            <td class="subheading">{{ props.item.estado }}</td>
             <td class="subheading">{{ props.item.codigo }}</td>
+            <td class="subheading">{{ props.item.criadoPor }}</td>
+            <td class="subheading">{{ props.item.entidade }}</td>
             <td class="subheading">
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
-            <td class="subheading">{{ props.item.entidade }}</td>
-            <td class="subheading">{{ props.item.criadoPor }}</td>
-            <td class="subheading">{{ converteData(props.item.data) }}</td>
+
             <td>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
@@ -61,25 +66,6 @@
                   >
                 </template>
                 <span>Ver pedido...</span>
-              </v-tooltip>
-
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    @click="analisaPedido(props.item)"
-                    color="indigo darken-2"
-                    v-on="on"
-                    >search</v-icon
-                  >
-                </template>
-                <span>Analisar pedido...</span>
-              </v-tooltip>
-
-              <v-tooltip bottom v-if="false">
-                <template v-slot:activator="{ on }">
-                  <v-icon color="red darken-2" v-on="on">delete</v-icon>
-                </template>
-                <span>Apagar pedido</span>
               </v-tooltip>
             </td>
           </tr>
@@ -101,15 +87,6 @@ export default {
   data: () => {
     return {
       headers: [
-        { text: "Código", value: "codigo", sortable: true, class: "title" },
-        { text: "Tipo", value: "tipo", sortable: true, class: "title" },
-        { text: "Entidade", value: "entidade", sortable: true, class: "title" },
-        {
-          text: "Responsável",
-          value: "responsavel",
-          sortable: true,
-          class: "title"
-        },
         {
           text: "Data",
           align: "left",
@@ -117,7 +94,27 @@ export default {
           value: "data",
           class: "title"
         },
-        { text: "Tarefa", sortable: false, class: "title" }
+        {
+          text: "Estado",
+          align: "left",
+          sortable: false,
+          value: "estado",
+          class: "title"
+        },
+        { text: "Código", value: "codigo", sortable: true, class: "title" },
+        {
+          text: "Responsável",
+          value: "responsavel",
+          sortable: true,
+          class: "title"
+        },
+        { text: "Entidade", value: "entidade", sortable: true, class: "title" },
+        { text: "Tipo", value: "tipo", sortable: true, class: "title" },
+        {
+          text: "Tarefa",
+          sortable: true,
+          class: "title"
+        }
       ],
 
       footer_props: {
@@ -148,10 +145,6 @@ export default {
 
     showPedido: function(pedido) {
       this.$router.push("/pedidos/" + pedido.codigo);
-    },
-
-    analisaPedido: function(pedido) {
-      this.$emit("analisar", pedido);
     }
   }
 };
