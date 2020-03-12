@@ -15,8 +15,8 @@
                 <span> Pedido: {{ item.pedido }} </span>
                 <v-icon @click="removerNotificacao(item._id)">clear</v-icon>
               </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <p> Messagem: {{ item.acao }} de {{ item.tipo }} movido para {{ item.novoEstado }} por {{ item.responsavel }}. </p>
+              <v-expansion-panel-content color="blue lighten-5">
+                <span> Messagem: {{ item.acao }} de {{ item.tipo }} movido para {{ item.novoEstado }} por {{ item.responsavel }}. </span>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>

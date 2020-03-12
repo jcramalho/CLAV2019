@@ -1,7 +1,7 @@
 <template>
   <v-app v-if="authenticated">
     <MainPageHeader 
-      :n="notificacoes.length" 
+      :n="size"
       @drawerNotificacoes="drawerNotificacoes()" 
       @drawerDefinicoes="drawerDefinicoes()" />
 
@@ -18,8 +18,7 @@
       <router-view 
         :drawN="drawN" 
         :drawD="drawD" 
-        :notificacoes="notificacoes" 
-        @removerNotificacao="removerNotificacao($event)"/>
+        @atualizarTamanho="sizeUpdate($event)"/>
     </v-content>
 
     <PageFooter />
@@ -98,13 +97,8 @@ export default {
     fecharSnackbar() {
       this.snackbar = false;
     },
-    removerNotificacao(id) {
-      try {
-        this.$request("delete", "/notificacoes/" + id);
-        this.notificacoes =  this.notificacoes.filter(notificacao => { return notificacao._id !== id; })
-      } catch (error) {
-        return error;
-      }
+    sizeUpdate(size) {
+      this.size = size;
     },
     drawerNotificacoes() {
       this.drawD = false;
@@ -115,16 +109,8 @@ export default {
       this.drawD = !this.drawD;
     }
   },
-  created: async function() {
-    try {
-      let response = await this.$request("get", "/notificacoes");
-      this.notificacoes = response.data;
-    } catch (error) {
-      return error;
-    }
-  },
   data: () => ({
-    notificacoes: null,
+    size: 0,
     drawN: false,
     drawD: false,
     snackbar: false,
