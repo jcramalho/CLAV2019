@@ -151,10 +151,6 @@ export default {
 
     showPedido: function(pedido) {
       this.$router.push("/pedidos/" + pedido.codigo);
-    },
-
-    analisaPedido: function(pedido) {
-      this.$emit("analisar", pedido);
     }
   }
 };
