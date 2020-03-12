@@ -4,12 +4,19 @@
       <v-icon large>home</v-icon>
     </v-btn>
     <v-toolbar-title class="headline" @click="goHome">
-      <span class="text-uppercase">CLAV</span>
+      
       <span 
-        class="font-weight-light ma-2" 
+        class="text-uppercase" 
         v-if="this.$store.state.name != ''"
       >
-        {{ this.$store.state.entidade.split('_')[1] }} 
+        CLAV | {{ this.$store.state.entidade.split('_')[1] }} 
+      </span>
+
+      <span 
+        class="text-uppercase"
+        v-if="this.$store.state.name == ''"
+      >
+        CLAV
       </span>
       <span 
         class="font-weight-light"
@@ -86,7 +93,7 @@ export default {
   },
   methods: {
     goHome() {
-      this.$router.push("/");
+      this.$router.push("/entidade");
     },
     drawerNotificacoes() {
       this.$emit('drawerNotificacoes');
