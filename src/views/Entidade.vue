@@ -6,12 +6,23 @@
       </v-col>
 
       <v-col>
-        <Gestao v-if="level > 0" :level="level" />
-      </v-col>
-      <v-col>
-        <Notificacoes :level="level"/>
+        <v-row align="center">
+          <v-col class="text-center">
+            <Gestao 
+              v-if="level > 0" 
+              :level="level" />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
+    <Notificacoes 
+      :level="level" 
+      :drawer="drawN" 
+      :notificacoes="notificacoes"
+      @removerNotificacao="removerNotificacao($event)"/> 
+    <Definicoes 
+      :level="level" 
+      :drawer="drawD"/> 
   </div>
 </template>
 
@@ -19,18 +30,15 @@
 import Operacoes from "@/components/principal/Operacoes.vue";
 import Gestao from "@/components/principal/Gestao.vue";
 import Notificacoes from "@/components/principal/Notificacoes.vue";
+import Definicoes from "@/components/principal/Definicoes.vue";
 
 export default {
+  props: ["drawN", "drawD", "notificacoes"],
   components: {
     Operacoes,
     Gestao,
-    Notificacoes
-  },
-
-  methods: {
-    go: function(url) {
-      this.$router.push(url);
-    }
+    Notificacoes,
+    Definicoes
   },
   data() {
     return {
@@ -38,6 +46,11 @@ export default {
       level: 0,
       entidade: "Nome da Entidade"
     };
+  },
+  methods: {
+    removerNotificacao(id) {
+      this.$emit('removerNotificacao', id)
+    }
   },
   mounted: async function() {
     this.level = await this.$userLevel(this.$store.state.token);

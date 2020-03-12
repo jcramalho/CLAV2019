@@ -1,14 +1,25 @@
 <template>
   <v-app v-if="authenticated">
-    <MainPageHeader />
+    <MainPageHeader 
+      :n="notificacoes.length" 
+      @drawerNotificacoes="drawerNotificacoes()" 
+      @drawerDefinicoes="drawerDefinicoes()" />
 
-    <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="0">
+    <v-snackbar 
+      v-model="snackbar" 
+      :color="color" 
+      :top="true" 
+      :timeout="0">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
     <v-content>
-      <router-view />
+      <router-view 
+        :drawN="drawN" 
+        :drawD="drawD" 
+        :notificacoes="notificacoes" 
+        @removerNotificacao="removerNotificacao($event)"/>
     </v-content>
 
     <PageFooter />
@@ -16,6 +27,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 
@@ -85,9 +97,36 @@ export default {
   methods: {
     fecharSnackbar() {
       this.snackbar = false;
+    },
+    removerNotificacao(id) {
+      try {
+        this.$request("delete", "/notificacoes/" + id);
+        this.notificacoes =  this.notificacoes.filter(notificacao => { return notificacao._id !== id; })
+      } catch (error) {
+        return error;
+      }
+    },
+    drawerNotificacoes() {
+      this.drawD = false;
+      this.drawN = !this.drawN;
+    },
+    drawerDefinicoes() {
+      this.drawN = false;
+      this.drawD = !this.drawD;
+    }
+  },
+  created: async function() {
+    try {
+      let response = await this.$request("get", "/notificacoes");
+      this.notificacoes = response.data;
+    } catch (error) {
+      return error;
     }
   },
   data: () => ({
+    notificacoes: null,
+    drawN: false,
+    drawD: false,
     snackbar: false,
     authenticated: false,
     color: "",
