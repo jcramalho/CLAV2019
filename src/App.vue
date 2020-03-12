@@ -1,9 +1,9 @@
 <template>
   <v-app v-if="authenticated">
     <MainPageHeader 
-      :n="size"
+      :n="notificacoes ? notificacoes.length : 0"
       @drawerNotificacoes="drawerNotificacoes()" 
-      @drawerDefinicoes="drawerDefinicoes()" />
+      @drawerDefinicoes="drawerDefinicoes()"/>
 
     <v-snackbar 
       v-model="snackbar" 
@@ -15,10 +15,16 @@
     </v-snackbar>
 
     <v-content>
-      <router-view 
-        :drawN="drawN" 
-        :drawD="drawD" 
-        @atualizarTamanho="sizeUpdate($event)"/>
+      <router-view @userNotificacoes="userNotificacoes($event)"/>
+      
+      <Notificacoes 
+        v-if="this.$store.state.name != ''"
+        :drawer="drawN" 
+        :notificacoes="notificacoes"
+        @removerNotificacao="removerNotificacao($event)"/> 
+      <Definicoes 
+        v-if="this.$store.state.name != ''"
+        :drawer="drawD"/> 
     </v-content>
 
     <PageFooter />
@@ -29,12 +35,16 @@
 /* eslint-disable */
 import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
+import Definicoes from "@/components/principal/Definicoes.vue";
+import Notificacoes from "@/components/principal/Notificacoes.vue";
 
 export default {
   name: "App",
   components: {
     PageFooter,
-    MainPageHeader
+    MainPageHeader,
+    Definicoes,
+    Notificacoes
   },
   watch: {
     async $route(to, from) {
@@ -107,10 +117,23 @@ export default {
     drawerDefinicoes() {
       this.drawN = false;
       this.drawD = !this.drawD;
+    },
+    userNotificacoes(notificacoes) {
+      this.notificacoes = notificacoes
+    },
+    removerNotificacao(id) {
+      try {
+        this.$request("delete", "/notificacoes/" + id);
+        this.notificacoes = this.notificacoes.filter(notificacao => {
+          return notificacao._id !== id;
+        });
+      } catch (error) {
+        return error;
+      }
     }
   },
   data: () => ({
-    size: 0,
+    notificacoes: null,
     drawN: false,
     drawD: false,
     snackbar: false,
