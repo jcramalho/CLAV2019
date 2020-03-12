@@ -1,7 +1,7 @@
 <template>
   <v-app v-if="authenticated">
     <MainPageHeader 
-      :n="notificacoes ? notificacoes.length : 0"
+      :n="notificacoes ? notificacoes.length : '0'"
       @drawerNotificacoes="drawerNotificacoes()" 
       @drawerDefinicoes="drawerDefinicoes()"/>
 
