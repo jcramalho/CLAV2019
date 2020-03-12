@@ -13,7 +13,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Designação</div>
+              <div class="info-label">Nome da Tipologia</div>
             </v-col>
             <v-col>
               <v-text-field

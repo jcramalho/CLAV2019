@@ -86,8 +86,8 @@ export default {
           );
           if (existeDesignacao.data) {
             this.mensagensErro.push({
-              sobre: "Designação",
-              mensagem: "Designação já existente na BD."
+              sobre: "Nome da Entidade",
+              mensagem: "Nome da entidade já existente na BD."
             });
             this.numeroErros++;
           }
