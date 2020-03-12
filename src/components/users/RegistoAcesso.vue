@@ -3,63 +3,14 @@
     <v-row row wrap>
       <v-col cols="12">
         <v-data-table
-          :headers="headersLogs"
-          :items="logs"
-          item-key="_id"
-          class="elevation-1 ma-10"
-          :search="searchLog"
-          :loading="loading"
-          loading-text="A carregar o registo de acesso..."
-          show-group-by
-          multi-sort
-        >
-          <template v-slot:top>
-            <v-toolbar flat color="indigo darken-4" dark>
-              <v-toolbar-title>
-                Registo de acesso nos últimos 30 dias
-              </v-toolbar-title>
-              <div class="flex-grow-1"></div>
-              <v-text-field
-                v-model="searchLog"
-                append-icon="search"
-                label="Filtrar"
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-toolbar>
-          </template>
-
-          <template v-slot:item.httpStatus="{ item }">
-            <v-chip
-              class="font-weight-bold"
-              :color="getColorStatus(item.httpStatus)"
-              dark
-            >
-              {{ item.httpStatus }}
-            </v-chip>
-          </template>
-
-          <template v-slot:item.method="{ item }">
-            <v-chip
-              class="font-weight-bold"
-              :color="getColorMethod(item.method)"
-              dark
-            >
-              {{ item.method }}
-            </v-chip>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
-    <v-row row wrap>
-      <v-col cols="12">
-        <v-data-table
           :headers="headersAggLogs"
           :items="aggregateLogs"
+          :items-per-page="5"
+          :footer-props="footer_props"
           item-key="_id"
           class="elevation-1 ma-10"
           :search="searchAggLog"
-          :loading="loading"
+          :loading="loadingAggLogs"
           loading-text="A carregar o sumário do registo de acesso..."
           multi-sort
         >
@@ -100,6 +51,85 @@
               {{ item.nDELETEs }}
             </v-chip>
           </template>
+
+          <template v-slot:footer.page-text="props">
+            {{ props.pageStart }} - {{ props.pageStop }} de
+            {{ props.itemsLength }}
+          </template>
+
+          <v-alert slot="no-results" :value="true" class="error" icon="warning">
+            A procura por "{{ searchAggLog }}" não deu resultados.
+          </v-alert>
+
+          <v-alert slot="no-data" :value="true" class="error" icon="warning">
+            Não foi possível obter os resultados.
+          </v-alert>
+        </v-data-table>
+      </v-col>
+    </v-row>
+    <v-row row wrap>
+      <v-col cols="12">
+        <v-data-table
+          :headers="headersLogs"
+          :items="logs"
+          :items-per-page="5"
+          :footer-props="footer_props"
+          item-key="_id"
+          class="elevation-1 ma-10"
+          :search="searchLog"
+          :loading="loadingLogs"
+          loading-text="A carregar o registo de acesso..."
+          show-group-by
+          multi-sort
+        >
+          <template v-slot:top>
+            <v-toolbar flat color="indigo darken-4" dark>
+              <v-toolbar-title>
+                Registo de acesso nos últimos 30 dias
+              </v-toolbar-title>
+              <div class="flex-grow-1"></div>
+              <v-text-field
+                v-model="searchLog"
+                append-icon="search"
+                label="Filtrar"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-toolbar>
+          </template>
+
+          <template v-slot:item.httpStatus="{ item }">
+            <v-chip
+              class="font-weight-bold"
+              :color="getColorStatus(item.httpStatus)"
+              dark
+            >
+              {{ item.httpStatus }}
+            </v-chip>
+          </template>
+
+          <template v-slot:item.method="{ item }">
+            <v-chip
+              class="font-weight-bold"
+              :color="getColorMethod(item.method)"
+              dark
+            >
+              {{ item.method }}
+            </v-chip>
+          </template>
+
+          <template v-slot:footer.page-text="props">
+            {{ props.pageStart }} - {{ props.pageStop }} de
+            {{ props.itemsLength }}
+          </template>
+
+          <v-alert slot="no-results" :value="true" class="error" icon="warning">
+            A procura por "{{ searchLog }}" não deu resultados.
+          </v-alert>
+
+          <v-alert slot="no-data" :value="true" class="error" icon="warning">
+            Não foi possível obter os resultados.
+          </v-alert>
         </v-data-table>
       </v-col>
     </v-row>
@@ -114,7 +144,9 @@
 export default {
   mounted: async function() {
     try {
-      this.loading = true;
+      this.loadingAggLogs = true;
+      this.loadingLogs = true;
+
       var response = await this.$request("get", "/users");
       this.users = {};
 
@@ -127,19 +159,6 @@ export default {
 
       for (i = 0; i < response.data.length; i++) {
         this.keys[response.data[i].id] = response.data[i].contactInfo;
-      }
-
-      response = await this.$request("get", "/logs");
-      this.logs = response.data;
-
-      for (i = 0; i < this.logs.length; i++) {
-        if (this.logs[i].type == "Chave") {
-          this.logs[i].email = this.keys[this.logs[i].id];
-        } else {
-          this.logs[i].email = this.users[this.logs[i].id];
-        }
-
-        this.logs[i].accessDate = this.getDateTime(this.logs[i].accessDate);
       }
 
       response = await this.$request("get", "/logsAgregados");
@@ -157,9 +176,25 @@ export default {
         );
       }
 
-      this.loading = false;
+      this.loadingAggLogs = false;
+
+      response = await this.$request("get", "/logs");
+      this.logs = response.data;
+
+      for (i = 0; i < this.logs.length; i++) {
+        if (this.logs[i].type == "Chave") {
+          this.logs[i].email = this.keys[this.logs[i].id];
+        } else {
+          this.logs[i].email = this.users[this.logs[i].id];
+        }
+
+        this.logs[i].accessDate = this.getDateTime(this.logs[i].accessDate);
+      }
+
+      this.loadingLogs = false;
     } catch (error) {
-      this.loading = false;
+      this.loadingAggLogs = false;
+      this.loadingLogs = false;
       this.color = "error";
       this.text = error.response.data;
     }
@@ -186,11 +221,17 @@ export default {
       { text: "Número de pedidos DELETE", align: "center", value: "nDELETEs" },
       { text: "Último Acesso", align: "center", value: "lastAccess" }
     ],
+    footer_props: {
+      "items-per-page-text": "Entradas por página",
+      "items-per-page-options": [5, 10, 20, -1],
+      "items-per-page-all-text": "Todas"
+    },
     color: "",
     text: "",
     searchLog: "",
     searchAggLog: "",
-    loading: false
+    loadingAggLogs: false,
+    loadingLogs: false
   }),
 
   methods: {

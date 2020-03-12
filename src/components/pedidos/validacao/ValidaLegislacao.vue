@@ -85,7 +85,7 @@
       <v-spacer />
       <PO
         operacao="Validar"
-        @finalizarPedido="finalizarPedido()"
+        @finalizarPedido="finalizarPedido($event)"
         @devolverPedido="despacharPedido($event)"
       />
     </v-row>
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import PO from "@/components/pedidos/analise/PainelOperacoes";
+import PO from "@/components/pedidos/generic/PainelOperacoes";
 
 export default {
   props: ["p"],
@@ -182,7 +182,7 @@ export default {
       }
     },
 
-    async finalizarPedido() {
+    async finalizarPedido(dados) {
       try {
         const estado = "Validado";
 
@@ -196,15 +196,14 @@ export default {
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
-          data: new Date()
-          // despacho: dados.mensagemDespacho
+          data: new Date(),
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
-        // TODO: Adicionar despacho
         await this.$request("put", "/pedidos", {
           pedido: pedido,
           distribuicao: novaDistribuicao

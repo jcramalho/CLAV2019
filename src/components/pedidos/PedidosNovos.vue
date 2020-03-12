@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="indigo darken-3 white--text" dark>
+    <v-expansion-panel-header class="indigo darken-3 white--text">
       <div>
         <b>Pedidos Novos</b>
         <sup class="ml-1">
@@ -11,6 +11,10 @@
           </v-badge>
         </sup>
       </div>
+
+      <template v-slot:actions>
+        <v-icon color="white">$expand</v-icon>
+      </template>
     </v-expansion-panel-header>
 
     <v-expansion-panel-content>

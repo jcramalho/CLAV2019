@@ -5,7 +5,7 @@
       dark
     >
       <div>
-        <b>{{ titulo }}</b>
+        <b>Pedidos Processados</b>
         <sup class="ml-1">
           <v-badge color="red">
             <template v-slot:badge>
@@ -14,6 +14,10 @@
           </v-badge>
         </sup>
       </div>
+      
+      <template v-slot:actions>
+        <v-icon color="white">$expand</v-icon>
+      </template>
     </v-expansion-panel-header>
 
     <v-expansion-panel-content>
@@ -50,6 +54,7 @@
             <td class="subheading">
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
+
             <td>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
@@ -61,48 +66,6 @@
                   >
                 </template>
                 <span>Ver pedido...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    @click="distribuiPedido(props.item)"
-                    color="indigo darken-2"
-                    v-on="on"
-                    >person</v-icon
-                  >
-                </template>
-                <span>Distribuir pedido...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    @click="analisaPedido(props.item)"
-                    color="indigo darken-2"
-                    v-on="on"
-                    >search</v-icon
-                  >
-                </template>
-                <span>Analisar pedido...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon color="indigo darken-2" v-on="on"
-                    >keyboard_return</v-icon
-                  >
-                </template>
-                <span>Devolver pedido...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon color="indigo darken-2" v-on="on">check</v-icon>
-                </template>
-                <span>Validar pedido...</span>
-              </v-tooltip>
-              <v-tooltip bottom v-if="false">
-                <template v-slot:activator="{ on }">
-                  <v-icon color="red darken-2" v-on="on">delete</v-icon>
-                </template>
-                <span>Apagar pedido</span>
               </v-tooltip>
             </td>
           </tr>
@@ -176,16 +139,8 @@ export default {
       return `${dia}-${mes}-${ano}`;
     },
 
-    distribuiPedido: function(pedido) {
-      this.$emit("distribuir", pedido);
-    },
-
     showPedido: function(pedido) {
       this.$router.push("/pedidos/" + pedido.codigo);
-    },
-
-    analisaPedido: function(pedido) {
-      this.$emit("analisar", pedido);
     }
   }
 };

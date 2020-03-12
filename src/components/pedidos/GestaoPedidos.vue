@@ -22,10 +22,9 @@
               @validar="validaPedido($event)"
             />
 
-            <PedidosLista
-              :pedidos="pedidosDevolvidos"
-              titulo="Pedidos devolvidos"
-            />
+            <PedidosDevolvidos :pedidos="pedidosDevolvidos" />
+
+            <PedidosProcessados :pedidos="pedidosProcessados" />
           </v-expansion-panels>
         </v-card-text>
       </v-card>
@@ -119,50 +118,56 @@
 </template>
 
 <script>
-import PedidosLista from "@/components/pedidos/PedidosLista.vue";
 import PedidosNovos from "@/components/pedidos/PedidosNovos";
 import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
 import PedidosValidacao from "@/components/pedidos/PedidosValidacao";
+import PedidosDevolvidos from "@/components/pedidos/PedidosDevolvidos";
+import PedidosProcessados from "@/components/pedidos/PedidosProcessados";
 
 import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
 import { filtraNivel } from "@/utils/utils";
 
 export default {
-  components: { PedidosLista, PedidosNovos, PedidosAnalise, PedidosValidacao },
-  data: () => ({
-    procuraUtilizador: "",
-    pedidoParaDistribuir: {},
-    distribuir: false,
-    show: false,
-    pedido: {},
-    despacho: "",
-    usersHeaders: [
-      { text: "Nome", value: "name", class: "title" },
-      { text: "Entidade", value: "entidade", class: "title" }
-    ],
-    usersRecords: [],
-    selectedUser: {},
-    pedidos: [],
-    pedidosSubmetidos: [],
-    pedidosDistribuidos: [],
-    pedidosValidados: [],
-    pedidosDevolvidos: []
-  }),
+  components: {
+    PedidosNovos,
+    PedidosAnalise,
+    PedidosValidacao,
+    PedidosDevolvidos,
+    PedidosProcessados
+  },
 
-  created: async function() {
+  data() {
+    return {
+      procuraUtilizador: "",
+      pedidoParaDistribuir: {},
+      distribuir: false,
+      show: false,
+      pedido: {},
+      despacho: "",
+      usersHeaders: [
+        { text: "Nome", value: "name", class: "title" },
+        { text: "Entidade", value: "entidade", class: "title" }
+      ],
+      usersRecords: [],
+      selectedUser: {},
+      pedidosSubmetidos: [],
+      pedidosDistribuidos: [],
+      pedidosValidados: [],
+      pedidosDevolvidos: [],
+      pedidosProcessados: []
+    };
+  },
+
+  async created() {
     try {
-      var response = await this.$request("get", "/pedidos");
-      this.pedidos = response.data;
-      this.pedidosSubmetidos = this.pedidos.filter(
-        p => p.estado == "Submetido"
-      );
-      this.pedidosDistribuidos = this.pedidos.filter(
-        p => p.estado == "Distribuído"
-      );
-      this.pedidosValidados = this.pedidos.filter(p => p.estado == "Apreciado");
-      this.pedidosDevolvidos = this.pedidos.filter(
-        p => p.estado == "Devolvido"
-      );
+      let pedidos = await this.$request("get", "/pedidos");
+      pedidos = pedidos.data;
+
+      this.pedidosSubmetidos = pedidos.filter(p => p.estado == "Submetido");
+      this.pedidosDistribuidos = pedidos.filter(p => p.estado == "Distribuído");
+      this.pedidosValidados = pedidos.filter(p => p.estado == "Apreciado");
+      this.pedidosDevolvidos = pedidos.filter(p => p.estado == "Devolvido");
+      this.pedidosProcessados = pedidos.filter(p => p.estado == "Validado");
     } catch (e) {
       return e;
     }
