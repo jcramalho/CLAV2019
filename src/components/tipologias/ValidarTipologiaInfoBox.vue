@@ -138,15 +138,6 @@ export default {
         });
         this.numeroErros++;
       }
-
-      // Sigla
-      if (this.t.sigla == "" || this.t.sigla == null) {
-        this.mensagensErro.push({
-          sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
-        });
-        this.numeroErros++;
-      }
     },
 
     async validarTipologia() {

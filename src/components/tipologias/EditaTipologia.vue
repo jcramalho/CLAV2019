@@ -27,22 +27,6 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Sigla</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="tipologia.sigla"
-                maxlength="10"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
