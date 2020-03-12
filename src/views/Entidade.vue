@@ -33,7 +33,7 @@ import Notificacoes from "@/components/principal/Notificacoes.vue";
 import Definicoes from "@/components/principal/Definicoes.vue";
 
 export default {
-  props: ["drawN", "drawD", "notificacoes"],
+  props: ["drawN", "drawD"],
   components: {
     Operacoes,
     Gestao,
@@ -42,6 +42,7 @@ export default {
   },
   data() {
     return {
+      notificacoes: null,
       panelHeaderColor: "indigo darken-4",
       level: 0,
       entidade: "Nome da Entidade"
@@ -49,7 +50,24 @@ export default {
   },
   methods: {
     removerNotificacao(id) {
-      this.$emit('removerNotificacao', id)
+      try {
+        this.$request("delete", "/notificacoes/" + id);
+        this.notificacoes = this.notificacoes.filter(notificacao => {
+          return notificacao._id !== id;
+        });
+        this.$emit("atualizarTamanho", notificacoes.length);
+      } catch (error) {
+        return error;
+      }
+    }
+  },
+  created: async function() {
+    try {
+      let response = await this.$request("get", "/notificacoes");
+      this.notificacoes = response.data;
+      this.$emit("atualizarTamanho", this.notificacoes.length);
+    } catch (error) {
+      return error;
     }
   },
   mounted: async function() {
