@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="mb-12">
+  <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
       <v-row>
         <v-col cols="12" xs="12" sm="3">

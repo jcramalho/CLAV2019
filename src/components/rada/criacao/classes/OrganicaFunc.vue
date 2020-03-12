@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent fullscreen>
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
         <v-icon dark left>add</v-icon>área orgânico-funcional

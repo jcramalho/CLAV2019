@@ -32,79 +32,85 @@
                 }}
               </template>
             </v-data-table>
-            <hr style="border: 3px solid indigo; border-radius: 2px;" />
+            <hr style="border: 3px solid; border-radius: 2px;" />
           </v-col>
         </v-row>
-        <!-- Novo form para adicionar relação -->
-        <v-form ref="addRel" :lazy-validation="false">
-          <v-row>
-            <v-col sm="3" xs="12">
-              <v-autocomplete
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                v-model="rel"
-                :items="listaRelacoes"
-                label="Relação"
-                solo
-                clearable
-              ></v-autocomplete>
-            </v-col>
-            <v-col sm="4" xs="12">
-              <v-combobox
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                v-model="codrel"
-                :items="getCodigos"
-                label="Código"
-                solo
-                clearable
-              >
-                <!-- <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
-                <template v-slot:selection="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>-->
-              </v-combobox>
-            </v-col>
-            <v-col sm="4" xs="12">
-              <v-select
-                :disabled="iscodvalido"
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                label="Tipo de Classe"
-                v-model="tipoClasse"
-                :items="['Série', 'Subsérie']"
-                chips
-                solo
-                clearable
-              >
-                <template v-slot:selection="data">
-                  <v-chip>
-                    <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
-                    {{ data.item }}
-                  </v-chip>
-                </template>
-              </v-select>
-            </v-col>
-            <v-col sm="1" xs="12">
-              <v-btn icon text rounded @click="add()">
-                <v-icon color="green lighten-1">add_circle</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
+        <v-card outlined>
+          <div class="info-label">Adicionar relação com série/subsérie</div>
 
-          <v-row>
-            <v-col sm="12" xs="12">
-              <v-text-field
-                :disabled="iscodvalido"
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                v-model="titrel"
-                label="Título"
-                solo
-                clearable
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row v-if="!!alertOn">
-            <v-col>
-              <v-alert dismissible dense text type="error">Relação já existente!</v-alert>
-            </v-col>
-          </v-row>
-        </v-form>
+          <v-card-text>
+            <!-- Novo form para adicionar relação -->
+            <v-form ref="addRel" :lazy-validation="false">
+              <v-row>
+                <v-col sm="5" xs="12">
+                  <v-autocomplete
+                    :rules="[v => !!v || 'Campo obrigatório!']"
+                    v-model="rel"
+                    :items="listaRelacoes"
+                    label="Relação"
+                    solo
+                    clearable
+                  ></v-autocomplete>
+                </v-col>
+                <v-col sm="6" xs="12">
+                  <v-combobox
+                    :rules="[v => codigoIgual(v)]"
+                    v-model="codrel"
+                    :items="getCodigos"
+                    label="Código"
+                    solo
+                    clearable
+                  >
+                    <!-- <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
+                    <template v-slot:selection="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>-->
+                  </v-combobox>
+                </v-col>
+                <v-col sm="1" xs="12">
+                  <v-btn icon text rounded @click="add()">
+                    <v-icon color="green lighten-1">add_circle</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col sm="8" xs="12">
+                  <v-text-field
+                    :disabled="iscodvalido"
+                    :rules="[v => !!v || 'Campo obrigatório!']"
+                    v-model="titrel"
+                    label="Título"
+                    solo
+                    clearable
+                  ></v-text-field>
+                </v-col>
+                <v-col sm="4" xs="12">
+                  <v-select
+                    :disabled="iscodvalido"
+                    :rules="[v => !!v || 'Campo obrigatório!']"
+                    label="Tipo de Classe"
+                    v-model="tipoClasse"
+                    :items="['Série', 'Subsérie']"
+                    chips
+                    solo
+                    clearable
+                  >
+                    <template v-slot:selection="data">
+                      <v-chip>
+                        <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                        {{ data.item }}
+                      </v-chip>
+                    </template>
+                  </v-select>
+                </v-col>
+              </v-row>
+              <v-row v-if="!!alertOn">
+                <v-col>
+                  <v-alert dismissible dense text type="error">Relação já existente!</v-alert>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </div>
@@ -117,13 +123,10 @@ export default {
   data() {
     return {
       tipoClasse: null,
-      eSerie: false,
-      eSubserie: false,
       iscodvalido: false,
       alertOn: false,
       rel: "",
-      classerel: "",
-      codrel: "",
+      codrel: null,
       titrel: "",
       listaRelacoes: [
         "Antecessora de",
@@ -193,24 +196,17 @@ export default {
         );
       });
     },
-    // add2: async function() {
-    //   this.alertOn = false;
-
-    //   if (this.$refs.addRel.validate()) {
-    //     if (!(await this.validateRelacao())) {
-    //       this.newSerie.relacoes.push({
-    //         relacao: this.rel,
-    //         serieRelacionada: {
-    //           codigo: this.classerel.codigo,
-    //           titulo: this.classerel.titulo
-    //         }
-    //       });
-    //       this.$refs.addRel.reset();
-    //     } else {
-    //       this.alertOn = true;
-    //     }
-    //   }
-    // },
+    codigoIgual: function(v) {
+      if (v == null || v == "") {
+        return "Campo Obrigatório";
+      } else {
+        if (v == this.newSerie.codigo) {
+          return "Código Inválido";
+        } else {
+          return true;
+        }
+      }
+    },
     add: async function() {
       this.alertOn = false;
 
@@ -233,8 +229,7 @@ export default {
     validateRelacao: function() {
       return this.newSerie.relacoes.some(el => {
         return (
-          el.relacao == this.rel &&
-          el.serieRelacionada.codigo == this.classerel.codigo
+          el.relacao == this.rel && el.serieRelacionada.codigo == this.codrel
         );
       });
     }

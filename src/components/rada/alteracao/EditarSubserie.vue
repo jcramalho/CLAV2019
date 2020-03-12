@@ -1,8 +1,12 @@
 <template>
-  <v-dialog v-model="dialog" fullscreen>
+  <v-dialog v-model="dialog">
     <template v-slot:activator="{ on }">
-      <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
-      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">(POR COMPLETAR)</b>
+      <b text depressed @click="filterSeries" v-on="on">
+        {{
+        treeview_object.titulo
+        }}
+      </b>
+      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">*</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
@@ -11,8 +15,6 @@
       <br />
       <v-card-text>
         <v-form ref="formSubserie" :lazy-validation="false">
-          <!-- <h5>Identificação</h5>
-          <v-divider></v-divider>-->
           <Identificacao :newSerie="subserie" :classes="classes" />
 
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
@@ -21,7 +23,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="subserie" />
+                <ZonaDescritiva :newSerie="subserie" :UIs="UIs" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -95,7 +97,7 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes"],
+  props: ["treeview_object", "classes", "UIs"],
   data: () => ({
     dialog: false,
     subserie: {},
@@ -120,6 +122,7 @@ export default {
       // DEEP CLONE do objetos
       this.subserie = Object.assign({}, subserie_real);
       this.subserie.relacoes = [...subserie_real.relacoes];
+      this.subserie.UIs = [...subserie_real.UIs];
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes.filter(

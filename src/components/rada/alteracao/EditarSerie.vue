@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="dialogSerie" persistent fullscreen>
+  <v-dialog v-model="dialogSerie" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
         {{
         treeview_object.titulo
         }}
       </b>
-      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">(POR COMPLETAR)</b>
+      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">*</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
@@ -23,7 +23,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" />
+                <ZonaDescritiva :newSerie="serie" :UIs="UIs"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -103,7 +103,7 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "legislacao", "RE"],
+  props: ["treeview_object", "classes", "legislacao", "RE", "UIs"],
   components: {
     Identificacao,
     ZonaDescritiva,
@@ -132,6 +132,7 @@ export default {
       this.serie.legislacao = [...serie_real.legislacao];
       this.serie.localizacao = [...serie_real.localizacao];
       this.serie.relacoes = [...serie_real.relacoes];
+      this.serie.UIs = [...serie_real.UIs];
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes.filter(

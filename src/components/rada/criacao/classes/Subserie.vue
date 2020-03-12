@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent fullscreen>
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
         <v-icon dark left>add</v-icon>Subsérie
@@ -20,7 +20,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSubSerie" />
+                <ZonaDescritiva :newSerie="newSubSerie" :UIs="UIs" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -104,7 +104,7 @@ export default {
     ZonaContexto,
     ZonaDecisoesAvaliacao
   },
-  props: ["classes"],
+  props: ["classes", "UIs"],
   data: () => ({
     panels: [0, 0, 0],
     isMultiple: false,
@@ -112,16 +112,17 @@ export default {
     classesHierarquia: [],
     classesRelacoes: [],
     newSubSerie: {
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: "",
-      dataFinal: "",
-      // codigo: "02.01.02",
-      // titulo: "SUBSERIESERIE",
-      // descricao: "DESC SERIE",
-      // dataInicial: "2020-02-13",
-      // dataFinal: "2020-02-16",
+      // codigo: "",
+      // titulo: "",
+      // descricao: "",
+      // dataInicial: null,
+      // dataFinal: null,
+      codigo: "02.01.02",
+      titulo: "SUBSERIESERIE",
+      descricao: "DESC SERIE",
+      dataInicial: "2020-02-13",
+      dataFinal: "2020-02-16",
+      UIs: [],
       relacoes: [],
       pca: "",
       formaContagem: "",
@@ -150,6 +151,7 @@ export default {
         if (this.$refs.form.validate()) {
           let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
+          await this.adicionarUIs(clone_newSubserie);
           await this.relacoes_simetricas(clone_newSubserie);
 
           this.classes.push(clone_newSubserie);
@@ -157,6 +159,41 @@ export default {
           this.apagar();
         }
       }, 1);
+    },
+    adicionarUIs: function(clone_newSerie) {
+      for (let i = 0; i < clone_newSerie.UIs.length; i++) {
+        let UI = this.UIs.find(e => e.codigo == clone_newSerie.UIs[i].codigo);
+
+        if (UI != undefined) {
+          UI.classesAssociadas.push({
+            codigo: clone_newSerie.codigo,
+            titulo: clone_newSerie.titulo,
+            tipo: clone_newSerie.tipo
+          });
+        } else {
+          this.UIs.push({
+            codigo: clone_newSerie.UIs[i].codigo,
+            codCota: "",
+            titulo: clone_newSerie.UIs[i].titulo,
+            dataInicial: null,
+            dataFinal: null,
+            produtor: {
+              tipologiasProdutoras: [],
+              entProdutoras: []
+            },
+            classesAssociadas: [
+              {
+                codigo: clone_newSerie.codigo,
+                titulo: clone_newSerie.titulo,
+                tipo: clone_newSerie.tipo
+              }
+            ],
+            descricao: "",
+            notas: "",
+            localizacao: ""
+          });
+        }
+      }
     },
     filterSeries: function() {
       this.classesHierarquia = this.classes.filter(
@@ -186,8 +223,8 @@ export default {
               codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
               titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
               descricao: "",
-              dataInicial: "",
-              dataFinal: "",
+              dataInicial: null,
+              dataFinal: null,
               tUA: "",
               tSerie: "",
               suporte: "",
@@ -197,6 +234,7 @@ export default {
               tipologiasProdutoras: [],
               legislacao: [],
               relacoes: [],
+              UIs: [],
               pca: "",
               formaContagem: "",
               justicacaoPCA: "",
@@ -211,9 +249,10 @@ export default {
               codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
               titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
               descricao: "",
-              dataInicial: "",
-              dataFinal: "",
+              dataInicial: null,
+              dataFinal: null,
               relacoes: [],
+              UIs: [],
               pca: "",
               formaContagem: "",
               justicacaoPCA: "",
