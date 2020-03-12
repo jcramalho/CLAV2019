@@ -102,10 +102,14 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header>
-                <div class="separador">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
                   Entidade responsável pela publicação
                 </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
@@ -126,10 +130,14 @@
 
             <!-- Segundo bloco expansivo -->
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header>
-                <div class="separador">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
                   Processos de negócio que regula ou enquadra
                 </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelProc
@@ -323,11 +331,11 @@ export default {
 
 <style scoped>
 .separador {
-  color: white; 
+  color: white;
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #1A237E; 
+  background-color: #1a237e;
   font-size: 14pt;
   font-weight: bold;
   margin: 5px;

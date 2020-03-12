@@ -16,7 +16,7 @@
       </div>
       
       <template v-slot:actions>
-        <v-icon color="white">$expand</v-icon>
+        <v-icon color="white">expand_more</v-icon>
       </template>
     </v-expansion-panel-header>
 

@@ -92,6 +92,7 @@ export default {
     fecharDialog() {
       this.avancarPedidoDialog = false;
       this.devolverPedidoDialog = false;
+      this.finalizarPedidoDialog = false;
     },
 
     avancarPedido(dados) {
