@@ -328,7 +328,13 @@ export default {
           valor: "NE",
           notas: null,
           justificacao: []
-        }
+        },
+        // Contexto para controlar a interface de cada subclasse
+        semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
+          }
       };
 
       this.procHeranca(this.c.processosRelacionados, novaSubclasse);
