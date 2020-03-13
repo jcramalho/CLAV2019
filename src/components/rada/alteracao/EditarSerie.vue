@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="dialogSerie" persistent fullscreen>
+  <v-dialog v-model="dialogSerie" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
         {{
         treeview_object.titulo
         }}
       </b>
-      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">(POR COMPLETAR)</b>
+      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">*</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
@@ -23,7 +23,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" />
+                <ZonaDescritiva :newSerie="serie" :UIs="UIs"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -33,7 +33,7 @@
               <v-expansion-panel-content>
                 <ZonaContexto
                   :newSerie="serie"
-                  :classes="classesNomes"
+                  :classes="classesRelacoes"
                   :legislacao="legislacao"
                   :RE="RE"
                 />
@@ -59,7 +59,7 @@
             <v-col sm="9" md="9">
               <v-autocomplete
                 v-model="serie.eFilhoDe"
-                :items="classesFiltradas"
+                :items="classesHierarquia"
                 :rules="[v => !!v || 'Campo obrigatório!']"
                 item-value="codigo"
                 dense
@@ -103,7 +103,7 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "legislacao", "RE"],
+  props: ["treeview_object", "classes", "legislacao", "RE", "UIs"],
   components: {
     Identificacao,
     ZonaDescritiva,
@@ -115,8 +115,8 @@ export default {
     isMultiple: false,
     dialogSerie: false,
     serie: {},
-    classesFiltradas: [],
-    classesNomes: []
+    classesHierarquia: [],
+    classesRelacoes: []
   }),
   methods: {
     filterSeries: async function() {
@@ -127,28 +127,23 @@ export default {
 
       // DEEP CLONE do objetos
       this.serie = Object.assign({}, serie_real);
-      if (this.serie.eFilhoDe != "") {
-        this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
-        this.serie.entProdutoras = [...serie_real.entProdutoras];
-        this.serie.legislacao = [...serie_real.legislacao];
-        this.serie.localizacao = [...serie_real.localizacao];
-      } else {
-        this.serie.tipologiasProdutoras = [];
-        this.serie.entProdutoras = [];
-        this.serie.legislacao = [];
-        this.serie.localizacao = [];
-      }
-
+      this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
+      this.serie.entProdutoras = [...serie_real.entProdutoras];
+      this.serie.legislacao = [...serie_real.legislacao];
+      this.serie.localizacao = [...serie_real.localizacao];
       this.serie.relacoes = [...serie_real.relacoes];
+      this.serie.UIs = [...serie_real.UIs];
 
       // Classes para definir a hierarquia
-      this.classesFiltradas = this.classes.filter(
+      this.classesHierarquia = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
 
       // Classes para as relações
-      this.classesNomes = this.classes.filter(
-        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      this.classesRelacoes = this.classes.filter(
+        e =>
+          (e.tipo == "Série" || e.tipo == "Subsérie") &&
+          e.codigo != serie_real.codigo
       );
     },
     save: async function() {

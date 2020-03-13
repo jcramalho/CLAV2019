@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="mb-12">
+  <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
       <v-row>
         <v-col cols="12" xs="12" sm="3">
@@ -18,46 +18,63 @@
       <v-row justify="center">
         <v-col cols="12" xs="12" sm="12">
           <AddOrgFunc :classes="TS.classes" />
-          <Serie :classes="TS.classes" :legislacao="legislacao" :RE="RE" />
-          <SubSerie :classes="TS.classes" />
+          <Serie :classes="TS.classes" :legislacao="legislacao" :RE="RE" :UIs="TS.UIs" />
+          <SubSerie :classes="TS.classes" :UIs="TS.UIs" />
         </v-col>
       </v-row>
+      <!-- {{ TS.classes }} -->
       <v-row>
         <v-col cols="12" xs="12" sm="12">
-          <v-treeview v-if="TS.classes.length > 0" hoverable :items="preparaTree" item-key="titulo">
-            <template v-slot:label="{ item }">
-              <EditarSerie
-                v-if="item.tipo == 'Série'"
-                @atualizacao="atualizacao_serie"
-                :treeview_object="item"
-                :classes="TS.classes"
-                :legislacao="legislacao"
-                :RE="RE"
-              />
-              <EditarSubserie v-else-if="item.tipo == 'Subsérie'" :treeview_object="item" />
-              <!-- <Editar
+          <div v-if="TS.classes.length > 0">
+            <v-treeview hoverable :items="preparaTree" item-key="titulo">
+              <template v-slot:label="{ item }">
+                <EditarSerie
+                  v-if="item.tipo == 'Série'"
+                  @atualizacao="atualizacao_serie"
+                  :treeview_object="item"
+                  :classes="TS.classes"
+                  :legislacao="legislacao"
+                  :RE="RE"
+                  :UIs="TS.UIs"
+                />
+                <EditarSubserie
+                  v-else-if="item.tipo == 'Subsérie'"
+                  @atualizacao="atualizacao_subserie"
+                  :treeview_object="item"
+                  :classes="TS.classes"
+                  :UIs="TS.UIs"
+                />
+                <!-- <Editar
                 v-else-if="item.tipo == ''"
                 :treeview_object="item"
                 :classes="TS.classes"
                 :legislacao="legislacao"
                 :RE="RE"
-              />-->
-              <EditarOrganicaFunc
-                v-else
-                @atualizacao="atualizacao_area_organico"
-                :classes="TS.classes"
-                :treeview_object="item"
-              />
-            </template>
-          </v-treeview>
-          <v-alert
-            class="text-center"
-            v-else
-            :value="true"
-            color="amber accent-3"
-            icon="warning"
-          >Sem Classes! É obrigatório adicionar.</v-alert>
+                />-->
+                <EditarOrganicaFunc
+                  v-else
+                  @atualizacao="atualizacao_area_organico"
+                  :classes="TS.classes"
+                  :treeview_object="item"
+                />
+              </template>
+            </v-treeview>
+            <br />
+            <b
+              v-if="TS.classes.some(e => e.eFilhoDe == '' && (e.tipo == 'Subsérie' || e.tipo == 'Série'))"
+              style="color:red"
+            >*Classes por preencher</b>
+          </div>
+          <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
+            <b>Sem Classes!</b> É obrigatório adicionar.
+          </v-alert>
           <br />
+        </v-col>
+      </v-row>
+      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+      <v-row>
+        <v-col sm="12" xs="12">
+          <ListaUI :UIs="TS.UIs" :RE="RE" :classes="TS.classes" />
         </v-col>
       </v-row>
     </v-form>
@@ -76,7 +93,7 @@ import SubSerie from "@/components/rada/criacao/classes/Subserie";
 import EditarOrganicaFunc from "@/components/rada/alteracao/EditarOrganicaFunc";
 import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
-// import Editar from "@/components/rada/alteracao/Editar";
+import ListaUI from "@/components/rada/criacao/ListaUI";
 
 export default {
   props: ["TS", "entidades", "RE", "legislacao"],
@@ -86,8 +103,8 @@ export default {
     SubSerie,
     EditarOrganicaFunc,
     EditarSubserie,
-    EditarSerie
-    // Editar
+    EditarSerie,
+    ListaUI
   },
   computed: {
     preparaTree() {
@@ -147,11 +164,13 @@ export default {
       let area_organico = this.TS.classes.find(e => e.codigo == c.codigo);
 
       area_organico.descricao = c.descricao;
+      area_organico.titulo = c.titulo;
     },
     async atualizacao_serie(c) {
       let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
       // FAZER LIGAÇÕES
       serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
+      serie_classe.UIs = await this.editaUI(serie_classe, c);
 
       serie_classe.titulo = c.titulo;
       serie_classe.descricao = c.descricao;
@@ -172,6 +191,100 @@ export default {
       serie_classe.df = c.df;
       serie_classe.justificacaoDF = c.justificacaoDF;
       serie_classe.eFilhoDe = c.eFilhoDe;
+    },
+    async atualizacao_subserie(c) {
+      let subserie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
+
+      subserie_classe.relacoes = await this.editaRelacoes(subserie_classe, c);
+      subserie_classe.UIs = await this.editaUI(subserie_classe, c);
+
+      subserie_classe.titulo = c.titulo;
+      subserie_classe.descricao = c.descricao;
+      subserie_classe.dataInicial = c.dataInicial;
+      subserie_classe.dataFinal = c.dataFinal;
+      subserie_classe.pca = c.pca;
+      subserie_classe.formaContagem = c.formaContagem;
+      subserie_classe.notas = c.notas;
+      subserie_classe.justicacaoPCA = c.justicacaoPCA;
+      subserie_classe.df = c.df;
+      subserie_classe.justificacaoDF = c.justificacaoDF;
+      subserie_classe.eFilhoDe = c.eFilhoDe;
+    },
+    async editaUI(serie_classe, c) {
+      let novo_UIs = [];
+
+      /*
+      
+        Iterar o array alterado pelo utilizador
+
+      */
+      for (let i = 0; i < c.UIs.length; i++) {
+        let UIs_igual = serie_classe.UIs.find(
+          ui => ui.codigo == c.UIs[i].codigo
+        );
+
+        if (UIs_igual != undefined) {
+          novo_UIs.push(UIs_igual);
+        } else {
+          await this.adicionaUI(c.UIs[i], serie_classe);
+          novo_UIs.push(c.UIs[i]);
+        }
+      }
+      /*
+      
+        Iterar o array original de relacoes
+
+      */
+      for (let j = 0; j < serie_classe.UIs.length; j++) {
+        let UIs_igual = c.UIs.find(
+          ui => ui.codigo == serie_classe.UIs[j].codigo
+        );
+
+        if (UIs_igual == undefined) {
+          await this.eliminaUI(serie_classe.UIs[j], serie_classe);
+        }
+      }
+      return novo_UIs;
+    },
+    async eliminaUI(velhaUI, serie_classe) {
+      let UI = this.TS.UIs.find(e => e.codigo == velhaUI.codigo);
+
+      UI.classesAssociadas = UI.classesAssociadas.filter(
+        e => e.codigo != serie_classe.codigo
+      );
+    },
+    adicionaUI(novaUI, serie_classe) {
+      let UI = this.TS.UIs.find(e => e.codigo == novaUI.codigo);
+
+      if (UI != undefined) {
+        UI.classesAssociadas.push({
+          codigo: serie_classe.codigo,
+          titulo: serie_classe.titulo,
+          tipo: serie_classe.tipo
+        });
+      } else {
+        this.TS.UIs.push({
+          codigo: novaUI.codigo,
+          codCota: "",
+          titulo: novaUI.titulo,
+          dataInicial: null,
+          dataFinal: null,
+          produtor: {
+            tipologiasProdutoras: [],
+            entProdutoras: []
+          },
+          classesAssociadas: [
+            {
+              codigo: serie_classe.codigo,
+              titulo: serie_classe.titulo,
+              tipo: serie_classe.tipo
+            }
+          ],
+          descricao: "",
+          notas: "",
+          localizacao: ""
+        });
+      }
     },
     async editaRelacoes(serie_classe, c) {
       let novo_relacoes = [];
@@ -229,8 +342,8 @@ export default {
             codigo: relacao.serieRelacionada.codigo,
             titulo: relacao.serieRelacionada.titulo,
             descricao: "",
-            dataInicial: "",
-            dataFinal: "",
+            dataInicial: null,
+            dataFinal: null,
             tUA: "",
             tSerie: "",
             suporte: "",
@@ -240,6 +353,7 @@ export default {
             tipologiasProdutoras: [],
             legislacao: [],
             relacoes: [],
+            UIs: [],
             pca: "",
             formaContagem: "",
             justicacaoPCA: "",
@@ -254,9 +368,10 @@ export default {
             codigo: relacao.serieRelacionada.codigo,
             titulo: relacao.serieRelacionada.titulo,
             descricao: "",
-            dataInicial: "",
-            dataFinal: "",
+            dataInicial: null,
+            dataFinal: null,
             relacoes: [],
+            UIs: [],
             pca: "",
             formaContagem: "",
             justicacaoPCA: "",

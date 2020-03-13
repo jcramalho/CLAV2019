@@ -14,7 +14,8 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+    <v-row v-if="!newSerie.UIs[0]">
       <!-- DATA INICIAL -->
       <v-col md="3" sm="3">
         <div class="info-label">Data Inicial</div>
@@ -37,6 +38,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
+              clearable
             ></v-text-field>
           </template>
           <v-date-picker v-model="newSerie.dataInicial" no-title scrollable locale="pt">
@@ -68,6 +70,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
+              clearable
             ></v-text-field>
           </template>
           <v-date-picker v-model="newSerie.dataFinal" no-title scrollable locale="pt">
@@ -78,6 +81,13 @@
         </v-menu>
       </v-col>
     </v-row>
+    <!-- UNIDADES DE INSTALAÇÃO -->
+    <AssociarUI
+      v-if="newSerie.dataInicial == null && newSerie.dataFinal == null"
+      :newSerie="newSerie"
+      :UIs="UIs"
+    />
+    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <div v-if="newSerie.tipo != 'Subsérie'">
       <v-row>
         <!-- TUArq -->
@@ -166,13 +176,18 @@
 </template>
 
 <script>
+import AssociarUI from "@/components/rada/criacao/classes/partes/AssociarUI";
+
 export default {
-  props: ["newSerie"],
+  props: ["newSerie", "UIs"],
+  components: {
+    AssociarUI
+  },
   data: () => ({
     data_inicial_menu: false,
     data_final_menu: false,
     tiposUA: ["Processo", "Coleção", "Dossier", "Registo"],
-    aberto_fechado: ["Aberto", "Fechado"],
+    aberto_fechado: ["Aberta", "Fechada"],
     suporte_items: [
       "Eletrónica Digitalizado",
       "Eletrónico Nativo",
