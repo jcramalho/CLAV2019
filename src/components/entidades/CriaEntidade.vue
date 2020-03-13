@@ -90,18 +90,6 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Data de extinção</div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="entidade.dataExtincao"
-                @dataSelecionada="entidade.dataExtincao = $event"
-              />
-            </v-col>
-          </v-row>
-
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
@@ -165,7 +153,6 @@ export default {
       tipologiasSel: [],
       codigo: "",
       dataCriacao: "",
-      dataExtincao: "",
       estado: "Ativa"
     },
 
