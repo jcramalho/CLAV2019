@@ -51,18 +51,9 @@ http {
     resolver 8.8.8.8 8.8.4.4 valid=300s;
     resolver_timeout 5s;
 
-    # Security headers
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";
-    add_header X-DNS-Prefetch-Control off;
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Download-Options noopen;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    #add_header Content-Security-Policy "default-src 'self';";
-
     location /$API_VERSION/ {
         proxy_pass $SERVER_URL;
-        proxy_set_header Origin $scheme://$http_host;
+        proxy_set_header Origin $http_origin;
     }
 
     location = /clav.yaml {
@@ -70,6 +61,15 @@ http {
     }
 
     location / {
+        # Security headers
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";
+        add_header X-DNS-Prefetch-Control off;
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header X-Download-Options noopen;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        add_header Content-Security-Policy "default-src 'self' $SERVER_URL; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; font-src 'self' https://fonts.gstatic.com;";
+
         root   /app;
         index  index.html;
         try_files $uri $uri/ /index.html;
