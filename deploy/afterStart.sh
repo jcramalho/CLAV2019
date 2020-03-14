@@ -2,12 +2,34 @@
 #Used acme.sh script from https://github.com/acmesh-official/acme.sh
 #necessary packages: openssl, cron, curl
 
+###### Arguments ########
+flags=1
+while getopts 'c:a:' option
+do
+    case "${option}" in
+        c) CERT_FOLDER=${OPTARG}
+           ((flags += 2));;
+        a) FOLDER=${OPTARG}
+           ((flags += 2));;
+        *) exit 1 ;;
+    esac
+done
+
+CERT_FOLDER=${CERT_FOLDER:-/etc/nginx/acme.sh}
+FOLDER=${FOLDER:-~/.acme.sh}
+
+if [[ $# -ge $flags ]]; then
+    DOMAINS="${@:$flags}"
+else
+    DOMAINS=('clav.dglab.gov.pt' 'epl.di.uminho.pt')
+fi
+
+
 NAME=acme.sh
-FOLDER=~/.acme.sh
 EXEC=$FOLDER/$NAME
-DOMAINS=('clav.dglab.gov.pt' 'epl.di.uminho.pt')
 WEBDIR=/var/www/html
-CERT_FOLDER=/etc/nginx/acme.sh
+
+##########################
 
 function join_by {
     local d=$1
@@ -64,6 +86,8 @@ downloadInstallScript() {
         sudo $pkg_mng ${toInstall[@]}
     fi
 
+    touch /var/spool/cron/crontabs/root
+
     #Check if script not exists
     if [ ! -f "$EXEC" ]; then
         curl -O https://raw.githubusercontent.com/Neilpang/acme.sh/master/acme.sh
@@ -78,8 +102,7 @@ getCertificate() {
     local domains="-d $(join_by ' -d ' ${DOMAINS[@]})"
     
     if [ ! -d $WEBDIR ]; then
-        mkdir $WEBDIR
-        #chown -R www-data:www-data $WEBDIR
+        mkdir -p $WEBDIR
     fi
 
     $EXEC --issue $domains -w $WEBDIR

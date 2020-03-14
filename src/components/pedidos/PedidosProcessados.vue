@@ -14,7 +14,7 @@
           </v-badge>
         </sup>
       </div>
-      
+
       <template v-slot:actions>
         <v-icon color="white">$expand</v-icon>
       </template>

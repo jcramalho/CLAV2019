@@ -14,13 +14,14 @@ http {
   access_log  /var/log/nginx/access.log  main;
   sendfile        on;
   keepalive_timeout  65;
+
   ssl_prefer_server_ciphers on;
   ssl_session_cache   shared:SSL:10m;
   ssl_session_timeout 10m;
 
   #redirect HTTP to HTTPS
   server {
-    listen 7776;
+    listen 7779;
     server_name localhost;
 
     location /.well-known/acme-challenge/ {
@@ -33,16 +34,16 @@ http {
   }
 
   server {
-    listen 7777 ssl http2;
+    listen 7780 ssl http2;
     server_name localhost;
 
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4";
-    ssl_certificate /etc/nginx/acme.sh/fullchain.pem;
-    ssl_certificate_key /etc/nginx/acme.sh/key.pem;
+    ssl_certificate $CERTS/fullchain.pem;
+    ssl_certificate_key $CERTS/key.pem;
 
     #stronger DHE parameter
-    ssl_dhparam /etc/nginx/acme.sh/dhparam.pem;
+    ssl_dhparam $CERTS/dhparam.pem;
     ssl_ecdh_curve secp384r1;
 
     ssl_stapling on;
@@ -57,7 +58,7 @@ http {
     add_header X-Download-Options noopen;
     add_header X-Content-Type-Options nosniff;
     add_header X-XSS-Protection "1; mode=block";
-    #add_header Content-Security-Policy "default-src 'self';";
+    #add_header Content-Security-Policy "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self'  https://fonts.googleapis.com;";
 
     location / {
       root   /app;
