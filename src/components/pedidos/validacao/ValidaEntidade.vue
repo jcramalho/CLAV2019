@@ -53,20 +53,29 @@
         @devolverPedido="despacharPedido($event)"
       />
     </v-row>
+
+    <!-- Dialog se existir erros no pedido à API -->
+    <v-dialog v-model="erroPedido" width="50%" hide-overlay>
+      <ErroDialog erro="Passar a mensagem de erro depois" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
+import ErroDialog from "@/components/pedidos/generic/ErroDialog";
+
 export default {
   props: ["p"],
 
   components: {
-    PO
+    PO,
+    ErroDialog
   },
 
   data() {
     return {
+      erroPedido: false,
       dialogTipologias: false,
       infoPedido: [
         {
@@ -139,6 +148,10 @@ export default {
 
     async finalizarPedido(dados) {
       try {
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        await this.$request("post", "/entidades", pedido.objeto.dados);
+
         const estado = "Validado";
 
         let dadosUtilizador = await this.$request(
@@ -155,7 +168,6 @@ export default {
           despacho: dados.mensagemDespacho
         };
 
-        let pedido = JSON.parse(JSON.stringify(this.p));
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
@@ -164,10 +176,9 @@ export default {
           distribuicao: novaDistribuicao
         });
 
-        await this.$request("post", "/entidades", pedido.objeto.dados);
-
         this.$router.go(-1);
       } catch (e) {
+        this.erroPedido = true;
         console.log("e :", e);
       }
     },

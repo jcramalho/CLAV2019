@@ -78,7 +78,7 @@
           :rules="[v => exist(v)]"
           solo
           clearable
-          v-model="newSerie.justicacaoDF"
+          v-model="newSerie.justificacaoDF"
           label="Justificação do DF"
         ></v-text-field>
       </v-col>

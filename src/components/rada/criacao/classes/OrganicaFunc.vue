@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent fullscreen>
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <v-btn
         color="indigo lighten-2"
@@ -70,7 +70,7 @@
             <v-col sm="9" md="9">
               <v-autocomplete
                 v-model="newOrgFunc.eFilhoDe"
-                :items="classesFiltradas"
+                :items="classesHierarquia"
                 item-value="codigo"
                 dense
                 solo
@@ -117,7 +117,7 @@ export default {
   props: ["classes"],
   data: () => ({
     dialog: false,
-    classesFiltradas: [],
+    classesHierarquia: [],
     newOrgFunc: {
       codigo: "",
       titulo: "",
@@ -148,8 +148,8 @@ export default {
       }
     },
     filterSeries: function() {
-      this.classesFiltradas = this.classes.filter(
-        classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
+      this.classesHierarquia = this.classes.filter(
+        classe => classe.tipo != "Série" && classe.tipo != "Subsérie" && classe.codigo
       );
     },
     verificaCodigo(v) {

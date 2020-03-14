@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="ma-4">
+  <v-card flat class="ma-4" style="background-color:#fafafa">
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
       <v-spacer />
@@ -15,7 +15,7 @@
     </v-card-title>
     <v-card-text>
       <br />
-      <v-stepper v-model="e1" vertical class="elevation-0">
+      <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
         <v-stepper-step
           color="amber accent-3"
@@ -153,8 +153,8 @@ export default {
         RE: {
           entidadesProd: [],
           tipologiasProd: [],
-          dataInicial: "",
-          dataFinal: "",
+          dataInicial: null,
+          dataFinal: null,
           dimSuporte: {
             nSeries: 0,
             nSubSeries: 0,
@@ -186,14 +186,32 @@ export default {
             //   eFilhoDe: "01",
             //   descricao: "Descricaao 01"
             // },
-            // // {
-            // //   codigo: "OLA",
-            // //   tipo: "Série",
-            // //   titulo: "MUNDOOO",
-            // //   eFilhoDe: "",
-            // //   descricao: "",
-            // //   relacoes: []
-            // // },
+            // {
+            //   codigo: "OLA",
+            //   tipo: "Série",
+            //   titulo: "MUNDOOO",
+            //   eFilhoDe: "",
+            //   descricao: "",
+            //   relacoes: [],
+            //   dataInicial: null,
+            //   dataFinal: null,
+            //   tUA: "",
+            //   tSerie: "",
+            //   UIs: [],
+            //   suporte: "",
+            //   medicao: "",
+            //   localizacao: [],
+            //   entProdutoras: [],
+            //   tipologiasProdutoras: [],
+            //   legislacao: [],
+            //   pca: "",
+            //   formaContagem: "",
+            //   justicacaoPCA: "",
+            //   df: "",
+            //   justificacaoDF: "",
+            //   notas: "",
+            //   children: []
+            // },
             // {
             //   codigo: "01.01",
             //   tipo: "Série",
@@ -201,13 +219,14 @@ export default {
             //   eFilhoDe: "01",
             //   descricao: "asjdbjahs",
             //   relacoes: [],
-            //   dataInicial: "",
-            //   dataFinal: "",
-            //   tUA: "",
-            //   tSerie: "",
-            //   suporte: "",
-            //   medicao: "",
-            //   localizacao: [],
+            //   dataInicial: null,
+            //   dataFinal: null,
+            //   UIs: [],
+            //   tUA: "Processo",
+            //   tSerie: "Aberta",
+            //   suporte: "Papel",
+            //   medicao: "12",
+            //   localizacao: ["ola"],
             //   entProdutoras: [],
             //   tipologiasProdutoras: [],
             //   legislacao: [],
@@ -226,8 +245,9 @@ export default {
             //   eFilhoDe: "01.01",
             //   descricao: "askpdoiapsodi",
             //   relacoes: [],
-            //   dataInicial: "",
-            //   dataFinal: "",
+            //   UIs: [],
+            //   dataInicial: null,
+            //   dataFinal: null,
             //   pca: "",
             //   formaContagem: "",
             //   justicacaoPCA: "",
@@ -249,8 +269,9 @@ export default {
             //   eFilhoDe: "02",
             //   descricao: "asjdbjahs",
             //   relacoes: [],
-            //   dataInicial: "",
-            //   dataFinal: "",
+            //   UIs: [],
+            //   dataInicial: null,
+            //   dataFinal: null,
             //   tUA: "",
             //   tSerie: "",
             //   suporte: "",
@@ -274,14 +295,32 @@ export default {
             //   eFilhoDe: "02.01",
             //   descricao: "askpdoiapsodi",
             //   relacoes: [],
-            //   dataInicial: "",
-            //   dataFinal: "",
+            //   UIs: [],
+            //   dataInicial: null,
+            //   dataFinal: null,
             //   pca: "",
             //   formaContagem: "",
             //   justicacaoPCA: "",
             //   df: "",
             //   justificacaoDF: "",
             //   notas: ""
+            // }
+          ],
+          UIs: [
+            // {
+            //   codigo: "UI - 01",
+            //   codCota: "A",
+            //   titulo: "TITULO",
+            //   dataInicial: "2020-03-03",
+            //   dataFinal: "2020-03-05",
+            //   produtor: {
+            //     tipologiasProdutoras: [],
+            //     entProdutoras: []
+            //   },
+            //   classesAssociadas: [],
+            //   descricao: "Desc",
+            //   notas: "Notas",
+            //   localizacao: "Loc"
             // }
           ]
         }

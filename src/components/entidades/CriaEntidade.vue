@@ -90,23 +90,15 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Data de extinção</div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="entidade.dataExtincao"
-                @dataSelecionada="entidade.dataExtincao = $event"
-              />
-            </v-col>
-          </v-row>
-
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header>
-                <div class="separador">Tipologias de Entidade</div>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>Tipologias de Entidade</div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelTip
@@ -161,7 +153,6 @@ export default {
       tipologiasSel: [],
       codigo: "",
       dataCriacao: "",
-      dataExtincao: "",
       estado: "Ativa"
     },
 

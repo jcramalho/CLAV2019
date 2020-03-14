@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="ma-4">
+  <v-card flat class="ma-4" style="background-color:#fafafa">
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
       <v-spacer />
@@ -14,7 +14,7 @@
     </v-card-title>
     <v-card-text>
       <!-- {{ obj.objeto.entidades}}
-      {{ obj.objeto.legislacao}} -->
+      {{ obj.objeto.legislacao}}-->
       <!-- {{ obj }} -->
       <v-dialog v-model="toDelete" width="500">
         <v-card>
@@ -40,7 +40,7 @@
         </v-card>
       </v-dialog>
       <br />
-      <v-stepper v-model="e1" vertical class="elevation-0">
+      <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
         <v-stepper-step
           color="amber accent-3"

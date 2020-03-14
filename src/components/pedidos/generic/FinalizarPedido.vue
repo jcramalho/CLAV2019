@@ -37,13 +37,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn
-        color="red darken-4"
-        dark
-        rounded
-        text
-        @click="finalizarPedidoDialog = false"
-      >
+      <v-btn color="red darken-4" dark rounded text @click="cancelar()">
         Não
       </v-btn>
 

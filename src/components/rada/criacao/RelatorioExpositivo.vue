@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="mb-12">
+  <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
       <div v-if="!RE.tipologiasProd[0]">
         <v-row>
@@ -121,6 +121,7 @@
                 prepend-icon="event"
                 readonly
                 v-on="on"
+                clearable
               ></v-text-field>
             </template>
             <v-date-picker
@@ -130,13 +131,8 @@
               locale="pt"
             >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu1 = false">Cancel</v-btn>
-              <v-btn
-                text
-                color="primary"
-                @click="$refs.menu1.save(RE.dataInicial)"
-                >OK</v-btn
-              >
+              <v-btn text color="primary" @click="menu1 = false">Cancelar</v-btn>
+              <v-btn text color="primary" @click="$refs.menu1.save(RE.dataInicial)">OK</v-btn>
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -161,6 +157,7 @@
                 prepend-icon="event"
                 readonly
                 v-on="on"
+                clearable
               ></v-text-field>
             </template>
             <v-date-picker
@@ -170,13 +167,8 @@
               locale="pt"
             >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu2 = false">Cancel</v-btn>
-              <v-btn
-                text
-                color="primary"
-                @click="$refs.menu2.save(RE.dataFinal)"
-                >OK</v-btn
-              >
+              <v-btn text color="primary" @click="menu2 = false">Cancelar</v-btn>
+              <v-btn text color="primary" @click="$refs.menu2.save(RE.dataFinal)">OK</v-btn>
             </v-date-picker>
           </v-menu>
         </v-col>

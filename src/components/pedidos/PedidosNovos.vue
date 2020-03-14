@@ -13,7 +13,7 @@
       </div>
 
       <template v-slot:actions>
-        <v-icon color="white">$expand</v-icon>
+        <v-icon color="white">expand_more</v-icon>
       </template>
     </v-expansion-panel-header>
 
@@ -151,10 +151,6 @@ export default {
 
     showPedido: function(pedido) {
       this.$router.push("/pedidos/" + pedido.codigo);
-    },
-
-    analisaPedido: function(pedido) {
-      this.$emit("analisar", pedido);
     }
   }
 };
