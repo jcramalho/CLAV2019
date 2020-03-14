@@ -1,8 +1,11 @@
 <template>
   <v-expansion-panel v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF">
     <!-- SUBCLASSES 4º NÍVEL -->
-    <v-expansion-panel-header>
-      <div class="separador">Subclasses de nível 4</div>
+    <v-expansion-panel-header class="expansion-panel-heading">
+      <div>Subclasses de nível 4</div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row>

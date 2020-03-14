@@ -1,8 +1,8 @@
 <template>
   <v-expansion-panel popout focusable>
     <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-    <v-expansion-panel-header>
-      <div class="separador">
+    <v-expansion-panel-header class="expansion-panel-heading">
+      <div>
         Contexto de Avaliação
         <InfoBox
           header="Contexto de Avaliação"
@@ -10,6 +10,9 @@
           helpColor="white"
         />
       </div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content v-if="c.nivel == 3">
       <!-- TIPO DE PROCESSO -->

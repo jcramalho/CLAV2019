@@ -1,8 +1,8 @@
 <template>
   <!-- BLOCO DESCRITIVO -->
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header>
-      <div class="separador">
+    <v-expansion-panel-header  class="expansion-panel-heading">
+      <div>
         Descritivo da Classe
         <InfoBox
           header="Descritivo da Classe"
@@ -10,6 +10,9 @@
           helpColor="white"
         />
       </div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row>

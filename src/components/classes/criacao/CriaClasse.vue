@@ -106,8 +106,8 @@
 
             <!-- DECISÕES DE AVALIAÇÂO -->
             <v-expansion-panel popout focusable v-if="classe.nivel == 3">
-              <v-expansion-panel-header>
-                <div class="separador">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
                   Decisões de Avaliação
                   <InfoBox
                     header="Decisões de Avaliação"
@@ -115,6 +115,9 @@
                     helpColor="white"
                   />
                 </div>
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
               </v-expansion-panel-header>
 
               <v-expansion-panel-content>
