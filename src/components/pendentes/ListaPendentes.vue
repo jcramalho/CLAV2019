@@ -9,6 +9,8 @@
         :items="pendentes"
         class="ma-2 elevation-1"
         :footer-props="procsFooterProps"
+        :sort-by="['dataAtualizacao']"
+        :sort-desc="[true]"
       >
         <template v-slot:no-data>
           <br/>
@@ -28,27 +30,12 @@
             <td class="subheading">{{ props.item.numInterv }}</td>
             <td class="subheading">{{ props.item.criadoPor }}</td>
             <td class="subheading">{{ props.item.acao }}</td>
-            <!--td class="subheading" v-if="props.item.tipo == 'Classe'">
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark v-on="on">Classe</v-btn>
-              </template>
-              <span
-              >{{ props.item.objeto.codigo }}:
-              {{ props.item.objeto.titulo }}</span
-              >
-            </v-tooltip>
-            </td-->
             <td class="subheading">{{ props.item.tipo }}</td>
             <td class="subheading">
-              <v-btn
-                rounded
-                color="indigo darken-3"
-                dark
-                @click="continuarTrabalho(props.item)"
-              >
-                Continuar trabalho
-              </v-btn>
+              <PainelOperacoesPendentes 
+                @continuar="continuarTrabalho(props.item)"
+                @apagar="apagarTrabalho(props.item)"
+              />
             </td>
           </tr>
         </template>
@@ -59,11 +46,30 @@
         </template>
       </v-data-table>
     </v-card-text>
+
+    <v-dialog v-model="pendenteRemovido" width="50%">
+        <v-card>
+          <v-card-title>Eliminação do trabalho</v-card-title>
+          <v-card-text>
+            <p>O seu pedido de eliminação foi processado com sucesso.</p>
+            <p>Toda a informação associada foi eliminada.</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="indigo darken-4" dark @click="pendenteRemovido = false">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
   </v-card>
 </template>
 
 <script>
+import PainelOperacoesPendentes from "@/components/pendentes/PainelOperacoesPendentes";
 export default {
+  components: {
+    PainelOperacoesPendentes
+  },
+
   data: () => ({
     headers: [
       {
@@ -109,9 +115,11 @@ export default {
       "items-per-page-options": [10, 20, 100, -1],
       "items-per-page-all-text": "Todos"
     },
-    pendentes: []
+    pendentes: [],
+    pendenteRemovido: false
   }),
-  mounted: async function() {
+
+  created: async function() {
     try {
       var response = await this.$request("get", "/pendentes");
       this.pendentes = response.data;
@@ -119,12 +127,27 @@ export default {
       return e;
     }
   },
+
   methods: {
     rowClicked: function(item) {
       this.$emit("pendenteSelected", item);
     },
     continuarTrabalho: function(item) {
       this.$router.push("/pendentes/continuar/" + item._id);
+    },
+    apagarTrabalho: async function(item) {
+      // Apagar da BD e apagar da lista carregada
+      try {
+        var response = await this.$request("delete", "/pendentes/" + item._id);
+        if(response.status == 200){
+          this.pendenteRemovido = true;
+          var index = this.pendentes.findIndex(p => p._id === item._id);
+          this.pendentes.splice(index, 1);
+        } 
+      } 
+      catch (e) {
+        return e;
+      }
     }
   }
 };
