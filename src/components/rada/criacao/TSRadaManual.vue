@@ -22,7 +22,7 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" />
         </v-col>
       </v-row>
-      <!-- {{ TS.classes }} -->
+      {{ TS.classes }}
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -259,14 +259,13 @@ export default {
       if (UI != undefined) {
         UI.classesAssociadas.push({
           codigo: serie_classe.codigo,
-          titulo: serie_classe.titulo,
           tipo: serie_classe.tipo
         });
       } else {
         this.TS.UIs.push({
           codigo: novaUI.codigo,
           codCota: "",
-          titulo: novaUI.titulo,
+          titulo: "",
           dataInicial: null,
           dataFinal: null,
           produtor: {
@@ -276,7 +275,6 @@ export default {
           classesAssociadas: [
             {
               codigo: serie_classe.codigo,
-              titulo: serie_classe.titulo,
               tipo: serie_classe.tipo
             }
           ],
@@ -340,7 +338,7 @@ export default {
         if (relacao.serieRelacionada.tipo == "Série") {
           classe_relacionada = {
             codigo: relacao.serieRelacionada.codigo,
-            titulo: relacao.serieRelacionada.titulo,
+            titulo: "",
             descricao: "",
             dataInicial: null,
             dataFinal: null,
@@ -366,7 +364,7 @@ export default {
         } else {
           classe_relacionada = {
             codigo: relacao.serieRelacionada.codigo,
-            titulo: relacao.serieRelacionada.titulo,
+            titulo: "",
             descricao: "",
             dataInicial: null,
             dataFinal: null,
@@ -422,9 +420,7 @@ export default {
         classe_relacionada.relacoes.push({
           relacao: relacao_inversa,
           serieRelacionada: {
-            codigo: serie_classe.codigo,
-            titulo: serie_classe.titulo,
-            tipo: serie_classe.tipo
+            codigo: serie_classe.codigo
           }
         });
       }

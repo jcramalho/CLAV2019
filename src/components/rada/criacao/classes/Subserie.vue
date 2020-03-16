@@ -167,14 +167,13 @@ export default {
         if (UI != undefined) {
           UI.classesAssociadas.push({
             codigo: clone_newSerie.codigo,
-            titulo: clone_newSerie.titulo,
             tipo: clone_newSerie.tipo
           });
         } else {
           this.UIs.push({
             codigo: clone_newSerie.UIs[i].codigo,
             codCota: "",
-            titulo: clone_newSerie.UIs[i].titulo,
+            titulo: "",
             dataInicial: null,
             dataFinal: null,
             produtor: {
@@ -184,7 +183,6 @@ export default {
             classesAssociadas: [
               {
                 codigo: clone_newSerie.codigo,
-                titulo: clone_newSerie.titulo,
                 tipo: clone_newSerie.tipo
               }
             ],
@@ -221,7 +219,7 @@ export default {
           if (clone_newSubserie.relacoes[i].serieRelacionada.tipo == "Série") {
             classe_relacionada = {
               codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
-              titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
+              titulo: "",
               descricao: "",
               dataInicial: null,
               dataFinal: null,
@@ -247,7 +245,7 @@ export default {
           } else {
             classe_relacionada = {
               codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
-              titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
+              titulo: "",
               descricao: "",
               dataInicial: null,
               dataFinal: null,
@@ -309,8 +307,7 @@ export default {
           classe_relacionada.relacoes.push({
             relacao: relacao_inversa,
             serieRelacionada: {
-              codigo: clone_newSubserie.codigo,
-              titulo: clone_newSubserie.titulo
+              codigo: clone_newSubserie.codigo
             }
           });
         }

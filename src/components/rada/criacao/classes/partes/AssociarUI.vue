@@ -5,6 +5,7 @@
         <div class="info-label">Unidades de Instalação</div>
       </v-col>
       <v-col md="8" sm="8">
+        {{ newSerie.UIs }}
         <v-data-table
           :headers="headers"
           :items="newSerie.UIs"
@@ -26,12 +27,12 @@
       </v-col>
     </v-row>
     <v-card outlined>
-      <div class="info-label" style="padding-right:-2px">Adicionar Unidades de Instalação</div>
+      <div class="info-label">Adicionar Unidades de Instalação</div>
 
       <v-card-text>
         <v-form ref="addRel" :lazy-validation="false">
           <v-row>
-            <v-col sm="5" xs="12">
+            <v-col sm="11" xs="12">
               <v-combobox
                 :rules="[v => !!v || 'Campo obrigatório!']"
                 v-model="cod"
@@ -40,16 +41,6 @@
                 solo
                 clearable
               ></v-combobox>
-            </v-col>
-            <v-col sm="6" xs="12">
-              <v-text-field
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                :disabled="iscodvalido"
-                v-model="tit"
-                label="Título"
-                solo
-                clearable
-              ></v-text-field>
             </v-col>
             <v-col sm="1" xs="12">
               <v-btn icon text rounded @click="adicionarUI">
@@ -79,22 +70,13 @@ export default {
   data() {
     return {
       alertOn: false,
-      iscodvalido: false,
       cod: "",
-      tit: "",
       headers: [
         {
           text: "Código",
           align: "center",
           value: "codigo",
-          width: "30%",
-          class: ["table-header", "body-2", "font-weight-bold"]
-        },
-        {
-          text: "Título",
-          align: "center",
-          value: "titulo",
-          width: "65%",
+          width: "95%",
           class: ["table-header", "body-2", "font-weight-bold"]
         },
         {
@@ -119,8 +101,7 @@ export default {
       if (this.$refs.addRel.validate()) {
         if (!(await this.validateUI())) {
           this.newSerie.UIs.push({
-            codigo: this.cod,
-            titulo: this.tit
+            codigo: this.cod
           });
           this.$refs.addRel.reset();
         } else {
@@ -132,18 +113,6 @@ export default {
       return this.newSerie.UIs.some(el => {
         return el.codigo == this.cod;
       });
-    }
-  },
-  watch: {
-    cod: function(novo, old) {
-      let c = this.UIs.find(e => e.codigo == novo);
-
-      if (c != undefined) {
-        this.iscodvalido = true;
-        this.tit = c.titulo;
-      } else {
-        this.iscodvalido = false;
-      }
     }
   }
 };
