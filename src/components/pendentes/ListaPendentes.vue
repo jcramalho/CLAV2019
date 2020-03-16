@@ -76,39 +76,39 @@ export default {
         text: "Criado em",
         sortable: true,
         value: "dataCriacao",
-        class: "title indigo darken-1 white--text"
+        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Atualizado em",
         sortable: true,
         value: "dataAtualizacao",
-        class: "title indigo darken-1 white--text"
+        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Nº interv.",
         sortable: false,
         value: "numInterv",
-        class: "title indigo darken-1 white--text"
+        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Criado por",
         value: "criadoPor",
         sortable: false,
-        class: "title indigo darken-1 white--text"
+        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Tipo de operação",
         value: "acao",
         sortable: false,
-        class: "title indigo darken-1 white--text"
+        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Tipo de objeto",
         value: "tipo",
         sortable: false,
-        class: "title indigo darken-1 white--text"
+        class: "title indigo lighten-5 indigo--text"
       },
-      { text: "Ações", class: "title indigo darken-1 white--text" }
+      { text: "Ações", class: "title indigo lighten-5 indigo--text" }
     ],
     procsFooterProps: {
       "items-per-page-text": "Pendentes por página",
