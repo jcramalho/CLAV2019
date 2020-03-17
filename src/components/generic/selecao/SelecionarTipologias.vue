@@ -1,12 +1,15 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <v-subheader class="info-label">Selecionar Tipologias de Entidade</v-subheader>
+      <v-subheader class="info-label">
+        Selecionar Tipologias de Entidade
+      </v-subheader>
     </v-col>
     <v-col v-if="tipologiasReady">
       <v-card>
         <v-card-title>
           <v-text-field
+            filled
             v-model="searchTipologias"
             append-icon="search"
             label="Filtrar Tipologias"
@@ -34,12 +37,9 @@
             {{ props.itemsLength }}
           </template>
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            color="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" color="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-card>
     </v-col>

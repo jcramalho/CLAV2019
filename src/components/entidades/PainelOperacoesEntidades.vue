@@ -282,10 +282,6 @@ export default {
 
     validarEntidadeAlteracao() {
       let numeroErros = 0;
-      // Designação
-      if (this.e.designacao == "" || this.e.designacao == null) {
-        numeroErros++;
-      }
 
       // Internacional
       if (this.e.internacional == "" || this.e.internacional == null) {

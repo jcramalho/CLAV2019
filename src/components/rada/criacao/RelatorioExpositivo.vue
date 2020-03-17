@@ -12,6 +12,7 @@
               :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-model="RE.entidadesProd"
               :items="entidadesProcessadas"
+              v-on:keyup.delete="console.log('delete')"
               item-text="searchField"
               placeholder="Selecione as Entidades Produtoras."
               chips
@@ -268,7 +269,7 @@
 import NovaEntidade from "./classes/partes/NovaEntidade";
 
 export default {
-  props: ["RE", "entidades", "tipologias", "classes"],
+  props: ["RE", "entidades", "tipologias", "classes", "UIs"],
   components: {
     NovaEntidade
   },
@@ -321,33 +322,45 @@ export default {
       if (index >= 0) this.RE.tipologiasProd.splice(index, 1);
     },
     produtoraEntidadeClasse(sigla, desi) {
-      let classes = this.classes.filter(e => e.tipo == "Série");
+      let classes = this.classes.filter(
+        e =>
+          e.tipo == "Série" &&
+          e.entProdutoras.some(
+            ent => ent.sigla == sigla && ent.designacao == desi
+          )
+      );
 
-      for (let i = 0; i < classes.length; i++) {
-        for (let j = 0; j < classes[i].entProdutoras.length; j++) {
-          if (
-            classes[i].entProdutoras[j].sigla == sigla &&
-            classes[i].entProdutoras[j].designacao == desi
-          ) {
-            return false;
-          }
-        }
+      let uis = this.UIs.filter(e =>
+        e.produtor.entProdutoras.some(
+          ent => ent.sigla == sigla && ent.designacao == desi
+        )
+      );
+
+      if (classes.length > 0 || uis.length > 0) {
+        return false;
       }
+
       return true;
     },
     produtoraTipologiaClasse(sigla, desi) {
-      let classes = this.classes.filter(e => e.tipo == "Série");
+      let classes = this.classes.filter(
+        e =>
+          e.tipo == "Série" &&
+          e.tipologiasProdutoras.some(
+            tip => tip.sigla == sigla && tip.designacao == desi
+          )
+      );
 
-      for (let i = 0; i < classes.length; i++) {
-        for (let j = 0; j < classes[i].tipologiasProdutoras.length; j++) {
-          if (
-            classes[i].tipologiasProdutoras[j].sigla == sigla &&
-            classes[i].tipologiasProdutoras[j].designacao == desi
-          ) {
-            return false;
-          }
-        }
+      let uis = this.UIs.filter(e =>
+        e.produtor.tipologiasProdutoras.some(
+          ent => ent.sigla == sigla && ent.designacao == desi
+        )
+      );
+
+      if (classes.length > 0 || uis.length > 0) {
+        return false;
       }
+
       return true;
     }
   }

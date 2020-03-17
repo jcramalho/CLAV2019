@@ -14,11 +14,11 @@
                 props.item.relacao
                 }}
               </template>
-              <template v-slot:item.tipo="props">
+              <!-- <template v-slot:item.tipo="props">
                 {{
                 props.item.serieRelacionada.tipo
                 }}
-              </template>
+              </template>-->
               <template v-slot:item.edicao="props">
                 <td>
                   <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
@@ -26,9 +26,7 @@
               </template>
               <template v-slot:item.serieRelacionada="props">
                 {{
-                props.item.serieRelacionada.codigo +
-                " - " +
-                props.item.serieRelacionada.titulo
+                props.item.serieRelacionada.codigo
                 }}
               </template>
             </v-data-table>
@@ -73,17 +71,7 @@
               </v-row>
 
               <v-row>
-                <v-col sm="8" xs="12">
-                  <v-text-field
-                    :disabled="iscodvalido"
-                    :rules="[v => !!v || 'Campo obrigatório!']"
-                    v-model="titrel"
-                    label="Título"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-col>
-                <v-col sm="4" xs="12">
+                <v-col sm="12" xs="12">
                   <v-select
                     :disabled="iscodvalido"
                     :rules="[v => !!v || 'Campo obrigatório!']"
@@ -127,7 +115,6 @@ export default {
       alertOn: false,
       rel: "",
       codrel: null,
-      titrel: "",
       listaRelacoes: [
         "Antecessora de",
         "Sucessora de",
@@ -142,7 +129,7 @@ export default {
           text: "Relação",
           align: "center",
           value: "relacao",
-          width: "20%",
+          width: "30%",
           class: ["table-header", "body-2", "font-weight-bold"]
         },
         {
@@ -150,13 +137,6 @@ export default {
           align: "center",
           value: "serieRelacionada",
           width: "65%",
-          class: ["table-header", "body-2", "font-weight-bold"]
-        },
-        {
-          text: "Tipo",
-          align: "center",
-          value: "tipo",
-          width: "10%",
           class: ["table-header", "body-2", "font-weight-bold"]
         },
         {
@@ -177,10 +157,8 @@ export default {
   watch: {
     codrel: function(novo, old) {
       let c = this.classes.find(e => e.codigo == novo);
-
       if (c != undefined) {
         this.iscodvalido = true;
-        this.titrel = c.titulo;
         this.tipoClasse = c.tipo;
       } else {
         this.iscodvalido = false;
@@ -216,11 +194,12 @@ export default {
             relacao: this.rel,
             serieRelacionada: {
               codigo: this.codrel,
-              titulo: this.titrel,
               tipo: this.tipoClasse
             }
           });
           this.$refs.addRel.reset();
+          this.iscodvalido = false;
+          this.tipoClasse = null;
         } else {
           this.alertOn = true;
         }

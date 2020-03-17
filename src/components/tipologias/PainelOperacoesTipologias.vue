@@ -220,16 +220,6 @@ export default {
       return numeroErros;
     },
 
-    validarTipologiaAlteracao() {
-      let numeroErros = 0;
-      // Designação
-      if (this.t.designacao == "" || this.t.designacao == null) {
-        numeroErros++;
-      }
-
-      return numeroErros;
-    },
-
     // Lança o pedido de criação da tipologia no worflow
     async criarAlterarTipologia() {
       try {
@@ -244,7 +234,6 @@ export default {
               break;
 
             case "Alteração":
-              erros = this.validarTipologiaAlteracao();
               break;
 
             default:

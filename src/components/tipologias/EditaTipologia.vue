@@ -5,28 +5,13 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
           <v-toolbar-title class="card-heading"
-            >Editar tipologia de entidade</v-toolbar-title
+            >Editar tipologia de entidade ({{ tipologia.sigla }} -
+            {{ tipologia.designacao }})</v-toolbar-title
           >
         </v-app-bar>
 
         <!-- Content -->
         <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nome da Tipologia</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="tipologia.designacao"
-                maxlength="50"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>

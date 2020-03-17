@@ -7,6 +7,7 @@
       <v-card>
         <v-card-title>
           <v-text-field
+            filled
             v-model="searchProcessos"
             append-icon="search"
             label="Filtrar Processos de negócio"
@@ -34,18 +35,20 @@
             {{ props.itemsLength }}
           </template>
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            color="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" color="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-card>
     </v-col>
     <v-col v-else style="text-align:center;">
       <p>A carregar processos...</p>
-      <v-progress-circular indeterminate size="100" width="10" color="indigo accent-4" />
+      <v-progress-circular
+        indeterminate
+        size="100"
+        width="10"
+        color="indigo accent-4"
+      />
     </v-col>
   </v-row>
 </template>

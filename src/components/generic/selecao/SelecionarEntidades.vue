@@ -7,6 +7,7 @@
       <v-card>
         <v-card-title>
           <v-text-field
+            filled
             v-model="searchEntidades"
             append-icon="search"
             label="Filtrar entidades"
@@ -34,12 +35,9 @@
             {{ props.itemsLength }}
           </template>
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            color="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" color="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-card>
     </v-col>

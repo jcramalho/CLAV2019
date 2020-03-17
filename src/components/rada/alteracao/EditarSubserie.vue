@@ -6,7 +6,10 @@
         treeview_object.titulo
         }}
       </b>
-      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">*</b>
+      <b
+        v-if="treeview_object.eFilhoDe == '' || !treeview_object.temUIs_ou_datas"
+        style="color:red"
+      >*</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
