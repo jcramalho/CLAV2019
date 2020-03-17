@@ -151,15 +151,6 @@ export default {
     },
 
     validarEntidadeAlteracao() {
-      // Designação
-      if (this.e.designacao == "" || this.e.designacao == null) {
-        this.mensagensErro.push({
-          sobre: "Nome da Entidade",
-          mensagem: "O nome da entidade não pode ser vazio."
-        });
-        this.numeroErros++;
-      }
-
       // Internacional
       if (this.e.internacional == "" || this.e.internacional == null) {
         this.mensagensErro.push({
