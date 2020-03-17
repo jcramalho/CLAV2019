@@ -190,6 +190,11 @@
                     </v-btn>
                   </v-col>
                 </v-row>
+                <v-row v-if="!!alertOn">
+                  <v-col>
+                    <v-alert dismissible dense text type="error">Relação já existente!</v-alert>
+                  </v-col>
+                </v-row>
               </v-form>
             </v-card-text>
           </v-card>
@@ -261,7 +266,10 @@ export default {
   computed: {
     getCodigos() {
       return this.classes
-        .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
+        .filter(
+          e =>
+            (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
+        )
         .map(e => e.codigo);
     }
   },
@@ -280,6 +288,7 @@ export default {
   data: () => ({
     menu1: false,
     menu2: false,
+    alertOn: false,
     iscodvalido: false,
     tipoClasse: null,
     dialog: false,
@@ -376,7 +385,7 @@ export default {
               suporte: "",
               medicao: "",
               localizacao: [],
-              UIs: [{ codigo: this.UI.codigo}],
+              UIs: [{ codigo: this.UI.codigo }],
               entProdutoras: [],
               tipologiasProdutoras: [],
               legislacao: [],
@@ -411,15 +420,24 @@ export default {
         }
       }
     },
-    adicionarClasseUI() {
+    async adicionarClasseUI() {
       if (this.$refs.addRel.validate()) {
-        this.UI.classesAssociadas.push({
-          codigo: this.cod,
-          tipo: this.tipoClasse
-        });
+        if (!(await this.validateUI())) {
+          this.UI.classesAssociadas.push({
+            codigo: this.cod,
+            tipo: this.tipoClasse
+          });
 
-        this.$refs.addRel.reset();
+          this.$refs.addRel.reset();
+        } else {
+          this.alertOn = true;
+        }
       }
+    },
+    validateUI: function() {
+      return this.UI.classesAssociadas.some(el => {
+        return el.codigo == this.cod;
+      });
     }
   }
 };

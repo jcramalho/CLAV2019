@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row v-if="UIs[0]">
-      {{UIs}}
+      <!-- {{UIs}} -->
       <v-col cols="12" xs="12" sm="12">
         <v-text-field
           v-model="search"

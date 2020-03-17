@@ -5,7 +5,7 @@
         <div class="info-label">Unidades de Instalação</div>
       </v-col>
       <v-col md="8" sm="8">
-        {{ newSerie.UIs }}
+        <!-- {{ newSerie.UIs }} -->
         <v-data-table
           :headers="headers"
           :items="newSerie.UIs"

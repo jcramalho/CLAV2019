@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <!-- <v-btn color="indigo lighten-2" dark class="ma-2" v-on="on"></v-btn> -->
-      <tr style="text-align: center" v-on="on" @click="cloneUI">
+      <tr :style="'text-align: center; background-color:' + isComplete" v-on="on" @click="cloneUI">
         <td>{{ UI.codigo }}</td>
         <td>{{ UI.titulo }}</td>
       </tr>
@@ -241,9 +241,6 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <!-- <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-        </v-btn>-->
         <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="guardar">Atualizar</v-btn>
       </v-card-actions>
@@ -260,9 +257,20 @@ export default {
     EntidadesProdutoras
   },
   computed: {
+    isComplete() {
+      let back_color = "#FAFAFA";
+
+      if (this.UI.classesAssociadas.length == 0 || this.UI.titulo == "") {
+        back_color = "#FFEBEE";
+      }
+      return back_color;
+    },
     getCodigos() {
       return this.classes
-        .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
+        .filter(
+          e =>
+            (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
+        )
         .map(e => e.codigo);
     }
   },
@@ -373,7 +381,7 @@ export default {
         classe.UIs.push({ codigo: codigo_UI });
       }
     },
-    editaUI(UI_real, UI_copia) {
+    editaClasses(UI_real, UI_copia) {
       let novo_classesAssociadas = [];
 
       /*
@@ -397,7 +405,7 @@ export default {
       }
       /*
       
-        Iterar o array original de relacoes
+        Iterar o array original de uis
 
       */
       for (let j = 0; j < UI_real.classesAssociadas.length; j++) {
@@ -415,18 +423,20 @@ export default {
       return novo_classesAssociadas;
     },
     guardar() {
-      this.UI.classesAssociadas = this.editaUI(this.UI, this.UI_clone);
+      if (this.$refs.formUI.validate()) {
+        this.UI.classesAssociadas = this.editaClasses(this.UI, this.UI_clone);
 
-      this.UI.titulo = this.UI_clone.titulo;
-      this.UI.codCota = this.UI_clone.codCota;
-      this.UI.dataInicial = this.UI_clone.dataInicial;
-      this.UI.dataFinal = this.UI_clone.dataFinal;
-      this.UI.produtor = this.UI_clone.produtor;
-      this.UI.descricao = this.UI_clone.descricao;
-      this.UI.notas = this.UI_clone.notas;
-      this.UI.localizacao = this.UI_clone.localizacao;
+        this.UI.titulo = this.UI_clone.titulo;
+        this.UI.codCota = this.UI_clone.codCota;
+        this.UI.dataInicial = this.UI_clone.dataInicial;
+        this.UI.dataFinal = this.UI_clone.dataFinal;
+        this.UI.produtor = this.UI_clone.produtor;
+        this.UI.descricao = this.UI_clone.descricao;
+        this.UI.notas = this.UI_clone.notas;
+        this.UI.localizacao = this.UI_clone.localizacao;
 
-      this.dialog = false;
+        this.dialog = false;
+      }
     },
     remove: function(item) {
       this.UI_clone.classesAssociadas = this.UI_clone.classesAssociadas.filter(
