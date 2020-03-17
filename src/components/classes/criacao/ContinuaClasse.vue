@@ -4,7 +4,7 @@
       <!-- HEADER -->
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Nova Classe</v-toolbar-title>
+          <v-toolbar-title class="card-heading">Nova Classe (continuação do trabalho guardado)</v-toolbar-title>
         </v-app-bar>
 
         <v-card-text>
@@ -19,29 +19,8 @@
             </v-col>
           </v-row>
 
-          <!-- CLASSE PAI -->
-          <v-row v-if="classe.nivel > 1">
-            <v-col cols="2">
-              <div class="info-label">
-                Classe Pai:
-                <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
-              </div>
-            </v-col>
-            <v-col>
-              <v-select
-                item-text="label"
-                item-value="value"
-                v-model="classe.pai.codigo"
-                :items="classesPai"
-                label="Selecione uma classe de nível superior"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
-
           <!-- CÓDIGO DA NOVA CLASSE -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+          <v-row>
             <v-col cols="2">
               <div class="info-label">
                 Código:
@@ -52,18 +31,14 @@
               </div>
             </v-col>
             <v-col>
-              <v-text-field
-                v-model="classe.codigo"
-                label="Código"
-                solo
-                clearable
-              ></v-text-field>
-              <span style="color: red">{{ mensValCodigo }}</span>
+              <div class="info-content">
+                {{ classe.codigo }}
+              </div>
             </v-col>
           </v-row>
 
           <!-- TÍTULO -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+          <v-row>
             <v-col cols="2">
               <div class="info-label">
                 Título:
@@ -87,7 +62,7 @@
             <!-- DESCRITIVO DA CLASSE -->
             <BlocoDescritivo :c="classe" />
 
-            <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+            <!-- CONTEXTO DE AVALIAÇÃO DA CLASSE -->
             <BlocoContexto
               :c="classe"
               :semaforos="semaforos"
@@ -241,40 +216,9 @@ export default {
   created: async function() {
     this.classe = this.obj.objeto;
     this.pendenteID = this.obj._id;
-    // alert(JSON.stringify(this.pendenteID));
-    await this.loadPais();
   },
 
   watch: {
-    "classe.pai.codigo": function() {
-      // O código da classe depende da classe pai
-      if (this.classe.codigo == "") {
-        if (this.classe.pai.codigo)
-          this.classe.codigo = this.classe.pai.codigo + ".";
-      }
-    },
-
-    "classe.codigo": async function() {
-      try {
-        this.mensValCodigo = "";
-        if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
-          this.mensValCodigo =
-            "Formato de código inválido! Deve ser: " +
-            this.formatoCodigo[this.classe.nivel];
-        } else if (!this.classe.codigo.includes(this.classe.pai.codigo)) {
-          this.mensValCodigo =
-            "Não pode alterar o código do pai selecionado em cima...";
-        } else {
-          var existe = await this.verificaExistenciaCodigo(this.classe.codigo);
-          if (existe) {
-            this.mensValCodigo = "Código já existente na base de dados...";
-          }
-        }
-      } catch (erro) {
-        return erro;
-      }
-    },
-
     "classe.temSubclasses4Nivel": function() {
       // Se passou a verdade vamos criar um par de subclasses
       // Informação base:
@@ -376,29 +320,6 @@ export default {
   },
 
   methods: {
-    // Carrega os potenciais pais da BD, quando alguém muda o nível para >1....................
-
-    loadPais: async function() {
-      try {
-        var response = await this.$request(
-          "get",
-          "/classes?nivel=" + (this.classe.nivel - 1)
-        );
-        this.classesPai = response.data
-          .map(function(item) {
-            return {
-              label: item.codigo + " - " + item.titulo,
-              value: item.id.split("#c")[1]
-            };
-          })
-          .sort(function(a, b) {
-            return a.label.localeCompare(b.label);
-          });
-      } catch (erro) {
-        return erro;
-      }
-    },
-
     // Carrega as entidades da BD....................
 
     loadEntidades: async function() {

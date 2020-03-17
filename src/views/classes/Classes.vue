@@ -183,6 +183,8 @@ export default {
       { text: "Título", value: { nome: "titulo", enum: [] } },
       { text: "Estado", value: { nome: "status", enum: [] } },
       { text: "Descrição", value: { nome: "descricao", enum: [] } },
+      { text: "Tipo de processo", value: { nome: "tp", enum: [] } },
+      { text: "Processo Transversal", value: { nome: "pt", enum: [] } },
       { text: "Notas de Aplicação", value: { nome: "na", enum: [] } },
       {
         text: "Exemplos de Notas de Aplicação",
@@ -238,9 +240,11 @@ export default {
     this.classesOriginal = this.classesTree;
 
     await this.loadStatus();
+    await this.loadTipoProc();
+    await this.loadProcTrans();
     await this.loadPCAFormasContagem();
     await this.loadPCASubFormasContagem();
-    this.loadCriterios();
+    await this.loadCriterios();
 
     var entidades = await this.$request("get", "/entidades");
     this.entidades = entidades.data.map(e => {
@@ -257,77 +261,85 @@ export default {
         }
       }
     },
-    loadEnum: function(nomeCampo, n_enum) {
-      var found = false;
+    load: async function(voc, transF, campo) {
+      var response = await this.$request("get", "/vocabularios/" + voc);
+      var list = response.data.map(transF);
 
+      if (list.length > 0 && typeof list[0] === "object") {
+        list = list.sort((a, b) => a.text.localeCompare(b.text));
+      } else {
+        list = list.sort();
+      }
+
+      var found = false;
       for (var i = 0; i < this.camposPesquisa.length && !found; i++) {
-        if (this.camposPesquisa[i].text == nomeCampo) {
-          this.camposPesquisa[i].value.enum = n_enum;
+        if (this.camposPesquisa[i].text == campo) {
+          this.camposPesquisa[i].value.enum = list;
           found = true;
         }
       }
     },
     loadStatus: async function() {
-      var response = await this.$request("get", "/vocabularios/vc_status");
-      var status = response.data
-        .map(item => {
-          return {
-            text: item.termo,
-            value: item.idtermo.split("#vc_status_")[1]
-          };
-        })
-        .sort((a, b) => a.text.localeCompare(b.text));
+      var transF = item => {
+        return {
+          text: item.termo,
+          value: item.idtermo.split("#vc_status_")[1]
+        };
+      };
 
-      this.loadEnum("Estado", status);
+      await this.load("vc_status", transF, "Estado");
+    },
+    loadTipoProc: async function() {
+      await this.load(
+        "vc_processoTipo",
+        item => item.termo,
+        "Tipo de processo"
+      );
+    },
+    loadProcTrans: async function() {
+      var transF = item => {
+        return {
+          text: item.termo,
+          value: item.termo.charAt(0)
+        };
+      };
+
+      await this.load(
+        "vc_processoTransversalidade",
+        transF,
+        "Processo Transversal"
+      );
     },
     loadPCAFormasContagem: async function() {
-      var response = await this.$request(
-        "get",
-        "/vocabularios/vc_pcaFormaContagem"
+      await this.load(
+        "vc_pcaFormaContagem",
+        item => item.termo,
+        "Forma de contagem do PCA"
       );
-
-      var pcaFormasContagem = response.data.map(item => item.termo).sort();
-      this.loadEnum("Forma de contagem do PCA", pcaFormasContagem);
     },
     loadPCASubFormasContagem: async function() {
-      var response = await this.$request(
-        "get",
-        "/vocabularios/vc_pcaSubformaContagem"
+      await this.load(
+        "vc_pcaSubformaContagem",
+        item => item.desc,
+        "Subforma de contagem do PCA"
       );
-
-      var pcaSubFormasContagem = response.data.map(item => item.desc).sort();
-      this.loadEnum("Subforma de contagem do PCA", pcaSubFormasContagem);
     },
-    loadCriterios: function() {
-      var criterios = [
-        {
-          text: "Critério Legal",
-          value: "CriterioJustificacaoLegal"
-        }
-      ];
-      var criteriosPCA = criterios.concat([
-        {
-          text: "Critério Gestionário",
-          value: "CriterioJustificacaoGestionario"
-        },
-        {
-          text: "Critério de Utilidade Administrativa",
-          value: "CriterioJustificacaoUtilidadeAdministrativa"
-        }
-      ]);
-      var criteriosDF = criterios.concat([
-        {
-          text: "Critério de Densidade Informacional",
-          value: "CriterioJustificacaoDensidadeInfo"
-        },
-        {
-          text: "Critério de Complementaridade Informacional",
-          value: "CriterioJustificacaoComplementaridadeInfo"
-        }
-      ]);
+    loadCriterios: async function() {
+      var transF = item => {
+        return {
+          text: item.termo,
+          value:
+            "CriterioJustificacao" +
+            item.termo
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .replace("informacional", "Info")
+              .replace(" ", "")
+        };
+      };
 
-      this.loadEnum("Justificação do PCA", criteriosPCA);
-      this.loadEnum("Justificação do DF", criteriosDF);
+      await this.load("vc_pcaCriterios", transF, "Justificação do PCA");
+      await this.load("vc_dfCriterios", transF, "Justificação do DF");
     },
     addActive: function(code) {
       if (!this.selected.includes(code)) {
@@ -489,6 +501,8 @@ export default {
           name: lclasses[i].nome,
           titulo: lclasses[i].titulo.toLowerCase(),
           status: lclasses[i].status.toLowerCase(),
+          tp: lclasses[i].tp.toLowerCase(),
+          pt: lclasses[i].pt.toLowerCase(),
           na: lclasses[i].na.toLowerCase(),
           exemploNa: lclasses[i].exemploNa.toLowerCase(),
           ne: lclasses[i].ne.toLowerCase(),
