@@ -19,6 +19,7 @@
                   <v-select
                     v-model="ent"
                     :items="entidades"
+                    :menu-props="{ bottom: true, offsetY: true }"
                     label="Selecione a entidade"
                     dense
                     outlined
