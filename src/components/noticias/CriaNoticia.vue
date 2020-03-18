@@ -11,7 +11,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Título:</div>
+              <div class="info-label">Título</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -64,7 +64,7 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Descrição:</div>
+              <div class="info-label">Descrição</div>
             </v-col>
             <v-col>
               <v-textarea
@@ -81,28 +81,28 @@
               <v-toolbar dense short flat>
                 <v-toolbar-title>Elementos de Texto</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn flat small text @click="addHeader"
+                <v-btn small text @click="addHeader"
                   ><v-icon>title</v-icon></v-btn
                 >
-                <v-btn flat small text @click="addBold"
+                <v-btn small text @click="addBold"
                   ><v-icon>format_bold</v-icon></v-btn
                 >
-                <v-btn flat small text @click="addItalic"
+                <v-btn small text @click="addItalic"
                   ><v-icon>format_italic</v-icon></v-btn
                 >
-                <v-btn flat small text @click="addChain"
+                <v-btn small text @click="addChain"
                   ><v-icon>strikethrough_s</v-icon></v-btn
                 >
-                <v-btn flat small text @click="addLink"
+                <v-btn small text @click="addLink"
                   ><v-icon>insert_link</v-icon></v-btn
                 >
-                <v-btn flat small text @click="addLine"
+                <v-btn small text @click="addLine"
                   ><v-icon>minimize</v-icon></v-btn
                 >
-                <v-btn flat small text @click="addListItem"
+                <v-btn small text @click="addListItem"
                   ><v-icon>format_list_bulleted</v-icon></v-btn
                 >
-                <v-btn flat small text @click="addTable"
+                <v-btn small text @click="addTable"
                   ><v-icon>table_chart</v-icon></v-btn
                 >
                 <v-dialog v-model="dialog" width="50%">
@@ -160,7 +160,7 @@ export default {
 
     regraData: [
       v =>
-        /[0-9]+\-[0-9]+\-[0-9]+/.test(v) || "Este campo está no formato errado."
+        /[0-9]+-[0-9]+-[0-9]+/.test(v) || "Este campo está no formato errado."
     ],
 
     snackbar: false,

@@ -40,7 +40,7 @@ export default {
 
     preparaCabecalhos(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
-        this.cabecalhos = ["Título", "Data", "Visível", "Operações"];
+        this.cabecalhos = ["Título", "Data", "Publicada", "Operações"];
         this.campos = ["titulo", "data", "ativa", "operacoes"];
       } else {
         this.cabecalhos = ["Título", "Data", ""];

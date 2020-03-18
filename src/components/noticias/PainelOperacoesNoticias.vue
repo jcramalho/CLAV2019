@@ -86,9 +86,20 @@
         <v-card>
           <v-card-title>{{ acao }} de Noticia Submetida</v-card-title>
           <v-card-text>
+            <v-row v-if="acao == 'Alteração'">
+              <v-col cols="2">
+                <div class="info-label">Publicada</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">
+                  {{ t.ativa == true ? "Sim" : "Não" }}
+                </div>
+              </v-col>
+            </v-row> 
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Título:</div>
+                <div class="info-label">Título</div>
               </v-col>
 
               <v-col>
@@ -98,7 +109,7 @@
 
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Data:</div>
+                <div class="info-label">Data</div>
               </v-col>
 
               <v-col>
@@ -106,21 +117,9 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="acao == 'Alteração'">
-              <v-col cols="2">
-                <div class="info-label">Ativa:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">
-                  {{ t.ativa == true ? "Sim" : "Não" }}
-                </div>
-              </v-col>
-            </v-row>
-
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Descrição:</div>
+                <div class="info-label">Descrição</div>
               </v-col>
 
               <v-col>
@@ -215,7 +214,7 @@ export default {
 
       if (this.t.data == "" || this.t.data == null) {
         this.numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.t.data)) {
+      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.t.data)) {
         this.numeroErros++;
       } else {
         let date = new Date();
@@ -308,8 +307,8 @@ export default {
               } else {
                 this.errosValidacao = true;
               }
-            default:
-              break;
+              break;   
+            default:          
           }
         }
       } catch (err) {
