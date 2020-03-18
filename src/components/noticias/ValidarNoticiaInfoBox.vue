@@ -76,7 +76,7 @@ export default {
       //Título
       if (this.t.titulo == "" || this.t.titulo == null) {
         this.mensagensErro.push({
-          sobre: "Título da Notícia",
+          sobre: "Título",
           mensagem: "O título não pode ser vazio."
         });
         this.numeroErros++;
