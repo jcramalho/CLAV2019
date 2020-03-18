@@ -57,6 +57,60 @@
     <v-row align="center" no-gutters v-if="showClasses">
       <v-col>
         <v-card-text>
+          <v-card
+            class="mx-auto mb-4"
+            max-width="1200"
+            v-if="
+              classesCarregadas &&
+                camposUsados[0].campo &&
+                camposUsados[0].valor
+            "
+          >
+            <v-card-title
+              class="white--text title font-weight-black indigo accent-4"
+            >
+              De seguida apresenta-se as classes em que:
+            </v-card-title>
+            <v-card-text>
+              <div
+                v-for="(c, i) in camposUsados"
+                :key="i"
+                class="text-center ma-2"
+              >
+                <span v-if="c.campo.label">
+                  <v-chip dark color="indigo darken-4">
+                    {{ entidades.filter(e => e.value == c.valor)[0].text }}
+                  </v-chip>
+                  é
+                  <v-chip dark label color="indigo accent-4">
+                    {{
+                      c.campo.enum.filter(e => e.value == c.campo.nome)[0].text
+                    }}
+                  </v-chip>
+                </span>
+                <span v-else>
+                  <v-chip dark color="indigo darken-4">
+                    {{
+                      camposPesquisa.filter(
+                        e => e.value.nome == c.campo.nome
+                      )[0].text
+                    }}
+                  </v-chip>
+                  é igual a
+                  <v-chip dark label color="indigo accent-4">
+                    {{
+                      c.campo.enum.length > 0
+                        ? c.campo.enum.filter(e => e.value == c.valor)[0].text
+                        : c.valor
+                    }}
+                  </v-chip>
+                </span>
+                <div class="ma-2" v-if="i + 1 < camposUsados.length">
+                  <v-chip dark color="indigo lighten-2">{{ conetor }}</v-chip>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
           <div v-if="classesCarregadas">
             <v-treeview
               hoverable
@@ -462,7 +516,7 @@ export default {
         this.selected = [];
         this.selectedParents = [];
 
-        var backupCU = JSON.parse(JSON.stringify(this.camposUsados));
+        var backupCaUs = JSON.parse(JSON.stringify(this.camposUsados));
         for (let c of this.camposUsados) {
           c.valor = c.valor.toLowerCase();
         }
@@ -474,7 +528,7 @@ export default {
         }
 
         this.classesTree = classesFiltradas;
-        this.camposUsados = backupCU;
+        this.camposUsados = backupCaUs;
         this.showClasses = true;
       }
     },
@@ -639,7 +693,6 @@ export default {
       return myTree;
     },
     goToClasse: function(id) {
-      //this.$router.push("/classes/consultar/c" + id);
       this.$router.push({
         name: "consultaClasse",
         params: {
