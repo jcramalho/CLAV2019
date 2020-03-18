@@ -86,6 +86,17 @@
         <v-card>
           <v-card-title>{{ acao }} de Noticia Submetida</v-card-title>
           <v-card-text>
+            <v-row v-if="acao == 'Alteração'">
+              <v-col cols="2">
+                <div class="info-label">Publicada</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">
+                  {{ t.ativa == true ? "Sim" : "Não" }}
+                </div>
+              </v-col>
+            </v-row> 
             <v-row>
               <v-col cols="2">
                 <div class="info-label">Título</div>
@@ -103,18 +114,6 @@
 
               <v-col>
                 <div class="info-content">{{ t.data }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="acao == 'Alteração'">
-              <v-col cols="2">
-                <div class="info-label">Publicada</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">
-                  {{ t.ativa == true ? "Sim" : "Não" }}
-                </div>
               </v-col>
             </v-row>
 
