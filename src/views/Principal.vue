@@ -3,7 +3,7 @@
     <v-col>
       <Info />
       <Operacoes :level="level" />
-      <Noticias />
+      <Noticias :level="level" />
     </v-col>
 
     <v-col>

@@ -129,17 +129,6 @@ export default {
       }
     },
 
-    validarTipologiaAlteracao() {
-      // Designação
-      if (this.t.designacao == "" || this.t.designacao == null) {
-        this.mensagensErro.push({
-          sobre: "Nome da Tipologia",
-          mensagem: "O nome da tipologia não pode ser vazio."
-        });
-        this.numeroErros++;
-      }
-    },
-
     async validarTipologia() {
       switch (this.acao) {
         case "Criação":
@@ -147,7 +136,6 @@ export default {
           break;
 
         case "Alteração":
-          this.validarTipologiaAlteracao();
           break;
 
         default:

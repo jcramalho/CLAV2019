@@ -21,8 +21,8 @@
                 color="indigo"
                 v-model="legislacao.tipo"
                 :items="tiposDiploma"
-                solo
-                dense
+                filled
+                label="Selecione uma opção"
               />
             </v-col>
           </v-row>
@@ -33,11 +33,12 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
                 clearable
                 color="indigo"
                 single-line
                 v-model="legislacao.numero"
+                label="Número do diploma"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -60,11 +61,12 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
                 clearable
                 color="indigo"
                 single-line
                 v-model="legislacao.sumario"
+                label="Sumário"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -76,10 +78,11 @@
             <v-col>
               <v-text-field
                 v-model="legislacao.link"
-                solo
+                filled
                 clearable
                 color="indigo"
                 single-line
+                label="Link"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -95,8 +98,7 @@
                 v-model="legislacao.fonte"
                 :items="diplomaFonteTipo"
                 label="Selecione uma opção"
-                solo
-                dense
+                filled
               />
             </v-col>
           </v-row>

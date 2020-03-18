@@ -12,13 +12,16 @@
             <v-stepper v-model="stepNo" vertical>
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
               <v-stepper-step :complete="stepNo > 1" step="1">
-                Identificação da entidade da tabela de seleção
+                Identificação da entidade da tabela de seleção:
+                <span v-if="stepNo<=1">[por selecionar]</span>
+                <span v-else class="indigo--text">{{ ent }}</span>
               </v-stepper-step>
               <v-stepper-content step="1">
                 <v-col>
                   <v-select
                     v-model="ent"
                     :items="entidades"
+                    :menu-props="{ bottom: true, offsetY: true }"
                     label="Selecione a entidade"
                     dense
                     outlined

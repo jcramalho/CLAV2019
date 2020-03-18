@@ -13,6 +13,14 @@
               {{ this.classe.codigo }}:
               {{ this.classe.titulo }}
             </v-toolbar-title>
+            <v-spacer />
+            <v-btn
+              v-if="this.savedSearch"
+              color="indigo accent-4"
+              @click="goToSearch()"
+            >
+              Voltar para os resultados
+            </v-btn>
           </v-app-bar>
 
           <v-card-text>
@@ -564,7 +572,7 @@ import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue"
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
-  props: ["idc"],
+  props: ["idc", "savedSearch"],
   data: () => ({
     classe: {},
     classeLoaded: false,
@@ -594,6 +602,12 @@ export default {
   methods: {
     go: function(idClasse) {
       this.$router.push("/classes/consultar/c" + idClasse);
+    },
+    goToSearch() {
+      this.$router.push({
+        name: "classes",
+        params: { savedSearch: this.savedSearch }
+      });
     }
   },
   mounted: function() {
