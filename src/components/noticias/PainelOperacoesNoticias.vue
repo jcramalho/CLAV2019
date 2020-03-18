@@ -214,7 +214,7 @@ export default {
 
       if (this.t.data == "" || this.t.data == null) {
         this.numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.t.data)) {
+      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.t.data)) {
         this.numeroErros++;
       } else {
         let date = new Date();
@@ -307,8 +307,8 @@ export default {
               } else {
                 this.errosValidacao = true;
               }
-            default:
-              break;
+              break;   
+            default:          
           }
         }
       } catch (err) {

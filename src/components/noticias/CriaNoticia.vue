@@ -160,7 +160,7 @@ export default {
 
     regraData: [
       v =>
-        /[0-9]+\-[0-9]+\-[0-9]+/.test(v) || "Este campo está no formato errado."
+        /[0-9]+-[0-9]+-[0-9]+/.test(v) || "Este campo está no formato errado."
     ],
 
     snackbar: false,
