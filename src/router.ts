@@ -17,6 +17,7 @@ export default new Router({
     {
       path: "/classes",
       name: "classes",
+      props: true,
       component: () => import("./views/classes/Classes.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
@@ -35,6 +36,7 @@ export default new Router({
     {
       path: "/classes/consultar/:idClasse",
       name: "consultaClasse",
+      props: true,
       component: () => import("./views/classes/ClassesConsulta.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },

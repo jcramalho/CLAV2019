@@ -1,8 +1,8 @@
 <template>
-  <v-card class="mx-auto">
-    <v-sheet class="pa-3 indigo lighten-2">
+  <v-card class="mx-auto fill-height">
+    <v-sheet class="indigo lighten-2">
       <v-row align="center" no-gutters>
-        <v-col xs="12" md="7" sm="7" lg="7" xl="7">
+        <v-col xs="7" md="7" sm="7" lg="7" xl="7">
           <v-text-field
             v-model="search"
             label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
@@ -15,27 +15,34 @@
             clear-icon="delete_forever"
           ></v-text-field>
         </v-col>
-        <v-col xs="12" md="2" sm="2" lg="2" xl="2">
-          <div class="text-center">
-            <v-btn @click="processaPesquisa()">
-              <v-icon left>search</v-icon>Pesquisar
-            </v-btn>
-          </div>
+        <v-col class="text-center">
+          <v-btn @click="processaPesquisa()">
+            <v-icon left>search</v-icon>Pesquisar
+          </v-btn>
         </v-col>
-        <v-col xs="12" md="3" sm="3" lg="3" xl="3">
-          <div class="text-center">
-            <v-btn
-              @click="
-                search = '';
-                showClasses = false;
-              "
-            >
-              <v-icon left>filter_list</v-icon>Pesquisa Avançada
-            </v-btn>
-          </div>
+        <v-divider
+          style="height: 50px;"
+          class="mr-10 grey lighten-4"
+          vertical
+        />
+        <v-col class="text-center">
+          <v-btn
+            @click="
+              search = '';
+              showClasses = false;
+            "
+          >
+            <v-icon left>filter_list</v-icon>Pesquisa Avançada
+          </v-btn>
+        </v-col>
+        <v-col v-if="this.selected.length > 0" class="text-center">
+          <v-btn @click="exportarResultados()">
+            <v-icon left>get_app</v-icon>Exportar
+          </v-btn>
         </v-col>
       </v-row>
     </v-sheet>
+
     <v-row align="center" no-gutters v-if="showClasses">
       <v-col>
         <v-card-text>
@@ -49,17 +56,17 @@
               :active="selected"
             >
               <template slot="label" slot-scope="{ item }">
-                <v-btn
-                  text
-                  depressed
-                  @click="$router.push('/classes/consultar/c' + item.id)"
-                >
+                <v-btn text depressed @click="goToClasse(item.id)">
                   {{ item.name }}
                 </v-btn>
                 <br />
               </template>
             </v-treeview>
+            <v-alert type="info" :value="classesTree.length == 0">
+              Sem resultados. Volte a pesquisar...
+            </v-alert>
           </div>
+          <Loading v-else :message="'classes'" />
         </v-card-text>
       </v-col>
     </v-row>
@@ -166,7 +173,11 @@
 </template>
 
 <script>
+import Loading from "@/components/generic/Loading";
+
 export default {
+  props: ["savedSearch"],
+  components: { Loading },
   data: () => ({
     showClasses: true,
     regraCampo: [v => !!v || "Campo a pesquisar é obrigatório."],
@@ -239,12 +250,22 @@ export default {
     this.classesTree = await this.preparaTree(myClasses.data);
     this.classesOriginal = this.classesTree;
 
-    await this.loadStatus();
-    await this.loadTipoProc();
-    await this.loadProcTrans();
-    await this.loadPCAFormasContagem();
-    await this.loadPCASubFormasContagem();
-    await this.loadCriterios();
+    if (this.savedSearch) {
+      this.camposUsados = this.savedSearch.camposUsados;
+      this.classesTree = this.savedSearch.classesTree;
+      this.camposPesquisa = this.savedSearch.camposPesquisa;
+      this.selected = this.savedSearch.selected;
+      this.selectedParents = this.savedSearch.selectedParents;
+      this.conetor = this.savedSearch.conetor;
+      this.opLogicas = [this.conetor];
+    } else {
+      await this.loadStatus();
+      await this.loadTipoProc();
+      await this.loadProcTrans();
+      await this.loadPCAFormasContagem();
+      await this.loadPCASubFormasContagem();
+      await this.loadCriterios();
+    }
 
     var entidades = await this.$request("get", "/entidades");
     this.entidades = entidades.data.map(e => {
@@ -429,6 +450,7 @@ export default {
         this.selected = [];
         this.selectedParents = [];
 
+        var backupCU = JSON.parse(JSON.stringify(this.camposUsados));
         for (let c of this.camposUsados) {
           c.valor = c.valor.toLowerCase();
         }
@@ -440,10 +462,7 @@ export default {
         }
 
         this.classesTree = classesFiltradas;
-        this.camposUsados = [{ campo: null, valor: "" }];
-        this.cleanNome();
-        this.opLogicas = ["E", "OU"];
-        this.conetor = "E";
+        this.camposUsados = backupCU;
         this.showClasses = true;
       }
     },
@@ -493,6 +512,65 @@ export default {
       this.classesTree = classesFiltradas;
       this.showClasses = true;
     },
+    getTitulo: function(id) {
+      var codigos = id.split(".");
+      var nivel = codigos.length;
+      var found;
+      var classes = this.classesTree;
+
+      for (var i = 0; i < nivel; i++) {
+        found = null;
+        for (var j = 0; j < classes.length && !found; j++) {
+          if (classes[j].id == codigos.slice(0, i + 1).join(".")) {
+            if (i == nivel - 1) {
+              found = classes[j].name.split(" - ")[1];
+            } else {
+              classes = classes[j].children;
+              found = "";
+            }
+          }
+        }
+      }
+
+      return found;
+    },
+    download(filename, content, format) {
+      var blob = new Blob([content], {
+        type: format + ";charset=utf-8;"
+      });
+
+      if (window.navigator.msSaveBlob) {
+        // FOR IE BROWSER
+        navigator.msSaveBlob(blob, filename);
+      } else {
+        // FOR OTHER BROWSERS
+        var url = URL.createObjectURL(blob);
+        var element = document.createElement("a");
+
+        element.setAttribute("href", url);
+        element.setAttribute("download", filename);
+        element.style.display = "none";
+
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      }
+    },
+    exportarResultados: function() {
+      var res = JSON.parse(JSON.stringify(this.selected));
+
+      res = res.map(c => {
+        return {
+          codigo: c,
+          titulo: this.getTitulo(c)
+        };
+      });
+
+      //exportar json, xml e csv TODO
+      //apenas exporta json para já
+      res = JSON.stringify(res, null, 4);
+      this.download("classes.json", res, "application/json");
+    },
     preparaTree: function(lclasses) {
       var myTree = [];
       for (var i = 0; i < lclasses.length; i++) {
@@ -519,6 +597,23 @@ export default {
         });
       }
       return myTree;
+    },
+    goToClasse: function(id) {
+      //this.$router.push("/classes/consultar/c" + id);
+      this.$router.push({
+        name: "consultaClasse",
+        params: {
+          idClasse: "c" + id,
+          savedSearch: {
+            camposUsados: this.camposUsados,
+            classesTree: this.classesTree,
+            selected: this.selected,
+            selectedParents: this.selectedParents,
+            camposPesquisa: this.camposPesquisa,
+            conetor: this.conetor
+          }
+        }
+      });
     }
   },
   watch: {
