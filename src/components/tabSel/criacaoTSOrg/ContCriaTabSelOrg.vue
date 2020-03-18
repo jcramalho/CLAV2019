@@ -11,6 +11,13 @@
           <v-container grid-list-md fluid>
             <v-stepper v-model="stepNo" vertical>
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
+               <v-stepper-step :complete="stepNo > 1" step="1">
+                Identificação da entidade da tabela de seleção:
+                <span class="indigo--text">{{ tabelaSelecao.idEntidade.split("_")[1] }}</span>
+                <span class="indigo--text">{{ tabelaSelecao.designacao }}</span>
+              </v-stepper-step>
+              <v-stepper-content step="1">
+              </v-stepper-content>
               <v-stepper-step :complete="stepNo > 2" step="2">
                 Tipologias de entidade a que pertence
               </v-stepper-step>
@@ -47,14 +54,14 @@
                   "
                   >Continuar</v-btn
                 >
-                <v-btn
+                <!--v-btn
                   text
                   @click="
                     stepNo--;
                     barra(0);
                   "
                   >Voltar</v-btn
-                >
+                -->
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 3" step="3"

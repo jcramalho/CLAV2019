@@ -53,6 +53,15 @@
             "
           />
 
+          <ListagemNot
+            v-else-if="tipo == 'Notícias'"
+            :item="props.item"
+            @rowClicked="go($event.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, props.item.id)
+            "
+          />
+
           <tr
             v-else-if="tipo == 'Autos de Eliminação'"
             @click="go(props.item.id)"
@@ -87,13 +96,15 @@
 import ListagemTI from "@/components/generic/ListagemTI";
 import ListagemTE from "@/components/generic/ListagemTE";
 import ListagemLegislacao from "@/components/generic/ListagemLegislacao";
+import ListagemNot from "@/components/generic/ListagemNot";
 
 export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
   components: {
     ListagemTI,
     ListagemTE,
-    ListagemLegislacao
+    ListagemLegislacao,
+    ListagemNot
   },
   data: () => ({
     search: "",
@@ -129,6 +140,9 @@ export default {
         case "Autos de Eliminação":
           this.$router.push("/autosEliminacao/ae_" + id);
           break;
+        case "Notícias":
+          this.$router.push("/noticias/" + id);
+          break;
       }
     },
 
@@ -142,6 +156,9 @@ export default {
           break;
         case "Legislação":
           this.$router.push("/legislacao/editar/" + id);
+          break;
+        case "Notícias":
+          this.$router.push("/noticias/editar/" + id);
           break;
         // case "Termos de Índice":
         //   this.$router.push("/classes/consultar/c" + id);
