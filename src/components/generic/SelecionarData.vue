@@ -10,6 +10,7 @@
   >
     <template v-slot:activator="{ on }">
       <v-text-field
+        filled
         v-model="dataValor"
         label="Data: AAAA-MM-DD"
         prepend-icon="event"

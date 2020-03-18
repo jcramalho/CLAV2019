@@ -1,8 +1,8 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="indigo darken-3" @click="validarEntidade"
-      >Validar Entidade</v-btn
+    <v-btn dark rounded class="indigo darken-3" @click="validarNoticia"
+      >Validar Noticia</v-btn
     >
 
     <!-- Erros na Validação ....................... -->
@@ -51,7 +51,8 @@
 
 <script>
 export default {
-  props: ["e", "acao"],
+  props: ["t", "acao"],
+
   data() {
     return {
       dialog: false,
@@ -69,119 +70,112 @@ export default {
   },
 
   methods: {
-    async validarEntidadeCriacao() {
-      // Designação
-      if (this.e.designacao === "" || this.e.designacao === null) {
+    async validarNoticiaAll() {
+      let parseAno = this.t.data.split("-");
+
+      //Título
+      if (this.t.titulo == "" || this.t.titulo == null) {
         this.mensagensErro.push({
-          sobre: "Nome da Entidade",
-          mensagem: "O nome da entidade não pode ser vazio."
+          sobre: "Título",
+          mensagem: "O título não pode ser vazio."
+        });
+        this.numeroErros++;
+      }
+
+      // Data
+      if (this.t.data == "" || this.t.data == null) {
+        this.mensagensErro.push({
+          sobre: "Data",
+          mensagem: "A data não pode ser vazia."
+        });
+        this.numeroErros++;
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.t.data)) {
+        this.mensagensErro.push({
+          sobre: "Data",
+          mensagem: "A data está no formato errado."
         });
         this.numeroErros++;
       } else {
-        try {
-          let existeDesignacao = await this.$request(
-            "get",
-            "/entidades/designacao?valor=" +
-              encodeURIComponent(this.e.designacao)
-          );
-          if (existeDesignacao.data) {
+        let date = new Date();
+
+        let ano = parseInt(this.t.data.slice(0, 4));
+        let mes = parseInt(this.t.data.slice(5, 7));
+        let dia = parseInt(this.t.data.slice(8, 10));
+
+        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        if (mes > 12) {
+          this.mensagensErro.push({
+            sobre: "Data",
+            mensagem: "A data apresenta o mês errado."
+          });
+          this.numeroErros++;
+        } else if (dia > dias[mes - 1]) {
+          if (mes == 2) {
+            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
+              this.mensagensErro.push({
+                sobre: "Data",
+                mensagem: "A data apresenta o dia do mês errado."
+              });
+              this.numeroErros++;
+            }
+          } else {
             this.mensagensErro.push({
-              sobre: "Nome da Entidade",
-              mensagem: "Nome da entidade já existente na BD."
+              sobre: "Data",
+              mensagem: "A data apresenta o dia do mês errado."
             });
             this.numeroErros++;
           }
-        } catch (err) {
-          this.numeroErros++;
+        } else if (ano > parseInt(date.getFullYear())) {
           this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação."
+            sobre: "Data",
+            mensagem:
+              "Ano inválido! Por favor selecione uma data anterior à atual"
           });
+          this.numeroErros++;
+        } else if (
+          ano == parseInt(date.getFullYear()) &&
+          mes > parseInt(date.getMonth() + 1)
+        ) {
+          this.mensagensErro.push({
+            sobre: "Data",
+            mensagem:
+              "Mês inválido! Por favor selecione uma data anterior à atual"
+          });
+          this.numeroErros++;
+        } else if (
+          ano == parseInt(date.getFullYear()) &&
+          mes == parseInt(date.getMonth() + 1) &&
+          dia > parseInt(date.getDate())
+        ) {
+          this.mensagensErro.push({
+            sobre: "Data",
+            mensagem:
+              "Dia inválido! Por favor selecione uma data anterior à atual"
+          });
+          this.numeroErros++;
         }
       }
 
-      // Sigla
-      if (this.e.sigla === "" || this.e.sigla === null) {
+      // Descrição
+      if (this.t.desc == "" || this.t.desc == null) {
         this.mensagensErro.push({
-          sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
+          sobre: "Descrição",
+          mensagem: "A descrição não pode ser vazia."
         });
         this.numeroErros++;
-      } else {
-        try {
-          let existeSigla = await this.$request(
-            "get",
-            "/entidades/sigla?valor=" + encodeURIComponent(this.e.sigla)
-          );
-          if (existeSigla.data) {
-            this.mensagensErro.push({
-              sobre: "Sigla",
-              mensagem: "Sigla já existente na BD."
-            });
-            this.numeroErros++;
-          }
-        } catch (err) {
-          this.numeroErros++;
-          this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da sigla."
-          });
-        }
-      }
-
-      // Internacional
-      if (this.e.internacional === "" || this.e.internacional === null) {
-        this.mensagensErro.push({
-          sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção."
-        });
-        this.numeroErros++;
-      }
-
-      // SIOE
-      if (this.e.sioe !== "" && this.e.sioe !== null) {
-        if (this.e.sioe.length > 12) {
-          this.mensagensErro.push({
-            sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
-          });
-          this.numeroErros++;
-        }
       }
     },
 
-    validarEntidadeAlteracao() {
-      // Internacional
-      if (this.e.internacional == "" || this.e.internacional == null) {
-        this.mensagensErro.push({
-          sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção."
-        });
-        this.numeroErros++;
-      }
-
-      // SIOE
-      if (this.e.sioe != "" && this.e.sioe != null) {
-        if (this.e.sioe.length > 12) {
-          this.mensagensErro.push({
-            sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
-          });
-          this.numeroErros++;
-        }
-      }
-    },
-
-    async validarEntidade() {
+    async validarNoticia() {
       switch (this.acao) {
         case "Criação":
-          await this.validarEntidadeCriacao();
+          this.validarNoticiaAll();
           break;
 
         case "Alteração":
-          this.validarEntidadeAlteracao();
+          this.validarNoticiaAll();
           break;
-
         default:
           break;
       }

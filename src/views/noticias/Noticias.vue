@@ -4,7 +4,7 @@
     <Listagem
       v-else
       :lista="noticias"
-      tipo="Noticias"
+      tipo="Notícias"
       :cabecalho="cabecalhos"
       :campos="campos"
     />
@@ -34,43 +34,53 @@ export default {
   methods: {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
-        this.operacoes = [
-          { icon: "edit", descricao: "Alteração" }
-          // { icon: "delete_outline", descricao: "Remoção" }
-        ];
+        this.operacoes = [{ icon: "edit", descricao: "Alteração" }];
       }
     },
 
     preparaCabecalhos(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
-        this.cabecalhos = ["Sigla", "Designação", "Operações"];
-        this.campos = ["id", "designacao", "operacoes"];
+        this.cabecalhos = ["Título", "Data", "Publicada", "Operações"];
+        this.campos = ["titulo", "data", "ativa", "operacoes"];
       } else {
-        this.cabecalhos = ["Sigla", "Designação"];
-        this.campos = ["id", "designacao"];
+        this.cabecalhos = ["Título", "Data", ""];
+        this.campos = ["titulo", "data"];
       }
     },
 
-    preparaLista(listaNoticias) {
+    preparaLista(level, listaNoticias) {
       let myTree = [];
 
       if (this.operacoes.length != 0) {
         for (let i = 0; i < listaNoticias.length; i++) {
-          myTree.push({
-            id: listaNoticias[i].sigla,
-            designacao: listaNoticias[i].designacao,
-            operacoes: this.operacoes
-          });
+          if (level >= NIVEL_MINIMO_ALTERAR) {
+            myTree.push({
+              titulo: listaNoticias[i].titulo,
+              data: listaNoticias[i].data,
+              ativa: listaNoticias[i].ativa,
+              operacoes: this.operacoes,
+              id: listaNoticias[i]._id
+            });
+          } else {
+            myTree.push({
+              titulo: listaNoticias[i].titulo,
+              data: listaNoticias[i].data,
+              operacoes: this.operacoes,
+              id: listaNoticias[i]._id
+            });
+          }
         }
       } else {
         for (let i = 0; i < listaNoticias.length; i++) {
-          myTree.push({
-            id: listaNoticias[i].sigla,
-            designacao: listaNoticias[i].designacao
-          });
+          if (listaNoticias[i].ativa == true) {
+            myTree.push({
+              titulo: listaNoticias[i].titulo,
+              data: listaNoticias[i].data,
+              id: listaNoticias[i]._id
+            });
+          }
         }
       }
-
       return myTree;
     }
   },
@@ -85,9 +95,9 @@ export default {
 
       this.preparaOperacoes(level);
 
-      this.noticias = await this.preparaLista(response.data);
+      this.noticias = await this.preparaLista(level, response.data);
 
-      this.entidadesReady = true;
+      this.noticiasReady = true;
     } catch (e) {
       return e;
     }

@@ -4,7 +4,10 @@
       <b text depressed @click="filterSeries" v-on="on">
         {{ treeview_object.titulo }}
       </b>
-      <b v-if="treeview_object.eFilhoDe == ''" style="color:red">*</b>
+      <b
+        v-show="treeview_object.eFilhoDe == '' || !treeview_object.temUIs_ou_datas"
+        style="color:red"
+      >*</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
@@ -21,7 +24,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" :UIs="UIs"/>
+                <ZonaDescritiva :newSerie="serie" :UIs="UIs" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>

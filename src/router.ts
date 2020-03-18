@@ -17,6 +17,7 @@ export default new Router({
     {
       path: "/classes",
       name: "classes",
+      props: true,
       component: () => import("./views/classes/Classes.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
@@ -35,6 +36,7 @@ export default new Router({
     {
       path: "/classes/consultar/:idClasse",
       name: "consultaClasse",
+      props: true,
       component: () => import("./views/classes/ClassesConsulta.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
@@ -234,6 +236,24 @@ export default new Router({
       path: "/noticias",
       name: "noticias",
       component: () => import("./views/noticias/Noticias.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
+      path: "/noticias/criar",
+      name: "criaNoticia",
+      component: () => import("./views/noticias/NoticiasCria.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/noticias/editar/:idNoticia",
+      name: "editaNoticia",
+      component: () => import("./views/noticias/NoticiasEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/noticias/:idNoticia",
+      name: "consultaNoticia",
+      component: () => import("./views/noticias/NoticiasConsulta.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     // Routes dos pedidos

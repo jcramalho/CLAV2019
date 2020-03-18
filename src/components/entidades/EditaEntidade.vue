@@ -5,7 +5,8 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
-            >Editar Entidade</v-toolbar-title
+            >Editar Entidade ({{ entidade.sigla }} -
+            {{ entidade.designacao }})</v-toolbar-title
           >
         </v-app-bar>
 
@@ -13,33 +14,16 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nome da Entidade</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.designacao"
-                maxlength="150"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
               <div class="info-label">Internacional</div>
             </v-col>
             <v-col>
               <v-select
+                filled
                 v-model="entidade.internacional"
                 :items="['Sim', 'Não']"
                 label="Selecione uma opção"
                 item-color="indigo"
                 color="indigo"
-                solo
-                dense
               />
             </v-col>
           </v-row>
@@ -50,8 +34,9 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
                 clearable
+                label="SIOE"
                 color="indigo"
                 single-line
                 v-model="entidade.sioe"

@@ -17,12 +17,13 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
                 clearable
                 color="indigo"
                 single-line
                 v-model="entidade.designacao"
                 maxlength="150"
+                label="Nome da Entidade"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -35,12 +36,13 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
                 clearable
                 color="indigo"
                 single-line
                 v-model="entidade.sigla"
                 maxlength="10"
+                label="Sigla"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -56,8 +58,7 @@
                 label="Selecione uma opção"
                 item-color="indigo"
                 color="indigo"
-                solo
-                dense
+                filled
               />
             </v-col>
           </v-row>
@@ -68,12 +69,13 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
                 clearable
                 color="indigo"
                 single-line
                 v-model="entidade.sioe"
                 :rules="regraSIOE"
+                label="SIOE"
               ></v-text-field>
             </v-col>
           </v-row>

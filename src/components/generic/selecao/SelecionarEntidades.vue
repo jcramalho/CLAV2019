@@ -7,6 +7,7 @@
       <v-card>
         <v-card-title>
           <v-text-field
+            filled
             v-model="searchEntidades"
             append-icon="search"
             label="Filtrar entidades"

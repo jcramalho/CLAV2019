@@ -15,7 +15,17 @@
           single-line
           hide-details
         ></v-text-field>
-        <v-data-table style="background-color:#fafafa" :headers="headers" :items="UIs" :search="search" :footer-props="footer_props"></v-data-table>
+        <v-data-table
+          style="background-color:#fafafa"
+          :headers="headers"
+          :items="UIs"
+          :search="search"
+          :footer-props="footer_props"
+        >
+          <template v-slot:item="props">
+            <EditaUI :UI="props.item" :RE="RE" :classes="classes" />
+          </template>
+        </v-data-table>
       </v-col>
     </v-row>
     <v-row v-else>
@@ -31,11 +41,13 @@
 
 <script>
 import UI from "@/components/rada/criacao/classes/UI";
+import EditaUI from "@/components/rada/alteracao/EditaUI";
 
 export default {
   props: ["UIs", "RE", "classes"],
   components: {
-    UI
+    UI,
+    EditaUI
   },
   data: () => ({
     search: "",
@@ -49,6 +61,7 @@ export default {
         align: "center",
         value: "codigo",
         width: "50%",
+        sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {

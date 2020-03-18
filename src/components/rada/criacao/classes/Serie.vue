@@ -130,16 +130,16 @@ export default {
     classesHierarquia: [],
     classesRelacoes: [],
     newSerie: {
-      codigo: "02.02",
-      titulo: "SERIE",
-      descricao: "DESC SERIE",
-      dataInicial: "2020-02-13",
-      dataFinal: "2020-02-16",
-      // codigo: "",
-      // titulo: "",
-      // descricao: "",
-      // dataInicial: null,
-      // dataFinal: null,
+      // codigo: "02.02",
+      // titulo: "SERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: null,
+      dataFinal: null,
       tUA: "",
       tSerie: "",
       suporte: "",
@@ -228,14 +228,13 @@ export default {
         if (UI != undefined) {
           UI.classesAssociadas.push({
             codigo: clone_newSerie.codigo,
-            titulo: clone_newSerie.titulo,
             tipo: clone_newSerie.tipo
           });
         } else {
           this.UIs.push({
             codigo: clone_newSerie.UIs[i].codigo,
             codCota: "",
-            titulo: clone_newSerie.UIs[i].titulo,
+            titulo: "",
             dataInicial: null,
             dataFinal: null,
             produtor: {
@@ -245,7 +244,6 @@ export default {
             classesAssociadas: [
               {
                 codigo: clone_newSerie.codigo,
-                titulo: clone_newSerie.titulo,
                 tipo: clone_newSerie.tipo
               }
             ],
@@ -271,7 +269,7 @@ export default {
           if (clone_newSerie.relacoes[i].serieRelacionada.tipo == "Série") {
             classe_relacionada = {
               codigo: clone_newSerie.relacoes[i].serieRelacionada.codigo,
-              titulo: clone_newSerie.relacoes[i].serieRelacionada.titulo,
+              titulo: "",
               descricao: "",
               dataInicial: null,
               dataFinal: null,
@@ -297,7 +295,7 @@ export default {
           } else {
             classe_relacionada = {
               codigo: clone_newSerie.relacoes[i].serieRelacionada.codigo,
-              titulo: clone_newSerie.relacoes[i].serieRelacionada.titulo,
+              titulo: "",
               descricao: "",
               dataInicial: null,
               dataFinal: null,
@@ -359,8 +357,7 @@ export default {
           classe_relacionada.relacoes.push({
             relacao: relacao_inversa,
             serieRelacionada: {
-              codigo: clone_newSerie.codigo,
-              titulo: clone_newSerie.titulo
+              codigo: clone_newSerie.codigo
             }
           });
         }

@@ -15,13 +15,12 @@
             </v-col>
             <v-col>
               <v-select
+                filled
                 item-color="indigo"
                 color="indigo"
                 v-model="legislacao.tipo"
                 :items="tiposDiploma"
                 label="Selecione uma opção"
-                solo
-                dense
               />
             </v-col>
           </v-row>
@@ -32,7 +31,8 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
+                label="Número do diploma"
                 clearable
                 color="indigo"
                 single-line
@@ -59,7 +59,8 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
+                label="Sumário"
                 clearable
                 color="indigo"
                 single-line
@@ -75,7 +76,8 @@
             <v-col>
               <v-text-field
                 v-model="legislacao.link"
-                solo
+                filled
+                label="Link"
                 clearable
                 color="indigo"
                 single-line
@@ -89,11 +91,12 @@
             </v-col>
             <v-col>
               <v-select
+                filled
+                label="Selecione uma opção"
                 item-color="indigo"
                 color="indigo"
                 v-model="legislacao.diplomaFonte"
                 :items="diplomaFonteTipo"
-                solo
                 dense
               />
             </v-col>
@@ -191,7 +194,7 @@ export default {
       tipo: "",
       data: "",
       link: "",
-      diplomaFonte: "Não aplicável",
+      diplomaFonte: "Não  especificada",
       entidadesSel: [],
       processosSel: [],
       codigo: "",
@@ -200,7 +203,7 @@ export default {
 
     tiposDiploma: [],
 
-    diplomaFonteTipo: ["Não aplicável", "PGD", "PGD/LC", "RADA"],
+    diplomaFonteTipo: ["Não   especificada", "PGD", "PGD/LC", "RADA"],
 
     // Para o seletor de entidades
     entidades: [],

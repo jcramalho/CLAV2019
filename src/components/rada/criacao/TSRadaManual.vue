@@ -44,13 +44,6 @@
                   :classes="TS.classes"
                   :UIs="TS.UIs"
                 />
-                <!-- <Editar
-                v-else-if="item.tipo == ''"
-                :treeview_object="item"
-                :classes="TS.classes"
-                :legislacao="legislacao"
-                :RE="RE"
-                />-->
                 <EditarOrganicaFunc
                   v-else
                   @atualizacao="atualizacao_area_organico"
@@ -61,7 +54,10 @@
             </v-treeview>
             <br />
             <b
-              v-if="TS.classes.some(e => e.eFilhoDe == '' && (e.tipo == 'Subsérie' || e.tipo == 'Série'))"
+              v-if="TS.classes.some(e => (e.eFilhoDe == '' || !((e.dataInicial != undefined &&
+                e.dataInicial != null) ||
+                (e.UIs != undefined &&
+                  e.UIs.length > 0))) && (e.tipo == 'Subsérie' || e.tipo == 'Série'))"
               style="color:red"
             >*Classes por preencher</b>
           </div>
@@ -121,6 +117,12 @@ export default {
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
             eFilhoDe: this.TS.classes[i].eFilhoDe,
+            temUIs_ou_datas: Boolean(
+              (this.TS.classes[i].dataInicial != undefined &&
+                this.TS.classes[i].dataInicial != null) ||
+                (this.TS.classes[i].UIs != undefined &&
+                  this.TS.classes[i].UIs.length > 0)
+            ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -140,6 +142,12 @@ export default {
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
             eFilhoDe: this.TS.classes[i].eFilhoDe,
+            temUIs_ou_datas: Boolean(
+              (this.TS.classes[i].dataInicial != undefined &&
+                this.TS.classes[i].dataInicial != null) ||
+                (this.TS.classes[i].UIs != undefined &&
+                  this.TS.classes[i].UIs.length > 0)
+            ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -155,11 +163,6 @@ export default {
         this.$emit("done");
       }
     },
-    deleteItem(item) {
-      const index = this.TS.classes.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
-        this.TS.classes.splice(index, 1);
-    },
     atualizacao_area_organico(c) {
       let area_organico = this.TS.classes.find(e => e.codigo == c.codigo);
 
@@ -168,15 +171,15 @@ export default {
     },
     async atualizacao_serie(c) {
       let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
-      // FAZER LIGAÇÕES
+      
       serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
       serie_classe.UIs = await this.editaUI(serie_classe, c);
 
       serie_classe.titulo = c.titulo;
       serie_classe.descricao = c.descricao;
+      serie_classe.tUA = c.tUA;
       serie_classe.dataInicial = c.dataInicial;
       serie_classe.dataFinal = c.dataFinal;
-      serie_classe.tUA = c.tUA;
       serie_classe.tSerie = c.tSerie;
       serie_classe.suporte = c.suporte;
       serie_classe.medicao = c.medicao;
@@ -198,10 +201,10 @@ export default {
       subserie_classe.relacoes = await this.editaRelacoes(subserie_classe, c);
       subserie_classe.UIs = await this.editaUI(subserie_classe, c);
 
-      subserie_classe.titulo = c.titulo;
-      subserie_classe.descricao = c.descricao;
       subserie_classe.dataInicial = c.dataInicial;
       subserie_classe.dataFinal = c.dataFinal;
+      subserie_classe.titulo = c.titulo;
+      subserie_classe.descricao = c.descricao;
       subserie_classe.pca = c.pca;
       subserie_classe.formaContagem = c.formaContagem;
       subserie_classe.notas = c.notas;
@@ -213,11 +216,7 @@ export default {
     async editaUI(serie_classe, c) {
       let novo_UIs = [];
 
-      /*
-      
-        Iterar o array alterado pelo utilizador
-
-      */
+      // Iterar o array alterado pelo utilizador
       for (let i = 0; i < c.UIs.length; i++) {
         let UIs_igual = serie_classe.UIs.find(
           ui => ui.codigo == c.UIs[i].codigo
@@ -230,11 +229,8 @@ export default {
           novo_UIs.push(c.UIs[i]);
         }
       }
-      /*
-      
-        Iterar o array original de relacoes
 
-      */
+      // Iterar o array original de relacoes
       for (let j = 0; j < serie_classe.UIs.length; j++) {
         let UIs_igual = c.UIs.find(
           ui => ui.codigo == serie_classe.UIs[j].codigo
@@ -259,14 +255,13 @@ export default {
       if (UI != undefined) {
         UI.classesAssociadas.push({
           codigo: serie_classe.codigo,
-          titulo: serie_classe.titulo,
           tipo: serie_classe.tipo
         });
       } else {
         this.TS.UIs.push({
           codigo: novaUI.codigo,
           codCota: "",
-          titulo: novaUI.titulo,
+          titulo: "",
           dataInicial: null,
           dataFinal: null,
           produtor: {
@@ -276,7 +271,6 @@ export default {
           classesAssociadas: [
             {
               codigo: serie_classe.codigo,
-              titulo: serie_classe.titulo,
               tipo: serie_classe.tipo
             }
           ],
@@ -289,11 +283,7 @@ export default {
     async editaRelacoes(serie_classe, c) {
       let novo_relacoes = [];
 
-      /*
-      
-        Iterar o array alterado pelo utilizador
-
-      */
+      // Iterar o array alterado pelo utilizador
       for (let i = 0; i < c.relacoes.length; i++) {
         let relacao_igual = serie_classe.relacoes.find(
           rel =>
@@ -309,11 +299,7 @@ export default {
         }
       }
 
-      /*
-      
-        Iterar o array original de relacoes
-
-      */
+      // Iterar o array original de relacoes
       for (let j = 0; j < serie_classe.relacoes.length; j++) {
         let relacao_igual = c.relacoes.find(
           rel =>
@@ -340,7 +326,7 @@ export default {
         if (relacao.serieRelacionada.tipo == "Série") {
           classe_relacionada = {
             codigo: relacao.serieRelacionada.codigo,
-            titulo: relacao.serieRelacionada.titulo,
+            titulo: "",
             descricao: "",
             dataInicial: null,
             dataFinal: null,
@@ -366,7 +352,7 @@ export default {
         } else {
           classe_relacionada = {
             codigo: relacao.serieRelacionada.codigo,
-            titulo: relacao.serieRelacionada.titulo,
+            titulo: "",
             descricao: "",
             dataInicial: null,
             dataFinal: null,
@@ -422,9 +408,7 @@ export default {
         classe_relacionada.relacoes.push({
           relacao: relacao_inversa,
           serieRelacionada: {
-            codigo: serie_classe.codigo,
-            titulo: serie_classe.titulo,
-            tipo: serie_classe.tipo
+            codigo: serie_classe.codigo
           }
         });
       }
@@ -460,15 +444,8 @@ export default {
           break;
       }
 
-      // console.log(JSON.stringify(classe_relacionada.relacoes));
       classe_relacionada.relacoes = await classe_relacionada.relacoes.filter(
         e => {
-          // console.log(relacao_inversa)
-          // console.log(serie_classe.codigo)
-          // console.log(
-          //   e.relacao != relacao_inversa &&
-          //     e.serieRelacionada.codigo != serie_classe.codigo
-          // );
           return (
             e.relacao != relacao_inversa ||
             e.serieRelacionada.codigo != serie_classe.codigo
@@ -483,6 +460,5 @@ export default {
 <style scoped>
 ::v-deep .v-treeview-node {
   background-color: rgba(240, 163, 10, 0.2);
-  /* background-color: rgba(0, 0, 0, 0.1); */
 }
 </style>
