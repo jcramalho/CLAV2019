@@ -238,6 +238,24 @@ export default new Router({
       component: () => import("./views/noticias/Noticias.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
+    {
+      path: "/noticias/criar",
+      name: "criaNoticia",
+      component: () => import("./views/noticias/NoticiasCria.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/noticias/editar/:idNoticia",
+      name: "editaNoticia",
+      component: () => import("./views/noticias/NoticiasEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/noticias/:idNoticia",
+      name: "consultaNoticia",
+      component: () => import("./views/noticias/NoticiasConsulta.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
     // Routes dos pedidos
     {
       path: "/pedidos",
