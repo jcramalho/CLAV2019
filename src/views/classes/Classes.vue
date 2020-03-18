@@ -2,7 +2,7 @@
   <v-card class="mx-auto fill-height">
     <v-sheet class="indigo lighten-2">
       <v-row align="center" no-gutters>
-        <v-col xs="7" md="7" sm="7" lg="7" xl="7">
+        <v-col class="ml-4" xs="7" md="7" sm="7" lg="7" xl="7">
           <v-text-field
             v-model="search"
             label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
@@ -36,9 +36,20 @@
           </v-btn>
         </v-col>
         <v-col v-if="this.selected.length > 0" class="text-center">
-          <v-btn @click="exportarResultados()">
-            <v-icon left>get_app</v-icon>Exportar
-          </v-btn>
+          <v-menu transition="fade-transition">
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on"><v-icon left>get_app</v-icon>Exportar</v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="type in exportTypes"
+                :key="type"
+                @click="exportarResultados(type)"
+              >
+                <v-list-item-title v-text="type"></v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-col>
       </v-row>
     </v-sheet>
@@ -243,7 +254,8 @@ export default {
     classesCarregadas: false,
     search: null,
     selected: [],
-    selectedParents: []
+    selectedParents: [],
+    exportTypes: ["JSON", "XML", "CSV"]
   }),
   created: async function() {
     var myClasses = await this.$request("get", "/classes?info=pesquisa");
@@ -556,8 +568,15 @@ export default {
         document.body.removeChild(element);
       }
     },
-    exportarResultados: function() {
-      var res = JSON.parse(JSON.stringify(this.selected));
+    toXML: function(e, i) {
+      var ret = `\t<item index="${i}" type="object">\n`;
+      ret += `\t\t<codigo type="string">${e.codigo}</codigo>\n`;
+      ret += `\t\t<titulo type="string">${e.titulo}</titulo>\n`;
+      ret += `\t</item>`;
+      return ret;
+    },
+    exportarResultados: function(format) {
+      var res = JSON.parse(JSON.stringify(this.selected)).sort();
 
       res = res.map(c => {
         return {
@@ -566,10 +585,31 @@ export default {
         };
       });
 
-      //exportar json, xml e csv TODO
-      //apenas exporta json para já
-      res = JSON.stringify(res, null, 4);
-      this.download("classes.json", res, "application/json");
+      var mediatype;
+      switch (format) {
+        case "JSON":
+          res = JSON.stringify(res, null, 4);
+          mediatype = "application/json";
+          break;
+        case "XML":
+          res = res.map(this.toXML).join("\n");
+          res = "<root>\n" + res;
+          res = res + "\n</root>";
+          res = `<?xml version="1.0" encoding="utf-8"?>\n` + res;
+          mediatype = "application/xml";
+          break;
+        case "CSV":
+          res = res.map(e => `"${e.codigo}","${e.titulo}"`).join("\n");
+          res = `"Código","Título"\n` + res;
+          mediatype = "text/csv";
+          break;
+        default:
+          res = JSON.stringify(res, null, 4);
+          format = "JSON";
+          mediatype = "application/json";
+          break;
+      }
+      this.download("classes." + format.toLowerCase(), res, mediatype);
     },
     preparaTree: function(lclasses) {
       var myTree = [];

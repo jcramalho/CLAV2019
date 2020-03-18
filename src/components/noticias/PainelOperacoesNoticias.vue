@@ -88,7 +88,7 @@
           <v-card-text>
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Título:</div>
+                <div class="info-label">Título</div>
               </v-col>
 
               <v-col>
@@ -98,7 +98,7 @@
 
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Data:</div>
+                <div class="info-label">Data</div>
               </v-col>
 
               <v-col>
@@ -108,7 +108,7 @@
 
             <v-row v-if="acao == 'Alteração'">
               <v-col cols="2">
-                <div class="info-label">Ativa:</div>
+                <div class="info-label">Publicada</div>
               </v-col>
 
               <v-col>
@@ -120,7 +120,7 @@
 
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Descrição:</div>
+                <div class="info-label">Descrição</div>
               </v-col>
 
               <v-col>
