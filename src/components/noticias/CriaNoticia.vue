@@ -11,6 +11,18 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
+              <div class="info-label">Publicada</div>
+            </v-col>
+            <v-col>
+              <v-radio-group v-model="noticia.ativa" row>
+                <v-radio label="Sim" :value="true"></v-radio>
+                <v-radio label="Não" :value="false"></v-radio>
+              </v-radio-group>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
               <div class="info-label">Título</div>
             </v-col>
             <v-col>
@@ -86,7 +98,8 @@ export default {
     noticia: {
       titulo: "",
       data: "",
-      desc: ""
+      desc: "",
+      ativa: false
     },
     dateCurrent: new Date().toISOString().substr(0, 10),
     date: new Date().toISOString().substr(0, 10),
