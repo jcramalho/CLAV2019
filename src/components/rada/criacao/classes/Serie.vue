@@ -185,15 +185,15 @@ export default {
     close: function() {
       this.dialog = false;
     },
-    save: async function() {
+    save: function() {
       this.isMultiple = true;
       this.panels = [0, 1];
-      setTimeout(async () => {
+      setTimeout(() => {
         if (this.$refs.formSerie.validate()) {
           let clone_newSerie = Object.assign({}, this.newSerie);
 
-          await this.relacoes_simetricas(clone_newSerie);
-          await this.adicionarUIs(clone_newSerie);
+          this.relacoes_simetricas(clone_newSerie);
+          this.adicionarUIs(clone_newSerie);
 
           this.classes.push(clone_newSerie);
           this.dialog = false;
@@ -202,6 +202,8 @@ export default {
       }, 1);
     },
     filterSeries: function() {
+      this.panels = [0, 0, 0];
+      
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
@@ -243,14 +245,14 @@ export default {
         }
       }
     },
-    relacoes_simetricas: async function(clone_newSerie) {
+    relacoes_simetricas: function(clone_newSerie) {
       for (let i = 0; i < clone_newSerie.relacoes.length; i++) {
         /*
         
           Ver qual é a série relacionada, ir encontrar e adicionar a relação oposta;
 
         */
-        let classe_relacionada = await this.classes.find(
+        let classe_relacionada = this.classes.find(
           e => e.codigo == clone_newSerie.relacoes[i].serieRelacionada.codigo
         );
 
@@ -336,7 +338,7 @@ export default {
         
         */
 
-        let existe_repetida = await classe_relacionada.relacoes.find(
+        let existe_repetida = classe_relacionada.relacoes.find(
           e =>
             e.relacao == relacao_inversa &&
             e.serieRelacionada.codigo == clone_newSerie.codigo
@@ -346,7 +348,8 @@ export default {
           classe_relacionada.relacoes.push({
             relacao: relacao_inversa,
             serieRelacionada: {
-              codigo: clone_newSerie.codigo
+              codigo: clone_newSerie.codigo,
+              tipo: clone_newSerie.tipo
             }
           });
         }

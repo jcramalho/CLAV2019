@@ -359,9 +359,10 @@ export default {
       };
       this.UI.classesAssociadas = [];
     },
-    guardar: async function() {
+    guardar: function() {
       if (this.$refs.formUI.validate()) {
-        await this.adicionarClasse();
+        // Alterei await aqui
+        this.adicionarClasse();
         this.UIs.push(Object.assign({}, this.UI));
         this.dialog = false;
         this.apagar();

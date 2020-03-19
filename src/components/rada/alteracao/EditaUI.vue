@@ -395,7 +395,7 @@ export default {
         classe.UIs.push({ codigo: codigo_UI });
       }
     },
-    async editaClasses(UI_real, UI_copia) {
+    editaClasses(UI_real, UI_copia) {
       let novo_classesAssociadas = [];
 
       /*
@@ -409,10 +409,7 @@ export default {
         );
 
         if (classe_ui_igual == undefined) {
-          await this.adiciona_a_classe(
-            UI_copia.classesAssociadas[i],
-            UI_real.codigo
-          );
+          this.adiciona_a_classe(UI_copia.classesAssociadas[i], UI_real.codigo);
         }
 
         novo_classesAssociadas.push({
@@ -431,7 +428,7 @@ export default {
         );
 
         if (classe_ui_igual == undefined) {
-          await this.elimina_de_classe(
+          this.elimina_de_classe(
             UI_real.classesAssociadas[j].codigo,
             UI_real.codigo
           );

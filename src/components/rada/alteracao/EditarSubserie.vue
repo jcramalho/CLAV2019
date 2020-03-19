@@ -116,7 +116,8 @@ export default {
     ZonaDecisoesAvaliacao
   },
   methods: {
-    filterSeries: async function() {
+    filterSeries: function() {
+      this.panels = [0, 0, 0];
       // ir buscar o verdadeiro objeto
       let subserie_real = this.classes.find(
         e => e.codigo == this.treeview_object.codigo
@@ -139,7 +140,7 @@ export default {
           e.codigo != subserie_real.codigo
       );
     },
-    save: async function() {
+    save: function() {
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
