@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
+import Listagem from "@/components/noticias/ListagemNoticias.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
 
 import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
@@ -34,7 +34,10 @@ export default {
   methods: {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
-        this.operacoes = [{ icon: "edit", descricao: "Alteração" }];
+        this.operacoes = [
+          { icon: "edit", descricao: "Alteração" },
+          { icon: "delete", descricao: "Remoção" }
+        ];
       }
     },
 
