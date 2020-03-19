@@ -86,6 +86,7 @@
                   </v-container>
                 </template>
               </v-autocomplete>
+              <b>* Confirme a hierarquia, impossível alterar no futuro.</b>
             </v-col>
           </v-row>
         </v-form>
@@ -114,34 +115,43 @@ export default {
       codigo: "",
       titulo: "",
       descricao: "",
-      eFilhoDe: "",
+      eFilhoDe: null,
       tipo: ""
     }
   }),
   methods: {
-    apagar: function() {
+    apagar() {
       this.$refs.form.reset();
     },
-    close: function() {
+    close() {
       this.dialog = false;
     },
-    save: function() {
-      if (this.$refs.form.validate()) {
-        if (this.newOrgFunc.eFilhoDe) {
-          this.newOrgFunc.tipo =
-            "N" + (this.newOrgFunc.eFilhoDe.split(".").length + 1);
+    tipo() {
+      if (this.newOrgFunc.eFilhoDe == null) {
+        this.newOrgFunc.tipo = "N1";
+      } else {
+        let classe = this.classes.find(
+          e => e.codigo == this.newOrgFunc.eFilhoDe
+        );
+
+        if (classe.tipo == "N1") {
+          this.newOrgFunc.tipo = "N2";
         } else {
-          this.newOrgFunc.tipo = "N1";
+          this.newOrgFunc.tipo = "N3";
         }
-        // this.classes.push(JSON.parse(JSON.stringify(this.newOrgFunc)));
+      }
+    },
+    async save() {
+      if (this.$refs.form.validate()) {
+        await this.tipo();
         this.classes.push(Object.assign({}, this.newOrgFunc));
         this.dialog = false;
         this.$refs.form.reset();
       }
     },
-    filterSeries: function() {
+    filterSeries() {
       this.classesHierarquia = this.classes.filter(
-        classe => classe.tipo != "Série" && classe.tipo != "Subsérie" && classe.codigo
+        classe => classe.tipo == "N1" || classe.tipo == "N2"
       );
     },
     verificaCodigo(v) {

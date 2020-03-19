@@ -36,7 +36,7 @@
               <v-expansion-panel-content>
                 <ZonaContexto
                   :newSerie="serie"
-                  :classes="classesRelacoes"
+                  :classes="classes"
                   :legislacao="legislacao"
                   :RE="RE"
                 />
@@ -118,8 +118,7 @@ export default {
     isMultiple: false,
     dialogSerie: false,
     serie: {},
-    classesHierarquia: [],
-    classesRelacoes: []
+    classesHierarquia: []
   }),
   methods: {
     filterSeries: function() {
@@ -141,13 +140,6 @@ export default {
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
-      );
-
-      // Classes para as relações
-      this.classesRelacoes = this.classes.filter(
-        e =>
-          (e.tipo == "Série" || e.tipo == "Subsérie") &&
-          e.codigo != serie_real.codigo
       );
     },
     save: function() {

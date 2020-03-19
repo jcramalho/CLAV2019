@@ -28,7 +28,7 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="newSubSerie" :classes="classesRelacoes" />
+                <ZonaContexto :newSerie="newSubSerie" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -110,7 +110,6 @@ export default {
     isMultiple: false,
     dialog: false,
     classesHierarquia: [],
-    classesRelacoes: [],
     newSubSerie: {
       codigo: "",
       titulo: "",
@@ -195,15 +194,10 @@ export default {
     },
     filterSeries: function() {
       this.panels = [0, 0, 0];
-      
+
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo == "Série"
       );
-
-      this.classesRelacoes = this.classes.filter(
-        e => e.tipo == "Série" || e.tipo == "Subsérie"
-      );
-      // .map(e => e.codigo + " - " + e.titulo);
     },
     relacoes_simetricas: function(clone_newSubserie) {
       for (let i = 0; i < clone_newSubserie.relacoes.length; i++) {
