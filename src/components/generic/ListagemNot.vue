@@ -9,7 +9,7 @@
       <v-icon
         v-for="(operacao, index) in item.operacoes"
         @click="doOperation(item, operacao)"
-        color="indigo darken-2"
+        :color="operacao.cor"
         :key="index"
         >{{ operacao.icon }}</v-icon
       >
