@@ -77,7 +77,7 @@ export default {
   },
   created: async function() {
     try {
-      var response2 = await this.$request("get", "/legislacao/portarias");
+      var response2 = await this.$request("get", "/legislacao?fonte=PGD/LC");
       this.portarias = await this.prepararLeg(response2.data);
 
       var response = await this.$request("get", "/entidades/");

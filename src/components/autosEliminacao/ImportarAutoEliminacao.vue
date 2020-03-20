@@ -107,7 +107,16 @@
                     <div v-if="tipo == 'PGD_LC'">
                       <v-autocomplete
                         label="Selecione a fonte de legitimação"
-                        :items="portarias"
+                        :items="portariaLC"
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                    </div>
+                    <div v-else-if="tipo=='PGD'">
+                      <v-autocomplete
+                        label="Selecione a fonte de legitimação"
+                        :items="portaria"
                         v-model="auto.legislacao"
                         solo
                         dense
@@ -326,7 +335,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["portarias", "entidades", "classes"],
+  props: ["entidades","classes"],
   components: {
     InfoBox
   },
@@ -336,6 +345,8 @@ export default {
       fundo: [],
       zonaControlo: []
     },
+    portariaLC: [],
+    portaria: [],
     fileSerie: null,
     fileAgreg: null,
     tipo: "PGD_LC",
@@ -449,6 +460,33 @@ export default {
         this.erroDialog = true;
         this.fileAgreg = null;
       }
+    },
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push("Portaria " + l.numero + " \n " + l.sumario);
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    }
+  },
+  created: async function() {
+    try{
+      var response = await this.$request("get","/legislacao?fonte=PGD/LC")
+      this.portariaLC = await this.prepararLeg(response.data)
+      var response2 = await this.$request("get","/legislacao?fonte=PGD")
+      this.portaria = await this.prepararLeg(response2.data)
+    } catch (e) {
+      this.portariaLC = [];
+      this.portaria = [];
+    }
+  },
+  watch: {
+    'tipo': function () {
+      this.auto.legislacao = null
     }
   }
 };

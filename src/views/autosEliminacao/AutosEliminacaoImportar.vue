@@ -1,6 +1,5 @@
 <template>
-  <ImportarAuto
-    v-bind:portarias="portarias"
+  <ImportarAuto 
     v-bind:entidades="entidades"
     v-bind:classes="classes"
   />
@@ -15,7 +14,6 @@ export default {
   },
   data: () => ({
     entidades: [],
-    portarias: [],
     classes: []
   }),
   methods: {
@@ -65,8 +63,6 @@ export default {
   },
   created: async function() {
     try {
-      var response = await this.$request("get", "/legislacao/portarias");
-      this.portarias = await this.prepararLeg(response.data);
       var response2 = await this.$request("get", "/entidades/");
       this.entidades = await this.prepararEntidade(response2.data);
       var response3 = await this.$request(
@@ -82,7 +78,6 @@ export default {
         response4.data
       );
     } catch (e) {
-      this.portarias = [];
       this.entidades = [];
       this.classes = [];
     }

@@ -14,12 +14,14 @@
               {{ this.classe.titulo }}
             </v-toolbar-title>
             <v-spacer />
-            <v-btn
-              v-if="this.savedSearch"
-              color="indigo accent-4"
-              @click="goToSearch()"
-            >
-              Voltar para os resultados
+            <v-btn color="indigo accent-4" @click="goToSearch()">
+              Voltar para
+              <span v-if="this.savedSearch">
+                os resultados
+              </span>
+              <span v-else>
+                as classes
+              </span>
             </v-btn>
           </v-app-bar>
 

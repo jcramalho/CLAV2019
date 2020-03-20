@@ -154,15 +154,15 @@ export default {
     close: function() {
       this.dialog = false;
     },
-    save: async function() {
+    save: function() {
       this.isMultiple = true;
       this.panels = [0, 1, 2];
-      setTimeout(async () => {
+      setTimeout(() => {
         if (this.$refs.form.validate()) {
           let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
-          await this.adicionarUIs(clone_newSubserie);
-          await this.relacoes_simetricas(clone_newSubserie);
+          this.adicionarUIs(clone_newSubserie);
+          this.relacoes_simetricas(clone_newSubserie);
 
           this.classes.push(clone_newSubserie);
           this.dialog = false;
@@ -204,6 +204,8 @@ export default {
       }
     },
     filterSeries: function() {
+      this.panels = [0, 0, 0];
+      
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo == "Série"
       );
@@ -213,7 +215,7 @@ export default {
       );
       // .map(e => e.codigo + " - " + e.titulo);
     },
-    relacoes_simetricas: async function(clone_newSubserie) {
+    relacoes_simetricas: function(clone_newSubserie) {
       for (let i = 0; i < clone_newSubserie.relacoes.length; i++) {
         /*
         
@@ -221,7 +223,7 @@ export default {
 
         */
 
-        let classe_relacionada = await this.classes.find(
+        let classe_relacionada = this.classes.find(
           e => e.codigo == clone_newSubserie.relacoes[i].serieRelacionada.codigo
         );
 
@@ -307,7 +309,7 @@ export default {
         
         */
 
-        let existe_repetida = await classe_relacionada.relacoes.find(
+        let existe_repetida = classe_relacionada.relacoes.find(
           e =>
             e.relacao == relacao_inversa &&
             e.serieRelacionada.codigo == clone_newSubserie.codigo
@@ -317,7 +319,8 @@ export default {
           classe_relacionada.relacoes.push({
             relacao: relacao_inversa,
             serieRelacionada: {
-              codigo: clone_newSubserie.codigo
+              codigo: clone_newSubserie.codigo,
+              tipo: clone_newSubserie.tipo
             }
           });
         }
