@@ -7,14 +7,13 @@
             <div class="info-label">Entidades Produtoras</div>
           </v-col>
           <v-col xs="12" sm="9">
+            <!-- {{ tipologiasProcessadas }} -->
             <v-autocomplete
-              deletable-chips
               :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-model="RE.entidadesProd"
               :items="entidadesProcessadas"
               item-text="searchField"
               placeholder="Selecione as Entidades Produtoras."
-              chips
               multiple
               return-object
             >
@@ -25,9 +24,6 @@
                   </v-list-item-title>
                 </v-list-item>
               </template>
-              <!-- <template v-slot:item="{ item }">
-                <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
-              </template>-->
               <template v-slot:selection="data">
                 <v-chip
                   v-bind="data.attrs"
@@ -47,12 +43,10 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
-            deletable-chips
             :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RE.tipologiasProd"
             :items="tipologiasProcessadas"
             item-text="searchField"
-            chips
             return-object
             placeholder="Selecione as Tipologias das Entidades Produtoras."
             multiple
@@ -64,9 +58,6 @@
                 </v-list-item-title>
               </v-list-item>
             </template>
-            <!-- <template v-slot:item="{ item }">
-              <v-list-item-title >{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
-            </template>-->
             <template v-slot:selection="data">
               <v-chip
                 v-bind="data.attrs"
@@ -75,9 +66,6 @@
                 @click:close="removeTip(data.item)"
               >{{ data.item.searchField }}</v-chip>
             </template>
-            <!-- <template v-slot:selection="{ item }">
-              <v-chip>{{ item.sigla + ' - ' + item.designacao}}</v-chip>
-            </template>-->
           </v-autocomplete>
         </v-col>
       </v-row>

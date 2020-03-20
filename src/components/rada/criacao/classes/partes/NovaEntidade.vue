@@ -104,6 +104,7 @@ export default {
         }
       }
     },
+    // Provavelmente vai ter que se alterar
     validaEntidade: async function() {
       return this.entidades.some(el => {
         return el.sigla == this.sigla || el.designacao == this.designacao;
