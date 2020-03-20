@@ -155,7 +155,13 @@ export default {
   },
   computed: {
     getCodigos() {
-      return this.classes.map(e => e.codigo);
+      return this.classes
+        .filter(
+          e =>
+            e.codigo != this.newSerie.codigo &&
+            (e.tipo == "Subsérie" || e.tipo == "Série")
+        )
+        .map(e => e.codigo);
     }
   },
   watch: {
@@ -182,7 +188,12 @@ export default {
       if (v == null || v == "") {
         return "Campo Obrigatório";
       } else {
-        if (v == this.newSerie.codigo) {
+        if (
+          v == this.newSerie.codigo ||
+          this.classes.some(
+            e => e.codigo == v && e.tipo != "Série" && e.tipo != "Subsérie"
+          )
+        ) {
           return "Código Inválido";
         } else {
           return true;

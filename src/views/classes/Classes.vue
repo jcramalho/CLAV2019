@@ -81,7 +81,12 @@
                   <v-chip dark color="indigo darken-4">
                     {{ entidades.filter(e => e.value == c.valor)[0].text }}
                   </v-chip>
-                  é
+                  <span v-if="c.not">
+                    <v-chip dark color="indigo lighten-2">não</v-chip> é
+                  </span>
+                  <span v-else>
+                    é
+                  </span>
                   <v-chip dark label color="indigo accent-4">
                     {{
                       c.campo.enum.filter(e => e.value == c.campo.nome)[0].text
@@ -96,7 +101,12 @@
                       )[0].text
                     }}
                   </v-chip>
-                  é igual a
+                  <span v-if="c.not">
+                    <v-chip dark color="indigo lighten-2">não</v-chip> é igual a
+                  </span>
+                  <span v-else>
+                    é igual a
+                  </span>
                   <v-chip dark label color="indigo accent-4">
                     {{
                       c.campo.enum.length > 0
@@ -146,12 +156,18 @@
             lazy-validation
           >
             <v-row>
-              <v-col cols="5">
+              <v-col cols="4">
                 <v-autocomplete
                   :items="camposPesquisa"
                   label="Campo a pesquisar"
                   :rules="regraCampo"
                   v-model="camposUsados[index].campo"
+                />
+              </v-col>
+              <v-col cols="1">
+                <v-autocomplete
+                  :items="notValues"
+                  v-model="camposUsados[index].not"
                 />
               </v-col>
               <v-col cols="5" v-if="camposUsados[index].campo">
@@ -200,7 +216,7 @@
                   :items="opLogicas"
                   v-model="conetor"
                   @input="
-                    camposUsados.push({ campo: null, valor: '' });
+                    camposUsados.push({ campo: null, valor: '', not: false });
                     opLogicas = [conetor];
                   "
                 />
@@ -250,7 +266,7 @@ export default {
     regraV: [v => !!v || "Obrigatório. Escolha um valor."],
     conetor: "E",
     opLogicas: ["E", "OU"],
-    camposUsados: [{ campo: null, valor: "" }],
+    camposUsados: [{ campo: null, valor: "", not: false }],
     camposPesquisa: [
       {
         text: "Código",
@@ -309,7 +325,8 @@ export default {
     search: null,
     selected: [],
     selectedParents: [],
-    exportTypes: ["JSON", "XML", "CSV"]
+    exportTypes: ["JSON", "XML", "CSV"],
+    notValues: [{ text: "é", value: false }, { text: "não é", value: true }]
   }),
   created: async function() {
     var myClasses = await this.$request("get", "/classes?info=pesquisa");
@@ -323,7 +340,7 @@ export default {
       this.selected = this.savedSearch.selected;
       this.selectedParents = this.savedSearch.selectedParents;
       this.conetor = this.savedSearch.conetor;
-      this.opLogicas = [this.conetor];
+      this.opLogicas = this.savedSearch.opLogicas;
     } else {
       await this.loadStatus();
       await this.loadTipoProc();
@@ -458,7 +475,7 @@ export default {
       this.classesTree = this.classesOriginal;
       this.selected = [];
       this.selectedParents = [];
-      this.camposUsados = [{ campo: null, valor: "" }];
+      this.camposUsados = [{ campo: null, valor: "", not: false }];
       this.cleanNome();
       this.opLogicas = ["E", "OU"];
       this.conetor = "E";
@@ -486,6 +503,8 @@ export default {
           } else {
             statAux = classes[i][c.campo.nome].indexOf(c.valor) > -1;
           }
+
+          if (c.not) statAux = !statAux;
 
           if (op) stat = stat && statAux;
           else stat = stat || statAux;
@@ -702,7 +721,8 @@ export default {
           selected: this.selected,
           selectedParents: this.selectedParents,
           camposPesquisa: this.camposPesquisa,
-          conetor: this.conetor
+          conetor: this.conetor,
+          opLogicas: this.opLogicas
         };
       }
 

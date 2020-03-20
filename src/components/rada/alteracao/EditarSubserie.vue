@@ -34,7 +34,7 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="subserie" :classes="classesRelacoes" />
+                <ZonaContexto :newSerie="subserie" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -106,7 +106,6 @@ export default {
     subserie: {},
     panels: [0, 0, 0],
     isMultiple: false,
-    classesRelacoes: [],
     classesHierarquia: []
   }),
   components: {
@@ -131,13 +130,6 @@ export default {
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo == "Série"
-      );
-
-      // Classes para as relações
-      this.classesRelacoes = this.classes.filter(
-        e =>
-          (e.tipo == "Série" || e.tipo == "Subsérie") &&
-          e.codigo != subserie_real.codigo
       );
     },
     save: function() {
