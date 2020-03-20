@@ -152,7 +152,7 @@
                 <v-row>
                   <v-col sm="6" xs="12">
                     <v-combobox
-                      :rules="[v => !!v || 'Campo obrigatório!']"
+                      :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório!']"
                       v-model="cod"
                       :items="getCodigos"
                       label="Código"
@@ -333,6 +333,19 @@ export default {
     ]
   }),
   methods: {
+    eCodigoClasseValido(v) {
+      if (
+        this.classes.some(
+          e =>
+            e.codigo == v &&
+            (e.dataInicial === undefined || e.dataInicial != null)
+        )
+      ) {
+        return "Impossível criar relação, altere o código!";
+      } else {
+        return false;
+      }
+    },
     remove: function(item) {
       this.UI.classesAssociadas = this.UI.classesAssociadas.filter(e => {
         return e.codigo != item.codigo;
@@ -346,9 +359,10 @@ export default {
       };
       this.UI.classesAssociadas = [];
     },
-    guardar: async function() {
+    guardar: function() {
       if (this.$refs.formUI.validate()) {
-        await this.adicionarClasse();
+        // Alterei await aqui
+        this.adicionarClasse();
         this.UIs.push(Object.assign({}, this.UI));
         this.dialog = false;
         this.apagar();

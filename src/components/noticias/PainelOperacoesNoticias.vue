@@ -86,7 +86,7 @@
         <v-card>
           <v-card-title>{{ acao }} de Noticia Submetida</v-card-title>
           <v-card-text>
-            <v-row v-if="acao == 'Alteração'">
+            <v-row>
               <v-col cols="2">
                 <div class="info-label">Publicada</div>
               </v-col>
@@ -295,6 +295,7 @@ export default {
                   titulo: this.t.titulo,
                   data: this.t.data,
                   desc: this.t.desc,
+                  ativa: this.t.ativa,
                   token: this.$store.state.token
                 };
 

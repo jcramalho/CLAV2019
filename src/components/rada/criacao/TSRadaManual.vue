@@ -171,7 +171,7 @@ export default {
     },
     async atualizacao_serie(c) {
       let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
-      
+
       serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
       serie_classe.UIs = await this.editaUI(serie_classe, c);
 
@@ -213,7 +213,7 @@ export default {
       subserie_classe.justificacaoDF = c.justificacaoDF;
       subserie_classe.eFilhoDe = c.eFilhoDe;
     },
-    async editaUI(serie_classe, c) {
+    editaUI(serie_classe, c) {
       let novo_UIs = [];
 
       // Iterar o array alterado pelo utilizador
@@ -222,12 +222,10 @@ export default {
           ui => ui.codigo == c.UIs[i].codigo
         );
 
-        if (UIs_igual != undefined) {
-          novo_UIs.push(UIs_igual);
-        } else {
-          await this.adicionaUI(c.UIs[i], serie_classe);
-          novo_UIs.push(c.UIs[i]);
+        if (UIs_igual == undefined) {
+          this.adicionaUI(c.UIs[i], serie_classe);
         }
+        novo_UIs.push(c.UIs[i]);
       }
 
       // Iterar o array original de relacoes
@@ -237,12 +235,12 @@ export default {
         );
 
         if (UIs_igual == undefined) {
-          await this.eliminaUI(serie_classe.UIs[j], serie_classe);
+          this.eliminaUI(serie_classe.UIs[j], serie_classe);
         }
       }
       return novo_UIs;
     },
-    async eliminaUI(velhaUI, serie_classe) {
+    eliminaUI(velhaUI, serie_classe) {
       let UI = this.TS.UIs.find(e => e.codigo == velhaUI.codigo);
 
       UI.classesAssociadas = UI.classesAssociadas.filter(
@@ -280,7 +278,7 @@ export default {
         });
       }
     },
-    async editaRelacoes(serie_classe, c) {
+    editaRelacoes(serie_classe, c) {
       let novo_relacoes = [];
 
       // Iterar o array alterado pelo utilizador
@@ -291,12 +289,10 @@ export default {
             rel.serieRelacionada.codigo == c.relacoes[i].serieRelacionada.codigo
         );
 
-        if (relacao_igual != undefined) {
-          novo_relacoes.push(relacao_igual);
-        } else {
-          await this.adicionaRelacoesInversas(c.relacoes[i], serie_classe);
-          novo_relacoes.push(c.relacoes[i]);
+        if (relacao_igual == undefined) {
+          this.adicionaRelacoesInversas(c.relacoes[i], serie_classe);
         }
+        novo_relacoes.push(c.relacoes[i]);
       }
 
       // Iterar o array original de relacoes
@@ -309,16 +305,13 @@ export default {
         );
 
         if (relacao_igual == undefined) {
-          await this.removeRelacoesInversas(
-            serie_classe.relacoes[j],
-            serie_classe
-          );
+          this.removeRelacoesInversas(serie_classe.relacoes[j], serie_classe);
         }
       }
       return novo_relacoes;
     },
-    async adicionaRelacoesInversas(relacao, serie_classe) {
-      let classe_relacionada = await this.TS.classes.find(
+    adicionaRelacoesInversas(relacao, serie_classe) {
+      let classe_relacionada = this.TS.classes.find(
         e => e.codigo == relacao.serieRelacionada.codigo
       );
 
@@ -398,7 +391,7 @@ export default {
           break;
       }
 
-      let existe_repetida = await classe_relacionada.relacoes.find(
+      let existe_repetida = classe_relacionada.relacoes.find(
         e =>
           e.relacao == relacao_inversa &&
           e.serieRelacionada.codigo == serie_classe.codigo
@@ -408,13 +401,14 @@ export default {
         classe_relacionada.relacoes.push({
           relacao: relacao_inversa,
           serieRelacionada: {
-            codigo: serie_classe.codigo
+            codigo: serie_classe.codigo,
+            tipo: serie_classe.tipo
           }
         });
       }
     },
-    async removeRelacoesInversas(relacao, serie_classe) {
-      let classe_relacionada = await this.TS.classes.find(
+    removeRelacoesInversas(relacao, serie_classe) {
+      let classe_relacionada = this.TS.classes.find(
         e => e.codigo == relacao.serieRelacionada.codigo
       );
 
@@ -444,14 +438,12 @@ export default {
           break;
       }
 
-      classe_relacionada.relacoes = await classe_relacionada.relacoes.filter(
-        e => {
-          return (
-            e.relacao != relacao_inversa ||
-            e.serieRelacionada.codigo != serie_classe.codigo
-          );
-        }
-      );
+      classe_relacionada.relacoes = classe_relacionada.relacoes.filter(e => {
+        return (
+          e.relacao != relacao_inversa ||
+          e.serieRelacionada.codigo != serie_classe.codigo
+        );
+      });
     }
   }
 };

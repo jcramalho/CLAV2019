@@ -148,7 +148,7 @@
                 <v-row>
                   <v-col sm="6" xs="12">
                     <v-combobox
-                      :rules="[v => !!v || 'Campo obrigatório!']"
+                      :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório!']"
                       v-model="cod"
                       :items="getCodigos"
                       label="Código"
@@ -321,6 +321,19 @@ export default {
     ]
   }),
   methods: {
+    eCodigoClasseValido(v) {
+      if (
+        this.classes.some(
+          e =>
+            e.codigo == v &&
+            (e.dataInicial === undefined || e.dataInicial != null)
+        )
+      ) {
+        return "Impossível criar relação, altere o código!";
+      } else {
+        return false;
+      }
+    },
     elimina_de_classe(classe_eliminada, codigo_UI) {
       let classe = this.classes.find(cl => cl.codigo == classe_eliminada);
 
@@ -377,6 +390,7 @@ export default {
             tipo: "Subsérie"
           };
         }
+        this.classes.push(classe);
       } else {
         classe.UIs.push({ codigo: codigo_UI });
       }
@@ -422,9 +436,12 @@ export default {
       }
       return novo_classesAssociadas;
     },
-    guardar() {
+    async guardar() {
       if (this.$refs.formUI.validate()) {
-        this.UI.classesAssociadas = this.editaClasses(this.UI, this.UI_clone);
+        this.UI.classesAssociadas = await this.editaClasses(
+          this.UI,
+          this.UI_clone
+        );
 
         this.UI.titulo = this.UI_clone.titulo;
         this.UI.codCota = this.UI_clone.codCota;
