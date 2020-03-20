@@ -693,18 +693,24 @@ export default {
       return myTree;
     },
     goToClasse: function(id) {
+      var ss = undefined;
+
+      if (this.selected.length > 0) {
+        ss = {
+          camposUsados: this.camposUsados,
+          classesTree: this.classesTree,
+          selected: this.selected,
+          selectedParents: this.selectedParents,
+          camposPesquisa: this.camposPesquisa,
+          conetor: this.conetor
+        };
+      }
+
       this.$router.push({
         name: "consultaClasse",
         params: {
           idClasse: "c" + id,
-          savedSearch: {
-            camposUsados: this.camposUsados,
-            classesTree: this.classesTree,
-            selected: this.selected,
-            selectedParents: this.selectedParents,
-            camposPesquisa: this.camposPesquisa,
-            conetor: this.conetor
-          }
+          savedSearch: ss
         }
       });
     }
