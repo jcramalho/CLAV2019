@@ -31,7 +31,7 @@
               <v-expansion-panel-content>
                 <ZonaContexto
                   :newSerie="newSerie"
-                  :classes="classesRelacoes"
+                  :classes="classes"
                   :legislacao="legislacao"
                   :RE="RE"
                 />
@@ -117,7 +117,6 @@ export default {
     isMultiple: false,
     dialog: false,
     classesHierarquia: [],
-    classesRelacoes: [],
     newSerie: {
       // codigo: "02.02",
       // titulo: "SERIE",
@@ -206,10 +205,6 @@ export default {
       
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
-      );
-
-      this.classesRelacoes = this.classes.filter(
-        e => e.tipo == "Série" || e.tipo == "Subsérie"
       );
     },
     adicionarUIs: function(clone_newSerie) {

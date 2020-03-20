@@ -7,15 +7,13 @@
             <div class="info-label">Entidades Produtoras</div>
           </v-col>
           <v-col xs="12" sm="9">
+            <!-- {{ tipologiasProcessadas }} -->
             <v-autocomplete
-              deletable-chips
               :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-model="RE.entidadesProd"
               :items="entidadesProcessadas"
-              v-on:keyup.delete="console.log('delete')"
               item-text="searchField"
               placeholder="Selecione as Entidades Produtoras."
-              chips
               multiple
               return-object
             >
@@ -26,16 +24,13 @@
                   </v-list-item-title>
                 </v-list-item>
               </template>
-              <template v-slot:item="{ item }">
-                <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
-              </template>
               <template v-slot:selection="data">
                 <v-chip
                   v-bind="data.attrs"
                   :input-value="data.selected"
-                  :close="produtoraEntidadeClasse(data.item.sigla, data.item.designacao)"
+                  :close="produtoraEntidadeClasse(data.item, data.item.sigla, data.item.designacao)"
                   @click:close="removeEnt(data.item)"
-                >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
+                >{{ data.item.searchField }}</v-chip>
               </template>
             </v-autocomplete>
           </v-col>
@@ -48,12 +43,10 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
-            deletable-chips
             :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RE.tipologiasProd"
             :items="tipologiasProcessadas"
             item-text="searchField"
-            chips
             return-object
             placeholder="Selecione as Tipologias das Entidades Produtoras."
             multiple
@@ -65,21 +58,14 @@
                 </v-list-item-title>
               </v-list-item>
             </template>
-            <template v-slot:item="{ item }">
-              <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
-            </template>
             <template v-slot:selection="data">
               <v-chip
                 v-bind="data.attrs"
                 :input-value="data.selected"
-                :close="produtoraTipologiaClasse(data.item.sigla, data.item.designacao)"
-                @click="data.select"
+                :close="produtoraTipologiaClasse(data.item, data.item.sigla, data.item.designacao)"
                 @click:close="removeTip(data.item)"
-              >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
+              >{{ data.item.searchField }}</v-chip>
             </template>
-            <!-- <template v-slot:selection="{ item }">
-              <v-chip>{{ item.sigla + ' - ' + item.designacao}}</v-chip>
-            </template>-->
           </v-autocomplete>
         </v-col>
       </v-row>
@@ -277,12 +263,14 @@ export default {
     entidadesProcessadas() {
       return this.entidades.map(item => {
         item["searchField"] = item.sigla + " - " + item.designacao;
+        item["disabled"] = false;
         return item;
       });
     },
     tipologiasProcessadas() {
       return this.tipologias.map(item => {
         item["searchField"] = item.sigla + " - " + item.designacao;
+        item["disabled"] = false;
         return item;
       });
     }
@@ -321,7 +309,7 @@ export default {
       );
       if (index >= 0) this.RE.tipologiasProd.splice(index, 1);
     },
-    produtoraEntidadeClasse(sigla, desi) {
+    produtoraEntidadeClasse(item, sigla, desi) {
       let classes = this.classes.filter(
         e =>
           e.tipo == "Série" &&
@@ -337,12 +325,14 @@ export default {
       );
 
       if (classes.length > 0 || uis.length > 0) {
+        item.disabled = true;
         return false;
       }
 
+      item.disabled = false;
       return true;
     },
-    produtoraTipologiaClasse(sigla, desi) {
+    produtoraTipologiaClasse(item, sigla, desi) {
       let classes = this.classes.filter(
         e =>
           e.tipo == "Série" &&
@@ -358,9 +348,11 @@ export default {
       );
 
       if (classes.length > 0 || uis.length > 0) {
+        item.disabled = true;
         return false;
       }
 
+      item.disabled = false;
       return true;
     }
   }
