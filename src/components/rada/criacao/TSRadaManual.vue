@@ -190,7 +190,7 @@ export default {
       serie_classe.pca = c.pca;
       serie_classe.formaContagem = c.formaContagem;
       serie_classe.notas = c.notas;
-      serie_classe.justicacaoPCA = c.justicacaoPCA;
+      serie_classe.justificacaoPCA = c.justificacaoPCA;
       serie_classe.df = c.df;
       serie_classe.justificacaoDF = c.justificacaoDF;
       serie_classe.eFilhoDe = c.eFilhoDe;
@@ -208,7 +208,7 @@ export default {
       subserie_classe.pca = c.pca;
       subserie_classe.formaContagem = c.formaContagem;
       subserie_classe.notas = c.notas;
-      subserie_classe.justicacaoPCA = c.justicacaoPCA;
+      subserie_classe.justificacaoPCA = c.justificacaoPCA;
       subserie_classe.df = c.df;
       subserie_classe.justificacaoDF = c.justificacaoDF;
       subserie_classe.eFilhoDe = c.eFilhoDe;
@@ -335,7 +335,7 @@ export default {
             UIs: [],
             pca: "",
             formaContagem: "",
-            justicacaoPCA: "",
+            justificacaoPCA: [],
             df: "",
             justificacaoDF: "",
             notas: "",
@@ -353,7 +353,7 @@ export default {
             UIs: [],
             pca: "",
             formaContagem: "",
-            justicacaoPCA: "",
+            justificacaoPCA: [],
             df: "",
             justificacaoDF: "",
             notas: "",
@@ -385,26 +385,53 @@ export default {
           break;
         case "Suplemento de":
           relacao_inversa = "Suplemento para";
+          this.adiciona_crit_utilidade_adminstrativa(
+            classe_relacionada,
+            serie_classe.codigo
+          );
           break;
         case "Suplemento para":
           relacao_inversa = "Suplemento de";
           break;
       }
 
-      let existe_repetida = classe_relacionada.relacoes.find(
-        e =>
-          e.relacao == relacao_inversa &&
-          e.serieRelacionada.codigo == serie_classe.codigo
+      classe_relacionada.relacoes.push({
+        relacao: relacao_inversa,
+        serieRelacionada: {
+          codigo: serie_classe.codigo,
+          tipo: serie_classe.tipo
+        }
+      });
+    },
+    remove_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
+      let criterio = classe_relacionada.justificacaoPCA.find(
+        crit => crit.tipo == "Critério de Utilidade Administrativa"
       );
 
-      if (existe_repetida == undefined) {
-        classe_relacionada.relacoes.push({
-          relacao: relacao_inversa,
-          serieRelacionada: {
-            codigo: serie_classe.codigo,
-            tipo: serie_classe.tipo
-          }
+      if (criterio != undefined) {
+        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+        if (criterio.relacoes.length == 0) {
+          classe_relacionada.justificacaoPCA = classe_relacionada.justificacaoPCA.filter(
+            e => e.tipo != "Critério de Utilidade Administrativa"
+          );
+        }
+      }
+    },
+    adiciona_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
+      let criterio = classe_relacionada.justificacaoPCA.find(
+        crit => crit.tipo == "Critério de Utilidade Administrativa"
+      );
+
+      if (criterio == undefined) {
+        classe_relacionada.justificacaoPCA.push({
+          tipo: "Critério de Utilidade Administrativa",
+          nota:
+            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
+          relacoes: [codigoClasse]
         });
+      } else {
+        criterio.relacoes.push(codigoClasse);
       }
     },
     removeRelacoesInversas(relacao, serie_classe) {
@@ -432,6 +459,10 @@ export default {
           break;
         case "Suplemento de":
           relacao_inversa = "Suplemento para";
+          this.remove_crit_utilidade_adminstrativa(
+            classe_relacionada,
+            serie_classe.codigo
+          );
           break;
         case "Suplemento para":
           relacao_inversa = "Suplemento de";

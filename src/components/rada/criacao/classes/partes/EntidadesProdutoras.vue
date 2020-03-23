@@ -33,8 +33,8 @@
           </template>
         </v-data-table>
         <v-alert
+          dense
           v-else
-          :value="true"
           icon="warning"
           color="amber accent-3"
         >Não tem entidades produtoras selecionadas...</v-alert>
@@ -71,7 +71,6 @@
 
           <v-alert
             v-slot:no-results
-            :value="true"
             class="error"
             icon="warning"
           >A procura por "{{ search }}" não deu resultados.</v-alert>
@@ -113,7 +112,7 @@
         </v-data-table>
         <v-alert
           v-else
-          :value="true"
+          dense
           icon="warning"
           color="amber accent-3"
         >Não tem entidades produtoras selecionadas...</v-alert>
