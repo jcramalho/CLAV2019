@@ -1,20 +1,11 @@
 <template>
   <v-card class="ma-4">
     <Loading v-if="!noticiaReady" :message="'a notícia'" />
-    <!--Consulta
-      v-else
-      tipo="Notícias"
-      v-bind:objeto="noticia"
-      v-bind:titulo="titulo"
-      v-bind:data="data"
-      v-bind:desc="desc"
-    /-->
-
     <v-card-title v-else class="indigo darken-4 white--text">{{
       this.titulo
     }}</v-card-title>
     <v-card-text>
-      <p>{{ this.noticia.data.text }}</p>
+      <p>{{ this.noticia.data }}</p>
       <p class="text-justify" v-html="compiledMarkdown" />
       <v-spacer />
 
@@ -33,40 +24,34 @@
 
 <script>
 import marked from "marked";
-import Consulta from "@/components/generic/Consulta.vue";
 import Loading from "@/components/generic/Loading";
 
 export default {
   components: {
-    //Consulta,
     Loading
   },
   data: () => ({
     idNoticia: "",
-    noticia: {},
-    titulo: ""
+    noticia: {
+      titulo: "",
+      data: "",
+      desc: ""
+    },
+    titulo: "",
+    noticiaReady: false
   }),
   computed: {
     compiledMarkdown: function() {
-      return marked(this.noticia.desc.text, { sanitize: true });
+      return marked(this.noticia.desc, { sanitize: true });
     }
   },
   methods: {
     preparaNoticia: async function(not) {
       try {
         var myNoticia = {
-          titulo: {
-            campo: "Titulo",
-            text: not.titulo
-          },
-          data: {
-            campo: "Data",
-            text: not.data
-          },
-          desc: {
-            campo: "Desc",
-            text: not.desc
-          }
+          titulo: not.titulo,
+          data: not.data,
+          desc: not.desc
         };
         return myNoticia;
       } catch (e) {

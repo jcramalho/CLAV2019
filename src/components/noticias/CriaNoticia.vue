@@ -108,7 +108,7 @@ export default {
       v =>
         /[0-9]+-[0-9]+-[0-9]+/.test(v) || "Este campo está no formato errado."
     ],
-
+    open: false,
     snackbar: false,
     text: ""
   }),

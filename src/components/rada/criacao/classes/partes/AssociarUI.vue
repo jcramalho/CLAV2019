@@ -20,7 +20,7 @@
         </v-data-table>
         <v-alert
           v-else
-          :value="true"
+          dense
           icon="warning"
           color="amber accent-3"
         >Não tem séries/subséries selecionadas...</v-alert>

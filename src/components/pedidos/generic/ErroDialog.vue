@@ -2,17 +2,24 @@
   <v-card>
     <v-card-title class="error title white--text" dark>
       <v-icon color="white" class="ma-1">error</v-icon>
-      Erro
+      Erros detetados na validação:
+      {{ erros.length }}
     </v-card-title>
     <v-card-text>
-      <v-container>
-        <h4>Erro ao finalizar o pedido.</h4>
-        <br />
-        <h6>
-          Por favor tente novamente mais tarde.
-        </h6>
-      </v-container>
+      <v-row v-for="(m, i) in erros" :key="i">
+        <v-col cols="3">
+          <div class="info-label">{{ m.sobre }}</div>
+        </v-col>
+        <v-col>
+          <div class="info-content">{{ m.mensagem }}</div>
+        </v-col>
+      </v-row>
+
+      <v-row class="ma-1">
+        <p>Por favor devolva o pedido ou tente novamnete mais tarde.</p>
+      </v-row>
     </v-card-text>
+
     <v-card-actions>
       <v-spacer />
       <v-btn class="indigo accent-4" rounded dark @click="voltar()">
@@ -24,10 +31,30 @@
 
 <script>
 export default {
+  props: ["erros"],
+
   methods: {
     voltar() {
-      this.$router.push("/pedidos");
+      this.$emit("fecharErro");
     }
   }
 };
 </script>
+
+<style scoped>
+.info-label {
+  color: #283593; /* indigo darken-3 */
+  padding: 5px;
+  width: 100%;
+  background-color: #e8eaf6; /* indigo lighten-5 */
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #283593;
+  border-radius: 3px;
+}
+</style>
