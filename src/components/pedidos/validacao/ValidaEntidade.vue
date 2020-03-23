@@ -55,8 +55,8 @@
     </v-row>
 
     <!-- Dialog se existir erros no pedido à API -->
-    <v-dialog v-model="erroPedido" width="50%" hide-overlay>
-      <ErroDialog erro="Passar a mensagem de erro depois" />
+    <v-dialog v-model="erroPedido" width="80%" hide-overlay>
+      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
     </v-dialog>
   </div>
 </template>
@@ -75,6 +75,7 @@ export default {
 
   data() {
     return {
+      erros: [],
       erroPedido: false,
       dialogTipologias: false,
       infoPedido: [
@@ -150,33 +151,41 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        await this.$request("post", "/entidades", pedido.objeto.dados);
-
-        const estado = "Validado";
-
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
+        let numeroErros = await this.validarEntidade(
+          pedido.objeto.acao,
+          pedido.objeto.dados
         );
 
-        dadosUtilizador = dadosUtilizador.data;
+        if (numeroErros > 0) {
+          this.erroPedido = true;
+        } else {
+          await this.$request("post", "/entidades", pedido.objeto.dados);
 
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho
-        };
+          const estado = "Validado";
 
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+          let dadosUtilizador = await this.$request(
+            "get",
+            "/users/" + this.$store.state.token + "/token"
+          );
+          dadosUtilizador = dadosUtilizador.data;
 
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao
-        });
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho
+          };
 
-        this.$router.go(-1);
+          pedido.estado = estado;
+          pedido.token = this.$store.state.token;
+
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao
+          });
+
+          this.$router.go(-1);
+        }
       } catch (e) {
         this.erroPedido = true;
         console.log("e :", e);
@@ -193,9 +202,96 @@ export default {
       this.infoPedido[i].cor = "red lighten-3";
     },
 
-    close() {
-      this.dialogtipologias = false;
-      this.dialogProcessos = false;
+    fecharErro() {
+      this.erroPedido = false;
+    },
+
+    async validarEntidade(acao, dados) {
+      let numeroErros = 0;
+
+      // Designação
+      if (
+        (dados.designacao === "" || dados.designacao === null) &&
+        acao === "Criação"
+      ) {
+        this.erros.push({
+          sobre: "Nome da Entidade",
+          mensagem: "O nome da entidade não pode ser vazio."
+        });
+        numeroErros++;
+      } else if (acao === "Criação") {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/entidades/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            this.erros.push({
+              sobre: "Nome da Entidade",
+              mensagem: "Nome da entidade já existente na BD."
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+          mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação."
+          });
+        }
+      }
+
+      // Sigla
+      if ((dados.sigla === "" || dados.sigla === null) && acao === "Criação") {
+        this.erros.push({
+          sobre: "Sigla",
+          mensagem: "A sigla não pode ser vazia."
+        });
+        numeroErros++;
+      } else if (acao === "Criação") {
+        try {
+          let existeSigla = await this.$request(
+            "get",
+            "/entidades/sigla?valor=" + encodeURIComponent(dados.sigla)
+          );
+          if (existeSigla.data) {
+            this.erros.push({
+              sobre: "Sigla",
+              mensagem: "Sigla já existente na BD."
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da sigla."
+          });
+        }
+      }
+
+      // Internacional
+      if (dados.internacional === "" || dados.internacional === null) {
+        this.erros.push({
+          sobre: "Internacional",
+          mensagem: "O campo internacional tem de ter uma opção."
+        });
+        numeroErros++;
+      }
+
+      // SIOE
+      if (dados.sioe !== "" && dados.sioe !== null) {
+        if (dados.sioe.length > 12) {
+          this.erros.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
+          });
+          numeroErros++;
+        }
+      }
+
+      return numeroErros;
     }
   }
 };

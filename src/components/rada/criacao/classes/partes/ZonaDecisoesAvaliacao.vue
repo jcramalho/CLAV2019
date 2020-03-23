@@ -28,20 +28,7 @@
       </v-col>
     </v-row>
     <!-- 2 -->
-    <v-row>
-      <v-col md="3" sm="3">
-        <div class="info-label">Justificação do PCA</div>
-      </v-col>
-      <v-col sm="9" md="9">
-        <v-text-field
-          :rules="[v => exist(v)]"
-          v-model="newSerie.justicacaoPCA"
-          label="Justificação do PCA"
-          solo
-          clearable
-        ></v-text-field>
-      </v-col>
-    </v-row>
+    <JustificacaoPCA :newSerie="newSerie" :classes="classes"/>
     <!-- 3 -->
     <v-row>
       <v-col md="3" sm="3">
@@ -101,8 +88,13 @@
 </template>
 
 <script>
+import JustificacaoPCA from "./JustificacaoPCA";
+
 export default {
-  props: ["newSerie"],
+  props: ["newSerie", "classes"],
+  components: {
+    JustificacaoPCA
+  },
   methods: {
     rulePCA: function(v) {
       if (v == "" || v == null) {
@@ -129,3 +121,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.info-content {
+  padding-right: 20px;
+  border: 1px solid #e0e0e0;
+}
+</style>

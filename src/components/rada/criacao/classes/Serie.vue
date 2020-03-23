@@ -50,7 +50,7 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="newSerie" />
+                <ZonaDecisoesAvaliacao :newSerie="newSerie" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -151,7 +151,7 @@ export default {
       relacoes: [],
       pca: "",
       formaContagem: "",
-      justicacaoPCA: "",
+      justificacaoPCA: [],
       df: "",
       justificacaoDF: "",
       notas: "",
@@ -183,7 +183,7 @@ export default {
         relacoes: [],
         pca: "",
         formaContagem: "",
-        justicacaoPCA: "",
+        justificacaoPCA: [],
         df: "",
         justificacaoDF: "",
         notas: "",
@@ -212,8 +212,9 @@ export default {
       }, 1);
     },
     filterSeries: function() {
+      this.isMultiple = false;
       this.panels = [0, 0, 0];
-      
+
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
       );
@@ -251,13 +252,24 @@ export default {
         }
       }
     },
+    adiciona_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
+      let criterio = classe_relacionada.justificacaoPCA.find(
+        crit => crit.tipo == "Critério de Utilidade Administrativa"
+      );
+
+      if (criterio == undefined) {
+        classe_relacionada.justificacaoPCA.push({
+          tipo: "Critério de Utilidade Administrativa",
+          nota:
+            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
+          relacoes: [codigoClasse]
+        });
+      } else {
+        criterio.relacoes.push(codigoClasse);
+      }
+    },
     relacoes_simetricas: function(clone_newSerie) {
       for (let i = 0; i < clone_newSerie.relacoes.length; i++) {
-        /*
-        
-          Ver qual é a série relacionada, ir encontrar e adicionar a relação oposta;
-
-        */
         let classe_relacionada = this.classes.find(
           e => e.codigo == clone_newSerie.relacoes[i].serieRelacionada.codigo
         );
@@ -282,7 +294,7 @@ export default {
               relacoes: [],
               pca: "",
               formaContagem: "",
-              justicacaoPCA: "",
+              justificacaoPCA: [],
               df: "",
               justificacaoDF: "",
               notas: "",
@@ -300,7 +312,7 @@ export default {
               UIs: [],
               pca: "",
               formaContagem: "",
-              justicacaoPCA: "",
+              justificacaoPCA: [],
               df: "",
               justificacaoDF: "",
               notas: "",
@@ -332,33 +344,23 @@ export default {
             break;
           case "Suplemento de":
             relacao_inversa = "Suplemento para";
+            this.adiciona_crit_utilidade_adminstrativa(
+              classe_relacionada,
+              clone_newSerie.codigo
+            );
             break;
           case "Suplemento para":
             relacao_inversa = "Suplemento de";
             break;
         }
 
-        /*
-        
-        Adicionar as relações simétricas verificando se essa relação já existe
-        
-        */
-
-        let existe_repetida = classe_relacionada.relacoes.find(
-          e =>
-            e.relacao == relacao_inversa &&
-            e.serieRelacionada.codigo == clone_newSerie.codigo
-        );
-
-        if (existe_repetida == undefined) {
-          classe_relacionada.relacoes.push({
-            relacao: relacao_inversa,
-            serieRelacionada: {
-              codigo: clone_newSerie.codigo,
-              tipo: clone_newSerie.tipo
-            }
-          });
-        }
+        classe_relacionada.relacoes.push({
+          relacao: relacao_inversa,
+          serieRelacionada: {
+            codigo: clone_newSerie.codigo,
+            tipo: clone_newSerie.tipo
+          }
+        });
       }
     }
   }

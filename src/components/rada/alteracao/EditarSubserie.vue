@@ -42,7 +42,7 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="subserie" />
+                <ZonaDecisoesAvaliacao :newSerie="subserie" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -117,6 +117,7 @@ export default {
   methods: {
     filterSeries: function() {
       this.panels = [0, 0, 0];
+      this.isMultiple = false;
       // ir buscar o verdadeiro objeto
       let subserie_real = this.classes.find(
         e => e.codigo == this.treeview_object.codigo
@@ -126,6 +127,7 @@ export default {
       this.subserie = Object.assign({}, subserie_real);
       this.subserie.relacoes = [...subserie_real.relacoes];
       this.subserie.UIs = [...subserie_real.UIs];
+      this.subserie.justificacaoDF = [...subserie_real.justificacaoDF];
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes.filter(

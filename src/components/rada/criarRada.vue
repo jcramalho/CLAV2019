@@ -17,12 +17,7 @@
       <br />
       <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
-        <v-stepper-step
-          color="amber accent-3"
-          :key="1"
-          :complete="e1 > 1"
-          :step="1"
-        >
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
           <font size="4">
             <b>Informação Geral</b>
           </font>
@@ -36,12 +31,7 @@
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step
-          color="amber accent-3"
-          :key="2"
-          :complete="e1 > 2"
-          :step="2"
-        >
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -58,12 +48,7 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step
-          color="amber accent-3"
-          :key="3"
-          :complete="e1 > 3"
-          :step="3"
-        >
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
@@ -207,7 +192,7 @@ export default {
             // //   legislacao: [],
             // //   pca: "",
             // //   formaContagem: "",
-            // //   justicacaoPCA: "",
+            // //   justificacaoPCA: [],
             // //   df: "",
             // //   justificacaoDF: "",
             // //   notas: "",
@@ -233,7 +218,7 @@ export default {
             //   legislacao: [],
             //   pca: "",
             //   formaContagem: "",
-            //   justicacaoPCA: "",
+            //   justificacaoPCA: [],
             //   df: "",
             //   justificacaoDF: "",
             //   notas: "",
@@ -249,12 +234,12 @@ export default {
             //   UIs: [],
             //   dataInicial: "2020-03-17",
             //   dataFinal: "2020-04-12",
-            //   pca: "",
-            //   formaContagem: "",
-            //   justicacaoPCA: "",
+            //   pca: "12",
+            //   formaContagem: "12",
+            //   justificacaoPCA: [],
             //   df: "",
-            //   justificacaoDF: "",
-            //   notas: ""
+            //   justificacaoDF: "asd",
+            //   notas: "asd"
             // },
             // {
             //   codigo: "02",
@@ -283,7 +268,7 @@ export default {
             //   legislacao: [],
             //   pca: "",
             //   formaContagem: "",
-            //   justicacaoPCA: "",
+            //   justificacaoPCA: [],
             //   df: "",
             //   justificacaoDF: "",
             //   notas: "",
@@ -301,7 +286,7 @@ export default {
             //   dataFinal: "2020-04-12",
             //   pca: "",
             //   formaContagem: "",
-            //   justicacaoPCA: "",
+            //   justificacaoPCA: [],
             //   df: "",
             //   justificacaoDF: "",
             //   notas: ""

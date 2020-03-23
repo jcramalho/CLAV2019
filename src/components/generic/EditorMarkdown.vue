@@ -6,7 +6,7 @@
       clearable
       color="indigo"
       counter="3000"
-      v-model="value"
+      v-model="texto"
       maxlength="3000"
       ref="descricao"
       @click:clear="custom_clear()"
@@ -91,7 +91,7 @@
         <v-card>
           <v-card-title>Pré-visualização</v-card-title>
           <v-card-text>
-            <p class="text-justify" v-html="compiledMarkdown(this.value)" />
+            <p class="text-justify" v-html="compiledMarkdown(this.texto)" />
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -112,19 +112,21 @@ export default {
   props: ["value"],
   data: nt => ({
     dialog: false,
-    snackbar: false
-  }),
+    snackbar: false,
+    texto: ""
+  }),  
   methods: {
     updateText(e) {
       //this.$refs.descricao.value
-      this.$emit("input", this.value);
+      this.$emit("input", this.texto);
     },
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
     },
     custom_clear() {
-      this.value = "";
+      this.texto = "";
+      this.updateText();
     },
     addHeader() {
       let textarea = this.$refs.descricao;
@@ -133,8 +135,8 @@ export default {
       let end = val.selectionEnd;
       let tmpStr = textarea.value;
       var insert = "";
-      if (!this.value) {
-        this.value = "";
+      if (!this.texto) {
+        this.texto = "";
         tmpStr = "";
       }
 
@@ -144,7 +146,7 @@ export default {
       } else {
         insert = "\n# " + tmpStr.substring(start, end) + "  \n";
       }
-      this.value =
+      this.texto =
         tmpStr.substring(0, start) +
         insert +
         tmpStr.substring(end, tmpStr.length);
@@ -164,8 +166,8 @@ export default {
       let end = val.selectionEnd;
       let tmpStr = textarea.value;
       var insert = "";
-      if (!this.value) {
-        this.value = "";
+      if (!this.texto) {
+        this.texto = "";
         tmpStr = "";
       }
 
@@ -175,7 +177,7 @@ export default {
       } else {
         insert = " __" + tmpStr.substring(start, end) + "__ ";
       }
-      this.value =
+      this.texto =
         tmpStr.substring(0, start) +
         insert +
         tmpStr.substring(end, tmpStr.length);
@@ -195,8 +197,8 @@ export default {
       let end = val.selectionEnd;
       let tmpStr = textarea.value;
       var insert = "";
-      if (!this.value) {
-        this.value = "";
+      if (!this.texto) {
+        this.texto = "";
         tmpStr = "";
       }
 
@@ -206,7 +208,7 @@ export default {
       } else {
         insert = " *" + tmpStr.substring(start, end) + "* ";
       }
-      this.value =
+      this.texto =
         tmpStr.substring(0, start) +
         insert +
         tmpStr.substring(end, tmpStr.length);
@@ -226,8 +228,8 @@ export default {
       let end = val.selectionEnd;
       let tmpStr = textarea.value;
       var insert = "";
-      if (!this.value) {
-        this.value = "";
+      if (!this.texto) {
+        this.texto = "";
         tmpStr = "";
       }
 
@@ -237,7 +239,7 @@ export default {
       } else {
         insert = " ~~" + tmpStr.substring(start, end) + "~~ ";
       }
-      this.value =
+      this.texto =
         tmpStr.substring(0, start) +
         insert +
         tmpStr.substring(end, tmpStr.length);
@@ -257,8 +259,8 @@ export default {
       let end = val.selectionEnd;
       let tmpStr = textarea.value;
       var insert = "";
-      if (!this.value) {
-        this.value = "";
+      if (!this.texto) {
+        this.texto = "";
         tmpStr = "";
       }
 
@@ -268,7 +270,7 @@ export default {
       } else {
         insert = " [" + tmpStr.substring(start, end) + "](http://ligação) ";
       }
-      this.value =
+      this.texto =
         tmpStr.substring(0, start) +
         insert +
         tmpStr.substring(end, tmpStr.length);
@@ -288,21 +290,21 @@ export default {
       let end = val.selectionEnd;
       let tmpStr = textarea.value;
       var insert = "";
-      if (!this.value) {
-        this.value = "";
+      if (!this.texto) {
+        this.texto = "";
         tmpStr = "";
       }
 
       // insert:
       if (end == start) {
         insert = "\n___  \n  ";
-        this.value =
+        this.texto =
           tmpStr.substring(0, start) +
           insert +
           tmpStr.substring(end, tmpStr.length);
       } else {
         insert = "\n___  \n  ";
-        this.value =
+        this.texto =
           tmpStr.substring(0, end) +
           insert +
           tmpStr.substring(end, tmpStr.length);
@@ -323,8 +325,8 @@ export default {
       let end = val.selectionEnd;
       let tmpStr = textarea.value;
       var insert = "";
-      if (!this.value) {
-        this.value = "";
+      if (!this.texto) {
+        this.texto = "";
         tmpStr = "";
       }
 
@@ -334,7 +336,7 @@ export default {
       } else {
         insert = "* " + tmpStr.substring(start, end) + "  \n";
       }
-      this.value =
+      this.texto =
         tmpStr.substring(0, start) +
         insert +
         tmpStr.substring(end, tmpStr.length);
@@ -353,14 +355,14 @@ export default {
       let start = val.selectionStart;
       let end = val.selectionEnd;
       let tmpStr = textarea.value;
-      if (!this.value) {
-        this.value = "";
+      if (!this.texto) {
+        this.texto = "";
         tmpStr = "";
       }
       var insert =
         "\n|  X  |  Y  |  Z  |\n|:----:|:----:|:----:|\n|  1  |  2  |  3  | ";
 
-      this.value =
+      this.texto =
         tmpStr.substring(0, start) +
         insert +
         tmpStr.substring(end, tmpStr.length);
@@ -374,8 +376,11 @@ export default {
       }, 10);
     },
     compiledMarkdown: function(d) {
-      return marked(d, { sanitize: true });
+      return marked(d || "", { sanitize: true });
     }
+  },
+  created: async function() {
+    this.texto = this.value;
   }
 };
 </script>
