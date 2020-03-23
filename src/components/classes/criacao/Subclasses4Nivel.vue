@@ -8,6 +8,9 @@
       </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
+
+      <DistribuiTI v-if="c.termosInd.length > 0" :c="c" />
+
       <v-row>
         <v-col cols="2">
         <v-tabs vertical outlined v-model="active" >
@@ -77,6 +80,7 @@
 </template>
 
 <script>
+import DistribuiTI from "@/components/classes/criacao/DistribuiTI.vue";
 import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
 import BlocoDecisoes4Nivel from "@/components/classes/criacao/BlocoDecisoes4Nivel.vue";
 
@@ -84,6 +88,7 @@ export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
 
   components: {
+    DistribuiTI,
     TermosIndiceOps,
     BlocoDecisoes4Nivel
   },
