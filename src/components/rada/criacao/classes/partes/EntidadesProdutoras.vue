@@ -33,8 +33,8 @@
           </template>
         </v-data-table>
         <v-alert
+          dense
           v-else
-          :value="true"
           icon="warning"
           color="amber accent-3"
         >Não tem entidades produtoras selecionadas...</v-alert>
@@ -71,7 +71,6 @@
 
           <v-alert
             v-slot:no-results
-            :value="true"
             class="error"
             icon="warning"
           >A procura por "{{ search }}" não deu resultados.</v-alert>
@@ -113,7 +112,7 @@
         </v-data-table>
         <v-alert
           v-else
-          :value="true"
+          dense
           icon="warning"
           color="amber accent-3"
         >Não tem entidades produtoras selecionadas...</v-alert>
@@ -235,20 +234,32 @@ export default {
     }
   },
   methods: {
+    //{ "estado": "Ativa", "sigla": "A3ES", "sioe": "", "designacao": "Agência de Avaliação e Acreditação do Ensino Superior", "id": "ent_A3ES", "internacional": "", "searchField": "A3ES - Agência de Avaliação e Acreditação do Ensino Superior", "disabled": false },
     selectEntidade: function(item) {
-      this.newSerie.entProdutoras.push(item);
+      this.newSerie.entProdutoras.push({
+        id: item.id,
+        sigla: item.sigla,
+        designacao: item.designacao,
+        estado: item.estado
+      });
     },
     unselectEntidade: function(item) {
       this.newSerie.entProdutoras = this.newSerie.entProdutoras.filter(
-        e => e.sigla != item.sigla
+        e => e.id != item.id
       );
     },
+    //{ "estado": "Ativa", "sigla": "AAC", "designacao": "Autoridades Administrativas Civis", "id": "tip_AAC", "searchField": "AAC - Autoridades Administrativas Civis", "disabled": false }
     selectTipologia: function(item) {
-      this.newSerie.tipologiasProdutoras.push(item);
+      this.newSerie.tipologiasProdutoras.push({
+        id: item.id,
+        sigla: item.sigla,
+        designacao: item.designacao,
+        estado: item.estado
+      });
     },
     unselectTipologia: function(item) {
       this.newSerie.tipologiasProdutoras = this.newSerie.tipologiasProdutoras.filter(
-        e => e.sigla != item.sigla
+        e => e.id != item.id
       );
     }
   }

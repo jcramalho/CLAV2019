@@ -32,9 +32,12 @@
             </tr>
           </template>
         </v-data-table>
-        <v-alert v-else :value="true" icon="warning" color="amber accent-3"
-          >Não tem legislação selecionada...</v-alert
-        >
+        <v-alert
+          v-else
+          dense
+          icon="warning"
+          color="amber accent-3"
+        >Não tem legislação selecionada...</v-alert>
       </v-col>
     </v-row>
     <NovaLegislacao :legislacao="legislacao" :newSerie="newSerie" />
@@ -67,9 +70,12 @@
             </tr>
           </template>
 
-          <v-alert v-slot:no-results :value="true" class="error" icon="warning"
-            >A procura por "{{ search }}" não deu resultados.</v-alert
-          >
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            class="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-col>
     </v-row>
@@ -166,7 +172,13 @@ export default {
   },
   methods: {
     selectLegislacao: function(item) {
-      this.newSerie.legislacao.push(item);
+      this.newSerie.legislacao.push({
+        id: item.id,
+        data: item.data,
+        tipo: item.tipo,
+        numero: item.numero,
+        sumario: item.sumario
+      });
     },
     unselectLegislacao: function(item) {
       this.newSerie.legislacao = this.newSerie.legislacao.filter(

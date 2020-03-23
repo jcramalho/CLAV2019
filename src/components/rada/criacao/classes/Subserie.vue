@@ -28,7 +28,7 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="newSubSerie" :classes="classesRelacoes" />
+                <ZonaContexto :newSerie="newSubSerie" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -36,7 +36,7 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="newSubSerie" />
+                <ZonaDecisoesAvaliacao :newSerie="newSubSerie" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -110,7 +110,6 @@ export default {
     isMultiple: false,
     dialog: false,
     classesHierarquia: [],
-    classesRelacoes: [],
     newSubSerie: {
       codigo: "",
       titulo: "",
@@ -126,7 +125,7 @@ export default {
       relacoes: [],
       pca: "",
       formaContagem: "",
-      justicacaoPCA: "",
+      justificacaoPCA: [],
       df: "",
       justificacaoDF: "",
       notas: "",
@@ -138,8 +137,24 @@ export default {
     apagar: function() {
       this.isMultiple = false;
       this.panels = [0, 0, 0];
-      this.newSubSerie.relacoes = [];
-      this.$refs.form.reset();
+      this.newSubSerie = {
+        codigo: "",
+        titulo: "",
+        descricao: "",
+        dataInicial: null,
+        dataFinal: null,
+        UIs: [],
+        relacoes: [],
+        pca: "",
+        formaContagem: "",
+        justificacaoPCA: [],
+        df: "",
+        justificacaoDF: "",
+        notas: "",
+        eFilhoDe: "",
+        tipo: "Subsérie"
+      };
+      this.$refs.form.resetValidation();
     },
     close: function() {
       this.dialog = false;
@@ -147,14 +162,15 @@ export default {
     save: function() {
       this.isMultiple = true;
       this.panels = [0, 1, 2];
-      setTimeout(() => {
+      setTimeout(async () => {
         if (this.$refs.form.validate()) {
           let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
-          this.adicionarUIs(clone_newSubserie);
-          this.relacoes_simetricas(clone_newSubserie);
+          await this.adicionarUIs(clone_newSubserie);
+          await this.relacoes_simetricas(clone_newSubserie);
 
           this.classes.push(clone_newSubserie);
+
           this.dialog = false;
           this.apagar();
         }
@@ -195,24 +211,30 @@ export default {
     },
     filterSeries: function() {
       this.panels = [0, 0, 0];
-      
+      this.isMultiple = false;
+
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo == "Série"
       );
-
-      this.classesRelacoes = this.classes.filter(
-        e => e.tipo == "Série" || e.tipo == "Subsérie"
+    },
+    adiciona_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
+      let criterio = classe_relacionada.justificacaoPCA.find(
+        crit => crit.tipo == "Critério de Utilidade Administrativa"
       );
-      // .map(e => e.codigo + " - " + e.titulo);
+
+      if (criterio == undefined) {
+        classe_relacionada.justificacaoPCA.push({
+          tipo: "Critério de Utilidade Administrativa",
+          nota:
+            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
+          relacoes: [codigoClasse]
+        });
+      } else {
+        criterio.relacoes.push(codigoClasse);
+      }
     },
     relacoes_simetricas: function(clone_newSubserie) {
       for (let i = 0; i < clone_newSubserie.relacoes.length; i++) {
-        /*
-        
-          Ver qual é a série relacionada, ir encontrar e adicionar a relação oposta;
-
-        */
-
         let classe_relacionada = this.classes.find(
           e => e.codigo == clone_newSubserie.relacoes[i].serieRelacionada.codigo
         );
@@ -237,7 +259,7 @@ export default {
               UIs: [],
               pca: "",
               formaContagem: "",
-              justicacaoPCA: "",
+              justificacaoPCA: [],
               df: "",
               justificacaoDF: "",
               notas: "",
@@ -255,7 +277,7 @@ export default {
               UIs: [],
               pca: "",
               formaContagem: "",
-              justicacaoPCA: "",
+              justificacaoPCA: [],
               df: "",
               justificacaoDF: "",
               notas: "",
@@ -287,33 +309,23 @@ export default {
             break;
           case "Suplemento de":
             relacao_inversa = "Suplemento para";
+            this.adiciona_crit_utilidade_adminstrativa(
+              classe_relacionada,
+              clone_newSubserie.codigo
+            );
             break;
           case "Suplemento para":
             relacao_inversa = "Suplemento de";
             break;
         }
 
-        /*
-        
-        Adicionar as relações simétricas verificando se essa relação já existe
-        
-        */
-
-        let existe_repetida = classe_relacionada.relacoes.find(
-          e =>
-            e.relacao == relacao_inversa &&
-            e.serieRelacionada.codigo == clone_newSubserie.codigo
-        );
-
-        if (existe_repetida == undefined) {
-          classe_relacionada.relacoes.push({
-            relacao: relacao_inversa,
-            serieRelacionada: {
-              codigo: clone_newSubserie.codigo,
-              tipo: clone_newSubserie.tipo
-            }
-          });
-        }
+        classe_relacionada.relacoes.push({
+          relacao: relacao_inversa,
+          serieRelacionada: {
+            codigo: clone_newSubserie.codigo,
+            tipo: clone_newSubserie.tipo
+          }
+        });
       }
     }
   }

@@ -151,7 +151,13 @@ export default {
   },
   computed: {
     getCodigos() {
-      return this.classes.map(e => e.codigo);
+      return this.classes
+        .filter(
+          e =>
+            e.codigo != this.newSerie.codigo &&
+            (e.tipo == "Subsérie" || e.tipo == "Série")
+        )
+        .map(e => e.codigo);
     }
   },
   watch: {
@@ -166,7 +172,23 @@ export default {
     }
   },
   methods: {
+    remove_crit_utilidade_adminstrativa(codigoClasse) {
+      let criterio = this.newSerie.justificacaoPCA.find(
+        crit => crit.tipo == "Critério de Utilidade Administrativa"
+      );
+
+      if (criterio != undefined) {
+        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+        if (criterio.relacoes.length == 0) {
+          this.newSerie.justificacaoPCA = this.newSerie.justificacaoPCA.filter(
+            e => e.tipo != "Critério de Utilidade Administrativa"
+          );
+        }
+      }
+    },
     remove: function(item) {
+      this.remove_crit_utilidade_adminstrativa(item.serieRelacionada.codigo);
       this.newSerie.relacoes = this.newSerie.relacoes.filter(e => {
         return (
           e.relacao != item.relacao ||
@@ -178,7 +200,12 @@ export default {
       if (v == null || v == "") {
         return "Campo Obrigatório";
       } else {
-        if (v == this.newSerie.codigo) {
+        if (
+          v == this.newSerie.codigo ||
+          this.classes.some(
+            e => e.codigo == v && e.tipo != "Série" && e.tipo != "Subsérie"
+          )
+        ) {
           return "Código Inválido";
         } else {
           return true;
@@ -190,6 +217,11 @@ export default {
 
       if (this.$refs.addRel.validate()) {
         if (!(await this.validateRelacao())) {
+          // TRATAR DA JUSTIFICAÇÃO DO PCA
+          if (this.rel == "Suplemento para") {
+            this.adiciona_crit_utilidade_adminstrativa(this.codrel);
+          }
+
           this.newSerie.relacoes.push({
             relacao: this.rel,
             serieRelacionada: {
@@ -197,12 +229,29 @@ export default {
               tipo: this.tipoClasse
             }
           });
+
           this.$refs.addRel.reset();
           this.iscodvalido = false;
           this.tipoClasse = null;
         } else {
           this.alertOn = true;
         }
+      }
+    },
+    adiciona_crit_utilidade_adminstrativa(codigoClasse) {
+      let criterio = this.newSerie.justificacaoPCA.find(
+        crit => crit.tipo == "Critério de Utilidade Administrativa"
+      );
+
+      if (criterio == undefined) {
+        this.newSerie.justificacaoPCA.push({
+          tipo: "Critério de Utilidade Administrativa",
+          nota:
+            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
+          relacoes: [codigoClasse]
+        });
+      } else {
+        criterio.relacoes.push(codigoClasse);
       }
     },
     validateRelacao: function() {
