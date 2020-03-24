@@ -66,8 +66,7 @@ export default {
 
   created: function(){
       this.tis = JSON.parse(JSON.stringify(this.c.termosInd))
-      alert(JSON.stringify(this.tis))
-      if(this.tis[0].subclasse == ""){ // Se ainda não foi feita uma distribuição
+      if(typeof(this.tis[0].subclasse) === "undefined"){ // Se ainda não foi feita uma distribuição
         for(var i=0; i < this.tis.length; i++)
           this.tis[i].subclasse = this.c.subclasses[0].codigo;
       }
