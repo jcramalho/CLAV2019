@@ -125,8 +125,9 @@ export default {
     distribui: function(tis){
       this.distribuiTIs = false
       this.c.termosInd = JSON.parse(JSON.stringify(tis))
-      this.c.subclasses[0].termosInd = tis.filter(t => t.subclasse[t.subclasse.length-1] == "1")
-      this.c.subclasses[1].termosInd = tis.filter(t => t.subclasse[t.subclasse.length-1] == "2")
+      for(var i=0; i < this.c.subclasses.length; i++){
+        this.c.subclasses[i].termosInd = tis.filter(t => t.subclasse == this.c.subclasses[i].codigo)
+      }
       return true
     }
   }
