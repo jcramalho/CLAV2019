@@ -2,8 +2,8 @@
   <v-card>
     <v-card-title class="indigo darken-2 white--text" fill-height>
       <div>
-        <h2>{{ inv.descRel }}</h2>
-        <h4 v-html="inv.descInv"></h4>
+        <h2>{{ mutableInv.descRel }}</h2>
+        <h4 v-html="mutableInv.descInv"></h4>
       </div>
     </v-card-title>
 
@@ -11,8 +11,8 @@
       <v-toolbar-title>PNs que não cumprem o invariante:</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <div v-if="inv.results.length != 0">
-      <v-data-table :headers="headers" :items="inv.results">
+    <div v-if="mutableInv.results.length != 0">
+      <v-data-table :headers="headers" :items="mutableInv.results">
         <template v-slot:item="{ item }">
           <tr>
             <td v-for="v in Object.keys(item)" :key="v" class="text-center">
@@ -37,17 +37,31 @@
       </v-alert>
     </div>
 
-    <v-btn class="ma-2" color="indigo darken-2" @click="goBack()" dark>
-      Voltar à lista de invariantes
-    </v-btn>
+    <v-card-actions>
+      <v-btn class="ma-2" color="indigo darken-2" @click="goBack()" dark>
+        Voltar à lista de invariantes
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        v-if="mutableInv.isFixable && mutableInv.results.length > 0"
+        class="ma-2"
+        color="indigo darken-2"
+        :loading="aCorrigir"
+        @click="fix()"
+        dark
+      >
+        Corrigir erros do invariante
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 export default {
-  props: ["inv"],
+  props: ["inv", "idRel", "idInv"],
   data: () => ({
-    headers: []
+    headers: [],
+    mutableInv: null
   }),
 
   methods: {
@@ -56,12 +70,38 @@ export default {
     },
     goToClass: function(classe) {
       this.$router.push("/classes/consultar/" + classe);
+    },
+    fix: async function() {
+      this.$emit("erro", "");
+      this.aCorrigir = true;
+      try {
+        await this.$request("post", "/invariantes", {
+          idRel: this.idRel,
+          idInv: this.idInv
+        });
+        try {
+          var response = await this.$request(
+            "get",
+            "/invariantes?idRel=" + this.idRel + "&idInv=" + this.idInv
+          );
+          this.mutableInv = response.data;
+        } catch (erro) {
+          this.$emit(
+            "erro",
+            "Não foi possível testar o invariante... Tente novamente mais tarde."
+          );
+        }
+      } catch (erro) {
+        this.$emit("erro", "Não foi possível realizar a correção dos erros...");
+      }
+      this.aCorrigir = false;
     }
   },
 
-  mounted: function() {
-    if (this.inv.results.length > 0) {
-      Object.keys(this.inv.results[0]).forEach(key => {
+  created: function() {
+    this.mutableInv = JSON.parse(JSON.stringify(this.inv));
+    if (this.mutableInv.results.length > 0) {
+      Object.keys(this.mutableInv.results[0]).forEach(key => {
         this.headers.push({ text: key, align: "center", value: key });
       });
     }

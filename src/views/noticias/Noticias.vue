@@ -134,12 +134,14 @@ export default {
             text: this.cabecalhos[i],
             value: this.campos[i],
             align: "end",
-            width: "10%"
+            width: "10%",
+            class: ["table-header", "subtitle-2", "font-weight-bold"]
           };
         else
           this.headers[i] = {
             text: this.cabecalhos[i],
-            value: this.campos[i]
+            value: this.campos[i],
+            class: ["table-header", "subtitle-2", "font-weight-bold"]
           };
       }
 
