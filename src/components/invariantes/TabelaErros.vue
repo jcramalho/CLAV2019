@@ -61,6 +61,7 @@ export default {
   props: ["inv", "idRel", "idInv"],
   data: () => ({
     headers: [],
+    aCorrigir: false,
     mutableInv: null
   }),
 
