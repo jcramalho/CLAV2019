@@ -187,6 +187,10 @@ export default {
           this.$router.go(-1);
         }
       } catch (e) {
+        this.erros.push({
+          sobre: "Acesso à Ontologia",
+          mensagem: "Ocorreu um erro ao aceder à ontologia."
+        });
         this.erroPedido = true;
         console.log("e :", e);
       }
@@ -204,6 +208,10 @@ export default {
 
     fecharErro() {
       this.erroPedido = false;
+    },
+
+    close() {
+      this.dialogTipologias = false;
     },
 
     async validarEntidade(acao, dados) {
@@ -235,7 +243,7 @@ export default {
           }
         } catch (err) {
           numeroErros++;
-          mensagensErro.push({
+          this.erros.push({
             sobre: "Acesso à Ontologia",
             mensagem: "Não consegui verificar a existência da designação."
           });
