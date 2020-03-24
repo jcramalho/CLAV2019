@@ -310,7 +310,7 @@ export default {
         codigo: this.c.codigo + "." + this.pad(this.c.subclasses.length + 1, 2),
         titulo: this.c.titulo + ": ",
         descricao: "",
-        termosInd: JSON.parse(JSON.stringify(this.c.termosInd)),
+        termosInd: [],
 
         // Bloco de contexto de avaliação
 
