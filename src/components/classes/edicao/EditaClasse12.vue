@@ -11,6 +11,13 @@
 
         <v-card-text>
           <v-expansion-panels>
+            <!-- IDENTIFICAÇÃO DA CLASSE -->
+            <BlocoIdentificativo :c="classe" />
+          </v-expansion-panels>
+        </v-card-text>
+
+        <v-card-text>
+          <v-expansion-panels>
             <!-- DESCRITIVO DA CLASSE -->
             <BlocoDescritivo :c="classe" />
           </v-expansion-panels>
@@ -35,11 +42,13 @@
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
+import BlocoIdentificativo from "@/components/classes/edicao/BlocoIdentificativo.vue";
 import BlocoDescritivo from "@/components/classes/criacao/BlocoDescritivo.vue";
 import PainelOperacoes from "@/components/classes/edicao/PainelOperacoes.vue";
 
 export default {
   components: {
+    BlocoIdentificativo,
     BlocoDescritivo,
     PainelOperacoes
   },
