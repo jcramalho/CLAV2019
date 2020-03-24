@@ -105,6 +105,8 @@
 </template>
 
 <script>
+const labels = require("@/config/labels").criterios;
+
 export default {
   name: "RelacoesClasse",
   props: ["newSerie", "classes"],
@@ -246,8 +248,7 @@ export default {
       if (criterio == undefined) {
         this.newSerie.justificacaoPCA.push({
           tipo: "Critério de Utilidade Administrativa",
-          nota:
-            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
+          nota: labels.textoCriterioUtilidadeAdministrativa,
           relacoes: [codigoClasse]
         });
       } else {

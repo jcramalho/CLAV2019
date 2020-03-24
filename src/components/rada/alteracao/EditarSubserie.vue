@@ -127,7 +127,7 @@ export default {
       this.subserie = Object.assign({}, subserie_real);
       this.subserie.relacoes = [...subserie_real.relacoes];
       this.subserie.UIs = [...subserie_real.UIs];
-      this.subserie.justificacaoDF = [...subserie_real.justificacaoDF];
+      this.subserie.justificacaoPCA = [...subserie_real.justificacaoPCA];
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes.filter(
