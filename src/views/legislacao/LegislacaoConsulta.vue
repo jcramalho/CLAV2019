@@ -59,7 +59,8 @@ export default {
           },
           entidades: {
             campo: "Entidades",
-            text: await this.parseEntidades(leg.entidades)
+            // text: await this.parseEntidades(leg.entidades)
+            text: leg.entidades
           }
         };
         if (leg.estado == "Ativo") {
@@ -89,12 +90,7 @@ export default {
         "/legislacao/" + this.idLegislacao
       );
       this.legislacao = await this.preparaLegislacao(response.data);
-      this.titulo =
-        response.data.tipo +
-        " " +
-        (await this.parseEntidades(response.data.entidades)) +
-        " " +
-        response.data.numero;
+      this.titulo = `${response.data.tipo}  ${response.data.numero}`;
 
       // Processos de negócio que são regulados pela legislação em causa
       var regulaProc = await this.$request(
