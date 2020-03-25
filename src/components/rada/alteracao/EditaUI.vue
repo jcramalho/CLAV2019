@@ -363,7 +363,9 @@ export default {
             relacoes: [],
             UIs: [{ codigo: codigo_UI }],
             pca: "",
-            formaContagem: "",
+            formaContagem: {
+              forma: null
+            },
             justificacaoPCA: [],
             df: "",
             justificacaoDF: "",
@@ -381,7 +383,9 @@ export default {
             relacoes: [],
             UIs: [{ codigo: codigo_UI }],
             pca: "",
-            formaContagem: "",
+            formaContagem: {
+              forma: null
+            },
             justificacaoPCA: [],
             df: "",
             justificacaoDF: "",

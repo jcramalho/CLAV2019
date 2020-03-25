@@ -47,7 +47,11 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="serie" :classes="classes" />
+                <ZonaDecisoesAvaliacao
+                  :newSerie="serie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -106,7 +110,14 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "legislacao", "RE", "UIs"],
+  props: [
+    "treeview_object",
+    "classes",
+    "legislacao",
+    "RE",
+    "UIs",
+    "formaContagem"
+  ],
   components: {
     Identificacao,
     ZonaDescritiva,
@@ -136,6 +147,7 @@ export default {
       this.serie.legislacao = [...serie_real.legislacao];
       this.serie.localizacao = [...serie_real.localizacao];
       this.serie.relacoes = [...serie_real.relacoes];
+      this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
       this.serie.justificacaoPCA = [...serie_real.justificacaoPCA];
       this.serie.UIs = [...serie_real.UIs];
 

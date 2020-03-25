@@ -405,7 +405,9 @@ export default {
               legislacao: [],
               relacoes: [],
               pca: "",
-              formaContagem: "",
+              formaContagem: {
+                forma: null
+              },
               justificacaoPCA: [],
               df: "",
               justificacaoDF: "",
@@ -422,7 +424,9 @@ export default {
               relacoes: [],
               pca: "",
               UIs: [{ codigo: this.UI.codigo }],
-              formaContagem: "",
+              formaContagem: {
+                forma: null
+              },
               justificacaoPCA: [],
               df: "",
               justificacaoDF: "",

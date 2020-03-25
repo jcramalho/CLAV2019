@@ -42,7 +42,11 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="newSerie" :classes="classes" />
+                <ZonaDecisoesAvaliacao
+                  :newSerie="newSerie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -111,7 +115,7 @@ export default {
     ZonaContexto,
     ZonaDecisoesAvaliacao
   },
-  props: ["classes", "legislacao", "RE", "UIs"],
+  props: ["classes", "legislacao", "RE", "UIs", "formaContagem"],
   data: () => ({
     panels: [0, 0, 0],
     isMultiple: false,
@@ -139,7 +143,9 @@ export default {
       legislacao: [],
       relacoes: [],
       pca: "",
-      formaContagem: "",
+      formaContagem: {
+        forma: null
+      },
       justificacaoPCA: [],
       df: "",
       justificacaoDF: "",
@@ -171,7 +177,9 @@ export default {
         legislacao: [],
         relacoes: [],
         pca: "",
-        formaContagem: "",
+        formaContagem: {
+          forma: null
+        },
         justificacaoPCA: [],
         df: "",
         justificacaoDF: "",
@@ -282,7 +290,9 @@ export default {
               legislacao: [],
               relacoes: [],
               pca: "",
-              formaContagem: "",
+              formaContagem: {
+                forma: null
+              },
               justificacaoPCA: [],
               df: "",
               justificacaoDF: "",
@@ -300,7 +310,9 @@ export default {
               relacoes: [],
               UIs: [],
               pca: "",
-              formaContagem: "",
+              formaContagem: {
+                forma: null
+              },
               justificacaoPCA: [],
               df: "",
               justificacaoDF: "",

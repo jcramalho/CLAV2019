@@ -42,7 +42,11 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="subserie" :classes="classes" />
+                <ZonaDecisoesAvaliacao
+                  :newSerie="subserie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -100,7 +104,7 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "UIs"],
+  props: ["treeview_object", "classes", "UIs", "formaContagem"],
   data: () => ({
     dialog: false,
     subserie: {},
@@ -128,6 +132,10 @@ export default {
       this.subserie.relacoes = [...subserie_real.relacoes];
       this.subserie.UIs = [...subserie_real.UIs];
       this.subserie.justificacaoPCA = [...subserie_real.justificacaoPCA];
+      this.subserie.formaContagem = Object.assign(
+        {},
+        subserie_real.formaContagem
+      );
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes.filter(

@@ -18,8 +18,14 @@
       <v-row justify="center">
         <v-col cols="12" xs="12" sm="12">
           <AddOrgFunc :classes="TS.classes" />
-          <Serie :classes="TS.classes" :legislacao="legislacao" :RE="RE" :UIs="TS.UIs" />
-          <SubSerie :classes="TS.classes" :UIs="TS.UIs" />
+          <Serie
+            :classes="TS.classes"
+            :legislacao="legislacao"
+            :RE="RE"
+            :UIs="TS.UIs"
+            :formaContagem="formaContagem"
+          />
+          <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" />
         </v-col>
       </v-row>
       <!-- {{ TS.classes }} -->
@@ -36,6 +42,7 @@
                   :legislacao="legislacao"
                   :RE="RE"
                   :UIs="TS.UIs"
+                  :formaContagem="formaContagem"
                 />
                 <EditarSubserie
                   v-else-if="item.tipo == 'Subsérie'"
@@ -43,6 +50,7 @@
                   :treeview_object="item"
                   :classes="TS.classes"
                   :UIs="TS.UIs"
+                  :formaContagem="formaContagem"
                 />
                 <EditarOrganicaFunc
                   v-else
@@ -102,6 +110,12 @@ export default {
     EditarSerie,
     ListaUI
   },
+  data: () => ({
+    formaContagem: {
+      subFormasContagem: [],
+      formasContagem: []
+    }
+  }),
   computed: {
     preparaTree() {
       var myTree = [];
@@ -334,7 +348,9 @@ export default {
             relacoes: [],
             UIs: [],
             pca: "",
-            formaContagem: "",
+            formaContagem: {
+              forma: null
+            },
             justificacaoPCA: [],
             df: "",
             justificacaoDF: "",
@@ -352,7 +368,9 @@ export default {
             relacoes: [],
             UIs: [],
             pca: "",
-            formaContagem: "",
+            formaContagem: {
+              forma: null
+            },
             justificacaoPCA: [],
             df: "",
             justificacaoDF: "",
@@ -476,6 +494,31 @@ export default {
         );
       });
     }
+  },
+  created: async function() {
+    let responseFC = await this.$request(
+      "get",
+      "/vocabularios/vc_pcaFormaContagem"
+    );
+
+    this.formaContagem.formasContagem = responseFC.data.map(item => {
+      return {
+        label: item.termo,
+        value: item.idtermo.split("#")[1]
+      };
+    });
+
+    let responseSFC = await this.$request(
+      "get",
+      "/vocabularios/vc_pcaSubformaContagem"
+    );
+
+    this.formaContagem.subFormasContagem = responseSFC.data.map(item => {
+      return {
+        label: item.termo.split(": ")[1] + ": " + item.desc,
+        value: item.idtermo.split("#")[1]
+      };
+    });
   }
 };
 </script>
