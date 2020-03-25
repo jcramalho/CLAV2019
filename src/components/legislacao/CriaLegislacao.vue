@@ -198,7 +198,7 @@ export default {
       entidadesSel: [],
       processosSel: [],
       codigo: "",
-      estado: "Ativo"
+      estado: "Ativa"
     },
 
     tiposDiploma: [],
