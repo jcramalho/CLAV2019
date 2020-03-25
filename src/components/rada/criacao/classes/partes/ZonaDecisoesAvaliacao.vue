@@ -16,15 +16,16 @@
       </v-col>
     </v-row>
     <!-- 2 -->
-    <FormaContagem :newSerie="newSerie" :formaContagem="formaContagem"/>
+    <FormaContagem :newSerie="newSerie" :formaContagem="formaContagem" />
     <!-- 3 -->
     <JustificacaoPCA :newSerie="newSerie" :classes="classes" />
+    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <!-- 4 -->
     <v-row>
       <v-col md="3" sm="3">
         <div class="info-label">Destino Final</div>
       </v-col>
-      <v-col sm="3" md="3">
+      <v-col sm="9" md="9">
         <v-select
           :rules="[v => exist(v)]"
           v-model="newSerie.df"
@@ -46,7 +47,7 @@
           </template>
         </v-select>
       </v-col>
-      <v-col md="3" sm="3">
+      <!-- <v-col md="3" sm="3">
         <div class="info-label">Justificação do DF</div>
       </v-col>
       <v-col sm="3" md="3">
@@ -57,9 +58,11 @@
           v-model="newSerie.justificacaoDF"
           label="Justificação do DF"
         ></v-text-field>
-      </v-col>
+      </v-col>-->
     </v-row>
     <!-- 5 -->
+    <JustificacaoDF :newSerie="newSerie" :classes="classes" />
+    <!-- 6 -->
     <v-row>
       <v-col md="3" sm="3">
         <div class="info-label">Notas</div>
@@ -74,12 +77,14 @@
 <script>
 import JustificacaoPCA from "./JustificacaoPCA";
 import FormaContagem from "./FormaContagem";
+import JustificacaoDF from "./JustificacaoDF";
 
 export default {
   props: ["newSerie", "classes", "formaContagem"],
   components: {
     JustificacaoPCA,
-    FormaContagem
+    FormaContagem,
+    JustificacaoDF
   },
   methods: {
     rulePCA: function(v) {

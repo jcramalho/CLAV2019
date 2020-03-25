@@ -36,7 +36,11 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="newSubSerie" :classes="classes" :formaContagem="formaContagem" />
+                <ZonaDecisoesAvaliacao
+                  :newSerie="newSubSerie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -129,7 +133,7 @@ export default {
       },
       justificacaoPCA: [],
       df: "",
-      justificacaoDF: "",
+      justificacaoDF: [],
       notas: "",
       eFilhoDe: "",
       tipo: "Subsérie"
@@ -153,7 +157,7 @@ export default {
         },
         justificacaoPCA: [],
         df: "",
-        justificacaoDF: "",
+        justificacaoDF: [],
         notas: "",
         eFilhoDe: "",
         tipo: "Subsérie"
@@ -267,7 +271,7 @@ export default {
               },
               justificacaoPCA: [],
               df: "",
-              justificacaoDF: "",
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
               tipo: "Série"
@@ -287,7 +291,7 @@ export default {
               },
               justificacaoPCA: [],
               df: "",
-              justificacaoDF: "",
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
               tipo: "Subsérie"
