@@ -43,7 +43,7 @@
             <v-col cols="3">
               <div style="padding-left: 15px;" class="info-label">
                 <v-icon
-                  v-if="criterio.tipo != 'Critério de Complementaridade Informacional'"
+                  v-if="criterio.tipo == 'Critério Legal'"
                   @click="removeCriterio(cindex, criterio.tipo)"
                   color="red darken-2"
                   dark
@@ -68,7 +68,7 @@
                     <li v-for="(relacao, relindex) in criterio.relacoes" :key="relindex">
                       {{ relacao }}
                       <v-icon
-                        v-if="criterio.tipo != 'Critério de Complementaridade Informacional'"
+                        v-if="criterio.tipo == 'Critério Legal'"
                         @click="removeRelacao(relindex, criterio, cindex)"
                         color="red darken-2"
                         dark

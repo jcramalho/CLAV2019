@@ -117,16 +117,16 @@ export default {
     dialog: false,
     classesHierarquia: [],
     newSubSerie: {
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: null,
-      dataFinal: null,
-      // codigo: "02.01.02",
-      // titulo: "SUBSERIESERIE",
-      // descricao: "DESC SERIE",
-      // dataInicial: "2020-02-13",
-      // dataFinal: "2020-02-16",
+      // codigo: "",
+      // titulo: "",
+      // descricao: "",
+      // dataInicial: null,
+      // dataFinal: null,
+      codigo: "02.01.02",
+      titulo: "SUBSERIESERIE",
+      descricao: "DESC SERIE",
+      dataInicial: "2020-02-13",
+      dataFinal: "2020-02-16",
       UIs: [],
       relacoes: [],
       pca: "",
@@ -227,37 +227,54 @@ export default {
         classe => classe.tipo == "Série"
       );
     },
-    adiciona_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
-      let criterio = classe_relacionada.justificacaoPCA.find(
-        crit => crit.tipo == "Critério de Utilidade Administrativa"
-      );
-
-      if (criterio == undefined) {
-        classe_relacionada.justificacaoPCA.push({
-          tipo: "Critério de Utilidade Administrativa",
-          nota: labels.textoCriterioUtilidadeAdministrativa,
-          relacoes: [codigoClasse]
-        });
-      } else {
-        criterio.relacoes.push(codigoClasse);
-      }
-    },
-    adiciona_crit_complementaridade_informacional(
+    adiciona_criterio_a_relacionada(
       classe_relacionada,
-      codigoClasse
+      codigoClasse,
+      tipo_criterio,
+      relacao
     ) {
-      let criterio = classe_relacionada.justificacaoDF.find(
-        crit => crit.tipo == "Critério de Complementaridade Informacional"
-      );
+      if (tipo_criterio == "Critério de Utilidade Administrativa") {
+        let criterio = classe_relacionada.justificacaoPCA.find(
+          crit => crit.tipo == tipo_criterio
+        );
 
-      if (criterio == undefined) {
-        classe_relacionada.justificacaoDF.push({
-          tipo: "Critério de Complementaridade Informacional",
-          nota: labels.textoCriterioComplementaridade,
-          relacoes: [codigoClasse]
-        });
+        if (criterio == undefined) {
+          classe_relacionada.justificacaoPCA.push({
+            tipo: tipo_criterio,
+            nota: labels.textoCriterioUtilidadeAdministrativa,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
       } else {
-        criterio.relacoes.push(codigoClasse);
+        let criterio = classe_relacionada.justificacaoDF.find(
+          crit => crit.tipo == tipo_criterio
+        );
+
+        if (criterio == undefined) {
+          let nota = "";
+
+          switch (relacao) {
+            case "Sintetizado por":
+              nota = labels.textoCriterioDensidadeSinPor;
+              break;
+            case "Complementar de":
+              nota = labels.textoCriterioComplementaridade;
+              break;
+            case "Síntese de":
+              nota = labels.textoCriterioDensidadeSinDe;
+              break;
+          }
+
+          classe_relacionada.justificacaoDF.push({
+            tipo: tipo_criterio,
+            nota: nota,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
       }
     },
     relacoes_simetricas: function(clone_newSubserie) {
@@ -331,22 +348,38 @@ export default {
             break;
           case "Complementar de":
             relacao_inversa = "Complementar de";
-            this.adiciona_crit_complementaridade_informacional(
+            this.adiciona_criterio_a_relacionada(
               classe_relacionada,
-              clone_newSubserie.codigo
+              clone_newSubserie.codigo,
+              "Critério de Complementaridade Informacional",
+              relacao_inversa
             );
             break;
           case "Sintetizado por":
             relacao_inversa = "Síntese de";
+            this.adiciona_criterio_a_relacionada(
+              classe_relacionada,
+              clone_newSubserie.codigo,
+              "Critério de Densidade Informacional",
+              relacao_inversa
+            );
             break;
           case "Síntese de":
             relacao_inversa = "Sintetizado por";
+            this.adiciona_criterio_a_relacionada(
+              classe_relacionada,
+              clone_newSubserie.codigo,
+              "Critério de Densidade Informacional",
+              relacao_inversa
+            );
             break;
           case "Suplemento de":
             relacao_inversa = "Suplemento para";
-            this.adiciona_crit_utilidade_adminstrativa(
+            this.adiciona_criterio_a_relacionada(
               classe_relacionada,
-              clone_newSubserie.codigo
+              clone_newSubserie.codigo,
+              "Critério de Utilidade Administrativa",
+              relacao_inversa
             );
             break;
           case "Suplemento para":
