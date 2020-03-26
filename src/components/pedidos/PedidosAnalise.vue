@@ -47,7 +47,9 @@
             <td class="subheading">
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
-            <td class="subheading">{{ props.item.entidade }}</td>
+            <td class="subheading">
+              {{ props.item.entidade.split("_")[1] }}
+            </td>
             <td class="subheading">{{ props.item.criadoPor }}</td>
             <td class="subheading">{{ converteData(props.item.data) }}</td>
             <td>

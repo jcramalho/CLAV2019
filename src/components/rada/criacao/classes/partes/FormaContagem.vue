@@ -23,7 +23,7 @@
       </v-col>
       <v-col sm="9" md="9" style="padding-right: 20px;">
         <v-select
-          :rules="[v => exist(v)]"
+          :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
           :items="formaContagem.subFormasContagem"
           v-model="newSerie.formaContagem.subforma"
           item-text="label"

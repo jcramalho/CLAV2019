@@ -410,7 +410,7 @@ export default {
               },
               justificacaoPCA: [],
               df: "",
-              justificacaoDF: "",
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: ""
             });
@@ -429,7 +429,7 @@ export default {
               },
               justificacaoPCA: [],
               df: "",
-              justificacaoDF: "",
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
               tipo: "Subsérie"
