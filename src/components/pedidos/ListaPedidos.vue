@@ -75,7 +75,9 @@
                 <template v-slot:item="props">
                   <tr @click="selectedUser = props.item">
                     <td class="subheading">{{ props.item.name }}</td>
-                    <td class="subheading">{{ props.item.entidade }}</td>
+                    <td class="subheading">
+                      {{ props.item.entidade.split("_")[1] }}
+                    </td>
                   </tr>
                 </template>
               </v-data-table>
@@ -84,7 +86,7 @@
             <div v-else>
               <p>
                 Tarefa atribuída a:
-                <b>{{ selectedUser.name }} ({{ selectedUser.entidade }})</b>.
+                <b>{{ selectedUser.name }} ({{ selectedUser.entidade.split("_")[1] }})</b>.
               </p>
               <div class="info-label">Despacho</div>
               <v-textarea

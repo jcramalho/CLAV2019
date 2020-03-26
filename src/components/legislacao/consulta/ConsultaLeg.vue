@@ -24,12 +24,11 @@
           </div>
           <div v-else>
             <div v-if="item.campo === 'Entidades'" class="info-content">
-              <a
-                v-for="(ent, index) in item.text.split(' ')"
-                v-bind:key="index"
-                :href="'/entidades/ent_' + ent"
-                >{{ ent }}</a
-              >
+              <ul>
+                <li v-for="(ent, i) in item.text" :key="i">
+                  <a :href="'/entidades/ent_' + ent.sigla">{{ ent.sigla }}</a>
+                </li>
+              </ul>
             </div>
             <div v-else class="info-content">{{ item.text }}</div>
           </div>

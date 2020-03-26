@@ -99,6 +99,8 @@ import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
 import ListaUI from "@/components/rada/criacao/ListaUI";
 
+const labels = require("@/config/labels").criterios;
+
 export default {
   props: ["TS", "entidades", "RE", "legislacao"],
   components: {
@@ -353,7 +355,7 @@ export default {
             },
             justificacaoPCA: [],
             df: "",
-            justificacaoDF: "",
+            justificacaoDF: [],
             notas: "",
             eFilhoDe: "",
             tipo: "Série"
@@ -373,7 +375,7 @@ export default {
             },
             justificacaoPCA: [],
             df: "",
-            justificacaoDF: "",
+            justificacaoDF: [],
             notas: "",
             eFilhoDe: "",
             tipo: "Subsérie"
@@ -394,6 +396,10 @@ export default {
           break;
         case "Complementar de":
           relacao_inversa = "Complementar de";
+          this.adiciona_crit_complementaridade_informacional(
+            classe_relacionada,
+            serie_classe.codigo
+          );
           break;
         case "Sintetizado por":
           relacao_inversa = "Síntese de";
@@ -444,8 +450,43 @@ export default {
       if (criterio == undefined) {
         classe_relacionada.justificacaoPCA.push({
           tipo: "Critério de Utilidade Administrativa",
-          nota:
-            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
+          nota: labels.textoCriterioUtilidadeAdministrativa,
+          relacoes: [codigoClasse]
+        });
+      } else {
+        criterio.relacoes.push(codigoClasse);
+      }
+    },
+    remove_crit_complementaridade_informacional(
+      classe_relacionada,
+      codigoClasse
+    ) {
+      let criterio = classe_relacionada.justificacaoDF.find(
+        crit => crit.tipo == "Critério de Complementaridade Informacional"
+      );
+
+      if (criterio != undefined) {
+        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+        if (criterio.relacoes.length == 0) {
+          classe_relacionada.justificacaoDF = classe_relacionada.justificacaoDF.filter(
+            e => e.tipo != "Critério de Complementaridade Informacional"
+          );
+        }
+      }
+    },
+    adiciona_crit_complementaridade_informacional(
+      classe_relacionada,
+      codigoClasse
+    ) {
+      let criterio = classe_relacionada.justificacaoDF.find(
+        crit => crit.tipo == "Critério de Complementaridade Informacional"
+      );
+
+      if (criterio == undefined) {
+        classe_relacionada.justificacaoDF.push({
+          tipo: "Critério de Complementaridade Informacional",
+          nota: labels.textoCriterioComplementaridade,
           relacoes: [codigoClasse]
         });
       } else {
@@ -468,6 +509,10 @@ export default {
           break;
         case "Complementar de":
           relacao_inversa = "Complementar de";
+          this.remove_crit_complementaridade_informacional(
+            classe_relacionada,
+            serie_classe.codigo
+          );
           break;
         case "Sintetizado por":
           relacao_inversa = "Síntese de";

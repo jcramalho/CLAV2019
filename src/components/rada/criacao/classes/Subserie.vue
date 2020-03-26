@@ -36,7 +36,11 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="newSubSerie" :classes="classes" :formaContagem="formaContagem" />
+                <ZonaDecisoesAvaliacao
+                  :newSerie="newSubSerie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -97,6 +101,8 @@ import ZonaDescritiva from "./partes/ZonaDescritiva";
 import ZonaContexto from "./partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "./partes/ZonaDecisoesAvaliacao";
 
+const labels = require("@/config/labels").criterios;
+
 export default {
   components: {
     Identificacao,
@@ -129,7 +135,7 @@ export default {
       },
       justificacaoPCA: [],
       df: "",
-      justificacaoDF: "",
+      justificacaoDF: [],
       notas: "",
       eFilhoDe: "",
       tipo: "Subsérie"
@@ -153,7 +159,7 @@ export default {
         },
         justificacaoPCA: [],
         df: "",
-        justificacaoDF: "",
+        justificacaoDF: [],
         notas: "",
         eFilhoDe: "",
         tipo: "Subsérie"
@@ -229,8 +235,25 @@ export default {
       if (criterio == undefined) {
         classe_relacionada.justificacaoPCA.push({
           tipo: "Critério de Utilidade Administrativa",
-          nota:
-            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
+          nota: labels.textoCriterioUtilidadeAdministrativa,
+          relacoes: [codigoClasse]
+        });
+      } else {
+        criterio.relacoes.push(codigoClasse);
+      }
+    },
+    adiciona_crit_complementaridade_informacional(
+      classe_relacionada,
+      codigoClasse
+    ) {
+      let criterio = classe_relacionada.justificacaoDF.find(
+        crit => crit.tipo == "Critério de Complementaridade Informacional"
+      );
+
+      if (criterio == undefined) {
+        classe_relacionada.justificacaoDF.push({
+          tipo: "Critério de Complementaridade Informacional",
+          nota: labels.textoCriterioComplementaridade,
           relacoes: [codigoClasse]
         });
       } else {
@@ -267,7 +290,7 @@ export default {
               },
               justificacaoPCA: [],
               df: "",
-              justificacaoDF: "",
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
               tipo: "Série"
@@ -287,7 +310,7 @@ export default {
               },
               justificacaoPCA: [],
               df: "",
-              justificacaoDF: "",
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
               tipo: "Subsérie"
@@ -308,6 +331,10 @@ export default {
             break;
           case "Complementar de":
             relacao_inversa = "Complementar de";
+            this.adiciona_crit_complementaridade_informacional(
+              classe_relacionada,
+              clone_newSubserie.codigo
+            );
             break;
           case "Sintetizado por":
             relacao_inversa = "Síntese de";

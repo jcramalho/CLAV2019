@@ -190,7 +190,15 @@ export default {
       }
     },
     remove: function(item) {
-      this.remove_crit_utilidade_adminstrativa(item.serieRelacionada.codigo);
+      if (item.relacao == "Suplemento para") {
+        this.remove_crit_utilidade_adminstrativa(item.serieRelacionada.codigo);
+      }
+
+      if (item.relacao == "Complementar de") {
+        this.remove_crit_complementaridade_informacional(
+          item.serieRelacionada.codigo
+        );
+      }
       this.newSerie.relacoes = this.newSerie.relacoes.filter(e => {
         return (
           e.relacao != item.relacao ||
@@ -224,6 +232,10 @@ export default {
             this.adiciona_crit_utilidade_adminstrativa(this.codrel);
           }
 
+          if (this.rel == "Complementar de") {
+            this.adiciona_crit_complementaridade_informacional(this.codrel);
+          }
+
           this.newSerie.relacoes.push({
             relacao: this.rel,
             serieRelacionada: {
@@ -238,6 +250,36 @@ export default {
         } else {
           this.alertOn = true;
         }
+      }
+    },
+    remove_crit_complementaridade_informacional(codigoClasse) {
+      let criterio = this.newSerie.justificacaoDF.find(
+        crit => crit.tipo == "Critério de Complementaridade Informacional"
+      );
+
+      if (criterio != undefined) {
+        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+        if (criterio.relacoes.length == 0) {
+          this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
+            e => e.tipo != "Critério de Complementaridade Informacional"
+          );
+        }
+      }
+    },
+    adiciona_crit_complementaridade_informacional(codigoClasse) {
+      let criterio = this.newSerie.justificacaoDF.find(
+        crit => crit.tipo == "Critério de Complementaridade Informacional"
+      );
+
+      if (criterio == undefined) {
+        this.newSerie.justificacaoDF.push({
+          tipo: "Critério de Complementaridade Informacional",
+          nota: labels.textoCriterioComplementaridade,
+          relacoes: [codigoClasse]
+        });
+      } else {
+        criterio.relacoes.push(codigoClasse);
       }
     },
     adiciona_crit_utilidade_adminstrativa(codigoClasse) {

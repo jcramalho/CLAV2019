@@ -368,7 +368,7 @@ export default {
             },
             justificacaoPCA: [],
             df: "",
-            justificacaoDF: "",
+            justificacaoDF: [],
             notas: "",
             eFilhoDe: "",
             tipo: "Série"
@@ -388,7 +388,7 @@ export default {
             },
             justificacaoPCA: [],
             df: "",
-            justificacaoDF: "",
+            justificacaoDF: [],
             notas: "",
             eFilhoDe: "",
             tipo: "Subsérie"

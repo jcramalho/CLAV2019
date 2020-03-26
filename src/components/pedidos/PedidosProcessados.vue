@@ -14,7 +14,7 @@
           </v-badge>
         </sup>
       </div>
-      
+
       <template v-slot:actions>
         <v-icon color="white">expand_more</v-icon>
       </template>
@@ -50,7 +50,7 @@
             <td class="subheading">{{ props.item.estado }}</td>
             <td class="subheading">{{ props.item.codigo }}</td>
             <td class="subheading">{{ props.item.criadoPor }}</td>
-            <td class="subheading">{{ props.item.entidade }}</td>
+            <td class="subheading">{{ props.item.entidade.split("_")[1] }}</td>
             <td class="subheading">
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
