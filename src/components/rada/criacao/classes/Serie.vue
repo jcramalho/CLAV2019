@@ -124,16 +124,16 @@ export default {
     dialog: false,
     classesHierarquia: [],
     newSerie: {
-      codigo: "02.02",
-      titulo: "SERIE",
-      descricao: "DESC SERIE",
-      dataInicial: "2020-02-13",
-      dataFinal: "2020-02-16",
-      // codigo: "",
-      // titulo: "",
-      // descricao: "",
-      // dataInicial: null,
-      // dataFinal: null,
+      // codigo: "02.02",
+      // titulo: "SERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: null,
+      dataFinal: null,
       tUA: "",
       tSerie: "",
       suporte: "",
@@ -149,7 +149,7 @@ export default {
         forma: null
       },
       justificacaoPCA: [],
-      df: "",
+      df: null,
       justificacaoDF: [],
       notas: "",
       eFilhoDe: "",
@@ -183,7 +183,7 @@ export default {
           forma: null
         },
         justificacaoPCA: [],
-        df: "",
+        df: null,
         justificacaoDF: [],
         notas: "",
         eFilhoDe: "",
@@ -196,7 +196,7 @@ export default {
     },
     save: function() {
       this.isMultiple = true;
-      this.panels = [0, 1];
+      this.panels = [0, 1, 2];
       setTimeout(() => {
         if (this.$refs.formSerie.validate()) {
           let clone_newSerie = Object.assign({}, this.newSerie);
@@ -251,6 +251,16 @@ export default {
         }
       }
     },
+    adicionarDF(classe_relacionada, relacao) {
+      if (
+        relacao == "Sintetizado por" &&
+        !classe_relacionada.relacoes.some(e => e.relacao == "Complementar de")
+      ) {
+        classe_relacionada.df = "Eliminação";
+      } else {
+        classe_relacionada.df = "Conservação";
+      }
+    },
     adiciona_criterio_a_relacionada(
       classe_relacionada,
       codigoClasse,
@@ -291,6 +301,8 @@ export default {
               break;
           }
 
+          this.adicionarDF(classe_relacionada, relacao);
+
           classe_relacionada.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
@@ -330,7 +342,7 @@ export default {
                 forma: null
               },
               justificacaoPCA: [],
-              df: "",
+              df: null,
               justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
@@ -350,7 +362,7 @@ export default {
                 forma: null
               },
               justificacaoPCA: [],
-              df: "",
+              df: null,
               justificacaoDF: [],
               notas: "",
               eFilhoDe: "",

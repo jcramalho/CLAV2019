@@ -95,7 +95,7 @@
                     dense
                     text
                     type="error"
-                  >Classe já associada a uma relação ou relação já existente!</v-alert>
+                  >Impossível criar relação! Já existe ou classe já se encontra relacionada ou relação inválida!</v-alert>
                 </v-col>
               </v-row>
             </v-form>
@@ -355,9 +355,25 @@ export default {
       }
     },
     validateRelacao: function() {
-      return this.newSerie.relacoes.some(
-        el => el.serieRelacionada.codigo == this.codrel
-      );
+      if (
+        this.newSerie.relacoes.some(
+          el => el.serieRelacionada.codigo == this.codrel
+        )
+      ) {
+        return true;
+      } else {
+        if (this.rel == "Síntese de" || this.rel == "Sintetizado por") {
+          let classe = this.classes.find(cl => cl.codigo == this.codrel);
+
+          if (
+            classe != undefined &&
+            classe.relacoes.some(e => e.relacao == this.rel)
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
   }
 };

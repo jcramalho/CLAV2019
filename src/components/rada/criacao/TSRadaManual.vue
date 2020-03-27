@@ -28,7 +28,7 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" />
         </v-col>
       </v-row>
-      <!-- {{ TS.classes }} -->
+      {{ TS.classes }}
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -61,13 +61,7 @@
               </template>
             </v-treeview>
             <br />
-            <b
-              v-if="TS.classes.some(e => (e.eFilhoDe == '' || !((e.dataInicial != undefined &&
-                e.dataInicial != null) ||
-                (e.UIs != undefined &&
-                  e.UIs.length > 0))) && (e.tipo == 'Subsérie' || e.tipo == 'Série'))"
-              style="color:red"
-            >*Classes por preencher</b>
+            <b v-if="incompleto" style="color:red">*Classes por preencher</b>
           </div>
           <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
             <b>Sem Classes!</b> É obrigatório adicionar.
@@ -139,11 +133,30 @@ export default {
                 (this.TS.classes[i].UIs != undefined &&
                   this.TS.classes[i].UIs.length > 0)
             ),
+            temDF: Boolean(this.TS.classes[i].df == null),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
       }
       return myTree;
+    },
+    incompleto() {
+      return this.TS.classes.some(
+        e =>
+          ((e.eFilhoDe == "" ||
+            !(
+              (e.dataInicial != undefined && e.dataInicial != null) ||
+              (e.UIs != undefined && e.UIs.length > 0)
+            )) &&
+            e.tipo == "Série") ||
+          ((e.df == null ||
+            e.eFilhoDe == "" ||
+            !(
+              (e.dataInicial != undefined && e.dataInicial != null) ||
+              (e.UIs != undefined && e.UIs.length > 0)
+            )) &&
+            e.tipo == "Subsérie")
+      );
     }
   },
   methods: {
@@ -164,6 +177,7 @@ export default {
                 (this.TS.classes[i].UIs != undefined &&
                   this.TS.classes[i].UIs.length > 0)
             ),
+            temDF: Boolean(this.TS.classes[i].df == null),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -327,6 +341,7 @@ export default {
       return novo_relacoes;
     },
     adicionaRelacoesInversas(relacao, serie_classe) {
+      // console.log("ADICIONA RELACAO INVERSA");
       let classe_relacionada = this.TS.classes.find(
         e => e.codigo == relacao.serieRelacionada.codigo
       );
@@ -354,7 +369,7 @@ export default {
               forma: null
             },
             justificacaoPCA: [],
-            df: "",
+            df: null,
             justificacaoDF: [],
             notas: "",
             eFilhoDe: "",
@@ -374,7 +389,7 @@ export default {
               forma: null
             },
             justificacaoPCA: [],
-            df: "",
+            df: null,
             justificacaoDF: [],
             notas: "",
             eFilhoDe: "",
@@ -443,12 +458,24 @@ export default {
         }
       });
     },
+    adicionarDF(classe_relacionada, relacao) {
+      // console.log("Adicionar DF");
+      if (
+        relacao == "Sintetizado por" &&
+        !classe_relacionada.relacoes.some(e => e.relacao == "Complementar de")
+      ) {
+        classe_relacionada.df = "Eliminação";
+      } else {
+        classe_relacionada.df = "Conservação";
+      }
+    },
     adiciona_criterio_a_relacionada(
       classe_relacionada,
       codigoClasse,
       tipo_criterio,
       relacao
     ) {
+      // console.log("ADICIONAR CRITÉRIO -> " + tipo_criterio);
       if (tipo_criterio == "Critério de Utilidade Administrativa") {
         let criterio = classe_relacionada.justificacaoPCA.find(
           crit => crit.tipo == tipo_criterio
@@ -482,6 +509,7 @@ export default {
               nota = labels.textoCriterioDensidadeSinDe;
               break;
           }
+          this.adicionarDF(classe_relacionada, relacao);
 
           classe_relacionada.justificacaoDF.push({
             tipo: tipo_criterio,
@@ -493,7 +521,36 @@ export default {
         }
       }
     },
-    remove_criterio(classe_relacionada, codigoClasse, tipo_criterio) {
+    removerDF(classe_relacionada, tipo_criterio) {
+      // console.log("Remover DF");
+      if (tipo_criterio == "Critério de Densidade Informacional") {
+        if (
+          classe_relacionada.justificacaoDF.some(
+            e => e.tipo == "Critério de Complementaridade Informacional"
+          )
+        ) {
+          classe_relacionada.df = "Conservação";
+        } else {
+          classe_relacionada.DF = null;
+        }
+      } else {
+        if (classe_relacionada.relacoes.some(e => e.relacao == "Síntese de")) {
+          classe_relacionada.df = "Conservação";
+        } else {
+          if (
+            classe_relacionada.relacoes.some(
+              e => e.relacao == "Sintetizado por"
+            )
+          ) {
+            classe_relacionada.df = "Eliminação";
+          } else {
+            classe_relacionada.df = null;
+          }
+        }
+      }
+    },
+    remove_criterio(classe_relacionada, codigoClasse, tipo_criterio, relacao) {
+      // console.log("REMOVER CRITÉRIO -> " + tipo_criterio);
       if (tipo_criterio == "Critério de Utilidade Administrativa") {
         let criterio = classe_relacionada.justificacaoPCA.find(
           crit => crit.tipo == tipo_criterio
@@ -517,6 +574,9 @@ export default {
           criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
 
           if (criterio.relacoes.length == 0) {
+            // Remover DF que é dependente do critério que vai ser eliminado;
+            this.removerDF(classe_relacionada, tipo_criterio, relacao);
+
             classe_relacionada.justificacaoDF = classe_relacionada.justificacaoDF.filter(
               e => e.tipo != tipo_criterio
             );
@@ -525,6 +585,7 @@ export default {
       }
     },
     removeRelacoesInversas(relacao, serie_classe) {
+      // console.log("REMOVE RELACAO INVERSA");
       let classe_relacionada = this.TS.classes.find(
         e => e.codigo == relacao.serieRelacionada.codigo
       );

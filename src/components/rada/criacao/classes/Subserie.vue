@@ -117,16 +117,16 @@ export default {
     dialog: false,
     classesHierarquia: [],
     newSubSerie: {
-      // codigo: "",
-      // titulo: "",
-      // descricao: "",
-      // dataInicial: null,
-      // dataFinal: null,
-      codigo: "02.01.02",
-      titulo: "SUBSERIESERIE",
-      descricao: "DESC SERIE",
-      dataInicial: "2020-02-13",
-      dataFinal: "2020-02-16",
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: null,
+      dataFinal: null,
+      // codigo: "02.01.02",
+      // titulo: "SUBSERIESERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
       UIs: [],
       relacoes: [],
       pca: "",
@@ -134,7 +134,7 @@ export default {
         forma: null
       },
       justificacaoPCA: [],
-      df: "",
+      df: null,
       justificacaoDF: [],
       notas: "",
       eFilhoDe: "",
@@ -158,7 +158,7 @@ export default {
           forma: null
         },
         justificacaoPCA: [],
-        df: "",
+        df: null,
         justificacaoDF: [],
         notas: "",
         eFilhoDe: "",
@@ -176,8 +176,8 @@ export default {
         if (this.$refs.form.validate()) {
           let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
-          await this.adicionarUIs(clone_newSubserie);
-          await this.relacoes_simetricas(clone_newSubserie);
+          this.adicionarUIs(clone_newSubserie);
+          this.relacoes_simetricas(clone_newSubserie);
 
           this.classes.push(clone_newSubserie);
 
@@ -227,6 +227,16 @@ export default {
         classe => classe.tipo == "Série"
       );
     },
+    adicionarDF(classe_relacionada, relacao) {
+      if (
+        relacao == "Sintetizado por" &&
+        !classe_relacionada.relacoes.some(e => e.relacao == "Complementar de")
+      ) {
+        classe_relacionada.df = "Eliminação";
+      } else {
+        classe_relacionada.df = "Conservação";
+      }
+    },
     adiciona_criterio_a_relacionada(
       classe_relacionada,
       codigoClasse,
@@ -267,6 +277,8 @@ export default {
               break;
           }
 
+          this.adicionarDF(classe_relacionada, relacao);
+
           classe_relacionada.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
@@ -306,7 +318,7 @@ export default {
                 forma: null
               },
               justificacaoPCA: [],
-              df: "",
+              df: null,
               justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
@@ -326,7 +338,7 @@ export default {
                 forma: null
               },
               justificacaoPCA: [],
-              df: "",
+              df: null,
               justificacaoDF: [],
               notas: "",
               eFilhoDe: "",

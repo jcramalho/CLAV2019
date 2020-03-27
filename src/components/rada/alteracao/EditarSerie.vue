@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogSerie" persistent>
+  <v-dialog v-model="dialogSerie" persistent fullscreen>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
         {{
@@ -158,7 +158,7 @@ export default {
     },
     save: function() {
       this.isMultiple = true;
-      this.panels = [0, 1];
+      this.panels = [0, 1, 2];
       setTimeout(() => {
         if (this.$refs.formSerie.validate()) {
           this.$emit("atualizacao", this.serie);

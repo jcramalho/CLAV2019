@@ -7,7 +7,7 @@
         }}
       </b>
       <b
-        v-if="treeview_object.eFilhoDe == '' || !treeview_object.temUIs_ou_datas"
+        v-show="treeview_object.eFilhoDe == '' || !treeview_object.temUIs_ou_datas || treeview_object.temDF"
         style="color:red"
       >*</b>
     </template>
