@@ -119,7 +119,36 @@ export default {
     ZonaDecisoesAvaliacao
   },
   methods: {
-    filterSeries: function() {
+    clonePCA(serie_real) {
+      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO PCA
+      let newJustificacaoPCA = [];
+
+      for (let i = 0; i < serie_real.justificacaoPCA.length; i++) {
+        let criterio = Object.assign({}, serie_real.justificacaoPCA[i]);
+
+        if (serie_real.justificacaoPCA[i].tipo != "Critério Gestionário") {
+          criterio.relacoes = [...serie_real.justificacaoPCA[i].relacoes];
+        }
+
+        newJustificacaoPCA.push(criterio);
+      }
+
+      return newJustificacaoPCA;
+    },
+    cloneDF(serie_real) {
+      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO DF
+      let newJustificacaoDF = [];
+
+      for (let i = 0; i < serie_real.justificacaoDF.length; i++) {
+        let criterio = Object.assign({}, serie_real.justificacaoDF[i]);
+        criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
+
+        newJustificacaoDF.push(criterio);
+      }
+
+      return newJustificacaoDF;
+    },
+    async filterSeries() {
       this.panels = [0, 0, 0];
       this.isMultiple = false;
       // ir buscar o verdadeiro objeto
@@ -131,8 +160,8 @@ export default {
       this.subserie = Object.assign({}, subserie_real);
       this.subserie.relacoes = [...subserie_real.relacoes];
       this.subserie.UIs = [...subserie_real.UIs];
-      this.subserie.justificacaoPCA = [...subserie_real.justificacaoPCA];
-      this.subserie.justificacaoDF = [...subserie_real.justificacaoDF];
+      this.subserie.justificacaoPCA = await this.clonePCA(subserie_real);
+      this.subserie.justificacaoDF = await this.cloneDF(subserie_real);
       this.subserie.formaContagem = Object.assign(
         {},
         subserie_real.formaContagem
