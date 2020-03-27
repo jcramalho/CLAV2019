@@ -28,7 +28,7 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" />
         </v-col>
       </v-row>
-      {{ TS.classes }}
+      <!-- {{ TS.classes }} -->
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -205,6 +205,8 @@ export default {
       serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
       serie_classe.UIs = await this.editaUI(serie_classe, c);
 
+      this.alterarCriterioLegalSubseries(serie_classe.codigo, c.legislacao);
+
       serie_classe.titulo = c.titulo;
       serie_classe.descricao = c.descricao;
       serie_classe.tUA = c.tUA;
@@ -242,6 +244,31 @@ export default {
       subserie_classe.df = c.df;
       subserie_classe.justificacaoDF = c.justificacaoDF;
       subserie_classe.eFilhoDe = c.eFilhoDe;
+    },
+    alterarCriterioLegalSubseries(codigoPai, legislacao) {
+      //procurar as subséries que são filhos e tratar dos seus critérios legislativos
+      let subseries = this.TS.classes.filter(e => e.eFilhoDe == codigoPai);
+
+      for (let i = 0; i < subseries.length; i++) {
+        // 1º remover do critério legal na justificação PCA
+        let legalPCA_subserie = subseries[i].justificacaoPCA.find(
+          e => e.tipo == "Critério Legal"
+        );
+        if (legalPCA_subserie != undefined) {
+          legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter(
+            e => e != item.tipo + " " + item.numero
+          );
+        }
+        // 2º remover do critério legal na justificação DF
+        let legalDF_subserie = subseries[i].justificacaoDF.find(
+          e => e.tipo == "Critério Legal"
+        );
+        if (legalDF_subserie != undefined) {
+          legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter(
+            e => e != item.tipo + " " + item.numero
+          );
+        }
+      }
     },
     editaUI(serie_classe, c) {
       let novo_UIs = [];

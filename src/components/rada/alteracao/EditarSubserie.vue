@@ -132,6 +132,7 @@ export default {
       this.subserie.relacoes = [...subserie_real.relacoes];
       this.subserie.UIs = [...subserie_real.UIs];
       this.subserie.justificacaoPCA = [...subserie_real.justificacaoPCA];
+      this.subserie.justificacaoDF = [...subserie_real.justificacaoDF];
       this.subserie.formaContagem = Object.assign(
         {},
         subserie_real.formaContagem
