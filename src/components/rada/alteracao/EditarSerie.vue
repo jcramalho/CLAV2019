@@ -149,7 +149,7 @@ export default {
       this.serie.relacoes = [...serie_real.relacoes];
       this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
       this.serie.justificacaoPCA = [...serie_real.justificacaoPCA];
-      this.subserie.justificacaoDF = [...subserie_real.justificacaoDF];
+      this.serie.justificacaoDF = [...serie_real.justificacaoDF];
       this.serie.UIs = [...serie_real.UIs];
 
       // Classes para definir a hierarquia
