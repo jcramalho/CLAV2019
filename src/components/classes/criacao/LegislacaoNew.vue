@@ -140,6 +140,14 @@ export default {
       }
     },
 
+    validaSumario: function(s) {
+      if (s != "") return true;
+      else {
+        this.mensagensErro.push("O sumário não pode ficar vazio!");
+        return false;
+      }
+    },
+
     validaData: function(d) {
       if (d != "") return true;
       else {
@@ -154,6 +162,7 @@ export default {
         this.validaNumero(this.numero) &&
         (await this.validaDups(this.tipo, this.numero)) &&
         this.validaDupsLocais(this.tipo, this.numero) &&
+        this.validaSumario(this.sumario) &&
         this.validaData(this.data)
       ) {
         var legislacao = {

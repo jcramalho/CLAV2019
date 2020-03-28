@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogSerie" persistent>
+  <v-dialog v-model="dialogSerie" persistent fullscreen>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
         {{ treeview_object.titulo }}
@@ -45,7 +45,11 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="serie" :classes="classes" />
+                <ZonaDecisoesAvaliacao
+                  :newSerie="serie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -111,7 +115,14 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "legislacao", "RE", "UIs"],
+  props: [
+    "treeview_object",
+    "classes",
+    "legislacao",
+    "RE",
+    "UIs",
+    "formaContagem"
+  ],
   components: {
     Identificacao,
     ZonaDescritiva,
@@ -126,7 +137,36 @@ export default {
     classesHierarquia: []
   }),
   methods: {
-    filterSeries: function() {
+    clonePCA(serie_real) {
+      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO PCA
+      let newJustificacaoPCA = [];
+
+      for (let i = 0; i < serie_real.justificacaoPCA.length; i++) {
+        let criterio = Object.assign({}, serie_real.justificacaoPCA[i]);
+
+        if (serie_real.justificacaoPCA[i].tipo != "Critério Gestionário") {
+          criterio.relacoes = [...serie_real.justificacaoPCA[i].relacoes];
+        }
+
+        newJustificacaoPCA.push(criterio);
+      }
+
+      return newJustificacaoPCA;
+    },
+    cloneDF(serie_real) {
+      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO DF
+      let newJustificacaoDF = [];
+
+      for (let i = 0; i < serie_real.justificacaoDF.length; i++) {
+        let criterio = Object.assign({}, serie_real.justificacaoDF[i]);
+        criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
+
+        newJustificacaoDF.push(criterio);
+      }
+
+      return newJustificacaoDF;
+    },
+    async filterSeries() {
       this.panels = [0, 0, 0];
       this.isMultiple = false;
       // ir buscar o verdadeiro objeto
@@ -141,7 +181,9 @@ export default {
       this.serie.legislacao = [...serie_real.legislacao];
       this.serie.localizacao = [...serie_real.localizacao];
       this.serie.relacoes = [...serie_real.relacoes];
-      this.serie.justificacaoPCA = [...serie_real.justificacaoPCA];
+      this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
+      this.serie.justificacaoPCA = await this.clonePCA(serie_real);
+      this.serie.justificacaoDF = await this.cloneDF(serie_real);
       this.serie.UIs = [...serie_real.UIs];
 
       // Classes para definir a hierarquia
@@ -151,7 +193,7 @@ export default {
     },
     save: function() {
       this.isMultiple = true;
-      this.panels = [0, 1];
+      this.panels = [0, 1, 2];
       setTimeout(() => {
         if (this.$refs.formSerie.validate()) {
           this.$emit("atualizacao", this.serie);

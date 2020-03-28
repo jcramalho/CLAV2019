@@ -3,7 +3,7 @@
     <div v-if="newSerie.tipo != 'Subsérie'">
       <EntidadesProdutoras :newSerie="newSerie" :RE="RE" />
       <hr style="border: 3px solid indigo; border-radius: 2px;" />
-      <Legislacao :newSerie="newSerie" :legislacao="legislacao" />
+      <Legislacao :newSerie="newSerie" :legislacao="legislacao" :classes="classes" />
       <hr style="border: 3px solid indigo; border-radius: 2px;" />
     </div>
     <RelacoesEntidades :newSerie="newSerie" :classes="classes" />

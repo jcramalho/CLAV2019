@@ -91,8 +91,8 @@
     </v-row>
 
     <!-- Dialog se existir erros no pedido à API -->
-    <v-dialog v-model="erroPedido" width="50%" hide-overlay>
-      <ErroDialog erro="Passar a mensagem de erro depois" />
+    <v-dialog v-model="erroPedido" width="80%" hide-overlay>
+      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
     </v-dialog>
   </div>
 </template>
@@ -111,6 +111,7 @@ export default {
 
   data() {
     return {
+      erros: [],
       erroPedido: false,
       dialogEnditades: false,
       dialogProcessos: false,
@@ -194,34 +195,47 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        await this.$request("post", "/legislacao", pedido.objeto.dados);
-
-        const estado = "Validado";
-
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
+        let numeroErros = await this.validarLegislacao(
+          pedido.objeto.acao,
+          pedido.objeto.dados
         );
 
-        dadosUtilizador = dadosUtilizador.data;
+        if (numeroErros > 0) {
+          this.erroPedido = true;
+        } else {
+          await this.$request("post", "/legislacao", pedido.objeto.dados);
 
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho
-        };
+          const estado = "Validado";
 
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+          let dadosUtilizador = await this.$request(
+            "get",
+            "/users/" + this.$store.state.token + "/token"
+          );
+          dadosUtilizador = dadosUtilizador.data;
 
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao
-        });
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho
+          };
 
-        this.$router.go(-1);
+          pedido.estado = estado;
+          pedido.token = this.$store.state.token;
+
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao
+          });
+
+          this.$router.go(-1);
+        }
       } catch (e) {
+        this.erros.push({
+          sobre: "Acesso à Ontologia",
+          mensagem: "Ocorreu um erro ao aceder à ontologia."
+        });
+        this.erroPedido = true;
         console.log("e :", e);
       }
     },
@@ -236,9 +250,159 @@ export default {
       this.infoPedido[i].cor = "red lighten-3";
     },
 
+    fecharErro() {
+      this.erroPedido = false;
+    },
+
     close() {
       this.dialogEnditades = false;
       this.dialogProcessos = false;
+    },
+
+    async validarLegislacao(acao, dados) {
+      console.log("dados :", dados);
+      let numeroErros = 0;
+
+      let parseAno = dados.numero.split("/");
+      let anoDiploma = parseInt(parseAno[1]);
+
+      //Tipo
+      if (dados.tipo === "" || dados.tipo === null) {
+        this.erros.push({
+          sobre: "Tipo de Diploma",
+          mensagem: "O tipo de diploma não pode ser vazio."
+        });
+
+        numeroErros++;
+      }
+
+      // Número Diploma
+      if (dados.numero === "" || dados.numero === null) {
+        this.erros.push({
+          sobre: "Número de Diploma",
+          mensagem: "O número de diploma não pode ser vazio."
+        });
+
+        numeroErros++;
+      } else {
+        try {
+          const existeNumero = await this.$request(
+            "get",
+            "/legislacao/numero?valor=" + encodeURIComponent(dados.numero)
+          );
+
+          if (existeNumero.data) {
+            this.erros.push({
+              sobre: "Número de Diploma",
+              mensagem: "O número de diploma já existente na BD."
+            });
+
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem:
+              "Não consegui verificar a existência do número do diploma."
+          });
+        }
+      }
+
+      // Data
+      if (dados.data === "" || dados.data === null) {
+        this.erros.push({
+          sobre: "Data",
+          mensagem: "A data não pode ser vazia."
+        });
+
+        numeroErros++;
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.data)) {
+        this.erros.push({
+          sobre: "Data",
+          mensagem: "A data está no formato errado."
+        });
+
+        numeroErros++;
+      } else {
+        let date = new Date();
+
+        let ano = parseInt(dados.data.slice(1, 4));
+        let mes = parseInt(dados.data.slice(5, 7));
+        let dia = parseInt(dados.data.slice(8, 10));
+
+        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        if (mes > 12) {
+          this.erros.push({
+            sobre: "Data",
+            mensagem: "A data apresenta o mês errado."
+          });
+
+          numeroErros++;
+        } else if (dia > dias[mes - 1]) {
+          if (mes == 2) {
+            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
+              this.erros.push({
+                sobre: "Data",
+                mensagem: "A data apresenta o dia do mês errado."
+              });
+
+              numeroErros++;
+            }
+          } else {
+            this.erros.push({
+              sobre: "Data",
+              mensagem: "A data apresenta o dia do mês errado."
+            });
+
+            numeroErros++;
+          }
+        } else if (ano > parseInt(date.getFullYear())) {
+          this.erros.push({
+            sobre: "Data",
+            mensagem:
+              "Ano inválido! Por favor selecione uma data anterior à atual"
+          });
+
+          numeroErros++;
+        } else if (
+          ano == parseInt(date.getFullYear()) &&
+          mes > parseInt(date.getMonth() + 1)
+        ) {
+          this.erros.push({
+            sobre: "Data",
+            mensagem:
+              "Mês inválido! Por favor selecione uma data anterior à atual"
+          });
+
+          numeroErros++;
+        } else if (
+          ano == parseInt(date.getFullYear()) &&
+          mes == parseInt(date.getMonth() + 1) &&
+          dia > parseInt(date.getDate())
+        ) {
+          this.erros.push({
+            sobre: "Data",
+            mensagem:
+              "Dia inválido! Por favor selecione uma data anterior à atual"
+          });
+
+          numeroErros++;
+        }
+      }
+
+      // Sumário
+      if (dados.sumario === "" || dados.sumario === null) {
+        this.erros.push({
+          sobre: "Sumário",
+          mensagem: "O sumário não pode ser vazio."
+        });
+
+        numeroErros++;
+      }
+
+      return numeroErros;
     }
   }
 };

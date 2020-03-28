@@ -397,8 +397,16 @@ export default {
       // Com subdivisão
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        // PCA: prazo
+        
         for (i = 0; i < this.c.subclasses.length; i++) {
+          // Unicidade do título
+          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+            this.mensagensErro.push({
+              sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
+              mensagem: "Está repetido noutra subclasse."
+            });
+          }
+          // PCA: prazo
           subclasse = this.c.subclasses[i];
           if (
             (!subclasse.pca.valor || subclasse.pca.valor == "") &&

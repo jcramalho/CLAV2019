@@ -191,10 +191,12 @@ export default {
             // //   tipologiasProdutoras: [],
             // //   legislacao: [],
             // //   pca: "",
-            // //   formaContagem: "",
+            // //   formaContagem: {
+            // //    forma: null
+            // //   },
             // //   justificacaoPCA: [],
-            // //   df: "",
-            // //   justificacaoDF: "",
+            // //   df: null,
+            // //   justificacaoDF: [],
             // //   notas: "",
             // //   children: []
             // // },
@@ -207,7 +209,8 @@ export default {
             //   relacoes: [],
             //   dataInicial: null,
             //   dataFinal: null,
-            //   UIs: [],
+            //   UIs: [{ codigo: "UI - 01" }],
+            //   // UIs: [],
             //   tUA: "Processo",
             //   tSerie: "Aberta",
             //   suporte: "Papel",
@@ -217,10 +220,12 @@ export default {
             //   tipologiasProdutoras: [],
             //   legislacao: [],
             //   pca: "",
-            //   formaContagem: "",
+            //   formaContagem: {
+            //     forma: null
+            //   },
             //   justificacaoPCA: [],
-            //   df: "",
-            //   justificacaoDF: "",
+            //   df: null,
+            //   justificacaoDF: [],
             //   notas: "",
             //   children: []
             // },
@@ -235,10 +240,12 @@ export default {
             //   dataInicial: "2020-03-17",
             //   dataFinal: "2020-04-12",
             //   pca: "12",
-            //   formaContagem: "12",
+            //   formaContagem: {
+            //     forma: null
+            //   },
             //   justificacaoPCA: [],
-            //   df: "",
-            //   justificacaoDF: "asd",
+            //   df: null,
+            //   justificacaoDF: [],
             //   notas: "asd"
             // },
             // {
@@ -267,10 +274,12 @@ export default {
             //   tipologiasProdutoras: [],
             //   legislacao: [],
             //   pca: "",
-            //   formaContagem: "",
+            //   formaContagem: {
+            //     forma: null
+            //   },
             //   justificacaoPCA: [],
-            //   df: "",
-            //   justificacaoDF: "",
+            //   df: null,
+            //   justificacaoDF: [],
             //   notas: "",
             //   children: []
             // },
@@ -285,10 +294,12 @@ export default {
             //   dataInicial: "2020-03-17",
             //   dataFinal: "2020-04-12",
             //   pca: "",
-            //   formaContagem: "",
+            //   formaContagem: {
+            //     forma: null
+            //   },
             //   justificacaoPCA: [],
-            //   df: "",
-            //   justificacaoDF: "",
+            //   df: "Conservação",
+            //   justificacaoDF: [],
             //   notas: ""
             // }
           ],

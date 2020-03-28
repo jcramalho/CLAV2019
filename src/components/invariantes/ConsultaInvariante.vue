@@ -2,7 +2,15 @@
   <v-container grid-list-md fluid>
     <v-row row wrap justify-center>
       <v-col cols="11" v-if="erro == '' && inv != null">
-        <TabelaErros :inv="inv" />
+        <TabelaErros
+          :inv="inv"
+          :idRel="idRel"
+          :idInv="idInv"
+          @erro="updateErro"
+        />
+        <v-alert :value="erroTE != ''" type="error">
+          {{ erroTE }}
+        </v-alert>
       </v-col>
       <v-col v-else>
         <v-alert :value="erro != ''" type="error">
@@ -20,7 +28,8 @@ export default {
   props: ["idRel", "idInv"],
   data: () => ({
     inv: null,
-    erro: ""
+    erro: "",
+    erroTE: ""
   }),
   components: {
     TabelaErros
@@ -38,6 +47,11 @@ export default {
         this.erro =
           "Não foi possível testar o invariante... Tente novamente mais tarde.";
       });
+  },
+  methods: {
+    updateErro: function(erro) {
+      this.erroTE = erro;
+    }
   }
 };
 </script>

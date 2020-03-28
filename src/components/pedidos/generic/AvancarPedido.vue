@@ -29,7 +29,9 @@
           <template v-slot:item="props">
             <tr @click="utilizadorSelecionado = props.item">
               <td class="subheading">{{ props.item.name }}</td>
-              <td class="subheading">{{ props.item.entidade }}</td>
+              <td class="subheading">
+                {{ props.item.entidade.split("_")[1] }}
+              </td>
             </tr>
           </template>
         </v-data-table>
@@ -40,7 +42,9 @@
           Tarefa atribuída a:
           <b>
             {{
-              `${this.utilizadorSelecionado.name} (${this.utilizadorSelecionado.entidade})`
+              `${this.utilizadorSelecionado.name} (${
+                this.utilizadorSelecionado.entidade.split("_")[1]
+              })`
             }}
           </b>
         </v-alert>

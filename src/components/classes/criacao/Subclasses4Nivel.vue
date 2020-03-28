@@ -8,6 +8,7 @@
       </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
+
       <v-row>
         <v-col cols="2">
           <v-tabs vertical outlined v-model="active">
@@ -25,65 +26,51 @@
           </v-btn>
         </v-col>
         <v-col>
-          <v-tabs-items v-model="active">
-            <v-tab-item
-              v-for="subClasse in c.subclasses"
-              :key="subClasse.codigo"
-              class="ma-2 pa-2"
-            >
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Código:</div>
-                </v-col>
-                <v-col>{{ subClasse.codigo }}</v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Código do pai:</div>
-                </v-col>
-                <v-col>{{ c.codigo }}</v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Título:</div>
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    v-model="subClasse.titulo"
-                    label="Título"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Descrição:</div>
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    v-model="subClasse.descricao"
-                    label="Descrição"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+        <v-tabs-items v-model="active">
+          <v-tab-item v-for="subClasse in c.subclasses" :key="subClasse.codigo" class="ma-2 pa-2">
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Código:</div>
+              </v-col>
+              <v-col>{{ subClasse.codigo }}</v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Código do pai:</div>
+              </v-col>
+              <v-col>{{ c.codigo }}</v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Título:</div>
+              </v-col>
+              <v-col>
+                <v-text-field v-model="subClasse.titulo" label="Título" solo clearable></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Descrição:</div>
+              </v-col>
+              <v-col>
+                <v-text-field v-model="subClasse.descricao" label="Descrição" solo clearable></v-text-field>
+              </v-col>
+            </v-row>
 
-              <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+            <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
-              <TermosIndiceOps :c="c" />
+            <TermosIndiceOps :c="subClasse" />
 
-              <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+            <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
-              <BlocoDecisoes4Nivel
-                :c="subClasse"
-                :semaforos="semaforos"
-                :pcaFormasContagem="pcaFormasContagem"
-                :pcaSubFormasContagem="pcaSubFormasContagem"
-              />
-            </v-tab-item>
-          </v-tabs-items>
+            <BlocoDecisoes4Nivel
+              :c="subClasse"
+              :semaforos="semaforos"
+              :pcaFormasContagem="pcaFormasContagem"
+              :pcaSubFormasContagem="pcaSubFormasContagem"
+            />
+          </v-tab-item>
+        </v-tabs-items>
         </v-col>
       </v-row>
     </v-expansion-panel-content>
@@ -323,7 +310,7 @@ export default {
         codigo: this.c.codigo + "." + this.pad(this.c.subclasses.length + 1, 2),
         titulo: this.c.titulo + ": ",
         descricao: "",
-        termosInd: JSON.parse(JSON.stringify(this.c.termosInd)),
+        termosInd: [],
 
         // Bloco de contexto de avaliação
 

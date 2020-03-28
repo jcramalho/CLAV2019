@@ -630,7 +630,7 @@ export default {
 
                 await this.$request("get", help).then(response => {
                   this.classe.df.justificacao[i].processos[j].nome =
-                    response.data[0].titulo;
+                    response.data.titulo;
                 });
               }
             }
@@ -671,7 +671,7 @@ export default {
                       "/meta"
                   ).then(response => {
                     this.classe.pca.justificacao[h].processos[z].nome =
-                      response.data[0].titulo;
+                      response.data.titulo;
                   });
                 }
               }

@@ -24,7 +24,7 @@
                   color="red darken-2"
                   dark
                   rounded
-                  @click="unselectLegislacao(props.item)"
+                  @click="desselecionarLegislacao(props.item)"
                 >
                   <v-icon dark>remove_circle</v-icon>
                 </v-btn>
@@ -56,13 +56,13 @@
         <v-data-table
           :search="search"
           :headers="headersSel"
-          :items="filterLegislacao"
+          :items="filtrarLegislacao"
           item-key="id"
           :footer-props="footer_props"
           :items-per-page="5"
         >
           <template v-slot:item="props">
-            <tr @click="selectLegislacao(props.item)">
+            <tr @click="selecionarLegislacao(props.item)">
               <td>{{ props.item.tipo }}</td>
               <td>{{ props.item.numero }}</td>
               <td>{{ props.item.sumario }}</td>
@@ -86,7 +86,7 @@
 import NovaLegislacao from "./NovaLegislacao";
 
 export default {
-  props: ["newSerie", "legislacao"],
+  props: ["newSerie", "legislacao", "classes"],
   components: {
     NovaLegislacao
   },
@@ -162,7 +162,7 @@ export default {
     };
   },
   computed: {
-    filterLegislacao() {
+    filtrarLegislacao() {
       return this.legislacao.filter(leg => {
         return !this.newSerie.legislacao.some(
           e => e.tipo == leg.tipo && e.numero == leg.numero
@@ -171,7 +171,7 @@ export default {
     }
   },
   methods: {
-    selectLegislacao: function(item) {
+    selecionarLegislacao(item) {
       this.newSerie.legislacao.push({
         id: item.id,
         data: item.data,
@@ -180,10 +180,38 @@ export default {
         sumario: item.sumario
       });
     },
-    unselectLegislacao: function(item) {
+    filtrarCriterioLegal(item) {
+      // Necessario remover do critério legal associado à série quer às subséries que são suas filhas
+
+      // 1º remover do critério legal na justificação PCA
+      let legalPCA = this.newSerie.justificacaoPCA.find(
+        e => e.tipo == "Critério Legal"
+      );
+
+      if (legalPCA != undefined) {
+        legalPCA.relacoes = legalPCA.relacoes.filter(
+          e => e != item.tipo + " " + item.numero
+        );
+      }
+
+      // 2º remover do critério legal na justificação DF
+      let legalDF = this.newSerie.justificacaoDF.find(
+        e => e.tipo == "Critério Legal"
+      );
+
+      if (legalDF != undefined) {
+        legalDF.relacoes = legalDF.relacoes.filter(
+          e => e != item.tipo + " " + item.numero
+        );
+      }
+    },
+    desselecionarLegislacao(item) {
       this.newSerie.legislacao = this.newSerie.legislacao.filter(
         e => e.id != item.id
       );
+
+      // Filtrar critério legal
+      this.filtrarCriterioLegal(item);
     }
   }
 };

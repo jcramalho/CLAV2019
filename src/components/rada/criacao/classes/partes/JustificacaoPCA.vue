@@ -26,6 +26,7 @@
           <v-col cols="3">
             <div style="padding-left: 15px;" class="info-label">
               <v-icon
+                v-if="criterio.tipo != 'Critério de Utilidade Administrativa'"
                 @click="removeCriterio(cindex, criterio.tipo)"
                 color="red darken-2"
                 dark
@@ -64,6 +65,7 @@
                   <li v-for="(relacao, relindex) in criterio.relacoes" :key="relindex">
                     {{ relacao }}
                     <v-icon
+                      v-if="criterio.tipo != 'Critério de Utilidade Administrativa'"
                       @click="removeRelacao(relindex, criterio, cindex)"
                       color="red darken-2"
                       dark
@@ -89,6 +91,8 @@
 </template>
 
 <script>
+const labels = require("@/config/labels").criterios;
+
 export default {
   props: ["newSerie", "classes"],
   computed: {
@@ -139,34 +143,27 @@ export default {
     adicionaGestionario() {
       this.newSerie.justificacaoPCA.push({
         tipo: "Critério Gestionário",
-        nota:
-          "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+        nota: labels.textoCriterioJustificacaoGestionario
       });
     },
     adicionaLegal() {
+      let relacoesLegis = [];
       if (this.newSerie.tipo == "Série") {
-        let relacoesLegis = this.newSerie.legislacao.map(item => {
+        relacoesLegis = this.newSerie.legislacao.map(item => {
           return item.tipo + " " + item.numero;
-        });
-
-        this.newSerie.justificacaoPCA.push({
-          tipo: "Critério Legal",
-          nota: "Prazo prescricional estabelecido em:",
-          relacoes: relacoesLegis
         });
       } else {
         let pai = this.classes.find(e => e.codigo == this.newSerie.eFilhoDe);
 
-        let relacoesLegis = pai.legislacao.map(item => {
+        relacoesLegis = pai.legislacao.map(item => {
           return item.tipo + " " + item.numero;
         });
-
-        this.newSerie.justificacaoPCA.push({
-          tipo: "Critério Legal",
-          nota: "Prazo prescricional estabelecido em:",
-          relacoes: relacoesLegis
-        });
       }
+      this.newSerie.justificacaoPCA.push({
+        tipo: "Critério Legal",
+        nota: labels.textoCriterioLegal,
+        relacoes: relacoesLegis
+      });
     }
   }
 };
