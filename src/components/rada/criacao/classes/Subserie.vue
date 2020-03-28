@@ -36,7 +36,11 @@
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao :newSerie="newSubSerie" :classes="classes" />
+                <ZonaDecisoesAvaliacao
+                  :newSerie="newSubSerie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -97,6 +101,8 @@ import ZonaDescritiva from "./partes/ZonaDescritiva";
 import ZonaContexto from "./partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "./partes/ZonaDecisoesAvaliacao";
 
+const labels = require("@/config/labels").criterios;
+
 export default {
   components: {
     Identificacao,
@@ -104,7 +110,7 @@ export default {
     ZonaContexto,
     ZonaDecisoesAvaliacao
   },
-  props: ["classes", "UIs"],
+  props: ["classes", "UIs", "formaContagem"],
   data: () => ({
     panels: [0, 0, 0],
     isMultiple: false,
@@ -124,10 +130,12 @@ export default {
       UIs: [],
       relacoes: [],
       pca: "",
-      formaContagem: "",
+      formaContagem: {
+        forma: null
+      },
       justificacaoPCA: [],
-      df: "",
-      justificacaoDF: "",
+      df: null,
+      justificacaoDF: [],
       notas: "",
       eFilhoDe: "",
       tipo: "Subsérie"
@@ -146,10 +154,12 @@ export default {
         UIs: [],
         relacoes: [],
         pca: "",
-        formaContagem: "",
+        formaContagem: {
+          forma: null
+        },
         justificacaoPCA: [],
-        df: "",
-        justificacaoDF: "",
+        df: null,
+        justificacaoDF: [],
         notas: "",
         eFilhoDe: "",
         tipo: "Subsérie"
@@ -166,8 +176,8 @@ export default {
         if (this.$refs.form.validate()) {
           let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
-          await this.adicionarUIs(clone_newSubserie);
-          await this.relacoes_simetricas(clone_newSubserie);
+          this.adicionarUIs(clone_newSubserie);
+          this.relacoes_simetricas(clone_newSubserie);
 
           this.classes.push(clone_newSubserie);
 
@@ -217,20 +227,66 @@ export default {
         classe => classe.tipo == "Série"
       );
     },
-    adiciona_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
-      let criterio = classe_relacionada.justificacaoPCA.find(
-        crit => crit.tipo == "Critério de Utilidade Administrativa"
-      );
-
-      if (criterio == undefined) {
-        classe_relacionada.justificacaoPCA.push({
-          tipo: "Critério de Utilidade Administrativa",
-          nota:
-            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
-          relacoes: [codigoClasse]
-        });
+    adicionarDF(classe_relacionada, relacao) {
+      if (
+        relacao == "Sintetizado por" &&
+        !classe_relacionada.relacoes.some(e => e.relacao == "Complementar de")
+      ) {
+        classe_relacionada.df = "Eliminação";
       } else {
-        criterio.relacoes.push(codigoClasse);
+        classe_relacionada.df = "Conservação";
+      }
+    },
+    adiciona_criterio_a_relacionada(
+      classe_relacionada,
+      codigoClasse,
+      tipo_criterio,
+      relacao
+    ) {
+      if (tipo_criterio == "Critério de Utilidade Administrativa") {
+        let criterio = classe_relacionada.justificacaoPCA.find(
+          crit => crit.tipo == tipo_criterio
+        );
+
+        if (criterio == undefined) {
+          classe_relacionada.justificacaoPCA.push({
+            tipo: tipo_criterio,
+            nota: labels.textoCriterioUtilidadeAdministrativa,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
+      } else {
+        let criterio = classe_relacionada.justificacaoDF.find(
+          crit => crit.tipo == tipo_criterio
+        );
+
+        if (criterio == undefined) {
+          let nota = "";
+
+          switch (relacao) {
+            case "Sintetizado por":
+              nota = labels.textoCriterioDensidadeSinPor;
+              break;
+            case "Complementar de":
+              nota = labels.textoCriterioComplementaridade;
+              break;
+            case "Síntese de":
+              nota = labels.textoCriterioDensidadeSinDe;
+              break;
+          }
+
+          this.adicionarDF(classe_relacionada, relacao);
+
+          classe_relacionada.justificacaoDF.push({
+            tipo: tipo_criterio,
+            nota: nota,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
       }
     },
     relacoes_simetricas: function(clone_newSubserie) {
@@ -258,10 +314,12 @@ export default {
               relacoes: [],
               UIs: [],
               pca: "",
-              formaContagem: "",
+              formaContagem: {
+                forma: null
+              },
               justificacaoPCA: [],
-              df: "",
-              justificacaoDF: "",
+              df: null,
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
               tipo: "Série"
@@ -276,10 +334,12 @@ export default {
               relacoes: [],
               UIs: [],
               pca: "",
-              formaContagem: "",
+              formaContagem: {
+                forma: null
+              },
               justificacaoPCA: [],
-              df: "",
-              justificacaoDF: "",
+              df: null,
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
               tipo: "Subsérie"
@@ -300,18 +360,38 @@ export default {
             break;
           case "Complementar de":
             relacao_inversa = "Complementar de";
+            this.adiciona_criterio_a_relacionada(
+              classe_relacionada,
+              clone_newSubserie.codigo,
+              "Critério de Complementaridade Informacional",
+              relacao_inversa
+            );
             break;
           case "Sintetizado por":
             relacao_inversa = "Síntese de";
+            this.adiciona_criterio_a_relacionada(
+              classe_relacionada,
+              clone_newSubserie.codigo,
+              "Critério de Densidade Informacional",
+              relacao_inversa
+            );
             break;
           case "Síntese de":
             relacao_inversa = "Sintetizado por";
+            this.adiciona_criterio_a_relacionada(
+              classe_relacionada,
+              clone_newSubserie.codigo,
+              "Critério de Densidade Informacional",
+              relacao_inversa
+            );
             break;
           case "Suplemento de":
             relacao_inversa = "Suplemento para";
-            this.adiciona_crit_utilidade_adminstrativa(
+            this.adiciona_criterio_a_relacionada(
               classe_relacionada,
-              clone_newSubserie.codigo
+              clone_newSubserie.codigo,
+              "Critério de Utilidade Administrativa",
+              relacao_inversa
             );
             break;
           case "Suplemento para":

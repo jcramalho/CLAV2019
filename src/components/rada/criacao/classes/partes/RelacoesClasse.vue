@@ -44,7 +44,7 @@
                   <v-autocomplete
                     :rules="[v => !!v || 'Campo obrigatório!']"
                     v-model="rel"
-                    :items="listaRelacoes"
+                    :items="filtrarRelacoes"
                     label="Relação"
                     solo
                     clearable
@@ -58,10 +58,7 @@
                     label="Código"
                     solo
                     clearable
-                  >
-                    <!-- <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
-                    <template v-slot:selection="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>-->
-                  </v-combobox>
+                  ></v-combobox>
                 </v-col>
                 <v-col sm="1" xs="12">
                   <v-btn icon text rounded @click="add()">
@@ -93,7 +90,12 @@
               </v-row>
               <v-row v-if="!!alertOn">
                 <v-col>
-                  <v-alert dismissible dense text type="error">Relação já existente!</v-alert>
+                  <v-alert
+                    dismissible
+                    dense
+                    text
+                    type="error"
+                  >Impossível criar relação! Já existe ou classe já se encontra relacionada ou relação inválida!</v-alert>
                 </v-col>
               </v-row>
             </v-form>
@@ -105,6 +107,8 @@
 </template>
 
 <script>
+const labels = require("@/config/labels").criterios;
+
 export default {
   name: "RelacoesClasse",
   props: ["newSerie", "classes"],
@@ -150,6 +154,17 @@ export default {
     };
   },
   computed: {
+    filtrarRelacoes() {
+      if (this.newSerie.relacoes.some(e => e.relacao == "Síntese de")) {
+        return this.listaRelacoes.filter(e => e != "Sintetizado por");
+      } else {
+        if (this.newSerie.relacoes.some(e => e.relacao == "Sintetizado por")) {
+          return this.listaRelacoes.filter(e => e != "Síntese de");
+        } else {
+          return this.listaRelacoes;
+        }
+      }
+    },
     getCodigos() {
       return this.classes
         .filter(
@@ -172,23 +187,59 @@ export default {
     }
   },
   methods: {
-    remove_crit_utilidade_adminstrativa(codigoClasse) {
-      let criterio = this.newSerie.justificacaoPCA.find(
-        crit => crit.tipo == "Critério de Utilidade Administrativa"
-      );
+    remove_criterio(codigoClasse, tipo_criterio) {
+      if (tipo_criterio == "Critério de Utilidade Administrativa") {
+        let criterio = this.newSerie.justificacaoPCA.find(
+          crit => crit.tipo == tipo_criterio
+        );
 
-      if (criterio != undefined) {
-        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+        if (criterio != undefined) {
+          criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
 
-        if (criterio.relacoes.length == 0) {
-          this.newSerie.justificacaoPCA = this.newSerie.justificacaoPCA.filter(
-            e => e.tipo != "Critério de Utilidade Administrativa"
-          );
+          if (criterio.relacoes.length == 0) {
+            this.newSerie.justificacaoPCA = this.newSerie.justificacaoPCA.filter(
+              e => e.tipo != tipo_criterio
+            );
+          }
+        }
+      } else {
+        let criterio = this.newSerie.justificacaoDF.find(
+          crit => crit.tipo == tipo_criterio
+        );
+
+        if (criterio != undefined) {
+          criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+          if (criterio.relacoes.length == 0) {
+            this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
+              e => e.tipo != tipo_criterio
+            );
+          }
         }
       }
     },
     remove: function(item) {
-      this.remove_crit_utilidade_adminstrativa(item.serieRelacionada.codigo);
+      if (item.relacao == "Suplemento para") {
+        this.remove_criterio(
+          item.serieRelacionada.codigo,
+          "Critério de Utilidade Administrativa"
+        );
+      }
+
+      if (item.relacao == "Complementar de") {
+        this.remove_criterio(
+          item.serieRelacionada.codigo,
+          "Critério de Complementaridade Informacional"
+        );
+      }
+
+      if (item.relacao == "Sintetizado por" || item.relacao == "Síntese de") {
+        this.remove_criterio(
+          item.serieRelacionada.codigo,
+          "Critério de Densidade Informacional"
+        );
+      }
+
       this.newSerie.relacoes = this.newSerie.relacoes.filter(e => {
         return (
           e.relacao != item.relacao ||
@@ -219,7 +270,27 @@ export default {
         if (!(await this.validateRelacao())) {
           // TRATAR DA JUSTIFICAÇÃO DO PCA
           if (this.rel == "Suplemento para") {
-            this.adiciona_crit_utilidade_adminstrativa(this.codrel);
+            this.adiciona_criterio(
+              this.codrel,
+              "Critério de Utilidade Administrativa",
+              this.rel
+            );
+          }
+
+          if (this.rel == "Complementar de") {
+            this.adiciona_criterio(
+              this.codrel,
+              "Critério de Complementaridade Informacional",
+              this.rel
+            );
+          }
+
+          if (this.rel == "Sintetizado por" || this.rel == "Síntese de") {
+            this.adiciona_criterio(
+              this.codrel,
+              "Critério de Densidade Informacional",
+              this.rel
+            );
           }
 
           this.newSerie.relacoes.push({
@@ -238,28 +309,71 @@ export default {
         }
       }
     },
-    adiciona_crit_utilidade_adminstrativa(codigoClasse) {
-      let criterio = this.newSerie.justificacaoPCA.find(
-        crit => crit.tipo == "Critério de Utilidade Administrativa"
-      );
+    adiciona_criterio(codigoClasse, tipo_criterio, relacao) {
+      if (tipo_criterio == "Critério de Utilidade Administrativa") {
+        let criterio = this.newSerie.justificacaoPCA.find(
+          crit => crit.tipo == tipo_criterio
+        );
 
-      if (criterio == undefined) {
-        this.newSerie.justificacaoPCA.push({
-          tipo: "Critério de Utilidade Administrativa",
-          nota:
-            "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de:",
-          relacoes: [codigoClasse]
-        });
+        if (criterio == undefined) {
+          this.newSerie.justificacaoPCA.push({
+            tipo: tipo_criterio,
+            nota: labels.textoCriterioUtilidadeAdministrativa,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
       } else {
-        criterio.relacoes.push(codigoClasse);
+        let criterio = this.newSerie.justificacaoDF.find(
+          crit => crit.tipo == tipo_criterio
+        );
+
+        if (criterio == undefined) {
+          let nota = "";
+
+          switch (relacao) {
+            case "Sintetizado por":
+              nota = labels.textoCriterioDensidadeSinPor;
+              break;
+            case "Complementar de":
+              nota = labels.textoCriterioComplementaridade;
+              break;
+            case "Síntese de":
+              nota = labels.textoCriterioDensidadeSinDe;
+              break;
+          }
+
+          this.newSerie.justificacaoDF.push({
+            tipo: tipo_criterio,
+            nota: nota,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
       }
     },
     validateRelacao: function() {
-      return this.newSerie.relacoes.some(el => {
-        return (
-          el.relacao == this.rel && el.serieRelacionada.codigo == this.codrel
-        );
-      });
+      if (
+        this.newSerie.relacoes.some(
+          el => el.serieRelacionada.codigo == this.codrel
+        )
+      ) {
+        return true;
+      } else {
+        if (this.rel == "Síntese de" || this.rel == "Sintetizado por") {
+          let classe = this.classes.find(cl => cl.codigo == this.codrel);
+
+          if (
+            classe != undefined &&
+            classe.relacoes.some(e => e.relacao == this.rel)
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
   }
 };

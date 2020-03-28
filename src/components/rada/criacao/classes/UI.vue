@@ -405,10 +405,12 @@ export default {
               legislacao: [],
               relacoes: [],
               pca: "",
-              formaContagem: "",
+              formaContagem: {
+                forma: null
+              },
               justificacaoPCA: [],
-              df: "",
-              justificacaoDF: "",
+              df: null,
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: ""
             });
@@ -422,10 +424,12 @@ export default {
               relacoes: [],
               pca: "",
               UIs: [{ codigo: this.UI.codigo }],
-              formaContagem: "",
+              formaContagem: {
+                forma: null
+              },
               justificacaoPCA: [],
-              df: "",
-              justificacaoDF: "",
+              df: null,
+              justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
               tipo: "Subsérie"
