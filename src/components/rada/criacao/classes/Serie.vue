@@ -149,7 +149,7 @@ export default {
         forma: null
       },
       justificacaoPCA: [],
-      df: "",
+      df: null,
       justificacaoDF: [],
       notas: "",
       eFilhoDe: "",
@@ -183,7 +183,7 @@ export default {
           forma: null
         },
         justificacaoPCA: [],
-        df: "",
+        df: null,
         justificacaoDF: [],
         notas: "",
         eFilhoDe: "",
@@ -196,7 +196,7 @@ export default {
     },
     save: function() {
       this.isMultiple = true;
-      this.panels = [0, 1];
+      this.panels = [0, 1, 2];
       setTimeout(() => {
         if (this.$refs.formSerie.validate()) {
           let clone_newSerie = Object.assign({}, this.newSerie);
@@ -251,37 +251,66 @@ export default {
         }
       }
     },
-    adiciona_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
-      let criterio = classe_relacionada.justificacaoPCA.find(
-        crit => crit.tipo == "Critério de Utilidade Administrativa"
-      );
-
-      if (criterio == undefined) {
-        classe_relacionada.justificacaoPCA.push({
-          tipo: "Critério de Utilidade Administrativa",
-          nota: labels.textoCriterioUtilidadeAdministrativa,
-          relacoes: [codigoClasse]
-        });
+    adicionarDF(classe_relacionada, relacao) {
+      if (
+        relacao == "Sintetizado por" &&
+        !classe_relacionada.relacoes.some(e => e.relacao == "Complementar de")
+      ) {
+        classe_relacionada.df = "Eliminação";
       } else {
-        criterio.relacoes.push(codigoClasse);
+        classe_relacionada.df = "Conservação";
       }
     },
-    adiciona_crit_complementaridade_informacional(
+    adiciona_criterio_a_relacionada(
       classe_relacionada,
-      codigoClasse
+      codigoClasse,
+      tipo_criterio,
+      relacao
     ) {
-      let criterio = classe_relacionada.justificacaoDF.find(
-        crit => crit.tipo == "Critério de Complementaridade Informacional"
-      );
+      if (tipo_criterio == "Critério de Utilidade Administrativa") {
+        let criterio = classe_relacionada.justificacaoPCA.find(
+          crit => crit.tipo == tipo_criterio
+        );
 
-      if (criterio == undefined) {
-        classe_relacionada.justificacaoDF.push({
-          tipo: "Critério de Complementaridade Informacional",
-          nota: labels.textoCriterioComplementaridade,
-          relacoes: [codigoClasse]
-        });
+        if (criterio == undefined) {
+          classe_relacionada.justificacaoPCA.push({
+            tipo: tipo_criterio,
+            nota: labels.textoCriterioUtilidadeAdministrativa,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
       } else {
-        criterio.relacoes.push(codigoClasse);
+        let criterio = classe_relacionada.justificacaoDF.find(
+          crit => crit.tipo == tipo_criterio
+        );
+
+        if (criterio == undefined) {
+          let nota = "";
+
+          switch (relacao) {
+            case "Sintetizado por":
+              nota = labels.textoCriterioDensidadeSinPor;
+              break;
+            case "Complementar de":
+              nota = labels.textoCriterioComplementaridade;
+              break;
+            case "Síntese de":
+              nota = labels.textoCriterioDensidadeSinDe;
+              break;
+          }
+
+          this.adicionarDF(classe_relacionada, relacao);
+
+          classe_relacionada.justificacaoDF.push({
+            tipo: tipo_criterio,
+            nota: nota,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
       }
     },
     relacoes_simetricas: function(clone_newSerie) {
@@ -313,7 +342,7 @@ export default {
                 forma: null
               },
               justificacaoPCA: [],
-              df: "",
+              df: null,
               justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
@@ -333,7 +362,7 @@ export default {
                 forma: null
               },
               justificacaoPCA: [],
-              df: "",
+              df: null,
               justificacaoDF: [],
               notas: "",
               eFilhoDe: "",
@@ -355,22 +384,38 @@ export default {
             break;
           case "Complementar de":
             relacao_inversa = "Complementar de";
-            this.adiciona_crit_complementaridade_informacional(
+            this.adiciona_criterio_a_relacionada(
               classe_relacionada,
-              clone_newSerie.codigo
+              clone_newSerie.codigo,
+              "Critério de Complementaridade Informacional",
+              relacao_inversa
             );
             break;
           case "Sintetizado por":
             relacao_inversa = "Síntese de";
+            this.adiciona_criterio_a_relacionada(
+              classe_relacionada,
+              clone_newSerie.codigo,
+              "Critério de Densidade Informacional",
+              relacao_inversa
+            );
             break;
           case "Síntese de":
             relacao_inversa = "Sintetizado por";
+            this.adiciona_criterio_a_relacionada(
+              classe_relacionada,
+              clone_newSerie.codigo,
+              "Critério de Densidade Informacional",
+              relacao_inversa
+            );
             break;
           case "Suplemento de":
             relacao_inversa = "Suplemento para";
-            this.adiciona_crit_utilidade_adminstrativa(
+            this.adiciona_criterio_a_relacionada(
               classe_relacionada,
-              clone_newSerie.codigo
+              clone_newSerie.codigo,
+              "Critério de Utilidade Administrativa",
+              relacao_inversa
             );
             break;
           case "Suplemento para":

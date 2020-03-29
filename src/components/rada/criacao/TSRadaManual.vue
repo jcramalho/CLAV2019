@@ -61,13 +61,7 @@
               </template>
             </v-treeview>
             <br />
-            <b
-              v-if="TS.classes.some(e => (e.eFilhoDe == '' || !((e.dataInicial != undefined &&
-                e.dataInicial != null) ||
-                (e.UIs != undefined &&
-                  e.UIs.length > 0))) && (e.tipo == 'Subsérie' || e.tipo == 'Série'))"
-              style="color:red"
-            >*Classes por preencher</b>
+            <b v-if="incompleto" style="color:red">*Classes por preencher</b>
           </div>
           <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
             <b>Sem Classes!</b> É obrigatório adicionar.
@@ -139,11 +133,30 @@ export default {
                 (this.TS.classes[i].UIs != undefined &&
                   this.TS.classes[i].UIs.length > 0)
             ),
+            temDF: Boolean(this.TS.classes[i].df == null),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
       }
       return myTree;
+    },
+    incompleto() {
+      return this.TS.classes.some(
+        e =>
+          ((e.eFilhoDe == "" ||
+            !(
+              (e.dataInicial != undefined && e.dataInicial != null) ||
+              (e.UIs != undefined && e.UIs.length > 0)
+            )) &&
+            e.tipo == "Série") ||
+          ((e.df == null ||
+            e.eFilhoDe == "" ||
+            !(
+              (e.dataInicial != undefined && e.dataInicial != null) ||
+              (e.UIs != undefined && e.UIs.length > 0)
+            )) &&
+            e.tipo == "Subsérie")
+      );
     }
   },
   methods: {
@@ -164,6 +177,7 @@ export default {
                 (this.TS.classes[i].UIs != undefined &&
                   this.TS.classes[i].UIs.length > 0)
             ),
+            temDF: Boolean(this.TS.classes[i].df == null),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -190,6 +204,8 @@ export default {
 
       serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
       serie_classe.UIs = await this.editaUI(serie_classe, c);
+
+      this.alterarCriterioLegalSubseries(serie_classe.codigo, c.legislacao);
 
       serie_classe.titulo = c.titulo;
       serie_classe.descricao = c.descricao;
@@ -228,6 +244,31 @@ export default {
       subserie_classe.df = c.df;
       subserie_classe.justificacaoDF = c.justificacaoDF;
       subserie_classe.eFilhoDe = c.eFilhoDe;
+    },
+    alterarCriterioLegalSubseries(codigoPai, legislacao) {
+      //procurar as subséries que são filhos e tratar dos seus critérios legislativos
+      let subseries = this.TS.classes.filter(e => e.eFilhoDe == codigoPai);
+
+      for (let i = 0; i < subseries.length; i++) {
+        // 1º remover do critério legal na justificação PCA
+        let legalPCA_subserie = subseries[i].justificacaoPCA.find(
+          e => e.tipo == "Critério Legal"
+        );
+        if (legalPCA_subserie != undefined) {
+          legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter(
+            e => e != item.tipo + " " + item.numero
+          );
+        }
+        // 2º remover do critério legal na justificação DF
+        let legalDF_subserie = subseries[i].justificacaoDF.find(
+          e => e.tipo == "Critério Legal"
+        );
+        if (legalDF_subserie != undefined) {
+          legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter(
+            e => e != item.tipo + " " + item.numero
+          );
+        }
+      }
     },
     editaUI(serie_classe, c) {
       let novo_UIs = [];
@@ -327,6 +368,7 @@ export default {
       return novo_relacoes;
     },
     adicionaRelacoesInversas(relacao, serie_classe) {
+      // console.log("ADICIONA RELACAO INVERSA");
       let classe_relacionada = this.TS.classes.find(
         e => e.codigo == relacao.serieRelacionada.codigo
       );
@@ -354,7 +396,7 @@ export default {
               forma: null
             },
             justificacaoPCA: [],
-            df: "",
+            df: null,
             justificacaoDF: [],
             notas: "",
             eFilhoDe: "",
@@ -374,7 +416,7 @@ export default {
               forma: null
             },
             justificacaoPCA: [],
-            df: "",
+            df: null,
             justificacaoDF: [],
             notas: "",
             eFilhoDe: "",
@@ -396,22 +438,38 @@ export default {
           break;
         case "Complementar de":
           relacao_inversa = "Complementar de";
-          this.adiciona_crit_complementaridade_informacional(
+          this.adiciona_criterio_a_relacionada(
             classe_relacionada,
-            serie_classe.codigo
+            serie_classe.codigo,
+            "Critério de Complementaridade Informacional",
+            relacao_inversa
           );
           break;
         case "Sintetizado por":
           relacao_inversa = "Síntese de";
+          this.adiciona_criterio_a_relacionada(
+            classe_relacionada,
+            serie_classe.codigo,
+            "Critério de Densidade Informacional",
+            relacao_inversa
+          );
           break;
         case "Síntese de":
           relacao_inversa = "Sintetizado por";
+          this.adiciona_criterio_a_relacionada(
+            classe_relacionada,
+            serie_classe.codigo,
+            "Critério de Densidade Informacional",
+            relacao_inversa
+          );
           break;
         case "Suplemento de":
           relacao_inversa = "Suplemento para";
-          this.adiciona_crit_utilidade_adminstrativa(
+          this.adiciona_criterio_a_relacionada(
             classe_relacionada,
-            serie_classe.codigo
+            serie_classe.codigo,
+            "Critério de Utilidade Administrativa",
+            relacao_inversa
           );
           break;
         case "Suplemento para":
@@ -427,73 +485,134 @@ export default {
         }
       });
     },
-    remove_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
-      let criterio = classe_relacionada.justificacaoPCA.find(
-        crit => crit.tipo == "Critério de Utilidade Administrativa"
-      );
+    adicionarDF(classe_relacionada, relacao) {
+      // console.log("Adicionar DF");
+      if (
+        relacao == "Sintetizado por" &&
+        !classe_relacionada.relacoes.some(e => e.relacao == "Complementar de")
+      ) {
+        classe_relacionada.df = "Eliminação";
+      } else {
+        classe_relacionada.df = "Conservação";
+      }
+    },
+    adiciona_criterio_a_relacionada(
+      classe_relacionada,
+      codigoClasse,
+      tipo_criterio,
+      relacao
+    ) {
+      // console.log("ADICIONAR CRITÉRIO -> " + tipo_criterio);
+      if (tipo_criterio == "Critério de Utilidade Administrativa") {
+        let criterio = classe_relacionada.justificacaoPCA.find(
+          crit => crit.tipo == tipo_criterio
+        );
 
-      if (criterio != undefined) {
-        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+        if (criterio == undefined) {
+          classe_relacionada.justificacaoPCA.push({
+            tipo: tipo_criterio,
+            nota: labels.textoCriterioUtilidadeAdministrativa,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
+        }
+      } else {
+        let criterio = classe_relacionada.justificacaoDF.find(
+          crit => crit.tipo == tipo_criterio
+        );
 
-        if (criterio.relacoes.length == 0) {
-          classe_relacionada.justificacaoPCA = classe_relacionada.justificacaoPCA.filter(
-            e => e.tipo != "Critério de Utilidade Administrativa"
-          );
+        if (criterio == undefined) {
+          let nota = "";
+
+          switch (relacao) {
+            case "Sintetizado por":
+              nota = labels.textoCriterioDensidadeSinPor;
+              break;
+            case "Complementar de":
+              nota = labels.textoCriterioComplementaridade;
+              break;
+            case "Síntese de":
+              nota = labels.textoCriterioDensidadeSinDe;
+              break;
+          }
+          this.adicionarDF(classe_relacionada, relacao);
+
+          classe_relacionada.justificacaoDF.push({
+            tipo: tipo_criterio,
+            nota: nota,
+            relacoes: [codigoClasse]
+          });
+        } else {
+          criterio.relacoes.push(codigoClasse);
         }
       }
     },
-    adiciona_crit_utilidade_adminstrativa(classe_relacionada, codigoClasse) {
-      let criterio = classe_relacionada.justificacaoPCA.find(
-        crit => crit.tipo == "Critério de Utilidade Administrativa"
-      );
-
-      if (criterio == undefined) {
-        classe_relacionada.justificacaoPCA.push({
-          tipo: "Critério de Utilidade Administrativa",
-          nota: labels.textoCriterioUtilidadeAdministrativa,
-          relacoes: [codigoClasse]
-        });
+    removerDF(classe_relacionada, tipo_criterio) {
+      // console.log("Remover DF");
+      if (tipo_criterio == "Critério de Densidade Informacional") {
+        if (
+          classe_relacionada.justificacaoDF.some(
+            e => e.tipo == "Critério de Complementaridade Informacional"
+          )
+        ) {
+          classe_relacionada.df = "Conservação";
+        } else {
+          classe_relacionada.DF = null;
+        }
       } else {
-        criterio.relacoes.push(codigoClasse);
-      }
-    },
-    remove_crit_complementaridade_informacional(
-      classe_relacionada,
-      codigoClasse
-    ) {
-      let criterio = classe_relacionada.justificacaoDF.find(
-        crit => crit.tipo == "Critério de Complementaridade Informacional"
-      );
-
-      if (criterio != undefined) {
-        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
-
-        if (criterio.relacoes.length == 0) {
-          classe_relacionada.justificacaoDF = classe_relacionada.justificacaoDF.filter(
-            e => e.tipo != "Critério de Complementaridade Informacional"
-          );
+        if (classe_relacionada.relacoes.some(e => e.relacao == "Síntese de")) {
+          classe_relacionada.df = "Conservação";
+        } else {
+          if (
+            classe_relacionada.relacoes.some(
+              e => e.relacao == "Sintetizado por"
+            )
+          ) {
+            classe_relacionada.df = "Eliminação";
+          } else {
+            classe_relacionada.df = null;
+          }
         }
       }
     },
-    adiciona_crit_complementaridade_informacional(
-      classe_relacionada,
-      codigoClasse
-    ) {
-      let criterio = classe_relacionada.justificacaoDF.find(
-        crit => crit.tipo == "Critério de Complementaridade Informacional"
-      );
+    remove_criterio(classe_relacionada, codigoClasse, tipo_criterio, relacao) {
+      // console.log("REMOVER CRITÉRIO -> " + tipo_criterio);
+      if (tipo_criterio == "Critério de Utilidade Administrativa") {
+        let criterio = classe_relacionada.justificacaoPCA.find(
+          crit => crit.tipo == tipo_criterio
+        );
 
-      if (criterio == undefined) {
-        classe_relacionada.justificacaoDF.push({
-          tipo: "Critério de Complementaridade Informacional",
-          nota: labels.textoCriterioComplementaridade,
-          relacoes: [codigoClasse]
-        });
+        if (criterio != undefined) {
+          criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+          if (criterio.relacoes.length == 0) {
+            classe_relacionada.justificacaoPCA = classe_relacionada.justificacaoPCA.filter(
+              e => e.tipo != tipo_criterio
+            );
+          }
+        }
       } else {
-        criterio.relacoes.push(codigoClasse);
+        let criterio = classe_relacionada.justificacaoDF.find(
+          crit => crit.tipo == tipo_criterio
+        );
+
+        if (criterio != undefined) {
+          criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+          if (criterio.relacoes.length == 0) {
+            // Remover DF que é dependente do critério que vai ser eliminado;
+            this.removerDF(classe_relacionada, tipo_criterio, relacao);
+
+            classe_relacionada.justificacaoDF = classe_relacionada.justificacaoDF.filter(
+              e => e.tipo != tipo_criterio
+            );
+          }
+        }
       }
     },
     removeRelacoesInversas(relacao, serie_classe) {
+      // console.log("REMOVE RELACAO INVERSA");
       let classe_relacionada = this.TS.classes.find(
         e => e.codigo == relacao.serieRelacionada.codigo
       );
@@ -509,22 +628,34 @@ export default {
           break;
         case "Complementar de":
           relacao_inversa = "Complementar de";
-          this.remove_crit_complementaridade_informacional(
+          this.remove_criterio(
             classe_relacionada,
-            serie_classe.codigo
+            serie_classe.codigo,
+            "Critério de Complementaridade Informacional"
           );
           break;
         case "Sintetizado por":
           relacao_inversa = "Síntese de";
+          this.remove_criterio(
+            classe_relacionada,
+            serie_classe.codigo,
+            "Critério de Densidade Informacional"
+          );
           break;
         case "Síntese de":
           relacao_inversa = "Sintetizado por";
+          this.remove_criterio(
+            classe_relacionada,
+            serie_classe.codigo,
+            "Critério de Densidade Informacional"
+          );
           break;
         case "Suplemento de":
           relacao_inversa = "Suplemento para";
-          this.remove_crit_utilidade_adminstrativa(
+          this.remove_criterio(
             classe_relacionada,
-            serie_classe.codigo
+            serie_classe.codigo,
+            "Critério de Utilidade Administrativa"
           );
           break;
         case "Suplemento para":

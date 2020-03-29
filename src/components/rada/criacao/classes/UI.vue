@@ -409,7 +409,7 @@ export default {
                 forma: null
               },
               justificacaoPCA: [],
-              df: "",
+              df: null,
               justificacaoDF: [],
               notas: "",
               eFilhoDe: ""
@@ -428,7 +428,7 @@ export default {
                 forma: null
               },
               justificacaoPCA: [],
-              df: "",
+              df: null,
               justificacaoDF: [],
               notas: "",
               eFilhoDe: "",

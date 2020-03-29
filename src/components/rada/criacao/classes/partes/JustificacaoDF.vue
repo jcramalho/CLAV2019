@@ -43,7 +43,7 @@
             <v-col cols="3">
               <div style="padding-left: 15px;" class="info-label">
                 <v-icon
-                  v-if="criterio.tipo != 'Critério de Complementaridade Informacional'"
+                  v-if="criterio.tipo == 'Critério Legal'"
                   @click="removeCriterio(cindex, criterio.tipo)"
                   color="red darken-2"
                   dark
@@ -68,7 +68,7 @@
                     <li v-for="(relacao, relindex) in criterio.relacoes" :key="relindex">
                       {{ relacao }}
                       <v-icon
-                        v-if="criterio.tipo != 'Critério de Complementaridade Informacional'"
+                        v-if="criterio.tipo == 'Critério Legal'"
                         @click="removeRelacao(relindex, criterio, cindex)"
                         color="red darken-2"
                         dark
@@ -123,17 +123,23 @@ export default {
     }
   },
   methods: {
+    // Verificar pela relação existente visto que a gestão feita não permite ter coisas erradas
     disable_df() {
       if (
-        this.newSerie.justificacaoDF.some(
-          e => e.tipo == "Critério de Complementaridade Informacional"
+        this.newSerie.relacoes.some(
+          e => e.relacao == "Síntese de" || e.relacao == "Complementar de"
         )
       ) {
         this.newSerie.df = "Conservação";
         return true;
       } else {
-        this.newSerie.df = null;
-        return false;
+        if (this.newSerie.relacoes.some(e => e.relacao == "Sintetizado por")) {
+          this.newSerie.df = "Eliminação";
+          return true;
+        } else {
+          this.newSerie.df = null;
+          return false;
+        }
       }
     },
     exist(v) {
