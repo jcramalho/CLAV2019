@@ -55,6 +55,7 @@
             </v-col>
             <v-col cols="12" sm="9" md="0">
               <v-autocomplete
+                :disabled="temCriterioLegal"
                 v-model="newSubSerie.eFilhoDe"
                 :items="classesHierarquia"
                 :rules="[v => !!v || 'Este campo é obrigatório.']"
@@ -74,7 +75,7 @@
                       :value="true"
                       color="red lighten-3"
                       icon="warning"
-                    >Sem classes Série! Adicione primeiro.</v-alert>
+                    >Sem classes Séries! Adicione primeiro.</v-alert>
                   </v-container>
                 </template>
               </v-autocomplete>
@@ -111,6 +112,14 @@ export default {
     ZonaDecisoesAvaliacao
   },
   props: ["classes", "UIs", "formaContagem"],
+  computed: {
+    temCriterioLegal() {
+      return (
+        this.newSubSerie.justificacaoDF.some(e => e.tipo == "Critério Legal") ||
+        this.newSubSerie.justificacaoPCA.some(e => e.tipo == "Critério Legal")
+      );
+    }
+  },
   data: () => ({
     panels: [0, 0, 0],
     isMultiple: false,

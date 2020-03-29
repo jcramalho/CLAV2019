@@ -60,6 +60,7 @@
             </v-col>
             <v-col cols="12" sm="9" md="0">
               <v-autocomplete
+                :disabled="temCriterioLegal"
                 v-model="subserie.eFilhoDe"
                 :items="classesHierarquia"
                 :rules="[v => !!v || 'Este campo é obrigatório.']"
@@ -107,7 +108,10 @@ export default {
   props: ["treeview_object", "classes", "UIs", "formaContagem"],
   data: () => ({
     dialog: false,
-    subserie: {},
+    subserie: {
+      justificacaoDF: [],
+      justificacaoPCA: []
+    },
     panels: [0, 0, 0],
     isMultiple: false,
     classesHierarquia: []
@@ -117,6 +121,14 @@ export default {
     ZonaDescritiva,
     ZonaContexto,
     ZonaDecisoesAvaliacao
+  },
+  computed: {
+    temCriterioLegal() {
+      return (
+        this.subserie.justificacaoDF.some(e => e.tipo == "Critério Legal") ||
+        this.subserie.justificacaoPCA.some(e => e.tipo == "Critério Legal")
+      );
+    }
   },
   methods: {
     clonePCA(serie_real) {
@@ -166,7 +178,7 @@ export default {
         {},
         subserie_real.formaContagem
       );
-
+      
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes.filter(
         classe => classe.tipo == "Série"
