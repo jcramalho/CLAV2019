@@ -50,6 +50,7 @@
           <RelatorioExpositivo
             @seguinte="changeE1"
             :RE="RADA.RE"
+            :UIs="RADA.tsRada.UIs"
             :classes="RADA.tsRada.classes"
             :entidades="entidades"
             :tipologias="tipologias"
