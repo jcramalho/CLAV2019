@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogSerie" persistent fullscreen>
+  <v-dialog v-model="dialogSerie" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
         {{

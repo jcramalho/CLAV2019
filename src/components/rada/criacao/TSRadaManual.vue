@@ -255,18 +255,30 @@ export default {
           e => e.tipo == "Critério Legal"
         );
         if (legalPCA_subserie != undefined) {
-          legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter(
-            e => e != item.tipo + " " + item.numero
+          legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter(e =>
+            legislacao.some(leg => leg.tipo + " " + leg.numero == e)
           );
+
+          if (legalPCA_subserie.relacoes.length == 0) {
+            subseries[i].justificacaoPCA = subseries[i].justificacaoPCA.filter(
+              e => e.tipo != "Critério Legal"
+            );
+          }
         }
         // 2º remover do critério legal na justificação DF
         let legalDF_subserie = subseries[i].justificacaoDF.find(
           e => e.tipo == "Critério Legal"
         );
         if (legalDF_subserie != undefined) {
-          legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter(
-            e => e != item.tipo + " " + item.numero
+          legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter(e =>
+            legislacao.some(leg => leg.tipo + " " + leg.numero == e)
           );
+
+          if (legalDF_subserie.relacoes.length == 0) {
+            subseries[i].justificacaoDF = subseries[i].justificacaoDF.filter(
+              e => e.tipo != "Critério Legal"
+            );
+          }
         }
       }
     },

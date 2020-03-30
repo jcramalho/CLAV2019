@@ -192,6 +192,12 @@ export default {
         legalPCA.relacoes = legalPCA.relacoes.filter(
           e => e != item.tipo + " " + item.numero
         );
+
+        if (legalPCA.relacoes.length == 0) {
+          this.newSerie.justificacaoPCA = this.newSerie.justificacaoPCA.filter(
+            e => e.tipo != "Critério Legal"
+          );
+        }
       }
 
       // 2º remover do critério legal na justificação DF
@@ -203,6 +209,12 @@ export default {
         legalDF.relacoes = legalDF.relacoes.filter(
           e => e != item.tipo + " " + item.numero
         );
+
+        if (legalDF.relacoes.length == 0) {
+          this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
+            e => e.tipo != "Critério Legal"
+          );
+        }
       }
     },
     desselecionarLegislacao(item) {

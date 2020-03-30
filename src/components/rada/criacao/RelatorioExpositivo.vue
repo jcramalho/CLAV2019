@@ -134,7 +134,7 @@
           </v-menu>
         </v-col>
       </v-row>
-      <v-row>
+      <!-- <v-row>
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Número de Unidades de Instalação</div>
         </v-col>
@@ -147,7 +147,7 @@
             type="number"
           />
         </v-col>
-      </v-row>
+      </v-row> -->
       <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
         <v-expansion-panel popout focusable>
           <v-expansion-panel-header class="expansion-panel-heading">
