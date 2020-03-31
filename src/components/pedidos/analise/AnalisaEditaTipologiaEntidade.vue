@@ -7,7 +7,6 @@
         v-if="
           info.campo !== 'Sigla' &&
             info.campo !== 'Código' &&
-            info.campo !== 'Designação' &&
             info.conteudo !== '' &&
             info.conteudo !== undefined
         "
@@ -20,7 +19,6 @@
         v-if="
           info.campo !== 'Sigla' &&
             info.campo !== 'Código' &&
-            info.campo !== 'Designação' &&
             info.conteudo !== '' &&
             info.conteudo !== undefined
         "

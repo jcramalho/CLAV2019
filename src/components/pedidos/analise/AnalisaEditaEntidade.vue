@@ -6,7 +6,6 @@
         cols="2"
         v-if="
           info.campo !== 'Sigla' &&
-            info.campo !== 'Designação' &&
             info.conteudo !== '' &&
             info.conteudo !== undefined
         "
@@ -18,7 +17,6 @@
       <v-col
         v-if="
           info.campo !== 'Sigla' &&
-            info.campo !== 'Designação' &&
             info.conteudo !== '' &&
             info.conteudo !== undefined
         "
