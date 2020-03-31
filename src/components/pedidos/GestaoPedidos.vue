@@ -29,7 +29,7 @@
         </v-card-text>
       </v-card>
 
-      <v-dialog v-model="distribuir" width="80%">
+      <v-dialog v-model="distribuir" width="80%" persistent>
         <AvancarPedido
           :utilizadores="utilizadores"
           :texto="{

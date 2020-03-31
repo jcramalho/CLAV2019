@@ -8,7 +8,8 @@
             Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
           </v-card-title>
-          <v-card-text>
+          <!-- Para a Criação de novos dados -->
+          <v-card-text v-if="pedido.objeto.acao === 'Criação'">
             <AnalisaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
@@ -20,6 +21,14 @@
             />
 
             <AnalisaTipologiaEntidade
+              v-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
+          </v-card-text>
+
+          <!-- Para a Alteração de dados -->
+          <v-card-text v-else-if="pedido.objeto.acao === 'Alteração'">
+            <AnalisaEditaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
             />
@@ -48,6 +57,8 @@ import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
 
+import AnalisaEditaTipologiaEntidade from "@/components/pedidos/analise/AnalisaEditaTipologiaEntidade";
+
 import Loading from "@/components/generic/Loading";
 
 export default {
@@ -57,7 +68,8 @@ export default {
     AnalisaEntidade,
     AnalisaLeg,
     Loading,
-    AnalisaTipologiaEntidade
+    AnalisaTipologiaEntidade,
+    AnalisaEditaTipologiaEntidade
   },
 
   data() {

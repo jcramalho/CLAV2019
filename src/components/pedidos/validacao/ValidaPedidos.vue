@@ -9,7 +9,8 @@
             {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
           </v-card-title>
-          <v-card-text>
+          <!-- Para a Criação de novos dados -->
+          <v-card-text v-if="pedido.objeto.acao === 'Criação'">
             <ValidaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
@@ -25,6 +26,14 @@
               :p="pedido"
             />
           </v-card-text>
+
+          <!-- Para a Alteração de novos dados -->
+          <v-card-text v-if="pedido.objeto.acao === 'Alteração'">
+            <ValidaEditaTipologiaEntidade
+              v-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -36,6 +45,8 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 
+import ValidaEditaTipologiaEntidade from "@/components/pedidos/validacao/ValidaEditaTipologiaEntidade";
+
 import Loading from "@/components/generic/Loading";
 
 export default {
@@ -45,6 +56,7 @@ export default {
     ValidaEntidade,
     ValidaLegislacao,
     ValidaTipologiaEntidade,
+    ValidaEditaTipologiaEntidade,
     Loading
   },
 
