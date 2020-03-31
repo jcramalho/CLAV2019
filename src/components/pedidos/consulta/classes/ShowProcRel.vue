@@ -5,7 +5,12 @@
         </v-col>
         <v-col>
           <div class="info-content">
-              
+              <ul>
+                <li v-for="(p,i) in lista" :key="i">
+                    [{{ p.relacao }}]:
+                    {{ p.codigo }} - {{ p.titulo }}
+                </li>
+              </ul>
           </div>
         </v-col>
       </v-row>

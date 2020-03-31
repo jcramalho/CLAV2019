@@ -13,7 +13,8 @@
         </v-col>
       </v-row>
 
-      <v-card class="ma-2">
+      <v-card class="ma-2"
+              v-if="(p.objeto.dados.notasAp.length > 0)||(p.objeto.dados.exemplosNotasAp.length > 0)||(p.objeto.dados.notasEx.length > 0)||((p.objeto.dados.nivel == 3) && (p.objeto.dados.termosInd.length > 0))">
         <v-card-title class="info-label subtitle-1 font-weight-medium">
           Descritivo da classe
         </v-card-title>
@@ -54,9 +55,34 @@
         </v-card-text>
       </v-card>
 
-      <div>
-        {{ JSON.stringify(p.objeto.dados) }}
-      </div>
+      <v-card class="ma-2">
+        <v-card-title class="info-label subtitle-1 font-weight-medium">
+          Decisões de avaliação
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="2">
+                <div class="info-label">PCA</div>
+            </v-col>
+            <v-col>
+              <ShowDecisoesPCA :pca="p.objeto.dados.pca"/>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+                <div class="info-label">DF</div>
+            </v-col>
+            <v-col>
+              <ShowDecisoesDF :df="p.objeto.dados.df"/>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <!--div>
+        {{ JSON.stringify(p.objeto.dados.pca) }}
+      </div-->
     </v-card-text>
   </v-card>
 </template>
@@ -72,12 +98,16 @@ import ShowParticipantes from "@/components/pedidos/consulta/classes/ShowPartici
 import ShowProcRel from "@/components/pedidos/consulta/classes/ShowProcRel"
 import ShowLegislacao from "@/components/pedidos/consulta/classes/ShowLegislacao"
 
+import ShowDecisoesPCA from "@/components/pedidos/consulta/classes/ShowDecisoesPCA"
+import ShowDecisoesDF from "@/components/pedidos/consulta/classes/ShowDecisoesDF"
+
 export default {
   props: ["p"],
 
   components: {
     ShowNotasAp, ShowExemplosNotasAp, ShowNotasEx, ShowTIs,
-    ShowDonos, ShowParticipantes, ShowProcRel, ShowLegislacao
+    ShowDonos, ShowParticipantes, ShowProcRel, ShowLegislacao,
+    ShowDecisoesPCA, ShowDecisoesDF
   },
 
   data() {
