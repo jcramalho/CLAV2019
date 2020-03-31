@@ -163,6 +163,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
+        // TODO: Adicionar validação para a designação
         // TODO: Alterar depois da API estar pronta
 
         // await this.$request("post", "/tipologias", pedido.objeto.dados);

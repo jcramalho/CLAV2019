@@ -6,7 +6,6 @@
         cols="2"
         v-if="
           info.campo !== 'Sigla' &&
-            info.campo !== 'Designação' &&
             info.conteudo !== '' &&
             info.conteudo !== undefined
         "
@@ -18,7 +17,6 @@
       <v-col
         v-if="
           info.campo !== 'Sigla' &&
-            info.campo !== 'Designação' &&
             info.conteudo !== '' &&
             info.conteudo !== undefined
         "
@@ -163,6 +161,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
+        // TODO: Adicionar validação para a designação
         // TODO: Alterar depois da API estar pronta
 
         // await this.$request("post", "/entidades", pedido.objeto.dados);
