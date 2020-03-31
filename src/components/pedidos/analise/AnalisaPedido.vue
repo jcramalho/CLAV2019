@@ -33,6 +33,11 @@
               :p="pedido"
             />
 
+            <AnalisaEditaLegislacao
+              v-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
+
             <AnalisaEditaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
@@ -63,6 +68,7 @@ import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
 
 import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
+import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLegislacao";
 import AnalisaEditaTipologiaEntidade from "@/components/pedidos/analise/AnalisaEditaTipologiaEntidade";
 
 import Loading from "@/components/generic/Loading";
@@ -76,6 +82,7 @@ export default {
     Loading,
     AnalisaTipologiaEntidade,
     AnalisaEditaEntidade,
+    AnalisaEditaLegislacao,
     AnalisaEditaTipologiaEntidade
   },
 

@@ -34,6 +34,11 @@
               :p="pedido"
             />
 
+            <ValidaEditaLegislacao
+              v-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
+
             <ValidaEditaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
@@ -51,6 +56,7 @@ import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
+import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
 import ValidaEditaTipologiaEntidade from "@/components/pedidos/validacao/ValidaEditaTipologiaEntidade";
 
 import Loading from "@/components/generic/Loading";
@@ -63,6 +69,7 @@ export default {
     ValidaLegislacao,
     ValidaTipologiaEntidade,
     ValidaEditaEntidade,
+    ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
     Loading
   },
