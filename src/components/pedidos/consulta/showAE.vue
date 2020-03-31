@@ -34,7 +34,7 @@
         <v-expansion-panels popout>
           <v-expansion-panel class="ma-1">
             <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
-              >Zonas de Controlo</v-expansion-panel-header
+              >Classes</v-expansion-panel-header
             >
             <v-expansion-panel-content>
               <v-list>
@@ -180,8 +180,30 @@
                           <td style="width:80%;">{{ item.uiOutros }}</td>
                         </tr>
                       </table>
+                      <div class="ma-1">
+                        <v-row justify="space-between" class="info-label">
+                          <v-col>Lista de Agregações</v-col>
+                          <v-col>
+                            <v-text-field
+                              v-model="search"
+                              append-icon="search"
+                              label="Procura"
+                              single-line
+                              hide-details
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-data-table
+                          :headers="cabecalho"
+                          :items="item.agregacoes"
+                          :items-per-page="5"
+                          class="elevation-1 ml-2 mt-3"
+                          :footer-props="footer_props"
+                          :search="search"
+                        />
+                      </div>
 
-                      <v-expansion-panels>
+                      <!--<v-expansion-panels>
                         <v-expansion-panel class="ma-2">
                           <v-expansion-panel-header class="pa-4 indigo darken-4 title white--text"
                             >Zonas de Agregação</v-expansion-panel-header
@@ -251,7 +273,7 @@
                             </v-list>
                           </v-expansion-panel-content>
                         </v-expansion-panel>
-                      </v-expansion-panels>
+                      </v-expansion-panels>-->
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-group>
@@ -268,7 +290,18 @@
 export default {
   props: ["p"],
 
-  data: () => ({})
+  data: () => ({
+    search: "",
+    cabecalho: [
+      { text: "Código", align: "left", sortable: false, value: "codigo" },
+      { text: "Título", align: "left", value: "titulo" },
+      { text: "Data de Contagem", align: "center", value: "dataContagem" },
+      { text: "Natureza de Intervenção", align: "center", value: "ni" }
+    ],
+    footer_props: {
+      "items-per-page-text": "Mostrar"
+    }
+  })
 };
 </script>
 
