@@ -28,6 +28,11 @@
 
           <!-- Para a Alteração de dados -->
           <v-card-text v-else-if="pedido.objeto.acao === 'Alteração'">
+            <AnalisaEditaEntidade
+              v-if="pedido.objeto.tipo === 'Entidade'"
+              :p="pedido"
+            />
+
             <AnalisaEditaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
@@ -57,6 +62,7 @@ import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
 
+import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
 import AnalisaEditaTipologiaEntidade from "@/components/pedidos/analise/AnalisaEditaTipologiaEntidade";
 
 import Loading from "@/components/generic/Loading";
@@ -69,6 +75,7 @@ export default {
     AnalisaLeg,
     Loading,
     AnalisaTipologiaEntidade,
+    AnalisaEditaEntidade,
     AnalisaEditaTipologiaEntidade
   },
 

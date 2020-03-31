@@ -29,6 +29,11 @@
 
           <!-- Para a Alteração de novos dados -->
           <v-card-text v-if="pedido.objeto.acao === 'Alteração'">
+            <ValidaEditaEntidade
+              v-if="pedido.objeto.tipo === 'Entidade'"
+              :p="pedido"
+            />
+
             <ValidaEditaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
@@ -45,6 +50,7 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 
+import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaTipologiaEntidade from "@/components/pedidos/validacao/ValidaEditaTipologiaEntidade";
 
 import Loading from "@/components/generic/Loading";
@@ -56,6 +62,7 @@ export default {
     ValidaEntidade,
     ValidaLegislacao,
     ValidaTipologiaEntidade,
+    ValidaEditaEntidade,
     ValidaEditaTipologiaEntidade,
     Loading
   },
