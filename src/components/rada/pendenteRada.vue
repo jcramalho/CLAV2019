@@ -3,7 +3,7 @@
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
       <v-spacer />
-      <v-btn style="background-color: #1a237e;" dark @click="guardarTrabalho">
+      <v-btn style="background-color: #1a237e;" dark @click="toSave = true">
         Guardar Trabalho
         <v-icon right>save</v-icon>
       </v-btn>
@@ -14,21 +14,48 @@
       <!-- {{ obj.objeto.entidades}}
       {{ obj.objeto.legislacao}}-->
       <!-- {{ obj }} -->
-      <v-dialog v-model="toDelete" width="500">
-        <v-card>
-          <v-card-title
-            class="headline grey lighten-2"
-            primary-title
-          >Pretende mesmo eliminar o trabalho?</v-card-title>
+      <v-row justify-center>
+        <v-dialog v-model="toSave" width="50%">
+          <v-card>
+            <v-card-title
+              class="headline grey lighten-2"
+              primary-title
+            >Pretende continuar o trabalho neste momento?</v-card-title>
 
-          <v-card-text align="center">
-            <br />
-            <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
-            <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarTrabalho">Sim</v-btn>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
+            <v-card-text align="center">
+              <br />
+              <v-spacer></v-spacer>
+
+              <v-btn
+                class="ma-3 pa-3"
+                color="indigo lighten-3"
+                @click="guardarTrabalho('nao')"
+              >Não, pretendo continuar depois.</v-btn>
+              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="guardarTrabalho('sim')">Sim.</v-btn>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </v-row>
+      <v-row>
+        <v-dialog v-model="toDelete" width="50%">
+          <v-card>
+            <v-card-title
+              class="headline grey lighten-2"
+              primary-title
+            >Pretende mesmo eliminar o trabalho?</v-card-title>
+
+            <v-card-text align="center">
+              <br />
+              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
+              <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarTrabalho">Sim</v-btn>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </v-row>
       <br />
+      <v-alert :value="alert_guardar" outlined type="success" text dismissible border="left">
+        <b>Trabalho guardado com sucesso!</b>
+      </v-alert>
       <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
         <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
@@ -122,6 +149,9 @@ export default {
   },
   data() {
     return {
+      alert_guardar: false,
+      user_entidade: null,
+      toSave: false,
       toDelete: false,
       mensagemPendenteCriadoOK: "",
       dialogRADAPendente: false,
@@ -139,7 +169,7 @@ export default {
   },
   methods: {
     //ATUALIZAR O PENDENTE
-    guardarTrabalho: function() {
+    guardarTrabalho: function(continuar_ou_nao) {
       let updatePendente = {
         _id: this.obj._id,
         objeto: {
@@ -152,7 +182,17 @@ export default {
       let response = this.$request("put", "/pendentes", updatePendente);
 
       response.then(resp => {
-        this.dialogRADAPendente = true;
+        if (continuar_ou_nao == "nao") {
+          this.toSave = false;
+          this.dialogRADAPendente = true;
+        } else {
+          this.toSave = false;
+          this.alert_guardar = true;
+
+          setTimeout(() => {
+            this.alert_guardar = false;
+          }, 5000);
+        }
       });
     },
     changeE1: function(e) {
@@ -173,7 +213,8 @@ export default {
           email: this.userEmail
         },
         token: this.$store.state.token,
-        criadoPor: this.userEmail
+        criadoPor: this.userEmail,
+        entidade: this.user_entidade
       };
 
       let response = await this.$request("post", "/pedidos", pedidoParams);
@@ -226,6 +267,13 @@ export default {
       "/users/" + this.$store.state.token + "/token"
     );
     this.userEmail = userBD.data.email;
+
+    let userEntidade = await this.$request(
+      "get",
+      "/entidades/" + userBD.data.entidade
+    );
+
+    this.user_entidade = "ent_" + userEntidade.data.sigla;
 
     // let userEntidade = await this.$request(
     //   "get",

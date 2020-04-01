@@ -287,9 +287,7 @@ export default {
 
       // Iterar o array alterado pelo utilizador
       for (let i = 0; i < c.UIs.length; i++) {
-        let UIs_igual = serie_classe.UIs.find(
-          ui => ui.codigo == c.UIs[i].codigo
-        );
+        let UIs_igual = serie_classe.UIs.find(ui => ui.codigo == c.UIs[i]);
 
         if (UIs_igual == undefined) {
           this.adicionaUI(c.UIs[i], serie_classe);
@@ -299,9 +297,7 @@ export default {
 
       // Iterar o array original de relacoes
       for (let j = 0; j < serie_classe.UIs.length; j++) {
-        let UIs_igual = c.UIs.find(
-          ui => ui.codigo == serie_classe.UIs[j].codigo
-        );
+        let UIs_igual = c.UIs.find(ui => ui.codigo == serie_classe.UIs[j]);
 
         if (UIs_igual == undefined) {
           this.eliminaUI(serie_classe.UIs[j], serie_classe);
@@ -310,14 +306,14 @@ export default {
       return novo_UIs;
     },
     eliminaUI(velhaUI, serie_classe) {
-      let UI = this.TS.UIs.find(e => e.codigo == velhaUI.codigo);
+      let UI = this.TS.UIs.find(e => e.codigo == velhaUI);
 
       UI.classesAssociadas = UI.classesAssociadas.filter(
         e => e.codigo != serie_classe.codigo
       );
     },
     adicionaUI(novaUI, serie_classe) {
-      let UI = this.TS.UIs.find(e => e.codigo == novaUI.codigo);
+      let UI = this.TS.UIs.find(e => e.codigo == novaUI);
 
       if (UI != undefined) {
         UI.classesAssociadas.push({
@@ -326,7 +322,7 @@ export default {
         });
       } else {
         this.TS.UIs.push({
-          codigo: novaUI.codigo,
+          codigo: novaUI,
           codCota: "",
           titulo: "",
           dataInicial: null,

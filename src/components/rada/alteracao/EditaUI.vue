@@ -132,6 +132,7 @@
               </v-data-table>
 
               <v-alert
+                dense
                 v-else
                 :value="true"
                 icon="warning"
@@ -337,7 +338,7 @@ export default {
     elimina_de_classe(classe_eliminada, codigo_UI) {
       let classe = this.classes.find(cl => cl.codigo == classe_eliminada);
 
-      classe.UIs = classe.UIs.filter(e => e.codigo != codigo_UI);
+      classe.UIs = classe.UIs.filter(e => e != codigo_UI);
     },
     adiciona_a_classe(classe_adicionada, codigo_UI) {
       let classe = this.classes.find(
@@ -361,7 +362,7 @@ export default {
             tipologiasProdutoras: [],
             legislacao: [],
             relacoes: [],
-            UIs: [{ codigo: codigo_UI }],
+            UIs: [codigo_UI],
             pca: "",
             formaContagem: {
               forma: null
@@ -381,7 +382,7 @@ export default {
             dataInicial: null,
             dataFinal: null,
             relacoes: [],
-            UIs: [{ codigo: codigo_UI }],
+            UIs: [codigo_UI],
             pca: "",
             formaContagem: {
               forma: null
@@ -396,17 +397,14 @@ export default {
         }
         this.classes.push(classe);
       } else {
-        classe.UIs.push({ codigo: codigo_UI });
+        classe.UIs.push(codigo_UI);
       }
     },
     editaClasses(UI_real, UI_copia) {
       let novo_classesAssociadas = [];
 
-      /*
-      
-        Iterar o array alterado pelo utilizador
+      // Iterar o array alterado pelo utilizador
 
-      */
       for (let i = 0; i < UI_copia.classesAssociadas.length; i++) {
         let classe_ui_igual = UI_real.classesAssociadas.find(
           ui => ui.codigo == UI_copia.classesAssociadas[i].codigo
@@ -421,11 +419,9 @@ export default {
           tipo: UI_copia.classesAssociadas[i].tipo
         });
       }
-      /*
-      
-        Iterar o array original de uis
 
-      */
+      //Iterar o array original de uis
+
       for (let j = 0; j < UI_real.classesAssociadas.length; j++) {
         let classe_ui_igual = UI_copia.classesAssociadas.find(
           ui => ui.codigo == UI_real.classesAssociadas[j].codigo
