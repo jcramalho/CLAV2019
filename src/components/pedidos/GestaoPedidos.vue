@@ -33,10 +33,11 @@
         <AvancarPedido
           :utilizadores="utilizadores"
           :texto="{
-            textoTitulo: 'Atribuição',
+            textoTitulo: 'Distribuição',
             textoAlert: 'análise',
-            textoBotao: 'Atribuir'
+            textoBotao: 'Distribuir'
           }"
+          :pedido="pedidoParaDistribuir.codigo"
           @fecharDialog="fecharDialog()"
           @avancarPedido="atribuirPedido($event)"
         />
