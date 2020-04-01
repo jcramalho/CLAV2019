@@ -42,7 +42,8 @@ export default {
   }),
   computed: {
     compiledMarkdown: function() {
-      return marked(this.noticia.desc, { sanitize: true });
+      //return marked(this.noticia.desc, { sanitize: true });
+      return marked(this.noticia.desc);
     }
   },
   methods: {

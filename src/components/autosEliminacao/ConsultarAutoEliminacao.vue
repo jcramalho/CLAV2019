@@ -2,7 +2,7 @@
   <v-card class="ma-4 panel panel-default panel-custom">
     <v-toolbar class="panel-heading">
       <v-toolbar-title class="page-header">
-        <h1>{{ "Auto de Eliminação - " + auto.id }}</h1>
+        <h1>{{ "Auto de Eliminação" }}</h1>
       </v-toolbar-title>
     </v-toolbar>
     <v-card-text class="panel-body">
