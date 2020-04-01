@@ -48,7 +48,7 @@
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
             <td class="subheading">
-              {{ props.item.entidade.split("_")[1] }}
+              <span v-if="props.item.entidade">{{ props.item.entidade.split("_")[1] }}</span>
             </td>
             <td class="subheading">{{ props.item.criadoPor }}</td>
             <td class="subheading">{{ converteData(props.item.data) }}</td>
