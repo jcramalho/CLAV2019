@@ -28,12 +28,14 @@
               <v-dialog v-model="dialogTipologias" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn rounded class="indigo accent-4 white--text" v-on="on">
-                    Adicionar em Falta
+                    Adicionar Tipologias
                   </v-btn>
                 </template>
                 <v-card>
                   <v-card-title>
-                    <span class="headline">Selecione uma Tipologia</span>
+                    <span class="headline">
+                      Selecione as tipologias em falta
+                    </span>
                   </v-card-title>
 
                   <v-card-actions>

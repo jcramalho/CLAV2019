@@ -38,12 +38,14 @@
               <v-dialog v-model="dialogEnditades" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn rounded class="indigo accent-4 white--text" v-on="on">
-                    Adicionar em Falta
+                    Adicionar Entidades
                   </v-btn>
                 </template>
                 <v-card>
                   <v-card-title>
-                    <span class="headline">Selecione uma Entidade</span>
+                    <span class="headline">
+                      Selecione as entidades em falta
+                    </span>
                   </v-card-title>
 
                   <v-card-actions>
@@ -79,12 +81,14 @@
               <v-dialog v-model="dialogProcessos" max-width="500px">
                 <template v-slot:activator="{ on }">
                   <v-btn rounded class="indigo accent-4 white--text" v-on="on">
-                    Adicionar em Falta
+                    Adicionar Processos
                   </v-btn>
                 </template>
                 <v-card>
                   <v-card-title>
-                    <span class="headline">Selecione um Processo</span>
+                    <span class="headline"
+                      >Selecione os processos em falta
+                    </span>
                   </v-card-title>
 
                   <v-card-actions>
