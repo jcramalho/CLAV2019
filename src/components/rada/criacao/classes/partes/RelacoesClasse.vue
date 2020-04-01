@@ -44,7 +44,24 @@
             <!-- Novo form para adicionar relação -->
             <v-form ref="addRel" :lazy-validation="false">
               <v-row>
-                <v-col sm="5" xs="12">
+                <v-col sm="12" xs="12">
+                  <v-combobox
+                    :rules="[v => codigoIgual(v)]"
+                    v-model="codrel"
+                    :items="getCodigos"
+                    label="Classe"
+                    item-value="codigo"
+                    item-text="searchField"
+                    solo
+                    clearable
+                    :return-object="false"
+                  >
+                  </v-combobox>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col sm="6" xs="12">
                   <v-autocomplete
                     :rules="[v => !!v || 'Campo obrigatório!']"
                     v-model="rel"
@@ -54,25 +71,7 @@
                     clearable
                   ></v-autocomplete>
                 </v-col>
-                <v-col sm="6" xs="12">
-                  <v-combobox
-                    :rules="[v => codigoIgual(v)]"
-                    v-model="codrel"
-                    :items="getCodigos"
-                    label="Código"
-                    solo
-                    clearable
-                  ></v-combobox>
-                </v-col>
-                <v-col sm="1" xs="12">
-                  <v-btn icon text rounded @click="add()">
-                    <v-icon color="green lighten-1">add_circle</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col sm="12" xs="12">
+                <v-col sm="5" xs="12">
                   <v-select
                     :disabled="iscodvalido"
                     :rules="[v => !!v || 'Campo obrigatório!']"
@@ -90,6 +89,11 @@
                       </v-chip>
                     </template>
                   </v-select>
+                </v-col>
+                <v-col sm="1" xs="12">
+                  <v-btn icon text rounded @click="add()">
+                    <v-icon color="green lighten-1">add_circle</v-icon>
+                  </v-btn>
                 </v-col>
               </v-row>
               <v-row v-if="!!alertOn">
@@ -176,7 +180,12 @@ export default {
             e.codigo != this.newSerie.codigo &&
             (e.tipo == "Subsérie" || e.tipo == "Série")
         )
-        .map(e => e.codigo);
+        .map(e => {
+          return {
+            codigo: e.codigo,
+            searchField: e.codigo + " - " + e.titulo
+          };
+        });
     }
   },
   watch: {
@@ -307,7 +316,6 @@ export default {
 
           this.$refs.addRel.reset();
           this.iscodvalido = false;
-          this.tipoClasse = null;
         } else {
           this.alertOn = true;
         }

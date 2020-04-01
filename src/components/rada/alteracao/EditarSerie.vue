@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogSerie" persistent fullscreen>
+  <v-dialog v-model="dialogSerie" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
         {{ treeview_object.titulo }}
@@ -187,9 +187,9 @@ export default {
       this.serie.UIs = [...serie_real.UIs];
 
       // Classes para definir a hierarquia
-      this.classesHierarquia = this.classes.filter(
-        classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
-      );
+      this.classesHierarquia = this.classes
+        .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+        .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
     save: function() {
       this.isMultiple = true;

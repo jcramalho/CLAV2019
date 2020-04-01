@@ -136,6 +136,7 @@
                 </template>
               </v-data-table>
               <v-alert
+                dense
                 v-else
                 :value="true"
                 icon="warning"
@@ -222,7 +223,7 @@
                 solo
                 clearable
                 v-model="UI.localizacao"
-                label="Título"
+                label="Localização"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -352,12 +353,22 @@ export default {
       });
     },
     apagar: function() {
-      this.$refs.formUI.reset();
-      this.UI.produtor = {
-        tipologiasProdutoras: [],
-        entProdutoras: []
+      this.UI = {
+        codigo: "",
+        codCota: "",
+        titulo: "",
+        dataInicial: null,
+        dataFinal: null,
+        produtor: {
+          tipologiasProdutoras: [],
+          entProdutoras: []
+        },
+        classesAssociadas: [],
+        descricao: "",
+        notas: "",
+        localizacao: ""
       };
-      this.UI.classesAssociadas = [];
+      this.$refs.formUI.resetValidation();
     },
     guardar: function() {
       if (this.$refs.formUI.validate()) {
@@ -382,9 +393,7 @@ export default {
         );
 
         if (classe != undefined) {
-          classe.UIs.push({
-            codigo: this.UI.codigo
-          });
+          classe.UIs.push(this.UI.codigo);
         } else {
           if (this.UI.classesAssociadas[i].tipo == "Série") {
             this.classes.push({
@@ -399,7 +408,7 @@ export default {
               suporte: "",
               medicao: "",
               localizacao: [],
-              UIs: [{ codigo: this.UI.codigo }],
+              UIs: [this.UI.codigo],
               entProdutoras: [],
               tipologiasProdutoras: [],
               legislacao: [],
@@ -423,7 +432,7 @@ export default {
               dataFinal: null,
               relacoes: [],
               pca: "",
-              UIs: [{ codigo: this.UI.codigo }],
+              UIs: [this.UI.codigo],
               formaContagem: {
                 forma: null
               },

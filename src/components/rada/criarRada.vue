@@ -3,18 +3,17 @@
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
       <v-spacer />
-      <v-btn
-        v-if="guardar"
-        style="background-color: #1a237e;"
-        dark
-        @click="guardarTrabalho"
-      >
+      <v-btn v-if="guardar" color="indigo darken-4" dark @click="toSave = true">
         Guardar Trabalho
         <v-icon right>save</v-icon>
       </v-btn>
+      <v-icon v-if="pode_remover" dark color="red" @click="toDelete = true" right>delete_sweep</v-icon>
     </v-card-title>
     <v-card-text>
       <br />
+      <v-alert :value="alert_guardar" outlined type="success" text dismissible border="left">
+        <b>Trabalho guardado com sucesso!</b>
+      </v-alert>
       <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
         <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
@@ -65,15 +64,14 @@
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
-        <v-dialog v-model="dialogRADAPendente" persistent max-width="60%">
+        <v-dialog v-model="dialogRADAPendente" persistent width="50%">
           <v-card>
-            <v-card-title class="headline"
-              >Trabalho pendente guardado</v-card-title
-            >
+            <v-card-title class="headline grey lighten-2" primary-title>Trabalho pendente guardado</v-card-title>
             <v-card-text>
+              <br />
               <p>
                 Os seus dados foram guardados para que possa retomar o trabalho
-                mais tarde.
+                mais tarde. Aceda aos pendentes para continuar.
               </p>
               <!-- <p>{{ mensagemPendenteCriadoOK }}</p> -->
             </v-card-text>
@@ -87,18 +85,60 @@
         </v-dialog>
       </v-row>
       <v-row justify-center>
-        <v-dialog v-model="dialogRADACriado" persistent max-width="60%">
+        <v-dialog v-model="dialogRADACriado" persistent width="50%">
           <v-card>
-            <v-card-title class="headline"
-              >Pedido de Criação do RADA Submetido</v-card-title
-            >
-            <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
+            <v-card-title
+              class="headline grey lighten-2"
+              primary-title
+            >Pedido de Criação do RADA Submetido.</v-card-title>
+            <v-card-text>
+              <br />
+              {{ mensagemPedidoCriadoOK }}
+            </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="$router.push('/')"
                 >Fechar</v-btn
               >
             </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+      <v-row justify-center>
+        <v-dialog v-model="toSave" width="50%">
+          <v-card>
+            <v-card-title
+              class="headline grey lighten-2"
+              primary-title
+            >Pretende continuar o trabalho neste momento?</v-card-title>
+
+            <v-card-text align="center">
+              <br />
+              <v-spacer></v-spacer>
+
+              <v-btn
+                class="ma-3 pa-3"
+                color="indigo lighten-3"
+                @click="guardarTrabalho('nao')"
+              >Não, pretendo continuar depois.</v-btn>
+              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="guardarTrabalho('sim')">Sim.</v-btn>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </v-row>
+      <v-row>
+        <v-dialog v-model="toDelete" width="50%">
+          <v-card>
+            <v-card-title
+              class="headline grey lighten-2"
+              primary-title
+            >Pretende mesmo eliminar o trabalho?</v-card-title>
+
+            <v-card-text align="center">
+              <br />
+              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
+              <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarTrabalho">Sim</v-btn>
+            </v-card-text>
           </v-card>
         </v-dialog>
       </v-row>
@@ -119,6 +159,12 @@ export default {
   },
   data() {
     return {
+      user_entidade: null,
+      alert_guardar: false,
+      pode_remover: false,
+      idPendente: null,
+      toDelete: false,
+      toSave: false,
       mensagemPendenteCriadoOK: "",
       dialogRADAPendente: false,
       mensagemPedidoCriadoOK: "",
@@ -209,8 +255,8 @@ export default {
             //   relacoes: [],
             //   dataInicial: null,
             //   dataFinal: null,
-            //   UIs: [{ codigo: "UI - 01" }],
-            //   // UIs: [],
+            //   // UIs: [{ codigo: "UI - 01" }],
+            //   UIs: [],
             //   tUA: "Processo",
             //   tSerie: "Aberta",
             //   suporte: "Papel",
@@ -318,6 +364,51 @@ export default {
             //   descricao: "Desc",
             //   notas: "Notas",
             //   localizacao: "Loc"
+            // },
+            // {
+            //   codigo: "UI - 02",
+            //   codCota: "A",
+            //   titulo: "TITULO",
+            //   dataInicial: "2020-03-03",
+            //   dataFinal: "2020-03-05",
+            //   produtor: {
+            //     tipologiasProdutoras: [],
+            //     entProdutoras: []
+            //   },
+            //   classesAssociadas: [],
+            //   descricao: "Desc",
+            //   notas: "Notas",
+            //   localizacao: "Loc"
+            // },
+            // {
+            //   codigo: "UI - 03",
+            //   codCota: "A",
+            //   titulo: "TITULO",
+            //   dataInicial: "2020-03-03",
+            //   dataFinal: "2020-03-05",
+            //   produtor: {
+            //     tipologiasProdutoras: [],
+            //     entProdutoras: []
+            //   },
+            //   classesAssociadas: [],
+            //   descricao: "Desc",
+            //   notas: "Notas",
+            //   localizacao: "Loc"
+            // },
+            // {
+            //   codigo: "UI - 04",
+            //   codCota: "A",
+            //   titulo: "TITULO",
+            //   dataInicial: "2020-03-03",
+            //   dataFinal: "2020-03-05",
+            //   produtor: {
+            //     tipologiasProdutoras: [],
+            //     entProdutoras: []
+            //   },
+            //   classesAssociadas: [],
+            //   descricao: "Desc",
+            //   notas: "Notas",
+            //   localizacao: "Loc"
             // }
           ]
         }
@@ -333,27 +424,95 @@ export default {
     }
   },
   methods: {
-    guardarTrabalho: function() {
-      let pendenteParams = {
-        numInterv: 1,
-        acao: "Criação",
-        tipo: "RADA",
-        objeto: {
-          rada: this.RADA,
-          entidades: this.entidades.filter(e => e.estado == "Nova"),
-          legislacao: this.legislacao.filter(e => e.estado == "Nova")
-        },
-        criadoPor: this.userEmail,
-        user: { email: this.userEmail },
-        token: this.$store.state.token
-      };
-
-      let response = this.$request("post", "/pendentes", pendenteParams);
-
-      response.then(resp => {
-        this.dialogRADAPendente = true;
-      });
+    eliminarTrabalho() {
+      this.$request("delete", "/pendentes/" + this.idPendente).then(
+        response => {
+          this.$router.push("/");
+        }
+      );
     },
+    guardarTrabalho(continuar_ou_nao) {
+      if (this.idPendente != null) {
+        let updatePendente = {
+          _id: this.idPendente,
+          objeto: {
+            rada: this.RADA,
+            entidades: this.entidades.filter(e => e.estado == "Nova"),
+            legislacao: this.legislacao.filter(e => e.estado == "Nova")
+          }
+        };
+
+        let response = this.$request("put", "/pendentes", updatePendente);
+
+        response.then(resp => {
+          if (continuar_ou_nao == "nao") {
+            this.toSave = false;
+            this.dialogRADAPendente = true;
+          } else {
+            this.toSave = false;
+            this.alert_guardar = true;
+
+            setTimeout(() => {
+              this.alert_guardar = false;
+            }, 5000);
+          }
+        });
+      } else {
+        let pendenteParams = {
+          numInterv: 1,
+          acao: "Criação",
+          tipo: "RADA",
+          objeto: {
+            rada: this.RADA,
+            entidades: this.entidades.filter(e => e.estado == "Nova"),
+            legislacao: this.legislacao.filter(e => e.estado == "Nova")
+          },
+          criadoPor: this.userEmail,
+          user: { email: this.userEmail },
+          token: this.$store.state.token
+        };
+
+        let response = this.$request("post", "/pendentes", pendenteParams);
+
+        response.then(resp => {
+          if (continuar_ou_nao == "sim") {
+            this.idPendente = resp.data._id;
+            this.toSave = false;
+            this.pode_remover = true;
+            this.alert_guardar = true;
+
+            setTimeout(() => {
+              this.alert_guardar = false;
+            }, 5000);
+          } else {
+            this.toSave = false;
+            this.dialogRADAPendente = true;
+          }
+        });
+      }
+    },
+    // guardarTrabalho: function() {
+    //   let pendenteParams = {
+    //     numInterv: 1,
+    //     acao: "Criação",
+    //     tipo: "RADA",
+    //     objeto: {
+    //       rada: this.RADA,
+    //       entidades: this.entidades.filter(e => e.estado == "Nova"),
+    //       legislacao: this.legislacao.filter(e => e.estado == "Nova")
+    //     },
+    //     criadoPor: this.userEmail,
+    //     user: { email: this.userEmail },
+    //     token: this.$store.state.token
+    //   };
+
+    //   let response = this.$request("post", "/pendentes", pendenteParams);
+
+    //   response.then(resp => {
+    //     console.log(resp.data);
+    //     this.dialogRADAPendente = true;
+    //   });
+    // },
     changeE1: function(e) {
       this.e1 = e;
     },
@@ -366,11 +525,16 @@ export default {
           email: this.userEmail
         },
         token: this.$store.state.token,
-        criadoPor: this.userEmail
+        criadoPor: this.userEmail,
+        entidade: this.user_entidade
       };
 
       let response = await this.$request("post", "/pedidos", pedidoParams);
 
+      if (this.idPendente != null) {
+        // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
+        await this.$request("delete", "/pendentes/" + this.idPendente);
+      }
       this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
       this.dialogRADACriado = true;
     }
@@ -395,6 +559,8 @@ export default {
       "get",
       "/entidades/" + userBD.data.entidade
     );
+
+    this.user_entidade = "ent_" + userEntidade.data.sigla;
 
     this.RADA.entRes.push(
       userEntidade.data.sigla + " - " + userEntidade.data.designacao

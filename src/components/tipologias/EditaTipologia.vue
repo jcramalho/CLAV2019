@@ -13,7 +13,7 @@
         <!-- Content -->
         <v-card-text>
           <!-- Blocos expansivos -->
-          <v-expansion-panels>
+          <v-expansion-panels :value="0">
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
                 <div>

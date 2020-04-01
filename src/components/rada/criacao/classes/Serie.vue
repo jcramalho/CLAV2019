@@ -107,7 +107,7 @@
           >Voltar</v-btn
         >
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
-        <v-btn color="success" class="mr-4" @click="save">Guardar</v-btn>
+        <v-btn color="success" class="mr-4" @click="save">Criar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -225,13 +225,22 @@ export default {
       this.isMultiple = false;
       this.panels = [0, 0, 0];
 
-      this.classesHierarquia = this.classes.filter(
-        classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
+
+      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas. ALTERAR DEPOIS
+      this.newSerie.relacoes = this.newSerie.relacoes.filter(
+        e => e.relacao != "Síntese de" && e.relacao != "Sintetizado por"
       );
+      this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
+        e => e.tipo != "Critério de Densidade Informacional"
+      );
+
+      this.classesHierarquia = this.classes
+        .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+        .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
     adicionarUIs: function(clone_newSerie) {
       for (let i = 0; i < clone_newSerie.UIs.length; i++) {
-        let UI = this.UIs.find(e => e.codigo == clone_newSerie.UIs[i].codigo);
+        let UI = this.UIs.find(e => e.codigo == clone_newSerie.UIs[i]);
 
         if (UI != undefined) {
           UI.classesAssociadas.push({
@@ -240,7 +249,7 @@ export default {
           });
         } else {
           this.UIs.push({
-            codigo: clone_newSerie.UIs[i].codigo,
+            codigo: clone_newSerie.UIs[i],
             codCota: "",
             titulo: "",
             dataInicial: null,

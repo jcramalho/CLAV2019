@@ -4,13 +4,25 @@
       <!-- Label -->
       <v-col
         cols="2"
-        v-if="info.conteudo !== '' && info.conteudo !== undefined"
+        v-if="
+          info.campo !== 'Sigla' &&
+            info.campo !== 'Código' &&
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
+        "
       >
         <div class="info-label">{{ info.campo }}</div>
       </v-col>
 
       <!-- Conteudo -->
-      <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
+      <v-col
+        v-if="
+          info.campo !== 'Sigla' &&
+            info.campo !== 'Código' &&
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
+        "
+      >
         <!-- Se o conteudo for uma lista de tipologias-->
         <v-data-table
           v-if="info.campo == 'Entidades'"
@@ -34,7 +46,7 @@
                 <v-card>
                   <v-card-title>
                     <span class="headline">
-                      Selecione as tipologias em falta
+                      Selecione as tipologia em falta
                     </span>
                   </v-card-title>
 

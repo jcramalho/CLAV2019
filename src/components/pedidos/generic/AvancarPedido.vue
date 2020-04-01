@@ -1,14 +1,14 @@
 <template>
   <v-card>
     <v-card-title class="indigo darken-4 title white--text" dark>
-      {{ texto.textoTitulo }} do pedido
+      {{ texto.textoTitulo }} do pedido {{ pedido }}
     </v-card-title>
 
     <v-card-text class="mt-2">
       <div v-if="!utilizadorSelecionado">
         <v-alert type="info">
           Clique sobre a linha da tabela para selecionar o utilizador a quem
-          deve ser atribuída a {{ texto.textoAlert }} do pedido.
+          deve ser atribuída a {{ texto.textoAlert }} do pedido {{ pedido }}.
         </v-alert>
 
         <v-text-field
@@ -51,7 +51,7 @@
 
         <v-row>
           <v-col cols="2">
-            <div class="info-label">Mensagem:</div>
+            <div class="info-label">Mensagem</div>
           </v-col>
 
           <v-col>
@@ -109,6 +109,8 @@ export default {
     },
 
     avancar() {
+      this.utilizadorSelecionado = null;
+      this.mensagemDespacho = null;
       this.$emit("avancarPedido", {
         utilizadorSelecionado: this.utilizadorSelecionado,
         mensagemDespacho: this.mensagemDespacho

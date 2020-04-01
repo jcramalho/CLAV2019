@@ -137,7 +137,6 @@ export default {
           this.newSerie.df = "Eliminação";
           return true;
         } else {
-          this.newSerie.df = null;
           return false;
         }
       }

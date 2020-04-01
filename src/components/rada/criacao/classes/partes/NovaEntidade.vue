@@ -66,7 +66,7 @@
 
 <script>
 export default {
-  props: ["entidades"],
+  props: ["entidades", "produtoras"],
   data: function() {
     return {
       alertOn: false,
@@ -106,6 +106,19 @@ export default {
             designacao: this.designacao,
             internacional: this.internacional
           };
+
+          let entidadeSelecionada = {
+            estado: "Nova",
+            id: "ent_" + this.sigla,
+            sigla: this.sigla,
+            sioe: this.sioe,
+            designacao: this.designacao,
+            internacional: this.internacional,
+            searchField: this.sigla + " - " + this.designacao,
+            disabled: false
+          };
+
+          this.produtoras.push(entidadeSelecionada);
           this.novasEntidades.push(entidade);
           this.entidades.push(entidade);
 

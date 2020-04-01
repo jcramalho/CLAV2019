@@ -65,7 +65,7 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="data" no-title scrollable>
+                <v-date-picker v-model="data" no-title scrollable locale="pt">
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="data_menu = false"
                     >Cancel</v-btn

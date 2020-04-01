@@ -1128,7 +1128,7 @@ export default {
             }
           },
           user: { email: userBD.data.email },
-          entidade: userBD.data.entidade.split("_")[1],
+          entidade: userBD.data.entidade,
           token: this.$store.state.token
         };
 

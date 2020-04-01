@@ -116,12 +116,14 @@ export default {
       // Clone
       this.classe = Object.assign({}, classe_area_organico);
 
-      this.classesHierarquia = this.classes.filter(
-        classe =>
-          classe.tipo != "Série" &&
-          classe.tipo != "Subsérie" &&
-          classe.codigo != classe_area_organico.codigo
-      );
+      this.classesHierarquia = this.classes
+        .filter(
+          classe =>
+            classe.tipo != "Série" &&
+            classe.tipo != "Subsérie" &&
+            classe.codigo != classe_area_organico.codigo
+        )
+        .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
     save: function() {
       this.$emit("atualizacao", this.classe);

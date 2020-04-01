@@ -107,7 +107,7 @@
           >Voltar</v-btn
         >
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
-        <v-btn color="success" class="mr-4" @click="save">Guardar</v-btn>
+        <v-btn color="success" class="mr-4" @click="save">Criar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -158,9 +158,9 @@ export default {
       }
     },
     filterSeries() {
-      this.classesHierarquia = this.classes.filter(
-        classe => classe.tipo == "N1" || classe.tipo == "N2"
-      );
+      this.classesHierarquia = this.classes
+        .filter(classe => classe.tipo == "N1" || classe.tipo == "N2")
+        .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
     verificaCodigo(v) {
       if (this.classes.some(e => e.codigo == v)) {

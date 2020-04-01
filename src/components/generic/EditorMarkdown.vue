@@ -76,6 +76,15 @@
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
+          <v-btn small text @click="addListItemNumbered" v-on="on"
+            ><v-icon>format_list_numbered</v-icon></v-btn
+          >
+        </template>
+        <span>Item de Lista Numerada</span>
+      </v-tooltip>
+
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
           <v-btn small text @click="addTable" v-on="on"
             ><v-icon>table_chart</v-icon></v-btn
           >
@@ -349,6 +358,47 @@ export default {
         val.selectionStart = val.selectionEnd = start;
       }, 10);
     },
+    addListItemNumbered() {
+      let textarea = this.$refs.descricao;
+      let val = textarea.$refs.input;
+      let start = val.selectionStart;
+      let end = val.selectionEnd;
+      let tmpStr = textarea.value;
+      var insert = "";
+      if (!this.texto) {
+        this.texto = "";
+        tmpStr = "";
+      }
+      // Calcular os índices que perteçam a uma lista numerada
+      var items = tmpStr.substring(0, start).match(/^(\s*)\d+\.\s+.*/gm);
+      //var items = tmpStr.match(/^(\s*)\d+\.\s+.*/gm);
+      var max = 0;
+      if(items){
+        items.forEach(element => {
+          var i = parseInt(element.match(/\d+(?=\.)/g)[0], 10);
+          max = i > max ? i : max ;
+        })
+      }
+      max++;
+      // insert:
+      if (end == start) {
+        insert = max + ". Item \n";
+      } else {
+        insert = max + ". " + tmpStr.substring(start, end) + "  \n";
+      }
+      this.texto =
+        tmpStr.substring(0, start) +
+        insert +
+        tmpStr.substring(end, tmpStr.length);
+
+      this.updateText();
+
+      // move cursor:
+      setTimeout(() => {
+        start += insert.length;
+        val.selectionStart = val.selectionEnd = start;
+      }, 10);
+    },
     addTable() {
       let textarea = this.$refs.descricao;
       let val = textarea.$refs.input;
@@ -376,7 +426,8 @@ export default {
       }, 10);
     },
     compiledMarkdown: function(d) {
-      return marked(d || "", { sanitize: true });
+      //return marked(d || "", { sanitize: true });
+      return marked(d || "");
     }
   },
   created: async function() {

@@ -4,17 +4,27 @@
       <!-- Label -->
       <v-col
         cols="2"
-        v-if="info.conteudo !== '' && info.conteudo !== undefined"
+        v-if="
+          info.campo !== 'Código' &&
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
+        "
       >
         <div class="info-label">{{ info.campo }}</div>
       </v-col>
 
       <!-- Conteudo -->
-      <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
-        <!-- Se o conteudo for uma lista de tipologias-->
+      <v-col
+        v-if="
+          info.campo !== 'Código' &&
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
+        "
+      >
+        <!-- Se o conteudo for uma lista de entidades -->
         <v-data-table
-          v-if="info.campo == 'Entidades'"
-          :headers="headersTipologias"
+          v-if="info.campo === 'Entidades'"
+          :headers="headersEntidades"
           :items="info.conteudo"
           class="elevation-1"
           hide-default-footer
@@ -25,17 +35,10 @@
 
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
-              <v-dialog v-model="dialogTipologias" max-width="500px">
-                <template v-slot:activator="{ on }">
-                  <v-btn rounded class="indigo accent-4 white--text" v-on="on">
-                    Adicionar Tipologias
-                  </v-btn>
-                </template>
+              <v-dialog v-model="dialogEnditades" max-width="500px">
                 <v-card>
                   <v-card-title>
-                    <span class="headline">
-                      Selecione as tipologias em falta
-                    </span>
+                    <span class="headline">Selecione uma Entidade</span>
                   </v-card-title>
 
                   <v-card-actions>
@@ -54,7 +57,24 @@
           </template>
         </v-data-table>
 
-        <!-- Se o conteudo for texto -->
+        <!-- Se o conteudo for uma lista de processos -->
+        <v-data-table
+          v-else-if="info.campo === 'Processos'"
+          :headers="headersProcessos"
+          :items="info.conteudo"
+          class="elevation-1"
+          hide-default-footer
+        >
+          <template v-slot:top>
+            <v-toolbar flat :color="info.cor">
+              <v-spacer />
+              <v-icon color="green" @click="verifica(info)">check</v-icon>
+              <v-icon color="red" @click="anula(info)">clear</v-icon>
+            </v-toolbar>
+          </template>
+        </v-data-table>
+
+        <!-- Se o contudo for texto -->
         <v-text-field
           v-else
           solo
@@ -66,7 +86,6 @@
           <template slot="append">
             <v-icon color="green" @click="verifica(info)">check</v-icon>
             <v-icon color="red" @click="anula(info)">clear</v-icon>
-            <v-icon @click="">create</v-icon>
           </template>
         </v-text-field>
       </v-col>
@@ -75,59 +94,75 @@
     <v-row>
       <v-spacer />
       <PO
-        operacao="Analisar"
-        @avancarPedido="encaminharPedido($event)"
+        operacao="Validar"
+        @finalizarPedido="finalizarPedido($event)"
         @devolverPedido="despacharPedido($event)"
       />
     </v-row>
+
+    <!-- Dialog se existir erros no pedido à API -->
+    <v-dialog v-model="erroPedido" width="80%" hide-overlay>
+      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
+import ErroDialog from "@/components/pedidos/generic/ErroDialog";
+
 export default {
   props: ["p"],
 
   components: {
-    PO
+    PO,
+    ErroDialog
   },
 
   data() {
     return {
-      dialogTipologias: false,
+      erros: [],
+      erroPedido: false,
+      dialogEnditades: false,
+      dialogProcessos: false,
       infoPedido: [
         {
-          campo: "Sigla",
-          conteudo: this.p.objeto.dados.sigla,
+          campo: "Tipo de Diploma",
+          conteudo: this.p.objeto.dados.tipo,
           cor: null
         },
         {
-          campo: "Designação",
-          conteudo: this.p.objeto.dados.designacao,
+          campo: "Fonte do Diploma",
+          conteudo: this.p.objeto.dados.diplomaFonte,
           cor: null
         },
+        {
+          campo: "Número do Diploma",
+          conteudo: this.p.objeto.dados.numero,
+          cor: null
+        },
+        { campo: "Data", conteudo: this.p.objeto.dados.data, cor: null },
+        { campo: "Sumário", conteudo: this.p.objeto.dados.sumario, cor: null },
+        { campo: "Link", conteudo: this.p.objeto.dados.link, cor: null },
+        { campo: "Código", conteudo: this.p.objeto.dados.codigo, cor: null },
         {
           campo: "Entidades",
           conteudo: this.p.objeto.dados.entidadesSel,
           cor: null
         },
         {
-          campo: "Código",
-          conteudo: this.p.objeto.dados.codigo,
+          campo: "Processos",
+          conteudo: this.p.objeto.dados.processosSel,
           cor: null
         }
       ],
-      headersTipologias: [
+      headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center"
-        }
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
+      ],
+      headersProcessos: [
+        { text: "Código", value: "codigo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" }
       ]
     };
   },
@@ -166,36 +201,45 @@ export default {
       }
     },
 
-    async encaminharPedido(dados) {
+    async finalizarPedido(dados) {
       try {
-        const estado = "Apreciado";
-
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
-
-        dadosUtilizador = dadosUtilizador.data;
-
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+        // TODO: Adicionar validação para a designação
+        // TODO: Alterar depois da API estar pronta
 
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho
-        };
+        // await this.$request("post", "/legislacao", pedido.objeto.dados);
 
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao
-        });
+        // const estado = "Validado";
 
-        this.$router.go(-1);
+        // let dadosUtilizador = await this.$request(
+        //   "get",
+        //   "/users/" + this.$store.state.token + "/token"
+        // );
+        // dadosUtilizador = dadosUtilizador.data;
+
+        // const novaDistribuicao = {
+        //   estado: estado,
+        //   responsavel: dadosUtilizador.email,
+        //   data: new Date(),
+        //   despacho: dados.mensagemDespacho
+        // };
+
+        // pedido.estado = estado;
+        // pedido.token = this.$store.state.token;
+
+        // await this.$request("put", "/pedidos", {
+        //   pedido: pedido,
+        //   distribuicao: novaDistribuicao
+        // });
+
+        // this.$router.go(-1);
       } catch (e) {
+        this.erros.push({
+          sobre: "Acesso à Ontologia",
+          mensagem: "Ocorreu um erro ao aceder à ontologia."
+        });
+        this.erroPedido = true;
         console.log("e :", e);
       }
     },
@@ -210,8 +254,13 @@ export default {
       this.infoPedido[i].cor = "red lighten-3";
     },
 
+    fecharErro() {
+      this.erroPedido = false;
+    },
+
     close() {
-      this.dialogtipologias = false;
+      this.dialogEnditades = false;
+      this.dialogProcessos = false;
     }
   }
 };

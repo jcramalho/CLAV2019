@@ -4,16 +4,26 @@
       <!-- Label -->
       <v-col
         cols="2"
-        v-if="info.conteudo !== '' && info.conteudo !== undefined"
+        v-if="
+          info.campo !== 'Sigla' &&
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
+        "
       >
         <div class="info-label">{{ info.campo }}</div>
       </v-col>
 
       <!-- Conteudo -->
-      <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
+      <v-col
+        v-if="
+          info.campo !== 'Sigla' &&
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
+        "
+      >
         <!-- Se o conteudo for uma lista de tipologias-->
         <v-data-table
-          v-if="info.campo == 'Entidades'"
+          v-if="info.campo === 'Tipologias'"
           :headers="headersTipologias"
           :items="info.conteudo"
           class="elevation-1"
@@ -107,13 +117,19 @@ export default {
           cor: null
         },
         {
-          campo: "Entidades",
-          conteudo: this.p.objeto.dados.entidadesSel,
+          campo: "Internacional",
+          conteudo: this.p.objeto.dados.internacional,
+          cor: null
+        },
+        { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
+        {
+          campo: "Tipologias",
+          conteudo: this.p.objeto.dados.tipologiasSel,
           cor: null
         },
         {
-          campo: "Código",
-          conteudo: this.p.objeto.dados.codigo,
+          campo: "Data Extinção",
+          conteudo: this.p.objeto.dados.dataExtincao,
           cor: null
         }
       ],
@@ -212,6 +228,7 @@ export default {
 
     close() {
       this.dialogtipologias = false;
+      this.dialogProcessos = false;
     }
   }
 };
