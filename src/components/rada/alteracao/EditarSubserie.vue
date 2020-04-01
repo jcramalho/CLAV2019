@@ -178,11 +178,11 @@ export default {
         {},
         subserie_real.formaContagem
       );
-      
+
       // Classes para definir a hierarquia
-      this.classesHierarquia = this.classes.filter(
-        classe => classe.tipo == "Série"
-      );
+      this.classesHierarquia = this.classes
+        .filter(classe => classe.tipo == "Série")
+        .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
     save: function() {
       this.isMultiple = true;

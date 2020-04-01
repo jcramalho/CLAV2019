@@ -182,9 +182,9 @@ export default {
       this.serie.UIs = [...serie_real.UIs];
 
       // Classes para definir a hierarquia
-      this.classesHierarquia = this.classes.filter(
-        classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
-      );
+      this.classesHierarquia = this.classes
+        .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+        .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
     save: function() {
       this.isMultiple = true;

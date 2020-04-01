@@ -5,7 +5,12 @@
         </v-col>
         <v-col>
           <div class="info-content">
-              
+              <ul>
+                <li v-for="(leg,i) in lista" :key="i">
+                    {{ leg.tipo }}
+                    {{ leg.numero }}, {{ leg.data }}, {{ leg.sumario }}
+                </li>
+              </ul>
           </div>
         </v-col>
       </v-row>

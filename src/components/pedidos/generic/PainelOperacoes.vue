@@ -38,10 +38,11 @@
       <AvancarPedido
         :utilizadores="utilizadores"
         :texto="{
-          textoTitulo: 'Encaminhamento',
+          textoTitulo: 'Distribuição',
           textoAlert: 'validação',
-          textoBotao: 'Encaminhar'
+          textoBotao: 'Distribuir'
         }"
+        :pedido="this.$route.params.idPedido"
         @fecharDialog="fecharDialog()"
         @avancarPedido="avancarPedido($event)"
       />

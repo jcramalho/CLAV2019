@@ -82,7 +82,8 @@ export default {
       return filtered;
     },
     compiledMarkdown: function(d) {
-      return marked(d, { sanitize: true });
+      //return marked(d || "", { sanitize: true });
+      return marked(d || "");
     }
   },
   computed: {

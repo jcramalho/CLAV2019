@@ -35,7 +35,7 @@
             </v-autocomplete>
           </v-col>
         </v-row>
-        <NovaEntidade :entidades="entidades" />
+        <NovaEntidade :entidades="entidades" :produtoras="RE.entidadesProd" />
       </div>
       <v-row v-if="!RE.entidadesProd[0]">
         <v-col cols="12" xs="12" sm="3">
