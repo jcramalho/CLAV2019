@@ -1085,11 +1085,9 @@ export default {
             }
           },
           user: { email: userBD.data.email },
-          entidade: userBD.data.entidade.split("_")[1],
+          entidade: userBD.data.entidade,
           token: this.$store.state.token
         };
-
-        console.log('Vou fazer a criação do pedido...')
 
         var response = await this.$request("post", "/pedidos", pedidoParams);
         console.log(JSON.stringify('resposta: ' + JSON.stringify(response)))
