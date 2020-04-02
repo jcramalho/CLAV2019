@@ -7,7 +7,7 @@
     </v-row>
     <v-row v-if="UIs[0]">
       <!-- {{UIs}} -->
-      <v-col cols="12" xs="12" sm="12">
+      <v-col cols="12" xs="12" sm="12">  
         <v-text-field
           v-model="search"
           append-icon="search"

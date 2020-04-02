@@ -6,9 +6,27 @@
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ 'Alterar a classe: ' + treeview_object.titulo }}</b>
+        <v-spacer />
+        <v-icon dark color="red" @click="toDelete = true" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
       <v-card-text>
+        <v-row>
+          <v-dialog v-model="toDelete" width="50%">
+            <v-card>
+              <v-card-title
+                class="headline grey lighten-2"
+                primary-title
+              >Pretende mesmo eliminar a classe {{ treeview_object.titulo }} ?</v-card-title>
+
+              <v-card-text align="center">
+                <br />
+                <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
+                <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarClasse">Sim</v-btn>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </v-row>
         <v-form ref="form" :lazy-validation="false">
           <v-row>
             <v-col md="3" sm="3">
@@ -94,12 +112,13 @@
 export default {
   props: ["treeview_object", "classes"],
   data: () => ({
+    toDelete: false,
     dialog: false,
     classesHierarquia: [],
     classe: {}
   }),
   methods: {
-    filterSeries: function() {
+    filterSeries() {
       // ir buscar o verdadeiro objeto
       let classe_area_organico = this.classes.find(
         e => e.codigo == this.treeview_object.codigo
@@ -117,8 +136,13 @@ export default {
         )
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
-    save: function() {
+    save() {
       this.$emit("atualizacao", this.classe);
+      this.dialog = false;
+    },
+    eliminarClasse(){
+      this.$emit("remover", this.classe);
+      // this.toDelete = false;
       this.dialog = false;
     }
   }

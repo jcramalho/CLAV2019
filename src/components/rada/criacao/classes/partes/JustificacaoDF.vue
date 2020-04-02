@@ -126,19 +126,15 @@ export default {
     // Verificar pela relação existente visto que a gestão feita não permite ter coisas erradas
     disable_df() {
       if (
-        this.newSerie.relacoes.some(
-          e => e.relacao == "Síntese de" || e.relacao == "Complementar de"
+        this.newSerie.justificacaoDF.some(
+          e =>
+            e.tipo == "Critério de Complementaridade Informacional" ||
+            e.tipo == "Critério de Densidade Informacional"
         )
       ) {
-        this.newSerie.df = "Conservação";
         return true;
       } else {
-        if (this.newSerie.relacoes.some(e => e.relacao == "Sintetizado por")) {
-          this.newSerie.df = "Eliminação";
-          return true;
-        } else {
-          return false;
-        }
+        return false;
       }
     },
     exist(v) {

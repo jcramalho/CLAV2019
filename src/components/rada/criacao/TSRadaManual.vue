@@ -28,7 +28,8 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" />
         </v-col>
       </v-row>
-      <!-- {{ TS.classes }} -->
+
+      <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p>
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -43,10 +44,12 @@
                   :RE="RE"
                   :UIs="TS.UIs"
                   :formaContagem="formaContagem"
+                  @remover="remover_classe"
                 />
                 <EditarSubserie
                   v-else-if="item.tipo == 'Subsérie'"
                   @atualizacao="atualizacao_subserie"
+                  @remover="remover_classe"
                   :treeview_object="item"
                   :classes="TS.classes"
                   :UIs="TS.UIs"
@@ -55,6 +58,7 @@
                 <EditarOrganicaFunc
                   v-else
                   @atualizacao="atualizacao_area_organico"
+                  @remover="remover_classe"
                   :classes="TS.classes"
                   :treeview_object="item"
                 />
@@ -115,7 +119,6 @@ export default {
   computed: {
     preparaTree() {
       var myTree = [];
-
       for (var i = 0; i < this.TS.classes.length; i++) {
         if (
           this.TS.classes[i].eFilhoDe == null ||
@@ -566,7 +569,7 @@ export default {
         ) {
           classe_relacionada.df = "Conservação";
         } else {
-          classe_relacionada.DF = null;
+          classe_relacionada.df = null;
         }
       } else {
         if (classe_relacionada.relacoes.some(e => e.relacao == "Síntese de")) {
@@ -610,11 +613,10 @@ export default {
 
           if (criterio.relacoes.length == 0) {
             // Remover DF que é dependente do critério que vai ser eliminado;
-            this.removerDF(classe_relacionada, tipo_criterio, relacao);
-
             classe_relacionada.justificacaoDF = classe_relacionada.justificacaoDF.filter(
               e => e.tipo != tipo_criterio
             );
+            this.removerDF(classe_relacionada, tipo_criterio);
           }
         }
       }
@@ -677,6 +679,27 @@ export default {
           e.serieRelacionada.codigo != serie_classe.codigo
         );
       });
+    },
+    remover_classe(classe) {
+      this.TS.classes
+        .filter(e => e.eFilhoDe == classe.codigo)
+        .map(item => {
+          item.eFilhoDe = null;
+        });
+
+      if (classe.tipo == "Série" || classe.tipo == "Subsérie") {
+        // Remover Relações Inversas, critérios e ajustar destino final;
+        for (let i = 0; i < classe.relacoes.length; i++) {
+          this.removeRelacoesInversas(classe.relacoes[i], classe);
+        }
+        // Remover UIs;
+        for (let j = 0; j < classe.UIs.length; j++) {
+          this.eliminaUI(classe.UIs[j], classe);
+        }
+      }
+      this.TS.classes = this.TS.classes.filter(
+        cl => cl.codigo != classe.codigo
+      );
     }
   },
   created: async function() {

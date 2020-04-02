@@ -157,6 +157,9 @@
                       v-model="cod"
                       :items="getCodigos"
                       label="Código"
+                      item-text="searchField"
+                      item-value="codigo"
+                      :return-object="false"
                       solo
                       clearable
                     >
@@ -271,7 +274,12 @@ export default {
           e =>
             (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
         )
-        .map(e => e.codigo);
+        .map(e => {
+          return {
+            codigo: e.codigo,
+            searchField: e.codigo + " - " + e.titulo
+          };
+        });
     }
   },
   watch: {

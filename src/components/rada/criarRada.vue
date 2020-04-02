@@ -196,115 +196,32 @@ export default {
         tsRada: {
           titulo: "",
           classes: [
+            {
+              codigo: "01",
+              tipo: "N1",
+              titulo: "Reforma Agraria",
+              eFilhoDe: "",
+              descricao: "Descricaao 01"
+            },
+            {
+              codigo: "01.02",
+              tipo: "N2",
+              titulo: "Reforma Agraria N2",
+              eFilhoDe: "01",
+              descricao: "Descricaao 01"
+            },
             // {
-            //   codigo: "01",
-            //   tipo: "N1",
-            //   titulo: "Reforma Agraria",
-            //   eFilhoDe: "",
-            //   descricao: "Descricaao 01"
-            // },
-            // {
-            //   codigo: "01.02",
-            //   tipo: "N2",
-            //   titulo: "Reforma Agraria N2",
-            //   eFilhoDe: "01",
-            //   descricao: "Descricaao 01"
-            // },
-            // // {
-            // //   codigo: "OLA",
-            // //   tipo: "Série",
-            // //   titulo: "MUNDOOO",
-            // //   eFilhoDe: "",
-            // //   descricao: "",
-            // //   relacoes: [],
-            // //   dataInicial: "",
-            // //   dataFinal: null,
-            // //   tUA: "",
-            // //   tSerie: "",
-            // //   UIs: [],
-            // //   suporte: "",
-            // //   medicao: "",
-            // //   localizacao: [],
-            // //   entProdutoras: [],
-            // //   tipologiasProdutoras: [],
-            // //   legislacao: [],
-            // //   pca: "",
-            // //   formaContagem: {
-            // //    forma: null
-            // //   },
-            // //   justificacaoPCA: [],
-            // //   df: null,
-            // //   justificacaoDF: [],
-            // //   notas: "",
-            // //   children: []
-            // // },
-            // {
-            //   codigo: "01.01",
+            //   codigo: "OLA",
             //   tipo: "Série",
-            //   titulo: "Serie da Reforma Agraria - 1",
-            //   eFilhoDe: "01",
-            //   descricao: "asjdbjahs",
+            //   titulo: "MUNDOOO",
+            //   eFilhoDe: "",
+            //   descricao: "",
             //   relacoes: [],
-            //   dataInicial: null,
+            //   dataInicial: "",
             //   dataFinal: null,
-            //   // UIs: [{ codigo: "UI - 01" }],
-            //   UIs: [],
-            //   tUA: "Processo",
-            //   tSerie: "Aberta",
-            //   suporte: "Papel",
-            //   medicao: "12",
-            //   localizacao: ["ola"],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [],
-            //   pca: "",
-            //   formaContagem: {
-            //     forma: null
-            //   },
-            //   justificacaoPCA: [],
-            //   df: null,
-            //   justificacaoDF: [],
-            //   notas: "",
-            //   children: []
-            // },
-            // {
-            //   codigo: "01.01.01",
-            //   tipo: "Subsérie",
-            //   titulo: "Subserie da Serie da Reforma Agraria - 1",
-            //   eFilhoDe: "01.01",
-            //   descricao: "askpdoiapsodi",
-            //   relacoes: [],
-            //   UIs: [],
-            //   dataInicial: "2020-03-17",
-            //   dataFinal: "2020-04-12",
-            //   pca: "12",
-            //   formaContagem: {
-            //     forma: null
-            //   },
-            //   justificacaoPCA: [],
-            //   df: null,
-            //   justificacaoDF: [],
-            //   notas: "asd"
-            // },
-            // {
-            //   codigo: "02",
-            //   tipo: "N1",
-            //   titulo: "Reforma Agraria",
-            //   eFilhoDe: "",
-            //   descricao: "Descricaao 01"
-            // },
-            // {
-            //   codigo: "02.01",
-            //   tipo: "Série",
-            //   titulo: "Serie da Reforma Agraria - 2",
-            //   eFilhoDe: "02",
-            //   descricao: "asjdbjahs",
-            //   relacoes: [],
-            //   UIs: [],
-            //   dataInicial: "2020-03-17",
-            //   dataFinal: "2020-04-12",
             //   tUA: "",
             //   tSerie: "",
+            //   UIs: [],
             //   suporte: "",
             //   medicao: "",
             //   localizacao: [],
@@ -313,7 +230,7 @@ export default {
             //   legislacao: [],
             //   pca: "",
             //   formaContagem: {
-            //     forma: null
+            //    forma: null
             //   },
             //   justificacaoPCA: [],
             //   df: null,
@@ -321,87 +238,168 @@ export default {
             //   notas: "",
             //   children: []
             // },
-            // {
-            //   codigo: "02.01.01",
-            //   tipo: "Subsérie",
-            //   titulo: "Subserie da Serie da Reforma Agraria - 2",
-            //   eFilhoDe: "02.01",
-            //   descricao: "askpdoiapsodi",
-            //   relacoes: [],
-            //   UIs: [],
-            //   dataInicial: "2020-03-17",
-            //   dataFinal: "2020-04-12",
-            //   pca: "",
-            //   formaContagem: {
-            //     forma: null
-            //   },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [],
-            //   notas: ""
-            // }
+            {
+              codigo: "01.01",
+              tipo: "Série",
+              titulo: "Serie da Reforma Agraria - 1",
+              eFilhoDe: "01",
+              descricao: "asjdbjahs",
+              relacoes: [],
+              dataInicial: null,
+              dataFinal: null,
+              // UIs: [{ codigo: "UI - 01" }],
+              UIs: [],
+              tUA: "Processo",
+              tSerie: "Aberta",
+              suporte: "Papel",
+              medicao: "12",
+              localizacao: ["ola"],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [],
+              pca: "",
+              formaContagem: {
+                forma: null
+              },
+              justificacaoPCA: [],
+              df: null,
+              justificacaoDF: [],
+              notas: ""
+            },
+            {
+              codigo: "01.01.01",
+              tipo: "Subsérie",
+              titulo: "Subserie da Serie da Reforma Agraria - 1",
+              eFilhoDe: "01.01",
+              descricao: "askpdoiapsodi",
+              relacoes: [],
+              UIs: [],
+              dataInicial: "2020-03-17",
+              dataFinal: "2020-04-12",
+              pca: "12",
+              formaContagem: {
+                forma: null
+              },
+              justificacaoPCA: [],
+              df: null,
+              justificacaoDF: [],
+              notas: "asd"
+            },
+            {
+              codigo: "02",
+              tipo: "N1",
+              titulo: "Reforma Agraria",
+              eFilhoDe: "",
+              descricao: "Descricaao 01"
+            },
+            {
+              codigo: "02.01",
+              tipo: "Série",
+              titulo: "Serie da Reforma Agraria - 2",
+              eFilhoDe: "02",
+              descricao: "asjdbjahs",
+              relacoes: [],
+              UIs: [],
+              dataInicial: "2020-03-17",
+              dataFinal: "2020-04-12",
+              tUA: "",
+              tSerie: "",
+              suporte: "",
+              medicao: "",
+              localizacao: [],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [],
+              pca: "",
+              formaContagem: {
+                forma: null
+              },
+              justificacaoPCA: [],
+              df: null,
+              justificacaoDF: [],
+              notas: ""
+            },
+            {
+              codigo: "02.01.01",
+              tipo: "Subsérie",
+              titulo: "Subserie da Serie da Reforma Agraria - 2",
+              eFilhoDe: "02.01",
+              descricao: "askpdoiapsodi",
+              relacoes: [],
+              UIs: [],
+              dataInicial: "2020-03-17",
+              dataFinal: "2020-04-12",
+              pca: "",
+              formaContagem: {
+                forma: null
+              },
+              justificacaoPCA: [],
+              df: "Conservação",
+              justificacaoDF: [],
+              notas: ""
+            }
           ],
           UIs: [
-            // {
-            //   codigo: "UI - 01",
-            //   codCota: "A",
-            //   titulo: "TITULO",
-            //   dataInicial: "2020-03-03",
-            //   dataFinal: "2020-03-05",
-            //   produtor: {
-            //     tipologiasProdutoras: [],
-            //     entProdutoras: []
-            //   },
-            //   classesAssociadas: [],
-            //   descricao: "Desc",
-            //   notas: "Notas",
-            //   localizacao: "Loc"
-            // },
-            // {
-            //   codigo: "UI - 02",
-            //   codCota: "A",
-            //   titulo: "TITULO",
-            //   dataInicial: "2020-03-03",
-            //   dataFinal: "2020-03-05",
-            //   produtor: {
-            //     tipologiasProdutoras: [],
-            //     entProdutoras: []
-            //   },
-            //   classesAssociadas: [],
-            //   descricao: "Desc",
-            //   notas: "Notas",
-            //   localizacao: "Loc"
-            // },
-            // {
-            //   codigo: "UI - 03",
-            //   codCota: "A",
-            //   titulo: "TITULO",
-            //   dataInicial: "2020-03-03",
-            //   dataFinal: "2020-03-05",
-            //   produtor: {
-            //     tipologiasProdutoras: [],
-            //     entProdutoras: []
-            //   },
-            //   classesAssociadas: [],
-            //   descricao: "Desc",
-            //   notas: "Notas",
-            //   localizacao: "Loc"
-            // },
-            // {
-            //   codigo: "UI - 04",
-            //   codCota: "A",
-            //   titulo: "TITULO",
-            //   dataInicial: "2020-03-03",
-            //   dataFinal: "2020-03-05",
-            //   produtor: {
-            //     tipologiasProdutoras: [],
-            //     entProdutoras: []
-            //   },
-            //   classesAssociadas: [],
-            //   descricao: "Desc",
-            //   notas: "Notas",
-            //   localizacao: "Loc"
-            // }
+            {
+              codigo: "UI - 01",
+              codCota: "A",
+              titulo: "TITULO",
+              dataInicial: "2020-03-03",
+              dataFinal: "2020-03-05",
+              produtor: {
+                tipologiasProdutoras: [],
+                entProdutoras: []
+              },
+              classesAssociadas: [],
+              descricao: "Desc",
+              notas: "Notas",
+              localizacao: "Loc"
+            },
+            {
+              codigo: "UI - 02",
+              codCota: "A",
+              titulo: "TITULO",
+              dataInicial: "2020-03-03",
+              dataFinal: "2020-03-05",
+              produtor: {
+                tipologiasProdutoras: [],
+                entProdutoras: []
+              },
+              classesAssociadas: [],
+              descricao: "Desc",
+              notas: "Notas",
+              localizacao: "Loc"
+            },
+            {
+              codigo: "UI - 03",
+              codCota: "A",
+              titulo: "TITULO",
+              dataInicial: "2020-03-03",
+              dataFinal: "2020-03-05",
+              produtor: {
+                tipologiasProdutoras: [],
+                entProdutoras: []
+              },
+              classesAssociadas: [],
+              descricao: "Desc",
+              notas: "Notas",
+              localizacao: "Loc"
+            },
+            {
+              codigo: "UI - 04",
+              codCota: "A",
+              titulo: "TITULO",
+              dataInicial: "2020-03-03",
+              dataFinal: "2020-03-05",
+              produtor: {
+                tipologiasProdutoras: [],
+                entProdutoras: []
+              },
+              classesAssociadas: [],
+              descricao: "Desc",
+              notas: "Notas",
+              localizacao: "Loc"
+            }
           ]
         }
       },
