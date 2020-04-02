@@ -314,6 +314,8 @@ module.exports.help = {
         "A Data de inicio da contagem deve ser igual ou inferior à subtração do Prazo de conservação administrativa ao ano corrente. Para garantia de cumprimento integral do PCA é aconselhável adicionar a este valor um ano.",
       DataContagemP:
         "Verifique se o campo <strong>Data de Contagem do PCA</strong> se encontra devidamente preenchido.",
+      DataContagemInicio:
+        "A Data de Inicio de contagem da Agregação <strong>não pode</strong> ser inferior à Data de Início da Classe.",
       DonoPN:
         "Quando o Destino Final da classe é <strong>Conservação</strong>, é obrigatório o preenchimento do campo <strong>Dono do PN</strong>"
     },

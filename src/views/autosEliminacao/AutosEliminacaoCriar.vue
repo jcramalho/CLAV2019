@@ -25,7 +25,7 @@ export default {
       try {
         var myEntidades = [];
         for (var e of ent) {
-          myEntidades.push(e.sigla + " - " + e.designacao);
+            myEntidades.push(e.sigla + " - " + e.designacao);
         }
         return myEntidades;
       } catch (error) {
