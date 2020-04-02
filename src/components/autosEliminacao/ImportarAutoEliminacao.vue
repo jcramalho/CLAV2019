@@ -375,10 +375,7 @@ export default {
               })
             }
             if(this.flagAE) this.erroDialog = true
-            else {
-              console.log(this.tipo)
-              console.log(eliminacao)
-              
+            else 
               this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
                 auto: eliminacao
               })
@@ -389,7 +386,7 @@ export default {
               .catch(e => {
                 this.erro = e.response.data;
                 this.erroDialog = true;
-              });}
+              });
           })
           .catch(err => {
             this.erro = err;
