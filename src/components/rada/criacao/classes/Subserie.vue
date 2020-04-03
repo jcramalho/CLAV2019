@@ -37,6 +37,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
+                  :rules="true"
                   :newSerie="newSubSerie"
                   :classes="classes"
                   :formaContagem="formaContagem"
@@ -138,7 +139,7 @@ export default {
       // dataFinal: "2020-02-16",
       UIs: [],
       relacoes: [],
-      pca: "",
+      pca: null,
       formaContagem: {
         forma: null
       },
@@ -146,7 +147,7 @@ export default {
       df: null,
       justificacaoDF: [],
       notas: "",
-      eFilhoDe: "",
+      eFilhoDe: null,
       tipo: "Subsérie"
     }
   }),
@@ -162,7 +163,7 @@ export default {
         dataFinal: null,
         UIs: [],
         relacoes: [],
-        pca: "",
+        pca: null,
         formaContagem: {
           forma: null
         },
@@ -170,7 +171,7 @@ export default {
         df: null,
         justificacaoDF: [],
         notas: "",
-        eFilhoDe: "",
+        eFilhoDe: null,
         tipo: "Subsérie"
       };
       this.$refs.form.resetValidation();
@@ -330,7 +331,7 @@ export default {
               legislacao: [],
               relacoes: [],
               UIs: [],
-              pca: "",
+              pca: null,
               formaContagem: {
                 forma: null
               },
@@ -338,7 +339,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: "",
+              eFilhoDe: null,
               tipo: "Série"
             };
           } else {
@@ -350,7 +351,7 @@ export default {
               dataFinal: null,
               relacoes: [],
               UIs: [],
-              pca: "",
+              pca: null,
               formaContagem: {
                 forma: null
               },
@@ -358,7 +359,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: "",
+              eFilhoDe: null,
               tipo: "Subsérie"
             };
           }

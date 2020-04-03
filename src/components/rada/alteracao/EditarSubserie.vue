@@ -7,7 +7,7 @@
         }}
       </b>
       <b
-        v-show="treeview_object.eFilhoDe == '' || !treeview_object.temUIs_ou_datas || treeview_object.temDF"
+        v-show="treeview_object.eFilhoDe == null || !treeview_object.temUIs_ou_datas || treeview_object.temDF"
         style="color:red"
       >*</b>
     </template>
@@ -61,6 +61,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
+                  :rules="true"
                   :newSerie="subserie"
                   :classes="classes"
                   :formaContagem="formaContagem"

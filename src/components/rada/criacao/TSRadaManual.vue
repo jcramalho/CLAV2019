@@ -28,8 +28,7 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" />
         </v-col>
       </v-row>
-
-      <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p>
+      <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p> -->
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -120,10 +119,7 @@ export default {
     preparaTree() {
       var myTree = [];
       for (var i = 0; i < this.TS.classes.length; i++) {
-        if (
-          this.TS.classes[i].eFilhoDe == null ||
-          this.TS.classes[i].eFilhoDe == ""
-        ) {
+        if (this.TS.classes[i].eFilhoDe == null) {
           myTree.push({
             codigo: this.TS.classes[i].codigo,
             titulo:
@@ -136,7 +132,11 @@ export default {
                 (this.TS.classes[i].UIs != undefined &&
                   this.TS.classes[i].UIs.length > 0)
             ),
-            temDF: Boolean(this.TS.classes[i].df == null),
+            temDF: Boolean(
+              this.TS.classes[i].df == null ||
+                this.TS.classes[i].pca == null ||
+                this.TS.classes[i].formaContagem.forma == null
+            ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -146,19 +146,23 @@ export default {
     incompleto() {
       return this.TS.classes.some(
         e =>
-          ((e.eFilhoDe == "" ||
-            !(
-              (e.dataInicial != undefined && e.dataInicial != null) ||
-              (e.UIs != undefined && e.UIs.length > 0)
-            )) &&
-            e.tipo == "Série") ||
-          ((e.df == null ||
-            e.eFilhoDe == "" ||
-            !(
-              (e.dataInicial != undefined && e.dataInicial != null) ||
-              (e.UIs != undefined && e.UIs.length > 0)
-            )) &&
-            e.tipo == "Subsérie")
+          (e.tipo == "Série" &&
+            ((!this.TS.classes.some(cl => cl.eFilhoDe == e.codigo) &&
+              (e.df == null ||
+                e.pca == null ||
+                e.formaContagem.forma == null)) ||
+              e.eFilhoDe == null ||
+              !(
+                (e.dataInicial != undefined && e.dataInicial != null) ||
+                (e.UIs != undefined && e.UIs.length > 0)
+              ))) ||
+          (e.tipo == "Subsérie" &&
+            (e.df == null ||
+              e.eFilhoDe == null ||
+              !(
+                (e.dataInicial != undefined && e.dataInicial != null) ||
+                (e.UIs != undefined && e.UIs.length > 0)
+              )))
       );
     }
   },
@@ -180,7 +184,11 @@ export default {
                 (this.TS.classes[i].UIs != undefined &&
                   this.TS.classes[i].UIs.length > 0)
             ),
-            temDF: Boolean(this.TS.classes[i].df == null),
+            temDF: Boolean(
+              this.TS.classes[i].df == null ||
+                this.TS.classes[i].pca == null ||
+                this.TS.classes[i].formaContagem.forma == null
+            ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -402,7 +410,7 @@ export default {
             legislacao: [],
             relacoes: [],
             UIs: [],
-            pca: "",
+            pca: null,
             formaContagem: {
               forma: null
             },
@@ -410,7 +418,7 @@ export default {
             df: null,
             justificacaoDF: [],
             notas: "",
-            eFilhoDe: "",
+            eFilhoDe: null,
             tipo: "Série"
           };
         } else {
@@ -422,7 +430,7 @@ export default {
             dataFinal: null,
             relacoes: [],
             UIs: [],
-            pca: "",
+            pca: null,
             formaContagem: {
               forma: null
             },
@@ -430,7 +438,7 @@ export default {
             df: null,
             justificacaoDF: [],
             notas: "",
-            eFilhoDe: "",
+            eFilhoDe: null,
             tipo: "Subsérie"
           };
         }

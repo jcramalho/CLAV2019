@@ -421,7 +421,7 @@ export default {
               tipologiasProdutoras: [],
               legislacao: [],
               relacoes: [],
-              pca: "",
+              pca: null,
               formaContagem: {
                 forma: null
               },
@@ -429,7 +429,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: ""
+              eFilhoDe: null
             });
           } else {
             this.classes.push({
@@ -439,7 +439,7 @@ export default {
               dataInicial: null,
               dataFinal: null,
               relacoes: [],
-              pca: "",
+              pca: null,
               UIs: [this.UI.codigo],
               formaContagem: {
                 forma: null
@@ -448,7 +448,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: "",
+              eFilhoDe: null,
               tipo: "Subsérie"
             });
           }

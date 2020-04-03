@@ -6,7 +6,7 @@
       </v-col>
       <v-col sm="9" md="9" style="padding-right: 20px;">
         <v-select
-          :rules="[v => exist(v)]"
+          :rules="[v => rule(v)]"
           :items="formaContagem.formasContagem"
           v-model="newSerie.formaContagem.forma"
           item-text="label"
@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  props: ["newSerie", "formaContagem"],
+  props: ["newSerie", "formaContagem", "rules"],
   data: () => ({
     necessario_subforma: false
   }),
@@ -53,8 +53,8 @@ export default {
     }
   },
   methods: {
-    exist(v) {
-      if (this.newSerie.tipo == "Subsérie" && (v == "" || v == null)) {
+    rule(v) {
+      if (this.rules && (v == "" || v == null)) {
         return "Campo Obrigatório";
       } else {
         return true;

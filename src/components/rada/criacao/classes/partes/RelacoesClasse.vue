@@ -368,7 +368,7 @@ export default {
           switch (relacao) {
             case "Sintetizado por":
               if (
-                !this.newSerie.relacoes.some(
+                !this.newSerie.justificacaoDF.some(
                   e => e.tipo == "Critério de Complementaridade Informacional"
                 )
               ) {

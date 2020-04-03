@@ -196,210 +196,230 @@ export default {
         tsRada: {
           titulo: "",
           classes: [
-            {
-              codigo: "01",
-              tipo: "N1",
-              titulo: "Reforma Agraria",
-              eFilhoDe: "",
-              descricao: "Descricaao 01"
-            },
-            {
-              codigo: "01.02",
-              tipo: "N2",
-              titulo: "Reforma Agraria N2",
-              eFilhoDe: "01",
-              descricao: "Descricaao 01"
-            },
             // {
-            //   codigo: "OLA",
-            //   tipo: "Série",
-            //   titulo: "MUNDOOO",
-            //   eFilhoDe: "",
-            //   descricao: "",
-            //   relacoes: [],
-            //   dataInicial: "",
-            //   dataFinal: null,
-            //   tUA: "",
-            //   tSerie: "",
+            //   codigo: "01",
+            //   titulo: "Classe N1 (01)",
+            //   descricao: "Descrição Classe N1 (01)",
+            //   eFilhoDe: null,
+            //   tipo: "N1"
+            // },
+            // {
+            //   codigo: "02",
+            //   titulo: "Classe N1 (02)",
+            //   descricao: "Descrição Classe N1 (02)",
+            //   tipo: "N1"
+            // },
+            // {
+            //   codigo: "03",
+            //   titulo: "Classe N1 (03)",
+            //   descricao: "Descrição Classe N1 (01)",
+            //   tipo: "N1"
+            // },
+            // {
+            //   codigo: "01.01",
+            //   titulo: "Classe N2 (01.01)",
+            //   descricao: "Descrição Classe N2 (01.01)",
+            //   eFilhoDe: "01",
+            //   tipo: "N2"
+            // },
+            // {
+            //   codigo: "01.02",
+            //   titulo: "Classe N2 (01.02)",
+            //   descricao: "Descrição Classe N2 (01.02)",
+            //   eFilhoDe: "01",
+            //   tipo: "N2"
+            // },
+            // {
+            //   codigo: "02.01",
+            //   titulo: "Classe N2 (02.01)",
+            //   descricao: "Descrição Classe N2 (02.01)",
+            //   eFilhoDe: "02",
+            //   tipo: "N2"
+            // },
+            // {
+            //   codigo: "03.01",
+            //   titulo: "Classe N2 (03.01)",
+            //   descricao: "Descrição Classe N2 (03.01)",
+            //   eFilhoDe: "03",
+            //   tipo: "N2"
+            // },
+            // {
+            //   codigo: "01.04",
+            //   titulo: "Série (01.04)",
+            //   descricao: "Descrição Série (01.04)",
+            //   dataInicial: "2020-04-11",
+            //   dataFinal: "2020-04-13",
+            //   tUA: "Coleção",
+            //   tSerie: "Fechada",
+            //   suporte: "Papel",
+            //   medicao: "35",
             //   UIs: [],
-            //   suporte: "",
-            //   medicao: "",
-            //   localizacao: [],
+            //   localizacao: ["Localização a definir..."],
             //   entProdutoras: [],
             //   tipologiasProdutoras: [],
-            //   legislacao: [],
-            //   pca: "",
-            //   formaContagem: {
-            //    forma: null
-            //   },
+            //   legislacao: [
+            //     {
+            //       id: "leg_ENe2tVpHmTj1xmtY6eo-z",
+            //       data: "29-01-2019",
+            //       tipo: "Portaria",
+            //       numero: "39/2019",
+            //       sumario:
+            //         "Regulamento para a Classificação e Avaliação da Informação Produzida no Exercício de Funções da CP - Comboios de Portugal, E. P. E."
+            //     },
+            //     {
+            //       id: "leg_w6sP8Soc5_N8nQeQiMCk3",
+            //       data: "30-03-2005",
+            //       tipo: "Portaria",
+            //       numero: "418/2005",
+            //       sumario:
+            //         "Regulamento Arquivístico da Secretaria-Geral do Ministério da Administração Interna"
+            //     }
+            //   ],
+            //   relacoes: [
+            //     {
+            //       relacao: "Complementar de",
+            //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
+            //     },
+            //     {
+            //       relacao: "Complementar de",
+            //       serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
+            //     }
+            //   ],
+            //   pca: null,
+            //   formaContagem: { forma: null },
             //   justificacaoPCA: [],
-            //   df: null,
-            //   justificacaoDF: [],
-            //   notas: "",
-            //   children: []
+            //   df: "Conservação",
+            //   justificacaoDF: [
+            //     {
+            //       tipo: "Critério de Complementaridade Informacional",
+            //       nota: "É complementar de: ",
+            //       relacoes: ["01.03", "01.04.01"]
+            //     }
+            //   ],
+            //   notas: "Notas da Série (01.04)",
+            //   eFilhoDe: "01",
+            //   tipo: "Série"
             // },
-            {
-              codigo: "01.01",
-              tipo: "Série",
-              titulo: "Serie da Reforma Agraria - 1",
-              eFilhoDe: "01",
-              descricao: "asjdbjahs",
-              relacoes: [],
-              dataInicial: null,
-              dataFinal: null,
-              // UIs: [{ codigo: "UI - 01" }],
-              UIs: [],
-              tUA: "Processo",
-              tSerie: "Aberta",
-              suporte: "Papel",
-              medicao: "12",
-              localizacao: ["ola"],
-              entProdutoras: [],
-              tipologiasProdutoras: [],
-              legislacao: [],
-              pca: "",
-              formaContagem: {
-                forma: null
-              },
-              justificacaoPCA: [],
-              df: null,
-              justificacaoDF: [],
-              notas: ""
-            },
-            {
-              codigo: "01.01.01",
-              tipo: "Subsérie",
-              titulo: "Subserie da Serie da Reforma Agraria - 1",
-              eFilhoDe: "01.01",
-              descricao: "askpdoiapsodi",
-              relacoes: [],
-              UIs: [],
-              dataInicial: "2020-03-17",
-              dataFinal: "2020-04-12",
-              pca: "12",
-              formaContagem: {
-                forma: null
-              },
-              justificacaoPCA: [],
-              df: null,
-              justificacaoDF: [],
-              notas: "asd"
-            },
-            {
-              codigo: "02",
-              tipo: "N1",
-              titulo: "Reforma Agraria",
-              eFilhoDe: "",
-              descricao: "Descricaao 01"
-            },
-            {
-              codigo: "02.01",
-              tipo: "Série",
-              titulo: "Serie da Reforma Agraria - 2",
-              eFilhoDe: "02",
-              descricao: "asjdbjahs",
-              relacoes: [],
-              UIs: [],
-              dataInicial: "2020-03-17",
-              dataFinal: "2020-04-12",
-              tUA: "",
-              tSerie: "",
-              suporte: "",
-              medicao: "",
-              localizacao: [],
-              entProdutoras: [],
-              tipologiasProdutoras: [],
-              legislacao: [],
-              pca: "",
-              formaContagem: {
-                forma: null
-              },
-              justificacaoPCA: [],
-              df: null,
-              justificacaoDF: [],
-              notas: ""
-            },
-            {
-              codigo: "02.01.01",
-              tipo: "Subsérie",
-              titulo: "Subserie da Serie da Reforma Agraria - 2",
-              eFilhoDe: "02.01",
-              descricao: "askpdoiapsodi",
-              relacoes: [],
-              UIs: [],
-              dataInicial: "2020-03-17",
-              dataFinal: "2020-04-12",
-              pca: "",
-              formaContagem: {
-                forma: null
-              },
-              justificacaoPCA: [],
-              df: "Conservação",
-              justificacaoDF: [],
-              notas: ""
-            }
+
+            // {
+            //   codigo: "01.03",
+            //   titulo: "Série (01.03)",
+            //   descricao: "Descrição Série (01.03)",
+            //   dataInicial: null,
+            //   dataFinal: null,
+            //   tUA: "Processo",
+            //   tSerie: "Aberta",
+            //   suporte: "Eletrónico Nativo",
+            //   UIs: ["01"],
+            //   medicao: "12",
+            //   localizacao: ["Torre do Tombo"],
+            //   entProdutoras: [],
+            //   tipologiasProdutoras: [],
+            //   legislacao: [
+            //     {
+            //       id: "leg_bzfJBtZAR94z9YC4UojBq",
+            //       data: "30-10-1991",
+            //       tipo: "Portaria",
+            //       numero: "1125/91",
+            //       sumario:
+            //         "Regulamento Arquivístico da Maternidade do Dr. Alfredo da Costa"
+            //     },
+            //     {
+            //       id: "leg_3OZCH3pb0dqpHjlX8HePk",
+            //       data: "30-03-2009",
+            //       tipo: "Portaria",
+            //       numero: "331/2009",
+            //       sumario:
+            //         "Regulamento de conservação arquivística do INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I. P., no que se refere à avaliação, selecção, conservação e eliminação da sua documentação e revoga a Portaria n.º 226/2005, de 24 de Fevereiro"
+            //     }
+            //   ],
+            //   relacoes: [
+            //     {
+            //       relacao: "Complementar de",
+            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
+            //     }
+            //   ],
+            //   pca: null,
+            //   formaContagem: { forma: null },
+            //   justificacaoPCA: [],
+            //   df: "Conservação",
+            //   justificacaoDF: [
+            //     {
+            //       tipo: "Critério de Complementaridade Informacional",
+            //       nota: "É complementar de: ",
+            //       relacoes: ["01.04"]
+            //     }
+            //   ],
+            //   notas: "",
+            //   eFilhoDe: "01",
+            //   tipo: "Série"
+            // },
+
+            // {
+            //   codigo: "01.04.01",
+            //   titulo: "Subsérie (01.04.01)",
+            //   descricao: "Descrição Subsérie (01.04.01)",
+            //   dataInicial: null,
+            //   dataFinal: null,
+            //   relacoes: [
+            //     {
+            //       relacao: "Complementar de",
+            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
+            //     }
+            //   ],
+            //   UIs: ["02"],
+            //   pca: "2",
+            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+            //   justificacaoPCA: [
+            //     {
+            //       tipo: "Critério Gestionário",
+            //       nota:
+            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+            //     }
+            //   ],
+            //   df: "Conservação",
+            //   justificacaoDF: [
+            //     {
+            //       tipo: "Critério de Complementaridade Informacional",
+            //       nota: "É complementar de: ",
+            //       relacoes: ["01.04"]
+            //     },
+            //     {
+            //       tipo: "Critério Legal",
+            //       nota: "Prazo prescricional estabelecido em: ",
+            //       relacoes: ["Portaria 39/2019", "Portaria 418/2005"]
+            //     }
+            //   ],
+            //   notas: "Notas do Destino Final",
+            //   eFilhoDe: "01.04",
+            //   tipo: "Subsérie"
+            // }
           ],
           UIs: [
-            {
-              codigo: "UI - 01",
-              codCota: "A",
-              titulo: "TITULO",
-              dataInicial: "2020-03-03",
-              dataFinal: "2020-03-05",
-              produtor: {
-                tipologiasProdutoras: [],
-                entProdutoras: []
-              },
-              classesAssociadas: [],
-              descricao: "Desc",
-              notas: "Notas",
-              localizacao: "Loc"
-            },
-            {
-              codigo: "UI - 02",
-              codCota: "A",
-              titulo: "TITULO",
-              dataInicial: "2020-03-03",
-              dataFinal: "2020-03-05",
-              produtor: {
-                tipologiasProdutoras: [],
-                entProdutoras: []
-              },
-              classesAssociadas: [],
-              descricao: "Desc",
-              notas: "Notas",
-              localizacao: "Loc"
-            },
-            {
-              codigo: "UI - 03",
-              codCota: "A",
-              titulo: "TITULO",
-              dataInicial: "2020-03-03",
-              dataFinal: "2020-03-05",
-              produtor: {
-                tipologiasProdutoras: [],
-                entProdutoras: []
-              },
-              classesAssociadas: [],
-              descricao: "Desc",
-              notas: "Notas",
-              localizacao: "Loc"
-            },
-            {
-              codigo: "UI - 04",
-              codCota: "A",
-              titulo: "TITULO",
-              dataInicial: "2020-03-03",
-              dataFinal: "2020-03-05",
-              produtor: {
-                tipologiasProdutoras: [],
-                entProdutoras: []
-              },
-              classesAssociadas: [],
-              descricao: "Desc",
-              notas: "Notas",
-              localizacao: "Loc"
-            }
+            // {
+            //   codigo: "01",
+            //   codCota: "",
+            //   titulo: "",
+            //   dataInicial: null,
+            //   dataFinal: null,
+            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
+            //   classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
+            //   descricao: "",
+            //   notas: "",
+            //   localizacao: ""
+            // },
+            // {
+            //   codigo: "02",
+            //   codCota: "",
+            //   titulo: "",
+            //   dataInicial: null,
+            //   dataFinal: null,
+            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
+            //   classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
+            //   descricao: "",
+            //   notas: "",
+            //   localizacao: ""
+            // }
           ]
         }
       },

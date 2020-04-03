@@ -371,7 +371,7 @@ export default {
             legislacao: [],
             relacoes: [],
             UIs: [codigo_UI],
-            pca: "",
+            pca: null,
             formaContagem: {
               forma: null
             },
@@ -379,7 +379,7 @@ export default {
             df: null,
             justificacaoDF: [],
             notas: "",
-            eFilhoDe: "",
+            eFilhoDe: null,
             tipo: "Série"
           };
         } else {
@@ -391,7 +391,7 @@ export default {
             dataFinal: null,
             relacoes: [],
             UIs: [codigo_UI],
-            pca: "",
+            pca: null,
             formaContagem: {
               forma: null
             },
@@ -399,7 +399,7 @@ export default {
             df: null,
             justificacaoDF: [],
             notas: "",
-            eFilhoDe: "",
+            eFilhoDe: null,
             tipo: "Subsérie"
           };
         }

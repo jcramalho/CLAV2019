@@ -43,6 +43,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
+                  :rules="false"
                   :newSerie="newSerie"
                   :classes="classes"
                   :formaContagem="formaContagem"
@@ -144,7 +145,7 @@ export default {
       tipologiasProdutoras: [],
       legislacao: [],
       relacoes: [],
-      pca: "",
+      pca: null,
       formaContagem: {
         forma: null
       },
@@ -152,9 +153,8 @@ export default {
       df: null,
       justificacaoDF: [],
       notas: "",
-      eFilhoDe: "",
-      tipo: "Série",
-      children: []
+      eFilhoDe: null,
+      tipo: "Série"
     }
   }),
   methods: {
@@ -178,7 +178,7 @@ export default {
         tipologiasProdutoras: [],
         legislacao: [],
         relacoes: [],
-        pca: "",
+        pca: null,
         formaContagem: {
           forma: null
         },
@@ -186,7 +186,7 @@ export default {
         df: null,
         justificacaoDF: [],
         notas: "",
-        eFilhoDe: "",
+        eFilhoDe: null,
         tipo: "Série"
       };
       this.$refs.formSerie.resetValidation();
@@ -346,7 +346,7 @@ export default {
               tipologiasProdutoras: [],
               legislacao: [],
               relacoes: [],
-              pca: "",
+              pca: null,
               formaContagem: {
                 forma: null
               },
@@ -354,7 +354,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: "",
+              eFilhoDe: null,
               tipo: "Série"
             };
           } else {
@@ -366,7 +366,7 @@ export default {
               dataFinal: null,
               relacoes: [],
               UIs: [],
-              pca: "",
+              pca: null,
               formaContagem: {
                 forma: null
               },
@@ -374,7 +374,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: "",
+              eFilhoDe: null,
               tipo: "Subsérie"
             };
           }

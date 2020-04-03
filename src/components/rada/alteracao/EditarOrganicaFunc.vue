@@ -2,6 +2,10 @@
   <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
+      <b
+        v-show="treeview_object.eFilhoDe == null && (treeview_object.tipo == 'N2' || treeview_object.tipo == 'N3')"
+        style="color:red"
+      >*</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
@@ -97,11 +101,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <!-- <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-        </v-btn>-->
         <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
-
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
       </v-card-actions>
     </v-card>
@@ -140,9 +140,8 @@ export default {
       this.$emit("atualizacao", this.classe);
       this.dialog = false;
     },
-    eliminarClasse(){
+    eliminarClasse() {
       this.$emit("remover", this.classe);
-      // this.toDelete = false;
       this.dialog = false;
     }
   }

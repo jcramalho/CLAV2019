@@ -6,7 +6,7 @@
       </v-col>
       <v-col sm="9" md="9">
         <v-select
-          :rules="[v => exist(v)]"
+          :rules="[v => rule(v)]"
           :disabled="disable_df()"
           v-model="newSerie.df"
           :items="['Conservação', 'Conservação Parcial', 'Eliminação']"
@@ -98,7 +98,7 @@
 const labels = require("@/config/labels").criterios;
 
 export default {
-  props: ["newSerie", "classes"],
+  props: ["newSerie", "classes", "rules"],
   computed: {
     existeLegislacao() {
       // Se já existir critério legal, não aparece botão
@@ -123,6 +123,13 @@ export default {
     }
   },
   methods: {
+    rule(v) {
+      if (this.rules && (v == "" || v == null)) {
+        return "Campo Obrigatório";
+      } else {
+        return true;
+      }
+    },
     // Verificar pela relação existente visto que a gestão feita não permite ter coisas erradas
     disable_df() {
       if (
@@ -135,13 +142,6 @@ export default {
         return true;
       } else {
         return false;
-      }
-    },
-    exist(v) {
-      if (this.newSerie.tipo == "Subsérie" && (v == "" || v == null)) {
-        return "Campo Obrigatório";
-      } else {
-        return true;
       }
     },
     removeRelacao(index, criterio, indexCriterio) {

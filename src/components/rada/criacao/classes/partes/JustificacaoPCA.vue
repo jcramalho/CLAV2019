@@ -94,7 +94,7 @@
 const labels = require("@/config/labels").criterios;
 
 export default {
-  props: ["newSerie", "classes"],
+  props: ["newSerie", "classes", "rules"],
   computed: {
     existeGestionario() {
       if (
