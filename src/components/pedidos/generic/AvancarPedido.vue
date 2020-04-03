@@ -39,7 +39,7 @@
 
       <div v-else>
         <v-alert type="success">
-          Tarefa atribuída a:
+          Tarefa atribuída a
           <b>
             {{
               `${this.utilizadorSelecionado.name} (${
@@ -55,9 +55,8 @@
           </v-col>
 
           <v-col>
-            <v-text-field
+            <v-textarea
               solo
-              clearable
               hide-details
               color="indigo"
               :label="`Mensagem de ${texto.textoTitulo.toLowerCase()}`"
