@@ -11,27 +11,27 @@ export function filtraNivel(utilizadores, nivel, operador = "=") {
   switch (operador) {
     case "=":
       utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level == nivel
+        (utilizador) => utilizador.level == nivel
       );
       break;
     case "<":
       utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level < nivel
+        (utilizador) => utilizador.level < nivel
       );
       break;
     case ">":
       utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level > nivel
+        (utilizador) => utilizador.level > nivel
       );
       break;
     case "<=":
       utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level <= nivel
+        (utilizador) => utilizador.level <= nivel
       );
       break;
     case ">=":
       utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level >= nivel
+        (utilizador) => utilizador.level >= nivel
       );
       break;
     default:
@@ -41,5 +41,5 @@ export function filtraNivel(utilizadores, nivel, operador = "=") {
 }
 
 export default {
-  filtraNivel
+  filtraNivel,
 };
