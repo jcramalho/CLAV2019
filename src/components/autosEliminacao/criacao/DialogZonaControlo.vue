@@ -31,33 +31,17 @@
           <v-text-field :value="df" solo dense readonly></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="df!= 'Eliminação'">
+      <v-row v-if="df== 'Conservação'">
         <v-col>
           <div class="info-label">Natureza de Intervenção</div>
         </v-col>
         <v-col>
           <v-text-field
-            v-if="df == 'Conservação'"
             :value="ni"
             solo
             dense
             readonly
           ></v-text-field>
-          <v-text-field
-            v-else-if="df == 'Eliminação'"
-            :value="ni"
-            solo
-            dense
-            readonly
-          ></v-text-field>
-          <v-select
-            v-else
-            label="Selecione a Natureza de Intervenção"
-            :items="natureza"
-            v-model="ni"
-            solo
-            dense
-          ></v-select>
         </v-col>
         <v-col>
           <div class="info-label">Dono PN:</div>
@@ -65,7 +49,7 @@
         <v-col>
           <v-autocomplete
             label="Selecione a entidade dona do processo"
-            :items="entidades"
+            :items="entidadesPN"
             v-model="dono"
             solo
             dense
@@ -209,6 +193,7 @@ export default {
     uiPapel: null,
     uiDigital: null,
     uiOutros: null,
+    entidadesPN: [],
 
     df: null,
     prazo: null,
@@ -235,7 +220,15 @@ export default {
       }
     }
   },
-  created: function() {
+  created: async function() {
+    try {
+      var user = await this.$request("get", "/users/token");
+      this.entidadesPN = this.entidades.filter(e=> !e.includes(user.data.entidade.split("_")[1]))
+    }
+    catch (e) {
+      this.entidadesPN = this.entidades
+    }
+
     if (this.zona) {
       this.classe = this.zona.codigo + " - " + this.zona.titulo;
       if(this.zona.destino=="C") this.df = "Conservação"
@@ -321,7 +314,6 @@ export default {
         this.erro = help.AutoEliminacao.Erros.Medicoes;
         this.erroDialog = true;
       } else {
-        console.log(parseInt)
         var codigo = this.classe.split(" - ")[0];
         var classe = await this.$request("get", "/classes/c" + codigo);
         var titulo = classe.data.titulo;
@@ -341,22 +333,44 @@ export default {
         else uiDigital = this.uiDigital;
         if (!this.uiOutros || this.uiOutros == "0") uiOutros = "";
         else uiOutros = this.uiOutros;
+        
+        var added = false;
 
-        this.auto.zonaControlo.push({
-          codigo: codigo,
-          titulo: titulo,
-          prazoConservacao: prazoConservacao,
-          destino: destino,
-          ni: ni,
-          dono: dono,
-          dataInicio: dataInicio,
-          dataFim: dataFim,
-          uiPapel: uiPapel,
-          uiDigital: uiDigital,
-          uiOutros: uiOutros,
-          agregacoes: []
-        });
-
+        for(var i in this.auto.zonaControlo) {
+          if(this.auto.zonaControlo[i].codigo > codigo) {
+            this.auto.zonaControlo.splice(i,0,{
+              codigo: codigo,
+              titulo: titulo,
+              prazoConservacao: prazoConservacao,
+              destino: destino,
+              ni: ni,
+              dono: dono,
+              dataInicio: dataInicio,
+              dataFim: dataFim,
+              uiPapel: uiPapel,
+              uiDigital: uiDigital,
+              uiOutros: uiOutros,
+              agregacoes: []
+            })
+            added = true;
+            break;
+          }
+        }
+        if(added == false) this.auto.zonaControlo.push({
+              codigo: codigo,
+              titulo: titulo,
+              prazoConservacao: prazoConservacao,
+              destino: destino,
+              ni: ni,
+              dono: dono,
+              dataInicio: dataInicio,
+              dataFim: dataFim,
+              uiPapel: uiPapel,
+              uiDigital: uiDigital,
+              uiOutros: uiOutros,
+              agregacoes: []
+            })
+        
         this.limparZC();
         this.closeZC();
       }

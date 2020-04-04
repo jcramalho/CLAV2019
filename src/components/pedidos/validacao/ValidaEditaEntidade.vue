@@ -6,8 +6,8 @@
         cols="2"
         v-if="
           info.campo !== 'Sigla' &&
-            info.conteudo !== '' &&
-            info.conteudo !== undefined
+          info.conteudo !== '' &&
+          info.conteudo !== undefined
         "
       >
         <div class="info-label">{{ info.campo }}</div>
@@ -17,8 +17,8 @@
       <v-col
         v-if="
           info.campo !== 'Sigla' &&
-            info.conteudo !== '' &&
-            info.conteudo !== undefined
+          info.conteudo !== '' &&
+          info.conteudo !== undefined
         "
       >
         <!-- Se o conteudo for uma lista de tipologias-->
@@ -80,7 +80,7 @@ export default {
 
   components: {
     PO,
-    ErroDialog
+    ErroDialog,
   },
 
   data() {
@@ -92,34 +92,34 @@ export default {
         {
           campo: "Sigla",
           conteudo: this.p.objeto.dados.sigla,
-          cor: null
+          cor: null,
         },
         {
           campo: "Designação",
           conteudo: this.p.objeto.dados.designacao,
-          cor: null
+          cor: null,
         },
         {
           campo: "Internacional",
           conteudo: this.p.objeto.dados.internacional,
-          cor: null
+          cor: null,
         },
         { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
         {
           campo: "Tipologias",
           conteudo: this.p.objeto.dados.tipologiasSel,
-          cor: null
+          cor: null,
         },
         {
           campo: "Data Extinção",
           conteudo: this.p.objeto.dados.dataExtincao,
-          cor: null
-        }
+          cor: null,
+        },
       ],
       headersTipologias: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
-      ]
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+      ],
     };
   },
 
@@ -138,7 +138,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -148,7 +148,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -162,38 +162,48 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         // TODO: Adicionar validação para a designação
-        // TODO: Alterar depois da API estar pronta
 
-        // await this.$request("post", "/entidades", pedido.objeto.dados);
+        for (const key in pedido.objeto.dadosOriginais) {
+          if (!pedido.objeto.dados.hasOwnProperty(key)) {
+            pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+          }
+        }
 
-        // const estado = "Validado";
+        await this.$request(
+          "put",
+          `/entidades/ent_${pedido.objeto.dados.sigla}`,
+          pedido.objeto.dados
+        );
 
-        // let dadosUtilizador = await this.$request(
-        //   "get",
-        //   "/users/" + this.$store.state.token + "/token"
-        // );
-        // dadosUtilizador = dadosUtilizador.data;
+        const estado = "Validado";
 
-        // const novaDistribuicao = {
-        //   estado: estado,
-        //   responsavel: dadosUtilizador.email,
-        //   data: new Date(),
-        //   despacho: dados.mensagemDespacho
-        // };
+        let dadosUtilizador = await this.$request(
+          "get",
+          "/users/" + this.$store.state.token + "/token"
+        );
 
-        // pedido.estado = estado;
-        // pedido.token = this.$store.state.token;
+        dadosUtilizador = dadosUtilizador.data;
 
-        // await this.$request("put", "/pedidos", {
-        //   pedido: pedido,
-        //   distribuicao: novaDistribuicao
-        // });
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
 
-        // this.$router.go(-1);
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
       } catch (e) {
         this.erros.push({
           sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia."
+          mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
         this.erroPedido = true;
         console.log("e :", e);
@@ -201,12 +211,12 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
@@ -216,8 +226,8 @@ export default {
 
     close() {
       this.dialogTipologias = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

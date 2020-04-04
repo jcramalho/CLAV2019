@@ -1,19 +1,18 @@
 <template>
   <v-card>
-    <v-card-title>Insira uma mensagem de despacho</v-card-title>
+    <v-card-title>Insira uma mensagem para devolução</v-card-title>
     <v-card-text>
       <v-row>
         <v-col cols="2">
-          <div class="info-label">Mensagem:</div>
+          <div class="info-label">Mensagem</div>
         </v-col>
 
         <v-col>
-          <v-text-field
+          <v-textarea
             solo
-            clearable
             hide-details
             color="indigo"
-            label="Mensagem de despacho"
+            label="Mensagem para devolução"
             v-model="mensagemDespacho"
           />
         </v-col>
@@ -26,7 +25,7 @@
       </v-btn>
 
       <v-btn class="indigo accent-4" rounded dark @click="despacho()">
-        Despacho
+        Devolver
       </v-btn>
     </v-card-actions>
   </v-card>
