@@ -300,7 +300,6 @@ export default {
             //   eFilhoDe: "01",
             //   tipo: "Série"
             // },
-
             // {
             //   codigo: "01.03",
             //   titulo: "Série (01.03)",
@@ -354,7 +353,6 @@ export default {
             //   eFilhoDe: "01",
             //   tipo: "Série"
             // },
-
             // {
             //   codigo: "01.04.01",
             //   titulo: "Subsérie (01.04.01)",

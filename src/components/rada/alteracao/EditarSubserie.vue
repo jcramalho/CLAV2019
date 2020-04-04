@@ -205,7 +205,11 @@ export default {
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
     eliminarClasse() {
-      this.$emit("remover", this.subserie);
+      let subserie_real = this.classes.find(
+        e => e.codigo == this.treeview_object.codigo
+      );
+
+      this.$emit("remover", subserie_real);
       this.dialog = false;
     },
     save() {

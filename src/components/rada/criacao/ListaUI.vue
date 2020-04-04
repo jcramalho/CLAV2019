@@ -2,12 +2,12 @@
   <div>
     <v-row>
       <v-col cols="12" xs="12" sm="12">
-        <UI :UIs="UIs" :RE="RE" :classes="classes" />
+        <UI :UIs="TS.UIs" :RE="RE" :classes="TS.classes" />
       </v-col>
     </v-row>
-    <v-row v-if="UIs[0]">
-      <!-- {{UIs}} -->
-      <v-col cols="12" xs="12" sm="12">  
+    <!-- {{TS.UIs}} -->
+    <v-row v-if="TS.UIs[0]">
+      <v-col cols="12" xs="12" sm="12">
         <v-text-field
           v-model="search"
           append-icon="search"
@@ -18,12 +18,12 @@
         <v-data-table
           style="background-color:#fafafa"
           :headers="headers"
-          :items="UIs"
+          :items="TS.UIs"
           :search="search"
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
-            <EditaUI :UI="props.item" :RE="RE" :classes="classes" />
+            <EditaUI @remover="remover_UI" :UI="props.item" :RE="RE" :classes="TS.classes" />
           </template>
         </v-data-table>
       </v-col>
@@ -44,7 +44,7 @@ import UI from "@/components/rada/criacao/classes/UI";
 import EditaUI from "@/components/rada/alteracao/EditaUI";
 
 export default {
-  props: ["UIs", "RE", "classes"],
+  props: ["TS", "RE"],
   components: {
     UI,
     EditaUI
@@ -72,6 +72,11 @@ export default {
         class: ["table-header", "body-2", "font-weight-bold"]
       }
     ]
-  })
+  }),
+  methods: {
+    remover_UI(ui_codigo) {
+      this.TS.UIs = this.TS.UIs.filter(e => e.codigo != ui_codigo);
+    }
+  }
 };
 </script>

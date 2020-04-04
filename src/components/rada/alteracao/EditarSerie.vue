@@ -190,7 +190,11 @@ export default {
       return newJustificacaoDF;
     },
     eliminarClasse() {
-      this.$emit("remover", this.serie);
+      // Buscar a classe original pois é a que temos que eliminar, o clone pode estar desatualizado
+      let serie_real = this.classes.find(
+        e => e.codigo == this.treeview_object.codigo
+      );
+      this.$emit("remover", serie_real);
       this.dialogSerie = false;
     },
     async filterSeries() {

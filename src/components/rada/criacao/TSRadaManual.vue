@@ -75,7 +75,7 @@
       <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <v-row>
         <v-col sm="12" xs="12">
-          <ListaUI :UIs="TS.UIs" :RE="RE" :classes="TS.classes" />
+          <ListaUI :TS="TS" :RE="RE" />
         </v-col>
       </v-row>
     </v-form>
@@ -694,7 +694,7 @@ export default {
         .map(item => {
           item.eFilhoDe = null;
         });
-
+  
       if (classe.tipo == "Série" || classe.tipo == "Subsérie") {
         // Remover Relações Inversas, critérios e ajustar destino final;
         for (let i = 0; i < classe.relacoes.length; i++) {
