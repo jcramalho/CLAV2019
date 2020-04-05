@@ -618,17 +618,12 @@ import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaPr
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
 import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcSel.vue";
 
-import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
-import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
-
 export default {
   components: {
     ListaProcessosComuns,
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
     ListaProcessosUltimos,
-    DesSelTip,
-    SelTip,
     ListaParteDescritiva
   },
   data() {
