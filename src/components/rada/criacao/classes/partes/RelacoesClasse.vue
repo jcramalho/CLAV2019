@@ -215,9 +215,6 @@ export default {
           this.newSerie.df = null;
         }
       }
-      // else {
-
-      // }
     },
     remove_criterio(codigoClasse, tipo_criterio) {
       if (tipo_criterio == "Critério de Utilidade Administrativa") {

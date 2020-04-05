@@ -233,17 +233,67 @@ export default {
       this.panels = [0, 0, 0];
       this.isMultiple = false;
 
-      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas. ALTERAR DEPOIS
-      this.newSubSerie.relacoes = this.newSubSerie.relacoes.filter(
-        e => e.relacao != "Síntese de" && e.relacao != "Sintetizado por"
-      );
-      this.newSubSerie.justificacaoDF = this.newSubSerie.justificacaoDF.filter(
-        e => e.tipo != "Critério de Densidade Informacional"
-      );
+      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas. 
+      this.validar_Relacoes_Sintese();
 
       this.classesHierarquia = this.classes
         .filter(classe => classe.tipo == "Série")
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
+    },
+    validar_Relacoes_Sintese() {
+      let relacoes_sintese = this.newSubSerie.relacoes.filter(
+        e => e.relacao == "Síntese de" || e.relacao == "Sintetizado por"
+      );
+
+      for (let i = 0; i < relacoes_sintese.length; i++) {
+        let existe_classe = this.classes.some(
+          cl =>
+            cl.codigo == relacoes_sintese[i].serieRelacionada.codigo &&
+            cl.relacoes.some(rel => rel.relacao == relacoes_sintese[i].relacao)
+        );
+
+        if (existe_classe) {
+          // Verificar esta expressão
+          this.newSubSerie.relacoes = this.newSubSerie.relacoes.filter(
+            rel =>
+              rel.relacao != relacoes_sintese[i].relacao ||
+              rel.serieRelacionada.codigo !=
+                relacoes_sintese[i].serieRelacionada.codigo
+          );
+
+          this.remove_criterio_densidade_informacional(
+            relacoes_sintese[i].serieRelacionada.codigo
+          );
+        }
+      }
+    },
+    remove_criterio_densidade_informacional(codigoClasse) {
+      let criterio = this.newSubSerie.justificacaoDF.find(
+        crit => crit.tipo == "Critério de Densidade Informacional"
+      );
+
+      if (criterio != undefined) {
+        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+        if (criterio.relacoes.length == 0) {
+          this.alteraDF();
+
+          this.newSubSerie.justificacaoDF = this.newSubSerie.justificacaoDF.filter(
+            e => e.tipo != "Critério de Densidade Informacional"
+          );
+        }
+      }
+    },
+    alteraDF() {
+      if (
+        this.newSubSerie.justificacaoDF.some(
+          e => e.tipo == "Critério de Complementaridade Informacional"
+        )
+      ) {
+        this.newSubSerie.df = "Conservação";
+      } else {
+        this.newSubSerie.df = null;
+      }
     },
     adicionarDF(classe_relacionada, relacao) {
       if (

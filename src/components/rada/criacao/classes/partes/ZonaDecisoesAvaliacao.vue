@@ -2,7 +2,7 @@
   <div>
     <!-- 1 -->
     <v-row>
-      <!-- {{newSerie}} -->
+      {{newSerie}}
       <v-col md="3" sm="3">
         <div class="info-label">Prazo de Conservação Administrativa</div>
       </v-col>
@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     rule(v) {
-      if (this.rules && v == null) {
+      if (this.rules && (v == null || v == "")) {
         return "Campo Obrigatório";
       } else {
         return true;
