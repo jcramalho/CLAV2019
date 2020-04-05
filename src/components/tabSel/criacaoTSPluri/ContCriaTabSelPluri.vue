@@ -684,18 +684,7 @@ export default {
         return err;
       }
     },
-    // Retira da lista as entidadesselecionadas
-    unselectEntidade: function(entidade) {
-      this.entidades.push(entidade);
-      var index = this.entSel.findIndex(e => e.id === entidade.id);
-      this.entSel.splice(index, 1);
-    },
-    // Coloca na lista as entidades selecionadas
-    selectEntidade: function(entidade) {
-      this.entSel.push(entidade);
-      var index = this.entidades.findIndex(e => e.id === entidade.id);
-      this.entidades.splice(index, 1);
-    },
+    
     // Carrega todos os processos comuns
     loadProcComuns: async function() {
       try {
@@ -1270,6 +1259,7 @@ export default {
           tipoObjeto: "TS Pluriorganizacional web",
           novoObjeto: {
             ts: {
+              entidades: this.entSel,
               processos: tsObj,
               designacao: this.tabelaSelecao.designacao
             }

@@ -1038,7 +1038,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/users/l" + this.$store.state.token + "/token"
+          "/users/" + this.$store.state.token + "/token"
         );
 
         var tsObj = [];
@@ -1116,6 +1116,7 @@ export default {
           tipoObjeto: "TS Pluriorganizacional web",
           novoObjeto: {
             ts: {
+              entidades: this.entSel,
               processos: tsObj,
               designacao: this.tabelaSelecao.designacao
             }
