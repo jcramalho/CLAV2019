@@ -546,9 +546,6 @@
 </template>
 
 <script>
-import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
-import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
-
 import ContListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ContListaProcessosComuns.vue";
 import ContListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ContListaProcessosEspecificos.vue";
 import ContListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ContListaProcessosEspRestantes.vue";
@@ -558,8 +555,6 @@ import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcS
 export default {
   props: ["obj"],
   components: {
-    DesSelEnt,
-    SelEnt,
     ContListaProcessosComuns,
     ContListaProcessosEspecificos,
     ContListaProcessosEspRestantes,
