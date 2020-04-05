@@ -100,12 +100,36 @@
         </v-card-title>
 
         <v-card-text>
-          <span
-            class="subtitle-1"
-            style="white-space: pre-wrap"
-            v-html="success"
-          >
-          </span>
+          <v-row class="my-2">
+            <v-col cols="2">
+              <div class="info-label">Fonte de Legitimação:</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div>{{ auto.legislacao }}</div>
+            </v-col>
+          </v-row>
+          <v-row class="my-2">
+            <v-col cols="2">
+              <div class="info-label">Fundo:</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
+            </v-col>
+          </v-row>
+          <v-row class="mt-2">
+            <v-col cols="2">
+              <div class="info-label">Classes e Agregações:</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div v-for="c in auto.zonaControlo" :key="c.codigo">
+                {{ c.codigo +" - "+c.titulo }}
+                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">{{+a.codigo + " - " + a.titulo}}</li>
+              </div>
+            </v-col>
+          </v-row>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -142,11 +166,41 @@
       <v-card>
         <v-card-title>Trabalho pendente guardado</v-card-title>
         <v-card-text>
-          <p>
+          <div><strong>
             Os seus dados foram guardados para que possa retomar o trabalho mais
             tarde.
-          </p>
-          <p>{{ pendenteGuardadoInfo }}</p>
+          </strong></div>
+          
+          <v-row v-if="auto.legislacao" class="my-2">
+            <v-col cols="2">
+              <div class="info-label">Fonte de Legitimação:</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div>{{ auto.legislacao }}</div>
+            </v-col>
+          </v-row>
+          <v-row class="my-2">
+            <v-col cols="2">
+              <div class="info-label">Fundo:</div>
+            </v-col>
+
+            <v-col v-if="auto.fundo" class="info-content">
+              <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
+            </v-col>
+          </v-row>
+          <v-row v-if="auto.zonaControlo" class="mt-2">
+            <v-col cols="2">
+              <div class="info-label">Classes e Agregações:</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div v-for="c in auto.zonaControlo" :key="c.codigo">
+                {{ c.codigo +" - "+c.titulo }}
+                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">{{+a.codigo + " - " + a.titulo}}</li>
+              </div>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />

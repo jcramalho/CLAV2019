@@ -5,13 +5,29 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
-            >Editar Entidade ({{ entidade.sigla }} -
-            {{ entidade.designacao }})</v-toolbar-title
+            >Editar Entidade ({{ entidadeOriginal.sigla }} -
+            {{ entidadeOriginal.designacao }})</v-toolbar-title
           >
         </v-app-bar>
 
         <!-- Content -->
         <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Nome da Entidade</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                filled
+                clearable
+                label="Nome da Entidade"
+                color="indigo"
+                single-line
+                v-model="entidade.designacao"
+              />
+            </v-col>
+          </v-row>
+
           <v-row>
             <v-col cols="2">
               <div class="info-label">Internacional</div>
@@ -106,7 +122,11 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      <PainelOpsEnt :e="entidade" :acao="'Alteração'" />
+      <PainelOpsEnt
+        :e="entidade"
+        :original="entidadeOriginal"
+        :acao="'Alteração'"
+      />
     </v-col>
   </v-row>
 </template>
@@ -123,45 +143,48 @@ export default {
     DesSelTip,
     SelTip,
     PainelOpsEnt,
-    SelecionarData
+    SelecionarData,
   },
 
-  data: vm => ({
-    entidade: {
-      designacao: "",
-      sigla: "",
-      internacional: "",
-      sioe: "",
-      tipologiasSel: [],
-      codigo: "",
-      dataCriacao: "",
-      dataExtincao: ""
-    },
+  data() {
+    return {
+      entidade: {
+        designacao: "",
+        sigla: "",
+        internacional: "",
+        sioe: "",
+        tipologiasSel: [],
+        codigo: "",
+        dataCriacao: "",
+        dataExtincao: "",
+      },
+      entidadeOriginal: {},
 
-    // Para o seletor de processos
-    tipologias: [],
-    tipSel: [],
-    tipologiasReady: false,
+      // Para o seletor de processos
+      tipologias: [],
+      tipSel: [],
+      tipologiasReady: false,
 
-    regraSIOE: [
-      v => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos."
-    ],
+      regraSIOE: [
+        (v) => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos.",
+      ],
 
-    snackbar: false,
-    text: ""
-  }),
+      snackbar: false,
+      text: "",
+    };
+  },
 
   methods: {
     // Vai à API buscar todas as tipologias
-    loadTipologias: async function() {
+    loadTipologias: async function () {
       try {
         let response = await this.$request("get", "/tipologias/");
 
-        this.tipologias = response.data.map(function(item) {
+        this.tipologias = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
 
@@ -171,39 +194,41 @@ export default {
       }
     },
 
-    unselectTipologia: function(tipologia) {
+    unselectTipologia: function (tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
-      let index = this.tipSel.findIndex(e => e.id === tipologia.id);
+      let index = this.tipSel.findIndex((e) => e.id === tipologia.id);
       this.tipSel.splice(index, 1);
       this.entidade.tipologiasSel = this.tipSel;
     },
 
-    selectTipologia: function(tipologia) {
+    selectTipologia: function (tipologia) {
       this.tipSel.push(tipologia);
       this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
-      let index = this.tipologias.findIndex(e => e.id === tipologia.id);
+      let index = this.tipologias.findIndex((e) => e.id === tipologia.id);
       this.tipologias.splice(index, 1);
     },
 
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
-  created: async function() {
-    this.entidade = this.e;
+  created: async function () {
+    this.entidade = JSON.parse(JSON.stringify(this.e));
+
+    this.entidadeOriginal = JSON.parse(JSON.stringify(this.e));
 
     await this.loadTipologias();
 
     try {
       if (this.entidade.tipologiasSel.length != 0) {
-        this.entidade.tipologiasSel.forEach(tip => {
+        this.entidade.tipologiasSel.forEach((tip) => {
           this.tipSel.push(tip);
           // Remove dos selecionáveis
-          let index = this.tipologias.findIndex(t => t.id === tip.id);
+          let index = this.tipologias.findIndex((t) => t.id === tip.id);
           this.tipologias.splice(index, 1);
         });
       }
@@ -211,7 +236,7 @@ export default {
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
-  }
+  },
 };
 </script>
 

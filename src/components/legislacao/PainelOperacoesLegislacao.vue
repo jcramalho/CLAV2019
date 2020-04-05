@@ -215,7 +215,6 @@
 </template>
 
 <script>
-import nanoid from "nanoid";
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 
 export default {
@@ -435,7 +434,6 @@ export default {
             );
 
             let dataObj = this.l;
-            dataObj.codigo = "leg_" + nanoid();
 
             let pedidoParams = {
               tipoPedido: this.acao,

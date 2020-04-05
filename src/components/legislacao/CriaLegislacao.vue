@@ -194,16 +194,16 @@ export default {
       tipo: "",
       data: "",
       link: "",
-      diplomaFonte: "Não  especificada",
+      diplomaFonte: "Não especificada",
       entidadesSel: [],
       processosSel: [],
       codigo: "",
-      estado: "Ativa"
+      estado: "Ativo"
     },
 
     tiposDiploma: [],
 
-    diplomaFonteTipo: ["Não   especificada", "PGD", "PGD/LC", "RADA"],
+    diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
 
     // Para o seletor de entidades
     entidades: [],

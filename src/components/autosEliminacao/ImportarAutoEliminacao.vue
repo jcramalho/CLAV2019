@@ -1,13 +1,11 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12 sm20>
-        <v-card class="panel panel-default panel-custom">
-          <v-toolbar class="panel-heading">
-            <v-toolbar-title class="page-header">
-              <h1>Importar Auto de Eliminação</h1>
+  <div>
+        <v-card class="ma-4">
+          <v-app-bar color="expansion-panel-heading" dark>
+            <v-toolbar-title class="card-heading">
+              Importar Auto de Eliminação
             </v-toolbar-title>
-          </v-toolbar>
+          </v-app-bar>
           <v-card-text class="panel-body">
             <div class="ma-3">
               A Plataforma CLAV permite a submissão de Autos de Eliminação (AE)
@@ -45,26 +43,18 @@
                 as instruções de preenchimento.
               </p>
             </div>
-            <div>
-              <table
-                class="adicao"
-                style="border-color: white; border-style:solid; margin-bottom:20px;"
-              >
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">
-                      Fonte de Legitimação
-                      <InfoBox
+            <v-row>
+              <v-col :md="3">
+                <div class="info-label">Fonte de legitimação<InfoBox
                         header="Fonte de Legitimação"
                         :text="myhelp.AutoEliminacao.Campos.FonteLegitimacao"
                         helpColor="indigo darken-4"
                         dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </td>
-                  <td style="width:40%">
-                    <v-radio-group row v-model="tipo" :mandatory="true">
-                      <v-radio xs4 sm4 value="PGD_LC">
+                      /></div>
+              </v-col>
+              <v-col>
+                <v-radio-group row v-model="tipo" :mandatory="true">
+                      <v-radio value="PGD_LC">
                         <template v-slot:label>
                           <div class="mt-2">
                             PGD/LC
@@ -77,7 +67,7 @@
                           </div>
                         </template>
                       </v-radio>
-                      <v-radio xs4 sm4 value="PGD">
+                      <v-radio value="PGD">
                         <template v-slot:label>
                           <div class="mt-2">
                             PGD
@@ -90,7 +80,7 @@
                           </div>
                         </template>
                       </v-radio>
-                      <v-radio xs4 sm4 value="RADA">
+                      <v-radio value="RADA">
                         <template v-slot:label>
                           <div class="mt-2">
                             RADA
@@ -138,15 +128,14 @@
                       Em seguida, para concluir, execute o comando
                       <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">Fundo</div>
-                  </td>
-                  <td style="width:40%;">
-                    <div>
-                      <v-autocomplete
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col :md="3">
+                <div class="info-label">Fundo</div>
+              </v-col>
+              <v-col class="mt-2">
+                <v-autocomplete
                         label="Selecione a entidade responsável pelo fundo"
                         :items="entidades"
                         v-model="auto.fundo"
@@ -155,44 +144,35 @@
                         chips
                         multiple
                       ></v-autocomplete>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col :md="3">
                     <div class="info-label">Ficheiro série</div>
-                  </td>
-                  <td style="width:40%">
-                    <div>
+              </v-col>
+              <v-col class="mt-2">
                       <input
                         type="file"
                         id="fileSerie"
                         ref="myFiles"
                         @change="previewFileSerie"
                       />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">
-                      Ficheiro Agregações / Unidades de instalação
-                    </div>
-                  </td>
-                  <td style="width:40%">
-                    <div>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col :md="3">
+                    <div class="info-label">Ficheiro Agregações / Unidades de instalação</div>
+                  </v-col>
+              <v-col class="mt-2">
                       <input
                         type="file"
                         id="fileAgreg"
                         ref="myFiles"
                         @change="previewFileAgreg"
                       />
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </v-card-text>
+              </v-col>
+            </v-row>
+         </v-card-text>
         </v-card>
         <div style="text-align:center">
           <v-btn
@@ -216,8 +196,6 @@
             Validar Auto de Eliminação
           </v-btn>
         </div>
-      </v-flex>
-    </v-layout>
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
         <v-card-title class="teal darken-4 title white--text" dark>
@@ -225,12 +203,37 @@
         </v-card-title>
 
         <v-card-text>
-          <span
-            class="subtitle-1"
-            style="white-space: pre-wrap"
-            v-html="success"
-          >
-          </span>
+          <v-row class="my-2">
+            <v-col cols="2">
+              <div class="info-label">Fonte de Legitimação:</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div>{{ auto.legislacao }}</div>
+            </v-col>
+          </v-row>
+          <v-row class="my-2">
+            <v-col cols="2">
+              <div class="info-label">Fundo:</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
+            </v-col>
+          </v-row>
+          <v-row class="mt-2">
+            <v-col cols="2">
+              <div class="info-label">Classes e Agregações:</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div v-for="(c,i) in auto.zonaControlo" :key="i">
+                <span v-if="c.codigo">{{ c.codigo +" - "+c.titulo }}</span>
+                <span v-if="c.referencia">{{ c.referencia +" - "+c.titulo }}</span>
+                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">{{+a.codigo + " - " + a.titulo}}</li>
+              </div>
+            </v-col>
+          </v-row>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -324,7 +327,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -493,48 +496,58 @@ export default {
 </script>
 
 <style>
-.expansion-panel-heading {
-  color: #1a237e !important;
-  background-image: linear-gradient(to bottom, #e8eaf6 0, #8c9eff 100%);
-}
-
-.panel-custom .panel-heading {
-  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
-}
-
-.panel-custom .page-header {
-  border: none;
-  margin: 0;
-  color: #1a237e;
-}
-
-.panel-custom .panel-default:hover {
-  border-color: #8c9eff;
-}
-
-.adicao tr {
+.consulta tr {
   vertical-align: top;
   border-bottom: 1px solid #ddd;
 }
 
-.adicao td {
+.consulta td {
   padding-left: 5px;
   padding-bottom: 5px;
   padding-top: 5px;
+  align-content: center;
 }
 
-.adicao td:nth-of-type(2) {
+.consulta td:nth-of-type(2) {
   vertical-align: middle;
   padding-left: 15px;
 }
-
 .info-label {
-  color: #1a237e;
-  padding: 6px;
+  color: #1a237e; /* green darken-3 */
+  padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #dee2f8;
+  background-color: #dee2f8; /* green lighten-5 */
   font-weight: bold;
   margin: 5px;
+  border-radius: 3px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #696969;
+}
+
+.expansion-panel-heading {
+  background-color: #1a237e !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+}
+
+.card-heading {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
 }
 </style>

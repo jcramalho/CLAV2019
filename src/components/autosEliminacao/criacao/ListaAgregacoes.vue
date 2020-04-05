@@ -300,7 +300,7 @@ export default {
           this.erro = help.AutoEliminacao.Erros.DataContagem;
           this.erroDialog = true;
         } else if (res2 < 0) {
-          this.erro = help.AutoEliminacao.Erros.DataContagem;
+          this.erro = help.AutoEliminacao.Erros.DataContagemInicio;
           this.erroDialog = true;
         } else {
           this.auto.zonaControlo[this.index].agregacoes.unshift({

@@ -11,52 +11,6 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Tipo de diploma</div>
-            </v-col>
-            <v-col>
-              <v-select
-                :loading="tipoReady"
-                :disabled="tipoReady"
-                item-color="indigo"
-                color="indigo"
-                v-model="legislacao.tipo"
-                :items="tiposDiploma"
-                filled
-                label="Selecione uma opção"
-              />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Número de diploma</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="legislacao.numero"
-                label="Número do diploma"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Data do diploma</div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="legislacao.data"
-                @dataSelecionada="legislacao.data = $event"
-              />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
               <div class="info-label">Sumário</div>
             </v-col>
             <v-col>
@@ -84,22 +38,6 @@
                 single-line
                 label="Link"
               ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Tipo de fonte de legitimação</div>
-            </v-col>
-            <v-col>
-              <v-select
-                item-color="indigo"
-                color="indigo"
-                v-model="legislacao.fonte"
-                :items="diplomaFonteTipo"
-                label="Selecione uma opção"
-                filled
-              />
             </v-col>
           </v-row>
 

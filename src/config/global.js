@@ -8,3 +8,4 @@ const dominio = process.env.VUE_APP_API_URL || dominioDefault;
 const apiVersion = process.env.VUE_APP_API_VERSION || "v2";
 
 module.exports.host = dominio + "/" + apiVersion;
+ 

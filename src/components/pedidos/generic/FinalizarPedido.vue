@@ -23,9 +23,8 @@
           </v-col>
 
           <v-col>
-            <v-text-field
+            <v-textarea
               solo
-              clearable
               hide-details
               color="indigo"
               label="Mensagem de despacho"
