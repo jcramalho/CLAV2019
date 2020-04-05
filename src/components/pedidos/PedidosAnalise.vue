@@ -91,10 +91,7 @@
           Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
           {{ props.itemsLength }}
         </template>
-      </v-data-table>
-      <div>
-        {{ JSON.stringify(pedidos[pedidos.length-2]) }}
-      </div>    
+      </v-data-table>   
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>

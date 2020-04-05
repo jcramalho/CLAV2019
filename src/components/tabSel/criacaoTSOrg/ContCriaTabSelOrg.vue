@@ -22,29 +22,20 @@
                 Tipologias de entidade a que pertence
               </v-stepper-step>
               <v-stepper-content step="2">
-                <v-expansion-panels>
-                  <v-expansion-panel>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      Selecione as tipologias de entidade a que pertence
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <v-card class="ma-4">
-                        <DesSelTip
-                          :tipologias="tipSel"
-                          @unselectTipologia="unselectTipologia($event)"
-                        />
-
-                        <hr style="border-top: 1px dashed #dee2f8;" />
-
-                        <SelTip
-                          :tipologiasReady="tipologiasReady"
-                          :tipologias="tipologias"
-                          @selectTipologia="selectTipologia($event)"
-                        />
-                      </v-card>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
+                <v-col>
+                  <v-autocomplete
+                    v-model="tipSel"
+                    :items="tipologias"
+                    item-value="id"
+                    item-text="searchField"
+                    placeholder="Selecione as tipologias de entidade a que pertence"
+                    multiple
+                    chips
+                    deletable-chips
+                    return-object
+                  >
+                  </v-autocomplete>
+                </v-col>
                 <hr style="border-top: 0px" />
                 <v-btn
                   color="primary"
@@ -724,38 +715,28 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
+            searchField: item.sigla + " - " + item.designacao
           };
         });
         this.tipologiasReady = true;
 
         // Tipologias onde a entidade se encontra
-        var tipologias = await this.$request(
+        var tipologiasEnt = await this.$request(
           "get",
           "/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        this.tipEnt = tipologias.data.map(function(item) {
+        this.tipEnt = tipologiasEnt.data.map(function(item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
+            searchField: item.sigla + " - " + item.designacao
           };
         });
 
-        // Retira da lista de todas as tipologias as que já pertencem a esta entidade
-        for (var i = 0; i < this.tabelaSelecao.tipologias.length; i++) {
-          var index = this.tipologias.findIndex(
-            e => e.id === this.tabelaSelecao.tipologias[i].id
-          );
-          this.tipologias.splice(index, 1);
-        }
-
         this.tipSel = this.tabelaSelecao.tipologias;
-        // Para retirar da lista de tipologias selecionadas aquelas que por default já fazem parte da entidade
-        /*for (var j = 0; j < this.tipEnt.length; j++) {
-          index = this.tipSel.findIndex(e => e.id === this.tipEnt[j].id);
-          this.tipSel.splice(index, 1);
-        }*/
+        
       } catch (error) {
         return error;
       }

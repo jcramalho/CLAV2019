@@ -207,9 +207,9 @@
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
 
 export default {
-  props: ["e", "acao"],
+  props: ["e", "acao", "original"],
   components: {
-    ValidarEntidadeInfoBox
+    ValidarEntidadeInfoBox,
   },
   data() {
     return {
@@ -222,13 +222,13 @@ export default {
       pedidoEliminado: false,
       headers: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
-      ]
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+      ],
     };
   },
 
   methods: {
-    validarEntidadeCriacao: async function() {
+    validarEntidadeCriacao: async function () {
       let numeroErros = 0;
       // Designação
       if (this.e.designacao === "" || this.e.designacao === null) {
@@ -299,7 +299,7 @@ export default {
     },
 
     // Lança o pedido de criação da entidade no worflow
-    criarAlterarEntidade: async function() {
+    async criarAlterarEntidade() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
@@ -323,7 +323,7 @@ export default {
               "get",
               "/users/" + this.$store.state.token + "/token"
             );
-            let dataObj = this.e;
+            let dataObj = JSON.parse(JSON.stringify(this.e));
             dataObj.codigo = "ent_" + this.e.sigla;
             let pedidoParams = {
               tipoPedido: this.acao,
@@ -331,14 +331,25 @@ export default {
               novoObjeto: dataObj,
               user: { email: userBD.data.email },
               entidade: userBD.data.entidade,
-              token: this.$store.state.token
+              token: this.$store.state.token,
             };
 
-            var response = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+            if (this.acao === "Alteração") {
+              pedidoParams.objetoOriginal = this.original;
+
+              for (const key in dataObj) {
+                if (
+                  (typeof dataObj[key] === "string" &&
+                    dataObj[key] === this.original[key]) ||
+                  this.original[key] === undefined
+                ) {
+                  if (key !== "sigla") delete dataObj[key];
+                }
+              }
+            }
+
+            await this.$request("post", "/pedidos", pedidoParams);
+
             this.dialogEntidadeCriada = true;
           } else {
             this.errosValidacao = true;
@@ -349,23 +360,23 @@ export default {
       }
     },
 
-    criacaoPendenteTerminada: function() {
+    criacaoPendenteTerminada: function () {
       this.$router.push("/");
     },
 
-    criacaoEntidadeTerminada: function() {
+    criacaoEntidadeTerminada: function () {
       this.$router.push("/");
     },
 
     // Cancela a criação da Entidade
-    eliminarEntidade: function() {
+    eliminarEntidade: function () {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoEntidade: function() {
+    cancelarCriacaoEntidade: function () {
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
 
