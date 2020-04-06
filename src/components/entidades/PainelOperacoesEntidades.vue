@@ -228,7 +228,7 @@ export default {
   },
 
   methods: {
-    validarEntidadeCriacao: async function () {
+    validarEntidadeCriacao: async function() {
       let numeroErros = 0;
       // Designação
       if (this.e.designacao === "" || this.e.designacao === null) {
@@ -339,9 +339,8 @@ export default {
 
               for (const key in dataObj) {
                 if (
-                  (typeof dataObj[key] === "string" &&
-                    dataObj[key] === this.original[key]) ||
-                  this.original[key] === undefined
+                  typeof dataObj[key] === "string" &&
+                  dataObj[key] === this.original[key]
                 ) {
                   if (key !== "sigla") delete dataObj[key];
                 }
@@ -360,20 +359,20 @@ export default {
       }
     },
 
-    criacaoPendenteTerminada: function () {
+    criacaoPendenteTerminada: function() {
       this.$router.push("/");
     },
 
-    criacaoEntidadeTerminada: function () {
+    criacaoEntidadeTerminada: function() {
       this.$router.push("/");
     },
 
     // Cancela a criação da Entidade
-    eliminarEntidade: function () {
+    eliminarEntidade: function() {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoEntidade: function () {
+    cancelarCriacaoEntidade: function() {
       this.$router.push("/");
     },
   },
