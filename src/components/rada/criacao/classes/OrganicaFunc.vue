@@ -92,7 +92,6 @@
                   </v-container>
                 </template>
               </v-autocomplete>
-              <b>* Confirme a hierarquia, impossível alterar no futuro.</b>
             </v-col>
           </v-row>
         </v-form>

@@ -37,9 +37,9 @@
         </template>
       </v-data-table>
 
-      <div class="info-content">
+      <!--div class="info-content">
         {{ JSON.stringify(p) }}
-      </div>
+      </div-->
     </v-card-text>
   </v-card>
 </template>

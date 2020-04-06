@@ -4,7 +4,7 @@
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
-            >Nova Tabela de Seleção</v-toolbar-title
+            >Nova Tabela de Seleção Pluriorganizacional</v-toolbar-title
           >
         </v-app-bar>
         <v-card-text class="panel-body">
@@ -13,33 +13,38 @@
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
               <v-stepper-step :complete="stepNo > 1" step="1">
                 Entidades abrangidas pela TS
+                <span v-if="stepNo > 1">
+                  <v-chip
+                    v-for="(e,i) in entSel" :key="i"
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ e.searchField }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="1">
-                <v-expansion-panels>
-                  <v-expansion-panel>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      Selecione as entidades abrangidas pela TS
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <v-card style="padding-top:30px;">
-                        <v-card-text>
-                          <DesSelEnt
-                            :entidades="entSel"
-                            @unselectEntidade="unselectEntidade($event)"
-                          />
-
-                          <hr style="border-top: 1px dashed #dee2f8;" />
-
-                          <SelEnt
-                            :entidadesReady="entidadesReady"
-                            :entidades="entidades"
-                            @selectEntidade="selectEntidade($event)"
-                          />
-                        </v-card-text>
-                      </v-card>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
+                <v-col v-if="entidadesReady">
+                  <v-autocomplete
+                    v-model="entSel"
+                    :items="entidades"
+                    item-text="searchField"
+                    placeholder="Selecione as entidades abrangidas pela TS"
+                    multiple
+                    chips
+                    deletable-chips
+                    return-object
+                  >
+                  </v-autocomplete>
+                </v-col>
+                <v-col v-else>
+                  <v-alert dense type="info">
+                    Ainda não foi possível carregar as entidades...
+                  </v-alert>
+                </v-col>
                 <hr style="border-top: 0px" />
                 <v-btn
                   color="primary"
@@ -56,9 +61,18 @@
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 2" step="2"
-                >Designação
-                <small>Designação da nova tabela de seleção</small>
+              <v-stepper-step :complete="stepNo > 2" step="2">
+                Designação da Tabela de Seleção
+                <span v-if="stepNo > 2">
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    {{ tabelaSelecao.designacao }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="2">
                 <v-flex xs12 sm6 md10>
@@ -523,9 +537,6 @@
 </template>
 
 <script>
-import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
-import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
-
 import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspRestantes.vue";
@@ -534,8 +545,6 @@ import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcS
 
 export default {
   components: {
-    DesSelEnt,
-    SelEnt,
     ListaProcessosComuns,
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
@@ -655,46 +664,30 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
+            searchField: item.sigla + " - " + item.designacao
           };
         });
 
-        for (var i = 0; i < this.entidades.length; i++) {
-          if (
-            "ent_" + this.entidades[i].sigla ===
-            this.tabelaSelecao.idEntidade
-          ) {
-            this.entSel.push({
-              sigla: this.entidades[i].sigla,
-              designacao: this.entidades[i].designacao,
-              id: this.entidades[i].id
-            });
-            break;
-          }
-        }
-        // Retira da lista das entidades a entidade a que pertence o utilizador
         var index = this.entidades.findIndex(
           e => e.id === this.tabelaSelecao.idEntidade
         );
-        this.entidades.splice(index, 1);
+
+        if(index != -1)
+          this.entSel.push({
+              sigla: this.entidades[index].sigla,
+              designacao: this.entidades[index].designacao,
+              id: this.entidades[index].id,
+              searchField: this.entidades[index].sigla + " - " + this.entidades[index].designacao
+            });
 
         this.entidadesReady = true;
-      } catch (err) {
-        return err;
+      }
+        catch (err) {
+          return err;
       }
     },
-    // Retira da lista de entidades selecionadas
-    unselectEntidade: function(entidade) {
-      this.entidades.push(entidade);
-      var index = this.entSel.findIndex(e => e.id === entidade.id);
-      this.entSel.splice(index, 1);
-    },
-    // Coloca na lista de entidades selecionadas
-    selectEntidade: function(entidade) {
-      this.entSel.push(entidade);
-      var index = this.entidades.findIndex(e => e.id === entidade.id);
-      this.entidades.splice(index, 1);
-    },
+    
     // Carrega todos os processos comuns
     loadProcComuns: async function() {
       try {
@@ -1045,7 +1038,7 @@ export default {
       try {
         var userBD = await this.$request(
           "get",
-          "/users/l" + this.$store.state.token + "/token"
+          "/users/" + this.$store.state.token + "/token"
         );
 
         var tsObj = [];
@@ -1123,6 +1116,7 @@ export default {
           tipoObjeto: "TS Pluriorganizacional web",
           novoObjeto: {
             ts: {
+              entidades: this.entSel,
               processos: tsObj,
               designacao: this.tabelaSelecao.designacao
             }
@@ -1197,9 +1191,10 @@ export default {
       this.$router.push("/");
     }
   },
+
   created: async function() {
     await this.infoUserEnt();
-    this.loadEntidades();
+    await this.loadEntidades();
     this.loadProcComuns();
   }
 };

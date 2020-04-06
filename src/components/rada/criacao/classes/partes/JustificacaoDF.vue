@@ -6,7 +6,7 @@
       </v-col>
       <v-col sm="9" md="9">
         <v-select
-          :rules="[v => exist(v)]"
+          :rules="[v => rule(v)]"
           :disabled="disable_df()"
           v-model="newSerie.df"
           :items="['Conservação', 'Conservação Parcial', 'Eliminação']"
@@ -98,7 +98,7 @@
 const labels = require("@/config/labels").criterios;
 
 export default {
-  props: ["newSerie", "classes"],
+  props: ["newSerie", "classes", "rules"],
   computed: {
     existeLegislacao() {
       // Se já existir critério legal, não aparece botão
@@ -123,29 +123,25 @@ export default {
     }
   },
   methods: {
-    // Verificar pela relação existente visto que a gestão feita não permite ter coisas erradas
-    disable_df() {
-      if (
-        this.newSerie.relacoes.some(
-          e => e.relacao == "Síntese de" || e.relacao == "Complementar de"
-        )
-      ) {
-        this.newSerie.df = "Conservação";
-        return true;
-      } else {
-        if (this.newSerie.relacoes.some(e => e.relacao == "Sintetizado por")) {
-          this.newSerie.df = "Eliminação";
-          return true;
-        } else {
-          return false;
-        }
-      }
-    },
-    exist(v) {
-      if (this.newSerie.tipo == "Subsérie" && (v == "" || v == null)) {
+    rule(v) {
+      if (this.rules && (v == "" || v == null)) {
         return "Campo Obrigatório";
       } else {
         return true;
+      }
+    },
+    // Verificar pela relação existente visto que a gestão feita não permite ter coisas erradas
+    disable_df() {
+      if (
+        this.newSerie.justificacaoDF.some(
+          e =>
+            e.tipo == "Critério de Complementaridade Informacional" ||
+            e.tipo == "Critério de Densidade Informacional"
+        )
+      ) {
+        return true;
+      } else {
+        return false;
       }
     },
     removeRelacao(index, criterio, indexCriterio) {

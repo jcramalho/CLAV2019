@@ -69,7 +69,8 @@
           </v-data-table>
         </v-card-text>
       </v-card>
-      <ShowTSOrg v-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
+      <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional web'" :p="p" />
+      <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
       <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
       <ShowAE
@@ -90,6 +91,7 @@
 </template>
 
 <script>
+import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
 import ShowDefault from "@/components/pedidos/consulta/showDefault.vue";
@@ -103,6 +105,7 @@ export default {
   props: ["p"],
 
   components: {
+    ShowTSPluri,
     ShowTSOrg,
     ShowClasse,
     ShowDefault,

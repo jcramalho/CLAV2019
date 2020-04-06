@@ -157,6 +157,9 @@
                       v-model="cod"
                       :items="getCodigos"
                       label="Código"
+                      item-text="searchField"
+                      item-value="codigo"
+                      :return-object="false"
                       solo
                       clearable
                     >
@@ -271,7 +274,12 @@ export default {
           e =>
             (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
         )
-        .map(e => e.codigo);
+        .map(e => {
+          return {
+            codigo: e.codigo,
+            searchField: e.codigo + " - " + e.titulo
+          };
+        });
     }
   },
   watch: {
@@ -413,7 +421,7 @@ export default {
               tipologiasProdutoras: [],
               legislacao: [],
               relacoes: [],
-              pca: "",
+              pca: null,
               formaContagem: {
                 forma: null
               },
@@ -421,7 +429,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: ""
+              eFilhoDe: null
             });
           } else {
             this.classes.push({
@@ -431,7 +439,7 @@ export default {
               dataInicial: null,
               dataFinal: null,
               relacoes: [],
-              pca: "",
+              pca: null,
               UIs: [this.UI.codigo],
               formaContagem: {
                 forma: null
@@ -440,7 +448,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: "",
+              eFilhoDe: null,
               tipo: "Subsérie"
             });
           }

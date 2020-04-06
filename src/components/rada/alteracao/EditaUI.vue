@@ -1,17 +1,51 @@
 <template>
   <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
-      <!-- <v-btn color="indigo lighten-2" dark class="ma-2" v-on="on"></v-btn> -->
-      <tr :style="'text-align: center; background-color:' + isComplete" v-on="on" @click="cloneUI">
-        <td>{{ UI.codigo }}</td>
-        <td>{{ UI.titulo }}</td>
-      </tr>
+    <template v-slot:activator="{ on: dialog }">
+      <v-tooltip top>
+        <template v-slot:activator="{ on: tooltip }">
+          <tr
+            :style="'text-align: center; background-color:' + isComplete"
+            v-on="{...tooltip, ...dialog}"
+            @click="cloneUI"
+          >
+            <td>{{ UI.codigo }}</td>
+            <td>{{ UI.titulo }}</td>
+          </tr>
+        </template>
+        <span width="100%">
+          <h4>
+            Classes associadas a:
+            <b>{{ UI.codigo + " - " + UI.titulo }}</b>
+          </h4>
+          <ul>
+            <li v-for="(classe, i) in UI.classesAssociadas" :key="i">{{classe.codigo}}</li>
+          </ul>
+        </span>
+      </v-tooltip>
     </template>
     <v-card>
-      <v-card-title
-        class="indigo darken-1 white--text"
-      >Editar Unidade de Instalação: {{ UI.codigo + " - " + UI.titulo}}</v-card-title>
+      <v-card-title class="indigo darken-1 white--text">
+        <b>Editar Unidade de Instalação: {{ UI.codigo + " - " + UI.titulo}}</b>
+        <v-spacer />
+        <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
+      </v-card-title>
       <v-card-text>
+        <v-row>
+          <v-dialog v-model="toDelete" width="50%">
+            <v-card>
+              <v-card-title
+                class="headline grey lighten-2"
+                primary-title
+              >Pretende mesmo eliminar a unidade de instalação: {{ UI.codigo + " - " + UI.titulo}}?</v-card-title>
+
+              <v-card-text align="center">
+                <br />
+                <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
+                <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarUI">Sim</v-btn>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </v-row>
         <v-form ref="formUI" :lazy-validation="false">
           <v-row>
             <v-col md="3" sm="3">
@@ -153,6 +187,9 @@
                       v-model="cod"
                       :items="getCodigos"
                       label="Código"
+                      item-text="searchField"
+                      item-value="codigo"
+                      :return-object="false"
                       solo
                       clearable
                     >
@@ -272,7 +309,12 @@ export default {
           e =>
             (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
         )
-        .map(e => e.codigo);
+        .map(e => {
+          return {
+            codigo: e.codigo,
+            searchField: e.codigo + " - " + e.titulo
+          };
+        });
     }
   },
   watch: {
@@ -288,6 +330,7 @@ export default {
     }
   },
   data: () => ({
+    toDelete: false,
     showTable: false,
     alertOn: false,
     menu1: false,
@@ -322,6 +365,13 @@ export default {
     ]
   }),
   methods: {
+    eliminarUI() {
+      for (let i = 0; i < this.UI.classesAssociadas.length; i++) {
+        this.elimina_de_classe(this.UI.classesAssociadas[i].codigo, this.UI.codigo);
+      }
+      this.$emit("remover", this.UI.codigo);
+      this.dialog = false;
+    },
     eCodigoClasseValido(v) {
       if (
         this.classes.some(
@@ -363,7 +413,7 @@ export default {
             legislacao: [],
             relacoes: [],
             UIs: [codigo_UI],
-            pca: "",
+            pca: null,
             formaContagem: {
               forma: null
             },
@@ -371,7 +421,7 @@ export default {
             df: null,
             justificacaoDF: [],
             notas: "",
-            eFilhoDe: "",
+            eFilhoDe: null,
             tipo: "Série"
           };
         } else {
@@ -383,7 +433,7 @@ export default {
             dataFinal: null,
             relacoes: [],
             UIs: [codigo_UI],
-            pca: "",
+            pca: null,
             formaContagem: {
               forma: null
             },
@@ -391,7 +441,7 @@ export default {
             df: null,
             justificacaoDF: [],
             notas: "",
-            eFilhoDe: "",
+            eFilhoDe: null,
             tipo: "Subsérie"
           };
         }
@@ -404,7 +454,6 @@ export default {
       let novo_classesAssociadas = [];
 
       // Iterar o array alterado pelo utilizador
-
       for (let i = 0; i < UI_copia.classesAssociadas.length; i++) {
         let classe_ui_igual = UI_real.classesAssociadas.find(
           ui => ui.codigo == UI_copia.classesAssociadas[i].codigo
@@ -421,7 +470,6 @@ export default {
       }
 
       //Iterar o array original de uis
-
       for (let j = 0; j < UI_real.classesAssociadas.length; j++) {
         let classe_ui_igual = UI_copia.classesAssociadas.find(
           ui => ui.codigo == UI_real.classesAssociadas[j].codigo

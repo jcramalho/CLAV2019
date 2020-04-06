@@ -55,8 +55,7 @@
                     solo
                     clearable
                     :return-object="false"
-                  >
-                  </v-combobox>
+                  ></v-combobox>
                 </v-col>
               </v-row>
 
@@ -200,6 +199,27 @@ export default {
     }
   },
   methods: {
+    alteraDF(tipo_criterio) {
+      if (tipo_criterio == "Critério de Complementaridade Informacional") {
+        if (this.newSerie.relacoes.some(e => e.relacao == "Síntese de")) {
+          this.newSerie.df = "Conservação";
+        } else {
+          if (
+            this.newSerie.relacoes.some(e => e.relacao == "Sintetizado por")
+          ) {
+            this.newSerie.df = "Eliminação";
+          } else {
+            this.newSerie.df = null;
+          }
+        }
+      } else {
+        if (this.newSerie.relacoes.some(e => e.relacao == "Complementar de")) {
+          this.newSerie.df = "Conservação";
+        } else {
+          this.newSerie.df = null;
+        }
+      }
+    },
     remove_criterio(codigoClasse, tipo_criterio) {
       if (tipo_criterio == "Critério de Utilidade Administrativa") {
         let criterio = this.newSerie.justificacaoPCA.find(
@@ -224,6 +244,8 @@ export default {
           criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
 
           if (criterio.relacoes.length == 0) {
+            this.alteraDF(tipo_criterio);
+
             this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
               e => e.tipo != tipo_criterio
             );
@@ -346,12 +368,21 @@ export default {
 
           switch (relacao) {
             case "Sintetizado por":
+              if (
+                !this.newSerie.justificacaoDF.some(
+                  e => e.tipo == "Critério de Complementaridade Informacional"
+                )
+              ) {
+                this.newSerie.df = "Eliminação";
+              }
               nota = labels.textoCriterioDensidadeSinPor;
               break;
             case "Complementar de":
+              this.newSerie.df = "Conservação";
               nota = labels.textoCriterioComplementaridade;
               break;
             case "Síntese de":
+              this.newSerie.df = "Conservação";
               nota = labels.textoCriterioDensidadeSinDe;
               break;
           }

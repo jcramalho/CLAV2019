@@ -13,8 +13,17 @@
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
               <v-stepper-step :complete="stepNo > 1" step="1">
                 Identificação da entidade da tabela de seleção:
-                <span v-if="stepNo<=1">[por selecionar]</span>
-                <span v-else class="indigo--text">{{ ent }}</span>
+                <span v-if="stepNo > 1">
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ ent }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="1">
                 <v-col>
@@ -36,13 +45,24 @@
 
               <v-stepper-step :complete="stepNo > 2" step="2">
                 Tipologias de entidade a que pertence
+                <span v-if="stepNo > 2">
+                  <v-chip
+                    v-for="(t,i) in tipSel" :key="i"
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ t.searchField }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="2">
                 <v-col>
                   <v-autocomplete
                     v-model="tipSel"
                     :items="tipologias"
-                    item-value="id"
                     item-text="searchField"
                     placeholder="Selecione as tipologias de entidade a que pertence"
                     multiple
@@ -71,9 +91,18 @@
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 3" step="3"
-                >Designação da Tabela de Seleção
-                <small>Designação da nova tabela de seleção</small>
+              <v-stepper-step :complete="stepNo > 3" step="3">
+                Designação da Tabela de Seleção
+                <span v-if="stepNo > 3">
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    {{ tabelaSelecao.designacao }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="3">
                 <v-flex xs12 sm6 md10>
@@ -618,17 +647,12 @@ import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSOrg/ListaPr
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSOrg/ListaProcessosUltimos.vue";
 import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcSel.vue";
 
-import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
-import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
-
 export default {
   components: {
     ListaProcessosComuns,
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
     ListaProcessosUltimos,
-    DesSelTip,
-    SelTip,
     ListaParteDescritiva
   },
   data() {

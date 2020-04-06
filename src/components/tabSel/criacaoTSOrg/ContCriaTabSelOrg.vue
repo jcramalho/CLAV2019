@@ -13,13 +13,35 @@
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
                <v-stepper-step :complete="stepNo > 1" step="1">
                 Identificação da entidade da tabela de seleção:
-                <span class="indigo--text">{{ tabelaSelecao.idEntidade.split("_")[1] }}</span>
-                <span class="indigo--text">{{ tabelaSelecao.designacao }}</span>
+                <span>
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ tabelaSelecao.idEntidade.split("_")[1] }}
+                    -
+                    {{ tabelaSelecao.designacao }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="1">
               </v-stepper-content>
               <v-stepper-step :complete="stepNo > 2" step="2">
                 Tipologias de entidade a que pertence
+                <span v-if="stepNo > 2">
+                  <v-chip
+                    v-for="(t,i) in tipSel" :key="i"
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ t.searchField }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="2">
                 <v-col>
@@ -45,19 +67,20 @@
                   "
                   >Continuar</v-btn
                 >
-                <!--v-btn
-                  text
-                  @click="
-                    stepNo--;
-                    barra(0);
-                  "
-                  >Voltar</v-btn
-                -->
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 3" step="3"
-                >Designação
-                <small>Designação da Tabela de Seleção</small>
+              <v-stepper-step :complete="stepNo > 3" step="3">
+                Designação da Tabela de Seleção
+                <span v-if="stepNo > 3">
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    {{ tabelaSelecao.designacao }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="3">
                 <v-flex xs12 sm6 md10>
