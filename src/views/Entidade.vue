@@ -28,14 +28,6 @@ export default {
       entidade: "Nome da Entidade"
     };
   },
-  created: async function() {
-    try {
-      let response = await this.$request("get", "/notificacoes");
-      this.$emit("userNotificacoes", response.data);
-    } catch (error) {
-      return error;
-    }
-  },
   mounted: async function() {
     this.level = await this.$userLevel(this.$store.state.token);
   }

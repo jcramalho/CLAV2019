@@ -3,7 +3,8 @@
     <MainPageHeader 
       :n="notificacoes ? notificacoes.length : '0'"
       @drawerNotificacoes="drawerNotificacoes()" 
-      @drawerDefinicoes="drawerDefinicoes()"/>
+      @drawerDefinicoes="drawerDefinicoes()"
+      @drawerEstatisticas="drawerEstatisticas()"/>
 
     <v-snackbar 
       v-model="snackbar" 
@@ -15,8 +16,8 @@
     </v-snackbar>
 
     <v-content>
-      <router-view @userNotificacoes="userNotificacoes($event)"/>
-      
+      <router-view/>
+
       <Notificacoes 
         v-if="this.$store.state.name != ''"
         :drawer="drawN" 
@@ -25,6 +26,9 @@
       <Definicoes 
         v-if="this.$store.state.name != ''"
         :drawer="drawD"/> 
+      <Estatisticas 
+        v-if="this.$store.state.name != ''"
+        :drawer="drawE"/> 
     </v-content>
 
     <PageFooter />
@@ -37,6 +41,7 @@ import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 import Definicoes from "@/components/principal/Definicoes.vue";
 import Notificacoes from "@/components/principal/Notificacoes.vue";
+import Estatisticas from "@/components/principal/Estatisticas.vue";
 
 export default {
   name: "App",
@@ -44,7 +49,8 @@ export default {
     PageFooter,
     MainPageHeader,
     Definicoes,
-    Notificacoes
+    Notificacoes,
+    Estatisticas
   },
   watch: {
     async $route(to, from) {
@@ -62,6 +68,8 @@ export default {
               )
             ) {
               this.authenticated = true;
+              let response = await this.$request("get", "/notificacoes");
+              this.notificacoes = response.data;
             } else {
               this.text = "Não tem permissões para aceder a esta página!";
               this.color = "error";
@@ -85,6 +93,12 @@ export default {
         }
       } else {
         this.authenticated = true;
+        try {
+          let response = await this.$request("get", "/notificacoes");
+          this.notificacoes = response.data;
+        } catch (error) {
+          return error;
+        }
       }
 
       if (this.$route.query.erro) {
@@ -112,18 +126,22 @@ export default {
     },
     drawerNotificacoes() {
       this.drawD = false;
+      this.drawE = false;
       this.drawN = !this.drawN;
     },
     drawerDefinicoes() {
       this.drawN = false;
+      this.drawE = false;
       this.drawD = !this.drawD;
     },
-    userNotificacoes(notificacoes) {
-      this.notificacoes = notificacoes
+    drawerEstatisticas() {
+      this.drawN = false;
+      this.drawD = false;
+      this.drawE = !this.drawE;
     },
-    removerNotificacao(id) {
+    async removerNotificacao(id) {
       try {
-        this.$request("delete", "/notificacoes/" + id);
+        await this.$request("delete", "/notificacoes/" + id);
         this.notificacoes = this.notificacoes.filter(notificacao => {
           return notificacao._id !== id;
         });
@@ -136,6 +154,7 @@ export default {
     notificacoes: null,
     drawN: false,
     drawD: false,
+    drawE: false,
     snackbar: false,
     authenticated: false,
     color: "",

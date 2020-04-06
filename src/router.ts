@@ -8,14 +8,14 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
-      name: "home",
+      path: "/oldentry",
+      name: "oldentry",
       component: () => import("./views/Principal.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },   
     {
-      path: "/entidade",
-      name: "entidade",
+      path: "/",
+      name: "home",
       component: () => import("./views/Entidade.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
@@ -353,6 +353,18 @@ export default new Router({
       path: "/gestao/metrica",
       name: "metrica",
       component: () => import("./views/gestao/Metrica.vue"),
+      meta: { levels: [6, 7] }
+    },
+    {
+      path: "/gestao/classes",
+      name: "indicadores",
+      component: () => import("./views/gestao/Classe.vue"),
+      meta: { levels: [6, 7] }
+    },
+    {
+      path: "/gestao/gerais",
+      name: "gerais",
+      component: () => import("./views/gestao/Geral.vue"),
       meta: { levels: [6, 7] }
     },
     //Chaves API

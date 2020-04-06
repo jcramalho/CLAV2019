@@ -62,6 +62,13 @@
       </v-btn>
       <v-btn
         v-if="this.$store.state.name != ''"
+        @click="drawerEstatisticas"
+        icon
+      >
+        <v-icon large>assessment</v-icon>
+      </v-btn>
+      <v-btn
+        v-if="this.$store.state.name != ''"
         @click="drawerDefinicoes"
         icon
       >
@@ -100,6 +107,9 @@ export default {
     },
     drawerDefinicoes() {
       this.$emit('drawerDefinicoes');
+    },
+    drawerEstatisticas() {
+      this.$emit('drawerEstatisticas');
     },
     fecharSnackbar() {
       this.snackbar = false;
