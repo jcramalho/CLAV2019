@@ -2,12 +2,14 @@
   <div>
     <!-- 1 -->
     <v-row>
+      <!-- {{newSerie}} -->
       <v-col md="3" sm="3">
         <div class="info-label">Prazo de Conservação Administrativa</div>
       </v-col>
       <v-col sm="9" md="9">
         <v-text-field
-          :rules="[v => rulePCA(v)]"
+          :rules="[v => rule(v)]"
+          type="number"
           v-model="newSerie.pca"
           label="Prazo de Conservação Administrativa"
           solo
@@ -16,12 +18,12 @@
       </v-col>
     </v-row>
     <!-- 2 -->
-    <FormaContagem :newSerie="newSerie" :formaContagem="formaContagem" />
+    <FormaContagem :newSerie="newSerie" :formaContagem="formaContagem" :rules="rules" />
     <!-- 3 -->
-    <JustificacaoPCA :newSerie="newSerie" :classes="classes" />
+    <JustificacaoPCA :newSerie="newSerie" :classes="classes" :rules="rules" />
     <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <!-- 4 -->
-    <JustificacaoDF :newSerie="newSerie" :classes="classes" />
+    <JustificacaoDF :newSerie="newSerie" :classes="classes" :rules="rules" />
     <!-- 5 -->
     <v-row>
       <v-col md="3" sm="3">
@@ -40,26 +42,18 @@ import FormaContagem from "./FormaContagem";
 import JustificacaoDF from "./JustificacaoDF";
 
 export default {
-  props: ["newSerie", "classes", "formaContagem"],
+  props: ["newSerie", "classes", "formaContagem", "rules"],
   components: {
     JustificacaoPCA,
     FormaContagem,
     JustificacaoDF
   },
   methods: {
-    rulePCA: function(v) {
-      if (v == "" || v == null) {
-        if (this.newSerie.tipo == "Subsérie") {
-          return "Campo Obrigatório";
-        } else {
-          return true;
-        }
+    rule(v) {
+      if (this.rules && (v == null || v == "")) {
+        return "Campo Obrigatório";
       } else {
-        if (!isNaN(parseInt(v)) && parseInt(v) >= 0) {
-          return true;
-        } else {
-          return "Valor tem que ser inteiro.";
-        }
+        return true;
       }
     }
   }

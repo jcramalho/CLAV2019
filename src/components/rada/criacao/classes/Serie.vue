@@ -43,6 +43,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
+                  :rules="false"
                   :newSerie="newSerie"
                   :classes="classes"
                   :formaContagem="formaContagem"
@@ -144,7 +145,7 @@ export default {
       tipologiasProdutoras: [],
       legislacao: [],
       relacoes: [],
-      pca: "",
+      pca: null,
       formaContagem: {
         forma: null
       },
@@ -152,9 +153,8 @@ export default {
       df: null,
       justificacaoDF: [],
       notas: "",
-      eFilhoDe: "",
-      tipo: "Série",
-      children: []
+      eFilhoDe: null,
+      tipo: "Série"
     }
   }),
   methods: {
@@ -178,7 +178,7 @@ export default {
         tipologiasProdutoras: [],
         legislacao: [],
         relacoes: [],
-        pca: "",
+        pca: null,
         formaContagem: {
           forma: null
         },
@@ -186,7 +186,7 @@ export default {
         df: null,
         justificacaoDF: [],
         notas: "",
-        eFilhoDe: "",
+        eFilhoDe: null,
         tipo: "Série"
       };
       this.$refs.formSerie.resetValidation();
@@ -214,18 +214,67 @@ export default {
       this.isMultiple = false;
       this.panels = [0, 0, 0];
 
-
-      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas. ALTERAR DEPOIS
-      this.newSerie.relacoes = this.newSerie.relacoes.filter(
-        e => e.relacao != "Síntese de" && e.relacao != "Sintetizado por"
-      );
-      this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
-        e => e.tipo != "Critério de Densidade Informacional"
-      );
+      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas. 
+      this.validar_Relacoes_Sintese();
 
       this.classesHierarquia = this.classes
         .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
+    },
+    validar_Relacoes_Sintese() {
+      let relacoes_sintese = this.newSerie.relacoes.filter(
+        e => e.relacao == "Síntese de" || e.relacao == "Sintetizado por"
+      );
+
+      for (let i = 0; i < relacoes_sintese.length; i++) {
+        let existe_classe = this.classes.some(
+          cl =>
+            cl.codigo == relacoes_sintese[i].serieRelacionada.codigo &&
+            cl.relacoes.some(rel => rel.relacao == relacoes_sintese[i].relacao)
+        );
+
+        if (existe_classe) {
+          // Verificar esta expressão
+          this.newSerie.relacoes = this.newSerie.relacoes.filter(
+            rel =>
+              rel.relacao != relacoes_sintese[i].relacao ||
+              rel.serieRelacionada.codigo !=
+                relacoes_sintese[i].serieRelacionada.codigo
+          );
+
+          this.remove_criterio_densidade_informacional(
+            relacoes_sintese[i].serieRelacionada.codigo
+          );
+        }
+      }
+    },
+    remove_criterio_densidade_informacional(codigoClasse) {
+      let criterio = this.newSerie.justificacaoDF.find(
+        crit => crit.tipo == "Critério de Densidade Informacional"
+      );
+
+      if (criterio != undefined) {
+        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+
+        if (criterio.relacoes.length == 0) {
+          this.alteraDF();
+
+          this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
+            e => e.tipo != "Critério de Densidade Informacional"
+          );
+        }
+      }
+    },
+    alteraDF() {
+      if (
+        this.newSerie.justificacaoDF.some(
+          e => e.tipo == "Critério de Complementaridade Informacional"
+        )
+      ) {
+        this.newSerie.df = "Conservação";
+      } else {
+        this.newSerie.df = null;
+      }
     },
     adicionarUIs: function(clone_newSerie) {
       for (let i = 0; i < clone_newSerie.UIs.length; i++) {
@@ -346,7 +395,7 @@ export default {
               tipologiasProdutoras: [],
               legislacao: [],
               relacoes: [],
-              pca: "",
+              pca: null,
               formaContagem: {
                 forma: null
               },
@@ -354,7 +403,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: "",
+              eFilhoDe: null,
               tipo: "Série"
             };
           } else {
@@ -366,7 +415,7 @@ export default {
               dataFinal: null,
               relacoes: [],
               UIs: [],
-              pca: "",
+              pca: null,
               formaContagem: {
                 forma: null
               },
@@ -374,7 +423,7 @@ export default {
               df: null,
               justificacaoDF: [],
               notas: "",
-              eFilhoDe: "",
+              eFilhoDe: null,
               tipo: "Subsérie"
             };
           }

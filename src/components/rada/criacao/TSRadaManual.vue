@@ -28,7 +28,7 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" />
         </v-col>
       </v-row>
-      <!-- {{ TS.classes }} -->
+      <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p> -->
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -43,10 +43,12 @@
                   :RE="RE"
                   :UIs="TS.UIs"
                   :formaContagem="formaContagem"
+                  @remover="remover_classe"
                 />
                 <EditarSubserie
                   v-else-if="item.tipo == 'Subsérie'"
                   @atualizacao="atualizacao_subserie"
+                  @remover="remover_classe"
                   :treeview_object="item"
                   :classes="TS.classes"
                   :UIs="TS.UIs"
@@ -55,6 +57,7 @@
                 <EditarOrganicaFunc
                   v-else
                   @atualizacao="atualizacao_area_organico"
+                  @remover="remover_classe"
                   :classes="TS.classes"
                   :treeview_object="item"
                 />
@@ -72,7 +75,7 @@
       <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <v-row>
         <v-col sm="12" xs="12">
-          <ListaUI :UIs="TS.UIs" :RE="RE" :classes="TS.classes" />
+          <ListaUI :TS="TS" :RE="RE" />
         </v-col>
       </v-row>
     </v-form>
@@ -115,12 +118,8 @@ export default {
   computed: {
     preparaTree() {
       var myTree = [];
-
       for (var i = 0; i < this.TS.classes.length; i++) {
-        if (
-          this.TS.classes[i].eFilhoDe == null ||
-          this.TS.classes[i].eFilhoDe == ""
-        ) {
+        if (this.TS.classes[i].eFilhoDe == null) {
           myTree.push({
             codigo: this.TS.classes[i].codigo,
             titulo:
@@ -133,7 +132,11 @@ export default {
                 (this.TS.classes[i].UIs != undefined &&
                   this.TS.classes[i].UIs.length > 0)
             ),
-            temDF: Boolean(this.TS.classes[i].df == null),
+            temDF: Boolean(
+              this.TS.classes[i].df == null ||
+                this.TS.classes[i].pca == null ||
+                this.TS.classes[i].formaContagem.forma == null
+            ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -143,19 +146,24 @@ export default {
     incompleto() {
       return this.TS.classes.some(
         e =>
-          ((e.eFilhoDe == "" ||
-            !(
-              (e.dataInicial != undefined && e.dataInicial != null) ||
-              (e.UIs != undefined && e.UIs.length > 0)
-            )) &&
-            e.tipo == "Série") ||
-          ((e.df == null ||
-            e.eFilhoDe == "" ||
-            !(
-              (e.dataInicial != undefined && e.dataInicial != null) ||
-              (e.UIs != undefined && e.UIs.length > 0)
-            )) &&
-            e.tipo == "Subsérie")
+          (e.tipo == "Série" &&
+            ((!this.TS.classes.some(cl => cl.eFilhoDe == e.codigo) &&
+              (e.df == null ||
+                e.pca == null ||
+                e.formaContagem.forma == null)) ||
+              e.eFilhoDe == null ||
+              !(
+                (e.dataInicial != undefined && e.dataInicial != null) ||
+                (e.UIs != undefined && e.UIs.length > 0)
+              ))) ||
+          (e.tipo == "Subsérie" &&
+            (e.df == null ||
+              e.eFilhoDe == null ||
+              !(
+                (e.dataInicial != undefined && e.dataInicial != null) ||
+                (e.UIs != undefined && e.UIs.length > 0)
+              ))) ||
+          (e.eFilhoDe == null && (e.tipo == "N2" || e.tipo == "N3"))
       );
     }
   },
@@ -177,7 +185,11 @@ export default {
                 (this.TS.classes[i].UIs != undefined &&
                   this.TS.classes[i].UIs.length > 0)
             ),
-            temDF: Boolean(this.TS.classes[i].df == null),
+            temDF: Boolean(
+              this.TS.classes[i].df == null ||
+                this.TS.classes[i].pca == null ||
+                this.TS.classes[i].formaContagem.forma == null
+            ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
           });
         }
@@ -198,6 +210,8 @@ export default {
 
       area_organico.descricao = c.descricao;
       area_organico.titulo = c.titulo;
+      area_organico.eFilhoDe = c.eFilhoDe;
+      area_organico.tipo = c.tipo;
     },
     async atualizacao_serie(c) {
       let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
@@ -399,7 +413,7 @@ export default {
             legislacao: [],
             relacoes: [],
             UIs: [],
-            pca: "",
+            pca: null,
             formaContagem: {
               forma: null
             },
@@ -407,7 +421,7 @@ export default {
             df: null,
             justificacaoDF: [],
             notas: "",
-            eFilhoDe: "",
+            eFilhoDe: null,
             tipo: "Série"
           };
         } else {
@@ -419,7 +433,7 @@ export default {
             dataFinal: null,
             relacoes: [],
             UIs: [],
-            pca: "",
+            pca: null,
             formaContagem: {
               forma: null
             },
@@ -427,7 +441,7 @@ export default {
             df: null,
             justificacaoDF: [],
             notas: "",
-            eFilhoDe: "",
+            eFilhoDe: null,
             tipo: "Subsérie"
           };
         }
@@ -566,7 +580,7 @@ export default {
         ) {
           classe_relacionada.df = "Conservação";
         } else {
-          classe_relacionada.DF = null;
+          classe_relacionada.df = null;
         }
       } else {
         if (classe_relacionada.relacoes.some(e => e.relacao == "Síntese de")) {
@@ -610,11 +624,10 @@ export default {
 
           if (criterio.relacoes.length == 0) {
             // Remover DF que é dependente do critério que vai ser eliminado;
-            this.removerDF(classe_relacionada, tipo_criterio, relacao);
-
             classe_relacionada.justificacaoDF = classe_relacionada.justificacaoDF.filter(
               e => e.tipo != tipo_criterio
             );
+            this.removerDF(classe_relacionada, tipo_criterio);
           }
         }
       }
@@ -677,6 +690,27 @@ export default {
           e.serieRelacionada.codigo != serie_classe.codigo
         );
       });
+    },
+    remover_classe(classe) {
+      this.TS.classes
+        .filter(e => e.eFilhoDe == classe.codigo)
+        .map(item => {
+          item.eFilhoDe = null;
+        });
+
+      if (classe.tipo == "Série" || classe.tipo == "Subsérie") {
+        // Remover Relações Inversas, critérios e ajustar destino final;
+        for (let i = 0; i < classe.relacoes.length; i++) {
+          this.removeRelacoesInversas(classe.relacoes[i], classe);
+        }
+        // Remover UIs;
+        for (let j = 0; j < classe.UIs.length; j++) {
+          this.eliminaUI(classe.UIs[j], classe);
+        }
+      }
+      this.TS.classes = this.TS.classes.filter(
+        cl => cl.codigo != classe.codigo
+      );
     }
   },
   created: async function() {

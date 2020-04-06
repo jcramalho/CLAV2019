@@ -7,16 +7,34 @@
         }}
       </b>
       <b
-        v-show="treeview_object.eFilhoDe == '' || !treeview_object.temUIs_ou_datas"
+        v-show="treeview_object.eFilhoDe == null || !treeview_object.temUIs_ou_datas || (treeview_object.temDF && !(!!(treeview_object.children[0])))"
         style="color:red"
       >*</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ "Alterar a série: " + treeview_object.titulo }}</b>
+        <v-spacer />
+        <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
       <v-card-text>
+        <v-row>
+          <v-dialog v-model="toDelete" width="50%">
+            <v-card>
+              <v-card-title
+                class="headline grey lighten-2"
+                primary-title
+              >Pretende mesmo eliminar a classe {{ treeview_object.titulo }} ?</v-card-title>
+
+              <v-card-text align="center">
+                <br />
+                <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
+                <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarClasse">Sim</v-btn>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </v-row>
         <v-form ref="formSerie" :lazy-validation="false">
           <Identificacao :newSerie="serie" />
 
@@ -42,21 +60,30 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel popout focusable>
+            <v-expansion-panel popout focusable v-if="!(!!(treeview_object.children[0]))">
               <v-expansion-panel-header class="expansion-panel-heading">
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
+                  :rules="true"
                   :newSerie="serie"
                   :classes="classes"
                   :formaContagem="formaContagem"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
+
+            <v-row v-else>
+              <v-col md="3" sm="3">
+                <div class="info-label">Notas</div>
+              </v-col>
+              <v-col sm="9" md="9">
+                <v-text-field solo clearable v-model="serie.notas" label="Notas"></v-text-field>
+              </v-col>
+            </v-row>
           </v-expansion-panels>
           <br />
-
           <h5>Hierarquia</h5>
           <v-divider></v-divider>
           <v-row>
@@ -125,6 +152,7 @@ export default {
     ZonaDecisoesAvaliacao
   },
   data: () => ({
+    toDelete: false,
     panels: [0, 0, 0],
     isMultiple: false,
     dialogSerie: false,
@@ -161,6 +189,14 @@ export default {
 
       return newJustificacaoDF;
     },
+    eliminarClasse() {
+      // Buscar a classe original pois é a que temos que eliminar, o clone pode estar desatualizado
+      let serie_real = this.classes.find(
+        e => e.codigo == this.treeview_object.codigo
+      );
+      this.$emit("remover", serie_real);
+      this.dialogSerie = false;
+    },
     async filterSeries() {
       this.panels = [0, 0, 0];
       this.isMultiple = false;
@@ -186,7 +222,7 @@ export default {
         .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
-    save: function() {
+    save() {
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {

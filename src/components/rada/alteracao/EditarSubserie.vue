@@ -7,16 +7,34 @@
         }}
       </b>
       <b
-        v-show="treeview_object.eFilhoDe == '' || !treeview_object.temUIs_ou_datas || treeview_object.temDF"
+        v-show="treeview_object.eFilhoDe == null || !treeview_object.temUIs_ou_datas || treeview_object.temDF"
         style="color:red"
       >*</b>
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ 'Alterar a subsérie: ' + treeview_object.titulo }}</b>
+        <v-spacer />
+        <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
       <v-card-text>
+        <v-row>
+          <v-dialog v-model="toDelete" width="50%">
+            <v-card>
+              <v-card-title
+                class="headline grey lighten-2"
+                primary-title
+              >Pretende mesmo eliminar a classe {{ treeview_object.titulo }} ?</v-card-title>
+
+              <v-card-text align="center">
+                <br />
+                <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
+                <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarClasse">Sim</v-btn>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </v-row>
         <v-form ref="formSubserie" :lazy-validation="false">
           <Identificacao :newSerie="subserie" :classes="classes" />
 
@@ -43,6 +61,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
+                  :rules="true"
                   :newSerie="subserie"
                   :classes="classes"
                   :formaContagem="formaContagem"
@@ -107,6 +126,7 @@ import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliac
 export default {
   props: ["treeview_object", "classes", "UIs", "formaContagem"],
   data: () => ({
+    toDelete: false,
     dialog: false,
     subserie: {
       justificacaoDF: [],
@@ -184,7 +204,15 @@ export default {
         .filter(classe => classe.tipo == "Série")
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
-    save: function() {
+    eliminarClasse() {
+      let subserie_real = this.classes.find(
+        e => e.codigo == this.treeview_object.codigo
+      );
+
+      this.$emit("remover", subserie_real);
+      this.dialog = false;
+    },
+    save() {
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
