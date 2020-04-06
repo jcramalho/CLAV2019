@@ -21,7 +21,7 @@ export default {
   }),
 
   methods: {
-    preparaEntidade: async function (ent, tip) {
+    preparaEntidade: async function(ent, tip) {
       try {
         let myEntidade = {
           designacao: ent.designacao,
@@ -47,7 +47,7 @@ export default {
     },
   },
 
-  created: async function () {
+  created: async function() {
     try {
       let idEntidade = this.$route.path.split("/")[3];
 

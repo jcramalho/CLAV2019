@@ -39,29 +39,6 @@
         >
       </v-col>
 
-      <!-- Trabalho pendente guardado com sucesso
-      <v-dialog v-model="pendenteGuardado" width="60%">
-        <v-card>
-          <v-card-title>Trabalho pendente guardado</v-card-title>
-          <v-card-text>
-            <p>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
-            </p>
-            <p>{{ pendenteGuardadoInfo }}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              color="indigo darken-1"
-              dark
-              @click="criacaoPendenteTerminada"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog> -->
-
       <!-- Erros de Validação -->
       <v-dialog v-model="errosValidacao" width="30%">
         <v-card>
