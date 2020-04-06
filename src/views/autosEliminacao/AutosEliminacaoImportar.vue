@@ -17,11 +17,12 @@ export default {
     classes: []
   }),
   methods: {
-    prepararEntidade: async function(ent) {
+    prepararEntidade: async function(ent,user) {
       try {
         var myEntidades = [];
         for (var e of ent) {
-          myEntidades.push(e.sigla + " - " + e.designacao);
+          if(e.id!=user.entidade)
+            myEntidades.push(e.sigla + " - " + e.designacao);
         }
         return myEntidades;
       } catch (error) {
@@ -62,9 +63,10 @@ export default {
     }
   },
   created: async function() {
-    try {
+    try {   
+      var user = await this.$request("get", "/users/token");
       var response2 = await this.$request("get", "/entidades/");
-      this.entidades = await this.prepararEntidade(response2.data);
+      this.entidades = await this.prepararEntidade(response2.data, user.data);
       var response3 = await this.$request(
         "get",
         "/classes?nivel=3&info=completa"

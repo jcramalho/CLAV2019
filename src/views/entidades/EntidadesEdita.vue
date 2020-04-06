@@ -12,32 +12,42 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     EditaEntidade,
-    Loading
+    Loading,
   },
 
   data: () => ({
     entidade: {},
-    dadosReady: false
+    dadosReady: false,
   }),
 
   methods: {
-    preparaEntidade: async function(ent, tip) {
+    preparaEntidade: async function (ent, tip) {
       try {
         let myEntidade = {
           designacao: ent.designacao,
           sigla: ent.sigla,
           sioe: ent.sioe,
           internacional: ent.internacional,
-          tipologiasSel: tip
+          tipologiasSel: tip,
+          estado: ent.estado,
         };
+
+        if (ent.dataCriacao) {
+          myEntidade.dataCriacao = ent.dataCriacao;
+        }
+
+        if (ent.dataExtincao) {
+          myEntidade.dataExtincao = ent.dataExtincao;
+        }
+
         return myEntidade;
       } catch (e) {
         return {};
       }
-    }
+    },
   },
 
-  created: async function() {
+  created: async function () {
     try {
       let idEntidade = this.$route.path.split("/")[3];
 
@@ -57,6 +67,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

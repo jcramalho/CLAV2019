@@ -19,13 +19,12 @@
       <v-container>
         <v-row>
           <v-col cols="3">
-            <div class="info-label">Mensagem:</div>
+            <div class="info-label">Despacho</div>
           </v-col>
 
           <v-col>
-            <v-text-field
+            <v-textarea
               solo
-              clearable
               hide-details
               color="indigo"
               label="Mensagem de despacho"

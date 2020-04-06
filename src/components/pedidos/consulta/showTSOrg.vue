@@ -36,6 +36,10 @@
           {{ props.itemsLength }}
         </template>
       </v-data-table>
+
+      <!--div class="info-content">
+        {{ JSON.stringify(p) }}
+      </div-->
     </v-card-text>
   </v-card>
 </template>

@@ -48,7 +48,7 @@
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
             <td class="subheading">
-              {{ props.item.entidade.split("_")[1] }}
+              <span v-if="props.item.entidade">{{ props.item.entidade.split("_")[1] }}</span>
             </td>
             <td class="subheading">{{ props.item.criadoPor }}</td>
             <td class="subheading">{{ converteData(props.item.data) }}</td>
@@ -91,7 +91,7 @@
           Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
           {{ props.itemsLength }}
         </template>
-      </v-data-table>
+      </v-data-table>   
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>

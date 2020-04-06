@@ -13,38 +13,51 @@
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
                <v-stepper-step :complete="stepNo > 1" step="1">
                 Identificação da entidade da tabela de seleção:
-                <span class="indigo--text">{{ tabelaSelecao.idEntidade.split("_")[1] }}</span>
-                <span class="indigo--text">{{ tabelaSelecao.designacao }}</span>
+                <span>
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ tabelaSelecao.idEntidade.split("_")[1] }}
+                    -
+                    {{ tabelaSelecao.designacao }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="1">
               </v-stepper-content>
               <v-stepper-step :complete="stepNo > 2" step="2">
                 Tipologias de entidade a que pertence
+                <span v-if="stepNo > 2">
+                  <v-chip
+                    v-for="(t,i) in tipSel" :key="i"
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ t.searchField }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="2">
-                <v-expansion-panels>
-                  <v-expansion-panel>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      Selecione as tipologias de entidade a que pertence
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <v-card class="ma-4">
-                        <DesSelTip
-                          :tipologias="tipSel"
-                          @unselectTipologia="unselectTipologia($event)"
-                        />
-
-                        <hr style="border-top: 1px dashed #dee2f8;" />
-
-                        <SelTip
-                          :tipologiasReady="tipologiasReady"
-                          :tipologias="tipologias"
-                          @selectTipologia="selectTipologia($event)"
-                        />
-                      </v-card>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
+                <v-col>
+                  <v-autocomplete
+                    v-model="tipSel"
+                    :items="tipologias"
+                    item-value="id"
+                    item-text="searchField"
+                    placeholder="Selecione as tipologias de entidade a que pertence"
+                    multiple
+                    chips
+                    deletable-chips
+                    return-object
+                  >
+                  </v-autocomplete>
+                </v-col>
                 <hr style="border-top: 0px" />
                 <v-btn
                   color="primary"
@@ -54,19 +67,20 @@
                   "
                   >Continuar</v-btn
                 >
-                <!--v-btn
-                  text
-                  @click="
-                    stepNo--;
-                    barra(0);
-                  "
-                  >Voltar</v-btn
-                -->
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 3" step="3"
-                >Designação
-                <small>Designação da Tabela de Seleção</small>
+              <v-stepper-step :complete="stepNo > 3" step="3">
+                Designação da Tabela de Seleção
+                <span v-if="stepNo > 3">
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    {{ tabelaSelecao.designacao }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="3">
                 <v-flex xs12 sm6 md10>
@@ -724,38 +738,28 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
+            searchField: item.sigla + " - " + item.designacao
           };
         });
         this.tipologiasReady = true;
 
         // Tipologias onde a entidade se encontra
-        var tipologias = await this.$request(
+        var tipologiasEnt = await this.$request(
           "get",
           "/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        this.tipEnt = tipologias.data.map(function(item) {
+        this.tipEnt = tipologiasEnt.data.map(function(item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
+            searchField: item.sigla + " - " + item.designacao
           };
         });
 
-        // Retira da lista de todas as tipologias as que já pertencem a esta entidade
-        for (var i = 0; i < this.tabelaSelecao.tipologias.length; i++) {
-          var index = this.tipologias.findIndex(
-            e => e.id === this.tabelaSelecao.tipologias[i].id
-          );
-          this.tipologias.splice(index, 1);
-        }
-
         this.tipSel = this.tabelaSelecao.tipologias;
-        // Para retirar da lista de tipologias selecionadas aquelas que por default já fazem parte da entidade
-        /*for (var j = 0; j < this.tipEnt.length; j++) {
-          index = this.tipSel.findIndex(e => e.id === this.tipEnt[j].id);
-          this.tipSel.splice(index, 1);
-        }*/
+        
       } catch (error) {
         return error;
       }
