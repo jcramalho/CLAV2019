@@ -162,7 +162,8 @@ export default {
               !(
                 (e.dataInicial != undefined && e.dataInicial != null) ||
                 (e.UIs != undefined && e.UIs.length > 0)
-              )))
+              ))) ||
+          (e.eFilhoDe == null && (e.tipo == "N2" || e.tipo == "N3"))
       );
     }
   },
@@ -209,6 +210,8 @@ export default {
 
       area_organico.descricao = c.descricao;
       area_organico.titulo = c.titulo;
+      area_organico.eFilhoDe = c.eFilhoDe;
+      area_organico.tipo = c.tipo;
     },
     async atualizacao_serie(c) {
       let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
@@ -694,7 +697,7 @@ export default {
         .map(item => {
           item.eFilhoDe = null;
         });
-  
+
       if (classe.tipo == "Série" || classe.tipo == "Subsérie") {
         // Remover Relações Inversas, critérios e ajustar destino final;
         for (let i = 0; i < classe.relacoes.length; i++) {

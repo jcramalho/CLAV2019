@@ -216,11 +216,25 @@ export default {
             //   tipo: "N1"
             // },
             // {
+            //   codigo: "04",
+            //   titulo: "Classe N1 (04)",
+            //   descricao: "Descrição Classe N1 (04)",
+            //   eFilhoDe: null,
+            //   tipo: "N1"
+            // },
+            // {
             //   codigo: "01.01",
             //   titulo: "Classe N2 (01.01)",
             //   descricao: "Descrição Classe N2 (01.01)",
             //   eFilhoDe: "01",
             //   tipo: "N2"
+            // },
+            // {
+            //   codigo: "01.01.01",
+            //   titulo: "Classe N3 (01.01.01)",
+            //   descricao: "Descrição Classe N3 (01.01.01)",
+            //   eFilhoDe: "01.01",
+            //   tipo: "N3"
             // },
             // {
             //   codigo: "01.02",
@@ -499,28 +513,6 @@ export default {
         });
       }
     },
-    // guardarTrabalho: function() {
-    //   let pendenteParams = {
-    //     numInterv: 1,
-    //     acao: "Criação",
-    //     tipo: "RADA",
-    //     objeto: {
-    //       rada: this.RADA,
-    //       entidades: this.entidades.filter(e => e.estado == "Nova"),
-    //       legislacao: this.legislacao.filter(e => e.estado == "Nova")
-    //     },
-    //     criadoPor: this.userEmail,
-    //     user: { email: this.userEmail },
-    //     token: this.$store.state.token
-    //   };
-
-    //   let response = this.$request("post", "/pendentes", pendenteParams);
-
-    //   response.then(resp => {
-    //     console.log(resp.data);
-    //     this.dialogRADAPendente = true;
-    //   });
-    // },
     changeE1: function(e) {
       this.e1 = e;
     },
