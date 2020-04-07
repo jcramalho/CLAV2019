@@ -414,7 +414,8 @@ export default {
               token: this.$store.state.token,
             };
 
-            pedidoParams.objetoOriginal = this.original;
+            if (this.original !== undefined)
+              pedidoParams.objetoOriginal = this.original;
 
             await this.$request("post", "/pedidos", pedidoParams);
 
