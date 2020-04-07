@@ -175,7 +175,7 @@
             </v-col>
           </v-row>
           <v-card outlined>
-            <div class="info-label">Adicionar série/subsérie</div>
+            <div class="info-label">Associar Série/Subsérie</div>
 
             <v-card-text>
               <!-- FORMULÁRIO PARA NOVA CLASSE -->
@@ -278,6 +278,12 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
+        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+          É necessário preencher os campos seguintes:
+          <ul>
+            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+          </ul>
+        </v-alert>
         <v-spacer></v-spacer>
         <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="guardar">Atualizar</v-btn>
@@ -330,6 +336,8 @@ export default {
     }
   },
   data: () => ({
+    existe_erros: false,
+    erros: [],
     toDelete: false,
     showTable: false,
     alertOn: false,
@@ -367,7 +375,10 @@ export default {
   methods: {
     eliminarUI() {
       for (let i = 0; i < this.UI.classesAssociadas.length; i++) {
-        this.elimina_de_classe(this.UI.classesAssociadas[i].codigo, this.UI.codigo);
+        this.elimina_de_classe(
+          this.UI.classesAssociadas[i].codigo,
+          this.UI.codigo
+        );
       }
       this.$emit("remover", this.UI.codigo);
       this.dialog = false;
@@ -484,7 +495,46 @@ export default {
       }
       return novo_classesAssociadas;
     },
+    recolherErros() {
+      this.existe_erros = true;
+
+      if (!this.UI_clone.titulo) {
+        this.erros.push("Título;");
+      }
+
+      if (!this.UI_clone.codCota) {
+        this.erros.push("Código Cota;");
+      }
+
+      if (!this.UI_clone.dataInicial || !this.UI.dataFinal) {
+        this.erros.push("Datas;");
+      }
+
+      if (
+        !!this.UI_clone.produtor.entProdutoras[0] == false &&
+        !!this.UI_clone.produtor.tipologiasProdutoras[0] == false
+      ) {
+        this.erros.push("Produtoras;");
+      }
+
+      if (!!this.UI_clone.classesAssociadas[0] == false) {
+        this.erros.push("Classes Associadas;");
+      }
+      if (!this.UI_clone.descricao) {
+        this.erros.push("Descrição;");
+      }
+
+      if (!this.UI_clone.notas) {
+        this.erros.push("Notas;");
+      }
+      if (!this.UI_clone.localizacao) {
+        this.erros.push("Localização;");
+      }
+    },
     async guardar() {
+      this.existe_erros = false;
+      this.erros = [];
+
       if (this.$refs.formUI.validate()) {
         this.UI.classesAssociadas = await this.editaClasses(
           this.UI,
@@ -501,6 +551,8 @@ export default {
         this.UI.localizacao = this.UI_clone.localizacao;
 
         this.dialog = false;
+      } else {
+        this.recolherErros();
       }
     },
     remove: function(item) {

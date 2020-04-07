@@ -32,8 +32,11 @@
       <v-col md="3" sm="3">
         <div class="info-label">Justificação do DF</div>
         <v-row no-gutters>
-          <v-col v-if="existeLegislacao" sm="5" md="5" xs="12">
-            <v-btn class="ma-2" color="indigo darken-2" dark @click="adicionaLegal">Critério Legal</v-btn>
+          <v-col v-if="existeLegislacao">
+            <v-btn class="ma-2" color="indigo darken-2" dark @click="adicionaLegal" rounded>
+              Critério Legal
+              <v-icon small dark right>add_circle_outline</v-icon>
+            </v-btn>
           </v-col>
         </v-row>
       </v-col>

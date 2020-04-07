@@ -140,7 +140,7 @@ export default {
           class: ["table-header", "body-2", "font-weight-bold"]
         },
         {
-          text: "Classe Relacionada",
+          text: "Série/Subsérie Relacionada",
           align: "center",
           value: "serieRelacionada",
           width: "65%",

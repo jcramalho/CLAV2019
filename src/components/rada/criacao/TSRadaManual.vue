@@ -79,7 +79,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-btn dark color="indigo darken-1" @click="sendToFather()">Concluir</v-btn>
+    <v-btn dark color="indigo darken-1" @click="sendToFather()">Criar RADA</v-btn>
     <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
     <v-btn color="indigo darken-4" text @click="apagar">
       <v-icon>delete_sweep</v-icon>
@@ -403,10 +403,10 @@ export default {
             descricao: "",
             dataInicial: null,
             dataFinal: null,
-            tUA: "",
-            tSerie: "",
-            suporte: "",
-            medicao: "",
+            tUA: null,
+            tSerie: null,
+            suporte: null,
+            medicao: null,
             localizacao: [],
             entProdutoras: [],
             tipologiasProdutoras: [],
