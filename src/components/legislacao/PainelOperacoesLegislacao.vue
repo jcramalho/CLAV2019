@@ -218,10 +218,10 @@
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 
 export default {
-  props: ["l", "acao"],
+  props: ["l", "acao", "original"],
 
   components: {
-    ValidarLegislacaoInfoBox
+    ValidarLegislacaoInfoBox,
   },
 
   data() {
@@ -235,12 +235,12 @@ export default {
       pedidoEliminado: false,
       headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
       headersProcessos: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" }
-      ]
+        { text: "Título", value: "titulo", class: "subtitle-1" },
+      ],
     };
   },
 
@@ -255,34 +255,17 @@ export default {
         numeroErros++;
       }
 
-      // // Fonte diploma
-      // if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
-      //   numeroErros++;
-      // }
-
-      // Número Diploma: esta validação foi desligada a pedido em 2020-03-09
-      /*if (this.l.numero == "" || this.l.numero == null) {
+      // Número Diploma
+      if (this.l.numero == "" || this.l.numero == null) {
         numeroErros++;
-      } else {
-        try {
-          let existeNumero = await this.$request(
-            "get",
-            "/legislacao/numero?valor=" + encodeURIComponent(this.l.numero)
-          );
-
-          if (existeNumero.data) {
-            numeroErros++;
-          } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
-            numeroErros++;
-          } else if (anoDiploma < 2000) {
-            if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
-              numeroErros++;
-            }
-          }
-        } catch (err) {
-          numeroErros++;
-        }
-      }*/
+      }
+      // else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
+      //   numeroErros++;
+      // } else if (anoDiploma < 2000) {
+      //   if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
+      //     numeroErros++;
+      //   }
+      // }
 
       // Data
       if (this.l.data == "" || this.l.data == null) {
@@ -342,26 +325,22 @@ export default {
         numeroErros++;
       }
 
-      // // Fonte diploma
-      // if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
-      //   numeroErros++;
-      // }
-
       // Número Diploma
       if (this.l.numero == "" || this.l.numero == null) {
         numeroErros++;
-      } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
-        numeroErros++;
-      } else if (anoDiploma < 2000) {
-        if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
-          numeroErros++;
-        }
       }
+      // else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
+      //   numeroErros++;
+      // } else if (anoDiploma < 2000) {
+      //   if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
+      //     numeroErros++;
+      //   }
+      // }
 
       // Data
       if (this.l.data == "" || this.l.data == null) {
         numeroErros++;
-      } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
         numeroErros++;
       } else {
         let date = new Date();
@@ -433,7 +412,7 @@ export default {
               "/users/" + this.$store.state.token + "/token"
             );
 
-            let dataObj = this.l;
+            let dataObj = JSON.parse(JSON.stringify(this.l));
 
             let pedidoParams = {
               tipoPedido: this.acao,
@@ -441,14 +420,24 @@ export default {
               novoObjeto: dataObj,
               user: { email: userBD.data.email },
               entidade: userBD.data.entidade,
-              token: this.$store.state.token
+              token: this.$store.state.token,
             };
 
-            let response = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+            if (this.acao === "Alteração") {
+              pedidoParams.objetoOriginal = this.original;
+
+              for (const key in dataObj) {
+                if (
+                  typeof dataObj[key] === "string" &&
+                  dataObj[key] === this.original[key]
+                ) {
+                  if (key !== "id") delete dataObj[key];
+                }
+              }
+            }
+
+            await this.$request("post", "/pedidos", pedidoParams);
+
             this.dialogLegislacaoCriada = true;
           } else {
             this.errosValidacao = true;
@@ -474,8 +463,8 @@ export default {
 
     cancelarCriacaoLegislacao: function() {
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
 

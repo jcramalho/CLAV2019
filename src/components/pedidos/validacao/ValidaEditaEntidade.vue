@@ -6,8 +6,8 @@
         cols="2"
         v-if="
           info.campo !== 'Sigla' &&
-          info.conteudo !== '' &&
-          info.conteudo !== undefined
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
         "
       >
         <div class="info-label">{{ info.campo }}</div>
@@ -17,8 +17,8 @@
       <v-col
         v-if="
           info.campo !== 'Sigla' &&
-          info.conteudo !== '' &&
-          info.conteudo !== undefined
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
         "
       >
         <!-- Se o conteudo for uma lista de tipologias-->
@@ -89,11 +89,6 @@ export default {
       erroPedido: false,
       dialogTipologias: false,
       infoPedido: [
-        {
-          campo: "Sigla",
-          conteudo: this.p.objeto.dados.sigla,
-          cor: null,
-        },
         {
           campo: "Designação",
           conteudo: this.p.objeto.dados.designacao,
@@ -181,7 +176,6 @@ export default {
           "get",
           "/users/" + this.$store.state.token + "/token"
         );
-
         dadosUtilizador = dadosUtilizador.data;
 
         const novaDistribuicao = {

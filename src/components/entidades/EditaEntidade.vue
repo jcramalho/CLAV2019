@@ -176,11 +176,11 @@ export default {
 
   methods: {
     // Vai à API buscar todas as tipologias
-    loadTipologias: async function () {
+    loadTipologias: async function() {
       try {
         let response = await this.$request("get", "/tipologias/");
 
-        this.tipologias = response.data.map(function (item) {
+        this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -194,7 +194,7 @@ export default {
       }
     },
 
-    unselectTipologia: function (tipologia) {
+    unselectTipologia: function(tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
       let index = this.tipSel.findIndex((e) => e.id === tipologia.id);
@@ -202,7 +202,7 @@ export default {
       this.entidade.tipologiasSel = this.tipSel;
     },
 
-    selectTipologia: function (tipologia) {
+    selectTipologia: function(tipologia) {
       this.tipSel.push(tipologia);
       this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
@@ -216,9 +216,8 @@ export default {
     },
   },
 
-  created: async function () {
+  created: async function() {
     this.entidade = JSON.parse(JSON.stringify(this.e));
-
     this.entidadeOriginal = JSON.parse(JSON.stringify(this.e));
 
     await this.loadTipologias();
@@ -227,6 +226,7 @@ export default {
       if (this.entidade.tipologiasSel.length != 0) {
         this.entidade.tipologiasSel.forEach((tip) => {
           this.tipSel.push(tip);
+
           // Remove dos selecionáveis
           let index = this.tipologias.findIndex((t) => t.id === tip.id);
           this.tipologias.splice(index, 1);

@@ -660,6 +660,7 @@ export default {
       // Objeto da TS
       tabelaSelecao: {
         idEntidade: "",
+        designacaoEntidade: "",
         designacao: "",
         tipologias: [],
         procComuns: [],
@@ -794,6 +795,7 @@ export default {
     guardaEntidade: async function() {
       try {
         this.tabelaSelecao.designacao = this.ent.split(" - ")[1];
+        this.tabelaSelecao.designacaoEntidade = this.ent.split(" - ")[1];
         this.tabelaSelecao.idEntidade = "ent_" + this.ent.split(" - ")[0];
         await this.loadTipologias();
         this.stepNo = this.stepNo + 1;

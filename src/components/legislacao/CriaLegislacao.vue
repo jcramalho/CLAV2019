@@ -187,44 +187,47 @@ import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
 import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 
 export default {
-  data: vm => ({
-    legislacao: {
-      numero: "",
-      sumario: "",
-      tipo: "",
-      data: "",
-      link: "",
-      diplomaFonte: "Não especificada",
-      entidadesSel: [],
-      processosSel: [],
-      codigo: "",
-      estado: "Ativo"
-    },
+  data() {
+    return {
+      legislacao: {
+        numero: "",
+        sumario: "",
+        tipo: "",
+        data: "",
+        link: "",
+        diplomaFonte: "Não especificada",
+        entidadesSel: [],
+        processosSel: [],
+        codigo: "",
+        estado: "Ativo",
+      },
 
-    tiposDiploma: [],
+      tiposDiploma: [],
 
-    diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
+      diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
 
-    // Para o seletor de entidades
-    entidades: [],
-    entSel: [],
-    entidadesReady: false,
+      // Para o seletor de entidades
+      entidades: [],
+      entSel: [],
+      entidadesReady: false,
 
-    // Para o seletor de processos
-    processos: [],
-    procSel: [],
-    processosReady: false,
+      // Para o seletor de processos
+      processos: [],
+      procSel: [],
+      processosReady: false,
 
-    // regras para submissão
-    regraNumero: [
-      v =>
-        /[0-9]+(-\w)?\/[0-9]+$/.test(v) || "Este campo está no formato errado."
-    ],
+      // regras para submissão
+      regraNumero: [
+        (v) =>
+          /[0-9]+(-\w)?\/[0-9]+$/.test(v) ||
+          "Este campo está no formato errado.",
+      ],
 
-    // para mostrar mensagens de erro
-    snackbar: false,
-    text: ""
-  }),
+      // para mostrar mensagens de erro
+      snackbar: false,
+      text: "",
+    };
+  },
 
   components: {
     DesSelEnt,
@@ -232,7 +235,7 @@ export default {
     DesSelProc,
     SelProc,
     PainelOpsLeg,
-    SelecionarData
+    SelecionarData,
   },
 
   methods: {
@@ -255,7 +258,7 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      let index = this.entSel.findIndex(e => e.id === entidade.id);
+      let index = this.entSel.findIndex((e) => e.id === entidade.id);
       this.entSel.splice(index, 1);
       this.legislacao.entidadesSel = this.entSel;
     },
@@ -264,7 +267,7 @@ export default {
       this.entSel.push(entidade);
       this.legislacao.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      let index = this.entidades.findIndex(e => e.id === entidade.id);
+      let index = this.entidades.findIndex((e) => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
@@ -276,7 +279,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
         this.entidadesReady = true;
@@ -288,7 +291,7 @@ export default {
     unselectProcesso: function(processo) {
       // Recoloca o processo nos selecionáveis
       this.processos.push(processo);
-      let index = this.procSel.findIndex(e => e.id === processo.id);
+      let index = this.procSel.findIndex((e) => e.id === processo.id);
       this.procSel.splice(index, 1);
       this.legislacao.processosSel = this.procSel;
     },
@@ -297,7 +300,7 @@ export default {
       this.procSel.push(processo);
       this.legislacao.processosSel = this.procSel;
       // Remove dos selecionáveis
-      let index = this.processos.findIndex(e => e.id === processo.id);
+      let index = this.processos.findIndex((e) => e.id === processo.id);
       this.processos.splice(index, 1);
     },
 
@@ -309,7 +312,7 @@ export default {
           return {
             codigo: item.codigo,
             titulo: item.titulo,
-            id: item.codigo
+            id: item.codigo,
           };
         });
         this.processosReady = true;
@@ -321,14 +324,14 @@ export default {
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
   created: function() {
     this.loadTipoDiploma();
     this.loadEntidades();
     this.loadClasses();
-  }
+  },
 };
 </script>
 

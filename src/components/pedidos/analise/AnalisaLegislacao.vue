@@ -133,7 +133,7 @@ export default {
   props: ["p"],
 
   components: {
-    PO
+    PO,
   },
 
   data() {
@@ -144,17 +144,17 @@ export default {
         {
           campo: "Tipo de Diploma",
           conteudo: this.p.objeto.dados.tipo,
-          cor: null
+          cor: null,
         },
         {
           campo: "Fonte do Diploma",
           conteudo: this.p.objeto.dados.diplomaFonte,
-          cor: null
+          cor: null,
         },
         {
           campo: "Número do Diploma",
           conteudo: this.p.objeto.dados.numero,
-          cor: null
+          cor: null,
         },
         { campo: "Data", conteudo: this.p.objeto.dados.data, cor: null },
         { campo: "Sumário", conteudo: this.p.objeto.dados.sumario, cor: null },
@@ -163,13 +163,13 @@ export default {
         {
           campo: "Entidades",
           conteudo: this.p.objeto.dados.entidadesSel,
-          cor: null
+          cor: null,
         },
         {
           campo: "Processos",
           conteudo: this.p.objeto.dados.processosSel,
-          cor: null
-        }
+          cor: null,
+        },
       ],
       headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
@@ -180,8 +180,8 @@ export default {
           class: "subtitle-1",
           sortable: false,
           width: "10%",
-          align: "center"
-        }
+          align: "center",
+        },
       ],
       headersProcessos: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
@@ -192,9 +192,9 @@ export default {
           class: "subtitle-1",
           sortable: false,
           width: "10%",
-          align: "center"
-        }
-      ]
+          align: "center",
+        },
+      ],
     };
   },
 
@@ -213,7 +213,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -223,7 +223,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -252,12 +252,12 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -267,20 +267,20 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
     close() {
       this.dialogEnditades = false;
       this.dialogProcessos = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

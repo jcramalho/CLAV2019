@@ -39,29 +39,6 @@
         >
       </v-col>
 
-      <!-- Trabalho pendente guardado com sucesso
-      <v-dialog v-model="pendenteGuardado" width="60%">
-        <v-card>
-          <v-card-title>Trabalho pendente guardado</v-card-title>
-          <v-card-text>
-            <p>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
-            </p>
-            <p>{{ pendenteGuardadoInfo }}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              color="indigo darken-1"
-              dark
-              @click="criacaoPendenteTerminada"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog> -->
-
       <!-- Erros de Validação -->
       <v-dialog v-model="errosValidacao" width="30%">
         <v-card>
@@ -228,7 +205,7 @@ export default {
   },
 
   methods: {
-    validarEntidadeCriacao: async function () {
+    validarEntidadeCriacao: async function() {
       let numeroErros = 0;
       // Designação
       if (this.e.designacao === "" || this.e.designacao === null) {
@@ -339,9 +316,8 @@ export default {
 
               for (const key in dataObj) {
                 if (
-                  (typeof dataObj[key] === "string" &&
-                    dataObj[key] === this.original[key]) ||
-                  this.original[key] === undefined
+                  typeof dataObj[key] === "string" &&
+                  dataObj[key] === this.original[key]
                 ) {
                   if (key !== "sigla") delete dataObj[key];
                 }
@@ -360,20 +336,20 @@ export default {
       }
     },
 
-    criacaoPendenteTerminada: function () {
+    criacaoPendenteTerminada: function() {
       this.$router.push("/");
     },
 
-    criacaoEntidadeTerminada: function () {
+    criacaoEntidadeTerminada: function() {
       this.$router.push("/");
     },
 
     // Cancela a criação da Entidade
-    eliminarEntidade: function () {
+    eliminarEntidade: function() {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoEntidade: function () {
+    cancelarCriacaoEntidade: function() {
       this.$router.push("/");
     },
   },

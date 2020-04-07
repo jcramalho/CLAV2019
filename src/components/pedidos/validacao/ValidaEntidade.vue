@@ -80,11 +80,6 @@ export default {
       dialogTipologias: false,
       infoPedido: [
         {
-          campo: "Sigla",
-          conteudo: this.p.objeto.dados.sigla,
-          cor: null,
-        },
-        {
           campo: "Designação",
           conteudo: this.p.objeto.dados.designacao,
           cor: null,
@@ -122,8 +117,8 @@ export default {
           "get",
           "/users/" + this.$store.state.token + "/token"
         );
-
         dadosUtilizador = dadosUtilizador.data;
+
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,

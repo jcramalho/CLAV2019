@@ -35,21 +35,6 @@
 
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
-              <v-dialog v-model="dialogEnditades" max-width="500px">
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Selecione uma Entidade</span>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="indigo darken-1" text @click="close"
-                      >Fechar</v-btn
-                    >
-                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
               <v-spacer />
               <v-icon color="green" @click="verifica(info)">check</v-icon>
               <v-icon color="red" @click="anula(info)">clear</v-icon>
@@ -116,7 +101,7 @@ export default {
 
   components: {
     PO,
-    ErroDialog
+    ErroDialog,
   },
 
   data() {
@@ -126,44 +111,28 @@ export default {
       dialogEnditades: false,
       dialogProcessos: false,
       infoPedido: [
-        {
-          campo: "Tipo de Diploma",
-          conteudo: this.p.objeto.dados.tipo,
-          cor: null
-        },
-        {
-          campo: "Fonte do Diploma",
-          conteudo: this.p.objeto.dados.diplomaFonte,
-          cor: null
-        },
-        {
-          campo: "Número do Diploma",
-          conteudo: this.p.objeto.dados.numero,
-          cor: null
-        },
         { campo: "Data", conteudo: this.p.objeto.dados.data, cor: null },
         { campo: "Sumário", conteudo: this.p.objeto.dados.sumario, cor: null },
         { campo: "Link", conteudo: this.p.objeto.dados.link, cor: null },
-        { campo: "Código", conteudo: this.p.objeto.dados.codigo, cor: null },
         {
           campo: "Entidades",
           conteudo: this.p.objeto.dados.entidadesSel,
-          cor: null
+          cor: null,
         },
         {
           campo: "Processos",
           conteudo: this.p.objeto.dados.processosSel,
-          cor: null
-        }
+          cor: null,
+        },
       ],
       headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
       headersProcessos: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" }
-      ]
+        { text: "Título", value: "titulo", class: "subtitle-1" },
+      ],
     };
   },
 
@@ -182,7 +151,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -192,7 +161,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -206,38 +175,50 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         // TODO: Adicionar validação para a designação
-        // TODO: Alterar depois da API estar pronta
 
-        // await this.$request("post", "/legislacao", pedido.objeto.dados);
+        for (const key in pedido.objeto.dadosOriginais) {
+          if (!pedido.objeto.dados.hasOwnProperty(key)) {
+            pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+          }
+        }
 
-        // const estado = "Validado";
+        if (pedido.objeto.dados.diplomaFonte === "Não especificada")
+          delete pedido.objeto.dados.diplomaFonte;
 
-        // let dadosUtilizador = await this.$request(
-        //   "get",
-        //   "/users/" + this.$store.state.token + "/token"
-        // );
-        // dadosUtilizador = dadosUtilizador.data;
+        await this.$request(
+          "put",
+          `/legislacao/${pedido.objeto.dados.id}`,
+          pedido.objeto.dados
+        );
 
-        // const novaDistribuicao = {
-        //   estado: estado,
-        //   responsavel: dadosUtilizador.email,
-        //   data: new Date(),
-        //   despacho: dados.mensagemDespacho
-        // };
+        const estado = "Validado";
 
-        // pedido.estado = estado;
-        // pedido.token = this.$store.state.token;
+        let dadosUtilizador = await this.$request(
+          "get",
+          "/users/" + this.$store.state.token + "/token"
+        );
+        dadosUtilizador = dadosUtilizador.data;
 
-        // await this.$request("put", "/pedidos", {
-        //   pedido: pedido,
-        //   distribuicao: novaDistribuicao
-        // });
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
 
-        // this.$router.go(-1);
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
       } catch (e) {
         this.erros.push({
           sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia."
+          mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
         this.erroPedido = true;
         console.log("e :", e);
@@ -245,12 +226,12 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
@@ -261,8 +242,8 @@ export default {
     close() {
       this.dialogEnditades = false;
       this.dialogProcessos = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
