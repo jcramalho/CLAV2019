@@ -27,7 +27,12 @@
           </v-card-text>
 
           <!-- Para a Alteração de dados -->
-          <v-card-text v-else-if="pedido.objeto.acao === 'Alteração'">
+          <v-card-text
+            v-else-if="
+              pedido.objeto.acao === 'Alteração' ||
+                pedido.objeto.acao === 'Extinção'
+            "
+          >
             <AnalisaEditaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
@@ -83,7 +88,7 @@ export default {
     AnalisaTipologiaEntidade,
     AnalisaEditaEntidade,
     AnalisaEditaLegislacao,
-    AnalisaEditaTipologiaEntidade
+    AnalisaEditaTipologiaEntidade,
   },
 
   data() {
@@ -91,7 +96,7 @@ export default {
       loading: true,
       snackbar: {
         visivel: false,
-        texto: "Test"
+        texto: "Test",
       },
       pedido: {},
       pedidoLoaded: false,
@@ -99,9 +104,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" }
+        { text: "Despacho", value: "despacho" },
       ],
-      etapas: []
+      etapas: [],
     };
   },
 
@@ -115,6 +120,6 @@ export default {
       this.snackbar.visivel = true;
       this.snackbar.texto = "Erro ao carregar dados da base de dados";
     }
-  }
+  },
 };
 </script>
