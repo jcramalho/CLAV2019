@@ -406,7 +406,7 @@ export default {
               }
             } else if (this.acao === "Extinção") {
               for (const key in dataObj) {
-                if (key !== "sigla" || key !== "dataExtincao")
+                if (key !== "sigla" && key !== "dataExtincao")
                   delete dataObj[key];
               }
             }
