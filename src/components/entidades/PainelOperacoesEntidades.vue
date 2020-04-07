@@ -18,6 +18,13 @@
           @click="criarAlterarEntidade"
           >Alterar Entidade</v-btn
         >
+        <v-btn
+          v-else-if="this.acao == 'Extinção'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarAlterarEntidade"
+          >Extinguir Entidade</v-btn
+        >
       </v-col>
 
       <v-col>
@@ -36,6 +43,14 @@
           class="red darken-4"
           @click="eliminarEntidade"
           >Cancelar Alteração</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Extinção'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarEntidade"
+          >Cancelar Extinção</v-btn
         >
       </v-col>
 
@@ -254,11 +269,44 @@ export default {
         }
       }
 
+      // Data Criação
+      // if (this.l.data == "" || this.l.data == null) {
+      //   this.mensagensErro.push({
+      //     sobre: "Data",
+      //     mensagem: "A data não pode ser vazia."
+      //   });
+      //   this.numeroErros++;
+      // } else
+      if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.dataCriacao)) {
+        this.mensagensErro.push({
+          sobre: "Data",
+          mensagem: "A data está no formato errado.",
+        });
+        this.numeroErros++;
+      }
+
       return numeroErros;
     },
 
-    validarEntidadeAlteracao() {
+    async validarEntidadeAlteracao() {
       let numeroErros = 0;
+
+      if (this.e.designacao === "" || this.e.designacao === null) {
+        numeroErros++;
+      } else {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/entidades/designacao?valor=" +
+              encodeURIComponent(this.e.designacao)
+          );
+          if (existeDesignacao.data) {
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+        }
+      }
 
       // Internacional
       if (this.e.internacional == "" || this.e.internacional == null) {
@@ -270,6 +318,32 @@ export default {
         if (this.e.sioe.length > 12) {
           numeroErros++;
         }
+      }
+
+      // Data Criação
+      // if (this.l.data === "" || this.l.data === null ||
+      // this.e.dataExtincao === undefined) {
+      //   numeroErros++;
+      // } else
+      if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.e.dataCriacao)) {
+        numeroErros++;
+      }
+
+      return numeroErros;
+    },
+
+    validarEntidadeExtincao() {
+      let numeroErros = 0;
+
+      // Data Extinção
+      if (
+        this.e.dataExtincao === "" ||
+        this.e.dataExtincao === null ||
+        this.e.dataExtincao === undefined
+      ) {
+        numeroErros++;
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.e.dataExtincao)) {
+        numeroErros++;
       }
 
       return numeroErros;
@@ -288,7 +362,11 @@ export default {
               break;
 
             case "Alteração":
-              erros = this.validarEntidadeAlteracao();
+              erros = await this.validarEntidadeAlteracao();
+              break;
+
+            case "Extinção":
+              erros = this.validarEntidadeExtincao();
               break;
 
             default:
@@ -300,8 +378,10 @@ export default {
               "get",
               "/users/" + this.$store.state.token + "/token"
             );
+
             let dataObj = JSON.parse(JSON.stringify(this.e));
             dataObj.codigo = "ent_" + this.e.sigla;
+
             let pedidoParams = {
               tipoPedido: this.acao,
               tipoObjeto: "Entidade",
@@ -321,6 +401,13 @@ export default {
                 ) {
                   if (key !== "sigla") delete dataObj[key];
                 }
+
+                if (key === "dataExtincao") delete dataObj[key];
+              }
+            } else if (this.acao === "Extinção") {
+              for (const key in dataObj) {
+                if (key !== "sigla" || key !== "dataExtincao")
+                  delete dataObj[key];
               }
             }
 

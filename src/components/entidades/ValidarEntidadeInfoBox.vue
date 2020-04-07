@@ -58,14 +58,14 @@ export default {
       dialogSemErros: false,
 
       mensagensErro: [],
-      numeroErros: 0
+      numeroErros: 0,
     };
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
@@ -74,7 +74,7 @@ export default {
       if (this.e.designacao === "" || this.e.designacao === null) {
         this.mensagensErro.push({
           sobre: "Nome da Entidade",
-          mensagem: "O nome da entidade não pode ser vazio."
+          mensagem: "O nome da entidade não pode ser vazio.",
         });
         this.numeroErros++;
       } else {
@@ -87,7 +87,7 @@ export default {
           if (existeDesignacao.data) {
             this.mensagensErro.push({
               sobre: "Nome da Entidade",
-              mensagem: "Nome da entidade já existente na BD."
+              mensagem: "Nome da entidade já existente na BD.",
             });
             this.numeroErros++;
           }
@@ -95,7 +95,7 @@ export default {
           this.numeroErros++;
           this.mensagensErro.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação."
+            mensagem: "Não consegui verificar a existência da designação.",
           });
         }
       }
@@ -104,7 +104,7 @@ export default {
       if (this.e.sigla === "" || this.e.sigla === null) {
         this.mensagensErro.push({
           sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
+          mensagem: "A sigla não pode ser vazia.",
         });
         this.numeroErros++;
       } else {
@@ -116,7 +116,7 @@ export default {
           if (existeSigla.data) {
             this.mensagensErro.push({
               sobre: "Sigla",
-              mensagem: "Sigla já existente na BD."
+              mensagem: "Sigla já existente na BD.",
             });
             this.numeroErros++;
           }
@@ -124,7 +124,7 @@ export default {
           this.numeroErros++;
           this.mensagensErro.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da sigla."
+            mensagem: "Não consegui verificar a existência da sigla.",
           });
         }
       }
@@ -133,7 +133,7 @@ export default {
       if (this.e.internacional === "" || this.e.internacional === null) {
         this.mensagensErro.push({
           sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção."
+          mensagem: "O campo internacional tem de ter uma opção.",
         });
         this.numeroErros++;
       }
@@ -143,10 +143,26 @@ export default {
         if (this.e.sioe.length > 12) {
           this.mensagensErro.push({
             sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           this.numeroErros++;
         }
+      }
+
+      // Data Criação
+      // if (this.l.data == "" || this.l.data == null) {
+      //   this.mensagensErro.push({
+      //     sobre: "Data",
+      //     mensagem: "A data não pode ser vazia."
+      //   });
+      //   this.numeroErros++;
+      // } else
+      if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.dataCriacao)) {
+        this.mensagensErro.push({
+          sobre: "Data",
+          mensagem: "A data está no formato errado.",
+        });
+        this.numeroErros++;
       }
     },
 
@@ -155,7 +171,7 @@ export default {
       if (this.e.internacional == "" || this.e.internacional == null) {
         this.mensagensErro.push({
           sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção."
+          mensagem: "O campo internacional tem de ter uma opção.",
         });
         this.numeroErros++;
       }
@@ -165,11 +181,36 @@ export default {
         if (this.e.sioe.length > 12) {
           this.mensagensErro.push({
             sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           this.numeroErros++;
         }
       }
+    },
+
+    validarEntidadeExtincao() {
+      let numeroErros = 0;
+
+      // Data Extinção
+      if (
+        this.e.dataExtincao === "" ||
+        this.e.dataExtincao === null ||
+        this.e.dataExtincao === undefined
+      ) {
+        this.mensagensErro.push({
+          sobre: "Data de extinção",
+          mensagem: "A data não pode ser vazia.",
+        });
+        this.numeroErros++;
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.e.dataExtincao)) {
+        this.mensagensErro.push({
+          sobre: "Data de extinção",
+          mensagem: "A data está no formato errado.",
+        });
+        this.numeroErros++;
+      }
+
+      return numeroErros;
     },
 
     async validarEntidade() {
@@ -180,6 +221,10 @@ export default {
 
         case "Alteração":
           this.validarEntidadeAlteracao();
+          break;
+
+        case "Extinção":
+          this.validarEntidadeExtincao();
           break;
 
         default:
@@ -196,8 +241,8 @@ export default {
     limpaErros: function() {
       this.numeroErros = 0;
       this.mensagensErro = [];
-    }
-  }
+    },
+  },
 };
 </script>
 
