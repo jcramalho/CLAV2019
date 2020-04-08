@@ -6,7 +6,6 @@
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-row>
-          <!-- {{newSerie.relacoes}} -->
           <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
             <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>
               <template v-slot:item.relacao="props">
@@ -14,11 +13,6 @@
                 props.item.relacao
                 }}
               </template>
-              <!-- <template v-slot:item.tipo="props">
-                {{
-                props.item.serieRelacionada.tipo
-                }}
-              </template>-->
               <template v-slot:item.edicao="props">
                 <td>
                   <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
@@ -86,10 +80,14 @@
                   </v-select>
                 </v-col>
                 <v-col sm="1" xs="12">
-                  <v-btn icon text rounded @click="add()">
+                  <v-btn text rounded @click="add()">
                     <v-icon color="green lighten-1">add_circle</v-icon>
                   </v-btn>
+                  <v-btn text rounded @click="$refs.addRel.reset()">
+                    <v-icon color="red lighten-1">delete_sweep</v-icon>
+                  </v-btn>
                 </v-col>
+                
               </v-row>
               <v-row v-if="!!alertOn">
                 <v-col>

@@ -19,7 +19,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSerie" :UIs="UIs" />
+                <ZonaDescritiva :newSerie="newSerie" :UIs="UIs" :RE="RE"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>

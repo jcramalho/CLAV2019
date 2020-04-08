@@ -51,6 +51,7 @@
                   @remover="remover_classe"
                   :treeview_object="item"
                   :classes="TS.classes"
+                  :RE="RE"
                   :UIs="TS.UIs"
                   :formaContagem="formaContagem"
                 />
@@ -118,6 +119,10 @@ export default {
   computed: {
     preparaTree() {
       var myTree = [];
+
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.TS.classes.sort((a, b) => a.codigo.localeCompare(b.codigo));
+
       for (var i = 0; i < this.TS.classes.length; i++) {
         if (this.TS.classes[i].eFilhoDe == null) {
           myTree.push({

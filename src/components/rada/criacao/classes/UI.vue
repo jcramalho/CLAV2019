@@ -60,8 +60,7 @@
                 :close-on-content-click="false"
                 :return-value.sync="UI.dataInicial"
                 transition="scale-transition"
-                offset-y
-                min-width="290px"
+                max-width="290px"
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
@@ -74,10 +73,22 @@
                     clearable
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="UI.dataInicial" no-title scrollable locale="pt">
+                <v-date-picker
+                  v-model="UI.dataInicial"
+                  full-width
+                  color="amber accent-3"
+                  scrollable
+                  locale="pt"
+                  :min="RE.dataInicial"
+                  :max="RE.dataFinal"
+                >
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu1 = false">Cancelar</v-btn>
-                  <v-btn text color="primary" @click="$refs.menu1.save(UI.dataInicial)">OK</v-btn>
+                  <v-btn text @click="menu1 = false">
+                    <v-icon>keyboard_backspace</v-icon>
+                  </v-btn>
+                  <v-btn text @click="$refs.menu1.save(UI.dataInicial)">
+                    <v-icon>check</v-icon>
+                  </v-btn>
                 </v-date-picker>
               </v-menu>
             </v-col>
@@ -91,8 +102,7 @@
                 :close-on-content-click="false"
                 :return-value.sync="UI.dataFinal"
                 transition="scale-transition"
-                offset-y
-                min-width="290px"
+                max-width="290px"
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
@@ -105,10 +115,22 @@
                     clearable
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="UI.dataFinal" no-title scrollable locale="pt">
+                <v-date-picker
+                  v-model="UI.dataFinal"
+                  full-width
+                  color="amber accent-3"
+                  scrollable
+                  locale="pt"
+                  :min="RE.dataInicial"
+                  :max="RE.dataFinal"
+                >
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu2 = false">Cancelar</v-btn>
-                  <v-btn text color="primary" @click="$refs.menu2.save(UI.dataFinal)">OK</v-btn>
+                  <v-btn text color="primary" @click="menu2 = false">
+                    <v-icon>keyboard_backspace</v-icon>
+                  </v-btn>
+                  <v-btn text color="primary" @click="$refs.menu2.save(UI.dataFinal)">
+                    <v-icon>check</v-icon>
+                  </v-btn>
                 </v-date-picker>
               </v-menu>
             </v-col>

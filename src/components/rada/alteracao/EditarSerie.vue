@@ -44,7 +44,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" :UIs="UIs" />
+                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
