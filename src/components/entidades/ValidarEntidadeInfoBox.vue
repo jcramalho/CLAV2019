@@ -103,7 +103,7 @@ export default {
 
       // Sigla
       if (this.e.sigla === "" || this.e.sigla === null) {
-        mensagensErro.push({
+        this.mensagensErro.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia.",
         });
