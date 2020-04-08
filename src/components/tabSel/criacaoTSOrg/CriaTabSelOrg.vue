@@ -212,16 +212,13 @@
                     procPreSelEspecificos();
                     loadProcEspRestantes();
                   "
-                  >Continuar</v-btn
-                >
+                  >Continuar</v-btn>
                 <v-btn
                   text
                   @click="
                     stepNo = stepNo - 1;
                     barra(14);
-                  "
-                  >Voltar</v-btn
-                >
+                  ">Voltar</v-btn>
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 5" step="5"
@@ -951,7 +948,7 @@ export default {
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
       this.numProcSelCom = procSelec.length;
-      this.tabelaSelecao.procComuns = procSelec;
+      this.tabelaSelecao.procComuns = JSON.parse(JSON.stringify(procSelec));
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
     procPreSelResTravCom: function(procPreSelResTravCom) {
