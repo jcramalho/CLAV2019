@@ -145,7 +145,6 @@ const help = require("@/config/help").help;
 
 export default {
   data: () => ({
-    menu1: false,
     myhelp: help,
     entidade: {
       designacao: "",
@@ -170,12 +169,14 @@ export default {
     snackbar: false,
     text: "",
   }),
+
   components: {
     DesSelTip,
     SelTip,
     PainelOpsEnt,
     SelecionarData,
   },
+
   methods: {
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
