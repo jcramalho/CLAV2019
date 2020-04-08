@@ -51,32 +51,33 @@
 
 <script>
 export default {
-  props: ["e", "acao"],
+  props: ["e", "acao", "original"],
   data() {
     return {
       dialog: false,
       dialogSemErros: false,
 
       mensagensErro: [],
-      numeroErros: 0
     };
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
     async validarEntidadeCriacao() {
+      let numeroErros = 0;
+
       // Designação
       if (this.e.designacao === "" || this.e.designacao === null) {
         this.mensagensErro.push({
           sobre: "Nome da Entidade",
-          mensagem: "O nome da entidade não pode ser vazio."
+          mensagem: "O nome da entidade não pode ser vazio.",
         });
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeDesignacao = await this.$request(
@@ -87,26 +88,26 @@ export default {
           if (existeDesignacao.data) {
             this.mensagensErro.push({
               sobre: "Nome da Entidade",
-              mensagem: "Nome da entidade já existente na BD."
+              mensagem: "Nome da entidade já existente na BD.",
             });
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
           this.mensagensErro.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação."
+            mensagem: "Não consegui verificar a existência da designação.",
           });
         }
       }
 
       // Sigla
       if (this.e.sigla === "" || this.e.sigla === null) {
-        this.mensagensErro.push({
+        mensagensErro.push({
           sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
+          mensagem: "A sigla não pode ser vazia.",
         });
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeSigla = await this.$request(
@@ -116,15 +117,15 @@ export default {
           if (existeSigla.data) {
             this.mensagensErro.push({
               sobre: "Sigla",
-              mensagem: "Sigla já existente na BD."
+              mensagem: "Sigla já existente na BD.",
             });
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
           this.mensagensErro.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da sigla."
+            mensagem: "Não consegui verificar a existência da sigla.",
           });
         }
       }
@@ -133,9 +134,9 @@ export default {
       if (this.e.internacional === "" || this.e.internacional === null) {
         this.mensagensErro.push({
           sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção."
+          mensagem: "O campo internacional tem de ter uma opção.",
         });
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // SIOE
@@ -143,50 +144,166 @@ export default {
         if (this.e.sioe.length > 12) {
           this.mensagensErro.push({
             sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
-          this.numeroErros++;
+          numeroErros++;
         }
       }
+
+      // Data Criação
+      // if (this.e.dataCriacao === "" || this.e.dataCriacao === null || this.e.dataCriacao === undefined) {
+      //   this.mensagensErro.push({
+      //     sobre: "Data de Criação",
+      //     mensagem: "A data de criação não pode ser vazia."
+      //   });
+      //   this.numeroErros++;
+      // } else
+      if (
+        this.e.dataCriacao !== undefined &&
+        !/[0-9]+\-[0-9]+\-[0-9]+/.test(this.e.dataCriacao)
+      ) {
+        this.mensagensErro.push({
+          sobre: "Data",
+          mensagem: "A data está no formato errado.",
+        });
+        numeroErros++;
+      }
+
+      return numeroErros;
     },
 
-    validarEntidadeAlteracao() {
+    async validarEntidadeAlteracao(dados) {
+      let numeroErros = 0;
+
+      // Designação
+      if (dados.designacao === "" || dados.designacao === null) {
+        this.mensagensErro.push({
+          sobre: "Nome da Entidade",
+          mensagem: "O nome da entidade não pode ser vazio.",
+        });
+        numeroErros++;
+      } else if (dados.designacao !== undefined) {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/entidades/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            this.mensagensErro.push({
+              sobre: "Nome da Entidade",
+              mensagem: "Nome da entidade já existente na BD.",
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação.",
+          });
+        }
+      }
+
       // Internacional
-      if (this.e.internacional == "" || this.e.internacional == null) {
+      if (dados.internacional === "" || dados.internacional === null) {
         this.mensagensErro.push({
           sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção."
+          mensagem: "O campo internacional tem de ter uma opção.",
         });
-        this.numeroErros++;
+        numeroErros++;
       }
 
       // SIOE
-      if (this.e.sioe != "" && this.e.sioe != null) {
-        if (this.e.sioe.length > 12) {
-          this.mensagensErro.push({
-            sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos."
-          });
-          this.numeroErros++;
-        }
+      if (dados.sioe !== "" && dados.sioe !== null) {
+        if (dados.sioe !== undefined)
+          if (dados.sioe.length > 12) {
+            this.mensagensErro.push({
+              sobre: "SIOE",
+              mensagem:
+                "O campo SIOE tem de ter menos que 12 digitos numéricos.",
+            });
+            numeroErros++;
+          }
       }
+
+      // Data Criação
+      if (
+        dados.dataCriacao !== undefined &&
+        !/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.dataCriacao)
+      ) {
+        this.mensagensErro.push({
+          sobre: "Data de Criação",
+          mensagem: "A data de criação está no formato errado.",
+        });
+        numeroErros++;
+      }
+
+      return numeroErros;
+    },
+
+    validarEntidadeExtincao(dados) {
+      let numeroErros = 0;
+
+      // Data Extinção
+      if (
+        dados.dataExtincao === "" ||
+        dados.dataExtincao === null ||
+        dados.dataExtincao === undefined
+      ) {
+        this.mensagensErro.push({
+          sobre: "Data de extinção",
+          mensagem: "A data não pode ser vazia.",
+        });
+        numeroErros++;
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.dataExtincao)) {
+        this.mensagensErro.push({
+          sobre: "Data de extinção",
+          mensagem: "A data está no formato errado.",
+        });
+        numeroErros++;
+      }
+
+      return numeroErros;
     },
 
     async validarEntidade() {
+      let erros = 0;
+      let dataObj = JSON.parse(JSON.stringify(this.e));
+
       switch (this.acao) {
         case "Criação":
-          await this.validarEntidadeCriacao();
+          erros = await this.validarEntidadeCriacao();
           break;
 
         case "Alteração":
-          this.validarEntidadeAlteracao();
+          for (const key in dataObj) {
+            if (
+              typeof dataObj[key] === "string" &&
+              dataObj[key] === this.original[key]
+            ) {
+              if (key !== "sigla") delete dataObj[key];
+            }
+
+            if (key === "dataExtincao") delete dataObj[key];
+          }
+
+          erros = await this.validarEntidadeAlteracao(dataObj);
+          break;
+
+        case "Extinção":
+          for (const key in dataObj) {
+            if (key !== "sigla" && key !== "dataExtincao") delete dataObj[key];
+          }
+
+          erros = this.validarEntidadeExtincao(dataObj);
           break;
 
         default:
           break;
       }
 
-      if (this.numeroErros > 0) {
+      if (erros > 0) {
         this.dialog = true;
       } else {
         this.dialogSemErros = true;
@@ -194,10 +311,9 @@ export default {
     },
 
     limpaErros: function() {
-      this.numeroErros = 0;
       this.mensagensErro = [];
-    }
-  }
+    },
+  },
 };
 </script>
 

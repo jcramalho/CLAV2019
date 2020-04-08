@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <ValidarEntidadeInfoBox :e="e" :acao="acao" />
+      <ValidarEntidadeInfoBox :e="e" :original="original" :acao="acao" />
 
       <v-col>
         <v-btn
@@ -17,6 +17,13 @@
           class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
           >Alterar Entidade</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Extinção'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarAlterarEntidade"
+          >Extinguir Entidade</v-btn
         >
       </v-col>
 
@@ -36,6 +43,14 @@
           class="red darken-4"
           @click="eliminarEntidade"
           >Cancelar Alteração</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Extinção'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarEntidade"
+          >Cancelar Extinção</v-btn
         >
       </v-col>
 
@@ -207,6 +222,7 @@ export default {
   methods: {
     validarEntidadeCriacao: async function() {
       let numeroErros = 0;
+
       // Designação
       if (this.e.designacao === "" || this.e.designacao === null) {
         numeroErros++;
@@ -254,22 +270,86 @@ export default {
         }
       }
 
+      // Data Criação
+      // if (this.l.data == "" || this.l.data == null) {
+      //   this.mensagensErro.push({
+      //     sobre: "Data",
+      //     mensagem: "A data não pode ser vazia."
+      //   });
+      //   this.numeroErros++;
+      // } else
+      if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.e.dataCriacao)) {
+        this.mensagensErro.push({
+          sobre: "Data",
+          mensagem: "A data está no formato errado.",
+        });
+        this.numeroErros++;
+      }
+
       return numeroErros;
     },
 
-    validarEntidadeAlteracao() {
+    async validarEntidadeAlteracao(dados) {
       let numeroErros = 0;
 
+      // Designação
+      if (dados.designacao === "" || dados.designacao === null) {
+        numeroErros++;
+      } else if (dados.designacao !== undefined) {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/entidades/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+        }
+      }
+
       // Internacional
-      if (this.e.internacional == "" || this.e.internacional == null) {
+      if (dados.internacional === "" || dados.internacional === null) {
         numeroErros++;
       }
 
       // SIOE
-      if (this.e.sioe != "" && this.e.sioe != null) {
-        if (this.e.sioe.length > 12) {
-          numeroErros++;
-        }
+      if (dados.sioe !== "" && dados.sioe !== null) {
+        if (dados.sioe !== undefined)
+          if (dados.sioe.length > 12) {
+            numeroErros++;
+          }
+      }
+
+      // Data Criação
+      // if (this.e.data === "" || this.e.data === null ||
+      // this.e.dataExtincao === undefined) {
+      //   numeroErros++;
+      // } else
+      if (
+        dados.dataCriacao !== undefined &&
+        !/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.dataCriacao)
+      ) {
+        numeroErros++;
+      }
+
+      return numeroErros;
+    },
+
+    validarEntidadeExtincao(dados) {
+      let numeroErros = 0;
+
+      // Data Extinção
+      if (
+        dados.dataExtincao === "" ||
+        dados.dataExtincao === null ||
+        dados.dataExtincao === undefined
+      ) {
+        numeroErros++;
+      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.dataExtincao)) {
+        numeroErros++;
       }
 
       return numeroErros;
@@ -282,13 +362,35 @@ export default {
           this.loginErrorSnackbar = true;
         } else {
           let erros = 0;
+          let dataObj = JSON.parse(JSON.stringify(this.e));
+
           switch (this.acao) {
             case "Criação":
               erros = await this.validarEntidadeCriacao();
               break;
 
             case "Alteração":
-              erros = this.validarEntidadeAlteracao();
+              for (const key in dataObj) {
+                if (
+                  typeof dataObj[key] === "string" &&
+                  dataObj[key] === this.original[key]
+                ) {
+                  if (key !== "sigla") delete dataObj[key];
+                }
+
+                if (key === "dataExtincao") delete dataObj[key];
+              }
+
+              erros = await this.validarEntidadeAlteracao(dataObj);
+              break;
+
+            case "Extinção":
+              for (const key in dataObj) {
+                if (key !== "sigla" && key !== "dataExtincao")
+                  delete dataObj[key];
+              }
+
+              erros = this.validarEntidadeExtincao(dataObj);
               break;
 
             default:
@@ -300,8 +402,9 @@ export default {
               "get",
               "/users/" + this.$store.state.token + "/token"
             );
-            let dataObj = JSON.parse(JSON.stringify(this.e));
-            dataObj.codigo = "ent_" + this.e.sigla;
+
+            // dataObj.codigo = "ent_" + this.e.sigla;
+
             let pedidoParams = {
               tipoPedido: this.acao,
               tipoObjeto: "Entidade",
@@ -311,18 +414,8 @@ export default {
               token: this.$store.state.token,
             };
 
-            if (this.acao === "Alteração") {
+            if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
-
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "sigla") delete dataObj[key];
-                }
-              }
-            }
 
             await this.$request("post", "/pedidos", pedidoParams);
 
