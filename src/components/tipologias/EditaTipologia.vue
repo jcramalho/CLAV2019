@@ -5,8 +5,8 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
           <v-toolbar-title class="card-heading"
-            >Editar tipologia de entidade ({{ tipologia.sigla }} -
-            {{ tipologia.designacao }})</v-toolbar-title
+            >Editar tipologia de entidade ({{ tipologiaOriginal.sigla }} -
+            {{ tipologiaOriginal.designacao }})</v-toolbar-title
           >
         </v-app-bar>
 
@@ -54,7 +54,7 @@
       </v-card>
 
       <!-- Painel Operações -->
-      <PainelOpsTip :t="tipologia" :acao="'Alteração'" />
+      <PainelOpsTip :t="tipologia" :original="tipologiaOriginal" :acao="acao" />
     </v-col>
   </v-row>
 </template>
@@ -66,13 +66,16 @@ import PainelOpsTip from "@/components/tipologias/PainelOperacoesTipologias";
 
 export default {
   props: ["t"],
+
   data: () => ({
     tipologia: {
       designacao: "",
       sigla: "",
       entidadesSel: [],
-      codigo: ""
+      codigo: "",
     },
+    tipologiaOriginal: {},
+    acao: "Alteração",
 
     // Para o seletor
     entidades: [],
@@ -80,12 +83,12 @@ export default {
     entidadesReady: false,
 
     snackbar: false,
-    text: ""
+    text: "",
   }),
   components: {
     DesSelEnt,
     SelEnt,
-    PainelOpsTip
+    PainelOpsTip,
   },
 
   methods: {
@@ -98,7 +101,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
 
@@ -111,7 +114,7 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      let index = this.entSel.findIndex(e => e.id === entidade.id);
+      let index = this.entSel.findIndex((e) => e.id === entidade.id);
       this.entSel.splice(index, 1);
       this.tipologia.entidadesSel = this.entSel;
     },
@@ -120,27 +123,29 @@ export default {
       this.entSel.push(entidade);
       this.tipologia.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      let index = this.entidades.findIndex(e => e.id === entidade.id);
+      let index = this.entidades.findIndex((e) => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
   created: async function() {
-    this.tipologia = this.t;
+    this.tipologia = JSON.parse(JSON.stringify(this.t));
+    this.tipologiaOriginal = JSON.parse(JSON.stringify(this.t));
 
     await this.loadEntidades();
 
     try {
-      if (this.tipologia.entidadesSel.length != 0) {
-        this.tipologia.entidadesSel.forEach(ent => {
+      if (this.tipologia.entidadesSel.length !== 0) {
+        this.tipologia.entidadesSel.forEach((ent) => {
           this.entSel.push(ent);
+
           // Remove dos selecionáveis
-          let index = this.entidades.findIndex(e => e.id === ent.id);
+          let index = this.entidades.findIndex((e) => e.id === ent.id);
           this.entidades.splice(index, 1);
         });
       }
@@ -148,7 +153,7 @@ export default {
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
-  }
+  },
 };
 </script>
 

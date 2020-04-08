@@ -12,12 +12,12 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     EditaTipologia,
-    Loading
+    Loading,
   },
 
   data: () => ({
     tipologia: {},
-    dadosReady: false
+    dadosReady: false,
   }),
 
   methods: {
@@ -26,13 +26,14 @@ export default {
         let myTipologia = {
           designacao: tip.designacao,
           sigla: tip.sigla,
-          entidadesSel: ent
+          estado: tip.estado,
+          entidadesSel: ent,
         };
         return myTipologia;
       } catch (e) {
         return {};
       }
-    }
+    },
   },
 
   created: async function() {
@@ -58,6 +59,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

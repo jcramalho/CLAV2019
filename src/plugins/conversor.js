@@ -292,7 +292,6 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         mensagem: "Pelo menos um dos campos deve estar preenchido",
         linhasSerie: errosSerie.medicoes
       })
-      console.log(errosAgregacoes.codigoAg.length)
       if(errosAgregacoes.codigoAg.length>0) errosVal.erros.push({
         sobre: "Código da agregação simples / UI - unidade de instalação",
         mensagem: "Código da agregação obrigatório e não repetivel",
@@ -332,7 +331,7 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
       zonaControlo: []
     };
     series.forEach((s,index) => {
-
+      s = s.replace(/[\r\n]+/g,'');
       var serie = s.split(/[;,]/)
       if(serie[0] || serie[1]) {
         var zc = {
@@ -347,6 +346,7 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
           agregacoes: []
         }
         agregacoes.forEach(a => {
+          a = a.replace(/[\r\n]+/g,'');
           var agregacao = a.split(/[;,]/)
           if(agregacao[0]==zc.codigo && agregacao[1]==zc.referencia) {
             var ag = {

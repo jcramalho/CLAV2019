@@ -51,6 +51,7 @@
                   @remover="remover_classe"
                   :treeview_object="item"
                   :classes="TS.classes"
+                  :RE="RE"
                   :UIs="TS.UIs"
                   :formaContagem="formaContagem"
                 />
@@ -79,7 +80,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-btn dark color="indigo darken-1" @click="sendToFather()">Concluir</v-btn>
+    <v-btn dark color="indigo darken-1" @click="sendToFather()">Criar RADA</v-btn>
     <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
     <v-btn color="indigo darken-4" text @click="apagar">
       <v-icon>delete_sweep</v-icon>
@@ -118,6 +119,10 @@ export default {
   computed: {
     preparaTree() {
       var myTree = [];
+
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.TS.classes.sort((a, b) => a.codigo.localeCompare(b.codigo));
+
       for (var i = 0; i < this.TS.classes.length; i++) {
         if (this.TS.classes[i].eFilhoDe == null) {
           myTree.push({
@@ -403,10 +408,10 @@ export default {
             descricao: "",
             dataInicial: null,
             dataFinal: null,
-            tUA: "",
-            tSerie: "",
-            suporte: "",
-            medicao: "",
+            tUA: null,
+            tSerie: null,
+            suporte: null,
+            medicao: null,
             localizacao: [],
             entProdutoras: [],
             tipologiasProdutoras: [],

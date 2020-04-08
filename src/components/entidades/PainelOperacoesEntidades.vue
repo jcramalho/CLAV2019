@@ -200,13 +200,13 @@ import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBo
 
 export default {
   props: ["e", "acao", "original"],
+
   components: {
     ValidarEntidadeInfoBox,
   },
+
   data() {
     return {
-      pendenteGuardado: false,
-      pendenteGuardadoInfo: "",
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,

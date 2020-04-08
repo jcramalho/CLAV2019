@@ -27,8 +27,7 @@
           :close-on-content-click="false"
           :return-value.sync="newSerie.dataInicial"
           transition="scale-transition"
-          offset-y
-          min-width="290px"
+          max-width="290px"
         >
           <template v-slot:activator="{ on }">
             <v-text-field
@@ -41,10 +40,22 @@
               clearable
             ></v-text-field>
           </template>
-          <v-date-picker v-model="newSerie.dataInicial" no-title scrollable locale="pt">
+          <v-date-picker
+            full-width
+            color="amber accent-3"
+            v-model="newSerie.dataInicial"
+            scrollable
+            locale="pt"
+            :min="RE.dataInicial"
+            :max="RE.dataFinal"
+          >
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="data_inicial_menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu1.save(newSerie.dataInicial)">OK</v-btn>
+            <v-btn text color="primary" @click="data_inicial_menu = false">
+              <v-icon>keyboard_backspace</v-icon>
+            </v-btn>
+            <v-btn text color="primary" @click="$refs.menu1.save(newSerie.dataInicial)">
+              <v-icon>check</v-icon>
+            </v-btn>
           </v-date-picker>
         </v-menu>
       </v-col>
@@ -59,8 +70,7 @@
           :close-on-content-click="false"
           :return-value.sync="newSerie.dataFinal"
           transition="scale-transition"
-          offset-y
-          min-width="290px"
+          max-width="290px"
         >
           <template v-slot:activator="{ on }">
             <v-text-field
@@ -73,10 +83,22 @@
               clearable
             ></v-text-field>
           </template>
-          <v-date-picker v-model="newSerie.dataFinal" no-title scrollable locale="pt">
+          <v-date-picker
+            full-width
+            v-model="newSerie.dataFinal"
+            color="amber accent-3"
+            scrollable
+            locale="pt"
+            :min="RE.dataInicial"
+            :max="RE.dataFinal"
+          >
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="data_final_menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu2.save(newSerie.dataFinal)">OK</v-btn>
+            <v-btn text @click="data_final_menu = false">
+              <v-icon>keyboard_backspace</v-icon>
+            </v-btn>
+            <v-btn text @click="$refs.menu2.save(newSerie.dataFinal)">
+              <v-icon>check</v-icon>
+            </v-btn>
           </v-date-picker>
         </v-menu>
       </v-col>
@@ -127,6 +149,7 @@
           ></v-select>
         </v-col>
       </v-row>
+      <!-- {{newSerie}} -->
       <v-row>
         <v-col md="3" sm="3">
           <div class="info-label">Suporte</div>
@@ -146,7 +169,8 @@
         </v-col>
         <v-col sm="3" md="3">
           <v-text-field
-            :rules="[v => !isNaN(parseInt(v)) && parseInt(v) > 0 || 'Campo Obrigatório! Valor tem que ser um número positivo.']"
+            :rules="[v => !!v || 'Campo obrigatório!']"
+            type="number"
             solo
             clearable
             v-model="newSerie.medicao"
@@ -179,7 +203,7 @@
 import AssociarUI from "@/components/rada/criacao/classes/partes/AssociarUI";
 
 export default {
-  props: ["newSerie", "UIs"],
+  props: ["newSerie", "UIs", "RE"],
   components: {
     AssociarUI
   },
@@ -194,6 +218,12 @@ export default {
       "Papel",
       "Outro"
     ]
-  })
+  }),
+  watch: {
+    "newSerie.dataInicial"(val) {
+      let v = new Date(val);
+      console.log(v.getTime());
+    }
+  }
 };
 </script>
