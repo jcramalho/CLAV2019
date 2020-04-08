@@ -25,21 +25,6 @@
 
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
-              <v-dialog v-model="dialogEnditades" max-width="500px">
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Selecione uma Entidade</span>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="indigo darken-1" text @click="close"
-                      >Fechar</v-btn
-                    >
-                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
               <v-spacer />
               <v-icon color="green" @click="verifica(info)">check</v-icon>
               <v-icon color="red" @click="anula(info)">clear</v-icon>
@@ -106,7 +91,7 @@ export default {
 
   components: {
     PO,
-    ErroDialog
+    ErroDialog,
   },
 
   data() {
@@ -119,18 +104,19 @@ export default {
         {
           campo: "Tipo de Diploma",
           conteudo: this.p.objeto.dados.tipo,
-          cor: null
+          cor: null,
         },
         {
           campo: "Fonte do Diploma",
           conteudo: this.p.objeto.dados.diplomaFonte,
-          cor: null
+          cor: null,
         },
         {
           campo: "Número do Diploma",
           conteudo: this.p.objeto.dados.numero,
-          cor: null
+          cor: null,
         },
+
         { campo: "Data", conteudo: this.p.objeto.dados.data, cor: null },
         { campo: "Sumário", conteudo: this.p.objeto.dados.sumario, cor: null },
         { campo: "Link", conteudo: this.p.objeto.dados.link, cor: null },
@@ -138,22 +124,22 @@ export default {
         {
           campo: "Entidades",
           conteudo: this.p.objeto.dados.entidadesSel,
-          cor: null
+          cor: null,
         },
         {
           campo: "Processos",
           conteudo: this.p.objeto.dados.processosSel,
-          cor: null
-        }
+          cor: null,
+        },
       ],
       headersEntidades: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
       headersProcessos: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" }
-      ]
+        { text: "Título", value: "titulo", class: "subtitle-1" },
+      ],
     };
   },
 
@@ -166,13 +152,13 @@ export default {
           "get",
           "/users/" + this.$store.state.token + "/token"
         );
-
         dadosUtilizador = dadosUtilizador.data;
+
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -182,7 +168,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -203,6 +189,19 @@ export default {
         if (numeroErros > 0) {
           this.erroPedido = true;
         } else {
+          for (const key in pedido.objeto.dados) {
+            if (
+              pedido.objeto.dados[key] === undefined ||
+              pedido.objeto.dados[key] === null ||
+              pedido.objeto.dados[key] === ""
+            ) {
+              delete pedido.objeto.dados[key];
+            }
+          }
+
+          if (pedido.objeto.dados.diplomaFonte === "Não especificada")
+            delete pedido.objeto.dados.diplomaFonte;
+
           await this.$request("post", "/legislacao", pedido.objeto.dados);
 
           const estado = "Validado";
@@ -217,7 +216,7 @@ export default {
             estado: estado,
             responsavel: dadosUtilizador.email,
             data: new Date(),
-            despacho: dados.mensagemDespacho
+            despacho: dados.mensagemDespacho,
           };
 
           pedido.estado = estado;
@@ -225,7 +224,7 @@ export default {
 
           await this.$request("put", "/pedidos", {
             pedido: pedido,
-            distribuicao: novaDistribuicao
+            distribuicao: novaDistribuicao,
           });
 
           this.$router.go(-1);
@@ -233,7 +232,7 @@ export default {
       } catch (e) {
         this.erros.push({
           sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia."
+          mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
         this.erroPedido = true;
         console.log("e :", e);
@@ -241,12 +240,12 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
@@ -260,7 +259,6 @@ export default {
     },
 
     async validarLegislacao(acao, dados) {
-      console.log("dados :", dados);
       let numeroErros = 0;
 
       let parseAno = dados.numero.split("/");
@@ -270,7 +268,7 @@ export default {
       if (dados.tipo === "" || dados.tipo === null) {
         this.erros.push({
           sobre: "Tipo de Diploma",
-          mensagem: "O tipo de diploma não pode ser vazio."
+          mensagem: "O tipo de diploma não pode ser vazio.",
         });
 
         numeroErros++;
@@ -280,7 +278,7 @@ export default {
       if (dados.numero === "" || dados.numero === null) {
         this.erros.push({
           sobre: "Número de Diploma",
-          mensagem: "O número de diploma não pode ser vazio."
+          mensagem: "O número de diploma não pode ser vazio.",
         });
 
         numeroErros++;
@@ -294,7 +292,7 @@ export default {
           if (existeNumero.data) {
             this.erros.push({
               sobre: "Número de Diploma",
-              mensagem: "O número de diploma já existente na BD."
+              mensagem: "O número de diploma já existente na BD.",
             });
 
             numeroErros++;
@@ -304,7 +302,7 @@ export default {
           this.erros.push({
             sobre: "Acesso à Ontologia",
             mensagem:
-              "Não consegui verificar a existência do número do diploma."
+              "Não consegui verificar a existência do número do diploma.",
           });
         }
       }
@@ -313,14 +311,14 @@ export default {
       if (dados.data === "" || dados.data === null) {
         this.erros.push({
           sobre: "Data",
-          mensagem: "A data não pode ser vazia."
+          mensagem: "A data não pode ser vazia.",
         });
 
         numeroErros++;
       } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.data)) {
         this.erros.push({
           sobre: "Data",
-          mensagem: "A data está no formato errado."
+          mensagem: "A data está no formato errado.",
         });
 
         numeroErros++;
@@ -336,7 +334,7 @@ export default {
         if (mes > 12) {
           this.erros.push({
             sobre: "Data",
-            mensagem: "A data apresenta o mês errado."
+            mensagem: "A data apresenta o mês errado.",
           });
 
           numeroErros++;
@@ -345,7 +343,7 @@ export default {
             if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
               this.erros.push({
                 sobre: "Data",
-                mensagem: "A data apresenta o dia do mês errado."
+                mensagem: "A data apresenta o dia do mês errado.",
               });
 
               numeroErros++;
@@ -353,7 +351,7 @@ export default {
           } else {
             this.erros.push({
               sobre: "Data",
-              mensagem: "A data apresenta o dia do mês errado."
+              mensagem: "A data apresenta o dia do mês errado.",
             });
 
             numeroErros++;
@@ -362,7 +360,7 @@ export default {
           this.erros.push({
             sobre: "Data",
             mensagem:
-              "Ano inválido! Por favor selecione uma data anterior à atual"
+              "Ano inválido! Por favor selecione uma data anterior à atual",
           });
 
           numeroErros++;
@@ -373,7 +371,7 @@ export default {
           this.erros.push({
             sobre: "Data",
             mensagem:
-              "Mês inválido! Por favor selecione uma data anterior à atual"
+              "Mês inválido! Por favor selecione uma data anterior à atual",
           });
 
           numeroErros++;
@@ -385,7 +383,7 @@ export default {
           this.erros.push({
             sobre: "Data",
             mensagem:
-              "Dia inválido! Por favor selecione uma data anterior à atual"
+              "Dia inválido! Por favor selecione uma data anterior à atual",
           });
 
           numeroErros++;
@@ -396,15 +394,15 @@ export default {
       if (dados.sumario === "" || dados.sumario === null) {
         this.erros.push({
           sobre: "Sumário",
-          mensagem: "O sumário não pode ser vazio."
+          mensagem: "O sumário não pode ser vazio.",
         });
 
         numeroErros++;
       }
 
       return numeroErros;
-    }
-  }
+    },
+  },
 };
 </script>
 

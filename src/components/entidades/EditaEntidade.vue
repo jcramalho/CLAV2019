@@ -11,106 +11,137 @@
         </v-app-bar>
 
         <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nome da Entidade</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                label="Nome da Entidade"
-                color="indigo"
-                single-line
-                v-model="entidade.designacao"
-              />
-            </v-col>
-          </v-row>
+        <v-card-text class="ma-0 pa-0">
+          <v-stepper v-model="etapa" vertical>
+            <!-- Step 1 -->
+            <v-stepper-step :complete="etapa > 1" step="1" editable>
+              Escolha a operação
+            </v-stepper-step>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Internacional</div>
-            </v-col>
-            <v-col>
-              <v-select
-                filled
-                v-model="entidade.internacional"
-                :items="['Sim', 'Não']"
-                label="Selecione uma opção"
-                item-color="indigo"
-                color="indigo"
-              />
-            </v-col>
-          </v-row>
+            <v-stepper-content step="1">
+              <div class="ma-4">
+                <v-radio-group v-model="acao" row>
+                  <v-radio label="Editar" value="Alteração"></v-radio>
+                  <v-radio label="Extinguir" value="Extinção"></v-radio>
+                </v-radio-group>
+              </div>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">SIOE</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                label="SIOE"
-                color="indigo"
-                single-line
-                v-model="entidade.sioe"
-                :rules="regraSIOE"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+              <v-btn color="primary" @click="etapa = 2">
+                Continuar
+              </v-btn>
+            </v-stepper-content>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Data de criação</div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="entidade.dataCriacao"
-                @dataSelecionada="entidade.dataCriacao = $event"
-              />
-            </v-col>
-          </v-row>
+            <!-- Step 2 -->
+            <v-stepper-step :complete="etapa > 2" step="2">{{
+              acao
+            }}</v-stepper-step>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Data de extinção</div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="entidade.dataExtincao"
-                @dataSelecionada="entidade.dataExtincao = $event"
-              />
-            </v-col>
-          </v-row>
+            <v-stepper-content step="2">
+              <div v-if="acao === 'Alteração'">
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Nome da Entidade</div>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      filled
+                      clearable
+                      label="Nome da Entidade"
+                      color="indigo"
+                      single-line
+                      v-model="entidade.designacao"
+                    />
+                  </v-col>
+                </v-row>
 
-          <!-- Blocos expansivos -->
-          <v-expansion-panels>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>Tipologias de Entidade</div>
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Internacional</div>
+                  </v-col>
+                  <v-col>
+                    <v-select
+                      filled
+                      v-model="entidade.internacional"
+                      :items="['Sim', 'Não']"
+                      label="Selecione uma opção"
+                      item-color="indigo"
+                      color="indigo"
+                    />
+                  </v-col>
+                </v-row>
 
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelTip
-                  :tipologias="tipSel"
-                  @unselectTipologia="unselectTipologia($event)"
-                />
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">SIOE</div>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      filled
+                      clearable
+                      label="SIOE"
+                      color="indigo"
+                      single-line
+                      v-model="entidade.sioe"
+                      :rules="regraSIOE"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
 
-                <hr style="border-top: 1px dashed #dee2f8;" />
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Data de criação</div>
+                  </v-col>
+                  <v-col>
+                    <SelecionarData
+                      :d="entidade.dataCriacao"
+                      @dataSelecionada="entidade.dataCriacao = $event"
+                    />
+                  </v-col>
+                </v-row>
 
-                <SelTip
-                  :tipologiasReady="tipologiasReady"
-                  :tipologias="tipologias"
-                  @selectTipologia="selectTipologia($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+                <!-- Blocos expansivos -->
+                <v-expansion-panels>
+                  <v-expansion-panel popout focusable>
+                    <v-expansion-panel-header class="expansion-panel-heading">
+                      <div>Tipologias de Entidade</div>
+
+                      <template v-slot:actions>
+                        <v-icon color="white">expand_more</v-icon>
+                      </template>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <DesSelTip
+                        :tipologias="tipSel"
+                        @unselectTipologia="unselectTipologia($event)"
+                      />
+
+                      <hr style="border-top: 1px dashed #dee2f8;" />
+
+                      <SelTip
+                        :tipologiasReady="tipologiasReady"
+                        :tipologias="tipologias"
+                        @selectTipologia="selectTipologia($event)"
+                      />
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </div>
+
+              <div v-else>
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Data de extinção</div>
+                  </v-col>
+                  <v-col>
+                    <SelecionarData
+                      :d="entidade.dataExtincao"
+                      @dataSelecionada="entidade.dataExtincao = $event"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+            </v-stepper-content>
+          </v-stepper>
         </v-card-text>
         <v-snackbar
           v-model="snackbar"
@@ -122,10 +153,12 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
+
       <PainelOpsEnt
+        v-if="etapa === 2"
         :e="entidade"
         :original="entidadeOriginal"
-        :acao="'Alteração'"
+        :acao="acao"
       />
     </v-col>
   </v-row>
@@ -148,6 +181,7 @@ export default {
 
   data() {
     return {
+      etapa: 1,
       entidade: {
         designacao: "",
         sigla: "",
@@ -159,6 +193,7 @@ export default {
         dataExtincao: "",
       },
       entidadeOriginal: {},
+      acao: "Alteração",
 
       // Para o seletor de processos
       tipologias: [],
@@ -176,11 +211,11 @@ export default {
 
   methods: {
     // Vai à API buscar todas as tipologias
-    loadTipologias: async function () {
+    loadTipologias: async function() {
       try {
         let response = await this.$request("get", "/tipologias/");
 
-        this.tipologias = response.data.map(function (item) {
+        this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -194,7 +229,7 @@ export default {
       }
     },
 
-    unselectTipologia: function (tipologia) {
+    unselectTipologia: function(tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
       let index = this.tipSel.findIndex((e) => e.id === tipologia.id);
@@ -202,7 +237,7 @@ export default {
       this.entidade.tipologiasSel = this.tipSel;
     },
 
-    selectTipologia: function (tipologia) {
+    selectTipologia: function(tipologia) {
       this.tipSel.push(tipologia);
       this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
@@ -216,17 +251,17 @@ export default {
     },
   },
 
-  created: async function () {
+  created: async function() {
     this.entidade = JSON.parse(JSON.stringify(this.e));
-
     this.entidadeOriginal = JSON.parse(JSON.stringify(this.e));
 
     await this.loadTipologias();
 
     try {
-      if (this.entidade.tipologiasSel.length != 0) {
+      if (this.entidade.tipologiasSel.length !== 0) {
         this.entidade.tipologiasSel.forEach((tip) => {
           this.tipSel.push(tip);
+
           // Remove dos selecionáveis
           let index = this.tipologias.findIndex((t) => t.id === tip.id);
           this.tipologias.splice(index, 1);

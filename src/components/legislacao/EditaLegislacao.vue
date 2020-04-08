@@ -4,7 +4,10 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Editar Diploma</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Editar Diploma ({{ legislacaoOriginal.tipo }} -
+            {{ legislacaoOriginal.numero }})</v-toolbar-title
+          >
         </v-app-bar>
 
         <!-- Content -->
@@ -124,7 +127,11 @@
       </v-card>
 
       <!-- Painel Operações -->
-      <PainelOpsLeg :l="legislacao" :acao="'Alteração'" />
+      <PainelOpsLeg
+        :l="legislacao"
+        :original="legislacaoOriginal"
+        :acao="'Alteração'"
+      />
     </v-col>
   </v-row>
 </template>
@@ -142,48 +149,51 @@ import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 export default {
   props: ["l"],
 
-  data: vm => ({
-    legislacao: {
-      numero: "",
-      sumario: "",
-      tipo: "",
-      data: "",
-      link: "",
-      fonte: "Não especificada",
-      entidadesSel: [],
-      processosSel: [],
-      codigo: "",
-      dataRevogacao: ""
-    },
-
-    tiposDiploma: [],
-
-    diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
-
-    // Para o seletor de entidades
-    entidades: [],
-    entSel: [],
-    entidadesReady: false,
-
-    tipoReady: true,
-
-    // Para o seletor de processos
-    processos: [],
-    procSel: [],
-    processosReady: false,
-
-    // para mostrar mensagens de erro
-    snackbar: false,
-    text: ""
-  }),
-
   components: {
     DesSelEnt,
     SelEnt,
     DesSelProc,
     SelProc,
     PainelOpsLeg,
-    SelecionarData
+    SelecionarData,
+  },
+
+  data() {
+    return {
+      legislacao: {
+        numero: "",
+        sumario: "",
+        tipo: "",
+        data: "",
+        link: "",
+        fonte: "Não especificada",
+        entidadesSel: [],
+        processosSel: [],
+        codigo: "",
+        dataRevogacao: "",
+      },
+      legislacaoOriginal: {},
+
+      tiposDiploma: [],
+
+      diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
+
+      // Para o seletor de entidades
+      entidades: [],
+      entSel: [],
+      entidadesReady: false,
+
+      tipoReady: true,
+
+      // Para o seletor de processos
+      processos: [],
+      procSel: [],
+      processosReady: false,
+
+      // para mostrar mensagens de erro
+      snackbar: false,
+      text: "",
+    };
   },
 
   methods: {
@@ -207,7 +217,7 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      let index = this.entSel.findIndex(e => e.id === entidade.id);
+      let index = this.entSel.findIndex((e) => e.id === entidade.id);
       this.entSel.splice(index, 1);
       this.legislacao.entidadesSel = this.entSel;
     },
@@ -216,7 +226,7 @@ export default {
       this.entSel.push(entidade);
       this.legislacao.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      let index = this.entidades.findIndex(e => e.id === entidade.id);
+      let index = this.entidades.findIndex((e) => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
@@ -224,11 +234,11 @@ export default {
     loadEntidades: async function() {
       try {
         let response = await this.$request("get", "/entidades");
-        this.entidades = response.data.map(function(item) {
+        this.entidades = response.data.map((item) => {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
         this.entidadesReady = true;
@@ -240,7 +250,7 @@ export default {
     unselectProcesso: function(processo) {
       // Recoloca o processo nos selecionáveis
       this.processos.push(processo);
-      let index = this.procSel.findIndex(e => e.id === processo.id);
+      let index = this.procSel.findIndex((e) => e.id === processo.id);
       this.procSel.splice(index, 1);
       this.legislacao.processosSel = this.procSel;
     },
@@ -249,7 +259,7 @@ export default {
       this.procSel.push(processo);
       this.legislacao.processosSel = this.procSel;
       // Remove dos selecionáveis
-      let index = this.processos.findIndex(e => e.id === processo.id);
+      let index = this.processos.findIndex((e) => e.id === processo.id);
       this.processos.splice(index, 1);
     },
 
@@ -261,7 +271,7 @@ export default {
           return {
             codigo: item.codigo,
             titulo: item.titulo,
-            id: item.id.split("#")[1]
+            id: item.id.split("#")[1],
           };
         });
         this.processosReady = true;
@@ -273,11 +283,12 @@ export default {
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
   created: async function() {
-    this.legislacao = this.l;
+    this.legislacao = JSON.parse(JSON.stringify(this.l));
+    this.legislacaoOriginal = JSON.parse(JSON.stringify(this.l));
 
     if (
       this.legislacao.fonte === "" ||
@@ -293,33 +304,38 @@ export default {
 
     try {
       if (this.legislacao.entidadesSel.length != 0) {
-        this.legislacao.entidadesSel.forEach(ent => {
+        this.legislacao.entidadesSel.forEach((ent) => {
           this.entSel.push(ent);
 
           // Remove dos selecionáveis
-          let index = this.entidades.findIndex(e => e.id === ent.id);
+          let index = this.entidades.findIndex((e) => {
+            return e.id === ent.id;
+          });
           this.entidades.splice(index, 1);
         });
       }
     } catch (e) {
+      console.log("e :", e);
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
 
     try {
       if (this.legislacao.processosSel.length != 0) {
-        this.legislacao.processosSel.forEach(proc => {
+        this.legislacao.processosSel.forEach((proc) => {
           this.procSel.push(proc);
+
           // Remove dos selecionáveis
-          let index = this.processos.findIndex(p => p.id === proc.id);
+          let index = this.processos.findIndex((p) => p.id === proc.id);
           this.processos.splice(index, 1);
         });
       }
     } catch (e) {
+      console.log("e :", e);
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
-  }
+  },
 };
 </script>
 

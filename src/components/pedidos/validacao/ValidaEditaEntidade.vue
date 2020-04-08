@@ -6,8 +6,8 @@
         cols="2"
         v-if="
           info.campo !== 'Sigla' &&
-          info.conteudo !== '' &&
-          info.conteudo !== undefined
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
         "
       >
         <div class="info-label">{{ info.campo }}</div>
@@ -17,8 +17,8 @@
       <v-col
         v-if="
           info.campo !== 'Sigla' &&
-          info.conteudo !== '' &&
-          info.conteudo !== undefined
+            info.conteudo !== '' &&
+            info.conteudo !== undefined
         "
       >
         <!-- Se o conteudo for uma lista de tipologias-->
@@ -90,11 +90,6 @@ export default {
       dialogTipologias: false,
       infoPedido: [
         {
-          campo: "Sigla",
-          conteudo: this.p.objeto.dados.sigla,
-          cor: null,
-        },
-        {
           campo: "Designação",
           conteudo: this.p.objeto.dados.designacao,
           cor: null,
@@ -162,18 +157,27 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         // TODO: Adicionar validação para a designação
+        // Se for extinção não valida
 
-        for (const key in pedido.objeto.dadosOriginais) {
-          if (!pedido.objeto.dados.hasOwnProperty(key)) {
-            pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+        if (pedido.objeto.acao === "Extinção") {
+          await this.$request(
+            "put",
+            `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
+            { dataExtincao: pedido.objeto.dados.dataExtincao }
+          );
+        } else {
+          for (const key in pedido.objeto.dadosOriginais) {
+            if (!pedido.objeto.dados.hasOwnProperty(key)) {
+              pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+            }
           }
-        }
 
-        await this.$request(
-          "put",
-          `/entidades/ent_${pedido.objeto.dados.sigla}`,
-          pedido.objeto.dados
-        );
+          await this.$request(
+            "put",
+            `/entidades/ent_${pedido.objeto.dados.sigla}`,
+            pedido.objeto.dados
+          );
+        }
 
         const estado = "Validado";
 
@@ -181,7 +185,6 @@ export default {
           "get",
           "/users/" + this.$store.state.token + "/token"
         );
-
         dadosUtilizador = dadosUtilizador.data;
 
         const novaDistribuicao = {

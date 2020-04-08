@@ -70,7 +70,7 @@ export default {
 
   components: {
     PO,
-    ErroDialog
+    ErroDialog,
   },
 
   data() {
@@ -82,34 +82,23 @@ export default {
         {
           campo: "Sigla",
           conteudo: this.p.objeto.dados.sigla,
-          cor: null
+          cor: null,
         },
         {
           campo: "Designação",
           conteudo: this.p.objeto.dados.designacao,
-          cor: null
+          cor: null,
         },
-        {
-          campo: "Internacional",
-          conteudo: this.p.objeto.dados.internacional,
-          cor: null
-        },
-        { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
         {
           campo: "Entidades",
           conteudo: this.p.objeto.dados.entidadesSel,
-          cor: null
+          cor: null,
         },
-        {
-          campo: "Data Extinção",
-          conteudo: this.p.objeto.dados.dataExtincao,
-          cor: null
-        }
       ],
       headersEntidade: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
-      ]
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+      ],
     };
   },
 
@@ -128,7 +117,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -138,7 +127,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -174,7 +163,7 @@ export default {
             estado: estado,
             responsavel: dadosUtilizador.email,
             data: new Date(),
-            despacho: dados.mensagemDespacho
+            despacho: dados.mensagemDespacho,
           };
 
           pedido.estado = estado;
@@ -182,7 +171,7 @@ export default {
 
           await this.$request("put", "/pedidos", {
             pedido: pedido,
-            distribuicao: novaDistribuicao
+            distribuicao: novaDistribuicao,
           });
 
           this.$router.go(-1);
@@ -190,7 +179,7 @@ export default {
       } catch (e) {
         this.erros.push({
           sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia."
+          mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
         this.erroPedido = true;
         console.log("e :", e);
@@ -198,12 +187,12 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
@@ -223,7 +212,7 @@ export default {
       if (dados.designacao === "" || dados.designacao === null) {
         this.erros.push({
           sobre: "Nome da Tipologia",
-          mensagem: "O nome da tipologia não pode ser vazio."
+          mensagem: "O nome da tipologia não pode ser vazio.",
         });
         numeroErros++;
       } else {
@@ -236,7 +225,7 @@ export default {
           if (existeDesignacao.data) {
             this.erros.push({
               sobre: "Nome da Tipologia",
-              mensagem: "Nome da tipologia já existente na BD."
+              mensagem: "Nome da tipologia já existente na BD.",
             });
             numeroErros++;
           }
@@ -244,7 +233,7 @@ export default {
           numeroErros++;
           this.erros.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação."
+            mensagem: "Não consegui verificar a existência da designação.",
           });
         }
       }
@@ -253,7 +242,7 @@ export default {
       if (dados.sigla === "" || dados.sigla === null) {
         this.erros.push({
           sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
+          mensagem: "A sigla não pode ser vazia.",
         });
         numeroErros++;
       } else {
@@ -265,7 +254,7 @@ export default {
           if (existeSigla.data) {
             this.erros.push({
               sobre: "Sigla",
-              mensagem: "Sigla já existente na BD."
+              mensagem: "Sigla já existente na BD.",
             });
             numeroErros++;
           }
@@ -273,14 +262,14 @@ export default {
           numeroErros++;
           this.erros.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da sigla."
+            mensagem: "Não consegui verificar a existência da sigla.",
           });
         }
       }
 
       return numeroErros;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -102,7 +102,7 @@ export default {
       sigla: "",
       estado: "Ativa",
       entidadesSel: [],
-      codigo: ""
+      codigo: "",
     },
 
     // Para o seletor
@@ -111,12 +111,13 @@ export default {
     entidadesReady: false,
 
     snackbar: false,
-    text: ""
+    text: "",
   }),
+
   components: {
     DesSelEnt,
     SelEnt,
-    PainelOpsTip
+    PainelOpsTip,
   },
 
   methods: {
@@ -128,7 +129,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
         this.entidadesReady = true;
@@ -140,7 +141,7 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      let index = this.entSel.findIndex(e => e.id === entidade.id);
+      let index = this.entSel.findIndex((e) => e.id === entidade.id);
       this.entSel.splice(index, 1);
       this.tipologia.entidadesSel = this.entSel;
     },
@@ -149,19 +150,19 @@ export default {
       this.entSel.push(entidade);
       this.tipologia.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      let index = this.entidades.findIndex(e => e.id === entidade.id);
+      let index = this.entidades.findIndex((e) => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
   created: function() {
     this.loadEntidades();
-  }
+  },
 };
 </script>
 

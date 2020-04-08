@@ -20,9 +20,9 @@
                     text-color="white"
                   >
                     <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idEntidade.split("_")[1] }}
+                    {{ tabelaSelecao.idEntidade }}
                     -
-                    {{ tabelaSelecao.designacao }}
+                    {{ tabelaSelecao.designacaoEntidade }}
                   </v-chip>
                 </span>
               </v-stepper-step>
