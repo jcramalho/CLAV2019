@@ -224,6 +224,7 @@ export default {
       serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
       serie_classe.UIs = await this.editaUI(serie_classe, c);
 
+      // Se a legislação for alterada pode mudar os critérios legais na subsérie;
       this.alterarCriterioLegalSubseries(serie_classe.codigo, c.legislacao);
 
       serie_classe.titulo = c.titulo;
@@ -275,7 +276,7 @@ export default {
         );
         if (legalPCA_subserie != undefined) {
           legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter(e =>
-            legislacao.some(leg => leg.tipo + " " + leg.numero == e)
+            legislacao.some(leg => leg.tipo + " " + leg.numero == e.codigo)
           );
 
           if (legalPCA_subserie.relacoes.length == 0) {
@@ -290,7 +291,7 @@ export default {
         );
         if (legalDF_subserie != undefined) {
           legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter(e =>
-            legislacao.some(leg => leg.tipo + " " + leg.numero == e)
+            legislacao.some(leg => leg.tipo + " " + leg.numero == e.codigo)
           );
 
           if (legalDF_subserie.relacoes.length == 0) {

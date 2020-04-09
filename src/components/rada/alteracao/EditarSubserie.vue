@@ -129,7 +129,7 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "UIs", "formaContagem"],
+  props: ["treeview_object", "classes", "UIs", "formaContagem", "RE"],
   data: () => ({
     existe_erros: false,
     erros: [],

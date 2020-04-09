@@ -69,7 +69,7 @@
                 <v-card-text>
                   <ul>
                     <li v-for="(relacao, relindex) in criterio.relacoes" :key="relindex">
-                      {{ relacao }}
+                      {{ relacao.codigo + " - " + relacao.titulo }}
                       <v-icon
                         v-if="criterio.tipo == 'Critério Legal'"
                         @click="removeRelacao(relindex, criterio, cindex)"
@@ -161,13 +161,19 @@ export default {
       let relacoesLegis = [];
       if (this.newSerie.tipo == "Série") {
         relacoesLegis = this.newSerie.legislacao.map(item => {
-          return item.tipo + " " + item.numero;
+          return {
+            codigo: item.tipo + " " + item.numero,
+            titulo: item.sumario
+          };
         });
       } else {
         let pai = this.classes.find(e => e.codigo == this.newSerie.eFilhoDe);
 
         relacoesLegis = pai.legislacao.map(item => {
-          return item.tipo + " " + item.numero;
+          return {
+            codigo: item.tipo + " " + item.numero,
+            titulo: item.sumario
+          };
         });
       }
       this.newSerie.justificacaoDF.push({
