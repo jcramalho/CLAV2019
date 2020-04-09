@@ -18,7 +18,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSubSerie" :UIs="UIs" :RE="RE"/>
+                <ZonaDescritiva :newSerie="newSubSerie" :UIs="UIs" :RE="RE" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -253,8 +253,27 @@ export default {
         if (this.$refs.form.validate()) {
           let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
+          clone_newSubserie.justificacaoPCA.forEach(criterio => {
+            if (criterio.tipo == "Critério de Utilidade Administrativa") {
+              criterio.relacoes.map(rel => delete rel.titulo);
+            }
+          });
+
+          clone_newSubserie.justificacaoDF.forEach(criterio => {
+            if (
+              criterio.tipo == "Critério de Complementaridade Informacional" ||
+              criterio.tipo == "Critério de Densidade Informacional"
+            ) {
+              criterio.relacoes.map(rel => delete rel.titulo);
+            }
+          });
+
           this.adicionarUIs(clone_newSubserie);
           this.relacoes_simetricas(clone_newSubserie);
+
+          clone_newSubserie.relacoes.map(
+            item => delete item.serieRelacionada.titulo
+          );
 
           this.classes.push(clone_newSubserie);
 
@@ -344,7 +363,9 @@ export default {
       );
 
       if (criterio != undefined) {
-        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+        criterio.relacoes = criterio.relacoes.filter(
+          e => e.codigo != codigoClasse
+        );
 
         if (criterio.relacoes.length == 0) {
           this.alteraDF();
@@ -391,10 +412,10 @@ export default {
           classe_relacionada.justificacaoPCA.push({
             tipo: tipo_criterio,
             nota: labels.textoCriterioUtilidadeAdministrativa,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({ codigo: codigoClasse });
         }
       } else {
         let criterio = classe_relacionada.justificacaoDF.find(
@@ -421,10 +442,10 @@ export default {
           classe_relacionada.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({ codigo: codigoClasse });
         }
       }
     },
@@ -438,7 +459,7 @@ export default {
           if (clone_newSubserie.relacoes[i].serieRelacionada.tipo == "Série") {
             classe_relacionada = {
               codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
-              titulo: "",
+              titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
               descricao: "",
               dataInicial: null,
               dataFinal: null,
@@ -466,7 +487,7 @@ export default {
           } else {
             classe_relacionada = {
               codigo: clone_newSubserie.relacoes[i].serieRelacionada.codigo,
-              titulo: "",
+              titulo: clone_newSubserie.relacoes[i].serieRelacionada.titulo,
               descricao: "",
               dataInicial: null,
               dataFinal: null,

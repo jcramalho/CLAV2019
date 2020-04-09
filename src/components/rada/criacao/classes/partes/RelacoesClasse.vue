@@ -5,6 +5,7 @@
         <div class="info-label">Relação com Série/Subsérie</div>
       </v-col>
       <v-col cols="12" xs="12" sm="9">
+        {{newSerie.relacoes}}
         <v-row>
           <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
             <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>
@@ -20,7 +21,7 @@
               </template>
               <template v-slot:item.serieRelacionada="props">
                 {{
-                props.item.serieRelacionada.codigo
+                props.item.serieRelacionada.codigo + " - " + props.item.serieRelacionada.titulo
                 }}
               </template>
             </v-data-table>
@@ -34,7 +35,7 @@
             <!-- Novo form para adicionar relação -->
             <v-form ref="addRel" :lazy-validation="false">
               <v-row>
-                <v-col sm="12" xs="12">
+                <v-col sm="6" xs="6">
                   <v-combobox
                     :rules="[v => codigoIgual(v)]"
                     v-model="codrel"
@@ -46,6 +47,16 @@
                     clearable
                     :return-object="false"
                   ></v-combobox>
+                </v-col>
+                <v-col sm="6" xs="6">
+                  <v-text-field
+                    :disabled="iscodvalido"
+                    :rules="[v => !!v || 'Campo Obrigatório']"
+                    v-model="tituloClasse"
+                    label="Título"
+                    solo
+                    clearable
+                  ></v-text-field>
                 </v-col>
               </v-row>
 
@@ -87,7 +98,6 @@
                     <v-icon color="red lighten-1">delete_sweep</v-icon>
                   </v-btn>
                 </v-col>
-                
               </v-row>
               <v-row v-if="!!alertOn">
                 <v-col>
@@ -115,6 +125,7 @@ export default {
   props: ["newSerie", "classes"],
   data() {
     return {
+      tituloClasse: null,
       tipoClasse: null,
       iscodvalido: false,
       alertOn: false,
@@ -187,6 +198,7 @@ export default {
       if (c != undefined) {
         this.iscodvalido = true;
         this.tipoClasse = c.tipo;
+        this.tituloClasse = c.titulo;
       } else {
         this.iscodvalido = false;
       }
@@ -221,7 +233,9 @@ export default {
         );
 
         if (criterio != undefined) {
-          criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+          criterio.relacoes = criterio.relacoes.filter(
+            e => e.codigo != codigoClasse
+          );
 
           if (criterio.relacoes.length == 0) {
             this.newSerie.justificacaoPCA = this.newSerie.justificacaoPCA.filter(
@@ -235,7 +249,9 @@ export default {
         );
 
         if (criterio != undefined) {
-          criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+          criterio.relacoes = criterio.relacoes.filter(
+            e => e.codigo != codigoClasse
+          );
 
           if (criterio.relacoes.length == 0) {
             this.alteraDF(tipo_criterio);
@@ -301,6 +317,7 @@ export default {
           if (this.rel == "Suplemento para") {
             this.adiciona_criterio(
               this.codrel,
+              this.tituloClasse,
               "Critério de Utilidade Administrativa",
               this.rel
             );
@@ -309,6 +326,7 @@ export default {
           if (this.rel == "Complementar de") {
             this.adiciona_criterio(
               this.codrel,
+              this.tituloClasse,
               "Critério de Complementaridade Informacional",
               this.rel
             );
@@ -317,6 +335,7 @@ export default {
           if (this.rel == "Sintetizado por" || this.rel == "Síntese de") {
             this.adiciona_criterio(
               this.codrel,
+              this.tituloClasse,
               "Critério de Densidade Informacional",
               this.rel
             );
@@ -326,7 +345,8 @@ export default {
             relacao: this.rel,
             serieRelacionada: {
               codigo: this.codrel,
-              tipo: this.tipoClasse
+              tipo: this.tipoClasse,
+              titulo: this.tituloClasse
             }
           });
 
@@ -337,7 +357,7 @@ export default {
         }
       }
     },
-    adiciona_criterio(codigoClasse, tipo_criterio, relacao) {
+    adiciona_criterio(codigoClasse, tituloClasse, tipo_criterio, relacao) {
       if (tipo_criterio == "Critério de Utilidade Administrativa") {
         let criterio = this.newSerie.justificacaoPCA.find(
           crit => crit.tipo == tipo_criterio
@@ -347,10 +367,13 @@ export default {
           this.newSerie.justificacaoPCA.push({
             tipo: tipo_criterio,
             nota: labels.textoCriterioUtilidadeAdministrativa,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse, titulo: tituloClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({
+            codigo: codigoClasse,
+            titulo: tituloClasse
+          });
         }
       } else {
         let criterio = this.newSerie.justificacaoDF.find(
@@ -384,10 +407,13 @@ export default {
           this.newSerie.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse, titulo: tituloClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({
+            codigo: codigoClasse,
+            titulo: tituloClasse
+          });
         }
       }
     },
