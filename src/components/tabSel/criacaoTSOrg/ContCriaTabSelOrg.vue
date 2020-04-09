@@ -96,23 +96,19 @@
                     barra(28);
                     loadProcEspecificos();
                   "
-                  >Continuar</v-btn
-                >
+                  >Continuar</v-btn>
                 <v-btn
                   text
                   @click="
                     stepNo--;
                     barra(0);
                   "
-                  >Voltar</v-btn
-                >
+                  >Voltar</v-btn>
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 4" step="4"
-                >Processos Comuns
-                <small
-                  >Processos passíveis de existir em qualquer entidade</small
-                >
+              <v-stepper-step :complete="stepNo > 4" step="4">
+                Processos Comuns
+                <small>Processos passíveis de existir em qualquer entidade</small>
               </v-stepper-step>
               <v-stepper-content step="4">
                 <v-layout wrap>
@@ -726,6 +722,10 @@ export default {
     };
   },
   methods: {
+    // Visualização de estruturas para efeitos de debug
+    debug: function(obj){
+      alert(JSON.stringify(obj));
+    },
     // Valor da barra de progresso
     barra: async function(valor) {
       this.valorBarra = valor;
@@ -946,7 +946,7 @@ export default {
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
       this.numProcSelCom = procSelec.length;
-      this.tabelaSelecao.procComuns = procSelec;
+      this.tabelaSelecao.procComuns = JSON.parse(JSON.stringify(procSelec));
     },
     // Contador dos processos pre selecionados comuns
     contadorProcPreSelCom: function(lista) {
@@ -1398,7 +1398,7 @@ export default {
           token: this.$store.state.token
         };
         var response = await this.$request(
-          "post",
+          "put",
           "/pendentes",
           pendenteParams
         );
