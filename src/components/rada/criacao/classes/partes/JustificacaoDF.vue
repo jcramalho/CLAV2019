@@ -32,8 +32,11 @@
       <v-col md="3" sm="3">
         <div class="info-label">Justificação do DF</div>
         <v-row no-gutters>
-          <v-col v-if="existeLegislacao" sm="5" md="5" xs="12">
-            <v-btn class="ma-2" color="indigo darken-2" dark @click="adicionaLegal">Critério Legal</v-btn>
+          <v-col v-if="existeLegislacao">
+            <v-btn class="ma-2" color="indigo darken-2" dark @click="adicionaLegal" rounded>
+              Critério Legal
+              <v-icon small dark right>add_circle_outline</v-icon>
+            </v-btn>
           </v-col>
         </v-row>
       </v-col>
@@ -66,7 +69,7 @@
                 <v-card-text>
                   <ul>
                     <li v-for="(relacao, relindex) in criterio.relacoes" :key="relindex">
-                      {{ relacao }}
+                      {{ relacao.codigo + " - " + relacao.titulo }}
                       <v-icon
                         v-if="criterio.tipo == 'Critério Legal'"
                         @click="removeRelacao(relindex, criterio, cindex)"
@@ -158,13 +161,19 @@ export default {
       let relacoesLegis = [];
       if (this.newSerie.tipo == "Série") {
         relacoesLegis = this.newSerie.legislacao.map(item => {
-          return item.tipo + " " + item.numero;
+          return {
+            codigo: item.tipo + " " + item.numero,
+            titulo: item.sumario
+          };
         });
       } else {
         let pai = this.classes.find(e => e.codigo == this.newSerie.eFilhoDe);
 
         relacoesLegis = pai.legislacao.map(item => {
-          return item.tipo + " " + item.numero;
+          return {
+            codigo: item.tipo + " " + item.numero,
+            titulo: item.sumario
+          };
         });
       }
       this.newSerie.justificacaoDF.push({

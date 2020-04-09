@@ -4,9 +4,7 @@
       <v-flex xs12 sm10>
         <v-card v-if="pendenteLoaded">
           <v-toolbar color="blue" dark>
-            <v-toolbar-title
-              >Consulta do pendente: {{ pendente._id }}</v-toolbar-title
-            >
+            <v-toolbar-title>Consulta do pendente: {{ pendente._id }}</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>

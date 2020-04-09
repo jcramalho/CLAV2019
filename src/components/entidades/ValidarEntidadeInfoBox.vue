@@ -1,17 +1,16 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="indigo darken-3" @click="validarEntidade"
-      >Validar Entidade</v-btn
-    >
+    <v-btn dark rounded class="indigo darken-3" @click="validarEntidade">
+      Validar Entidade
+    </v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="70%">
       <v-card>
-        <v-card-title
-          >Erros detetados na validação:
-          {{ mensagensErro.length }}</v-card-title
-        >
+        <v-card-title>
+          Erros detetados na validação: {{ mensagensErro.length }}
+        </v-card-title>
         <v-card-text>
           <v-row v-for="(m, i) in mensagensErro" :key="i">
             <v-col cols="2">
@@ -103,7 +102,7 @@ export default {
 
       // Sigla
       if (this.e.sigla === "" || this.e.sigla === null) {
-        mensagensErro.push({
+        this.mensagensErro.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia.",
         });

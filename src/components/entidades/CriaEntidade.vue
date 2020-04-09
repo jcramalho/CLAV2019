@@ -145,7 +145,6 @@ const help = require("@/config/help").help;
 
 export default {
   data: () => ({
-    menu1: false,
     myhelp: help,
     entidade: {
       designacao: "",
@@ -155,7 +154,7 @@ export default {
       tipologiasSel: [],
       codigo: "",
       dataCriacao: "",
-      estado: "Ativa"
+      estado: "Ativa",
     },
 
     // Para o seletor de processos
@@ -164,18 +163,20 @@ export default {
     tipologiasReady: false,
 
     regraSIOE: [
-      v => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos."
+      (v) => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos.",
     ],
 
     snackbar: false,
-    text: ""
+    text: "",
   }),
+
   components: {
     DesSelTip,
     SelTip,
     PainelOpsEnt,
-    SelecionarData
+    SelecionarData,
   },
+
   methods: {
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
@@ -185,7 +186,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
         this.tipologiasReady = true;
@@ -197,7 +198,7 @@ export default {
     unselectTipologia: function(tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
-      let index = this.tipSel.findIndex(e => e.id === tipologia.id);
+      let index = this.tipSel.findIndex((e) => e.id === tipologia.id);
       this.tipSel.splice(index, 1);
       this.entidade.tipologiasSel = this.tipSel;
     },
@@ -206,19 +207,19 @@ export default {
       this.tipSel.push(tipologia);
       this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
-      let index = this.tipologias.findIndex(e => e.id === tipologia.id);
+      let index = this.tipologias.findIndex((e) => e.id === tipologia.id);
       this.tipologias.splice(index, 1);
     },
 
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
   created: function() {
     this.loadTipologias();
-  }
+  },
 };
 </script>
 

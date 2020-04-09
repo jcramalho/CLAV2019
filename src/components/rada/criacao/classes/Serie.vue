@@ -11,8 +11,6 @@
 
       <v-card-text>
         <v-form ref="formSerie" :lazy-validation="false">
-          <!-- <h5>Identificação</h5>
-          <v-divider></v-divider>-->
           <Identificacao :newSerie="newSerie" :classes="classes" />
 
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
@@ -21,7 +19,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSerie" :UIs="UIs" />
+                <ZonaDescritiva :newSerie="newSerie" :UIs="UIs" :RE="RE" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -91,6 +89,12 @@
       </v-card-text>
 
       <v-card-actions>
+        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+          É necessário preencher os campos seguintes:
+          <ul>
+            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+          </ul>
+        </v-alert>
         <v-spacer></v-spacer>
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
@@ -121,25 +125,27 @@ export default {
   props: ["classes", "legislacao", "RE", "UIs", "formaContagem"],
   data: () => ({
     panels: [0, 0, 0],
+    existe_erros: false,
+    erros: [],
     isMultiple: false,
     dialog: false,
     classesHierarquia: [],
     newSerie: {
-      // codigo: "02.02",
-      // titulo: "SERIE",
-      // descricao: "DESC SERIE",
-      // dataInicial: "2020-02-13",
-      // dataFinal: "2020-02-16",
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: null,
-      dataFinal: null,
-      tUA: "",
-      tSerie: "",
-      suporte: "",
+      codigo: "02.02",
+      titulo: "SERIE",
+      descricao: "DESC SERIE",
+      dataInicial: "2020-02-13",
+      dataFinal: "2020-02-16",
+      // codigo: "",
+      // titulo: "",
+      // descricao: "",
+      // dataInicial: null,
+      // dataFinal: null,
+      tUA: null,
+      tSerie: null,
+      suporte: null,
       UIs: [],
-      medicao: "",
+      medicao: null,
       localizacao: [],
       entProdutoras: [],
       tipologiasProdutoras: [],
@@ -161,6 +167,8 @@ export default {
     apagar: function() {
       this.isMultiple = false;
       this.panels = [0, 0, 0];
+      this.existe_erros = false;
+      this.erros = [];
 
       this.newSerie = {
         codigo: "",
@@ -168,11 +176,11 @@ export default {
         descricao: "",
         dataInicial: null,
         dataFinal: null,
-        tUA: "",
-        tSerie: "",
+        tUA: null,
+        tSerie: null,
         UIs: [],
-        suporte: "",
-        medicao: "",
+        suporte: null,
+        medicao: null,
         localizacao: [],
         entProdutoras: [],
         tipologiasProdutoras: [],
@@ -194,19 +202,100 @@ export default {
     close: function() {
       this.dialog = false;
     },
+    recolherErros() {
+      this.existe_erros = true;
+
+      if (!this.newSerie.codigo) {
+        this.erros.push("Código;");
+      }
+
+      if (!this.newSerie.titulo) {
+        this.erros.push("Título;");
+      }
+
+      if (!this.newSerie.descricao) {
+        this.erros.push("Descrição;");
+      }
+
+      if (
+        !!this.newSerie.UIs[0] == false &&
+        (!this.newSerie.dataInicial || !this.newSerie.dataFinal)
+      ) {
+        this.erros.push("Datas ou Unidades de Instalação;");
+      }
+
+      if (!this.newSerie.tUA) {
+        this.erros.push("Tipo de Unidade Arquivistica;");
+      }
+
+      if (!this.newSerie.suporte) {
+        this.erros.push("Suporte;");
+      }
+
+      if (!this.newSerie.medicao) {
+        this.erros.push("Medição;");
+      }
+
+      if (!!this.newSerie.localizacao[0] == false) {
+        this.erros.push("Localização;");
+      }
+
+      if (
+        !!this.newSerie.entProdutoras[0] == false &&
+        !!this.newSerie.tipologiasProdutoras[0] == false
+      ) {
+        this.erros.push("Produtoras;");
+      }
+
+      if (!!this.newSerie.legislacao[0] == false) {
+        this.erros.push("Legislação;");
+      }
+      if (!!this.newSerie.relacoes[0] == false) {
+        this.erros.push("Relações;");
+      }
+
+      if (!this.newSerie.eFilhoDe) {
+        this.erros.push("Relação de Hierarquia;");
+      }
+    },
     save: function() {
+      this.existe_erros = false;
+      this.erros = [];
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
         if (this.$refs.formSerie.validate()) {
           let clone_newSerie = Object.assign({}, this.newSerie);
 
+          clone_newSerie.justificacaoPCA.forEach(criterio => {
+            if (criterio.tipo == "Critério de Utilidade Administrativa") {
+              criterio.relacoes.map(rel => delete rel.titulo);
+            }
+          });
+
+          clone_newSerie.justificacaoDF.forEach(criterio => {
+            if (
+              criterio.tipo == "Critério de Complementaridade Informacional" ||
+              criterio.tipo == "Critério de Densidade Informacional"
+            ) {
+              criterio.relacoes.map(rel => delete rel.titulo);
+            }
+          });
+
           this.relacoes_simetricas(clone_newSerie);
           this.adicionarUIs(clone_newSerie);
 
+          clone_newSerie.relacoes.map(
+            item => delete item.serieRelacionada.titulo
+          );
+
           this.classes.push(clone_newSerie);
-          this.dialog = false;
           this.apagar();
+          this.dialog = false;
+        } else {
+          this.isMultiple = false;
+          this.panels = [0, 0, 0];
+          this.recolherErros();
         }
       }, 1);
     },
@@ -214,14 +303,14 @@ export default {
       this.isMultiple = false;
       this.panels = [0, 0, 0];
 
-      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas. 
-      this.validar_Relacoes_Sintese();
+      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas.
+      this.validar_relacoes_sintese();
 
       this.classesHierarquia = this.classes
         .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
-    validar_Relacoes_Sintese() {
+    validar_relacoes_sintese() {
       let relacoes_sintese = this.newSerie.relacoes.filter(
         e => e.relacao == "Síntese de" || e.relacao == "Sintetizado por"
       );
@@ -234,7 +323,6 @@ export default {
         );
 
         if (existe_classe) {
-          // Verificar esta expressão
           this.newSerie.relacoes = this.newSerie.relacoes.filter(
             rel =>
               rel.relacao != relacoes_sintese[i].relacao ||
@@ -254,7 +342,9 @@ export default {
       );
 
       if (criterio != undefined) {
-        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+        criterio.relacoes = criterio.relacoes.filter(
+          e => e.codigo != codigoClasse
+        );
 
         if (criterio.relacoes.length == 0) {
           this.alteraDF();
@@ -334,10 +424,10 @@ export default {
           classe_relacionada.justificacaoPCA.push({
             tipo: tipo_criterio,
             nota: labels.textoCriterioUtilidadeAdministrativa,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({ codigo: codigoClasse });
         }
       } else {
         let criterio = classe_relacionada.justificacaoDF.find(
@@ -364,10 +454,10 @@ export default {
           classe_relacionada.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({ codigo: codigoClasse });
         }
       }
     },
@@ -381,14 +471,14 @@ export default {
           if (clone_newSerie.relacoes[i].serieRelacionada.tipo == "Série") {
             classe_relacionada = {
               codigo: clone_newSerie.relacoes[i].serieRelacionada.codigo,
-              titulo: "",
+              titulo: clone_newSerie.relacoes[i].serieRelacionada.titulo,
               descricao: "",
               dataInicial: null,
               dataFinal: null,
-              tUA: "",
-              tSerie: "",
-              suporte: "",
-              medicao: "",
+              tUA: null,
+              tSerie: null,
+              suporte: null,
+              medicao: null,
               UIs: [],
               localizacao: [],
               entProdutoras: [],
@@ -409,7 +499,7 @@ export default {
           } else {
             classe_relacionada = {
               codigo: clone_newSerie.relacoes[i].serieRelacionada.codigo,
-              titulo: "",
+              titulo: clone_newSerie.relacoes[i].serieRelacionada.titulo,
               descricao: "",
               dataInicial: null,
               dataFinal: null,

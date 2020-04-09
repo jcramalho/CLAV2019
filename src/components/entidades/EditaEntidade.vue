@@ -153,6 +153,7 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
+
       <PainelOpsEnt
         v-if="etapa === 2"
         :e="entidade"
@@ -257,7 +258,7 @@ export default {
     await this.loadTipologias();
 
     try {
-      if (this.entidade.tipologiasSel.length != 0) {
+      if (this.entidade.tipologiasSel.length !== 0) {
         this.entidade.tipologiasSel.forEach((tip) => {
           this.tipSel.push(tip);
 

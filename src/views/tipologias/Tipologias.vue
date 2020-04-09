@@ -23,19 +23,19 @@ export default {
     campos: [],
     cabecalhos: [],
     operacoes: [],
-    tipologiaReady: false
+    tipologiaReady: false,
   }),
 
   components: {
     Listagem,
-    Loading
+    Loading,
   },
 
   methods: {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" }
+          { icon: "edit", descricao: "Alteração" },
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }
@@ -56,26 +56,32 @@ export default {
 
       if (this.operacoes.length != 0) {
         for (let i = 0; i < listaTipologias.length; i++) {
-          myTree.push({
-            id: listaTipologias[i].sigla,
-            designacao: listaTipologias[i].designacao,
-            operacoes: this.operacoes
-          });
+          if (listaTipologias[i].estado === "Ativa")
+            myTree.push({
+              id: listaTipologias[i].sigla,
+              designacao: listaTipologias[i].designacao,
+              operacoes: this.operacoes,
+            });
+          else
+            myTree.push({
+              id: listaTipologias[i].sigla,
+              designacao: listaTipologias[i].designacao,
+            });
         }
       } else {
         for (let i = 0; i < listaTipologias.length; i++) {
           myTree.push({
             id: listaTipologias[i].sigla,
-            designacao: listaTipologias[i].designacao
+            designacao: listaTipologias[i].designacao,
           });
         }
       }
 
       return myTree;
-    }
+    },
   },
 
-  created: async function() {
+  created: async function () {
     try {
       let response = await this.$request("get", "/tipologias");
 
@@ -91,6 +97,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

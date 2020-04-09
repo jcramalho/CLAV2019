@@ -28,7 +28,7 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" />
         </v-col>
       </v-row>
-      <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p> -->
+      <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p>
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -51,6 +51,7 @@
                   @remover="remover_classe"
                   :treeview_object="item"
                   :classes="TS.classes"
+                  :RE="RE"
                   :UIs="TS.UIs"
                   :formaContagem="formaContagem"
                 />
@@ -79,7 +80,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-btn dark color="indigo darken-1" @click="sendToFather()">Concluir</v-btn>
+    <v-btn dark color="indigo darken-1" @click="sendToFather()">Criar RADA</v-btn>
     <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
     <v-btn color="indigo darken-4" text @click="apagar">
       <v-icon>delete_sweep</v-icon>
@@ -118,6 +119,10 @@ export default {
   computed: {
     preparaTree() {
       var myTree = [];
+
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.TS.classes.sort((a, b) => a.codigo.localeCompare(b.codigo));
+
       for (var i = 0; i < this.TS.classes.length; i++) {
         if (this.TS.classes[i].eFilhoDe == null) {
           myTree.push({
@@ -219,6 +224,7 @@ export default {
       serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
       serie_classe.UIs = await this.editaUI(serie_classe, c);
 
+      // Se a legislação for alterada pode mudar os critérios legais na subsérie;
       this.alterarCriterioLegalSubseries(serie_classe.codigo, c.legislacao);
 
       serie_classe.titulo = c.titulo;
@@ -240,6 +246,21 @@ export default {
       serie_classe.df = c.df;
       serie_classe.justificacaoDF = c.justificacaoDF;
       serie_classe.eFilhoDe = c.eFilhoDe;
+
+      serie_classe.justificacaoPCA.forEach(criterio => {
+        if (criterio.tipo == "Critério de Utilidade Administrativa") {
+          criterio.relacoes.map(rel => delete rel.titulo);
+        }
+      });
+
+      serie_classe.justificacaoDF.forEach(criterio => {
+        if (
+          criterio.tipo == "Critério de Complementaridade Informacional" ||
+          criterio.tipo == "Critério de Densidade Informacional"
+        ) {
+          criterio.relacoes.map(rel => delete rel.titulo);
+        }
+      });
     },
     async atualizacao_subserie(c) {
       let subserie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
@@ -258,6 +279,21 @@ export default {
       subserie_classe.df = c.df;
       subserie_classe.justificacaoDF = c.justificacaoDF;
       subserie_classe.eFilhoDe = c.eFilhoDe;
+
+      subserie_classe.justificacaoPCA.forEach(criterio => {
+        if (criterio.tipo == "Critério de Utilidade Administrativa") {
+          criterio.relacoes.map(rel => delete rel.titulo);
+        }
+      });
+
+      subserie_classe.justificacaoDF.forEach(criterio => {
+        if (
+          criterio.tipo == "Critério de Complementaridade Informacional" ||
+          criterio.tipo == "Critério de Densidade Informacional"
+        ) {
+          criterio.relacoes.map(rel => delete rel.titulo);
+        }
+      });
     },
     alterarCriterioLegalSubseries(codigoPai, legislacao) {
       //procurar as subséries que são filhos e tratar dos seus critérios legislativos
@@ -270,7 +306,7 @@ export default {
         );
         if (legalPCA_subserie != undefined) {
           legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter(e =>
-            legislacao.some(leg => leg.tipo + " " + leg.numero == e)
+            legislacao.some(leg => leg.tipo + " " + leg.numero == e.codigo)
           );
 
           if (legalPCA_subserie.relacoes.length == 0) {
@@ -285,7 +321,7 @@ export default {
         );
         if (legalDF_subserie != undefined) {
           legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter(e =>
-            legislacao.some(leg => leg.tipo + " " + leg.numero == e)
+            legislacao.some(leg => leg.tipo + " " + leg.numero == e.codigo)
           );
 
           if (legalDF_subserie.relacoes.length == 0) {
@@ -371,6 +407,8 @@ export default {
         if (relacao_igual == undefined) {
           this.adicionaRelacoesInversas(c.relacoes[i], serie_classe);
         }
+
+        delete c.relacoes[i].serieRelacionada.titulo;
         novo_relacoes.push(c.relacoes[i]);
       }
 
@@ -399,14 +437,14 @@ export default {
         if (relacao.serieRelacionada.tipo == "Série") {
           classe_relacionada = {
             codigo: relacao.serieRelacionada.codigo,
-            titulo: "",
+            titulo: relacao.serieRelacionada.titulo,
             descricao: "",
             dataInicial: null,
             dataFinal: null,
-            tUA: "",
-            tSerie: "",
-            suporte: "",
-            medicao: "",
+            tUA: null,
+            tSerie: null,
+            suporte: null,
+            medicao: null,
             localizacao: [],
             entProdutoras: [],
             tipologiasProdutoras: [],
@@ -427,7 +465,7 @@ export default {
         } else {
           classe_relacionada = {
             codigo: relacao.serieRelacionada.codigo,
-            titulo: "",
+            titulo: relacao.serieRelacionada.titulo,
             descricao: "",
             dataInicial: null,
             dataFinal: null,
@@ -534,10 +572,10 @@ export default {
           classe_relacionada.justificacaoPCA.push({
             tipo: tipo_criterio,
             nota: labels.textoCriterioUtilidadeAdministrativa,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({ codigo: codigoClasse });
         }
       } else {
         let criterio = classe_relacionada.justificacaoDF.find(
@@ -563,10 +601,10 @@ export default {
           classe_relacionada.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({ codigo: codigoClasse });
         }
       }
     },
@@ -606,7 +644,9 @@ export default {
         );
 
         if (criterio != undefined) {
-          criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+          criterio.relacoes = criterio.relacoes.filter(
+            e => e.codigo != codigoClasse
+          );
 
           if (criterio.relacoes.length == 0) {
             classe_relacionada.justificacaoPCA = classe_relacionada.justificacaoPCA.filter(
@@ -620,7 +660,9 @@ export default {
         );
 
         if (criterio != undefined) {
-          criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+          criterio.relacoes = criterio.relacoes.filter(
+            e => e.codigo != codigoClasse
+          );
 
           if (criterio.relacoes.length == 0) {
             // Remover DF que é dependente do critério que vai ser eliminado;

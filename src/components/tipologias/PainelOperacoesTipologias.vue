@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <ValidarTipologiaInfoBox :t="t" :acao="acao" />
+      <ValidarTipologiaInfoBox :t="t" :original="original" :acao="acao" />
 
       <v-col>
         <v-btn
@@ -159,10 +159,10 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 
 export default {
-  props: ["t", "acao"],
+  props: ["t", "acao", "original"],
 
   components: {
-    ValidarTipologiaInfoBox
+    ValidarTipologiaInfoBox,
   },
 
   data() {
@@ -174,16 +174,17 @@ export default {
       pedidoEliminado: false,
       headers: [
         { text: "Designação", value: "designacao", class: "subtitle-1" },
-        { text: "Sigla", value: "sigla", class: "subtitle-1" }
-      ]
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+      ],
     };
   },
 
   methods: {
     async validarTipologiaCriacao() {
       let numeroErros = 0;
+
       // Designação
-      if (this.t.designacao == "" || this.t.designacao == null) {
+      if (this.t.designacao === "" || this.t.designacao === null) {
         numeroErros++;
       } else {
         try {
@@ -201,7 +202,7 @@ export default {
       }
 
       // Sigla
-      if (this.t.sigla == "" || this.t.sigla == null) {
+      if (this.t.sigla === "" || this.t.sigla === null) {
         numeroErros++;
       } else {
         try {
@@ -227,6 +228,7 @@ export default {
           this.loginErrorSnackbar = true;
         } else {
           let erros = 0;
+          let dataObj = JSON.parse(JSON.stringify(this.t));
 
           switch (this.acao) {
             case "Criação":
@@ -234,6 +236,14 @@ export default {
               break;
 
             case "Alteração":
+              for (const key in dataObj) {
+                if (
+                  typeof dataObj[key] === "string" &&
+                  dataObj[key] === this.original[key]
+                ) {
+                  if (key !== "sigla") delete dataObj[key];
+                }
+              }
               break;
 
             default:
@@ -246,8 +256,7 @@ export default {
               "/users/" + this.$store.state.token + "/token"
             );
 
-            let dataObj = this.t;
-            dataObj.codigo = "tip_" + this.t.sigla;
+            // dataObj.codigo = "tip_" + this.t.sigla;
 
             let pedidoParams = {
               tipoPedido: this.acao,
@@ -255,14 +264,14 @@ export default {
               novoObjeto: dataObj,
               user: { email: userBD.data.email },
               entidade: userBD.data.entidade,
-              token: this.$store.state.token
+              token: this.$store.state.token,
             };
 
-            let response = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+            if (this.original !== undefined)
+              pedidoParams.objetoOriginal = this.original;
+
+            await this.$request("post", "/pedidos", pedidoParams);
+
             this.dialogTipologiaCriada = true;
           } else {
             this.errosValidacao = true;
@@ -288,8 +297,8 @@ export default {
 
     cancelarCriacaoTipologia: function() {
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -190,7 +190,7 @@ export default {
 
       if (legalPCA != undefined) {
         legalPCA.relacoes = legalPCA.relacoes.filter(
-          e => e != item.tipo + " " + item.numero
+          e => e.codigo != item.tipo + " " + item.numero
         );
 
         if (legalPCA.relacoes.length == 0) {
@@ -207,7 +207,7 @@ export default {
 
       if (legalDF != undefined) {
         legalDF.relacoes = legalDF.relacoes.filter(
-          e => e != item.tipo + " " + item.numero
+          e => e.codigo != item.tipo + " " + item.numero
         );
 
         if (legalDF.relacoes.length == 0) {

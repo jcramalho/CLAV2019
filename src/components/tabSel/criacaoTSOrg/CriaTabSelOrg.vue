@@ -212,16 +212,13 @@
                     procPreSelEspecificos();
                     loadProcEspRestantes();
                   "
-                  >Continuar</v-btn
-                >
+                  >Continuar</v-btn>
                 <v-btn
                   text
                   @click="
                     stepNo = stepNo - 1;
                     barra(14);
-                  "
-                  >Voltar</v-btn
-                >
+                  ">Voltar</v-btn>
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 5" step="5"
@@ -754,8 +751,8 @@ export default {
     };
   },
   methods: {
-    debug: function(){
-      alert(JSON.stringify(this.tipSel));
+    debug: function(obj){
+      alert(JSON.stringify(obj));
     },
     // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
     infoUserEnt: async function() {
@@ -1252,6 +1249,7 @@ export default {
           this.listaTotalProcSel = this.listaTotalProcSelUpdate;
         }
 
+        this.debug(this.listaTotalProcSel)
         this.tabelaSelecao.listaProcSel = JSON.stringify(
           this.listaTotalProcSel
         );

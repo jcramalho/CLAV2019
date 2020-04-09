@@ -44,7 +44,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="subserie" :UIs="UIs" />
+                <ZonaDescritiva :newSerie="subserie" :UIs="UIs" :RE="RE" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -108,9 +108,14 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
+        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+          É necessário preencher os campos seguintes:
+          <ul>
+            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+          </ul>
+        </v-alert>
         <v-spacer></v-spacer>
         <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
-
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
       </v-card-actions>
     </v-card>
@@ -124,8 +129,10 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "UIs", "formaContagem"],
+  props: ["treeview_object", "classes", "UIs", "formaContagem", "RE"],
   data: () => ({
+    existe_erros: false,
+    erros: [],
     toDelete: false,
     dialog: false,
     subserie: {
@@ -180,9 +187,49 @@ export default {
 
       return newJustificacaoDF;
     },
+    buscarNomesClasses() {
+      this.subserie.relacoes.forEach(rel => {
+        let classe_relacionada = this.classes.find(
+          cl => cl.codigo == rel.serieRelacionada.codigo
+        );
+
+        rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
+
+        let criterio = null;
+
+        if (rel.relacao == "Suplemento para") {
+          criterio = this.subserie.justificacaoPCA.find(
+            e => e.tipo == "Critério de Utilidade Administrativa"
+          );
+        }
+
+        if (rel.relacao == "Complementar de") {
+          criterio = this.subserie.justificacaoDF.find(
+            e => e.tipo == "Critério de Complementaridade Informacional"
+          );
+        }
+
+        if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
+          criterio = this.subserie.justificacaoDF.find(
+            e => e.tipo == "Critério de Densidade Informacional"
+          );
+        }
+
+        if (criterio != null) {
+          let relacaoCriterio = criterio.relacoes.find(
+            e => e.codigo == classe_relacionada.codigo
+          );
+
+          relacaoCriterio["titulo"] = classe_relacionada.titulo;
+        }
+      });
+    },
     async filterSeries() {
+      this.existe_erros = false;
+      this.erros = [];
       this.panels = [0, 0, 0];
       this.isMultiple = false;
+
       // ir buscar o verdadeiro objeto
       let subserie_real = this.classes.find(
         e => e.codigo == this.treeview_object.codigo
@@ -190,7 +237,6 @@ export default {
 
       // DEEP CLONE do objetos
       this.subserie = Object.assign({}, subserie_real);
-      this.subserie.relacoes = [...subserie_real.relacoes];
       this.subserie.UIs = [...subserie_real.UIs];
       this.subserie.justificacaoPCA = await this.clonePCA(subserie_real);
       this.subserie.justificacaoDF = await this.cloneDF(subserie_real);
@@ -198,6 +244,8 @@ export default {
         {},
         subserie_real.formaContagem
       );
+      this.subserie.relacoes = [...subserie_real.relacoes];
+      this.buscarNomesClasses();
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes
@@ -212,13 +260,72 @@ export default {
       this.$emit("remover", subserie_real);
       this.dialog = false;
     },
+    recolherErros() {
+      this.existe_erros = true;
+
+      if (!this.subserie.titulo) {
+        this.erros.push("Título;");
+      }
+
+      if (!this.subserie.descricao) {
+        this.erros.push("Descrição;");
+      }
+
+      if (
+        !!this.subserie.UIs[0] == false &&
+        (!this.subserie.dataInicial || !this.subserie.dataFinal)
+      ) {
+        this.erros.push("Datas ou Unidades de Instalação;");
+      }
+
+      if (!!this.subserie.relacoes[0] == false) {
+        this.erros.push("Relações;");
+      }
+
+      if (!this.subserie.eFilhoDe) {
+        this.erros.push("Relação de Hierarquia;");
+      }
+      if (!this.subserie.pca) {
+        this.erros.push("Prazo de Conservação Administrativa;");
+      }
+
+      if (!!this.subserie.justificacaoPCA[0] == false) {
+        this.erros.push("Justificação do PCA;");
+      }
+
+      if (!!this.subserie.justificacaoDF[0] == false) {
+        this.erros.push("Justificação do DF;");
+      }
+
+      if (!this.subserie.df) {
+        this.erros.push("Destino Final;");
+      }
+
+      if (!this.subserie.formaContagem.forma) {
+        this.erros.push("Forma de Contagem;");
+      } else {
+        if (
+          this.subserie.formaContagem.forma ==
+            "vc_pcaFormaContagem_disposicaoLegal" &&
+          !this.subserie.formaContagem.subforma
+        ) {
+          this.erros.push("Subforma de Contagem;");
+        }
+      }
+    },
     save() {
+      this.existe_erros = false;
+      this.erros = [];
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
         if (this.$refs.formSubserie.validate()) {
           this.$emit("atualizacao", this.subserie);
           this.dialog = false;
+        } else {
+          this.isMultiple = false;
+          this.panels = [0, 0, 0];
+          this.recolherErros();
         }
       }, 1);
     }
