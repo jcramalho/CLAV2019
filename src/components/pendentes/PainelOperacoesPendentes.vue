@@ -1,15 +1,24 @@
 <template>
   <div>
         <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-                <v-icon
-                    @click="$emit('continuar')"
-                    color="indigo darken-2"
-                    v-on="on"
-                    >edit</v-icon
-                >
-            </template>
-            <span>Continuar trabalho</span>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              @click="$emit('continuar')"
+              color="indigo darken-2"
+              v-on="on"
+              >edit</v-icon>
+          </template>
+          <span>Continuar trabalho</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              @click="$emit('show')"
+              color="indigo darken-2"
+              v-on="on"
+              >visibility</v-icon>
+          </template>
+          <span>Ver pedido...</span>
         </v-tooltip>
         <v-tooltip bottom>
             <template v-slot:activator="{ on }">

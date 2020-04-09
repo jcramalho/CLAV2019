@@ -751,8 +751,8 @@ export default {
     };
   },
   methods: {
-    debug: function(){
-      alert(JSON.stringify(this.tipSel));
+    debug: function(obj){
+      alert(JSON.stringify(obj));
     },
     // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
     infoUserEnt: async function() {
@@ -948,7 +948,7 @@ export default {
     // Contador dos processos selecionados comuns
     contadorProcSelCom: function(procSelec) {
       this.numProcSelCom = procSelec.length;
-      this.tabelaSelecao.procComuns = JSON.parse(JSON.stringify(procSelec));
+      this.tabelaSelecao.procComuns = procSelec;
     },
     // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
     procPreSelResTravCom: function(procPreSelResTravCom) {
@@ -1249,6 +1249,7 @@ export default {
           this.listaTotalProcSel = this.listaTotalProcSelUpdate;
         }
 
+        this.debug(this.listaTotalProcSel)
         this.tabelaSelecao.listaProcSel = JSON.stringify(
           this.listaTotalProcSel
         );
