@@ -82,10 +82,11 @@
             :return-value.sync="RE.dataInicial"
             transition="scale-transition"
             offset-y
-            min-width="290px"
+            max-width="290px"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
+                :disabled="bloquearData()"
                 :rules="basicRule"
                 v-model="RE.dataInicial"
                 label="Data Inicial"
@@ -96,14 +97,19 @@
               ></v-text-field>
             </template>
             <v-date-picker
+              full-width
               v-model="RE.dataInicial"
-              no-title
+              color="amber accent-3"
               scrollable
               locale="pt"
             >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu1 = false">Cancelar</v-btn>
-              <v-btn text color="primary" @click="$refs.menu1.save(RE.dataInicial)">OK</v-btn>
+              <v-btn text @click="menu1 = false">
+                <v-icon>keyboard_backspace</v-icon>
+              </v-btn>
+              <v-btn text @click="$refs.menu1.save(RE.dataInicial)">
+                <v-icon>check</v-icon>
+              </v-btn>
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -117,11 +123,11 @@
             :close-on-content-click="false"
             :return-value.sync="RE.dataFinal"
             transition="scale-transition"
-            offset-y
-            min-width="290px"
+            max-width="290px"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
+                :disabled="bloquearData()"
                 :rules="basicRule"
                 v-model="RE.dataFinal"
                 label="Data Final"
@@ -132,36 +138,23 @@
               ></v-text-field>
             </template>
             <v-date-picker
+              full-width
               v-model="RE.dataFinal"
-              no-title
+              color="amber accent-3"
               scrollable
               locale="pt"
             >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu2 = false">Cancelar</v-btn>
-              <v-btn text color="primary" @click="$refs.menu2.save(RE.dataFinal)">OK</v-btn>
+              <v-btn text @click="menu2 = false">
+                <v-icon>keyboard_backspace</v-icon>
+              </v-btn>
+              <v-btn text @click="$refs.menu2.save(new Date(RE.dataFinal))">
+                <v-icon>check</v-icon>
+              </v-btn>
             </v-date-picker>
           </v-menu>
         </v-col>
       </v-row>
-      <!-- <v-row>
-        <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Número de Unidades de Instalação</div>
-        </v-col>
-        <v-col xs="12" sm="9">
-          <v-text-field
-            v-model="RE.dimSuporte.nUI"
-            placeholder="Nº de Unidades de Instalação."
-            :rules="[
-              v =>
-                (!isNaN(parseInt(v)) && parseInt(v) >= 0) ||
-                'Campo Obrigatório! Valor tem que ser inteiro.'
-            ]"
-            single-line
-            type="number"
-          />
-        </v-col>
-      </v-row> -->
       <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
         <v-expansion-panel popout focusable>
           <v-expansion-panel-header class="expansion-panel-heading">
@@ -297,6 +290,22 @@ export default {
     basicRule: [v => !!v || "Campo de preenchimento obrigatório!"]
   }),
   methods: {
+    bloquearData() {
+      let classes = this.classes.some(
+        e =>
+          (e.tipo == "Série" || e.tipo == "Subsérie") &&
+          (e.dataInicial != null || e.dataFinal != null)
+      );
+
+      let uis = this.UIs.some(
+        e => e.dataInicial != null || e.dataFinal != null
+      );
+
+      if (classes || uis) {
+        return true;
+      }
+      return false;
+    },
     apagar: function() {
       this.$refs.form.reset();
       this.isMultiple = false;

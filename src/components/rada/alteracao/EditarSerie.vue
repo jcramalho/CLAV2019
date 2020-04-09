@@ -42,7 +42,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" :UIs="UIs" />
+                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE"/>
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -120,6 +120,12 @@
       </v-card-text>
 
       <v-card-actions>
+        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+          É necessário preencher os campos seguintes:
+          <ul>
+            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+          </ul>
+        </v-alert>
         <v-spacer></v-spacer>
         <v-btn
           color="indigo darken-4"
@@ -157,6 +163,8 @@ export default {
     ZonaDecisoesAvaliacao
   },
   data: () => ({
+    existe_erros: false,
+    erros: [],
     toDelete: false,
     panels: [0, 0, 0],
     isMultiple: false,
@@ -203,6 +211,8 @@ export default {
       this.dialogSerie = false;
     },
     async filterSeries() {
+      this.existe_erros = false;
+      this.erros = [];
       this.panels = [0, 0, 0];
       this.isMultiple = false;
       // ir buscar o verdadeiro objeto
@@ -227,13 +237,101 @@ export default {
         .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
+    recolherErros() {
+      this.existe_erros = true;
+
+      if (!this.serie.titulo) {
+        this.erros.push("Título;");
+      }
+
+      if (!this.serie.descricao) {
+        this.erros.push("Descrição;");
+      }
+
+      if (
+        !!this.serie.UIs[0] == false &&
+        (!this.serie.dataInicial || !this.serie.dataFinal)
+      ) {
+        this.erros.push("Datas ou Unidades de Instalação;");
+      }
+
+      if (!!this.serie.relacoes[0] == false) {
+        this.erros.push("Relações;");
+      }
+
+      if (!this.serie.eFilhoDe) {
+        this.erros.push("Relação de Hierarquia;");
+      }
+
+      if (!this.serie.tUA) {
+        this.erros.push("Tipo de Unidade Arquivistica;");
+      }
+
+      if (!this.serie.suporte) {
+        this.erros.push("Suporte;");
+      }
+
+      if (!this.serie.medicao) {
+        this.erros.push("Medição;");
+      }
+
+      if (!!this.serie.localizacao[0] == false) {
+        this.erros.push("Localização;");
+      }
+
+      if (
+        !!this.serie.entProdutoras[0] == false &&
+        !!this.serie.tipologiasProdutoras[0] == false
+      ) {
+        this.erros.push("Produtoras;");
+      }
+
+      if (!!this.serie.legislacao[0] == false) {
+        this.erros.push("Legislação;");
+      }
+      if (!!this.treeview_object.children[0] == 0) {
+        if (!this.serie.pca) {
+          this.erros.push("Prazo de Conservação Administrativa;");
+        }
+
+        if (!!this.serie.justificacaoPCA[0] == false) {
+          this.erros.push("Justificação do PCA;");
+        }
+
+        if (!!this.serie.justificacaoDF[0] == false) {
+          this.erros.push("Justificação do DF;");
+        }
+
+        if (!this.serie.df) {
+          this.erros.push("Destino Final;");
+        }
+
+        if (!this.serie.formaContagem.forma) {
+          this.erros.push("Forma de Contagem;");
+        } else {
+          if (
+            this.serie.formaContagem.forma ==
+              "vc_pcaFormaContagem_disposicaoLegal" &&
+            !this.serie.formaContagem.subforma
+          ) {
+            this.erros.push("Subforma de Contagem;");
+          }
+        }
+      }
+    },
     save() {
+      this.existe_erros = false;
+      this.erros = [];
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
         if (this.$refs.formSerie.validate()) {
           this.$emit("atualizacao", this.serie);
           this.dialogSerie = false;
+        } else {
+          this.isMultiple = false;
+          this.panels = [0, 0, 0];
+          this.recolherErros();
         }
       }, 1);
     }

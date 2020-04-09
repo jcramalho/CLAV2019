@@ -28,7 +28,12 @@
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
-          <v-card-text v-if="pedido.objeto.acao === 'Alteração'">
+          <v-card-text
+            v-if="
+              pedido.objeto.acao === 'Alteração' ||
+                pedido.objeto.acao === 'Extinção'
+            "
+          >
             <ValidaEditaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
@@ -71,7 +76,7 @@ export default {
     ValidaEditaEntidade,
     ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
-    Loading
+    Loading,
   },
 
   data() {
@@ -83,9 +88,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" }
+        { text: "Despacho", value: "despacho" },
       ],
-      etapas: []
+      etapas: [],
     };
   },
 
@@ -98,6 +103,6 @@ export default {
     } catch (e) {
       console.log("e :", e);
     }
-  }
+  },
 };
 </script>

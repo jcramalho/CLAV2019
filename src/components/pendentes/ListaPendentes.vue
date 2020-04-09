@@ -34,6 +34,7 @@
             <td class="subheading">
               <PainelOperacoesPendentes 
                 @continuar="continuarTrabalho(props.item)"
+                @show="showPendente(props.item)"
                 @apagar="apagarTrabalho(props.item)"
               />
             </td>
@@ -57,6 +58,23 @@
           <v-card-actions>
             <v-spacer />
             <v-btn color="indigo darken-4" dark @click="pendenteRemovido = false">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="showDialog" width="80%" hide-overlay>
+        <v-card>
+          <v-card-title>Visualização do Pendente</v-card-title>
+          <v-card-text>
+            <div>
+              {{ JSON.stringify(selectedPendente) }}
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="red darken-1" dark @click="showDialog = false"
+              >Fechar</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -116,7 +134,10 @@ export default {
       "items-per-page-all-text": "Todos"
     },
     pendentes: [],
-    pendenteRemovido: false
+    pendenteRemovido: false,
+
+    selectedPendente: {},
+    showDialog: false,
   }),
 
   created: async function() {
@@ -132,6 +153,14 @@ export default {
     rowClicked: function(item) {
       this.$emit("pendenteSelected", item);
     },
+
+    showPendente: function(pendente) {
+      this.selectedPendente = pendente;
+      this.showDialog = true;
+      //alert(JSON.stringify(pendente))
+      //this.$router.push("/pendentes/" + pedido.codigo);
+    },
+
     continuarTrabalho: function(item) {
       this.$router.push("/pendentes/continuar/" + item._id);
     },

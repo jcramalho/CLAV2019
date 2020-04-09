@@ -51,7 +51,7 @@
 
 <script>
 export default {
-  props: ["l", "acao"],
+  props: ["l", "acao", "original"],
 
   data() {
     return {
@@ -59,46 +59,35 @@ export default {
       dialogSemErros: false,
 
       mensagensErro: [],
-      numeroErros: 0
     };
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
     async validarLegislacaoCriacao() {
-      let parseAno = this.l.numero.split("/");
-      let anoDiploma = parseInt(parseAno[1]);
+      let numeroErros = 0;
 
       //Tipo
-      if (this.l.tipo == "" || this.l.tipo == null) {
+      if (this.l.tipo === "" || this.l.tipo === null) {
         this.mensagensErro.push({
           sobre: "Tipo de Diploma",
-          mensagem: "O tipo de diploma não pode ser vazio."
+          mensagem: "O tipo de diploma não pode ser vazio.",
         });
-        this.numeroErros++;
+        numeroErros++;
       }
 
-      // // Fonte diploma
-      // if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
-      //   this.mensagensErro.push({
-      //     sobre: "Fonte do Diploma",
-      //     mensagem: "A fonte do diploma não pode ser vazio."
-      //   });
-      //   this.numeroErros++;
-      // }
-
       // Número Diploma
-      if (this.l.numero == "" || this.l.numero == null) {
+      if (this.l.numero === "" || this.l.numero === null) {
         this.mensagensErro.push({
           sobre: "Número de Diploma",
-          mensagem: "O número de diploma não pode ser vazio."
+          mensagem: "O número de diploma não pode ser vazio.",
         });
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeNumero = await this.$request(
@@ -109,266 +98,89 @@ export default {
           if (existeNumero.data) {
             this.mensagensErro.push({
               sobre: "Número de Diploma",
-              mensagem: "O número de diploma já existente na BD."
+              mensagem: "O número de diploma já existente na BD.",
             });
             this.numeroErros++;
-          } /*else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
-            this.mensagensErro.push({
-              sobre: "Número do Diploma",
-              mensagem: "O número do diploma está no formato errado."
-            });
-            this.numeroErros++;
-          } else if (anoDiploma < 2000) {
-            if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
-              this.mensagensErro.push({
-                sobre: "Número do Diploma",
-                mensagem:
-                  "Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!"
-              });
-              this.numeroErros++;
-            }
-          }*/
+          }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
           this.mensagensErro.push({
             sobre: "Acesso à Ontologia",
             mensagem:
-              "Não consegui verificar a existência do número do diploma."
+              "Não consegui verificar a existência do número do diploma.",
           });
         }
       }
 
       // Data
-      if (this.l.data == "" || this.l.data == null) {
+      if (this.l.data === "" || this.l.data === null) {
         this.mensagensErro.push({
           sobre: "Data",
-          mensagem: "A data não pode ser vazia."
+          mensagem: "A data não pode ser vazia.",
         });
-        this.numeroErros++;
+        numeroErros++;
       } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
         this.mensagensErro.push({
           sobre: "Data",
-          mensagem: "A data está no formato errado."
+          mensagem: "A data está no formato errado.",
         });
-        this.numeroErros++;
-      } else {
-        let date = new Date();
-
-        let ano = parseInt(this.l.data.slice(0, 4));
-        let mes = parseInt(this.l.data.slice(5, 7));
-        let dia = parseInt(this.l.data.slice(8, 10));
-
-        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-        if (mes > 12) {
-          this.mensagensErro.push({
-            sobre: "Data",
-            mensagem: "A data apresenta o mês errado."
-          });
-          this.numeroErros++;
-        } else if (dia > dias[mes - 1]) {
-          if (mes == 2) {
-            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
-              this.mensagensErro.push({
-                sobre: "Data",
-                mensagem: "A data apresenta o dia do mês errado."
-              });
-              this.numeroErros++;
-            }
-          } else {
-            this.mensagensErro.push({
-              sobre: "Data",
-              mensagem: "A data apresenta o dia do mês errado."
-            });
-            this.numeroErros++;
-          }
-        } else if (ano > parseInt(date.getFullYear())) {
-          this.mensagensErro.push({
-            sobre: "Data",
-            mensagem:
-              "Ano inválido! Por favor selecione uma data anterior à atual"
-          });
-          this.numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes > parseInt(date.getMonth() + 1)
-        ) {
-          this.mensagensErro.push({
-            sobre: "Data",
-            mensagem:
-              "Mês inválido! Por favor selecione uma data anterior à atual"
-          });
-          this.numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes == parseInt(date.getMonth() + 1) &&
-          dia > parseInt(date.getDate())
-        ) {
-          this.mensagensErro.push({
-            sobre: "Data",
-            mensagem:
-              "Dia inválido! Por favor selecione uma data anterior à atual"
-          });
-          this.numeroErros++;
-        }
+        numeroErros++;
       }
 
       // Sumário
-      if (this.l.sumario == "" || this.l.sumario == null) {
+      if (this.l.sumario === "" || this.l.sumario === null) {
         this.mensagensErro.push({
           sobre: "Sumário",
-          mensagem: "O sumário não pode ser vazio."
+          mensagem: "O sumário não pode ser vazio.",
         });
-        this.numeroErros++;
+        numeroErros++;
       }
+
+      return numeroErros;
     },
 
-    validarLegislacaoAlteracao() {
-      let parseAno = this.l.numero.split("/");
-      let anoDiploma = parseInt(parseAno[1]);
-
-      //Tipo
-      if (this.l.tipo == "" || this.l.tipo == null) {
-        this.mensagensErro.push({
-          sobre: "Tipo do Diploma",
-          mensagem: "O tipo do diploma não pode ser vazio."
-        });
-        this.numeroErros++;
-      }
-
-      // // Fonte diploma
-      // if (this.l.diplomaFonte == "" || this.l.diplomaFonte == null) {
-      //   this.mensagensErro.push({
-      //     sobre: "Fonte do Diploma",
-      //     mensagem: "A fonte do diploma não pode ser vazio."
-      //   });
-      //   this.numeroErros++;
-      // }
-
-      // Número Diploma
-      if (this.l.numero == "" || this.l.numero == null) {
-        this.mensagensErro.push({
-          sobre: "Número de Diploma",
-          mensagem: "O número de diploma não pode ser vazio."
-        });
-        this.numeroErros++;
-      } else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
-        this.mensagensErro.push({
-          sobre: "Número de Diploma",
-          mensagem: "O número de diploma está no formato errado."
-        });
-        this.numeroErros++;
-      } else if (anoDiploma < 2000) {
-        if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
-          this.mensagensErro.push({
-            sobre: "Número de Diploma",
-            mensagem:
-              "Anos de diploma anteriores a 2000 devem ter apenas os dois últimos dígitos!"
-          });
-          this.numeroErros++;
-        }
-      }
-
-      // Data
-      if (this.l.data == "" || this.l.data == null) {
-        this.mensagensErro.push({
-          sobre: "Data",
-          mensagem: "A data não pode ser vazia."
-        });
-        this.numeroErros++;
-      } else if (!/[0-9]+\/[0-9]+\/[0-9]+/.test(this.l.data)) {
-        this.mensagensErro.push({
-          sobre: "Data",
-          mensagem: "A data está no formato errado."
-        });
-        this.numeroErros++;
-      } else {
-        let date = new Date();
-
-        let ano = parseInt(this.l.data.slice(0, 4));
-        let mes = parseInt(this.l.data.slice(5, 7));
-        let dia = parseInt(this.l.data.slice(8, 10));
-
-        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-        if (mes > 12) {
-          this.mensagensErro.push({
-            sobre: "Data",
-            mensagem: "A data apresenta o mês errado."
-          });
-          this.numeroErros++;
-        } else if (dia > dias[mes - 1]) {
-          if (mes == 2) {
-            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
-              this.mensagensErro.push({
-                sobre: "Data",
-                mensagem: "A data apresenta o dia do mês errado."
-              });
-              this.numeroErros++;
-            }
-          } else {
-            this.mensagensErro.push({
-              sobre: "Data",
-              mensagem: "A data apresenta o dia do mês errado."
-            });
-            this.numeroErros++;
-          }
-        } else if (ano > parseInt(date.getFullYear())) {
-          this.mensagensErro.push({
-            sobre: "Data",
-            mensagem:
-              "Ano inválido! Por favor selecione uma data anterior à atual"
-          });
-          this.numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes > parseInt(date.getMonth() + 1)
-        ) {
-          this.mensagensErro.push({
-            sobre: "Data",
-            mensagem:
-              "Mês inválido! Por favor selecione uma data anterior à atual"
-          });
-          this.numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes == parseInt(date.getMonth() + 1) &&
-          dia > parseInt(date.getDate())
-        ) {
-          this.mensagensErro.push({
-            sobre: "Data",
-            mensagem:
-              "Dia inválido! Por favor selecione uma data anterior à atual"
-          });
-          this.numeroErros++;
-        }
-      }
+    validarLegislacaoAlteracao(dados) {
+      let numeroErros = 0;
 
       // Sumário
-      if (this.l.sumario == "" || this.l.sumario == null) {
+      if (dados.sumario === "" || dados.sumario === null) {
         this.mensagensErro.push({
           sobre: "Sumário",
-          mensagem: "O sumário não pode ser vazio."
+          mensagem: "O sumário não pode ser vazio.",
         });
-        this.numeroErros++;
+        numeroErros++;
       }
+
+      return numeroErros;
     },
 
     async validarLegislacao() {
+      let erros = 0;
+      let dataObj = JSON.parse(JSON.stringify(this.l));
+
       switch (this.acao) {
         case "Criação":
-          await this.validarLegislacaoCriacao();
+          erros = await this.validarLegislacaoCriacao();
           break;
 
         case "Alteração":
-          this.validarLegislacaoAlteracao();
+          for (const key in dataObj) {
+            if (
+              typeof dataObj[key] === "string" &&
+              dataObj[key] === this.original[key]
+            ) {
+              if (key !== "id") delete dataObj[key];
+            }
+          }
+
+          erros = this.validarLegislacaoAlteracao(dataObj);
           break;
 
         default:
           break;
       }
 
-      if (this.numeroErros > 0) {
+      if (erros > 0) {
         this.dialog = true;
       } else {
         this.dialogSemErros = true;
@@ -378,8 +190,8 @@ export default {
     limpaErros: function() {
       this.numeroErros = 0;
       this.mensagensErro = [];
-    }
-  }
+    },
+  },
 };
 </script>
 

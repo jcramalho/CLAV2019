@@ -82,7 +82,7 @@ export default {
 
   components: {
     PO,
-    ErroDialog
+    ErroDialog,
   },
 
   data() {
@@ -92,36 +92,15 @@ export default {
       dialogTipologias: false,
       infoPedido: [
         {
-          campo: "Sigla",
-          conteudo: this.p.objeto.dados.sigla,
-          cor: null
-        },
-        {
-          campo: "Designação",
-          conteudo: this.p.objeto.dados.designacao,
-          cor: null
-        },
-        {
-          campo: "Internacional",
-          conteudo: this.p.objeto.dados.internacional,
-          cor: null
-        },
-        { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
-        {
           campo: "Entidades",
           conteudo: this.p.objeto.dados.entidadesSel,
-          cor: null
+          cor: null,
         },
-        {
-          campo: "Data Extinção",
-          conteudo: this.p.objeto.dados.dataExtincao,
-          cor: null
-        }
       ],
       headersEntidade: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
-      ]
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+      ],
     };
   },
 
@@ -140,7 +119,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -150,7 +129,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -164,39 +143,47 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         // TODO: Adicionar validação para a designação
-        // TODO: Alterar depois da API estar pronta
 
-        // await this.$request("post", "/tipologias", pedido.objeto.dados);
+        for (const key in pedido.objeto.dadosOriginais) {
+          if (!pedido.objeto.dados.hasOwnProperty(key)) {
+            pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+          }
+        }
 
-        // const estado = "Validado";
+        await this.$request(
+          "put",
+          `/tipologias/tip_${pedido.objeto.dados.sigla}`,
+          pedido.objeto.dados
+        );
 
-        // let dadosUtilizador = await this.$request(
-        //   "get",
-        //   "/users/" + this.$store.state.token + "/token"
-        // );
+        const estado = "Validado";
 
-        // dadosUtilizador = dadosUtilizador.data;
+        let dadosUtilizador = await this.$request(
+          "get",
+          "/users/" + this.$store.state.token + "/token"
+        );
+        dadosUtilizador = dadosUtilizador.data;
 
-        // const novaDistribuicao = {
-        //   estado: estado,
-        //   responsavel: dadosUtilizador.email,
-        //   data: new Date(),
-        //   despacho: dados.mensagemDespacho
-        // };
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
 
-        // pedido.estado = estado;
-        // pedido.token = this.$store.state.token;
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
 
-        // await this.$request("put", "/pedidos", {
-        //   pedido: pedido,
-        //   distribuicao: novaDistribuicao
-        // });
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
 
-        // this.$router.go(-1);
+        this.$router.go(-1);
       } catch (e) {
         this.erros.push({
           sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia."
+          mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
         this.erroPedido = true;
         console.log("e :", e);
@@ -204,12 +191,12 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
@@ -220,8 +207,8 @@ export default {
     close() {
       this.dialogtipologias = false;
       this.dialogProcessos = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

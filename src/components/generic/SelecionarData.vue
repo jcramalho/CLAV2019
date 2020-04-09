@@ -16,14 +16,23 @@
         prepend-icon="event"
         readonly
         v-on="on"
-      ></v-text-field>
+      />
     </template>
 
-    <v-date-picker v-model="dataValor" no-title scrollable locale="pt">
-      <v-spacer></v-spacer>
-      <v-btn text color="primary" @click="menu1 = false">Fechar</v-btn>
-      <v-btn text color="primary" @click="dataSelecionada">Selecionar</v-btn>
-    </v-date-picker>
+    <v-date-picker
+      v-model="dataValor"
+      no-title
+      scrollable
+      show-current
+      first-day-of-week="1"
+      :max="new Date().toISOString().substr(0, 10)"
+      min="1970-01-01"
+      locale="pt"
+      @input="
+        menu1 = false;
+        dataSelecionada();
+      "
+    />
   </v-menu>
 </template>
 
@@ -34,7 +43,7 @@ export default {
   data() {
     return {
       dataValor: this.d,
-      menu1: false
+      menu1: false,
     };
   },
 
@@ -43,7 +52,7 @@ export default {
       this.$refs.menu1.save(this.dataValor);
       this.$emit("dataSelecionada", this.dataValor);
       this.dataValor = "";
-    }
-  }
+    },
+  },
 };
 </script>

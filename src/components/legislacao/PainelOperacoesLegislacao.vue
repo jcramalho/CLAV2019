@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <ValidarLegislacaoInfoBox :l="l" :acao="acao" />
+      <ValidarLegislacaoInfoBox :l="l" :original="original" :acao="acao" />
 
       <v-col>
         <v-btn
@@ -247,138 +247,37 @@ export default {
   methods: {
     async validarLegislacaoCriacao() {
       let numeroErros = 0;
-      let parseAno = this.l.numero.split("/");
-      let anoDiploma = parseInt(parseAno[1]);
 
       // Tipo
-      if (this.l.tipo == "" || this.l.tipo == null) {
+      if (this.l.tipo === "" || this.l.tipo === null) {
         numeroErros++;
       }
 
       // Número Diploma
-      if (this.l.numero == "" || this.l.numero == null) {
+      if (this.l.numero === "" || this.l.numero === null) {
         numeroErros++;
       }
-      // else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
-      //   numeroErros++;
-      // } else if (anoDiploma < 2000) {
-      //   if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
-      //     numeroErros++;
-      //   }
-      // }
 
       // Data
-      if (this.l.data == "" || this.l.data == null) {
+      if (this.l.data === "" || this.l.data === null) {
         numeroErros++;
       } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
         numeroErros++;
-      } else {
-        let date = new Date();
-
-        let ano = parseInt(this.l.data.slice(0, 4));
-        let mes = parseInt(this.l.data.slice(5, 7));
-        let dia = parseInt(this.l.data.slice(8, 10));
-
-        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-        if (mes > 12) {
-          numeroErros++;
-        } else if (dia > dias[mes - 1]) {
-          if (mes == 2) {
-            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
-              numeroErros++;
-            }
-          } else {
-            numeroErros++;
-          }
-        } else if (ano > parseInt(date.getFullYear())) {
-          numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes > parseInt(date.getMonth() + 1)
-        ) {
-          numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes == parseInt(date.getMonth() + 1) &&
-          dia > parseInt(date.getDate())
-        ) {
-          numeroErros++;
-        }
       }
 
       // Sumário
-      if (this.l.sumario == "" || this.l.sumario == null) {
+      if (this.l.sumario === "" || this.l.sumario === null) {
         numeroErros++;
       }
 
       return numeroErros;
     },
 
-    validarLegislacaoAlteracao() {
+    validarLegislacaoAlteracao(dados) {
       let numeroErros = 0;
-      let parseAno = this.l.numero.split("/");
-      let anoDiploma = parseInt(parseAno[1]);
-
-      // Tipo
-      if (this.l.tipo == "" || this.l.tipo == null) {
-        numeroErros++;
-      }
-
-      // Número Diploma
-      if (this.l.numero == "" || this.l.numero == null) {
-        numeroErros++;
-      }
-      // else if (!/[0-9]+(-\w)?\/[0-9]+$/.test(this.l.numero)) {
-      //   numeroErros++;
-      // } else if (anoDiploma < 2000) {
-      //   if (!/[0-9]+(-\w)?\/[0-9]\d{1}$/.test(this.l.numero)) {
-      //     numeroErros++;
-      //   }
-      // }
-
-      // Data
-      if (this.l.data == "" || this.l.data == null) {
-        numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
-        numeroErros++;
-      } else {
-        let date = new Date();
-
-        let ano = parseInt(this.l.data.slice(0, 4));
-        let mes = parseInt(this.l.data.slice(5, 7));
-        let dia = parseInt(this.l.data.slice(8, 10));
-
-        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-        if (mes > 12) {
-          numeroErros++;
-        } else if (dia > dias[mes - 1]) {
-          if (mes == 2) {
-            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
-              numeroErros++;
-            }
-          } else {
-            numeroErros++;
-          }
-        } else if (ano > parseInt(date.getFullYear())) {
-          numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes > parseInt(date.getMonth() + 1)
-        ) {
-          numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes == parseInt(date.getMonth() + 1) &&
-          dia > parseInt(date.getDate())
-        ) {
-          numeroErros++;
-        }
-      }
 
       // Sumário
-      if (this.l.sumario == "" || this.l.sumario == null) {
+      if (dados.sumario === "" || dados.sumario === null) {
         numeroErros++;
       }
 
@@ -392,6 +291,7 @@ export default {
           this.loginErrorSnackbar = true;
         } else {
           let erros = 0;
+          let dataObj = JSON.parse(JSON.stringify(this.l));
 
           switch (this.acao) {
             case "Criação":
@@ -399,7 +299,16 @@ export default {
               break;
 
             case "Alteração":
-              erros = this.validarLegislacaoAlteracao();
+              for (const key in dataObj) {
+                if (
+                  typeof dataObj[key] === "string" &&
+                  dataObj[key] === this.original[key]
+                ) {
+                  if (key !== "id") delete dataObj[key];
+                }
+              }
+
+              erros = this.validarLegislacaoAlteracao(dataObj);
               break;
 
             default:
@@ -412,8 +321,6 @@ export default {
               "/users/" + this.$store.state.token + "/token"
             );
 
-            let dataObj = JSON.parse(JSON.stringify(this.l));
-
             let pedidoParams = {
               tipoPedido: this.acao,
               tipoObjeto: "Legislação",
@@ -423,18 +330,8 @@ export default {
               token: this.$store.state.token,
             };
 
-            if (this.acao === "Alteração") {
+            if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
-
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "id") delete dataObj[key];
-                }
-              }
-            }
 
             await this.$request("post", "/pedidos", pedidoParams);
 

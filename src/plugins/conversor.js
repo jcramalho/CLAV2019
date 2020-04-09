@@ -335,100 +335,77 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       var errosVal = {
         erros: [],
         numErros: errosSerie.numeroErros + errosAgregacoes.numeroErros
-      };
-      if (errosSerie.codigosRepetidos.length > 0)
-        errosVal.erros.push({
-          sobre: "Código da série ou subsérie",
-          mensagem: "O código não pode ser repetido no mesmo auto",
-          linhasSerie: errosSerie.codigosRepetidos
-        });
-      if (errosSerie.referenciasRepetidas.length > 0)
-        errosVal.erros.push({
-          sobre: "Número de referência",
-          mensagem:
-            "O número de referência não pode ser repetido no mesmo auto",
-          linhasSerie: errosSerie.referenciasRepetidas
-        });
-      if (errosSerie.codigo.length > 0 || errosAgregacoes.codigo.length > 0)
-        errosVal.erros.push({
-          sobre: "Código da série ou subsérie",
-          mensagem: "O código é obrigatório nas PGD",
-          linhasSerie: errosSerie.codigo,
-          linhasUI: errosAgregacoes.codigo
-        });
-      if (
-        errosSerie.referencia.length > 0 ||
-        errosAgregacoes.referencia.length > 0
-      )
-        errosVal.erros.push({
-          sobre: "Número de referência",
-          mensagem:
-            "O número de referência é obrigatório quando não existe código",
-          linhasSerie: errosSerie.referencia,
-          linhasUI: errosAgregacoes.referencia
-        });
-      if (errosSerie.titulo.length > 0)
-        errosVal.erros.push({
-          sobre: "Título da série ou subsérie",
-          mensagem: "O título é obrigatório",
-          linhasSerie: errosSerie.titulo
-        });
-      if (errosSerie.dataInicio.length > 0)
-        errosVal.erros.push({
-          sobre: "Data inicial da documentação proposta para eliminação",
-          mensagem:
-            "A data inicial é obrigatória e deve constar de quatro digitos",
-          linhasSerie: errosSerie.dataInicio
-        });
-      if (errosSerie.dataFim.length > 0)
-        errosVal.erros.push({
-          sobre: "Data final da documentação proposta para eliminação",
-          mensagem:
-            "A data final é obrigatória e deve constar de quatro digitos",
-          linhasSerie: errosSerie.dataFim
-        });
-      if (errosSerie.agregacoes.length > 0)
-        errosVal.erros.push({
-          sobre: "Nº de agregações simples /UI – unidade de instalação",
-          mensagem:
-            "Verificar se corresponde ao total das agregações do ficheiro anexo",
-          linhasSerie: errosSerie.agregacoes
-        });
-      if (errosSerie.medicoes.length > 0)
-        errosVal.erros.push({
-          sobre: "Medição das agregações",
-          mensagem: "Pelo menos um dos campos deve estar preenchido",
-          linhasSerie: errosSerie.medicoes
-        });
-      console.log(errosAgregacoes.codigoAg.length);
-      if (errosAgregacoes.codigoAg.length > 0)
-        errosVal.erros.push({
-          sobre: "Código da agregação simples / UI - unidade de instalação",
-          mensagem: "Código da agregação obrigatório e não repetivel",
-          linhasUI: errosAgregacoes.codigoAg
-        });
-      if (errosAgregacoes.titulo.length > 0)
-        errosVal.erros.push({
-          sobre: "Título da agregação / UI",
-          mensagem: "Título da agregação obrigatório",
-          linhasUI: errosAgregacoes.titulo
-        });
-      if (errosAgregacoes.pca.length > 0)
-        errosVal.erros.push({
-          sobre: "Data de início de contagem do PCA",
-          mensagem:
-            "Data de início de contagem do PCA da agregação obrigatória",
-          linhasUI: errosAgregacoes.pca
-        });
-      if (errosAgregacoes.ni.length > 0)
-        errosVal.erros.push({
-          sobre: "Natureza de intervenção",
-          mensagem:
-            "Natureza de intervenção obrigatória quando constante da LC",
-          linhasUI: errosAgregacoes.ni
-        });
-      reject(errosVal);
-    } else resolve("Ficheiros em anexo validados com sucesso!");
+      }
+      if(errosSerie.codigosRepetidos.length>0) errosVal.erros.push({
+        sobre: "Código da série ou subsérie",
+        mensagem: "O código não pode ser repetido no mesmo auto",
+        linhasSerie: errosSerie.codigosRepetidos
+      })
+      if(errosSerie.referenciasRepetidas.length>0) errosVal.erros.push({
+        sobre: "Número de referência",
+        mensagem: "O número de referência não pode ser repetido no mesmo auto",
+        linhasSerie: errosSerie.referenciasRepetidas
+      })
+      if(errosSerie.codigo.length>0 || errosAgregacoes.codigo.length>0) errosVal.erros.push({
+        sobre: "Código da série ou subsérie",
+        mensagem: "O código é obrigatório nas PGD",
+        linhasSerie: errosSerie.codigo,
+        linhasUI: errosAgregacoes.codigo
+      })
+      if(errosSerie.referencia.length>0 || errosAgregacoes.referencia.length>0) errosVal.erros.push({
+        sobre: "Número de referência",
+        mensagem: "O número de referência é obrigatório quando não existe código",
+        linhasSerie: errosSerie.referencia,
+        linhasUI: errosAgregacoes.referencia
+      })
+      if(errosSerie.titulo.length>0) errosVal.erros.push({
+        sobre: "Título da série ou subsérie",
+        mensagem: "O título é obrigatório",
+        linhasSerie: errosSerie.titulo
+      })
+      if(errosSerie.dataInicio.length>0) errosVal.erros.push({
+        sobre: "Data inicial da documentação proposta para eliminação",
+        mensagem: "A data inicial é obrigatória e deve constar de quatro digitos",
+        linhasSerie: errosSerie.dataInicio
+      })
+      if(errosSerie.dataFim.length>0) errosVal.erros.push({
+        sobre: "Data final da documentação proposta para eliminação",
+        mensagem: "A data final é obrigatória e deve constar de quatro digitos",
+        linhasSerie: errosSerie.dataFim
+      })
+      if(errosSerie.agregacoes.length>0) errosVal.erros.push({
+        sobre: "Nº de agregações simples /UI – unidade de instalação",
+        mensagem: "Verificar se corresponde ao total das agregações do ficheiro anexo",
+        linhasSerie: errosSerie.agregacoes
+      })
+      if(errosSerie.medicoes.length>0) errosVal.erros.push({
+        sobre: "Medição das agregações",
+        mensagem: "Pelo menos um dos campos deve estar preenchido",
+        linhasSerie: errosSerie.medicoes
+      })
+      if(errosAgregacoes.codigoAg.length>0) errosVal.erros.push({
+        sobre: "Código da agregação simples / UI - unidade de instalação",
+        mensagem: "Código da agregação obrigatório e não repetivel",
+        linhasUI: errosAgregacoes.codigoAg
+      })
+      if(errosAgregacoes.titulo.length>0) errosVal.erros.push({
+        sobre: "Título da agregação / UI",
+        mensagem: "Título da agregação obrigatório",
+        linhasUI: errosAgregacoes.titulo
+      })
+      if(errosAgregacoes.pca.length>0) errosVal.erros.push({
+        sobre: "Data de início de contagem do PCA",
+        mensagem: "Data de início de contagem do PCA da agregação obrigatória",
+        linhasUI: errosAgregacoes.pca
+      })
+      if(errosAgregacoes.ni.length>0) errosVal.erros.push({
+        sobre: "Natureza de intervenção",
+        mensagem: "Natureza de intervenção obrigatória quando constante da LC",
+        linhasUI: errosAgregacoes.ni
+      })
+      reject(errosVal)
+    }
+    else resolve("Ficheiros em anexo validados com sucesso!")
   });
 };
 
@@ -444,9 +421,10 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
       tipo: tipo,
       zonaControlo: []
     };
-    series.forEach((s, index) => {
-      var serie = s.split(/[;,]/);
-      if (serie[0] || serie[1]) {
+    series.forEach((s,index) => {
+      s = s.replace(/[\r\n]+/g,'');
+      var serie = s.split(/[;,]/)
+      if(serie[0] || serie[1]) {
         var zc = {
           codigo: serie[0],
           referencia: serie[1],
@@ -459,8 +437,9 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
           agregacoes: []
         };
         agregacoes.forEach(a => {
-          var agregacao = a.split(/[;,]/);
-          if (agregacao[0] == zc.codigo && agregacao[1] == zc.referencia) {
+          a = a.replace(/[\r\n]+/g,'');
+          var agregacao = a.split(/[;,]/)
+          if(agregacao[0]==zc.codigo && agregacao[1]==zc.referencia) {
             var ag = {
               codigo: agregacao[2].replace(/[ -.,!/]/g, "_"),
               titulo: agregacao[3],

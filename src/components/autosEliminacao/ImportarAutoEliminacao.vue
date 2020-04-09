@@ -199,7 +199,7 @@
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
         <v-card-title class="teal darken-4 title white--text" dark>
-          Pedido de criação de auto de eliminação criado com sucesso
+          Pedido de importação de auto de eliminação submetido com sucesso
         </v-card-title>
 
         <v-card-text>
@@ -223,15 +223,20 @@
           </v-row>
           <v-row class="mt-2">
             <v-col cols="2">
-              <div class="info-label">Classes e Agregações:</div>
+              <div class="info-label">Ficheiro de Série</div>
             </v-col>
 
             <v-col class="info-content">
-              <div v-for="(c,i) in auto.zonaControlo" :key="i">
-                <span v-if="c.codigo">{{ c.codigo +" - "+c.titulo }}</span>
-                <span v-if="c.referencia">{{ c.referencia +" - "+c.titulo }}</span>
-                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">{{+a.codigo + " - " + a.titulo}}</li>
-              </div>
+              <div>Ficheiro em anexo validado com sucesso!</div>
+            </v-col>
+          </v-row>
+          <v-row class="mt-2">
+            <v-col cols="2">
+              <div class="info-label">Ficheiro Agregações / Unidades de Instalação</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div>Ficheiro em anexo validado com sucesso!</div>
             </v-col>
           </v-row>
         </v-card-text>
@@ -441,10 +446,10 @@ export default {
         const reader = new FileReader();
         reader.onload = e => (this.fileSerie = e.target.result);
         reader.readAsArrayBuffer(file);
-      } else {
-        ev.target.value = "";
-        this.erro =
-          "Porfavor verifique se o ficheiro está no formato <strong>.csv</strong>";
+      }
+      else {
+        ev.target.value = ""
+        this.erro = "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>"
         this.erroDialog = true;
         this.fileSerie = null;
       }
@@ -456,10 +461,10 @@ export default {
         const reader = new FileReader();
         reader.onload = e => (this.fileAgreg = e.target.result);
         reader.readAsArrayBuffer(file);
-      } else {
-        ev.target.value = "";
-        this.erro =
-          "Porfavor verifique se o ficheiro está no formato <strong>.csv</strong>";
+      }
+      else {
+        ev.target.value = ""
+        this.erro = "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>"
         this.erroDialog = true;
         this.fileAgreg = null;
       }

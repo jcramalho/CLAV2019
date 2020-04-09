@@ -157,18 +157,27 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         // TODO: Adicionar validação para a designação
+        // Se for extinção não valida
 
-        for (const key in pedido.objeto.dadosOriginais) {
-          if (!pedido.objeto.dados.hasOwnProperty(key)) {
-            pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+        if (pedido.objeto.acao === "Extinção") {
+          await this.$request(
+            "put",
+            `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
+            { dataExtincao: pedido.objeto.dados.dataExtincao }
+          );
+        } else {
+          for (const key in pedido.objeto.dadosOriginais) {
+            if (!pedido.objeto.dados.hasOwnProperty(key)) {
+              pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+            }
           }
-        }
 
-        await this.$request(
-          "put",
-          `/entidades/ent_${pedido.objeto.dados.sigla}`,
-          pedido.objeto.dados
-        );
+          await this.$request(
+            "put",
+            `/entidades/ent_${pedido.objeto.dados.sigla}`,
+            pedido.objeto.dados
+          );
+        }
 
         const estado = "Validado";
 

@@ -33,13 +33,11 @@
 
             <v-col>
               <v-select
-                prefix="Internacional: "
                 item-text="label"
                 item-value="value"
                 v-model="internacional"
                 :items="simNao"
                 label="Internacional"
-                solo
                 dense
               />
             </v-col>

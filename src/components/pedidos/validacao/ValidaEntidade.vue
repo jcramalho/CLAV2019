@@ -95,11 +95,6 @@ export default {
           conteudo: this.p.objeto.dados.tipologiasSel,
           cor: null,
         },
-        {
-          campo: "Data Extinção",
-          conteudo: this.p.objeto.dados.dataExtincao,
-          cor: null,
-        },
       ],
       headersTipologias: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },

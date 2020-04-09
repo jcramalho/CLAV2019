@@ -27,7 +27,7 @@
             <td style="width:20%;">
               <div class="info-label">Fundo:</div>
             </td>
-            <td style="width:80%;">{{ p.objeto.dados.ae.fundo }}</td>
+            <td style="width:80%;"><li v-for="(f,i) in p.objeto.dados.ae.fundo" :key="i">{{f}}</li></td>
           </tr>
         </table>
 
@@ -136,7 +136,7 @@
                           <td style="width:20%;">
                             <div class="info-label">Dono do PN:</div>
                           </td>
-                          <td style="width:80%;">{{ item.dono }}</td>
+                          <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
                         </tr>
                         <tr>
                           <td style="width:20%;">

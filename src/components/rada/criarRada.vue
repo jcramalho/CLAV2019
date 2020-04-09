@@ -185,8 +185,8 @@ export default {
         RE: {
           entidadesProd: [],
           tipologiasProd: [],
-          dataInicial: null,
-          dataFinal: null,
+          dataInicial: "2020-04-11",
+          dataFinal: "2020-04-11",
           dimSuporte: {
             nSeries: 0,
             nSubSeries: 0,
@@ -212,6 +212,13 @@ export default {
             //   tipo: "N1"
             // },
             // {
+            //   codigo: "04",
+            //   titulo: "Classe N1 (04)",
+            //   descricao: "Descrição Classe N1 (04)",
+            //   eFilhoDe: null,
+            //   tipo: "N1"
+            // },
+            // {
             //   codigo: "02",
             //   titulo: "Classe N1 (02)",
             //   descricao: "Descrição Classe N1 (02)",
@@ -224,11 +231,11 @@ export default {
             //   tipo: "N1"
             // },
             // {
-            //   codigo: "04",
-            //   titulo: "Classe N1 (04)",
-            //   descricao: "Descrição Classe N1 (04)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
+            //   codigo: "01.02",
+            //   titulo: "Classe N2 (01.02)",
+            //   descricao: "Descrição Classe N2 (01.02)",
+            //   eFilhoDe: "01",
+            //   tipo: "N2"
             // },
             // {
             //   codigo: "01.01",
@@ -244,13 +251,7 @@ export default {
             //   eFilhoDe: "01.01",
             //   tipo: "N3"
             // },
-            // {
-            //   codigo: "01.02",
-            //   titulo: "Classe N2 (01.02)",
-            //   descricao: "Descrição Classe N2 (01.02)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
-            // },
+
             // {
             //   codigo: "02.01",
             //   titulo: "Classe N2 (02.01)",

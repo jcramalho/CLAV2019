@@ -295,6 +295,12 @@ export default new Router({
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
     {
+      path: "/pendentes/:idPendente",
+      name: "consultaPendente",
+      component: () => import("./views/pendentes/PendentesConsulta.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
       path: "/pendentes/continuar/:idPendente",
       name: "continuaPendente",
       component: () => import("./views/pendentes/PendentesContinuacao.vue"),
