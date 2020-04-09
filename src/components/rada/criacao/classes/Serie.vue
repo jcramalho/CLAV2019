@@ -27,7 +27,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSerie" :UIs="UIs" :RE="RE"/>
+                <ZonaDescritiva :newSerie="newSerie" :UIs="UIs" :RE="RE" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -142,16 +142,16 @@ export default {
     dialog: false,
     classesHierarquia: [],
     newSerie: {
-      // codigo: "02.02",
-      // titulo: "SERIE",
-      // descricao: "DESC SERIE",
-      // dataInicial: "2020-02-13",
-      // dataFinal: "2020-02-16",
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: null,
-      dataFinal: null,
+      codigo: "02.02",
+      titulo: "SERIE",
+      descricao: "DESC SERIE",
+      dataInicial: "2020-02-13",
+      dataFinal: "2020-02-16",
+      // codigo: "",
+      // titulo: "",
+      // descricao: "",
+      // dataInicial: null,
+      // dataFinal: null,
       tUA: null,
       tSerie: null,
       suporte: null,
@@ -278,8 +278,27 @@ export default {
         if (this.$refs.formSerie.validate()) {
           let clone_newSerie = Object.assign({}, this.newSerie);
 
+          clone_newSerie.justificacaoPCA.forEach(criterio => {
+            if (criterio.tipo == "Critério de Utilidade Administrativa") {
+              criterio.relacoes.map(rel => delete rel.titulo);
+            }
+          });
+
+          clone_newSerie.justificacaoDF.forEach(criterio => {
+            if (
+              criterio.tipo == "Critério de Complementaridade Informacional" ||
+              criterio.tipo == "Critério de Densidade Informacional"
+            ) {
+              criterio.relacoes.map(rel => delete rel.titulo);
+            }
+          });
+
           this.relacoes_simetricas(clone_newSerie);
           this.adicionarUIs(clone_newSerie);
+
+          clone_newSerie.relacoes.map(
+            item => delete item.serieRelacionada.titulo
+          );
 
           this.classes.push(clone_newSerie);
           this.apagar();
@@ -296,13 +315,13 @@ export default {
       this.panels = [0, 0, 0];
 
       // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas.
-      this.validar_Relacoes_Sintese();
+      this.validar_relacoes_sintese();
 
       this.classesHierarquia = this.classes
         .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
         .sort((a, b) => a.codigo.localeCompare(b.codigo));
     },
-    validar_Relacoes_Sintese() {
+    validar_relacoes_sintese() {
       let relacoes_sintese = this.newSerie.relacoes.filter(
         e => e.relacao == "Síntese de" || e.relacao == "Sintetizado por"
       );
@@ -315,7 +334,6 @@ export default {
         );
 
         if (existe_classe) {
-          // Verificar esta expressão
           this.newSerie.relacoes = this.newSerie.relacoes.filter(
             rel =>
               rel.relacao != relacoes_sintese[i].relacao ||
@@ -335,7 +353,9 @@ export default {
       );
 
       if (criterio != undefined) {
-        criterio.relacoes = criterio.relacoes.filter(e => e != codigoClasse);
+        criterio.relacoes = criterio.relacoes.filter(
+          e => e.codigo != codigoClasse
+        );
 
         if (criterio.relacoes.length == 0) {
           this.alteraDF();
@@ -415,10 +435,10 @@ export default {
           classe_relacionada.justificacaoPCA.push({
             tipo: tipo_criterio,
             nota: labels.textoCriterioUtilidadeAdministrativa,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({ codigo: codigoClasse });
         }
       } else {
         let criterio = classe_relacionada.justificacaoDF.find(
@@ -445,10 +465,10 @@ export default {
           classe_relacionada.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
-            relacoes: [codigoClasse]
+            relacoes: [{ codigo: codigoClasse }]
           });
         } else {
-          criterio.relacoes.push(codigoClasse);
+          criterio.relacoes.push({ codigo: codigoClasse });
         }
       }
     },
@@ -462,7 +482,7 @@ export default {
           if (clone_newSerie.relacoes[i].serieRelacionada.tipo == "Série") {
             classe_relacionada = {
               codigo: clone_newSerie.relacoes[i].serieRelacionada.codigo,
-              titulo: "",
+              titulo: clone_newSerie.relacoes[i].serieRelacionada.titulo,
               descricao: "",
               dataInicial: null,
               dataFinal: null,
@@ -490,7 +510,7 @@ export default {
           } else {
             classe_relacionada = {
               codigo: clone_newSerie.relacoes[i].serieRelacionada.codigo,
-              titulo: "",
+              titulo: clone_newSerie.relacoes[i].serieRelacionada.titulo,
               descricao: "",
               dataInicial: null,
               dataFinal: null,

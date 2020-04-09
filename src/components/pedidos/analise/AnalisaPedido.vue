@@ -75,6 +75,7 @@
 import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
+import AnalisaAE from "@/components/pedidos/analise/AnalisaAE";
 
 import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
 import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLegislacao";
@@ -95,6 +96,7 @@ export default {
     AnalisaEditaEntidade,
     AnalisaEditaLegislacao,
     AnalisaEditaTipologiaEntidade,
+    AnalisaAE,
     AnalisaDefault,
   },
 

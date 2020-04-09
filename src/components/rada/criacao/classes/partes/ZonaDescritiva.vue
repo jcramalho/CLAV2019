@@ -220,12 +220,6 @@ export default {
       "Papel",
       "Outro"
     ]
-  }),
-  watch: {
-    "newSerie.dataInicial"(val) {
-      let v = new Date(val);
-      console.log(v.getTime());
-    }
-  }
+  })
 };
 </script>

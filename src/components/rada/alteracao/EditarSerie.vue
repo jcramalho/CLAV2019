@@ -42,7 +42,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE"/>
+                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -210,6 +210,43 @@ export default {
       this.$emit("remover", serie_real);
       this.dialogSerie = false;
     },
+    buscarNomesClasses() {
+      this.serie.relacoes.forEach(rel => {
+        let classe_relacionada = this.classes.find(
+          cl => cl.codigo == rel.serieRelacionada.codigo
+        );
+
+        rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
+
+        let criterio = null;
+
+        if (rel.relacao == "Suplemento para") {
+          criterio = this.serie.justificacaoPCA.find(
+            e => e.tipo == "Critério de Utilidade Administrativa"
+          );
+        }
+
+        if (rel.relacao == "Complementar de") {
+          criterio = this.serie.justificacaoDF.find(
+            e => e.tipo == "Critério de Complementaridade Informacional"
+          );
+        }
+
+        if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
+          criterio = this.serie.justificacaoDF.find(
+            e => e.tipo == "Critério de Densidade Informacional"
+          );
+        }
+
+        if (criterio != null) {
+          let relacaoCriterio = criterio.relacoes.find(
+            e => e.codigo == classe_relacionada.codigo
+          );
+
+          relacaoCriterio["titulo"] = classe_relacionada.titulo;
+        }
+      });
+    },
     async filterSeries() {
       this.existe_erros = false;
       this.erros = [];
@@ -226,10 +263,12 @@ export default {
       this.serie.entProdutoras = [...serie_real.entProdutoras];
       this.serie.legislacao = [...serie_real.legislacao];
       this.serie.localizacao = [...serie_real.localizacao];
-      this.serie.relacoes = [...serie_real.relacoes];
       this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
       this.serie.justificacaoPCA = await this.clonePCA(serie_real);
       this.serie.justificacaoDF = await this.cloneDF(serie_real);
+      this.serie.relacoes = [...serie_real.relacoes];
+      this.buscarNomesClasses();
+
       this.serie.UIs = [...serie_real.UIs];
 
       // Classes para definir a hierarquia

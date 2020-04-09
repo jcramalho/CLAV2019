@@ -1316,7 +1316,7 @@ export default {
         };
 
         var response = await this.$request(
-          "post",
+          "put",
           "/pendentes",
           pendenteParams
         );

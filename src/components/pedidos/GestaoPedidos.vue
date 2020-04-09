@@ -35,7 +35,7 @@
           :texto="{
             textoTitulo: 'Distribuição',
             textoAlert: 'análise',
-            textoBotao: 'Distribuir'
+            textoBotao: 'Distribuir',
           }"
           :pedido="pedidoParaDistribuir.codigo"
           @fecharDialog="fecharDialog()"
@@ -64,7 +64,7 @@ export default {
     PedidosValidacao,
     PedidosDevolvidos,
     PedidosProcessados,
-    AvancarPedido
+    AvancarPedido,
   },
 
   data() {
@@ -76,7 +76,7 @@ export default {
       pedidosDistribuidos: [],
       pedidosValidados: [],
       pedidosDevolvidos: [],
-      pedidosProcessados: []
+      pedidosProcessados: [],
     };
   },
 
@@ -90,13 +90,13 @@ export default {
         let pedidos = await this.$request("get", "/pedidos");
         pedidos = pedidos.data;
 
-        this.pedidosSubmetidos = pedidos.filter(p => p.estado == "Submetido");
+        this.pedidosSubmetidos = pedidos.filter((p) => p.estado == "Submetido");
         this.pedidosDistribuidos = pedidos.filter(
-          p => p.estado == "Distribuído"
+          (p) => p.estado == "Distribuído"
         );
-        this.pedidosValidados = pedidos.filter(p => p.estado == "Apreciado");
-        this.pedidosDevolvidos = pedidos.filter(p => p.estado == "Devolvido");
-        this.pedidosProcessados = pedidos.filter(p => p.estado == "Validado");
+        this.pedidosValidados = pedidos.filter((p) => p.estado == "Apreciado");
+        this.pedidosDevolvidos = pedidos.filter((p) => p.estado == "Devolvido");
+        this.pedidosProcessados = pedidos.filter((p) => p.estado == "Validado");
 
         await this.listaUtilizadores();
       } catch (e) {
@@ -153,12 +153,12 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.carregaPedidos();
@@ -167,8 +167,8 @@ export default {
       } catch (e) {
         console.log("e :", e);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

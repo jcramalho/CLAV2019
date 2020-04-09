@@ -4,12 +4,26 @@
       <div class="info-label">Justificação do PCA</div>
       <v-row no-gutters>
         <v-col>
-          <v-btn v-if="existeGestionario" class="ma-2" color="indigo darken-2" dark @click="adicionaGestionario" rounded>
+          <v-btn
+            v-if="existeGestionario"
+            class="ma-2"
+            color="indigo darken-2"
+            dark
+            @click="adicionaGestionario"
+            rounded
+          >
             Critério Gestionário
             <v-icon small dark right>add_circle_outline</v-icon>
           </v-btn>
 
-          <v-btn v-if="existeLegislacao" class="ma-2" color="indigo darken-2" dark @click="adicionaLegal" rounded>
+          <v-btn
+            v-if="existeLegislacao"
+            class="ma-2"
+            color="indigo darken-2"
+            dark
+            @click="adicionaLegal"
+            rounded
+          >
             Critério Legal
             <v-icon small dark right>add_circle_outline</v-icon>
           </v-btn>
@@ -60,7 +74,7 @@
               <v-card-text>
                 <ul>
                   <li v-for="(relacao, relindex) in criterio.relacoes" :key="relindex">
-                    {{ relacao }}
+                    {{ relacao.codigo + " - " + relacao.titulo }}
                     <v-icon
                       v-if="criterio.tipo != 'Critério de Utilidade Administrativa'"
                       @click="removeRelacao(relindex, criterio, cindex)"
@@ -147,13 +161,19 @@ export default {
       let relacoesLegis = [];
       if (this.newSerie.tipo == "Série") {
         relacoesLegis = this.newSerie.legislacao.map(item => {
-          return item.tipo + " " + item.numero;
+          return {
+            codigo: item.tipo + " " + item.numero,
+            titulo: item.sumario
+          };
         });
       } else {
         let pai = this.classes.find(e => e.codigo == this.newSerie.eFilhoDe);
 
         relacoesLegis = pai.legislacao.map(item => {
-          return item.tipo + " " + item.numero;
+          return {
+            codigo: item.tipo + " " + item.numero,
+            titulo: item.sumario
+          };
         });
       }
       this.newSerie.justificacaoPCA.push({

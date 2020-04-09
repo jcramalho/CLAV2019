@@ -44,7 +44,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="subserie" :UIs="UIs" :RE="RE"/>
+                <ZonaDescritiva :newSerie="subserie" :UIs="UIs" :RE="RE" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -129,7 +129,7 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "UIs", "formaContagem"],
+  props: ["treeview_object", "classes", "UIs", "formaContagem", "RE"],
   data: () => ({
     existe_erros: false,
     erros: [],
@@ -187,11 +187,49 @@ export default {
 
       return newJustificacaoDF;
     },
+    buscarNomesClasses() {
+      this.subserie.relacoes.forEach(rel => {
+        let classe_relacionada = this.classes.find(
+          cl => cl.codigo == rel.serieRelacionada.codigo
+        );
+
+        rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
+
+        let criterio = null;
+
+        if (rel.relacao == "Suplemento para") {
+          criterio = this.subserie.justificacaoPCA.find(
+            e => e.tipo == "Critério de Utilidade Administrativa"
+          );
+        }
+
+        if (rel.relacao == "Complementar de") {
+          criterio = this.subserie.justificacaoDF.find(
+            e => e.tipo == "Critério de Complementaridade Informacional"
+          );
+        }
+
+        if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
+          criterio = this.subserie.justificacaoDF.find(
+            e => e.tipo == "Critério de Densidade Informacional"
+          );
+        }
+
+        if (criterio != null) {
+          let relacaoCriterio = criterio.relacoes.find(
+            e => e.codigo == classe_relacionada.codigo
+          );
+
+          relacaoCriterio["titulo"] = classe_relacionada.titulo;
+        }
+      });
+    },
     async filterSeries() {
       this.existe_erros = false;
       this.erros = [];
       this.panels = [0, 0, 0];
       this.isMultiple = false;
+
       // ir buscar o verdadeiro objeto
       let subserie_real = this.classes.find(
         e => e.codigo == this.treeview_object.codigo
@@ -199,7 +237,6 @@ export default {
 
       // DEEP CLONE do objetos
       this.subserie = Object.assign({}, subserie_real);
-      this.subserie.relacoes = [...subserie_real.relacoes];
       this.subserie.UIs = [...subserie_real.UIs];
       this.subserie.justificacaoPCA = await this.clonePCA(subserie_real);
       this.subserie.justificacaoDF = await this.cloneDF(subserie_real);
@@ -207,6 +244,8 @@ export default {
         {},
         subserie_real.formaContagem
       );
+      this.subserie.relacoes = [...subserie_real.relacoes];
+      this.buscarNomesClasses();
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes
