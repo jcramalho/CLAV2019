@@ -56,7 +56,6 @@
           </v-row>
           <h5>Hierarquia</h5>
           <v-divider></v-divider>
-
           <v-row>
             <v-col md="3" sm="3">
               <div class="info-label">Classe Pai</div>
@@ -66,24 +65,18 @@
                 v-model="newOrgFunc.eFilhoDe"
                 :items="classesHierarquia"
                 item-value="codigo"
-                dense
+                item-text="searchField"
                 solo
                 clearable
                 placeholder="Classe Pai"
                 chips
               >
-                <template v-slot:item="{ item }">{{item.codigo}} - {{ item.titulo }}</template>
-                <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
-                </template>
                 <template v-slot:no-data>
-                  <v-container fluid>
-                    <v-alert
-                      :value="true"
-                      color="red lighten-3"
-                      icon="warning"
-                    >Sem classes mais Área Orgânico-Funcional!</v-alert>
-                  </v-container>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                    </v-list-item-title>
+                  </v-list-item>
                 </template>
               </v-autocomplete>
             </v-col>
@@ -151,7 +144,13 @@ export default {
     filterSeries() {
       this.classesHierarquia = this.classes
         .filter(classe => classe.tipo == "N1" || classe.tipo == "N2")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo));
+        .sort((a, b) => a.codigo.localeCompare(b.codigo))
+        .map(classe => {
+          return {
+            searchField: classe.codigo + " - " + classe.titulo,
+            codigo: classe.codigo
+          };
+        });
     },
     verificaCodigo(v) {
       if (this.classes.some(e => e.codigo == v)) {
