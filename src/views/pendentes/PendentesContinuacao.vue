@@ -63,14 +63,6 @@ export default {
             break;
         }
         this.objLoaded = true;
-        // Apaga-se o pendente
-        // this.$request("delete", "/pendentes/" + this.$route.params.idPendente)
-        //   .then(response => {
-        //     console.log("Pendente removido: " + this.$route.params.idPendente);
-        //   })
-        //   .catch(error => {
-        //     console.log("Erro ao apagar o pendente: " + error);
-        //   });
       })
       .catch(error => {
         return error;

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import ShowPendente from "@/components/pedidos/consulta/ShowPendente.vue";
+import ShowPendente from "@/components/pendentes/consulta/ShowPendente";
 
 export default {
   props: ["idp"],
@@ -22,7 +22,7 @@ export default {
     pendenteLoaded: false
   }),
 
-  mounted: function() {
+  created: function() {
     this.$request("get", "/pendentes/" + this.idp)
       .then(response => {
         this.selectedPendente = response.data;
