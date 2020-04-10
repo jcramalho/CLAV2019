@@ -65,11 +65,11 @@ export default {
 
 <style>
 .info-label {
-  color: #00695c;
+  color: #1a237e;
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #dee2f8;
   font-weight: bold;
 }
 

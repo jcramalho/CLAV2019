@@ -4,6 +4,7 @@
         Consulta do objeto do pendente: {{ p._id }} ({{p.acao}}-{{p.tipo}})</v-card-title>
     <v-card-text>
       <ShowTSOrg v-if="p.tipo == 'TS Organizacional'" :p="p" />
+      <ShowClasse v-else-if="p.tipo == 'Classe'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
@@ -13,6 +14,7 @@
 </template>
 
 <script>
+import ShowClasse from "@/components/pendentes/consulta/ShowClasse.vue";
 import ShowTSOrg from "@/components/pendentes/consulta/ShowTSOrg.vue";
 import ShowDefault from "@/components/pendentes/consulta/ShowDefault.vue";
 
@@ -20,6 +22,7 @@ export default {
   props: ["p"],
 
   components: {
+    ShowClasse,
     ShowTSOrg,
     ShowDefault
   },
