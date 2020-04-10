@@ -61,23 +61,6 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-
-      <v-dialog v-model="showDialog" width="80%" hide-overlay>
-        <v-card>
-          <v-card-title>Visualização do Pendente</v-card-title>
-          <v-card-text>
-            <div>
-              {{ JSON.stringify(selectedPendente) }}
-            </div>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn color="red darken-1" dark @click="showDialog = false"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
   </v-card>
 </template>
 
@@ -134,10 +117,7 @@ export default {
       "items-per-page-all-text": "Todos"
     },
     pendentes: [],
-    pendenteRemovido: false,
-
-    selectedPendente: {},
-    showDialog: false,
+    pendenteRemovido: false
   }),
 
   created: async function() {
@@ -155,10 +135,7 @@ export default {
     },
 
     showPendente: function(pendente) {
-      this.selectedPendente = pendente;
-      this.showDialog = true;
-      //alert(JSON.stringify(pendente))
-      //this.$router.push("/pendentes/" + pedido.codigo);
+      this.$router.push("/pendentes/" + pendente._id);
     },
 
     continuarTrabalho: function(item) {
