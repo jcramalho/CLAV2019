@@ -5,7 +5,7 @@
         <div class="info-label">Relação com Série/Subsérie</div>
       </v-col>
       <v-col cols="12" xs="12" sm="9">
-        {{newSerie.relacoes}}
+        <!-- {{newSerie.relacoes}} -->
         <v-row>
           <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
             <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>

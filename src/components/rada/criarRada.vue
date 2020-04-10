@@ -308,7 +308,7 @@ export default {
             //     {
             //       tipo: "Critério de Complementaridade Informacional",
             //       nota: "É complementar de: ",
-            //       relacoes: ["01.03", "01.04.01"]
+            //       relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
             //     }
             //   ],
             //   notas: "Notas da Série (01.04)",
@@ -361,7 +361,7 @@ export default {
             //     {
             //       tipo: "Critério de Complementaridade Informacional",
             //       nota: "É complementar de: ",
-            //       relacoes: ["01.04"]
+            //       relacoes: [{ codigo: "01.04" }]
             //     }
             //   ],
             //   notas: "",
@@ -395,12 +395,7 @@ export default {
             //     {
             //       tipo: "Critério de Complementaridade Informacional",
             //       nota: "É complementar de: ",
-            //       relacoes: ["01.04"]
-            //     },
-            //     {
-            //       tipo: "Critério Legal",
-            //       nota: "Prazo prescricional estabelecido em: ",
-            //       relacoes: ["Portaria 39/2019", "Portaria 418/2005"]
+            //       relacoes: [{ codigo: "01.04" }]
             //     }
             //   ],
             //   notas: "Notas do Destino Final",

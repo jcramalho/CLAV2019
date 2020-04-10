@@ -205,7 +205,7 @@ export default {
       this.$emit("remover", serie_real);
       this.dialogSerie = false;
     },
-    buscarNomesClasses() {
+    buscarTitulosClasses() {
       this.serie.relacoes.forEach(rel => {
         let classe_relacionada = this.classes.find(
           cl => cl.codigo == rel.serieRelacionada.codigo
@@ -262,7 +262,7 @@ export default {
       this.serie.justificacaoPCA = await this.clonePCA(serie_real);
       this.serie.justificacaoDF = await this.cloneDF(serie_real);
       this.serie.relacoes = [...serie_real.relacoes];
-      this.buscarNomesClasses();
+      this.buscarTitulosClasses();
 
       this.serie.UIs = [...serie_real.UIs];
 

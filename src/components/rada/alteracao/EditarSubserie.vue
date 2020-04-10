@@ -187,7 +187,7 @@ export default {
 
       return newJustificacaoDF;
     },
-    buscarNomesClasses() {
+    buscarTitulosClasses() {
       this.subserie.relacoes.forEach(rel => {
         let classe_relacionada = this.classes.find(
           cl => cl.codigo == rel.serieRelacionada.codigo
@@ -245,7 +245,7 @@ export default {
         subserie_real.formaContagem
       );
       this.subserie.relacoes = [...subserie_real.relacoes];
-      this.buscarNomesClasses();
+      this.buscarTitulosClasses();
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes
