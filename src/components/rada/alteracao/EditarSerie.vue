@@ -96,23 +96,22 @@
                 :items="classesHierarquia"
                 :rules="[v => !!v || 'Campo obrigatório!']"
                 item-value="codigo"
-                dense
+                item-text="searchField"
                 solo
                 clearable
                 placeholder="Classe Pai"
+                chips
               >
-                <template v-slot:item="{ item }">{{ item.codigo }} - {{ item.titulo }}</template>
+                <!-- <template v-slot:item="{ item }">{{ item.codigo }} - {{ item.titulo }}</template>
                 <template v-slot:selection="{ item }">
                   <v-chip>{{ item.codigo }} - {{ item.titulo }}</v-chip>
-                </template>
+                </template>-->
                 <template v-slot:no-data>
-                  <v-container fluid>
-                    <v-alert
-                      :value="true"
-                      color="red lighten-3"
-                      icon="warning"
-                    >Sem classes Área Orgânico-Funcional! Adicione primeiro.</v-alert>
-                  </v-container>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                    </v-list-item-title>
+                  </v-list-item>
                 </template>
               </v-autocomplete>
             </v-col>
@@ -269,7 +268,13 @@ export default {
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes
         .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo));
+        .sort((a, b) => a.codigo.localeCompare(b.codigo))
+        .map(classe => {
+          return {
+            searchField: classe.codigo + " - " + classe.titulo,
+            codigo: classe.codigo
+          };
+        });
     },
     recolherErros() {
       this.existe_erros = true;

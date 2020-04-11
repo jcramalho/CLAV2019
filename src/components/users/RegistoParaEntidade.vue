@@ -143,7 +143,7 @@ export default {
       this.entidades = response.data.map(ent => {
         return {
           text: ent.sigla + " - " + ent.designacao,
-          value: ent.sigla
+          value: ent.id
         };
       });
     } catch (error) {

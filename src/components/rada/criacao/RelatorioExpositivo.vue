@@ -148,7 +148,7 @@
               <v-btn text @click="menu2 = false">
                 <v-icon>keyboard_backspace</v-icon>
               </v-btn>
-              <v-btn text @click="$refs.menu2.save(new Date(RE.dataFinal))">
+              <v-btn text @click="$refs.menu2.save(RE.dataFinal)">
                 <v-icon>check</v-icon>
               </v-btn>
             </v-date-picker>

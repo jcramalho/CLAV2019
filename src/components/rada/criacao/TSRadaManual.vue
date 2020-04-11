@@ -337,7 +337,7 @@ export default {
 
       // Iterar o array alterado pelo utilizador
       for (let i = 0; i < c.UIs.length; i++) {
-        let UIs_igual = serie_classe.UIs.find(ui => ui.codigo == c.UIs[i]);
+        let UIs_igual = serie_classe.UIs.find(ui => ui == c.UIs[i]);
 
         if (UIs_igual == undefined) {
           this.adicionaUI(c.UIs[i], serie_classe);
@@ -347,7 +347,7 @@ export default {
 
       // Iterar o array original de relacoes
       for (let j = 0; j < serie_classe.UIs.length; j++) {
-        let UIs_igual = c.UIs.find(ui => ui.codigo == serie_classe.UIs[j]);
+        let UIs_igual = c.UIs.find(ui => ui == serie_classe.UIs[j]);
 
         if (UIs_igual == undefined) {
           this.eliminaUI(serie_classe.UIs[j], serie_classe);

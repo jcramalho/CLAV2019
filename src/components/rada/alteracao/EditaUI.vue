@@ -20,7 +20,7 @@
           <ul v-if="!!UI.classesAssociadas[0]">
             <li v-for="(classe, i) in UI.classesAssociadas" :key="i">{{classe.codigo}}</li>
           </ul>
-          <p v-else>Não tem classes aassociadas!</p>
+          <p v-else>Não tem classes associadas!</p>
         </span>
       </v-tooltip>
     </template>
