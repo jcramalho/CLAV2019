@@ -367,6 +367,12 @@ export default new Router({
       component: () => import("./views/gestao/Geral.vue"),
       meta: { levels: [6, 7] }
     },
+    {
+      path: "/gestao/tabela",
+      name: "tabela",
+      component: () => import("./views/gestao/Tabela.vue"),
+      meta: { levels: [6, 7] }
+    },
     //Chaves API
     {
       path: "/gestao/api/listagem",

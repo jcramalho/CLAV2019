@@ -32,13 +32,30 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <v-layout row wrap>
+      <v-flex md6 xs12>
+        <v-card light>
+          <DoughnutEntidades/>
+        </v-card>
+      </v-flex>
+      <v-flex md6 xs12>
+        <v-card light>
+          <DoughnutDocs/>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
+/* eslint-disable */
+import DoughnutEntidades from "./chart/GeralEntsDoughnut";
+import DoughnutDocs from "./chart/GeralDocsDoughnut";
 export default {
   name: "Dashboard",
   components: {
+    DoughnutEntidades,
+    DoughnutDocs
   },
   data() {
     return {
@@ -52,13 +69,13 @@ export default {
   },
   methods: {
     async getNumeroTipologias() {
-      await this.$request("get", "/tipologias")
+      await this.$request("get", "/stats/tipologias")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "class",
-            title: "Número de Tipologias",
-            data: res.data.length,
+            title: res.data.indicador,
+            data: res.data.valor,
             action: {
               label: "Mais info",
               link: "/tipologias"
@@ -68,13 +85,13 @@ export default {
         .catch(error => alert(error));
     }
     ,async getNumeroEntidades() {
-      await this.$request("get", "/entidades")
+      await this.$request("get", "/stats/entidades")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "class",
-            title: "Número de entidades",
-            data: res.data.length,
+            title: res.data.indicador,
+            data: res.data.valor,
             action: {
               label: "Mais info",
               link: "/entidades"
@@ -84,13 +101,13 @@ export default {
         .catch(error => alert(error));
     },
     async getNumeroDocsLegislativos() {
-      await this.$request("get", "/legislacao")
+      await this.$request("get", "/stats/legislacao")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "work",
-            title: "Número de documentos legislativos",
-            data: res.data.length,
+            title: res.data.indicador,
+            data: res.data.valor,
             action: {
               label: "Mais info",
               link: "/legislacao"

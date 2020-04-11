@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-lg>
     <v-layout row wrap>
-      <v-flex md3 sm6 xs12 v-for="(stat, index) in stats" v-bind:key="index">
+      <v-flex md4 sm6 xs12 v-for="(stat, index) in stats" v-bind:key="index">
         <v-card :class="stat.bgColor" dark>
           <v-container fluid grid-list-sm dark>
             <v-layout class="mt-0 mb-0 pa-0" row>
@@ -35,12 +35,24 @@
     <v-layout row wrap>
       <v-flex md6 xs12>
         <v-card light>
-          <DoughnutPNS></DoughnutPNS>
+          <DoughnutPNS/>
         </v-card>
       </v-flex>
       <v-flex md6 xs12>
         <v-card light>
-          <DoughnutParticipantes></DoughnutParticipantes>
+          <DoughnutParticipantes/>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap>
+      <v-flex md6 xs12>
+        <v-card light>
+          <DoughnutDF/>
+        </v-card>
+      </v-flex>
+      <v-flex md6 xs12>
+        <v-card light>
+          <DoughnutCriterio :crit="criterios"/>
         </v-card>
       </v-flex>
     </v-layout>
@@ -48,16 +60,22 @@
 </template>
 
 <script>
+/* eslint-disable */
 import DoughnutPNS from "./chart/RelsPNsDoughnut";
 import DoughnutParticipantes from "./chart/RelsPartiDoughnut";
+import DoughnutDF from "./chart/RelsDFDoughnut";
+import DoughnutCriterio from "./chart/RelsCriterioDoughnut";
 export default {
   name: "Dashboard",
   components: {
     DoughnutPNS,
-    DoughnutParticipantes
+    DoughnutParticipantes,
+    DoughnutDF,
+    DoughnutCriterio
   },
   data() {
     return {
+      criterios: [],
       stats: []
     };
   },
@@ -66,16 +84,30 @@ export default {
     await this.getNumeroClassesNivelDois();
     await this.getNumeroClassesNivelTres();
     await this.getNumeroClassesNivelQuatro();
+    await this.getCriteriosDeJustificacao();
   },
   methods: {
+    async getCriteriosDeJustificacao() {
+      await this.$request("get", "/stats/critstats")
+        .then(res => {
+          this.criterios = res.data;
+          this.stats.push({
+            bgColor: "indigo darken-4",
+            icon: "gavel",
+            title: "Número de Critérios de Justificação",
+            data: res.data[0].valor
+          });
+        })
+        .catch(error => alert(error));
+    },
     async getNumeroClassesNivelUm() {
-      await this.$request("get", "/classes/")
+      await this.$request("get", "/stats/classesn1")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "class",
-            title: "Número de classes de Nível 1",
-            data: res.data.length,
+            title: res.data.indicador,
+            data: res.data.valor,
             action: {
               label: "Mais info",
               link: "/classes"
@@ -85,37 +117,37 @@ export default {
         .catch(error => alert(error));
     }
     ,async getNumeroClassesNivelDois() {
-      await this.$request("get", "/classes?nivel=2")
+      await this.$request("get", "/stats/classesn2")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "class",
-            title: "Número de classes de Nível 2",
-            data: res.data.length,
+            title: res.data.indicador,
+            data: res.data.valor,
           });
         })
         .catch(error => alert(error));
     },
     async getNumeroClassesNivelTres() {
-      await this.$request("get", "/classes?nivel=3")
+      await this.$request("get", "/stats/classesn3")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "work",
-            title: "Número de classes de Nível 3",
-            data: res.data.length,
+            title: res.data.indicador,
+            data: res.data.valor,
           });
         })
         .catch(error => alert(error));
     },
     async getNumeroClassesNivelQuatro() {
-      await this.$request("get", "/classes?nivel=4")
+      await this.$request("get", "/stats/classesn4")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "work",
-            title: "Número de classes de Nível 4",
-            data: res.data.length,
+            title: res.data.indicador,
+            data: res.data.valor,
           });
         })
         .catch(error => alert(error));

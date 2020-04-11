@@ -6,14 +6,14 @@ export default {
     return {
       info: {
         labels: [
-          "Antecessores",
-          "Sucessores",
-          "Complementares",
-          "Cruzados",
-          "Sintetizadores",
-          "Sintetizados",
-          "Suplementos",
-          "Suplementados"
+          "É Antecessor de",
+          "É Sucessor de",
+          "É Complementar de",
+          "É Cruzado com",
+          "É Sintese de",
+          "É Sintetizado por",
+          "É Suplemento de",
+          "É Suplemento para"
         ],
         datasets: [
           {
@@ -42,49 +42,49 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/classes/relstats")
+    this.$request("get", "/stats/relstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
           switch (i){
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.rel.split('#')[1] === 'eAntecessorDe'
-              }).relCount;
+                return elem.indicador.split('#')[1] === 'eAntecessorDe'
+              }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.rel.split('#')[1] === 'eSucessorDe'
-              }).relCount;
+                return elem.indicador.split('#')[1] === 'eSucessorDe'
+              }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.rel.split('#')[1] === 'eComplementarDe'
-              }).relCount;
+                return elem.indicador.split('#')[1] === 'eComplementarDe'
+              }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.rel.split('#')[1] === 'eCruzadoCom'
-              }).relCount;
+                return elem.indicador.split('#')[1] === 'eCruzadoCom'
+              }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.rel.split('#')[1] === 'eSinteseDe'
-              }).relCount;
+                return elem.indicador.split('#')[1] === 'eSinteseDe'
+              }).valor;
               break;
             case 5:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.rel.split('#')[1] === 'eSintetizadoPor'
-              }).relCount;
+                return elem.indicador.split('#')[1] === 'eSintetizadoPor'
+              }).valor;
               break;
             case 6:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.rel.split('#')[1] === 'eSuplementoDe'
-              }).relCount;
+                return elem.indicador.split('#')[1] === 'eSuplementoDe'
+              }).valor;
               break;
             case 7:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.rel.split('#')[1] === 'eSuplementoPara'
-              }).relCount;
+                return elem.indicador.split('#')[1] === 'eSuplementoPara'
+              }).valor;
               break;
             default:
               break;

@@ -6,13 +6,11 @@ export default {
     return {
       info: {
         labels: [
-          "Apreciador",
-          "Comunicador",
-          "Decisor",
-          "Assessor",
-          "Iniciador",
-          "Executor",
-          "Dono"
+          "Justificação de Complementaridade de Informação",
+          "Justificação de Densidade de Informação",
+          "Justificação Gestionária",
+          "Justificação Legal",
+          "Justificação de Utilidade Administrativa"
         ],
         datasets: [
           {
@@ -22,17 +20,16 @@ export default {
               "#7986CB",
               "#5C6BC0",
               "#26A69A",
-              "#00897B",
-              "#FDD835"
+              "#00897B"
             ],
-            data: [0, 0, 0, 0, 0, 0, 0]
+            data: [0, 0, 0, 0, 0]
           }
         ]
       },
       options: {
         title: {
           display: true,
-          text: 'Tipo de participantes'
+          text: 'Critérios de justificação'
         },
         responsive: true,
         maintainAspectRatio: false
@@ -40,43 +37,33 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/stats/relstats")
+    this.$request("get", "/stats/critstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
           switch (i){
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteApreciador'
+                return elem.indicador.split('#')[1] === 'CriterioJustificacaoComplementaridadeInfo'
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteComunicador'
+                return elem.indicador.split('#')[1] === 'CriterioJustificacaoDensidadeInfo'
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteDecisor'
+                return elem.indicador.split('#')[1] === 'CriterioJustificacaoGestionario'
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteAssessor'
+                return elem.indicador.split('#')[1] === 'CriterioJustificacaoLegal'
               }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteIniciador'
-              }).valor;
-              break;
-            case 5:
-              this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteExecutor'
-              }).valor;
-              break;
-            case 6:
-              this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temDono'
+                return elem.indicador.split('#')[1] === 'CriterioJustificacaoUtilidadeAdministrativa'
               }).valor;
               break;
             default:

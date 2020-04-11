@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     goHome() {
-      this.$router.push("/entidade");
+      this.$router.push("/");
     },
     drawerNotificacoes() {
       this.$emit('drawerNotificacoes');

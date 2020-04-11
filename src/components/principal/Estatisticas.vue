@@ -36,6 +36,14 @@
                 <v-icon>donut_small</v-icon>
               </v-list-item-icon>
             </v-list-item>
+            <v-list-item @click="$router.push('/gestao/tabela')">
+              <v-list-item-content>
+                Tabela de Indicadores
+              </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon>table_chart</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
           </v-list-item-group>
         </v-list>
       </v-card-text>
