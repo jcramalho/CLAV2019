@@ -258,7 +258,7 @@ export default {
           })
           .catch(err => {
             this.text =
-              "Ocorreu um erro ao registar o utilizador: " + err.response.data;
+              "Ocorreu um erro ao registar o utilizador: " + (err.response.data[0].msg || err.response.data);
             this.color = "error";
             this.snackbar = true;
             this.done = false;

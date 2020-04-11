@@ -1,14 +1,13 @@
 <template>
-  <!--ConsultaPedido :idp="$route.params.idPedido" /-->
-  <p>Being done...</p>
+  <ConsultaPendente :idp="$route.params.idPendente" />
 </template>
 
 <script>
-// import ConsultaPedido from "@/components/pedidos/ConsultaPedido.vue"; // @ is an alias to /src
+import ConsultaPendente from "@/components/pendentes/ConsultaPendente.vue"; // @ is an alias to /src
 
 export default {
   components: {
-    
+    ConsultaPendente
   }
 };
 </script>

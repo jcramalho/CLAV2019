@@ -16,16 +16,21 @@
             />
 
             <AnalisaLeg
-              v-if="pedido.objeto.tipo === 'Legislação'"
+              v-else-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
             />
 
             <AnalisaTipologiaEntidade
-              v-if="pedido.objeto.tipo === 'Tipologia'"
+              v-else-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
+            
+            <AnalisaAE
+              v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'"
               :p="pedido"
             />
 
-            <AnalisaDefault v-else :p="pedido" />
+            <AnalisaDefault v-else :p="pedido"/>
           </v-card-text>
 
           <!-- Para a Alteração de dados -->
@@ -41,12 +46,12 @@
             />
 
             <AnalisaEditaLegislacao
-              v-if="pedido.objeto.tipo === 'Legislação'"
+              v-else-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
             />
 
             <AnalisaEditaTipologiaEntidade
-              v-if="pedido.objeto.tipo === 'Tipologia'"
+              v-else-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
             />
 

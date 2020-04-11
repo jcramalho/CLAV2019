@@ -77,26 +77,19 @@
                 :disabled="hierarquiaDesativada"
                 v-model="classe.eFilhoDe"
                 :items="classesHierarquia"
-                item-text="titulo"
+                item-text="searchField"
                 item-value="codigo"
-                dense
                 solo
                 clearable
                 placeholder="Classe Pai"
                 chips
               >
-                <template v-slot:item="{ item }"
-                  >{{ item.codigo }} - {{ item.titulo }}</template
-                >
-                <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo }} - {{ item.titulo }}</v-chip>
-                </template>
                 <template v-slot:no-data>
-                  <v-container fluid>
-                    <v-alert :value="true" color="red lighten-3" icon="warning"
-                      >Sem classes mais Área Orgânico-Funcional!</v-alert
-                    >
-                  </v-container>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                    </v-list-item-title>
+                  </v-list-item>
                 </template>
               </v-autocomplete>
             </v-col>
@@ -162,7 +155,13 @@ export default {
                     classe.tipo == "N1" &&
                     classe.codigo != classe_area_organico.codigo
                 )
-                .sort((a, b) => a.codigo.localeCompare(b.codigo));
+                .sort((a, b) => a.codigo.localeCompare(b.codigo))
+                .map(classe => {
+                  return {
+                    searchField: classe.codigo + " - " + classe.titulo,
+                    codigo: classe.codigo
+                  };
+                });
             }
           } else {
             this.classesHierarquia = this.classes
@@ -171,7 +170,13 @@ export default {
                   (classe.tipo == "N1" || classe.tipo == "N2") &&
                   classe.codigo != classe_area_organico.codigo
               )
-              .sort((a, b) => a.codigo.localeCompare(b.codigo));
+              .sort((a, b) => a.codigo.localeCompare(b.codigo))
+              .map(classe => {
+                return {
+                  searchField: classe.codigo + " - " + classe.titulo,
+                  codigo: classe.codigo
+                };
+              });
           }
           break;
         case "N2":
@@ -183,7 +188,13 @@ export default {
           ) {
             this.classesHierarquia = this.classes
               .filter(classe => classe.tipo == "N1")
-              .sort((a, b) => a.codigo.localeCompare(b.codigo));
+              .sort((a, b) => a.codigo.localeCompare(b.codigo))
+              .map(classe => {
+                return {
+                  searchField: classe.codigo + " - " + classe.titulo,
+                  codigo: classe.codigo
+                };
+              });
           } else {
             this.classesHierarquia = this.classes
               .filter(
@@ -191,13 +202,25 @@ export default {
                   (classe.tipo == "N1" || classe.tipo == "N2") &&
                   classe.codigo != classe_area_organico.codigo
               )
-              .sort((a, b) => a.codigo.localeCompare(b.codigo));
+              .sort((a, b) => a.codigo.localeCompare(b.codigo))
+              .map(classe => {
+                return {
+                  searchField: classe.codigo + " - " + classe.titulo,
+                  codigo: classe.codigo
+                };
+              });
           }
           break;
         case "N3":
           this.classesHierarquia = this.classes
             .filter(classe => classe.tipo == "N1" || classe.tipo == "N2")
-            .sort((a, b) => a.codigo.localeCompare(b.codigo));
+            .sort((a, b) => a.codigo.localeCompare(b.codigo))
+            .map(classe => {
+              return {
+                searchField: classe.codigo + " - " + classe.titulo,
+                codigo: classe.codigo
+              };
+            });
           break;
       }
     },

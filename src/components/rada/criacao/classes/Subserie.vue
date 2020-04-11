@@ -67,25 +67,17 @@
                 :items="classesHierarquia"
                 :rules="[v => !!v || 'Este campo é obrigatório.']"
                 item-value="codigo"
-                dense
+                item-text="searchField"
                 solo
                 clearable
                 placeholder="Classe Pai"
               >
-                <template v-slot:item="{ item }">{{
-                  item.codigo + " - " + item.titulo
-                }}</template>
-                <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo + " - " + item.titulo }}</v-chip>
-                </template>
                 <template v-slot:no-data>
-                  <v-container fluid>
-                    <v-alert
-                      :value="true"
-                      color="red lighten-3"
-                      icon="warning"
-                    >Sem classes Séries! Adicione primeiro.</v-alert>
-                  </v-container>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Série</strong> em questão não existe!
+                    </v-list-item-title>
+                  </v-list-item>
                 </template>
               </v-autocomplete>
             </v-col>
@@ -340,7 +332,13 @@ export default {
 
       this.classesHierarquia = this.classes
         .filter(classe => classe.tipo == "Série")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo));
+        .sort((a, b) => a.codigo.localeCompare(b.codigo))
+        .map(classe => {
+          return {
+            searchField: classe.codigo + " - " + classe.titulo,
+            codigo: classe.codigo
+          };
+        });
     },
     validar_Relacoes_Sintese() {
       let relacoes_sintese = this.newSubSerie.relacoes.filter(

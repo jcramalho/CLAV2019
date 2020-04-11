@@ -50,10 +50,25 @@
                 label="Código Classificação/Cota"
               ></v-text-field>
             </v-col>
-            <v-col cols="12" xs="12" sm="2">
+
+            <v-col md="2" sm="2">
+              <div class="info-label">Descrição</div>
+            </v-col>
+            <v-col sm="6" md="6">
+              <v-text-field
+                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                solo
+                clearable
+                v-model="UI.descricao"
+                label="Descrição"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col xs="12" sm="3">
               <div class="info-label">Data Inicial da Documentação</div>
             </v-col>
-            <v-col xs="12" sm="2">
+            <v-col xs="12" sm="3">
               <v-menu
                 ref="menu1"
                 v-model="menu1"
@@ -92,10 +107,10 @@
                 </v-date-picker>
               </v-menu>
             </v-col>
-            <v-col cols="12" xs="12" sm="2">
+            <v-col xs="12" sm="3">
               <div class="info-label">Data Final da Documentação</div>
             </v-col>
-            <v-col xs="12" sm="2">
+            <v-col xs="12" sm="3">
               <v-menu
                 ref="menu2"
                 v-model="menu2"
@@ -151,6 +166,9 @@
                 hide-default-footer
                 v-if="UI.classesAssociadas[0]"
               >
+                <template
+                  v-slot:item.codigo="props"
+                >{{ props.item.codigo + " - " + props.item.titulo }}</template>
                 <template v-slot:item.edicao="props">
                   <td>
                     <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
@@ -173,9 +191,9 @@
               <!-- FORMULÁRIO PARA NOVA CLASSE -->
               <v-form ref="addRel" :lazy-validation="false">
                 <v-row>
-                  <v-col sm="6" xs="12">
+                  <v-col sm="4" xs="12">
                     <v-combobox
-                      :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório!']"
+                      :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório para associar série/subsérie!']"
                       v-model="cod"
                       :items="getCodigos"
                       label="Código"
@@ -191,8 +209,18 @@
                     <!-- <v-text-field v-model="cod" label="Código" solo clearable></v-text-field> -->
                   </v-col>
                   <v-col sm="5" xs="12">
+                    <v-text-field
+                      :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
+                      :disabled="iscodvalido"
+                      solo
+                      clearable
+                      v-model="tituloClasse"
+                      label="Título da Série/Subsérie"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col sm="2" xs="12">
                     <v-select
-                      :rules="[v => !!v || 'Campo obrigatório!']"
+                      :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
                       :disabled="iscodvalido"
                       label="Tipo de Classe"
                       v-model="tipoClasse"
@@ -207,18 +235,21 @@
                           {{ data.item }}
                         </v-chip>
                       </template>
-                    </v-select>
+                    </v-select> 
                   </v-col>
 
                   <v-col sm="1" xs="12">
-                    <v-btn icon text rounded @click="adicionarClasseUI">
+                    <v-btn text rounded @click="adicionarClasseUI">
                       <v-icon color="green lighten-1">add_circle</v-icon>
+                    </v-btn>
+                    <v-btn text rounded @click="$refs.addRel.reset()">
+                      <v-icon color="red lighten-1">delete_sweep</v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
                 <v-row v-if="!!alertOn">
                   <v-col>
-                    <v-alert dismissible dense text type="error">Relação já existente!</v-alert>
+                    <v-alert dismissible dense text type="error">Associação já existente!</v-alert>
                   </v-col>
                 </v-row>
               </v-form>
@@ -227,10 +258,10 @@
 
           <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <v-row>
-            <v-col md="3" sm="3">
+            <v-col md="2" sm="2">
               <div class="info-label">Notas</div>
             </v-col>
-            <v-col sm="3" md="3">
+            <v-col sm="4" md="4">
               <v-text-field
                 :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
                 solo
@@ -239,30 +270,16 @@
                 label="Notas"
               ></v-text-field>
             </v-col>
-            <v-col md="3" sm="3">
+            <v-col md="2" sm="2">
               <div class="info-label">Localização</div>
             </v-col>
-            <v-col sm="3" md="3">
+            <v-col sm="4" md="4">
               <v-text-field
                 :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
                 solo
                 clearable
                 v-model="UI.localizacao"
                 label="Localização"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col md="4" sm="4">
-              <div class="info-label">Descrição</div>
-            </v-col>
-            <v-col sm="8" md="8">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI.descricao"
-                label="Descrição"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -316,6 +333,7 @@ export default {
 
       if (c != undefined) {
         this.iscodvalido = true;
+        this.tituloClasse = c.titulo;
         this.tipoClasse = c.tipo;
       } else {
         this.iscodvalido = false;
@@ -323,6 +341,7 @@ export default {
     }
   },
   data: () => ({
+    tituloClasse: null,
     existe_erros: false,
     erros: [],
     menu1: false,
@@ -349,7 +368,7 @@ export default {
     },
     headers: [
       {
-        text: "Código",
+        text: "Série/Subsérie Associada",
         align: "center",
         value: "codigo",
         width: "75%",
@@ -380,7 +399,7 @@ export default {
             (e.dataInicial === undefined || e.dataInicial != null)
         )
       ) {
-        return "Impossível criar relação, altere o código!";
+        return "Impossível criar associação, altere o código!";
       } else {
         return false;
       }
@@ -458,6 +477,9 @@ export default {
       if (this.$refs.formUI.validate()) {
         // Alterei await aqui
         this.adicionarClasse();
+        this.UI.classesAssociadas.forEach(
+          associacao => delete associacao.titulo
+        );
         this.UIs.push(Object.assign({}, this.UI));
         this.dialog = false;
         this.apagar();
@@ -484,7 +506,7 @@ export default {
           if (this.UI.classesAssociadas[i].tipo == "Série") {
             this.classes.push({
               codigo: this.UI.classesAssociadas[i].codigo,
-              titulo: "",
+              titulo: this.UI.classesAssociadas[i].titulo,
               tipo: "Série",
               descricao: "",
               dataInicial: null,
@@ -512,7 +534,7 @@ export default {
           } else {
             this.classes.push({
               codigo: this.UI.classesAssociadas[i].codigo,
-              titulo: "",
+              titulo: this.UI.classesAssociadas[i].titulo,
               descricao: "",
               dataInicial: null,
               dataFinal: null,
@@ -538,7 +560,8 @@ export default {
         if (!(await this.validateUI())) {
           this.UI.classesAssociadas.push({
             codigo: this.cod,
-            tipo: this.tipoClasse
+            tipo: this.tipoClasse,
+            titulo: this.tituloClasse
           });
 
           this.$refs.addRel.reset();

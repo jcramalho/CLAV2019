@@ -71,25 +71,23 @@
                 :items="classesHierarquia"
                 :rules="[v => !!v || 'Campo obrigatório!']"
                 item-value="codigo"
-                dense
+                item-text="searchField"
                 solo
                 clearable
                 placeholder="Classe Pai"
+                chips
               >
-                <template v-slot:item="{ item }">{{
-                  item.codigo + " - " + item.titulo
-                }}</template>
+                <!-- <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
                 <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo + " - " + item.titulo }}</v-chip>
-                </template>
+                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
+                </template>-->
 
                 <template v-slot:no-data>
-                  <v-container fluid>
-                    <v-alert :value="true" color="red lighten-3" icon="warning"
-                      >Sem classes Área Orgânico-Funcional! Adicione
-                      primeiro.</v-alert
-                    >
-                  </v-container>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                    </v-list-item-title>
+                  </v-list-item>
                 </template>
               </v-autocomplete>
             </v-col>
@@ -142,16 +140,16 @@ export default {
     dialog: false,
     classesHierarquia: [],
     newSerie: {
-      codigo: "02.02",
-      titulo: "SERIE",
-      descricao: "DESC SERIE",
-      dataInicial: "2020-02-13",
-      dataFinal: "2020-02-16",
-      // codigo: "",
-      // titulo: "",
-      // descricao: "",
-      // dataInicial: null,
-      // dataFinal: null,
+      // codigo: "02.02",
+      // titulo: "SERIE",
+      // descricao: "DESC SERIE",
+      // dataInicial: "2020-02-13",
+      // dataFinal: "2020-02-16",
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: null,
+      dataFinal: null,
       tUA: null,
       tSerie: null,
       suporte: null,
@@ -319,7 +317,13 @@ export default {
 
       this.classesHierarquia = this.classes
         .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo));
+        .sort((a, b) => a.codigo.localeCompare(b.codigo))
+        .map(classe => {
+          return {
+            searchField: classe.codigo + " - " + classe.titulo,
+            codigo: classe.codigo
+          };
+        });
     },
     validar_relacoes_sintese() {
       let relacoes_sintese = this.newSerie.relacoes.filter(

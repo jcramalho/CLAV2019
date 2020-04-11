@@ -25,10 +25,10 @@
             :UIs="TS.UIs"
             :formaContagem="formaContagem"
           />
-          <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" />
+          <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
         </v-col>
       </v-row>
-      <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p>
+      <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p> -->
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -337,7 +337,7 @@ export default {
 
       // Iterar o array alterado pelo utilizador
       for (let i = 0; i < c.UIs.length; i++) {
-        let UIs_igual = serie_classe.UIs.find(ui => ui.codigo == c.UIs[i]);
+        let UIs_igual = serie_classe.UIs.find(ui => ui == c.UIs[i]);
 
         if (UIs_igual == undefined) {
           this.adicionaUI(c.UIs[i], serie_classe);
@@ -347,7 +347,7 @@ export default {
 
       // Iterar o array original de relacoes
       for (let j = 0; j < serie_classe.UIs.length; j++) {
-        let UIs_igual = c.UIs.find(ui => ui.codigo == serie_classe.UIs[j]);
+        let UIs_igual = c.UIs.find(ui => ui == serie_classe.UIs[j]);
 
         if (UIs_igual == undefined) {
           this.eliminaUI(serie_classe.UIs[j], serie_classe);
