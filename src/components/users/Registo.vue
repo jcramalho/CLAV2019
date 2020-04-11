@@ -200,7 +200,7 @@ export default {
           var response = await this.$request("post", "/users/registar", {
             name: this.$data.form.name,
             email: this.$data.form.email,
-            entidade: this.$data.form.entidade,
+            entidade: "ent_" + this.$data.form.entidade,
             type: parsedType,
             password: this.$data.form.password
           });
@@ -210,7 +210,8 @@ export default {
           );
         } catch (err) {
           this.text =
-            "Ocorreu um erro ao realizar o registo: " + err.response.data;
+            "Ocorreu um erro ao realizar o registo: " +
+            (err.response.data[0].msg || err.response.data);
           this.color = "error";
           this.snackbar = true;
           this.done = false;

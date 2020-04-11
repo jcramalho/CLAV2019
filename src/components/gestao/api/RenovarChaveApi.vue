@@ -109,7 +109,7 @@ export default {
             this.done = true;
           })
           .catch(err => {
-            this.text = err.response.data;
+            this.text = err.response.data[0].msg || err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;
