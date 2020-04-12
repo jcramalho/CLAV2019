@@ -26,7 +26,7 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="ma-2">
+      <v-card class="ma-2" v-if="p.objeto.nivel >= 3">
         <v-card-title class="info-label subtitle-1 font-weight-medium">
           Contexto de avaliação
         </v-card-title>
@@ -55,7 +55,7 @@
         </v-card-text>
       </v-card>
 
-      <v-card class="ma-2">
+      <v-card class="ma-2"  v-if="p.objeto.nivel >= 3">
         <v-card-title class="info-label subtitle-1 font-weight-medium">
           Decisões de avaliação
         </v-card-title>
