@@ -42,7 +42,7 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/stats/relstats")
+    this.$request("get", "/indicadores/relstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
           switch (i){

@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     async getNumeroTipologias() {
-      await this.$request("get", "/stats/tipologias")
+      await this.$request("get", "/indicadores/tipologias")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
@@ -85,7 +85,7 @@ export default {
         .catch(error => alert(error));
     }
     ,async getNumeroEntidades() {
-      await this.$request("get", "/stats/entidades")
+      await this.$request("get", "/indicadores/entidades")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
@@ -101,7 +101,7 @@ export default {
         .catch(error => alert(error));
     },
     async getNumeroDocsLegislativos() {
-      await this.$request("get", "/stats/legislacao")
+      await this.$request("get", "/indicadores/leg")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",

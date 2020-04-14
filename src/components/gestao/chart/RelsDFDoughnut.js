@@ -34,7 +34,7 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/stats/dfstats")
+    this.$request("get", "/indicadores/dfstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
           switch (i){

@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     async getCriteriosDeJustificacao() {
-      await this.$request("get", "/stats/critstats")
+      await this.$request("get", "/indicadores/critstats")
         .then(res => {
           this.criterios = res.data;
           this.stats.push({
@@ -101,7 +101,7 @@ export default {
         .catch(error => alert(error));
     },
     async getNumeroClassesNivelUm() {
-      await this.$request("get", "/stats/classesn1")
+      await this.$request("get", "/indicadores/classesN1")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
@@ -117,7 +117,7 @@ export default {
         .catch(error => alert(error));
     }
     ,async getNumeroClassesNivelDois() {
-      await this.$request("get", "/stats/classesn2")
+      await this.$request("get", "/indicadores/classesN2")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
@@ -129,7 +129,7 @@ export default {
         .catch(error => alert(error));
     },
     async getNumeroClassesNivelTres() {
-      await this.$request("get", "/stats/classesn3")
+      await this.$request("get", "/indicadores/classesN3")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
@@ -141,7 +141,7 @@ export default {
         .catch(error => alert(error));
     },
     async getNumeroClassesNivelQuatro() {
-      await this.$request("get", "/stats/classesn4")
+      await this.$request("get", "/indicadores/classesN4")
         .then(res => {
           this.stats.push({
             bgColor: "indigo darken-4",
