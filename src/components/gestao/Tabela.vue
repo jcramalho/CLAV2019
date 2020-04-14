@@ -56,48 +56,7 @@
           },
           { text: 'Valor', value: 'valor' }
         ],
-        indicadores: [
-          {
-            indicador: 'Frozen Yogurt',
-            valor: 159
-          },
-          {
-            indicador: 'Ice cream sandwich',
-            valor: 237
-          },
-          {
-            indicador: 'Eclair',
-            valor: 262
-          },
-          {
-            indicador: 'Cupcake',
-            valor: 305
-          },
-          {
-            indicador: 'Gingerbread',
-            valor: 356
-          },
-          {
-            indicador: 'Jelly bean',
-            valor: 375
-          },
-          {
-            indicador: 'Lollipop',
-            valor: 392
-          },
-          {
-            indicador: 'Honeycomb',
-            valor: 408
-          },
-          {
-            indicador: 'Donut',
-            valor: 452
-          },
-          {
-            indicador: 'KitKat',
-            valor: 518
-          },
-        ],
+        indicadores: [],
       }
     },
   created() {
@@ -111,6 +70,10 @@
           this.indicadores.forEach(element => {
             if(element.indicador.includes('#')) {
               element.indicador = element.indicador.split('#')[1];
+              element.indicador = element.indicador.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+              element.indicador = element.indicador[0].toUpperCase() + element.indicador.slice(1);
+              element.indicador = element.indicador.replace(/^E/g, 'É');
+              element.indicador = element.indicador.replace(/Tem Rel Proc/g, 'Relacoes Entre Processos');
             } else if (element.indicador === 'C' | 
                        element.indicador === 'CP'|
                        element.indicador === 'E' |

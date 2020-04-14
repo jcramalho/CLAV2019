@@ -1,8 +1,6 @@
 <template>
   <v-app v-if="authenticated">
     <MainPageHeader 
-      :n="notificacoes ? notificacoes.length : '0'"
-      @drawerNotificacoes="drawerNotificacoes()" 
       @drawerDefinicoes="drawerDefinicoes()"
       @drawerEstatisticas="drawerEstatisticas()"/>
 
@@ -18,11 +16,6 @@
     <v-content>
       <router-view/>
 
-      <Notificacoes 
-        v-if="this.$store.state.name != ''"
-        :drawer="drawN" 
-        :notificacoes="notificacoes"
-        @removerNotificacao="removerNotificacao($event)"/> 
       <Definicoes 
         v-if="this.$store.state.name != ''"
         :drawer="drawD"/> 
@@ -40,7 +33,6 @@
 import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 import Definicoes from "@/components/principal/Definicoes.vue";
-import Notificacoes from "@/components/principal/Notificacoes.vue";
 import Estatisticas from "@/components/principal/Estatisticas.vue";
 
 export default {
@@ -49,7 +41,6 @@ export default {
     PageFooter,
     MainPageHeader,
     Definicoes,
-    Notificacoes,
     Estatisticas
   },
   watch: {
@@ -68,8 +59,6 @@ export default {
               )
             ) {
               this.authenticated = true;
-              let response = await this.$request("get", "/notificacoes");
-              this.notificacoes = response.data;
             } else {
               this.text = "Não tem permissões para aceder a esta página!";
               this.color = "error";
@@ -93,12 +82,6 @@ export default {
         }
       } else {
         this.authenticated = true;
-        try {
-          let response = await this.$request("get", "/notificacoes");
-          this.notificacoes = response.data;
-        } catch (error) {
-          return error;
-        }
       }
 
       if (this.$route.query.erro) {
@@ -124,35 +107,16 @@ export default {
     sizeUpdate(size) {
       this.size = size;
     },
-    drawerNotificacoes() {
-      this.drawD = false;
-      this.drawE = false;
-      this.drawN = !this.drawN;
-    },
     drawerDefinicoes() {
-      this.drawN = false;
       this.drawE = false;
       this.drawD = !this.drawD;
     },
     drawerEstatisticas() {
-      this.drawN = false;
       this.drawD = false;
       this.drawE = !this.drawE;
-    },
-    async removerNotificacao(id) {
-      try {
-        await this.$request("delete", "/notificacoes/" + id);
-        this.notificacoes = this.notificacoes.filter(notificacao => {
-          return notificacao._id !== id;
-        });
-      } catch (error) {
-        return error;
-      }
     }
   },
   data: () => ({
-    notificacoes: null,
-    drawN: false,
     drawD: false,
     drawE: false,
     snackbar: false,
