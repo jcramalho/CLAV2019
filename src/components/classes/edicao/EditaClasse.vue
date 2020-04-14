@@ -105,7 +105,7 @@ export default {
     DecisaoSemSubPCA,
     DecisaoSemSubDF,
     Subclasses4Nivel,
-    InfoBox,
+    //InfoBox,
     PainelOperacoes
   },
 

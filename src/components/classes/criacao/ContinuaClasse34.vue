@@ -156,6 +156,11 @@ export default {
     PainelOperacoes
   },
 
+  created: async function() {
+    this.classe = this.obj.objeto;
+    this.pendenteID = this.obj._id;
+  },
+
   data: () => ({
     // Objeto que guarda uma classe
 
@@ -173,20 +178,6 @@ export default {
       4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
     },
 
-    formatoCodigo: {
-      1: "ddd (d - digito)",
-      2: "ddd.dd (d - digito)",
-      3: "ddd.dd.ddd (d - digito)",
-      4: "ddd.dd.ddd.dd (d - digito)"
-    },
-
-    classeNiveis: [
-      { label: "Nível 1", value: "1" },
-      { label: "Nível 2", value: "2" },
-      { label: "Nível 3", value: "3" }
-    ],
-
-    classesPai: [],
     entidadesD: [],
     entidadesP: [],
     listaProcessos: [],
@@ -196,7 +187,6 @@ export default {
     pcaSubFormasContagem: [],
 
     semaforos: {
-      paisReady: false,
       classesReady: false,
       entidadesReady: false,
       legislacaoReady: false,
@@ -212,11 +202,6 @@ export default {
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
     mensValCodigo: ""
   }),
-
-  created: async function() {
-    this.classe = this.obj.objeto;
-    this.pendenteID = this.obj._id;
-  },
 
   watch: {
     "classe.temSubclasses4Nivel": function() {

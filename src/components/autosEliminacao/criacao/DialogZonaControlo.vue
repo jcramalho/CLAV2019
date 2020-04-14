@@ -332,9 +332,6 @@ export default {
         var dataFim = this.dataFim;
         var ni = this.ni;
         var dono = this.dono;
-        var uiPapel;
-        var uiDigital;
-        var uiOutros;
 
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
@@ -445,9 +442,6 @@ export default {
         var dataFim = this.dataFim;
         var ni = this.ni;
         var dono = this.dono;
-        var uiPapel;
-        var uiDigital;
-        var uiOutros;
 
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;

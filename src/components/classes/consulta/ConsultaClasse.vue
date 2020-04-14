@@ -317,9 +317,9 @@
                             <v-col xs="10" sm="10">
                               <div class="info-content">
                                 {{
-                                  // texto normalizado:
-                                  // mylabels.textoCriterioJustificacaoGestionario
-                                  // texto proveniente da FRD:
+                                  /* texto normalizado:
+                                  mylabels.textoCriterioJustificacaoGestionario
+                                  texto proveniente da FRD: */
                                   c.conteudo
                                 }}
                               </div>
@@ -491,9 +491,9 @@
                             <v-col xs="10" sm="10">
                               <div class="info-content">
                                 {{
-                                  // texto normalizado:
-                                  // mylabels.textoCriterioDensidadeInfo
-                                  // texto proveniente da FRD:
+                                  /* texto normalizado:
+                                  mylabels.textoCriterioDensidadeInfo
+                                  texto proveniente da FRD: */
                                   c.conteudo
                                 }}
                                 <br />
@@ -525,9 +525,9 @@
                             <v-col xs="10" sm="10">
                               <div class="info-content">
                                 {{
-                                  // texto normalizado:
-                                  // mylabels.textoCriterioComplementaridade
-                                  // texto proveniente da FRD:
+                                  /* texto normalizado:
+                                  mylabels.textoCriterioComplementaridade
+                                  texto proveniente da FRD: */
                                   c.conteudo
                                 }}
                                 <br />

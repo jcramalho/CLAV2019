@@ -631,8 +631,8 @@ export default {
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
     ListaProcessosUltimos,
-    DesSelTip,
-    SelTip,
+    //DesSelTip,
+    //SelTip,
     ListaParteDescritiva
   },
 
