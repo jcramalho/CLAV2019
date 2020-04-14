@@ -76,9 +76,9 @@
       <!-- Pedido de "Ação" de entidade submetido com sucesso -->
       <v-dialog v-model="dialogEntidadeCriada" width="70%">
         <v-card>
-          <v-card-title
-            >Pedido de {{ acao }} de Entidade Submetido</v-card-title
-          >
+          <v-card-title>
+            Pedido n.º {{ codigoPedido }} de {{ acao }} de Entidade Submetido
+          </v-card-title>
           <v-card-text>
             <v-row v-if="e.designacao">
               <v-col cols="2">
@@ -212,6 +212,7 @@ export default {
       dialogEntidadeCriada: false,
       errosValidacao: false,
       pedidoEliminado: false,
+      codigoPedido: "",
       headers: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
@@ -278,7 +279,11 @@ export default {
       //   });
       //   this.numeroErros++;
       // } else
-      if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.e.dataCriacao)) {
+      if (
+        this.e.dataCriacao !== "" &&
+        this.e.dataCriacao !== null &&
+        !/[0-9]+-[0-9]+-[0-9]+/.test(this.e.dataCriacao)
+      ) {
         this.mensagensErro.push({
           sobre: "Data",
           mensagem: "A data está no formato errado.",
@@ -330,6 +335,8 @@ export default {
       // } else
       if (
         dados.dataCriacao !== undefined &&
+        dados.dataCriacao !== "" &&
+        dados.dataCriacao !== null &&
         !/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataCriacao)
       ) {
         numeroErros++;
@@ -417,7 +424,13 @@ export default {
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
 
-            await this.$request("post", "/pedidos", pedidoParams);
+            const codigoPedido = await this.$request(
+              "post",
+              "/pedidos",
+              pedidoParams
+            );
+
+            this.codigoPedido = codigoPedido.data;
 
             this.dialogEntidadeCriada = true;
           } else {
