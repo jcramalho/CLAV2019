@@ -1,14 +1,27 @@
 <template>
   <v-app v-if="authenticated">
-    <MainPageHeader />
+    <MainPageHeader 
+      @drawerDefinicoes="drawerDefinicoes()"
+      @drawerEstatisticas="drawerEstatisticas()"/>
 
-    <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="0">
+    <v-snackbar 
+      v-model="snackbar" 
+      :color="color" 
+      :top="true" 
+      :timeout="0">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
     <v-content>
-      <router-view />
+      <router-view/>
+
+      <Definicoes 
+        v-if="this.$store.state.name != ''"
+        :drawer="drawD"/> 
+      <Estatisticas 
+        v-if="this.$store.state.name != ''"
+        :drawer="drawE"/> 
     </v-content>
 
     <PageFooter />
@@ -16,14 +29,19 @@
 </template>
 
 <script>
+/* eslint-disable */
 import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
+import Definicoes from "@/components/principal/Definicoes.vue";
+import Estatisticas from "@/components/principal/Estatisticas.vue";
 
 export default {
   name: "App",
   components: {
     PageFooter,
-    MainPageHeader
+    MainPageHeader,
+    Definicoes,
+    Estatisticas
   },
   watch: {
     async $route(to, from) {
@@ -85,9 +103,22 @@ export default {
   methods: {
     fecharSnackbar() {
       this.snackbar = false;
+    },
+    sizeUpdate(size) {
+      this.size = size;
+    },
+    drawerDefinicoes() {
+      this.drawE = false;
+      this.drawD = !this.drawD;
+    },
+    drawerEstatisticas() {
+      this.drawD = false;
+      this.drawE = !this.drawE;
     }
   },
   data: () => ({
+    drawD: false,
+    drawE: false,
     snackbar: false,
     authenticated: false,
     color: "",

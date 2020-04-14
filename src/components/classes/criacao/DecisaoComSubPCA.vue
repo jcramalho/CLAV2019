@@ -227,8 +227,8 @@ export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
 
   components: {
-    ProcessosRelacionadosOps,
-    LegislacaoOps,
+    //ProcessosRelacionadosOps,
+    //LegislacaoOps,
     InfoBox
   },
 

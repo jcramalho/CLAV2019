@@ -56,7 +56,7 @@
 
 <script>
 import Bar from "./chart/Bar";
-import Doughnut from "./chart/Doughnut";
+import Doughnut from "./chart/APIUsersTypeDoughnut";
 import LineChart from "./chart/LineChart";
 
 export default {

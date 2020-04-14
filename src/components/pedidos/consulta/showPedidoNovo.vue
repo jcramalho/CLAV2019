@@ -208,7 +208,7 @@ export default {
         this.fecharDialog();
         this.$router.push("/pedidos");
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 

@@ -20,7 +20,8 @@
           hide-default-footer
         >
           <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
+            <!--<v-icon color="red" @click="">delete</v-icon>-->
+            <v-icon color="red">delete</v-icon>
           </template>
 
           <template v-slot:top>
@@ -66,7 +67,8 @@
           <template slot="append">
             <v-icon color="green" @click="verifica(info)">check</v-icon>
             <v-icon color="red" @click="anula(info)">clear</v-icon>
-            <v-icon @click="">create</v-icon>
+            <!--<v-icon @click="">create</v-icon>-->
+            <v-icon>create</v-icon>
           </template>
         </v-text-field>
       </v-col>
@@ -162,7 +164,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
@@ -196,7 +198,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 

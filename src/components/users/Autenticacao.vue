@@ -127,7 +127,7 @@
 <script>
 const lhost = require("@/config/global").host;
 const builder = require("xmlbuilder");
-const uuidv4 = require("uuid/v4");
+const { v4: uuidv4 } = require("uuid");
 const SignedXml = require("xml-crypto").SignedXml;
 const FileKeyInfo = require("xml-crypto").FileKeyInfo;
 

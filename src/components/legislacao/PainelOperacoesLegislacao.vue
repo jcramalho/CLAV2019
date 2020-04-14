@@ -59,7 +59,10 @@
       <!-- Pedido de criação de legislacao submetido com sucesso -->
       <v-dialog v-model="dialogLegislacaoCriada" width="70%">
         <v-card>
-          <v-card-title>Pedido de {{ acao }} de Diploma Submetido</v-card-title>
+          <v-card-title
+            >Pedido n.º {{ codigoPedido }} de {{ acao }} de Diploma
+            Submetido</v-card-title
+          >
           <v-card-text>
             <v-row v-if="l.tipo">
               <v-col cols="2">
@@ -231,6 +234,7 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar o Diploma!",
       dialogLegislacaoCriada: false,
+      codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
       headersEntidades: [
@@ -261,7 +265,7 @@ export default {
       // Data
       if (this.l.data === "" || this.l.data === null) {
         numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
+      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.l.data)) {
         numeroErros++;
       }
 
@@ -333,7 +337,13 @@ export default {
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
 
-            await this.$request("post", "/pedidos", pedidoParams);
+            const codigoPedido = await this.$request(
+              "post",
+              "/pedidos",
+              pedidoParams
+            );
+
+            this.codigoPedido = codigoPedido.data;
 
             this.dialogLegislacaoCriada = true;
           } else {

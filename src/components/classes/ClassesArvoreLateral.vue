@@ -63,7 +63,7 @@ export default {
       this.classesTree = await this.preparaTree(myClasses.data, myIndice.data);
       this.classesCarregadas = true;
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   },
 

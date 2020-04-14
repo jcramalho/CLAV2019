@@ -38,8 +38,8 @@ export default {
   }),
   methods: {
     analisaRefs: function(nota){
-      var notaHtml = nota.replace(this.codeFormats[3], '<a href=\"/classes/consultar/c$&\">$&</a>')
-      notaHtml = notaHtml.replace(this.codeFormats[2], '<a href=\"/classes/consultar/c$&\">$&</a>')
+      var notaHtml = nota.replace(this.codeFormats[3], '<a href="/classes/consultar/c$&">$&</a>')
+      notaHtml = notaHtml.replace(this.codeFormats[2], '<a href="/classes/consultar/c$&">$&</a>')
       return notaHtml
     }
   }
