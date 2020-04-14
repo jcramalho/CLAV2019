@@ -4,53 +4,26 @@
       <!-- HEADER -->
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Criar Classe</v-toolbar-title>
+          <v-toolbar-title class="card-heading">Nova Classe (continuação do trabalho guardado)</v-toolbar-title>
         </v-app-bar>
 
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nível</div>
+              <div class="info-label">Nível:</div>
             </v-col>
             <v-col>
-              <v-radio-group v-model="classe.nivel" row>
-                <v-radio
-                  v-for="(n, i) in classeNiveis"
-                  :key="i"
-                  :label="n.label"
-                  :value="n.value"
-                  color="indigo darken-3"
-                ></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
-
-          <!-- CLASSE PAI -->
-          <v-row v-if="classe.nivel > 1">
-            <v-col cols="2">
-              <div class="info-label">
-                Classe Pai
-                <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
+              <div class="info-content">
+                {{ classe.nivel }}
               </div>
-            </v-col>
-            <v-col>
-              <v-select
-                item-text="label"
-                item-value="value"
-                v-model="classe.pai.codigo"
-                :items="classesPai"
-                label="Selecione uma classe de nível superior"
-                solo
-                dense
-              />
             </v-col>
           </v-row>
 
           <!-- CÓDIGO DA NOVA CLASSE -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+          <v-row>
             <v-col cols="2">
               <div class="info-label">
-                Código
+                Código:
                 <InfoBox
                   header="Código da Classe"
                   :text="myhelp.Classe.Campos.Codigo"
@@ -58,21 +31,17 @@
               </div>
             </v-col>
             <v-col>
-              <v-text-field
-                v-model="classe.codigo"
-                label="Código"
-                solo
-                clearable
-              ></v-text-field>
-              <span style="color: red">{{ mensValCodigo }}</span>
+              <div class="info-content">
+                {{ classe.codigo }}
+              </div>
             </v-col>
           </v-row>
 
           <!-- TÍTULO -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+          <v-row>
             <v-col cols="2">
               <div class="info-label">
-                Título
+                Título:
                 <InfoBox
                   header="Título da Classe"
                   :text="myhelp.Classe.Campos.Titulo"
@@ -93,7 +62,7 @@
             <!-- DESCRITIVO DA CLASSE -->
             <BlocoDescritivo :c="classe" />
 
-            <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+            <!-- CONTEXTO DE AVALIAÇÃO DA CLASSE -->
             <BlocoContexto
               :c="classe"
               :semaforos="semaforos"
@@ -107,24 +76,14 @@
             <!-- DECISÕES DE AVALIAÇÂO -->
             <v-expansion-panel popout focusable v-if="classe.nivel == 3">
               <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Decisões de Avaliação
-                  <InfoBox
-                    header="Decisões de Avaliação"
-                    :text="myhelp.Classe.BlocoDecisoes"
-                    helpColor="white"
-                  />
-                </div>
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
+                <div>Decisões de Avaliação</div>
               </v-expansion-panel-header>
 
               <v-expansion-panel-content>
                 <!-- HÁ SUBDIVISÃO? -->
                 <Subdivisao3Nivel :c="classe" />
 
-                <hr style="border: 3px solid #1A237E; border-radius: 2px;" />
+                <hr style="border: 3px solid green; border-radius: 2px;" />
 
                 <!-- DECISÃO SEM SUBDIVISÃO -->
                 <DecisaoSemSubPCA
@@ -134,15 +93,14 @@
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
 
-                <hr
-                  style="border-top: 3px dashed #1A237E; border-radius: 2px;"
-                />
+                <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
                 <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
               </v-expansion-panel-content>
             </v-expansion-panel>
 
             <!-- DECISÃO COM SUBDIVISÃO -->
+            <!-- TODO: Corrigir este componente com o novo layout -->
             <Subclasses4Nivel
               :c="classe"
               :semaforos="semaforos"
@@ -163,7 +121,7 @@
         </v-snackbar>
       </v-card>
       <!-- TODO: Corrigir este componente -->
-      <PainelOperacoes :c="classe" :pendenteId="''" />
+      <PainelOperacoes :c="classe" :pendenteId="pendenteID" />
     </v-col>
   </v-row>
 </template>
@@ -185,6 +143,8 @@ import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel.vue"
 import PainelOperacoes from "@/components/classes/criacao/PainelOperacoes.vue";
 
 export default {
+  props: ["obj"],
+
   components: {
     BlocoDescritivo,
     BlocoContexto,
@@ -199,73 +159,8 @@ export default {
   data: () => ({
     // Objeto que guarda uma classe
 
-    classe: {
-      // Metainformação e campos da área de Descrição
-
-      nivel: 0,
-      pai: {
-        codigo: "",
-        titulo: ""
-      },
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      notasAp: [],
-      exemplosNotasAp: [],
-      notasEx: [],
-      termosInd: [],
-
-      temSubclasses4Nivel: false,
-      temSubclasses4NivelPCA: false,
-      temSubclasses4NivelDF: false,
-      subdivisao4Nivel01Sintetiza02: true,
-
-      // Campos da área do Contexto de Avaliação
-      // Tipo de processo
-
-      tipoProc: "PC",
-      procTrans: "N",
-
-      // Donos do processo: lista de entidades
-
-      donos: [],
-
-      // Participantes no processo: lista de entidades
-
-      participantes: [],
-
-      // Processos Relacionados
-
-      processosRelacionados: [],
-
-      // Legislação Associada
-
-      legislacao: [],
-
-      // Bloco de decisão de avaliação: PCA e DF
-
-      pca: {
-        valor: null,
-        notas: "",
-        formaContagem: "",
-        subFormaContagem: "",
-        justificacao: [] // j = [criterio]
-      }, // criterio = {tipo, notas, [proc], [leg]}
-
-      df: {
-        valor: "NE",
-        notas: "",
-        justificacao: []
-      },
-
-      // Bloco de subclasses de nível 4, caso haja desdobramento
-
-      subclasses: [],
-
-      user: {
-        token: ""
-      }
-    },
+    classe: {},
+    pendenteID: "",
 
     // Estruturas auxiliares
 
@@ -318,55 +213,12 @@ export default {
     mensValCodigo: ""
   }),
 
+  created: async function() {
+    this.classe = this.obj.objeto;
+    this.pendenteID = this.obj._id;
+  },
+
   watch: {
-    "classe.pai.codigo": function() {
-      // O código da classe depende da classe pai
-      this.classe.codigo = "";
-      if (this.classe.pai.codigo)
-        this.classe.codigo = this.classe.pai.codigo + ".";
-    },
-    "classe.nivel": function() {
-      // A classe pai depende do nível
-      this.classe.pai.codigo = "";
-
-      if (this.classe.nivel > 1) {
-        this.loadPais();
-      }
-      if (this.classe.nivel >= 3 && !this.semaforos.entidadesReady) {
-        this.loadEntidades();
-      }
-      if (this.classe.nivel >= 3 && !this.semaforos.classesReady) {
-        this.loadProcessos();
-      }
-      if (this.classe.nivel >= 3 && !this.semaforos.legislacaoReady) {
-        this.loadLegislacao();
-      }
-      if (this.classe.nivel >= 3) {
-        this.loadPCA();
-      }
-    },
-
-    "classe.codigo": async function() {
-      try {
-        this.mensValCodigo = "";
-        if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
-          this.mensValCodigo =
-            "Formato de código inválido! Deve ser: " +
-            this.formatoCodigo[this.classe.nivel];
-        } else if (!this.classe.codigo.includes(this.classe.pai.codigo)) {
-          this.mensValCodigo =
-            "Não pode alterar o código do pai selecionado em cima...";
-        } else {
-          var existe = await this.verificaExistenciaCodigo(this.classe.codigo);
-          if (existe) {
-            this.mensValCodigo = "Código já existente na base de dados...";
-          }
-        }
-      } catch (erro) {
-        return erro;
-      }
-    },
-
     "classe.temSubclasses4Nivel": function() {
       // Se passou a verdade vamos criar um par de subclasses
       // Informação base:
@@ -400,13 +252,6 @@ export default {
             valor: "NE",
             notas: "",
             justificacao: []
-          },
-
-          // Contexto para controlar a interface de cada subclasse
-          semaforos: {
-            critLegalAdicionadoPCA: false,
-            critLegalAdicionadoDF: false,
-            critGestionarioAdicionado: false
           }
         };
         var novaSubclasse2 = {
@@ -438,13 +283,6 @@ export default {
             valor: "NE",
             notas: "",
             justificacao: []
-          },
-
-          // Contexto para controlar a interface de cada subclasse
-          semaforos: {
-            critLegalAdicionadoPCA: false,
-            critLegalAdicionadoDF: false,
-            critGestionarioAdicionado: false
           }
         };
 
@@ -474,35 +312,14 @@ export default {
       if (this.classe.temSubclasses4NivelDF) this.calcSinteseDF4Nivel();
     },
     "classe.subdivisao4Nivel01Sintetiza02": function() {
-      this.remSintese4Nivel(this.classe.subclasses);
-      this.calcSinteseDF4Nivel();
+      if (this.classe.temSubclasses4NivelDF) {
+        this.remSintese4Nivel(this.classe.subclasses);
+        this.calcSinteseDF4Nivel();
+      }
     }
   },
 
   methods: {
-    // Carrega os potenciais pais da BD, quando alguém muda o nível para >1....................
-
-    loadPais: async function() {
-      try {
-        var response = await this.$request(
-          "get",
-          "/classes?nivel=" + (this.classe.nivel - 1)
-        );
-        this.classesPai = response.data
-          .map(function(item) {
-            return {
-              label: item.codigo + " - " + item.titulo,
-              value: item.id.split("#c")[1]
-            };
-          })
-          .sort(function(a, b) {
-            return a.label.localeCompare(b.label);
-          });
-      } catch (erro) {
-        return erro;
-      }
-    },
-
     // Carrega as entidades da BD....................
 
     loadEntidades: async function() {
@@ -592,7 +409,7 @@ export default {
         return error;
       }
     },
-
+ 
     // Carrega a informação contextual relativa ao PCA: formas de contagem, etc....................
 
     loadPCA: function() {
@@ -890,21 +707,12 @@ export default {
 
     remSintese4Nivel: function(subclasses) {
       var index = -1;
-      var cindex = -1;
       for (var i = 0; i < subclasses.length; i++) {
         if (subclasses[i].processosRelacionados.length > 0) {
-          // Remover as relações das subclasses
           index = subclasses[i].processosRelacionados.findIndex(
             p => p.relacao == "eSintetizadoPor" || p.relacao == "eSinteseDe"
           );
           if (index != -1) subclasses[i].processosRelacionados.splice(index, 1);
-        }
-        // Remover o critério de densidade das subclasses
-        if (subclasses[i].df.justificacao.length > 0) {
-          cindex = subclasses[i].df.justificacao.findIndex(
-            c => c.tipo == "CriterioJustificacaoDensidadeInfo"
-          );
-          if (cindex != -1) subclasses[i].df.justificacao.splice(cindex, 1);
         }
       }
     }
@@ -913,18 +721,6 @@ export default {
 </script>
 
 <style>
-.separador {
-  color: white;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1a237e;
-  font-size: 14pt;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
 .info-label {
   color: #283593; /* indigo darken-3 */
   padding: 5px;
