@@ -4,39 +4,43 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading">Nova Tipologia</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Nova tipologia de entidade</v-toolbar-title
+          >
         </v-app-bar>
 
         <!-- Content -->
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Designação:</div>
+              <div class="info-label">Nome da Tipologia</div>
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
                 clearable
                 color="indigo"
                 single-line
                 v-model="tipologia.designacao"
                 maxlength="50"
+                label="Nome da Tipologia"
               ></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla:</div>
+              <div class="info-label">Sigla</div>
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
                 clearable
                 color="indigo"
                 single-line
                 v-model="tipologia.sigla"
                 maxlength="10"
+                label="Sigla"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -44,9 +48,13 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Entidades</v-expansion-panel-header
-              >
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>Entidades</div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
                   :entidades="entSel"
@@ -92,8 +100,9 @@ export default {
     tipologia: {
       designacao: "",
       sigla: "",
+      estado: "Ativa",
       entidadesSel: [],
-      codigo: ""
+      codigo: "",
     },
 
     // Para o seletor
@@ -102,12 +111,13 @@ export default {
     entidadesReady: false,
 
     snackbar: false,
-    text: ""
+    text: "",
   }),
+
   components: {
     DesSelEnt,
     SelEnt,
-    PainelOpsTip
+    PainelOpsTip,
   },
 
   methods: {
@@ -119,7 +129,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
         this.entidadesReady = true;
@@ -131,7 +141,7 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      let index = this.entSel.findIndex(e => e.id === entidade.id);
+      let index = this.entSel.findIndex((e) => e.id === entidade.id);
       this.entSel.splice(index, 1);
       this.tipologia.entidadesSel = this.entSel;
     },
@@ -140,23 +150,35 @@ export default {
       this.entSel.push(entidade);
       this.tipologia.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      let index = this.entidades.findIndex(e => e.id === entidade.id);
+      let index = this.entidades.findIndex((e) => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
   created: function() {
     this.loadEntidades();
-  }
+  },
 };
 </script>
 
 <style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

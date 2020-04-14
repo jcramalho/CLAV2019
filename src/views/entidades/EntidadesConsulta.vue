@@ -62,6 +62,18 @@ export default {
             text: ent.internacional
           }
         };
+        if (ent.dataCriacao) {
+          myEntidade["dataCriacao"] = {
+            campo: "Data de criação",
+            text: ent.dataCriacao
+          };
+        }
+        if (ent.dataExtincao) {
+          myEntidade["dataExtincao"] = {
+            campo: "Data de extinção",
+            text: ent.dataExtincao
+          };
+        }
         return myEntidade;
       } catch (e) {
         return {};

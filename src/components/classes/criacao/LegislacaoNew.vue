@@ -1,7 +1,7 @@
 <template>
   <v-row class="ma-2 indigo lighten-5">
     <v-col cols="2">
-      <div class="info-label">Legislação nova:</div>
+      <div class="info-label">Legislação nova</div>
       <v-btn small dark rounded color="indigo darken-2" @click="newLegislacao">
         Adicionar
         <v-icon small dark right>add_circle_outline</v-icon>
@@ -140,6 +140,14 @@ export default {
       }
     },
 
+    validaSumario: function(s) {
+      if (s != "") return true;
+      else {
+        this.mensagensErro.push("O sumário não pode ficar vazio!");
+        return false;
+      }
+    },
+
     validaData: function(d) {
       if (d != "") return true;
       else {
@@ -154,6 +162,7 @@ export default {
         this.validaNumero(this.numero) &&
         (await this.validaDups(this.tipo, this.numero)) &&
         this.validaDupsLocais(this.tipo, this.numero) &&
+        this.validaSumario(this.sumario) &&
         this.validaData(this.data)
       ) {
         var legislacao = {

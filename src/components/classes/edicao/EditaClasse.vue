@@ -165,7 +165,7 @@ export default {
 
     loginErrorSnackbar: false,
 
-    loginErrorMessage: "Precisa de fazer login para criar a Classe!",
+    loginErrorMessage: "Precisa de fazer login para alterar a Classe!",
     mensValCodigo: ""
   }),
 
@@ -188,7 +188,7 @@ export default {
 
                 await this.$request("get", help).then(response => {
                   this.classe.df.justificacao[i].processos[j].nome =
-                    response.data[0].titulo;
+                    response.data.titulo;
                 });
               }
             }
@@ -229,7 +229,7 @@ export default {
                       "/meta"
                   ).then(response => {
                     this.classe.pca.justificacao[h].processos[z].nome =
-                      response.data[0].titulo;
+                      response.data.titulo;
                   });
                 }
               }
@@ -476,7 +476,7 @@ export default {
 
     loadLegislacao: async function() {
       try {
-        var response = await this.$request("get", "/legislacao?estado=A");
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {

@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="indigo darken-3 white--text" dark>
+    <v-expansion-panel-header class="indigo darken-3 white--text">
       <div>
         <b>Pedidos Novos</b>
         <sup class="ml-1">
@@ -11,6 +11,10 @@
           </v-badge>
         </sup>
       </div>
+
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
     </v-expansion-panel-header>
 
     <v-expansion-panel-content>
@@ -44,7 +48,11 @@
             <td class="subheading">
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
-            <td class="subheading">{{ props.item.entidade }}</td>
+            <td class="subheading">
+              <span v-if="props.item.entidade">{{
+                props.item.entidade.split("_")[1]
+              }}</span>
+            </td>
             <td class="subheading">{{ props.item.criadoPor }}</td>
             <td class="subheading">{{ converteData(props.item.data) }}</td>
             <td>
@@ -103,23 +111,23 @@ export default {
           text: "Responsável",
           value: "responsavel",
           sortable: true,
-          class: "title"
+          class: "title",
         },
         {
           text: "Data",
           align: "left",
           sortable: true,
           value: "data",
-          class: "title"
+          class: "title",
         },
-        { text: "Tarefa", sortable: false, class: "title" }
+        { text: "Tarefa", sortable: false, class: "title" },
       ],
 
       footer_props: {
         "items-per-page-text": "Pedidos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos"
-      }
+        "items-per-page-all-text": "Todos",
+      },
     };
   },
 
@@ -141,17 +149,13 @@ export default {
       return `${dia}-${mes}-${ano}`;
     },
 
-    distribuiPedido: function(pedido) {
+    distribuiPedido: function (pedido) {
       this.$emit("distribuir", pedido);
     },
 
-    showPedido: function(pedido) {
-      this.$router.push("/pedidos/" + pedido.codigo);
+    showPedido: function (pedido) {
+      this.$router.push("/pedidos/novos/" + pedido.codigo);
     },
-
-    analisaPedido: function(pedido) {
-      this.$emit("analisar", pedido);
-    }
-  }
+  },
 };
 </script>

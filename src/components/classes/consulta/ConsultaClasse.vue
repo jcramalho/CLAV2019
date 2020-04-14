@@ -8,11 +8,21 @@
       <v-col xs="12" sm="9">
         <!-- HEADER -->
         <v-card v-if="classeLoaded">
-          <v-app-bar color="indigo darken-2" dark>
+          <v-app-bar color="indigo darken-4" dark>
             <v-toolbar-title>
               {{ this.classe.codigo }}:
               {{ this.classe.titulo }}
             </v-toolbar-title>
+            <v-spacer />
+            <v-btn color="indigo accent-4" @click="goToSearch()">
+              Voltar para
+              <span v-if="this.savedSearch">
+                os resultados
+              </span>
+              <span v-else>
+                as classes
+              </span>
+            </v-btn>
           </v-app-bar>
 
           <v-card-text>
@@ -25,21 +35,14 @@
               <v-expansion-panel popout>
                 <!-- DESCRITIVO DA CLASSE -->
                 <v-expansion-panel-header>
-                  <v-toolbar
-                    color="indigo darken-1 body-2 font-weight-bold"
-                    dark
-                    dense
-                  >
-                    <v-toolbar-title>
-                      Descritivo da Classe
-                      <InfoBox
+                  <div class="separador">
+                    Descritivo da Classe
+                    <InfoBox
                         header="Descritivo da Classe"
                         :text="myhelp.Classe.BlocoDescritivo"
                         helpColor="white"
-                        dialogColor="#E0F2F1"
                       />
-                    </v-toolbar-title>
-                  </v-toolbar>
+                  </div>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-row>
@@ -72,7 +75,6 @@
                           header="Descrição"
                           :text="myhelp.Classe.Campos.Descricao"
                           helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -106,21 +108,14 @@
               <v-expansion-panel popout v-if="classe.nivel == 3">
                 <!-- CONTEXTO DA CLASSE -->
                 <v-expansion-panel-header>
-                  <v-toolbar
-                    color="indigo darken-1 body-2 font-weight-bold"
-                    dark
-                    dense
-                  >
-                    <v-toolbar-title>
-                      Contexto de Avaliação
-                      <InfoBox
+                  <div class="separador">
+                    Contexto de Avaliação
+                    <InfoBox
                         header="Contexto de Avaliação"
                         :text="myhelp.Classe.BlocoContexto"
                         helpColor="white"
-                        dialogColor="#E0F2F1"
                       />
-                    </v-toolbar-title>
-                  </v-toolbar>
+                  </div>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-row>
@@ -132,7 +127,6 @@
                           header="Tipo de Processo"
                           :text="myhelp.Classe.Campos.TipoProcesso"
                           helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -150,7 +144,6 @@
                           header="Processo Transversal"
                           :text="myhelp.Classe.Campos.ProcessoTransversal"
                           helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -189,29 +182,23 @@
                 "
               >
                 <v-expansion-panel-header>
-                  <v-toolbar
-                    color="indigo darken-1 body-2 font-weight-bold"
-                    dark
-                    dense
-                  >
-                    <v-toolbar-title>
-                      Decisões de Avaliação
-                      <InfoBox
+                  <div class="separador">
+                    Decisões de Avaliação
+                    <InfoBox
                         header="Decisões de Avaliação"
                         :text="myhelp.Classe.BlocoDecisoes"
                         helpColor="white"
-                        dialogColor="#E0F2F1"
                       />
-                    </v-toolbar-title>
-                  </v-toolbar>
+                  </div>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-row>
                     <v-col xs="12" sm="12">
                       <v-toolbar
-                        color="indigo font-weight-medium"
+                        color="indigo darken-4"
+                        class="caption font-weight-regular"
                         dark
-                        height="30"
+                        height="25"
                       >
                         <v-toolbar-title>
                           Prazo de Conservação Administrativa
@@ -229,7 +216,6 @@
                           header="Prazo"
                           :text="myhelp.Classe.Campos.Prazo"
                           helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -252,7 +238,14 @@
                   <v-row v-if="classe.pca.notas != ''">
                     <!-- NOTAS -->
                     <v-col xs="2" sm="2">
-                      <div class="info-label">Notas</div>
+                      <div class="info-label">
+                        Notas
+                        <InfoBox
+                          header="Notas ao PCA"
+                          :text="myhelp.Classe.Campos.Notas"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
                     </v-col>
                     <v-col xs="10" sm="10">
                       <div class="info-content">{{ classe.pca.notas }}</div>
@@ -268,7 +261,6 @@
                           header="Forma de Contagem"
                           :text="myhelp.Classe.Campos.FormaContagem"
                           helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -287,8 +279,6 @@
                         <InfoBox
                           header="Subforma de Contagem"
                           :text="myhelp.Classe.Campos.SubformaContagem"
-                          helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -308,7 +298,6 @@
                           header="Justificação do PCA"
                           :text="myhelp.Classe.Campos.JustificacaoPCA"
                           helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -396,9 +385,10 @@
                   <v-row>
                     <v-col xs="12" sm="12">
                       <v-toolbar
-                        color="indigo font-weight-medium"
+                        color="indigo darken-4"
+                        class="caption font-weight-regular"
                         dark
-                        height="30"
+                        height="25"
                       >
                         <v-toolbar-title>Destino Final</v-toolbar-title>
                       </v-toolbar>
@@ -414,7 +404,6 @@
                           header="Destino Final"
                           :text="myhelp.Classe.Campos.DF"
                           helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -435,7 +424,14 @@
                   <v-row v-if="classe.df.nota">
                     <!-- NOTA ao DF -->
                     <v-col xs="2" sm="2">
-                      <div class="info-label">Nota</div>
+                      <div class="info-label">
+                        Nota
+                        <InfoBox
+                          header="Nota ao DF"
+                          :text="myhelp.Classe.Campos.NotasDF"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
                     </v-col>
                     <v-col xs="10" sm="10">
                       <div class="info-content">{{ classe.df.nota }}</div>
@@ -451,7 +447,6 @@
                           header="Justificação do DF"
                           :text="myhelp.Classe.Campos.JustificacaoDF"
                           helpColor="indigo darken-4"
-                          dialogColor="#E0F2F1"
                         />
                       </div>
                     </v-col>
@@ -579,7 +574,7 @@ import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue"
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
-  props: ["idc"],
+  props: ["idc", "savedSearch"],
   data: () => ({
     classe: {},
     classeLoaded: false,
@@ -609,6 +604,12 @@ export default {
   methods: {
     go: function(idClasse) {
       this.$router.push("/classes/consultar/c" + idClasse);
+    },
+    goToSearch() {
+      this.$router.push({
+        name: "classes",
+        params: { savedSearch: this.savedSearch }
+      });
     }
   },
   mounted: function() {
@@ -630,7 +631,7 @@ export default {
 
                 await this.$request("get", help).then(response => {
                   this.classe.df.justificacao[i].processos[j].nome =
-                    response.data[0].titulo;
+                    response.data.titulo;
                 });
               }
             }
@@ -671,7 +672,7 @@ export default {
                       "/meta"
                   ).then(response => {
                     this.classe.pca.justificacao[h].processos[z].nome =
-                      response.data[0].titulo;
+                      response.data.titulo;
                   });
                 }
               }
@@ -709,6 +710,18 @@ export default {
 <style>
 .myPanelHeader {
   color: #304ffe;
+}
+
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-label {

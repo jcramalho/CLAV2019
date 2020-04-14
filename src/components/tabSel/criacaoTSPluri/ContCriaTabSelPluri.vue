@@ -4,7 +4,7 @@
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
-            >Nova Tabela de Seleção</v-toolbar-title
+            >Nova Tabela de Seleção Pluriorganizacional</v-toolbar-title
           >
         </v-app-bar>
         <v-card-text class="panel-body">
@@ -13,33 +13,40 @@
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
               <v-stepper-step :complete="stepNo > 1" step="1">
                 Entidades abrangidas pela TS
+                <span v-if="stepNo > 1">
+                  <v-chip
+                    v-for="(e,i) in entSel" :key="i"
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ e.searchField }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="1">
-                <v-expansion-panels>
-                  <v-expansion-panel>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      Selecione as entidades abrangidas pela TS
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <v-card style="padding-top:30px;">
-                        <v-card-text>
-                          <DesSelEnt
-                            :entidades="entSel"
-                            @unselectEntidade="unselectEntidade($event)"
-                          />
+                
+                <v-col v-if="entidadesReady">
+                  <v-autocomplete
+                    v-model="entSel"
+                    :items="entidades"
+                    item-text="searchField"
+                    placeholder="Selecione as entidades abrangidas pela TS"
+                    multiple
+                    chips
+                    deletable-chips
+                    return-object
+                  >
+                  </v-autocomplete>
+                </v-col>
+                <v-col v-else>
+                  <v-alert dense type="info">
+                    Ainda não foi possível carregar as entidades...
+                  </v-alert>
+                </v-col>
 
-                          <hr style="border-top: 1px dashed #dee2f8;" />
-
-                          <SelEnt
-                            :entidadesReady="entidadesReady"
-                            :entidades="entidades"
-                            @selectEntidade="selectEntidade($event)"
-                          />
-                        </v-card-text>
-                      </v-card>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
                 <hr style="border-top: 0px" />
                 <v-btn
                   color="primary"
@@ -56,20 +63,23 @@
                 >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 2" step="2"
-                >Designação
-                <small>Designação da nova tabela de seleção</small>
+              <v-stepper-step :complete="stepNo > 2" step="2">
+                Designação da Tabela de Seleção
+                <span v-if="stepNo > 2">
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    {{ tabelaSelecao.designacao }}
+                  </v-chip>
+                </span>
               </v-stepper-step>
               <v-stepper-content step="2">
                 <v-flex xs12 sm6 md10>
                   <v-text-field
-                    v-if="!tabelaSelecao.designacao"
                     placeholder="Designação da Nova Tabela de Seleção"
-                    v-model="tabelaSelecao.designacao"
-                  ></v-text-field>
-                  <v-text-field
-                    v-else
-                    :placeholder="tabelaSelecao.designacao"
                     v-model="tabelaSelecao.designacao"
                   ></v-text-field>
                 </v-flex>
@@ -536,9 +546,6 @@
 </template>
 
 <script>
-import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
-import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
-
 import ContListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ContListaProcessosComuns.vue";
 import ContListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ContListaProcessosEspecificos.vue";
 import ContListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ContListaProcessosEspRestantes.vue";
@@ -548,8 +555,6 @@ import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcS
 export default {
   props: ["obj"],
   components: {
-    DesSelEnt,
-    SelEnt,
     ContListaProcessosComuns,
     ContListaProcessosEspecificos,
     ContListaProcessosEspRestantes,
@@ -648,45 +653,25 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
+            searchField: item.sigla + " - " + item.designacao
           };
         });
 
-        var index;
-        // Retira da lista de todas as entidades as que já pertencem a esta entidade
-        for (var i = 0; i < this.tabelaSelecao.entidades.length; i++) {
-          index = this.entidades.findIndex(
-            e => e.id === this.tabelaSelecao.entidades[i].id
+        if(this.tabelaSelecao.entidades.length > 0)
+          this.entSel = this.tabelaSelecao.entidades;
+        else{
+          var index = this.entidades.findIndex(
+            e => e.id === this.tabelaSelecao.idEntidade
           );
-          this.entidades.splice(index, 1);
-        }
 
-        this.entSel = this.tabelaSelecao.entidades;
-
-        for (i = 0; i < this.tabelaSelecao.entidades.length; i++) {
-          if (
-            this.tabelaSelecao.entidades[i].id === this.tabelaSelecao.idEntidade
-          ) {
+          if(index != -1)
             this.entSel.push({
-              sigla: this.tabelaSelecao.entidades[i].sigla,
-              designacao: this.tabelaSelecao.entidades[i].designacao,
-              id: this.tabelaSelecao.entidades[i].id
+                sigla: this.entidades[index].sigla,
+                designacao: this.entidades[index].designacao,
+                id: this.entidades[index].id,
+                searchField: this.entidades[index].sigla + " - " + this.entidades[index].designacao
             });
-            break;
-          }
-        }
-
-        index = this.entidades.findIndex(
-          e => e.id === this.tabelaSelecao.idEntidade
-        );
-        if (index != -1) {
-          this.entidades.splice(index, 1);
-        }
-        var index2 = this.entSel.findIndex(
-          e => e.id === this.tabelaSelecao.idEntidade
-        );
-        if (index2 != -1) {
-          this.entSel.splice(index2, 1);
         }
 
         this.entidadesReady = true;
@@ -694,18 +679,7 @@ export default {
         return err;
       }
     },
-    // Retira da lista as entidadesselecionadas
-    unselectEntidade: function(entidade) {
-      this.entidades.push(entidade);
-      var index = this.entSel.findIndex(e => e.id === entidade.id);
-      this.entSel.splice(index, 1);
-    },
-    // Coloca na lista as entidades selecionadas
-    selectEntidade: function(entidade) {
-      this.entSel.push(entidade);
-      var index = this.entidades.findIndex(e => e.id === entidade.id);
-      this.entidades.splice(index, 1);
-    },
+    
     // Carrega todos os processos comuns
     loadProcComuns: async function() {
       try {
@@ -1280,12 +1254,13 @@ export default {
           tipoObjeto: "TS Pluriorganizacional web",
           novoObjeto: {
             ts: {
+              entidades: this.entSel,
               processos: tsObj,
               designacao: this.tabelaSelecao.designacao
             }
           },
           user: { email: userBD.data.email },
-          entidade: userBD.data.entidade.split("_")[1],
+          entidade: userBD.data.entidade,
           token: this.$store.state.token
         };
 
@@ -1341,7 +1316,7 @@ export default {
         };
 
         var response = await this.$request(
-          "post",
+          "put",
           "/pendentes",
           pendenteParams
         );

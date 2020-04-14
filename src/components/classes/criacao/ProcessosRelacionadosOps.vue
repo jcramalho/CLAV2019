@@ -1,7 +1,10 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Processos Relacionados:</div>
+      <div class="info-label">
+        Processos Relacionados
+        <InfoBox header="Processos Relacionados" :text="myhelp.Classe.Campos.ProcessosRelacionados" />
+      </div>
     </v-col>
     <v-col v-if="processos.length > 0">
       <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
@@ -33,13 +36,21 @@
 
 <script>
 const labels = require("@/config/labels").classeCriacaoProcessosRelacionadosOps;
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["processos"],
 
+  components: {
+    InfoBox
+  },
+
   data: function() {
     return {
       mylabels: labels,
+      myhelp: help,
       headers: [
         { text: "Relação", align: "left", sortable: true, value: "idRel" },
         { text: "Processo", align: "left", sortable: false, value: "codigo" },

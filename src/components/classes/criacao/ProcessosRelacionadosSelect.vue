@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Selecione o(s) processo(s) relacionado(s):</div>
+      <div class="info-label">Selecione o(s) processo(s) relacionado(s)</div>
     </v-col>
     <v-col v-if="procReady">
       <v-card>
@@ -17,6 +17,7 @@
         <v-data-table
           :headers="processosRelacionadosHeaders"
           :items="processos"
+          :items-per-page="5"
           :search="searchProcessos"
           item-key="id"
           class="elevation-1"

@@ -8,19 +8,54 @@
             Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
           </v-card-title>
-          <v-card-text>
+          <!-- Para a Criação de novos dados -->
+          <v-card-text v-if="pedido.objeto.acao === 'Criação'">
             <AnalisaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
             />
+
             <AnalisaLeg
-              v-if="pedido.objeto.tipo === 'Legislação'"
+              v-else-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
             />
+
             <AnalisaTipologiaEntidade
-              v-if="pedido.objeto.tipo === 'Tipologia'"
+              v-else-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
             />
+            
+            <AnalisaAE
+              v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'"
+              :p="pedido"
+            />
+
+            <AnalisaDefault v-else :p="pedido"/>
+          </v-card-text>
+
+          <!-- Para a Alteração de dados -->
+          <v-card-text
+            v-else-if="
+              pedido.objeto.acao === 'Alteração' ||
+                pedido.objeto.acao === 'Extinção'
+            "
+          >
+            <AnalisaEditaEntidade
+              v-if="pedido.objeto.tipo === 'Entidade'"
+              :p="pedido"
+            />
+
+            <AnalisaEditaLegislacao
+              v-else-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
+
+            <AnalisaEditaTipologiaEntidade
+              v-else-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
+
+            <AnalisaDefault v-else :p="pedido" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -45,6 +80,13 @@
 import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
+import AnalisaAE from "@/components/pedidos/analise/AnalisaAE";
+
+import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
+import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLegislacao";
+import AnalisaEditaTipologiaEntidade from "@/components/pedidos/analise/AnalisaEditaTipologiaEntidade";
+
+import AnalisaDefault from "@/components/pedidos/analise/AnalisaDefault";
 
 import Loading from "@/components/generic/Loading";
 
@@ -55,7 +97,12 @@ export default {
     AnalisaEntidade,
     AnalisaLeg,
     Loading,
-    AnalisaTipologiaEntidade
+    AnalisaTipologiaEntidade,
+    AnalisaEditaEntidade,
+    AnalisaEditaLegislacao,
+    AnalisaEditaTipologiaEntidade,
+    AnalisaAE,
+    AnalisaDefault,
   },
 
   data() {
@@ -63,7 +110,7 @@ export default {
       loading: true,
       snackbar: {
         visivel: false,
-        texto: "Test"
+        texto: "Test",
       },
       pedido: {},
       pedidoLoaded: false,
@@ -71,9 +118,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" }
+        { text: "Despacho", value: "despacho" },
       ],
-      etapas: []
+      etapas: [],
     };
   },
 
@@ -87,6 +134,6 @@ export default {
       this.snackbar.visivel = true;
       this.snackbar.texto = "Erro ao carregar dados da base de dados";
     }
-  }
+  },
 };
 </script>

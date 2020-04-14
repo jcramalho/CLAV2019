@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <ValidarTipologiaInfoBox :t="t" :acao="acao" />
+      <ValidarTipologiaInfoBox :t="t" :original="original" :acao="acao" />
 
       <v-col>
         <v-btn
@@ -39,29 +39,6 @@
         >
       </v-col>
 
-      <!-- Trabalho pendente guardado com sucesso -->
-      <v-dialog v-model="pendenteGuardado" width="60%">
-        <v-card>
-          <v-card-title>Trabalho pendente guardado</v-card-title>
-          <v-card-text>
-            <p>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
-            </p>
-            <p>{{ pendenteGuardadoInfo }}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              color="indigo darken-1"
-              dark
-              @click="criacaoPendenteTerminada"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
       <!-- Erros de Validação -->
       <v-dialog v-model="errosValidacao" width="30%">
         <v-card>
@@ -90,7 +67,7 @@
           <v-card-text>
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Designação:</div>
+                <div class="info-label">Designação</div>
               </v-col>
 
               <v-col>
@@ -100,7 +77,7 @@
 
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Sigla:</div>
+                <div class="info-label">Sigla</div>
               </v-col>
 
               <v-col>
@@ -138,12 +115,11 @@
       <!-- Cancelamento da criação de uma tipologia: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
-          <v-card-title
-            >Cancelamento e eliminação do pedido de criação da
-            tipologia</v-card-title
-          >
+          <v-card-title>
+            Cancelamento e eliminação do pedido
+          </v-card-title>
           <v-card-text>
-            <p>Selecionou o cancelamento da criação da tipologia.</p>
+            <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
             <p>
               Confirme a decisão para ser reencaminhado para a página principal.
@@ -183,34 +159,33 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 
 export default {
-  props: ["t", "acao"],
+  props: ["t", "acao", "original"],
 
   components: {
-    ValidarTipologiaInfoBox
+    ValidarTipologiaInfoBox,
   },
 
   data() {
     return {
-      pendenteGuardado: false,
-      pendenteGuardadoInfo: "",
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
       dialogTipologiaCriada: false,
-      numeroErros: 0,
       errosValidacao: false,
       pedidoEliminado: false,
       headers: [
         { text: "Designação", value: "designacao", class: "subtitle-1" },
-        { text: "Sigla", value: "sigla", class: "subtitle-1" }
-      ]
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+      ],
     };
   },
 
   methods: {
     async validarTipologiaCriacao() {
+      let numeroErros = 0;
+
       // Designação
-      if (this.t.designacao == "" || this.t.designacao == null) {
-        this.numeroErros++;
+      if (this.t.designacao === "" || this.t.designacao === null) {
+        numeroErros++;
       } else {
         try {
           let existeDesignacao = await this.$request(
@@ -219,16 +194,16 @@ export default {
               encodeURIComponent(this.t.designacao)
           );
           if (existeDesignacao.data) {
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
       // Sigla
-      if (this.t.sigla == "" || this.t.sigla == null) {
-        this.numeroErros++;
+      if (this.t.sigla === "" || this.t.sigla === null) {
+        numeroErros++;
       } else {
         try {
           let existeSigla = await this.$request(
@@ -236,28 +211,14 @@ export default {
             "/tipologias/sigla?valor=" + encodeURIComponent(this.t.sigla)
           );
           if (existeSigla.data) {
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
         }
       }
 
-      return this.numeroErros;
-    },
-
-    validarTipologiaAlteracao() {
-      // Designação
-      if (this.t.designacao == "" || this.t.designacao == null) {
-        this.numeroErros++;
-      }
-
-      // Sigla
-      if (this.t.sigla == "" || this.t.sigla == null) {
-        this.numeroErros++;
-      }
-
-      return this.numeroErros;
+      return numeroErros;
     },
 
     // Lança o pedido de criação da tipologia no worflow
@@ -267,6 +228,7 @@ export default {
           this.loginErrorSnackbar = true;
         } else {
           let erros = 0;
+          let dataObj = JSON.parse(JSON.stringify(this.t));
 
           switch (this.acao) {
             case "Criação":
@@ -274,7 +236,14 @@ export default {
               break;
 
             case "Alteração":
-              erros = this.validarTipologiaAlteracao();
+              for (const key in dataObj) {
+                if (
+                  typeof dataObj[key] === "string" &&
+                  dataObj[key] === this.original[key]
+                ) {
+                  if (key !== "sigla") delete dataObj[key];
+                }
+              }
               break;
 
             default:
@@ -287,8 +256,7 @@ export default {
               "/users/" + this.$store.state.token + "/token"
             );
 
-            let dataObj = this.t;
-            dataObj.codigo = "tip_" + this.t.sigla;
+            // dataObj.codigo = "tip_" + this.t.sigla;
 
             let pedidoParams = {
               tipoPedido: this.acao,
@@ -296,14 +264,14 @@ export default {
               novoObjeto: dataObj,
               user: { email: userBD.data.email },
               entidade: userBD.data.entidade,
-              token: this.$store.state.token
+              token: this.$store.state.token,
             };
 
-            let response = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+            if (this.original !== undefined)
+              pedidoParams.objetoOriginal = this.original;
+
+            await this.$request("post", "/pedidos", pedidoParams);
+
             this.dialogTipologiaCriada = true;
           } else {
             this.errosValidacao = true;
@@ -329,8 +297,8 @@ export default {
 
     cancelarCriacaoTipologia: function() {
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
 

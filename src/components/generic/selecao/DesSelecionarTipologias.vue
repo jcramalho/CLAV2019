@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <v-subheader class="info-label">Tipologias selecionadas:</v-subheader>
+      <v-subheader class="info-label">Tipologias selecionadas</v-subheader>
     </v-col>
     <v-col v-if="tipologias.length > 0">
       <v-data-table :headers="headers" :items="tipologias" :items-per-page="100" class="elevation-1" hide-default-footer>

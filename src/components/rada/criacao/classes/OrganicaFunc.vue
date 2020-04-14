@@ -56,7 +56,6 @@
           </v-row>
           <h5>Hierarquia</h5>
           <v-divider></v-divider>
-
           <v-row>
             <v-col md="3" sm="3">
               <div class="info-label">Classe Pai</div>
@@ -64,26 +63,20 @@
             <v-col sm="9" md="9">
               <v-autocomplete
                 v-model="newOrgFunc.eFilhoDe"
-                :items="classesFiltradas"
+                :items="classesHierarquia"
                 item-value="codigo"
-                dense
+                item-text="searchField"
                 solo
                 clearable
                 placeholder="Classe Pai"
                 chips
               >
-                <template v-slot:item="{ item }">{{item.codigo}} - {{ item.titulo }}</template>
-                <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
-                </template>
                 <template v-slot:no-data>
-                  <v-container fluid>
-                    <v-alert
-                      :value="true"
-                      color="red lighten-3"
-                      icon="warning"
-                    >Sem classes mais Área Orgânico-Funcional!</v-alert>
-                  </v-container>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                    </v-list-item-title>
+                  </v-list-item>
                 </template>
               </v-autocomplete>
             </v-col>
@@ -96,9 +89,9 @@
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close">Cancelar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="close">Voltar</v-btn>
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
-        <v-btn color="success" class="mr-4" @click="save">Guardar</v-btn>
+        <v-btn color="success" class="mr-4" @click="save">Criar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -109,40 +102,55 @@ export default {
   props: ["classes"],
   data: () => ({
     dialog: false,
-    classesFiltradas: [],
+    classesHierarquia: [],
     newOrgFunc: {
       codigo: "",
       titulo: "",
       descricao: "",
-      eFilhoDe: "",
+      eFilhoDe: null,
       tipo: ""
     }
   }),
   methods: {
-    apagar: function() {
+    apagar() {
       this.$refs.form.reset();
     },
-    close: function() {
+    close() {
       this.dialog = false;
     },
-    save: function() {
-      if (this.$refs.form.validate()) {
-        if (this.newOrgFunc.eFilhoDe) {
-          this.newOrgFunc.tipo =
-            "N" + (this.newOrgFunc.eFilhoDe.split(".").length + 1);
+    tipo() {
+      if (this.newOrgFunc.eFilhoDe == null) {
+        this.newOrgFunc.tipo = "N1";
+      } else {
+        let classe = this.classes.find(
+          e => e.codigo == this.newOrgFunc.eFilhoDe
+        );
+
+        if (classe.tipo == "N1") {
+          this.newOrgFunc.tipo = "N2";
         } else {
-          this.newOrgFunc.tipo = "N1";
+          this.newOrgFunc.tipo = "N3";
         }
-        // this.classes.push(JSON.parse(JSON.stringify(this.newOrgFunc)));
+      }
+    },
+    async save() {
+      if (this.$refs.form.validate()) {
+        await this.tipo();
         this.classes.push(Object.assign({}, this.newOrgFunc));
         this.dialog = false;
         this.$refs.form.reset();
       }
     },
-    filterSeries: function() {
-      this.classesFiltradas = this.classes.filter(
-        classe => classe.tipo != "Série" && classe.tipo != "Subsérie"
-      );
+    filterSeries() {
+      this.classesHierarquia = this.classes
+        .filter(classe => classe.tipo == "N1" || classe.tipo == "N2")
+        .sort((a, b) => a.codigo.localeCompare(b.codigo))
+        .map(classe => {
+          return {
+            searchField: classe.codigo + " - " + classe.titulo,
+            codigo: classe.codigo
+          };
+        });
     },
     verificaCodigo(v) {
       if (this.classes.some(e => e.codigo == v)) {

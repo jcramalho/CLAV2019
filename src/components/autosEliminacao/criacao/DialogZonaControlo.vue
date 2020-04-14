@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="expansion-panel-heading">Classe / Série</v-card-title>
+    <v-card-title class="expansion-panel-heading">Classe</v-card-title>
     <v-card-text class="mt-4">
       <v-row>
         <v-col :md="2">
@@ -31,33 +31,17 @@
           <v-text-field :value="df" solo dense readonly></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="df== 'Conservação'">
         <v-col>
           <div class="info-label">Natureza de Intervenção</div>
         </v-col>
         <v-col>
           <v-text-field
-            v-if="df == 'Conservação'"
             :value="ni"
             solo
             dense
             readonly
           ></v-text-field>
-          <v-text-field
-            v-else-if="df == 'Eliminação'"
-            :value="ni"
-            solo
-            dense
-            readonly
-          ></v-text-field>
-          <v-select
-            v-else
-            label="Selecione a Natureza de Intervenção"
-            :items="natureza"
-            v-model="ni"
-            solo
-            dense
-          ></v-select>
         </v-col>
         <v-col>
           <div class="info-label">Dono PN:</div>
@@ -65,7 +49,7 @@
         <v-col>
           <v-autocomplete
             label="Selecione a entidade dona do processo"
-            :items="entidades"
+            :items="entidadesPN"
             v-model="dono"
             solo
             dense
@@ -149,7 +133,8 @@
         </v-col>
       </v-row>
       <v-row justify="end">
-        <v-btn color="red darken-4" dark text @click="limparZC">Limpar</v-btn>
+        <v-btn color="red darken-4" v-if="!this.zona" dark text @click="limparZC">Limpar</v-btn>
+        <v-btn color="red darken-4" v-else dark text @click="closeZC">Fechar</v-btn>
         <v-btn
           v-if="!this.zona"
           color="green darken-4"
@@ -167,7 +152,7 @@
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="red darken-4 title white--text" dark>
-          Erro: Não foi possível adicionar a Zona de Controlo
+          Erro: Não foi possível adicionar a Classe
         </v-card-title>
 
         <v-card-text>
@@ -201,13 +186,14 @@ export default {
   ],
   data: () => ({
     classe: null,
-    ni: "Vazio",
-    dono: null,
+    ni: null,
+    dono: [],
     dataInicio: null,
     dataFim: null,
     uiPapel: null,
     uiDigital: null,
     uiOutros: null,
+    entidadesPN: [],
 
     df: null,
     prazo: null,
@@ -217,9 +203,37 @@ export default {
     erro: null,
     erroDialog: false
   }),
-  created: function() {
+  watch: {
+    "index": function() {
+      if (this.zona) {
+        this.classe = this.zona.codigo + " - " + this.zona.titulo;
+        if(this.zona.destino=="C") this.df = "Conservação"
+        else this.df = "Eliminação"
+        this.prazo = this.zona.prazoConservacao
+        this.ni = this.zona.ni;
+        this.dono = this.zona.dono;
+        this.dataInicio = this.zona.dataInicio;
+        this.dataFim = this.zona.dataFim;
+        this.uiPapel = this.zona.uiPapel;
+        this.uiDigital = this.zona.uiDigital;
+        this.uiOutros = this.zona.uiOutros;
+      }
+    }
+  },
+  created: async function() {
+    try {
+      var user = await this.$request("get", "/users/token");
+      this.entidadesPN = this.entidades.filter(e=> !e.includes(user.data.entidade.split("_")[1]))
+    }
+    catch (e) {
+      this.entidadesPN = this.entidades
+    }
+
     if (this.zona) {
       this.classe = this.zona.codigo + " - " + this.zona.titulo;
+      if(this.zona.destino=="C") this.df = "Conservação"
+      else this.df = "Eliminação"
+      this.prazo = this.zona.prazoConservacao + " Anos"
       this.ni = this.zona.ni;
       this.dono = this.zona.dono;
       this.dataInicio = this.zona.dataInicio;
@@ -241,7 +255,8 @@ export default {
           this.ni = "Participante";
         } else if (c[0].df.valor === "E") {
           this.df = "Eliminação";
-          this.ni = "Dono";
+          this.ni = null;
+          this.dono = []
         } else this.df = c[0].df.valor;
       }
     },
@@ -263,6 +278,9 @@ export default {
       var result = this.auto.zonaControlo.filter(
         zc => zc.codigo + " - " + zc.titulo == this.classe
       );
+      var uiPapel = parseFloat(this.uiPapel) || 0;
+      var uiDigital = parseFloat(this.uiDigital) || 0;
+      var uiOutros = parseFloat(this.uiOutros) || 0;
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
@@ -289,6 +307,12 @@ export default {
       } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
+      } else if(this.df == "Conservação" && this.dono.length==0) {
+        this.erro = help.AutoEliminacao.Erros.DonoPN;
+        this.erroDialog = true;
+      } else if(uiPapel+uiDigital+uiOutros<=0) {
+        this.erro = help.AutoEliminacao.Erros.Medicoes;
+        this.erroDialog = true;
       } else {
         var codigo = this.classe.split(" - ")[0];
         var classe = await this.$request("get", "/classes/c" + codigo);
@@ -298,36 +322,55 @@ export default {
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = this.ni;
-        var dono = [];
+        var dono = this.dono;
         var uiPapel;
         var uiDigital;
         var uiOutros;
 
-        if (this.dono) {
-          dono = this.dono;
-        }
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
         if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";
         else uiDigital = this.uiDigital;
         if (!this.uiOutros || this.uiOutros == "0") uiOutros = "";
         else uiOutros = this.uiOutros;
+        
+        var added = false;
 
-        this.auto.zonaControlo.push({
-          codigo: codigo,
-          titulo: titulo,
-          prazoConservacao: prazoConservacao,
-          destino: destino,
-          ni: ni,
-          dono: dono,
-          dataInicio: dataInicio,
-          dataFim: dataFim,
-          uiPapel: uiPapel,
-          uiDigital: uiDigital,
-          uiOutros: uiOutros,
-          agregacoes: []
-        });
-
+        for(var i in this.auto.zonaControlo) {
+          if(this.auto.zonaControlo[i].codigo > codigo) {
+            this.auto.zonaControlo.splice(i,0,{
+              codigo: codigo,
+              titulo: titulo,
+              prazoConservacao: prazoConservacao,
+              destino: destino,
+              ni: ni,
+              dono: dono,
+              dataInicio: dataInicio,
+              dataFim: dataFim,
+              uiPapel: uiPapel,
+              uiDigital: uiDigital,
+              uiOutros: uiOutros,
+              agregacoes: []
+            })
+            added = true;
+            break;
+          }
+        }
+        if(added == false) this.auto.zonaControlo.push({
+              codigo: codigo,
+              titulo: titulo,
+              prazoConservacao: prazoConservacao,
+              destino: destino,
+              ni: ni,
+              dono: dono,
+              dataInicio: dataInicio,
+              dataFim: dataFim,
+              uiPapel: uiPapel,
+              uiDigital: uiDigital,
+              uiOutros: uiOutros,
+              agregacoes: []
+            })
+        
         this.limparZC();
         this.closeZC();
       }
@@ -340,6 +383,9 @@ export default {
       var result = this.auto.zonaControlo.filter(
         zc => zc.codigo + " - " + zc.titulo == this.classe
       );
+      var uiPapel = parseInt(this.uiPapel) || 0;
+      var uiDigital = parseInt(this.uiDigital) || 0;
+      var uiOutros = parseInt(this.uiOutros) || 0;
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
@@ -373,7 +419,14 @@ export default {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup;
-      } else {
+      } else if(this.df == "Conservação" && this.dono.length==0) {
+        this.erro = help.AutoEliminacao.Erros.DonoPN;
+        this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup;
+      } else if(uiPapel+uiDigital+uiOutros<=0) {
+        this.erro = help.AutoEliminacao.Erros.Medicoes;
+        this.erroDialog = true;
+      }  else {
         var codigo = this.classe.split(" - ")[0];
         var classe = await this.$request("get", "/classes/c" + codigo);
         var titulo = classe.data.titulo;
@@ -382,12 +435,11 @@ export default {
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = this.ni;
-        var dono = "";
+        var dono = this.dono;
         var uiPapel;
         var uiDigital;
         var uiOutros;
 
-        if (this.dono) dono = this.dono;
         if (!this.uiPapel || this.uiPapel == "0") uiPapel = "";
         else uiPapel = this.uiPapel;
         if (!this.uiDigital || this.uiDigital == "0") uiDigital = "";

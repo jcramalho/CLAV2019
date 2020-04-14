@@ -193,12 +193,12 @@ export default {
       this.$store.commit("guardaTokenUtilizador", this.token);
       this.$store.commit("guardaNomeUtilizador", this.nomeCompleto);
       this.$router.push("/");
+    } else {
+      this.successfullAuthentication =
+        this.nic != undefined && this.nomeCompleto != undefined;
+      // await this.getEntidades();
+      this.isMounted = true;
     }
-
-    this.successfullAuthentication =
-      this.nic != undefined && this.nomeCompleto != undefined;
-    // await this.getEntidades();
-    this.isMounted = true;
   },
   methods: {
     /*async getEntidades() {
@@ -258,7 +258,7 @@ export default {
           })
           .catch(err => {
             this.text =
-              "Ocorreu um erro ao registar o utilizador: " + err.response.data;
+              "Ocorreu um erro ao registar o utilizador: " + (err.response.data[0].msg || err.response.data);
             this.color = "error";
             this.snackbar = true;
             this.done = false;

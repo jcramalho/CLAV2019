@@ -135,21 +135,205 @@ var excel2Json = function(file, tipo) {
   });
 };
 
+var verificarSerie = function(str) {
+  var arr = str.split(/[,;]/)
+  if(arr[0].trim() != "Código de classificação da série ou subsérie") return false;
+  if(arr[1].trim() != "Número de referência") return false;
+  if(arr[2].trim() != "Título da série ou subsérie") return false;
+  if(arr[3].trim() != "Data inicial da documentação proposta para eliminação") return false;
+  if(arr[4].trim() != "Data final da documentação proposta para eliminação") return false;
+  if(arr[5].trim() != "Nº de agregações simples / UI – unidade de instalação") return false;
+  if(arr[6].trim() != "Medição das agregações / UI em papel (m.l.)") return false;
+  if(arr[7].trim() != "Medição das agregações / UI em digital (Gb)") return false;
+  if(arr[8].trim() != "Medição das agregações / UI noutros suportes") return false;
+  return true;
+}
+
+var verificarAgregacoes = function(str) {
+  var arr = str.split(/[,;]/)
+  if(arr[0].trim() != "Código de classificação da série ou subsérie") return false;
+  if(arr[1].trim() != "Número de referência") return false;
+  if(arr[2].trim() != "Código da agregação simples / UI - unidade de instalação") return false;
+  if(arr[3].trim() != "Título da agregação / UI") return false;
+  if(arr[4].trim() != "Data de início de contagem do PCA") return false;
+  if(arr[5].trim() != "Natureza da intervenção") return false;
+  return true;
+}
+
+var validarCSVs = function(fileSerie, fileAgreg, tipo) {
+  return new Promise(function(resolve, reject) {
+    var enc = new TextDecoder("utf-8");
+    var series = enc.decode(fileSerie).split("\n")
+    var agregacoes = enc.decode(fileAgreg).split("\n")
+    if(!verificarSerie(series[0]))
+      reject({msg: "Verifique se inseriu o ficheiro de classe / série correto", numErros: 1})
+    if(!verificarAgregacoes(agregacoes[0]))
+      reject({msg: "Verifique se inseriu o ficheiro de agregações / UI correto", numErros: 1})
+    series.shift()
+    agregacoes.shift()
+    var errosSerie = {
+      codigosRepetidos: [],
+      referenciasRepetidas: [],
+      codigo: [],
+      referencia: [],
+      titulo: [],
+      dataInicio: [],
+      dataFim: [],
+      agregacoes: [],
+      medicoes: [],
+      numeroErros: 0
+    }
+    var errosAgregacoes = {
+      codigo: [],
+      referencia: [],
+      codigoAg: [],
+      titulo: [],
+      pca: [],
+      ni: [],
+      numeroErros: 0
+    }
+    var codigosSerie = [];
+    var referenciasSerie = [];
+
+    series.forEach((s,index) => {
+      var serie = s.split(/[;,]/)
+      if(serie.length>=7) {
+        if(tipo != "RADA" && serie[0] == "") {errosSerie.codigo.push(index+2);errosSerie.numeroErros++;}
+        else if(tipo == "RADA" && serie[0] == "" && serie[1] == "") {errosSerie.referencia.push(index+2);errosSerie.numeroErros++;}
+        if(serie[0]!="") if(!codigosSerie.find(elem => elem == serie[0])) codigosSerie.push(serie[0]); else {errosSerie.codigosRepetidos.push(index+2); errosSerie.numeroErros++; }
+        if(serie[1]!="") if(!referenciasSerie.find(elem => elem == serie[1])) referenciasSerie.push(serie[1]); else {errosSerie.referenciasRepetidas.push(index+2); errosSerie.numeroErros++; }
+        if(serie[2]=="") {errosSerie.titulo.push(index+2); errosSerie.numeroErros++;}
+        var dataInicio = parseInt(serie[3]) || 0;
+        var dataFim = parseInt(serie[4]) || 0;
+        if(!serie[3].match(/[0-9]{4}/) || dataInicio<1000) {errosSerie.dataInicio.push(index+2); errosSerie.numeroErros++;}
+        else if(!serie[4].match(/[0-9]{4}/) || dataFim<1000 || dataInicio>dataFim) {errosSerie.dataFim.push(index+2); errosSerie.numeroErros++;}
+        if(!serie[5].match(/[0-9]+/) || parseInt(serie[5])<1) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++;}
+        var uiPapel = parseFloat(serie[6]) || 0;
+        var uiDigital = parseFloat(serie[7]) || 0;
+        var uiOutros = parseFloat(serie[8]) || 0;
+        if(uiPapel+uiDigital+uiOutros<=0) {errosSerie.medicoes.push(index+2); errosSerie.numeroErros++;}
+        var numero = 0;
+        agregacoes.forEach((a,ind) => {
+          var agregacao = a.split(/[;,]/)
+          var codigo = [];
+          if(agregacao[0]==serie[0] && agregacao[1]==serie[1]) {
+            numero++;
+            if(agregacao[2]!="" && !codigo.find(elem => elem == agregacao[2])) codigo.push(agregacao[2]); 
+            else {errosAgregacoes.codigoAg.push(ind+2); errosAgregacoes.numeroErros++; }
+            if(agregacao[3]=="") {errosAgregacoes.titulo.push(index+2);errosAgregacoes.numeroErros++;}
+            var pca = parseInt(agregacao[4]) || 0;
+            if(!agregacao[4].match(/[0-9]{4}/) || pca<1000 || pca<dataInicio) {errosAgregacoes.pca.push(ind+2);errosAgregacoes.numeroErros++;}
+            if(tipo=="PGD_LC" && agregacao[5]=="") {errosAgregacoes.ni.push(ind+2);errosAgregacoes.numeroErros++;}
+          }
+        })
+        if(numero != serie[5]) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++}
+      } 
+    })
+    agregacoes.forEach((a,index) => {
+      var agregacao = a.split(/[;,]/)
+      if(agregacao.length>=5) {
+        if(tipo != "RADA" && agregacao[0] == "") {errosAgregacoes.codigo.push(index+2);errosAgregacoes.numeroErros++;}
+        else if(tipo == "RADA" && agregacao[0] == "" && agregacao[1] == "") {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
+        else {
+          if(agregacao[0]!="" && !codigosSerie.find(elem => elem == agregacao[0])) {errosAgregacoes.codigo.push(index+2);errosAgregacoes.numeroErros++;}
+          if(agregacao[1]!="" && !referenciasSerie.find(elem => elem == agregacao[1])) {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
+        }
+      }
+    })
+    if(errosSerie.numeroErros + errosAgregacoes.numeroErros >0) {
+      var errosVal = {
+        erros: [],
+        numErros: errosSerie.numeroErros + errosAgregacoes.numeroErros
+      }
+      if(errosSerie.codigosRepetidos.length>0) errosVal.erros.push({
+        sobre: "Código da série ou subsérie",
+        mensagem: "O código não pode ser repetido no mesmo auto",
+        linhasSerie: errosSerie.codigosRepetidos
+      })
+      if(errosSerie.referenciasRepetidas.length>0) errosVal.erros.push({
+        sobre: "Número de referência",
+        mensagem: "O número de referência não pode ser repetido no mesmo auto",
+        linhasSerie: errosSerie.referenciasRepetidas
+      })
+      if(errosSerie.codigo.length>0 || errosAgregacoes.codigo.length>0) errosVal.erros.push({
+        sobre: "Código da série ou subsérie",
+        mensagem: "O código é obrigatório nas PGD",
+        linhasSerie: errosSerie.codigo,
+        linhasUI: errosAgregacoes.codigo
+      })
+      if(errosSerie.referencia.length>0 || errosAgregacoes.referencia.length>0) errosVal.erros.push({
+        sobre: "Número de referência",
+        mensagem: "O número de referência é obrigatório quando não existe código",
+        linhasSerie: errosSerie.referencia,
+        linhasUI: errosAgregacoes.referencia
+      })
+      if(errosSerie.titulo.length>0) errosVal.erros.push({
+        sobre: "Título da série ou subsérie",
+        mensagem: "O título é obrigatório",
+        linhasSerie: errosSerie.titulo
+      })
+      if(errosSerie.dataInicio.length>0) errosVal.erros.push({
+        sobre: "Data inicial da documentação proposta para eliminação",
+        mensagem: "A data inicial é obrigatória e deve constar de quatro digitos",
+        linhasSerie: errosSerie.dataInicio
+      })
+      if(errosSerie.dataFim.length>0) errosVal.erros.push({
+        sobre: "Data final da documentação proposta para eliminação",
+        mensagem: "A data final é obrigatória e deve constar de quatro digitos",
+        linhasSerie: errosSerie.dataFim
+      })
+      if(errosSerie.agregacoes.length>0) errosVal.erros.push({
+        sobre: "Nº de agregações simples /UI – unidade de instalação",
+        mensagem: "Verificar se corresponde ao total das agregações do ficheiro anexo",
+        linhasSerie: errosSerie.agregacoes
+      })
+      if(errosSerie.medicoes.length>0) errosVal.erros.push({
+        sobre: "Medição das agregações",
+        mensagem: "Pelo menos um dos campos deve estar preenchido",
+        linhasSerie: errosSerie.medicoes
+      })
+      if(errosAgregacoes.codigoAg.length>0) errosVal.erros.push({
+        sobre: "Código da agregação simples / UI - unidade de instalação",
+        mensagem: "Código da agregação obrigatório e não repetivel",
+        linhasUI: errosAgregacoes.codigoAg
+      })
+      if(errosAgregacoes.titulo.length>0) errosVal.erros.push({
+        sobre: "Título da agregação / UI",
+        mensagem: "Título da agregação obrigatório",
+        linhasUI: errosAgregacoes.titulo
+      })
+      if(errosAgregacoes.pca.length>0) errosVal.erros.push({
+        sobre: "Data de início de contagem do PCA",
+        mensagem: "Data de início de contagem do PCA da agregação obrigatória",
+        linhasUI: errosAgregacoes.pca
+      })
+      if(errosAgregacoes.ni.length>0) errosVal.erros.push({
+        sobre: "Natureza de intervenção",
+        mensagem: "Natureza de intervenção obrigatória quando constante da LC",
+        linhasUI: errosAgregacoes.ni
+      })
+      reject(errosVal)
+    }
+    else resolve("Ficheiros em anexo validados com sucesso!")
+  });
+}
+
 var csv2Json = function(fileSerie, fileAgreg, tipo) {
   return new Promise(function(resolve, reject) {
     var enc = new TextDecoder("utf-8");
     var series = enc.decode(fileSerie).split("\n")
     var agregacoes = enc.decode(fileAgreg).split("\n")
+
     series.shift()
     agregacoes.shift()
     var auto = {
       tipo: tipo,
       zonaControlo: []
     };
-    series.forEach(s => {
-
+    series.forEach((s,index) => {
+      s = s.replace(/[\r\n]+/g,'');
       var serie = s.split(/[;,]/)
-      if(serie[0]) {
+      if(serie[0] || serie[1]) {
         var zc = {
           codigo: serie[0],
           referencia: serie[1],
@@ -162,6 +346,7 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
           agregacoes: []
         }
         agregacoes.forEach(a => {
+          a = a.replace(/[\r\n]+/g,'');
           var agregacao = a.split(/[;,]/)
           if(agregacao[0]==zc.codigo && agregacao[1]==zc.referencia) {
             var ag = {
@@ -181,4 +366,4 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
   });
 };
 
-export { csv2Json };
+export { csv2Json, validarCSVs };

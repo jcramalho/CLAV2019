@@ -14,7 +14,8 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+    <v-row v-if="!newSerie.UIs[0]">
       <!-- DATA INICIAL -->
       <v-col md="3" sm="3">
         <div class="info-label">Data Inicial</div>
@@ -26,8 +27,7 @@
           :close-on-content-click="false"
           :return-value.sync="newSerie.dataInicial"
           transition="scale-transition"
-          offset-y
-          min-width="290px"
+          max-width="290px"
         >
           <template v-slot:activator="{ on }">
             <v-text-field
@@ -37,12 +37,25 @@
               prepend-icon="event"
               readonly
               v-on="on"
+              clearable
             ></v-text-field>
           </template>
-          <v-date-picker v-model="newSerie.dataInicial" no-title scrollable locale="pt">
+          <v-date-picker
+            full-width
+            color="amber accent-3"
+            v-model="newSerie.dataInicial"
+            scrollable
+            locale="pt"
+            :min="RE.dataInicial"
+            :max="RE.dataFinal"
+          >
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="data_inicial_menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu1.save(newSerie.dataInicial)">OK</v-btn>
+            <v-btn text color="primary" @click="data_inicial_menu = false">
+              <v-icon>keyboard_backspace</v-icon>
+            </v-btn>
+            <v-btn text color="primary" @click="$refs.menu1.save(newSerie.dataInicial)">
+              <v-icon>check</v-icon>
+            </v-btn>
           </v-date-picker>
         </v-menu>
       </v-col>
@@ -57,8 +70,7 @@
           :close-on-content-click="false"
           :return-value.sync="newSerie.dataFinal"
           transition="scale-transition"
-          offset-y
-          min-width="290px"
+          max-width="290px"
         >
           <template v-slot:activator="{ on }">
             <v-text-field
@@ -68,16 +80,36 @@
               prepend-icon="event"
               readonly
               v-on="on"
+              clearable
             ></v-text-field>
           </template>
-          <v-date-picker v-model="newSerie.dataFinal" no-title scrollable locale="pt">
+          <v-date-picker
+            full-width
+            v-model="newSerie.dataFinal"
+            color="amber accent-3"
+            scrollable
+            locale="pt"
+            :min="RE.dataInicial"
+            :max="RE.dataFinal"
+          >
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="data_final_menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu2.save(newSerie.dataFinal)">OK</v-btn>
+            <v-btn text @click="data_final_menu = false">
+              <v-icon>keyboard_backspace</v-icon>
+            </v-btn>
+            <v-btn text @click="$refs.menu2.save(newSerie.dataFinal)">
+              <v-icon>check</v-icon>
+            </v-btn>
           </v-date-picker>
         </v-menu>
       </v-col>
     </v-row>
+    <!-- UNIDADES DE INSTALAÇÃO -->
+    <AssociarUI
+      v-if="newSerie.dataInicial == null && newSerie.dataFinal == null"
+      :newSerie="newSerie"
+      :UIs="UIs"
+    />
+    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <div v-if="newSerie.tipo != 'Subsérie'">
       <v-row>
         <!-- TUArq -->
@@ -89,7 +121,7 @@
             :rules="[v => !!v || 'Campo obrigatório!']"
             v-if="newSerie.tipo != 'Subsérie'"
             label="Tipo de Unidade Arquivística"
-            v-model="newSerie.tUa"
+            v-model="newSerie.tUA"
             :items="tiposUA"
             chips
             solo
@@ -117,6 +149,7 @@
           ></v-select>
         </v-col>
       </v-row>
+      <!-- {{newSerie}} -->
       <v-row>
         <v-col md="3" sm="3">
           <div class="info-label">Suporte</div>
@@ -136,7 +169,8 @@
         </v-col>
         <v-col sm="3" md="3">
           <v-text-field
-            :rules="[v => !isNaN(parseInt(v)) && parseInt(v) > 0 || 'Campo Obrigatório! Valor tem que ser um número positivo.']"
+            :rules="[v => !!v || 'Campo obrigatório!']"
+            type="number"
             solo
             clearable
             v-model="newSerie.medicao"
@@ -166,13 +200,18 @@
 </template>
 
 <script>
+import AssociarUI from "@/components/rada/criacao/classes/partes/AssociarUI";
+
 export default {
-  props: ["newSerie"],
+  props: ["newSerie", "UIs", "RE"],
+  components: {
+    AssociarUI
+  },
   data: () => ({
     data_inicial_menu: false,
     data_final_menu: false,
     tiposUA: ["Processo", "Coleção", "Dossier", "Registo"],
-    aberto_fechado: ["Aberto", "Fechado"],
+    aberto_fechado: ["Aberta", "Fechada"],
     suporte_items: [
       "Eletrónica Digitalizado",
       "Eletrónico Nativo",

@@ -9,19 +9,45 @@
             {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
           </v-card-title>
-          <v-card-text>
+          <!-- Para a Criação de novos dados -->
+          <v-card-text v-if="pedido.objeto.acao === 'Criação'">
             <ValidaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
             />
-            <!-- <AnalisaLeg
+
+            <ValidaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
             />
-            <AnalisaTipologiaEntidade
+
+            <ValidaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
-            /> -->
+            />
+          </v-card-text>
+
+          <!-- Para a Alteração de novos dados -->
+          <v-card-text
+            v-if="
+              pedido.objeto.acao === 'Alteração' ||
+                pedido.objeto.acao === 'Extinção'
+            "
+          >
+            <ValidaEditaEntidade
+              v-if="pedido.objeto.tipo === 'Entidade'"
+              :p="pedido"
+            />
+
+            <ValidaEditaLegislacao
+              v-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
+
+            <ValidaEditaTipologiaEntidade
+              v-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -30,9 +56,13 @@
 </template>
 
 <script>
-// import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
 import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
-// import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
+import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
+import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
+
+import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
+import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
+import ValidaEditaTipologiaEntidade from "@/components/pedidos/validacao/ValidaEditaTipologiaEntidade";
 
 import Loading from "@/components/generic/Loading";
 
@@ -41,9 +71,12 @@ export default {
 
   components: {
     ValidaEntidade,
-    // AnalisaLeg,
-    Loading
-    // AnalisaTipologiaEntidade
+    ValidaLegislacao,
+    ValidaTipologiaEntidade,
+    ValidaEditaEntidade,
+    ValidaEditaLegislacao,
+    ValidaEditaTipologiaEntidade,
+    Loading,
   },
 
   data() {
@@ -55,9 +88,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" }
+        { text: "Despacho", value: "despacho" },
       ],
-      etapas: []
+      etapas: [],
     };
   },
 
@@ -67,10 +100,9 @@ export default {
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;
-    } catch (err) {
-      this.snackbar.visivel = true;
-      this.snackbar.texto = "Erro ao carregar dados da base de dados";
+    } catch (e) {
+      console.log("e :", e);
     }
-  }
+  },
 };
 </script>

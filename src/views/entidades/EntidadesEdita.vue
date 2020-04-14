@@ -12,12 +12,12 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     EditaEntidade,
-    Loading
+    Loading,
   },
 
   data: () => ({
     entidade: {},
-    dadosReady: false
+    dadosReady: false,
   }),
 
   methods: {
@@ -28,13 +28,23 @@ export default {
           sigla: ent.sigla,
           sioe: ent.sioe,
           internacional: ent.internacional,
-          tipologiasSel: tip
+          tipologiasSel: tip,
+          estado: ent.estado,
         };
+
+        if (ent.dataCriacao) {
+          myEntidade.dataCriacao = ent.dataCriacao;
+        }
+
+        if (ent.dataExtincao) {
+          myEntidade.dataExtincao = ent.dataExtincao;
+        }
+
         return myEntidade;
       } catch (e) {
         return {};
       }
-    }
+    },
   },
 
   created: async function() {
@@ -57,6 +67,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

@@ -11,7 +11,7 @@
         <div class="info-label">Titulo</div>
       </v-col>
       <v-col sm="3" md="3">
-        <v-text-field clearable solo v-model="newSerie.titulo"></v-text-field>
+        <v-text-field :rules="[v => !!v || 'Campo de preenchimento obrigatório!']" clearable solo v-model="newSerie.titulo" label="Título"></v-text-field>
       </v-col>
     </v-row>
   </div>

@@ -41,7 +41,7 @@
             </v-form>
           </v-card-text>
         </v-card>
-        <div style="text-align:center">
+        <div class="ma-4" style="text-align:center">
           <v-btn medium color="primary" @click="verPedido()">Ver Pedido</v-btn>
         </div>
       </v-flex>

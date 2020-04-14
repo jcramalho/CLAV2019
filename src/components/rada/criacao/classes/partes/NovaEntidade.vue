@@ -25,13 +25,11 @@
 
             <v-col>
               <v-select
-                prefix="Internacional: "
                 item-text="label"
                 item-value="value"
                 v-model="internacional"
                 :items="simNao"
                 label="Internacional"
-                solo
                 dense
               />
             </v-col>
@@ -54,7 +52,7 @@
 
 <script>
 export default {
-  props: ["entidades"],
+  props: ["entidades", "produtoras"],
   data: function() {
     return {
       alertOn: false,
@@ -94,6 +92,19 @@ export default {
             designacao: this.designacao,
             internacional: this.internacional
           };
+
+          let entidadeSelecionada = {
+            estado: "Nova",
+            id: "ent_" + this.sigla,
+            sigla: this.sigla,
+            sioe: this.sioe,
+            designacao: this.designacao,
+            internacional: this.internacional,
+            searchField: this.sigla + " - " + this.designacao,
+            disabled: false
+          };
+
+          this.produtoras.push(entidadeSelecionada);
           this.novasEntidades.push(entidade);
           this.entidades.push(entidade);
 
@@ -104,6 +115,7 @@ export default {
         }
       }
     },
+    // Provavelmente vai ter que se alterar
     validaEntidade: async function() {
       return this.entidades.some(el => {
         return el.sigla == this.sigla || el.designacao == this.designacao;

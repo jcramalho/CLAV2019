@@ -1,7 +1,10 @@
 <template>
   <v-row>
     <v-col cols="2">
-      <div class="info-label">Donos do processo:</div>
+      <div class="info-label">
+        Donos do processo
+        <InfoBox header="Donos do processo" :text="myhelp.Classe.Campos.Donos" />
+      </div>
     </v-col>
     <v-col v-if="entidades.length > 0">
       <v-data-table :headers="headers" :items="entidades" class="elevation-1" hide-default-footer>
@@ -33,13 +36,21 @@
 
 <script>
 const labels = require("@/config/labels").classeCriacaoDonosOps;
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["entidades"],
 
+  components: {
+    InfoBox
+  },
+
   data: function() {
     return {
       mylabels: labels,
+      myhelp: help,
       headers: [
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },

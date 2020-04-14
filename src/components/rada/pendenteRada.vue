@@ -1,9 +1,9 @@
 <template>
-  <v-card flat class="ma-4">
+  <v-card flat class="ma-4" style="background-color:#fafafa">
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
       <v-spacer />
-      <v-btn style="background-color: #1a237e;" dark @click="guardarTrabalho">
+      <v-btn style="background-color: #1a237e;" dark @click="toSave = true">
         Guardar Trabalho
         <v-icon right>save</v-icon>
       </v-btn>
@@ -12,26 +12,53 @@
     </v-card-title>
     <v-card-text>
       <!-- {{ obj.objeto.entidades}}
-      {{ obj.objeto.legislacao}} -->
+      {{ obj.objeto.legislacao}}-->
       <!-- {{ obj }} -->
-      <v-dialog v-model="toDelete" width="500">
-        <v-card>
-          <v-card-title
-            class="headline grey lighten-2"
-            primary-title
-          >Pretende mesmo eliminar o trabalho?</v-card-title>
+      <v-row justify-center>
+        <v-dialog v-model="toSave" width="50%">
+          <v-card>
+            <v-card-title
+              class="headline grey lighten-2"
+              primary-title
+            >Pretende continuar o trabalho neste momento?</v-card-title>
 
-          <v-card-text align="center">
-            <br />
-            <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
-            <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarTrabalho">Sim</v-btn>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
+            <v-card-text align="center">
+              <br />
+              <v-spacer></v-spacer>
+
+              <v-btn
+                class="ma-3 pa-3"
+                color="indigo lighten-3"
+                @click="guardarTrabalho('nao')"
+              >Não, pretendo continuar depois.</v-btn>
+              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="guardarTrabalho('sim')">Sim.</v-btn>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </v-row>
+      <v-row>
+        <v-dialog v-model="toDelete" width="50%">
+          <v-card>
+            <v-card-title
+              class="headline grey lighten-2"
+              primary-title
+            >Pretende mesmo eliminar o trabalho?</v-card-title>
+
+            <v-card-text align="center">
+              <br />
+              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
+              <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarTrabalho">Sim</v-btn>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </v-row>
       <br />
-      <v-stepper v-model="e1" vertical class="elevation-0">
+      <v-alert :value="alert_guardar" outlined type="success" text dismissible border="left">
+        <b>Trabalho guardado com sucesso!</b>
+      </v-alert>
+      <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
           <font size="4">
             <b>Informação Geral</b>
           </font>
@@ -41,7 +68,7 @@
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -50,6 +77,7 @@
           <RelatorioExpositivo
             @seguinte="changeE1"
             :RE="RADA.RE"
+            :UIs="RADA.tsRada.UIs"
             :classes="RADA.tsRada.classes"
             :entidades="entidades"
             :tipologias="tipologias"
@@ -57,7 +85,7 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
@@ -121,6 +149,9 @@ export default {
   },
   data() {
     return {
+      alert_guardar: false,
+      user_entidade: null,
+      toSave: false,
       toDelete: false,
       mensagemPendenteCriadoOK: "",
       dialogRADAPendente: false,
@@ -137,7 +168,8 @@ export default {
     };
   },
   methods: {
-    guardarTrabalho: function() {
+    //ATUALIZAR O PENDENTE
+    guardarTrabalho: function(continuar_ou_nao) {
       let updatePendente = {
         _id: this.obj._id,
         objeto: {
@@ -150,12 +182,23 @@ export default {
       let response = this.$request("put", "/pendentes", updatePendente);
 
       response.then(resp => {
-        this.dialogRADAPendente = true;
+        if (continuar_ou_nao == "nao") {
+          this.toSave = false;
+          this.dialogRADAPendente = true;
+        } else {
+          this.toSave = false;
+          this.alert_guardar = true;
+
+          setTimeout(() => {
+            this.alert_guardar = false;
+          }, 5000);
+        }
       });
     },
     changeE1: function(e) {
       this.e1 = e;
     },
+    //ELIMINAR O PENDENTE
     eliminarTrabalho: function() {
       this.$request("delete", "/pendentes/" + this.obj._id).then(response => {
         this.$router.push("/pendentes");
@@ -170,11 +213,13 @@ export default {
           email: this.userEmail
         },
         token: this.$store.state.token,
-        criadoPor: this.userEmail
+        criadoPor: this.userEmail,
+        entidade: this.user_entidade
       };
 
       let response = await this.$request("post", "/pedidos", pedidoParams);
 
+      // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
       await this.$request("delete", "/pendentes/" + this.obj._id);
 
       this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
@@ -222,6 +267,13 @@ export default {
       "/users/" + this.$store.state.token + "/token"
     );
     this.userEmail = userBD.data.email;
+
+    let userEntidade = await this.$request(
+      "get",
+      "/entidades/" + userBD.data.entidade
+    );
+
+    this.user_entidade = "ent_" + userEntidade.data.sigla;
 
     // let userEntidade = await this.$request(
     //   "get",

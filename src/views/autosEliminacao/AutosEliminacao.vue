@@ -4,12 +4,12 @@
     tipo="Autos de Eliminação"
     v-bind:cabecalho="[
       'Identificação',
-      'Entidade Responsável',
       'Fonte de Legitimação',
-      'Fundo',
+      'Diploma Legislativo',
+      'Entidade Produtora',
       'Data'
     ]"
-    v-bind:campos="['id', 'entidade', 'fonte', 'fundo', 'data']"
+    v-bind:campos="['id', 'tipo', 'numero', 'entidade', 'data']"
   />
 </template>
 
@@ -41,11 +41,11 @@ export default {
         for (var i = 0; i < listaAutosEliminacao.length; i++) {
           myTree.push({
             id: listaAutosEliminacao[i].id.split("#")[1].replace("ae_", ""),
+            tipo: listaAutosEliminacao[i].tipo,
+            fonte: "Portaria " + listaAutosEliminacao[i].numero,
             entidade: listaAutosEliminacao[i].entidade
               .split("#")[1]
               .replace("ent_", ""),
-            fonte: listaAutosEliminacao[i].legislacao,
-            fundo: listaAutosEliminacao[i].fundo,
             data: listaAutosEliminacao[i].data
           });
         }

@@ -45,7 +45,7 @@ export default {
       try {
         var myTipologia = {
           nome: {
-            campo: "Nome",
+            campo: "Designação",
             text: tip.designacao
           },
           sigla: {
@@ -97,10 +97,10 @@ export default {
       );
       this.processosDono = processosDono.data;
 
-      // Procesos em que a entidade participa
+      // Procesos em que a tipologia participa
       var processosParticipa = await this.$request(
         "get",
-        "/entidades/" + this.idTipologia + "/intervencao/participante"
+        "/tipologias/" + this.idTipologia + "/intervencao/participante"
       );
       await this.parseParticipacoes(processosParticipa.data);
 

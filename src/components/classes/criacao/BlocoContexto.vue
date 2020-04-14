@@ -2,45 +2,21 @@
   <v-expansion-panel popout focusable>
     <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
     <v-expansion-panel-header class="expansion-panel-heading">
-      <div>Contexto de Avaliação</div>
+      <div>
+        Contexto de Avaliação
+        <InfoBox header="Contexto de Avaliação" :text="myhelp.Classe.BlocoContexto"  helpColor="white"/>
+      </div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content v-if="c.nivel == 3">
       <!-- TIPO DE PROCESSO -->
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">Tipo de Processo:</div>
-        </v-col>
-        <v-col>
-          <v-select
-            item-text="label"
-            item-value="value"
-            v-model="c.tipoProc"
-            :items="processoTipos"
-            label="Selecione o tipo de processo:"
-            solo
-            dense
-          />
-        </v-col>
-      </v-row>
+      <BlocoContextoSelTipoProcesso :c="c" />
 
       <!-- PROCESSO TRANVERSAL -->
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">Processo Transversal:</div>
-        </v-col>
-        <v-col>
-          <v-select
-            item-text="label"
-            item-value="value"
-            v-model="c.procTrans"
-            :items="simNao"
-            label="Indique se o processo é transversal:"
-            solo
-            dense
-          />
-        </v-col>
-      </v-row>
-
+      <BlocoContextoSelTransversalidade :c="c" />
+      
       <hr style="border: 3px solid indigo; border-radius: 2px;" />
 
       <!-- DONOS -->
@@ -148,6 +124,7 @@
 
 <script>
 const nanoid = require("nanoid");
+const help = require("@/config/help").help;
 
 import DonosOps from "@/components/classes/criacao/DonosOps.vue";
 import DonosNew from "@/components/classes/criacao/DonosNew.vue";
@@ -160,6 +137,9 @@ import ProcessosRelacionadosSelect from "@/components/classes/criacao/ProcessosR
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 import LegislacaoNew from "@/components/classes/criacao/LegislacaoNew.vue";
 import LegislacaoSelect from "@/components/classes/criacao/LegislacaoSelect.vue";
+import BlocoContextoSelTipoProcesso from "@/components/classes/criacao/BlocoContextoSelTipoProcesso.vue";
+import BlocoContextoSelTransversalidade from "@/components/classes/criacao/BlocoContextoSelTransversalidade.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["c", "semaforos", "donos", "participantes", "procRel", "legs"],
@@ -175,23 +155,21 @@ export default {
     ProcessosRelacionadosSelect,
     LegislacaoOps,
     LegislacaoNew,
-    LegislacaoSelect
+    LegislacaoSelect,
+    BlocoContextoSelTipoProcesso,
+    BlocoContextoSelTransversalidade,
+    InfoBox
   },
 
   data: () => {
     return {
-      processoTipos: [
-        { label: "Processo Comum", value: "PC" },
-        { label: "Processo Específico", value: "PE" }
-      ],
+      myhelp: help,
 
       erroEntidadeDuplicada: false,
       mensagemEntidadeDuplicada: "Entidade duplicada! Não será adicionada.",
 
       erroIntervencaoIndefinida: false,
       mensagemIntervencaoIndefinida: "Tem de selecionar uma intervanção para o participante!",
-
-      simNao: [{ label: "Não", value: "N" }, { label: "Sim", value: "S" }],
 
       textoCriterioUtilidadeAdministrativa:
         "Prazo decorrente da necessidade de consulta para apuramento da " +
@@ -692,11 +670,23 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
+  color: #2e7d32; 
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #e8f5e9; 
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

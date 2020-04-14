@@ -1,14 +1,14 @@
 <template>
   <v-card>
     <v-card-title class="indigo darken-4 title white--text" dark>
-      {{ texto.textoTitulo }} do pedido
+      {{ texto.textoTitulo }} do pedido {{ pedido }}
     </v-card-title>
 
     <v-card-text class="mt-2">
       <div v-if="!utilizadorSelecionado">
         <v-alert type="info">
           Clique sobre a linha da tabela para selecionar o utilizador a quem
-          deve ser atribuída a {{ texto.textoAlert }} do pedido.
+          deve ser atribuída a {{ texto.textoAlert }} do pedido {{ pedido }}.
         </v-alert>
 
         <v-text-field
@@ -29,7 +29,9 @@
           <template v-slot:item="props">
             <tr @click="utilizadorSelecionado = props.item">
               <td class="subheading">{{ props.item.name }}</td>
-              <td class="subheading">{{ props.item.entidade }}</td>
+              <td class="subheading">
+                {{ props.item.entidade.split("_")[1] }}
+              </td>
             </tr>
           </template>
         </v-data-table>
@@ -37,23 +39,24 @@
 
       <div v-else>
         <v-alert type="success">
-          Tarefa atribuída a:
+          Tarefa atribuída a
           <b>
             {{
-              `${this.utilizadorSelecionado.name} (${this.utilizadorSelecionado.entidade})`
+              `${this.utilizadorSelecionado.name} (${
+                this.utilizadorSelecionado.entidade.split("_")[1]
+              })`
             }}
           </b>
         </v-alert>
 
         <v-row>
           <v-col cols="2">
-            <div class="info-label">Mensagem:</div>
+            <div class="info-label">Mensagem</div>
           </v-col>
 
           <v-col>
-            <v-text-field
+            <v-textarea
               solo
-              clearable
               hide-details
               color="indigo"
               :label="`Mensagem de ${texto.textoTitulo.toLowerCase()}`"
@@ -105,6 +108,8 @@ export default {
     },
 
     avancar() {
+      this.utilizadorSelecionado = null;
+      this.mensagemDespacho = null;
       this.$emit("avancarPedido", {
         utilizadorSelecionado: this.utilizadorSelecionado,
         mensagemDespacho: this.mensagemDespacho

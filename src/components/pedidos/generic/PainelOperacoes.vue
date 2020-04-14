@@ -38,10 +38,11 @@
       <AvancarPedido
         :utilizadores="utilizadores"
         :texto="{
-          textoTitulo: 'Encaminhamento',
+          textoTitulo: 'Distribuição',
           textoAlert: 'validação',
-          textoBotao: 'Encaminhar'
+          textoBotao: 'Distribuir'
         }"
+        :pedido="this.$route.params.idPedido"
         @fecharDialog="fecharDialog()"
         @avancarPedido="avancarPedido($event)"
       />
@@ -57,43 +58,10 @@
 
     <!-- Dialog de Confirmação de Operação -->
     <v-dialog v-model="finalizarPedidoDialog" width="50%">
-      <v-card>
-        <v-card-title class="warning title white--text" dark>
-          <v-icon color="white" class="ma-1">warning</v-icon>
-          Aviso
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <h4>Deseja mesmo finalizar o pedido?</h4>
-            <br />
-            <h6>
-              Ao clicar em Sim está a introduzir toda a informação validada no
-              sistema.
-            </h6>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="red darken-4"
-            dark
-            rounded
-            text
-            @click="finalizarPedidoDialog = false"
-          >
-            Não
-          </v-btn>
-
-          <v-btn
-            class="indigo accent-4"
-            rounded
-            dark
-            @click="finalizarPedido()"
-          >
-            Sim
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+      <FinalizarPedido
+        @fecharDialog="fecharDialog()"
+        @finalizarPedido="finalizarPedido($event)"
+      />
     </v-dialog>
   </div>
 </template>
@@ -101,13 +69,15 @@
 <script>
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
+import FinalizarPedido from "@/components/pedidos/generic/FinalizarPedido";
 
 export default {
   props: ["operacao"],
 
   components: {
     AvancarPedido,
-    DevolverPedido
+    DevolverPedido,
+    FinalizarPedido
   },
 
   data() {
@@ -123,6 +93,7 @@ export default {
     fecharDialog() {
       this.avancarPedidoDialog = false;
       this.devolverPedidoDialog = false;
+      this.finalizarPedidoDialog = false;
     },
 
     avancarPedido(dados) {
@@ -133,8 +104,8 @@ export default {
       this.$emit("devolverPedido", dados);
     },
 
-    finalizarPedido() {
-      this.$emit("finalizarPedido");
+    finalizarPedido(dados) {
+      this.$emit("finalizarPedido", dados);
     }
   },
 

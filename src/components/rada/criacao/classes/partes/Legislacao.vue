@@ -24,7 +24,7 @@
                   color="red darken-2"
                   dark
                   rounded
-                  @click="unselectLegislacao(props.item)"
+                  @click="desselecionarLegislacao(props.item)"
                 >
                   <v-icon dark>remove_circle</v-icon>
                 </v-btn>
@@ -32,9 +32,12 @@
             </tr>
           </template>
         </v-data-table>
-        <v-alert v-else :value="true" icon="warning" color="amber accent-3"
-          >Não tem legislação selecionada...</v-alert
-        >
+        <v-alert
+          v-else
+          dense
+          icon="warning"
+          color="amber accent-3"
+        >Não tem legislação selecionada...</v-alert>
       </v-col>
     </v-row>
     <NovaLegislacao :legislacao="legislacao" :newSerie="newSerie" />
@@ -53,13 +56,13 @@
         <v-data-table
           :search="search"
           :headers="headersSel"
-          :items="filterLegislacao"
+          :items="filtrarLegislacao"
           item-key="id"
           :footer-props="footer_props"
           :items-per-page="5"
         >
           <template v-slot:item="props">
-            <tr @click="selectLegislacao(props.item)">
+            <tr @click="selecionarLegislacao(props.item)">
               <td>{{ props.item.tipo }}</td>
               <td>{{ props.item.numero }}</td>
               <td>{{ props.item.sumario }}</td>
@@ -67,9 +70,12 @@
             </tr>
           </template>
 
-          <v-alert v-slot:no-results :value="true" class="error" icon="warning"
-            >A procura por "{{ search }}" não deu resultados.</v-alert
-          >
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            class="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-col>
     </v-row>
@@ -80,7 +86,7 @@
 import NovaLegislacao from "./NovaLegislacao";
 
 export default {
-  props: ["newSerie", "legislacao"],
+  props: ["newSerie", "legislacao", "classes"],
   components: {
     NovaLegislacao
   },
@@ -156,7 +162,7 @@ export default {
     };
   },
   computed: {
-    filterLegislacao() {
+    filtrarLegislacao() {
       return this.legislacao.filter(leg => {
         return !this.newSerie.legislacao.some(
           e => e.tipo == leg.tipo && e.numero == leg.numero
@@ -165,13 +171,59 @@ export default {
     }
   },
   methods: {
-    selectLegislacao: function(item) {
-      this.newSerie.legislacao.push(item);
+    selecionarLegislacao(item) {
+      this.newSerie.legislacao.push({
+        id: item.id,
+        data: item.data,
+        tipo: item.tipo,
+        numero: item.numero,
+        sumario: item.sumario
+      });
     },
-    unselectLegislacao: function(item) {
-      this.newSerie.legislacao = this.newSerie.legislacao.filter(
-        e => e.numero != item.numero && e.tipo != item.tipo
+    filtrarCriterioLegal(item) {
+      // Necessario remover do critério legal associado à série quer às subséries que são suas filhas
+
+      // 1º remover do critério legal na justificação PCA
+      let legalPCA = this.newSerie.justificacaoPCA.find(
+        e => e.tipo == "Critério Legal"
       );
+
+      if (legalPCA != undefined) {
+        legalPCA.relacoes = legalPCA.relacoes.filter(
+          e => e.codigo != item.tipo + " " + item.numero
+        );
+
+        if (legalPCA.relacoes.length == 0) {
+          this.newSerie.justificacaoPCA = this.newSerie.justificacaoPCA.filter(
+            e => e.tipo != "Critério Legal"
+          );
+        }
+      }
+
+      // 2º remover do critério legal na justificação DF
+      let legalDF = this.newSerie.justificacaoDF.find(
+        e => e.tipo == "Critério Legal"
+      );
+
+      if (legalDF != undefined) {
+        legalDF.relacoes = legalDF.relacoes.filter(
+          e => e.codigo != item.tipo + " " + item.numero
+        );
+
+        if (legalDF.relacoes.length == 0) {
+          this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
+            e => e.tipo != "Critério Legal"
+          );
+        }
+      }
+    },
+    desselecionarLegislacao(item) {
+      this.newSerie.legislacao = this.newSerie.legislacao.filter(
+        e => e.id != item.id
+      );
+
+      // Filtrar critério legal
+      this.filtrarCriterioLegal(item);
     }
   }
 };

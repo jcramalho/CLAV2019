@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="mb-12">
+  <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
       <div v-if="!RE.tipologiasProd[0]">
         <v-row>
@@ -7,14 +7,13 @@
             <div class="info-label">Entidades Produtoras</div>
           </v-col>
           <v-col xs="12" sm="9">
+            <!-- {{ tipologiasProcessadas }} -->
             <v-autocomplete
-              deletable-chips
               :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-model="RE.entidadesProd"
               :items="entidadesProcessadas"
               item-text="searchField"
               placeholder="Selecione as Entidades Produtoras."
-              chips
               multiple
               return-object
             >
@@ -25,21 +24,18 @@
                   </v-list-item-title>
                 </v-list-item>
               </template>
-              <template v-slot:item="{ item }">
-                <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
-              </template>
               <template v-slot:selection="data">
                 <v-chip
                   v-bind="data.attrs"
                   :input-value="data.selected"
-                  :close="produtoraEntidadeClasse(data.item.sigla, data.item.designacao)"
+                  :close="produtoraEntidadeClasse(data.item, data.item.sigla, data.item.designacao)"
                   @click:close="removeEnt(data.item)"
-                >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
+                >{{ data.item.searchField }}</v-chip>
               </template>
             </v-autocomplete>
           </v-col>
         </v-row>
-        <NovaEntidade :entidades="entidades" />
+        <NovaEntidade :entidades="entidades" :produtoras="RE.entidadesProd" />
       </div>
       <v-row v-if="!RE.entidadesProd[0]">
         <v-col cols="12" xs="12" sm="3">
@@ -47,12 +43,10 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
-            deletable-chips
             :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RE.tipologiasProd"
             :items="tipologiasProcessadas"
             item-text="searchField"
-            chips
             return-object
             placeholder="Selecione as Tipologias das Entidades Produtoras."
             multiple
@@ -64,21 +58,14 @@
                 </v-list-item-title>
               </v-list-item>
             </template>
-            <template v-slot:item="{ item }">
-              <v-list-item-title>{{ item.sigla + ' - ' + item.designacao}}</v-list-item-title>
-            </template>
             <template v-slot:selection="data">
               <v-chip
                 v-bind="data.attrs"
                 :input-value="data.selected"
-                :close="produtoraTipologiaClasse(data.item.sigla, data.item.designacao)"
-                @click="data.select"
+                :close="produtoraTipologiaClasse(data.item, data.item.sigla, data.item.designacao)"
                 @click:close="removeTip(data.item)"
-              >{{ data.item.sigla + ' - ' + data.item.designacao}}</v-chip>
+              >{{ data.item.searchField }}</v-chip>
             </template>
-            <!-- <template v-slot:selection="{ item }">
-              <v-chip>{{ item.sigla + ' - ' + item.designacao}}</v-chip>
-            </template>-->
           </v-autocomplete>
         </v-col>
       </v-row>
@@ -95,22 +82,34 @@
             :return-value.sync="RE.dataInicial"
             transition="scale-transition"
             offset-y
-            min-width="290px"
+            max-width="290px"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
+                :disabled="bloquearData()"
                 :rules="basicRule"
                 v-model="RE.dataInicial"
                 label="Data Inicial"
                 prepend-icon="event"
                 readonly
                 v-on="on"
+                clearable
               ></v-text-field>
             </template>
-            <v-date-picker v-model="RE.dataInicial" no-title scrollable locale="pt">
+            <v-date-picker
+              full-width
+              v-model="RE.dataInicial"
+              color="amber accent-3"
+              scrollable
+              locale="pt"
+            >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu1 = false">Cancel</v-btn>
-              <v-btn text color="primary" @click="$refs.menu1.save(RE.dataInicial)">OK</v-btn>
+              <v-btn text @click="menu1 = false">
+                <v-icon>keyboard_backspace</v-icon>
+              </v-btn>
+              <v-btn text @click="$refs.menu1.save(RE.dataInicial)">
+                <v-icon>check</v-icon>
+              </v-btn>
             </v-date-picker>
           </v-menu>
         </v-col>
@@ -124,39 +123,36 @@
             :close-on-content-click="false"
             :return-value.sync="RE.dataFinal"
             transition="scale-transition"
-            offset-y
-            min-width="290px"
+            max-width="290px"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
+                :disabled="bloquearData()"
                 :rules="basicRule"
                 v-model="RE.dataFinal"
                 label="Data Final"
                 prepend-icon="event"
                 readonly
                 v-on="on"
+                clearable
               ></v-text-field>
             </template>
-            <v-date-picker v-model="RE.dataFinal" no-title scrollable locale="pt">
+            <v-date-picker
+              full-width
+              v-model="RE.dataFinal"
+              color="amber accent-3"
+              scrollable
+              locale="pt"
+            >
               <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu2 = false">Cancel</v-btn>
-              <v-btn text color="primary" @click="$refs.menu2.save(RE.dataFinal)">OK</v-btn>
+              <v-btn text @click="menu2 = false">
+                <v-icon>keyboard_backspace</v-icon>
+              </v-btn>
+              <v-btn text @click="$refs.menu2.save(RE.dataFinal)">
+                <v-icon>check</v-icon>
+              </v-btn>
             </v-date-picker>
           </v-menu>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Número de Unidades de Instalação</div>
-        </v-col>
-        <v-col xs="12" sm="9">
-          <v-text-field
-            v-model="RE.dimSuporte.nUI"
-            placeholder="Nº de Unidades de Instalação."
-            :rules="[v => !isNaN(parseInt(v)) && parseInt(v) >= 0 || 'Campo Obrigatório! Valor tem que ser inteiro.']"
-            single-line
-            type="number"
-          />
         </v-col>
       </v-row>
       <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
@@ -266,7 +262,7 @@
 import NovaEntidade from "./classes/partes/NovaEntidade";
 
 export default {
-  props: ["RE", "entidades", "tipologias", "classes"],
+  props: ["RE", "entidades", "tipologias", "classes", "UIs"],
   components: {
     NovaEntidade
   },
@@ -274,12 +270,14 @@ export default {
     entidadesProcessadas() {
       return this.entidades.map(item => {
         item["searchField"] = item.sigla + " - " + item.designacao;
+        item["disabled"] = false;
         return item;
       });
     },
     tipologiasProcessadas() {
       return this.tipologias.map(item => {
         item["searchField"] = item.sigla + " - " + item.designacao;
+        item["disabled"] = false;
         return item;
       });
     }
@@ -292,6 +290,22 @@ export default {
     basicRule: [v => !!v || "Campo de preenchimento obrigatório!"]
   }),
   methods: {
+    bloquearData() {
+      let classes = this.classes.some(
+        e =>
+          (e.tipo == "Série" || e.tipo == "Subsérie") &&
+          (e.dataInicial != null || e.dataFinal != null)
+      );
+
+      let uis = this.UIs.some(
+        e => e.dataInicial != null || e.dataFinal != null
+      );
+
+      if (classes || uis) {
+        return true;
+      }
+      return false;
+    },
     apagar: function() {
       this.$refs.form.reset();
       this.isMultiple = false;
@@ -318,34 +332,50 @@ export default {
       );
       if (index >= 0) this.RE.tipologiasProd.splice(index, 1);
     },
-    produtoraEntidadeClasse(sigla, desi) {
-      let classes = this.classes.filter(e => e.tipo == "Série");
+    produtoraEntidadeClasse(item, sigla, desi) {
+      let classes = this.classes.filter(
+        e =>
+          e.tipo == "Série" &&
+          e.entProdutoras.some(
+            ent => ent.sigla == sigla && ent.designacao == desi
+          )
+      );
 
-      for (let i = 0; i < classes.length; i++) {
-        for (let j = 0; j < classes[i].entProdutoras.length; j++) {
-          if (
-            classes[i].entProdutoras[j].sigla == sigla &&
-            classes[i].entProdutoras[j].designacao == desi
-          ) {
-            return false;
-          }
-        }
+      let uis = this.UIs.filter(e =>
+        e.produtor.entProdutoras.some(
+          ent => ent.sigla == sigla && ent.designacao == desi
+        )
+      );
+
+      if (classes.length > 0 || uis.length > 0) {
+        item.disabled = true;
+        return false;
       }
+
+      item.disabled = false;
       return true;
     },
-    produtoraTipologiaClasse(sigla, desi) {
-      let classes = this.classes.filter(e => e.tipo == "Série");
+    produtoraTipologiaClasse(item, sigla, desi) {
+      let classes = this.classes.filter(
+        e =>
+          e.tipo == "Série" &&
+          e.tipologiasProdutoras.some(
+            tip => tip.sigla == sigla && tip.designacao == desi
+          )
+      );
 
-      for (let i = 0; i < classes.length; i++) {
-        for (let j = 0; j < classes[i].tipologiasProdutoras.length; j++) {
-          if (
-            classes[i].tipologiasProdutoras[j].sigla == sigla &&
-            classes[i].tipologiasProdutoras[j].designacao == desi
-          ) {
-            return false;
-          }
-        }
+      let uis = this.UIs.filter(e =>
+        e.produtor.tipologiasProdutoras.some(
+          ent => ent.sigla == sigla && ent.designacao == desi
+        )
+      );
+
+      if (classes.length > 0 || uis.length > 0) {
+        item.disabled = true;
+        return false;
       }
+
+      item.disabled = false;
       return true;
     }
   }

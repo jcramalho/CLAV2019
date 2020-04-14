@@ -44,7 +44,8 @@ module.exports.help = {
     "Legislação que regula os processos de negócio e enquadra os respetivos prazos " +
     "de conservação administrativa (PCA) e destino final (DF).",
   TermosIndice:
-    "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação.",
+    "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação." +
+    " Aplica-se às classes de 3º e 4º nível.",
   API:
     "Acesso à página de documentação da API de dados onde poderá consultar toda a informação sobre a mesma " +
     "experimentar as várias operações (página gerada a partir da especificação em Swagger).",
@@ -91,7 +92,8 @@ module.exports.help = {
       TipoProcesso:
         "Indicação do tipo de processo: processo comum  (ocorre em qualquer entidade pública) ou específico (só ocorre em algumas entidades). Aplica-se  às classes de 3º nível.",
       ProcessoTransversal:
-        "Indicação do tipo de processo: processo comum  (ocorre em qualquer entidade pública) ou específico (só ocorre em algumas entidades). Aplica-se  às classes de 3º nível.",
+        "Indicação da transversalidade, ou não, do processo, isto é, se resulta da intervenção de várias entidades" +
+        " ou se decorre numa só entidade, Aplica-se às classes de 3º nível.",
       Donos:
         "Nome da(s) entidade(s) responsável(eis) pela condução  do processo de negócio, pelo respetivo produto final e pela guarda do produto final. Aplica-se às classes de 3º nível.",
       Participantes:
@@ -130,10 +132,12 @@ module.exports.help = {
         "isto é, contém informação que o segundo vai necessitar de recolher e analisar.<dd></dl></p>",
       Legislacao:
         "Legislação que regula os processos de negócio e enquadra os respetivos prazos de conservação administrativa " +
-        "(PCA) e destino final (DF). Aplica-se às classes de 3º e 4º nível.",
+        "(PCA) e destino final (DF). Aplica-se às classes de 3º.",
       Prazo:
         "Prazo de conservação administrativa (PCA), período de tempo, registado em anos, durante o qual a informação " +
         "/ documentação tem de ser conservada. Aplica-se às classes de 3º ou 4º nível.",
+      Notas: 
+        "Informação específica para PN cujo PCA reflete o do PN que o origina. Aplica-se às classes de 3º e 4º nível.",
       FormaContagem:
         "<p>Instrução relativa à ação / momento que origina a contagem do prazo. Aplica-se às classes de 3º " +
         "ou 4º nível.</p>" +
@@ -160,7 +164,7 @@ module.exports.help = {
         "afetação, da reserva de uso, do direito de superfície, do arrendamento ou cedência.</dd>" +
         "</dl></p>",
       SubformaContagem:
-        "Informação complementar da forma de contagem do prazo  Conforme disposição legal (F01) " +
+        "Informação complementar da forma de contagem do prazo  <i>Conforme disposição legal (F01)</i> " +
         "referente às datas ou à ação que determina o momento a partir do qual é iniciada a contagem do " +
         "prazo de conservação administrativa fixado na tabela. Aplica-se às classes de 3º ou 4º nível.",
       JustificacaoPCA:
@@ -176,6 +180,8 @@ module.exports.help = {
         "Indicação do destino final (DF) da informação / documentação, depois de cumprido o prazo de conservação " +
         "administrativo, podendo ser: Conservação (C), Conservação parcial (CP), Eliminação  (E) e Não especificado " +
         "(NE). Aplica-se às classes de 3º ou 4º nível.",
+      NotasDF:
+        "Informação específica para PN cujo DF reflete o do PN que o origina. Aplica-se às classes de 3º ou 4º nível.",
       JustificacaoDF:
         "<p>Indicação dos critérios que fundamentam o destino final (DF). Aplica-se às classes de 3º ou 4º " +
         "nível.</p>" +
@@ -192,10 +198,16 @@ module.exports.help = {
     Campos: {
       Sigla: "Sigla da entidade.",
       Estado:
-        "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
+            "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
+      SIOE: "Registo do código SIOE da entidade. O SIOE, ou o <i>Sistema de Informação e Organização " +
+            "do Estado</i>, é um sistema de informação sobre a caracterização das entidades públicas do" +
+            " universo das contas nacionais, bem como a atividade social dos empregadores públicos. " +
+            "O SIOE atribui um código, composto por uma sequência de dígitos numéricos, a todas as entidades públicas.",
       Internacional: "Indicação do caráter internacional da entidade.",
-      DataCriacao: "Data de criação da entidade.",
-      DataExtincao: "Data de extinção da entidade.",
+      DataCriacao: "Registo da data de criação da entidade. No caso das entidades públicas esta data consta num " +
+            "diploma legal.",
+      DataExtincao: "Registo da data de extinção da entidade. No caso das entidades públicas esta data consta num " +
+      "diploma legal.",
       Tipologias: "Indicação das tipologias de entidade a que pertence."
     },
     Intervencoes: {
@@ -292,14 +304,20 @@ module.exports.help = {
         "Verifique se o campo <strong> Medição de UI Digital</strong> se encontra devidamente preenchido.",
       MedicaoOutro:
         "Verifique se o campo <strong> Medição de UI noutro Suporte</strong> se encontra devidamente preenchido.",
+      Medicoes:
+        "Pelo menos um dos campos de <strong>Medições de UI</strong> deve estar preenchido.",
       FaltaCamposAg:
         "Verifique se os campos <strong>Código da Agregação, Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.",
       CodigoAg:
         "O <strong>Código da Agregação</strong> que introduziu já foi associado a esta Zona de Controlo.",
       DataContagem:
-        "A Data de Contagem do Prazo de Conservação Administrativa da agregação tem de ser igual ou superior à Data de Início somada ao Prazo de Conservação Administrativo colocadas na respetiva Zona de Controlo.",
+        "A Data de inicio da contagem deve ser igual ou inferior à subtração do Prazo de conservação administrativa ao ano corrente. Para garantia de cumprimento integral do PCA é aconselhável adicionar a este valor um ano.",
       DataContagemP:
-        "Verifique se o campo <strong>Data de Contagem do PCA</strong> se encontra devidamente preenchido."
+        "Verifique se o campo <strong>Data de Contagem do PCA</strong> se encontra devidamente preenchido.",
+      DataContagemInicio:
+        "A Data de Inicio de contagem da Agregação <strong>não pode</strong> ser inferior à Data de Início da Classe.",
+      DonoPN:
+        "Quando o Destino Final da classe é <strong>Conservação</strong>, é obrigatório o preenchimento do campo <strong>Dono do PN</strong>"
     },
     Campos: {
       FonteLegitimacao:

@@ -1,10 +1,14 @@
 <template>
   <v-expansion-panel v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF">
     <!-- SUBCLASSES 4º NÍVEL -->
-    <v-expansion-panel-header class="expansion-panel-heading">
+    <v-expansion-panel-header  class="expansion-panel-heading">
       <div>Subclasses de nível 4</div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
+
       <v-row>
         <v-col cols="2">
         <v-tabs vertical outlined v-model="active" >
@@ -55,7 +59,7 @@
 
             <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
-            <TermosIndiceOps :c="c" />
+            <TermosIndiceOps :c="subClasse" />
 
             <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
@@ -306,7 +310,7 @@ export default {
         codigo: this.c.codigo + "." + this.pad(this.c.subclasses.length + 1, 2),
         titulo: this.c.titulo + ": ",
         descricao: "",
-        termosInd: JSON.parse(JSON.stringify(this.c.termosInd)),
+        termosInd: [],
 
         // Bloco de contexto de avaliação
 
@@ -328,7 +332,13 @@ export default {
           valor: "NE",
           notas: null,
           justificacao: []
-        }
+        },
+        // Contexto para controlar a interface de cada subclasse
+        semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
+          }
       };
 
       this.procHeranca(this.c.processosRelacionados, novaSubclasse);
@@ -338,6 +348,18 @@ export default {
 };
 </script>
 <style>
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .info-label {
   color: #00695c;
   padding: 5px;

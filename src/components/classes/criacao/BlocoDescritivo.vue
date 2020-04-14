@@ -1,19 +1,22 @@
 <template>
   <!-- BLOCO DESCRITIVO -->
   <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="expansion-panel-heading">
+    <v-expansion-panel-header  class="expansion-panel-heading">
       <div>
         Descritivo da Classe
-        <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" />
+        <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" helpColor="white"/>
       </div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row>
         <!-- DESCRIÇÂO -->
         <v-col cols="2">
           <div class="info-label">
-            Descrição:
-            <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
+            Descrição
+            <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" helpColor="indigo darken-4"/>
           </div>
         </v-col>
         <v-col>
@@ -78,6 +81,18 @@ export default {
   font-weight: 400;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;

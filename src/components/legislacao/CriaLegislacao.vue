@@ -15,13 +15,12 @@
             </v-col>
             <v-col>
               <v-select
+                filled
                 item-color="indigo"
                 color="indigo"
                 v-model="legislacao.tipo"
                 :items="tiposDiploma"
                 label="Selecione uma opção"
-                solo
-                dense
               />
             </v-col>
           </v-row>
@@ -32,51 +31,25 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
+                label="Número do diploma"
                 clearable
                 color="indigo"
                 single-line
                 v-model="legislacao.numero"
-                maxlength="11"
-                placeholder=" NNNNNN/AAAA"
-                :rules="regraNumero"
               ></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Data</div>
+              <div class="info-label">Data do diploma</div>
             </v-col>
             <v-col>
-              <v-menu
-                ref="open"
-                v-model="open"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    solo
-                    v-model="legislacao.data"
-                    hint="AAAA/MM/DD"
-                    persistent-hint
-                    @blur="date = parseDate(dateFormatted)"
-                    v-on="on"
-                    :rules="regraData"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="date"
-                  no-title
-                  @input="open = false"
-                  :max="dateCurrent"
-                ></v-date-picker>
-              </v-menu>
+              <SelecionarData
+                :d="legislacao.data"
+                @dataSelecionada="legislacao.data = $event"
+              />
             </v-col>
           </v-row>
 
@@ -86,7 +59,8 @@
             </v-col>
             <v-col>
               <v-text-field
-                solo
+                filled
+                label="Sumário"
                 clearable
                 color="indigo"
                 single-line
@@ -102,7 +76,8 @@
             <v-col>
               <v-text-field
                 v-model="legislacao.link"
-                solo
+                filled
+                label="Link"
                 clearable
                 color="indigo"
                 single-line
@@ -116,11 +91,12 @@
             </v-col>
             <v-col>
               <v-select
+                filled
+                label="Selecione uma opção"
                 item-color="indigo"
                 color="indigo"
                 v-model="legislacao.diplomaFonte"
                 :items="diplomaFonteTipo"
-                solo
                 dense
               />
             </v-col>
@@ -129,9 +105,15 @@
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Entidade responsável pela publicação</v-expansion-panel-header
-              >
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
+                  Entidade responsável pela publicação
+                </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelEnt
                   :entidades="entSel"
@@ -151,10 +133,15 @@
 
             <!-- Segundo bloco expansivo -->
             <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Processos de negócio que regula ou
-                enquadra</v-expansion-panel-header
-              >
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
+                  Processos de negócio que regula ou enquadra
+                </div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <DesSelProc
                   :processos="procSel"
@@ -190,6 +177,7 @@
 </template>
 
 <script>
+import SelecionarData from "@/components/generic/SelecionarData";
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 
@@ -199,92 +187,58 @@ import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
 import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 
 export default {
-  data: vm => ({
-    legislacao: {
-      numero: "",
-      sumario: "",
-      tipo: "",
-      data: "",
-      link: "",
-      diplomaFonte: "Não aplicável",
-      entidadesSel: [],
-      processosSel: [],
-      codigo: ""
-    },
+  data() {
+    return {
+      legislacao: {
+        numero: "",
+        sumario: "",
+        tipo: "",
+        data: "",
+        link: "",
+        diplomaFonte: "Não especificada",
+        entidadesSel: [],
+        processosSel: [],
+        codigo: "",
+        estado: "Ativo",
+      },
 
-    tiposDiploma: [],
+      tiposDiploma: [],
 
-    diplomaFonteTipo: ["Não aplicável", "PGD", "PGD/LC", "RADA"],
+      diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
 
-    // Para o seletor de entidades
-    entidades: [],
-    entSel: [],
-    entidadesReady: false,
+      // Para o seletor de entidades
+      entidades: [],
+      entSel: [],
+      entidadesReady: false,
 
-    // vuetify datepicker
-    date: new Date().toISOString().substr(0, 10),
-    dateCurrent: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-    open: false,
+      // Para o seletor de processos
+      processos: [],
+      procSel: [],
+      processosReady: false,
 
-    // Para o seletor de processos
-    processos: [],
-    procSel: [],
-    processosReady: false,
+      // regras para submissão
+      regraNumero: [
+        (v) =>
+          /[0-9]+(-\w)?\/[0-9]+$/.test(v) ||
+          "Este campo está no formato errado.",
+      ],
 
-    // regras para submissão
-    regraNumero: [
-      v =>
-        /[0-9]+(-\w)?\/[0-9]+$/.test(v) || "Este campo está no formato errado."
-    ],
-    regraData: [
-      v =>
-        /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || "Este campo está no formato errado."
-    ],
-
-    // para mostrar mensagens de erro
-    snackbar: false,
-    text: ""
-  }),
+      // para mostrar mensagens de erro
+      snackbar: false,
+      text: "",
+    };
+  },
 
   components: {
     DesSelEnt,
     SelEnt,
     DesSelProc,
     SelProc,
-    PainelOpsLeg
-  },
-
-  // vuetify datepicker
-  computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date);
-    }
-  },
-
-  watch: {
-    date(val) {
-      this.legislacao.data = this.formatDate(this.date);
-      this.dateFormatted = this.formatDate(this.date);
-    }
+    PainelOpsLeg,
+    SelecionarData,
   },
 
   methods: {
-    // vuetify datepicker
-    formatDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("-");
-      return `${year}/${month}/${day}`;
-    },
-
-    parseDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
-
     // Vai a API buscar todos os tipos de diplomas legislativos
     loadTipoDiploma: async function() {
       try {
@@ -304,7 +258,7 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      let index = this.entSel.findIndex(e => e.id === entidade.id);
+      let index = this.entSel.findIndex((e) => e.id === entidade.id);
       this.entSel.splice(index, 1);
       this.legislacao.entidadesSel = this.entSel;
     },
@@ -313,7 +267,7 @@ export default {
       this.entSel.push(entidade);
       this.legislacao.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      let index = this.entidades.findIndex(e => e.id === entidade.id);
+      let index = this.entidades.findIndex((e) => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
@@ -325,7 +279,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
         this.entidadesReady = true;
@@ -337,7 +291,7 @@ export default {
     unselectProcesso: function(processo) {
       // Recoloca o processo nos selecionáveis
       this.processos.push(processo);
-      let index = this.procSel.findIndex(e => e.id === processo.id);
+      let index = this.procSel.findIndex((e) => e.id === processo.id);
       this.procSel.splice(index, 1);
       this.legislacao.processosSel = this.procSel;
     },
@@ -346,7 +300,7 @@ export default {
       this.procSel.push(processo);
       this.legislacao.processosSel = this.procSel;
       // Remove dos selecionáveis
-      let index = this.processos.findIndex(e => e.id === processo.id);
+      let index = this.processos.findIndex((e) => e.id === processo.id);
       this.processos.splice(index, 1);
     },
 
@@ -358,7 +312,7 @@ export default {
           return {
             codigo: item.codigo,
             titulo: item.titulo,
-            id: item.codigo
+            id: item.codigo,
           };
         });
         this.processosReady = true;
@@ -370,19 +324,30 @@ export default {
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
   created: function() {
-    this.legislacao.data = this.dateFormatted;
     this.loadTipoDiploma();
     this.loadEntidades();
     this.loadClasses();
-  }
+  },
 };
 </script>
 
 <style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

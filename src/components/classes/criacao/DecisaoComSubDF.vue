@@ -5,7 +5,10 @@
     <v-card-text>
       <v-row class="ma-2">
         <v-col cols="2">
-          <div class="info-label">Destino</div>
+          <div class="info-label">
+            Destino
+            <InfoBox header="Destino" :text="myhelp.Classe.Campos.DF" />
+          </div>
         </v-col>
         <v-col>
           <SelectValueFromList
@@ -22,7 +25,10 @@
 
       <v-row class="ma-2">
         <v-col cols="2">
-          <div class="info-label">Notas</div>
+          <div class="info-label">
+            Notas
+            <InfoBox header="Notas" :text="myhelp.Classe.Campos.NotasDF" />
+          </div>
         </v-col>
         <v-col>
           <v-textarea
@@ -42,7 +48,10 @@
       <!-- JUSTIFICAÇÂO DO DF -->
       <v-row class="ma-2">
         <v-col cols="3">
-          <div class="ma-2 info-label">Justificação do DF</div>
+          <div class="ma-2 info-label">
+            Justificação do DF
+            <InfoBox header="Justificação do DF" :text="myhelp.Classe.Campos.JustificacaoDF" />
+          </div>
 
           <div class="ma-2">
             <v-btn
@@ -131,9 +140,12 @@
 </template>
 
 <script>
+const help = require("@/config/help").help;
+
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 import SelectValueFromList from "@/components/generic/SelectValueFromList.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
@@ -141,7 +153,8 @@ export default {
   components: {
     ProcessosRelacionadosOps,
     LegislacaoOps,
-    SelectValueFromList
+    SelectValueFromList,
+    InfoBox
   },
 
   created: function(){
@@ -168,6 +181,8 @@ export default {
 
   data: function() {
     return {
+      myhelp: help,
+
       destinoFinalTipos: [
         { label: "Não Especificado", value: "NE" },
         { label: "Conservação", value: "C" },

@@ -25,18 +25,18 @@ export default {
     cabecalhos: [],
     operacoes: [],
     ids: [],
-    legislacaoReady: false
+    legislacaoReady: false,
   }),
   components: {
     Listagem,
-    Loading
+    Loading,
   },
 
   methods: {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" }
+          { icon: "edit", descricao: "Alteração" },
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }
@@ -45,12 +45,12 @@ export default {
     preparaCabecalhos(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.cabecalhos = [
-          "Data",
+          "Data do diploma",
           "Tipo",
           "Entidade(s)",
           "Número",
           "Sumário",
-          "Operações"
+          "Operações",
         ];
         this.campos = [
           "data",
@@ -58,10 +58,16 @@ export default {
           "entidades",
           "numero",
           "sumario",
-          "operacoes"
+          "operacoes",
         ];
       } else {
-        this.cabecalhos = ["Data", "Tipo", "Entidade(s)", "Número", "Sumário"];
+        this.cabecalhos = [
+          "Data do diploma",
+          "Tipo",
+          "Entidade(s)",
+          "Número",
+          "Sumário",
+        ];
         this.campos = ["data", "tipo", "entidades", "numero", "sumario"];
       }
     },
@@ -69,7 +75,7 @@ export default {
     preparaLista(listaLegislacao) {
       let myTree = [];
 
-      if (this.operacoes.length != 0) {
+      if (this.operacoes.length !== 0) {
         for (let i = 0; i < listaLegislacao.length; i++) {
           let temp = "";
 
@@ -83,15 +89,25 @@ export default {
 
           listaLegislacao[i].entidades = temp;
 
-          myTree.push({
-            data: listaLegislacao[i].data,
-            tipo: listaLegislacao[i].tipo,
-            entidades: listaLegislacao[i].entidades,
-            numero: listaLegislacao[i].numero,
-            sumario: listaLegislacao[i].sumario,
-            operacoes: this.operacoes,
-            id: listaLegislacao[i].id
-          });
+          if (listaLegislacao[i].estado === "Ativo")
+            myTree.push({
+              data: listaLegislacao[i].data,
+              tipo: listaLegislacao[i].tipo,
+              entidades: listaLegislacao[i].entidades,
+              numero: listaLegislacao[i].numero,
+              sumario: listaLegislacao[i].sumario,
+              operacoes: this.operacoes,
+              id: listaLegislacao[i].id,
+            });
+          else
+            myTree.push({
+              data: listaLegislacao[i].data,
+              tipo: listaLegislacao[i].tipo,
+              entidades: listaLegislacao[i].entidades,
+              numero: listaLegislacao[i].numero,
+              sumario: listaLegislacao[i].sumario,
+              id: listaLegislacao[i].id,
+            });
         }
       } else {
         for (let i = 0; i < listaLegislacao.length; i++) {
@@ -113,7 +129,7 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
-            id: listaLegislacao[i].id
+            id: listaLegislacao[i].id,
           });
         }
       }
@@ -127,15 +143,15 @@ export default {
       for (let i = 0; i < listaLegislacao.length; i++) {
         ids.push({
           numero: listaLegislacao[i].numero,
-          id: listaLegislacao[i].id
+          id: listaLegislacao[i].id,
         });
       }
 
       return ids;
-    }
+    },
   },
 
-  created: async function() {
+  created: async function () {
     try {
       let response = await this.$request("get", "/legislacao");
 
@@ -153,6 +169,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

@@ -50,32 +50,33 @@
 
 <script>
 export default {
-  props: ["t", "acao"],
+  props: ["t", "acao", "original"],
   data() {
     return {
       dialog: false,
       dialogSemErros: false,
 
       mensagensErro: [],
-      numeroErros: 0
     };
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
     async validarTipologiaCriacao() {
+      let numeroErros = 0;
+
       // Designação
-      if (this.t.designacao == "" || this.t.designacao == null) {
+      if (this.t.designacao === "" || this.t.designacao === null) {
         this.mensagensErro.push({
           sobre: "Nome da Tipologia",
-          mensagem: "O nome da tipologia não pode ser vazio."
+          mensagem: "O nome da tipologia não pode ser vazio.",
         });
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeDesignacao = await this.$request(
@@ -85,27 +86,27 @@ export default {
           );
           if (existeDesignacao.data) {
             this.mensagensErro.push({
-              sobre: "Designação",
-              mensagem: "Designação já existente na BD."
+              sobre: "Nome da Tipologia",
+              mensagem: "Nome da tipologia já existente na BD.",
             });
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
           this.mensagensErro.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação."
+            mensagem: "Não consegui verificar a existência da designação.",
           });
         }
       }
 
       // Sigla
-      if (this.t.sigla == "" || this.t.sigla == null) {
+      if (this.t.sigla === "" || this.t.sigla === null) {
         this.mensagensErro.push({
           sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
+          mensagem: "A sigla não pode ser vazia.",
         });
-        this.numeroErros++;
+        numeroErros++;
       } else {
         try {
           let existeSigla = await this.$request(
@@ -115,55 +116,48 @@ export default {
           if (existeSigla.data) {
             this.mensagensErro.push({
               sobre: "Sigla",
-              mensagem: "Sigla já existente na BD."
+              mensagem: "Sigla já existente na BD.",
             });
-            this.numeroErros++;
+            numeroErros++;
           }
         } catch (err) {
-          this.numeroErros++;
+          numeroErros++;
           this.mensagensErro.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da sigla."
+            mensagem: "Não consegui verificar a existência da sigla.",
           });
         }
       }
-    },
 
-    validarTipologiaAlteracao() {
-      // Designação
-      if (this.t.designacao == "" || this.t.designacao == null) {
-        this.mensagensErro.push({
-          sobre: "Nome da Tipologia",
-          mensagem: "O nome da tipologia não pode ser vazio."
-        });
-        this.numeroErros++;
-      }
-
-      // Sigla
-      if (this.t.sigla == "" || this.t.sigla == null) {
-        this.mensagensErro.push({
-          sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia."
-        });
-        this.numeroErros++;
-      }
+      return numeroErros;
     },
 
     async validarTipologia() {
+      let erros = 0;
+      let dataObj = JSON.parse(JSON.stringify(this.t));
+
       switch (this.acao) {
         case "Criação":
-          await this.validarTipologiaCriacao();
+          erros = await this.validarTipologiaCriacao();
           break;
 
         case "Alteração":
-          this.validarTipologiaAlteracao();
+          for (const key in dataObj) {
+            if (
+              typeof dataObj[key] === "string" &&
+              dataObj[key] === this.original[key]
+            ) {
+              if (key !== "sigla") delete dataObj[key];
+            }
+          }
+
           break;
 
         default:
           break;
       }
 
-      if (this.numeroErros > 0) {
+      if (erros > 0) {
         this.dialog = true;
       } else {
         this.dialogSemErros = true;
@@ -171,10 +165,9 @@ export default {
     },
 
     limpaErros: function() {
-      this.numeroErros = 0;
       this.mensagensErro = [];
-    }
-  }
+    },
+  },
 };
 </script>
 

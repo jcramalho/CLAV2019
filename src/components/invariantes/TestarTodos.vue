@@ -3,7 +3,15 @@
     <v-row row wrap justify-center>
       <v-col cols="11" v-if="erro == '' && invs.length > 0 && !loading">
         <div v-for="(inv, index) in invs" :key="index">
-          <TabelaErros :inv="inv" />
+          <TabelaErros
+            :inv="inv"
+            :idRel="inv.idRel"
+            :idInv="inv.idInv"
+            @erro="updateErroTE"
+          />
+          <v-alert :value="erroTE != ''" type="error">
+            {{ erroTE }}
+          </v-alert>
           <br />
         </div>
       </v-col>
@@ -41,6 +49,7 @@ export default {
   data: () => ({
     invs: [],
     erro: "",
+    erroTE: "",
     loading: true
   }),
   components: {
@@ -58,6 +67,11 @@ export default {
           "Não foi possível testar os invariantes... Tente novamente mais tarde.";
         this.loading = false;
       });
+  },
+  methods: {
+    updateErroTE: function(erro) {
+      this.erroTE = erro;
+    }
   }
 };
 </script>

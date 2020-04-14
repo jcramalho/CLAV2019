@@ -5,147 +5,143 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
-            >Editar Entidade</v-toolbar-title
+            >Editar Entidade ({{ entidadeOriginal.sigla }} -
+            {{ entidadeOriginal.designacao }})</v-toolbar-title
           >
         </v-app-bar>
 
         <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nome da Entidade:</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.designacao"
-                maxlength="150"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+        <v-card-text class="ma-0 pa-0">
+          <v-stepper v-model="etapa" vertical>
+            <!-- Step 1 -->
+            <v-stepper-step :complete="etapa > 1" step="1" editable>
+              Escolha a operação
+            </v-stepper-step>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Sigla:</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.sigla"
-                maxlength="10"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Internacional:</div>
-            </v-col>
-            <v-col>
-              <v-select
-                v-model="entidade.internacional"
-                :items="['Sim', 'Não']"
-                label="Selecione uma opção"
-                item-color="indigo"
-                color="indigo"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">SIOE:</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                solo
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.sioe"
-                type="number"
-                :rules="regraSIOE"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Data de extinção:
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" color="warning">info</v-icon>
-                  </template>
-                  <span
-                    >Ao clicar neste campo adiciona uma data de extinção à
-                    entidade!</span
-                  >
-                </v-tooltip>
+            <v-stepper-content step="1">
+              <div class="ma-4">
+                <v-radio-group v-model="acao" row>
+                  <v-radio label="Editar" value="Alteração"></v-radio>
+                  <v-radio label="Extinguir" value="Extinção"></v-radio>
+                </v-radio-group>
               </div>
-            </v-col>
-            <v-col>
-              <v-menu
-                ref="open"
-                v-model="open"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    solo
-                    v-model="entidade.dataExtincao"
-                    hint="AAAA/MM/DD"
-                    persistent-hint
-                    @blur="date = parseDate(dateFormatted)"
-                    v-on="on"
-                    :rules="regraData"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="date"
-                  no-title
-                  @input="open = false"
-                  :max="new Date().toISOString().substr(0, 10)"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-row>
 
-          <!-- Blocos expansivos -->
-          <v-expansion-panels>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading"
-                >Tipologias de Entidade</v-expansion-panel-header
-              >
-              <v-expansion-panel-content>
-                <DesSelTip
-                  :tipologias="tipSel"
-                  @unselectTipologia="unselectTipologia($event)"
-                />
+              <v-btn color="primary" @click="etapa = 2">
+                Continuar
+              </v-btn>
+            </v-stepper-content>
 
-                <hr style="border-top: 1px dashed #dee2f8;" />
+            <!-- Step 2 -->
+            <v-stepper-step :complete="etapa > 2" step="2">{{
+              acao
+            }}</v-stepper-step>
 
-                <SelTip
-                  :tipologiasReady="tipologiasReady"
-                  :tipologias="tipologias"
-                  @selectTipologia="selectTipologia($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+            <v-stepper-content step="2">
+              <div v-if="acao === 'Alteração'">
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Nome da Entidade</div>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      filled
+                      clearable
+                      label="Nome da Entidade"
+                      color="indigo"
+                      single-line
+                      v-model="entidade.designacao"
+                    />
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Internacional</div>
+                  </v-col>
+                  <v-col>
+                    <v-select
+                      filled
+                      v-model="entidade.internacional"
+                      :items="['Sim', 'Não']"
+                      label="Selecione uma opção"
+                      item-color="indigo"
+                      color="indigo"
+                    />
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">SIOE</div>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      filled
+                      clearable
+                      label="SIOE"
+                      color="indigo"
+                      single-line
+                      v-model="entidade.sioe"
+                      :rules="regraSIOE"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Data de criação</div>
+                  </v-col>
+                  <v-col>
+                    <SelecionarData
+                      :d="entidade.dataCriacao"
+                      @dataSelecionada="entidade.dataCriacao = $event"
+                    />
+                  </v-col>
+                </v-row>
+
+                <!-- Blocos expansivos -->
+                <v-expansion-panels>
+                  <v-expansion-panel popout focusable>
+                    <v-expansion-panel-header class="expansion-panel-heading">
+                      <div>Tipologias de Entidade</div>
+
+                      <template v-slot:actions>
+                        <v-icon color="white">expand_more</v-icon>
+                      </template>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <DesSelTip
+                        :tipologias="tipSel"
+                        @unselectTipologia="unselectTipologia($event)"
+                      />
+
+                      <hr style="border-top: 1px dashed #dee2f8;" />
+
+                      <SelTip
+                        :tipologiasReady="tipologiasReady"
+                        :tipologias="tipologias"
+                        @selectTipologia="selectTipologia($event)"
+                      />
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </div>
+
+              <div v-else>
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Data de extinção</div>
+                  </v-col>
+                  <v-col>
+                    <SelecionarData
+                      :d="entidade.dataExtincao"
+                      @dataSelecionada="entidade.dataExtincao = $event"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+            </v-stepper-content>
+          </v-stepper>
         </v-card-text>
         <v-snackbar
           v-model="snackbar"
@@ -157,7 +153,13 @@
           <v-btn text @click="fecharSnackbar">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      <PainelOpsEnt :e="entidade" :acao="'Alteração'" />
+
+      <PainelOpsEnt
+        v-if="etapa === 2"
+        :e="entidade"
+        :original="entidadeOriginal"
+        :acao="acao"
+      />
     </v-col>
   </v-row>
 </template>
@@ -166,78 +168,48 @@
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
+import SelecionarData from "@/components/generic/SelecionarData";
 
 export default {
   props: ["e"],
   components: {
     DesSelTip,
     SelTip,
-    PainelOpsEnt
+    PainelOpsEnt,
+    SelecionarData,
   },
 
-  data: vm => ({
-    entidade: {
-      designacao: "",
-      sigla: "",
-      internacional: "",
-      sioe: "",
-      tipologiasSel: [],
-      codigo: "",
-      dataExtincao: ""
-    },
+  data() {
+    return {
+      etapa: 1,
+      entidade: {
+        designacao: "",
+        sigla: "",
+        internacional: "",
+        sioe: "",
+        tipologiasSel: [],
+        codigo: "",
+        dataCriacao: "",
+        dataExtincao: "",
+      },
+      entidadeOriginal: {},
+      acao: "Alteração",
 
-    // vuetify datepicker
-    date: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-    open: false,
+      // Para o seletor de processos
+      tipologias: [],
+      tipSel: [],
+      tipologiasReady: false,
 
-    // Para o seletor de processos
-    tipologias: [],
-    tipSel: [],
-    tipologiasReady: false,
+      regraSIOE: [
+        (v) => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos.",
+      ],
 
-    regraSIOE: [
-      v => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos."
-    ],
-    regraData: [
-      v =>
-        /[0-9]+\/[0-9]+\/[0-9]+/.test(v) || "Este campo está no formato errado."
-    ],
-
-    snackbar: false,
-    text: ""
-  }),
-
-  // vuetify datepicker
-  computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date);
-    }
-  },
-
-  watch: {
-    date(val) {
-      this.entidade.dataExtincao = this.formatDate(this.date);
-      this.dateFormatted = this.formatDate(this.date);
-    }
+      snackbar: false,
+      text: "",
+    };
   },
 
   methods: {
-    // vuetify datepicker
-    formatDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("-");
-      return `${year}/${month}/${day}`;
-    },
-
-    parseDate(date) {
-      if (!date) return null;
-
-      const [year, month, day] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-    },
-
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
@@ -247,7 +219,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
 
@@ -260,7 +232,7 @@ export default {
     unselectTipologia: function(tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
-      let index = this.tipSel.findIndex(e => e.id === tipologia.id);
+      let index = this.tipSel.findIndex((e) => e.id === tipologia.id);
       this.tipSel.splice(index, 1);
       this.entidade.tipologiasSel = this.tipSel;
     },
@@ -269,27 +241,29 @@ export default {
       this.tipSel.push(tipologia);
       this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
-      let index = this.tipologias.findIndex(e => e.id === tipologia.id);
+      let index = this.tipologias.findIndex((e) => e.id === tipologia.id);
       this.tipologias.splice(index, 1);
     },
 
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
 
   created: async function() {
-    this.entidade = this.e;
+    this.entidade = JSON.parse(JSON.stringify(this.e));
+    this.entidadeOriginal = JSON.parse(JSON.stringify(this.e));
 
     await this.loadTipologias();
 
     try {
-      if (this.entidade.tipologiasSel.length != 0) {
-        this.entidade.tipologiasSel.forEach(tip => {
+      if (this.entidade.tipologiasSel.length !== 0) {
+        this.entidade.tipologiasSel.forEach((tip) => {
           this.tipSel.push(tip);
+
           // Remove dos selecionáveis
-          let index = this.tipologias.findIndex(t => t.id === tip.id);
+          let index = this.tipologias.findIndex((t) => t.id === tip.id);
           this.tipologias.splice(index, 1);
         });
       }
@@ -297,11 +271,23 @@ export default {
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
-  }
+  },
 };
 </script>
 
 <style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-for="(info, i) in legislacaoInfo" :key="i">
+    <v-row v-for="(info, i) in infoPedido" :key="i">
       <!-- Label -->
       <v-col
         cols="2"
@@ -19,10 +19,6 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
-          </template>
-
           <template v-slot:top>
             <v-toolbar flat :color="info.cor">
               <v-spacer />
@@ -53,65 +49,57 @@
       <v-spacer />
       <PO
         operacao="Validar"
-        @avancarPedido="encaminharPedido($event)"
-        @finalizarPedido="finalizarPedido()"
+        @finalizarPedido="finalizarPedido($event)"
+        @devolverPedido="despacharPedido($event)"
       />
     </v-row>
+
+    <!-- Dialog se existir erros no pedido à API -->
+    <v-dialog v-model="erroPedido" width="80%" hide-overlay>
+      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import PO from "@/components/pedidos/analise/PainelOperacoes";
+import PO from "@/components/pedidos/generic/PainelOperacoes";
+import ErroDialog from "@/components/pedidos/generic/ErroDialog";
+
 export default {
   props: ["p"],
 
   components: {
-    PO
+    PO,
+    ErroDialog,
   },
 
   data() {
     return {
+      erros: [],
+      erroPedido: false,
       dialogTipologias: false,
-      legislacaoInfo: [
-        {
-          campo: "Sigla",
-          conteudo: this.p.objeto.dados.sigla,
-          cor: null
-        },
+      infoPedido: [
         {
           campo: "Designação",
           conteudo: this.p.objeto.dados.designacao,
-          cor: null
+          cor: null,
         },
         {
           campo: "Internacional",
           conteudo: this.p.objeto.dados.internacional,
-          cor: null
+          cor: null,
         },
         { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
         {
           campo: "Tipologias",
           conteudo: this.p.objeto.dados.tipologiasSel,
-          cor: null
+          cor: null,
         },
-        {
-          campo: "Data Extinção",
-          conteudo: this.p.objeto.dados.dataExtincao,
-          cor: null
-        }
       ],
       headersTipologias: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center"
-        }
-      ]
+      ],
     };
   },
 
@@ -124,13 +112,13 @@ export default {
           "get",
           "/users/" + this.$store.state.token + "/token"
         );
-
         dadosUtilizador = dadosUtilizador.data;
+
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -140,7 +128,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -149,85 +137,171 @@ export default {
       }
     },
 
-    async encaminharPedido(dados) {
+    async finalizarPedido(dados) {
       try {
-        const estado = "Apreciado";
-
-        let dadosUtilizador = dados.utilizadorSelecionado;
-
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho
-        };
-
         let pedido = JSON.parse(JSON.stringify(this.p));
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao
-        });
-
-        this.$router.go(-1);
-      } catch (e) {
-        console.log("e :", e);
-      }
-    },
-
-    async finalizarPedido() {
-      try {
-        const estado = "Validado";
-
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
+        let numeroErros = await this.validarEntidade(
+          pedido.objeto.acao,
+          pedido.objeto.dados
         );
 
-        dadosUtilizador = dadosUtilizador.data;
+        if (numeroErros > 0) {
+          this.erroPedido = true;
+        } else {
+          for (const key in pedido.objeto.dados) {
+            if (
+              pedido.objeto.dados[key] === undefined ||
+              pedido.objeto.dados[key] === null ||
+              pedido.objeto.dados[key] === ""
+            ) {
+              delete pedido.objeto.dados[key];
+            }
+          }
 
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date()
-          // despacho: dados.mensagemDespacho
-        };
+          await this.$request("post", "/entidades", pedido.objeto.dados);
 
-        let pedido = JSON.parse(JSON.stringify(this.p));
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+          const estado = "Validado";
 
-        // TODO: Fica assim?
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao
-        });
+          let dadosUtilizador = await this.$request(
+            "get",
+            "/users/" + this.$store.state.token + "/token"
+          );
+          dadosUtilizador = dadosUtilizador.data;
 
-        await this.$request("post", "/entidades", pedido.objeto.dados);
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho,
+          };
 
-        this.$router.go(-1);
+          pedido.estado = estado;
+          pedido.token = this.$store.state.token;
+
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao,
+          });
+
+          this.$router.go(-1);
+        }
       } catch (e) {
+        this.erros.push({
+          sobre: "Acesso à Ontologia",
+          mensagem: "Ocorreu um erro ao aceder à ontologia.",
+        });
+        this.erroPedido = true;
         console.log("e :", e);
       }
     },
 
     verifica(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "green lighten-3";
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.legislacaoInfo.findIndex(o => o.campo == obj.campo);
-      this.legislacaoInfo[i].cor = "red lighten-3";
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      this.infoPedido[i].cor = "red lighten-3";
+    },
+
+    fecharErro() {
+      this.erroPedido = false;
     },
 
     close() {
-      this.dialogtipologias = false;
-      this.dialogProcessos = false;
-    }
-  }
+      this.dialogTipologias = false;
+    },
+
+    async validarEntidade(acao, dados) {
+      let numeroErros = 0;
+
+      // Designação
+      if (
+        (dados.designacao === "" || dados.designacao === null) &&
+        acao === "Criação"
+      ) {
+        this.erros.push({
+          sobre: "Nome da Entidade",
+          mensagem: "O nome da entidade não pode ser vazio.",
+        });
+        numeroErros++;
+      } else if (acao === "Criação") {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/entidades/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            this.erros.push({
+              sobre: "Nome da Entidade",
+              mensagem: "Nome da entidade já existente na BD.",
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação.",
+          });
+        }
+      }
+
+      // Sigla
+      if ((dados.sigla === "" || dados.sigla === null) && acao === "Criação") {
+        this.erros.push({
+          sobre: "Sigla",
+          mensagem: "A sigla não pode ser vazia.",
+        });
+        numeroErros++;
+      } else if (acao === "Criação") {
+        try {
+          let existeSigla = await this.$request(
+            "get",
+            "/entidades/sigla?valor=" + encodeURIComponent(dados.sigla)
+          );
+          if (existeSigla.data) {
+            this.erros.push({
+              sobre: "Sigla",
+              mensagem: "Sigla já existente na BD.",
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da sigla.",
+          });
+        }
+      }
+
+      // Internacional
+      if (dados.internacional === "" || dados.internacional === null) {
+        this.erros.push({
+          sobre: "Internacional",
+          mensagem: "O campo internacional tem de ter uma opção.",
+        });
+        numeroErros++;
+      }
+
+      // SIOE
+      if (dados.sioe !== "" && dados.sioe !== null) {
+        if (dados.sioe.length > 12) {
+          this.erros.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
+          });
+          numeroErros++;
+        }
+      }
+
+      return numeroErros;
+    },
+  },
 };
 </script>
 
