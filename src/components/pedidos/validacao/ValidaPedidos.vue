@@ -101,7 +101,7 @@ export default {
       this.pedidoLoaded = true;
       this.loading = false;
     } catch (e) {
-      console.log("e :", e);
+      //console.log("e :", e);
     }
   },
 };

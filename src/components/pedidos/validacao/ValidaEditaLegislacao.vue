@@ -30,7 +30,8 @@
           hide-default-footer
         >
           <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
+            <!--<v-icon color="red" @click="">delete</v-icon>-->
+            <v-icon color="red">delete</v-icon>
           </template>
 
           <template v-slot:top>
@@ -166,7 +167,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
@@ -221,7 +222,7 @@ export default {
           mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
         this.erroPedido = true;
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 

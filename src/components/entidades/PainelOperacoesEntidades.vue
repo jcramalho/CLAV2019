@@ -278,7 +278,7 @@ export default {
       //   });
       //   this.numeroErros++;
       // } else
-      if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.e.dataCriacao)) {
+      if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.e.dataCriacao)) {
         this.mensagensErro.push({
           sobre: "Data",
           mensagem: "A data está no formato errado.",
@@ -330,7 +330,7 @@ export default {
       // } else
       if (
         dados.dataCriacao !== undefined &&
-        !/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.dataCriacao)
+        !/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataCriacao)
       ) {
         numeroErros++;
       }
@@ -348,7 +348,7 @@ export default {
         dados.dataExtincao === undefined
       ) {
         numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.dataExtincao)) {
+      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataExtincao)) {
         numeroErros++;
       }
 

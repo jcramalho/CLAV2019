@@ -261,7 +261,7 @@ export default {
       // Data
       if (this.l.data === "" || this.l.data === null) {
         numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
+      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.l.data)) {
         numeroErros++;
       }
 
