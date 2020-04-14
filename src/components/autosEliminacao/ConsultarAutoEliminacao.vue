@@ -11,7 +11,7 @@
               <div class="info-label">Número</div>
             </td>
             <td style="width:80%;">
-              {{ auto.id.split("ae_")[1].replace(/\_/g,"/") }}
+              {{ ((auto.id || "").split("ae_")[1] || "").replace(/\_/g,"/") }}
             </td>
           </tr>
           <tr>
@@ -27,7 +27,7 @@
               <div class="info-label">Entidade Responsável</div>
             </td>
             <td style="width:80%;">
-              <a :href="'/entidades/' + auto.entidade">{{ auto.entidade.split("_")[1] +" - "+auto.entidadeNome}}</a>{{" ("+auto.responsavel+")"}}
+              <a :href="'/entidades/' + auto.entidade">{{ (auto.entidade || "").split("_")[1] +" - "+auto.entidadeNome}}</a>{{" ("+auto.responsavel+")"}}
             </td>
           </tr>
           <tr>
@@ -44,7 +44,7 @@
             </td>
             <td style="width:80%;">
               <li v-for="(f,i) in auto.fundo" :key="i">
-                <a :href="'/entidades/' + f">{{ f.fundo.split("_")[1] +" - "+f.nome}}</a>
+                <a :href="'/entidades/' + f">{{ (f.fundo || "").split("_")[1] +" - "+f.nome}}</a>
               </li>
             </td>
           </tr>
@@ -127,7 +127,7 @@
                             <div class="info-label">Dono do PN:</div>
                           </td>
                           <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">
-                            <a :href='"/entidade/"+d.dono' >{{ d.dono.split("_")[1] +" - "+d.nome }}</a>
+                            <a :href='"/entidade/"+d.dono' >{{ (d.dono || "").split("_")[1] +" - "+d.nome }}</a>
                           </li></td>
                         </tr>
                         <tr>
