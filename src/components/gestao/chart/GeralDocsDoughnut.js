@@ -1,6 +1,7 @@
 import { Doughnut } from "vue-chartjs";
 
 export default {
+  /* eslint-disable */
   extends: Doughnut,
   data() {
     return {
@@ -30,8 +31,9 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/stats/legativos")
+    this.$request("get", "/indicadores/legVigor")
       .then(res => {
+        console.log(res)
         this.info.datasets[0].data[0] = res.data[0].valor;
         this.info.datasets[0].data[1] = res.data[1].valor;
         this.renderChart(this.info, this.options);

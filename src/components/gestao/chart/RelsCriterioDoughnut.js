@@ -37,7 +37,7 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/stats/critstats")
+    this.$request("get", "/indicadores/critstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
           switch (i){

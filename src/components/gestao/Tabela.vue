@@ -64,7 +64,7 @@
   },
   methods: {
     async getIndicadores() {
-      await this.$request("get", "/stats/tabela")
+      await this.$request("get", "/indicadores/tabela")
         .then(res => {
           this.indicadores = res.data;
           this.indicadores.forEach(element => {

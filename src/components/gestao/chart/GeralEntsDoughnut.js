@@ -30,7 +30,7 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/stats/entativas")
+    this.$request("get", "/indicadores/entidadesAtivas")
       .then(res => {
         this.info.datasets[0].data[0] = res.data[0].valor;
         this.info.datasets[0].data[1] = res.data[1].valor;
