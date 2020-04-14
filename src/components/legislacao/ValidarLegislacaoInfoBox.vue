@@ -119,7 +119,7 @@ export default {
           mensagem: "A data não pode ser vazia.",
         });
         numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(this.l.data)) {
+      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.l.data)) {
         this.mensagensErro.push({
           sobre: "Data",
           mensagem: "A data está no formato errado.",

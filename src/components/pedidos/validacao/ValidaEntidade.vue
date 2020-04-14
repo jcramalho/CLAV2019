@@ -133,7 +133,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
@@ -192,7 +192,7 @@ export default {
           mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
         this.erroPedido = true;
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
