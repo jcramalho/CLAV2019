@@ -13,7 +13,8 @@ export default {
   props: ["obj"],
 
   components: {
-    ContinuaClasse12, ContinuaClasse34
+    ContinuaClasse12,
+    ContinuaClasse34
   }
 };
 </script>

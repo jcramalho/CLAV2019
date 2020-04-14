@@ -374,7 +374,7 @@ export default {
 
     loadLegislacao: async function() {
       try {
-        var response = await this.$request("get", "/legislacao?estado=A");
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {
