@@ -159,6 +159,8 @@ export default {
       // } else
       if (
         this.e.dataCriacao !== undefined &&
+        this.e.dataCriacao !== "" &&
+        this.e.dataCriacao !== null &&
         !/[0-9]+-[0-9]+-[0-9]+/.test(this.e.dataCriacao)
       ) {
         this.mensagensErro.push({

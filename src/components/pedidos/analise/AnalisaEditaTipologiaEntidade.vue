@@ -31,9 +31,12 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacao="{ item }">
-            <!--<v-icon color="red" @click="">delete</v-icon>-->
-            <v-icon color="red">delete</v-icon>
+          <template v-slot:item="props">
+            <tr>
+              <td>{{ props.item.sigla }}</td>
+              <td>{{ props.item.designacao }}</td>
+              <td><v-icon color="red">delete</v-icon></td>
+            </tr>
           </template>
 
           <template v-slot:top>
