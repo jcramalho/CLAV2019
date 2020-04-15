@@ -8,7 +8,6 @@
         name="indicadores.csv"
         :labels="labels"
         :fields="fields"
-        v-on:export-finished="exported"
       >
         <v-btn class="ml-5" fab small color="indigo darken-4">
           <v-icon color="white">cloud_download</v-icon>
