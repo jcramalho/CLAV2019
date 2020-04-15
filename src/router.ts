@@ -385,25 +385,25 @@ export default new Router({
       path: "/gestao/metrica",
       name: "metrica",
       component: () => import("./views/gestao/Metrica.vue"),
-      meta: { levels: [6, 7] },
+      meta: { levels: [3.5, 4, 5, 6, 7] },
     },
     {
       path: "/gestao/classes",
       name: "indicadores",
       component: () => import("./views/gestao/Classe.vue"),
-      meta: { levels: [6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7] }
     },
     {
       path: "/gestao/gerais",
       name: "gerais",
       component: () => import("./views/gestao/Geral.vue"),
-      meta: { levels: [6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7] }
     },
     {
       path: "/gestao/tabela",
       name: "tabela",
       component: () => import("./views/gestao/Tabela.vue"),
-      meta: { levels: [6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7] }
     },
     //Chaves API
     {

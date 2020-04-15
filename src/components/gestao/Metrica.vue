@@ -16,11 +16,11 @@
                   <v-flex d-flex xs12>
                     <div class="silver--text display-1">{{ stat.data }}</div>
                     <v-btn
-                      outline
+                      outlined
                       class="darkgrey--text darken-1"
                       v-if="stat.action.label.length > 0"
                       right
-                      flat
+                      text
                       small
                       @click="irPara(stat.action.link)"
                     >
