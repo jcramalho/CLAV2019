@@ -34,7 +34,7 @@ export default {
       options: {
         title: {
           display: true,
-          text: 'Relações dos processos de negócio'
+          text: "Relações dos processos de negócio"
         },
         responsive: true,
         maintainAspectRatio: false
@@ -45,45 +45,45 @@ export default {
     this.$request("get", "/indicadores/relstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
-          switch (i){
+          switch (i) {
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'eAntecessorDe'
+                return elem.indicador === "eAntecessorDe";
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'eSucessorDe'
+                return elem.indicador === "eSucessorDe";
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'eComplementarDe'
+                return elem.indicador === "eComplementarDe";
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'eCruzadoCom'
+                return elem.indicador === "eCruzadoCom";
               }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'eSinteseDe'
+                return elem.indicador === "eSinteseDe";
               }).valor;
               break;
             case 5:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'eSintetizadoPor'
+                return elem.indicador === "eSintetizadoPor";
               }).valor;
               break;
             case 6:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'eSuplementoDe'
+                return elem.indicador === "eSuplementoDe";
               }).valor;
               break;
             case 7:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'eSuplementoPara'
+                return elem.indicador === "eSuplementoPara";
               }).valor;
               break;
             default:
