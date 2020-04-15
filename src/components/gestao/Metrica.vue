@@ -45,11 +45,11 @@
           <bar></bar>
         </v-card>
       </v-flex>
-      <v-flex md6 xs12>
+      <!--v-flex md6 xs12>
         <v-card light>
           <line-chart></line-chart>
         </v-card>
-      </v-flex>
+      </v-flex-->
     </v-layout>
   </v-container>
 </template>
@@ -57,13 +57,13 @@
 <script>
 import Bar from "./chart/Bar";
 import Doughnut from "./chart/APIUsersTypeDoughnut";
-import LineChart from "./chart/LineChart";
+//import LineChart from "./chart/LineChart";
 
 export default {
   name: "Dashboard",
   components: {
     Bar,
-    Doughnut //,
+    Doughnut,
     //LineChart
   },
   data() {
