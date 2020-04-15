@@ -30,6 +30,7 @@
       ></v-text-field>
     </v-card-title>
     <v-data-table
+      class="ma-4"
       :headers="headers"
       :items="indicadores"
       :search="search"
