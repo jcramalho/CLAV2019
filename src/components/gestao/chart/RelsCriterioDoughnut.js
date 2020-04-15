@@ -43,32 +43,52 @@ export default {
           switch (i) {
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return (
                   elem.indicador === "CriterioJustificacaoComplementaridadeInfo"
                 );
+=======
+                return elem.indicador === 'CriterioJustificacaoComplementaridadeInfo'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "CriterioJustificacaoDensidadeInfo";
+=======
+                return elem.indicador === 'CriterioJustificacaoDensidadeInfo'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "CriterioJustificacaoGestionario";
+=======
+                return elem.indicador === 'CriterioJustificacaoGestionario'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "CriterioJustificacaoLegal";
+=======
+                return elem.indicador === 'CriterioJustificacaoLegal'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return (
                   elem.indicador ===
                   "CriterioJustificacaoUtilidadeAdministrativa"
                 );
+=======
+                return elem.indicador === 'CriterioJustificacaoUtilidadeAdministrativa'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             default:

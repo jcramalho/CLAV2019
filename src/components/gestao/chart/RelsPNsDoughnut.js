@@ -48,42 +48,74 @@ export default {
           switch (i) {
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "eAntecessorDe";
+=======
+                return elem.indicador === 'eAntecessorDe'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "eSucessorDe";
+=======
+                return elem.indicador === 'eSucessorDe'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "eComplementarDe";
+=======
+                return elem.indicador === 'eComplementarDe'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "eCruzadoCom";
+=======
+                return elem.indicador === 'eCruzadoCom'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "eSinteseDe";
+=======
+                return elem.indicador === 'eSinteseDe'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 5:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "eSintetizadoPor";
+=======
+                return elem.indicador === 'eSintetizadoPor'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 6:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "eSuplementoDe";
+=======
+                return elem.indicador === 'eSuplementoDe'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 7:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "eSuplementoPara";
+=======
+                return elem.indicador === 'eSuplementoPara'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             default:

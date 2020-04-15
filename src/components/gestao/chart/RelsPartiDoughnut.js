@@ -46,37 +46,65 @@ export default {
           switch (i) {
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "temParticipanteApreciador";
+=======
+                return elem.indicador === 'temParticipanteApreciador'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "temParticipanteComunicador";
+=======
+                return elem.indicador === 'temParticipanteComunicador'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "temParticipanteDecisor";
+=======
+                return elem.indicador === 'temParticipanteDecisor'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "temParticipanteAssessor";
+=======
+                return elem.indicador === 'temParticipanteAssessor'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "temParticipanteIniciador";
+=======
+                return elem.indicador === 'temParticipanteIniciador'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 5:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "temParticipanteExecutor";
+=======
+                return elem.indicador === 'temParticipanteExecutor'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             case 6:
               this.info.datasets[0].data[i] = res.data.find(elem => {
+<<<<<<< HEAD
                 return elem.indicador === "temDono";
+=======
+                return elem.indicador === 'temDono'
+>>>>>>> 3a31fceda94ebddb7a91aa9e370e38b093b76346
               }).valor;
               break;
             default:
