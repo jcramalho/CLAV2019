@@ -22,7 +22,9 @@
         :headers="headers"
         :items="pedidos"
         class="elevation-1"
+        sortDesc
         sort-by="data"
+        :custom-sort="ordenaTabela"
         :footer-props="footer_props"
       >
         <template v-slot:no-data>
@@ -104,13 +106,23 @@ export default {
   data: () => {
     return {
       headers: [
-        { text: "Código", value: "codigo", sortable: true, class: "title" },
-        { text: "Tipo", value: "tipo", sortable: true, class: "title" },
-        { text: "Entidade", value: "entidade", sortable: true, class: "title" },
+        {
+          text: "Código",
+          value: "codigo",
+          sortable: true,
+          class: "title",
+        },
+        { text: "Tipo", value: "tipo", sortable: false, class: "title" },
+        {
+          text: "Entidade",
+          value: "entidade",
+          sortable: false,
+          class: "title",
+        },
         {
           text: "Responsável",
           value: "responsavel",
-          sortable: true,
+          sortable: false,
           class: "title",
         },
         {
@@ -132,6 +144,46 @@ export default {
   },
 
   methods: {
+    ordenaTabela(items, index, isDesc) {
+      items.sort((a, b) => {
+        if (index[0] === "codigo") {
+          if (!isDesc[0]) {
+            return (
+              parseInt(b[index].split("-")[0].concat(b[index].split("-")[1])) -
+              parseInt(a[index].split("-")[0].concat(a[index].split("-")[1]))
+            );
+          } else {
+            return (
+              parseInt(a[index].split("-")[0].concat(a[index].split("-")[1])) -
+              parseInt(b[index].split("-")[0].concat(b[index].split("-")[1]))
+            );
+          }
+        } else if (index[0] === "data") {
+          if (!isDesc[0]) {
+            return new Date(b[index]) - new Date(a[index]);
+          } else {
+            return new Date(a[index]) - new Date(b[index]);
+          }
+        } else {
+          if (
+            typeof a[index] !== "undefined" &&
+            typeof b[index] !== "undefined"
+          ) {
+            if (!isDesc[0]) {
+              return a[index]
+                .toLowerCase()
+                .localeCompare(b[index].toLowerCase());
+            } else {
+              return b[index]
+                .toLowerCase()
+                .localeCompare(a[index].toLowerCase());
+            }
+          }
+        }
+      });
+      return items;
+    },
+
     converteData(data) {
       let novaData = new Date(data);
 
@@ -149,11 +201,11 @@ export default {
       return `${dia}-${mes}-${ano}`;
     },
 
-    distribuiPedido: function (pedido) {
+    distribuiPedido: function(pedido) {
       this.$emit("distribuir", pedido);
     },
 
-    showPedido: function (pedido) {
+    showPedido: function(pedido) {
       this.$router.push("/pedidos/novos/" + pedido.codigo);
     },
   },
