@@ -46,37 +46,37 @@ export default {
           switch (i){
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteApreciador'
+                return elem.indicador === 'temParticipanteApreciador'
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteComunicador'
+                return elem.indicador === 'temParticipanteComunicador'
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteDecisor'
+                return elem.indicador === 'temParticipanteDecisor'
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteAssessor'
+                return elem.indicador === 'temParticipanteAssessor'
               }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteIniciador'
+                return elem.indicador === 'temParticipanteIniciador'
               }).valor;
               break;
             case 5:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temParticipanteExecutor'
+                return elem.indicador === 'temParticipanteExecutor'
               }).valor;
               break;
             case 6:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador.split('#')[1] === 'temDono'
+                return elem.indicador === 'temDono'
               }).valor;
               break;
             default:
