@@ -35,12 +35,12 @@
     <v-layout row wrap>
       <v-flex md6 xs12>
         <v-card light>
-          <DoughnutEntidades/>
+          <DoughnutEntidades />
         </v-card>
       </v-flex>
       <v-flex md6 xs12>
         <v-card light>
-          <DoughnutDocs/>
+          <DoughnutDocs />
         </v-card>
       </v-flex>
     </v-layout>
@@ -48,7 +48,6 @@
 </template>
 
 <script>
-/* eslint-disable */
 import DoughnutEntidades from "./chart/GeralEntsDoughnut";
 import DoughnutDocs from "./chart/GeralDocsDoughnut";
 export default {
@@ -83,8 +82,8 @@ export default {
           });
         })
         .catch(error => alert(error));
-    }
-    ,async getNumeroEntidades() {
+    },
+    async getNumeroEntidades() {
       await this.$request("get", "/indicadores/entidades")
         .then(res => {
           this.stats.push({
