@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@types/node": "^13.9.0",
-    "axios": "^0.19.2",
     "@vue/babel-preset-app": "^4.3.1",
     "@vue/component-compiler-utils": "^3.1.2",
+    "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
     "core-js": "^3.6.5",
