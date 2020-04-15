@@ -29,7 +29,7 @@ export default {
       options: {
         title: {
           display: true,
-          text: 'Critérios de justificação'
+          text: "Critérios de justificação"
         },
         responsive: true,
         maintainAspectRatio: false
@@ -40,30 +40,35 @@ export default {
     this.$request("get", "/indicadores/critstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
-          switch (i){
+          switch (i) {
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'CriterioJustificacaoComplementaridadeInfo'
+                return (
+                  elem.indicador === "CriterioJustificacaoComplementaridadeInfo"
+                );
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'CriterioJustificacaoDensidadeInfo'
+                return elem.indicador === "CriterioJustificacaoDensidadeInfo";
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'CriterioJustificacaoGestionario'
+                return elem.indicador === "CriterioJustificacaoGestionario";
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'CriterioJustificacaoLegal'
+                return elem.indicador === "CriterioJustificacaoLegal";
               }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'CriterioJustificacaoUtilidadeAdministrativa'
+                return (
+                  elem.indicador ===
+                  "CriterioJustificacaoUtilidadeAdministrativa"
+                );
               }).valor;
               break;
             default:

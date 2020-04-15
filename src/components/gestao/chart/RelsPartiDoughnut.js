@@ -32,7 +32,7 @@ export default {
       options: {
         title: {
           display: true,
-          text: 'Tipo de participantes'
+          text: "Tipo de participantes"
         },
         responsive: true,
         maintainAspectRatio: false
@@ -43,40 +43,40 @@ export default {
     this.$request("get", "/indicadores/relstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
-          switch (i){
+          switch (i) {
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'temParticipanteApreciador'
+                return elem.indicador === "temParticipanteApreciador";
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'temParticipanteComunicador'
+                return elem.indicador === "temParticipanteComunicador";
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'temParticipanteDecisor'
+                return elem.indicador === "temParticipanteDecisor";
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'temParticipanteAssessor'
+                return elem.indicador === "temParticipanteAssessor";
               }).valor;
               break;
             case 4:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'temParticipanteIniciador'
+                return elem.indicador === "temParticipanteIniciador";
               }).valor;
               break;
             case 5:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'temParticipanteExecutor'
+                return elem.indicador === "temParticipanteExecutor";
               }).valor;
               break;
             case 6:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'temDono'
+                return elem.indicador === "temDono";
               }).valor;
               break;
             default:

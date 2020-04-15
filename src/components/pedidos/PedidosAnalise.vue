@@ -22,6 +22,9 @@
         :headers="headers"
         :items="pedidos"
         class="elevation-1"
+        sortDesc
+        sort-by="data"
+        :custom-sort="ordenaTabela"
         :footer-props="footer_props"
       >
         <template v-slot:no-data>
@@ -48,7 +51,9 @@
               {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
             </td>
             <td class="subheading">
-              <span v-if="props.item.entidade">{{ props.item.entidade.split("_")[1] }}</span>
+              <span v-if="props.item.entidade">{{
+                props.item.entidade.split("_")[1]
+              }}</span>
             </td>
             <td class="subheading">{{ props.item.criadoPor }}</td>
             <td class="subheading">{{ converteData(props.item.data) }}</td>
@@ -91,7 +96,7 @@
           Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
           {{ props.itemsLength }}
         </template>
-      </v-data-table>   
+      </v-data-table>
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
@@ -104,33 +109,78 @@ export default {
     return {
       headers: [
         { text: "Código", value: "codigo", sortable: true, class: "title" },
-        { text: "Tipo", value: "tipo", sortable: true, class: "title" },
-        { text: "Entidade", value: "entidade", sortable: true, class: "title" },
+        { text: "Tipo", value: "tipo", sortable: false, class: "title" },
+        {
+          text: "Entidade",
+          value: "entidade",
+          sortable: false,
+          class: "title",
+        },
         {
           text: "Responsável",
           value: "responsavel",
-          sortable: true,
-          class: "title"
+          sortable: false,
+          class: "title",
         },
         {
           text: "Data",
           align: "left",
           sortable: true,
           value: "data",
-          class: "title"
+          class: "title",
         },
-        { text: "Tarefa", sortable: false, class: "title" }
+        { text: "Tarefa", sortable: false, class: "title" },
       ],
 
       footer_props: {
         "items-per-page-text": "Pedidos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos"
-      }
+        "items-per-page-all-text": "Todos",
+      },
     };
   },
 
   methods: {
+    ordenaTabela(items, index, isDesc) {
+      items.sort((a, b) => {
+        if (index[0] === "codigo") {
+          if (!isDesc[0]) {
+            return (
+              parseInt(b[index].split("-")[0].concat(b[index].split("-")[1])) -
+              parseInt(a[index].split("-")[0].concat(a[index].split("-")[1]))
+            );
+          } else {
+            return (
+              parseInt(a[index].split("-")[0].concat(a[index].split("-")[1])) -
+              parseInt(b[index].split("-")[0].concat(b[index].split("-")[1]))
+            );
+          }
+        } else if (index[0] === "data") {
+          if (!isDesc[0]) {
+            return new Date(b[index]) - new Date(a[index]);
+          } else {
+            return new Date(a[index]) - new Date(b[index]);
+          }
+        } else {
+          if (
+            typeof a[index] !== "undefined" &&
+            typeof b[index] !== "undefined"
+          ) {
+            if (!isDesc[0]) {
+              return a[index]
+                .toLowerCase()
+                .localeCompare(b[index].toLowerCase());
+            } else {
+              return b[index]
+                .toLowerCase()
+                .localeCompare(a[index].toLowerCase());
+            }
+          }
+        }
+      });
+      return items;
+    },
+
     converteData(data) {
       let novaData = new Date(data);
 
@@ -154,7 +204,7 @@ export default {
 
     analisaPedido: function(pedido) {
       this.$emit("analisar", pedido);
-    }
-  }
+    },
+  },
 };
 </script>
