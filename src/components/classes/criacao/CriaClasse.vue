@@ -162,7 +162,7 @@
           <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      <!-- TODO: Corrigir este componente -->
+      
       <PainelOperacoes :c="classe" :pendenteId="''" />
     </v-col>
   </v-row>

@@ -20,9 +20,48 @@
             </v-col>
 
             <v-col>
-              <v-text-field v-model="sioe" label="SIOE"></v-text-field>
+              <v-text-field :rules="[v => /^[0-9]*$/.test(v) || 'Apenas são aceites caracteres numéricos.']" v-model="sioe" label="SIOE"></v-text-field>
             </v-col>
-
+            <v-col>
+              <v-menu
+                ref="menu2"
+                v-model="data_menu"
+                :close-on-content-click="false"
+                :return-value.sync="data"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    :rules="[v => !!v || 'Campo obrigatório!']"
+                    v-model="data"
+                    label="Data"
+                    prepend-icon="event"
+                    readonly
+                    v-on="on"
+                    clearable
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  full-width
+                  v-model="data"
+                  color="amber accent-3"
+                  locale="pt"
+                  :max="new Date().toISOString().split('T')[0]"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn text @click="data_menu = false">
+                    <v-icon>keyboard_backspace</v-icon>
+                  </v-btn>
+                  <v-btn text @click="$refs.menu2.save(data)">
+                    <v-icon>check</v-icon>
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+          <v-row>
             <v-col>
               <v-text-field
                 :rules="designacaoRules"
@@ -67,11 +106,12 @@ export default {
   props: ["entidades", "produtoras"],
   data: function() {
     return {
+      data_menu: false,
+      data: null,
       alertOn: false,
       sucessOn: false,
       sigla: "",
       sioe: "",
-      novasEntidades: [],
       siglaRules: [v => !!v || "A Sigla é um campo obrigatório."],
       designacao: "",
       designacaoRules: [v => !!v || "A Designação é obrigatória."],
@@ -96,13 +136,17 @@ export default {
 
       if (this.$refs.form.validate()) {
         if (!(await this.validaEntidade())) {
+          if (this.sioe == null) {
+            this.sioe = "";
+          }
           let entidade = {
             estado: "Nova",
             id: "ent_" + this.sigla,
             sigla: this.sigla,
             sioe: this.sioe,
             designacao: this.designacao,
-            internacional: this.internacional
+            internacional: this.internacional,
+            dataCriacao: this.data
           };
 
           let entidadeSelecionada = {
@@ -117,7 +161,6 @@ export default {
           };
 
           this.produtoras.push(entidadeSelecionada);
-          this.novasEntidades.push(entidade);
           this.entidades.push(entidade);
 
           this.sucessOn = true;

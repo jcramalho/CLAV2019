@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="ma-4" style="background-color:#fafafa">
+  <v-card class="ma-4" style="background-color:#fafafa">
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
       <v-spacer />
@@ -13,9 +13,6 @@
       >
     </v-card-title>
     <v-card-text>
-      <!-- {{ obj.objeto.entidades}}
-      {{ obj.objeto.legislacao}}-->
-      <!-- {{ obj }} -->
       <v-row justify-center>
         <v-dialog v-model="toSave" width="50%">
           <v-card>
@@ -98,7 +95,7 @@
         </v-stepper-step>
         <v-stepper-content step="3">
           <TSRada
-            @done="done"
+            @done="concluir"
             @voltar="changeE1"
             :legislacao="legislacao"
             :RE="RADA.RE"
@@ -221,7 +218,176 @@ export default {
         this.$router.push("/pendentes");
       });
     },
-    done: async function() {
+    calcular_dimensao_suporte(series) {
+      this.RADA.RE.dimSuporte.nSeries = series.length;
+      this.RADA.RE.dimSuporte.nSubseries = this.RADA.tsRada.classes.filter(
+        e => e.tipo == "Subsérie"
+      ).length;
+      // adicionar ids às UIs
+      this.RADA.RE.dimSuporte.nUI = this.RADA.tsRada.UIs.map(ui => {
+        ui["id"] = "rada_" + this.RADA.id + "_ui_" + ui.codigo;
+        return ui;
+      }).length;
+      this.RADA.RE.dimSuporte.medicaoUI_papel = series
+        .filter(e => e.suporte == "Papel")
+        .reduce((acc, a) => {
+          return acc + Number(a.medicao);
+        }, 0);
+      this.RADA.RE.dimSuporte.medicaoUI_digital = series
+        .filter(
+          e =>
+            e.suporte == "Eletrónico Digitalizado" ||
+            e.suporte == "Eletrónico Nativo"
+        )
+        .reduce((acc, a) => {
+          return acc + Number(a.medicao);
+        }, 0);
+
+      this.RADA.RE.dimSuporte.medicaoUI_outros = series
+        .filter(e => e.suporte == "Outro")
+        .reduce((acc, a) => {
+          return acc + Number(a.medicao);
+        }, 0);
+    },
+    // Fazer pedidos para as entidades
+    async fazer_pedidos_entidades(series) {
+      //  filtrar as novas entidaaddes criadas e que estão associadas a classes ou UIs
+      let entidades = this.entidades.filter(
+        e =>
+          e.estado == "Nova" &&
+          (series.some(cl => cl.entProdutoras.some(ent => ent.id == e.id)) ||
+            this.RADA.tsRada.UIs.some(ui =>
+              ui.produtor.entProdutoras.some(ent => ent.id == e.id)
+            ))
+      );
+
+      for (let i = 0; i < entidades.length; i++) {
+        let pedidoEntidades = {
+          tipoPedido: "Criação",
+          tipoObjeto: "Entidade",
+          novoObjeto: {
+            estado: "Ativa",
+            designacao: entidades[i].designacao,
+            internacional: entidades[i].internacional,
+            sigla: entidades[i].sigla,
+            sioe: entidades[i].sioe,
+            tipologiasSel: [],
+            dataCriacao: entidades[i].dataCriacao,
+            codigo: ""
+          },
+          user: {
+            email: this.userEmail
+          },
+          token: this.$store.state.token,
+          criadoPor: this.userEmail,
+          entidade: this.user_entidade
+        };
+
+        let response = await this.$request("post", "/pedidos", pedidoEntidades);
+
+        this.RADA.pedidosEntidades.push(response.data);
+      }
+    },
+    async fazer_pedidos_legislacao(series) {
+      let legislacao = this.legislacao
+        .filter(
+          e =>
+            e.estado == "Nova" &&
+            series.some(cl =>
+              cl.legislacao.some(
+                legis => legis.tipo == e.tipo && legis.numero == e.numero
+              )
+            )
+        )
+        .map(leg => {
+          leg["codigo"] = "";
+          leg["diplomaFonte"] = "RADA";
+          leg["estado"] = "Ativo";
+          leg["processosSel"] = [];
+          if (leg.link == null) {
+            leg["link"] = "";
+          }
+          // Adicionar série à qual está relacionada;
+          leg["processosSel"] = series
+            .filter(cl =>
+              cl.legislacao.some(
+                legis => legis.tipo == leg.tipo && legis.numero == leg.numero
+              )
+            )
+            .map(cl => {
+              return {
+                codigo: cl.codigo,
+                titulo: cl.titulo,
+                id: cl.id,
+                tituloRada: this.RADA.titulo
+              };
+            });
+          // Adicionar entidades relacionadas com a criação legislação
+          leg["entidadesSel"] = this.RADA.entRes.map(entidade => {
+            let ent = entidade.split(" - ");
+
+            return {
+              designacao: ent[1],
+              sigla: ent[0],
+              id: "ent_" + ent[0]
+            };
+          });
+
+          return leg;
+        });
+
+      for (let i = 0; i < legislacao.length; i++) {
+        let pedidoLegis = {
+          tipoPedido: "Criação",
+          tipoObjeto: "Legislação",
+          novoObjeto: legislacao[i],
+          user: {
+            email: this.userEmail
+          },
+          token: this.$store.state.token,
+          criadoPor: this.userEmail,
+          entidade: this.user_entidade
+        };
+
+        let response = await this.$request("post", "/pedidos", pedidoLegis);
+
+        this.RADA.pedidosLegislacao.push(response.data);
+      }
+    },
+    concluir: async function() {
+      let series = this.RADA.tsRada.classes
+        // adicionar os IDS às classes
+        .map(e => {
+          let tipo = null;
+
+          switch (e.tipo) {
+            case "Série":
+              tipo = "serie";
+              break;
+            case "Subsérie":
+              tipo = "subserie";
+              break;
+            default:
+              tipo = "organico_funcional";
+              break;
+          }
+
+          e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
+
+          return e;
+        })
+        .filter(e => e.tipo == "Série");
+
+      // Calcular os valores de dimensão e suporte no relatório expositivo
+      this.calcular_dimensao_suporte(series);
+
+      // Tratar dos pedidos das novas legislações
+      await this.fazer_pedidos_legislacao(series);
+
+      // Tratar dos pedidos da novas entidades
+      await this.fazer_pedidos_entidades(series);
+
+      // Fazer pedido do RADA
       let pedidoParams = {
         tipoPedido: "Criação",
         tipoObjeto: "RADA",

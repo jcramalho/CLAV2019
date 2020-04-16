@@ -87,6 +87,7 @@
             <div class="info-label">
               {{ crit.label }}
               <v-icon
+                v-if="crit.procRel.length == 0 && crit.legislacao.length == 0"
                 color="red darken-2"
                 dark
                 small
@@ -305,8 +306,16 @@ export default {
 
     // Remove um critério completo duma vez
     removerCriterioTodo: function(justificacao, i, PCAouDF) {
-      this.atualizaFlagsCriterios(justificacao[i].tipo, PCAouDF);
-      justificacao.splice(i, 1);
+      if(justificacao[i].tipo == "CriterioJustificacaoDensidadeInfo"){
+        if(justificacao[i].procRel.length == 0){
+          this.atualizaFlagsCriterios(justificacao[i].tipo, PCAouDF);
+          justificacao.splice(i, 1);
+        }
+      }
+      else{
+        this.atualizaFlagsCriterios(justificacao[i].tipo, PCAouDF);
+        justificacao.splice(i, 1);
+      } 
     },
 
     // Atualiza as flags que controlam os botões de adicionar e remover critérios

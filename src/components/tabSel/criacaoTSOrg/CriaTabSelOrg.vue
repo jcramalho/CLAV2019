@@ -21,7 +21,7 @@
                     label
                   >
                     <v-icon left>account_balance</v-icon>
-                    {{ ent }}
+                    {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
                   </v-chip>
                 </span>
               </v-stepper-step>
@@ -771,6 +771,7 @@ export default {
       } else {
         this.tabelaSelecao.designacao = resEnt.data.designacao;
         this.tabelaSelecao.idEntidade = resUser.data.entidade;
+        this.tabelaSelecao.designacaoEntidade = resEnt.data.designacao;
         this.stepNo = 2;
         await this.loadTipologias();
       }
@@ -1207,7 +1208,7 @@ export default {
         );
 
         var tsObj = {
-          entidade: this.tabelaSelecao.idEntidade.split("_")[1],
+          entidade: this.tabelaSelecao.idEntidade,
           designacao: this.tabelaSelecao.designacao,
           tipologias: this.tipSel,
           processos: this.listaTotalProcSel.map(p => {
@@ -1225,7 +1226,7 @@ export default {
           tipoObjeto: "TS Organizacional",
           novoObjeto: { ts: tsObj },
           user: { email: userBD.data.email },
-          entidade: userBD.data.entidade.split("_")[1],
+          entidade: userBD.data.entidade,
           token: this.$store.state.token
         };
 

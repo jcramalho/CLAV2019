@@ -30,5 +30,8 @@ export default new Vuex.Store({
       state.entidade = entidade;
     }
   },
+  getters: {
+    token: state => state.token
+  },
   actions: {}
 });

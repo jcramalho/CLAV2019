@@ -16,11 +16,11 @@
                   <v-flex d-flex xs12>
                     <div class="silver--text display-1">{{ stat.data }}</div>
                     <v-btn
-                      outline
+                      outlined
                       class="darkgrey--text darken-1"
                       v-if="stat.action.label.length > 0"
                       right
-                      flat
+                      text
                       small
                       @click="irPara(stat.action.link)"
                     >
@@ -45,11 +45,11 @@
           <bar></bar>
         </v-card>
       </v-flex>
-      <v-flex md6 xs12>
+      <!--v-flex md6 xs12>
         <v-card light>
           <line-chart></line-chart>
         </v-card>
-      </v-flex>
+      </v-flex-->
     </v-layout>
   </v-container>
 </template>
@@ -57,13 +57,13 @@
 <script>
 import Bar from "./chart/Bar";
 import Doughnut from "./chart/APIUsersTypeDoughnut";
-import LineChart from "./chart/LineChart";
+//import LineChart from "./chart/LineChart";
 
 export default {
   name: "Dashboard",
   components: {
     Bar,
-    Doughnut //,
+    Doughnut,
     //LineChart
   },
   data() {
@@ -112,7 +112,7 @@ export default {
         .catch(error => alert(error));
     },
     async getApiCalls() {
-      await this.$request("get", "/stats/total")
+      await this.$request("get", "/logsAgregados/total")
         .then(res => {
           this.stats.push({
             bgColor: "primary",

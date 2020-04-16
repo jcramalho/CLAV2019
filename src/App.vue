@@ -20,7 +20,7 @@
         v-if="this.$store.state.name != ''"
         :drawer="drawD"/> 
       <Estatisticas 
-        v-if="this.$store.state.name != ''"
+        v-if="this.$store.state.name != '' && level >= 3.5"
         :drawer="drawE"/> 
     </v-content>
 
@@ -45,19 +45,27 @@ export default {
   },
   watch: {
     async $route(to, from) {
+      //verifica se o utilizador está autenticado
+      if (this.$store.state.token != "") {
+        try{
+          var res = await this.$request("get", "/users/token");
+          this.level = res.data.level;
+        } catch (erro) {
+          this.text = "A sua sessão expirou! Por favor faça login novamente.";
+          this.color = "error";
+          this.snackbar = true;
+          this.$store.commit("guardaTokenUtilizador", "");
+          this.$store.commit("guardaNomeUtilizador", "");
+          this.$router.push("/users/autenticacao");
+        }
+      }
+
       this.authenticated = false;
       //verifica se o utilizador tem de estar autenticado para aceder à rota
       if (to.matched.some(record => !record.meta.levels.includes(0))) {
-        if (this.$store.state.token != "") {
-          //verifica se o utilizador está autenticado
-          try {
-            var res = await this.$request("get", "/users/token");
+        if (this.$store.state.token != "" && this.level > 0) {
             //se está autenticado, verifica se tem permissões suficientes para a ceder a página
-            if (
-              to.matched.some(record =>
-                record.meta.levels.includes(res.data.level)
-              )
-            ) {
+            if (to.matched.some(record => record.meta.levels.includes(this.level))){
               this.authenticated = true;
             } else {
               this.text = "Não tem permissões para aceder a esta página!";
@@ -65,14 +73,6 @@ export default {
               this.snackbar = true;
               this.$router.push("/");
             }
-          } catch (erro) {
-            this.text = "A sua sessão expirou! Por favor faça login novamente.";
-            this.color = "error";
-            this.snackbar = true;
-            this.$store.commit("guardaTokenUtilizador", "");
-            this.$store.commit("guardaNomeUtilizador", "");
-            this.$router.push("/users/autenticacao");
-          }
         } else {
           this.text =
             "Não tem permissões para aceder a esta página! Por favor faça login.";
@@ -126,7 +126,8 @@ export default {
     classeOps: ["Listar", "Consultar", "Inserir", "Alterar", "Desativar"],
     entidadeOps: ["Listar", "Consultar", "Inserir", "Alterar", "Desativar"],
     tipologiaOps: ["Listar", "Consultar", "Inserir", "Alterar", "Desativar"],
-    legislacaoOps: ["Listar", "Consultar", "Inserir", "Alterar", "Desativar"]
+    legislacaoOps: ["Listar", "Consultar", "Inserir", "Alterar", "Desativar"],
+    level: 0
   })
 };
 </script>
