@@ -146,9 +146,7 @@ export default {
 
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
-    validarClasse: async function() {
-      var i = 0;
-
+    validaCodigo: async function(){
       // Codigo
       if (this.c.codigo) {
         if (this.c.nivel > 1) {
@@ -202,7 +200,9 @@ export default {
         });
         this.numeroErros++;
       }
+    },
 
+    validaTitulo: async function(){
       // Título
       if (this.c.titulo == "") {
         this.mensagensErro.push({
@@ -231,7 +231,14 @@ export default {
           });
         }
       }
+    },
 
+    validaMeta: async function(){
+      this.validaCodigo();
+      this.validaTitulo();
+    },
+
+    validaDescricao: function(){
       // Descrição
       if (this.c.descricao == "") {
         this.mensagensErro.push({
@@ -240,9 +247,11 @@ export default {
         });
         this.numeroErros++;
       }
+    },
 
+    validaNotasAp: async function(){
       // Notas de Aplicação
-      for (i = 0; i < this.c.notasAp.length; i++) {
+      for (let i = 0; i < this.c.notasAp.length; i++) {
         try {
           var existeNotaAp = await this.$request(
             "get",
@@ -271,9 +280,11 @@ export default {
         });
         this.numeroErros++;
       }
+    },
 
+    validaExemplosNotasAp: async function(){
       // Exemplos de notas de Aplicação
-      for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
+      for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(
             "get",
@@ -305,7 +316,9 @@ export default {
         });
         this.numeroErros++;
       }
+    },
 
+    validaNotasEx: async function(){
       // Notas de Exclusão
       if (this.notaDuplicada(this.c.notasEx)) {
         this.mensagensErro.push({
@@ -314,9 +327,11 @@ export default {
         });
         this.numeroErros++;
       }
+    },
 
+    validaTIs: async function(){
       // Termos de Índice
-      for (i = 0; i < this.c.termosInd.length; i++) {
+      for (let i = 0; i < this.c.termosInd.length; i++) {
         try {
           var existeTI = await this.$request(
             "get",
@@ -346,7 +361,28 @@ export default {
           mensagem: "O último ti encontra-se duplicado."
         });
       }
+    },
 
+    validaBlocoDescritivo: async function(){
+      this.validaDescricao();
+      this.validaNotasAp();
+      this.validaExemplosNotasAp();
+      this.validaNotasEx();
+      this.validaTIs();
+    },
+
+    validaBlocoContexto: function(){
+      // Um PN Transversal tem de ter 1 dono ou 1 participante
+      if((this.c.procTrans == "S")&&(this.c.donos.length==0)&&(this.c.participantes.length==0)){
+        this.mensagensErro.push({
+            sobre: "Invariante da Transversalidade",
+            mensagem: "Um processo Transversal deve ter um dono ou um participante."
+          });
+          this.numeroErros++;
+      }
+    },
+
+    validaDecisoesSemSub: async function(){
       // Decisões
       // Sem subdivisão
       if (this.c.nivel == 3 && !this.c.temSubclasses4Nivel) {
@@ -394,11 +430,14 @@ export default {
           this.numeroErros++;
         }
       }
+    },
+
+    validaDecisoesComSub: function(){
       // Com subdivisão
-      else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
+      if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
         
-        for (i = 0; i < this.c.subclasses.length; i++) {
+        for (let i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
           if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
             this.mensagensErro.push({
@@ -457,6 +496,17 @@ export default {
           }
         }
       }
+    },
+
+    validarClasse: async function() {
+      var i = 0;
+    
+      this.validaMeta();
+      this.validaBlocoDescritivo();
+      this.validaBlocoContexto();
+      this.validaDecisoesSemSub();
+      this.validaDecisoesComSub();
+      
       if (this.numeroErros > 0) {
         this.dialog = true;
       } else {
