@@ -29,8 +29,13 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
+
+          <template v-slot:item="props">
+            <tr>
+              <td>{{ props.item.sigla }}</td>
+              <td>{{ props.item.designacao }}</td>
+              <td><v-icon color="red">delete</v-icon></td>
+            </tr>
           </template>
 
           <template v-slot:top>
@@ -72,8 +77,13 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
+
+          <template v-slot:item="props">
+            <tr>
+              <td>{{ props.item.codigo }}</td>
+              <td>{{ props.item.titulo }}</td>
+              <td><v-icon color="red">delete</v-icon></td>
+            </tr>
           </template>
 
           <template v-slot:top>
@@ -119,7 +129,8 @@
           <template slot="append">
             <v-icon color="green" @click="verifica(info)">check</v-icon>
             <v-icon color="red" @click="anula(info)">clear</v-icon>
-            <v-icon @click="">create</v-icon>
+            <!--<v-icon @click="">create</v-icon>-->
+            <v-icon>create</v-icon>
           </template>
         </v-text-field>
       </v-col>
@@ -238,7 +249,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
@@ -272,7 +283,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 

@@ -151,8 +151,8 @@ export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
 
   components: {
-    ProcessosRelacionadosOps,
-    LegislacaoOps,
+    //ProcessosRelacionadosOps,
+    //LegislacaoOps,
     SelectValueFromList,
     InfoBox
   },
@@ -216,8 +216,7 @@ export default {
       if (indice == -1) {
         justificacao.push({
           tipo: tipo,
-          label,
-          label,
+          label: label,
           notas: notas,
           procRel: myProcRel,
           legislacao: myLeg

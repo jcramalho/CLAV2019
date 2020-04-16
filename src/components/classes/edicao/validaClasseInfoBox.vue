@@ -188,7 +188,7 @@ export default {
       }
 
       // Exemplos de notas de Aplicação
-      for (var i = 0; i < this.c.exemplosNotasAp.length; i++) {
+      for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         let obj = this.original.exemplosNotasAp.find(
           x => x.exemplo === this.c.exemplosNotasAp[i].exemplo
         );
@@ -238,7 +238,7 @@ export default {
       }
 
       // Termos de Índice
-      for (var i = 0; i < this.c.termosInd.length; i++) {
+      for (i = 0; i < this.c.termosInd.length; i++) {
         let obj = this.original.termosInd.find(
           x => x.termo === this.c.termosInd[i].termo
         );

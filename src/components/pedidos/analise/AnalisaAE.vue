@@ -26,7 +26,8 @@
           <template slot="append-icon">
               <v-icon color="green" @click="verifica(info)">check</v-icon>
               <v-icon color="red" @click="anula(info)">clear</v-icon>
-              <v-icon @click="">create</v-icon>
+              <!--<v-icon @click="">create</v-icon>-->
+              <v-icon>create</v-icon>
             </template>
         </v-textarea>
         
@@ -42,7 +43,8 @@
           <template slot="append">
             <v-icon color="green" @click="verifica(info)">check</v-icon>
             <v-icon color="red" @click="anula(info)">clear</v-icon>
-            <v-icon @click="">create</v-icon>
+            <!--<v-icon @click="">create</v-icon>-->
+            <v-icon>create</v-icon>
           </template>
         </v-text-field>
       </v-col>
@@ -132,7 +134,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
@@ -166,7 +168,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 

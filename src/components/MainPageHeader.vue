@@ -4,8 +4,24 @@
       <v-icon large>home</v-icon>
     </v-btn>
     <v-toolbar-title class="headline" @click="goHome">
-      <span class="text-uppercase">CLAV</span>
-      <span class="font-weight-light">
+      
+      <span 
+        class="text-uppercase" 
+        v-if="this.$store.state.name != ''"
+      >
+        CLAV | {{ this.$store.state.entidade.split('_')[1] }} 
+      </span>
+
+      <span 
+        class="text-uppercase"
+        v-if="this.$store.state.name == ''"
+      >
+        CLAV
+      </span>
+      <span 
+        class="font-weight-light"
+        v-if="this.$store.state.name == ''"
+      >
         - Classificação e Avaliação da Informação Pública</span
       >
     </v-toolbar-title>
@@ -31,23 +47,19 @@
         Iniciar Sessão
       </v-btn>
 
-      <span class="font-weight-light ma-2" v-if="this.$store.state.name != ''">
-        {{ this.$store.state.name }}</span
-      >
       <v-btn
-        class="mr-2"
-        color="indigo accent-4"
-        v-if="this.$store.state.name != ''"
-        @click="$router.push('/users/alteracaoPassword')"
+        v-if="$store.state.token != '' && level >= 3.5"
+        @click="drawerEstatisticas"
+        icon
       >
-        Alterar Password
+        <v-icon large>assessment</v-icon>
       </v-btn>
       <v-btn
-        color="indigo accent-4"
         v-if="this.$store.state.name != ''"
-        @click="logoutUtilizador"
+        @click="drawerDefinicoes"
+        icon
       >
-        Terminar Sessão
+        <v-icon large>settings</v-icon>
       </v-btn>
       <!--v-btn
         color="red"
@@ -61,7 +73,7 @@
 </template>
 
 <script>
-import NotificationBell from "vue-notification-bell";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -70,32 +82,31 @@ export default {
       color: "",
       timeout: 4000,
       text: "",
-      counter: 10
+      counter: 10,
+      level: 0
     };
   },
-  components: {
-    NotificationBell
+  computed: {
+    ...mapGetters(["token"])
+  },
+  watch: {
+    //apenas atualiza o nível quando o valor do token muda
+    async token(oldToken, newToken) {
+      this.level = await this.$userLevel(this.$store.state.token);
+    }
+  },
+  created: async function() {
+    this.level = await this.$userLevel(this.$store.state.token);
   },
   methods: {
     goHome() {
       this.$router.push("/");
     },
-    logoutUtilizador() {
-      this.text = "Logout efetuado com sucesso!";
-      this.color = "success";
-      this.snackbar = true;
-      // this.$store.state.name = '';
-      // this.$store.state.token = '';
-      this.$store.commit("guardaTokenUtilizador", "");
-      this.$store.commit("guardaNomeUtilizador", "");
-
-      //se já está na página inicial (home)
-      if (this.$route.path == "/") {
-        //faz reload da página para atualizar os componentes que dependem do nível do utilizador
-        this.$router.go();
-      } else {
-        this.$router.push("/");
-      }
+    drawerDefinicoes() {
+      this.$emit('drawerDefinicoes');
+    },
+    drawerEstatisticas() {
+      this.$emit('drawerEstatisticas');
     },
     fecharSnackbar() {
       this.snackbar = false;

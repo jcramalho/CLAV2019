@@ -159,7 +159,9 @@ export default {
       // } else
       if (
         this.e.dataCriacao !== undefined &&
-        !/[0-9]+\-[0-9]+\-[0-9]+/.test(this.e.dataCriacao)
+        this.e.dataCriacao !== "" &&
+        this.e.dataCriacao !== null &&
+        !/[0-9]+-[0-9]+-[0-9]+/.test(this.e.dataCriacao)
       ) {
         this.mensagensErro.push({
           sobre: "Data",
@@ -229,7 +231,7 @@ export default {
       // Data Criação
       if (
         dados.dataCriacao !== undefined &&
-        !/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.dataCriacao)
+        !/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataCriacao)
       ) {
         this.mensagensErro.push({
           sobre: "Data de Criação",
@@ -255,7 +257,7 @@ export default {
           mensagem: "A data não pode ser vazia.",
         });
         numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.dataExtincao)) {
+      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataExtincao)) {
         this.mensagensErro.push({
           sobre: "Data de extinção",
           mensagem: "A data está no formato errado.",
