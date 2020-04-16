@@ -202,7 +202,7 @@ export default {
       }
     },
 
-    validaTitulo: function(){
+    validaTitulo: async function(){
       // Título
       if (this.c.titulo == "") {
         this.mensagensErro.push({
@@ -331,7 +331,7 @@ export default {
 
     validaTIs: async function(){
       // Termos de Índice
-      for (i = 0; i < this.c.termosInd.length; i++) {
+      for (let i = 0; i < this.c.termosInd.length; i++) {
         try {
           var existeTI = await this.$request(
             "get",
@@ -373,7 +373,7 @@ export default {
 
     validaBlocoContexto: function(){
       // Um PN Transversal tem de ter 1 dono ou 1 participante
-      if((c.procTrans == "S")&&(c.donos.length==0)&&(c.participantes.length==0)){
+      if((this.c.procTrans == "S")&&(this.c.donos.length==0)&&(this.c.participantes.length==0)){
         this.mensagensErro.push({
             sobre: "Invariante da Transversalidade",
             mensagem: "Um processo Transversal deve ter um dono ou um participante."
@@ -437,7 +437,7 @@ export default {
       if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
         
-        for (i = 0; i < this.c.subclasses.length; i++) {
+        for (let i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
           if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
             this.mensagensErro.push({
