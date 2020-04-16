@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="ma-4" style="background-color:#fafafa">
+  <v-card class="ma-4" style="background-color:#fafafa">
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
       <v-spacer />
@@ -16,7 +16,7 @@
       </v-alert>
       <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
           <font size="4">
             <b>Informação Geral</b>
           </font>
@@ -26,7 +26,7 @@
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -43,14 +43,14 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
         </v-stepper-step>
         <v-stepper-content step="3">
           <TSRada
-            @done="done"
+            @done="concluir"
             @voltar="changeE1"
             :legislacao="legislacao"
             :RE="RADA.RE"
@@ -139,6 +139,8 @@
 </template>
 
 <script>
+const nanoid = require("nanoid");
+
 import RelatorioExpositivo from "@/components/rada/criacao/RelatorioExpositivo.vue";
 import TSRada from "@/components/rada/criacao/TSRadaManual.vue";
 import InformacaoGeral from "@/components/rada/criacao/InformacaoGeral";
@@ -168,24 +170,27 @@ export default {
       titulo: "",
       guardar: false,
       RADA: {
+        id: nanoid(),
         titulo: "",
         despachoAprovacao: null,
         dataAprovacao: null,
         despachoRevogacao: null,
         dataRevogacao: null,
         entRes: [],
+        pedidosLegislacao: [],
+        pedidosEntidades: [],
         RE: {
           entidadesProd: [],
           tipologiasProd: [],
           dataInicial: null,
           dataFinal: null,
           dimSuporte: {
-            nSeries: 0,
-            nSubSeries: 0,
+            nSeries: null,
+            nSubseries: null,
             nUI: null,
-            medicaoUI_papel: 0,
-            medicaoUI_digital: 0,
-            medicaoUI_outros: 0
+            medicaoUI_papel: null,
+            medicaoUI_digital: null,
+            medicaoUI_outros: null
           },
           hist_admin: "",
           hist_cust: "",
@@ -196,238 +201,238 @@ export default {
         tsRada: {
           titulo: "",
           classes: [
-            // {
-            //   codigo: "01",
-            //   titulo: "Classe N1 (01)",
-            //   descricao: "Descrição Classe N1 (01)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "04",
-            //   titulo: "Classe N1 (04)",
-            //   descricao: "Descrição Classe N1 (04)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "02",
-            //   titulo: "Classe N1 (02)",
-            //   descricao: "Descrição Classe N1 (02)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "03",
-            //   titulo: "Classe N1 (03)",
-            //   descricao: "Descrição Classe N1 (01)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "01.02",
-            //   titulo: "Classe N2 (01.02)",
-            //   descricao: "Descrição Classe N2 (01.02)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.01",
-            //   titulo: "Classe N2 (01.01)",
-            //   descricao: "Descrição Classe N2 (01.01)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.01.01",
-            //   titulo: "Classe N3 (01.01.01)",
-            //   descricao: "Descrição Classe N3 (01.01.01)",
-            //   eFilhoDe: "01.01",
-            //   tipo: "N3"
-            // },
+            {
+              codigo: "01",
+              titulo: "Classe N1 (01)",
+              descricao: "Descrição Classe N1 (01)",
+              eFilhoDe: null,
+              tipo: "N1"
+            },
+            {
+              codigo: "04",
+              titulo: "Classe N1 (04)",
+              descricao: "Descrição Classe N1 (04)",
+              eFilhoDe: null,
+              tipo: "N1"
+            },
+            {
+              codigo: "02",
+              titulo: "Classe N1 (02)",
+              descricao: "Descrição Classe N1 (02)",
+              tipo: "N1"
+            },
+            {
+              codigo: "03",
+              titulo: "Classe N1 (03)",
+              descricao: "Descrição Classe N1 (01)",
+              tipo: "N1"
+            },
+            {
+              codigo: "01.02",
+              titulo: "Classe N2 (01.02)",
+              descricao: "Descrição Classe N2 (01.02)",
+              eFilhoDe: "01",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.01",
+              titulo: "Classe N2 (01.01)",
+              descricao: "Descrição Classe N2 (01.01)",
+              eFilhoDe: "01",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.01.01",
+              titulo: "Classe N3 (01.01.01)",
+              descricao: "Descrição Classe N3 (01.01.01)",
+              eFilhoDe: "01.01",
+              tipo: "N3"
+            },
 
-            // {
-            //   codigo: "02.01",
-            //   titulo: "Classe N2 (02.01)",
-            //   descricao: "Descrição Classe N2 (02.01)",
-            //   eFilhoDe: "02",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "03.01",
-            //   titulo: "Classe N2 (03.01)",
-            //   descricao: "Descrição Classe N2 (03.01)",
-            //   eFilhoDe: "03",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.04",
-            //   titulo: "Série (01.04)",
-            //   descricao: "Descrição Série (01.04)",
-            //   dataInicial: "2020-04-11",
-            //   dataFinal: "2020-04-13",
-            //   tUA: "Coleção",
-            //   tSerie: "Fechada",
-            //   suporte: "Papel",
-            //   medicao: "35",
-            //   UIs: [],
-            //   localizacao: ["Localização a definir..."],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [
-            //     {
-            //       id: "leg_ENe2tVpHmTj1xmtY6eo-z",
-            //       data: "29-01-2019",
-            //       tipo: "Portaria",
-            //       numero: "39/2019",
-            //       sumario:
-            //         "Regulamento para a Classificação e Avaliação da Informação Produzida no Exercício de Funções da CP - Comboios de Portugal, E. P. E."
-            //     },
-            //     {
-            //       id: "leg_w6sP8Soc5_N8nQeQiMCk3",
-            //       data: "30-03-2005",
-            //       tipo: "Portaria",
-            //       numero: "418/2005",
-            //       sumario:
-            //         "Regulamento Arquivístico da Secretaria-Geral do Ministério da Administração Interna"
-            //     }
-            //   ],
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
-            //     },
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
-            //     }
-            //   ],
-            //   pca: null,
-            //   formaContagem: { forma: null },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
-            //     }
-            //   ],
-            //   notas: "Notas da Série (01.04)",
-            //   eFilhoDe: "01",
-            //   tipo: "Série"
-            // },
-            // {
-            //   codigo: "01.03",
-            //   titulo: "Série (01.03)",
-            //   descricao: "Descrição Série (01.03)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   tUA: "Processo",
-            //   tSerie: "Aberta",
-            //   suporte: "Eletrónico Nativo",
-            //   UIs: ["01"],
-            //   medicao: "12",
-            //   localizacao: ["Torre do Tombo"],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [
-            //     {
-            //       id: "leg_bzfJBtZAR94z9YC4UojBq",
-            //       data: "30-10-1991",
-            //       tipo: "Portaria",
-            //       numero: "1125/91",
-            //       sumario:
-            //         "Regulamento Arquivístico da Maternidade do Dr. Alfredo da Costa"
-            //     },
-            //     {
-            //       id: "leg_3OZCH3pb0dqpHjlX8HePk",
-            //       data: "30-03-2009",
-            //       tipo: "Portaria",
-            //       numero: "331/2009",
-            //       sumario:
-            //         "Regulamento de conservação arquivística do INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I. P., no que se refere à avaliação, selecção, conservação e eliminação da sua documentação e revoga a Portaria n.º 226/2005, de 24 de Fevereiro"
-            //     }
-            //   ],
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   pca: null,
-            //   formaContagem: { forma: null },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
-            //     }
-            //   ],
-            //   notas: "",
-            //   eFilhoDe: "01",
-            //   tipo: "Série"
-            // },
-            // {
-            //   codigo: "01.04.01",
-            //   titulo: "Subsérie (01.04.01)",
-            //   descricao: "Descrição Subsérie (01.04.01)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   UIs: ["02"],
-            //   pca: "2",
-            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
-            //   justificacaoPCA: [
-            //     {
-            //       tipo: "Critério Gestionário",
-            //       nota:
-            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
-            //     }
-            //   ],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
-            //     }
-            //   ],
-            //   notas: "Notas do Destino Final",
-            //   eFilhoDe: "01.04",
-            //   tipo: "Subsérie"
-            // }
+            {
+              codigo: "02.01",
+              titulo: "Classe N2 (02.01)",
+              descricao: "Descrição Classe N2 (02.01)",
+              eFilhoDe: "02",
+              tipo: "N2"
+            },
+            {
+              codigo: "03.01",
+              titulo: "Classe N2 (03.01)",
+              descricao: "Descrição Classe N2 (03.01)",
+              eFilhoDe: "03",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.04",
+              titulo: "Série (01.04)",
+              descricao: "Descrição Série (01.04)",
+              dataInicial: "2020-04-11",
+              dataFinal: "2020-04-13",
+              tUA: "Coleção",
+              tSerie: "Fechada",
+              suporte: "Papel",
+              medicao: "35",
+              UIs: [],
+              localizacao: ["Localização a definir..."],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [
+                {
+                  id: "leg_ENe2tVpHmTj1xmtY6eo-z",
+                  data: "29-01-2019",
+                  tipo: "Portaria",
+                  numero: "39/2019",
+                  sumario:
+                    "Regulamento para a Classificação e Avaliação da Informação Produzida no Exercício de Funções da CP - Comboios de Portugal, E. P. E."
+                },
+                {
+                  id: "leg_w6sP8Soc5_N8nQeQiMCk3",
+                  data: "30-03-2005",
+                  tipo: "Portaria",
+                  numero: "418/2005",
+                  sumario:
+                    "Regulamento Arquivístico da Secretaria-Geral do Ministério da Administração Interna"
+                }
+              ],
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.03", tipo: "Série" }
+                },
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
+                }
+              ],
+              pca: null,
+              formaContagem: { forma: null },
+              justificacaoPCA: [],
+              df: "Conservação",
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
+                }
+              ],
+              notas: "Notas da Série (01.04)",
+              eFilhoDe: "01",
+              tipo: "Série"
+            },
+            {
+              codigo: "01.03",
+              titulo: "Série (01.03)",
+              descricao: "Descrição Série (01.03)",
+              dataInicial: null,
+              dataFinal: null,
+              tUA: "Processo",
+              tSerie: "Aberta",
+              suporte: "Eletrónico Nativo",
+              UIs: ["01"],
+              medicao: "12",
+              localizacao: ["Torre do Tombo"],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [
+                {
+                  id: "leg_bzfJBtZAR94z9YC4UojBq",
+                  data: "30-10-1991",
+                  tipo: "Portaria",
+                  numero: "1125/91",
+                  sumario:
+                    "Regulamento Arquivístico da Maternidade do Dr. Alfredo da Costa"
+                },
+                {
+                  id: "leg_3OZCH3pb0dqpHjlX8HePk",
+                  data: "30-03-2009",
+                  tipo: "Portaria",
+                  numero: "331/2009",
+                  sumario:
+                    "Regulamento de conservação arquivística do INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I. P., no que se refere à avaliação, selecção, conservação e eliminação da sua documentação e revoga a Portaria n.º 226/2005, de 24 de Fevereiro"
+                }
+              ],
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04", tipo: "Série" }
+                }
+              ],
+              pca: 2,
+              formaContagem: { forma: "hello" },
+              justificacaoPCA: [],
+              df: "Conservação",
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.04" }]
+                }
+              ],
+              notas: "",
+              eFilhoDe: "01",
+              tipo: "Série"
+            },
+            {
+              codigo: "01.04.01",
+              titulo: "Subsérie (01.04.01)",
+              descricao: "Descrição Subsérie (01.04.01)",
+              dataInicial: null,
+              dataFinal: null,
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04", tipo: "Série" }
+                }
+              ],
+              UIs: ["02"],
+              pca: "2",
+              formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+              justificacaoPCA: [
+                {
+                  tipo: "Critério Gestionário",
+                  nota:
+                    "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+                }
+              ],
+              df: "Conservação",
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.04" }]
+                }
+              ],
+              notas: "Notas do Destino Final",
+              eFilhoDe: "01.04",
+              tipo: "Subsérie"
+            }
           ],
           UIs: [
-            // {
-            //   codigo: "01",
-            //   codCota: "",
-            //   titulo: "",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
-            //   descricao: "",
-            //   notas: "",
-            //   localizacao: ""
-            // },
-            // {
-            //   codigo: "02",
-            //   codCota: "",
-            //   titulo: "",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
-            //   descricao: "",
-            //   notas: "",
-            //   localizacao: ""
-            // }
+            {
+              codigo: "01",
+              codCota: "1",
+              titulo: "1",
+              dataInicial: "2020-03-01",
+              dataFinal: "2020-03-03",
+              produtor: { tipologiasProdutoras: [], entProdutoras: [] },
+              classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
+              descricao: "1",
+              notas: "1",
+              localizacao: "1"
+            },
+            {
+              codigo: "02",
+              codCota: "2",
+              titulo: "2",
+              dataInicial: "2020-04-20",
+              dataFinal: "2020-04-21",
+              produtor: { tipologiasProdutoras: [], entProdutoras: [] },
+              classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
+              descricao: "2",
+              notas: "2",
+              localizacao: "2"
+            }
           ]
         }
       },
@@ -512,7 +517,176 @@ export default {
     changeE1: function(e) {
       this.e1 = e;
     },
-    done: async function() {
+    calcular_dimensao_suporte(series) {
+      this.RADA.RE.dimSuporte.nSeries = series.length;
+      this.RADA.RE.dimSuporte.nSubseries = this.RADA.tsRada.classes.filter(
+        e => e.tipo == "Subsérie"
+      ).length;
+      // adicionar ids às UIs
+      this.RADA.RE.dimSuporte.nUI = this.RADA.tsRada.UIs.map(ui => {
+        ui["id"] = "rada_" + this.RADA.id + "_ui_" + ui.codigo;
+        return ui;
+      }).length;
+      this.RADA.RE.dimSuporte.medicaoUI_papel = series
+        .filter(e => e.suporte == "Papel")
+        .reduce((acc, a) => {
+          return acc + Number(a.medicao);
+        }, 0);
+      this.RADA.RE.dimSuporte.medicaoUI_digital = series
+        .filter(
+          e =>
+            e.suporte == "Eletrónico Digitalizado" ||
+            e.suporte == "Eletrónico Nativo"
+        )
+        .reduce((acc, a) => {
+          return acc + Number(a.medicao);
+        }, 0);
+
+      this.RADA.RE.dimSuporte.medicaoUI_outros = series
+        .filter(e => e.suporte == "Outro")
+        .reduce((acc, a) => {
+          return acc + Number(a.medicao);
+        }, 0);
+    },
+    // Fazer pedidos para as entidades
+    async fazer_pedidos_entidades(series) {
+      //  filtrar as novas entidaaddes criadas e que estão associadas a classes ou UIs
+      let entidades = this.entidades.filter(
+        e =>
+          e.estado == "Nova" &&
+          (series.some(cl => cl.entProdutoras.some(ent => ent.id == e.id)) ||
+            this.RADA.tsRada.UIs.some(ui =>
+              ui.produtor.entProdutoras.some(ent => ent.id == e.id)
+            ))
+      );
+
+      for (let i = 0; i < entidades.length; i++) {
+        let pedidoEntidades = {
+          tipoPedido: "Criação",
+          tipoObjeto: "Entidade",
+          novoObjeto: {
+            estado: "Ativa",
+            designacao: entidades[i].designacao,
+            internacional: entidades[i].internacional,
+            sigla: entidades[i].sigla,
+            sioe: entidades[i].sioe,
+            tipologiasSel: [],
+            dataCriacao: entidades[i].dataCriacao,
+            codigo: ""
+          },
+          user: {
+            email: this.userEmail
+          },
+          token: this.$store.state.token,
+          criadoPor: this.userEmail,
+          entidade: this.user_entidade
+        };
+
+        let response = await this.$request("post", "/pedidos", pedidoEntidades);
+
+        this.RADA.pedidosEntidades.push(response.data);
+      }
+    },
+    async fazer_pedidos_legislacao(series) {
+      let legislacao = this.legislacao
+        .filter(
+          e =>
+            e.estado == "Nova" &&
+            series.some(cl =>
+              cl.legislacao.some(
+                legis => legis.tipo == e.tipo && legis.numero == e.numero
+              )
+            )
+        )
+        .map(leg => {
+          leg["codigo"] = "";
+          leg["diplomaFonte"] = "RADA";
+          leg["estado"] = "Ativo";
+          leg["processosSel"] = [];
+          if (leg.link == null) {
+            leg["link"] = "";
+          }
+          // Adicionar série à qual está relacionada;
+          leg["processosSel"] = series
+            .filter(cl =>
+              cl.legislacao.some(
+                legis => legis.tipo == leg.tipo && legis.numero == leg.numero
+              )
+            )
+            .map(cl => {
+              return {
+                codigo: cl.codigo,
+                titulo: cl.titulo,
+                id: cl.id,
+                tituloRada: this.RADA.titulo
+              };
+            });
+          // Adicionar entidades relacionadas com a criação legislação
+          leg["entidadesSel"] = this.RADA.entRes.map(entidade => {
+            let ent = entidade.split(" - ");
+
+            return {
+              designacao: ent[1],
+              sigla: ent[0],
+              id: "ent_" + ent[0]
+            };
+          });
+
+          return leg;
+        });
+
+      for (let i = 0; i < legislacao.length; i++) {
+        let pedidoLegis = {
+          tipoPedido: "Criação",
+          tipoObjeto: "Legislação",
+          novoObjeto: legislacao[i],
+          user: {
+            email: this.userEmail
+          },
+          token: this.$store.state.token,
+          criadoPor: this.userEmail,
+          entidade: this.user_entidade
+        };
+
+        let response = await this.$request("post", "/pedidos", pedidoLegis);
+
+        this.RADA.pedidosLegislacao.push(response.data);
+      }
+    },
+    concluir: async function() {
+      let series = this.RADA.tsRada.classes
+        // adicionar os IDS a todas as classes
+        .map(e => {
+          let tipo = null;
+
+          switch (e.tipo) {
+            case "Série":
+              tipo = "serie";
+              break;
+            case "Subsérie":
+              tipo = "subserie";
+              break;
+            default:
+              tipo = "organico_funcional";
+              break;
+          }
+
+          e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
+
+          return e;
+        })
+        .filter(e => e.tipo == "Série");
+
+      // Calcular os valores de dimensão e suporte no relatório expositivo
+      this.calcular_dimensao_suporte(series);
+
+      // Tratar dos pedidos das novas legislações
+      await this.fazer_pedidos_legislacao(series);
+
+      // Tratar dos pedidos da novas entidades
+      await this.fazer_pedidos_entidades(series);
+
+      // Fazer pedido do RADA
       let pedidoParams = {
         tipoPedido: "Criação",
         tipoObjeto: "RADA",
