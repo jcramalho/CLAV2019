@@ -112,7 +112,7 @@ export default {
         .catch(error => alert(error));
     },
     async getApiCalls() {
-      await this.$request("get", "/stats/total")
+      await this.$request("get", "/logsAgregados/total")
         .then(res => {
           this.stats.push({
             bgColor: "primary",
