@@ -48,7 +48,7 @@
       </v-btn>
 
       <v-btn
-        v-if="this.$store.state.name != ''"
+        v-if="$store.state.token != '' && level >= 3.5"
         @click="drawerEstatisticas"
         icon
       >
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -81,8 +82,21 @@ export default {
       color: "",
       timeout: 4000,
       text: "",
-      counter: 10
+      counter: 10,
+      level: 0
     };
+  },
+  computed: {
+    ...mapGetters(["token"])
+  },
+  watch: {
+    //apenas atualiza o nível quando o valor do token muda
+    async token(oldToken, newToken) {
+      this.level = await this.$userLevel(this.$store.state.token);
+    }
+  },
+  created: async function() {
+    this.level = await this.$userLevel(this.$store.state.token);
   },
   methods: {
     goHome() {
