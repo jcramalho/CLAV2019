@@ -34,7 +34,7 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="pedidos"
+          :items="dadosTabela"
           :search="procurar"
           class="elevation-1"
           sortDesc
@@ -59,7 +59,13 @@
             </span>
           </template>
 
-          <template v-slot:item="props">
+          <template v-slot:item.tarefa="{ item }">
+            <v-icon @click="showPedido(item)" color="indigo darken-2">
+              visibility
+            </v-icon>
+          </template>
+
+          <!-- <template v-slot:item="props">
             <tr>
               <td class="subheading">{{ props.item.codigo }}</td>
               <td class="subheading">
@@ -103,7 +109,7 @@
                 </v-tooltip>
               </td>
             </tr>
-          </template>
+          </template> -->
 
           <template v-slot:pageText="props">
             Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
@@ -126,41 +132,48 @@ export default {
         {
           text: "Código",
           value: "codigo",
-          sortable: true,
           class: "title",
+          sortable: true,
           filterable: true,
         },
         {
           text: "Tipo",
           value: "tipo",
-          sortable: false,
           class: "title",
-          filterable: false,
+          sortable: true,
+          filterable: true,
         },
         {
           text: "Entidade",
           value: "entidade",
-          sortable: false,
           class: "title",
-          filterable: false,
+          sortable: false,
+          filterable: true,
         },
         {
           text: "Responsável",
           value: "responsavel",
-          sortable: false,
           class: "title",
-          filterable: false,
+          sortable: true,
+          filterable: true,
         },
         {
           text: "Data",
           align: "left",
-          sortable: true,
           value: "data",
+          class: "title",
+          sortable: true,
+          filterable: true,
+        },
+        {
+          text: "Tarefa",
+          value: "tarefa",
+          sortable: false,
           class: "title",
           filterable: false,
         },
-        { text: "Tarefa", sortable: false, class: "title", filterable: false },
       ],
+      dadosTabela: [],
 
       footer_props: {
         "items-per-page-text": "Pedidos por página",
@@ -170,7 +183,27 @@ export default {
     };
   },
 
+  watch: {
+    pedidos() {
+      this.atualizaPedidos();
+    },
+  },
+
   methods: {
+    atualizaPedidos() {
+      this.dadosTabela = this.pedidos.map((pedido) => {
+        const dados = {};
+        dados.codigo = pedido.codigo;
+        dados.tipo = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
+        if (pedido.entidade !== undefined)
+          dados.entidade = pedido.entidade.split("_")[1];
+        dados.responsavel = pedido.criadoPor;
+        dados.data = this.converteData(pedido.data);
+
+        return dados;
+      });
+    },
+
     ordenaTabela(items, index, isDesc) {
       items.sort((a, b) => {
         if (index[0] === "codigo") {
