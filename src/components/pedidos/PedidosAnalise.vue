@@ -56,12 +56,31 @@
           </template>
 
           <template v-slot:item.tarefa="{ item }">
-            <v-icon @click="showPedido(item)" color="indigo darken-2">
-              visibility
-            </v-icon>
-            <v-icon @click="analisaPedido(item)" color="indigo darken-2">
-              person
-            </v-icon>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  @click="showPedido(item)"
+                  color="indigo darken-2"
+                  v-on="on"
+                >
+                  visibility
+                </v-icon>
+              </template>
+              <span>Ver pedido...</span>
+            </v-tooltip>
+
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  @click="analisaPedido(item)"
+                  color="indigo darken-2"
+                  v-on="on"
+                >
+                  search
+                </v-icon>
+              </template>
+              <span>Analisar pedido...</span>
+            </v-tooltip>
           </template>
 
           <!-- <template v-slot:item="props">

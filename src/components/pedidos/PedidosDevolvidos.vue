@@ -26,7 +26,7 @@
           <v-text-field
             v-model="procurar"
             append-icon="search"
-            label="Procurar pedido por código"
+            label="Procurar pedido"
             single-line
             hide-details
             filled
@@ -60,9 +60,18 @@
           </template>
 
           <template v-slot:item.tarefa="{ item }">
-            <v-icon @click="showPedido(item)" color="indigo darken-2">
-              visibility
-            </v-icon>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  @click="showPedido(item)"
+                  color="indigo darken-2"
+                  v-on="on"
+                >
+                  visibility
+                </v-icon>
+              </template>
+              <span>Ver pedido...</span>
+            </v-tooltip>
           </template>
 
           <!-- <template v-slot:item="props">
