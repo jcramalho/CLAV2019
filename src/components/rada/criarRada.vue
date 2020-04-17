@@ -16,7 +16,7 @@
       </v-alert>
       <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
           <font size="4">
             <b>Informação Geral</b>
           </font>
@@ -26,7 +26,7 @@
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -43,7 +43,7 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
@@ -201,238 +201,238 @@ export default {
         tsRada: {
           titulo: "",
           classes: [
-            // {
-            //   codigo: "01",
-            //   titulo: "Classe N1 (01)",
-            //   descricao: "Descrição Classe N1 (01)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "04",
-            //   titulo: "Classe N1 (04)",
-            //   descricao: "Descrição Classe N1 (04)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "02",
-            //   titulo: "Classe N1 (02)",
-            //   descricao: "Descrição Classe N1 (02)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "03",
-            //   titulo: "Classe N1 (03)",
-            //   descricao: "Descrição Classe N1 (01)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "01.02",
-            //   titulo: "Classe N2 (01.02)",
-            //   descricao: "Descrição Classe N2 (01.02)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.01",
-            //   titulo: "Classe N2 (01.01)",
-            //   descricao: "Descrição Classe N2 (01.01)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.01.01",
-            //   titulo: "Classe N3 (01.01.01)",
-            //   descricao: "Descrição Classe N3 (01.01.01)",
-            //   eFilhoDe: "01.01",
-            //   tipo: "N3"
-            // },
+            {
+              codigo: "01",
+              titulo: "Classe N1 (01)",
+              descricao: "Descrição Classe N1 (01)",
+              eFilhoDe: null,
+              tipo: "N1"
+            },
+            {
+              codigo: "04",
+              titulo: "Classe N1 (04)",
+              descricao: "Descrição Classe N1 (04)",
+              eFilhoDe: null,
+              tipo: "N1"
+            },
+            {
+              codigo: "02",
+              titulo: "Classe N1 (02)",
+              descricao: "Descrição Classe N1 (02)",
+              tipo: "N1"
+            },
+            {
+              codigo: "03",
+              titulo: "Classe N1 (03)",
+              descricao: "Descrição Classe N1 (01)",
+              tipo: "N1"
+            },
+            {
+              codigo: "01.02",
+              titulo: "Classe N2 (01.02)",
+              descricao: "Descrição Classe N2 (01.02)",
+              eFilhoDe: "01",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.01",
+              titulo: "Classe N2 (01.01)",
+              descricao: "Descrição Classe N2 (01.01)",
+              eFilhoDe: "01",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.01.01",
+              titulo: "Classe N3 (01.01.01)",
+              descricao: "Descrição Classe N3 (01.01.01)",
+              eFilhoDe: "01.01",
+              tipo: "N3"
+            },
 
-            // {
-            //   codigo: "02.01",
-            //   titulo: "Classe N2 (02.01)",
-            //   descricao: "Descrição Classe N2 (02.01)",
-            //   eFilhoDe: "02",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "03.01",
-            //   titulo: "Classe N2 (03.01)",
-            //   descricao: "Descrição Classe N2 (03.01)",
-            //   eFilhoDe: "03",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.04",
-            //   titulo: "Série (01.04)",
-            //   descricao: "Descrição Série (01.04)",
-            //   dataInicial: "2020-04-11",
-            //   dataFinal: "2020-04-13",
-            //   tUA: "Coleção",
-            //   tSerie: "Fechada",
-            //   suporte: "Papel",
-            //   medicao: "35",
-            //   UIs: [],
-            //   localizacao: ["Localização a definir..."],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [
-            //     {
-            //       id: "leg_ENe2tVpHmTj1xmtY6eo-z",
-            //       data: "29-01-2019",
-            //       tipo: "Portaria",
-            //       numero: "39/2019",
-            //       sumario:
-            //         "Regulamento para a Classificação e Avaliação da Informação Produzida no Exercício de Funções da CP - Comboios de Portugal, E. P. E."
-            //     },
-            //     {
-            //       id: "leg_w6sP8Soc5_N8nQeQiMCk3",
-            //       data: "30-03-2005",
-            //       tipo: "Portaria",
-            //       numero: "418/2005",
-            //       sumario:
-            //         "Regulamento Arquivístico da Secretaria-Geral do Ministério da Administração Interna"
-            //     }
-            //   ],
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
-            //     },
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
-            //     }
-            //   ],
-            //   pca: null,
-            //   formaContagem: { forma: null },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
-            //     }
-            //   ],
-            //   notas: "Notas da Série (01.04)",
-            //   eFilhoDe: "01",
-            //   tipo: "Série"
-            // },
-            // {
-            //   codigo: "01.03",
-            //   titulo: "Série (01.03)",
-            //   descricao: "Descrição Série (01.03)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   tUA: "Processo",
-            //   tSerie: "Aberta",
-            //   suporte: "Eletrónico Nativo",
-            //   UIs: ["01"],
-            //   medicao: "12",
-            //   localizacao: ["Torre do Tombo"],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [
-            //     {
-            //       id: "leg_bzfJBtZAR94z9YC4UojBq",
-            //       data: "30-10-1991",
-            //       tipo: "Portaria",
-            //       numero: "1125/91",
-            //       sumario:
-            //         "Regulamento Arquivístico da Maternidade do Dr. Alfredo da Costa"
-            //     },
-            //     {
-            //       id: "leg_3OZCH3pb0dqpHjlX8HePk",
-            //       data: "30-03-2009",
-            //       tipo: "Portaria",
-            //       numero: "331/2009",
-            //       sumario:
-            //         "Regulamento de conservação arquivística do INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I. P., no que se refere à avaliação, selecção, conservação e eliminação da sua documentação e revoga a Portaria n.º 226/2005, de 24 de Fevereiro"
-            //     }
-            //   ],
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   pca: 2,
-            //   formaContagem: { forma: "hello" },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
-            //     }
-            //   ],
-            //   notas: "",
-            //   eFilhoDe: "01",
-            //   tipo: "Série"
-            // },
-            // {
-            //   codigo: "01.04.01",
-            //   titulo: "Subsérie (01.04.01)",
-            //   descricao: "Descrição Subsérie (01.04.01)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   UIs: ["02"],
-            //   pca: "2",
-            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
-            //   justificacaoPCA: [
-            //     {
-            //       tipo: "Critério Gestionário",
-            //       nota:
-            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
-            //     }
-            //   ],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
-            //     }
-            //   ],
-            //   notas: "Notas do Destino Final",
-            //   eFilhoDe: "01.04",
-            //   tipo: "Subsérie"
-            // }
+            {
+              codigo: "02.01",
+              titulo: "Classe N2 (02.01)",
+              descricao: "Descrição Classe N2 (02.01)",
+              eFilhoDe: "02",
+              tipo: "N2"
+            },
+            {
+              codigo: "03.01",
+              titulo: "Classe N2 (03.01)",
+              descricao: "Descrição Classe N2 (03.01)",
+              eFilhoDe: "03",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.04",
+              titulo: "Série (01.04)",
+              descricao: "Descrição Série (01.04)",
+              dataInicial: "2020-04-11",
+              dataFinal: "2020-04-13",
+              tUA: "Coleção",
+              tSerie: "Fechada",
+              suporte: "Papel",
+              medicao: "35",
+              UIs: [],
+              localizacao: ["Localização a definir..."],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [
+                {
+                  id: "leg_ENe2tVpHmTj1xmtY6eo-z",
+                  data: "29-01-2019",
+                  tipo: "Portaria",
+                  numero: "39/2019",
+                  sumario:
+                    "Regulamento para a Classificação e Avaliação da Informação Produzida no Exercício de Funções da CP - Comboios de Portugal, E. P. E."
+                },
+                {
+                  id: "leg_w6sP8Soc5_N8nQeQiMCk3",
+                  data: "30-03-2005",
+                  tipo: "Portaria",
+                  numero: "418/2005",
+                  sumario:
+                    "Regulamento Arquivístico da Secretaria-Geral do Ministério da Administração Interna"
+                }
+              ],
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.03", tipo: "Série" }
+                },
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
+                }
+              ],
+              pca: null,
+              formaContagem: { forma: null },
+              justificacaoPCA: [],
+              df: "Conservação",
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
+                }
+              ],
+              notas: "Notas da Série (01.04)",
+              eFilhoDe: "01",
+              tipo: "Série"
+            },
+            {
+              codigo: "01.03",
+              titulo: "Série (01.03)",
+              descricao: "Descrição Série (01.03)",
+              dataInicial: null,
+              dataFinal: null,
+              tUA: "Processo",
+              tSerie: "Aberta",
+              suporte: "Eletrónico Nativo",
+              UIs: ["01"],
+              medicao: "12",
+              localizacao: ["Torre do Tombo"],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [
+                {
+                  id: "leg_bzfJBtZAR94z9YC4UojBq",
+                  data: "30-10-1991",
+                  tipo: "Portaria",
+                  numero: "1125/91",
+                  sumario:
+                    "Regulamento Arquivístico da Maternidade do Dr. Alfredo da Costa"
+                },
+                {
+                  id: "leg_3OZCH3pb0dqpHjlX8HePk",
+                  data: "30-03-2009",
+                  tipo: "Portaria",
+                  numero: "331/2009",
+                  sumario:
+                    "Regulamento de conservação arquivística do INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I. P., no que se refere à avaliação, selecção, conservação e eliminação da sua documentação e revoga a Portaria n.º 226/2005, de 24 de Fevereiro"
+                }
+              ],
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04", tipo: "Série" }
+                }
+              ],
+              pca: 2,
+              formaContagem: { forma: "hello" },
+              justificacaoPCA: [],
+              df: "Conservação",
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.04" }]
+                }
+              ],
+              notas: "",
+              eFilhoDe: "01",
+              tipo: "Série"
+            },
+            {
+              codigo: "01.04.01",
+              titulo: "Subsérie (01.04.01)",
+              descricao: "Descrição Subsérie (01.04.01)",
+              dataInicial: null,
+              dataFinal: null,
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04", tipo: "Série" }
+                }
+              ],
+              UIs: ["02"],
+              pca: "2",
+              formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+              justificacaoPCA: [
+                {
+                  tipo: "Critério Gestionário",
+                  nota:
+                    "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+                }
+              ],
+              df: "Conservação",
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.04" }]
+                }
+              ],
+              notas: "Notas do Destino Final",
+              eFilhoDe: "01.04",
+              tipo: "Subsérie"
+            }
           ],
           UIs: [
-            // {
-            //   codigo: "01",
-            //   codCota: "1",
-            //   titulo: "1",
-            //   dataInicial: "2020-03-01",
-            //   dataFinal: "2020-03-03",
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
-            //   descricao: "1",
-            //   notas: "1",
-            //   localizacao: "1"
-            // },
-            // {
-            //   codigo: "02",
-            //   codCota: "2",
-            //   titulo: "2",
-            //   dataInicial: "2020-04-20",
-            //   dataFinal: "2020-04-21",
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
-            //   descricao: "2",
-            //   notas: "2",
-            //   localizacao: "2"
-            // }
+            {
+              codigo: "01",
+              codCota: "1",
+              titulo: "1",
+              dataInicial: "2020-03-01",
+              dataFinal: "2020-03-03",
+              produtor: { tipologiasProdutoras: [], entProdutoras: [] },
+              classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
+              descricao: "1",
+              notas: "1",
+              localizacao: "1"
+            },
+            {
+              codigo: "02",
+              codCota: "2",
+              titulo: "2",
+              dataInicial: "2020-04-20",
+              dataFinal: "2020-04-21",
+              produtor: { tipologiasProdutoras: [], entProdutoras: [] },
+              classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
+              descricao: "2",
+              notas: "2",
+              localizacao: "2"
+            }
           ]
         }
       },
@@ -570,7 +570,14 @@ export default {
             internacional: entidades[i].internacional,
             sigla: entidades[i].sigla,
             sioe: entidades[i].sioe,
-            tipologiasSel: [],
+            tipologiasSel: entidades[i].tipologiasSel.map(tipologia => {
+              let tip = tipologia.split(" - ");
+              return {
+                sigla: tip[0],
+                designacao: tip[1],
+                id: "tip_" + tip[0]
+              };
+            }),
             dataCriacao: entidades[i].dataCriacao,
             codigo: ""
           },

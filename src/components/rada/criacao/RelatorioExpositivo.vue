@@ -2,6 +2,7 @@
   <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
       <div v-if="!RE.tipologiasProd[0]">
+        <NovaEntidade :entidades="entidades" :produtoras="RE.entidadesProd" :tipologias="tipologiasProcessadas" />
         <v-row>
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Entidades Produtoras</div>
@@ -35,7 +36,7 @@
             </v-autocomplete>
           </v-col>
         </v-row>
-        <NovaEntidade :entidades="entidades" :produtoras="RE.entidadesProd" />
+        
       </div>
       <v-row v-if="!RE.entidadesProd[0]">
         <v-col cols="12" xs="12" sm="3">

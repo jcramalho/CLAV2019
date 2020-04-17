@@ -254,7 +254,14 @@ export default {
             internacional: entidades[i].internacional,
             sigla: entidades[i].sigla,
             sioe: entidades[i].sioe,
-            tipologiasSel: [],
+            tipologiasSel: entidades[i].tipologiasSel.map(tipologia => {
+              let tip = tipologia.split(" - ");
+              return {
+                sigla: tip[0],
+                designacao: tip[1],
+                id: "tip_" + tip[0]
+              };
+            }),
             dataCriacao: entidades[i].dataCriacao,
             codigo: ""
           },
