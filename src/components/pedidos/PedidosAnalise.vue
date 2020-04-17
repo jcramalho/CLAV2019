@@ -59,7 +59,7 @@
             <v-icon @click="showPedido(item)" color="indigo darken-2">
               visibility
             </v-icon>
-            <v-icon @click="distribuiPedido(item)" color="indigo darken-2">
+            <v-icon @click="analisaPedido(item)" color="indigo darken-2">
               person
             </v-icon>
           </template>
