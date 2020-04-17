@@ -20,9 +20,7 @@
                     text-color="white"
                   >
                     <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idEntidade }}
-                    -
-                    {{ tabelaSelecao.designacaoEntidade }}
+                    {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
                   </v-chip>
                 </span>
               </v-stepper-step>
@@ -631,8 +629,8 @@ export default {
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
     ListaProcessosUltimos,
-    DesSelTip,
-    SelTip,
+    //DesSelTip,
+    //SelTip,
     ListaParteDescritiva
   },
 
@@ -1354,7 +1352,7 @@ export default {
           tipoObjeto: "TS Organizacional",
           novoObjeto: { ts: tsObj },
           user: { email: userBD.data.email },
-          entidade: userBD.data.entidade.split("_")[1],
+          entidade: userBD.data.entidade,
           token: this.$store.state.token
         };
 

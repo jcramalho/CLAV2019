@@ -19,8 +19,12 @@
           class="elevation-1"
           hide-default-footer
         >
-          <template v-slot:item.operacao="{ item }">
-            <v-icon color="red" @click="">delete</v-icon>
+          <template v-slot:item="props">
+            <tr>
+              <td>{{ props.item.sigla }}</td>
+              <td>{{ props.item.designacao }}</td>
+              <td><v-icon color="red">delete</v-icon></td>
+            </tr>
           </template>
 
           <template v-slot:top>
@@ -173,7 +177,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
@@ -235,7 +239,7 @@ export default {
           mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
         this.erroPedido = true;
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
@@ -315,7 +319,7 @@ export default {
         });
 
         numeroErros++;
-      } else if (!/[0-9]+\-[0-9]+\-[0-9]+/.test(dados.data)) {
+      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(dados.data)) {
         this.erros.push({
           sobre: "Data",
           mensagem: "A data está no formato errado.",

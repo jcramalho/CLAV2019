@@ -213,7 +213,7 @@ export default {
     tiposUA: ["Processo", "Coleção", "Dossier", "Registo"],
     aberto_fechado: ["Aberta", "Fechada"],
     suporte_items: [
-      "Eletrónica Digitalizado",
+      "Eletrónico Digitalizado",
       "Eletrónico Nativo",
       "Papel",
       "Outro"

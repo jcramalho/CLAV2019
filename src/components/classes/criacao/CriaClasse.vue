@@ -158,7 +158,7 @@
           <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-      <!-- TODO: Corrigir este componente -->
+      
       <PainelOperacoes :c="classe" :pendenteId="''" />
     </v-col>
   </v-row>
@@ -568,7 +568,7 @@ export default {
 
     loadLegislacao: async function() {
       try {
-        var response = await this.$request("get", "/legislacao?estado=A");
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {

@@ -62,7 +62,8 @@
       <v-dialog v-model="dialogTipologiaCriada" width="70%">
         <v-card>
           <v-card-title
-            >Pedido de {{ acao }} de Tipologia Submetido</v-card-title
+            >Pedido n.º {{ codigoPedido }} de {{ acao }} de Tipologia
+            Submetido</v-card-title
           >
           <v-card-text>
             <v-row>
@@ -170,6 +171,7 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
       dialogTipologiaCriada: false,
+      codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
       headers: [
@@ -270,7 +272,13 @@ export default {
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
 
-            await this.$request("post", "/pedidos", pedidoParams);
+            const codigoPedido = await this.$request(
+              "post",
+              "/pedidos",
+              pedidoParams
+            );
+
+            this.codigoPedido = codigoPedido.data;
 
             this.dialogTipologiaCriada = true;
           } else {

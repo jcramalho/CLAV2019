@@ -147,17 +147,6 @@ export default {
           ]
         },
         {
-          entidade: "Métricas da plataforma",
-          texto: "",
-          ops: [
-            {
-              label: "Consultar métrica",
-              url: "/gestao/metrica",
-              level: [6, 7]
-            }
-          ]
-        },
-        {
           entidade: "Chaves API",
           texto: "",
           ops: [

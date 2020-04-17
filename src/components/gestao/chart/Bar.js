@@ -9,17 +9,22 @@ export default {
         datasets: [
           {
             label: "GET",
-            backgroundColor: "#f87979",
+            backgroundColor: "#61affe",
             data: []
           },
           {
             label: "POST",
-            backgroundColor: "#aed987",
+            backgroundColor: "#8edeba",
             data: []
           },
           {
             label: "PUT",
-            backgroundColor: "#05CBE1",
+            backgroundColor: "#faa53b",
+            data: []
+          },
+          {
+            label: "DELETE",
+            backgroundColor: "#f98787",
             data: []
           }
         ]
@@ -31,22 +36,16 @@ export default {
     };
   },
   mounted() {
-    this.$request("get", "/stats")
+    this.$request("get", "/logsAgregados/rotas")
       .then(res => {
         for (var i = 0; i < res.data.length; i++) {
-          if (
-            res.data[i]._id != "" &&
-            res.data[i]._id != "unknown route" &&
-            res.data[i]._id != "/stats" &&
-            res.data[i]._id != "/chaves"
-          ) {
-            // alert(JSON.stringify(res.data[i]))
-            this.info.labels.push(res.data[i]._id);
-            var index = this.info.labels.indexOf(res.data[i]._id);
-            this.info.datasets[0].data[index] = res.data[i].nCallsGet;
-            this.info.datasets[1].data[index] = res.data[i].nCallsPost;
-            this.info.datasets[2].data[index] = res.data[i].nCallsPut;
-          }
+          // alert(JSON.stringify(res.data[i]))
+          this.info.labels.push(res.data[i].route);
+          var index = this.info.labels.indexOf(res.data[i].route);
+          this.info.datasets[0].data[index] = res.data[i].nGETs;
+          this.info.datasets[1].data[index] = res.data[i].nPOSTs;
+          this.info.datasets[2].data[index] = res.data[i].nPUTs;
+          this.info.datasets[3].data[index] = res.data[i].nDELETEs;
         }
         this.renderChart(this.info, this.options);
       })

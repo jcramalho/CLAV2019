@@ -80,7 +80,9 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-btn dark color="indigo darken-1" @click="sendToFather()">Criar RADA</v-btn>
+    <v-btn :disabled="UIs_validas || incompleto" color="#3949ab" @click="sendToFather()">
+      <font style="color: white">Criar RADA</font>
+    </v-btn>
     <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
     <v-btn color="indigo darken-4" text @click="apagar">
       <v-icon>delete_sweep</v-icon>
@@ -169,6 +171,11 @@ export default {
                 (e.UIs != undefined && e.UIs.length > 0)
               ))) ||
           (e.eFilhoDe == null && (e.tipo == "N2" || e.tipo == "N3"))
+      );
+    },
+    UIs_validas() {
+      return this.TS.UIs.some(
+        e => e.classesAssociadas.length == 0 || e.titulo == ""
       );
     }
   },

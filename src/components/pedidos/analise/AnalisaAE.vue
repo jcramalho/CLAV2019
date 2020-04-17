@@ -246,7 +246,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 
@@ -280,7 +280,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        console.log("e :", e);
+        //console.log("e :", e);
       }
     },
 

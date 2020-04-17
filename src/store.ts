@@ -9,6 +9,7 @@ export default new Vuex.Store({
     name: "",
     token: "",
     clavToken: "",
+    entidade: "",
     expClavToken: ""
   },
   plugins: [createPersistedState()],
@@ -24,7 +25,13 @@ export default new Vuex.Store({
     },
     guardaNomeUtilizador(state, nome) {
       state.name = nome;
+    },
+    guardaEntidade(state, entidade) {
+      state.entidade = entidade;
     }
+  },
+  getters: {
+    token: state => state.token
   },
   actions: {}
 });

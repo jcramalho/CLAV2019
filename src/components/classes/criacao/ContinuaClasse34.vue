@@ -156,6 +156,11 @@ export default {
     PainelOperacoes
   },
 
+  created: function() {
+    this.classe = this.obj.objeto;
+    this.pendenteID = this.obj._id;
+  },
+
   data: () => ({
     // Objeto que guarda uma classe
 
@@ -173,20 +178,6 @@ export default {
       4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
     },
 
-    formatoCodigo: {
-      1: "ddd (d - digito)",
-      2: "ddd.dd (d - digito)",
-      3: "ddd.dd.ddd (d - digito)",
-      4: "ddd.dd.ddd.dd (d - digito)"
-    },
-
-    classeNiveis: [
-      { label: "Nível 1", value: "1" },
-      { label: "Nível 2", value: "2" },
-      { label: "Nível 3", value: "3" }
-    ],
-
-    classesPai: [],
     entidadesD: [],
     entidadesP: [],
     listaProcessos: [],
@@ -196,7 +187,6 @@ export default {
     pcaSubFormasContagem: [],
 
     semaforos: {
-      paisReady: false,
       classesReady: false,
       entidadesReady: false,
       legislacaoReady: false,
@@ -204,7 +194,8 @@ export default {
       pcaSubFormasContagemReady: false,
       critLegalAdicionadoPCA: false,
       critLegalAdicionadoDF: false,
-      critGestionarioAdicionado: false
+      critGestionarioAdicionado: false,
+      arranqueSistema: true,
     },
 
     loginErrorSnackbar: false,
@@ -213,14 +204,28 @@ export default {
     mensValCodigo: ""
   }),
 
-  created: async function() {
-    this.classe = this.obj.objeto;
-    this.pendenteID = this.obj._id;
-  },
-
   watch: {
     "classe.temSubclasses4Nivel": function() {
-      // Se passou a verdade vamos criar um par de subclasses
+      // Se passou a verdade  depois do sistema arrancar vamos criar um par de subclasses
+      // A flag arranqueSistema evita a duplicação de subsclasses se já houve subdivisão anterior
+      if(!this.semaforos.arranqueSistema) this.subdivideClasse();
+      else this.semaforos.arranqueSistema = false;
+    },
+    "classe.temSubclasses4NivelDF": function() {
+      if (this.classe.temSubclasses4NivelDF) this.calcSinteseDF4Nivel();
+    },
+    "classe.subdivisao4Nivel01Sintetiza02": function() {
+      if (this.classe.temSubclasses4NivelDF) {
+        this.remSintese4Nivel(this.classe.subclasses);
+        this.calcSinteseDF4Nivel();
+      }
+    }
+  },
+
+  methods: {
+    // Carrega as entidades da BD....................
+
+    subdivideClasse: function(){
       // Informação base:
       if (this.classe.temSubclasses4Nivel) {
         var novaSubclasse1 = {
@@ -252,6 +257,13 @@ export default {
             valor: "NE",
             notas: "",
             justificacao: []
+          },
+
+          // Contexto para controlar a interface de cada subclasse
+          semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
           }
         };
         var novaSubclasse2 = {
@@ -283,6 +295,12 @@ export default {
             valor: "NE",
             notas: "",
             justificacao: []
+          },
+          // Contexto para controlar a interface de cada subclasse
+          semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
           }
         };
 
@@ -308,19 +326,6 @@ export default {
         this.classe.df.valor = this.calcDF(this.classe.processosRelacionados);
       }
     },
-    "classe.temSubclasses4NivelDF": function() {
-      if (this.classe.temSubclasses4NivelDF) this.calcSinteseDF4Nivel();
-    },
-    "classe.subdivisao4Nivel01Sintetiza02": function() {
-      if (this.classe.temSubclasses4NivelDF) {
-        this.remSintese4Nivel(this.classe.subclasses);
-        this.calcSinteseDF4Nivel();
-      }
-    }
-  },
-
-  methods: {
-    // Carrega as entidades da BD....................
 
     loadEntidades: async function() {
       try {
@@ -389,7 +394,7 @@ export default {
 
     loadLegislacao: async function() {
       try {
-        var response = await this.$request("get", "/legislacao?estado=A");
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {

@@ -305,7 +305,7 @@ export default {
             numeroErros++;
           }
         } catch (e) {
-          console.log("Erro na verificação da existência do código da classe.");
+          //console.log("Erro na verificação da existência do código da classe.");
         }
       } else {
         numeroErros++;
@@ -325,7 +325,7 @@ export default {
             numeroErros++;
           }
         } catch (e) {
-          console.log("Erro na verificação da existência do título da classe.");
+          //console.log("Erro na verificação da existência do título da classe.");
         }
       }
 

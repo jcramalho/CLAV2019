@@ -11,7 +11,7 @@
       <v-form ref="form" :lazy-validation="false">
         <v-container>
           <v-row>
-            <v-col v-if="listaTipos.length > 0">
+            <v-col v-if="!!listaTipos[0]">
               <v-select
                 :rules="rule"
                 item-text="label"
@@ -21,28 +21,9 @@
                 label="Tipo"
               />
             </v-col>
-            <v-col v-else>
-              <v-text-field
-                :rules="rule"
-                v-model="tipo"
-                label="Tipo"
-              ></v-text-field>
-            </v-col>
 
             <v-col>
-              <v-text-field
-                :rules="rule"
-                v-model="numero"
-                label="Número"
-              ></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-text-field
-                :rules="rule"
-                v-model="sumario"
-                label="Sumário"
-              ></v-text-field>
+              <v-text-field :rules="rule" v-model="numero" label="Número"></v-text-field>
             </v-col>
 
             <v-col>
@@ -53,7 +34,7 @@
                 :return-value.sync="data"
                 transition="scale-transition"
                 offset-y
-                min-width="290px"
+                max-width="290px"
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
@@ -63,38 +44,44 @@
                     prepend-icon="event"
                     readonly
                     v-on="on"
+                    clearable
                   ></v-text-field>
                 </template>
-                <v-date-picker v-model="data" no-title scrollable locale="pt">
+                <v-date-picker
+                  full-width
+                  v-model="data"
+                  color="amber accent-3"
+                  locale="pt"
+                  :max="new Date().toISOString().split('T')[0]"
+                >
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="data_menu = false"
-                    >Cancel</v-btn
-                  >
-                  <v-btn text color="primary" @click="$refs.menu2.save(data)"
-                    >OK</v-btn
-                  >
+                  <v-btn text @click="data_menu = false">
+                    <v-icon>keyboard_backspace</v-icon>
+                  </v-btn>
+                  <v-btn text @click="$refs.menu2.save(data)">
+                    <v-icon>check</v-icon>
+                  </v-btn>
                 </v-date-picker>
               </v-menu>
-              <!-- <v-text-field
-                :rules="rule"
-                v-model="data"
-                label="Data: AAAA-MM-DD"
-                v-mask="'####-##-##'"
-              />-->
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field :rules="rule" v-model="sumario" label="Sumário"></v-text-field>
+            </v-col>
+
+            <v-col>
+              <v-text-field v-model="link" label="Link"></v-text-field>
             </v-col>
           </v-row>
           <v-row v-if="!!alertOn">
             <v-col>
-              <v-alert dismissible dense text type="error"
-                >Legislação já existe!</v-alert
-              >
+              <v-alert dismissible dense text type="error">Legislação já existe!</v-alert>
             </v-col>
           </v-row>
           <v-row v-if="sucessOn">
             <v-col>
-              <v-alert dismissible dense text type="success"
-                >Legislação adicionada com sucesso!</v-alert
-              >
+              <v-alert dismissible dense text type="success">Legislação adicionada com sucesso!</v-alert>
             </v-col>
           </v-row>
         </v-container>
@@ -111,13 +98,13 @@ export default {
       data_menu: false,
       rule: [v => !!v || "Campo é obrigatório."],
       listaTipos: [],
-      novasLegislacao: [],
       alertOn: false,
       sucessOn: false,
       tipo: "",
       numero: "",
       sumario: "",
-      data: ""
+      data: "",
+      link: ""
     };
   },
 
@@ -144,14 +131,13 @@ export default {
           let legis = {
             estado: "Nova",
             tipo: this.tipo,
-            id: "...",
             numero: this.numero,
             sumario: this.sumario,
-            data: this.data
+            data: this.data,
+            link: this.link
           };
 
           this.legislacao.push(legis);
-          this.novasLegislacao.push(legis);
           this.newSerie.legislacao.push(legis);
           this.sucessOn = true;
           this.$refs.form.reset();
@@ -166,17 +152,6 @@ export default {
         return el.tipo == this.tipo && el.numero == this.numero;
       });
     }
-
-    // validaData: function(d) {
-    //   var date = new Date().toISOString().slice(0, 10);
-    //   var res = true;
-    //   if (d > date) {
-    //     this.mensagensErro.push("A data não pode ser superior à data atual!");
-    //     this.data = "";
-    //     res = false;
-    //   }
-    //   return res;
-    // }
   }
 };
 </script>
