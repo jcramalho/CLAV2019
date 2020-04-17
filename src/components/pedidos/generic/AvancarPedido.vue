@@ -109,10 +109,14 @@ export default {
     },
 
     avancar() {
-      this.$emit("avancarPedido", {
+      const despacho = {
         utilizadorSelecionado: this.utilizadorSelecionado,
-        mensagemDespacho: this.mensagemDespacho,
-      });
+      };
+
+      if (this.mensagemDespacho !== null)
+        despacho.utilizadorSelecionado = this.utilizadorSelecionado;
+
+      this.$emit("avancarPedido", despacho);
 
       this.utilizadorSelecionado = null;
       this.mensagemDespacho = null;
