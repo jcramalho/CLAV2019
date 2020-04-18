@@ -587,11 +587,32 @@ export default {
       return res;
     },
 
+    // Atualiza as flags que controlam os botões de adicionar e remover critérios
+    atualizaFlagsCriterios(tipo, PCAouDF) {
+      if (tipo == "CriterioJustificacaoLegal") {
+        if (PCAouDF == "PCA") this.semaforos.critLegalAdicionadoPCA = false;
+        else this.semaforos.critLegalAdicionadoDF = false;
+      } else if (tipo == "CriterioJustificacaoGestionario") {
+        this.semaforos.critGestionarioAdicionado = false;
+      }
+    },
+
     selectDiploma: function(leg) {
       this.c.legislacao.push(leg);
       // Remove dos selecionáveis
       var index = this.legs.findIndex(l => l.id === leg.id);
       this.legs.splice(index, 1);
+      // Remove critérios legais pois houve alteração no contexto
+      index = this.c.pca.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
+      if(index != -1){
+        this.c.pca.justificacao.splice(index, 1);
+        this.atualizaFlagsCriterios("CriterioJustificacaoLegal", "PCA");
+      }
+      index = this.c.df.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
+      if(index != -1){
+        this.c.df.justificacao.splice(index, 1);
+        this.atualizaFlagsCriterios("CriterioJustificacaoLegal", "DF");
+      }
     },
 
     unselectDiploma: function(diploma) {
