@@ -252,7 +252,11 @@ export default {
       this.codigo = null;
       this.titulo = null;
       this.dataContagem = null;
-      this.ni = "Dono";
+      if(this.auto.zonaControlo[this.index].destino =="C") {
+        this.ni = "Participante"
+        this.natureza = ["Participante"]
+      } else 
+        this.ni = "Dono";
       this.editAG = null;
     },
     deleteAG: function() {
