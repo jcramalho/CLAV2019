@@ -62,11 +62,7 @@ export default {
       try {
         const estado = "Devolvido";
 
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
-        dadosUtilizador = dadosUtilizador.data;
+        let dadosUtilizador = this.$verifyTokenUser();
 
         const novaDistribuicao = {
           estado: estado,
@@ -117,11 +113,7 @@ export default {
 
           const estado = "Validado";
 
-          let dadosUtilizador = await this.$request(
-            "get",
-            "/users/" + this.$store.state.token + "/token"
-          );
-          dadosUtilizador = dadosUtilizador.data;
+          let dadosUtilizador = this.$verifyTokenUser();
 
           const novaDistribuicao = {
             estado: estado,

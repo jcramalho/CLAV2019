@@ -85,7 +85,7 @@ export default {
     try {
       let response = await this.$request("get", "/tipologias");
 
-      let level = await this.$userLevel(this.$store.state.token);
+      let level = this.$userLevel();
 
       this.preparaCabecalhos(level);
 

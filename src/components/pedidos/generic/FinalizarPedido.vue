@@ -51,7 +51,7 @@
 export default {
   data() {
     return {
-      mensagemDespacho: null
+      mensagemDespacho: null,
     };
   },
 
@@ -63,11 +63,13 @@ export default {
     },
 
     finalizarPedido() {
-      this.$emit("finalizarPedido", {
-        mensagemDespacho: this.mensagemDespacho
-      });
-    }
-  }
+      const despacho = {};
+      if (this.mensagemDespacho !== null)
+        despacho.mensagemDespacho = this.mensagemDespacho;
+
+      this.$emit("finalizarPedido", despacho);
+    },
+  },
 };
 </script>
 

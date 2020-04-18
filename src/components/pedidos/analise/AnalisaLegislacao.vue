@@ -212,12 +212,8 @@ export default {
       try {
         const estado = "Devolvido";
 
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
+        let dadosUtilizador = this.$verifyTokenUser();
 
-        dadosUtilizador = dadosUtilizador.data;
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
@@ -245,12 +241,7 @@ export default {
       try {
         const estado = "Apreciado";
 
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
-
-        dadosUtilizador = dadosUtilizador.data;
+        let dadosUtilizador = this.$verifyTokenUser();
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 

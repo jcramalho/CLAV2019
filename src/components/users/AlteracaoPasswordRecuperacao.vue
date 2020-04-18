@@ -64,16 +64,10 @@
 export default {
   name: "signup",
   mounted: async function() {
-    var res = await this.$request(
-      "get",
-      "/users/" +
-        this.$route.query.jwt +
-        "/token?token=" +
-        this.$route.query.jwt
-    );
+    var jwt = this.$verifyTokenUser(this.$route.query.jwt);
     this.validJWT = true;
-    this.form.id = res.data._id;
-    this.form.name = res.data.name;
+    this.form.id = jwt.id;
+    this.form.name = jwt.name;
   },
   data() {
     return {

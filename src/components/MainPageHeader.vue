@@ -92,11 +92,11 @@ export default {
   watch: {
     //apenas atualiza o nível quando o valor do token muda
     async token(oldToken, newToken) {
-      this.level = await this.$userLevel(this.$store.state.token);
+      this.level = this.$userLevel();
     }
   },
   created: async function() {
-    this.level = await this.$userLevel(this.$store.state.token);
+    this.level = this.$userLevel();
   },
   methods: {
     goHome() {
@@ -112,11 +112,8 @@ export default {
       this.snackbar = false;
     },
     async testJWT() {
-      var res = await this.$request(
-        "get",
-        "/users/" + this.$store.state.token + "/token"
-      );
-      alert(JSON.stringify(res.data));
+      var res = this.$verifyTokenUser();
+      alert(JSON.stringify(res));
     }
   }
 };

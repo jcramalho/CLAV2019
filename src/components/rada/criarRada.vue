@@ -727,18 +727,16 @@ export default {
     response = await this.$request("get", "/tipologias");
     this.tipologias = response.data;
 
-    let userBD = await this.$request(
-      "get",
-      "/users/" + this.$store.state.token + "/token"
-    );
-    this.userEmail = userBD.data.email;
+    let userBD = this.$verifyTokenUser();
+    this.userEmail = userBD.email;
 
     let userEntidade = await this.$request(
       "get",
-      "/entidades/" + userBD.data.entidade
+      "/entidades/" + userBD.entidade
     );
 
-    this.user_entidade = "ent_" + userEntidade.data.sigla;
+    //this.user_entidade = "ent_" + userEntidade.data.sigla;
+    this.user_entidade = userBD.entidade;
 
     this.RADA.entRes.push(
       userEntidade.data.sigla + " - " + userEntidade.data.designacao

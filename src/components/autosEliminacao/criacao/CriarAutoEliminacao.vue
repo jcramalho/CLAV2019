@@ -240,11 +240,6 @@ export default {
   methods: {
     submit: async function() {
       this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
-      var fundo = [];
-      for (var f of this.auto.fundo) {
-        fundo.push(f.split(" - ")[1]);
-      }
-      this.auto.fundo = fundo;
       this.$request("post", "/autosEliminacao/", { auto: this.auto })
         .then(r => {
           this.successDialog = true;
@@ -262,17 +257,14 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          var userBD = await this.$request(
-            "get",
-            "/users/" + this.$store.state.token + "/token"
-          );
+          var userBD = this.$verifyTokenUser();
           var pendenteParams = {
             numInterv: 1,
             acao: "Criação",
             tipo: "Auto de Eliminação",
             objeto: this.auto,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email },
+            criadoPor: userBD.email,
+            user: { email: userBD.email },
             token: this.$store.state.token
           };
           var response = await this.$request(

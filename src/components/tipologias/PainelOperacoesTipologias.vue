@@ -253,10 +253,7 @@ export default {
           }
 
           if (erros == 0) {
-            let userBD = await this.$request(
-              "get",
-              "/users/" + this.$store.state.token + "/token"
-            );
+            var userBD = this.$verifyTokenUser();
 
             // dataObj.codigo = "tip_" + this.t.sigla;
 
@@ -264,8 +261,8 @@ export default {
               tipoPedido: this.acao,
               tipoObjeto: "Tipologia",
               novoObjeto: dataObj,
-              user: { email: userBD.data.email },
-              entidade: userBD.data.entidade,
+              user: { email: userBD.email },
+              entidade: userBD.entidade,
               token: this.$store.state.token,
             };
 
