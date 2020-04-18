@@ -63,10 +63,10 @@ export default {
     }
   },
   created: async function() {
-    try {   
-      var user = await this.$request("get", "/users/token");
+    try {
+      var user = this.$verifyTokenUser();
       var response2 = await this.$request("get", "/entidades/");
-      this.entidades = await this.prepararEntidade(response2.data, user.data);
+      this.entidades = await this.prepararEntidade(response2.data, user);
       var response3 = await this.$request(
         "get",
         "/classes?nivel=3&info=completa"

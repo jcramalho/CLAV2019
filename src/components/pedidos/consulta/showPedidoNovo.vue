@@ -183,12 +183,7 @@ export default {
 
         const estado = "Distribuído";
 
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
-
-        dadosUtilizador = dadosUtilizador.data;
+        let dadosUtilizador = this.$verifyTokenUser();
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;

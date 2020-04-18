@@ -1,67 +1,40 @@
 var axios = require("axios");
 const lhost = require("@/config/global").host;
 
-async function getCLAVToken(store) {
-  var apikey;
+function redirectUser(objThis) {
+  objThis.$store.commit("guardaTokenUtilizador", "");
+  objThis.$store.commit("guardaNomeUtilizador", "");
+  objThis.$store.commit("guardaEntidade", "");
 
-  try {
-    var response = await axios.get(lhost + "/chaves/clavToken");
-    apikey = response.data.token;
-
-    store.commit("guardaTokenCLAV", apikey);
-    store.commit("guardaExpTokenCLAV", response.data.exp);
-  } catch (erro) {
-    apikey = "";
-  }
-
-  return apikey;
+  objThis.$router.push(
+    "/users/autenticacao?erro=" +
+      encodeURIComponent(
+        "A sua sessão expirou! Por favor faça login novamente."
+      )
+  );
 }
 
-async function getAuthToken(store) {
-  var auth = "";
+function redirectKey(objThis) {
+  objThis.$store.commit("guardaTokenCLAV", "");
 
-  if (store.state.token != "") {
-    auth = "token " + store.state.token;
-  } else {
-    var apikey;
-
-    if (store.state.clavToken != "") {
-      var expDate = new Date(store.state.expClavToken * 1000);
-      var atualDate = new Date();
-
-      //verifica se o token ainda não expirou
-      if (expDate.getTime() >= atualDate.getTime()) {
-        apikey = store.state.clavToken;
-      } else {
-        apikey = await getCLAVToken(store);
-      }
-    } else {
-      apikey = await getCLAVToken(store);
-    }
-    auth = "apikey " + apikey;
-  }
-
-  return auth;
+  objThis.$router.push(
+    "/?erro=" +
+      encodeURIComponent("Ocorreu um erro com o pedido. Tente de novo.")
+  );
 }
 
-function parseError(erro, path, store, router) {
+function parseError(erro, path, objThis) {
   if (erro.response && erro.response.status) {
     var httpStatus = erro.response.status;
 
     if (httpStatus == 401 && path != "/users/login") {
-      store.commit("guardaTokenUtilizador", "");
-      store.commit("guardaNomeUtilizador", "");
-      store.commit("guardaTokenCLAV", "");
-      store.commit("guardaExpTokenCLAV", "");
-
-      router.push(
-        "/users/autenticacao?erro=" +
-          encodeURIComponent(
-            "A sua sessão expirou! Por favor faça login novamente."
-          )
-      );
+      if (objThis.$store.state.token != "") {
+        redirectUser(objThis);
+      } else {
+        redirectKey(objThis);
+      }
     } else if (httpStatus == 403) {
-      router.push(
+      objThis.$router.push(
         "/?erro=" +
           encodeURIComponent(
             "Não tem permissões suficientes para realizar o seu pedido!"
@@ -75,10 +48,10 @@ function parseError(erro, path, store, router) {
   }
 }
 
-async function exec(type, path, data, config, store, router) {
+async function exec(type, path, data, config, objThis) {
   config = config || null;
   data = data || null;
-  var authToken = await getAuthToken(store);
+  var authToken = await objThis.$getAuthToken();
   var url = lhost + path;
 
   if (config == null) {
@@ -105,17 +78,42 @@ async function exec(type, path, data, config, store, router) {
         throw "Wrong REST method or not supported!";
     }
   } catch (erro) {
-    parseError(erro, path, store, router);
+    parseError(erro, path, objThis);
   }
 }
 
 const request = {
   install(Vue) {
     Vue.prototype.$request = async function(type, path, data, config) {
-      return await exec(type, path, data, config, this.$store, this.$router);
+      return await exec(type, path, data, config, this);
     };
     Vue.prototype.$getAuthToken = async function() {
-      return await getAuthToken(this.$store);
+      var auth = "";
+
+      if (this.$store.state.token != "") {
+        //verifica se o token ainda não expirou
+        //se expirou o user será redirecionado
+        this.$verifyTokenUser();
+        auth = "token " + this.$store.state.token;
+      } else {
+        var apikey = this.$store.state.clavToken;
+
+        //verifica se o token ainda não expirou
+        var isValid = this.$verifyTokenKey();
+        if (!isValid) {
+          try {
+            var response = await axios.get(lhost + "/chaves/clavToken");
+            apikey = response.data.apikey;
+
+            this.$store.commit("guardaTokenCLAV", apikey);
+          } catch (erro) {
+            redirectKey(this);
+          }
+        }
+        auth = "apikey " + apikey;
+      }
+
+      return auth;
     };
   }
 };

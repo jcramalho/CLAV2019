@@ -222,8 +222,8 @@ export default {
   },
   created: async function() {
     try {
-      var user = await this.$request("get", "/users/token");
-      this.entidadesPN = this.entidades.filter(e=> !e.includes(user.data.entidade.split("_")[1]))
+      var user = this.$verifyTokenUser();
+      this.entidadesPN = this.entidades.filter(e=> !e.includes(user.entidade.split("_")[1]))
     }
     catch (e) {
       this.entidadesPN = this.entidades

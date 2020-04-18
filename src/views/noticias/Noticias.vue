@@ -234,7 +234,7 @@ export default {
       try {
         let response = await this.$request("get", "/noticias");
 
-        let level = await this.$userLevel(this.$store.state.token);
+        let level = this.$userLevel();
 
         this.preparaCabecalhos(level);
 
@@ -256,7 +256,7 @@ export default {
       
       let response = await this.$request("get", "/noticias");
 
-      let level = await this.$userLevel(this.$store.state.token);
+      let level = this.$userLevel();
 
       this.preparaCabecalhos(level);
 

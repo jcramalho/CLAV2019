@@ -428,22 +428,20 @@ export default {
     response = await this.$request("get", "/tipologias");
     this.tipologias = response.data;
 
-    let userBD = await this.$request(
-      "get",
-      "/users/" + this.$store.state.token + "/token"
-    );
-    this.userEmail = userBD.data.email;
+    let userBD = this.$verifyTokenUser();
+    this.userEmail = userBD.email;
+    this.user_entidade = userBD.entidade;
 
-    let userEntidade = await this.$request(
-      "get",
-      "/entidades/" + userBD.data.entidade
-    );
+    //let userEntidade = await this.$request(
+    //  "get",
+    //  "/entidades/" + userBD.entidade
+    //);
 
-    this.user_entidade = "ent_" + userEntidade.data.sigla;
+    //this.user_entidade = "ent_" + userEntidade.data.sigla;
 
     // let userEntidade = await this.$request(
     //   "get",
-    //   "/entidades/" + userBD.data.entidade
+    //   "/entidades/" + userBD.entidade
     // );
 
     // if (
