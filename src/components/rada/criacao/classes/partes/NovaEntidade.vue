@@ -1,9 +1,13 @@
 <template>
   <div>
-    <v-expansion-panels flat focusable>
+    <v-expansion-panels flat focusable v-model="panel">
       <v-expansion-panel>
-        <v-expansion-panel-header color="indigo lighten-5">
+        <v-expansion-panel-header disable-icon-rotate color="#dee2f8" ripple>
           <b style="color:#1a237e">Criar Nova Entidade</b>
+
+          <template v-slot:actions>
+            <v-icon color="sucess" rounded>add</v-icon>
+          </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content color="indigo lighten-5">
           <v-card flat color="indigo lighten-5">
@@ -16,7 +20,7 @@
 
                   <v-col>
                     <v-text-field
-                      :rules="[v => /^[0-9]*$/.test(v) || 'Apenas são aceites caracteres numéricos.']"
+                      :rules="[v => /^[0-9]*$/.test(v) || v == null || 'Apenas são aceites caracteres numéricos.']"
                       v-model="sioe"
                       label="SIOE"
                     ></v-text-field>
@@ -81,12 +85,20 @@
                       :items="tipologias"
                       label="Tipologias à qual a entidade pertence"
                       multiple
-                      item-text="searchField"
-                      item-value="searchField"
+                      item-text="tipologia"
+                      item-value="tipologia"
                       chips
                       deletable-chips
                       :return-object="false"
-                    ></v-autocomplete>
+                    >
+                      <template v-slot:no-data>
+                        <v-list-item>
+                          <v-list-item-title>
+                            <strong>Tipologia</strong> em questão não existe!
+                          </v-list-item-title>
+                        </v-list-item>
+                      </template>
+                    </v-autocomplete>
                   </v-col>
                 </v-row>
                 <v-row v-if="!!alertOn">
@@ -124,6 +136,7 @@ export default {
   props: ["entidades", "produtoras", "tipologias"],
   data: function() {
     return {
+      panel: [0],
       data_menu: false,
       data: null,
       alertOn: false,
@@ -134,7 +147,7 @@ export default {
       siglaRules: [v => !!v || "A Sigla é um campo obrigatório."],
       designacao: "",
       designacaoRules: [v => !!v || "A Designação é obrigatória."],
-      internacional: "Nao",
+      internacional: "",
       simNao: [
         {
           label: "Sim",
@@ -151,7 +164,6 @@ export default {
   methods: {
     newEntidade: async function() {
       this.alertOn = false;
-      this.sucessOn = false;
 
       if (this.$refs.form.validate()) {
         if (!(await this.validaEntidade())) {
@@ -169,24 +181,21 @@ export default {
             tipologiasSel: this.tipologiasSel
           };
 
-          let entidadeSelecionada = {
-            estado: "Nova",
-            id: "ent_" + this.sigla,
-            sigla: this.sigla,
-            sioe: this.sioe,
-            designacao: this.designacao,
-            internacional: this.internacional,
-            searchField: this.sigla + " - " + this.designacao,
-            disabled: false
-          };
-
-          this.produtoras.push(entidadeSelecionada);
+          this.produtoras.push(this.sigla + " - " + this.designacao);
           this.entidades.push(entidade);
 
           this.sucessOn = true;
           this.$refs.form.reset();
+
+          setTimeout(() => {
+            this.sucessOn = false;
+            this.panel = [0];
+          }, 2500);
         } else {
           this.alertOn = true;
+          setTimeout(() => {
+            this.alertOn = false;
+          }, 5000);
         }
       }
     },

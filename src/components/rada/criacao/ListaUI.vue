@@ -80,3 +80,12 @@ export default {
   }
 };
 </script>
+
+<style>
+.table-header {
+  color: #1a237e;
+  font-weight: 400;
+  background-color: #dee2f8;
+  font-weight: bold;
+}
+</style>

@@ -28,7 +28,7 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
         </v-col>
       </v-row>
-      <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p> -->
+      <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p>
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
