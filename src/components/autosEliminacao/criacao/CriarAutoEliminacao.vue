@@ -240,11 +240,6 @@ export default {
   methods: {
     submit: async function() {
       this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
-      var fundo = [];
-      for (var f of this.auto.fundo) {
-        fundo.push(f.split(" - ")[1]);
-      }
-      this.auto.fundo = fundo;
       this.$request("post", "/autosEliminacao/", { auto: this.auto })
         .then(r => {
           this.successDialog = true;

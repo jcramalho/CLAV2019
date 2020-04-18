@@ -35,7 +35,7 @@
 export default {
   data() {
     return {
-      mensagemDespacho: null
+      mensagemDespacho: null,
     };
   },
 
@@ -47,11 +47,14 @@ export default {
     },
 
     despacho() {
-      this.$emit("devolverPedido", {
-        mensagemDespacho: this.mensagemDespacho
-      });
-    }
-  }
+      const despacho = {};
+
+      if (this.mensagemDespacho !== null)
+        despacho.utilizadorSelecionado = this.utilizadorSelecionado;
+
+      this.$emit("devolverPedido", despacho);
+    },
+  },
 };
 </script>
 
