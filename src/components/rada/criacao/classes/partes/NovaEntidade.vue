@@ -11,7 +11,7 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content color="indigo lighten-5">
           <v-card flat color="indigo lighten-5">
-            <v-card-text width>
+            <v-card-text>
               <v-form ref="form" :lazy-validation="false">
                 <v-row>
                   <v-col>
@@ -70,6 +70,7 @@
                   </v-col>
                   <v-col sm="4" md="4">
                     <v-select
+                      :rules="[v => !!v || 'Campo obrigatório!']"
                       item-text="label"
                       item-value="value"
                       v-model="internacional"
@@ -133,7 +134,7 @@
 
 <script>
 export default {
-  props: ["entidades", "produtoras", "tipologias"],
+  props: ["entidades", "produtoras", "tipologias", "entidadesProcessadas"],
   data: function() {
     return {
       panel: [0],
@@ -181,7 +182,16 @@ export default {
             tipologiasSel: this.tipologiasSel
           };
 
+          // PUSH PARA ARRAY DE ENTIDADES SELECIONADAS
           this.produtoras.push(this.sigla + " - " + this.designacao);
+
+          // PUSH PARA ARRAY DE ENTIDADES DOS ITEMS
+          this.entidadesProcessadas.push({
+            entidade: entidade.sigla + " - " + entidade.designacao,
+            disabled: false
+          });
+
+          // PUSH DA ENTIDADE COMPLETA PARA O ARRAY ENTIDADES
           this.entidades.push(entidade);
 
           this.sucessOn = true;

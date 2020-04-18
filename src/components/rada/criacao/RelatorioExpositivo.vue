@@ -5,8 +5,10 @@
         <NovaEntidade
           :entidades="entidades"
           :produtoras="RE.entidadesProd"
-          :tipologias="tipologiasProcessadas"
+          :tipologias="tipologias"
+          :entidadesProcessadas="entidadesProcessadas"
         />
+        <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Entidades Produtoras</div>
@@ -48,7 +50,7 @@
           <v-autocomplete
             :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RE.tipologiasProd"
-            :items="tipologiasProcessadas"
+            :items="tipologias"
             item-text="tipologia"
             item-value="tipologia"
             placeholder="Selecione as Tipologias das Entidades Produtoras."
@@ -72,7 +74,7 @@
           </v-autocomplete>
         </v-col>
       </v-row>
-      <hr style="border: 2px solid indigo; border-radius: 1px;" />
+      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Data Inicial da Documentação</div>
@@ -265,28 +267,35 @@
 import NovaEntidade from "./classes/partes/NovaEntidade";
 
 export default {
-  props: ["RE", "entidades", "tipologias", "classes", "UIs"],
+  props: [
+    "RE",
+    "entidades",
+    "tipologias",
+    "classes",
+    "UIs",
+    "entidadesProcessadas"
+  ],
   components: {
     NovaEntidade
   },
-  computed: { 
-    entidadesProcessadas() {
-      return this.entidades.map(item => {
-        return {
-          entidade: item.sigla + " - " + item.designacao,
-          disabled: false
-        };
-      });
-    },
-    tipologiasProcessadas() {
-      return this.tipologias.map(item => {
-        return {
-          tipologia: item.sigla + " - " + item.designacao,
-          disabled: false
-        };
-      });
-    }
-  },
+  // computed: {
+  //   entidadesProcessadas() {
+  //     return this.entidades.map(item => {
+  //       return {
+  //         entidade: item.sigla + " - " + item.designacao,
+  //         disabled: false
+  //       };
+  //     });
+  //   },
+  //   tipologiasProcessadas() {
+  //     return this.tipologias.map(item => {
+  //       return {
+  //         tipologia: item.sigla + " - " + item.designacao,
+  //         disabled: false
+  //       };
+  //     });
+  //   }
+  // },
   data: () => ({
     panels: [0, 0, 0],
     menu1: false,

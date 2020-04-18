@@ -77,6 +77,7 @@
             :UIs="RADA.tsRada.UIs"
             :classes="RADA.tsRada.classes"
             :entidades="entidades"
+            :entidadesProcessadas="entidadesProcessadas"
             :tipologias="tipologias"
           />
         </v-stepper-content>
@@ -95,6 +96,7 @@
             :RE="RADA.RE"
             :TS="RADA.tsRada"
             :entidades="entidades"
+            :legislacaoProcessada="legislacaoProcessada"
           />
         </v-stepper-content>
       </v-stepper>
@@ -157,6 +159,8 @@ export default {
       entidades: [],
       tipologias: [],
       legislacao: [],
+      legislacaoProcessada: [],
+      entidadesProcessadas: [],
       e1: 1,
       titulo: "",
       guardar: false,
@@ -238,9 +242,13 @@ export default {
       let entidades = this.entidades.filter(
         e =>
           e.estado == "Nova" &&
-          (series.some(cl => cl.entProdutoras.some(ent => ent.id == e.id)) ||
+          (series.some(cl =>
+            cl.entProdutoras.some(ent => ent == e.sigla + " - " + e.designacao)
+          ) ||
             this.RADA.tsRada.UIs.some(ui =>
-              ui.produtor.entProdutoras.some(ent => ent.id == e.id)
+              ui.produtor.entProdutoras.some(
+                ent => ent == e.sigla + " - " + e.designacao
+              )
             ))
       );
 
@@ -285,7 +293,9 @@ export default {
             e.estado == "Nova" &&
             series.some(cl =>
               cl.legislacao.some(
-                legis => legis.tipo == e.tipo && legis.numero == e.numero
+                legis =>
+                  legis.legislacao ==
+                  e.tipo + " " + e.numero + " - " + e.sumario
               )
             )
         )
@@ -301,7 +311,9 @@ export default {
           leg["processosSel"] = series
             .filter(cl =>
               cl.legislacao.some(
-                legis => legis.tipo == leg.tipo && legis.numero == leg.numero
+                legis =>
+                  legis.legislacao ==
+                  leg.tipo + " " + leg.numero + " - " + leg.sumario
               )
             )
             .map(cl => {
@@ -400,10 +412,10 @@ export default {
     }
   },
   created: async function() {
+    // Pedido para a legislação e processamento para formulários!
     let l = await this.$request("get", "/legislacao");
     this.legislacao = l.data;
-
-    // Inserir as legislações que foram criadas na sessão antiga
+    // Inserir as legislações que foram criadas na sessão antiga, verificando se já não foram aprovadas!
     for (let i = 0; i < this.obj.objeto.legislacao.length; i++) {
       if (
         !this.legislacao.some(
@@ -415,7 +427,15 @@ export default {
         this.legislacao.push(this.obj.objeto.legislacao[i]);
       }
     }
+    // Processamento para formulários
+    this.legislacaoProcessada = this.legislacao.map(item => {
+      return {
+        id: item.id,
+        legislacao: item.tipo + " " + item.numero + " - " + item.sumario
+      };
+    });
 
+    // Pedido para as entidades e processamento para formulários!
     let response = await this.$request("get", "/entidades");
     this.entidades = response.data;
 
@@ -431,9 +451,22 @@ export default {
         this.entidades.push(this.obj.objeto.entidades[j]);
       }
     }
+    // Processamento para formulários
+    this.entidadesProcessadas = this.entidades.map(item => {
+      return {
+        entidade: item.sigla + " - " + item.designacao,
+        disabled: false
+      };
+    });
 
+    // Pedido para tipologias e seu processamento para formulários!
     response = await this.$request("get", "/tipologias");
-    this.tipologias = response.data;
+    this.tipologias = response.data.map(item => {
+      return {
+        tipologia: item.sigla + " - " + item.designacao,
+        disabled: false
+      };
+    });
 
     let userBD = await this.$request(
       "get",
@@ -447,21 +480,6 @@ export default {
     );
 
     this.user_entidade = "ent_" + userEntidade.data.sigla;
-
-    // let userEntidade = await this.$request(
-    //   "get",
-    //   "/entidades/" + userBD.data.entidade
-    // );
-
-    // if (
-    //   this.RADA.entRes.indexOf(
-    //     userEntidade.data.sigla + " - " + userEntidade.data.designacao
-    //   ) == -1
-    // ) {
-    //   this.RADA.entRes.push(
-    //     userEntidade.data.sigla + " - " + userEntidade.data.designacao
-    //   );
-    // }
   }
 };
 </script>

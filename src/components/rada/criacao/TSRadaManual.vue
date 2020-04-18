@@ -24,6 +24,7 @@
             :RE="RE"
             :UIs="TS.UIs"
             :formaContagem="formaContagem"
+            :legislacaoProcessada="legislacaoProcessada"
           />
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
         </v-col>
@@ -40,6 +41,7 @@
                   :treeview_object="item"
                   :classes="TS.classes"
                   :legislacao="legislacao"
+                  :legislacaoProcessada="legislacaoProcessada"
                   :RE="RE"
                   :UIs="TS.UIs"
                   :formaContagem="formaContagem"
@@ -102,7 +104,7 @@ import ListaUI from "@/components/rada/criacao/ListaUI";
 const labels = require("@/config/labels").criterios;
 
 export default {
-  props: ["TS", "entidades", "RE", "legislacao"],
+  props: ["TS", "entidades", "RE", "legislacao", "legislacaoProcessada"],
   components: {
     AddOrgFunc,
     Serie,
@@ -313,7 +315,7 @@ export default {
         );
         if (legalPCA_subserie != undefined) {
           legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter(e =>
-            legislacao.some(leg => leg.tipo + " " + leg.numero == e.codigo)
+            legislacao.some(leg => leg.legislacao == e)
           );
 
           if (legalPCA_subserie.relacoes.length == 0) {
@@ -328,7 +330,7 @@ export default {
         );
         if (legalDF_subserie != undefined) {
           legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter(e =>
-            legislacao.some(leg => leg.tipo + " " + leg.numero == e.codigo)
+            legislacao.some(leg => leg.legislacao == e)
           );
 
           if (legalDF_subserie.relacoes.length == 0) {
