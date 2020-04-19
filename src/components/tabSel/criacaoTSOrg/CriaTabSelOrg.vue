@@ -21,7 +21,7 @@
                     label
                   >
                     <v-icon left>account_balance</v-icon>
-                    {{ ent }}
+                    {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
                   </v-chip>
                 </span>
               </v-stepper-step>
@@ -756,21 +756,21 @@ export default {
     },
     // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
     infoUserEnt: async function() {
-      var resUser = await this.$request(
-        "get",
-        "/users/" + this.$store.state.token + "/token"
-      );
-      var resEnt = await this.$request(
-        "get",
-        "/entidades/" + resUser.data.entidade
-      );
-      if (resUser.data.entidade === "ent_DGLAB") {
+      var resUser = this.$verifyTokenUser();
+
+      if (resUser.entidade === "ent_DGLAB") {
         this.stepNo = 1;
         this.entidadeDGLAB = true;
         this.loadEntidades();
       } else {
+        var resEnt = await this.$request(
+          "get",
+          "/entidades/" + resUser.entidade
+        );
+
         this.tabelaSelecao.designacao = resEnt.data.designacao;
-        this.tabelaSelecao.idEntidade = resUser.data.entidade;
+        this.tabelaSelecao.idEntidade = resUser.entidade;
+        this.tabelaSelecao.designacaoEntidade = resEnt.data.designacao;
         this.stepNo = 2;
         await this.loadTipologias();
       }
@@ -1201,13 +1201,10 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
+        var userBD = this.$verifyTokenUser();
 
         var tsObj = {
-          entidade: this.tabelaSelecao.idEntidade.split("_")[1],
+          entidade: this.tabelaSelecao.idEntidade,
           designacao: this.tabelaSelecao.designacao,
           tipologias: this.tipSel,
           processos: this.listaTotalProcSel.map(p => {
@@ -1224,8 +1221,8 @@ export default {
           tipoPedido: "Criação",
           tipoObjeto: "TS Organizacional",
           novoObjeto: { ts: tsObj },
-          user: { email: userBD.data.email },
-          entidade: userBD.data.entidade.split("_")[1],
+          user: { email: userBD.email },
+          entidade: userBD.entidade,
           token: this.$store.state.token
         };
 
@@ -1238,10 +1235,7 @@ export default {
     // Guarda o trabalho de criação de uma TS
     guardarTrabalho: async function() {
       try {
-        var userBD = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
+        var userBD = this.$verifyTokenUser();
 
         this.tabelaSelecao.tipologias = this.tipSel;
 
@@ -1259,8 +1253,8 @@ export default {
           acao: "Criação",
           tipo: "TS Organizacional",
           objeto: this.tabelaSelecao,
-          criadoPor: userBD.data.email,
-          user: { email: userBD.data.email },
+          criadoPor: userBD.email,
+          user: { email: userBD.email },
           token: this.$store.state.token
         };
 

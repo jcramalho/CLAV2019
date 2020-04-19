@@ -20,9 +20,7 @@
                     text-color="white"
                   >
                     <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idEntidade }}
-                    -
-                    {{ tabelaSelecao.designacaoEntidade }}
+                    {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
                   </v-chip>
                 </span>
               </v-stepper-step>
@@ -1330,10 +1328,7 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
+        var userBD = this.$verifyTokenUser();
 
         var tsObj = {
           entidade: this.tabelaSelecao.idEntidade.split("_")[1],
@@ -1353,8 +1348,8 @@ export default {
           tipoPedido: "Criação",
           tipoObjeto: "TS Organizacional",
           novoObjeto: { ts: tsObj },
-          user: { email: userBD.data.email },
-          entidade: userBD.data.entidade.split("_")[1],
+          user: { email: userBD.email },
+          entidade: userBD.entidade,
           token: this.$store.state.token
         };
 
@@ -1368,10 +1363,7 @@ export default {
     // Guarda o trabalho de criação de uma TS
     guardarTrabalho: async function() {
       try {
-        var userBD = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
+        var userBD = this.$verifyTokenUser();
 
         this.tabelaSelecao.tipologias = this.tipSel;
 
@@ -1394,7 +1386,7 @@ export default {
           tipo: this.obj.tipo,
           objeto: this.tabelaSelecao,
           criadoPor: this.obj.criadoPor,
-          user: { email: userBD.data.email },
+          user: { email: userBD.email },
           token: this.$store.state.token
         };
         var response = await this.$request(

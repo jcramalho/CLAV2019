@@ -192,6 +192,7 @@ export default {
     if (this.alreadyRegistered) {
       this.$store.commit("guardaTokenUtilizador", this.token);
       this.$store.commit("guardaNomeUtilizador", this.nomeCompleto);
+      this.$store.commit("guardaEntidade", this.entidade);
       this.$router.push("/");
     } else {
       this.successfullAuthentication =

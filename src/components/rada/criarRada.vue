@@ -252,7 +252,6 @@ export default {
             //   eFilhoDe: "01.01",
             //   tipo: "N3"
             // },
-
             // {
             //   codigo: "02.01",
             //   titulo: "Classe N2 (02.01)",
@@ -726,21 +725,20 @@ export default {
       };
     });
 
-    let userBD = await this.$request(
-      "get",
-      "/users/" + this.$store.state.token + "/token"
-    );
-    this.userEmail = userBD.data.email;
+    let userBD = this.$verifyTokenUser();
+    this.userEmail = userBD.email;
 
-    let userEntidade = await this.$request(
-      "get",
-      "/entidades/" + userBD.data.entidade
-    );
+    this.user_entidade = userBD.entidade;
 
-    this.user_entidade = "ent_" + userEntidade.data.sigla;
+    let user_entidade_completa = await this.$request(
+      "get",
+      "/entidades/" + userBD.entidade
+    );
 
     this.RADA.entRes.push(
-      userEntidade.data.sigla + " - " + userEntidade.data.designacao
+      user_entidade_completa.data.sigla +
+        " - " +
+        user_entidade_completa.data.designacao
     );
   }
 };

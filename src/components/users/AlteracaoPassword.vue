@@ -82,14 +82,11 @@
 export default {
   name: "signup",
   mounted: async function() {
-    var res = await this.$request(
-      "get",
-      "/users/" + this.$store.state.token + "/token"
-    );
-    this.form.id = res.data._id;
-    this.form.name = res.data.name;
+    var user = this.$verifyTokenUser();
+    this.form.id = user.id;
 
-    res = await this.$request("get", "/users/" + this.form.id);
+    var res = await this.$request("get", "/users/" + this.form.id);
+    this.form.name = res.data.name;
     this.temPass = res.data.local;
     this.validJWT = true;
   },

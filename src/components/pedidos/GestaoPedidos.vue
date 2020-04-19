@@ -139,12 +139,7 @@ export default {
 
         const estado = "Distribuído";
 
-        let dadosUtilizador = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
-
-        dadosUtilizador = dadosUtilizador.data;
+        let dadosUtilizador = this.$verifyTokenUser();
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
@@ -165,7 +160,7 @@ export default {
         // this.$router.push("/pedidos");
         this.fecharDialog();
       } catch (e) {
-        //console.log("e :", e);
+        console.log("e :", e);
       }
     },
   },

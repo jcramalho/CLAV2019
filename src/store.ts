@@ -9,14 +9,10 @@ export default new Vuex.Store({
     name: "",
     token: "",
     clavToken: "",
-    entidade: "",
-    expClavToken: ""
+    entidade: ""
   },
   plugins: [createPersistedState()],
   mutations: {
-    guardaExpTokenCLAV(state, exp) {
-      state.expClavToken = exp;
-    },
     guardaTokenCLAV(state, token) {
       state.clavToken = token;
     },

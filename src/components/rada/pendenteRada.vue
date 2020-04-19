@@ -468,18 +468,9 @@ export default {
       };
     });
 
-    let userBD = await this.$request(
-      "get",
-      "/users/" + this.$store.state.token + "/token"
-    );
-    this.userEmail = userBD.data.email;
-
-    let userEntidade = await this.$request(
-      "get",
-      "/entidades/" + userBD.data.entidade
-    );
-
-    this.user_entidade = "ent_" + userEntidade.data.sigla;
+    let userBD = this.$verifyTokenUser();
+    this.userEmail = userBD.email;
+    this.user_entidade = userBD.entidade;
   }
 };
 </script>

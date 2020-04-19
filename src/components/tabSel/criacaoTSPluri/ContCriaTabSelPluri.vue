@@ -1174,10 +1174,7 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
+        var userBD = this.$verifyTokenUser();
 
         var tsObj = [];
 
@@ -1259,8 +1256,8 @@ export default {
               designacao: this.tabelaSelecao.designacao
             }
           },
-          user: { email: userBD.data.email },
-          entidade: userBD.data.entidade,
+          user: { email: userBD.email },
+          entidade: userBD.entidade,
           token: this.$store.state.token
         };
 

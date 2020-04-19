@@ -23,6 +23,7 @@
         <v-data-table
           :headers="usersHeaders"
           :items="utilizadores"
+          :items-per-page="5"
           :search="procuraUtilizador"
           class="elevation-1"
         >
@@ -95,8 +96,8 @@ export default {
       mensagemDespacho: null,
       usersHeaders: [
         { text: "Nome", value: "name", class: "title" },
-        { text: "Entidade", value: "entidade", class: "title" }
-      ]
+        { text: "Entidade", value: "entidade", class: "title" },
+      ],
     };
   },
 
@@ -108,14 +109,19 @@ export default {
     },
 
     avancar() {
+      const despacho = {
+        utilizadorSelecionado: this.utilizadorSelecionado,
+      };
+
+      if (this.mensagemDespacho !== null)
+        despacho.utilizadorSelecionado = this.utilizadorSelecionado;
+
+      this.$emit("avancarPedido", despacho);
+
       this.utilizadorSelecionado = null;
       this.mensagemDespacho = null;
-      this.$emit("avancarPedido", {
-        utilizadorSelecionado: this.utilizadorSelecionado,
-        mensagemDespacho: this.mensagemDespacho
-      });
-    }
-  }
+    },
+  },
 };
 </script>
 

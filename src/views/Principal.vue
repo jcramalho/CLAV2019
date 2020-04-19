@@ -44,7 +44,7 @@ export default {
     };
   },
   mounted: async function() {
-    this.level = await this.$userLevel(this.$store.state.token);
+    this.level = this.$userLevel();
   }
 };
 </script>
