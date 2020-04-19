@@ -32,8 +32,8 @@
         <div class="info-label">Tipologias das Entidades Produtoras</div>
       </v-col>
       <v-col cols="12" xs="12" sm="9">
-        <!-- :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']" -->
         <v-autocomplete
+          :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.tipologiasProdutoras"
           :items="RE.tipologiasProd"
           placeholder="Selecione as Tipologias da Entidades produtoras."

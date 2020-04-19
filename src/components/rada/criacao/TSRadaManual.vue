@@ -9,7 +9,7 @@
           <v-text-field
             :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
             v-model="TS.titulo"
-            label="Título da TS"
+            label="Título da Tabela de Seleção"
             solo
             clearable
           ></v-text-field>
@@ -29,7 +29,7 @@
           <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
         </v-col>
       </v-row>
-      <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p>
+      <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p> -->
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
@@ -82,7 +82,11 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-btn :disabled="UIs_validas || incompleto" color="#3949ab" @click="sendToFather()">
+    <v-btn
+      :disabled="!Boolean(TS.classes[0]) || UIs_validas || incompleto"
+      color="#3949ab"
+      @click="sendToFather()"
+    >
       <font style="color: white">Criar RADA</font>
     </v-btn>
     <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
