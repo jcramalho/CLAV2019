@@ -257,17 +257,15 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          var userBD = await this.$request(
-            "get",
-            "/users/" + this.$store.state.token + "/token"
-          );
+          var userBD = this.$verifyTokenUser();
+
           var pendenteParams = {
             numInterv: 1,
             acao: "Criação",
             tipo: "Auto de Eliminação",
             objeto: this.auto,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email },
+            criadoPor: userBD.email,
+            user: { email: userBD.email },
             token: this.$store.state.token
           };
           var response = await this.$request(
