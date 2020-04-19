@@ -25,6 +25,11 @@
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
             />
+
+            <ValidaAE
+              v-if="pedido.objeto.tipo === 'Auto de Eliminação'"
+              :p="pedido"
+            />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
@@ -59,6 +64,7 @@
 import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
+import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
@@ -76,6 +82,7 @@ export default {
     ValidaEditaEntidade,
     ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
+    ValidaAE,
     Loading,
   },
 
