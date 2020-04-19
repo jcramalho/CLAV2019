@@ -646,15 +646,12 @@ export default {
     },
     // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
     infoUserEnt: async function() {
-      var resUser = await this.$request(
-        "get",
-        "/users/" + this.$store.state.token + "/token"
-      );
-      var resEnt = await this.$request(
-        "get",
-        "/entidades/" + resUser.data.entidade
-      );
-      this.tabelaSelecao.idEntidade = resUser.data.entidade;
+      var resUser = this.$verifyTokenUser();
+      //var resEnt = await this.$request(
+      //  "get",
+      //  "/entidades/" + resUser.entidade
+      //);
+      this.tabelaSelecao.idEntidade = resUser.entidade;
     },
     // Faz load de todas as entidades
     loadEntidades: async function() {
@@ -1036,10 +1033,7 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
+        var userBD = this.$verifyTokenUser();
 
         var tsObj = [];
 
@@ -1121,8 +1115,8 @@ export default {
               designacao: this.tabelaSelecao.designacao
             }
           },
-          user: { email: userBD.data.email },
-          entidade: userBD.data.entidade,
+          user: { email: userBD.email },
+          entidade: userBD.entidade,
           token: this.$store.state.token
         };
 
@@ -1136,10 +1130,7 @@ export default {
     // Guarda o trabalho de criação de uma TS
     guardarTrabalho: async function() {
       try {
-        var userBD = await this.$request(
-          "get",
-          "/users/" + this.$store.state.token + "/token"
-        );
+        var userBD = this.$verifyTokenUser();
 
         if (this.stepNo < 2) {
           this.tabelaSelecao.entidades = this.entSel;
@@ -1171,8 +1162,8 @@ export default {
           acao: "Criação",
           tipo: "TS Pluriorganizacional",
           objeto: this.tabelaSelecao,
-          criadoPor: userBD.data.email,
-          user: { email: userBD.data.email },
+          criadoPor: userBD.email,
+          user: { email: userBD.email },
           token: this.$store.state.token
         };
 

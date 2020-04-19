@@ -1,27 +1,23 @@
 <template>
   <v-app v-if="authenticated">
-    <MainPageHeader 
+    <MainPageHeader
       @drawerDefinicoes="drawerDefinicoes()"
-      @drawerEstatisticas="drawerEstatisticas()"/>
+      @drawerEstatisticas="drawerEstatisticas()"
+    />
 
-    <v-snackbar 
-      v-model="snackbar" 
-      :color="color" 
-      :top="true" 
-      :timeout="0">
+    <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="0">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
     <v-content>
-      <router-view/>
+      <router-view />
 
-      <Definicoes 
-        v-if="this.$store.state.name != ''"
-        :drawer="drawD"/> 
-      <Estatisticas 
+      <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
+      <Estatisticas
         v-if="this.$store.state.name != '' && level >= 3.5"
-        :drawer="drawE"/> 
+        :drawer="drawE"
+      />
     </v-content>
 
     <PageFooter />
@@ -47,17 +43,8 @@ export default {
     async $route(to, from) {
       //verifica se o utilizador está autenticado
       if (this.$store.state.token != "") {
-        try{
-          var res = await this.$request("get", "/users/token");
-          this.level = res.data.level;
-        } catch (erro) {
-          this.text = "A sua sessão expirou! Por favor faça login novamente.";
-          this.color = "error";
-          this.snackbar = true;
-          this.$store.commit("guardaTokenUtilizador", "");
-          this.$store.commit("guardaNomeUtilizador", "");
-          this.$router.push("/users/autenticacao");
-        }
+        var user = this.$verifyTokenUser();
+        this.level = user.level;
       }
 
       this.authenticated = false;

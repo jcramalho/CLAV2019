@@ -200,17 +200,14 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          var userBD = await this.$request(
-            "get",
-            "/users/" + this.$store.state.token + "/token"
-          );
+          var userBD = this.$verifyTokenUser();
           var pendenteParams = {
             numInterv: 1,
             acao: "Criação",
             tipo: "Classe",
             objeto: this.c,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email },
+            criadoPor: userBD.email,
+            user: { email: userBD.email },
             token: this.$store.state.token
           };
           var response = this.$request("post", "/pendentes", pendenteParams);
@@ -630,16 +627,13 @@ export default {
         } else {
           var erros = await this.validarClasse2();
           if (erros == 0) {
-            var userBD = await this.$request(
-              "get",
-              "/users/" + this.$store.state.token + "/token"
-            );
+            var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
               tipoObjeto: "Classe",
               novoObjeto: this.c,
-              user: { email: userBD.data.email },
-              entidade: userBD.data.entidade,
+              user: { email: userBD.email },
+              entidade: userBD.entidade,
               token: this.$store.state.token
             };
 

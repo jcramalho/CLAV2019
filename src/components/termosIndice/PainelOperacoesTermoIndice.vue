@@ -172,17 +172,14 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          var userBD = await this.$request(
-            "get",
-            "/users/" + this.$store.state.token + "/token"
-          );
+          var userBD = this.$verifyTokenUser();
           var pendenteParams = {
             numInterv: 1,
             acao: "Criação",
             tipo: "Termo de Indice",
             objeto: this.ti,
-            criadoPor: userBD.data.email,
-            user: { email: userBD.data.email },
+            criadoPor: userBD.email,
+            user: { email: userBD.email },
             token: this.$store.state.token
           };
           var response = await this.$request(
@@ -231,10 +228,7 @@ export default {
         } else {
           let erros = await this.validarTI();
           if (erros == 0) {
-            let userBD = await this.$request(
-              "get",
-              "/users/" + this.$store.state.token + "/token"
-            );
+            var userBD = this.$verifyTokenUser();
 
             let dataObj = this.ti;
             dataObj.codigo = "ti_" + nanoid();
@@ -243,8 +237,8 @@ export default {
               tipoPedido: "Criação",
               tipoObjeto: "Termo de Indice",
               novoObjeto: dataObj,
-              user: { email: userBD.data.email },
-              entidade: userBD.data.entidade,
+              user: { email: userBD.email },
+              entidade: userBD.entidade,
               token: this.$store.state.token
             };
 

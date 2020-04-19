@@ -67,11 +67,16 @@
                   v-model="criterio.nota"
                 ></v-textarea>
                 <v-card-text>
-                  <ul>
+                  <ul v-if="criterio.tipo != 'Critério Legal'">
+                    <li
+                      v-for="(relacao, relindex) in criterio.relacoes"
+                      :key="relindex"
+                    >{{ relacao.codigo + " - " + relacao.titulo }}</li>
+                  </ul>
+                  <ul v-else>
                     <li v-for="(relacao, relindex) in criterio.relacoes" :key="relindex">
-                      {{ relacao.codigo + " - " + relacao.titulo }}
+                      {{ relacao }}
                       <v-icon
-                        v-if="criterio.tipo == 'Critério Legal'"
                         @click="removeRelacao(relindex, criterio, cindex)"
                         color="red darken-2"
                         dark
@@ -160,21 +165,10 @@ export default {
     adicionaLegal() {
       let relacoesLegis = [];
       if (this.newSerie.tipo == "Série") {
-        relacoesLegis = this.newSerie.legislacao.map(item => {
-          return {
-            codigo: item.tipo + " " + item.numero,
-            titulo: item.sumario
-          };
-        });
+        relacoesLegis = this.newSerie.legislacao.map(legis => legis.legislacao);
       } else {
         let pai = this.classes.find(e => e.codigo == this.newSerie.eFilhoDe);
-
-        relacoesLegis = pai.legislacao.map(item => {
-          return {
-            codigo: item.tipo + " " + item.numero,
-            titulo: item.sumario
-          };
-        });
+        relacoesLegis = pai.legislacao.map(legis => legis.legislacao);
       }
       this.newSerie.justificacaoDF.push({
         tipo: "Critério Legal",

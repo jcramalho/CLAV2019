@@ -60,6 +60,7 @@ export default {
       // this.$store.state.token = '';
       this.$store.commit("guardaTokenUtilizador", "");
       this.$store.commit("guardaNomeUtilizador", "");
+      this.$store.commit("guardaEntidade", "");
 
       //se já está na página inicial (home)
       if (this.$route.path == "/") {

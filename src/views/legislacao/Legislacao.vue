@@ -155,7 +155,7 @@ export default {
     try {
       let response = await this.$request("get", "/legislacao");
 
-      let level = await this.$userLevel(this.$store.state.token);
+      let level = this.$userLevel();
 
       this.preparaCabecalhos(level);
 

@@ -405,10 +405,7 @@ export default {
           }
 
           if (erros === 0) {
-            let userBD = await this.$request(
-              "get",
-              "/users/" + this.$store.state.token + "/token"
-            );
+            let userBD = this.$verifyTokenUser();
 
             // dataObj.codigo = "ent_" + this.e.sigla;
 
@@ -416,9 +413,9 @@ export default {
               tipoPedido: this.acao,
               tipoObjeto: "Entidade",
               novoObjeto: dataObj,
-              user: { email: userBD.data.email },
-              entidade: userBD.data.entidade,
-              token: this.$store.state.token,
+              user: { email: userBD.email },
+              entidade: userBD.entidade,
+              token: this.$store.state.token
             };
 
             if (this.original !== undefined)

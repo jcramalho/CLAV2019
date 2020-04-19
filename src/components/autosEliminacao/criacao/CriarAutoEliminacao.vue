@@ -258,7 +258,6 @@ export default {
           this.loginErrorSnackbar = true;
         } else {
           var userBD = this.$verifyTokenUser();
-
           var pendenteParams = {
             numInterv: 1,
             acao: "Criação",
