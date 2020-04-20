@@ -75,86 +75,11 @@
 
       <!-- Pedido de "Ação" de entidade submetido com sucesso -->
       <v-dialog v-model="dialogEntidadeCriada" width="70%">
-        <v-card>
-          <v-card-title>
-            Pedido n.º {{ codigoPedido }} de {{ acao }} de Entidade Submetido
-          </v-card-title>
-          <v-card-text>
-            <v-row v-if="e.designacao">
-              <v-col cols="2">
-                <div class="info-label">Nome da Entidade:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ e.designacao }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="e.sigla">
-              <v-col cols="2">
-                <div class="info-label">Sigla:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ e.sigla }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="e.internacional">
-              <v-col cols="2">
-                <div class="info-label">Internacional:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ e.internacional }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="e.sioe">
-              <v-col cols="2">
-                <div class="info-label">SIOE:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ e.sioe }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="e.tipologiasSel.length > 0">
-              <v-col cols="2">
-                <div class="info-label">Tipologias:</div>
-              </v-col>
-
-              <v-col>
-                <v-data-table
-                  :headers="headers"
-                  :items="e.tipologiasSel"
-                  class="elevation-1"
-                  hide-default-footer
-                ></v-data-table>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="e.dataExtincao">
-              <v-col cols="2">
-                <div class="info-label">Data de Extinção:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ e.dataExtincao }}</div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="indigo darken-1"
-              dark
-              @click="criacaoEntidadeTerminada"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
+        <DialogEntidadeSucesso
+          :e="e"
+          :codigoPedido="codigoPedido"
+          :acao="acao"
+        />
       </v-dialog>
 
       <!-- Cancelamento da criação de uma entidade: confirmação -->
@@ -198,11 +123,14 @@
 <script>
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
 
+import DialogEntidadeSucesso from "@/components/entidades/DialogEntidadeSucesso";
+
 export default {
   props: ["e", "acao", "original"],
 
   components: {
     ValidarEntidadeInfoBox,
+    DialogEntidadeSucesso,
   },
 
   data() {
@@ -213,10 +141,6 @@ export default {
       errosValidacao: false,
       pedidoEliminado: false,
       codigoPedido: "",
-      headers: [
-        { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
-      ],
     };
   },
 
@@ -415,7 +339,7 @@ export default {
               novoObjeto: dataObj,
               user: { email: userBD.email },
               entidade: userBD.entidade,
-              token: this.$store.state.token
+              token: this.$store.state.token,
             };
 
             if (this.original !== undefined)
@@ -440,10 +364,6 @@ export default {
     },
 
     criacaoPendenteTerminada: function() {
-      this.$router.push("/");
-    },
-
-    criacaoEntidadeTerminada: function() {
       this.$router.push("/");
     },
 

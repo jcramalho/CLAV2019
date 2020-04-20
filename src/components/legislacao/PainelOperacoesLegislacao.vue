@@ -58,122 +58,11 @@
 
       <!-- Pedido de criação de legislacao submetido com sucesso -->
       <v-dialog v-model="dialogLegislacaoCriada" width="70%">
-        <v-card>
-          <v-card-title
-            >Pedido n.º {{ codigoPedido }} de {{ acao }} de Diploma
-            Submetido</v-card-title
-          >
-          <v-card-text>
-            <v-row v-if="l.tipo">
-              <v-col cols="2">
-                <div class="info-label">Tipo de diploma:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ l.tipo }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="l.diplomaFonte">
-              <v-col cols="2">
-                <div class="info-label">Fonte do diploma:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ l.diplomaFonte }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="l.numero">
-              <v-col cols="2">
-                <div class="info-label">Número de diploma:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ l.numero }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="l.data">
-              <v-col cols="2">
-                <div class="info-label">Data:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ l.data }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="l.Sumário">
-              <v-col cols="2">
-                <div class="info-label">Sumário:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ l.sumario }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="l.link != '' && l.link != null">
-              <v-col cols="2">
-                <div class="info-label">Link:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ l.link }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="l.entidadesSel.length > 0">
-              <v-col cols="2">
-                <div class="info-label">Entidades:</div>
-              </v-col>
-
-              <v-col>
-                <v-data-table
-                  :headers="headersEntidades"
-                  :items="l.entidadesSel"
-                  class="elevation-1"
-                  hide-default-footer
-                ></v-data-table>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="l.processosSel.length > 0">
-              <v-col cols="2">
-                <div class="info-label">Processos:</div>
-              </v-col>
-
-              <v-col>
-                <v-data-table
-                  :headers="headersProcessos"
-                  :items="l.processosSel"
-                  class="elevation-1"
-                  hide-default-footer
-                ></v-data-table>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="l.dataRevogacao">
-              <v-col cols="2">
-                <div class="info-label">Data de Revogação:</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ l.dataRevogacao }}</div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="indigo darken-1"
-              dark
-              @click="criacaoLegislacaoTerminada"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
+        <DialogLegislacaoSucesso
+          :l="l"
+          :codigoPedido="codigoPedido"
+          :acao="acao"
+        />
       </v-dialog>
 
       <!-- Cancelamento da criação de uma legislacao: confirmação -->
@@ -219,12 +108,14 @@
 
 <script>
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
+import DialogLegislacaoSucesso from "@/components/legislacao/DialogLegislacaoSucesso";
 
 export default {
   props: ["l", "acao", "original"],
 
   components: {
     ValidarLegislacaoInfoBox,
+    DialogLegislacaoSucesso,
   },
 
   data() {
@@ -237,14 +128,6 @@ export default {
       codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
-      headersEntidades: [
-        { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
-      ],
-      headersProcessos: [
-        { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" },
-      ],
     };
   },
 
@@ -353,10 +236,6 @@ export default {
     },
 
     criacaoPendenteTerminada: function() {
-      this.$router.push("/");
-    },
-
-    criacaoLegislacaoTerminada: function() {
       this.$router.push("/");
     },
 
