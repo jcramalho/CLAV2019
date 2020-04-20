@@ -59,7 +59,7 @@
       </v-dialog>
 
       <!-- Pedido de criação de tipologia submetido com sucesso -->
-      <v-dialog v-model="dialogTipologiaCriada" width="70%">
+      <v-dialog v-model="dialogTipologiaCriada" width="70%" persistent>
         <DialogTipologiaSucesso
           :t="t"
           :codigoPedido="codigoPedido"

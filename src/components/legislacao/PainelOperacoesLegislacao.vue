@@ -57,7 +57,7 @@
       </v-dialog>
 
       <!-- Pedido de criação de legislacao submetido com sucesso -->
-      <v-dialog v-model="dialogLegislacaoCriada" width="70%">
+      <v-dialog v-model="dialogLegislacaoCriada" width="70%" persistent>
         <DialogLegislacaoSucesso
           :l="l"
           :codigoPedido="codigoPedido"

@@ -74,7 +74,7 @@
       </v-dialog>
 
       <!-- Pedido de "Ação" de entidade submetido com sucesso -->
-      <v-dialog v-model="dialogEntidadeCriada" width="70%">
+      <v-dialog v-model="dialogEntidadeCriada" width="70%" persistent>
         <DialogEntidadeSucesso
           :e="e"
           :codigoPedido="codigoPedido"
