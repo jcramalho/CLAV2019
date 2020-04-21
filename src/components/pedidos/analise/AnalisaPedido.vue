@@ -86,6 +86,11 @@
       </v-btn>
     </v-snackbar>
 
+    <!-- Dialog de erros -->
+    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
+      <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
+    </v-dialog>
+
     <!-- Dialog Ver Despachos-->
     <v-dialog v-model="despachosDialog" width="50%">
       <VerDespachos
@@ -111,6 +116,7 @@ import AnalisaDefault from "@/components/pedidos/analise/AnalisaDefault";
 import VerDespachos from "@/components/pedidos/generic/VerDespachos";
 
 import Loading from "@/components/generic/Loading";
+import ErroDialog from "@/components/generic/ErroDialog";
 
 export default {
   props: ["idp"],
@@ -126,6 +132,7 @@ export default {
     AnalisaAE,
     AnalisaDefault,
     VerDespachos,
+    ErroDialog,
   },
 
   data() {
@@ -134,6 +141,10 @@ export default {
       snackbar: {
         visivel: false,
         texto: "Test",
+      },
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
       },
       pedido: {},
       pedidoLoaded: false,
@@ -148,15 +159,23 @@ export default {
     };
   },
 
-  async mounted() {
+  async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
+      if (data.estado !== "Distribuído")
+        throw new URIError("Este pedido não pertence a este estado.");
+
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;
     } catch (err) {
-      this.snackbar.visivel = true;
-      this.snackbar.texto = "Erro ao carregar dados da base de dados";
+      if (err instanceof URIError) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem = err.message.toString();
+      } else {
+        this.snackbar.visivel = true;
+        this.snackbar.texto = "Erro ao carregar dados da base de dados";
+      }
     }
   },
 
