@@ -202,7 +202,7 @@ export default {
             this.getNoticias();
         })
         .catch(e => {
-            this.text = e.response.data;
+            this.text = e.response.data[0].msg || e.response.data;
             this.color = "error";
             this.snackbar = true;
             this.eliminarId = "";

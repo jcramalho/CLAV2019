@@ -282,7 +282,7 @@ export default {
         this.text = response.data;
         this.type = "success";
       } catch (erro) {
-        this.text = erro.response.data;
+        this.text = erro.response.data[0].msg || erro.response.data;
         this.type = "error";
       }
 
@@ -426,7 +426,7 @@ export default {
         this.text = response.data;
         this.type = "success";
       } catch (e) {
-        this.text = e.response.data;
+        this.text = e.response.data[0].msg || e.response.data;
         this.type = "error";
       }
 
