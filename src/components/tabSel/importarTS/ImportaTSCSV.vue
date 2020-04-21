@@ -216,7 +216,7 @@ export default {
         this.successDialog = true;
       } catch (e) {
         this.loading = false;
-        this.erro = e.response.data;
+        this.erro = e.response.data[0].msg || e.response.data;
         this.erroDialog = true;
       }
     },

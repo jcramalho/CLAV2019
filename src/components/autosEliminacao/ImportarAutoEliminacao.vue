@@ -388,51 +388,63 @@ export default {
       validador(this.fileSerie, this.fileAgreg, this.tipo)
         .then(() => {
           conversor(this.fileSerie, this.fileAgreg, this.tipo)
-            .then(res => {
-              const eliminacao = res.auto;
-              eliminacao.fundo = this.auto.fundo;
-              eliminacao.legislacao = this.auto.legislacao;
-              if (this.tipo == "PGD_LC") {
-                //VERIFICA AS CLASSES DA LC
-                eliminacao.zonaControlo.forEach(zc => {
-                  var classe = this.classes.find(
-                    elem => elem.codigo == zc.codigo
-                  );
-                  if (!classe) {
-                    this.flagAE = true;
-                    this.erro =
-                      "Codigo da classe <b>" +
-                      zc.codigo +
-                      "</b> não foi encontrado na Lista Consolidada";
-                    return; //ERROS
-                  }
+          .then(async res => {
+            const eliminacao = res.auto
+            eliminacao.fundo = this.auto.fundo
+            eliminacao.legislacao = this.auto.legislacao
+            if(this.tipo=="PGD_LC") {
+              //VERIFICA AS CLASSES DA LC
+              eliminacao.zonaControlo.forEach( zc => {
+                var classe = this.classes.find(elem => elem.codigo == zc.codigo) 
+                if(!classe) {
+                  this.flagAE = true;
+                  this.erro = "Codigo da classe <b>"+zc.codigo+"</b> não foi encontrado na Lista Consolidada"
+                  return; //ERROS
+                }
 
-                  delete zc["referencia"];
-                  zc.titulo = classe.titulo;
-                  zc.prazoConservacao = classe.pca.valores;
-                  zc.destino = classe.df.valor;
-                });
+                delete zc["referencia"]
+                zc.titulo = classe.titulo
+                zc.prazoConservacao = classe.pca.valores
+                zc.destino = classe.df.valor
+              })
+            }
+            if(this.flagAE) this.erroDialog = true
+            else {
+              var user = this.$verifyTokenUser();
+
+              eliminacao.responsavel = user.email;
+              eliminacao.entidade = user.entidade;
+
+              if(this.tipo == "PGD_LC") this.tipo = "PGD/LC"
+              this.tipo = "AE " + this.tipo
+
+              var pedidoParams = {
+                tipoPedido: "Importação",
+                tipoObjeto: this.tipo,
+                novoObjeto: {
+                  ae: eliminacao
+                },
+                user: { email: user.email },
+                entidade: user.entidade,
+                token: this.$store.state.token
               }
-              if (this.flagAE) this.erroDialog = true;
-              else
-                this.$request("post", "/autosEliminacao?tipo=" + this.tipo, {
-                  auto: eliminacao
-                })
-                  .then(r => {
-                    this.successDialog = true;
-                    this.success = `<b>Código do pedido:</b>\n${JSON.stringify(
-                      eliminacao
-                    )}`;
-                  })
-                  .catch(e => {
-                    this.erro = e.response.data;
-                    this.erroDialog = true;
-                  });
-            })
-            .catch(err => {
-              this.erro = err;
-              this.erroDialog = true;
-            });
+              
+              const codigoPedido = await this.$request(
+                      "post",
+                      "/pedidos",
+                      pedidoParams
+                    );
+
+              this.codigoPedido = codigoPedido.data;
+
+              this.auto.legislacao = eliminacao.legislacao;
+              this.successDialog = true;
+            }
+          })
+          .catch(err => {
+            this.erro = err;
+            this.erroDialog = true;
+          });
         })
         .catch(err => {
           this.errosVal = err;

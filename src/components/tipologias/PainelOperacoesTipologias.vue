@@ -59,58 +59,12 @@
       </v-dialog>
 
       <!-- Pedido de criação de tipologia submetido com sucesso -->
-      <v-dialog v-model="dialogTipologiaCriada" width="70%">
-        <v-card>
-          <v-card-title
-            >Pedido n.º {{ codigoPedido }} de {{ acao }} de Tipologia
-            Submetido</v-card-title
-          >
-          <v-card-text>
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Designação</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ t.designacao }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Sigla</div>
-              </v-col>
-
-              <v-col>
-                <div class="info-content">{{ t.sigla }}</div>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="t.entidadesSel.length > 0">
-              <v-col cols="2">
-                <div class="info-label">Entidades:</div>
-              </v-col>
-
-              <v-col>
-                <v-data-table
-                  :headers="headers"
-                  :items="t.entidadesSel"
-                  class="elevation-1"
-                  hide-default-footer
-                ></v-data-table>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="indigo darken-1"
-              dark
-              @click="criacaoTipologiaTerminada"
-              >Fechar</v-btn
-            >
-          </v-card-actions>
-        </v-card>
+      <v-dialog v-model="dialogTipologiaCriada" width="70%" persistent>
+        <DialogTipologiaSucesso
+          :t="t"
+          :codigoPedido="codigoPedido"
+          :acao="acao"
+        />
       </v-dialog>
 
       <!-- Cancelamento da criação de uma tipologia: confirmação -->
@@ -158,12 +112,14 @@
 
 <script>
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
+import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
 export default {
   props: ["t", "acao", "original"],
 
   components: {
     ValidarTipologiaInfoBox,
+    DialogTipologiaSucesso,
   },
 
   data() {
@@ -174,10 +130,6 @@ export default {
       codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
-      headers: [
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
-        { text: "Sigla", value: "sigla", class: "subtitle-1" },
-      ],
     };
   },
 
@@ -288,10 +240,6 @@ export default {
     },
 
     criacaoPendenteTerminada: function() {
-      this.$router.push("/");
-    },
-
-    criacaoTipologiaTerminada: function() {
       this.$router.push("/");
     },
 

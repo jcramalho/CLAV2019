@@ -232,11 +232,25 @@
                       :return-object="false"
                       solo
                       clearable
+                      chips
                     >
-                      <!-- <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
-                      <template v-slot:selection="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>-->
+                      <template v-slot:no-data>
+                        <v-list-item>
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              Classe
+                              <strong>Série</strong> e
+                              <strong>Subsérie</strong> em questão não existe no sistema!
+                            </v-list-item-title>
+                            <v-list-item-subtitle>
+                              Pode criar aqui uma nova classe Série ou Subsérie.
+                              Para tal, escreva código da nova classe e prima a tecla
+                              <i>"Enter"</i>. Posteriormente preencha os restantes campos.
+                            </v-list-item-subtitle>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
                     </v-combobox>
-                    <!-- <v-text-field v-model="cod" label="Código" solo clearable></v-text-field> -->
                   </v-col>
                   <v-col sm="6" xs="12">
                     <v-text-field

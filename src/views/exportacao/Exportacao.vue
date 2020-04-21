@@ -455,7 +455,7 @@ export default {
       });
     } catch (erro) {
       if (erro.response && erro.response.data) {
-        this.text = erro.response.data;
+        this.text = erro.response.data[0].msg || erro.response.data;
       } else {
         this.text = erro;
       }
@@ -585,7 +585,7 @@ export default {
             var response = await this.$request("get", path);
           } catch (erro) {
             if (erro.response && erro.response.data) {
-              this.text = erro.response.data;
+              this.text = erro.response.data[0].msg || erro.response.data;
             } else {
               this.text = erro;
             }

@@ -124,7 +124,7 @@
                             {{ item.destino }}
                           </td>
                         </tr>
-                        <tr v-if="item.ni">
+                        <tr v-if="item.ni && item.destino === 'C'">
                           <td style="width:20%;">
                             <div class="info-label">
                               Natureza de intervenção:
@@ -132,7 +132,7 @@
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
-                        <tr v-if="item.dono">
+                        <tr v-if="item.dono && item.destino === 'C'">
                           <td style="width:20%;">
                             <div class="info-label">Dono do PN:</div>
                           </td>

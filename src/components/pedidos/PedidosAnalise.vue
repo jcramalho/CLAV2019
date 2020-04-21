@@ -238,9 +238,29 @@ export default {
           }
         } else if (index[0] === "data") {
           if (!isDesc[0]) {
-            return new Date(b[index]) - new Date(a[index]);
+            const dataA = a[index]
+              .split("-")
+              .reverse()
+              .join("");
+
+            const dataB = b[index]
+              .split("-")
+              .reverse()
+              .join("");
+
+            return dataB.localeCompare(dataA);
           } else {
-            return new Date(a[index]) - new Date(b[index]);
+            const dataA = a[index]
+              .split("-")
+              .reverse()
+              .join("");
+
+            const dataB = b[index]
+              .split("-")
+              .reverse()
+              .join("");
+
+            return dataA.localeCompare(dataB);
           }
         } else {
           if (

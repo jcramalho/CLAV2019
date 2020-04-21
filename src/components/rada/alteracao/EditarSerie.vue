@@ -55,6 +55,7 @@
                   :classes="classes"
                   :legislacao="legislacao"
                   :RE="RE"
+                  :legislacaoProcessada="legislacaoProcessada"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -152,7 +153,8 @@ export default {
     "legislacao",
     "RE",
     "UIs",
-    "formaContagem"
+    "formaContagem",
+    "legislacaoProcessada"
   ],
   components: {
     Identificacao,

@@ -40,6 +40,7 @@
                   :classes="classes"
                   :legislacao="legislacao"
                   :RE="RE"
+                  :legislacaoProcessada="legislacaoProcessada"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -131,7 +132,14 @@ export default {
     ZonaContexto,
     ZonaDecisoesAvaliacao
   },
-  props: ["classes", "legislacao", "RE", "UIs", "formaContagem"],
+  props: [
+    "classes",
+    "legislacao",
+    "RE",
+    "UIs",
+    "formaContagem",
+    "legislacaoProcessada"
+  ],
   data: () => ({
     panels: [0, 0, 0],
     existe_erros: false,

@@ -16,7 +16,8 @@
         >
           <v-toolbar dark color="primary">
             <v-toolbar-title>
-              Autenticação de utilizador via Cartão de Cidadão
+              Autenticação de utilizador via Cartão de Cidadão ou Chave Móvel
+              Digital
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
@@ -38,7 +39,7 @@
           </v-card-actions>
           <!-- <v-toolbar dark color="primary">
             <v-toolbar-title>
-              Registo de utilizador via Cartão de Cidadão
+              Registo de utilizador via Cartão de Cidadão ou Chave Móvel Digital
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
@@ -120,12 +121,14 @@
           <v-toolbar dark color="primary">
             <v-toolbar-title>
               <!--Registo de utilizador via Cartão de Cidadão-->
-              Autenticação de utilizador via Cartão de Cidadão
+              Autenticação de utilizador via Cartão de Cidadão ou Chave Móvel
+              Digital
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            Ocorreu um erro durante a autenticação com o Cartão de Cidadão! Por
-            favor verifique se introduziu o PIN de autenticação corretamente.
+            Ocorreu um erro durante a autenticação com o Cartão de Cidadão ou
+            Chave Móvel Digital! Por favor verifique se introduziu o PIN de
+            autenticação/CMD/segurança corretamente.
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
