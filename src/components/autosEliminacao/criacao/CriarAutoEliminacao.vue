@@ -96,7 +96,7 @@
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
         <v-card-title class="teal darken-4 title white--text" dark>
-          Pedido de criação de auto de eliminação criado com sucesso
+          Pedido de criação de auto de eliminação criado com sucesso: {{ codigoPedido }}
         </v-card-title>
 
         <v-card-text>
@@ -234,23 +234,39 @@ export default {
     erroDialog: false,
     success: null,
     successDialog: false,
+    codigoPedido: null,
     pendenteGuardado: false,
     pendenteGuardadoInfo: null
   }),
   methods: {
     submit: async function() {
       this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
-      this.$request("post", "/autosEliminacao/", { auto: this.auto })
-        .then(r => {
-          this.successDialog = true;
-          this.success = `<b>Código do pedido:</b>\n${JSON.stringify(
-            this.auto
-          )}`;
-        })
-        .catch(e => {
-          this.erro = e.response.data;
-          this.erroDialog = true;
-        });
+
+      var user = this.$verifyTokenUser();
+
+      this.auto.responsavel = user.email;
+      this.auto.entidade = user.entidade;
+
+      var pedidoParams = {
+        tipoPedido: "Criação",
+        tipoObjeto: "Auto de Eliminação",
+        novoObjeto: {
+          ae: this.auto
+        },
+        user: { email: user.email },
+        entidade: user.entidade,
+        token: this.$store.state.token
+      }
+      
+      const codigoPedido = await this.$request(
+              "post",
+              "/pedidos",
+              pedidoParams
+            );
+
+      this.codigoPedido = codigoPedido.data;
+
+      this.successDialog = true;
     },
     guardarTrabalho: async function() {
       try {
@@ -284,22 +300,6 @@ export default {
 </script>
 
 <style>
-.consulta tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.consulta td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
-}
-
-.consulta td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
-}
 .info-label {
   color: #1a237e; /* green darken-3 */
   padding: 5px;
@@ -309,12 +309,6 @@ export default {
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #696969;
 }
 
 .expansion-panel-heading {
@@ -335,7 +329,21 @@ export default {
   border: 1px solid #1a237e;
 }
 
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+.consulta tr {
+  vertical-align: top;
+  border-bottom: 1px solid #ddd;
 }
+
+.consulta td {
+  padding-left: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  align-content: center;
+}
+
+.consulta td:nth-of-type(2) {
+  vertical-align: middle;
+  padding-left: 15px;
+}
+
 </style>

@@ -28,7 +28,15 @@
             placeholder="Selecione as Entidades Responsáveis."
             chips
             multiple
-          ></v-autocomplete>
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-title>
+                  <strong>Entidade</strong> em questão não existe!
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-autocomplete>
         </v-col>
       </v-row>
     </v-form>

@@ -8,7 +8,6 @@
       <v-col cols="1">
         <v-icon color="green" @click="verifica(info)">check</v-icon>
         <v-icon color="red" @click="anula(info)">clear</v-icon>
-        <!--<v-icon @click="">create</v-icon>-->
         <v-icon>create</v-icon>
       </v-col>
     </v-row>
@@ -22,7 +21,6 @@
       <v-col cols="1">
         <v-icon color="green" @click="verifica(info)">check</v-icon>
         <v-icon color="red" @click="anula(info)">clear</v-icon>
-        <!--<v-icon @click="">create</v-icon>-->
         <v-icon>create</v-icon>
       </v-col>
     </v-row>
@@ -59,7 +57,7 @@
               <v-list-item-content>
                 <v-list-item-title>
                   <v-row v-if="item.codigo">
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Código da class:</div>
                     </v-col>
                     <v-col class="mt-3">
@@ -69,39 +67,37 @@
                       >{{ item.codigo }}</a>
                       <div v-else>{{ item.codigo }}</div>
                     </v-col>
-                    <v-col cols="1">
+                    <v-col cols="1" class="mr-1">
                       <v-icon color="green" @click="verifica(info)">check</v-icon>
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
-                      <!--<v-icon @click="">create</v-icon>-->
                       <v-icon>create</v-icon>
                     </v-col>
                   </v-row>
                   <v-row v-if="item.referencia">
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Referência:</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.referencia }}</v-col>
-                    <v-col cols="1">
+                    <v-col cols="1" class="mr-1" v-if="!item.codigo">
                       <v-icon color="green" @click="verifica(info)">check</v-icon>
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
-                      <!--<v-icon @click="">create</v-icon>-->
                       <v-icon>create</v-icon>
                     </v-col>
                   </v-row>
                   <v-row v-if="item.titulo">
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Título:</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.titulo }}</v-col>
                   </v-row>
                   <v-row v-if="item.prazoConservacao">
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Prazo de Conservação Administrativa:</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.prazoConservacao }} Anos</v-col>
                   </v-row>
                   <v-row v-if="item.destino">
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Destino Final:</div>
                     </v-col>
                     <v-col class="mt-3">
@@ -111,19 +107,19 @@
                     </v-col>
                   </v-row>
                   <v-row v-if="item.ni">
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Natureza de intervenção:</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.ni }}</v-col>
                   </v-row>
                   <v-row v-if="item.dono">
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Dono do PN:</div>
                     </v-col>
                     <v-col class="mt-3">
                       <li v-for="(d,i) in item.dono" :key="i">{{ d }}</li>
                     </v-col>
-                    <v-col cols="1">
+                    <v-col cols="1" class="mr-1">
                       <v-icon color="green" @click="verifica(info)">check</v-icon>
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                       <!--<v-icon @click="">create</v-icon>-->
@@ -131,11 +127,11 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Data de Início:</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.dataInicio }}</v-col>
-                    <v-col cols="1">
+                    <v-col cols="1" class="mr-1">
                       <v-icon color="green" @click="verifica(info)">check</v-icon>
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                       <!--<v-icon @click="">create</v-icon>-->
@@ -143,11 +139,11 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Data de Fim:</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.dataFim }}</v-col>
-                    <v-col cols="1">
+                    <v-col cols="1" class="mr-1">
                       <v-icon color="green" @click="verifica(info)">check</v-icon>
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                       <!--<v-icon @click="">create</v-icon>-->
@@ -155,14 +151,14 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Medição das UI em papel (m.l.):</div>
                     </v-col>
                     <v-col class="mt-3">
                       <span v-if="item.uiPapel">{{ item.uiPapel }}</span>
                       <span v-else>0</span>  
                     </v-col>
-                    <v-col cols="1">
+                    <v-col cols="1" class="mr-1">
                       <v-icon color="green" @click="verifica(info)">check</v-icon>
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                       <!--<v-icon @click="">create</v-icon>-->
@@ -170,14 +166,14 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Medição das UI em digital (Gb):</div>
                     </v-col>
                     <v-col class="mt-3">
                       <span v-if="item.uiDigital">{{ item.uiDigital }}</span>
                       <span v-else>0</span>  
                     </v-col>
-                    <v-col cols="1">
+                    <v-col cols="1" class="mr-1">
                       <v-icon color="green" @click="verifica(info)">check</v-icon>
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                       <!--<v-icon @click="">create</v-icon>-->
@@ -185,14 +181,14 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">Medição das UI noutros suportes:</div>
                     </v-col>
                     <v-col class="mt-3">
                       <span v-if="item.uiOutros">{{ item.uiOutros }}</span>
                       <span v-else>0</span>  
                     </v-col>
-                    <v-col cols="1">
+                    <v-col cols="1" class="mr-1">
                       <v-icon color="green" @click="verifica(info)">check</v-icon>
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                       <!--<v-icon @click="">create</v-icon>-->
@@ -200,7 +196,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <div class="info-label">N.º de agregações:</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.agregacoes.length }}</v-col>
@@ -257,22 +253,6 @@ export default {
   data() {
     return {
       dialogTipologias: false,
-      infoPedido: [
-        {
-          campo: "Fundo",
-          conteudo: this.p.objeto.dados.ae.fundo,
-          cor: null
-        },
-        {
-          campo: "Legislação",
-          conteudo: this.p.objeto.dados.ae.legislacao,
-          cor: null
-        },
-        {
-          campo: "Zona de Controlo",
-          conteudo: this.p.objeto.dados.ae.zonaControlo
-        }
-      ],
       search: "",
       cabecalho: [
         { text: "Código", align: "left", sortable: false, value: "codigo" },
@@ -362,10 +342,40 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.panel-custom .panel-heading {
+  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
+}
+
+.panel-custom .page-header {
+  border: none;
+  margin: 0;
+  color: #1a237e;
+}
+
+.panel-custom .panel-default:hover {
+  border-color: #1a237e;
+}
+
+.consulta tr {
+  vertical-align: top;
+  border-bottom: 1px solid #ddd;
+}
+
+.consulta td {
+  padding-left: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  align-content: center;
+}
+
+.consulta td:nth-of-type(2) {
+  vertical-align: middle;
+  padding-left: 15px;
+}
+
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
+  color: #1a237e; /* indigo darken-4 */
   font-weight: 400;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
@@ -376,7 +386,34 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #283593;
+  border: 1px solid #1a237e;
   border-radius: 3px;
+}
+
+.panel-info-custom .panel-body {
+  font-size: 1pc;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.panel-noticiabox .panel-body {
+  font-size: 1pc;
+}
+
+.panel-linkbox .panel-body {
+  padding-top: 5px !important;
+  padding-left: 30px !important;
+  padding-bottom: 10px;
+}
+
+li .panel-body {
+  padding: 0px;
+}
+
+li .panel-body li {
+  margin-left: 20px;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
 }
 </style>
