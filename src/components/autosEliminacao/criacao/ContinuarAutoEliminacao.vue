@@ -43,6 +43,7 @@
           v-bind:classes="classes"
           v-bind:entidades="entidades"
           v-bind:auto="auto"
+          v-bind:classesCompletas="classesCompletas"
         />
 
         <!-- Zonas de Controlo -->
@@ -53,7 +54,7 @@
             focusable
           >
             <v-expansion-panel-header class="expansion-panel-heading">
-              <div>Zonas de Controlo</div>
+              <div>Classes</div>
             </v-expansion-panel-header>
 
             <v-expansion-panel-content>
@@ -61,6 +62,7 @@
                 v-bind:auto="auto"
                 v-bind:classes="classes"
                 v-bind:entidades="entidades"
+                v-bind:classesCompletas="classesCompletas"
               />
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -259,6 +261,7 @@ export default {
     entidades: [],
     portarias: [],
     classes: [],
+    classesCompletas: [],
     auto: {
       legislacao: null,
       fundo: [],
@@ -274,14 +277,25 @@ export default {
   }),
   created: async function() {
     try {
+      var response2 = await this.$request("get", "/legislacao?fonte=PGD/LC");
+      this.portarias = await this.prepararLeg(response2.data);
+
       var response = await this.$request("get", "/entidades/");
       this.entidades = await this.prepararEntidade(response.data);
 
-      var response2 = await this.$request("get", "/legislacao/portarias");
-      this.portarias = await this.prepararLeg(response2.data);
-
-      var response3 = await this.$request("get", "/classes?nivel=3");
-      this.classes = await this.prepararClasses(response3.data);
+      var response3 = await this.$request(
+        "get",
+        "/classes?nivel=3&info=completa"
+      );
+      var response4 = await this.$request(
+        "get",
+        "/classes?nivel=4&info=completa"
+      );
+      this.classesCompletas = await this.prepararClassesCompletas(
+        response3.data,
+        response4.data
+      );
+      this.classes = await this.prepararClasses(this.classesCompletas);
 
       this.auto = this.obj.objeto;
       this.pendenteID = this.obj._id;
@@ -299,7 +313,7 @@ export default {
       try {
         var myEntidades = [];
         for (var e of ent) {
-          myEntidades.push(e.sigla + " - " + e.designacao);
+            myEntidades.push(e.sigla + " - " + e.designacao);
         }
         return myEntidades;
       } catch (error) {
@@ -320,9 +334,30 @@ export default {
     prepararClasses: async function(classes) {
       try {
         var myClasses = [];
-        for (var c of classes) {
+        for (var c of classes)
           myClasses.push(c.codigo + " - " + c.titulo);
+        return myClasses;
+      } catch (error) {
+        return [];
+      }
+    },
+    prepararClassesCompletas: async function(classes, nivel4) {
+      try {
+        var myClasses = [];
+        for (var c of classes) {
+          if (c.df.valor !== "NE") myClasses.push(c);
+          else {
+            var indexs = 0;
+            for (var n of nivel4) {
+              if (n.codigo.includes(c.codigo)) {
+                myClasses.push(n);
+                indexs++;
+              } else break;
+            }
+            nivel4.splice(0, indexs);
+          }
         }
+        
         return myClasses;
       } catch (error) {
         return [];
@@ -335,20 +370,34 @@ export default {
     },
     submit: async function() {
       this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
-      var fundo = [];
-      this.auto.fundo.forEach(f => {
-        fundo.push(f.split(" - ")[1]);
-      })
-      this.auto.fundo = fundo;
-      this.$request("post", "/autosEliminacao/", { auto: this.auto })
-        .then(r => {
-          this.$request("delete", "/pendentes/" + this.obj._id);
-          this.successDialog = true;
-        })
-        .catch(e => {
-          this.erro = e.response.data;
-          this.erroDialog = true;
-        });
+
+      var user = this.$verifyTokenUser();
+
+      this.auto.responsavel = user.email;
+      this.auto.entidade = user.entidade;
+
+      var pedidoParams = {
+        tipoPedido: "Criação",
+        tipoObjeto: "Auto de Eliminação",
+        novoObjeto: {
+          ae: this.auto
+        },
+        user: { email: user.email },
+        entidade: user.entidade,
+        token: this.$store.state.token
+      }
+      
+      const codigoPedido = await this.$request(
+              "post",
+              "/pedidos",
+              pedidoParams
+            );
+
+      this.codigoPedido = codigoPedido.data;
+
+      this.$request("delete", "/pendentes/" + this.obj._id);
+      this.successDialog = true;
+
     },
     guardarTrabalho: async function() {
       try {
@@ -379,24 +428,7 @@ export default {
 };
 </script>
 
-
 <style>
-.consulta tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.consulta td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
-}
-
-.consulta td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
-}
 .info-label {
   color: #1a237e; /* green darken-3 */
   padding: 5px;
@@ -406,12 +438,6 @@ export default {
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #696969;
 }
 
 .expansion-panel-heading {
@@ -430,9 +456,5 @@ export default {
   padding: 5px;
   width: 100%;
   border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
 }
 </style>

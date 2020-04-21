@@ -38,6 +38,7 @@
             :UIs="RADA.tsRada.UIs"
             :RE="RADA.RE"
             :entidades="entidades"
+            :entidadesProcessadas="entidadesProcessadas"
             :tipologias="tipologias"
           />
         </v-stepper-content>
@@ -56,6 +57,7 @@
             :RE="RADA.RE"
             :TS="RADA.tsRada"
             :entidades="entidades"
+            :legislacaoProcessada="legislacaoProcessada"
           />
         </v-stepper-content>
       </v-stepper>
@@ -166,6 +168,8 @@ export default {
       entidades: [],
       tipologias: [],
       legislacao: [],
+      legislacaoProcessada: [],
+      entidadesProcessadas: [],
       e1: 1,
       titulo: "",
       guardar: false,
@@ -248,7 +252,6 @@ export default {
             //   eFilhoDe: "01.01",
             //   tipo: "N3"
             // },
-
             // {
             //   codigo: "02.01",
             //   titulo: "Classe N2 (02.01)",
@@ -277,24 +280,7 @@ export default {
             //   localizacao: ["Localização a definir..."],
             //   entProdutoras: [],
             //   tipologiasProdutoras: [],
-            //   legislacao: [
-            //     {
-            //       id: "leg_ENe2tVpHmTj1xmtY6eo-z",
-            //       data: "29-01-2019",
-            //       tipo: "Portaria",
-            //       numero: "39/2019",
-            //       sumario:
-            //         "Regulamento para a Classificação e Avaliação da Informação Produzida no Exercício de Funções da CP - Comboios de Portugal, E. P. E."
-            //     },
-            //     {
-            //       id: "leg_w6sP8Soc5_N8nQeQiMCk3",
-            //       data: "30-03-2005",
-            //       tipo: "Portaria",
-            //       numero: "418/2005",
-            //       sumario:
-            //         "Regulamento Arquivístico da Secretaria-Geral do Ministério da Administração Interna"
-            //     }
-            //   ],
+            //   legislacao: [],
             //   relacoes: [
             //     {
             //       relacao: "Complementar de",
@@ -334,24 +320,7 @@ export default {
             //   localizacao: ["Torre do Tombo"],
             //   entProdutoras: [],
             //   tipologiasProdutoras: [],
-            //   legislacao: [
-            //     {
-            //       id: "leg_bzfJBtZAR94z9YC4UojBq",
-            //       data: "30-10-1991",
-            //       tipo: "Portaria",
-            //       numero: "1125/91",
-            //       sumario:
-            //         "Regulamento Arquivístico da Maternidade do Dr. Alfredo da Costa"
-            //     },
-            //     {
-            //       id: "leg_3OZCH3pb0dqpHjlX8HePk",
-            //       data: "30-03-2009",
-            //       tipo: "Portaria",
-            //       numero: "331/2009",
-            //       sumario:
-            //         "Regulamento de conservação arquivística do INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I. P., no que se refere à avaliação, selecção, conservação e eliminação da sua documentação e revoga a Portaria n.º 226/2005, de 24 de Fevereiro"
-            //     }
-            //   ],
+            //   legislacao: [],
             //   relacoes: [
             //     {
             //       relacao: "Complementar de",
@@ -554,9 +523,13 @@ export default {
       let entidades = this.entidades.filter(
         e =>
           e.estado == "Nova" &&
-          (series.some(cl => cl.entProdutoras.some(ent => ent.id == e.id)) ||
+          (series.some(cl =>
+            cl.entProdutoras.some(ent => ent == e.sigla + " - " + e.designacao)
+          ) ||
             this.RADA.tsRada.UIs.some(ui =>
-              ui.produtor.entProdutoras.some(ent => ent.id == e.id)
+              ui.produtor.entProdutoras.some(
+                ent => ent == e.sigla + " - " + e.designacao
+              )
             ))
       );
 
@@ -570,7 +543,14 @@ export default {
             internacional: entidades[i].internacional,
             sigla: entidades[i].sigla,
             sioe: entidades[i].sioe,
-            tipologiasSel: [],
+            tipologiasSel: entidades[i].tipologiasSel.map(tipologia => {
+              let tip = tipologia.split(" - ");
+              return {
+                sigla: tip[0],
+                designacao: tip[1],
+                id: "tip_" + tip[0]
+              };
+            }),
             dataCriacao: entidades[i].dataCriacao,
             codigo: ""
           },
@@ -594,7 +574,9 @@ export default {
             e.estado == "Nova" &&
             series.some(cl =>
               cl.legislacao.some(
-                legis => legis.tipo == e.tipo && legis.numero == e.numero
+                legis =>
+                  legis.legislacao ==
+                  e.tipo + " " + e.numero + " - " + e.sumario
               )
             )
         )
@@ -610,7 +592,9 @@ export default {
           leg["processosSel"] = series
             .filter(cl =>
               cl.legislacao.some(
-                legis => legis.tipo == leg.tipo && legis.numero == leg.numero
+                legis =>
+                  legis.legislacao ==
+                  leg.tipo + " " + leg.numero + " - " + leg.sumario
               )
             )
             .map(cl => {
@@ -710,28 +694,51 @@ export default {
     }
   },
   created: async function() {
+    // Pedido para a legislação e processamento para formulários!
     let l = await this.$request("get", "/legislacao");
     this.legislacao = l.data;
 
+    this.legislacaoProcessada = l.data.map(item => {
+      return {
+        id: item.id,
+        legislacao: item.tipo + " " + item.numero + " - " + item.sumario
+      };
+    });
+
+    // Pedido para as entidades e processamento para formulários!
     let response = await this.$request("get", "/entidades");
     this.entidades = response.data;
 
+    this.entidadesProcessadas = response.data.map(item => {
+      return {
+        entidade: item.sigla + " - " + item.designacao,
+        disabled: false
+      };
+    });
+
+    // Pedido para tipologias e seu processamento para formulários!
     response = await this.$request("get", "/tipologias");
-    this.tipologias = response.data;
+    this.tipologias = response.data.map(item => {
+      return {
+        tipologia: item.sigla + " - " + item.designacao,
+        disabled: false
+      };
+    });
 
     let userBD = this.$verifyTokenUser();
     this.userEmail = userBD.email;
 
-    let userEntidade = await this.$request(
+    this.user_entidade = userBD.entidade;
+
+    let user_entidade_completa = await this.$request(
       "get",
       "/entidades/" + userBD.entidade
     );
 
-    //this.user_entidade = "ent_" + userEntidade.data.sigla;
-    this.user_entidade = userBD.entidade;
-
     this.RADA.entRes.push(
-      userEntidade.data.sigla + " - " + userEntidade.data.designacao
+      user_entidade_completa.data.sigla +
+        " - " +
+        user_entidade_completa.data.designacao
     );
   }
 };

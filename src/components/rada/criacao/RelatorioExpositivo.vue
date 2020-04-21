@@ -2,20 +2,26 @@
   <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
       <div v-if="!RE.tipologiasProd[0]">
+        <NovaEntidade
+          :entidades="entidades"
+          :produtoras="RE.entidadesProd"
+          :tipologias="tipologias"
+          :entidadesProcessadas="entidadesProcessadas"
+        />
+        <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Entidades Produtoras</div>
           </v-col>
           <v-col xs="12" sm="9">
-            <!-- {{ tipologiasProcessadas }} -->
             <v-autocomplete
               :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-model="RE.entidadesProd"
               :items="entidadesProcessadas"
-              item-text="searchField"
+              item-text="entidade"
+              item-value="entidade"
               placeholder="Selecione as Entidades Produtoras."
               multiple
-              return-object
             >
               <template v-slot:no-data>
                 <v-list-item>
@@ -28,14 +34,13 @@
                 <v-chip
                   v-bind="data.attrs"
                   :input-value="data.selected"
-                  :close="produtoraEntidadeClasse(data.item, data.item.sigla, data.item.designacao)"
+                  :close="produtoraEntidadeClasse(data.item, data.item.entidade)"
                   @click:close="removeEnt(data.item)"
-                >{{ data.item.searchField }}</v-chip>
+                >{{ data.item.entidade }}</v-chip>
               </template>
             </v-autocomplete>
           </v-col>
         </v-row>
-        <NovaEntidade :entidades="entidades" :produtoras="RE.entidadesProd" />
       </div>
       <v-row v-if="!RE.entidadesProd[0]">
         <v-col cols="12" xs="12" sm="3">
@@ -45,9 +50,9 @@
           <v-autocomplete
             :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RE.tipologiasProd"
-            :items="tipologiasProcessadas"
-            item-text="searchField"
-            return-object
+            :items="tipologias"
+            item-text="tipologia"
+            item-value="tipologia"
             placeholder="Selecione as Tipologias das Entidades Produtoras."
             multiple
           >
@@ -62,14 +67,14 @@
               <v-chip
                 v-bind="data.attrs"
                 :input-value="data.selected"
-                :close="produtoraTipologiaClasse(data.item, data.item.sigla, data.item.designacao)"
+                :close="produtoraTipologiaClasse(data.item, data.item.tipologia)"
                 @click:close="removeTip(data.item)"
-              >{{ data.item.searchField }}</v-chip>
+              >{{ data.item.tipologia }}</v-chip>
             </template>
           </v-autocomplete>
         </v-col>
       </v-row>
-      <hr style="border: 2px solid indigo; border-radius: 1px;" />
+      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Data Inicial da Documentação</div>
@@ -262,26 +267,35 @@
 import NovaEntidade from "./classes/partes/NovaEntidade";
 
 export default {
-  props: ["RE", "entidades", "tipologias", "classes", "UIs"],
+  props: [
+    "RE",
+    "entidades",
+    "tipologias",
+    "classes",
+    "UIs",
+    "entidadesProcessadas"
+  ],
   components: {
     NovaEntidade
   },
-  computed: {
-    entidadesProcessadas() {
-      return this.entidades.map(item => {
-        item["searchField"] = item.sigla + " - " + item.designacao;
-        item["disabled"] = false;
-        return item;
-      });
-    },
-    tipologiasProcessadas() {
-      return this.tipologias.map(item => {
-        item["searchField"] = item.sigla + " - " + item.designacao;
-        item["disabled"] = false;
-        return item;
-      });
-    }
-  },
+  // computed: {
+  //   entidadesProcessadas() {
+  //     return this.entidades.map(item => {
+  //       return {
+  //         entidade: item.sigla + " - " + item.designacao,
+  //         disabled: false
+  //       };
+  //     });
+  //   },
+  //   tipologiasProcessadas() {
+  //     return this.tipologias.map(item => {
+  //       return {
+  //         tipologia: item.sigla + " - " + item.designacao,
+  //         disabled: false
+  //       };
+  //     });
+  //   }
+  // },
   data: () => ({
     panels: [0, 0, 0],
     menu1: false,
@@ -321,30 +335,20 @@ export default {
       }, 1);
     },
     removeEnt: function(item) {
-      const index = this.RE.entidadesProd.findIndex(
-        i => i.sigla === item.sigla
-      );
+      const index = this.RE.entidadesProd.findIndex(i => i === item.entidade);
       if (index >= 0) this.RE.entidadesProd.splice(index, 1);
     },
     removeTip: function(item) {
-      const index = this.RE.tipologiasProd.findIndex(
-        i => i.sigla === item.sigla
-      );
+      const index = this.RE.tipologiasProd.findIndex(i => i === item.tipologia);
       if (index >= 0) this.RE.tipologiasProd.splice(index, 1);
     },
-    produtoraEntidadeClasse(item, sigla, desi) {
+    produtoraEntidadeClasse(item, entidade) {
       let classes = this.classes.filter(
-        e =>
-          e.tipo == "Série" &&
-          e.entProdutoras.some(
-            ent => ent.sigla == sigla && ent.designacao == desi
-          )
+        e => e.tipo == "Série" && e.entProdutoras.some(ent => ent == entidade)
       );
 
       let uis = this.UIs.filter(e =>
-        e.produtor.entProdutoras.some(
-          ent => ent.sigla == sigla && ent.designacao == desi
-        )
+        e.produtor.entProdutoras.some(ent => ent == entidade)
       );
 
       if (classes.length > 0 || uis.length > 0) {
@@ -355,19 +359,15 @@ export default {
       item.disabled = false;
       return true;
     },
-    produtoraTipologiaClasse(item, sigla, desi) {
+    produtoraTipologiaClasse(item, tipologia) {
       let classes = this.classes.filter(
         e =>
           e.tipo == "Série" &&
-          e.tipologiasProdutoras.some(
-            tip => tip.sigla == sigla && tip.designacao == desi
-          )
+          e.tipologiasProdutoras.some(tip => tip == tipologia)
       );
 
       let uis = this.UIs.filter(e =>
-        e.produtor.tipologiasProdutoras.some(
-          ent => ent.sigla == sigla && ent.designacao == desi
-        )
+        e.produtor.tipologiasProdutoras.some(tip => tip == tipologia)
       );
 
       if (classes.length > 0 || uis.length > 0) {
