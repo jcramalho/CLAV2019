@@ -92,14 +92,14 @@
                   "
                   >Continuar</v-btn
                 >
-                <v-btn
+                <!--v-btn
                   text
                   @click="
                     stepNo = 1;
                     barra(0);
                   "
                   >Voltar</v-btn
-                >
+                -->
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 3" step="3"
