@@ -69,6 +69,11 @@
       </v-col>
     </v-row>
 
+    <!-- Dialog de erros -->
+    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
+      <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
+    </v-dialog>
+
     <!-- Dialog Ver Despachos-->
     <v-dialog v-model="despachosDialog" width="50%">
       <VerDespachos
@@ -92,6 +97,7 @@ import ValidaEditaTipologiaEntidade from "@/components/pedidos/validacao/ValidaE
 import VerDespachos from "@/components/pedidos/generic/VerDespachos";
 
 import Loading from "@/components/generic/Loading";
+import ErroDialog from "@/components/generic/ErroDialog";
 
 export default {
   props: ["idp"],
@@ -106,12 +112,17 @@ export default {
     ValidaAE,
     Loading,
     VerDespachos,
+    ErroDialog,
   },
 
   data() {
     return {
       loading: true,
       pedido: {},
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
+      },
       pedidoLoaded: false,
       despachosDialog: false,
       headers: [
@@ -127,11 +138,17 @@ export default {
   async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
+      if (data.estado !== "Apreciado")
+        throw new URIError("Este pedido não pertence a este estado.");
+
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;
-    } catch (e) {
-      //console.log("e :", e);
+    } catch (err) {
+      if (err instanceof URIError) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem = err.message.toString();
+      }
     }
   },
 

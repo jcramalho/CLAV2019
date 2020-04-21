@@ -224,7 +224,6 @@ export default {
     },
 
     ordenaTabela(items, index, isDesc) {
-      console.log("index[0] :", index[0]);
       items.sort((a, b) => {
         if (index[0] === "codigo") {
           if (!isDesc[0]) {
