@@ -566,7 +566,7 @@ export default {
       // Objeto Tabela de Seleção
       tabelaSelecao: {},
       // Numero do passo da criação de TS
-      stepNo: 1,
+      stepNo: 2,
       // Valor da barra de progresso
       valorBarra: 0,
       // Lista de todas as entidades existentes
