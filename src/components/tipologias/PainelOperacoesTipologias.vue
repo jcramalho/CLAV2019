@@ -175,6 +175,30 @@ export default {
       return numeroErros;
     },
 
+    async validarTipologiasAlteracao(dados) {
+      let numeroErros = 0;
+
+      // Designação
+      if (dados.designacao === "" || dados.designacao === null) {
+        numeroErros++;
+      } else if (dados.designacao !== undefined) {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/tipologias/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+        }
+      }
+
+      return numeroErros;
+    },
+
     // Lança o pedido de criação da tipologia no worflow
     async criarAlterarTipologia() {
       try {
@@ -198,6 +222,8 @@ export default {
                   if (key !== "sigla") delete dataObj[key];
                 }
               }
+
+              erros = await this.validarTipologiasAlteracao(dataObj);
               break;
 
             default:
