@@ -38,6 +38,12 @@
           <div class="info-content">{{ p.objeto.listaProcSel.procSelUltimos.length }}</div>
         </v-col>
       </v-row>
+
+      <v-row class="mt-1">
+        <v-col>
+          <div class="info-content">{{ JSON.stringify(p) }}</div>
+        </v-col>
+      </v-row>
   </div>
 </template>
 
