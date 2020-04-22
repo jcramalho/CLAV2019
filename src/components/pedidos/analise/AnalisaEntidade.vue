@@ -4,13 +4,23 @@
       <!-- Label -->
       <v-col
         cols="2"
-        v-if="info.conteudo !== '' && info.conteudo !== undefined"
+        v-if="
+          info.conteudo !== '' &&
+            info.conteudo !== null &&
+            info.conteudo !== undefined
+        "
       >
         <div class="info-label">{{ info.campo }}</div>
       </v-col>
 
       <!-- Conteudo -->
-      <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
+      <v-col
+        v-if="
+          info.conteudo !== '' &&
+            info.conteudo !== null &&
+            info.conteudo !== undefined
+        "
+      >
         <!-- Se o conteudo for uma lista de tipologias-->
         <v-data-table
           v-if="info.campo === 'Tipologias'"
@@ -19,7 +29,6 @@
           class="elevation-1"
           hide-default-footer
         >
-
           <template v-slot:item="props">
             <tr>
               <td>{{ props.item.sigla }}</td>
@@ -95,7 +104,7 @@ export default {
   props: ["p"],
 
   components: {
-    PO
+    PO,
   },
 
   data() {
@@ -105,29 +114,29 @@ export default {
         {
           campo: "Sigla",
           conteudo: this.p.objeto.dados.sigla,
-          cor: null
+          cor: null,
         },
         {
           campo: "Designação",
           conteudo: this.p.objeto.dados.designacao,
-          cor: null
+          cor: null,
         },
         {
           campo: "Internacional",
           conteudo: this.p.objeto.dados.internacional,
-          cor: null
+          cor: null,
         },
         { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
         {
           campo: "Tipologias",
           conteudo: this.p.objeto.dados.tipologiasSel,
-          cor: null
+          cor: null,
         },
         {
           campo: "Data Extinção",
           conteudo: this.p.objeto.dados.dataExtincao,
-          cor: null
-        }
+          cor: null,
+        },
       ],
       headersTipologias: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
@@ -138,9 +147,9 @@ export default {
           class: "subtitle-1",
           sortable: false,
           width: "10%",
-          align: "center"
-        }
-      ]
+          align: "center",
+        },
+      ],
     };
   },
 
@@ -155,7 +164,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -165,7 +174,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -189,12 +198,12 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -204,20 +213,20 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
     close() {
       this.dialogtipologias = false;
       this.dialogProcessos = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
