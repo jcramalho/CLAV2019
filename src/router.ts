@@ -431,6 +431,12 @@ export default new Router({
       component: () => import("./views/gestao/Administracao.vue"),
       meta: { levels: [7] },
     },
+    {
+      path: "/gestao/exportarColecoes",
+      name: "exportarColecoes",
+      component: () => import("./views/gestao/ExportarColecoes.vue"),
+      meta: { levels: [7] },
+    },
     // Routes de Invariantes
     {
       path: "/invariantes",

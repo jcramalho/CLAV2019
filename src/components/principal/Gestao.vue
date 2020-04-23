@@ -165,6 +165,11 @@ export default {
               label: "Área de Administração",
               url: "/gestao/administracao",
               level: [7]
+            },
+            {
+              label: "Exportar Coleções",
+              url: "/gestao/exportarColecoes",
+              level: [7]
             }
           ]
         }
