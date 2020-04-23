@@ -169,8 +169,8 @@ export default {
           filterable: true,
         },
         {
-          text: "Responsável",
-          value: "responsavel",
+          text: "Criador",
+          value: "criador",
           class: "title",
           sortable: true,
           filterable: true,
@@ -179,6 +179,13 @@ export default {
           text: "Data",
           align: "left",
           value: "data",
+          class: "title",
+          sortable: true,
+          filterable: true,
+        },
+        {
+          text: "Responsável",
+          value: "responsavel",
           class: "title",
           sortable: true,
           filterable: true,
@@ -215,8 +222,16 @@ export default {
         dados.tipo = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
         if (pedido.entidade !== undefined)
           dados.entidade = pedido.entidade.split("_")[1];
-        dados.responsavel = pedido.criadoPor;
+        dados.criador = pedido.criadoPor;
         dados.data = this.converteData(pedido.data);
+        if (
+          pedido.distribuicao[pedido.distribuicao.length - 1]
+            .proximoResponsavel !== undefined
+        )
+          dados.responsavel =
+            pedido.distribuicao[
+              pedido.distribuicao.length - 1
+            ].proximoResponsavel.nome;
 
         return dados;
       });
