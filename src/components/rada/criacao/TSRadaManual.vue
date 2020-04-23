@@ -90,9 +90,6 @@
       <font style="color: white">Criar RADA</font>
     </v-btn>
     <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
-    <v-btn color="indigo darken-4" text @click="apagar">
-      <v-icon>delete_sweep</v-icon>
-    </v-btn>
   </v-card>
 </template>
 
@@ -214,9 +211,6 @@ export default {
       }
 
       return children;
-    },
-    apagar: function() {
-      this.$refs.form.reset();
     },
     sendToFather: function() {
       if (this.$refs.form.validate() && this.TS.classes[0]) {
