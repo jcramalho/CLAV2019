@@ -4,13 +4,23 @@
       <!-- Label -->
       <v-col
         cols="2"
-        v-if="info.conteudo !== '' && info.conteudo !== undefined"
+        v-if="
+          info.conteudo !== '' &&
+            info.conteudo !== null &&
+            info.conteudo !== undefined
+        "
       >
         <div class="info-label">{{ info.campo }}</div>
       </v-col>
 
       <!-- Conteudo -->
-      <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
+      <v-col
+        v-if="
+          info.conteudo !== '' &&
+            info.conteudo !== null &&
+            info.conteudo !== undefined
+        "
+      >
         <!-- Se o conteudo for uma lista de entidades -->
         <v-data-table
           v-if="info.campo === 'Entidades'"
@@ -80,22 +90,22 @@
     </v-row>
 
     <!-- Dialog se existir erros no pedido à API -->
-    <v-dialog v-model="erroPedido" width="80%" hide-overlay>
-      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    <v-dialog v-model="erroPedido" width="50%" persistent>
+      <ErroAPIDialog :erros="erros" @fecharErro="fecharErro()" />
     </v-dialog>
   </div>
 </template>
 
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
-import ErroDialog from "@/components/pedidos/generic/ErroDialog";
+import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 
 export default {
   props: ["p"],
 
   components: {
     PO,
-    ErroDialog,
+    ErroAPIDialog,
   },
 
   data() {
@@ -226,12 +236,21 @@ export default {
           this.$router.go(-1);
         }
       } catch (e) {
-        this.erros.push({
-          sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia.",
-        });
+        let parsedError = Object.assign({}, e);
+        parsedError = parsedError.response;
+
+        if (parsedError.status === 422) {
+          parsedError.data.forEach((erro) => {
+            this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+          });
+        } else {
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Ocorreu um erro ao aceder à ontologia.",
+          });
+        }
+
         this.erroPedido = true;
-        //console.log("e :", e);
       }
     },
 

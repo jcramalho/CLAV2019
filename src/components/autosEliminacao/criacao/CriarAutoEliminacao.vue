@@ -329,4 +329,21 @@ export default {
   border: 1px solid #1a237e;
 }
 
+.consulta tr {
+  vertical-align: top;
+  border-bottom: 1px solid #ddd;
+}
+
+.consulta td {
+  padding-left: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  align-content: center;
+}
+
+.consulta td:nth-of-type(2) {
+  vertical-align: middle;
+  padding-left: 15px;
+}
+
 </style>

@@ -26,42 +26,8 @@
                   </v-chip>
                 </span>
               </v-stepper-step>
-              <v-stepper-content step="1">
-                
-                <v-col v-if="entidadesReady">
-                  <v-autocomplete
-                    v-model="entSel"
-                    :items="entidades"
-                    item-text="searchField"
-                    placeholder="Selecione as entidades abrangidas pela TS"
-                    multiple
-                    chips
-                    deletable-chips
-                    return-object
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col v-else>
-                  <v-alert dense type="info">
-                    Ainda não foi possível carregar as entidades...
-                  </v-alert>
-                </v-col>
-
-                <hr style="border-top: 0px" />
-                <v-btn
-                  color="primary"
-                  @click="
-                    stepNo = 2;
-                    barra(14);
-                    entSel.sort((a, b) =>
-                      a.designacao > b.designacao ? 1 : -1
-                    );
-                    tabelaSelecao.entidades = entSel;
-                    entSelReady = true;
-                  "
-                  >Continuar</v-btn
-                >
-              </v-stepper-content>
+              <!-- Não há lugar à seleção de entidades -->
+              <v-stepper-content step="1"></v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 2" step="2">
                 Designação da Tabela de Seleção
@@ -92,14 +58,6 @@
                   "
                   >Continuar</v-btn
                 >
-                <v-btn
-                  text
-                  @click="
-                    stepNo = 1;
-                    barra(0);
-                  "
-                  >Voltar</v-btn
-                >
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 3" step="3"
@@ -120,7 +78,7 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content eager>
                           <ContListaProcessosComuns
-                            v-if="listaProcComunsReady && entSelReady"
+                            v-if="listaProcComunsReady"
                             v-bind:lista="listaProcComuns"
                             v-bind:entidades="tabelaSelecao.entidades"
                             @contadorProcSelCom="contadorProcSelCom($event)"
@@ -566,7 +524,7 @@ export default {
       // Objeto Tabela de Seleção
       tabelaSelecao: {},
       // Numero do passo da criação de TS
-      stepNo: 1,
+      stepNo: 2,
       // Valor da barra de progresso
       valorBarra: 0,
       // Lista de todas as entidades existentes
@@ -579,8 +537,6 @@ export default {
       entidadesReady: false,
       // Lista com todos os processos comuns
       listaProcComuns: [],
-      // Passa a true quando o utilizador tiver selecionado todas as entidades no primeiro passo
-      entSelReady: false,
       // True quando a lista de todos os processos comuns existentes estiver completa
       listaProcComunsReady: false,
       // Numero de processos comuns selecionados

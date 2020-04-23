@@ -12,8 +12,25 @@
 
         <!-- Content -->
         <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Nome da Tipologia</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                filled
+                clearable
+                color="indigo"
+                single-line
+                v-model="tipologia.designacao"
+                maxlength="50"
+                label="Nome da Tipologia"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
           <!-- Blocos expansivos -->
-          <v-expansion-panels :value="0">
+          <v-expansion-panels>
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
                 <div>

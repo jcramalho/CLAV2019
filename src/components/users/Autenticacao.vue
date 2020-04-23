@@ -44,21 +44,31 @@
             <v-col cols="12" class="d-flex flex-row-reverse">
               <form
                 action="https://preprod.autenticacao.gov.pt/fa/Default.aspx"
+                action_comment="https://autenticacao.gov.pt/fa/Default.aspx"
                 method="POST"
               >
                 <input
                   type="hidden"
                   name="SAMLRequest"
-                  v-bind:value="createSAML()"
+                  v-bind:value="createSAML('CC')"
                 />
                 <v-btn color="primary" type="submit">Cartão de Cidadão</v-btn>
               </form>
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row-reverse">
-              <v-btn color="primary" disabled type="submit">
-                Chave Móvel Digital
-              </v-btn>
+              <form
+                action="https://preprod.autenticacao.gov.pt/fa/Default.aspx"
+                action_comment="https://autenticacao.gov.pt/fa/Default.aspx"
+                method="POST"
+              >
+                <input
+                  type="hidden"
+                  name="SAMLRequest"
+                  v-bind:value="createSAML('CMD')"
+                />
+                <v-btn color="primary" type="submit">Chave Móvel Digital</v-btn>
+              </form>
             </v-col>
 
             <v-col class="d-flex flex-row-reverse">
@@ -153,8 +163,7 @@ export default {
     renovarApi() {
       this.$router.push("/gestao/api/renovar");
     },
-    buildSamlRequest() {
-      var uuid = "_" + uuidv4();
+    partialXML(uuid) {
       var xml = builder
         .begin({
           encoding: "utf-8"
@@ -166,6 +175,7 @@ export default {
             "@IssueInstant": new Date().toISOString(),
             "@Destination":
               "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
+              //Versão prod: "https://autenticacao.gov.pt/fa/Default.aspx",
             "@ProtocolBinding":
               "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
             "@AssertionConsumerServiceURL": lhost + "/users/callback",
@@ -198,9 +208,44 @@ export default {
           Name: "http://interop.gov.pt/MDC/Cidadao/NomeCompleto",
           NameFormat: "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
           isRequired: "True"
+        });
+      return xml;
+    },
+    ccXML(uuid) {
+      return this.partialXML(uuid).end();
+    },
+    cmdXML(uuid) {
+      var xml = this.partialXML(uuid)
+        .up()
+        .up()
+        //Indica que apenas é necessário o level 3 (CMD) para os atributos
+        .ele(
+          "fa:FAAALevel",
+          {
+            "xmlns:fa": "http://autenticacao.cartaodecidadao.pt/atributos"
+          },
+          3
+        )
+        .up()
+        //Politicas de Apresentação
+        .ele("fa:AuthTabPresentationPolicies", {
+          "xmlns:fa":
+            "http://autenticacao.cartaodecidadao.pt/presentationpolicy"
+        })
+        //seleciona a Tab default do CMD
+        .ele("fa:defaultSelectedAuthTab", {
+          TabId: "CMD"
+        })
+        .up()
+        //Esconde a tab do CC (retirar esta parte se se pretender mostrar as hipóteses CC e CMD)
+        .ele("fa:hideAuthTab", {
+          TabId: "CC"
         })
         .end();
 
+      return xml;
+    },
+    buildSamlRequest(xml, uuid) {
       this.$request("post", "/auth/adicionar", {
         id: uuid,
         url: window.location.protocol + "//" + window.location.host
@@ -254,8 +299,14 @@ export default {
         "Extensions"
       );
     },
-    createSAML() {
-      return btoa(this.stripExtension(this.buildSamlRequest()));
+    createSAML(type) {
+      var uuid = "_" + uuidv4();
+      var xml;
+      if (type == "CC") xml = this.ccXML(uuid);
+      else if (type == "CMD") xml = this.cmdXML(uuid);
+      else throw "ERRO: tipo inválido";
+
+      return btoa(this.stripExtension(this.buildSamlRequest(xml, uuid)));
     }
   }
 };

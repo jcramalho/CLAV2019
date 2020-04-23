@@ -207,7 +207,7 @@ export default {
           );
         } catch (e) {
           this.color = "error";
-          this.text = e.response.data;
+          this.text = e.response.data[0].msg || e.response.data;
         }
       }
     },

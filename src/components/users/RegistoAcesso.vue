@@ -353,7 +353,7 @@ export default {
       this.loadingAggLogs = false;
       this.loadingLogs = false;
       this.color = "error";
-      this.text = error.response.data;
+      this.text = error.response.data[0].msg || error.response.data;
     }
   },
   data: () => ({
