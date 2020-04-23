@@ -152,7 +152,7 @@ export default {
     ShowTI,
     AvancarPedido,
     ShowRADA,
-    ErroDialog
+    ErroDialog,
   },
 
   data: () => ({
@@ -167,14 +167,14 @@ export default {
       { text: "Data", value: "data" },
       { text: "Responsável", value: "responsavel" },
       { text: "Despacho", value: "despacho" },
-      { text: "Objeto", value: "objeto" }
+      { text: "Objeto", value: "objeto" },
     ],
     distHeaders: [
       { text: "Estado", value: "estado", class: "subtitle-1" },
       { text: "Data", value: "data", class: "subtitle-1" },
       { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Despacho", value: "despacho", class: "subtitle-1" }
-    ]
+      { text: "Despacho", value: "despacho", class: "subtitle-1" },
+    ],
   }),
 
   async created() {
@@ -213,13 +213,18 @@ export default {
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.fecharDialog();
@@ -235,8 +240,8 @@ export default {
 
     voltar: function() {
       this.$router.go(-1);
-    }
-  }
+    },
+  },
 };
 </script>
 

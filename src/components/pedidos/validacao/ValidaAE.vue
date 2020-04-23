@@ -15,7 +15,7 @@
         <div class="info-label">Fundo:</div>
       </v-col>
       <v-col class="mt-3">
-        <li v-for="(f,i) in p.objeto.dados.ae.fundo" :key="i">{{f}}</li>
+        <li v-for="(f, i) in p.objeto.dados.ae.fundo" :key="i">{{ f }}</li>
       </v-col>
       <v-col cols="1">
         <v-icon color="green" @click="verifica(info)">check</v-icon>
@@ -25,7 +25,9 @@
 
     <v-expansion-panels popout>
       <v-expansion-panel class="ma-1">
-        <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">Classes</v-expansion-panel-header>
+        <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
+          >Classes</v-expansion-panel-header
+        >
         <v-expansion-panel-content>
           <v-list>
             <v-list-group
@@ -39,17 +41,20 @@
                   <v-list-item-title
                     v-if="item.codigo && item.referencia"
                     v-text="
-                          'Zona de Controlo - ' +
-                            item.codigo +
-                            ' ' +
-                            item.referencia
-                        "
+                      'Zona de Controlo - ' +
+                        item.codigo +
+                        ' ' +
+                        item.referencia
+                    "
                   ></v-list-item-title>
                   <v-list-item-title
                     v-else-if="item.codigo"
                     v-text="'Zona de Controlo - ' + item.codigo"
                   ></v-list-item-title>
-                  <v-list-item-title v-else v-text="'Zona de Controlo - ' + item.referencia"></v-list-item-title>
+                  <v-list-item-title
+                    v-else
+                    v-text="'Zona de Controlo - ' + item.referencia"
+                  ></v-list-item-title>
                 </v-list-item-content>
               </template>
               <v-list-item-content>
@@ -62,11 +67,14 @@
                       <a
                         v-if="!item.referencia"
                         :href="'/classes/consultar/c' + item.codigo"
-                      >{{ item.codigo }}</a>
+                        >{{ item.codigo }}</a
+                      >
                       <div v-else>{{ item.codigo }}</div>
                     </v-col>
                     <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)">check</v-icon>
+                      <v-icon color="green" @click="verifica(info)"
+                        >check</v-icon
+                      >
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                     </v-col>
                   </v-row>
@@ -76,7 +84,9 @@
                     </v-col>
                     <v-col class="mt-3">{{ item.referencia }}</v-col>
                     <v-col cols="1" v-if="!item.codigo">
-                      <v-icon color="green" @click="verifica(info)">check</v-icon>
+                      <v-icon color="green" @click="verifica(info)"
+                        >check</v-icon
+                      >
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                     </v-col>
                   </v-row>
@@ -88,7 +98,9 @@
                   </v-row>
                   <v-row v-if="item.prazoConservacao">
                     <v-col cols="4">
-                      <div class="info-label">Prazo de Conservação Administrativa:</div>
+                      <div class="info-label">
+                        Prazo de Conservação Administrativa:
+                      </div>
                     </v-col>
                     <v-col class="mt-3">{{ item.prazoConservacao }} Anos</v-col>
                   </v-row>
@@ -99,7 +111,7 @@
                     <v-col class="mt-3">
                       <span v-if="item.destino === 'E'">Eliminação</span>
                       <span v-else-if="item.destino === 'C'">Conservação</span>
-                      <span v-else >{{ item.destino }}</span>
+                      <span v-else>{{ item.destino }}</span>
                     </v-col>
                   </v-row>
                   <v-row v-if="item.ni">
@@ -113,10 +125,12 @@
                       <div class="info-label">Dono do PN:</div>
                     </v-col>
                     <v-col class="mt-3">
-                      <li v-for="(d,i) in item.dono" :key="i">{{ d }}</li>
+                      <li v-for="(d, i) in item.dono" :key="i">{{ d }}</li>
                     </v-col>
                     <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)">check</v-icon>
+                      <v-icon color="green" @click="verifica(info)"
+                        >check</v-icon
+                      >
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                     </v-col>
                   </v-row>
@@ -126,7 +140,9 @@
                     </v-col>
                     <v-col class="mt-3">{{ item.dataInicio }}</v-col>
                     <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)">check</v-icon>
+                      <v-icon color="green" @click="verifica(info)"
+                        >check</v-icon
+                      >
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                     </v-col>
                   </v-row>
@@ -136,43 +152,57 @@
                     </v-col>
                     <v-col class="mt-3">{{ item.dataFim }}</v-col>
                     <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)">check</v-icon>
+                      <v-icon color="green" @click="verifica(info)"
+                        >check</v-icon
+                      >
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                     </v-col>
                   </v-row>
                   <v-row v-if="item.uiPapel">
                     <v-col cols="4">
-                      <div class="info-label">Medição das UI em papel (m.l.):</div>
+                      <div class="info-label">
+                        Medição das UI em papel (m.l.):
+                      </div>
                     </v-col>
                     <v-col class="mt-3">
                       {{ item.uiPapel }}
                     </v-col>
                     <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)">check</v-icon>
+                      <v-icon color="green" @click="verifica(info)"
+                        >check</v-icon
+                      >
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                     </v-col>
                   </v-row>
                   <v-row v-if="item.uiDigital">
                     <v-col cols="4">
-                      <div class="info-label">Medição das UI em digital (Gb):</div>
+                      <div class="info-label">
+                        Medição das UI em digital (Gb):
+                      </div>
                     </v-col>
                     <v-col class="mt-3">
                       {{ item.uiDigital }}
                     </v-col>
                     <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)">check</v-icon>
+                      <v-icon color="green" @click="verifica(info)"
+                        >check</v-icon
+                      >
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                     </v-col>
                   </v-row>
                   <v-row v-if="item.uiOutros">
                     <v-col cols="4">
-                      <div class="info-label">Medição das UI noutros suportes:</div>
+                      <div class="info-label">
+                        Medição das UI noutros suportes:
+                      </div>
                     </v-col>
                     <v-col class="mt-3">
                       {{ item.uiOutros }}
                     </v-col>
                     <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)">check</v-icon>
+                      <v-icon color="green" @click="verifica(info)"
+                        >check</v-icon
+                      >
                       <v-icon color="red" @click="anula(info)">clear</v-icon>
                     </v-col>
                   </v-row>
@@ -210,7 +240,7 @@
           </v-list>
         </v-expansion-panel-content>
       </v-expansion-panel>
-    </v-expansion-panels> 
+    </v-expansion-panels>
     <v-row>
       <v-spacer />
       <PO
@@ -249,11 +279,11 @@ export default {
         { text: "Código", align: "left", sortable: false, value: "codigo" },
         { text: "Título", align: "left", value: "titulo" },
         { text: "Data de Contagem", align: "center", value: "dataContagem" },
-        { text: "Natureza de Intervenção", align: "center", value: "ni" }
+        { text: "Natureza de Intervenção", align: "center", value: "ni" },
       ],
       footer_props: {
-        "items-per-page-text": "Mostrar"
-      }
+        "items-per-page-text": "Mostrar",
+      },
     };
   },
 
@@ -291,7 +321,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        var numeroErros = 0
+        var numeroErros = 0;
 
         if (numeroErros > 0) {
           this.erroPedido = true;
@@ -306,7 +336,9 @@ export default {
             }
           }
 
-          await this.$request("post", "/autosEliminacao",  {auto: pedido.objeto.dados.ae});
+          await this.$request("post", "/autosEliminacao", {
+            auto: pedido.objeto.dados.ae,
+          });
 
           const estado = "Validado";
 
@@ -315,6 +347,11 @@ export default {
           const novaDistribuicao = {
             estado: estado,
             responsavel: dadosUtilizador.email,
+            proximoResponsavel: {
+              nome: dados.utilizadorSelecionado.name,
+              entidade: dados.utilizadorSelecionado.entidade,
+              email: dados.utilizadorSelecionado.email,
+            },
             data: new Date(),
             despacho: dados.mensagemDespacho,
           };
