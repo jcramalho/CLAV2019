@@ -79,9 +79,15 @@
               >
                 <template v-slot:no-data>
                   <v-list-item>
-                    <v-list-item-title>
-                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
-                    </v-list-item-title>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        Este campo pode não ser preenchido. Se assim for, a classe será do tipo
+                        <i>N1</i>.
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
                   </v-list-item>
                 </template>
               </v-autocomplete>

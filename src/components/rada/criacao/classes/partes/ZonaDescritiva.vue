@@ -74,7 +74,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              :rules="[v => !!v || 'Campo obrigatório!']"
+              :rules="[v => data_final_valida(v) || 'Campo obrigatório!']"
               v-model="newSerie.dataFinal"
               label="Data Final"
               prepend-icon="event"
@@ -220,6 +220,22 @@ export default {
       "Papel",
       "Outro"
     ]
-  })
+  }),
+  methods: {
+    data_final_valida(v) {
+      if (!!v) {
+        if (this.newSerie.dataInicial != null) {
+          let data_inicial = new Date(this.newSerie.dataInicial);
+          let data_final = new Date(v);
+
+          if (data_inicial > data_final) {
+            return "Data final inválida! É anterior à data inicial.";
+          }
+        }
+        return true;
+      }
+      return false;
+    }
+  }
 };
 </script>

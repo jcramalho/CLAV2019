@@ -116,14 +116,26 @@
 
             <v-card-text align="center">
               <br />
-              <v-spacer></v-spacer>
-
-              <v-btn
-                class="ma-3 pa-3"
-                color="indigo lighten-3"
-                @click="guardarTrabalho('nao')"
-              >Não, pretendo continuar depois.</v-btn>
-              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="guardarTrabalho('sim')">Sim.</v-btn>
+              <v-progress-circular
+                v-if="loading_circle"
+                :size="70"
+                :width="7"
+                color="amber accent-3"
+                indeterminate
+              ></v-progress-circular> 
+              <div v-else>
+                <v-spacer></v-spacer>
+                <v-btn
+                  class="ma-3 pa-3"
+                  color="indigo lighten-3"
+                  @click="guardarTrabalho('nao')"
+                >Não, pretendo continuar depois.</v-btn>
+                <v-btn
+                  class="ma-3 pa-3"
+                  color="indigo lighten-3"
+                  @click="guardarTrabalho('sim')"
+                >Sim.</v-btn>
+              </div>
             </v-card-text>
           </v-card>
         </v-dialog>
@@ -163,6 +175,7 @@ export default {
   },
   data() {
     return {
+      loading_circle: false,
       user_entidade: null,
       alert_guardar: false,
       pode_remover: false,
@@ -194,8 +207,8 @@ export default {
         RE: {
           entidadesProd: [],
           tipologiasProd: [],
-          dataInicial: null,
-          dataFinal: null,
+          dataInicial: "2020-02-27",
+          dataFinal: "2020-05-01",
           dimSuporte: {
             nSeries: null,
             nSubseries: null,
@@ -336,7 +349,12 @@ export default {
             //     }
             //   ],
             //   pca: 2,
-            //   formaContagem: { forma: "hello" },
+            //   formaContagem: {
+            //     forma: {
+            //       label: "Data de extinção do direito",
+            //       value: "vc_pcaFormaContagem_extincaoDireito"
+            //     }
+            //   },
             //   justificacaoPCA: [],
             //   df: "Conservação",
             //   justificacaoDF: [
@@ -364,7 +382,12 @@ export default {
             //   ],
             //   UIs: ["02"],
             //   pca: "2",
-            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+            //   formaContagem: {
+            //     forma: {
+            //       label: "Data de extinção do direito",
+            //       value: "vc_pcaFormaContagem_extincaoDireito"
+            //     }
+            //   },
             //   justificacaoPCA: [
             //     {
             //       tipo: "Critério Gestionário",
@@ -432,6 +455,7 @@ export default {
       );
     },
     guardarTrabalho(continuar_ou_nao) {
+      this.loading_circle = true;
       if (this.idPendente != null) {
         let updatePendente = {
           _id: this.idPendente,
@@ -446,16 +470,16 @@ export default {
 
         response.then(resp => {
           if (continuar_ou_nao == "nao") {
-            this.toSave = false;
             this.dialogRADAPendente = true;
           } else {
-            this.toSave = false;
             this.alert_guardar = true;
 
             setTimeout(() => {
               this.alert_guardar = false;
             }, 5000);
           }
+          this.loading_circle = false;
+          this.toSave = false;
         });
       } else {
         let pendenteParams = {
@@ -477,7 +501,6 @@ export default {
         response.then(resp => {
           if (continuar_ou_nao == "sim") {
             this.idPendente = resp.data._id;
-            this.toSave = false;
             this.pode_remover = true;
             this.alert_guardar = true;
 
@@ -485,9 +508,11 @@ export default {
               this.alert_guardar = false;
             }, 5000);
           } else {
-            this.toSave = false;
             this.dialogRADAPendente = true;
           }
+
+          this.toSave = false;
+          this.loading_circle = false;
         });
       }
     },
