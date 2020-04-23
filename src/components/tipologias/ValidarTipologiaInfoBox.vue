@@ -132,6 +132,42 @@ export default {
       return numeroErros;
     },
 
+    async validarTipologiasAlteracao(dados) {
+      let numeroErros = 0;
+
+      // Designação
+      if (dados.designacao === "" || dados.designacao === null) {
+        this.mensagensErro.push({
+          sobre: "Nome da Tipologia",
+          mensagem: "O nome da tipologia não pode ser vazio.",
+        });
+        numeroErros++;
+      } else if (dados.designacao !== undefined) {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/tipologias/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            this.mensagensErro.push({
+              sobre: "Nome da Tipologia",
+              mensagem: "Nome da tipologia já existente na BD.",
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação.",
+          });
+        }
+      }
+
+      return numeroErros;
+    },
+
     async validarTipologia() {
       let erros = 0;
       let dataObj = JSON.parse(JSON.stringify(this.t));
@@ -151,6 +187,7 @@ export default {
             }
           }
 
+          erros = await this.validarTipologiasAlteracao(dataObj);
           break;
 
         default:

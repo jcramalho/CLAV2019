@@ -5,8 +5,8 @@
       <v-col
         cols="2"
         v-if="
-          info.campo !== 'Sigla' &&
-            info.conteudo !== '' &&
+          info.conteudo !== '' &&
+            info.conteudo !== null &&
             info.conteudo !== undefined
         "
       >
@@ -16,8 +16,8 @@
       <!-- Conteudo -->
       <v-col
         v-if="
-          info.campo !== 'Sigla' &&
-            info.conteudo !== '' &&
+          info.conteudo !== '' &&
+            info.conteudo !== null &&
             info.conteudo !== undefined
         "
       >
@@ -65,22 +65,22 @@
     </v-row>
 
     <!-- Dialog se existir erros no pedido à API -->
-    <v-dialog v-model="erroPedido" width="80%" hide-overlay>
-      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    <v-dialog v-model="erroPedido" width="50%" persistent>
+      <ErroAPIDialog :erros="erros" @fecharErro="fecharErro()" />
     </v-dialog>
   </div>
 </template>
 
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
-import ErroDialog from "@/components/pedidos/generic/ErroDialog";
+import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 
 export default {
   props: ["p"],
 
   components: {
     PO,
-    ErroDialog,
+    ErroAPIDialog,
   },
 
   data() {
@@ -152,9 +152,6 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        // TODO: Adicionar validação para a designação
-        // Se for extinção não valida
-
         if (pedido.objeto.acao === "Extinção") {
           await this.$request(
             "put",
@@ -162,10 +159,25 @@ export default {
             { dataExtincao: pedido.objeto.dados.dataExtincao }
           );
         } else {
+          if (pedido.objeto.dados.hasOwnProperty("designacao")) {
+            let numeroErros = await this.validar(
+              pedido.objeto.acao,
+              pedido.objeto.dados
+            );
+
+            if (numeroErros > 0) this.erroPedido = true;
+          }
+
           for (const key in pedido.objeto.dadosOriginais) {
             if (!pedido.objeto.dados.hasOwnProperty(key)) {
               pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
             }
+
+            if (
+              pedido.objeto.dados[key] === "" ||
+              pedido.objeto.dados[key] === null
+            )
+              delete pedido.objeto.dados[key];
           }
 
           await this.$request(
@@ -196,13 +208,50 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
+        let parsedError = Object.assign({}, e);
+        parsedError = parsedError.response;
+
+        if (parsedError.status === 422) {
+          parsedError.data.forEach((erro) => {
+            this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+          });
+        } else {
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Ocorreu um erro ao aceder à ontologia.",
+          });
+        }
+
+        this.erroPedido = true;
+      }
+    },
+
+    async validar(dados) {
+      let numeroErros = 0;
+
+      // Designação
+      try {
+        let existeDesignacao = await this.$request(
+          "get",
+          "/entidades/designacao?valor=" + encodeURIComponent(dados.designacao)
+        );
+
+        if (existeDesignacao.data) {
+          this.erros.push({
+            sobre: "Nome da Entidade",
+            mensagem: "Nome da entidade já existente na BD.",
+          });
+          numeroErros++;
+        }
+      } catch (err) {
+        numeroErros++;
         this.erros.push({
           sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia.",
+          mensagem: "Não consegui verificar a existência da designação.",
         });
-        this.erroPedido = true;
-        //console.log("e :", e);
       }
+
+      return numeroErros;
     },
 
     verifica(obj) {

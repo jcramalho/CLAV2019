@@ -4,13 +4,23 @@
       <!-- Label -->
       <v-col
         cols="2"
-        v-if="info.conteudo !== '' && info.conteudo !== undefined"
+        v-if="
+          info.conteudo !== '' &&
+            info.conteudo !== null &&
+            info.conteudo !== undefined
+        "
       >
         <div class="info-label">{{ info.campo }}</div>
       </v-col>
 
       <!-- Conteudo -->
-      <v-col v-if="info.conteudo !== '' && info.conteudo !== undefined">
+      <v-col
+        v-if="
+          info.conteudo !== '' &&
+            info.conteudo !== null &&
+            info.conteudo !== undefined
+        "
+      >
         <!-- Se o conteudo for uma lista de entidades -->
         <v-data-table
           v-if="info.campo === 'Entidades'"
