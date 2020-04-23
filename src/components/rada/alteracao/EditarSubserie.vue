@@ -18,10 +18,10 @@
         <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
-      <v-card-text>
+      <v-card-text> 
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
-            <v-card>
+            <v-card> 
               <v-card-title
                 class="headline grey lighten-2"
                 primary-title
@@ -36,7 +36,7 @@
           </v-dialog>
         </v-row>
         <v-form ref="formSubserie" :lazy-validation="false">
-          <Identificacao :newSerie="subserie" :classes="classes" />
+          <Identificacao :newSerie="subserie" />
 
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel popout focusable>
@@ -88,6 +88,7 @@
                 solo
                 clearable
                 placeholder="Classe Pai"
+                chips
               >
                 <template v-slot:no-data>
                   <v-list-item>

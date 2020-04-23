@@ -33,7 +33,7 @@
       <v-row>
         <v-col cols="12" xs="12" sm="12">
           <div v-if="TS.classes.length > 0">
-            <v-treeview hoverable :items="preparaTree" item-key="titulo">
+            <v-treeview hoverable :items="preparaTree" item-key="codigo">
               <template v-slot:label="{ item }">
                 <EditarSerie
                   v-if="item.tipo == 'Série'"

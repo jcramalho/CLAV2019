@@ -328,7 +328,12 @@ export default {
             //     }
             //   ],
             //   pca: 2,
-            //   formaContagem: { forma: "hello" },
+            //   formaContagem: {
+            //     forma: {
+            //       label: "Data de extinção do direito",
+            //       value: "vc_pcaFormaContagem_extincaoDireito"
+            //     }
+            //   },
             //   justificacaoPCA: [],
             //   df: "Conservação",
             //   justificacaoDF: [
@@ -356,7 +361,12 @@ export default {
             //   ],
             //   UIs: ["02"],
             //   pca: "2",
-            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+            //   formaContagem: {
+            //     forma: {
+            //       label: "Data de extinção do direito",
+            //       value: "vc_pcaFormaContagem_extincaoDireito"
+            //     }
+            //   },
             //   justificacaoPCA: [
             //     {
             //       tipo: "Critério Gestionário",

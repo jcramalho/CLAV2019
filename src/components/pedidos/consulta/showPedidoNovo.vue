@@ -1,8 +1,6 @@
 <template>
   <v-card class="ma-8">
-    <v-card-title class="pa-2 indigo darken-4 title white--text"
-      >Consulta do pedido: {{ p.codigo }}</v-card-title
-    >
+    <v-card-title class="pa-2 indigo darken-4 title white--text">Consulta do pedido: {{ p.codigo }}</v-card-title>
     <v-card-text>
       <v-row class="mt-1">
         <v-col cols="2">
@@ -41,16 +39,12 @@
           <div class="info-label">Tipo</div>
         </v-col>
         <v-col>
-          <div class="info-content">
-            {{ p.objeto.acao }} - {{ p.objeto.tipo }}
-          </div>
+          <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
         </v-col>
       </v-row>
 
       <v-card class="mt-3">
-        <v-card-title class="pa-2 indigo darken-4 title white--text"
-          >Distribuição</v-card-title
-        >
+        <v-card-title class="pa-2 indigo darken-4 title white--text">Distribuição</v-card-title>
         <v-card-text>
           <v-data-table
             :headers="distHeaders"
@@ -69,10 +63,7 @@
           </v-data-table>
         </v-card-text>
       </v-card>
-      <ShowTSPluri
-        v-if="p.objeto.tipo == 'TS Pluriorganizacional web'"
-        :p="p"
-      />
+      <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional web'" :p="p" />
       <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
       <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
@@ -84,15 +75,14 @@
       />
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
+      <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
       <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
       <v-btn color="indigo" dark @click="voltar">Voltar</v-btn>
       <v-spacer />
-      <v-btn color="indigo accent-4" dark @click="distribuir = true"
-        >Distribuir</v-btn
-      >
+      <v-btn color="indigo accent-4" dark @click="distribuir = true">Distribuir</v-btn>
     </v-card-actions>
 
     <v-dialog v-model="distribuir" width="80%" persistent>
@@ -117,6 +107,7 @@ import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
 import ShowDefault from "@/components/pedidos/consulta/showDefault.vue";
+import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowAE from "@/components/pedidos/consulta/showAE.vue";
 import ShowEntidade from "@/components/pedidos/consulta/showEntidade";
 import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
@@ -140,6 +131,7 @@ export default {
     ShowLegislacao,
     ShowTI,
     AvancarPedido,
+    ShowRADA
   },
 
   data: () => ({
@@ -150,14 +142,14 @@ export default {
       { text: "Data", value: "data" },
       { text: "Responsável", value: "responsavel" },
       { text: "Despacho", value: "despacho" },
-      { text: "Objeto", value: "objeto" },
+      { text: "Objeto", value: "objeto" }
     ],
     distHeaders: [
       { text: "Estado", value: "estado", class: "subtitle-1" },
       { text: "Data", value: "data", class: "subtitle-1" },
       { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Despacho", value: "despacho", class: "subtitle-1" },
-    ],
+      { text: "Despacho", value: "despacho", class: "subtitle-1" }
+    ]
   }),
 
   async created() {
@@ -192,12 +184,12 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.fecharDialog();
@@ -211,10 +203,10 @@ export default {
       this.distribuir = false;
     },
 
-    voltar: function () {
+    voltar: function() {
       this.$router.go(-1);
-    },
-  },
+    }
+  }
 };
 </script>
 
