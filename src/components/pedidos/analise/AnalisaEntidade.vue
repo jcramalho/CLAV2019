@@ -197,6 +197,11 @@ export default {
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
           data: new Date(),
           despacho: dados.mensagemDespacho,
         };
