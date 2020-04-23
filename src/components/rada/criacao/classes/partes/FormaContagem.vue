@@ -1,6 +1,5 @@
 <template>
   <v-card outlined>
-    {{newSerie.formaContagem}}
     <v-row>
       <v-col md="3" sm="3">
         <div class="info-label">Forma de Contagem do PCA</div>
