@@ -18,10 +18,10 @@
         <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
-      <v-card-text> 
+      <v-card-text>
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
-            <v-card> 
+            <v-card>
               <v-card-title
                 class="headline grey lighten-2"
                 primary-title
@@ -52,7 +52,11 @@
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaContexto :newSerie="subserie" :classes="classes" />
+                <ZonaContexto
+                  :newSerie="subserie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -160,8 +164,21 @@ export default {
       for (let i = 0; i < serie_real.justificacaoPCA.length; i++) {
         let criterio = Object.assign({}, serie_real.justificacaoPCA[i]);
 
-        if (serie_real.justificacaoPCA[i].tipo != "Critério Gestionário") {
+        if (serie_real.justificacaoPCA[i].tipo == "Critério Legal") {
           criterio.relacoes = [...serie_real.justificacaoPCA[i].relacoes];
+        }
+
+        if (
+          serie_real.justificacaoPCA[i].tipo ==
+          "Critério de Utilidade Administrativa"
+        ) {
+          criterio.relacoes = serie_real.justificacaoPCA[i].relacoes.map(
+            rel => {
+              return {
+                codigo: rel.codigo
+              };
+            }
+          );
         }
 
         newJustificacaoPCA.push(criterio);
@@ -175,36 +192,48 @@ export default {
 
       for (let i = 0; i < serie_real.justificacaoDF.length; i++) {
         let criterio = Object.assign({}, serie_real.justificacaoDF[i]);
-        criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
 
+        if (serie_real.justificacaoDF[i].tipo == "Critério Legal") {
+          criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
+        } else {
+          criterio.relacoes = serie_real.justificacaoDF[i].relacoes.map(rel => {
+            return {
+              codigo: rel.codigo
+            };
+          });
+        }
         newJustificacaoDF.push(criterio);
       }
 
       return newJustificacaoDF;
     },
     buscarTitulosClasses() {
-      this.subserie.relacoes.forEach(rel => {
+      for (let i = 0; i < this.subserie.relacoes.length; i++) {
         let classe_relacionada = this.classes.find(
-          cl => cl.codigo == rel.serieRelacionada.codigo
+          cl => cl.codigo == this.subserie.relacoes[i].serieRelacionada.codigo
         );
 
-        rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
+        this.subserie.relacoes[i].serieRelacionada["titulo"] =
+          classe_relacionada.titulo;
 
         let criterio = null;
 
-        if (rel.relacao == "Suplemento para") {
+        if (this.subserie.relacoes[i].relacao == "Suplemento para") {
           criterio = this.subserie.justificacaoPCA.find(
             e => e.tipo == "Critério de Utilidade Administrativa"
           );
         }
 
-        if (rel.relacao == "Complementar de") {
+        if (this.subserie.relacoes[i].relacao == "Complementar de") {
           criterio = this.subserie.justificacaoDF.find(
             e => e.tipo == "Critério de Complementaridade Informacional"
           );
         }
 
-        if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
+        if (
+          this.subserie.relacoes[i].relacao == "Síntese de" ||
+          this.subserie.relacoes[i].relacao == "Sintetizado por"
+        ) {
           criterio = this.subserie.justificacaoDF.find(
             e => e.tipo == "Critério de Densidade Informacional"
           );
@@ -215,9 +244,10 @@ export default {
             e => e.codigo == classe_relacionada.codigo
           );
 
-          relacaoCriterio["titulo"] = classe_relacionada.titulo;
+          this.$set(relacaoCriterio, "titulo", classe_relacionada.titulo);
+          // relacaoCriterio["titulo"] = classe_relacionada.titulo;
         }
-      });
+      }
     },
     async filterSeries() {
       this.existe_erros = false;
