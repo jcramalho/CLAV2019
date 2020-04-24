@@ -77,6 +77,7 @@
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
         <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
+        <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
         <ShowAE
           v-else-if="
             p.objeto.tipo.includes('AE ') ||
@@ -124,6 +125,7 @@ import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
 import ShowDefault from "@/components/pedidos/consulta/showDefault.vue";
+import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowAE from "@/components/pedidos/consulta/showAE.vue";
 import ShowEntidade from "@/components/pedidos/consulta/showEntidade";
 import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
@@ -149,6 +151,7 @@ export default {
     ShowLegislacao,
     ShowTI,
     AvancarPedido,
+    ShowRADA,
     ErroDialog,
   },
 
@@ -210,6 +213,11 @@ export default {
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
           data: new Date(),
           despacho: dados.mensagemDespacho,
         };
