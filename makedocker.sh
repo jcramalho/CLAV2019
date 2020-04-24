@@ -1,8 +1,8 @@
 #!/bin/bash
 docker build . -t clav2020
 echo 'Tagging'
-docker tag clav2020:latest zzglider/clav2020:Fev06
+docker tag clav2020:latest zzglider/clav2020:Abr22
 echo 'Pushing'
-docker push zzglider/clav2020:Fev06
+docker push zzglider/clav2020:Abr22
 echo 'Terminado'
 
