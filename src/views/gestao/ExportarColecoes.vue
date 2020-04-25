@@ -186,6 +186,10 @@ export default {
           return;
         }
 
+        if (this.tipo.path == "users/") {
+          delete response.data.temPass;
+        }
+
         var filename = this.tipo.filename + ".json";
         var content = JSON.stringify(response.data, null, 4);
         var format = "application/json";
