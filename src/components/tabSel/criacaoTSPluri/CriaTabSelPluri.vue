@@ -117,18 +117,7 @@
                           Selecione os processos de negócio comuns
                         </v-expansion-panel-header>
                         <v-expansion-panel-content eager>
-                          <!--ListaProcessosComuns
-                            v-if="listaProcComunsReady && entSelReady"
-                            v-bind:lista="listaProcComuns"
-                            v-bind:entidades="tabelaSelecao.entidades"
-                            @contadorProcSelCom="contadorProcSelCom($event)"
-                            @contadorProcPreSelCom="
-                              contadorProcPreSelCom($event)
-                            "
-                            @procPreSelResTravCom="procPreSelResTravCom($event)"
-                            @guardarTSProcComuns="guardarTSProcComuns($event)"
-                          /-->
-                          <ListaProcessosComunsJcr
+                          <ListaProcessosComuns
                             v-if="listaProcComunsReady && entSelReady"
                             v-bind:lista="listaProcComuns"
                             v-bind:entidades="tabelaSelecao.entidades"
@@ -139,6 +128,17 @@
                             @procPreSelResTravCom="procPreSelResTravCom($event)"
                             @guardarTSProcComuns="guardarTSProcComuns($event)"
                           />
+                          <!--ListaProcessosComunsJcr
+                            v-if="listaProcComunsReady && entSelReady"
+                            v-bind:lista="listaProcComuns"
+                            v-bind:entidades="tabelaSelecao.entidades"
+                            @contadorProcSelCom="contadorProcSelCom($event)"
+                            @contadorProcPreSelCom="
+                              contadorProcPreSelCom($event)
+                            "
+                            @procPreSelResTravCom="procPreSelResTravCom($event)"
+                            @guardarTSProcComuns="guardarTSProcComuns($event)"
+                          /-->
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                     </v-expansion-panels>
