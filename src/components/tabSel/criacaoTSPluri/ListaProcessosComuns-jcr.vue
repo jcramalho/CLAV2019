@@ -1,32 +1,37 @@
 <template>
-  <v-data-table
-    v-if="entProcDonoReady"
-    :items="lista"
-    :headers="headers"
-    class="ma-1"
-    item-key="classe"
-    :footer-props="procsFooterProps"
-  >
-    <template v-slot:header="props">
-      <tr>
-        <th
-          v-for="h in props.headers"
-          :key="h.value"
-          class="body-2 font-weight-bold"
-        >
-          {{ h.text }}
-        </th>
-      </tr>
-    </template>
+  <div>
+      <v-row>
+          <v-col cols="2">
+              <v-btn class="ma-1" fab small color="indigo" @click="debug=true">Debug</v-btn>
+          </v-col>
+          <v-col>
+              <v-dialog v-model="debug" fullscreen hide-overlay transition="dialog-bottom-transition">
+                  <v-card>
+                    <v-card-title class="headline">
+                        Painel de Debug
+                    </v-card-title>
+                    <v-card-text>
+                        <div class="info-content">
+                            {{ JSON.stringify(entidades) }}
+                        </div>
+                    </v-card-text>
+                  </v-card>
+              </v-dialog>
+          </v-col>
+      </v-row>
+
+      <v-data-table
+        :items="lista"
+        :headers="headers"
+        class="ma-1"
+        item-key="classe"
+        :footer-props="procsFooterProps"
+      >
+
     <template v-slot:item="props">
       <tr
         :style="{
-          backgroundColor:
-            listaResComuns.findIndex(p => p == props.item.classe) != -1 &&
-            !entProcDono[props.item.classe][
-              Object.keys(entProcDono[props.item.classe])
-            ] &&
-            !Object.keys(entProcPar[props.item.classe]).length
+          backgroundColor: props.item.edited
               ? 'orange'
               : 'transparent'
         }"
@@ -38,260 +43,14 @@
           {{ props.item.designacao }}
         </td>
         <td>
-          <v-dialog
-            v-model="props.item.dono"
-            scrollable
-            persistent
-            width="700px"
-          >
-            <template
-              v-slot:activator="{ on }"
-              v-if="!procSelDonos.includes(props.item.classe)"
-            >
-              <v-btn class="ma-1" fab small color="primary" v-on="on">
-                <v-icon>list</v-icon>
-              </v-btn>
-            </template>
-            <template v-slot:activator="{ on }" v-else>
-              <v-btn class="ma-1" fab small color="primary" v-on="on">
-                <v-icon>check</v-icon>
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span>
-                  Selecione as entidades donas do processo:
-                  {{ props.item.classe }}
-                </span>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text style="height: 400px;">
-                <v-row align="center" v-for="e in entidades" :key="e.id">
-                  <v-checkbox
-                    hide-details
-                    v-model="entProcDono[props.item.classe][e.id]"
-                    class="shrink mr-2 mt-0"
-                  ></v-checkbox>
-                  <b>{{ e.designacao + "  (" + e.sigla + ") " }}</b>
-                  <hr style="border-top: 0px" />
-                </v-row>
-              </v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="
-                    props.item.dono = false;
-                    selecTodasEnt(
-                      entidades,
-                      props.item.classe,
-                      props.item.designacao
-                    );
-                  "
-                >
-                  Selecionar todos
-                </v-btn>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="
-                    props.item.dono = false;
-                    guardaEntDonos(props.item.classe, props.item.designacao);
-                  "
-                >
-                  Continuar
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+            <v-icon v-if="props.item.dono">check</v-icon>
         </td>
         <td>
-          <v-dialog
-            v-model="props.item.participante"
-            scrollable
-            persistent
-            width="700px"
-            v-if="entProcParReady"
-          >
-            <template
-              v-slot:activator="{ on }"
-              v-if="!Object.keys(entProcPar[props.item.classe]).length"
-            >
-              <v-btn class="ma-1" fab small color="primary" v-on="on">
-                <v-icon>list</v-icon>
-              </v-btn>
-            </template>
-            <template v-slot:activator="{ on }" v-else>
-              <v-btn class="ma-1" fab small color="primary" v-on="on">
-                <v-icon>check</v-icon>
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span>
-                  Selecione as entidades participantes no processo:
-                  {{ props.item.classe }}
-                </span>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text style="height: 400px;">
-                <div v-for="e in entidades" :key="e.id">
-                  <template v-if="!entProcPar[props.item.classe][e.id]">
-                    <v-btn
-                      color="primary"
-                      fab
-                      small
-                      dark
-                      @click="
-                        dialog[props.item.classe][e.id] = !dialog[
-                          props.item.classe
-                        ][e.id];
-                        props.item.participante = false;
-                      "
-                    >
-                      <v-icon dark>add</v-icon>
-                    </v-btn>
-                    <b class="ma-4">{{
-                      e.designacao + "  (" + e.sigla + ") "
-                    }}</b>
-                    <hr style="border-top: 0px" />
-                  </template>
-                  <template v-else>
-                    <v-btn
-                      color="primary"
-                      fab
-                      small
-                      dark
-                      @click="
-                        dialog[props.item.classe][e.id] = !dialog[
-                          props.item.classe
-                        ][e.id];
-                        props.item.participante = false;
-                      "
-                    >
-                      <v-icon dark>edit</v-icon>
-                    </v-btn>
-                    <v-btn
-                      color="primary"
-                      fab
-                      small
-                      dark
-                      @click="eliminarPart = true"
-                      class="ma-1"
-                    >
-                      <v-icon dark>remove</v-icon>
-                      <v-dialog
-                        v-model="eliminarPart"
-                        persistent
-                        max-width="290"
-                      >
-                        <v-card>
-                          <v-card-title class="headline">
-                            Confirmar ação
-                          </v-card-title>
-                          <v-card-text>
-                            Pretende eliminar esta participação?
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="red"
-                              text
-                              @click="eliminarPart = false"
-                            >
-                              Cancelar
-                            </v-btn>
-                            <v-btn
-                              color="primary"
-                              text
-                              @click="
-                                desselecionarPart(props.item.classe, e.id);
-                                eliminarPart = false;
-                              "
-                            >
-                              Confirmar
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </v-btn>
-                    <b class="ma-4">{{
-                      e.designacao +
-                        "  (" +
-                        e.sigla +
-                        ") " +
-                        ": " +
-                        entProcPar[props.item.classe][e.id]
-                    }}</b>
-                    <hr style="border-top: 0px" />
-                  </template>
-                  <div style="flex: 1 1 auto;">
-                    <v-dialog
-                      v-model="dialog[props.item.classe][e.id]"
-                      persistent
-                      max-width="800"
-                    >
-                      <v-card>
-                        <v-card-title>
-                          {{
-                            "Selecione o tipo de intervenção da entidade: " +
-                              e.sigla
-                          }}
-                          <br />
-                          {{ "No processo: " + props.item.classe }}
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-card-text style="height: 400px;">
-                          <v-container fluid>
-                            <v-radio-group
-                              v-model="entProcPar[props.item.classe][e.id]"
-                            >
-                              <v-radio
-                                v-for="t in tipoParticipacao"
-                                :key="t"
-                                v-bind:value="t"
-                              >
-                                <template v-slot:label>
-                                  <div class="shrink mr-6 mt-2">{{ t }}</div>
-                                </template>
-                              </v-radio>
-                            </v-radio-group>
-                          </v-container>
-                        </v-card-text>
-                        <v-divider></v-divider>
-                        <v-card-actions>
-                          <v-btn
-                            color="primary"
-                            text
-                            @click="
-                              dialog[props.item.classe][e.id] = false;
-                              props.item.participante = true;
-                            "
-                          >
-                            Continuar
-                          </v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
-                  </div>
-                </div>
-              </v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="
-                    props.item.participante = false;
-                    guardaEntPar(props.item.classe, props.item.designacao);
-                  "
-                >
-                  Continuar
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+          <v-icon v-if="props.item.participante">check</v-icon>
+        </td>
+        <td>
+            <v-btn small color="indigo darken-4" dark
+                @click="procSel = props.item; selecionaResponsabilidades=true">Selecionar</v-btn>
         </td>
       </tr>
     </template>
@@ -300,66 +59,63 @@
       {{ props.itemsLength }}
     </template>
   </v-data-table>
+
+  <Selresponsabilidade v-if="selecionaResponsabilidades" 
+        :es = "entidades"
+        :p = "procSel"
+        @selecionadas = "selecionaResponsabilidades=false"/>
+  </div>
 </template>
 
 <script>
+
+import Selresponsabilidade from "@/components/tabSel/criacaoTSPluri/SelResponsabilidade.vue";
+
 export default {
   props: ["lista", "entidades"],
+  components: {
+      Selresponsabilidade
+  },
+
   data: () => ({
+    // Ativador do dialog para fazer debug de alguma estrutura
+    debug: false,
+    // Processo corrente
+    procSel: {},
+    // Ativador do subcomponente que tem a interface de seleção
+    selecionaResponsabilidades: false,
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
-        text: "Classe",
+        text: "Processo",
         value: "classe",
-        width: "20%"
+        width: "10%",
+        class: ["body-2", "font-weight-bold"]
       },
       {
         text: "Designação",
         value: "designacao",
-        width: "55%"
+        width: "50%",
+        class: ["body-2", "font-weight-bold"]
       },
       {
         text: "Dono",
         value: "dono",
-        width: "10%"
+        width: "10%",
+        class: ["body-2", "font-weight-bold"]
       },
       {
         text: "Participante",
         value: "participante",
-        width: "15%"
+        width: "10%",
+        class: ["body-2", "font-weight-bold"]
       }
     ],
     procsFooterProps: {
       "items-per-page-text": "Processos por página",
       "items-per-page-options": [10, 20, 100, -1],
       "items-per-page-all-text": "Todos"
-    },
-    // Onde vão ficar armazenados as entidades donas de cada processo. Por ex: {proc1: [ent1,ent2]; proc2: [ent1,ent3]}
-    entProcDono: [],
-    // True quando a lista das entidades donas de cada processo estiver pronta
-    entProcDonoReady: false,
-    // Para abrir e fechar a caixa de dialogo
-    dialog: {},
-    // Onde vão ficar armazenados as entidades participantes de cada processo. Por ex: {proc1: [ent1 : "apreciar", ent2 : __]; proc2: [ent1: __,ent3: "iniciar"]}
-    entProcPar: [],
-    // True quando a lista das entidades donas de cada processo estiver pronta
-    entProcParReady: false,
-    // Tipos de participação
-    tipoParticipacao: [],
-    // Processos comuns selecionados (como dono ou participante ou ambos)
-    procComunsSel: [],
-    // exemplo: {processo1 : [listaResultados1], processo2: [listaResultados2]}
-    listaProcResultado: {},
-    // Todas as travessias são carregadas para esta variável
-    travessias: [],
-    // Lista dos processos comuns resultantes das travessias
-    listaResComuns: [],
-    // Lista dos processos restantes resultantes das travessias
-    listaResRestantes: [],
-    // Lista dos processos selecionados como donos
-    procSelDonos: [],
-    // Dialog de confirmação de eliminação de participação
-    eliminarPart: false
+    }
   }),
   methods: {
     guardaEntDonos: async function(proc, des) {
@@ -551,7 +307,7 @@ export default {
       this.$emit("contadorProcPreSelCom", this.listaResComuns);
     }
   },
-  mounted: async function() {
+  created: async function() {
     try {
       // Vai a API de dados buscar todos os cálculos das travessias
       var res = await this.$request("get", "/travessia");
@@ -584,3 +340,11 @@ export default {
   }
 };
 </script>
+
+<style>
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+</style>
