@@ -58,6 +58,19 @@ export default new Router({
       component: () => import("./views/classes/ClassesCria.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] },
     },
+    // Routes da documentação de apoio
+    {
+      path: "/documentacaoApoio/criar/tecnico_cientifico",
+      name: "criaEntradaCientifico",
+      component: () => import("./views/documentacaoApoio/CientificaCria.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/documentacaoApoio/editar/tecnico_cientifico/:id",
+      name: "editaEntradaCientifico",
+      component: () => import("./views/documentacaoApoio/CientificaEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
     // Routes das entidades
     {
       path: "/entidades",

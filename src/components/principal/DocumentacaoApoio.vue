@@ -359,8 +359,19 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
-        <DocApoioProdTecCientifica />
+        <DocApoioProdTecCientifica :level="level" />
       </v-expansion-panels>
+      <div>
+        <v-btn
+          v-for="item in this.fops"
+          color="indigo accent-4"
+          dark
+          class="ma-2"
+          @click="go(item.url)"
+          :key="item.url"
+          >{{ item.label }}</v-btn
+        >
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -369,17 +380,22 @@
 import DocApoioProdTecCientifica from "@/components/principal/DocApoio-ProdTecCientifica.vue";
 
 export default {
-  components: {
-    DocApoioProdTecCientifica
-  },
-
   data() {
     return {
       panelHeaderColor: "indigo darken-4",
-      publicPath: process.env.BASE_URL
+      publicPath: process.env.BASE_URL,
+      operacoes: [
+        {
+          label: "Adicionar Documento Técnico/Científico",
+          url: "/documentacaoApoio/criar/tecnico_cientifico",
+          level: [4, 5, 6, 7]
+        }
+      ]
     };
   },
-
+  components: {
+    DocApoioProdTecCientifica
+  },
   methods: {
     async getFormulario() {
       var path = "/classes?info=esqueleto&fs=text/csv";
@@ -415,7 +431,38 @@ export default {
             )
         );
       }
+    },
+    go: function(url) {
+      if (url.startsWith("http")) {
+        window.location.href = url;
+      } else {
+        this.$router.push(url);
+      }
+    },
+    filtraOps: function(operacoes) {
+      var filtered = [];
+      for (var i = 0; i < operacoes.length; i++) {
+        var levelsSet = new Set();
+        operacoes[i].level.forEach(l => levelsSet.add(l));
+        var levels = Array.from(levelsSet);
+        if (levels.includes(this.level)) {
+          filtered.push({
+            label: operacoes[i].label,
+            url: operacoes[i].url,
+            level: operacoes[i].level
+          });
+        }
+      }
+      return filtered;
     }
+  },
+  computed: {
+    fops: function() {
+      return this.filtraOps(this.operacoes);
+    }
+  },
+  created: async function() {
+    this.level = this.$userLevel();
   }
 };
 </script>
