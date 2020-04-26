@@ -557,8 +557,8 @@ import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcS
 
 export default {
   components: {
-    //ListaProcessosComuns,
-    ListaProcessosComunsJcr,
+    ListaProcessosComuns,
+    //ListaProcessosComunsJcr,
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
     ListaProcessosUltimos,
