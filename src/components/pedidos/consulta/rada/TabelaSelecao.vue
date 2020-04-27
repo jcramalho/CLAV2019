@@ -17,12 +17,14 @@
               :formaContagem="formaContagem"
               :treeview_object="item"
               :classes="TS.classes"
+              :show_a_partir_de_pedido="true"
             />
             <ShowSubserie
               v-else-if="item.tipo == 'Subsérie'"
               :treeview_object="item"
               :classes="TS.classes"
               :formaContagem="formaContagem"
+              :show_a_partir_de_pedido="true"
             />
             <ShowOrganico v-else :treeview_object="item" :classes="TS.classes" />
           </template>

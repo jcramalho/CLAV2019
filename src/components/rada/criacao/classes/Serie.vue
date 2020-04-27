@@ -33,6 +33,7 @@
                   :legislacao="legislacao"
                   :RE="RE"
                   :legislacaoProcessada="legislacaoProcessada"
+                  :formaContagem="formaContagem"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>

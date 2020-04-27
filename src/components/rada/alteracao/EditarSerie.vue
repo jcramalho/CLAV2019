@@ -281,19 +281,19 @@ export default {
       );
 
       // DEEP CLONE do objetos
-      this.serie = Object.assign({}, serie_real);
-      this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
-      this.serie.entProdutoras = [...serie_real.entProdutoras];
-      this.serie.legislacao = [...serie_real.legislacao];
-      this.serie.localizacao = [...serie_real.localizacao];
-      this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
-      this.serie.justificacaoPCA = await this.clonePCA(serie_real);
-      this.serie.justificacaoDF = await this.cloneDF(serie_real);
-      this.serie.relacoes = [...serie_real.relacoes];
+      // this.serie = Object.assign({}, serie_real);
+      // this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
+      // this.serie.entProdutoras = [...serie_real.entProdutoras];
+      // this.serie.legislacao = [...serie_real.legislacao];
+      // this.serie.localizacao = [...serie_real.localizacao];
+      // this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
+      // this.serie.justificacaoPCA = await this.clonePCA(serie_real);
+      // this.serie.justificacaoDF = await this.cloneDF(serie_real);
+      // this.serie.relacoes = JSON.parse(JSON.stringify(this.serie.relacoes));
+      // this.serie.UIs = [...serie_real.UIs];
+      this.serie = JSON.parse(JSON.stringify(serie_real));
 
       this.buscarTitulosClasses();
-
-      this.serie.UIs = [...serie_real.UIs];
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes

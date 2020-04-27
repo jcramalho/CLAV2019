@@ -261,15 +261,18 @@ export default {
       );
 
       // DEEP CLONE do objetos
-      this.subserie = Object.assign({}, subserie_real);
-      this.subserie.UIs = [...subserie_real.UIs];
-      this.subserie.justificacaoPCA = await this.clonePCA(subserie_real);
-      this.subserie.justificacaoDF = await this.cloneDF(subserie_real);
-      this.subserie.formaContagem = Object.assign(
-        {},
-        subserie_real.formaContagem
-      );
-      this.subserie.relacoes = [...subserie_real.relacoes];
+      // this.subserie = Object.assign({}, subserie_real);
+      // this.subserie.UIs = [...subserie_real.UIs];
+      // this.subserie.justificacaoPCA = await this.clonePCA(subserie_real);
+      // this.subserie.justificacaoDF = await this.cloneDF(subserie_real);
+      // this.subserie.formaContagem = Object.assign(
+      //   {},
+      //   subserie_real.formaContagem
+      // );
+      // this.subserie.relacoes = [...subserie_real.relacoes];
+
+      this.subserie = JSON.parse(JSON.stringify(subserie_real));
+
       this.buscarTitulosClasses();
 
       // Classes para definir a hierarquia
