@@ -48,6 +48,19 @@
       </v-btn>
 
       <v-btn
+        v-if="this.$store.state.name != ''"
+        @click="drawerNotificacoes"
+        icon
+      >
+        <v-badge
+          color="blue"
+          :content="n"
+          overlap
+        >
+          <v-icon large>notification_important</v-icon>
+        </v-badge>
+      </v-btn>
+      <v-btn
         v-if="$store.state.token != '' && level >= 3.5"
         @click="drawerEstatisticas"
         icon
@@ -76,6 +89,7 @@
 import { mapGetters } from "vuex";
 
 export default {
+  props: ["n"],
   data() {
     return {
       snackbar: false,
@@ -101,6 +115,9 @@ export default {
   methods: {
     goHome() {
       this.$router.push("/");
+    },
+    drawerNotificacoes() {
+      this.$emit('drawerNotificacoes');
     },
     drawerDefinicoes() {
       this.$emit('drawerDefinicoes');
