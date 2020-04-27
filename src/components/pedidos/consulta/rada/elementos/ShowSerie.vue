@@ -84,7 +84,12 @@ import ZonaContexto from "./partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "./partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "formaContagem"],
+  props: [
+    "treeview_object",
+    "classes",
+    "formaContagem",
+    "show_a_partir_de_pedido"
+  ],
   data: () => ({
     serie: {},
     dialogSerie: false
@@ -100,6 +105,71 @@ export default {
       this.serie = this.classes.find(
         e => e.codigo == this.treeview_object.codigo
       );
+
+      if (this.show_a_partir_de_pedido == false) {
+        // Buscar nome do pai para colocar no combobox;
+        let classe_que_e_pai = this.classes.find(
+          e => e.codigo == this.serie.eFilhoDe
+        );
+
+        if (classe_que_e_pai != undefined) {
+          this.treeview_object.eFilhoDe =
+            classe_que_e_pai.codigo + " - " + classe_que_e_pai.titulo;
+        }
+
+        // Fazer clone da classe para buscar titulos para relações e critérios
+        this.serie = JSON.parse(JSON.stringify(this.serie));
+
+        // Buscar titulos para as relações;
+        this.serie.relacoes.map(rel => {
+          let classe_que_tem_relacao = this.classes.find(
+            e => e.codigo == rel.serieRelacionada.codigo
+          );
+
+          rel.serieRelacionada["titulo"] = classe_que_tem_relacao.titulo;
+        });
+
+        // console.log(
+        //   "JUSTIFICAÇÃO DF ANTERIOR: ",
+        //   JSON.stringify(this.serie.justificacaoDF)
+        // );
+        //Buscar titulos para a justificação DF e ao mesmo tempo fazer deep clone;
+        this.serie.justificacaoDF.map(criterio => {
+          if (criterio.tipo != "Critério Legal") {
+            criterio.relacoes.map(rel => {
+              let relacao_criterio = this.serie.relacoes.find(
+                r => r.serieRelacionada.codigo == rel.codigo
+              );
+
+              rel["titulo"] = relacao_criterio.serieRelacionada.titulo;
+            });
+          }
+        });
+        // console.log(
+        //   "JUSTIFICAÇÃO DF FINAL: ",
+        //   JSON.stringify(this.serie.justificacaoDF)
+        // );
+
+        // console.log(
+        //   "JUSTIFICAÇÃO PCA ANTERIOR: ",
+        //   JSON.stringify(this.serie.justificacaoPCA)
+        // );
+        //Buscar titulos para a justificação PCA  e ao mesmo tempo fazer deep clone;
+        this.serie.justificacaoPCA.map(criterio => {
+          if (criterio.tipo == "Critério de Utilidade Administrativa") {
+            criterio.relacoes.map(rel => {
+              let relacao_criterio = this.serie.relacoes.find(
+                r => r.serieRelacionada.codigo == rel.codigo
+              );
+              rel["titulo"] = relacao_criterio.serieRelacionada.titulo;
+            });
+          }
+        });
+        // console.log(
+        //   "JUSTIFICAÇÃO PCA FINAL: ",
+        //   JSON.stringify(this.serie.justificacaoPCA)
+        // );
+      }
     }
   }
 };

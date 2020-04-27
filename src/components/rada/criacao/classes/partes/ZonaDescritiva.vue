@@ -109,8 +109,8 @@
       :newSerie="newSerie"
       :UIs="UIs"
     />
-    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <div v-if="newSerie.tipo != 'Subsérie'">
+      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <v-row>
         <!-- TUArq -->
         <v-col md="3" sm="3">

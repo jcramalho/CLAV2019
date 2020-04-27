@@ -122,7 +122,7 @@
                 :width="7"
                 color="amber accent-3"
                 indeterminate
-              ></v-progress-circular> 
+              ></v-progress-circular>
               <div v-else>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -205,10 +205,15 @@ export default {
         pedidosLegislacao: [],
         pedidosEntidades: [],
         RE: {
-          entidadesProd: [],
+          entidadesProd: [
+            // "ACSS - Administração Central do Sistema de Saúde, IP",
+            // "ADSE - Instituto de Proteção e Assistência na Doença, I.P."
+          ],
           tipologiasProd: [],
-          dataInicial: "2020-02-27",
-          dataFinal: "2020-05-01",
+          // dataInicial: "2020-02-27",
+          // dataFinal: "2020-05-01",
+          dataInicial: null,
+          dataFinal: null,
           dimSuporte: {
             nSeries: null,
             nSubseries: null,
@@ -350,10 +355,7 @@ export default {
             //   ],
             //   pca: 2,
             //   formaContagem: {
-            //     forma: {
-            //       label: "Data de extinção do direito",
-            //       value: "vc_pcaFormaContagem_extincaoDireito"
-            //     }
+            //     forma: "vc_pcaFormaContagem_extincaoDireito"
             //   },
             //   justificacaoPCA: [],
             //   df: "Conservação",
@@ -383,10 +385,7 @@ export default {
             //   UIs: ["02"],
             //   pca: "2",
             //   formaContagem: {
-            //     forma: {
-            //       label: "Data de extinção do direito",
-            //       value: "vc_pcaFormaContagem_extincaoDireito"
-            //     }
+            //     forma: "vc_pcaFormaContagem_extincaoDireito"
             //   },
             //   justificacaoPCA: [
             //     {
