@@ -81,6 +81,24 @@
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
+    <div v-if="this.level >= this.min">
+      <v-btn
+        color="indigo accent-4"
+        dark
+        small
+        class="ma-2"
+        @click="go('/documentacaoApoio/importar/tecnico_cientifico')"
+        >Importar</v-btn
+      >
+      <v-btn
+        color="indigo accent-4"
+        dark
+        small
+        class="ma-2"
+        @click="exportarFicheiro()"
+        >Exportar</v-btn
+      >
+    </div>
   </v-expansion-panel>
 </template>
 
@@ -103,7 +121,8 @@ export default {
       color: "",
       timeout: 4000,
       eliminarId: "",
-      done: false
+      done: false,
+      min: NIVEL_MINIMO_ALTERAR
     };
   },
   components: {
@@ -178,6 +197,14 @@ export default {
       path = lhost + path + "?" + token;
       this.download(path, "");
     },
+    async exportarFicheiro() {
+      var token = await this.$getAuthToken();
+      token = token.replace(" ", "=");
+
+      var path = "/documentacaoCientifica/exportar";
+      path = lhost + path + "?" + token;
+      this.download(path, "");
+    },
     remover(id) {
       this.$request("delete", "/documentacaoCientifica/" + id)
         .then(res => {
@@ -213,6 +240,13 @@ export default {
     fecharSnackbar() {
       this.snackbar = false;
       if (this.done == true) this.getDocumentacao();
+    },
+    go: function(url) {
+      if (url.startsWith("http")) {
+        window.location.href = url;
+      } else {
+        this.$router.push(url);
+      }
     },
     async getDocumentacao() {
       try {
