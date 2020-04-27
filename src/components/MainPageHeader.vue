@@ -4,24 +4,14 @@
       <v-icon large>home</v-icon>
     </v-btn>
     <v-toolbar-title class="headline" @click="goHome">
-      
-      <span 
-        class="text-uppercase" 
-        v-if="this.$store.state.name != ''"
-      >
-        CLAV | {{ this.$store.state.entidade.split('_')[1] }} 
+      <span class="text-uppercase" v-if="this.$store.state.name != ''">
+        CLAV | {{ this.$store.state.entidade.split("_")[1] }}
       </span>
 
-      <span 
-        class="text-uppercase"
-        v-if="this.$store.state.name == ''"
-      >
+      <span class="text-uppercase" v-if="this.$store.state.name == ''">
         CLAV
       </span>
-      <span 
-        class="font-weight-light"
-        v-if="this.$store.state.name == ''"
-      >
+      <span class="font-weight-light" v-if="this.$store.state.name == ''">
         - Classificação e Avaliação da Informação Pública</span
       >
     </v-toolbar-title>
@@ -52,11 +42,7 @@
         @click="drawerNotificacoes"
         icon
       >
-        <v-badge
-          color="blue"
-          :content="n"
-          overlap
-        >
+        <v-badge color="blue" :content="n" overlap>
           <v-icon large>notification_important</v-icon>
         </v-badge>
       </v-btn>
@@ -67,11 +53,7 @@
       >
         <v-icon large>assessment</v-icon>
       </v-btn>
-      <v-btn
-        v-if="this.$store.state.name != ''"
-        @click="drawerDefinicoes"
-        icon
-      >
+      <v-btn v-if="this.$store.state.name != ''" @click="drawerDefinicoes" icon>
         <v-icon large>settings</v-icon>
       </v-btn>
       <!--v-btn
@@ -117,13 +99,13 @@ export default {
       this.$router.push("/");
     },
     drawerNotificacoes() {
-      this.$emit('drawerNotificacoes');
+      this.$emit("drawerNotificacoes");
     },
     drawerDefinicoes() {
-      this.$emit('drawerDefinicoes');
+      this.$emit("drawerDefinicoes");
     },
     drawerEstatisticas() {
-      this.$emit('drawerEstatisticas');
+      this.$emit("drawerEstatisticas");
     },
     fecharSnackbar() {
       this.snackbar = false;
