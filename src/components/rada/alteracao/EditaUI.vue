@@ -630,7 +630,7 @@ export default {
       );
     },
     buscarTitulosClasses() {
-      this.UI.classesAssociadas.forEach(rel => {
+      this.UI_clone.classesAssociadas.forEach(rel => {
         let classe_relacionada = this.classes.find(
           cl => cl.codigo == rel.codigo
         );
