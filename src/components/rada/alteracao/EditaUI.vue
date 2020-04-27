@@ -640,18 +640,6 @@ export default {
     },
     cloneUI() {
       //DEEP CLONE OF UI
-      // this.UI_clone = Object.assign({}, this.UI);
-
-      // this.UI_clone.produtor.tipologiasProdutoras = [
-      //   ...this.UI.produtor.tipologiasProdutoras
-      // ];
-
-      // this.UI_clone.produtor.entProdutoras = [
-      //   ...this.UI.produtor.entProdutoras
-      // ];
-
-      // this.UI_clone.classesAssociadas = [...this.UI.classesAssociadas];
-
       this.UI_clone = JSON.parse(JSON.stringify(this.UI));
 
       this.buscarTitulosClasses();

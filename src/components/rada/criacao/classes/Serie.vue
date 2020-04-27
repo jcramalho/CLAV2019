@@ -265,6 +265,18 @@ export default {
       if (!this.newSerie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
+
+      if (!this.newSerie.formaContagem.forma) {
+        this.erros.push("Forma de Contagem;");
+      } else {
+        if (
+          this.newSerie.formaContagem.forma ==
+            "vc_pcaFormaContagem_disposicaoLegal" &&
+          !this.newSerie.formaContagem.subforma
+        ) {
+          this.erros.push("Subforma de Contagem;");
+        }
+      }
     },
     save: function() {
       this.existe_erros = false;

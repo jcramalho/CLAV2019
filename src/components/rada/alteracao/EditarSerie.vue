@@ -68,7 +68,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
-                  :rules="true"
+                  :rules="false"
                   :newSerie="serie"
                   :classes="classes"
                   :formaContagem="formaContagem"
@@ -170,57 +170,6 @@ export default {
     classesHierarquia: []
   }),
   methods: {
-    clonePCA(serie_real) {
-      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO PCA
-      let newJustificacaoPCA = [];
-
-      for (let i = 0; i < serie_real.justificacaoPCA.length; i++) {
-        let criterio = Object.assign({}, serie_real.justificacaoPCA[i]);
-
-        if (serie_real.justificacaoPCA[i].tipo == "Critério Legal") {
-          criterio.relacoes = [...serie_real.justificacaoPCA[i].relacoes];
-        }
-
-        if (
-          serie_real.justificacaoPCA[i].tipo ==
-          "Critério de Utilidade Administrativa"
-        ) {
-          criterio.relacoes = serie_real.justificacaoPCA[i].relacoes.map(
-            rel => {
-              return {
-                codigo: rel.codigo
-              };
-            }
-          );
-        }
-
-        newJustificacaoPCA.push(criterio);
-      }
-
-      return newJustificacaoPCA;
-    },
-    cloneDF(serie_real) {
-      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO DF
-      let newJustificacaoDF = [];
-
-      for (let i = 0; i < serie_real.justificacaoDF.length; i++) {
-        let criterio = Object.assign({}, serie_real.justificacaoDF[i]);
-
-        if (serie_real.justificacaoDF[i].tipo == "Critério Legal") {
-          criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
-        } else {
-          criterio.relacoes = serie_real.justificacaoDF[i].relacoes.map(rel => {
-            return {
-              codigo: rel.codigo
-            };
-          });
-        }
-
-        newJustificacaoDF.push(criterio);
-      }
-
-      return newJustificacaoDF;
-    },
     eliminarClasse() {
       // Buscar a classe original pois é a que temos que eliminar, o clone pode estar desatualizado
       let serie_real = this.classes.find(
@@ -281,16 +230,6 @@ export default {
       );
 
       // DEEP CLONE do objetos
-      // this.serie = Object.assign({}, serie_real);
-      // this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
-      // this.serie.entProdutoras = [...serie_real.entProdutoras];
-      // this.serie.legislacao = [...serie_real.legislacao];
-      // this.serie.localizacao = [...serie_real.localizacao];
-      // this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
-      // this.serie.justificacaoPCA = await this.clonePCA(serie_real);
-      // this.serie.justificacaoDF = await this.cloneDF(serie_real);
-      // this.serie.relacoes = JSON.parse(JSON.stringify(this.serie.relacoes));
-      // this.serie.UIs = [...serie_real.UIs];
       this.serie = JSON.parse(JSON.stringify(serie_real));
 
       this.buscarTitulosClasses();

@@ -157,56 +157,6 @@ export default {
     }
   },
   methods: {
-    clonePCA(serie_real) {
-      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO PCA
-      let newJustificacaoPCA = [];
-
-      for (let i = 0; i < serie_real.justificacaoPCA.length; i++) {
-        let criterio = Object.assign({}, serie_real.justificacaoPCA[i]);
-
-        if (serie_real.justificacaoPCA[i].tipo == "Critério Legal") {
-          criterio.relacoes = [...serie_real.justificacaoPCA[i].relacoes];
-        }
-
-        if (
-          serie_real.justificacaoPCA[i].tipo ==
-          "Critério de Utilidade Administrativa"
-        ) {
-          criterio.relacoes = serie_real.justificacaoPCA[i].relacoes.map(
-            rel => {
-              return {
-                codigo: rel.codigo
-              };
-            }
-          );
-        }
-
-        newJustificacaoPCA.push(criterio);
-      }
-
-      return newJustificacaoPCA;
-    },
-    cloneDF(serie_real) {
-      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO DF
-      let newJustificacaoDF = [];
-
-      for (let i = 0; i < serie_real.justificacaoDF.length; i++) {
-        let criterio = Object.assign({}, serie_real.justificacaoDF[i]);
-
-        if (serie_real.justificacaoDF[i].tipo == "Critério Legal") {
-          criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
-        } else {
-          criterio.relacoes = serie_real.justificacaoDF[i].relacoes.map(rel => {
-            return {
-              codigo: rel.codigo
-            };
-          });
-        }
-        newJustificacaoDF.push(criterio);
-      }
-
-      return newJustificacaoDF;
-    },
     buscarTitulosClasses() {
       for (let i = 0; i < this.subserie.relacoes.length; i++) {
         let classe_relacionada = this.classes.find(
@@ -261,16 +211,6 @@ export default {
       );
 
       // DEEP CLONE do objetos
-      // this.subserie = Object.assign({}, subserie_real);
-      // this.subserie.UIs = [...subserie_real.UIs];
-      // this.subserie.justificacaoPCA = await this.clonePCA(subserie_real);
-      // this.subserie.justificacaoDF = await this.cloneDF(subserie_real);
-      // this.subserie.formaContagem = Object.assign(
-      //   {},
-      //   subserie_real.formaContagem
-      // );
-      // this.subserie.relacoes = [...subserie_real.relacoes];
-
       this.subserie = JSON.parse(JSON.stringify(subserie_real));
 
       this.buscarTitulosClasses();
