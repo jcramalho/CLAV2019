@@ -128,6 +128,17 @@
                             @procPreSelResTravCom="procPreSelResTravCom($event)"
                             @guardarTSProcComuns="guardarTSProcComuns($event)"
                           />
+                          <!--ListaProcessosComunsJcr
+                            v-if="listaProcComunsReady && entSelReady"
+                            v-bind:lista="listaProcComuns"
+                            v-bind:entidades="tabelaSelecao.entidades"
+                            @contadorProcSelCom="contadorProcSelCom($event)"
+                            @contadorProcPreSelCom="
+                              contadorProcPreSelCom($event)
+                            "
+                            @procPreSelResTravCom="procPreSelResTravCom($event)"
+                            @guardarTSProcComuns="guardarTSProcComuns($event)"
+                          /-->
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                     </v-expansion-panels>
@@ -538,6 +549,7 @@
 
 <script>
 import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns.vue";
+import ListaProcessosComunsJcr from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns-jcr.vue";
 import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspecificos.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ListaProcessosUltimos.vue";
@@ -546,6 +558,7 @@ import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcS
 export default {
   components: {
     ListaProcessosComuns,
+    //ListaProcessosComunsJcr,
     ListaProcessosEspecificos,
     ListaProcessosEspRestantes,
     ListaProcessosUltimos,

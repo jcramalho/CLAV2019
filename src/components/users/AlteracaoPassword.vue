@@ -87,7 +87,7 @@ export default {
 
     var res = await this.$request("get", "/users/" + this.form.id);
     this.form.name = res.data.name;
-    this.temPass = res.data.local;
+    this.temPass = res.data.temPass;
     this.validJWT = true;
   },
   data() {
