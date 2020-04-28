@@ -133,7 +133,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 :disabled="bloquearData()"
-                :rules="basicRule"
+                :rules="[v => data_final_valida(v) || 'Campo de preenchimento obrigatório!']"
                 v-model="RE.dataFinal"
                 label="Data Final"
                 prepend-icon="event"
@@ -278,24 +278,6 @@ export default {
   components: {
     NovaEntidade
   },
-  // computed: {
-  //   entidadesProcessadas() {
-  //     return this.entidades.map(item => {
-  //       return {
-  //         entidade: item.sigla + " - " + item.designacao,
-  //         disabled: false
-  //       };
-  //     });
-  //   },
-  //   tipologiasProcessadas() {
-  //     return this.tipologias.map(item => {
-  //       return {
-  //         tipologia: item.sigla + " - " + item.designacao,
-  //         disabled: false
-  //       };
-  //     });
-  //   }
-  // },
   data: () => ({
     panels: [0, 0, 0],
     menu1: false,
@@ -304,6 +286,20 @@ export default {
     basicRule: [v => !!v || "Campo de preenchimento obrigatório!"]
   }),
   methods: {
+    data_final_valida(v) {
+      if (!!v) {
+        if (this.RE.dataInicial != null) {
+          let data_inicial = new Date(this.RE.dataInicial);
+          let data_final = new Date(v);
+
+          if (data_inicial > data_final) {
+            return "Data final inválida! É anterior à data inicial.";
+          }
+        }
+        return true;
+      }
+      return false;
+    },
     bloquearData() {
       let classes = this.classes.some(
         e =>

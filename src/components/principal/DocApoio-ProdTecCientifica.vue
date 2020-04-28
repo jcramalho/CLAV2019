@@ -1,155 +1,296 @@
 <template>
-    <v-expansion-panel>
-        <v-expansion-panel-header>Produção Técnica e Científica</v-expansion-panel-header>
-        <v-expansion-panel-content>
-            <v-card>
-              <v-card-text>
-                <div class="subtitle">Provas académicas</div>
-                <ul>
-                  <li>
-        
-                  </li>
-                </ul>
-                <div class="subtitle">Comunicações e artigos</div>
-                <v-list two-line subheader>
-                    <v-list-item v-for="item in listaPubs" :key="item.ano">
-                        <v-list-item-content>
-                            <v-list-item-title>{{ item.ano }}</v-list-item-title>
-                            <ul>
-                                <li v-for="pub in item.pubs" :key="pub.url">
-                                    <b><a :href="pub.url">{{ pub.titulo }}</a></b>, 
-                                    {{ pub.local }};
-                                    <span v-for="a in pub.autores" :key="a">{{ a }}</span>,
-                                </li>
-                            </ul>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                </v-list>
-              </v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+  <Loading v-if="!pubsReady" :message="'documentação científica'" />
+  <v-expansion-panel v-else>
+    <v-expansion-panel-header
+      >Produção Técnica e Científica</v-expansion-panel-header
+    >
+    <v-expansion-panel-content>
+      <v-card>
+        <v-card-text>
+          <div v-for="item in listaPubs" :key="item.classe" class="subtitle">
+            {{ item.classe }}
+            <v-list two-line subheader>
+              <v-list-item
+                v-for="documento in item.documentos"
+                :key="documento.ano"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>{{ documento.ano }}</v-list-item-title>
+                  <ul>
+                    <li
+                      v-for="publicacao in documento.publicacoes"
+                      :key="publicacao.titulo"
+                    >
+                      <b
+                        ><a
+                          v-if="publicacao.url !== 'FICHEIRO'"
+                          :href="publicacao.url"
+                          >{{ publicacao.titulo }}</a
+                        >
+                        <span 
+                          class="fakea"
+                          v-else
+                          href="#"
+                          @click="downloadFile(publicacao._id)"
+                        >{{ publicacao.titulo }}</span></b
+                      >, {{ publicacao.local }};
+                      <span v-for="a in publicacao.autores" :key="a"
+                        >{{ a }}&nbsp;</span
+                      >
+                      <v-icon
+                        v-for="(operacao, index) in operacoes"
+                        @click="
+                          switchOperacao(operacao.descricao, publicacao._id)
+                        "
+                        :color="operacao.cor"
+                        :key="index"
+                        >{{ operacao.icon }}</v-icon
+                      >
+                    </li>
+                  </ul>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-expansion-panel-content>
+    <v-dialog :value="eliminarId != ''" persistent max-width="290px">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende eliminar o documento?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="eliminarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" text @click="remover(eliminarId)">
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="timeout"
+      :top="true"
+    >
+      {{ text }}
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+    </v-snackbar>
+    <div v-if="this.level >= this.min">
+      <v-btn
+        color="indigo accent-4"
+        dark
+        small
+        class="ma-2"
+        @click="go('/documentacaoApoio/importar/tecnico_cientifico')"
+        >Importar</v-btn
+      >
+      <v-btn
+        color="indigo accent-4"
+        dark
+        small
+        class="ma-2"
+        @click="exportarFicheiro()"
+        >Exportar</v-btn
+      >
+    </div>
+  </v-expansion-panel>
 </template>
 
 <script>
+import Loading from "@/components/generic/Loading";
+const lhost = require("@/config/global").host;
+import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
+
 export default {
+  props: ["level"],
   data() {
     return {
       panelHeaderColor: "indigo darken-4",
-      listaPubs: [
-        {
-          ano: "2019",
-          pubs: [
-          {
-              titulo: "Plataforma CLAV: garantindo a interoperabilidade semântica e preparando o acesso continuado à informação",
-              url: "https://www.bad.pt/publicacoes/index.php/arquivosmunicipais/article/view/1979",
-              local: "13.º Encontro Nacional de Arquivos Municipais, BAD, Cascais (18 e 19 Out. 2019)",
-              autores: ["Alexandra Lourenço", "José Carlos Ramalho", "Madalena Ribeiro", "Pedro Penteado", "Rita Gago"]
-          },
-          {
-              titulo: "A proposta de portaria de gestão de documentos para a Administração Local",
-              url: "https://www.bad.pt/publicacoes/index.php/arquivosmunicipais/article/view/2037",
-              local: "13.º Encontro Nacional de Arquivos Municipais, BAD, Cascais (18 e 19 Out.2019)",
-              autores: ["Alexandra Lourenço", "Isabel Campaniço", "Filomena Machado", "Isabel Salgueiro", "Manuela Maio", 
-                        "Júlio Cardoso", "Daniel de Melo", "Helena Neves", "Natália Antónia"]
-          }
-        ]},
-        {
-          ano: "2018",
-          pubs: [
-          {
-              titulo: "Transformação digital: novas políticas e procedimentos para a classificação e a avaliação da informação",
-              url: "https://www.bad.pt/publicacoes/index.php/congressosbad/article/view/1861",
-              local: "13º Congresso Nacional BAD, Fundão (24 a 26 Out. 2018)",
-              autores: ["Alexandra Lourenço", "José Carlos Ramalho", "Pedro Penteado", "Rita Gago"]
-          },
-          {
-              titulo: "A lista consolidada como instrumento facilitador de aplicação do RGPD, IIª Jornadas Gestão de Informação \"Interação entre arquivistas e informáticos: Bits e bytes: MoReq, proteção de dados e afins… \"",
-              url: "https://www.bad.pt/eventos/programa-cientifico-ii-jornadas-de-trabalho-interacao-entre-arquivistas-e-informaticos-bits-e-bytes-moreq-protecao-de-dados-e-afins-2/",
-              local: "Ponte da Barca (4 Maio) 2018",
-              autores: ["Alexandra Lourenço", "Pedro Penteado", "Rita Gago"]
-          }
-        ]},
-        {
-          ano: "2017",
-          pubs: [
-          {
-              titulo: "Plataforma M51-CLAV: o que há de novo?",
-              url: "https://www.bad.pt/eventos/wp-content/uploads/2018/01/CIGIA_COM_01.pdf",
-              local: "I Conferência Internacional de Gestão de Informação e Arquivos (CIGIA), Albergaria-a-Velha (4 Nov.2017 )",
-              autores: ["Alexandra Lourenço", "Pedro Penteado", "Rita Gago"]
-          }
-        ]},
-        {
-          ano: "2016",
-          pubs: [
-          {
-              titulo: "Simplex +: o que precisamos para além da Medida 51?",
-              url: "http://www.bad.pt/publicacoes/index.php/arquivosmunicipais/article/view/1535",
-              local: "12º Encontro Nacional de Arquivos Municipais, Castelo Branco (14 e 15 Out. 2016)",
-              autores: ["Alexandra Lourenço", "Pedro Penteado"]
-          }
-        ]},
-        {
-            ano: "2015",
-            pubs: [
-                {
-                    titulo: "A caminho da ASIA – Avaliação Suprainstitucional da Informação Arquivística",
-                    url: "http://www.bad.pt/publicacoes/index.php/congressosbad/article/view/1458",
-                    local: "12º Congresso da Associação Nacional de Bibliotecários, Arquivistas e Documentalistas (21 a 23 Out. 2015)",
-                    autores: ["Alexandra Lourenço", "Pedro Penteado"]
-                },
-                {
-                    titulo: "Uma ontologia para os processos de negócio da Administração",
-                    url: "http://www.bad.pt/publicacoes/index.php/congressosbad/article/view/1453",
-                    local: "12º Congresso da Associação Nacional de Bibliotecários, Arquivistas e Documentalistas (21 a 23 Out. 2015)",
-                    autores: ["Alexandra Lourenço", "José Carlos Ramalho", "Pedro Penteado"]
-                }
-            ]
-        },
-        {
-            ano: "2014",
-            pubs: [
-                {
-                    titulo: "Las estrategias para mejorar el acceso y la reutilización de la información  pública en Portugal: el papel de la interoperabilidad semântica",
-                    url: "http://www.girona.cat/web/ica2014/ponents/textos/id200.pdf",
-                    local: "2nd Annual Conference \"ICA\": Archives and Cultural Industries. Girona (11-15  Out. 2014)",
-                    autores: ["Alexandra Lourenço", "Pedro Penteado"]
-                }
-            ]
-        },
-        {
-            ano: "2012",
-            pubs:[
-                {
-                    titulo: "O desafio da interoperabilidade na gestão dos arquivos da Administração: propostas do órgão de coordenação nacional de arquivo",
-                    url: "http://www.bad.pt/publicacoes/index.php/congressosbad/article/view/452",
-                    local: "11º Congresso da Associação Nacional de Bibliotecários, Arquivistas e Documentalistas (18 Out. 2012)",
-                    autores: ["Alexandra Lourenço", "Pedro Penteado"]
-                },
-                {
-                    titulo: "É necessário alterar o processo de avaliação arquivística?",
-                    url: "http://www.bad.pt/publicacoes/index.php/congressosbad/article/view/341",
-                    local: "11º Congresso da Associação Nacional de Bibliotecários, Arquivistas e Documentalistas (19 Out. 2012)",
-                    autores: ["Alexandra Lourenço"]
-                }
-            ]
-        },
-        {
-            ano: "2011",
-            pubs: [
-                {
-                    titulo: "Novos modelos de gestão da informação arquivística na Administração Pública: A Macroestrutura Funcional (MEF)",
-                    url: "http://repap.ina.pt/bitstream/10782/580/1/Novos%20modelos%20e%20instrumentos%20de%20gest%C3%A3o%20da%20informa%C3%A7%C3%A3o%20arquivistica.pdf",
-                    local: "8º Congresso nacional da Administração Pública: desafios e soluções. Lisboa, Instituto Nacional de Administração, 2011. p. 235-243",
-                    autores: ["Alexandra Lourenço", "Cecília Henriques", "Pedro Penteado"]
-                }
-            ]
-        }
-      ],
-
+      listaPubs: [],
+      pubsReady: false,
+      operacoes: [],
+      dialog: false,
+      snackbar: false,
+      text: "",
+      color: "",
+      timeout: 4000,
+      eliminarId: "",
+      done: false,
+      min: NIVEL_MINIMO_ALTERAR
     };
+  },
+  components: {
+    Loading
+  },
+  methods: {
+    groupBy: function(key, array) {
+      var result = [];
+      for (var i = 0; i < array.length; i++) {
+        var added = false;
+        for (var j = 0; j < result.length; j++) {
+          if (result[j][key] == array[i][key]) {
+            result[j].publicacoes.push(array[i]);
+            added = true;
+            break;
+          }
+        }
+        if (!added) {
+          var entry = { publicacoes: [] };
+          entry[key] = array[i][key];
+          entry.publicacoes.push(array[i]);
+          result.push(entry);
+        }
+      }
+      return result;
+    },
+    preparaConteudo: async function(conteudo) {
+      try {
+        var response = conteudo;
+        // Remover da lista entradas nao visiveis consoante o nivel
+        if (this.level < NIVEL_MINIMO_ALTERAR) {
+          response = response.filter(item => item.visivel);
+        }
+        // Agrupar por classe
+        var classes = response.reduce(
+          (p, c) => (
+            p[c.classe] ? p[c.classe].push(c) : (p[c.classe] = [c]), p
+          ),
+          {}
+        );
+        // Agrupar por ano em cada classe
+        response = Object.keys(classes).map(k => ({
+          classe: k,
+          documentos: this.groupBy("ano", classes[k]).sort((a, b) =>
+            a.ano < b.ano ? 1 : -1
+          )
+        }));
+        return response;
+      } catch (e) {
+        return {};
+      }
+    },
+    goEditar(id) {
+      this.$router.push("/documentacaoApoio/editar/tecnico_cientifico/" + id);
+    },
+    download(path, filename) {
+      var element = document.createElement("a");
+      
+      element.setAttribute("href", path);
+      element.setAttribute("download", filename);
+      element.style.display = "none";
+
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
+    async downloadFile(id) {
+      var token = await this.$getAuthToken();
+      token = token.replace(" ", "=");
+
+      var path = "/documentacaoCientifica/" + id + "/ficheiro";
+      path = lhost + path + "?" + token;
+      this.download(path, "");
+    },
+    async exportarFicheiro() {
+      var token = await this.$getAuthToken();
+      token = token.replace(" ", "=");
+
+      var path = "/documentacaoCientifica/exportar";
+      path = lhost + path + "?" + token;
+      this.download(path, "");
+    },
+    remover(id) {
+      this.$request("delete", "/documentacaoCientifica/" + id)
+        .then(res => {
+          this.text = res.data;
+          this.color = "success";
+          this.snackbar = true;
+          this.eliminarId = "";
+          this.done = true;
+          this.getDocumentacao();
+        })
+        .catch(e => {
+          this.text = e.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.eliminarId = "";
+          this.done = false;
+        });
+    },
+    async switchOperacao(op, id) {
+      switch (op) {
+        case "Alteração":
+          this.goEditar(id);
+          break;
+
+        case "Remoção":
+          this.eliminarId = id;
+          break;
+
+        default:
+          break;
+      }
+    },
+    fecharSnackbar() {
+      this.snackbar = false;
+      if (this.done == true) this.getDocumentacao();
+    },
+    go: function(url) {
+      if (url.startsWith("http")) {
+        window.location.href = url;
+      } else {
+        this.$router.push(url);
+      }
+    },
+    async getDocumentacao() {
+      try {
+        let response = await this.$request("get", "/documentacaoCientifica");
+
+        let conteudo = response.data;
+
+        this.listaPubs = await this.preparaConteudo(conteudo);
+
+        this.pubsReady = true;
+      } catch (e) {
+        return e;
+      }
+    },
+    preparaOperacoes(level) {
+      if (level >= NIVEL_MINIMO_ALTERAR) {
+        this.operacoes = [
+          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
+          { icon: "delete", descricao: "Remoção", cor: "red" }
+        ];
+      }
+    }
+  },
+  created: async function() {
+    let response = await this.$request("get", "/documentacaoCientifica");
+
+    let conteudo = response.data; 
+
+    this.preparaOperacoes(this.level);
+
+    this.listaPubs = await this.preparaConteudo(conteudo);
+
+    this.pubsReady = true;
   }
-}
+};
 </script>
+
+<style>
+.fakea:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.fakea {
+  color: #1A76D2;
+}
+</style>

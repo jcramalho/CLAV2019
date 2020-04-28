@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog">
+  <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
       <v-btn color="#dee2f8" class="ma-2" v-on="on">
         <v-icon dark left>add</v-icon>Unidade de Instalação
@@ -121,7 +121,7 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
-                    :rules="[v => !!v || 'Campo obrigatório!']"
+                    :rules="[v => data_final_valida(v) || 'Campo obrigatório!']"
                     v-model="UI.dataFinal"
                     label="Data Final"
                     prepend-icon="event"
@@ -405,6 +405,20 @@ export default {
     ]
   }),
   methods: {
+    data_final_valida(v) {
+      if (!!v) {
+        if (this.UI.dataInicial != null) {
+          let data_inicial = new Date(this.UI.dataInicial);
+          let data_final = new Date(v);
+
+          if (data_inicial > data_final) {
+            return "Data final inválida! É anterior à data inicial.";
+          }
+        }
+        return true;
+      }
+      return false;
+    },
     eCodigoClasseValido(v) {
       if (
         this.classes.some(

@@ -246,7 +246,7 @@ export default {
             label: "Filtrar pelo campo internacional",
             desc:
               "Permite filtrar as entidades que contém internacional igual a este valor.",
-            enum: ["Sim", "Não"],
+            enum: ["Por definir"],
             multiple: false
           },
           sioe: {
@@ -260,7 +260,7 @@ export default {
             label: "Filtrar por estado",
             desc:
               "Permite filtrar as entidades que contém o estado igual a este valor.",
-            enum: ["Por definir", "Ativa", "Inativa", "Harmonização"],
+            enum: ["Por definir"],
             multiple: false
           },
           info: {
@@ -290,7 +290,7 @@ export default {
             label: "Filtrar por estado",
             desc:
               "Filtra as tipologias pelo estado das mesmas. O estado pode ser Ativa, Inativa ou Harmonização.",
-            enum: ["Por definir", "Ativa", "Inativa", "Harmonização"],
+            enum: ["Por definir"],
             multiple: false
           },
           info: {
@@ -314,14 +314,14 @@ export default {
             label: "Filtrar por estado",
             desc:
               "Os documentos legislativos tem dois estados possíveis, Ativo ou Revogado. Este parâmetro sobrepõe os seguintes, ou seja, caso este parâmetro seja definido os restantes são ignorados.",
-            enum: ["Por definir", "Ativo", "Revogado"],
+            enum: ["Por definir"],
             multiple: false
           },
           fonte: {
             label: "Filtrar por fonte",
             desc:
               "No caso de ser definido lista os documentos legislativos de acordo com a fonte especificada. Só funciona caso os parâmetros estado e processos não sejam definidos.",
-            enum: ["Por definir", "PGD", "PGD/LC", "RADA"],
+            enum: ["Por definir"],
             multiple: false
           },
           info: {
@@ -453,6 +453,28 @@ export default {
           value: l.id
         };
       });
+
+      //obtenção vocabulários necessários
+
+      this.queryStrings.entidades.internacional.enum = this.queryStrings.entidades.internacional.enum.concat(
+        await this.load("vc_internacional")
+      );
+
+      var status = await this.load("vc_status");
+      this.queryStrings.entidades.estado.enum = this.queryStrings.entidades.estado.enum.concat(
+        status
+      );
+      this.queryStrings.tipologias.estado.enum = this.queryStrings.tipologias.estado.enum.concat(
+        status
+      );
+
+      this.queryStrings.legislacoes.estado.enum = this.queryStrings.legislacoes.estado.enum.concat(
+        await this.load("vc_legStatus")
+      );
+
+      this.queryStrings.legislacoes.fonte.enum = this.queryStrings.legislacoes.fonte.enum.concat(
+        await this.load("vc_legFonte")
+      );
     } catch (erro) {
       if (erro.response && erro.response.data) {
         this.text = erro.response.data[0].msg || erro.response.data;
@@ -564,15 +586,7 @@ export default {
               this.queriesSel[key] != "Por definir" &&
               this.queriesSel[key] != ""
             ) {
-              if (
-                this.tipo.filename == "entidades" &&
-                key == "internacional" &&
-                this.queriesSel[key] == "Não"
-              ) {
-                q.push(key + "=" + encodeURIComponent(""));
-              } else {
-                q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
-              }
+              q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
             }
           }
 
@@ -617,6 +631,18 @@ export default {
       }
 
       return ret;
+    },
+    load: async function(voc) {
+      var response = await this.$request("get", "/vocabularios/" + voc);
+      var list = response.data.map(e => e.termo);
+
+      if (list.length > 0 && typeof list[0] === "object") {
+        list = list.sort((a, b) => a.text.localeCompare(b.text));
+      } else {
+        list = list.sort();
+      }
+
+      return list;
     }
   }
 };

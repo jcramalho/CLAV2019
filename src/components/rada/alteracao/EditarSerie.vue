@@ -58,6 +58,7 @@
                   :legislacao="legislacao"
                   :RE="RE"
                   :legislacaoProcessada="legislacaoProcessada"
+                  :formaContagem="formaContagem"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -176,8 +177,21 @@ export default {
       for (let i = 0; i < serie_real.justificacaoPCA.length; i++) {
         let criterio = Object.assign({}, serie_real.justificacaoPCA[i]);
 
-        if (serie_real.justificacaoPCA[i].tipo != "Critério Gestionário") {
+        if (serie_real.justificacaoPCA[i].tipo == "Critério Legal") {
           criterio.relacoes = [...serie_real.justificacaoPCA[i].relacoes];
+        }
+
+        if (
+          serie_real.justificacaoPCA[i].tipo ==
+          "Critério de Utilidade Administrativa"
+        ) {
+          criterio.relacoes = serie_real.justificacaoPCA[i].relacoes.map(
+            rel => {
+              return {
+                codigo: rel.codigo
+              };
+            }
+          );
         }
 
         newJustificacaoPCA.push(criterio);
@@ -191,7 +205,16 @@ export default {
 
       for (let i = 0; i < serie_real.justificacaoDF.length; i++) {
         let criterio = Object.assign({}, serie_real.justificacaoDF[i]);
-        criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
+
+        if (serie_real.justificacaoDF[i].tipo == "Critério Legal") {
+          criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
+        } else {
+          criterio.relacoes = serie_real.justificacaoDF[i].relacoes.map(rel => {
+            return {
+              codigo: rel.codigo
+            };
+          });
+        }
 
         newJustificacaoDF.push(criterio);
       }
@@ -207,28 +230,31 @@ export default {
       this.dialogSerie = false;
     },
     buscarTitulosClasses() {
-      this.serie.relacoes.forEach(rel => {
+      for (let i = 0; i < this.serie.relacoes.length; i++) {
         let classe_relacionada = this.classes.find(
-          cl => cl.codigo == rel.serieRelacionada.codigo
+          cl => cl.codigo == this.serie.relacoes[i].serieRelacionada.codigo
         );
 
-        rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
+        this.serie.relacoes[i].serieRelacionada["titulo"] =
+          classe_relacionada.titulo;
 
         let criterio = null;
-
-        if (rel.relacao == "Suplemento para") {
+        if (this.serie.relacoes[i].relacao == "Suplemento para") {
           criterio = this.serie.justificacaoPCA.find(
             e => e.tipo == "Critério de Utilidade Administrativa"
           );
         }
 
-        if (rel.relacao == "Complementar de") {
+        if (this.serie.relacoes[i].relacao == "Complementar de") {
           criterio = this.serie.justificacaoDF.find(
             e => e.tipo == "Critério de Complementaridade Informacional"
           );
         }
 
-        if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
+        if (
+          this.serie.relacoes[i].relacao == "Síntese de" ||
+          this.serie.relacoes[i].relacao == "Sintetizado por"
+        ) {
           criterio = this.serie.justificacaoDF.find(
             e => e.tipo == "Critério de Densidade Informacional"
           );
@@ -239,9 +265,10 @@ export default {
             e => e.codigo == classe_relacionada.codigo
           );
 
-          relacaoCriterio["titulo"] = classe_relacionada.titulo;
+          this.$set(relacaoCriterio, "titulo", classe_relacionada.titulo);
+          // relacaoCriterio["titulo"] = classe_relacionada.titulo;
         }
-      });
+      }
     },
     async filterSeries() {
       this.existe_erros = false;
@@ -254,18 +281,19 @@ export default {
       );
 
       // DEEP CLONE do objetos
-      this.serie = Object.assign({}, serie_real);
-      this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
-      this.serie.entProdutoras = [...serie_real.entProdutoras];
-      this.serie.legislacao = [...serie_real.legislacao];
-      this.serie.localizacao = [...serie_real.localizacao];
-      this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
-      this.serie.justificacaoPCA = await this.clonePCA(serie_real);
-      this.serie.justificacaoDF = await this.cloneDF(serie_real);
-      this.serie.relacoes = [...serie_real.relacoes];
-      this.buscarTitulosClasses();
+      // this.serie = Object.assign({}, serie_real);
+      // this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
+      // this.serie.entProdutoras = [...serie_real.entProdutoras];
+      // this.serie.legislacao = [...serie_real.legislacao];
+      // this.serie.localizacao = [...serie_real.localizacao];
+      // this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
+      // this.serie.justificacaoPCA = await this.clonePCA(serie_real);
+      // this.serie.justificacaoDF = await this.cloneDF(serie_real);
+      // this.serie.relacoes = JSON.parse(JSON.stringify(this.serie.relacoes));
+      // this.serie.UIs = [...serie_real.UIs];
+      this.serie = JSON.parse(JSON.stringify(serie_real));
 
-      this.serie.UIs = [...serie_real.UIs];
+      this.buscarTitulosClasses();
 
       // Classes para definir a hierarquia
       this.classesHierarquia = this.classes

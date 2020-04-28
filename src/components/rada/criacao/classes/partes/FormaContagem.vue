@@ -4,6 +4,7 @@
       <v-col md="3" sm="3">
         <div class="info-label">Forma de Contagem do PCA</div>
       </v-col>
+
       <v-col sm="9" md="9" style="padding-right: 20px;">
         <v-select
           :rules="[v => rule(v)]"
@@ -16,7 +17,7 @@
         ></v-select>
       </v-col>
     </v-row>
-    <v-row v-if="necessario_subforma">
+    <v-row v-if="newSerie.formaContagem.forma == 'vc_pcaFormaContagem_disposicaoLegal'">
       <!-- newSerie.formaContagem.forma == 'vc_pcaFormaContagem_disposicaoLegal'  -->
       <v-col md="3" sm="3">
         <div class="info-label">Subforma de Contagem do PCA</div>
@@ -39,15 +40,10 @@
 <script>
 export default {
   props: ["newSerie", "formaContagem", "rules"],
-  data: () => ({
-    necessario_subforma: false
-  }),
   watch: {
     "newSerie.formaContagem.forma": function(val) {
-      if (val == "vc_pcaFormaContagem_disposicaoLegal") {
-        this.necessario_subforma = true;
-      } else {
-        this.necessario_subforma = false;
+      // console.log(JSON.stringify(val));
+      if (val != "vc_pcaFormaContagem_disposicaoLegal") {
         delete this.newSerie.formaContagem["subforma"];
       }
     }

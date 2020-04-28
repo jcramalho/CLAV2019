@@ -1,114 +1,135 @@
 <template>
   <div>
-    <v-row v-for="(info, i) in infoPedido" :key="i">
-      <!-- Label -->
-      <v-col
-        cols="2"
-        v-if="
-          info.conteudo !== '' &&
-            info.conteudo !== null &&
-            info.conteudo !== undefined
-        "
-      >
-        <div class="info-label">{{ info.campo }}</div>
-      </v-col>
-
-      <!-- Conteudo -->
-      <v-col
-        v-if="
-          info.conteudo !== '' &&
-            info.conteudo !== null &&
-            info.conteudo !== undefined
-        "
-      >
-        <!-- Se o conteudo for uma lista de tipologias-->
-        <v-data-table
-          v-if="info.campo === 'Tipologias'"
-          :headers="headersTipologias"
-          :items="info.conteudo"
-          class="elevation-1"
-          hide-default-footer
+    <Loading v-if="loading" :message="'pedido'" />
+    <div v-else>
+      <v-row v-for="(info, i) in infoPedido" :key="i">
+        <!-- Label -->
+        <v-col
+          cols="2"
+          v-if="
+            info.conteudo !== '' &&
+              info.conteudo !== null &&
+              info.conteudo !== undefined
+          "
         >
-          <template v-slot:item="props">
-            <tr>
-              <td>{{ props.item.sigla }}</td>
-              <td>{{ props.item.designacao }}</td>
-              <td><v-icon color="red">delete</v-icon></td>
-            </tr>
-          </template>
+          <div class="info-label">{{ info.campo }}</div>
+        </v-col>
 
-          <template v-slot:top>
-            <v-toolbar flat :color="info.cor">
-              <v-dialog v-model="dialogTipologias" max-width="500px">
-                <template v-slot:activator="{ on }">
-                  <v-btn rounded class="indigo accent-4 white--text" v-on="on">
-                    Adicionar Tipologias
-                  </v-btn>
-                </template>
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">
-                      Selecione as tipologias em falta
-                    </span>
-                  </v-card-title>
+        <!-- Conteudo -->
+        <v-col
+          v-if="
+            info.conteudo !== '' &&
+              info.conteudo !== null &&
+              info.conteudo !== undefined
+          "
+        >
+          <!-- Se o conteudo for uma lista de tipologias-->
+          <v-data-table
+            v-if="info.campo === 'Tipologias'"
+            :headers="headersTipologias"
+            :items="info.conteudo"
+            class="elevation-1"
+            hide-default-footer
+          >
+            <template v-slot:item="props">
+              <tr>
+                <td>{{ props.item.sigla }}</td>
+                <td>{{ props.item.designacao }}</td>
+                <td><v-icon color="red">delete</v-icon></td>
+              </tr>
+            </template>
 
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="indigo darken-1" text @click="close"
-                      >Fechar</v-btn
-                    >
-                    <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-              <v-spacer />
+            <template v-slot:top>
+              <v-toolbar flat :color="info.cor">
+                <v-btn
+                  rounded
+                  class="indigo accent-4 white--text"
+                  @click="tipologiasClick()"
+                >
+                  Adicionar Tipologias
+                </v-btn>
+
+                <v-spacer />
+                <v-icon color="green" @click="verifica(info)">check</v-icon>
+                <v-icon color="red" @click="anula(info)">clear</v-icon>
+              </v-toolbar>
+            </template>
+          </v-data-table>
+
+          <!-- Se o conteudo for texto -->
+          <v-text-field
+            v-else
+            solo
+            readonly
+            hide-details
+            :background-color="info.cor"
+            :value="info.conteudo"
+          >
+            <template slot="append">
               <v-icon color="green" @click="verifica(info)">check</v-icon>
               <v-icon color="red" @click="anula(info)">clear</v-icon>
-            </v-toolbar>
-          </template>
-        </v-data-table>
+              <!--<v-icon @click="">create</v-icon>-->
+              <v-icon>create</v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
 
-        <!-- Se o conteudo for texto -->
-        <v-text-field
-          v-else
-          solo
-          readonly
-          hide-details
-          :background-color="info.cor"
-          :value="info.conteudo"
-        >
-          <template slot="append">
-            <v-icon color="green" @click="verifica(info)">check</v-icon>
-            <v-icon color="red" @click="anula(info)">clear</v-icon>
-            <!--<v-icon @click="">create</v-icon>-->
-            <v-icon>create</v-icon>
-          </template>
-        </v-text-field>
-      </v-col>
-    </v-row>
+      <v-row>
+        <v-spacer />
+        <PO
+          operacao="Analisar"
+          @avancarPedido="encaminharPedido($event)"
+          @devolverPedido="despacharPedido($event)"
+        />
+      </v-row>
+    </div>
 
-    <v-row>
-      <v-spacer />
-      <PO
-        operacao="Analisar"
-        @avancarPedido="encaminharPedido($event)"
-        @devolverPedido="despacharPedido($event)"
+    <!-- Dialog de erros -->
+    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
+      <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
+    </v-dialog>
+
+    <!-- Dialog de tipologias-->
+    <v-dialog v-model="dialogTipologias" width="50%" persistent>
+      <SelecionaAutocomplete
+        :mensagem="mensagemCombobox"
+        :tipologias="tipologias"
+        :tipologiasSelecionadas="tipologiasSelecionadas"
       />
-    </v-row>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
+import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
+
+import Loading from "@/components/generic/Loading";
+import ErroDialog from "@/components/generic/ErroDialog";
+
 export default {
   props: ["p"],
 
   components: {
     PO,
+    Loading,
+    ErroDialog,
+    SelecionaAutocomplete,
   },
 
   data() {
     return {
+      mensagemCombobox: {
+        titulo: "tipologias",
+        combobox: "tipologias",
+      },
+      loading: true,
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
+      },
+      pedidoLoaded: false,
       dialogTipologias: false,
       infoPedido: [
         {
@@ -150,10 +171,49 @@ export default {
           align: "center",
         },
       ],
+
+      tipologias: [],
+      tipologiasSelecionadas: [],
     };
   },
 
+  async created() {
+    try {
+      await this.loadTipologias();
+      this.tipologiasSelecionadas = this.p.objeto.tipologiasSel;
+
+      this.loading = false;
+    } catch (e) {
+      console.log("e :", e);
+      this.erroDialog.visivel = true;
+      this.erroDialog.mensagem =
+        "Erro ao carregar os dados, por favor tente novamente";
+      // this.text = "Erro ao carregar os dados, por favor tente novamente";
+      // this.snackbar = true;
+    }
+  },
+
   methods: {
+    tipologiasClick() {
+      this.dialogTipologias = true;
+    },
+
+    loadTipologias: async function() {
+      try {
+        let response = await this.$request("get", "/tipologias/");
+
+        this.tipologias = response.data.map(function(item) {
+          return {
+            sigla: item.sigla,
+            designacao: item.designacao,
+            id: item.id,
+          };
+        });
+      } catch (error) {
+        return error;
+      }
+    },
+
     async despacharPedido(dados) {
       try {
         const estado = "Devolvido";
@@ -197,6 +257,11 @@ export default {
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
           data: new Date(),
           despacho: dados.mensagemDespacho,
         };
@@ -213,17 +278,17 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
     close() {
-      this.dialogtipologias = false;
+      this.dialogTipologias = false;
       this.dialogProcessos = false;
     },
   },

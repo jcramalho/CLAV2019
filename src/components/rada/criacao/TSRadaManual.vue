@@ -1,98 +1,104 @@
 <template>
   <v-card flat class="mb-12" style="background-color:#fafafa">
-    <v-form ref="form" :lazy-validation="false">
-      <v-row>
-        <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Título</div>
-        </v-col>
-        <v-col xs="12" sm="9">
-          <v-text-field
-            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="TS.titulo"
-            label="Título da Tabela de Seleção"
-            solo
-            clearable
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col cols="12" xs="12" sm="12">
-          <AddOrgFunc :classes="TS.classes" />
-          <Serie
-            :classes="TS.classes"
-            :legislacao="legislacao"
-            :RE="RE"
-            :UIs="TS.UIs"
-            :formaContagem="formaContagem"
-            :legislacaoProcessada="legislacaoProcessada"
-          />
-          <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
-        </v-col>
-      </v-row>
-      <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p> -->
-      <v-row>
-        <v-col cols="12" xs="12" sm="12">
-          <div v-if="TS.classes.length > 0">
-            <v-treeview hoverable :items="preparaTree" item-key="titulo">
-              <template v-slot:label="{ item }">
-                <EditarSerie
-                  v-if="item.tipo == 'Série'"
-                  @atualizacao="atualizacao_serie"
-                  :treeview_object="item"
-                  :classes="TS.classes"
-                  :legislacao="legislacao"
-                  :legislacaoProcessada="legislacaoProcessada"
-                  :RE="RE"
-                  :UIs="TS.UIs"
-                  :formaContagem="formaContagem"
-                  @remover="remover_classe"
-                />
-                <EditarSubserie
-                  v-else-if="item.tipo == 'Subsérie'"
-                  @atualizacao="atualizacao_subserie"
-                  @remover="remover_classe"
-                  :treeview_object="item"
-                  :classes="TS.classes"
-                  :RE="RE"
-                  :UIs="TS.UIs"
-                  :formaContagem="formaContagem"
-                />
-                <EditarOrganicaFunc
-                  v-else
-                  @atualizacao="atualizacao_area_organico"
-                  @remover="remover_classe"
-                  :classes="TS.classes"
-                  :treeview_object="item"
-                />
-              </template>
-            </v-treeview>
-            <br />
-            <b v-if="incompleto" style="color:red">*Classes por preencher</b>
-          </div>
-          <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
-            <b>Sem Classes!</b> É obrigatório adicionar.
-          </v-alert>
+    <v-row>
+      <v-col cols="12" xs="12" sm="3">
+        <div class="info-label">Título</div>
+      </v-col>
+      <v-col xs="12" sm="9">
+        <v-text-field
+          :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+          v-model="TS.titulo"
+          label="Título da Tabela de Seleção"
+          solo
+          clearable
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="12" xs="12" sm="12">
+        <AddOrgFunc :classes="TS.classes" />
+        <Serie
+          :classes="TS.classes"
+          :legislacao="legislacao"
+          :RE="RE"
+          :UIs="TS.UIs"
+          :formaContagem="formaContagem"
+          :legislacaoProcessada="legislacaoProcessada"
+        />
+        <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
+      </v-col>
+    </v-row>
+    <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ TS.classes }}</p> -->
+    <!-- {{ TS.classes }} -->
+    <v-row>
+      <v-col cols="12" xs="12" sm="12">
+        <div v-if="TS.classes.length > 0">
+          <v-treeview hoverable :items="preparaTree" item-key="codigo">
+            <template v-slot:label="{ item }">
+              <EditarSerie
+                v-if="item.tipo == 'Série'"
+                @atualizacao="atualizacao_serie"
+                :treeview_object="item"
+                :classes="TS.classes"
+                :legislacao="legislacao"
+                :legislacaoProcessada="legislacaoProcessada"
+                :RE="RE"
+                :UIs="TS.UIs"
+                :formaContagem="formaContagem"
+                @remover="remover_classe"
+              />
+              <EditarSubserie
+                v-else-if="item.tipo == 'Subsérie'"
+                @atualizacao="atualizacao_subserie"
+                @remover="remover_classe"
+                :treeview_object="item"
+                :classes="TS.classes"
+                :RE="RE"
+                :UIs="TS.UIs"
+                :formaContagem="formaContagem"
+              />
+              <EditarOrganicaFunc
+                v-else
+                @atualizacao="atualizacao_area_organico"
+                @remover="remover_classe"
+                :classes="TS.classes"
+                :treeview_object="item"
+              />
+            </template>
+          </v-treeview>
           <br />
-        </v-col>
-      </v-row>
-      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
-      <v-row>
-        <v-col sm="12" xs="12">
-          <ListaUI :TS="TS" :RE="RE" />
-        </v-col>
-      </v-row>
-    </v-form>
-    <v-btn
-      :disabled="!Boolean(TS.classes[0]) || UIs_validas || incompleto"
-      color="#3949ab"
-      @click="sendToFather()"
-    >
-      <font style="color: white">Criar RADA</font>
-    </v-btn>
-    <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
-    <v-btn color="indigo darken-4" text @click="apagar">
-      <v-icon>delete_sweep</v-icon>
-    </v-btn>
+          <b v-if="incompleto" style="color:red">*Classes por preencher</b>
+        </div>
+        <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
+          <b>Sem Classes!</b> É obrigatório adicionar.
+        </v-alert>
+        <br />
+      </v-col>
+    </v-row>
+    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+    <v-row>
+      <v-col sm="12" xs="12">
+        <ListaUI :TS="TS" :RE="RE" />
+      </v-col>
+    </v-row>
+
+    <v-progress-circular
+      v-if="loading_circle"
+      :size="70"
+      :width="3"
+      color="amber accent-3"
+      indeterminate
+    ></v-progress-circular>
+    <div v-else>
+      <v-btn
+        :disabled="!Boolean(TS.classes[0]) || UIs_validas || incompleto || !Boolean(TS.titulo)"
+        color="#3949ab"
+        @click="sendToFather()"
+      >
+        <font style="color: white">Criar RADA</font>
+      </v-btn>
+      <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
+    </div>
   </v-card>
 </template>
 
@@ -119,6 +125,7 @@ export default {
     ListaUI
   },
   data: () => ({
+    loading_circle: false,
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
@@ -148,6 +155,7 @@ export default {
             temDF: Boolean(
               this.TS.classes[i].df == null ||
                 this.TS.classes[i].pca == null ||
+                this.TS.classes[i].pca == "" ||
                 this.TS.classes[i].formaContagem.forma == null
             ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
@@ -163,6 +171,7 @@ export default {
             ((!this.TS.classes.some(cl => cl.eFilhoDe == e.codigo) &&
               (e.df == null ||
                 e.pca == null ||
+                e.pca == "" ||
                 e.formaContagem.forma == null)) ||
               e.eFilhoDe == null ||
               !(
@@ -206,6 +215,7 @@ export default {
             temDF: Boolean(
               this.TS.classes[i].df == null ||
                 this.TS.classes[i].pca == null ||
+                this.TS.classes[i].pca == "" ||
                 this.TS.classes[i].formaContagem.forma == null
             ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
@@ -215,13 +225,9 @@ export default {
 
       return children;
     },
-    apagar: function() {
-      this.$refs.form.reset();
-    },
     sendToFather: function() {
-      if (this.$refs.form.validate() && this.TS.classes[0]) {
-        this.$emit("done");
-      }
+      this.loading_circle = true;
+      this.$emit("done");
     },
     atualizacao_area_organico(c) {
       let area_organico = this.TS.classes.find(e => e.codigo == c.codigo);

@@ -6,8 +6,8 @@
         <div class="info-label">Entidades Produtoras</div>
       </v-col>
       <v-col xs="12" sm="9">
-        <!-- :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']" -->
         <v-autocomplete
+          :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.entProdutoras"
           :items="RE.entidadesProd"
           placeholder="Selecione as Entidades Produtoras."

@@ -20,9 +20,39 @@
                 </td>
               </template>
               <template v-slot:item.serieRelacionada="props">
-                {{
-                props.item.serieRelacionada.codigo + " - " + props.item.serieRelacionada.titulo
-                }}
+                <b
+                  v-if="!classes.some(cl => cl.codigo == props.item.serieRelacionada.codigo)"
+                  @click="snackbar = true"
+                >
+                  {{
+                  props.item.serieRelacionada.codigo + " - " + props.item.serieRelacionada.titulo
+                  }}
+                </b>
+
+                <ShowSerie
+                  v-else-if="props.item.serieRelacionada.tipo == 'Série'"
+                  :formaContagem="formaContagem"
+                  :show_a_partir_de_pedido="false"
+                  :treeview_object="{
+                    codigo: props.item.serieRelacionada.codigo,
+                    titulo: props.item.serieRelacionada.codigo + ' - ' + props.item.serieRelacionada.titulo,
+                    eFilhoDe: '',
+                    children: []
+                  }"
+                  :classes="classes"
+                />
+                <ShowSubserie
+                  v-else
+                  :treeview_object="{
+                    codigo: props.item.serieRelacionada.codigo,
+                    titulo: props.item.serieRelacionada.codigo + ' - ' + props.item.serieRelacionada.titulo,
+                    eFilhoDe: '',
+                    children: []
+                  }"
+                  :show_a_partir_de_pedido="false"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
               </template>
             </v-data-table>
             <hr style="border: 3px solid; border-radius: 2px;" />
@@ -137,6 +167,10 @@
                 </v-col>
               </v-row>
             </v-form>
+            <v-snackbar v-model="snackbar" color="#fafafa" :timeout="2000">
+              <font color="#000000">Classe ainda não existe no sistema!</font>
+              <v-btn color="#3949ab" text @click="snackbar = false">Fechar</v-btn>
+            </v-snackbar>
           </v-card-text>
         </v-card>
       </v-col>
@@ -146,12 +180,19 @@
 
 <script>
 const labels = require("@/config/labels").criterios;
+import ShowSerie from "@/components/pedidos/consulta/rada/elementos/ShowSerie";
+import ShowSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSubserie";
 
 export default {
   name: "RelacoesClasse",
-  props: ["newSerie", "classes"],
+  props: ["newSerie", "classes", "formaContagem"],
+  components: {
+    ShowSerie,
+    ShowSubserie
+  },
   data() {
     return {
+      snackbar: false,
       tituloClasse: null,
       tipoClasse: null,
       iscodvalido: false,
