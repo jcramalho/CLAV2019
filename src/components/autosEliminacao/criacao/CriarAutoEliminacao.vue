@@ -230,6 +230,7 @@ export default {
       fundo: [],
       zonaControlo: []
     },
+    donos: [],
     erro: null,
     erroDialog: false,
     success: null,
@@ -238,6 +239,24 @@ export default {
     pendenteGuardado: false,
     pendenteGuardadoInfo: null
   }),
+  created: async function() {
+    try{
+      var user = this.$verifyTokenUser()
+      let user_entidade = await this.$request(
+        "get",
+        "/entidades/" + user.entidade
+      );
+
+      this.auto.fundo.push(
+        user_entidade.data.sigla +
+          " - " +
+          user_entidade.data.designacao
+      );
+    }
+    catch (e) {
+      this.auto.fundo = [];
+    }
+  },
   methods: {
     submit: async function() {
       this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];

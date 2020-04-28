@@ -49,7 +49,7 @@
         <v-col>
           <v-autocomplete
             label="Selecione a entidade dona do processo"
-            :items="entidadesPN"
+            :items="donos"
             v-model="dono"
             solo
             dense
@@ -182,7 +182,8 @@ export default {
     "closeZC",
     "zona",
     "index",
-    "classesCompletas"
+    "classesCompletas",
+    "donos"
   ],
   data: () => ({
     classe: null,
@@ -193,7 +194,6 @@ export default {
     uiPapel: null,
     uiDigital: null,
     uiOutros: null,
-    entidadesPN: [],
 
     df: null,
     prazo: null,
@@ -221,14 +221,6 @@ export default {
     }
   },
   created: async function() {
-    try {
-      var user = this.$verifyTokenUser();
-      this.entidadesPN = this.entidades.filter(e=> !e.includes(user.entidade.split("_")[1]))
-    }
-    catch (e) {
-      this.entidadesPN = this.entidades
-    }
-
     if (this.zona) {
       this.classe = this.zona.codigo + " - " + this.zona.titulo;
       if(this.zona.destino=="C") this.df = "Conservação"

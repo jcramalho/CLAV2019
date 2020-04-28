@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import ImportarAuto from "@/components/autosEliminacao/ImportarAutoEliminacao.vue";
+import ImportarAuto from "@/components/autosEliminacao/importacao/ImportarAutoEliminacao.vue";
 
 export default {
   components: {
@@ -17,11 +17,10 @@ export default {
     classes: []
   }),
   methods: {
-    prepararEntidade: async function(ent,user) {
+    prepararEntidade: async function(ent) {
       try {
         var myEntidades = [];
         for (var e of ent) {
-          if(e.id!=user.entidade)
             myEntidades.push(e.sigla + " - " + e.designacao);
         }
         return myEntidades;
@@ -64,9 +63,8 @@ export default {
   },
   created: async function() {
     try {
-      var user = this.$verifyTokenUser();
       var response2 = await this.$request("get", "/entidades/");
-      this.entidades = await this.prepararEntidade(response2.data, user);
+      this.entidades = await this.prepararEntidade(response2.data);
       var response3 = await this.$request(
         "get",
         "/classes?nivel=3&info=completa"
