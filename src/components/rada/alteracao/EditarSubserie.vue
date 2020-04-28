@@ -286,6 +286,10 @@ export default {
           this.erros.push("Subforma de Contagem;");
         }
       }
+
+      // if (!Boolean(this.erros[0])) {
+      //   this.erros.push("Datas Inválidas;");
+      // }
     },
     save() {
       this.existe_erros = false;

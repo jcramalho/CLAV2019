@@ -16,7 +16,7 @@
       </v-alert>
       <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" >
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
           <font size="4">
             <b>Informação Geral</b>
           </font>
@@ -26,7 +26,7 @@
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" >
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -44,7 +44,7 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" >
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
@@ -198,14 +198,14 @@ export default {
         pedidosEntidades: [],
         RE: {
           entidadesProd: [
-            "ACSS - Administração Central do Sistema de Saúde, IP",
-            "ADSE - Instituto de Proteção e Assistência na Doença, I.P."
+            // "ACSS - Administração Central do Sistema de Saúde, IP",
+            // "ADSE - Instituto de Proteção e Assistência na Doença, I.P."
           ],
           tipologiasProd: [],
-          dataInicial: "2020-02-27",
-          dataFinal: "2020-05-01",
-          // dataInicial: null,
-          // dataFinal: null,
+          // dataInicial: "2020-02-27",
+          // dataFinal: "2020-05-01",
+          dataInicial: null,
+          dataFinal: null,
           dimSuporte: {
             nSeries: null,
             nSubseries: null,

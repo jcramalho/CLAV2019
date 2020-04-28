@@ -326,6 +326,10 @@ export default {
           }
         }
       }
+
+      // if (!Boolean(this.erros[0])) {
+      //   this.erros.push("Datas Inválidas;");
+      // }
     },
     save() {
       this.existe_erros = false;

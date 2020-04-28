@@ -573,7 +573,7 @@ export default {
         this.erros.push("Código Cota;");
       }
 
-      if (!this.UI_clone.dataInicial || !this.UI.dataFinal) {
+      if (!this.UI_clone.dataInicial || !this.UI_clone.dataFinal) {
         this.erros.push("Datas;");
       }
 
@@ -597,6 +597,10 @@ export default {
       if (!this.UI_clone.localizacao) {
         this.erros.push("Localização;");
       }
+
+      // if (!Boolean(this.erros[0])) {
+      //   this.erros.push("Datas Inválidas;");
+      // }
     },
     async guardar() {
       this.existe_erros = false;
