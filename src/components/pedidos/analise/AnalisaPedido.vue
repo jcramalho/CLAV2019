@@ -147,7 +147,6 @@ export default {
         mensagem: null,
       },
       pedido: {},
-      pedidoLoaded: false,
       despachosDialog: false,
       headers: [
         { text: "Estado", align: "left", sortable: false, value: "estado" },
@@ -166,7 +165,6 @@ export default {
         throw new URIError("Este pedido não pertence a este estado.");
 
       this.pedido = data;
-      this.pedidoLoaded = true;
       this.loading = false;
     } catch (err) {
       if (err instanceof URIError) {
