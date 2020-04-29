@@ -20,7 +20,7 @@
           counter
           deletable-chips
           class="m-2 mt-4"
-          :label="`Selecione ${mensagem.combobox}`"
+          :label="`Selecione ${mensagem.autocomplete}`"
         >
           <template v-slot:no-data>
             <v-list-item>
@@ -60,7 +60,7 @@ export default {
 
   methods: {
     fechar() {
-      // this.$emit();
+      this.$emit("fechar");
     },
 
     adicionar() {},

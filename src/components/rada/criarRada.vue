@@ -662,6 +662,18 @@ export default {
       }
     },
     concluir: async function() {
+      //  Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
+      //  em que as produtoras tem que estar associadas pelo menos a uma série ou ui
+      if (!!this.RADA.RE.entidadesProd[0]) {
+        this.RADA.RE.entidadesProd = this.entidadesProcessadas
+          .filter(e => e.disabled == true)
+          .map(e => e.entidade);
+      } else {
+        this.RADA.RE.tipologiasProd = this.tipologias
+          .filter(t => t.disabled == true)
+          .map(t => t.tipologia);
+      }
+
       let series = this.RADA.tsRada.classes
         // adicionar os IDS a todas as classes
         .map(e => {

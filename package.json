@@ -18,6 +18,7 @@
     "core-js": "^3.6.5",
     "exceljs": "^2.0.1",
     "fs": "0.0.1-security",
+    "iconv-lite": "^0.5.1",
     "jest": "^25.3.0",
     "jquery": "^3.5.0",
     "jsonwebtoken": "^8.5.1",

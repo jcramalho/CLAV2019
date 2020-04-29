@@ -573,7 +573,7 @@ export default {
         this.erros.push("Código Cota;");
       }
 
-      if (!this.UI_clone.dataInicial || !this.UI.dataFinal) {
+      if (!this.UI_clone.dataInicial || !this.UI_clone.dataFinal) {
         this.erros.push("Datas;");
       }
 
@@ -597,6 +597,10 @@ export default {
       if (!this.UI_clone.localizacao) {
         this.erros.push("Localização;");
       }
+
+      // if (!Boolean(this.erros[0])) {
+      //   this.erros.push("Datas Inválidas;");
+      // }
     },
     async guardar() {
       this.existe_erros = false;
@@ -640,18 +644,6 @@ export default {
     },
     cloneUI() {
       //DEEP CLONE OF UI
-      // this.UI_clone = Object.assign({}, this.UI);
-
-      // this.UI_clone.produtor.tipologiasProdutoras = [
-      //   ...this.UI.produtor.tipologiasProdutoras
-      // ];
-
-      // this.UI_clone.produtor.entProdutoras = [
-      //   ...this.UI.produtor.entProdutoras
-      // ];
-
-      // this.UI_clone.classesAssociadas = [...this.UI.classesAssociadas];
-
       this.UI_clone = JSON.parse(JSON.stringify(this.UI));
 
       this.buscarTitulosClasses();
