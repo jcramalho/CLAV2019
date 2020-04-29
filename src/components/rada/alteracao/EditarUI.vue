@@ -169,7 +169,7 @@
                 :headers="headers"
                 :items="UI_clone.classesAssociadas"
                 hide-default-footer
-                v-if="UI_clone.classesAssociadas == undefined || UI_clone.classesAssociadas[0]"
+                v-if="!!UI_clone.classesAssociadas[0]"
               >
                 <template
                   v-slot:item.codigo="props"
@@ -201,7 +201,7 @@
                     <v-combobox
                       :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório para associar série/subsérie!']"
                       v-model="cod"
-                      :items="getCodigos"
+                      :items="classes_processadas"
                       label="Código"
                       item-text="searchField"
                       item-value="codigo"
@@ -313,6 +313,7 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
+
         <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="guardar">Atualizar</v-btn>
       </v-card-actions>
@@ -331,6 +332,7 @@ export default {
     menu2: false,
     cod: null,
     existe_erros: false,
+    classes_processadas: [],
     erros: [],
     iscodvalido: false,
     tituloClasse: null,
@@ -507,20 +509,20 @@ export default {
       set(val) {
         this.$emit("fecharDialog", false);
       }
-    },
-    getCodigos() {
-      return this.classes
-        .filter(
-          e =>
-            (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
-        )
-        .map(e => {
-          return {
-            codigo: e.codigo,
-            searchField: e.codigo + " - " + e.titulo
-          };
-        });
     }
+  },
+  created() {
+    this.classes_processadas = this.classes
+      .filter(
+        e =>
+          (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
+      )
+      .map(e => {
+        return {
+          codigo: e.codigo,
+          searchField: e.codigo + " - " + e.titulo
+        };
+      });
   }
 };
 </script>
