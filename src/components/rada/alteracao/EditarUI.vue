@@ -1,32 +1,8 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on: dialog }">
-      <v-tooltip top>
-        <template v-slot:activator="{ on: tooltip }">
-          <tr
-            :style="'text-align: center; background-color:' + isComplete"
-            v-on="{...tooltip, ...dialog}"
-            @click="cloneUI"
-          >
-            <td>{{ UI.codigo }}</td>
-            <td>{{ UI.titulo }}</td>
-          </tr>
-        </template>
-        <span width="100%">
-          <h4>
-            Classes associadas a:
-            <b>{{ UI.codigo + " - " + UI.titulo }}</b>
-          </h4>
-          <ul v-if="!!UI.classesAssociadas[0]">
-            <li v-for="(classe, i) in UI.classesAssociadas" :key="i">{{classe.codigo}}</li>
-          </ul>
-          <p v-else>Não tem classes associadas!</p>
-        </span>
-      </v-tooltip>
-    </template>
+  <v-dialog v-model="dialogState" persistent>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
-        <b>Editar Unidade de Instalação: {{ UI.codigo + " - " + UI.titulo}}</b>
+        <b>Editar Unidade de Instalação: {{ UI_clone.codigo + " - " + UI_clone.titulo}}</b>
         <v-spacer />
         <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
@@ -37,7 +13,7 @@
               <v-card-title
                 class="headline grey lighten-2"
                 primary-title
-              >Pretende mesmo eliminar a unidade de instalação: {{ UI.codigo + " - " + UI.titulo}}?</v-card-title>
+              >Pretende mesmo eliminar a unidade de instalação: {{ UI_clone.codigo + " - " + UI_clone.titulo}}?</v-card-title>
 
               <v-card-text align="center">
                 <br />
@@ -301,7 +277,6 @@
           </v-card>
 
           <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
-
           <v-row>
             <v-col md="2" sm="2">
               <div class="info-label">Notas</div>
@@ -338,7 +313,7 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="guardar">Atualizar</v-btn>
       </v-card-actions>
     </v-card>
@@ -349,60 +324,18 @@
 import EntidadesProdutoras from "@/components/rada/criacao/classes/partes/EntidadesProdutoras.vue";
 
 export default {
-  props: ["UI", "RE", "classes"],
-  components: {
-    EntidadesProdutoras
-  },
-  computed: {
-    isComplete() {
-      let back_color = "#FAFAFA";
-
-      if (this.UI.classesAssociadas.length == 0 || this.UI.titulo == "") {
-        back_color = "#FFEBEE";
-      }
-      return back_color;
-    },
-    getCodigos() {
-      return this.classes
-        .filter(
-          e =>
-            (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
-        )
-        .map(e => {
-          return {
-            codigo: e.codigo,
-            searchField: e.codigo + " - " + e.titulo
-          };
-        });
-    }
-  },
-  watch: {
-    cod: function(novo, old) {
-      let c = this.classes.find(e => e.codigo == novo);
-
-      if (c != undefined) {
-        this.iscodvalido = true;
-        this.tituloClasse = c.titulo;
-        this.tipoClasse = c.tipo;
-      } else {
-        this.iscodvalido = false;
-      }
-    }
-  },
+  props: ["UI_clone", "RE", "classes", "dialog"],
   data: () => ({
-    tituloClasse: null,
-    existe_erros: false,
-    erros: [],
     toDelete: false,
-    showTable: false,
-    alertOn: false,
     menu1: false,
     menu2: false,
     cod: null,
+    existe_erros: false,
+    erros: [],
     iscodvalido: false,
+    tituloClasse: null,
     tipoClasse: null,
-    UI_clone: {},
-    dialog: false,
+    alertOn: false,
     headers: [
       {
         text: "Série/Subsérie Associada",
@@ -427,30 +360,44 @@ export default {
       }
     ]
   }),
-  methods: {
-    data_final_valida(v) {
-      if (!!v) {
-        if (this.UI_clone.dataInicial != null) {
-          let data_inicial = new Date(this.UI_clone.dataInicial);
-          let data_final = new Date(v);
+  components: {
+    EntidadesProdutoras
+  },
+  watch: {
+    cod: function(novo, old) {
+      let c = this.classes.find(e => e.codigo == novo);
 
-          if (data_inicial > data_final) {
-            return "Data final inválida! É anterior à data inicial.";
-          }
+      if (c != undefined) {
+        this.iscodvalido = true;
+        this.tituloClasse = c.titulo;
+        this.tipoClasse = c.tipo;
+      } else {
+        this.iscodvalido = false;
+      }
+    }
+  },
+  methods: {
+    async adicionarClasseUI() {
+      this.alertOn = false;
+
+      if (this.$refs.addRel.validate()) {
+        if (!(await this.validateUI())) {
+          this.UI_clone.classesAssociadas.push({
+            codigo: this.cod,
+            tipo: this.tipoClasse,
+            titulo: this.tituloClasse
+          });
+
+          this.$refs.addRel.reset();
+        } else {
+          this.alertOn = true;
         }
-        return true;
       }
-      return false;
     },
-    eliminarUI() {
-      for (let i = 0; i < this.UI.classesAssociadas.length; i++) {
-        this.elimina_de_classe(
-          this.UI.classesAssociadas[i].codigo,
-          this.UI.codigo
-        );
-      }
-      this.$emit("remover", this.UI.codigo);
-      this.dialog = false;
+    validateUI: function() {
+      return this.UI_clone.classesAssociadas.some(el => {
+        return el.codigo == this.cod;
+      });
     },
     eCodigoClasseValido(v) {
       if (
@@ -465,102 +412,41 @@ export default {
         return false;
       }
     },
+    remove(item) {
+      this.UI_clone.classesAssociadas = this.UI_clone.classesAssociadas.filter(
+        e => {
+          return e.codigo != item.codigo;
+        }
+      );
+    },
+    data_final_valida(v) {
+      if (!!v) {
+        if (this.UI_clone.dataInicial != null) {
+          let data_inicial = new Date(this.UI_clone.dataInicial);
+          let data_final = new Date(v);
+
+          if (data_inicial > data_final) {
+            return "Data final inválida! É anterior à data inicial.";
+          }
+        }
+        return true;
+      }
+      return false;
+    },
     elimina_de_classe(classe_eliminada, codigo_UI) {
       let classe = this.classes.find(cl => cl.codigo == classe_eliminada);
 
       classe.UIs = classe.UIs.filter(e => e != codigo_UI);
     },
-    adiciona_a_classe(classe_adicionada, codigo_UI) {
-      let classe = this.classes.find(
-        cl => cl.codigo == classe_adicionada.codigo
-      );
-
-      if (classe == undefined) {
-        if (classe_adicionada.tipo == "Série") {
-          classe = {
-            codigo: classe_adicionada.codigo,
-            titulo: classe_adicionada.titulo,
-            descricao: "",
-            dataInicial: null,
-            dataFinal: null,
-            tUA: "",
-            tSerie: "",
-            suporte: "",
-            medicao: "",
-            localizacao: [],
-            entProdutoras: [],
-            tipologiasProdutoras: [],
-            legislacao: [],
-            relacoes: [],
-            UIs: [codigo_UI],
-            pca: null,
-            formaContagem: {
-              forma: null
-            },
-            justificacaoPCA: [],
-            df: null,
-            justificacaoDF: [],
-            notas: "",
-            eFilhoDe: null,
-            tipo: "Série"
-          };
-        } else {
-          classe = {
-            codigo: classe_adicionada.codigo,
-            titulo: classe_adicionada.titulo,
-            descricao: "",
-            dataInicial: null,
-            dataFinal: null,
-            relacoes: [],
-            UIs: [codigo_UI],
-            pca: null,
-            formaContagem: {
-              forma: null
-            },
-            justificacaoPCA: [],
-            df: null,
-            justificacaoDF: [],
-            notas: "",
-            eFilhoDe: null,
-            tipo: "Subsérie"
-          };
-        }
-        this.classes.push(classe);
-      } else {
-        classe.UIs.push(codigo_UI);
-      }
-    },
-    editaClasses(UI_real, UI_copia) {
-      let novo_classesAssociadas = [];
-
-      // Iterar o array alterado pelo utilizador
-      for (let i = 0; i < UI_copia.classesAssociadas.length; i++) {
-        let classe_ui_igual = UI_real.classesAssociadas.find(
-          ui => ui.codigo == UI_copia.classesAssociadas[i].codigo
+    eliminarUI() {
+      for (let i = 0; i < this.UI_clone.classesAssociadas.length; i++) {
+        this.elimina_de_classe(
+          this.UI_clone.classesAssociadas[i].codigo,
+          this.UI_clone.codigo
         );
-
-        if (classe_ui_igual == undefined) {
-          this.adiciona_a_classe(UI_copia.classesAssociadas[i], UI_real.codigo);
-        }
-
-        delete UI_copia.classesAssociadas[i].titulo;
-        novo_classesAssociadas.push(UI_copia.classesAssociadas[i]);
       }
-
-      //Iterar o array original de uis
-      for (let j = 0; j < UI_real.classesAssociadas.length; j++) {
-        let classe_ui_igual = UI_copia.classesAssociadas.find(
-          ui => ui.codigo == UI_real.classesAssociadas[j].codigo
-        );
-
-        if (classe_ui_igual == undefined) {
-          this.elimina_de_classe(
-            UI_real.classesAssociadas[j].codigo,
-            UI_real.codigo
-          );
-        }
-      }
-      return novo_classesAssociadas;
+      this.$emit("remover", this.UI_clone.codigo);
+      this.dialogState = false;
     },
     recolherErros() {
       this.existe_erros = true;
@@ -607,68 +493,33 @@ export default {
       this.erros = [];
 
       if (this.$refs.formUI.validate()) {
-        this.UI.classesAssociadas = await this.editaClasses(
-          this.UI,
-          this.UI_clone
-        );
-
-        this.UI.titulo = this.UI_clone.titulo;
-        this.UI.codCota = this.UI_clone.codCota;
-        this.UI.dataInicial = this.UI_clone.dataInicial;
-        this.UI.dataFinal = this.UI_clone.dataFinal;
-        this.UI.produtor = this.UI_clone.produtor;
-        this.UI.descricao = this.UI_clone.descricao;
-        this.UI.notas = this.UI_clone.notas;
-        this.UI.localizacao = this.UI_clone.localizacao;
-
-        this.dialog = false;
+        this.$emit("atualizar");
       } else {
         this.recolherErros();
       }
-    },
-    remove: function(item) {
-      this.UI_clone.classesAssociadas = this.UI_clone.classesAssociadas.filter(
-        e => {
-          return e.codigo != item.codigo;
-        }
-      );
-    },
-    buscarTitulosClasses() {
-      this.UI_clone.classesAssociadas.forEach(rel => {
-        let classe_relacionada = this.classes.find(
-          cl => cl.codigo == rel.codigo
-        );
-
-        rel["titulo"] = classe_relacionada.titulo;
-      });
-    },
-    cloneUI() {
-      //DEEP CLONE OF UI
-      this.UI_clone = JSON.parse(JSON.stringify(this.UI));
-
-      this.buscarTitulosClasses();
-    },
-    async adicionarClasseUI() {
-      this.alertOn = false;
-
-      if (this.$refs.addRel.validate()) {
-        if (!(await this.validateUI())) {
-          this.UI_clone.classesAssociadas.push({
-            codigo: this.cod,
-            tipo: this.tipoClasse,
-            titulo: this.tituloClasse
-          });
-
-          this.$refs.addRel.reset();
-        } else {
-          this.alertOn = true;
-        }
+    }
+  },
+  computed: {
+    dialogState: {
+      get() {
+        return this.dialog;
+      },
+      set(val) {
+        this.$emit("fecharDialog", false);
       }
     },
-    validateUI: function() {
-      return this.UI_clone.classesAssociadas.some(el => {
-        return el.codigo == this.cod;
-      });
+    getCodigos() {
+      return this.classes
+        .filter(
+          e =>
+            (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
+        )
+        .map(e => {
+          return {
+            codigo: e.codigo,
+            searchField: e.codigo + " - " + e.titulo
+          };
+        });
     }
   }
 };
