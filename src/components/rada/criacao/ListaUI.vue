@@ -41,7 +41,7 @@
 
 <script>
 import UI from "@/components/rada/criacao/classes/UI";
-import EditaUI from "@/components/rada/alteracao/EditaUI";
+import EditaUI from "@/components/rada/alteracao/EditarUI";
 
 export default {
   props: ["TS", "RE"],
