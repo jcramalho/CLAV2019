@@ -1,30 +1,10 @@
 <template>
   <div>
-      <v-row>
-          <v-col cols="2">
-              <v-btn class="ma-1" fab small color="indigo" @click="debug=true">Debug</v-btn>
-          </v-col>
-          <v-col>
-              <v-dialog v-model="debug" fullscreen hide-overlay transition="dialog-bottom-transition">
-                  <v-card>
-                    <v-card-title class="headline">
-                        Painel de Debug
-                    </v-card-title>
-                    <v-card-text>
-                        <div class="info-content">
-                            {{ JSON.stringify(entidades) }}
-                        </div>
-                    </v-card-text>
-                  </v-card>
-              </v-dialog>
-          </v-col>
-      </v-row>
-
       <v-data-table
         :items="lista"
         :headers="headers"
         class="ma-1"
-        item-key="classe"
+        item-key="chave"
         :footer-props="procsFooterProps"
       >
 
@@ -32,12 +12,12 @@
       <tr
         :style="{
           backgroundColor: props.item.edited
-              ? 'orange'
+              ? '#BBDEFB'
               : 'transparent'
         }"
       >
         <td>
-          {{ props.item.classe }}
+          {{ props.item.proc }}
         </td>
         <td>
           {{ props.item.designacao }}
@@ -61,7 +41,6 @@
   </v-data-table>
 
   <Selresponsabilidade v-if="selecionaResponsabilidades" 
-        :es = "entidades"
         :p = "procSel"
         @selecionadas = "selecionaResponsabilidades=false"/>
   </div>
@@ -307,6 +286,7 @@ export default {
       this.$emit("contadorProcPreSelCom", this.listaResComuns);
     }
   },
+
   created: async function() {
     try {
       // Vai a API de dados buscar todos os cálculos das travessias

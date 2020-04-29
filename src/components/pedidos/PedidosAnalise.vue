@@ -165,7 +165,7 @@ export default {
           text: "Entidade",
           value: "entidade",
           class: "title",
-          sortable: false,
+          sortable: true,
           filterable: true,
         },
         {
