@@ -35,7 +35,11 @@
               <tr>
                 <td>{{ props.item.sigla }}</td>
                 <td>{{ props.item.designacao }}</td>
-                <td><v-icon color="red">delete</v-icon></td>
+                <td>
+                  <v-icon color="red" @click="removeTipologia(props.item)">
+                    delete
+                  </v-icon>
+                </td>
               </tr>
             </template>
 
@@ -44,7 +48,7 @@
                 <v-btn
                   rounded
                   class="indigo accent-4 white--text"
-                  @click="tipologiasClick()"
+                  @click="abreTipologiasDialog()"
                 >
                   Adicionar Tipologias
                 </v-btn>
@@ -93,9 +97,10 @@
     <!-- Dialog de tipologias-->
     <v-dialog v-model="dialogTipologias" width="50%" persistent>
       <SelecionaAutocomplete
-        :mensagem="mensagemCombobox"
+        :mensagem="mensagemAutocomplete"
         :tipologias="tipologias"
         :tipologiasSelecionadas="tipologiasSelecionadas"
+        @fechar="fechaTipologiasDialog"
       />
     </v-dialog>
   </div>
@@ -120,9 +125,9 @@ export default {
 
   data() {
     return {
-      mensagemCombobox: {
+      mensagemAutocomplete: {
         titulo: "tipologias",
-        combobox: "tipologias",
+        autocomplete: "tipologias",
       },
       loading: true,
       erroDialog: {
@@ -131,34 +136,7 @@ export default {
       },
       pedidoLoaded: false,
       dialogTipologias: false,
-      infoPedido: [
-        {
-          campo: "Sigla",
-          conteudo: this.p.objeto.dados.sigla,
-          cor: null,
-        },
-        {
-          campo: "Designação",
-          conteudo: this.p.objeto.dados.designacao,
-          cor: null,
-        },
-        {
-          campo: "Internacional",
-          conteudo: this.p.objeto.dados.internacional,
-          cor: null,
-        },
-        { campo: "SIOE", conteudo: this.p.objeto.dados.sioe, cor: null },
-        {
-          campo: "Tipologias",
-          conteudo: this.p.objeto.dados.tipologiasSel,
-          cor: null,
-        },
-        {
-          campo: "Data Extinção",
-          conteudo: this.p.objeto.dados.dataExtincao,
-          cor: null,
-        },
-      ],
+      infoPedido: [],
       headersTipologias: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
@@ -174,13 +152,14 @@ export default {
 
       tipologias: [],
       tipologiasSelecionadas: [],
+      pedido: null,
     };
   },
 
   async created() {
     try {
       await this.loadTipologias();
-      this.tipologiasSelecionadas = this.p.objeto.tipologiasSel;
+      // this.tipologiasSelecionadas = this.p.objeto.tipologiasSel;
 
       this.loading = false;
     } catch (e) {
@@ -193,16 +172,128 @@ export default {
     }
   },
 
+  mounted() {
+    this.infoPedido = [
+      {
+        campo: "Sigla",
+        conteudo: this.pedido.objeto.dados.sigla,
+        cor: null,
+      },
+      {
+        campo: "Designação",
+        conteudo: this.pedido.objeto.dados.designacao,
+        cor: null,
+      },
+      {
+        campo: "Internacional",
+        conteudo: this.pedido.objeto.dados.internacional,
+        cor: null,
+      },
+      { campo: "SIOE", conteudo: this.pedido.objeto.dados.sioe, cor: null },
+      {
+        campo: "Tipologias",
+        conteudo: this.pedido.objeto.dados.tipologiasSel,
+        cor: null,
+      },
+      {
+        campo: "Data Extinção",
+        conteudo: this.pedido.objeto.dados.dataExtincao,
+        cor: null,
+      },
+    ];
+  },
+
+  watch: {
+    p: {
+      handler(newP, oldP) {
+        if (newP !== oldP) {
+          this.tipologiasSelecionadas = newP.objeto.dados.tipologiasSel;
+          this.pedido = this.p;
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    pedido: {
+      handler() {
+        this.infoPedido = [
+          {
+            campo: "Sigla",
+            conteudo: this.pedido.objeto.dados.sigla,
+            cor: null,
+          },
+          {
+            campo: "Designação",
+            conteudo: this.pedido.objeto.dados.designacao,
+            cor: null,
+          },
+          {
+            campo: "Internacional",
+            conteudo: this.pedido.objeto.dados.internacional,
+            cor: null,
+          },
+          { campo: "SIOE", conteudo: this.pedido.objeto.dados.sioe, cor: null },
+          {
+            campo: "Tipologias",
+            conteudo: this.pedido.objeto.dados.tipologiasSel,
+            cor: null,
+          },
+          {
+            campo: "Data Extinção",
+            conteudo: this.pedido.objeto.dados.dataExtincao,
+            cor: null,
+          },
+        ];
+      },
+      deep: true,
+    },
+  },
+
   methods: {
-    tipologiasClick() {
+    abreTipologiasDialog() {
+      this.tipologiasSelecionadas.forEach((tipSel) => {
+        const index = this.tipologias.findIndex(
+          (tip) => tip.sigla === tipSel.sigla
+        );
+
+        if (index !== -1) this.tipologias.splice(index, 1);
+        console.log("index :>> ", index);
+      });
+
       this.dialogTipologias = true;
+    },
+
+    fechaTipologiasDialog() {
+      this.dialogTipologias = false;
+    },
+
+    removeTipologia(tipologia) {
+      console.log("tipologia :>> ", tipologia);
+      const index = this.pedido.objeto.dados.tipologiasSel.findIndex(
+        (tipSel) => tipSel.sigla === tipologia.sigla
+      );
+
+      console.log("index Tipologia :>> ", index);
+
+      const existe = this.tipologias.every(
+        (tip) => tip.sigla === tipologia.sigla
+      );
+
+      if (index !== -1) {
+        if (!existe) {
+          this.tipologias.push(tipologia);
+        }
+
+        this.pedido.objeto.dados.tipologiasSel.splice(index, 1);
+      }
     },
 
     loadTipologias: async function() {
       try {
         let response = await this.$request("get", "/tipologias/");
 
-        this.tipologias = response.data.map(function(item) {
+        this.tipologias = response.data.map((item) => {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -227,7 +318,7 @@ export default {
           despacho: dados.mensagemDespacho,
         };
 
-        let pedido = JSON.parse(JSON.stringify(this.p));
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
@@ -249,7 +340,7 @@ export default {
 
         let dadosUtilizador = this.$verifyTokenUser();
 
-        let pedido = JSON.parse(JSON.stringify(this.p));
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;

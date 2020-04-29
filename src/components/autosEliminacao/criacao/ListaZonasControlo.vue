@@ -26,15 +26,7 @@
             <v-row justify="end" class="mx-4">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon
-                    v-on="on"
-                    class="mr-2"
-                    @click="
-                      editarIndex = index;
-                      editarZC = true;
-                    "
-                    >edit</v-icon
-                  >
+                  <v-icon v-on="on" class="mr-2" @click="editarIndex=index; editarZC=true; filtrarDonos()">edit</v-icon>
                 </template>
                 <span>Editar Classe</span>
               </v-tooltip>
@@ -135,6 +127,7 @@
             v-bind:zona="auto.zonaControlo[editarIndex]"
             v-bind:index="editarIndex"
             v-bind:classesCompletas="classesCompletas"
+            v-bind:donos="donos"
           />
         </v-dialog>
         <v-dialog v-model="deleteDialog" width="700" persistent>
@@ -220,6 +213,7 @@ export default {
     classe: null,
     ni: "Vazio",
     dono: null,
+    donos: [],
     dataInicio: null,
     dataFim: null,
     uiPapel: null,
@@ -242,9 +236,16 @@ export default {
       this.auto.zonaControlo.splice(this.deleteIndex, 1);
       this.deleteDialog = false;
     },
-    closeZC: function() {
-      this.editarZC = false;
-      this.snackbar = true;
+    closeZC: function () {
+      this.editarZC = false
+      this.snackbar = true
+    },
+    filtrarDonos: async function() {
+      this.donos = this.entidades
+
+      for(var f of this.auto.fundo)
+        this.donos = this.donos.filter(e => !e.includes(f))
+
     }
   }
 };

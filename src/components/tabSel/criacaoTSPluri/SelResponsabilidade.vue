@@ -38,8 +38,7 @@
         </v-card-text>
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="indigo darken-4" text dark rounded @click="selecionar">Selecionar</v-btn>
-            <v-btn color="red darken-4" text dark rounded @click="dialog = false;">Cancelar</v-btn>
+            <v-btn color="indigo darken-4" text dark rounded @click="selecionar">Guardar</v-btn>
         </v-card-actions>
       </v-card>
       </v-dialog>
@@ -49,7 +48,7 @@
 
 <script>
 export default {
-  props: ["es", "p"],
+  props: ["p"],
 
   data: function() {
     return {
@@ -74,19 +73,6 @@ export default {
   },
 
   mounted: function(){
-    if(!("entidades" in this.p)){
-        this.p["entidades"] = [];
-        for(let i=0; i < this.es.length; i++){
-            this.p.entidades.push({
-                sigla: this.es[i].sigla,
-                designacao: this.es[i].designacao,
-                id: this.es[i].id,
-                label: this.es[i].searchField,
-                dono: false,
-                participante: "NP"
-            });
-        }
-    }
     this.dialog = true;
   },
 
@@ -103,6 +89,21 @@ export default {
 
     // Devolve a seleção para cima
     selecionar: function(){
+        let i=0, encontreiDono=false, encontreiParticipante=false;
+        while(i < this.p.entidades.length && (!encontreiDono || !encontreiParticipante)){
+            if(this.p.entidades[i].dono) encontreiDono = true;
+            if(this.p.entidades[i].participante != "NP") encontreiParticipante = true;
+            i++;
+        }
+        if(encontreiDono) this.p.dono = true;
+        else this.p.dono = false;
+        if(encontreiParticipante) this.p.participante = true;
+        else this.p.participante = false;
+
+        if(encontreiDono || encontreiParticipante) this.p.edited = true;
+        else this.p.edited = false;
+        
+        this.p.chave = this.p.chave * -1;
         this.$emit("selecionadas");
     }
   }

@@ -34,6 +34,14 @@
       <v-col cols="12" xs="12" sm="12">
         <div v-if="TS.classes.length > 0">
           <v-treeview hoverable :items="preparaTree" item-key="codigo">
+            <template v-slot:prepend="{ item }">
+              <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
+              <img
+                v-else-if="item.tipo == 'Subsérie'"
+                style="width:23px; height:30px"
+                :src="svg_ssr"
+              />
+            </template>
             <template v-slot:label="{ item }">
               <EditarSerie
                 v-if="item.tipo == 'Série'"
@@ -125,6 +133,9 @@ export default {
     ListaUI
   },
   data: () => ({
+    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+    erros_ts: [],
     loading_circle: false,
     formaContagem: {
       subFormasContagem: [],

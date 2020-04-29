@@ -167,6 +167,11 @@ export default {
               level: [7]
             },
             {
+              label: "Alterar parâmetros da API de dados",
+              url: "/gestao/alterarParametros",
+              level: [7]
+            },
+            {
               label: "Exportar Coleções",
               url: "/gestao/exportarColecoes",
               level: [7]

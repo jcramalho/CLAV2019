@@ -451,6 +451,12 @@ export default new Router({
       meta: { levels: [7] },
     },
     {
+      path: "/gestao/alterarParametros",
+      name: "alterarParametros",
+      component: () => import("./views/gestao/AlterarParametros.vue"),
+      meta: { levels: [7] },
+    },
+    {
       path: "/gestao/exportarColecoes",
       name: "exportarColecoes",
       component: () => import("./views/gestao/ExportarColecoes.vue"),

@@ -1,6 +1,7 @@
 <template>
   <div>
     <!-- 1 -->
+    <!-- {{JSON.stringify(newSerie.pca)}} -->
     <v-row>
       <!-- {{newSerie}} -->
       <v-col md="3" sm="3">
@@ -13,7 +14,7 @@
           v-model="newSerie.pca"
           label="Prazo de Conservação Administrativa"
           solo
-          clearable
+          :messages="error_messages"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -48,6 +49,9 @@ import JustificacaoDF from "./JustificacaoDF";
 
 export default {
   props: ["newSerie", "classes", "formaContagem", "rules"],
+  data: () => ({
+    error_messages: []
+  }),
   components: {
     JustificacaoPCA,
     FormaContagem,
@@ -55,11 +59,24 @@ export default {
   },
   methods: {
     rule(v) {
-      if (this.rules && (v == null || v == "")) {
-        return "Campo Obrigatório";
+      if (this.rules) {
+        if (v == null || v == "") {
+          return "Campo Obrigatório. Valor tem que ser inteiro!";
+        }
       } else {
-        return true;
+        if (
+          v == "" &&
+          this.error_messages.findIndex(
+            e => e == "Valor tem que ser inteiro!"
+          ) == -1
+        ) {
+          this.error_messages.push("Valor tem que ser inteiro!");
+        } else {
+          this.error_messages = [];
+        }
       }
+
+      return true;
     }
   }
 };
