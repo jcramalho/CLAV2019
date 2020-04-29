@@ -265,6 +265,18 @@ export default {
       if (!this.newSerie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
+
+      if (
+        this.newSerie.formaContagem.forma ==
+          "vc_pcaFormaContagem_disposicaoLegal" &&
+        !this.newSerie.formaContagem.subforma
+      ) {
+        this.erros.push("Subforma de Contagem;");
+      }
+
+      // if (!Boolean(this.erros[0])) {
+      //   this.erros.push("Datas Inválidas;");
+      // }
     },
     save: function() {
       this.existe_erros = false;

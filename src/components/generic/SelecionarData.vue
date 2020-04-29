@@ -26,7 +26,7 @@
       show-current
       first-day-of-week="1"
       :max="new Date().toISOString().substr(0, 10)"
-      min="1970-01-01"
+      min="1900-01-01"
       locale="pt"
       @input="
         menu1 = false;

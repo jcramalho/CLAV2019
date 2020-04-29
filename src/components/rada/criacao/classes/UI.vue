@@ -497,6 +497,10 @@ export default {
       if (!this.UI.localizacao) {
         this.erros.push("Localização;");
       }
+
+      // if (!Boolean(this.erros[0])) {
+      //   this.erros.push("Datas Inválidas;");
+      // }
     },
     guardar: function() {
       this.existe_erros = false;

@@ -125,6 +125,7 @@ export default {
     ListaUI
   },
   data: () => ({
+    erros_ts: [],
     loading_circle: false,
     formaContagem: {
       subFormasContagem: [],
