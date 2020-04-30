@@ -16,21 +16,11 @@
             <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
           </template>
           <template v-slot:label="{ item }">
-            <ShowSerie
-              v-if="item.tipo == 'Série'"
-              :formaContagem="formaContagem"
-              :treeview_object="item"
-              :classes="TS.classes"
-              :show_a_partir_de_pedido="true"
-            />
-            <ShowSubserie
-              v-else-if="item.tipo == 'Subsérie'"
-              :treeview_object="item"
-              :classes="TS.classes"
-              :formaContagem="formaContagem"
-              :show_a_partir_de_pedido="true"
-            />
-            <ShowOrganico v-else :treeview_object="item" :classes="TS.classes" />
+            <b @click="showClasse(item)">
+              {{
+              item.titulo
+              }}
+            </b>
           </template>
         </v-treeview>
       </v-col>
@@ -69,6 +59,31 @@
         </v-alert>
       </v-col>
     </v-row>
+    <ShowSerie
+      v-if="show_serie"
+      :dialog="show_serie"
+      @fecharDialog="show_serie = false"
+      :formaContagem="formaContagem"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :show_a_partir_de_pedido="true"
+    />
+    <ShowSubserie
+      v-if="show_subserie"
+      :dialog="show_subserie"
+      @fecharDialog="show_subserie = false"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :formaContagem="formaContagem"
+      :show_a_partir_de_pedido="true"
+    />
+    <ShowOrganico
+      v-if="show_area_organico"
+      @fecharDialog="show_area_organico = false"
+      :dialog="show_area_organico"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+    />
   </v-card>
 </template>
 
@@ -90,6 +105,10 @@ export default {
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     search: "",
+    show_serie: false,
+    show_subserie: false,
+    show_area_organico: false,
+    treeview_object: null,
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
@@ -142,6 +161,23 @@ export default {
     }
   },
   methods: {
+    showClasse(item) {
+      console.log(item);
+      switch (item.tipo) {
+        case "Série":
+          this.treeview_object = item;
+          this.show_serie = true;
+          break;
+        case "Subsérie":
+          this.treeview_object = item;
+          this.show_subserie = true;
+          break;
+        default:
+          this.treeview_object = item;
+          this.show_area_organico = true;
+          break;
+      }
+    },
     preparaTreeFilhos: function(pai_codigo, pai_titulo) {
       let children = [];
 

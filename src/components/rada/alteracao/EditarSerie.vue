@@ -1,16 +1,5 @@
 <template>
-  <v-dialog v-model="dialogSerie" persistent>
-    <template v-slot:activator="{ on }">
-      <b text depressed @click="filterSeries" v-on="on">
-        {{
-        treeview_object.titulo
-        }}
-      </b>
-      <b
-        v-show="treeview_object.eFilhoDe == null || !treeview_object.temUIs_ou_datas || (treeview_object.temDF && !(!!(treeview_object.children[0])))"
-        style="color:red"
-      >*</b>
-    </template>
+  <v-dialog v-model="dialogState" persistent>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ "Alterar a série: " + treeview_object.titulo }}</b>
@@ -104,10 +93,6 @@
                 placeholder="Classe Pai"
                 chips
               >
-                <!-- <template v-slot:item="{ item }">{{ item.codigo }} - {{ item.titulo }}</template>
-                <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo }} - {{ item.titulo }}</v-chip>
-                </template>-->
                 <template v-slot:no-data>
                   <v-list-item>
                     <v-list-item-title>
@@ -129,9 +114,9 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogSerie = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
 
-        <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
+        <v-btn color="success" class="mr-4" @click="atualizar">Atualizar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -151,7 +136,8 @@ export default {
     "RE",
     "UIs",
     "formaContagem",
-    "legislacaoProcessada"
+    "legislacaoProcessada",
+    "dialog"
   ],
   components: {
     Identificacao,
@@ -165,7 +151,6 @@ export default {
     toDelete: false,
     panels: [0, 0, 0],
     isMultiple: false,
-    dialogSerie: false,
     serie: {},
     classesHierarquia: []
   }),
@@ -176,7 +161,7 @@ export default {
         e => e.codigo == this.treeview_object.codigo
       );
       this.$emit("remover", serie_real);
-      this.dialogSerie = false;
+      this.dialogState = false;
     },
     buscarTitulosClasses() {
       for (let i = 0; i < this.serie.relacoes.length; i++) {
@@ -218,32 +203,6 @@ export default {
           // relacaoCriterio["titulo"] = classe_relacionada.titulo;
         }
       }
-    },
-    async filterSeries() {
-      this.existe_erros = false;
-      this.erros = [];
-      this.panels = [0, 0, 0];
-      this.isMultiple = false;
-      // ir buscar o verdadeiro objeto
-      let serie_real = this.classes.find(
-        e => e.codigo == this.treeview_object.codigo
-      );
-
-      // DEEP CLONE do objetos
-      this.serie = JSON.parse(JSON.stringify(serie_real));
-
-      this.buscarTitulosClasses();
-
-      // Classes para definir a hierarquia
-      this.classesHierarquia = this.classes
-        .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo))
-        .map(classe => {
-          return {
-            searchField: classe.codigo + " - " + classe.titulo,
-            codigo: classe.codigo
-          };
-        });
     },
     recolherErros() {
       this.existe_erros = true;
@@ -331,7 +290,7 @@ export default {
       //   this.erros.push("Datas Inválidas;");
       // }
     },
-    save() {
+    atualizar() {
       this.existe_erros = false;
       this.erros = [];
       this.isMultiple = true;
@@ -339,7 +298,7 @@ export default {
       setTimeout(() => {
         if (this.$refs.formSerie.validate()) {
           this.$emit("atualizacao", this.serie);
-          this.dialogSerie = false;
+          this.dialogState = false;
         } else {
           this.isMultiple = false;
           this.panels = [0, 0, 0];
@@ -347,6 +306,38 @@ export default {
         }
       }, 1);
     }
+  },
+  computed: {
+    dialogState: {
+      get() {
+        return this.dialog;
+      },
+      set(val) {
+        this.$emit("fecharDialog", false);
+      }
+    }
+  },
+  created() {
+    // ir buscar o verdadeiro objeto
+    let serie_real = this.classes.find(
+      e => e.codigo == this.treeview_object.codigo
+    );
+
+    // DEEP CLONE do objetos
+    this.serie = JSON.parse(JSON.stringify(serie_real));
+
+    this.buscarTitulosClasses();
+
+    // Classes para definir a hierarquia
+    this.classesHierarquia = this.classes
+      .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+      .sort((a, b) => a.codigo.localeCompare(b.codigo))
+      .map(classe => {
+        return {
+          searchField: classe.codigo + " - " + classe.titulo,
+          codigo: classe.codigo
+        };
+      });
   }
 };
 </script>

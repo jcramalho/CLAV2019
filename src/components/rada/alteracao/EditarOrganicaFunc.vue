@@ -1,12 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
-      <b text depressed @click="filterSeries" v-on="on">{{ treeview_object.titulo }}</b>
-      <b
-        v-show="treeview_object.eFilhoDe == null && (treeview_object.tipo == 'N2' || treeview_object.tipo == 'N3')"
-        style="color:red"
-      >*</b>
-    </template>
+  <v-dialog v-model="dialogState" persistent>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ 'Alterar a classe: ' + treeview_object.titulo }}</b>
@@ -101,7 +94,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
       </v-card-actions>
     </v-card>
@@ -110,26 +103,14 @@
 
 <script>
 export default {
-  props: ["treeview_object", "classes"],
+  props: ["treeview_object", "classes", "dialog"],
   data: () => ({
     hierarquiaDesativada: false,
     toDelete: false,
-    dialog: false,
     classesHierarquia: [],
     classe: {}
   }),
   methods: {
-    filterSeries() {
-      // ir buscar o verdadeiro objeto
-      let classe_area_organico = this.classes.find(
-        e => e.codigo == this.treeview_object.codigo
-      );
-
-      // Clone
-      this.classe = Object.assign({}, classe_area_organico);
-
-      this.filtrarClassesHierarquia(classe_area_organico);
-    },
     // Função para calcular os items de hirarquia para se alterar o pai da classe;
     filtrarClassesHierarquia(classe_area_organico) {
       switch (classe_area_organico.tipo) {
@@ -275,11 +256,32 @@ export default {
     async save() {
       await this.tipo();
       this.$emit("atualizacao", this.classe);
-      this.dialog = false;
+      this.dialogState = false;
     },
     eliminarClasse() {
       this.$emit("remover", this.classe);
-      this.dialog = false;
+      this.dialogState = false;
+    }
+  },
+  created() {
+    // ir buscar o verdadeiro objeto
+    let classe_area_organico = this.classes.find(
+      e => e.codigo == this.treeview_object.codigo
+    );
+
+    // Clone
+    this.classe = Object.assign({}, classe_area_organico);
+
+    this.filtrarClassesHierarquia(classe_area_organico);
+  },
+  computed: {
+    dialogState: {
+      get() {
+        return this.dialog;
+      },
+      set(val) {
+        this.$emit("fecharDialog", false);
+      }
     }
   }
 };

@@ -9,50 +9,30 @@
         <v-row>
           <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
             <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>
-              <template v-slot:item.relacao="props">
-                {{
-                props.item.relacao
-                }}
-              </template>
+              <template v-slot:item.relacao="props">{{ props.item.relacao }}</template>
               <template v-slot:item.edicao="props">
                 <td>
                   <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
                 </td>
               </template>
               <template v-slot:item.serieRelacionada="props">
-                <b
-                  v-if="!classes.some(cl => cl.codigo == props.item.serieRelacionada.codigo)"
-                  @click="snackbar = true"
-                >
+                <img
+                  v-if="props.item.serieRelacionada.tipo == 'Série'"
+                  style="width:23px; height:30px"
+                  :src="svg_sr"
+                />
+                <img
+                  v-else-if="props.item.serieRelacionada.tipo == 'Subsérie'"
+                  style="width:23px; height:30px"
+                  :src="svg_ssr"
+                />
+                <b @click="showClasse(props.item)">
                   {{
-                  props.item.serieRelacionada.codigo + " - " + props.item.serieRelacionada.titulo
+                  props.item.serieRelacionada.codigo +
+                  " - " +
+                  props.item.serieRelacionada.titulo
                   }}
                 </b>
-
-                <ShowSerie
-                  v-else-if="props.item.serieRelacionada.tipo == 'Série'"
-                  :formaContagem="formaContagem"
-                  :show_a_partir_de_pedido="false"
-                  :treeview_object="{
-                    codigo: props.item.serieRelacionada.codigo,
-                    titulo: props.item.serieRelacionada.codigo + ' - ' + props.item.serieRelacionada.titulo,
-                    eFilhoDe: '',
-                    children: []
-                  }"
-                  :classes="classes"
-                />
-                <ShowSubserie
-                  v-else
-                  :treeview_object="{
-                    codigo: props.item.serieRelacionada.codigo,
-                    titulo: props.item.serieRelacionada.codigo + ' - ' + props.item.serieRelacionada.titulo,
-                    eFilhoDe: '',
-                    children: []
-                  }"
-                  :show_a_partir_de_pedido="false"
-                  :classes="classes"
-                  :formaContagem="formaContagem"
-                />
               </template>
             </v-data-table>
             <hr style="border: 3px solid; border-radius: 2px;" />
@@ -84,12 +64,15 @@
                           <v-list-item-title>
                             Classe
                             <strong>Série</strong> e
-                            <strong>Subsérie</strong> em questão não existe no sistema!
+                            <strong>Subsérie</strong> em questão não existe no
+                            sistema!
                           </v-list-item-title>
                           <v-list-item-subtitle>
                             Pode criar aqui uma nova classe Série ou Subsérie.
-                            Para tal, escreva código da nova classe e prima a tecla
-                            <i>"Enter"</i>. Posteriormente preencha os restantes campos.
+                            Para tal, escreva código da nova classe e prima a
+                            tecla
+                            <i>"Enter"</i>. Posteriormente preencha os restantes
+                            campos.
                           </v-list-item-subtitle>
                         </v-list-item-content>
                       </v-list-item>
@@ -141,7 +124,11 @@
                   >
                     <template v-slot:selection="data">
                       <v-chip>
-                        <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                        <v-avatar left color="amber accent-3">
+                          {{
+                          data.item[0]
+                          }}
+                        </v-avatar>
                         {{ data.item }}
                       </v-chip>
                     </template>
@@ -158,12 +145,10 @@
               </v-row>
               <v-row v-if="!!alertOn">
                 <v-col>
-                  <v-alert
-                    dismissible
-                    dense
-                    text
-                    type="error"
-                  >Impossível criar relação! Já existe ou classe já se encontra relacionada ou relação inválida!</v-alert>
+                  <v-alert dismissible dense text type="error">
+                    Impossível criar relação! Já existe ou classe já se
+                    encontra relacionada ou relação inválida!
+                  </v-alert>
                 </v-col>
               </v-row>
             </v-form>
@@ -175,6 +160,24 @@
         </v-card>
       </v-col>
     </v-row>
+    <ShowSerie
+      v-if="show_serie"
+      :dialog="show_serie"
+      @fecharDialog="show_serie = false"
+      :formaContagem="formaContagem"
+      :show_a_partir_de_pedido="false"
+      :treeview_object="treeview_object"
+      :classes="classes"
+    />
+    <ShowSubserie
+      v-if="show_subserie"
+      :dialog="show_subserie"
+      @fecharDialog="show_subserie = false"
+      :treeview_object="treeview_object"
+      :show_a_partir_de_pedido="false"
+      :classes="classes"
+      :formaContagem="formaContagem"
+    />
   </div>
 </template>
 
@@ -192,8 +195,13 @@ export default {
   },
   data() {
     return {
+      svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+      svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
       snackbar: false,
+      show_serie: false,
+      show_subserie: false,
       tituloClasse: null,
+      treeview_object: null,
       tipoClasse: null,
       iscodvalido: false,
       alertOn: false,
@@ -273,6 +281,25 @@ export default {
     }
   },
   methods: {
+    showClasse(item) {
+      if (this.classes.some(cl => cl.codigo == item.serieRelacionada.codigo)) {
+        this.treeview_object = {
+          codigo: item.serieRelacionada.codigo,
+          titulo:
+            item.serieRelacionada.codigo + " - " + item.serieRelacionada.titulo,
+          eFilhoDe: "",
+          children: []
+        };
+
+        if (item.serieRelacionada.tipo == "Série") {
+          this.show_serie = true;
+        } else {
+          this.show_subserie = true;
+        }
+      } else {
+        this.snackbar = true;
+      }
+    },
     alteraDF(tipo_criterio) {
       if (tipo_criterio == "Critério de Complementaridade Informacional") {
         if (this.newSerie.relacoes.some(e => e.relacao == "Síntese de")) {

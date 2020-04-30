@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="dialogOrganico">
-    <template v-slot:activator="{ on }">
+  <v-dialog v-model="dialogState">
+    <!-- <template v-slot:activator="{ on }">
       <b text depressed @click="getSerie" v-on="on">
         {{
         treeview_object.titulo
         }}
       </b>
-    </template>
+    </template>-->
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ "Área orgânico-funcional: " + treeview_object.titulo }}</b>
@@ -57,7 +57,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogOrganico = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -65,16 +65,24 @@
 
 <script>
 export default {
-  props: ["treeview_object", "classes"],
+  props: ["treeview_object", "classes", "dialog"],
   data: () => ({
-    organico: {},
-    dialogOrganico: false
+    organico: {}
   }),
-  methods: {
-    getSerie() {
-      this.organico = this.classes.find(
-        e => e.codigo == this.treeview_object.codigo
-      );
+
+  created() {
+    this.organico = this.classes.find(
+      e => e.codigo == this.treeview_object.codigo
+    );
+  },
+  computed: {
+    dialogState: {
+      get() {
+        return this.dialog;
+      },
+      set(val) {
+        this.$emit("fecharDialog", false);
+      }
     }
   }
 };

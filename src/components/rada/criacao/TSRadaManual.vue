@@ -43,35 +43,26 @@
               />
             </template>
             <template v-slot:label="{ item }">
-              <EditarSerie
-                v-if="item.tipo == 'Série'"
-                @atualizacao="atualizacao_serie"
-                :treeview_object="item"
-                :classes="TS.classes"
-                :legislacao="legislacao"
-                :legislacaoProcessada="legislacaoProcessada"
-                :RE="RE"
-                :UIs="TS.UIs"
-                :formaContagem="formaContagem"
-                @remover="remover_classe"
-              />
-              <EditarSubserie
-                v-else-if="item.tipo == 'Subsérie'"
-                @atualizacao="atualizacao_subserie"
-                @remover="remover_classe"
-                :treeview_object="item"
-                :classes="TS.classes"
-                :RE="RE"
-                :UIs="TS.UIs"
-                :formaContagem="formaContagem"
-              />
-              <EditarOrganicaFunc
-                v-else
-                @atualizacao="atualizacao_area_organico"
-                @remover="remover_classe"
-                :classes="TS.classes"
-                :treeview_object="item"
-              />
+              <b text @click="editarClasse(item)">
+                {{
+                item.titulo
+                }}
+              </b>
+              <!-- Série -->
+              <b
+                v-show="item.tipo == 'Série' && (item.eFilhoDe == null || !item.temUIs_ou_datas || (item.temDF && !(!!(item.children[0]))))"
+                style="color:red"
+              >*</b>
+              <!-- Subsérie -->
+              <b
+                v-show="item.tipo == 'Subsérie' && (item.eFilhoDe == null || !item.temUIs_ou_datas || item.temDF)"
+                style="color:red"
+              >*</b>
+              <!-- N1, N2 OU N3 -->
+              <b
+                v-show="item.eFilhoDe == null && (item.tipo == 'N2' || item.tipo == 'N3')"
+                style="color:red"
+              >*</b>
             </template>
           </v-treeview>
           <br />
@@ -89,6 +80,41 @@
         <ListaUI :TS="TS" :RE="RE" />
       </v-col>
     </v-row>
+    <EditarSerie
+      v-if="editar_serie"
+      :dialog="editar_serie"
+      @fecharDialog="editar_serie = false"
+      @atualizacao="atualizacao_serie"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :legislacao="legislacao"
+      :legislacaoProcessada="legislacaoProcessada"
+      :RE="RE"
+      :UIs="TS.UIs"
+      :formaContagem="formaContagem"
+      @remover="remover_classe"
+    />
+    <EditarSubserie
+      v-if="editar_subserie"
+      :dialog="editar_subserie"
+      @fecharDialog="editar_subserie = false"
+      @atualizacao="atualizacao_subserie"
+      @remover="remover_classe"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :RE="RE"
+      :UIs="TS.UIs"
+      :formaContagem="formaContagem"
+    />
+    <EditarOrganicaFunc
+      v-if="editar_area_organico"
+      :dialog="editar_area_organico"
+      @fecharDialog="editar_area_organico = false"
+      @atualizacao="atualizacao_area_organico"
+      @remover="remover_classe"
+      :classes="TS.classes"
+      :treeview_object="treeview_object"
+    />
 
     <v-progress-circular
       v-if="loading_circle"
@@ -140,7 +166,11 @@ export default {
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
-    }
+    },
+    treeview_object: null,
+    editar_serie: false,
+    editar_subserie: false,
+    editar_area_organico: false
   }),
   computed: {
     preparaTree() {
@@ -206,6 +236,22 @@ export default {
     }
   },
   methods: {
+    editarClasse(item) {
+      switch (item.tipo) {
+        case "Série":
+          this.treeview_object = item;
+          this.editar_serie = true;
+          break;
+        case "Subsérie":
+          this.treeview_object = item;
+          this.editar_subserie = true;
+          break;
+        default:
+          this.treeview_object = item;
+          this.editar_area_organico = true;
+          break;
+      }
+    },
     preparaTreeFilhos: function(pai) {
       let children = [];
 

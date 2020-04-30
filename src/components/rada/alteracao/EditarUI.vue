@@ -171,9 +171,19 @@
                 hide-default-footer
                 v-if="!!UI_clone.classesAssociadas[0]"
               >
-                <template
-                  v-slot:item.codigo="props"
-                >{{ props.item.codigo + " - " + props.item.titulo }}</template>
+                <template v-slot:item.codigo="props">
+                  <img
+                    v-if="props.item.tipo == 'Série'"
+                    style="width:23px; height:30px"
+                    :src="svg_sr"
+                  />
+                  <img
+                    v-else-if="props.item.tipo == 'Subsérie'"
+                    style="width:23px; height:30px"
+                    :src="svg_ssr"
+                  />
+                  {{ props.item.codigo + " - " + props.item.titulo }}
+                </template>
                 <template v-slot:item.edicao="props">
                   <td>
                     <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
@@ -327,6 +337,8 @@ import EntidadesProdutoras from "@/components/rada/criacao/classes/partes/Entida
 export default {
   props: ["UI_clone", "RE", "classes", "dialog"],
   data: () => ({
+    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     toDelete: false,
     menu1: false,
     menu2: false,
@@ -343,14 +355,7 @@ export default {
         text: "Série/Subsérie Associada",
         align: "center",
         value: "codigo",
-        width: "75%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Tipo",
-        align: "center",
-        value: "tipo",
-        width: "20%",
+        width: "95%",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {

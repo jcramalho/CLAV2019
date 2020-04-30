@@ -54,6 +54,16 @@
             }}
           </template>
           <template v-slot:item.serieRelacionada="props">
+            <img
+              v-if="props.item.serieRelacionada.tipo == 'Série'"
+              style="width:23px; height:30px"
+              :src="svg_sr"
+            />
+            <img
+              v-else-if="props.item.serieRelacionada.tipo == 'Subsérie'"
+              style="width:23px; height:30px"
+              :src="svg_ssr"
+            />
             {{
             props.item.serieRelacionada.codigo + " - " + props.item.serieRelacionada.titulo
             }}
@@ -75,6 +85,8 @@
 export default {
   props: ["classe"],
   data: () => ({
+    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     headers: [
       {
         text: "Relação",
