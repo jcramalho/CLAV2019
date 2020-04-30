@@ -7,6 +7,7 @@
 
       <v-card-text>
         <v-autocomplete
+          v-model="selecao"
           :items="
             tipologias.map(
               (tipologia) => `${tipologia.sigla} - ${tipologia.designacao}`
@@ -16,8 +17,8 @@
           filled
           multiple
           chips
-          hide-selected
           counter
+          hide-selected
           deletable-chips
           class="m-2 mt-4"
           :label="`Selecione ${mensagem.autocomplete}`"
@@ -55,6 +56,7 @@ export default {
   data() {
     return {
       pesquisa: null,
+      selecao: null,
     };
   },
 
@@ -63,7 +65,20 @@ export default {
       this.$emit("fechar");
     },
 
-    adicionar() {},
+    adicionar() {
+      const selecaoFormatada = [];
+
+      this.selecao.forEach((elemento) => {
+        this.tipologias.some((tipologia) => {
+          if (elemento.split(" ")[0].localeCompare(tipologia.sigla) === 0) {
+            selecaoFormatada.push(tipologia);
+          }
+        });
+      });
+
+      this.selecao = null;
+      this.$emit("selecao", selecaoFormatada);
+    },
   },
 };
 </script>

@@ -31,6 +31,10 @@
             class="elevation-1"
             hide-default-footer
           >
+            <template v-slot:no-data>
+              Não existem tipologias selecionadas.
+            </template>
+
             <template v-slot:item="props">
               <tr>
                 <td>{{ props.item.sigla }}</td>
@@ -101,6 +105,7 @@
         :tipologias="tipologias"
         :tipologiasSelecionadas="tipologiasSelecionadas"
         @fechar="fechaTipologiasDialog"
+        @selecao="adicionaTipologias"
       />
     </v-dialog>
   </div>
@@ -207,8 +212,10 @@ export default {
     p: {
       handler(newP, oldP) {
         if (newP !== oldP) {
-          this.tipologiasSelecionadas = newP.objeto.dados.tipologiasSel;
-          this.pedido = this.p;
+          this.tipologiasSelecionadas = JSON.parse(
+            JSON.stringify(newP.objeto.dados.tipologiasSel)
+          );
+          this.pedido = JSON.parse(JSON.stringify(this.p));
         }
       },
       deep: true,
@@ -258,7 +265,6 @@ export default {
         );
 
         if (index !== -1) this.tipologias.splice(index, 1);
-        console.log("index :>> ", index);
       });
 
       this.dialogTipologias = true;
@@ -269,12 +275,9 @@ export default {
     },
 
     removeTipologia(tipologia) {
-      console.log("tipologia :>> ", tipologia);
       const index = this.pedido.objeto.dados.tipologiasSel.findIndex(
         (tipSel) => tipSel.sigla === tipologia.sigla
       );
-
-      console.log("index Tipologia :>> ", index);
 
       const existe = this.tipologias.every(
         (tip) => tip.sigla === tipologia.sigla
@@ -287,6 +290,12 @@ export default {
 
         this.pedido.objeto.dados.tipologiasSel.splice(index, 1);
       }
+    },
+
+    adicionaTipologias(tipologias) {
+      this.tipologiasSelecionadas.push(...tipologias);
+      this.pedido.objeto.dados.tipologiasSel.push(...tipologias);
+      this.dialogTipologias = false;
     },
 
     loadTipologias: async function() {
