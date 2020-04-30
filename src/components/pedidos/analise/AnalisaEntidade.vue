@@ -102,8 +102,7 @@
     <v-dialog v-model="dialogTipologias" width="50%" persistent>
       <SelecionaAutocomplete
         :mensagem="mensagemAutocomplete"
-        :tipologias="tipologias"
-        :tipologiasSelecionadas="tipologiasSelecionadas"
+        :dados="tipologias"
         @fechar="fechaTipologiasDialog"
         @selecao="adicionaTipologias"
       />
@@ -130,18 +129,11 @@ export default {
 
   data() {
     return {
-      mensagemAutocomplete: {
-        titulo: "tipologias",
-        autocomplete: "tipologias",
-      },
       loading: true,
       erroDialog: {
         visivel: false,
         mensagem: null,
       },
-      pedidoLoaded: false,
-      dialogTipologias: false,
-      infoPedido: [],
       headersTipologias: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
@@ -155,8 +147,14 @@ export default {
         },
       ],
 
+      mensagemAutocomplete: {
+        titulo: "tipologias",
+        autocomplete: "tipologias",
+      },
+      dialogTipologias: false,
       tipologias: [],
       tipologiasSelecionadas: [],
+      infoPedido: [],
       pedido: null,
     };
   },
@@ -164,7 +162,6 @@ export default {
   async created() {
     try {
       await this.loadTipologias();
-      // this.tipologiasSelecionadas = this.p.objeto.tipologiasSel;
 
       this.loading = false;
     } catch (e) {
@@ -221,40 +218,6 @@ export default {
       deep: true,
       immediate: true,
     },
-
-    pedido: {
-      handler() {
-        this.infoPedido = [
-          {
-            campo: "Sigla",
-            conteudo: this.pedido.objeto.dados.sigla,
-            cor: null,
-          },
-          {
-            campo: "Designação",
-            conteudo: this.pedido.objeto.dados.designacao,
-            cor: null,
-          },
-          {
-            campo: "Internacional",
-            conteudo: this.pedido.objeto.dados.internacional,
-            cor: null,
-          },
-          { campo: "SIOE", conteudo: this.pedido.objeto.dados.sioe, cor: null },
-          {
-            campo: "Tipologias",
-            conteudo: this.pedido.objeto.dados.tipologiasSel,
-            cor: null,
-          },
-          {
-            campo: "Data Extinção",
-            conteudo: this.pedido.objeto.dados.dataExtincao,
-            cor: null,
-          },
-        ];
-      },
-      deep: true,
-    },
   },
 
   methods: {
@@ -279,7 +242,7 @@ export default {
         (tipSel) => tipSel.sigla === tipologia.sigla
       );
 
-      const existe = this.tipologias.every(
+      const existe = this.tipologias.some(
         (tip) => tip.sigla === tipologia.sigla
       );
 
@@ -298,7 +261,7 @@ export default {
       this.dialogTipologias = false;
     },
 
-    loadTipologias: async function() {
+    async loadTipologias() {
       try {
         let response = await this.$request("get", "/tipologias/");
 
@@ -310,7 +273,9 @@ export default {
           };
         });
       } catch (error) {
-        return error;
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao carregar os dados, por favor tente novamente";
       }
     },
 
