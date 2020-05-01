@@ -114,7 +114,7 @@ export default {
       };
 
       if (this.mensagemDespacho !== null)
-        despacho.utilizadorSelecionado = this.utilizadorSelecionado;
+        despacho.mensagemDespacho = this.mensagemDespacho;
 
       this.$emit("avancarPedido", despacho);
 

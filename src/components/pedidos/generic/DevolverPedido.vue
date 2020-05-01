@@ -50,7 +50,7 @@ export default {
       const despacho = {};
 
       if (this.mensagemDespacho !== null)
-        despacho.utilizadorSelecionado = this.utilizadorSelecionado;
+        despacho.mensagemDespacho = this.mensagemDespacho;
 
       this.$emit("devolverPedido", despacho);
     },

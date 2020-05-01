@@ -40,6 +40,36 @@ export function filtraNivel(utilizadores, nivel, operador = "=") {
   return utilizadoresFiltrados;
 }
 
+export function comparaSigla(a, b) {
+  const keyA = a.sigla;
+  const keyB = b.sigla;
+
+  let comparison = 0;
+  if (keyA > keyB) {
+    comparison = 1;
+  } else if (keyA < keyB) {
+    comparison = -1;
+  }
+
+  return comparison;
+}
+
+export function comparaCodigo(a, b) {
+  const keyA = a.codigo;
+  const keyB = b.codigo;
+
+  let comparison = 0;
+  if (keyA > keyB) {
+    comparison = 1;
+  } else if (keyA < keyB) {
+    comparison = -1;
+  }
+
+  return comparison;
+}
+
 export default {
   filtraNivel,
+  comparaSigla,
+  comparaCodigo,
 };
