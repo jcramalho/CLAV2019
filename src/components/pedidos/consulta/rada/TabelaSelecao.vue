@@ -12,14 +12,20 @@
       <v-col cols="12">
         <v-treeview hoverable :items="preparaTree" item-key="codigo">
           <template v-slot:prepend="{ item }">
-            <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
-            <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
+            <img
+              v-if="item.tipo == 'Série'"
+              style="width:23px; height:30px"
+              :src="svg_sr"
+            />
+            <img
+              v-else-if="item.tipo == 'Subsérie'"
+              style="width:23px; height:30px"
+              :src="svg_ssr"
+            />
           </template>
           <template v-slot:label="{ item }">
             <b @click="showClasse(item)">
-              {{
-              item.titulo
-              }}
+              {{ item.titulo }}
             </b>
           </template>
         </v-treeview>
@@ -46,14 +52,46 @@
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
-            <ShowUI :UI="props.item" />
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <tr
+                  :style="'text-align: center'"
+                  v-on="on"
+                  @click="showUI(props.item)"
+                >
+                  <td>{{ props.item.codigo }}</td>
+                  <td>{{ props.item.titulo }}</td>
+                </tr>
+              </template>
+              <span width="100%">
+                <h4>
+                  Classes associadas a:
+                  <b>{{ props.item.codigo + " - " + props.item.titulo }}</b>
+                </h4>
+
+                <ul v-if="!!props.item.classesAssociadas[0]">
+                  <li
+                    v-for="(classe, i) in props.item.classesAssociadas"
+                    :key="i"
+                  >
+                    {{ classe.codigo }}
+                  </li>
+                </ul>
+                <p v-else>Não tem classes associadas!</p>
+              </span>
+            </v-tooltip>
           </template>
         </v-data-table>
       </v-col>
     </v-row>
     <v-row v-else>
       <v-col cols="12" xs="12" sm="12">
-        <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
+        <v-alert
+          class="text-center"
+          :value="true"
+          color="amber accent-3"
+          icon="warning"
+        >
           Não foram adicionadas
           <b>Unidades de Instalação</b>.
         </v-alert>
@@ -84,6 +122,12 @@
       :treeview_object="treeview_object"
       :classes="TS.classes"
     />
+    <ShowUI
+      v-if="show_ui"
+      @fecharDialog="show_ui = false"
+      :dialog="show_ui"
+      :UI="UI"
+    />
   </v-card>
 </template>
 
@@ -105,6 +149,8 @@ export default {
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     search: "",
+    UI: null,
+    show_ui: false,
     show_serie: false,
     show_subserie: false,
     show_area_organico: false,
@@ -161,8 +207,11 @@ export default {
     }
   },
   methods: {
+    showUI(item) {
+      this.UI = item;
+      this.show_ui = true;
+    },
     showClasse(item) {
-      console.log(item);
       switch (item.tipo) {
         case "Série":
           this.treeview_object = item;
