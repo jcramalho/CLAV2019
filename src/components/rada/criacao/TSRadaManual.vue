@@ -148,7 +148,14 @@ import ListaUI from "@/components/rada/criacao/ListaUI";
 const labels = require("@/config/labels").criterios;
 
 export default {
-  props: ["TS", "entidades", "RE", "legislacao", "legislacaoProcessada"],
+  props: [
+    "TS",
+    "entidades",
+    "RE",
+    "legislacao",
+    "legislacaoProcessada",
+    "loading_circle"
+  ],
   components: {
     AddOrgFunc,
     Serie,
@@ -162,7 +169,6 @@ export default {
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     erros_ts: [],
-    loading_circle: false,
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
@@ -283,7 +289,8 @@ export default {
       return children;
     },
     sendToFather: function() {
-      this.loading_circle = true;
+      // this.loading_circle = true;
+      this.$emit("update:loading_circle", true);
       this.$emit("done");
     },
     atualizacao_area_organico(c) {
