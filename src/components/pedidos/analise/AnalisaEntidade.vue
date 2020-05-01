@@ -31,6 +31,10 @@
             class="elevation-1"
             hide-default-footer
           >
+            <template v-slot:no-data>
+              Não existem tipologias selecionadas.
+            </template>
+
             <template v-slot:item="props">
               <tr>
                 <td>{{ props.item.sigla }}</td>
@@ -98,9 +102,9 @@
     <v-dialog v-model="dialogTipologias" width="50%" persistent>
       <SelecionaAutocomplete
         :mensagem="mensagemAutocomplete"
-        :tipologias="tipologias"
-        :tipologiasSelecionadas="tipologiasSelecionadas"
+        :dados="tipologias"
         @fechar="fechaTipologiasDialog"
+        @selecao="adicionaTipologias"
       />
     </v-dialog>
   </div>
@@ -112,6 +116,8 @@ import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocom
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
+
+import { comparasigla } from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -125,18 +131,11 @@ export default {
 
   data() {
     return {
-      mensagemAutocomplete: {
-        titulo: "tipologias",
-        autocomplete: "tipologias",
-      },
       loading: true,
       erroDialog: {
         visivel: false,
         mensagem: null,
       },
-      pedidoLoaded: false,
-      dialogTipologias: false,
-      infoPedido: [],
       headersTipologias: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
@@ -150,8 +149,14 @@ export default {
         },
       ],
 
+      mensagemAutocomplete: {
+        titulo: "tipologias",
+        autocomplete: "tipologias",
+      },
+      dialogTipologias: false,
       tipologias: [],
       tipologiasSelecionadas: [],
+      infoPedido: [],
       pedido: null,
     };
   },
@@ -159,7 +164,6 @@ export default {
   async created() {
     try {
       await this.loadTipologias();
-      // this.tipologiasSelecionadas = this.p.objeto.tipologiasSel;
 
       this.loading = false;
     } catch (e) {
@@ -207,58 +211,25 @@ export default {
     p: {
       handler(newP, oldP) {
         if (newP !== oldP) {
-          this.tipologiasSelecionadas = newP.objeto.dados.tipologiasSel;
-          this.pedido = this.p;
+          // this.tipologiasSelecionadas = JSON.parse(
+          //   JSON.stringify(newP.objeto.dados.tipologiasSel)
+          // );
+          this.pedido = JSON.parse(JSON.stringify(this.p));
         }
       },
       deep: true,
       immediate: true,
     },
-
-    pedido: {
-      handler() {
-        this.infoPedido = [
-          {
-            campo: "Sigla",
-            conteudo: this.pedido.objeto.dados.sigla,
-            cor: null,
-          },
-          {
-            campo: "Designação",
-            conteudo: this.pedido.objeto.dados.designacao,
-            cor: null,
-          },
-          {
-            campo: "Internacional",
-            conteudo: this.pedido.objeto.dados.internacional,
-            cor: null,
-          },
-          { campo: "SIOE", conteudo: this.pedido.objeto.dados.sioe, cor: null },
-          {
-            campo: "Tipologias",
-            conteudo: this.pedido.objeto.dados.tipologiasSel,
-            cor: null,
-          },
-          {
-            campo: "Data Extinção",
-            conteudo: this.pedido.objeto.dados.dataExtincao,
-            cor: null,
-          },
-        ];
-      },
-      deep: true,
-    },
   },
 
   methods: {
     abreTipologiasDialog() {
-      this.tipologiasSelecionadas.forEach((tipSel) => {
+      this.pedido.objeto.dados.tipologiasSel.forEach((tipSel) => {
         const index = this.tipologias.findIndex(
           (tip) => tip.sigla === tipSel.sigla
         );
 
         if (index !== -1) this.tipologias.splice(index, 1);
-        console.log("index :>> ", index);
       });
 
       this.dialogTipologias = true;
@@ -269,27 +240,31 @@ export default {
     },
 
     removeTipologia(tipologia) {
-      console.log("tipologia :>> ", tipologia);
       const index = this.pedido.objeto.dados.tipologiasSel.findIndex(
         (tipSel) => tipSel.sigla === tipologia.sigla
       );
 
-      console.log("index Tipologia :>> ", index);
-
-      const existe = this.tipologias.every(
+      const existe = this.tipologias.some(
         (tip) => tip.sigla === tipologia.sigla
       );
 
       if (index !== -1) {
         if (!existe) {
           this.tipologias.push(tipologia);
+          this.tipologias.sort(comparaSigla);
         }
 
         this.pedido.objeto.dados.tipologiasSel.splice(index, 1);
       }
     },
 
-    loadTipologias: async function() {
+    adicionaTipologias(tipologias) {
+      // this.tipologiasSelecionadas.push(...tipologias);
+      this.pedido.objeto.dados.tipologiasSel.push(...tipologias);
+      this.dialogTipologias = false;
+    },
+
+    async loadTipologias() {
       try {
         let response = await this.$request("get", "/tipologias/");
 
@@ -301,7 +276,9 @@ export default {
           };
         });
       } catch (error) {
-        return error;
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao carregar os dados, por favor tente novamente";
       }
     },
 
