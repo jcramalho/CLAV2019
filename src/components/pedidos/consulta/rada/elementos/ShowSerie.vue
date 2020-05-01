@@ -1,12 +1,5 @@
 <template>
   <v-dialog v-model="dialogState">
-    <!-- <template v-slot:activator="{ on }">
-      <b text depressed @click="getSerie" v-on="on">
-        {{
-        treeview_object.titulo
-        }}
-      </b>
-    </template>-->
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ "Série: " + treeview_object.titulo }}</b>
