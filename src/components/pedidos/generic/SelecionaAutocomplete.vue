@@ -104,8 +104,6 @@ export default {
         });
       });
 
-      console.log("selecaoFormatada", selecaoFormatada);
-
       this.selecao = null;
       this.$emit("selecao", selecaoFormatada);
     },

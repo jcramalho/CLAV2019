@@ -117,6 +117,8 @@ import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocom
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
+import { comparasigla } from "@/utils/utils";
+
 export default {
   props: ["p"],
 
@@ -221,20 +223,6 @@ export default {
   },
 
   methods: {
-    comparaSigla(a, b) {
-      // Use toUpperCase() to ignore character casing
-      const siglaA = a.sigla;
-      const siglaB = b.sigla;
-
-      let comparison = 0;
-      if (siglaA > siglaB) {
-        comparison = 1;
-      } else if (siglaA < siglaB) {
-        comparison = -1;
-      }
-      return comparison;
-    },
-
     abreTipologiasDialog() {
       this.pedido.objeto.dados.tipologiasSel.forEach((tipSel) => {
         const index = this.tipologias.findIndex(
@@ -263,7 +251,7 @@ export default {
       if (index !== -1) {
         if (!existe) {
           this.tipologias.push(tipologia);
-          this.tipologias.sort(this.comparaSigla);
+          this.tipologias.sort(comparaSigla);
         }
 
         this.pedido.objeto.dados.tipologiasSel.splice(index, 1);
