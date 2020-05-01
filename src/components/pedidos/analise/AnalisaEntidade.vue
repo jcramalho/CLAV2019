@@ -209,9 +209,9 @@ export default {
     p: {
       handler(newP, oldP) {
         if (newP !== oldP) {
-          this.tipologiasSelecionadas = JSON.parse(
-            JSON.stringify(newP.objeto.dados.tipologiasSel)
-          );
+          // this.tipologiasSelecionadas = JSON.parse(
+          //   JSON.stringify(newP.objeto.dados.tipologiasSel)
+          // );
           this.pedido = JSON.parse(JSON.stringify(this.p));
         }
       },
@@ -221,8 +221,22 @@ export default {
   },
 
   methods: {
+    comparaSigla(a, b) {
+      // Use toUpperCase() to ignore character casing
+      const siglaA = a.sigla;
+      const siglaB = b.sigla;
+
+      let comparison = 0;
+      if (siglaA > siglaB) {
+        comparison = 1;
+      } else if (siglaA < siglaB) {
+        comparison = -1;
+      }
+      return comparison;
+    },
+
     abreTipologiasDialog() {
-      this.tipologiasSelecionadas.forEach((tipSel) => {
+      this.pedido.objeto.dados.tipologiasSel.forEach((tipSel) => {
         const index = this.tipologias.findIndex(
           (tip) => tip.sigla === tipSel.sigla
         );
@@ -249,6 +263,7 @@ export default {
       if (index !== -1) {
         if (!existe) {
           this.tipologias.push(tipologia);
+          this.tipologias.sort(this.comparaSigla);
         }
 
         this.pedido.objeto.dados.tipologiasSel.splice(index, 1);
@@ -256,7 +271,7 @@ export default {
     },
 
     adicionaTipologias(tipologias) {
-      this.tipologiasSelecionadas.push(...tipologias);
+      // this.tipologiasSelecionadas.push(...tipologias);
       this.pedido.objeto.dados.tipologiasSel.push(...tipologias);
       this.dialogTipologias = false;
     },
