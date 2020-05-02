@@ -4,7 +4,7 @@
         <v-dialog v-model="dialog" width="95%">
       <v-card>
         <v-card-title class="headline">
-          {{ p.classe }} - {{ p.designacao }}
+          {{ p.proc }} - {{ p.designacao }}
         </v-card-title>
         <v-card-text>
           <v-data-table
@@ -65,6 +65,7 @@ export default {
 
   created: async function(){
       try{
+          alert(this.p);
           await this.tipoParticipacao();
       }
       catch(e){
@@ -89,6 +90,7 @@ export default {
 
     // Devolve a seleção para cima
     selecionar: function(){
+        var contador = 0; // Controla se este proc entra ou não na contagem dos selecionados
         let i=0, encontreiDono=false, encontreiParticipante=false;
         while(i < this.p.entidades.length && (!encontreiDono || !encontreiParticipante)){
             if(this.p.entidades[i].dono) encontreiDono = true;
@@ -100,11 +102,21 @@ export default {
         if(encontreiParticipante) this.p.participante = true;
         else this.p.participante = false;
 
-        if(encontreiDono || encontreiParticipante) this.p.edited = true;
-        else this.p.edited = false;
-        
+        if(encontreiDono || encontreiParticipante) {
+            if(!this.p.edited){
+                this.p.edited = true;
+                contador++;
+            }
+        }
+        else{
+            if(this.p.edited){
+                this.p.edited = false;
+                contador--;
+            }
+        } 
+
         this.p.chave = this.p.chave * -1;
-        this.$emit("selecionadas");
+        this.$emit("selecionadas", contador);
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
       <v-data-table
-        :items="lista"
+        :items="listaProcs.procs"
         :headers="headers"
         class="ma-1"
         item-key="chave"
@@ -30,7 +30,7 @@
         </td>
         <td>
             <v-btn small color="indigo darken-4" dark
-                @click="procSel = props.item; selecionaResponsabilidades=true">Selecionar</v-btn>
+                @click="selecionaParticipacoes(props.item)">Selecionar</v-btn>
         </td>
       </tr>
     </template>
@@ -42,7 +42,7 @@
 
   <Selresponsabilidade v-if="selecionaResponsabilidades" 
         :p = "procSel"
-        @selecionadas = "selecionaResponsabilidades=false"/>
+        @selecionadas = "selectProc($event)"/>
   </div>
 </template>
 
@@ -51,16 +51,16 @@
 import Selresponsabilidade from "@/components/tabSel/criacaoTSPluri/SelResponsabilidade.vue";
 
 export default {
-  props: ["lista", "entidades"],
+  props: ["listaProcs", "entidades"],
   components: {
       Selresponsabilidade
   },
 
   data: () => ({
-    // Ativador do dialog para fazer debug de alguma estrutura
-    debug: false,
     // Processo corrente
     procSel: {},
+    // Travessias
+    travessias: [],
     // Ativador do subcomponente que tem a interface de seleção
     selecionaResponsabilidades: false,
     // Cabeçalho da tabela para selecionar os PNs comuns
@@ -97,110 +97,27 @@ export default {
     }
   }),
   methods: {
-    guardaEntDonos: async function(proc, des) {
-      for (var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++) {
-        var haDono = false;
-        if (this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]]) {
-          haDono = true;
-          this.procSelDonos.push(proc);
-          if (!this.procComunsSel.find(x => x.classe === proc)) {
-            this.procComunsSel.push({
-              classe: proc,
-              designacao: des
-            });
-            this.$emit("contadorProcSelCom", this.procComunsSel);
-            this.calcRel(proc);
-          }
-          break;
-        }
-      }
-      if (!haDono) {
-        var indexDono;
-        if (Object.keys(this.entProcPar[proc]).length == 0) {
-          var index = this.procComunsSel.indexOf(x => x.classe === proc);
-          indexDono = this.procSelDonos.indexOf(proc);
-          if (index != -1) {
-            this.procComunsSel.splice(index, 1);
-            this.procSelDonos.splice(indexDono, 1);
-            this.uncheck(proc);
-            this.$emit("contadorProcSelCom", this.procComunsSel);
-          }
-        } else {
-          indexDono = this.procSelDonos.indexOf(proc);
-          if (index != -1) {
-            this.procSelDonos.splice(indexDono, 1);
-          }
-        }
-      }
+    // Seleção das participações
+    selecionaParticipacoes: function(proc){
+        this.procSel = proc;
+        this.selecionaResponsabilidades = true;
+    },
 
-      var guardar = {};
-      guardar["dono"] = this.entProcDono;
-      this.$emit("guardarTSProcComuns", guardar);
-    },
-    selecTodasEnt: async function(entidades, proc, des) {
-      for (var i = 0; i < entidades.length; i++) {
-        this.entProcDono[proc][entidades[i].id] = true;
-      }
-      this.procSelDonos.push(proc);
-      if (!this.procComunsSel.find(x => x.classe === proc)) {
-        this.procComunsSel.push({
-          classe: proc,
-          designacao: des
-        });
-        this.$emit("contadorProcSelCom", this.procComunsSel);
-        this.calcRel(proc);
-      }
-      var guardar = {};
-      guardar["dono"] = this.entProcDono;
-      this.$emit("guardarTSProcComuns", guardar);
-    },
-    guardaEntPar: async function(proc, des) {
-      var guardar = {};
-      guardar["part"] = this.entProcPar;
-      this.$emit("guardarTSProcComuns", guardar);
-      if (
-        !this.procComunsSel.find(x => x.classe === proc) &&
-        Object.keys(this.entProcPar[proc]).length
-      ) {
-        this.procComunsSel.push({
-          classe: proc,
-          designacao: des
-        });
-        this.$emit("contadorProcSelCom", this.procComunsSel);
-        this.calcRel(proc);
-      } else if (Object.keys(this.entProcPar[proc]).length == 0) {
-        var haDono = false;
-        for (var i = 0; i < Object.keys(this.entProcDono[proc]).length; i++) {
-          if (this.entProcDono[proc][Object.keys(this.entProcDono[proc])[i]]) {
-            haDono = true;
-            break;
-          }
+    // Função de retorno do processo de seleção  
+    selectProc: function(inc){
+        this.selecionaResponsabilidades = false;
+        this.listaProcs.numProcSelCom += inc;
+        alert(JSON.stringify(this.listaProcs))
+        /*if(inc > 0){ // foi selecionado
+            this.acrescentaFecho(this.procSel);
         }
-        if (!haDono) {
-          var index = this.procComunsSel.indexOf(x => x.classe === proc);
-          if (index != -1) {
-            this.procComunsSel.splice(index, 1);
-            this.uncheck(proc);
-            this.$emit("contadorProcSelCom", this.procComunsSel);
-          }
-        }
-      }
+        else{
+            this.retiraFecho(this.procSel);
+        }*/
     },
-    desselecionarPart: async function(classe, id) {
-      delete this.entProcPar[classe][id];
-    },
-    // Lista com todos os tipos de intervenção possíveis
-    tipoPar: async function() {
-      var resPar = await this.$request(
-        "get",
-        "/vocabularios/vc_processoTipoParticipacao"
-      );
-      for (var i = 0; i < resPar.data.length; i++) {
-        this.tipoParticipacao.push(resPar.data[i].termo);
-      }
-    },
+    
     // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
-    calcRel: async function(processo) {
+    acrescentaFecho: async function(processo) {
       try {
         // Lista com todos os processos resultantes da travessia com ponto de partida no processo x (processo):
         this.listaProcResultado[processo] = this.travessias[processo];
@@ -246,7 +163,7 @@ export default {
       }
     },
     // Reverte a seleção
-    uncheck: async function(processo) {
+    retiraFecho: async function(processo) {
       // apaga o resultado da travessia desse processo
       // Assim listaProcResultado: Nova lista dos processos resultantes das travessias (sem o processo que se desselecionou)
       delete this.listaProcResultado[processo];
@@ -284,6 +201,22 @@ export default {
 
       this.$emit("procPreSelResTravCom", this.listaResRestantes);
       this.$emit("contadorProcPreSelCom", this.listaResComuns);
+    },
+
+    // Lista com todos os tipos de intervenção possíveis
+    tipoPar: async function() {
+        try{
+            var resPar = await this.$request(
+                            "get",
+                            "/vocabularios/vc_processoTipoParticipacao"
+            );
+            for (var i = 0; i < resPar.data.length; i++) {
+                this.tipoParticipacao.push(resPar.data[i].termo);
+            }
+        }
+        catch(e){
+            console.log("Erro na recuperação dos tipos de participação: " + e );
+        }
     }
   },
 
@@ -295,25 +228,10 @@ export default {
       for (var j = 0; j < trav.length; j++) {
         this.travessias[trav[j].processo] = trav[j].travessia;
       }
+      alert(JSON.stringify(this.travessias));
 
-      this.tipoPar();
-      for (var i = 0; i < this.lista.length; i++) {
-        this.entProcDono[this.lista[i].classe] = {};
-        for (j = 0; j < this.entidades.length; j++) {
-          this.entProcDono[this.lista[i].classe][this.entidades[j].id] = false;
-        }
-      }
-      this.entProcDonoReady = true;
-      for (i = 0; i < this.lista.length; i++) {
-        this.entProcPar[this.lista[i].classe] = {};
-        var tempDialog = [];
-        for (j = 0; j < this.entidades.length; j++) {
-          tempDialog[this.entidades[j].id] = false;
-        }
-        this.dialog[this.lista[i].classe] = tempDialog;
-        tempDialog = [];
-      }
-      this.entProcParReady = true;
+      await this.tipoPar();
+      
     } catch (err) {
       return err;
     }
