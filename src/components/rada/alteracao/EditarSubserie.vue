@@ -1,16 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
-      <b text depressed @click="filterSeries" v-on="on">
-        {{
-        treeview_object.titulo
-        }}
-      </b>
-      <b
-        v-show="treeview_object.eFilhoDe == null || !treeview_object.temUIs_ou_datas || treeview_object.temDF"
-        style="color:red"
-      >*</b>
-    </template>
+  <v-dialog v-model="dialogState" persistent>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ 'Alterar a subsérie: ' + treeview_object.titulo }}</b>
@@ -18,7 +7,7 @@
         <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
-      <v-card-text>
+      <v-card-text> 
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
             <v-card>
@@ -114,7 +103,7 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
       </v-card-actions>
     </v-card>
@@ -128,12 +117,11 @@ import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
 export default {
-  props: ["treeview_object", "classes", "UIs", "formaContagem", "RE"],
+  props: ["treeview_object", "classes", "UIs", "formaContagem", "RE", "dialog"],
   data: () => ({
     existe_erros: false,
     erros: [],
     toDelete: false,
-    dialog: false,
     subserie: {
       justificacaoDF: [],
       justificacaoPCA: []
@@ -154,6 +142,14 @@ export default {
         this.subserie.justificacaoDF.some(e => e.tipo == "Critério Legal") ||
         this.subserie.justificacaoPCA.some(e => e.tipo == "Critério Legal")
       );
+    },
+    dialogState: {
+      get() {
+        return this.dialog;
+      },
+      set(val) {
+        this.$emit("fecharDialog", false);
+      }
     }
   },
   methods: {
@@ -199,40 +195,13 @@ export default {
         }
       }
     },
-    async filterSeries() {
-      this.existe_erros = false;
-      this.erros = [];
-      this.panels = [0, 0, 0];
-      this.isMultiple = false;
-
-      // ir buscar o verdadeiro objeto
-      let subserie_real = this.classes.find(
-        e => e.codigo == this.treeview_object.codigo
-      );
-
-      // DEEP CLONE do objetos
-      this.subserie = JSON.parse(JSON.stringify(subserie_real));
-
-      this.buscarTitulosClasses();
-
-      // Classes para definir a hierarquia
-      this.classesHierarquia = this.classes
-        .filter(classe => classe.tipo == "Série")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo))
-        .map(classe => {
-          return {
-            searchField: classe.codigo + " - " + classe.titulo,
-            codigo: classe.codigo
-          };
-        });
-    },
     eliminarClasse() {
       let subserie_real = this.classes.find(
         e => e.codigo == this.treeview_object.codigo
       );
 
       this.$emit("remover", subserie_real);
-      this.dialog = false;
+      this.dialogState = false;
     },
     recolherErros() {
       this.existe_erros = true;
@@ -299,7 +268,7 @@ export default {
       setTimeout(() => {
         if (this.$refs.formSubserie.validate()) {
           this.$emit("atualizacao", this.subserie);
-          this.dialog = false;
+          this.dialogState = false;
         } else {
           this.isMultiple = false;
           this.panels = [0, 0, 0];
@@ -307,6 +276,28 @@ export default {
         }
       }, 1);
     }
+  },
+  created() {
+    // ir buscar o verdadeiro objeto
+    let subserie_real = this.classes.find(
+      e => e.codigo == this.treeview_object.codigo
+    );
+
+    // DEEP CLONE do objeto
+    this.subserie = JSON.parse(JSON.stringify(subserie_real));
+
+    this.buscarTitulosClasses();
+
+    // Classes para definir a hierarquia
+    this.classesHierarquia = this.classes
+      .filter(classe => classe.tipo == "Série")
+      .sort((a, b) => a.codigo.localeCompare(b.codigo))
+      .map(classe => {
+        return {
+          searchField: classe.codigo + " - " + classe.titulo,
+          codigo: classe.codigo
+        };
+      });
   }
 };
 </script>

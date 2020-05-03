@@ -12,25 +12,21 @@
       <v-col cols="12">
         <v-treeview hoverable :items="preparaTree" item-key="codigo">
           <template v-slot:prepend="{ item }">
-            <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
-            <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
+            <img
+              v-if="item.tipo == 'Série'"
+              style="width:23px; height:30px"
+              :src="svg_sr"
+            />
+            <img
+              v-else-if="item.tipo == 'Subsérie'"
+              style="width:23px; height:30px"
+              :src="svg_ssr"
+            />
           </template>
           <template v-slot:label="{ item }">
-            <ShowSerie
-              v-if="item.tipo == 'Série'"
-              :formaContagem="formaContagem"
-              :treeview_object="item"
-              :classes="TS.classes"
-              :show_a_partir_de_pedido="true"
-            />
-            <ShowSubserie
-              v-else-if="item.tipo == 'Subsérie'"
-              :treeview_object="item"
-              :classes="TS.classes"
-              :formaContagem="formaContagem"
-              :show_a_partir_de_pedido="true"
-            />
-            <ShowOrganico v-else :treeview_object="item" :classes="TS.classes" />
+            <b @click="showClasse(item)">
+              {{ item.titulo }}
+            </b>
           </template>
         </v-treeview>
       </v-col>
@@ -56,19 +52,82 @@
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
-            <ShowUI :UI="props.item" />
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <tr
+                  :style="'text-align: center'"
+                  v-on="on"
+                  @click="showUI(props.item)"
+                >
+                  <td>{{ props.item.codigo }}</td>
+                  <td>{{ props.item.titulo }}</td>
+                </tr>
+              </template>
+              <span width="100%">
+                <h4>
+                  Classes associadas a:
+                  <b>{{ props.item.codigo + " - " + props.item.titulo }}</b>
+                </h4>
+
+                <ul v-if="!!props.item.classesAssociadas[0]">
+                  <li
+                    v-for="(classe, i) in props.item.classesAssociadas"
+                    :key="i"
+                  >
+                    {{ classe.codigo }}
+                  </li>
+                </ul>
+                <p v-else>Não tem classes associadas!</p>
+              </span>
+            </v-tooltip>
           </template>
         </v-data-table>
       </v-col>
     </v-row>
     <v-row v-else>
       <v-col cols="12" xs="12" sm="12">
-        <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
+        <v-alert
+          class="text-center"
+          :value="true"
+          color="amber accent-3"
+          icon="warning"
+        >
           Não foram adicionadas
           <b>Unidades de Instalação</b>.
         </v-alert>
       </v-col>
     </v-row>
+    <ShowSerie
+      v-if="show_serie"
+      :dialog="show_serie"
+      @fecharDialog="show_serie = false"
+      :formaContagem="formaContagem"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :show_a_partir_de_pedido="true"
+    />
+    <ShowSubserie
+      v-if="show_subserie"
+      :dialog="show_subserie"
+      @fecharDialog="show_subserie = false"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :formaContagem="formaContagem"
+      :show_a_partir_de_pedido="true"
+    />
+    <ShowOrganico
+      v-if="show_area_organico"
+      @fecharDialog="show_area_organico = false"
+      :dialog="show_area_organico"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+    />
+    <ShowUI
+      v-if="show_ui"
+      @fecharDialog="show_ui = false"
+      :dialog="show_ui"
+      :UI="UI"
+    />
   </v-card>
 </template>
 
@@ -90,6 +149,12 @@ export default {
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     search: "",
+    UI: null,
+    show_ui: false,
+    show_serie: false,
+    show_subserie: false,
+    show_area_organico: false,
+    treeview_object: null,
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
@@ -142,6 +207,26 @@ export default {
     }
   },
   methods: {
+    showUI(item) {
+      this.UI = item;
+      this.show_ui = true;
+    },
+    showClasse(item) {
+      switch (item.tipo) {
+        case "Série":
+          this.treeview_object = item;
+          this.show_serie = true;
+          break;
+        case "Subsérie":
+          this.treeview_object = item;
+          this.show_subserie = true;
+          break;
+        default:
+          this.treeview_object = item;
+          this.show_area_organico = true;
+          break;
+      }
+    },
     preparaTreeFilhos: function(pai_codigo, pai_titulo) {
       let children = [];
 
