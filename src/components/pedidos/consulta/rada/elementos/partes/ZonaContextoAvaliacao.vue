@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="classe.tipo != 'Subsérie'">
-      <v-row v-if="classe.entProdutoras.length > 0">
+      <v-row v-if="classe.entProdutoras.length >= 0">
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Entidades Produtoras</div>
         </v-col>

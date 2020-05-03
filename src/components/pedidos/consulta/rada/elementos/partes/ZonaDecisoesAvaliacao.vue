@@ -4,11 +4,11 @@
       <v-col md="3" sm="3">
         <div class="info-label">Prazo de Conservação Administrativa</div>
       </v-col>
+      <!-- v-model="classe.pca" -->
       <v-col sm="9" md="9">
         <v-text-field
           readonly
-          type="number"
-          v-model="classe.pca"
+          :value="!!classe.pca ? classe.pca : 'Não especificado'"
           solo
           label="Sem prazo de conservação administrativa"
         ></v-text-field>
@@ -64,7 +64,7 @@
       </v-row>
     </v-card>
 
-    <v-row>
+    <v-row v-if="!!classe.pca">
       <!-- Justificação PCA -->
       <v-col md="3" sm="3">
         <div class="info-label">Justificação do PCA</div>
@@ -133,25 +133,12 @@
         <div class="info-label">Destino Final</div>
       </v-col>
       <v-col sm="9" md="9">
-        <v-select
+        <v-text-field
           readonly
-          v-model="classe.df"
-          :items="['Conservação', 'Conservação Parcial', 'Eliminação']"
+          :value="!!classe.df ? classe.df : 'Não especificado'"
           solo
           label="Sem destino final"
-        >
-          <template v-slot:selection="data">
-            <v-chip>
-              <v-avatar
-                v-if="data.item != 'Conservação Parcial'"
-                left
-                color="amber accent-3"
-              >{{ data.item[0] }}</v-avatar>
-              <v-avatar v-else left color="amber accent-3">CP</v-avatar>
-              {{ data.item }}
-            </v-chip>
-          </template>
-        </v-select>
+        ></v-text-field>
       </v-col>
     </v-row>
     <!-- Nota DF -->
@@ -164,7 +151,7 @@
       </v-col>
     </v-row>
     <!-- Justificação DF -->
-    <v-row>
+    <v-row v-if="!!classe.df">
       <v-col md="3" sm="3">
         <div class="info-label">Justificação do DF</div>
       </v-col>
