@@ -6,7 +6,6 @@
       </v-col>
       <v-col sm="9" md="9">
         <v-select
-          :rules="[v => rule(v)]"
           :disabled="disable_df()"
           v-model="newSerie.df"
           :items="['Conservação', 'Conservação Parcial', 'Eliminação']"
@@ -29,6 +28,21 @@
       </v-col>
     </v-row>
     <v-row>
+      <!-- {{newSerie}} -->
+      <v-col md="3" sm="3">
+        <div class="info-label">Nota sobre o DF</div>
+      </v-col>
+      <v-col sm="9" md="9">
+        <v-text-field
+          :rules="[v => rule_nota_DF(v)]"
+          solo
+          clearable
+          label="Nota sobre o DF"
+          v-model="newSerie.notaDF"
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row v-if="!!newSerie.df">
       <v-col md="3" sm="3">
         <div class="info-label">Justificação do DF</div>
         <v-row no-gutters>
@@ -131,12 +145,12 @@ export default {
     }
   },
   methods: {
-    rule(v) {
-      if (this.rules && (v == "" || v == null)) {
-        return "Campo Obrigatório";
-      } else {
-        return true;
+    rule_nota_DF(v) {
+      if (this.rules && (v == null || v == "") && !Boolean(this.newSerie.df)) {
+        return "Campo obrigatório! DF sem valor!";
       }
+
+      return true;
     },
     // Verificar pela relação existente visto que a gestão feita não permite ter coisas erradas
     disable_df() {

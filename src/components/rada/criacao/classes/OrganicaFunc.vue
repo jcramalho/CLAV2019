@@ -68,7 +68,7 @@
                 item-text="searchField"
                 solo
                 clearable
-                placeholder="Classe Pai"
+                label="Classe Pai"
                 chips
               >
                 <template v-slot:no-data>

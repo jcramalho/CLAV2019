@@ -10,10 +10,12 @@
           :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.entProdutoras"
           :items="RE.entidadesProd"
-          placeholder="Selecione as Entidades Produtoras."
+          label="Selecione as Entidades Produtoras."
           multiple
           chips
           deletable-chips
+          solo
+          clearable
         >
           <template v-slot:no-data>
             <v-list-item>
@@ -36,10 +38,12 @@
           :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.tipologiasProdutoras"
           :items="RE.tipologiasProd"
-          placeholder="Selecione as Tipologias da Entidades produtoras."
+          label="Selecione as Tipologias da Entidades produtoras."
           multiple
           chips
           deletable-chips
+          solo
+          clearable
         >
           <template v-slot:no-data>
             <v-list-item>

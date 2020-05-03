@@ -52,6 +52,7 @@
           <v-col sm="9" md="9">
             <v-combobox
               readonly
+              label="Sem classe pai"
               v-model="treeview_object.eFilhoDe"
               :items="[]"
               item-value="codigo"

@@ -39,6 +39,7 @@
               readonly
               v-model="treeview_object.eFilhoDe"
               :items="[]"
+              label="Sem classe pai"
               item-text="searchField"
               item-value="codigo"
               solo

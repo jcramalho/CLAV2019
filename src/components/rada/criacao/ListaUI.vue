@@ -165,15 +165,17 @@ export default {
             descricao: "",
             dataInicial: null,
             dataFinal: null,
-            tUA: "",
-            tSerie: "",
-            suporte: "",
-            medicao: "",
+            tUA: null,
+            tSerie: null,
+            suporte: null,
+            medicao: null,
             localizacao: [],
             entProdutoras: [],
             tipologiasProdutoras: [],
             legislacao: [],
             relacoes: [],
+            notaPCA: null,
+            notaDF: null,
             UIs: [codigo_UI],
             pca: null,
             formaContagem: {
@@ -182,7 +184,6 @@ export default {
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
-            notas: "",
             eFilhoDe: null,
             tipo: "Série"
           };
@@ -195,6 +196,8 @@ export default {
             dataFinal: null,
             relacoes: [],
             UIs: [codigo_UI],
+            notaPCA: null,
+            notaDF: null,
             pca: null,
             formaContagem: {
               forma: null
@@ -202,7 +205,6 @@ export default {
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
-            notas: "",
             eFilhoDe: null,
             tipo: "Subsérie"
           };
