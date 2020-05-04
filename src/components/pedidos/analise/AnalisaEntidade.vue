@@ -117,7 +117,7 @@ import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocom
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparasigla } from "@/utils/utils";
+import { comparaSigla } from "@/utils/utils";
 
 export default {
   props: ["p"],
