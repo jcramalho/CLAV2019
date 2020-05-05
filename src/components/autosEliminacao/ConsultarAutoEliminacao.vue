@@ -50,7 +50,7 @@
           </tr>
         </table>
 
-        <v-expansion-panels popout>
+        <v-expansion-panels v-model="panel" multiple popout>
           <v-expansion-panel class="ma-1">
             <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
               >Classes</v-expansion-panel-header
@@ -65,9 +65,9 @@
                 >
                   <template v-slot:activator>
                     <v-list-item-content class="info-label">
-                      <v-list-item-title
-                        v-text="'Zona de Controlo - ' + item.codigo"
-                      ></v-list-item-title>
+                      <v-list-item-title class="mx-2">
+                        {{item.codigo + ' - ' + item.titulo}}
+                      </v-list-item-title>
                     </v-list-item-content>
                   </template>
                   <v-list-item-content>
@@ -75,7 +75,7 @@
                       <table class="consulta mx-5">
                         <tr v-if="item.codigo">
                           <td style="width:20%;">
-                            <div class="info-label">Código da class:</div>
+                            <div class="info-label">Código da class</div>
                           </td>
                           <td style="width:80%;">
                             <a
@@ -86,7 +86,7 @@
                         </tr>
                         <tr v-if="item.titulo">
                           <td style="width:20%;">
-                            <div class="info-label">Título:</div>
+                            <div class="info-label">Título</div>
                           </td>
                           <td style="width:80%;">
                             {{ item.titulo }}
@@ -94,7 +94,7 @@
                         </tr>
                         <tr v-if="item.pca">
                           <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa:</div>
+                            <div class="info-label">Prazo de Conservação Administrativa</div>
                           </td>
                           <td style="width:80%;">
                             {{ item.pca }} Anos
@@ -102,7 +102,7 @@
                         </tr>
                         <tr v-if="item.destino">
                           <td style="width:20%;">
-                            <div class="info-label">Destino Final:</div>
+                            <div class="info-label">Destino Final</div>
                           </td>
                           <td v-if="item.destino === 'E'" style="width:80%;">
                             Eliminação
@@ -117,14 +117,14 @@
                         <tr v-if="item.ni">
                           <td style="width:20%;">
                             <div class="info-label">
-                              Natureza de intervenção:
+                              Natureza de intervenção
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
                         <tr v-if="item.dono && item.destino === 'C'">
                           <td style="width:20%;">
-                            <div class="info-label">Dono do PN:</div>
+                            <div class="info-label">Dono do PN</div>
                           </td>
                           <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">
                             <a :href='"/entidade/"+d.dono' >{{ (d.dono || "").split("_")[1] +" - "+d.nome }}</a>
@@ -132,7 +132,7 @@
                         </tr>
                         <tr>
                           <td style="width:20%;">
-                            <div class="info-label">Data de Início:</div>
+                            <div class="info-label">Data de Início</div>
                           </td>
                           <td style="width:80%;">
                             {{ item.dataInicio }}
@@ -140,14 +140,14 @@
                         </tr>
                         <tr>
                           <td style="width:20%;">
-                            <div class="info-label">Data de Fim:</div>
+                            <div class="info-label">Data de Fim</div>
                           </td>
                           <td style="width:80%;">{{ item.dataFim }}</td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
                             <div class="info-label">
-                              N.º de agregações:
+                              N.º de agregações
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.agregacoes.length }}</td>
@@ -155,7 +155,7 @@
                         <tr v-if="item.UIpapel">
                           <td style="width:20%;">
                             <div class="info-label">
-                              Medição das UI em papel (m.l.):
+                              Medição das UI em papel (m.l.)
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.UIpapel }}</td>
@@ -163,7 +163,7 @@
                         <tr v-if="item.UIdigital">
                           <td style="width:20%;">
                             <div class="info-label">
-                              Medição das UI em digital (Gb):
+                              Medição das UI em digital (Gb)
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.UIdigital }}</td>
@@ -171,7 +171,7 @@
                         <tr v-if="item.UIoutros">
                           <td style="width:20%;">
                             <div class="info-label">
-                              Medição das UI noutros suportes:
+                              Medição das UI noutros suportes
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.UIoutros }}</td>
@@ -221,6 +221,7 @@ export default {
   props: ["auto"],
   data: () => ({
     search: "",
+    panel: [0],
     cabecalho: [
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", align: "left", value: "titulo" },
