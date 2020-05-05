@@ -65,11 +65,10 @@ export default {
 
   created: async function(){
       try{
-          alert(this.p);
           await this.tipoParticipacao();
       }
       catch(e){
-          console.log("Erro no carregamento dos tipos de participação...");
+          console.log("Erro no carregamento da travessia ou dos tipos de participação...");
       }
   },
 
@@ -111,12 +110,13 @@ export default {
         else{
             if(this.p.edited){
                 this.p.edited = false;
-                contador--;
+                contador=-1;
             }
         } 
 
         this.p.chave = this.p.chave * -1;
-        this.$emit("selecionadas", contador);
+        this.p.inc = contador;
+        this.$emit("selecionadas", this.p);
     }
   }
 }

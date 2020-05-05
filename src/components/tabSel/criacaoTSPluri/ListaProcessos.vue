@@ -42,20 +42,20 @@
 
   <v-row wrap>
     <v-col>
-                    <v-text-field
-                      readonly
-                      label="Nº de processos comuns selecionados"
-                      v-model="listaProcs.numProcSel"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col>
-                    <v-text-field
-                      readonly
-                      label="Nº de processos comuns pré-selecionados"
-                      v-model="listaProcs.numProcPreSel"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+        <v-text-field
+            readonly
+            label="Nº de processos selecionados"
+            v-model="listaProcs.numProcSel"
+        ></v-text-field>
+    </v-col>
+    <v-col>
+        <v-text-field
+            readonly
+            label="Nº de processos pré-selecionados"
+            v-model="listaProcs.numProcPreSel"
+        ></v-text-field>
+    </v-col>
+  </v-row>
 
   <Selresponsabilidade v-if="selecionaResponsabilidades" 
         :p = "procSel"
@@ -69,9 +69,13 @@
 import Selresponsabilidade from "@/components/tabSel/criacaoTSPluri/SelResponsabilidade.vue";
 
 export default {
-  props: ["listaProcs", "entidades"],
+  props: ["listaProcs"],
   components: {
       Selresponsabilidade
+  },
+
+  created: function(){
+      alert("Lista: " + JSON.stringify(this.listaProcs));
   },
 
   data: () => ({
@@ -85,7 +89,7 @@ export default {
     headers: [
       {
         text: "Processo",
-        value: "classe",
+        value: "proc",
         width: "10%",
         class: ["body-2", "font-weight-bold"]
       },

@@ -48,18 +48,8 @@
                 <hr style="border-top: 0px" />
                 <v-btn
                   color="primary"
-                  @click="
-                    stepNo = 2;
-                    entidadesSelecionadas();
-                    barra(14);
-                    entSel.sort((a, b) =>
-                      a.designacao > b.designacao ? 1 : -1
-                    );
-                    tabelaSelecao.entidades = entSel;
-                    entSelReady = true;
-                  "
-                  >Continuar</v-btn
-                >
+                  @click="stepNo = 2; entidadesSelecionadas();"
+                  >Continuar</v-btn>
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 2" step="2">
@@ -87,7 +77,7 @@
                   @click="
                     stepNo = 3;
                     barra(28);
-                    loadProcEspecificos();
+                    
                   "
                   >Continuar</v-btn>
               </v-stepper-content>
@@ -97,75 +87,45 @@
                 <small>Processos passíveis de existir em qualquer entidade</small>
               </v-stepper-step>
               <v-stepper-content step="3">
-                <v-layout wrap>
-                  <v-flex>
+                <v-row wrap>
+                  <v-col>
                     <v-expansion-panels>
                       <v-expansion-panel>
                         <v-expansion-panel-header
                           class="expansion-panel-heading"
                         >
                           Selecione os processos de negócio comuns
+                          <template v-slot:actions>
+                            <v-icon color="white">expand_more</v-icon>
+                          </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content eager>
-                          <ListaProcessosComunsJcr
+                          <ListaProcessos
                             v-if="listaProcComunsReady && entSelReady"
                             :listaProcs="listaProcComuns"
-                            :entidades="tabelaSelecao.entidades"
-                            @procPreSelResTravCom="procPreSelResTravCom($event)"
-                            @guardarTSProcComuns="guardarTSProcComuns($event)"
                           />
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                     </v-expansion-panels>
-                  </v-flex>
-                </v-layout>
-                <v-layout wrap>
-                  <v-flex>
-                    <span>
-                        <v-chip class="ma-2" color="primary">
-                            Nº de processos comuns selecionados:
-                            {{ listaProcComuns.numProcSelCom }}
-                        </v-chip>
-                    </span>
-                    <span>
-                        <v-chip class="ma-2" color="primary">
-                            Nº de processos comuns selecionados:
-                            {{ listaProcComuns.numProcPreSelCom }}
-                        </v-chip>
-                    </span>
-                    
-                  </v-flex>
-                </v-layout>
+                  </v-col>
+                </v-row>
+                
                 <v-btn
                   color="primary"
-                  @click="
-                    stepNo = 4;
-                    barra(42);
-                    procPreSelEspecificos();
-                    loadProcEspRestantes();
-                  "
-                  >Continuar</v-btn
-                >
-                <v-btn
-                  text
-                  @click="
-                    stepNo = 2;
-                    barra(14);
-                  "
-                  >Voltar</v-btn
-                >
+                  @click="stepNo = 4; barra(42);"
+                  >Continuar</v-btn>
+                <v-btn text
+                  @click=" stepNo = 2; barra(14);"
+                  >Voltar</v-btn>
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 4" step="4"
                 >Processos Específicos
-                <small
-                  >Processos específicos da entidade e tipologia em que se
-                  enquadra</small
-                >
+                <small>Processos específicos das entidades e tipologias</small>
               </v-stepper-step>
               <v-stepper-content step="4">
-                <v-layout wrap>
-                  <v-flex>
+                <v-row wrap>
+                  <v-col>
                     <v-expansion-panels>
                       <v-expansion-panel>
                         <v-expansion-panel-header
@@ -174,56 +134,23 @@
                           Selecione os processos de negócio específicos
                         </v-expansion-panel-header>
                         <v-expansion-panel-content eager>
-                          <ListaProcessosEspecificos
-                            v-if="listaProcEspReady"
-                            v-bind:lista="listaProcEsp"
-                            v-bind:listaPreSel="procPreSelResTravComum"
-                            v-bind:entidades="tabelaSelecao.entidades"
-                            @contadorProcSelEsp="contadorProcSelEsp($event)"
-                            @contadorProcPreSelEsp="
-                              contadorProcPreSelEsp($event)
-                            "
-                            @procPreSelResTravEsp="procPreSelResTravEsp($event)"
-                            @guardarTSProcEsp="guardarTSProcEsp($event)"
+                          <ListaProcessosEsp
+                            v-if="listaProcEspReady && entSelReady"
+                            :listaProcs="listaProcEsp"
                           />
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                     </v-expansion-panels>
-                  </v-flex>
-                </v-layout>
-                <v-layout wrap>
-                  <v-flex xs3>
-                    <v-text-field
-                      readonly
-                      label="Nº de processos específicos selecionados"
-                      :value="numProcSelEsp"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs4 style="padding-left:60px;">
-                    <v-text-field
-                      readonly
-                      label="Nº de processos específicos pré selecionados"
-                      :value="numProcPreSelEsp"
-                    ></v-text-field>
-                  </v-flex>
-                </v-layout>
+                  </v-col>
+                </v-row>
                 <v-btn
                   color="primary"
-                  @click="
-                    stepNo = 5;
-                    barra(56);
-                    procPreSelRestantes();
-                  "
-                  >Continuar</v-btn
-                >
+                  @click="stepNo = 5; barra(56);"
+                  >Continuar</v-btn>
                 <v-btn
                   text
-                  @click="
-                    stepNo = 3;
-                    barra(28);
-                  "
-                  >Voltar</v-btn
-                >
+                  @click="stepNo = 3; barra(28);"
+                  >Voltar</v-btn>
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 5" step="5"
@@ -523,17 +450,16 @@
 </template>
 
 <script>
-import ListaProcessosComuns from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns.vue";
-import ListaProcessosComunsJcr from "@/components/tabSel/criacaoTSPluri/ListaProcessosComuns-jcr.vue";
-import ListaProcessosEspecificos from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspecificos.vue";
+import ListaProcessos from "@/components/tabSel/criacaoTSPluri/ListaProcessos.vue";
+import ListaProcessosEsp from "@/components/tabSel/criacaoTSPluri/ListaProcessosEsp.vue";
 import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspRestantes.vue";
 import ListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ListaProcessosUltimos.vue";
 import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcSel.vue";
 
 export default {
   components: {
-    ListaProcessosComunsJcr,
-    ListaProcessosEspecificos,
+    ListaProcessos,
+    ListaProcessosEsp,
     ListaProcessosEspRestantes,
     ListaProcessosUltimos,
     ListaParteDescritiva
@@ -574,16 +500,10 @@ export default {
       entSelReady: false,
       // True quando a lista de todos os processos comuns existentes estiver completa
       listaProcComunsReady: false,
-      // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs comuns)
-      procPreSelResTravComum: [],
       // True quando a lista de todos os processos especificos da entidade e tipologias em causa estiver completa
       listaProcEspReady: false,
       // Lista com todos os processos especificos da entidade e tipologias em causa
-      listaProcEsp: [],
-      // Numero de processos pre selecionados especificos
-      numProcPreSelEsp: 0,
-      // Numero de processos especificos selecionados
-      numProcSelEsp: 0,
+      listaProcEsp: {},
       // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs especificos)
       procPreSelResTravEspecifico: [],
       // True quando a lista dos processos especificos restantes estiver completa
@@ -622,16 +542,20 @@ export default {
       listaTotalProcSelUpdate: []
     };
   },
+
   methods: {
+    debug: function(data){
+       alert(JSON.stringify(data));
+    },
     // Valor da barra de progresso
     barra: async function(valor) {
       this.valorBarra = valor;
     },
     // Função que retira o nome da entidade e o id da Entidade associada ao utilizador do token
-    infoUserEnt: async function() {
+    /*infoUserEnt: async function() {
       var resUser = this.$verifyTokenUser();
       this.tabelaSelecao.idEntidade = resUser.entidade;
-    },
+    },*/
     // Faz load de todas as entidades
     loadEntidades: async function() {
       try {
@@ -646,18 +570,20 @@ export default {
         });
 
         // Carrega a entidade do utilizador nas entidades selecionadas
+        /*var resUser = this.$verifyTokenUser();
+        debug(resUser);
         var index = this.entidades.findIndex(
-          e => e.id === this.tabelaSelecao.idEntidade
+          e => e.id === resUser.entidade
         );
 
         if(index != -1)
           this.entSel.push({
-              sigla: this.entidades[index].sigla,
-              designacao: this.entidades[index].designacao,
-              id: this.entidades[index].id,
-              label: this.entidades[index].sigla + " - " + this.entidades[index].designacao
+              sigla: resUser.entidade.sigla,
+              designacao: resUser.entidade.designacao,
+              id: resUser.entidade.id,
+              label: resUser.entidade.sigla + " - " + resUser.entidade.designacao
             });
-
+*/
         this.entidadesReady = true;
       }
         catch (err) {
@@ -669,8 +595,8 @@ export default {
     loadProcComuns: async function() {
       try {
         if (!this.listaProcComunsReady) {
-          this.listaProcComuns.numProcSelCom = 0;
-          this.listaProcComuns.numProcPreSelCom = 0;
+          this.listaProcComuns.numProcSel = 0;
+          this.listaProcComuns.numProcPreSel = 0;
           this.listaProcComuns.procs = [];
           var response = await this.$request("get", "/classes?tipo=comum");
           for (let i = 0; i < response.data.length; i++) {
@@ -678,11 +604,12 @@ export default {
               proc: response.data[i].codigo,
               designacao: response.data[i].titulo,
               chave: i,
-              edited: false
+              edited: false,
+              preSelected: false
             });
             this.listaProcComuns.procs[i].entidades = [];
           } 
-          this.listaProcComuns.procs.sort((a, b) => (a.classe > b.classe ? 1 : -1));
+          this.listaProcComuns.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcComunsReady = true;
           return this.listaProcComuns;
         }
@@ -691,9 +618,14 @@ export default {
       }
     },
     // Quando se termina a seleção das entidades
-    entidadesSelecionadas: function(){
+    entidadesSelecionadas: async function(){
+      try{
+        this.barra(14);
         this.entSel.sort((a, b) => a.designacao > b.designacao ? 1 : -1 );
         this.tabelaSelecao.entidades = this.entSel;
+
+        await this.loadProcEspecificos();
+        
         for(let i=0; i < this.listaProcComuns.procs.length; i++){
             for(let j=0; j < this.tabelaSelecao.entidades.length; j++){
                 this.listaProcComuns.procs[i].entidades.push({
@@ -706,13 +638,27 @@ export default {
                 });
             }
         }
+        
+        for(let i=0; i < this.listaProcEsp.procs.length; i++){
+            for(let j=0; j < this.tabelaSelecao.entidades.length; j++){
+                this.listaProcEsp.procs[i].entidades.push({
+                    sigla: this.tabelaSelecao.entidades[j].sigla,
+                    designacao: this.tabelaSelecao.entidades[j].designacao,
+                    id: this.tabelaSelecao.entidades[j].id,
+                    label: this.tabelaSelecao.entidades[j].label,
+                    dono: false,
+                    participante: "NP"
+                });
+            }
+        }
         this.entSelReady = true;
+      }
+      catch(e){
+        console.log("Erro ao carregar os processos específicos: " + e);
+      }
+        
     },
 
-    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
-    procPreSelResTravCom: function(procPreSelResTravCom) {
-      
-    },
     // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
     guardarTSProcComuns: function(procComuns) {
       
@@ -721,8 +667,8 @@ export default {
     loadProcEspecificos: async function() {
       try {
         if (!this.listaProcEspReady) {
-          this.listaProcEsp.numProcSelCom = 0;
-          this.listaProcEsp.numProcPreSelCom = 0;
+          this.listaProcEsp.numProcSel = 0;
+          this.listaProcEsp.numProcPreSel = 0;
           this.listaProcEsp.procs = [];
 
           var url = "/classes?tipo=especifico&ents=";
@@ -731,39 +677,27 @@ export default {
           }
           url += this.tabelaSelecao.entidades[i].id;
         }
-      
         var response = await this.$request("get", url);
 
         for (var j = 0; j < response.data.length; j++) {
-          this.listaProcEsp.push({
-            proc: response.data[i].codigo,
-            designacao: response.data[i].titulo,
-            chave: i,
-            edited: false
+          this.listaProcEsp.procs.push({
+            proc: response.data[j].codigo,
+            designacao: response.data[j].titulo,
+            chave: j,
+            edited: false,
+            preSelected: false
           });
+          this.listaProcEsp.procs[j].entidades = [];
         }
 
-        this.listaProcEsp.sort((a, b) => (a.classe > b.classe ? 1 : -1));
+        this.listaProcEsp.sort((a, b) => (a.proc > b.proc ? 1 : -1));
         this.listaProcEspReady = true;
+        return this.listaProcEsp;
       } catch (error) {
         return error;
       }
     },
-    procPreSelEspecificos: function() {
-      
-    },
-    // Contador dos processos selecionados especificos
-    contadorProcSelEsp: function(procSelec) {
-      
-    },
-    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
-    procPreSelResTravEsp: function(procPreSelResTravEsp) {
-      
-    },
-    // Contador dos processos pre selecionados comuns
-    contadorProcPreSelEsp: function(lista) {
-      
-    },
+    
     // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
     guardarTSProcEsp: function(procEsp) {
       
@@ -824,7 +758,7 @@ export default {
 
   created: async function() {
       try{
-            await this.infoUserEnt();
+            //await this.infoUserEnt();
             await this.loadEntidades();
             await this.loadProcComuns();
       }
@@ -835,10 +769,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .expansion-panel-heading {
-  color: #1a237e !important;
-  background-image: linear-gradient(to bottom, #bac1eb 0, #8c9eff 100%);
+  color: white !important;
+  background-color: #1565C0;
 }
 
 .info-label {
