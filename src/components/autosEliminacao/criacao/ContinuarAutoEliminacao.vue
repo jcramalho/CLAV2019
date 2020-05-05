@@ -2,115 +2,115 @@
   <div>
     <v-card class="ma-4">
       <v-app-bar color="expansion-panel-heading" dark>
-        <v-toolbar-title class="card-heading">
-          Novo Auto de Eliminação
-        </v-toolbar-title>
+        <v-toolbar-title class="card-heading">Novo Auto de Eliminação</v-toolbar-title>
       </v-app-bar>
 
       <v-card-text>
-        <v-row>
-          <v-col :md="2">
-            <div class="info-label">Fonte de legitimação</div>
-          </v-col>
-          <v-col>
-            <v-autocomplete
-              label="Selecione a fonte de legitimação"
-              :items="portarias"
-              v-model="auto.legislacao"
-              solo
-              dense
-            ></v-autocomplete>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :md="2">
-            <div class="info-label">Fundo</div>
-          </v-col>
-          <v-col>
-            <v-autocomplete
-              label="Selecione a entidade responsável pelo fundo"
-              :items="entidades"
-              v-model="auto.fundo"
-              solo
-              dense
-              chips
-              multiple
-            ></v-autocomplete>
-          </v-col>
-        </v-row>
-        <!-- Adicionar Zona Controlo -->
-        <AdicionarZonaControlo
-          v-bind:classes="classes"
-          v-bind:entidades="entidades"
-          v-bind:auto="auto"
-          v-bind:classesCompletas="classesCompletas"
-        />
+        <v-stepper v-model="steps" vertical>
+          <v-stepper-step :complete="steps > 1" step="1">Seleção de Fonte e Fundo</v-stepper-step>
 
-        <!-- Zonas de Controlo -->
-        <v-expansion-panels class="my-2">
-          <v-expansion-panel
-            v-if="this.auto.zonaControlo.length > 0"
-            popout
-            focusable
-          >
-            <v-expansion-panel-header class="expansion-panel-heading">
-              <div>Classes</div>
-            </v-expansion-panel-header>
+          <v-stepper-content step="1">
+            <v-row>
+              <v-col :md="2">
+                <div class="info-label">Fonte de legitimação</div>
+              </v-col>
+              <v-col>
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="portarias"
+                  v-model="auto.legislacao"
+                  solo
+                  dense
+                ></v-autocomplete>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col :md="2">
+                <div class="info-label">Fundo</div>
+              </v-col>
+              <v-col>
+                <v-autocomplete
+                  label="Selecione a entidade responsável pelo fundo"
+                  :items="entidades"
+                  v-model="auto.fundo"
+                  solo
+                  dense
+                  chips
+                  multiple
+                ></v-autocomplete>
+              </v-col>
+            </v-row>
+            <v-btn class="ma-2" color="primary darken-4" @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Avançar</v-btn>
+          </v-stepper-content>
 
-            <v-expansion-panel-content>
-              <ListaZonasControlo
-                v-bind:auto="auto"
-                v-bind:classes="classes"
-                v-bind:entidades="entidades"
-                v-bind:classesCompletas="classesCompletas"
-              />
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
+          <v-stepper-step step="2">Tratamento das classes de controlo</v-stepper-step>
+
+          <v-stepper-content step="2">
+            <!-- Adicionar Zona Controlo -->
+            <AdicionarZonaControlo
+              v-bind:classes="classes"
+              v-bind:entidades="entidades"
+              v-bind:auto="auto"
+              v-bind:classesCompletas="classesCompletas"
+              v-bind:donos="donos"
+            />
+
+            <!-- Zonas de Controlo -->
+            <ListaZonasControlo
+              v-bind:auto="auto"
+              v-bind:classes="classes"
+              v-bind:entidades="entidades"
+              v-bind:classesCompletas="classesCompletas"
+              v-bind:donos="donos"
+            />
+
+            <div class="mx-2">
+              <v-btn @click="steps = 1" class="ma-2">Voltar</v-btn>
+              <v-btn
+                medium
+                color="warning darken-2"
+                @click="guardarTrabalho"
+                :disabled="
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                "
+                class="ma-2"
+              >Guardar Auto de Eliminação</v-btn>
+              <v-btn
+                medium
+                color="primary darken-4"
+                @click="submit"
+                :disabled="
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                "
+                class="ma-2"
+              >Criar Auto de Eliminação</v-btn>
+            </div>
+            
+          </v-stepper-content>
+        </v-stepper>
       </v-card-text>
     </v-card>
-    <div>
-      <v-btn
-        rounded
-        color="warning"
-        @click="guardarTrabalho"
-        :disabled="
-          !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
-        "
-        class="elevation-2 mx-4 ma-1"
-      >
-        Guardar Auto de Eliminação
-      </v-btn>
-      <v-btn
-        rounded
-        color="primary"
-        @click="submit"
-        :disabled="
-          !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
-        "
-        class="elevation-2 mx-4"
-      >
-        Criar Auto de Eliminação
-      </v-btn>
-      <v-btn
-        rounded
-        color="error"
-        @click="apagarAE = true"
-        class="elevation-2 mx-4 ma-1"
-      >
-        Eliminar Auto de Eliminação
-      </v-btn>
-    </div>
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
-        <v-card-title class="teal darken-4 title white--text" dark>
-          Pedido de criação de auto de eliminação criado com sucesso
-        </v-card-title>
+        <v-card-title
+          class="teal darken-4 title white--text"
+          dark
+        >Pedido de criação de auto de eliminação criado com sucesso: {{ codigoPedido }}</v-card-title>
 
         <v-card-text>
           <v-row class="my-2">
             <v-col cols="2">
-              <div class="info-label">Fonte de Legitimação:</div>
+              <div class="info-label">Código do pedido</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div>{{ codigoPedido }}</div>
+            </v-col>
+          </v-row>
+
+          <v-row class="my-2">
+            <v-col cols="2">
+              <div class="info-label">Fonte de Legitimação</div>
             </v-col>
 
             <v-col class="info-content">
@@ -119,7 +119,7 @@
           </v-row>
           <v-row class="my-2">
             <v-col cols="2">
-              <div class="info-label">Fundo:</div>
+              <div class="info-label">Fundo</div>
             </v-col>
 
             <v-col class="info-content">
@@ -128,13 +128,18 @@
           </v-row>
           <v-row class="mt-2">
             <v-col cols="2">
-              <div class="info-label">Classes e Agregações:</div>
+              <div class="info-label">Classes e Agregações</div>
             </v-col>
 
             <v-col class="info-content">
               <div v-for="c in auto.zonaControlo" :key="c.codigo">
-                {{ c.codigo +" - "+c.titulo }}
-                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">{{+a.codigo + " - " + a.titulo}}</li>
+                <strong>{{ c.codigo +" - "+c.titulo }}</strong>
+                Agregações: 
+                <li
+                  class="ml-4"
+                  v-for="a in c.agregacoes"
+                  :key="a.codigo"
+                >{{a.codigo + " - " + a.titulo}}</li>
               </div>
             </v-col>
           </v-row>
@@ -143,54 +148,25 @@
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="green darken-4" text @click="$router.push('/')">
-            Fechar
-          </v-btn>
+          <v-btn color="green darken-4" text @click="$router.push('/')">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
-        <v-card-title class="red darken-4 title white--text" dark>
-          Não foi possível criar o pedido de criação de auto de eliminação
-        </v-card-title>
+        <v-card-title
+          class="red darken-4 title white--text"
+          dark
+        >Não foi possível criar o pedido de criação de auto de eliminação</v-card-title>
 
         <v-card-text>
-          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro">
-          </span>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro"></span>
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="red darken-4" text @click="erroDialog = false">
-            Fechar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="apagarAE" width="700" persistent>
-      <v-card outlined>
-        <v-card-title class="red darken-4 title white--text" dark>
-          Eliminar Auto de Eliminação
-        </v-card-title>
-
-        <v-card-text>
-          <span class="subtitle-1" style="white-space: pre-wrap">
-            Este método remove <strong>permanentemente</strong> o Auto de
-            Eliminação, assim como as suas Zonas de Controlo e Agregações.
-          </span>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-btn color="green darken-4" text @click="apagarAE = false">
-            Fechar
-          </v-btn>
-          <v-btn color="red darken-4" text @click="eliminarAE">
-            Confirmar
-          </v-btn>
+          <v-btn color="red darken-4" text @click="erroDialog = false">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -199,11 +175,13 @@
       <v-card>
         <v-card-title>Trabalho pendente guardado</v-card-title>
         <v-card-text>
-          <div><strong>
-            Os seus dados foram guardados para que possa retomar o trabalho mais
-            tarde.
-          </strong></div>
-          
+          <div>
+            <strong>
+              Os seus dados foram guardados para que possa retomar o trabalho mais
+              tarde.
+            </strong>
+          </div>
+
           <v-row v-if="auto.legislacao" class="my-2">
             <v-col cols="2">
               <div class="info-label">Fonte de Legitimação:</div>
@@ -230,16 +208,18 @@
             <v-col class="info-content">
               <div v-for="c in auto.zonaControlo" :key="c.codigo">
                 {{ c.codigo +" - "+c.titulo }}
-                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">{{+a.codigo + " - " + a.titulo}}</li>
+                <li
+                  class="ml-4"
+                  v-for="a in c.agregacoes"
+                  :key="a.codigo"
+                >{{+a.codigo + " - " + a.titulo}}</li>
               </div>
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="green darken-1" dark @click="$router.push('/')">
-            Fechar
-          </v-btn>
+          <v-btn color="green darken-1" dark @click="$router.push('/')">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -268,6 +248,7 @@ export default {
       zonaControlo: []
     },
     apagarAE: false,
+    steps: 1,
     erro: null,
     erroDialog: false,
     success: null,
@@ -369,35 +350,48 @@ export default {
       this.$router.push("/");
     },
     submit: async function() {
-      this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
-
-      var user = this.$verifyTokenUser();
-
-      this.auto.responsavel = user.email;
-      this.auto.entidade = user.entidade;
-
-      var pedidoParams = {
-        tipoPedido: "Criação",
-        tipoObjeto: "Auto de Eliminação",
-        novoObjeto: {
-          ae: this.auto
-        },
-        user: { email: user.email },
-        entidade: user.entidade,
-        token: this.$store.state.token
+      this.erro = ""
+      for(var zc of this.auto.zonaControlo) {
+        if(zc.dono.length === 0) {
+          this.erroDialog = true;
+          this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
+        }
+        if(zc.agregacoes.length === 0) {
+          this.erroDialog = true;
+          this.erro = "Não existem agregações em " + zc.codigo +" - "+zc.titulo+".\n"
+        }
       }
-      
-      const codigoPedido = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+      if(this.erro==="") {
 
-      this.codigoPedido = codigoPedido.data;
+        this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
+
+        var user = this.$verifyTokenUser();
+
+        this.auto.responsavel = user.email;
+        this.auto.entidade = user.entidade;
+
+        var pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "Auto de Eliminação",
+          novoObjeto: {
+            ae: this.auto
+          },
+          user: { email: user.email },
+          entidade: user.entidade,
+          token: this.$store.state.token
+        };
+
+        const codigoPedido = await this.$request(
+          "post",
+          "/pedidos",
+          pedidoParams
+        );
+
+        this.codigoPedido = codigoPedido.data;
 
       this.$request("delete", "/pendentes/" + this.obj._id);
       this.successDialog = true;
-
+      }
     },
     guardarTrabalho: async function() {
       try {
@@ -422,6 +416,17 @@ export default {
         this.pendenteGuardadoInfo = JSON.stringify(response.data);
       } catch (error) {
         return error;
+      }
+    },
+    filtrarDonos: async function() {
+      this.donos = this.entidades
+
+      for(var f of this.auto.fundo) {
+        this.donos = this.donos.filter(e => !e.includes(f))
+
+        for(var zc of this.auto.zonaControlo) {
+          zc.dono = zc.dono.filter(e => !e.includes(f))
+        }
       }
     }
   }

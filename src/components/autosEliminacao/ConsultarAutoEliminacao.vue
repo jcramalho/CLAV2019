@@ -75,7 +75,7 @@
                       <table class="consulta mx-5">
                         <tr v-if="item.codigo">
                           <td style="width:20%;">
-                            <div class="info-label">Código da class</div>
+                            <div class="info-label">Código da classe</div>
                           </td>
                           <td style="width:80%;">
                             <a
