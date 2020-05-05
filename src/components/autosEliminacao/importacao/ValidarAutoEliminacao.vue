@@ -32,7 +32,7 @@
         <v-list-item-title>
           <v-row v-if="item.codigo">
             <v-col cols="3">
-              <div class="info-label">Código da class:</div>
+              <div class="info-label">Código da classe</div>
             </v-col>
             <v-col class="mt-2">
               {{ item.codigo }}
@@ -40,7 +40,7 @@
           </v-row>
           <v-row v-if="item.referencia">
             <v-col cols="3">
-              <div class="info-label">Referência:</div>
+              <div class="info-label">Referência</div>
             </v-col>
             <v-col class="mt-2">
               {{ item.referencia }}
@@ -48,7 +48,7 @@
           </v-row>
           <v-row v-if="item.titulo">
             <v-col cols="3">
-              <div class="info-label">Título:</div>
+              <div class="info-label">Título</div>
             </v-col>
             <v-col class="mt-2">
               {{ item.titulo }}
@@ -56,7 +56,7 @@
           </v-row>
           <v-row v-if="item.prazoConservacao">
             <v-col cols="3">
-              <div class="info-label">Prazo de Conservação Administrativa:</div>
+              <div class="info-label">Prazo de Conservação Administrativa</div>
             </v-col>
             <v-col class="mt-2">
               {{ item.prazoConservacao }} Anos
@@ -64,18 +64,34 @@
           </v-row>
           <v-row v-else>
             <v-col cols="3">
-              <div class="info-label">Prazo de Conservação Administrativa:</div>
+              <div class="info-label">Prazo de Conservação Administrativa</div>
             </v-col>
-            <v-col class="mt-2">
-              <v-text-field :value="item.prazo" label="Insira o PCA em Anos" hint="Exemplo: 10" solo clearable></v-text-field>
+            <v-col>
+              <v-text-field 
+                v-model="item.prazo" 
+                label="Insira o PCA em Anos" 
+                hint="Exemplo: 10" 
+                filled
+                solo
+                dense
+                clearable
+                />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="3">
-              <div class="info-label">Destino Final:</div>
+              <div class="info-label">Destino Final</div>
             </v-col>
-            <v-col class="mt-2">
-              <v-select v-if="tipo!='PGD_LC'" :items="df" v-model="item.destino" solo dense></v-select>
+            <v-col>
+              <v-select 
+                v-if="tipo!='PGD_LC'" 
+                :items="df" 
+                v-model="item.destino" 
+                label="Eliminação / Conservação"
+                filled
+                dense
+                solo
+                ></v-select>
               <span v-else>{{item.destino}}</span>
             </v-col>
           </v-row>
@@ -83,7 +99,7 @@
             <v-row>
               <v-col cols="3">
                 <div class="info-label">
-                  Natureza de intervenção:
+                  Natureza de intervenção
                 </div>
               </v-col>
               <v-col class="mt-2">
@@ -92,9 +108,9 @@
             </v-row>
             <v-row>
               <v-col cols="3">
-                <div class="info-label">Dono do PN:</div>
+                <div class="info-label">Dono do PN</div>
               </v-col>
-              <v-col class="mt-2">
+              <v-col >
               <v-autocomplete
                 label="Selecione as entidades donas do processo"
                 :items="donos"
@@ -109,7 +125,7 @@
           </div>
           <v-row>
             <v-col cols="3">
-              <div class="info-label">Data de Início:</div>
+              <div class="info-label">Data de Início</div>
             </v-col>
             <v-col class="mt-2">
               {{ item.dataInicio }}
@@ -117,14 +133,14 @@
           </v-row>
           <v-row>
             <v-col cols="3">
-              <div class="info-label">Data de Fim:</div>
+              <div class="info-label">Data de Fim</div>
             </v-col>
             <v-col class="mt-2">{{ item.dataFim }}</v-col>
           </v-row>
           <v-row>
             <v-col cols="3">
               <div class="info-label">
-                N.º de agregações:
+                N.º de agregações
               </div>
             </v-col>
             <v-col class="mt-2">{{ item.agregacoes.length }}</v-col>
@@ -132,7 +148,7 @@
           <v-row v-if="item.uiPapel">
             <v-col cols="3">
               <div class="info-label">
-                Medição das UI em papel (m.l.):
+                Medição das UI em papel (m.l.)
               </div>
             </v-col>
             <v-col class="mt-2">{{ item.uiPapel }}</v-col>
@@ -140,7 +156,7 @@
           <v-row v-if="item.uiDigital">
             <v-col cols="3">
               <div class="info-label">
-                Medição das UI em digital (Gb):
+                Medição das UI em digital (Gb)
               </div>
             </v-col>
             <v-col class="mt-2">{{ item.uiDigital }}</v-col>
@@ -148,7 +164,7 @@
           <v-row v-if="item.uiOutros">
             <v-col cols="3">
               <div class="info-label">
-                Medição das UI noutros suportes:
+                Medição das UI noutros suportes
               </div>
             </v-col>
             <v-col class="mt-2">{{ item.uiOutros }}</v-col>
@@ -166,13 +182,12 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <v-data-table
-            :headers="cabecalho"
-            :items="item.agregacoes"
-            :items-per-page="5"
-            class="elevation-1 ml-2 mt-3"
-            :footer-props="footer_props"
-            :search="search"
+          <Agregacoes 
+            v-bind:agregacoes="item.agregacoes" 
+            v-bind:df="item.destino"
+            v-bind:pca="item.prazo"
+            v-bind:dataInicio="item.dataInicio"
+            v-bind:search="search"
           />
         </div>
       </v-list-item-title>
@@ -182,21 +197,16 @@
 </template>
 
 <script>
+import Agregacoes from "@/components/autosEliminacao/importacao/ListaAgregacoes.vue";
+
 export default {
   props: ["auto","donos","submit","tipo"],
-
+  components: {
+    Agregacoes
+  },
   data: () => ({
     df: ["Eliminação", "Conservação"],
-    search: "",
-    cabecalho: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" },
-      { text: "Título", align: "left", value: "titulo" },
-      { text: "Data de Contagem", align: "center", value: "dataContagem" },
-      { text: "Natureza de Intervenção", align: "center", value: "ni" }
-    ],
-    footer_props: {
-      "items-per-page-text": "Mostrar"
-    }
+    search: ""
   })
 };
 </script>

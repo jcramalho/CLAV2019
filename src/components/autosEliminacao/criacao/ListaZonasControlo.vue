@@ -1,11 +1,10 @@
 <template>
   <div>
-    <v-list>
+    <v-list shaped>
       <v-list-group
         v-for="(item,index) in auto.zonaControlo"
         :key="index"
         color="grey darken-1"
-        no-action
       >
         <template v-slot:activator>
           <v-list-item-content>
@@ -26,7 +25,7 @@
             <v-row justify="end" class="mx-4">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon v-on="on" class="mr-2" @click="editarIndex=index; editarZC=true; filtrarDonos()">edit</v-icon>
+                  <v-icon v-on="on" class="mr-2" @click="editarIndex=index; editarZC=true;">edit</v-icon>
                 </template>
                 <span>Editar Classe</span>
               </v-tooltip>
@@ -58,9 +57,9 @@
                 </td>
                 <td>{{ item.ni }}</td>
               </tr>
-              <tr v-if="item.dono.length>0">
+              <tr v-if="item.destino === 'C'">
                 <td style="width:20%;">
-                  <div class="info-label">Dono do PN</div>
+                  <div class="info-label">Dono do PN <v-icon color="red" v-if="item.dono.length==0">warning</v-icon></div>
                 </td>
                 <td><p v-for="d in item.dono" :key="d">{{ d }}</p></td>
               </tr>
@@ -185,7 +184,7 @@ import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaC
 import ListaAgregacoes from "@/components/autosEliminacao/criacao/ListaAgregacoes.vue"
 
 export default {
-  props: ["classes", "entidades", "auto", "classesCompletas"],
+  props: ["classes", "entidades", "auto", "classesCompletas","donos"],
   components: {
     DialogZonaControlo,
     ListaAgregacoes
@@ -221,13 +220,6 @@ export default {
     closeZC: function () {
       this.editarZC = false
       this.snackbar = true
-    },
-    filtrarDonos: async function() {
-      this.donos = this.entidades
-
-      for(var f of this.auto.fundo)
-        this.donos = this.donos.filter(e => !e.includes(f))
-
     }
   }
 };
