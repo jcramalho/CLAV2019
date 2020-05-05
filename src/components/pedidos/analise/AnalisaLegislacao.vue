@@ -73,7 +73,7 @@
             hide-default-footer
           >
             <template v-slot:no-data>
-              Não existem processos selecionadas.
+              Não existem processos selecionados.
             </template>
 
             <template v-slot:item="props">
