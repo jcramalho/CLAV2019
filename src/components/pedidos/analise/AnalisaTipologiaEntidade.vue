@@ -228,7 +228,6 @@ export default {
     },
 
     removeEntidade(entidade) {
-      console.log("entidade :>> ", entidade);
       const index = this.pedido.objeto.dados.entidadesSel.findIndex(
         (entSel) => entSel.sigla === entidade.sigla
       );
