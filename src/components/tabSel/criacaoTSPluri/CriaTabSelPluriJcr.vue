@@ -87,7 +87,7 @@
                 <small>Processos passíveis de existir em qualquer entidade</small>
               </v-stepper-step>
               <v-stepper-content step="3">
-                <v-row wrap>
+                <v-row wrap v-if="listaProcComunsReady && entSelReady">
                   <v-col>
                     <v-expansion-panels>
                       <v-expansion-panel>
@@ -101,13 +101,16 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content eager>
                           <ListaProcessos
-                            v-if="listaProcComunsReady && entSelReady"
                             :listaProcs="listaProcComuns"
                           />
                         </v-expansion-panel-content>
                       </v-expansion-panel>
                     </v-expansion-panels>
                   </v-col>
+                </v-row>
+
+                <v-row v-else>
+                  <v-col>Ainda não foi possível carregar a informação dos Processos Comuns...</v-col>
                 </v-row>
                 
                 <v-btn
@@ -124,7 +127,7 @@
                 <small>Processos específicos das entidades e tipologias</small>
               </v-stepper-step>
               <v-stepper-content step="4">
-                <v-row wrap>
+                <v-row wrap v-if="listaProcEspReady && entSelReady">
                   <v-col>
                     <v-expansion-panels>
                       <v-expansion-panel>
@@ -134,8 +137,7 @@
                           Selecione os processos de negócio específicos
                         </v-expansion-panel-header>
                         <v-expansion-panel-content eager>
-                          <ListaProcessosEsp
-                            v-if="listaProcEspReady && entSelReady"
+                          <ListaProcessos
                             :listaProcs="listaProcEsp"
                           />
                         </v-expansion-panel-content>
@@ -143,151 +145,17 @@
                     </v-expansion-panels>
                   </v-col>
                 </v-row>
+                <v-row v-else>
+                  <v-col>Ainda não foi possível carregar a informação dos Processos Específicos...</v-col>
+                </v-row>
                 <v-btn
                   color="primary"
-                  @click="stepNo = 5; barra(56);"
+                  @click="stepNo = 7; barra(56);"
                   >Continuar</v-btn>
                 <v-btn
                   text
                   @click="stepNo = 3; barra(28);"
                   >Voltar</v-btn>
-              </v-stepper-content>
-
-              <v-stepper-step :complete="stepNo > 5" step="5"
-                >Processos Específicos Restantes
-              </v-stepper-step>
-              <v-stepper-content step="5">
-                <v-layout wrap>
-                  <v-flex>
-                    <v-expansion-panels>
-                      <v-expansion-panel>
-                        <v-expansion-panel-header
-                          class="expansion-panel-heading"
-                        >
-                          Selecione os processos de negócio específicos
-                          restantes
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content eager>
-                          <ListaProcessosEspRestantes
-                            v-if="listaProcEspResReady"
-                            v-bind:lista="listaProcEspRes"
-                            v-bind:listaPreSel="procPreSelEspRestantes"
-                            v-bind:entidades="tabelaSelecao.entidades"
-                            @contadorProcSelRes="contadorProcSelRes($event)"
-                            @contadorProcPreSelRes="
-                              contadorProcPreSelRes($event)
-                            "
-                            @procPreSelResTravRes="procPreSelResTravRes($event)"
-                            @guardarTSProcRes="guardarTSProcRes($event)"
-                          />
-                        </v-expansion-panel-content>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                  </v-flex>
-                </v-layout>
-                <v-layout wrap>
-                  <v-flex xs3>
-                    <v-text-field
-                      readonly
-                      label="Nº de processos restantes selecionados"
-                      :value="numProcSelRes"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs4 style="padding-left:60px;">
-                    <v-text-field
-                      readonly
-                      label="Nº de processos restantes pré selecionados"
-                      :value="numProcPreSelRes"
-                    ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-btn
-                  color="primary"
-                  @click="
-                    stepNo = 6;
-                    barra(70);
-                    loadUltimosProcessos();
-                    procPreSelUlt();
-                  "
-                  >Continuar</v-btn
-                >
-                <v-btn
-                  text
-                  @click="
-                    stepNo = 4;
-                    barra(42);
-                  "
-                  >Voltar</v-btn
-                >
-              </v-stepper-content>
-
-              <v-stepper-step :complete="stepNo > 6" step="6"
-                >Outros processos
-                <small
-                  >Revisão de processos de negócio não selecionados nas etapas
-                  anteriores</small
-                >
-              </v-stepper-step>
-              <v-stepper-content step="6">
-                <v-layout wrap>
-                  <v-flex>
-                    <v-expansion-panels>
-                      <v-expansion-panel>
-                        <v-expansion-panel-header
-                          class="expansion-panel-heading"
-                        >
-                          Selecione os processos de negócio restantes
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content eager>
-                          <ListaProcessosUltimos
-                            v-if="listaProcUltReady"
-                            v-bind:lista="listaProcUlt"
-                            v-bind:listaPreSel="procPreSelUltimos"
-                            v-bind:entidades="tabelaSelecao.entidades"
-                            @contadorProcSelUlt="contadorProcSelUlt($event)"
-                            @contadorProcPreSelUlt="
-                              contadorProcPreSelUlt($event)
-                            "
-                            @guardarTSProcUlt="guardarTSProcUlt($event)"
-                          />
-                        </v-expansion-panel-content>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                  </v-flex>
-                </v-layout>
-                <v-layout wrap>
-                  <v-flex xs3>
-                    <v-text-field
-                      readonly
-                      label="Nº dos últimos processos selecionados"
-                      :value="numProcSelUlt"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs4 style="padding-left:60px;">
-                    <v-text-field
-                      readonly
-                      label="Nº dos últimos processos pré selecionados"
-                      :value="numProcPreSelUlt"
-                    ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-btn
-                  color="primary"
-                  @click="
-                    stepNo = 7;
-                    barra(84);
-                    parseProcessosSel();
-                  "
-                  >Continuar</v-btn
-                >
-                <v-btn
-                  text
-                  @click="
-                    stepNo = 5;
-                    barra(56);
-                  "
-                  >Voltar</v-btn
-                >
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 7" step="7"
@@ -371,7 +239,7 @@
                 <v-btn
                   text
                   @click="
-                    stepNo = 6;
+                    stepNo = 4;
                     barra(72);
                   "
                   >Voltar</v-btn
@@ -459,9 +327,7 @@ import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcS
 export default {
   components: {
     ListaProcessos,
-    ListaProcessosEsp,
-    ListaProcessosEspRestantes,
-    ListaProcessosUltimos,
+    //ListaProcessosEsp,
     ListaParteDescritiva
   },
   data() {
@@ -666,7 +532,6 @@ export default {
     // Carrega os processos específicos das entidades em causa
     loadProcEspecificos: async function() {
       try {
-        if (!this.listaProcEspReady) {
           this.listaProcEsp.numProcSel = 0;
           this.listaProcEsp.numProcPreSel = 0;
           this.listaProcEsp.procs = [];
@@ -676,23 +541,23 @@ export default {
             url += this.tabelaSelecao.entidades[i].id + ",";
           }
           url += this.tabelaSelecao.entidades[i].id;
-        }
-        var response = await this.$request("get", url);
 
-        for (var j = 0; j < response.data.length; j++) {
-          this.listaProcEsp.procs.push({
-            proc: response.data[j].codigo,
-            designacao: response.data[j].titulo,
-            chave: j,
-            edited: false,
-            preSelected: false
-          });
-          this.listaProcEsp.procs[j].entidades = [];
-        }
+          var response = await this.$request("get", url);
 
-        this.listaProcEsp.sort((a, b) => (a.proc > b.proc ? 1 : -1));
-        this.listaProcEspReady = true;
-        return this.listaProcEsp;
+          for (var j = 0; j < response.data.length; j++) {
+            this.listaProcEsp.procs.push({
+              proc: response.data[j].codigo,
+              designacao: response.data[j].titulo,
+              chave: j,
+              edited: false,
+              preSelected: false
+            });
+            this.listaProcEsp.procs[j].entidades = [];
+          }
+
+          this.listaProcEsp.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
+          this.listaProcEspReady = true;
+
       } catch (error) {
         return error;
       }

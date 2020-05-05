@@ -74,10 +74,6 @@ export default {
       Selresponsabilidade
   },
 
-  created: function(){
-      alert("Lista: " + JSON.stringify(this.listaProcs));
-  },
-
   data: () => ({
     // Processo corrente
     procSel: {},
@@ -134,7 +130,7 @@ export default {
               await this.acrescentaFecho(p);
           }
           else if(p.inc < 0){
-              this.retiraFecho(this.procSel);
+              await this.retiraFecho(this.procSel);
           }
         }
         catch (err) {
@@ -152,7 +148,7 @@ export default {
           var index = this.listaProcs.procs.findIndex(p => p.proc == this.travessia[t]);
           if(index != -1){
             this.listaProcs.procs[index].preSelected = true;
-            this.listaProcs.numProcPreSel++;
+            if(!this.listaProcs.procs[index].edited) this.listaProcs.numProcPreSel++;
           } 
         }
       } catch (err) {
