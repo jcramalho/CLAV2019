@@ -73,7 +73,7 @@
             hide-default-footer
           >
             <template v-slot:no-data>
-              Não existem processos selecionadas.
+              Não existem processos selecionados.
             </template>
 
             <template v-slot:item="props">
@@ -168,6 +168,8 @@ import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocom
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
+import { comparaSigla, comparaCodigo } from "@/utils/utils";
+
 export default {
   props: ["p"],
 
@@ -222,8 +224,6 @@ export default {
       dialogProcessos: false,
       entidades: [],
       processos: [],
-      entidadesSelecionadas: [],
-      processosSelecionados: [],
       infoPedido: [],
       pedido: null,
     };
@@ -239,8 +239,6 @@ export default {
       this.erroDialog.visivel = true;
       this.erroDialog.mensagem =
         "Erro ao carregar os dados, por favor tente novamente";
-      // this.text = "Erro ao carregar os dados, por favor tente novamente";
-      // this.snackbar = true;
     }
   },
 
@@ -286,14 +284,6 @@ export default {
     p: {
       handler(newP, oldP) {
         if (newP !== oldP) {
-          this.entidadesSelecionadas = JSON.parse(
-            JSON.stringify(newP.objeto.dados.entidadesSel)
-          );
-
-          this.processosSelecionados = JSON.parse(
-            JSON.stringify(newP.objeto.dados.processosSel)
-          );
-
           this.pedido = JSON.parse(JSON.stringify(this.p));
         }
       },
@@ -304,7 +294,7 @@ export default {
 
   methods: {
     abreEntidadesDialog() {
-      this.entidadesSelecionadas.forEach((entSel) => {
+      this.pedido.objeto.dados.entidadesSel.forEach((entSel) => {
         const index = this.entidades.findIndex(
           (ent) => ent.sigla === entSel.sigla
         );
@@ -316,7 +306,7 @@ export default {
     },
 
     abreProcessosDialog() {
-      this.processosSelecionados.forEach((procSel) => {
+      this.pedido.objeto.dados.processosSel.forEach((procSel) => {
         const index = this.processos.findIndex(
           (proc) => proc.codigo === procSel.codigo
         );
@@ -345,12 +335,10 @@ export default {
       if (index !== -1) {
         if (!existe) {
           this.entidades.push(entidade);
+          this.entidades.sort(comparaSigla);
         }
 
         this.pedido.objeto.dados.entidadesSel.splice(index, 1);
-        this.entidadesSelecionadas = JSON.parse(
-          JSON.stringify(this.pedido.objeto.dados.entidadesSel)
-        );
       }
     },
 
@@ -366,6 +354,7 @@ export default {
       if (index !== -1) {
         if (!existe) {
           this.processos.push(processo);
+          this.processos.sort(comparaCodigo);
         }
 
         this.pedido.objeto.dados.processosSel.splice(index, 1);
@@ -373,13 +362,11 @@ export default {
     },
 
     adicionaEntidades(entidades) {
-      this.entidadesSelecionadas.push(...entidades);
       this.pedido.objeto.dados.entidadesSel.push(...entidades);
       this.dialogEntidades = false;
     },
 
     adicionaProcessos(processos) {
-      this.processosSelecionados.push(...processos);
       this.pedido.objeto.dados.processosSel.push(...processos);
       this.dialogProcessos = false;
     },
@@ -431,7 +418,7 @@ export default {
           despacho: dados.mensagemDespacho,
         };
 
-        let pedido = JSON.parse(JSON.stringify(this.p));
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
@@ -443,7 +430,9 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -453,7 +442,7 @@ export default {
 
         let dadosUtilizador = this.$verifyTokenUser();
 
-        let pedido = JSON.parse(JSON.stringify(this.p));
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
@@ -477,7 +466,9 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao distribuir o pedido, por favor tente novamente";
       }
     },
 

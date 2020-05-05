@@ -181,21 +181,15 @@
             <v-btn
               medium
               color="primary darken-4"
-              @click="submit"
-              :disabled="!fileSerie || !fileAgreg || !auto.fundo || !auto.legislacao"
-              class="ma-2"
-            >Submeter Auto de Eliminação</v-btn>
-            <v-btn
-              medium
-              color="warning darken-2"
               @click="validar"
-              :disabled="!fileSerie || !fileAgreg"
+              :disabled="!fileSerie || !fileAgreg || !auto.fundo || !auto.legislacao"
               class="ma-2"
             >Validar Auto de Eliminação</v-btn>
           </v-stepper-content>
         </v-stepper>
       </v-card-text>
     </v-card>
+    
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
         <v-card-title
@@ -206,7 +200,16 @@
         <v-card-text>
           <v-row class="my-2">
             <v-col cols="2">
-              <div class="info-label">Fonte de Legitimação:</div>
+              <div class="info-label">Codigo do pedido</div>
+            </v-col>
+
+            <v-col class="info-content">
+              <div>{{ codigoPedido }}</div>
+            </v-col>
+          </v-row>
+          <v-row class="my-2">
+            <v-col cols="2">
+              <div class="info-label">Fonte de Legitimação</div>
             </v-col>
 
             <v-col class="info-content">
@@ -215,7 +218,7 @@
           </v-row>
           <v-row class="my-2">
             <v-col cols="2">
-              <div class="info-label">Fundo:</div>
+              <div class="info-label">Fundo</div>
             </v-col>
 
             <v-col class="info-content">
@@ -257,13 +260,15 @@
         >Validação de auto de eliminação executada com sucesso</v-card-title>
 
         <v-card-text>
-          <span class="subtitle-1" style="white-space: pre-wrap" v-html="success"></span>
+          Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação, selecione "Confirmar". Caso ainda pretenda realizar alguma alteração ao AE, clique em "Voltar".
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="green darken-4" text @click="valDialog=false">Fechar</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-4" text @click="valDialog=false">Voltar</v-btn>
+          <v-btn color="green darken-4" text @click="valDialog=false; submit()">Confirmar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -297,7 +302,7 @@
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="red darken-4" text @click="errosValDialog = false">Fechar</v-btn>
+          <v-btn color="red darken-4" text @click="errosValDialog = false; errosVal.erros=[]; errosVal.numErros=0;">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -338,6 +343,7 @@ export default {
   },
   data: () => ({
     steps: 1,
+    codigoPedido: "",
     auto: {
       legislacao: "",
       fundo: [],
@@ -366,87 +372,98 @@ export default {
   }),
   methods: {
     validar: async function() {
-      validador(this.fileSerie, this.fileAgreg, this.tipo)
-        .then(res => {
-          this.valDialog = true;
-          this.success = res;
-        })
-        .catch(err => {
-          this.errosVal = err;
-          this.errosValDialog = true;
-        });
+      for(var zc of this.auto.zonaControlo) {
+        if(!zc.prazo || zc.prazo=="" || !(/^[0-9]*$/.test(zc.prazo))) {
+          this.errosVal.erros.push({
+            sobre: "Prazo de Conservação Administrativa",
+            mensagem: "Preenchimento incorreto ou não preenchido na classe " + zc.codigo + " " + zc.referencia
+          })
+          this.errosVal.numErros++
+        }
+        if(!zc.destino || zc.destino=="") {
+          this.errosVal.erros.push({
+            sobre: "Destino Final",
+            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " " + zc.referencia
+          })
+          this.errosVal.numErros++
+        }
+        else if((zc.destino=="C" || zc.destino=="Conservação") && zc.dono.length===0) {
+          this.errosVal.erros.push({
+            sobre: "Dono do PN",
+            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " " + zc.referencia
+          })
+          this.errosVal.numErros++
+        }
+        var pca = parseInt(zc.prazo) || 0;
+        var dataInicio = parseInt(zc.dataInicio)
+        var currentTime = new Date()
+
+        for(var ag of zc.agregacoes) {
+          var dataContagem = parseInt(ag.dataContagem) || 0
+          var res1 = pca + dataContagem + 1
+          var res2 = dataContagem - dataInicio
+          if(res1 > currentTime.getFullYear()) {
+            this.errosVal.erros.push({
+              sobre: "Data Contagem",
+              mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente."
+            })
+            this.errosVal.numErros++
+          }
+          if(res2 < 0) {
+            this.errosVal.erros.push({
+              sobre: "Data Contagem",
+              mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe."
+            })
+            this.errosVal.numErros++
+          }
+        }
+      }
+      if(this.errosVal.numErros>0) this.errosValDialog = true;
+      else this.valDialog = true;
     },
     submit: async function() {
-      validador(this.fileSerie, this.fileAgreg, this.tipo)
-        .then(() => {
-          conversor(this.fileSerie, this.fileAgreg, this.tipo)
-            .then(async res => {
-              const eliminacao = res.auto;
-              eliminacao.fundo = this.auto.fundo;
-              eliminacao.legislacao = this.auto.legislacao;
-              if (this.tipo == "PGD_LC") {
-                //VERIFICA AS CLASSES DA LC
-                eliminacao.zonaControlo.forEach(zc => {
-                  var classe = this.classes.find(
-                    elem => elem.codigo == zc.codigo
-                  );
-                  if (!classe) {
-                    this.flagAE = true;
-                    this.erro =
-                      "Codigo da classe <b>" +
-                      zc.codigo +
-                      "</b> não foi encontrado na Lista Consolidada";
-                    return; //ERROS
-                  }
+      for(var zc of this.auto.zonaControlo) {
+        if(this.tipo=="PGD_LC")
+          delete zc["referencia"];
+        zc.prazoConservacao = zc.prazo;
 
-                  delete zc["referencia"];
-                  zc.titulo = classe.titulo;
-                  zc.prazoConservacao = classe.pca.valores;
-                  zc.destino = classe.df.valor;
-                });
-              }
-              if (this.flagAE) this.erroDialog = true;
-              else {
-                var user = this.$verifyTokenUser();
+        if(zc.destino === "Conservação") zc.destino = "C"
+        else if(zc.destino === "Eliminação") zc.destino = "E"
+        
+        for(var ag of zc.agregacoes) 
+          if(zc.destino === "C") ag.ni = "Participante"
+        
+      }
 
-                eliminacao.responsavel = user.email;
-                eliminacao.entidade = user.entidade;
+      var user = this.$verifyTokenUser();
 
-                if (this.tipo == "PGD_LC") this.tipo = "PGD/LC";
-                this.tipo = "AE " + this.tipo;
+      this.auto.responsavel = user.email;
+      this.auto.entidade = user.entidade;
+      var tipo = this.tipo
+      if (tipo == "PGD_LC") tipo = "PGD/LC";
+      tipo = "AE " + tipo;
 
-                var pedidoParams = {
-                  tipoPedido: "Importação",
-                  tipoObjeto: this.tipo,
-                  novoObjeto: {
-                    ae: eliminacao
-                  },
-                  user: { email: user.email },
-                  entidade: user.entidade,
-                  token: this.$store.state.token
-                };
+      var pedidoParams = {
+        tipoPedido: "Importação",
+        tipoObjeto: tipo,
+        novoObjeto: {
+          ae: this.auto
+        },
+        user: { email: user.email },
+        entidade: user.entidade,
+        token: this.$store.state.token
+      };
 
-                const codigoPedido = await this.$request(
-                  "post",
-                  "/pedidos",
-                  pedidoParams
-                );
+      const codigoPedido = await this.$request(
+        "post",
+        "/pedidos",
+        pedidoParams
+      );
 
-                this.codigoPedido = codigoPedido.data;
+      this.codigoPedido = codigoPedido.data;
 
-                this.auto.legislacao = eliminacao.legislacao;
-                this.successDialog = true;
-              }
-            })
-            .catch(err => {
-              this.erro = err;
-              this.erroDialog = true;
-            });
-        })
-        .catch(err => {
-          this.errosVal = err;
-          this.errosValDialog = true;
-        });
+      this.successDialog = true;
+
     },
     converter: async function() {
       validador(this.fileSerie, this.fileAgreg, this.tipo)
