@@ -208,9 +208,6 @@ export default {
     p: {
       handler(newP, oldP) {
         if (newP !== oldP) {
-          // this.tipologiasSelecionadas = JSON.parse(
-          //   JSON.stringify(newP.objeto.dados.tipologiasSel)
-          // );
           this.pedido = JSON.parse(JSON.stringify(this.p));
         }
       },
