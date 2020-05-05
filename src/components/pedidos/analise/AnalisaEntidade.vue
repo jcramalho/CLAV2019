@@ -171,8 +171,6 @@ export default {
       this.erroDialog.visivel = true;
       this.erroDialog.mensagem =
         "Erro ao carregar os dados, por favor tente novamente";
-      // this.text = "Erro ao carregar os dados, por favor tente novamente";
-      // this.snackbar = true;
     }
   },
 
