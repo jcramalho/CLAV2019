@@ -283,9 +283,9 @@ export default {
         this.erros.push("Subforma de Contagem;");
       }
 
-      // if (!Boolean(this.erros[0])) {
-      //   this.erros.push("Datas Inválidas;");
-      // }
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
     },
     validar_justificacoes() {
       if (!!this.newSerie.pca && !!this.newSerie.justificacaoPCA[0] == false) {

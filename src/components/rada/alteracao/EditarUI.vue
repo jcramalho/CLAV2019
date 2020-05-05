@@ -493,9 +493,9 @@ export default {
         this.erros.push("Localização;");
       }
 
-      // if (!Boolean(this.erros[0])) {
-      //   this.erros.push("Datas Inválidas;");
-      // }
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
     },
     async guardar() {
       this.existe_erros = false;
