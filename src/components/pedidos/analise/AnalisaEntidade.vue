@@ -155,7 +155,6 @@ export default {
       },
       dialogTipologias: false,
       tipologias: [],
-      tipologiasSelecionadas: [],
       infoPedido: [],
       pedido: null,
     };
@@ -305,7 +304,9 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -339,7 +340,9 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao distribuir o pedido, por favor tente novamente";
       }
     },
 
