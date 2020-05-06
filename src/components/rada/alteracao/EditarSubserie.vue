@@ -7,7 +7,7 @@
         <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
-      <v-card-text> 
+      <v-card-text>
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
             <v-card>
@@ -228,20 +228,27 @@ export default {
       if (!this.subserie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
-      if (!this.subserie.pca) {
-        this.erros.push("Prazo de Conservação Administrativa;");
+
+      if (!Boolean(this.subserie.pca)) {
+        if (!Boolean(this.subserie.notaPCA)) {
+          this.erros.push(
+            "Prazo de Conservação Administrativa ou nota sobre o PCA;"
+          );
+        }
+      } else {
+        if (!!this.subserie.justificacaoPCA[0] == false) {
+          this.erros.push("Justificação do PCA;");
+        }
       }
 
-      if (!!this.subserie.justificacaoPCA[0] == false) {
-        this.erros.push("Justificação do PCA;");
-      }
-
-      if (!!this.subserie.justificacaoDF[0] == false) {
-        this.erros.push("Justificação do DF;");
-      }
-
-      if (!this.subserie.df) {
-        this.erros.push("Destino Final;");
+      if (!Boolean(this.subserie.df)) {
+        if (!Boolean(this.subserie.notaDF)) {
+          this.erros.push("Destino Final ou nota sobre o DF;");
+        }
+      } else {
+        if (!!this.subserie.justificacaoDF[0] == false) {
+          this.erros.push("Justificação do DF;");
+        }
       }
 
       if (!this.subserie.formaContagem.forma) {
@@ -256,9 +263,19 @@ export default {
         }
       }
 
-      // if (!Boolean(this.erros[0])) {
-      //   this.erros.push("Datas Inválidas;");
-      // }
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
+    },
+    validar_justificacoes() {
+      if (!!this.subserie.pca && !!this.subserie.justificacaoPCA[0] == false) {
+        return false;
+      }
+      if (!!this.subserie.df && !!this.subserie.justificacaoDF[0] == false) {
+        return false;
+      }
+
+      return true;
     },
     save() {
       this.existe_erros = false;
@@ -266,7 +283,10 @@ export default {
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
-        if (this.$refs.formSubserie.validate()) {
+        if (
+          this.$refs.formSubserie.validate() &&
+          this.validar_justificacoes()
+        ) {
           this.$emit("atualizacao", this.subserie);
           this.dialogState = false;
         } else {

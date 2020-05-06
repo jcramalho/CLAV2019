@@ -22,6 +22,7 @@
               item-value="entidade"
               placeholder="Selecione as Entidades Produtoras."
               multiple
+              solo
             >
               <template v-slot:no-data>
                 <v-list-item>
@@ -55,6 +56,7 @@
             item-value="tipologia"
             placeholder="Selecione as Tipologias das Entidades Produtoras."
             multiple
+            solo
           >
             <template v-slot:no-data>
               <v-list-item>
@@ -98,6 +100,8 @@
                 prepend-icon="event"
                 readonly
                 v-on="on"
+                solo
+
                 clearable
               ></v-text-field>
             </template>
@@ -139,6 +143,7 @@
                 prepend-icon="event"
                 readonly
                 v-on="on"
+                solo
                 clearable
               ></v-text-field>
             </template>

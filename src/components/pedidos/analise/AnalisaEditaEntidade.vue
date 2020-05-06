@@ -42,9 +42,9 @@
                 <td>{{ props.item.sigla }}</td>
                 <td>{{ props.item.designacao }}</td>
                 <td>
-                  <v-icon color="red" @click="removeTipologia(props.item)"
-                    >delete</v-icon
-                  >
+                  <v-icon color="red" @click="removeTipologia(props.item)">
+                    delete
+                  </v-icon>
                 </td>
               </tr>
             </template>
@@ -157,7 +157,6 @@ export default {
       },
       dialogTipologias: false,
       tipologias: [],
-      tipologiasSelecionadas: [],
       infoPedido: [],
       pedido: null,
     };
@@ -309,7 +308,9 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -343,7 +344,9 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao distribuir o pedido, por favor tente novamente";
       }
     },
 

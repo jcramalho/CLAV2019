@@ -10,12 +10,13 @@
           :rules="[v => !!v[0] || 'Campo obrigatório!']"
           v-model="newSerie.UIs"
           :items="getCodigos"
-          placeholder="Unidadades de Instalação"
+          label="Unidadades de Instalação"
           clearable
           multiple
           item-text="searchField"
           item-value="codigo"
           chips
+          solo
           deletable-chips
           :return-object="false"
         >

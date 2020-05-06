@@ -97,7 +97,21 @@
             :TS="RADA.tsRada"
             :entidades="entidades"
             :legislacaoProcessada="legislacaoProcessada"
+            :loading_circle.sync="loading_circle_ts"
           />
+          <v-alert
+            width="100%"
+            :value="!!erroProdutoras[0]"
+            outlined
+            type="error"
+            prominent
+            border="left"
+          >
+            As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série!
+            <ul>
+              <li v-for="(produtora, i) in erroProdutoras" :key="i">{{produtora}}</li>
+            </ul>
+          </v-alert>
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
@@ -150,6 +164,8 @@ export default {
     return {
       alert_guardar: false,
       user_entidade: null,
+      loading_circle_ts: false,
+      erroProdutoras: [],
       toSave: false,
       toDelete: false,
       mensagemPendenteCriadoOK: "",
@@ -359,68 +375,85 @@ export default {
     concluir: async function() {
       //  Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
       //  em que as produtoras tem que estar associadas pelo menos a uma série ou ui
+      this.erroProdutoras = [];
       if (!!this.RADA.RE.entidadesProd[0]) {
-        this.RADA.RE.entidadesProd = this.entidadesProcessadas
+        let entidades_selecionadas = this.entidadesProcessadas
           .filter(e => e.disabled == true)
           .map(e => e.entidade);
+
+        this.RADA.RE.entidadesProd.forEach(ent => {
+          if (!entidades_selecionadas.some(e => e == ent)) {
+            this.erroProdutoras.push(ent);
+          }
+        });
       } else {
-        this.RADA.RE.tipologiasProd = this.tipologias
+        let tipologias_selecionadas = this.tipologias
           .filter(t => t.disabled == true)
           .map(t => t.tipologia);
+
+        this.RADA.RE.tipologiasProd.forEach(tip => {
+          if (!tipologias_selecionadas.some(e == tip)) {
+            this.erroProdutoras.push(tip);
+          }
+        });
       }
 
-      let series = this.RADA.tsRada.classes
-        // adicionar os IDS às classes
-        .map(e => {
-          let tipo = null;
+      if (!!this.erroProdutoras[0]) {
+        this.loading_circle_ts = false;
+      } else {
+        let series = this.RADA.tsRada.classes
+          // adicionar os IDS às classes
+          .map(e => {
+            let tipo = null;
 
-          switch (e.tipo) {
-            case "Série":
-              tipo = "serie";
-              break;
-            case "Subsérie":
-              tipo = "subserie";
-              break;
-            default:
-              tipo = "organico_funcional";
-              break;
-          }
+            switch (e.tipo) {
+              case "Série":
+                tipo = "serie";
+                break;
+              case "Subsérie":
+                tipo = "subserie";
+                break;
+              default:
+                tipo = "organico_funcional";
+                break;
+            }
 
-          e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
+            e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
 
-          return e;
-        })
-        .filter(e => e.tipo == "Série");
+            return e;
+          })
+          .filter(e => e.tipo == "Série");
 
-      // Calcular os valores de dimensão e suporte no relatório expositivo
-      this.calcular_dimensao_suporte(series);
+        // Calcular os valores de dimensão e suporte no relatório expositivo
+        this.calcular_dimensao_suporte(series);
 
-      // Tratar dos pedidos das novas legislações
-      await this.fazer_pedidos_legislacao(series);
+        // Tratar dos pedidos das novas legislações
+        await this.fazer_pedidos_legislacao(series);
 
-      // Tratar dos pedidos da novas entidades
-      await this.fazer_pedidos_entidades(series);
+        // Tratar dos pedidos da novas entidades
+        await this.fazer_pedidos_entidades(series);
 
-      // Fazer pedido do RADA
-      let pedidoParams = {
-        tipoPedido: "Criação",
-        tipoObjeto: "RADA",
-        novoObjeto: this.RADA,
-        user: {
-          email: this.userEmail
-        },
-        token: this.$store.state.token,
-        criadoPor: this.userEmail,
-        entidade: this.user_entidade
-      };
+        // Fazer pedido do RADA
+        let pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "RADA",
+          novoObjeto: this.RADA,
+          user: {
+            email: this.userEmail
+          },
+          token: this.$store.state.token,
+          criadoPor: this.userEmail,
+          entidade: this.user_entidade
+        };
 
-      let response = await this.$request("post", "/pedidos", pedidoParams);
+        let response = await this.$request("post", "/pedidos", pedidoParams);
 
-      // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
-      await this.$request("delete", "/pendentes/" + this.obj._id);
+        // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
+        await this.$request("delete", "/pendentes/" + this.obj._id);
 
-      this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-      this.dialogRADACriado = true;
+        this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
+        this.dialogRADACriado = true;
+      }
     }
   },
   created: async function() {

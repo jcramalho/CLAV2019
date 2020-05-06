@@ -25,7 +25,12 @@
           :formaContagem="formaContagem"
           :legislacaoProcessada="legislacaoProcessada"
         />
-        <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
+        <SubSerie
+          :classes="TS.classes"
+          :UIs="TS.UIs"
+          :formaContagem="formaContagem"
+          :RE="RE"
+        />
       </v-col>
     </v-row>
     <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ TS.classes }}</p> -->
@@ -35,7 +40,11 @@
         <div v-if="TS.classes.length > 0">
           <v-treeview hoverable :items="preparaTree" item-key="codigo">
             <template v-slot:prepend="{ item }">
-              <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
+              <img
+                v-if="item.tipo == 'Série'"
+                style="width:23px; height:30px"
+                :src="svg_sr"
+              />
               <img
                 v-else-if="item.tipo == 'Subsérie'"
                 style="width:23px; height:30px"
@@ -44,31 +53,51 @@
             </template>
             <template v-slot:label="{ item }">
               <b text @click="editarClasse(item)">
-                {{
-                item.titulo
-                }}
+                {{ item.titulo }}
               </b>
               <!-- Série -->
               <b
-                v-show="item.tipo == 'Série' && (item.eFilhoDe == null || !item.temUIs_ou_datas || (item.temDF && !(!!(item.children[0]))))"
+                v-show="
+                  item.tipo == 'Série' &&
+                    (item.eFilhoDe == null ||
+                      !item.temUIs_ou_datas ||
+                      (item.temDF && !!!item.children[0]))
+                "
                 style="color:red"
-              >*</b>
+                >*</b
+              >
               <!-- Subsérie -->
               <b
-                v-show="item.tipo == 'Subsérie' && (item.eFilhoDe == null || !item.temUIs_ou_datas || item.temDF)"
+                v-show="
+                  item.tipo == 'Subsérie' &&
+                    (item.eFilhoDe == null ||
+                      !item.temUIs_ou_datas ||
+                      item.temDF)
+                "
                 style="color:red"
-              >*</b>
+                >*</b
+              >
               <!-- N1, N2 OU N3 -->
               <b
-                v-show="item.eFilhoDe == null && (item.tipo == 'N2' || item.tipo == 'N3')"
+                v-show="
+                  item.eFilhoDe == null &&
+                    (item.tipo == 'N2' || item.tipo == 'N3')
+                "
                 style="color:red"
-              >*</b>
+                >*</b
+              >
             </template>
           </v-treeview>
           <br />
           <b v-if="incompleto" style="color:red">*Classes por preencher</b>
         </div>
-        <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
+        <v-alert
+          class="text-center"
+          v-else
+          :value="true"
+          color="amber accent-3"
+          icon="warning"
+        >
           <b>Sem Classes!</b> É obrigatório adicionar.
         </v-alert>
         <br />
@@ -125,7 +154,12 @@
     ></v-progress-circular>
     <div v-else>
       <v-btn
-        :disabled="!Boolean(TS.classes[0]) || UIs_validas || incompleto || !Boolean(TS.titulo)"
+        :disabled="
+          !Boolean(TS.classes[0]) ||
+            UIs_validas ||
+            incompleto ||
+            !Boolean(TS.titulo)
+        "
         color="#3949ab"
         @click="sendToFather()"
       >
@@ -148,7 +182,14 @@ import ListaUI from "@/components/rada/criacao/ListaUI";
 const labels = require("@/config/labels").criterios;
 
 export default {
-  props: ["TS", "entidades", "RE", "legislacao", "legislacaoProcessada"],
+  props: [
+    "TS",
+    "entidades",
+    "RE",
+    "legislacao",
+    "legislacaoProcessada",
+    "loading_circle"
+  ],
   components: {
     AddOrgFunc,
     Serie,
@@ -162,7 +203,6 @@ export default {
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     erros_ts: [],
-    loading_circle: false,
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
@@ -194,9 +234,10 @@ export default {
                   this.TS.classes[i].UIs.length > 0)
             ),
             temDF: Boolean(
-              this.TS.classes[i].df == null ||
-                this.TS.classes[i].pca == null ||
-                this.TS.classes[i].pca == "" ||
+              (!Boolean(this.TS.classes[i].df) &&
+                !Boolean(this.TS.classes[i].notaDF)) ||
+                (!Boolean(this.TS.classes[i].pca) &&
+                  !Boolean(this.TS.classes[i].notaPCA)) ||
                 this.TS.classes[i].formaContagem.forma == null
             ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
@@ -210,9 +251,8 @@ export default {
         e =>
           (e.tipo == "Série" &&
             ((!this.TS.classes.some(cl => cl.eFilhoDe == e.codigo) &&
-              (e.df == null ||
-                e.pca == null ||
-                e.pca == "" ||
+              ((!Boolean(e.df) && !Boolean(e.notaDF)) ||
+                (!Boolean(e.pca) && !Boolean(e.notaPCA)) ||
                 e.formaContagem.forma == null)) ||
               e.eFilhoDe == null ||
               !(
@@ -220,7 +260,7 @@ export default {
                 (e.UIs != undefined && e.UIs.length > 0)
               ))) ||
           (e.tipo == "Subsérie" &&
-            (e.df == null ||
+            ((!Boolean(e.df) && !Boolean(e.notaDF)) ||
               e.eFilhoDe == null ||
               !(
                 (e.dataInicial != undefined && e.dataInicial != null) ||
@@ -270,9 +310,10 @@ export default {
                   this.TS.classes[i].UIs.length > 0)
             ),
             temDF: Boolean(
-              this.TS.classes[i].df == null ||
-                this.TS.classes[i].pca == null ||
-                this.TS.classes[i].pca == "" ||
+              (!Boolean(this.TS.classes[i].df) &&
+                !Boolean(this.TS.classes[i].notaDF)) ||
+                (!Boolean(this.TS.classes[i].pca) &&
+                  !Boolean(this.TS.classes[i].notaPCA)) ||
                 this.TS.classes[i].formaContagem.forma == null
             ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
@@ -283,7 +324,8 @@ export default {
       return children;
     },
     sendToFather: function() {
-      this.loading_circle = true;
+      // this.loading_circle = true;
+      this.$emit("update:loading_circle", true);
       this.$emit("done");
     },
     atualizacao_area_organico(c) {
@@ -317,7 +359,8 @@ export default {
       serie_classe.legislacao = c.legislacao;
       serie_classe.pca = c.pca;
       serie_classe.formaContagem = c.formaContagem;
-      serie_classe.notas = c.notas;
+      serie_classe.notaPCA = c.notaPCA;
+      serie_classe.notaDF = c.notaDF;
       serie_classe.justificacaoPCA = c.justificacaoPCA;
       serie_classe.df = c.df;
       serie_classe.justificacaoDF = c.justificacaoDF;
@@ -350,7 +393,8 @@ export default {
       subserie_classe.descricao = c.descricao;
       subserie_classe.pca = c.pca;
       subserie_classe.formaContagem = c.formaContagem;
-      subserie_classe.notas = c.notas;
+      subserie_classe.notaPCA = c.notaPCA;
+      subserie_classe.notaDF = c.notaDF;
       subserie_classe.justificacaoPCA = c.justificacaoPCA;
       subserie_classe.df = c.df;
       subserie_classe.justificacaoDF = c.justificacaoDF;
@@ -526,6 +570,8 @@ export default {
             tipologiasProdutoras: [],
             legislacao: [],
             relacoes: [],
+            notaPCA: null,
+            notaDF: null,
             UIs: [],
             pca: null,
             formaContagem: {
@@ -534,7 +580,6 @@ export default {
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
-            notas: "",
             eFilhoDe: null,
             tipo: "Série"
           };
@@ -548,13 +593,14 @@ export default {
             relacoes: [],
             UIs: [],
             pca: null,
+            notaPCA: null,
+            notaDF: null,
             formaContagem: {
               forma: null
             },
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
-            notas: "",
             eFilhoDe: null,
             tipo: "Subsérie"
           };

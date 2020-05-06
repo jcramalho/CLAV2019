@@ -58,7 +58,22 @@
             :TS="RADA.tsRada"
             :entidades="entidades"
             :legislacaoProcessada="legislacaoProcessada"
+            :loading_circle.sync="loading_circle_ts"
           />
+          <v-alert
+            width="100%"
+            :value="!!erroProdutoras[0]"
+            outlined
+            type="error"
+            prominent
+            border="left"
+          >
+            As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série!
+            <ul>
+              <li v-for="(produtora, i) in erroProdutoras" :key="i">{{produtora}}</li>
+            </ul>
+          </v-alert>
+          <!-- <p>{{erroProdutoras}}</p> -->
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
@@ -167,6 +182,8 @@ export default {
   },
   data() {
     return {
+      loading_circle_ts: false,
+      erroProdutoras: [],
       loading_circle: false,
       user_entidade: null,
       alert_guardar: false,
@@ -320,7 +337,8 @@ export default {
             //       relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
             //     }
             //   ],
-            //   notas: "Notas da Série (01.04)",
+            //   notaPCA: null,
+            //   notaDF: null,
             //   eFilhoDe: "01",
             //   tipo: "Série"
             // },
@@ -345,7 +363,7 @@ export default {
             //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
             //     }
             //   ],
-            //   pca: 2,
+            //   pca: "",
             //   formaContagem: {
             //     forma: "vc_pcaFormaContagem_extincaoDireito"
             //   },
@@ -358,7 +376,8 @@ export default {
             //       relacoes: [{ codigo: "01.04" }]
             //     }
             //   ],
-            //   notas: "",
+            //   notaPCA: null,
+            //   notaDF: null,
             //   eFilhoDe: "01",
             //   tipo: "Série"
             // },
@@ -375,7 +394,7 @@ export default {
             //     }
             //   ],
             //   UIs: ["02"],
-            //   pca: "2",
+            //   pca: null,
             //   formaContagem: {
             //     forma: "vc_pcaFormaContagem_extincaoDireito"
             //   },
@@ -386,7 +405,7 @@ export default {
             //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
             //     }
             //   ],
-            //   df: "Conservação",
+            //   df: null,
             //   justificacaoDF: [
             //     {
             //       tipo: "Critério de Complementaridade Informacional",
@@ -394,7 +413,8 @@ export default {
             //       relacoes: [{ codigo: "01.04" }]
             //     }
             //   ],
-            //   notas: "Notas do Destino Final",
+            //   notaPCA: null,
+            //   notaDF: null,
             //   eFilhoDe: "01.04",
             //   tipo: "Subsérie"
             // }
@@ -662,71 +682,79 @@ export default {
       }
     },
     concluir: async function() {
-      //  Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
-      //  em que as produtoras tem que estar associadas pelo menos a uma série ou ui
+      // Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
+      // em que as produtoras tem que estar associadas pelo menos a uma série ou ui
+      this.erroProdutoras = [];
       if (!!this.RADA.RE.entidadesProd[0]) {
-        this.RADA.RE.entidadesProd = this.entidadesProcessadas
+        let entidades_selecionadas = this.entidadesProcessadas
           .filter(e => e.disabled == true)
           .map(e => e.entidade);
+
+        this.RADA.RE.entidadesProd.forEach(ent => {
+          if (!entidades_selecionadas.some(e => e == ent)) {
+            this.erroProdutoras.push(ent);
+          }
+        });
       } else {
-        this.RADA.RE.tipologiasProd = this.tipologias
+        let tipologias_selecionadas = this.tipologias
           .filter(t => t.disabled == true)
           .map(t => t.tipologia);
-      }
 
-      let series = this.RADA.tsRada.classes
-        // adicionar os IDS a todas as classes
-        .map(e => {
-          let tipo = null;
-
-          switch (e.tipo) {
-            case "Série":
-              tipo = "serie";
-              break;
-            case "Subsérie":
-              tipo = "subserie";
-              break;
-            default:
-              tipo = "organico_funcional";
-              break;
+        this.RADA.RE.tipologiasProd.forEach(tip => {
+          if (!tipologias_selecionadas.some(e == tip)) {
+            this.erroProdutoras.push(tip);
           }
-
-          e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
-
-          return e;
-        })
-        .filter(e => e.tipo == "Série");
-
-      // Calcular os valores de dimensão e suporte no relatório expositivo
-      this.calcular_dimensao_suporte(series);
-
-      // Tratar dos pedidos das novas legislações
-      await this.fazer_pedidos_legislacao(series);
-
-      // Tratar dos pedidos da novas entidades
-      await this.fazer_pedidos_entidades(series);
-
-      // Fazer pedido do RADA
-      let pedidoParams = {
-        tipoPedido: "Criação",
-        tipoObjeto: "RADA",
-        novoObjeto: this.RADA,
-        user: {
-          email: this.userEmail
-        },
-        token: this.$store.state.token,
-        criadoPor: this.userEmail,
-        entidade: this.user_entidade
-      };
-
-      let response = await this.$request("post", "/pedidos", pedidoParams);
-
-      if (this.idPendente != null) {
-        // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
-        await this.$request("delete", "/pendentes/" + this.idPendente);
+        });
       }
-      this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-      this.dialogRADACriado = true;
+
+      if (!!this.erroProdutoras[0]) {
+        this.loading_circle_ts = false;
+      } else {
+        let series = this.RADA.tsRada.classes
+          // adicionar os IDS a todas as classes
+          .map(e => {
+            let tipo = null;
+            switch (e.tipo) {
+              case "Série":
+                tipo = "serie";
+                break;
+              case "Subsérie":
+                tipo = "subserie";
+                break;
+              default:
+                tipo = "organico_funcional";
+                break;
+            }
+            e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
+            return e;
+          })
+          .filter(e => e.tipo == "Série");
+        // Calcular os valores de dimensão e suporte no relatório expositivo
+        this.calcular_dimensao_suporte(series);
+        // Tratar dos pedidos das novas legislações
+        await this.fazer_pedidos_legislacao(series);
+        // Tratar dos pedidos da novas entidades
+        await this.fazer_pedidos_entidades(series);
+        // Fazer pedido do RADA
+        let pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "RADA",
+          novoObjeto: this.RADA,
+          user: {
+            email: this.userEmail
+          },
+          token: this.$store.state.token,
+          criadoPor: this.userEmail,
+          entidade: this.user_entidade
+        };
+        let response = await this.$request("post", "/pedidos", pedidoParams);
+        if (this.idPendente != null) {
+          // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
+          await this.$request("delete", "/pendentes/" + this.idPendente);
+        }
+        this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
+        this.dialogRADACriado = true;
+      }
     }
   },
   created: async function() {

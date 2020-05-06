@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 1 -->
-    <!-- {{JSON.stringify(newSerie.pca)}} -->
+    <!-- {{ JSON.stringify(newSerie.pca) }} -->
     <v-row>
       <!-- {{newSerie}} -->
       <v-col md="3" sm="3">
@@ -9,31 +9,36 @@
       </v-col>
       <v-col sm="9" md="9">
         <v-text-field
-          :rules="[v => rule(v)]"
-          type="number"
+          v-mask="'###'"
           v-model="newSerie.pca"
-          label="Prazo de Conservação Administrativa"
+          label="Prazo em anos: 0 a 199"
           solo
-          :messages="error_messages"
+          clearable
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <!-- {{newSerie}} -->
+      <v-col md="3" sm="3">
+        <div class="info-label">Nota sobre o PCA</div>
+      </v-col>
+      <v-col sm="9" md="9">
+        <v-text-field
+          :rules="[v => rule_nota_PCA(v)]"
+          solo
+          clearable
+          label="Nota sobre o PCA"
+          v-model="newSerie.notaPCA"
         ></v-text-field>
       </v-col>
     </v-row>
     <!-- 2 -->
     <FormaContagem :newSerie="newSerie" :formaContagem="formaContagem" :rules="rules" />
     <!-- 3 -->
-    <JustificacaoPCA :newSerie="newSerie" :classes="classes" :rules="rules" />
+    <JustificacaoPCA v-if="!!newSerie.pca" :newSerie="newSerie" :classes="classes" :rules="rules" />
     <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <!-- 4 -->
     <JustificacaoDF :newSerie="newSerie" :classes="classes" :rules="rules" />
-    <!-- 5 -->
-    <v-row>
-      <v-col md="3" sm="3">
-        <div class="info-label">Notas</div>
-      </v-col>
-      <v-col sm="9" md="9">
-        <v-text-field solo clearable v-model="newSerie.notas" label="Notas"></v-text-field>
-      </v-col>
-    </v-row>
   </div>
 </template>
 
@@ -44,31 +49,15 @@ import JustificacaoDF from "./JustificacaoDF";
 
 export default {
   props: ["newSerie", "classes", "formaContagem", "rules"],
-  data: () => ({
-    error_messages: []
-  }),
   components: {
     JustificacaoPCA,
     FormaContagem,
     JustificacaoDF
   },
   methods: {
-    rule(v) {
-      if (this.rules) {
-        if (v == null || v == "") {
-          return "Campo Obrigatório. Valor tem que ser inteiro!";
-        }
-      } else {
-        if (
-          v == "" &&
-          this.error_messages.findIndex(
-            e => e == "Valor tem que ser inteiro!"
-          ) == -1
-        ) {
-          this.error_messages.push("Valor tem que ser inteiro!");
-        } else {
-          this.error_messages = [];
-        }
+    rule_nota_PCA(v) {
+      if (this.rules && (v == null || v == "") && !Boolean(this.newSerie.pca)) {
+        return "Campo obrigatório! PCA sem valor!";
       }
 
       return true;

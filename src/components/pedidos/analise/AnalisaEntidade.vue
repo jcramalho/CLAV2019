@@ -155,7 +155,6 @@ export default {
       },
       dialogTipologias: false,
       tipologias: [],
-      tipologiasSelecionadas: [],
       infoPedido: [],
       pedido: null,
     };
@@ -209,9 +208,6 @@ export default {
     p: {
       handler(newP, oldP) {
         if (newP !== oldP) {
-          // this.tipologiasSelecionadas = JSON.parse(
-          //   JSON.stringify(newP.objeto.dados.tipologiasSel)
-          // );
           this.pedido = JSON.parse(JSON.stringify(this.p));
         }
       },
@@ -305,7 +301,9 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -339,7 +337,9 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao distribuir o pedido, por favor tente novamente";
       }
     },
 
