@@ -22,7 +22,6 @@
       <v-col sm="9" md="9">
         <v-text-field
           solo
-          clearable
           readonly
           v-model="classe.notaPCA"
           label="Sem notas sobre o PCA"
@@ -147,7 +146,7 @@
         <div class="info-label">Nota sobre o DF</div>
       </v-col>
       <v-col sm="9" md="9">
-        <v-text-field solo clearable readonly v-model="classe.notaDF" label="Sem notas sobre o DF"></v-text-field>
+        <v-text-field solo readonly v-model="classe.notaDF" label="Sem notas sobre o DF"></v-text-field>
       </v-col>
     </v-row>
     <!-- Justificação DF -->

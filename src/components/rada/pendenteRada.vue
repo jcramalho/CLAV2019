@@ -372,6 +372,21 @@ export default {
         this.RADA.pedidosLegislacao.push(response.data);
       }
     },
+    removerDecisoesAvaliacao(series) {
+      for (let i = 0; i < series.length; i++) {
+        if (
+          this.RADA.tsRada.classes.some(e => e.eFilhoDe == series[i].codigo)
+        ) {
+          delete series[i].pca;
+          delete series[i].notaPCA;
+          delete series[i].notaDF;
+          delete series[i].formaContagem;
+          delete series[i].justificacaoPCA;
+          delete series[i].df;
+          delete series[i].justificacaoDF;
+        }
+      }
+    },
     concluir: async function() {
       //  Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
       //  em que as produtoras tem que estar associadas pelo menos a uma série ou ui
@@ -423,6 +438,9 @@ export default {
             return e;
           })
           .filter(e => e.tipo == "Série");
+
+        // Nesta função será removida a zona de decisões de avaliação respeitando o invariante;
+        this.removerDecisoesAvaliacao(series);
 
         // Calcular os valores de dimensão e suporte no relatório expositivo
         this.calcular_dimensao_suporte(series);

@@ -32,15 +32,6 @@
               <ZonaDecisoesAvaliacao :classe="serie" :formaContagem="formaContagem" />
             </v-expansion-panel-content>
           </v-expansion-panel>
-
-          <v-row v-else>
-            <v-col md="3" sm="3">
-              <div class="info-label">Notas</div>
-            </v-col>
-            <v-col sm="9" md="9">
-              <v-text-field solo readonly v-model="serie.notas" label="Notas" placeholder="Notas"></v-text-field>
-            </v-col>
-          </v-row>
         </v-expansion-panels>
         <br />
         <h5>Hierarquia</h5>
