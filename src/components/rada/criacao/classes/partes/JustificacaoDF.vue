@@ -42,7 +42,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row v-if="!!newSerie.df">
+    <v-row>
       <v-col md="3" sm="3">
         <div class="info-label">Justificação do DF</div>
         <v-row no-gutters>

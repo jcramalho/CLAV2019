@@ -35,7 +35,7 @@
     <!-- 2 -->
     <FormaContagem :newSerie="newSerie" :formaContagem="formaContagem" :rules="rules" />
     <!-- 3 -->
-    <JustificacaoPCA v-if="!!newSerie.pca" :newSerie="newSerie" :classes="classes" :rules="rules" />
+    <JustificacaoPCA :newSerie="newSerie" :classes="classes" :rules="rules" />
     <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <!-- 4 -->
     <JustificacaoDF :newSerie="newSerie" :classes="classes" :rules="rules" />

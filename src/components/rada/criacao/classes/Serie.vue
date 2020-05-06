@@ -267,13 +267,6 @@ export default {
       if (!this.newSerie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
-      if (!!this.newSerie.pca && !!this.newSerie.justificacaoPCA[0] == false) {
-        this.erros.push("Justificação do PCA;");
-      }
-
-      if (!!this.newSerie.df && !!this.newSerie.justificacaoDF[0] == false) {
-        this.erros.push("Justificação do DF;");
-      }
 
       if (
         this.newSerie.formaContagem.forma ==
@@ -287,23 +280,14 @@ export default {
         this.erros.push("Datas Inválidas;");
       }
     },
-    validar_justificacoes() {
-      if (!!this.newSerie.pca && !!this.newSerie.justificacaoPCA[0] == false) {
-        return false;
-      }
-      if (!!this.newSerie.df && !!this.newSerie.justificacaoDF[0] == false) {
-        return false;
-      }
-
-      return true;
-    },
     save() {
       this.existe_erros = false;
       this.erros = [];
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
-        if (this.$refs.formSerie.validate() && this.validar_justificacoes()) {
+        // && this.validar_justificacoes()
+        if (this.$refs.formSerie.validate()) {
           let clone_newSerie = Object.assign({}, this.newSerie);
 
           clone_newSerie.justificacaoPCA.forEach(criterio => {

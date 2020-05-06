@@ -222,19 +222,11 @@ export default {
             "Prazo de Conservação Administrativa ou nota sobre o PCA;"
           );
         }
-      } else {
-        if (!!this.newSubSerie.justificacaoPCA[0] == false) {
-          this.erros.push("Justificação do PCA;");
-        }
       }
 
       if (!Boolean(this.newSubSerie.df)) {
         if (!Boolean(this.newSubSerie.notaDF)) {
           this.erros.push("Destino Final ou nota sobre o DF;");
-        }
-      } else {
-        if (!!this.newSubSerie.justificacaoDF[0] == false) {
-          this.erros.push("Justificação do DF;");
         }
       }
 
@@ -254,29 +246,14 @@ export default {
         this.erros.push("Datas Inválidas;");
       }
     },
-    validar_justificacoes() {
-      if (
-        !!this.newSubSerie.pca &&
-        !!this.newSubSerie.justificacaoPCA[0] == false
-      ) {
-        return false;
-      }
-      if (
-        !!this.newSubSerie.df &&
-        !!this.newSubSerie.justificacaoDF[0] == false
-      ) {
-        return false;
-      }
-
-      return true;
-    },
     save() {
       this.existe_erros = false;
       this.erros = [];
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
-        if (this.$refs.form.validate() && this.validar_justificacoes()) {
+        //  && this.validar_justificacoes()
+        if (this.$refs.form.validate()) {
           let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
           clone_newSubserie.justificacaoPCA.forEach(criterio => {

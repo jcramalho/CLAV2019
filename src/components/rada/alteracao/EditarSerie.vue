@@ -254,19 +254,11 @@ export default {
               "Prazo de Conservação Administrativa ou nota sobre o PCA;"
             );
           }
-        } else {
-          if (!!this.serie.justificacaoPCA[0] == false) {
-            this.erros.push("Justificação do PCA;");
-          }
         }
 
         if (!Boolean(this.serie.df)) {
           if (!Boolean(this.serie.notaDF)) {
             this.erros.push("Destino Final ou nota sobre o DF;");
-          }
-        } else {
-          if (!!this.serie.justificacaoDF[0] == false) {
-            this.erros.push("Justificação do DF;");
           }
         }
 
@@ -287,23 +279,13 @@ export default {
         this.erros.push("Datas Inválidas;");
       }
     },
-    validar_justificacoes() {
-      if (!!this.serie.pca && !!this.serie.justificacaoPCA[0] == false) {
-        return false;
-      }
-      if (!!this.serie.df && !!this.serie.justificacaoDF[0] == false) {
-        return false;
-      }
-
-      return true;
-    },
     atualizar() {
       this.existe_erros = false;
       this.erros = [];
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
-        if (this.$refs.formSerie.validate() && this.validar_justificacoes()) {
+        if (this.$refs.formSerie.validate()) {
           this.$emit("atualizacao", this.serie);
           this.dialogState = false;
         } else {
