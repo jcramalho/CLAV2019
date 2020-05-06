@@ -201,6 +201,11 @@ export default {
         conteudo: this.pedido.objeto.dados.dataExtincao,
         cor: null,
       },
+      {
+        campo: "Data Criação",
+        conteudo: this.pedido.objeto.dados.dataCriacao,
+        cor: null,
+      },
     ];
   },
 
