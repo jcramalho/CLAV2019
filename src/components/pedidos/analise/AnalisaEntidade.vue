@@ -258,7 +258,6 @@ export default {
     },
 
     adicionaTipologias(tipologias) {
-      // this.tipologiasSelecionadas.push(...tipologias);
       this.pedido.objeto.dados.tipologiasSel.push(...tipologias);
       this.dialogTipologias = false;
     },

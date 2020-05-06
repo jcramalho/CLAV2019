@@ -266,7 +266,6 @@ export default {
     },
 
     adicionaTipologias(tipologias) {
-      // this.tipologiasSelecionadas.push(...tipologias);
       this.pedido.objeto.dados.tipologiasSel.push(...tipologias);
       this.dialogTipologias = false;
     },
@@ -329,9 +328,7 @@ export default {
           pedido.objeto.dados
         );
 
-        if (numeroErros > 0) {
-          this.erroPedido = true;
-        } else {
+        if (numeroErros === 0) {
           for (const key in pedido.objeto.dados) {
             if (
               pedido.objeto.dados[key] === undefined ||
@@ -366,12 +363,12 @@ export default {
           this.$router.go(-1);
         }
       } catch (e) {
-        console.log("e :>> ", e);
+        this.erroPedido = true;
 
         let parsedError = Object.assign({}, e);
         parsedError = parsedError.response;
 
-        if (parsedError !== undefined || parsedError !== null) {
+        if (parsedError !== undefined) {
           if (parsedError.status === 422) {
             parsedError.data.forEach((erro) => {
               this.erros.push({ parametro: erro.param, mensagem: erro.msg });
@@ -383,8 +380,6 @@ export default {
             mensagem: "Ocorreu um erro ao aceder à ontologia.",
           });
         }
-
-        this.erroPedido = true;
       }
     },
 
