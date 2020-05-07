@@ -260,9 +260,6 @@ export default {
       if (!!this.newSerie.legislacao[0] == false) {
         this.erros.push("Legislação;");
       }
-      if (!!this.newSerie.relacoes[0] == false) {
-        this.erros.push("Relações;");
-      }
 
       if (!this.newSerie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");

@@ -76,7 +76,6 @@
         </v-alert>
       </v-col>
     </v-row>
-    <p>{{TS.classes}}</p>
     <ShowSerie
       v-if="show_serie"
       :dialog="show_serie"

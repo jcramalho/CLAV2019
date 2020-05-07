@@ -213,10 +213,6 @@ export default {
         this.erros.push("Datas ou Unidades de Instalação;");
       }
 
-      if (!!this.serie.relacoes[0] == false) {
-        this.erros.push("Relações;");
-      }
-
       if (!this.serie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }

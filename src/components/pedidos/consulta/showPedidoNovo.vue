@@ -1,9 +1,9 @@
 <template>
   <v-card class="ma-8">
     <div v-if="!erroDialog.visivel">
-      <v-card-title class="pa-2 indigo darken-4 title white--text"
-        >Consulta do pedido: {{ p.codigo }}</v-card-title
-      >
+      <v-card-title
+        class="pa-2 indigo darken-4 title white--text"
+      >Consulta do pedido: {{ p.codigo }}</v-card-title>
       <v-card-text>
         <v-row class="mt-1">
           <v-col cols="2">
@@ -42,16 +42,12 @@
             <div class="info-label">Tipo</div>
           </v-col>
           <v-col>
-            <div class="info-content">
-              {{ p.objeto.acao }} - {{ p.objeto.tipo }}
-            </div>
+            <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
           </v-col>
         </v-row>
 
         <v-card class="mt-3">
-          <v-card-title class="pa-2 indigo darken-4 title white--text"
-            >Distribuição</v-card-title
-          >
+          <v-card-title class="pa-2 indigo darken-4 title white--text">Distribuição</v-card-title>
           <v-card-text>
             <v-data-table
               :headers="distHeaders"
@@ -64,16 +60,13 @@
                   <td class="subheading">{{ props.item.estado }}</td>
                   <td class="subheading">{{ props.item.data }}</td>
                   <td class="subheading">{{ props.item.responsavel }}</td>
-                  <td class="subheading">{{ props.item.despacho }}</td>
+                  <td class="subheading" v-html="despacho_para_html(props.item.despacho)"></td>
                 </tr>
               </template>
             </v-data-table>
           </v-card-text>
         </v-card>
-        <ShowTSPluri
-          v-if="p.objeto.tipo == 'TS Pluriorganizacional web'"
-          :p="p"
-        />
+        <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional web'" :p="p" />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
         <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
@@ -93,9 +86,7 @@
       <v-card-actions>
         <v-btn color="indigo" dark @click="voltar">Voltar</v-btn>
         <v-spacer />
-        <v-btn color="indigo accent-4" dark @click="distribuir = true"
-          >Distribuir</v-btn
-        >
+        <v-btn color="indigo accent-4" dark @click="distribuir = true">Distribuir</v-btn>
       </v-card-actions>
 
       <v-dialog v-model="distribuir" width="80%" persistent>
@@ -152,7 +143,7 @@ export default {
     ShowTI,
     AvancarPedido,
     ShowRADA,
-    ErroDialog,
+    ErroDialog
   },
 
   data: () => ({
@@ -160,21 +151,21 @@ export default {
     utilizadores: [],
     erroDialog: {
       visivel: false,
-      mensagem: null,
+      mensagem: null
     },
     headers: [
       { text: "Estado", align: "left", sortable: false, value: "estado" },
       { text: "Data", value: "data" },
       { text: "Responsável", value: "responsavel" },
       { text: "Despacho", value: "despacho" },
-      { text: "Objeto", value: "objeto" },
+      { text: "Objeto", value: "objeto" }
     ],
     distHeaders: [
       { text: "Estado", value: "estado", class: "subtitle-1" },
       { text: "Data", value: "data", class: "subtitle-1" },
       { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Despacho", value: "despacho", class: "subtitle-1" },
-    ],
+      { text: "Despacho", value: "despacho", class: "subtitle-1" }
+    ]
   }),
 
   async created() {
@@ -187,6 +178,35 @@ export default {
   },
 
   methods: {
+    despacho_para_html(despacho) {
+      let despacho_divido_por_n = despacho.split("\n");
+
+      if (despacho_divido_por_n.length == 1) {
+        return despacho_divido_por_n[0];
+      } else {
+        let html = "<div><br/>" + despacho_divido_por_n[0] + "<br/><ul>";
+
+        for (let i = 1; i < despacho_divido_por_n.length - 1; i++) {
+          // const regex_encontrar_codigo = /\[(?<codigo>.*)\](?<pedido>.*)/
+
+          let match_regex = despacho_divido_por_n[i].match(
+            /\[(?<codigo>.*)\](?<pedido>.*)/
+          ).groups;
+
+          html =
+            html +
+            "<li><a href=" +
+            match_regex.codigo +
+            ">" +
+            match_regex.pedido +
+            "</a></li>";
+        }
+
+        html = html + "</ul></div>";
+
+        return html;
+      }
+    },
     async listaUtilizadores() {
       const response = await this.$request("get", "/users");
 
@@ -216,15 +236,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.fecharDialog();
@@ -240,8 +260,8 @@ export default {
 
     voltar: function() {
       this.$router.go(-1);
-    },
-  },
+    }
+  }
 };
 </script>
 

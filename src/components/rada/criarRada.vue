@@ -136,12 +136,12 @@
                   class="ma-3 pa-3"
                   color="indigo lighten-3"
                   @click="guardarTrabalho('nao')"
-                >Não, pretendo continuar depois.</v-btn>
+                >Não, pretendo continuar depois</v-btn>
                 <v-btn
                   class="ma-3 pa-3"
                   color="indigo lighten-3"
                   @click="guardarTrabalho('sim')"
-                >Sim.</v-btn>
+                >Sim</v-btn>
               </div>
             </v-card-text>
           </v-card>
@@ -203,6 +203,8 @@ export default {
       e1: 1,
       titulo: "",
       guardar: false,
+      despacho: "",
+      pedidos_novas_entidades: [],
       RADA: {
         id: nanoid(),
         titulo: "",
@@ -211,8 +213,6 @@ export default {
         despachoRevogacao: null,
         dataRevogacao: null,
         entRes: [],
-        pedidosLegislacao: [],
-        pedidosEntidades: [],
         RE: {
           entidadesProd: [
             // "ACSS - Administração Central do Sistema de Saúde, IP",
@@ -608,10 +608,25 @@ export default {
 
         let response = await this.$request("post", "/pedidos", pedidoEntidades);
 
-        this.RADA.pedidosEntidades.push(response.data);
+        this.despacho =
+          this.despacho +
+          "[" +
+          response.data +
+          "] " +
+          entidades[i].sigla +
+          " - " +
+          entidades[i].designacao +
+          " (entidade);\n";
+
+        this.pedidos_novas_entidades.push({
+          codigo: response.data,
+          id: "ent_" + entidades[i].sigla
+        });
       }
     },
     async fazer_pedidos_legislacao(series) {
+      let despacho = "";
+
       let legislacao = this.legislacao
         .filter(
           e =>
@@ -645,13 +660,28 @@ export default {
               return {
                 codigo: cl.codigo,
                 titulo: cl.titulo,
-                id: cl.id,
-                tituloRada: this.RADA.titulo
+                id: cl.id
               };
             });
           // Adicionar entidades relacionadas com a criação legislação
           leg["entidadesSel"] = this.RADA.entRes.map(entidade => {
             let ent = entidade.split(" - ");
+
+            let nova_entidade = this.pedidos_novas_entidades.find(
+              e => e.id == "ent_" + ent[0]
+            );
+
+            if (nova_entidade != undefined) {
+              despacho =
+                despacho +
+                "[" +
+                nova_entidade.codigo +
+                "] " +
+                ent[0] +
+                " - " + 
+                ent[1] +
+                " (entidade);\n";
+            }
 
             return {
               designacao: ent[1],
@@ -673,12 +703,24 @@ export default {
           },
           token: this.$store.state.token,
           criadoPor: this.userEmail,
-          entidade: this.user_entidade
+          entidade: this.user_entidade,
+          despacho: !!despacho
+            ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
+              despacho
+            : "Submissão inicial"
         };
 
         let response = await this.$request("post", "/pedidos", pedidoLegis);
 
-        this.RADA.pedidosLegislacao.push(response.data);
+        this.despacho =
+          this.despacho +
+          "[" +
+          response.data +
+          "] " +
+          legislacao[i].tipo +
+          " - " +
+          legislacao[i].numero +
+          " (legislação);\n";
       }
     },
     removerDecisoesAvaliacao(series) {
@@ -751,11 +793,11 @@ export default {
         // Calcular os valores de dimensão e suporte no relatório expositivo
         this.calcular_dimensao_suporte(series);
 
-        // Tratar dos pedidos das novas legislações
-        await this.fazer_pedidos_legislacao(series);
-
         // Tratar dos pedidos da novas entidades
         await this.fazer_pedidos_entidades(series);
+
+        // Tratar dos pedidos das novas legislações
+        await this.fazer_pedidos_legislacao(series);
 
         // Fazer pedido do RADA
         let pedidoParams = {
@@ -767,7 +809,11 @@ export default {
           },
           token: this.$store.state.token,
           criadoPor: this.userEmail,
-          entidade: this.user_entidade
+          entidade: this.user_entidade,
+          despacho: !!this.despacho
+            ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
+              this.despacho
+            : "Submissão inicial"
         };
         let response = await this.$request("post", "/pedidos", pedidoParams);
         if (this.idPendente != null) {

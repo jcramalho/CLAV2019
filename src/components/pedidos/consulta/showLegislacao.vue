@@ -3,22 +3,6 @@
     <v-card-title class="indigo darken-4 white--text title">{{ p.objeto.acao }} da Legislação</v-card-title>
     <v-card-text>
       <!-- Aviso quando a legislação foi criada a partir de um RADA -->
-      <v-row>
-        <v-col cols="12">
-          <br />
-          <v-alert
-            v-if="p.objeto.dados.diplomaFonte == 'RADA' && p.objeto.dados.processosSel.some(proc => proc.tituloRada != null)"
-            width="100%"
-            outlined
-            type="warning"
-            prominent
-            border="left"
-          >
-            O pedido para criação do RADA "
-            <b>{{p.objeto.dados.processosSel[0].tituloRada}}</b>" está dependente da aprovação desta legislação!
-          </v-alert>
-        </v-col>
-      </v-row>
       <v-row v-for="t in legislacaoInfo" :key="t.campo">
         <v-col cols="2" v-if="t.conteudo != ''">
           <div class="info-label">{{ t.campo }}</div>
