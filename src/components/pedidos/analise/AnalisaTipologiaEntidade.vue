@@ -190,11 +190,6 @@ export default {
         conteudo: this.pedido.objeto.dados.entidadesSel,
         cor: null,
       },
-      {
-        campo: "Código",
-        conteudo: this.pedido.objeto.dados.codigo,
-        cor: null,
-      },
     ];
   },
 

@@ -179,11 +179,6 @@ export default {
   mounted() {
     this.infoPedido = [
       {
-        campo: "Sigla",
-        conteudo: this.pedido.objeto.dados.sigla,
-        cor: null,
-      },
-      {
         campo: "Designação",
         conteudo: this.pedido.objeto.dados.designacao,
         cor: null,
@@ -191,11 +186,6 @@ export default {
       {
         campo: "Entidades",
         conteudo: this.pedido.objeto.dados.entidadesSel,
-        cor: null,
-      },
-      {
-        campo: "Código",
-        conteudo: this.pedido.objeto.dados.codigo,
         cor: null,
       },
     ];
