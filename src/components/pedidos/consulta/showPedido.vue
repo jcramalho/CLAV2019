@@ -69,7 +69,10 @@
           </v-data-table>
         </v-card-text>
       </v-card>
-      <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional web'" :p="p" />
+      <ShowTSPluri
+        v-if="p.objeto.tipo == 'TS Pluriorganizacional web'"
+        :p="p"
+      />
       <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
       <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
@@ -86,7 +89,22 @@
     </v-card-text>
     <v-card-actions>
       <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
+      <v-spacer />
+      <v-btn
+        v-if="p.estado === 'Distribuído' || p.estado === 'Apreciado'"
+        color="indigo accent-4"
+        dark
+        @click="substituir()"
+        rounded
+      >
+        Substituir Responsável
+      </v-btn>
     </v-card-actions>
+
+    <!-- Substituir responsável dialog -->
+    <v-dialog v-model="substituirResponsavelDialog" width="80%" persistent>
+      <SubstituirResponsavel :pedido="p" @fecharDialog="fecharDialog()" />
+    </v-dialog>
   </v-card>
 </template>
 
@@ -101,6 +119,8 @@ import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
 import ShowLegislacao from "@/components/pedidos/consulta/showLegislacao";
 import ShowTI from "@/components/pedidos/consulta/showTI";
 
+import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
+
 export default {
   props: ["p"],
 
@@ -113,30 +133,42 @@ export default {
     ShowEntidade,
     ShowTipologia,
     ShowLegislacao,
-    ShowTI
+    ShowTI,
+    SubstituirResponsavel,
   },
 
-  data: () => ({
-    headers: [
-      { text: "Estado", align: "left", sortable: false, value: "estado" },
-      { text: "Data", value: "data" },
-      { text: "Responsável", value: "responsavel" },
-      { text: "Despacho", value: "despacho" },
-      { text: "Objeto", value: "objeto" }
-    ],
-    distHeaders: [
-      { text: "Estado", value: "estado", class: "subtitle-1" },
-      { text: "Data", value: "data", class: "subtitle-1" },
-      { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Despacho", value: "despacho", class: "subtitle-1" }
-    ]
-  }),
+  data() {
+    return {
+      substituirResponsavelDialog: false,
+      headers: [
+        { text: "Estado", align: "left", sortable: false, value: "estado" },
+        { text: "Data", value: "data" },
+        { text: "Responsável", value: "responsavel" },
+        { text: "Despacho", value: "despacho" },
+        { text: "Objeto", value: "objeto" },
+      ],
+      distHeaders: [
+        { text: "Estado", value: "estado", class: "subtitle-1" },
+        { text: "Data", value: "data", class: "subtitle-1" },
+        { text: "Responsável", value: "responsavel", class: "subtitle-1" },
+        { text: "Despacho", value: "despacho", class: "subtitle-1" },
+      ],
+    };
+  },
 
   methods: {
     voltar: function() {
       this.$router.go(-1);
-    }
-  }
+    },
+
+    fecharDialog() {
+      this.substituirResponsavelDialog = false;
+    },
+
+    substituir() {
+      this.substituirResponsavelDialog = true;
+    },
+  },
 };
 </script>
 
