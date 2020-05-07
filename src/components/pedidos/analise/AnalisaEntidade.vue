@@ -201,6 +201,11 @@ export default {
         conteudo: this.pedido.objeto.dados.dataExtincao,
         cor: null,
       },
+      {
+        campo: "Data Criação",
+        conteudo: this.pedido.objeto.dados.dataCriacao,
+        cor: null,
+      },
     ];
   },
 
@@ -253,7 +258,6 @@ export default {
     },
 
     adicionaTipologias(tipologias) {
-      // this.tipologiasSelecionadas.push(...tipologias);
       this.pedido.objeto.dados.tipologiasSel.push(...tipologias);
       this.dialogTipologias = false;
     },

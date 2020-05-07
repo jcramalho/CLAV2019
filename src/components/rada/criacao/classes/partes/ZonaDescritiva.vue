@@ -38,6 +38,7 @@
               readonly
               v-on="on"
               clearable
+              solo
             ></v-text-field>
           </template>
           <v-date-picker
@@ -81,6 +82,7 @@
               readonly
               v-on="on"
               clearable
+              solo
             ></v-text-field>
           </template>
           <v-date-picker

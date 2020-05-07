@@ -4,8 +4,28 @@
       <v-col md="3" sm="3">
         <div class="info-label">Prazo de Conservação Administrativa</div>
       </v-col>
+      <!-- v-model="classe.pca" -->
       <v-col sm="9" md="9">
-        <v-text-field readonly type="number" v-model="classe.pca" solo></v-text-field>
+        <v-text-field
+          readonly
+          :value="!!classe.pca ? classe.pca : 'Não especificado'"
+          solo
+          label="Sem prazo de conservação administrativa"
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <!-- Nota PCA -->
+    <v-row>
+      <v-col md="3" sm="3">
+        <div class="info-label">Nota sobre o PCA</div>
+      </v-col>
+      <v-col sm="9" md="9">
+        <v-text-field
+          solo
+          readonly
+          v-model="classe.notaPCA"
+          label="Sem notas sobre o PCA"
+        ></v-text-field>
       </v-col>
     </v-row>
     <!-- FORMA DE CONTAGEM -->
@@ -21,6 +41,7 @@
             readonly
             v-model="classe.formaContagem.forma"
             item-text="label"
+            label="Sem forma de contagem do PCA"
             solo
           ></v-select>
         </v-col>
@@ -41,7 +62,8 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-row>
+
+    <v-row v-if="!!classe.pca">
       <!-- Justificação PCA -->
       <v-col md="3" sm="3">
         <div class="info-label">Justificação do PCA</div>
@@ -110,28 +132,25 @@
         <div class="info-label">Destino Final</div>
       </v-col>
       <v-col sm="9" md="9">
-        <v-select
+        <v-text-field
           readonly
-          v-model="classe.df"
-          :items="['Conservação', 'Conservação Parcial', 'Eliminação']"
+          :value="!!classe.df ? classe.df : 'Não especificado'"
           solo
-        >
-          <template v-slot:selection="data">
-            <v-chip>
-              <v-avatar
-                v-if="data.item != 'Conservação Parcial'"
-                left
-                color="amber accent-3"
-              >{{ data.item[0] }}</v-avatar>
-              <v-avatar v-else left color="amber accent-3">CP</v-avatar>
-              {{ data.item }}
-            </v-chip>
-          </template>
-        </v-select>
+          label="Sem destino final"
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <!-- Nota DF -->
+    <v-row>
+      <v-col md="3" sm="3">
+        <div class="info-label">Nota sobre o DF</div>
+      </v-col>
+      <v-col sm="9" md="9">
+        <v-text-field solo readonly v-model="classe.notaDF" label="Sem notas sobre o DF"></v-text-field>
       </v-col>
     </v-row>
     <!-- Justificação DF -->
-    <v-row>
+    <v-row v-if="!!classe.df">
       <v-col md="3" sm="3">
         <div class="info-label">Justificação do DF</div>
       </v-col>
@@ -177,15 +196,6 @@
           icon="warning"
           color="amber accent-3"
         >Não existe justificação do Destino Final!</v-alert>
-      </v-col>
-    </v-row>
-    <!-- NOTAS -->
-    <v-row>
-      <v-col md="3" sm="3">
-        <div class="info-label">Notas</div>
-      </v-col>
-      <v-col sm="9" md="9">
-        <v-text-field solo readonly v-model="classe.notas" placeholder="Notas"></v-text-field>
       </v-col>
     </v-row>
   </div>

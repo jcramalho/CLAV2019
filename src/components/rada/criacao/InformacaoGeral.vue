@@ -30,6 +30,7 @@
             placeholder="Selecione as Entidades Responsáveis."
             chips
             multiple
+            solo
           >
             <template v-slot:no-data>
               <v-list-item>

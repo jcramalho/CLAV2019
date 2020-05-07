@@ -76,7 +76,7 @@
                 item-text="searchField"
                 solo
                 clearable
-                placeholder="Classe Pai"
+                label="Classe Pai"
                 chips
               >
                 <!-- <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
@@ -170,13 +170,14 @@ export default {
       legislacao: [],
       relacoes: [],
       pca: null,
+      notaPCA: null,
+      notaDF: null,
       formaContagem: {
         forma: null
       },
       justificacaoPCA: [],
       df: null,
       justificacaoDF: [],
-      notas: "",
       eFilhoDe: null,
       tipo: "Série"
     }
@@ -199,6 +200,8 @@ export default {
         UIs: [],
         suporte: null,
         medicao: null,
+        notaPCA: null,
+        notaDF: null,
         localizacao: [],
         entProdutoras: [],
         tipologiasProdutoras: [],
@@ -211,7 +214,6 @@ export default {
         justificacaoPCA: [],
         df: null,
         justificacaoDF: [],
-        notas: "",
         eFilhoDe: null,
         tipo: "Série"
       };
@@ -262,14 +264,11 @@ export default {
         !!this.newSerie.entProdutoras[0] == false &&
         !!this.newSerie.tipologiasProdutoras[0] == false
       ) {
-        this.erros.push("Produtoras;");
+        this.erros.push("Produtoras da Série;");
       }
 
       if (!!this.newSerie.legislacao[0] == false) {
         this.erros.push("Legislação;");
-      }
-      if (!!this.newSerie.relacoes[0] == false) {
-        this.erros.push("Relações;");
       }
 
       if (!this.newSerie.eFilhoDe) {
@@ -284,16 +283,17 @@ export default {
         this.erros.push("Subforma de Contagem;");
       }
 
-      // if (!Boolean(this.erros[0])) {
-      //   this.erros.push("Datas Inválidas;");
-      // }
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
     },
-    save: function() {
+    save() {
       this.existe_erros = false;
       this.erros = [];
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
+        // && this.validar_justificacoes()
         if (this.$refs.formSerie.validate()) {
           let clone_newSerie = Object.assign({}, this.newSerie);
 
@@ -518,6 +518,8 @@ export default {
               UIs: [],
               localizacao: [],
               entProdutoras: [],
+              notaPCA: null,
+              notaDF: null,
               tipologiasProdutoras: [],
               legislacao: [],
               relacoes: [],
@@ -528,7 +530,6 @@ export default {
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              notas: "",
               eFilhoDe: null,
               tipo: "Série"
             };
@@ -542,13 +543,14 @@ export default {
               relacoes: [],
               UIs: [],
               pca: null,
+              notaPCA: null,
+              notaDF: null,
               formaContagem: {
                 forma: null
               },
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              notas: "",
               eFilhoDe: null,
               tipo: "Subsérie"
             };

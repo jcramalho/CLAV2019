@@ -1,12 +1,20 @@
 <template>
   <div>
     <div v-if="classe.tipo != 'Subsérie'">
-      <v-row v-if="classe.entProdutoras.length > 0">
+      <v-row v-if="classe.entProdutoras.length >= 0">
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Entidades Produtoras</div>
         </v-col>
         <v-col xs="12" sm="9">
-          <v-combobox v-model="classe.entProdutoras" :items="[]" readonly multiple chips></v-combobox>
+          <v-combobox
+            label="Sem tipologias/entidades produtoras"
+            v-model="classe.entProdutoras"
+            :items="[]"
+            readonly
+            multiple
+            chips
+            solo
+          ></v-combobox>
         </v-col>
       </v-row>
       <v-row v-else>
@@ -14,7 +22,15 @@
           <div class="info-label">Tipologias Produtoras</div>
         </v-col>
         <v-col xs="12" sm="9">
-          <v-combobox v-model="classe.tipologiasProdutoras" :items="[]" readonly multiple chips></v-combobox>
+          <v-combobox
+            label="Sem tipologias/entidades produtoras"
+            v-model="classe.tipologiasProdutoras"
+            :items="[]"
+            readonly
+            multiple
+            chips
+            solo
+          ></v-combobox>
         </v-col>
       </v-row>
       <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
@@ -24,12 +40,14 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-combobox
+            label="Sem legislação associada"
             item-text="legislacao"
             v-model="classe.legislacao"
             :items="[]"
             readonly
             multiple
             chips
+            solo
           ></v-combobox>
         </v-col>
       </v-row>

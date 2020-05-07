@@ -74,7 +74,7 @@
                 item-text="searchField"
                 solo
                 clearable
-                placeholder="Classe Pai"
+                label="Classe Pai"
               >
                 <template v-slot:no-data>
                   <v-list-item>
@@ -154,13 +154,14 @@ export default {
       UIs: [],
       relacoes: [],
       pca: null,
+      notaPCA: null,
+      notaDF: null,
       formaContagem: {
         forma: null
       },
       justificacaoPCA: [],
       df: null,
       justificacaoDF: [],
-      notas: "",
       eFilhoDe: null,
       tipo: "Subsérie"
     }
@@ -180,13 +181,14 @@ export default {
         UIs: [],
         relacoes: [],
         pca: null,
+        notaPCA: null,
         formaContagem: {
           forma: null
         },
         justificacaoPCA: [],
         df: null,
+        notaDF: null,
         justificacaoDF: [],
-        notas: "",
         eFilhoDe: null,
         tipo: "Subsérie"
       };
@@ -217,27 +219,21 @@ export default {
         this.erros.push("Datas ou Unidades de Instalação;");
       }
 
-      if (!!this.newSubSerie.relacoes[0] == false) {
-        this.erros.push("Relações;");
-      }
-
       if (!this.newSubSerie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
-      if (!this.newSubSerie.pca) {
-        this.erros.push("Prazo de Conservação Administrativa;");
+      if (!Boolean(this.newSubSerie.pca)) {
+        if (!Boolean(this.newSubSerie.notaPCA)) {
+          this.erros.push(
+            "Prazo de Conservação Administrativa ou nota sobre o PCA;"
+          );
+        }
       }
 
-      if (!!this.newSubSerie.justificacaoPCA[0] == false) {
-        this.erros.push("Justificação do PCA;");
-      }
-
-      if (!!this.newSubSerie.justificacaoDF[0] == false) {
-        this.erros.push("Justificação do DF;");
-      }
-
-      if (!this.newSubSerie.df) {
-        this.erros.push("Destino Final;");
+      if (!Boolean(this.newSubSerie.df)) {
+        if (!Boolean(this.newSubSerie.notaDF)) {
+          this.erros.push("Destino Final ou nota sobre o DF;");
+        }
       }
 
       if (!this.newSubSerie.formaContagem.forma) {
@@ -252,16 +248,17 @@ export default {
         }
       }
 
-      // if (!Boolean(this.erros[0])) {
-      //   this.erros.push("Datas Inválidas;");
-      // }
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
     },
-    save: function() {
+    save() {
       this.existe_erros = false;
       this.erros = [];
       this.isMultiple = true;
       this.panels = [0, 1, 2];
-      setTimeout(async () => {
+      setTimeout(() => {
+        //  && this.validar_justificacoes()
         if (this.$refs.form.validate()) {
           let clone_newSubserie = Object.assign({}, this.newSubSerie);
 
@@ -492,13 +489,14 @@ export default {
               relacoes: [],
               UIs: [],
               pca: null,
+              notaPCA: null,
+              notaDF: null,
               formaContagem: {
                 forma: null
               },
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              notas: "",
               eFilhoDe: null,
               tipo: "Série"
             };
@@ -512,13 +510,14 @@ export default {
               relacoes: [],
               UIs: [],
               pca: null,
+              notaPCA: null,
+              notaDF: null,
               formaContagem: {
                 forma: null
               },
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              notas: "",
               eFilhoDe: null,
               tipo: "Subsérie"
             };

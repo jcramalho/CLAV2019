@@ -86,6 +86,7 @@
                     readonly
                     v-on="on"
                     clearable
+                    solo
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -128,6 +129,7 @@
                     readonly
                     v-on="on"
                     clearable
+                    solo
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -503,9 +505,9 @@ export default {
         this.erros.push("Localização;");
       }
 
-      // if (!Boolean(this.erros[0])) {
-      //   this.erros.push("Datas Inválidas;");
-      // }
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
     },
     guardar: function() {
       this.existe_erros = false;
@@ -559,13 +561,14 @@ export default {
               legislacao: [],
               relacoes: [],
               pca: null,
+              notaPCA: null,
+              notaDF: null,
               formaContagem: {
                 forma: null
               },
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              notas: "",
               eFilhoDe: null
             });
           } else {
@@ -577,6 +580,8 @@ export default {
               dataFinal: null,
               relacoes: [],
               pca: null,
+              notaPCA: null,
+              notaDF: null,
               UIs: [this.UI.codigo],
               formaContagem: {
                 forma: null
@@ -584,7 +589,6 @@ export default {
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              notas: "",
               eFilhoDe: null,
               tipo: "Subsérie"
             });

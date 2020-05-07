@@ -7,7 +7,7 @@
         <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
-      <v-card-text> 
+      <v-card-text>
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
             <v-card>
@@ -221,27 +221,22 @@ export default {
         this.erros.push("Datas ou Unidades de Instalação;");
       }
 
-      if (!!this.subserie.relacoes[0] == false) {
-        this.erros.push("Relações;");
-      }
-
       if (!this.subserie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
-      if (!this.subserie.pca) {
-        this.erros.push("Prazo de Conservação Administrativa;");
+
+      if (!Boolean(this.subserie.pca)) {
+        if (!Boolean(this.subserie.notaPCA)) {
+          this.erros.push(
+            "Prazo de Conservação Administrativa ou nota sobre o PCA;"
+          );
+        }
       }
 
-      if (!!this.subserie.justificacaoPCA[0] == false) {
-        this.erros.push("Justificação do PCA;");
-      }
-
-      if (!!this.subserie.justificacaoDF[0] == false) {
-        this.erros.push("Justificação do DF;");
-      }
-
-      if (!this.subserie.df) {
-        this.erros.push("Destino Final;");
+      if (!Boolean(this.subserie.df)) {
+        if (!Boolean(this.subserie.notaDF)) {
+          this.erros.push("Destino Final ou nota sobre o DF;");
+        }
       }
 
       if (!this.subserie.formaContagem.forma) {
@@ -256,9 +251,9 @@ export default {
         }
       }
 
-      // if (!Boolean(this.erros[0])) {
-      //   this.erros.push("Datas Inválidas;");
-      // }
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
     },
     save() {
       this.existe_erros = false;

@@ -12,21 +12,11 @@
       <v-col cols="12">
         <v-treeview hoverable :items="preparaTree" item-key="codigo">
           <template v-slot:prepend="{ item }">
-            <img
-              v-if="item.tipo == 'Série'"
-              style="width:23px; height:30px"
-              :src="svg_sr"
-            />
-            <img
-              v-else-if="item.tipo == 'Subsérie'"
-              style="width:23px; height:30px"
-              :src="svg_ssr"
-            />
+            <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
+            <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
           </template>
           <template v-slot:label="{ item }">
-            <b @click="showClasse(item)">
-              {{ item.titulo }}
-            </b>
+            <b @click="showClasse(item)">{{ item.titulo }}</b>
           </template>
         </v-treeview>
       </v-col>
@@ -54,11 +44,7 @@
           <template v-slot:item="props">
             <v-tooltip top>
               <template v-slot:activator="{ on }">
-                <tr
-                  :style="'text-align: center'"
-                  v-on="on"
-                  @click="showUI(props.item)"
-                >
+                <tr :style="'text-align: center'" v-on="on" @click="showUI(props.item)">
                   <td>{{ props.item.codigo }}</td>
                   <td>{{ props.item.titulo }}</td>
                 </tr>
@@ -73,9 +59,7 @@
                   <li
                     v-for="(classe, i) in props.item.classesAssociadas"
                     :key="i"
-                  >
-                    {{ classe.codigo }}
-                  </li>
+                  >{{ classe.codigo }}</li>
                 </ul>
                 <p v-else>Não tem classes associadas!</p>
               </span>
@@ -86,12 +70,7 @@
     </v-row>
     <v-row v-else>
       <v-col cols="12" xs="12" sm="12">
-        <v-alert
-          class="text-center"
-          :value="true"
-          color="amber accent-3"
-          icon="warning"
-        >
+        <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
           Não foram adicionadas
           <b>Unidades de Instalação</b>.
         </v-alert>
@@ -122,12 +101,7 @@
       :treeview_object="treeview_object"
       :classes="TS.classes"
     />
-    <ShowUI
-      v-if="show_ui"
-      @fecharDialog="show_ui = false"
-      :dialog="show_ui"
-      :UI="UI"
-    />
+    <ShowUI v-if="show_ui" @fecharDialog="show_ui = false" :dialog="show_ui" :UI="UI" />
   </v-card>
 </template>
 
@@ -287,27 +261,29 @@ export default {
         );
         rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
 
-        let criterio = null;
-        if (rel.relacao == "Suplemento para") {
-          criterio = series_subseries[i].justificacaoPCA.find(
-            e => e.tipo == "Critério de Utilidade Administrativa"
-          );
-        }
-        if (rel.relacao == "Complementar de") {
-          criterio = series_subseries[i].justificacaoDF.find(
-            e => e.tipo == "Critério de Complementaridade Informacional"
-          );
-        }
-        if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
-          criterio = series_subseries[i].justificacaoDF.find(
-            e => e.tipo == "Critério de Densidade Informacional"
-          );
-        }
-        if (criterio != null) {
-          let relacaoCriterio = criterio.relacoes.find(
-            e => e.codigo == classe_relacionada.codigo
-          );
-          relacaoCriterio["titulo"] = classe_relacionada.titulo;
+        if (!!series_subseries[i].justificacaoPCA) {
+          let criterio = null;
+          if (rel.relacao == "Suplemento para") {
+            criterio = series_subseries[i].justificacaoPCA.find(
+              e => e.tipo == "Critério de Utilidade Administrativa"
+            );
+          }
+          if (rel.relacao == "Complementar de") {
+            criterio = series_subseries[i].justificacaoDF.find(
+              e => e.tipo == "Critério de Complementaridade Informacional"
+            );
+          }
+          if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
+            criterio = series_subseries[i].justificacaoDF.find(
+              e => e.tipo == "Critério de Densidade Informacional"
+            );
+          }
+          if (criterio != null) {
+            let relacaoCriterio = criterio.relacoes.find(
+              e => e.codigo == classe_relacionada.codigo
+            );
+            relacaoCriterio["titulo"] = classe_relacionada.titulo;
+          }
         }
       });
     }

@@ -57,22 +57,13 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
-                  :rules="false"
+                  :rules="true"
                   :newSerie="serie"
                   :classes="classes"
                   :formaContagem="formaContagem"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
-
-            <v-row v-else>
-              <v-col md="3" sm="3">
-                <div class="info-label">Notas</div>
-              </v-col>
-              <v-col sm="9" md="9">
-                <v-text-field solo clearable v-model="serie.notas" label="Notas"></v-text-field>
-              </v-col>
-            </v-row>
           </v-expansion-panels>
           <br />
           <h5>Hierarquia</h5>
@@ -222,10 +213,6 @@ export default {
         this.erros.push("Datas ou Unidades de Instalação;");
       }
 
-      if (!!this.serie.relacoes[0] == false) {
-        this.erros.push("Relações;");
-      }
-
       if (!this.serie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
@@ -257,20 +244,18 @@ export default {
         this.erros.push("Legislação;");
       }
       if (!!this.treeview_object.children[0] == 0) {
-        if (!this.serie.pca) {
-          this.erros.push("Prazo de Conservação Administrativa;");
+        if (!Boolean(this.serie.pca)) {
+          if (!Boolean(this.serie.notaPCA)) {
+            this.erros.push(
+              "Prazo de Conservação Administrativa ou nota sobre o PCA;"
+            );
+          }
         }
 
-        if (!!this.serie.justificacaoPCA[0] == false) {
-          this.erros.push("Justificação do PCA;");
-        }
-
-        if (!!this.serie.justificacaoDF[0] == false) {
-          this.erros.push("Justificação do DF;");
-        }
-
-        if (!this.serie.df) {
-          this.erros.push("Destino Final;");
+        if (!Boolean(this.serie.df)) {
+          if (!Boolean(this.serie.notaDF)) {
+            this.erros.push("Destino Final ou nota sobre o DF;");
+          }
         }
 
         if (!this.serie.formaContagem.forma) {
@@ -286,9 +271,9 @@ export default {
         }
       }
 
-      // if (!Boolean(this.erros[0])) {
-      //   this.erros.push("Datas Inválidas;");
-      // }
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
     },
     atualizar() {
       this.existe_erros = false;
