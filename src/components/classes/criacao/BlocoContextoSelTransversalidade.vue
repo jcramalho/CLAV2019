@@ -2,7 +2,7 @@
       <v-row>
         <v-col cols="2">
           <div class="info-label">
-            Processo Transversal?
+            Processo Transversal
             <InfoBox header="Processo Transversal" :text="myhelp.Classe.Campos.ProcessoTransversal" />
           </div>
         </v-col>
