@@ -358,7 +358,7 @@ export default {
         }
       }
     },
-    remove: function(item) {
+    remove(item) {
       if (item.relacao == "Suplemento para") {
         this.remove_criterio(
           item.serieRelacionada.codigo,
@@ -387,7 +387,7 @@ export default {
         );
       });
     },
-    codigoIgual: function(v) {
+    codigoIgual(v) {
       if (v == null || v == "") {
         return "Campo Obrigatório";
       } else {
@@ -403,7 +403,7 @@ export default {
         }
       }
     },
-    add: async function() {
+    async add() {
       this.alertOn = false;
 
       if (this.$refs.addRel.validate()) {
@@ -512,6 +512,20 @@ export default {
         }
       }
     },
+    data_final_valida(v) {
+      if (!!v) {
+        if (this.RE.dataInicial != null) {
+          let data_inicial = new Date(this.RE.dataInicial);
+          let data_final = new Date(v);
+
+          if (data_inicial > data_final) {
+            return "Data final inválida! É anterior à data inicial.";
+          }
+        }
+        return true;
+      }
+      return false;
+    },
     validateRelacao: function() {
       if (
         this.newSerie.relacoes.some(
@@ -522,7 +536,6 @@ export default {
       } else {
         if (this.rel == "Síntese de" || this.rel == "Sintetizado por") {
           let classe = this.classes.find(cl => cl.codigo == this.codrel);
-
           if (
             classe != undefined &&
             classe.relacoes.some(e => e.relacao == this.rel)
