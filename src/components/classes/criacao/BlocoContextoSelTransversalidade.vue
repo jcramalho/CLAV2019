@@ -1,26 +1,23 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <div class="info-label">
-        Processo Transversal?
-        <InfoBox
-          header="Processo Transversal"
-          :text="myhelp.Classe.Campos.ProcessoTransversal"
-        />
-      </div>
-    </v-col>
-    <v-col>
-      <v-radio-group v-model="c.procTrans" row>
-        <v-radio
-          v-for="(o, i) in simNao"
-          :key="i"
-          :label="o.label"
-          :value="o.value"
-          color="indigo darken-3"
-        ></v-radio>
-      </v-radio-group>
-    </v-col>
-  </v-row>
+      <v-row>
+        <v-col cols="2">
+          <div class="info-label">
+            Processo Transversal
+            <InfoBox header="Processo Transversal" :text="myhelp.Classe.Campos.ProcessoTransversal" />
+          </div>
+        </v-col>
+        <v-col>
+            <v-radio-group v-model="c.procTrans" row>
+                <v-radio
+                  v-for="(o, i) in simNao"
+                  :key="i"
+                  :label="o.label"
+                  :value="o.value"
+                  color="indigo darken-3"
+                ></v-radio>
+              </v-radio-group>
+        </v-col>
+      </v-row>
 </template>
 
 <script>
