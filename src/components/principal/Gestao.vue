@@ -175,6 +175,11 @@ export default {
               label: "Exportar Coleções",
               url: "/gestao/exportarColecoes",
               level: [7]
+            },
+            {
+              label: "Apagar Coleções",
+              url: "/gestao/apagarColecoes",
+              level: [7]
             }
           ]
         }
