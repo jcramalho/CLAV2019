@@ -1,26 +1,40 @@
 <template>
   <div>
-      <v-data-table
-        :items="listaProcs.procs"
-        :headers="headers"
-        class="ma-1"
-        item-key="chave"
-        :footer-props="procsFooterProps"
-      >
+    <v-row justify="space-around">
+      <v-btn color="primary" dark @click="filtro=''">Todos</v-btn>
+      <v-btn color="primary" dark @click="filtro='Processo Comum'">Processos Comuns</v-btn>
+      <v-btn color="primary" dark @click="filtro='Processo Específico'">Processos Específicos</v-btn>
+      <v-btn color="primary" dark @click="filtro='PR'">Processos Restantes</v-btn>
+      <v-btn outlined>{{filtro}}</v-btn>
+    </v-row>
+
+    <v-data-table
+      :items="listaProcs.procs"
+      :headers="headers"
+      class="ma-1"
+      item-key="chave"
+      :footer-props="procsFooterProps"
+      :search="filtro"
+    >
 
     <template v-slot:item="props">
       <tr
         :style="{
           backgroundColor: props.item.edited
               ? '#BBDEFB'
-              : (props.item.preSelected ? '#FFECB3' : 'transparent')
+              : (props.item.preSelected > 0 ? '#FFECB3' : 'transparent')
         }"
       >
         <td>
-          {{ props.item.proc }}
+          {{ props.item.codigo }}
         </td>
         <td>
-          {{ props.item.designacao }}
+          {{ props.item.titulo }}
+        </td>
+        <td>
+          <span v-if="props.item.tipoProc == 'Processo Comum'">PC</span>
+          <span v-else-if="props.item.tipoProc == 'PR'">PR</span>
+          <span v-else>PE</span>
         </td>
         <td>
             <v-icon v-if="props.item.dono">check</v-icon>
@@ -45,14 +59,14 @@
         <v-text-field
             readonly
             label="Nº de processos selecionados"
-            v-model="listaProcs.numProcSel"
+            v-model="listaProcs.numProcessosSelecionados"
         ></v-text-field>
     </v-col>
     <v-col>
         <v-text-field
             readonly
             label="Nº de processos pré-selecionados"
-            v-model="listaProcs.numProcPreSel"
+            v-model="listaProcs.numProcessosPreSelecionados"
         ></v-text-field>
     </v-col>
   </v-row>
@@ -69,7 +83,7 @@
 import Selresponsabilidade from "@/components/tabSel/criacaoTSPluri/SelResponsabilidade.vue";
 
 export default {
-  props: ["listaProcs"],
+  props: ["listaProcs", "listaCodigosEsp"],
   components: {
       Selresponsabilidade
   },
@@ -77,22 +91,31 @@ export default {
   data: () => ({
     // Processo corrente
     procSel: {},
-    // Travessia
-    travessia: [],
+    // Fecho Transitivo dos processos
+    fechoTransitivo: {},
     // Ativador do subcomponente que tem a interface de seleção
     selecionaResponsabilidades: false,
+    // Filtro da tabela
+    filtro: "",
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
         text: "Processo",
-        value: "proc",
+        value: "codigo",
         width: "10%",
         class: ["body-2", "font-weight-bold"]
       },
       {
-        text: "Designação",
-        value: "designacao",
-        width: "50%",
+        text: "Título",
+        value: "titulo",
+        width: "40%",
+        class: ["body-2", "font-weight-bold"],
+        filterable: false
+      },
+      {
+        text: "Tipo",
+        value: "tipoProc",
+        width: "10%",
         class: ["body-2", "font-weight-bold"]
       },
       {
@@ -114,7 +137,23 @@ export default {
       "items-per-page-all-text": "Todos"
     }
   }),
+
+  created: async function(){
+    try{
+      var response = await this.$request("get", "/travessiaV2");
+      this.fechoTransitivo = response.data;
+    }
+    catch(e){
+      console.log("Erro ao carregar o fecho transitivo: " + e);
+    }
+  },
+
   methods: {
+    // Filtra os processos na tabela
+    filtraProcessos: function (value, search, item) {
+        return (item.tipoProc == "");
+      },
+
     // Seleção das participações
     selecionaParticipacoes: function(proc){
         this.procSel = proc;
@@ -125,12 +164,12 @@ export default {
     selectProc: async function(p){
         try{
           this.selecionaResponsabilidades = false;
-          this.listaProcs.numProcSel += p.inc;
+          this.listaProcs.numProcessosSelecionados += p.inc;
           if(p.inc > 0){ // foi selecionado
               await this.acrescentaFecho(p);
           }
           else if(p.inc < 0){
-              await this.retiraFecho(this.procSel);
+              await this.retiraFecho(p);
           }
         }
         catch (err) {
@@ -138,39 +177,26 @@ export default {
       }
     },
     
-    // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
-    acrescentaFecho: async function(processo) {
-      try {
-        var res = await this.$request("get", "/travessia/" + processo.proc);
-        this.travessia = res.data;
-
-        for(let t=0; t < this.travessia.length; t++){
-          var index = this.listaProcs.procs.findIndex(p => p.proc == this.travessia[t]);
+    acrescentaFecho: function(processo) {
+        var fecho = this.fechoTransitivo[processo.codigo];
+        for(let i=0; i < fecho.length; i++){
+          var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
           if(index != -1){
-            this.listaProcs.procs[index].preSelected = true;
-            if(!this.listaProcs.procs[index].edited) this.listaProcs.numProcPreSel++;
+            this.listaProcs.procs[index].preSelected ++;
+            if(this.listaProcs.procs[index].preSelected == 1) this.listaProcs.numProcessosPreSelecionados++;
           } 
         }
-      } catch (err) {
-        return err;
-      }
     },
     // Reverte a seleção
     retiraFecho: async function(processo) {
-      try {
-        var res = await this.$request("get", "/travessia/" + processo.proc);
-        this.travessia = res.data;
-
-        for(let t=0; t < this.travessia.length; t++){
-          var index = this.listaProcs.procs.findIndex(p => p.proc == this.travessia[t]);
+        var fecho = this.fechoTransitivo[processo.codigo];
+        for(let i=0; i < fecho.length; i++){
+          var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
           if(index != -1){
-            this.listaProcs.procs[index].preSelected = false;
-            this.listaProcs.numProcPreSel--;
+            this.listaProcs.procs[index].preSelected --;
+            if(this.listaProcs.procs[index].preSelected == 0) this.listaProcs.numProcessosPreSelecionados--;
           } 
         }
-      } catch (err) {
-        return err;
-      }
     }
   }
 };

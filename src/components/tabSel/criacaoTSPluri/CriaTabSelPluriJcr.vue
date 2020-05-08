@@ -10,7 +10,6 @@
         <v-card-text class="panel-body">
           <v-container grid-list-md fluid>
             <v-stepper v-model="stepNo" vertical>
-              <v-progress-linear v-model="valorBarra"></v-progress-linear>
               <v-stepper-step :complete="stepNo > 1" step="1">
                 Entidades abrangidas pela TS
                 <span v-if="stepNo > 1">
@@ -72,93 +71,37 @@
                     v-model="tabelaSelecao.designacao"
                   ></v-text-field>
                 </v-flex>
-                <v-btn
-                  color="primary"
-                  @click="
-                    stepNo = 3;
-                    barra(28);
-                    
-                  "
+                <v-btn color="primary" @click="stepNo = 3;"
                   >Continuar</v-btn>
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 3" step="3"
-                >Processos Comuns
-                <small>Processos passíveis de existir em qualquer entidade</small>
+              <v-stepper-step :complete="stepNo > 3" step="3">
+                Seleção dos Processos
               </v-stepper-step>
               <v-stepper-content step="3">
-                <v-row wrap v-if="listaProcComunsReady && entSelReady">
-                  <v-col>
-                    <v-expansion-panels>
-                      <v-expansion-panel>
-                        <v-expansion-panel-header
-                          class="expansion-panel-heading"
-                        >
-                          Selecione os processos de negócio comuns
-                          <template v-slot:actions>
-                            <v-icon color="white">expand_more</v-icon>
-                          </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content eager>
-                          <ListaProcessos
-                            :listaProcs="listaProcComuns"
-                          />
-                        </v-expansion-panel-content>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                  </v-col>
+                <v-row wrap v-if="listaProcessosReady && entSelReady">
+                  <v-card class="mx-auto">
+                    <v-card-title>Selecione os processos</v-card-title>
+                    <v-card-text>
+                      <ListaProcessos
+                            :listaProcs="listaProcessos"
+                            :listaCodigosEsp="listaCodigosEsp"
+                      />
+                    </v-card-text>
+                  </v-card>
                 </v-row>
 
                 <v-row v-else>
                   <v-col>Ainda não foi possível carregar a informação dos Processos Comuns...</v-col>
                 </v-row>
                 
-                <v-btn
-                  color="primary"
-                  @click="stepNo = 4; barra(42);"
+                <v-btn color="primary" @click="stepNo = 4;"
                   >Continuar</v-btn>
-                <v-btn text
-                  @click=" stepNo = 2; barra(14);"
+                <v-btn text @click=" stepNo = 2;"
                   >Voltar</v-btn>
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 4" step="4"
-                >Processos Específicos
-                <small>Processos específicos das entidades e tipologias</small>
-              </v-stepper-step>
-              <v-stepper-content step="4">
-                <v-row wrap v-if="listaProcEspReady && entSelReady">
-                  <v-col>
-                    <v-expansion-panels>
-                      <v-expansion-panel>
-                        <v-expansion-panel-header
-                          class="expansion-panel-heading"
-                        >
-                          Selecione os processos de negócio específicos
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content eager>
-                          <ListaProcessos
-                            :listaProcs="listaProcEsp"
-                          />
-                        </v-expansion-panel-content>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                  </v-col>
-                </v-row>
-                <v-row v-else>
-                  <v-col>Ainda não foi possível carregar a informação dos Processos Específicos...</v-col>
-                </v-row>
-                <v-btn
-                  color="primary"
-                  @click="stepNo = 7; barra(56);"
-                  >Continuar</v-btn>
-                <v-btn
-                  text
-                  @click="stepNo = 3; barra(28);"
-                  >Voltar</v-btn>
-              </v-stepper-content>
-
-              <v-stepper-step :complete="stepNo > 7" step="7"
+              <!--v-stepper-step :complete="stepNo > 7" step="7"
                 >Alterações na parte descritiva
                 <small>
                   Adicionar, remover ou editar Notas de Aplicação (NA), Exclusão
@@ -226,7 +169,6 @@
                           text
                           @click="
                             stepNo = 8;
-                            barra(100);
                             finalizaUltPasso = false;
                           "
                         >
@@ -236,15 +178,9 @@
                     </v-card>
                   </v-dialog>
                 </v-btn>
-                <v-btn
-                  text
-                  @click="
-                    stepNo = 4;
-                    barra(72);
-                  "
-                  >Voltar</v-btn
-                >
-              </v-stepper-content>
+                <v-btn text @click="stepNo = 4;"
+                  >Voltar</v-btn>
+              </v-stepper-content-->
 
               <hr style="border-top: 0px" />
 
@@ -319,16 +255,10 @@
 
 <script>
 import ListaProcessos from "@/components/tabSel/criacaoTSPluri/ListaProcessos.vue";
-import ListaProcessosEsp from "@/components/tabSel/criacaoTSPluri/ListaProcessosEsp.vue";
-import ListaProcessosEspRestantes from "@/components/tabSel/criacaoTSPluri/ListaProcessosEspRestantes.vue";
-import ListaProcessosUltimos from "@/components/tabSel/criacaoTSPluri/ListaProcessosUltimos.vue";
-import ListaParteDescritiva from "@/components/tabSel/parteDescritiva/ListaProcSel.vue";
 
 export default {
   components: {
-    ListaProcessos,
-    //ListaProcessosEsp,
-    ListaParteDescritiva
+    ListaProcessos
   },
   data() {
     return {
@@ -337,75 +267,33 @@ export default {
         designacao: "",
         idEntidade: "",
         entidades: [],
-        procComuns: {},
-        procEspecificos: {},
-        procEspRestantes: {},
-        procUltimos: {},
-        // Lista de todos os processos selecionados
-        listaProcSel: {
-          procSelComuns: [],
-          procSelEspecificos: [],
-          procSelEspRestantes: [],
-          procSelUltimos: []
-        },
+        
         parteDescritivaUpdate: {}
       },
       // Numero do passo da criação de TS
       stepNo: 1,
-      // Valor da barra de progresso
-      valorBarra: 0,
+      
       // Lista de todas as entidades existentes
       entidades: [],
       // Lista com as entidades selecionadas
       entSel: [],
       // True quando a lista de entidades estiver carregada
       entidadesReady: false,
-      // Lista com todos os processos comuns
-      listaProcComuns: {},
       // Passa a true quando o utilizador tiver selecionado todas as entidades no primeiro passo
       entSelReady: false,
-      // True quando a lista de todos os processos comuns existentes estiver completa
-      listaProcComunsReady: false,
-      // True quando a lista de todos os processos especificos da entidade e tipologias em causa estiver completa
-      listaProcEspReady: false,
-      // Lista com todos os processos especificos da entidade e tipologias em causa
-      listaProcEsp: {},
-      // Lista dos processos pre selecionados restantes (resultado das travessias dos PNs especificos)
-      procPreSelResTravEspecifico: [],
-      // True quando a lista dos processos especificos restantes estiver completa
-      listaProcEspResReady: false,
-      // Lista com Todos os processos especificos existentes
-      listaTotalProcEsp: [],
-      // Lista dos processos especificos restantes (que não são especificos da entidade nem da tipologia em causa)
-      listaProcEspRes: [],
-      // Lista dos processos pré selecionados resultantes das travessias dos comuns e especificos
-      procPreSelEspRestantes: [],
-      // Numero de processos restantes que se encontram pré selecionados
-      numProcPreSelRes: 0,
-      // Lista dos processos pré selecionados restantes (resultado das travessias pos PNs especificos restantes)
-      procPreSelResTravRestante: [],
-      // Numero de processos especificos restantes selecionados
-      numProcSelRes: 0,
-      // Lista de todos os processos que ainda não foram selecionados nas etapas anteriores
-      listaProcUlt: [],
-      // True quando a ultima lista estiver pronta
-      listaProcUltReady: false,
-      // Numero de processos pré selecionados no ultimo componente de seleção
-      numProcPreSelUlt: 0,
-      // Numero dos ultimos processos selecionados
-      numProcSelUlt: 0,
-      // Lista dos ultimos processos pre selecionados
-      procPreSelUltimos: [],
-      // Para o snackbar de pedido criado e trabalho guardado
+
+      // Flag de controlo do carregamento dos processos
+      listaProcessosReady: false,
+      // Lista com todos os processos e com a informação necessária à criação da TS
+      listaProcessos: {},
+      // Lista com os códigos dos processos específicos das entidades selecionadas
+      listaCodigosEsp: [],
+      
       pendenteGuardado: false,
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
       // Dialog de confirmação finalização de TS
-      finalizaUltPasso: false,
-      // Lista de todos os processos selecionados em todos os passos
-      listaTotalProcSel: [],
-      listaTotalProcSelReady: false,
-      listaTotalProcSelUpdate: []
+      finalizaUltPasso: false
     };
   },
 
@@ -413,10 +301,40 @@ export default {
     debug: function(data){
        alert(JSON.stringify(data));
     },
-    // Valor da barra de progresso
-    barra: async function(valor) {
-      this.valorBarra = valor;
+
+    // Carregamento dos processos
+    loadProcessos: async function(){
+      try {
+        if (!this.listaProcessosReady) {
+          this.listaProcessos.numProcessosSelecionados = 0;
+          this.listaProcessos.numProcessosPreSelecionados = 0;
+          this.listaProcessos.procs = [];
+          var response = await this.$request("get", "/classes?nivel=3&info=completa");
+          for (let i = 0; i < response.data.length; i++) {
+            this.listaProcessos.procs.push({
+              chave: i,
+              edited: false,
+              preSelected: 0,
+              tipoProc: response.data[i].tipoProc,
+              procTrans: response.data[i].procTrans,
+              codigo: response.data[i].codigo,
+              titulo: response.data[i].titulo,
+              descricao: response.data[i].descricao,
+              notasAp: response.data[i].notasAp,
+              exemplosNotasAp: response.data[i].exemplosNotasAp,
+              notasEx: response.data[i].notasEx,
+              termosInd: response.data[i].termosInd
+            });
+            this.listaProcessos.procs[i].entidades = [];
+          } 
+          // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
+          this.listaProcessosReady = true;
+        }
+      } catch (err) {
+        console.log("Erro ao carregar os processos: " + err);
+      }
     },
+
     // Função que retira o nome da entidade e o id da Entidade associada ao utilizador do token
     /*infoUserEnt: async function() {
       var resUser = this.$verifyTokenUser();
@@ -457,44 +375,15 @@ export default {
       }
     },
     
-    // Carrega todos os processos comuns
-    loadProcComuns: async function() {
-      try {
-        if (!this.listaProcComunsReady) {
-          this.listaProcComuns.numProcSel = 0;
-          this.listaProcComuns.numProcPreSel = 0;
-          this.listaProcComuns.procs = [];
-          var response = await this.$request("get", "/classes?tipo=comum");
-          for (let i = 0; i < response.data.length; i++) {
-            this.listaProcComuns.procs.push({
-              proc: response.data[i].codigo,
-              designacao: response.data[i].titulo,
-              chave: i,
-              edited: false,
-              preSelected: false
-            });
-            this.listaProcComuns.procs[i].entidades = [];
-          } 
-          this.listaProcComuns.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
-          this.listaProcComunsReady = true;
-          return this.listaProcComuns;
-        }
-      } catch (err) {
-        return err;
-      }
-    },
     // Quando se termina a seleção das entidades
     entidadesSelecionadas: async function(){
       try{
-        this.barra(14);
         this.entSel.sort((a, b) => a.designacao > b.designacao ? 1 : -1 );
         this.tabelaSelecao.entidades = this.entSel;
-
-        await this.loadProcEspecificos();
         
-        for(let i=0; i < this.listaProcComuns.procs.length; i++){
+        for(let i=0; i < this.listaProcessos.procs.length; i++){
             for(let j=0; j < this.tabelaSelecao.entidades.length; j++){
-                this.listaProcComuns.procs[i].entidades.push({
+                this.listaProcessos.procs[i].entidades.push({
                     sigla: this.tabelaSelecao.entidades[j].sigla,
                     designacao: this.tabelaSelecao.entidades[j].designacao,
                     id: this.tabelaSelecao.entidades[j].id,
@@ -504,112 +393,41 @@ export default {
                 });
             }
         }
-        
-        for(let i=0; i < this.listaProcEsp.procs.length; i++){
-            for(let j=0; j < this.tabelaSelecao.entidades.length; j++){
-                this.listaProcEsp.procs[i].entidades.push({
-                    sigla: this.tabelaSelecao.entidades[j].sigla,
-                    designacao: this.tabelaSelecao.entidades[j].designacao,
-                    id: this.tabelaSelecao.entidades[j].id,
-                    label: this.tabelaSelecao.entidades[j].label,
-                    dono: false,
-                    participante: "NP"
-                });
-            }
-        }
+        await this.loadProcessosEspecificos(this.tabelaSelecao.entidades);
         this.entSelReady = true;
       }
       catch(e){
-        console.log("Erro ao carregar os processos específicos: " + e);
-      }
+        console.log("Erro ao fundir as entidades nos processos: " + e);
+      }  
+    },
+
+    loadProcessosEspecificos: async function(entidades){
+      try{
+        var url = "/classes?tipo=especifico&ents=";
+        for (var i = 0; i < entidades.length-1; i++) {
+          url += this.tabelaSelecao.entidades[i].id + ",";
+        }
+        url += this.tabelaSelecao.entidades[i].id;
         
-    },
-
-    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
-    guardarTSProcComuns: function(procComuns) {
-      
-    },
-    // Carrega os processos específicos das entidades em causa
-    loadProcEspecificos: async function() {
-      try {
-          this.listaProcEsp.numProcSel = 0;
-          this.listaProcEsp.numProcPreSel = 0;
-          this.listaProcEsp.procs = [];
-
-          var url = "/classes?tipo=especifico&ents=";
-          for (var i = 0; i < this.tabelaSelecao.entidades.length - 1; i++) {
-            url += this.tabelaSelecao.entidades[i].id + ",";
+        var response = await this.$request("get", url);
+        
+        for (let j = 0; j < response.data.length; j++) {
+          this.listaCodigosEsp.push(response.data[j].codigo);
+        }
+        // Marcamos os processos que não são específicos destas entidades como restantes
+        var index;
+        for(let j = 0; j < this.listaProcessos.procs.length; j++){
+          if(this.listaProcessos.procs[j].tipoProc != "Processo Comum"){
+            index = this.listaCodigosEsp.indexOf(this.listaProcessos.procs[j].codigo);
+            if(index == -1) this.listaProcessos.procs[j].tipoProc = "PR";
           }
-          url += this.tabelaSelecao.entidades[i].id;
-
-          var response = await this.$request("get", url);
-
-          for (var j = 0; j < response.data.length; j++) {
-            this.listaProcEsp.procs.push({
-              proc: response.data[j].codigo,
-              designacao: response.data[j].titulo,
-              chave: j,
-              edited: false,
-              preSelected: false
-            });
-            this.listaProcEsp.procs[j].entidades = [];
-          }
-
-          this.listaProcEsp.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
-          this.listaProcEspReady = true;
-
-      } catch (error) {
-        return error;
+        }
+      }
+      catch(e){
+        console.log("Erro ao calcular os processos específicos das entidades: " + e);
       }
     },
-    
-    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
-    guardarTSProcEsp: function(procEsp) {
-      
-    },
-    // Carrega todos os processos especificos restantes
-    loadProcEspRestantes: async function() {
-      
-    },
-    // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
-    procPreSelRestantes: function() {
-      
-    },
-    // Contador dos processos selecionados especificos
-    contadorProcSelRes: function(procSelec) {
-      
-    },
-    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
-    procPreSelResTravRes: function(procPreSelResTravRes) {
-      
-    },
-    // Contador dos processos pre selecionados comuns
-    contadorProcPreSelRes: function(lista) {
-      
-    },
-    // Guarda na tabela de seleção a lista processos comuns, depois de selecionados no componente
-    guardarTSProcRes: function(procEsp) {
-      
-    },
-    // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
-    loadUltimosProcessos: function() {
-      
-    },
-    // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
-    procPreSelUlt: function() {
-     
-    },
-    
-    parseProcessosSel: function() {
-      
-    },
-    listaTotalSelUpdate: function(proc) {
-  
-    },
-    // Guarda na tabela de seleção a lista dos ultimos processos, depois de selecionados no componente
-    guardarTSProcUlt: function(procUlt) {
-      
-    },
+
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       
@@ -625,10 +443,10 @@ export default {
       try{
             //await this.infoUserEnt();
             await this.loadEntidades();
-            await this.loadProcComuns();
+            await this.loadProcessos();
       }
       catch(e){
-          console.log('Erro ao carregar a informação: ' + e);
+          console.log('Erro ao carregar a informação inicial: ' + e);
       }
   }
 };
