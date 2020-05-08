@@ -18,7 +18,8 @@ export default {
     userEmail: "",
     guardar: false,
     despacho: "",
-    pedidos_novas_entidades: []
+    pedidos_novas_entidades: [],
+    erros_relacoes: []
   }),
   methods: {
     changeE1(e) {
@@ -232,6 +233,40 @@ export default {
           " (legislação);\n";
       }
     },
+    // validar_relacoes() {
+    //   for (let i = 0; i < this.RADA.tsRada.classes.length; i++) {
+    //     let data_inicial = null;
+    //     let data_final = null;
+
+    //     if (!!this.RADA.tsRada.classes[i].dataInicial && !!this.RADA.tsRada.classes[i].dataFinal) {
+    //       data_inicial = new Date(this.RADA.tsRada.classes[i].dataInicial);
+    //       data_final = new Date(this.RADA.tsRada.classes[i].dataFinal);
+    //     } else {
+    //       let ui = this.RADA.tsRada.UIs.find(e => e.codigo == this.RADA.classes[i].UIs[0]);
+
+    //       data_inicial = new Date(ui.dataInicial);
+    //       data_final = new Date(ui.dataFinal);
+
+    //       for (let z = 1; z < this.RADA.classes[i].UIs.length; z++) {
+    //         ui = this.RADA.tsRada.UIs.find(e => e.codigo == this.RADA.classes[i].UIs[z]);
+
+    //         let aux_data_inicial = new Date(ui.dataInicial);
+    //         let aux_data_final = new Date(ui.dataFinal);
+
+    //         if (aux_data_inicial < data_inicial) {
+    //           data_inicial = aux_data_inicial;
+    //         }
+
+    //         if (aux_data_final > data_final) {
+    //           data_final = aux_data_final;
+    //         }
+    //       }
+    //     }
+    //     for (let j = 0; j < this.RADA.tsRada.classes[i].relacoes.length; j++) {
+
+    //     }
+    //   }
+    // },
     async concluir(id_remocao_pendente) {
       // Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
       // em que as produtoras tem que estar associadas pelo menos a uma série ou ui

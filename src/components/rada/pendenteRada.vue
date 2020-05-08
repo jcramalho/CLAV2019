@@ -152,7 +152,7 @@ import RelatorioExpositivo from "@/components/rada/criacao/RelatorioExpositivo.v
 import TSRada from "@/components/rada/criacao/TSRadaManual.vue";
 import InformacaoGeral from "@/components/rada/criacao/InformacaoGeral";
 
-import mixin_criacao from "./mixins/mixins_criacao";
+import mixin_criacao from "@/mixins/rada/mixin_criacao";
 
 export default {
   props: ["obj"],
