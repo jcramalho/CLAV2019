@@ -76,22 +76,13 @@
         </v-alert>
       </v-col>
     </v-row>
-    <ShowSerie
-      v-if="show_serie"
-      :dialog="show_serie"
-      @fecharDialog="show_serie = false"
+    <ShowSerieSubserie
+      v-if="show_serie_subserie"
+      :dialog="show_serie_subserie"
+      @fecharDialog="show_serie_subserie = false"
       :formaContagem="formaContagem"
       :treeview_object="treeview_object"
       :classes="TS.classes"
-      :show_a_partir_de_pedido="true"
-    />
-    <ShowSubserie
-      v-if="show_subserie"
-      :dialog="show_subserie"
-      @fecharDialog="show_subserie = false"
-      :treeview_object="treeview_object"
-      :classes="TS.classes"
-      :formaContagem="formaContagem"
       :show_a_partir_de_pedido="true"
     />
     <ShowOrganico
@@ -106,8 +97,7 @@
 </template>
 
 <script>
-import ShowSerie from "@/components/pedidos/consulta/rada/elementos/ShowSerie";
-import ShowSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSubserie";
+import ShowSerieSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSerieOuSubserie";
 import ShowOrganico from "@/components/pedidos/consulta/rada/elementos/ShowOrganico";
 import ShowUI from "@/components/pedidos/consulta/rada/elementos/ShowUI";
 
@@ -115,8 +105,7 @@ export default {
   props: ["TS"],
   components: {
     ShowOrganico,
-    ShowSubserie,
-    ShowSerie,
+    ShowSerieSubserie,
     ShowUI
   },
   data: () => ({
@@ -125,8 +114,7 @@ export default {
     search: "",
     UI: null,
     show_ui: false,
-    show_serie: false,
-    show_subserie: false,
+    show_serie_subserie: false,
     show_area_organico: false,
     treeview_object: null,
     formaContagem: {
@@ -186,19 +174,12 @@ export default {
       this.show_ui = true;
     },
     showClasse(item) {
-      switch (item.tipo) {
-        case "Série":
-          this.treeview_object = item;
-          this.show_serie = true;
-          break;
-        case "Subsérie":
-          this.treeview_object = item;
-          this.show_subserie = true;
-          break;
-        default:
-          this.treeview_object = item;
-          this.show_area_organico = true;
-          break;
+      if (item.tipo == "Série" || item.tipo == "Subsérie") {
+        this.treeview_object = item;
+        this.show_serie_subserie = true;
+      } else {
+        this.treeview_object = item;
+        this.show_area_organico = true;
       }
     },
     preparaTreeFilhos: function(pai_codigo, pai_titulo) {

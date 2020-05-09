@@ -24,7 +24,7 @@
             </v-card>
           </v-dialog>
         </v-row>
-        <v-form ref="formSerie" :lazy-validation="false">
+        <v-form ref="form" :lazy-validation="false">
           <Identificacao :newSerie="serie" />
 
           <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
@@ -107,7 +107,7 @@
         <v-spacer></v-spacer>
         <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
 
-        <v-btn color="success" class="mr-4" @click="atualizar">Atualizar</v-btn>
+        <v-btn color="success" class="mr-4" @click="atualizar(serie)">Atualizar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -118,6 +118,8 @@ import Identificacao from "./partes/Identificacao";
 import ZonaDescritiva from "../criacao/classes/partes/ZonaDescritiva";
 import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
+
+import mixin_edicao_serie_subserie from "@/mixins/rada/mixin_edicao_serie_subserie";
 
 export default {
   props: [
@@ -137,64 +139,10 @@ export default {
     ZonaDecisoesAvaliacao
   },
   data: () => ({
-    existe_erros: false,
-    erros: [],
-    toDelete: false,
-    panels: [0, 0, 0],
-    isMultiple: false,
-    serie: {},
-    classesHierarquia: []
+    serie: {}
   }),
+  mixins: [mixin_edicao_serie_subserie],
   methods: {
-    eliminarClasse() {
-      // Buscar a classe original pois é a que temos que eliminar, o clone pode estar desatualizado
-      let serie_real = this.classes.find(
-        e => e.codigo == this.treeview_object.codigo
-      );
-      this.$emit("remover", serie_real);
-      this.dialogState = false;
-    },
-    buscarTitulosClasses() {
-      for (let i = 0; i < this.serie.relacoes.length; i++) {
-        let classe_relacionada = this.classes.find(
-          cl => cl.codigo == this.serie.relacoes[i].serieRelacionada.codigo
-        );
-
-        this.serie.relacoes[i].serieRelacionada["titulo"] =
-          classe_relacionada.titulo;
-
-        let criterio = null;
-        if (this.serie.relacoes[i].relacao == "Suplemento para") {
-          criterio = this.serie.justificacaoPCA.find(
-            e => e.tipo == "Critério de Utilidade Administrativa"
-          );
-        }
-
-        if (this.serie.relacoes[i].relacao == "Complementar de") {
-          criterio = this.serie.justificacaoDF.find(
-            e => e.tipo == "Critério de Complementaridade Informacional"
-          );
-        }
-
-        if (
-          this.serie.relacoes[i].relacao == "Síntese de" ||
-          this.serie.relacoes[i].relacao == "Sintetizado por"
-        ) {
-          criterio = this.serie.justificacaoDF.find(
-            e => e.tipo == "Critério de Densidade Informacional"
-          );
-        }
-
-        if (criterio != null) {
-          let relacaoCriterio = criterio.relacoes.find(
-            e => e.codigo == classe_relacionada.codigo
-          );
-
-          this.$set(relacaoCriterio, "titulo", classe_relacionada.titulo);
-          // relacaoCriterio["titulo"] = classe_relacionada.titulo;
-        }
-      }
-    },
     recolherErros() {
       this.existe_erros = true;
 
@@ -274,32 +222,6 @@ export default {
       if (!Boolean(this.erros[0])) {
         this.erros.push("Datas Inválidas;");
       }
-    },
-    atualizar() {
-      this.existe_erros = false;
-      this.erros = [];
-      this.isMultiple = true;
-      this.panels = [0, 1, 2];
-      setTimeout(() => {
-        if (this.$refs.formSerie.validate()) {
-          this.$emit("atualizacao", this.serie);
-          this.dialogState = false;
-        } else {
-          this.isMultiple = false;
-          this.panels = [0, 0, 0];
-          this.recolherErros();
-        }
-      }, 1);
-    }
-  },
-  computed: {
-    dialogState: {
-      get() {
-        return this.dialog;
-      },
-      set(val) {
-        this.$emit("fecharDialog", false);
-      }
     }
   },
   created() {
@@ -311,7 +233,7 @@ export default {
     // DEEP CLONE do objetos
     this.serie = JSON.parse(JSON.stringify(serie_real));
 
-    this.buscarTitulosClasses();
+    this.buscarTitulosClasses(this.serie);
 
     // Classes para definir a hierarquia
     this.classesHierarquia = this.classes

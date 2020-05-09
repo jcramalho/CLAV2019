@@ -24,7 +24,7 @@
             </v-card>
           </v-dialog>
         </v-row>
-        <v-form ref="formSubserie" :lazy-validation="false">
+        <v-form ref="form" :lazy-validation="false">
           <Identificacao :newSerie="subserie" />
 
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
@@ -104,7 +104,7 @@
         </v-alert>
         <v-spacer></v-spacer>
         <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
+        <v-btn color="success" class="mr-4" @click="atualizar(subserie)">Atualizar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -116,19 +116,15 @@ import ZonaDescritiva from "../criacao/classes/partes/ZonaDescritiva";
 import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
+import mixin_edicao_serie_subserie from "@/mixins/rada/mixin_edicao_serie_subserie";
+
 export default {
   props: ["treeview_object", "classes", "UIs", "formaContagem", "RE", "dialog"],
   data: () => ({
-    existe_erros: false,
-    erros: [],
-    toDelete: false,
     subserie: {
       justificacaoDF: [],
       justificacaoPCA: []
-    },
-    panels: [0, 0, 0],
-    isMultiple: false,
-    classesHierarquia: []
+    }
   }),
   components: {
     Identificacao,
@@ -136,73 +132,16 @@ export default {
     ZonaContexto,
     ZonaDecisoesAvaliacao
   },
+  mixins: [mixin_edicao_serie_subserie],
   computed: {
     temCriterioLegal() {
       return (
         this.subserie.justificacaoDF.some(e => e.tipo == "Critério Legal") ||
         this.subserie.justificacaoPCA.some(e => e.tipo == "Critério Legal")
       );
-    },
-    dialogState: {
-      get() {
-        return this.dialog;
-      },
-      set(val) {
-        this.$emit("fecharDialog", false);
-      }
     }
   },
   methods: {
-    buscarTitulosClasses() {
-      for (let i = 0; i < this.subserie.relacoes.length; i++) {
-        let classe_relacionada = this.classes.find(
-          cl => cl.codigo == this.subserie.relacoes[i].serieRelacionada.codigo
-        );
-
-        this.subserie.relacoes[i].serieRelacionada["titulo"] =
-          classe_relacionada.titulo;
-
-        let criterio = null;
-
-        if (this.subserie.relacoes[i].relacao == "Suplemento para") {
-          criterio = this.subserie.justificacaoPCA.find(
-            e => e.tipo == "Critério de Utilidade Administrativa"
-          );
-        }
-
-        if (this.subserie.relacoes[i].relacao == "Complementar de") {
-          criterio = this.subserie.justificacaoDF.find(
-            e => e.tipo == "Critério de Complementaridade Informacional"
-          );
-        }
-
-        if (
-          this.subserie.relacoes[i].relacao == "Síntese de" ||
-          this.subserie.relacoes[i].relacao == "Sintetizado por"
-        ) {
-          criterio = this.subserie.justificacaoDF.find(
-            e => e.tipo == "Critério de Densidade Informacional"
-          );
-        }
-
-        if (criterio != null) {
-          let relacaoCriterio = criterio.relacoes.find(
-            e => e.codigo == classe_relacionada.codigo
-          );
-
-          this.$set(relacaoCriterio, "titulo", classe_relacionada.titulo);
-          // relacaoCriterio["titulo"] = classe_relacionada.titulo;
-        }
-      }
-    },
-    eliminarClasse() {
-      let subserie_real = this.classes.find(
-        e => e.codigo == this.treeview_object.codigo
-      );
-
-      this.$emit("remover", subserie_real);
-      this.dialogState = false;
-    },
     recolherErros() {
       this.existe_erros = true;
 
@@ -254,22 +193,6 @@ export default {
       if (!Boolean(this.erros[0])) {
         this.erros.push("Datas Inválidas;");
       }
-    },
-    save() {
-      this.existe_erros = false;
-      this.erros = [];
-      this.isMultiple = true;
-      this.panels = [0, 1, 2];
-      setTimeout(() => {
-        if (this.$refs.formSubserie.validate()) {
-          this.$emit("atualizacao", this.subserie);
-          this.dialogState = false;
-        } else {
-          this.isMultiple = false;
-          this.panels = [0, 0, 0];
-          this.recolherErros();
-        }
-      }, 1);
     }
   },
   created() {
@@ -281,7 +204,7 @@ export default {
     // DEEP CLONE do objeto
     this.subserie = JSON.parse(JSON.stringify(subserie_real));
 
-    this.buscarTitulosClasses();
+    this.buscarTitulosClasses(this.subserie);
 
     // Classes para definir a hierarquia
     this.classesHierarquia = this.classes

@@ -122,7 +122,7 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
-                    :rules="[v => data_final_valida(v) || 'Campo obrigatório!']"
+                    :rules="[v => data_final_valida(v, UI) || 'Campo obrigatório!']"
                     v-model="UI.dataFinal"
                     label="Data Final"
                     prepend-icon="event"
@@ -265,7 +265,7 @@
                   </v-col>
 
                   <v-col sm="1" xs="12">
-                    <v-btn text rounded @click="adicionarClasseUI">
+                    <v-btn text rounded @click="adicionarClasseUI(UI)">
                       <v-icon color="green lighten-1">add_circle</v-icon>
                     </v-btn>
                     <v-btn text rounded @click="$refs.addRel.reset()">
@@ -333,11 +333,14 @@
 <script>
 import EntidadesProdutoras from "@/components/rada/criacao/classes/partes/EntidadesProdutoras.vue";
 
+import mixin_unidade_instalacao from "@/mixins/rada/mixin_unidade_instalacao";
+
 export default {
   props: ["UIs", "RE", "classes"],
   components: {
     EntidadesProdutoras
   },
+  mixins: [mixin_unidade_instalacao],
   computed: {
     getCodigos() {
       return this.classes
@@ -353,32 +356,8 @@ export default {
         });
     }
   },
-  watch: {
-    cod: function(novo, old) {
-      let c = this.classes.find(e => e.codigo == novo);
-
-      if (c != undefined) {
-        this.iscodvalido = true;
-        this.tituloClasse = c.titulo;
-        this.tipoClasse = c.tipo;
-      } else {
-        this.iscodvalido = false;
-      }
-    }
-  },
   data: () => ({
-    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
-    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
-    tituloClasse: null,
-    existe_erros: false,
-    erros: [],
-    menu1: false,
-    menu2: false,
-    alertOn: false,
-    iscodvalido: false,
-    tipoClasse: null,
     dialog: false,
-    cod: null,
     UI: {
       codigo: "",
       codCota: "",
@@ -393,52 +372,9 @@ export default {
       descricao: "",
       notas: "",
       localizacao: ""
-    },
-    headers: [
-      {
-        text: "Série/Subsérie Associada",
-        align: "center",
-        value: "codigo",
-        width: "95%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        value: "edicao",
-        align: "center",
-        sortable: false,
-        width: "5%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
+    }
   }),
   methods: {
-    data_final_valida(v) {
-      if (!!v) {
-        if (this.UI.dataInicial != null) {
-          let data_inicial = new Date(this.UI.dataInicial);
-          let data_final = new Date(v);
-
-          if (data_inicial > data_final) {
-            return "Data final inválida! É anterior à data inicial.";
-          }
-        }
-        return true;
-      }
-      return false;
-    },
-    eCodigoClasseValido(v) {
-      if (
-        this.classes.some(
-          e =>
-            e.codigo == v &&
-            (e.dataInicial === undefined || e.dataInicial != null)
-        )
-      ) {
-        return "Impossível criar associação, altere o código!";
-      } else {
-        return false;
-      }
-    },
     remove: function(item) {
       this.UI.classesAssociadas = this.UI.classesAssociadas.filter(e => {
         return e.codigo != item.codigo;
@@ -465,50 +401,6 @@ export default {
       };
       this.$refs.formUI.resetValidation();
     },
-    recolherErros() {
-      this.existe_erros = true;
-
-      if (!this.UI.codigo) {
-        this.erros.push("Código;");
-      }
-
-      if (!this.UI.titulo) {
-        this.erros.push("Título;");
-      }
-
-      if (!this.UI.codCota) {
-        this.erros.push("Código Cota;");
-      }
-
-      if (!this.UI.dataInicial || !this.UI.dataFinal) {
-        this.erros.push("Datas;");
-      }
-
-      if (
-        !!this.UI.produtor.entProdutoras[0] == false &&
-        !!this.UI.produtor.tipologiasProdutoras[0] == false
-      ) {
-        this.erros.push("Produtoras;");
-      }
-
-      if (!!this.UI.classesAssociadas[0] == false) {
-        this.erros.push("Classes Associadas;");
-      }
-      if (!this.UI.descricao) {
-        this.erros.push("Descrição;");
-      }
-
-      if (!this.UI.notas) {
-        this.erros.push("Notas;");
-      }
-      if (!this.UI.localizacao) {
-        this.erros.push("Localização;");
-      }
-
-      if (!Boolean(this.erros[0])) {
-        this.erros.push("Datas Inválidas;");
-      }
-    },
     guardar: function() {
       this.existe_erros = false;
       this.erros = [];
@@ -523,7 +415,7 @@ export default {
         this.dialog = false;
         this.apagar();
       } else {
-        this.recolherErros();
+        this.recolherErros(this.UI);
       }
     },
     verificaCodigoUI(v) {
@@ -595,26 +487,6 @@ export default {
           }
         }
       }
-    },
-    async adicionarClasseUI() {
-      if (this.$refs.addRel.validate()) {
-        if (!(await this.validateUI())) {
-          this.UI.classesAssociadas.push({
-            codigo: this.cod,
-            tipo: this.tipoClasse,
-            titulo: this.tituloClasse
-          });
-
-          this.$refs.addRel.reset();
-        } else {
-          this.alertOn = true;
-        }
-      }
-    },
-    validateUI: function() {
-      return this.UI.classesAssociadas.some(el => {
-        return el.codigo == this.cod;
-      });
     }
   }
 };
