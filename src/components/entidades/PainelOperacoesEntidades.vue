@@ -145,7 +145,7 @@ export default {
   },
 
   methods: {
-    validarEntidadeCriacao: async function() {
+    async validarEntidadeCriacao() {
       let numeroErros = 0;
 
       // Designação
@@ -195,24 +195,18 @@ export default {
         }
       }
 
-      // Data Criação
-      // if (this.l.data == "" || this.l.data == null) {
-      //   this.mensagensErro.push({
-      //     sobre: "Data",
-      //     mensagem: "A data não pode ser vazia."
-      //   });
-      //   this.numeroErros++;
-      // } else
+      // Datas
       if (
         this.e.dataCriacao !== "" &&
         this.e.dataCriacao !== null &&
-        !/[0-9]+-[0-9]+-[0-9]+/.test(this.e.dataCriacao)
+        this.e.dataCriacao !== undefined &&
+        this.e.dataExtincao !== "" &&
+        this.e.dataExtincao !== null &&
+        this.e.dataExtincao !== undefined
       ) {
-        this.mensagensErro.push({
-          sobre: "Data",
-          mensagem: "A data está no formato errado.",
-        });
-        this.numeroErros++;
+        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) {
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -252,18 +246,18 @@ export default {
           }
       }
 
-      // Data Criação
-      // if (this.e.data === "" || this.e.data === null ||
-      // this.e.dataExtincao === undefined) {
-      //   numeroErros++;
-      // } else
+      // Datas
       if (
-        dados.dataCriacao !== undefined &&
         dados.dataCriacao !== "" &&
         dados.dataCriacao !== null &&
-        !/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataCriacao)
+        dados.dataCriacao !== undefined &&
+        dados.dataExtincao !== "" &&
+        dados.dataExtincao !== null &&
+        dados.dataExtincao !== undefined
       ) {
-        numeroErros++;
+        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -272,15 +266,24 @@ export default {
     validarEntidadeExtincao(dados) {
       let numeroErros = 0;
 
-      // Data Extinção
+      // Datas
       if (
         dados.dataExtincao === "" ||
         dados.dataExtincao === null ||
         dados.dataExtincao === undefined
       ) {
         numeroErros++;
-      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataExtincao)) {
-        numeroErros++;
+      } else if (
+        dados.dataCriacao !== "" &&
+        dados.dataCriacao !== null &&
+        dados.dataCriacao !== undefined &&
+        dados.dataExtincao !== "" &&
+        dados.dataExtincao !== null &&
+        dados.dataExtincao !== undefined
+      ) {
+        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -297,6 +300,13 @@ export default {
 
           switch (this.acao) {
             case "Criação":
+              if (
+                dataObj.dataExtincao !== undefined &&
+                dataObj.dataExtincao !== null &&
+                dataObj.dataExtincao !== ""
+              )
+                dataObj.estado = "Inativa";
+
               erros = await this.validarEntidadeCriacao();
               break;
 
@@ -308,20 +318,18 @@ export default {
                 ) {
                   if (key !== "sigla") delete dataObj[key];
                 }
-
-                if (key === "dataExtincao") delete dataObj[key];
               }
 
               erros = await this.validarEntidadeAlteracao(dataObj);
               break;
 
             case "Extinção":
+              erros = this.validarEntidadeExtincao(dataObj);
+
               for (const key in dataObj) {
                 if (key !== "sigla" && key !== "dataExtincao")
                   delete dataObj[key];
               }
-
-              erros = this.validarEntidadeExtincao(dataObj);
               break;
 
             default:
