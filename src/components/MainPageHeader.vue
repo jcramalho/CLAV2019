@@ -1096,12 +1096,6 @@ export default {
     },
     drawerDefinicoes() {
       this.$emit("drawerDefinicoes");
-<<<<<<< HEAD
-=======
-    },
-    drawerEstatisticas() {
-      this.$emit("drawerEstatisticas");
->>>>>>> e5842cbee75b64b36879b0a5c8e68e5a06680ce1
     },
     fecharSnackbar() {
       this.snackbar = false;
