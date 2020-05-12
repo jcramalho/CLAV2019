@@ -1,33 +1,49 @@
 <template>
-    <v-navigation-drawer
-      :value="drawer"
-      width="320px"
-      right
-      absolute
+  <v-navigation-drawer
+    :value="drawer"
+    width="320px"
+    right
+    absolute
+    height="80%"
+  >
+    <v-toolbar
+      :color="panelHeaderColor"
+      dark
+      class="d-flex justify-center pt-1"
     >
-      <v-toolbar :color="panelHeaderColor" dark>
-        <v-toolbar-title> Notificações </v-toolbar-title>
-      </v-toolbar>
-      <v-card-text>
-          <v-expansion-panels v-if="notificacoes">
-            <v-expansion-panel  v-for="(item, i) in notificacoes" :key="i">
-              <v-expansion-panel-header>
-                <span> Pedido: {{ item.pedido }} </span>
-                <v-icon @click="removerNotificacao(item._id)">clear</v-icon>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content color="blue lighten-5">
-                <span> Messagem: {{ item.acao }} de {{ item.tipo }} movido para {{ item.novoEstado }} por {{ item.responsavel }}. </span>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-      </v-card-text>
-    </v-navigation-drawer>
+      <v-toolbar-title class="font-weight-medium " id="drawer-title">
+        Notificações
+      </v-toolbar-title>
+    </v-toolbar>
+    <v-card-text>
+      <v-expansion-panels v-if="notificacoes" hover id="painel-notificacoes">
+        <v-expansion-panel v-for="(item, i) in notificacoes" :key="i">
+          <v-expansion-panel-header>
+            <template v-slot:actions>
+              <v-icon color="#67cc72">$expand</v-icon>
+            </template>
+            <p class="font-weight-medium">Pedido: {{ item.pedido }}</p>
+            <v-icon @click="removerNotificacao(item._id)" color="red"
+              >clear</v-icon
+            >
+          </v-expansion-panel-header>
+          <v-expansion-panel-content color="blue lighten-5">
+            <p class="pt-3">
+              Messagem: {{ item.acao }} de {{ item.tipo }} movido para
+              {{ item.novoEstado }} por {{ item.responsavel }}.
+            </p>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-card-text>
+  </v-navigation-drawer>
 </template>
 
 <script>
-/* eslint-disable */ 
+/* eslint-disable */
+
 export default {
-  props: ["level","drawer","notificacoes"],
+  props: ["level", "drawer", "notificacoes"],
 
   data() {
     return {
@@ -36,8 +52,35 @@ export default {
   },
   methods: {
     removerNotificacao(id) {
-      this.$emit('removerNotificacao', id)
-    }
-  }
+      this.$emit("removerNotificacao", id);
+    },
+  },
 };
 </script>
+<style scoped>
+#drawer-title {
+  font-size: 1.07rem !important;
+}
+.theme--light.v-navigation-drawer {
+  background: linear-gradient(to bottom, #19237e 0%, #0056b6 100%);
+  border-radius: 0 0 0 20px;
+}
+theme--dark.v-footer,
+.theme--dark.v-sheet,
+.theme--dark.v-card {
+  background-color: transparent !important;
+}
+.v-toolbar {
+  box-shadow: none !important;
+}
+.v-expansion-panel-header:hover {
+  background-color: rgba(20, 78, 149, 0.15) !important;
+}
+.theme--light.v-expansion-panels .v-expansion-panel {
+  margin-top: 5px;
+  border-radius: 10px;
+}
+.v-expansion-panel-content {
+   border-radius: 0 0 10px 10px;
+}
+</style>

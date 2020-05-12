@@ -10,6 +10,21 @@ import request from "./plugins/request";
 import userLevel from "./plugins/userLevel";
 import { VueMaskDirective } from "v-mask";
 import JsonCSV from "vue-json-csv";
+import Unicon from "vue-unicons";
+import {
+  homeIcon,
+  registoIcon,
+  operacoesIcon,
+  documentacaoIcon,
+  estatisticasIcon,
+  noticiasIcon,
+  loginIcon,
+  menuIcon,
+  arrowDownIcon,
+  perfilIcon,
+  contactIcon
+} from "./custom-icons";
+
 //import BootstrapVue from "bootstrap-vue";
 
 //Vue.use(BootstrapVue);
@@ -22,6 +37,21 @@ Vue.use(request);
 Vue.use(userLevel);
 Vue.directive("mask", VueMaskDirective);
 Vue.component("downloadCsv", JsonCSV);
+
+Unicon.add([
+  homeIcon,
+  registoIcon,
+  operacoesIcon,
+  documentacaoIcon,
+  estatisticasIcon,
+  noticiasIcon,
+  loginIcon,
+  menuIcon,
+  arrowDownIcon,
+  perfilIcon,
+  contactIcon
+]);
+Vue.use(Unicon);
 
 Vue.config.productionTip = false;
 

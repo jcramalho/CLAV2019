@@ -1,30 +1,39 @@
 <template>
-  <v-app-bar
-    color="indigo darken-4"
-    dark
-    dense
-    height="80px"
-    style="max-height:80px"
-  >
-    <v-toolbar-title>
-      DGLAB - Direção-Geral do Livro, dos Arquivos e das Bibliotecas
-    </v-toolbar-title>
-    <v-spacer></v-spacer>
+  <v-footer dark padless>
+    <v-card class="flex" flat>
+      <v-card-title id="footer-bar" class="px-4 py-0">
+        <p class="big-footer-letters">DGLAB -</p>
+        <p class="regular-footer-letters">
+          Direção Geral do Livro, dos Arquivos e das Bibliotecas
+        </p>
+        <v-spacer></v-spacer>
+        <p class="body-2">Versão: 2020-03-19</p>
 
-    <div class="body-2">Versão: 2020-04-23</div>
+        <v-spacer></v-spacer>
 
-    <v-spacer></v-spacer>
+        <p v-if="ontoReady" class="body-2">Ontologia: {{ ontologia }}</p>
 
-    <div v-if="ontoReady" class="body-2">Ontologia: {{ ontologia }}</div>
-
-    <v-spacer></v-spacer>
-
-    <v-toolbar-title>
-      <v-btn text depressed href="mailto:clav@dglab.gov.pt">Contactos</v-btn>
-    </v-toolbar-title>
-    <v-spacer></v-spacer>
-    <v-img :src="require('./../assets/feder.png')" aspect-ratio="4.8600" />
-  </v-app-bar>
+        <v-spacer></v-spacer>
+        <v-btn text rounded href="mailto:clav@dglab.gov.pt" id="contact-button">
+          <unicon
+            name="contact-icon"
+            width="24"
+            height="24"
+            viewBox="0 0 25.71 19.282"
+            fill="#e5e5e5"
+          />
+          <p class="icon-text">Contactos</p>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-img
+          id="footer-image"
+          class="my-2"
+          :src="require('./../assets/feder.png')"
+          aspect-ratio="4.8600"
+        />
+      </v-card-title>
+    </v-card>
+  </v-footer>
 </template>
 
 <script>
@@ -51,5 +60,45 @@ export default {
 <style scoped>
 .v-btn:hover:before {
   opacity: 0;
+}
+.v-card__title {
+  line-height: 0.5rem !important;
+}
+.v-application .body-2 {
+  line-height: 0.5rem !important;
+}
+#footer-bar {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  font-size: 1em;
+}
+.big-footer-letters {
+  display: inline;
+  font-weight: bold;
+  font-size: 1.2em !important;
+}
+.regular-footer-letters {
+  display: inline;
+  padding-left: 0.75em;
+  font-weight: 300;
+  vertical-align: text-bottom;
+}
+.v-btn {
+  text-transform: none !important;
+}
+.v-application p {
+  margin-bottom: 0 !important;
+  color: #e5e5e5 !important;
+}
+.icon-text {
+  margin-left: 0.625em;
+  display: inline;
+}
+#contact-button {
+  outline: none !important;
+  text-decoration: none;
+}
+#footer-image {
+  min-width: 90px;
+  max-width: 120px;
 }
 </style>

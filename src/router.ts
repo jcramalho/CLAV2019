@@ -11,13 +11,13 @@ export default new Router({
       path: "/oldentry",
       name: "oldentry",
       component: () => import("./views/Principal.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
-    },   
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
     {
       path: "/",
       name: "home",
       component: () => import("./views/Entidade.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
     },
     // Routes das classes
     {
@@ -391,19 +391,19 @@ export default new Router({
       path: "/gestao/classes",
       name: "indicadores",
       component: () => import("./views/gestao/Classe.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7] },
     },
     {
       path: "/gestao/gerais",
       name: "gerais",
       component: () => import("./views/gestao/Geral.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7] },
     },
     {
       path: "/gestao/tabela",
       name: "tabela",
       component: () => import("./views/gestao/Tabela.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7] },
     },
     //Chaves API
     {

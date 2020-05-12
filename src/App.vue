@@ -2,24 +2,38 @@
   <v-app v-if="authenticated">
     <MainPageHeader
       :n="notificacoes ? notificacoes.length : '0'"
-      @drawerNotificacoes="drawerNotificacoes()" 
+      @drawerNotificacoes="drawerNotificacoes()"
       @drawerDefinicoes="drawerDefinicoes()"
       @drawerEstatisticas="drawerEstatisticas()"
     />
-
     <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="0">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
+    <!--Se for mobile, elimina-se o padding entre a navbar e o content-->
+    <v-content class="hidden-sm-and-up pt-0 ">
+      <router-view />
+      <Notificacoes
+        v-if="this.$store.state.name != ''"
+        :drawer="drawN"
+        :notificacoes="notificacoes"
+        @removerNotificacao="removerNotificacao($event)"
+      />
+      <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
+      <Estatisticas
+        v-if="this.$store.state.name != '' && level >= 3.5"
+        :drawer="drawE"
+      />
+    </v-content>
     <v-content>
       <router-view />
-
-      <Notificacoes 
+      <Notificacoes
         v-if="this.$store.state.name != ''"
-        :drawer="drawN" 
+        :drawer="drawN"
         :notificacoes="notificacoes"
-        @removerNotificacao="removerNotificacao($event)"/> 
+        @removerNotificacao="removerNotificacao($event)"
+      />
       <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
       <Estatisticas
         v-if="this.$store.state.name != '' && level >= 3.5"
@@ -32,7 +46,6 @@
 </template>
 
 <script>
-/* eslint-disable */
 import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 import Definicoes from "@/components/principal/Definicoes.vue";
@@ -60,21 +73,28 @@ export default {
       //verifica se o utilizador tem de estar autenticado para aceder à rota
       if (to.matched.some(record => !record.meta.levels.includes(0))) {
         if (this.$store.state.token != "" && this.level > 0) {
-            //se está autenticado, verifica se tem permissões suficientes para a ceder a página
-            if (to.matched.some(record => record.meta.levels.includes(this.level))){
-              this.authenticated = true;
-              try {                                                         /** fix with sockets */
-                let response = await this.$request("get", "/notificacoes"); /** fix with sockets */
-                this.notificacoes = response.data;                          /** fix with sockets */
-              } catch (error) {                                             /** fix with sockets */
-                return error;                                               /** fix with sockets */
-              }                                                             /** fix with sockets */
-            } else {
-              this.text = "Não tem permissões para aceder a esta página!";
-              this.color = "error";
-              this.snackbar = true;
-              this.$router.push("/");
-            }
+          //se está autenticado, verifica se tem permissões suficientes para a ceder a página
+          if (
+            to.matched.some(record => record.meta.levels.includes(this.level))
+          ) {
+            this.authenticated = true;
+            try {
+              /** fix with sockets */
+              let response = await this.$request(
+                "get",
+                "/notificacoes"
+              ); /** fix with sockets */
+              this.notificacoes = response.data; /** fix with sockets */
+            } catch (error) {
+              /** fix with sockets */
+              return error; /** fix with sockets */
+            } /** fix with sockets */
+          } else {
+            this.text = "Não tem permissões para aceder a esta página!";
+            this.color = "error";
+            this.snackbar = true;
+            this.$router.push("/");
+          }
         } else {
           this.text =
             "Não tem permissões para aceder a esta página! Por favor faça login.";
@@ -84,12 +104,17 @@ export default {
         }
       } else {
         this.authenticated = true;
-        try {                                                         /** fix with sockets */
-          let response = await this.$request("get", "/notificacoes"); /** fix with sockets */
-          this.notificacoes = response.data;                          /** fix with sockets */
-        } catch (error) {                                             /** fix with sockets */
-          return error;                                               /** fix with sockets */
-        }                                                             /** fix with sockets */
+        try {
+          /** fix with sockets */
+          let response = await this.$request(
+            "get",
+            "/notificacoes"
+          ); /** fix with sockets */
+          this.notificacoes = response.data; /** fix with sockets */
+        } catch (error) {
+          /** fix with sockets */
+          return error; /** fix with sockets */
+        } /** fix with sockets */
       }
 
       if (this.$route.query.erro) {
@@ -157,3 +182,44 @@ export default {
   })
 };
 </script>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap");
+#app {
+  font-family: "Montserrat", sans-serif;
+}
+.v-application--wrap {
+  background-color: #f3f7fc;
+}
+.v-application p {
+  margin-bottom: 0 !important;
+}
+.v-btn {
+  text-transform: none !important;
+  /*
+  TODO add this
+   */
+  font-weight: 600 !important;
+}
+.v-text-field .v-label {
+  left: 0 !important;
+  right: 0 !important;
+  margin: auto !important;
+}
+.v-form .v-label {
+  margin: 0 !important;
+}
+.v-input__slot::before {
+  border-color: #4da0d0 !important;
+}
+.v-input--selection-controls {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+.v-text-field > .v-input__control > .v-input__slot::after {
+  border-width: 2px !important;
+}
+b {
+  font-weight: 500 !important;
+  text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+}
+</style>
