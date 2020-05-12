@@ -11,6 +11,18 @@
                       {{ e.searchField }}
                   </li>
               </ul>
+              <span>
+                  <v-chip
+                    v-for="e in p.objeto.entidades" :key="e.sigla"
+                    class="ma-2"
+                    color="indigo darken-4"
+                    outlined
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ e.label }}
+                  </v-chip>
+                </span>
           </div>
         </v-col>
       </v-row>
