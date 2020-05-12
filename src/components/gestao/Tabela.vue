@@ -70,8 +70,15 @@ export default {
         .then(res => {
           this.indicadores = res.data;
           this.indicadores.forEach(element => {
-            if (element.indicador.includes("#")) {
-              element.indicador = element.indicador.split("#")[1];
+            if (
+              (element.indicador === "C") |
+              (element.indicador === "CP") |
+              (element.indicador === "E") |
+              (element.indicador === "NE")
+            ) {
+              element.indicador = "Destino final " + element.indicador;
+            }
+            if (element.indicador.match(/^([a-z]|[A-Z0-9])[a-z]*/g)) {
               element.indicador = element.indicador.replace(
                 /([a-z0-9])([A-Z])/g,
                 "$1 $2"
@@ -83,13 +90,6 @@ export default {
                 /Tem Rel Proc/g,
                 "Relacoes Entre Processos"
               );
-            } else if (
-              (element.indicador === "C") |
-              (element.indicador === "CP") |
-              (element.indicador === "E") |
-              (element.indicador === "NE")
-            ) {
-              element.indicador = "Destino final " + element.indicador;
             }
           });
         })

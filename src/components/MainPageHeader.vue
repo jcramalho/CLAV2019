@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div>
     <!--Navbar para large screens-->
     <v-app-bar
@@ -70,6 +71,22 @@
         rounded
         dark
         id="user-button"
+=======
+  <v-app-bar app color="indigo darken-4" dark height="64px">
+    <v-btn to="/" icon>
+      <v-icon large>home</v-icon>
+    </v-btn>
+    <v-toolbar-title class="headline" @click="goHome">
+      <span class="text-uppercase" v-if="this.$store.state.name != ''">
+        CLAV | {{ this.$store.state.entidade.split("_")[1] }}
+      </span>
+
+      <span class="text-uppercase" v-if="this.$store.state.name == ''">
+        CLAV
+      </span>
+      <span class="font-weight-light" v-if="this.$store.state.name == ''">
+        - Classificação e Avaliação da Informação Pública</span
+>>>>>>> e5842cbee75b64b36879b0a5c8e68e5a06680ce1
       >
         <p>{{ $store.state.name }}</p>
         <unicon
@@ -336,6 +353,7 @@
         icon
         color="blue"
       >
+<<<<<<< HEAD
         <v-badge color="red" :content="n" overlap>
           <unicon
             name="perfil-icon"
@@ -362,6 +380,21 @@
           viewBox="0 0 26.358 20.71"
           fill="#e5e5e5"
         />
+=======
+        <v-badge color="blue" :content="n" overlap>
+          <v-icon large>notification_important</v-icon>
+        </v-badge>
+      </v-btn>
+      <v-btn
+        v-if="$store.state.token != '' && level >= 3.5"
+        @click="drawerEstatisticas"
+        icon
+      >
+        <v-icon large>assessment</v-icon>
+      </v-btn>
+      <v-btn v-if="this.$store.state.name != ''" @click="drawerDefinicoes" icon>
+        <v-icon large>settings</v-icon>
+>>>>>>> e5842cbee75b64b36879b0a5c8e68e5a06680ce1
       </v-btn>
       <template v-slot:extension>
         <v-tabs
@@ -1063,6 +1096,12 @@ export default {
     },
     drawerDefinicoes() {
       this.$emit("drawerDefinicoes");
+<<<<<<< HEAD
+=======
+    },
+    drawerEstatisticas() {
+      this.$emit("drawerEstatisticas");
+>>>>>>> e5842cbee75b64b36879b0a5c8e68e5a06680ce1
     },
     fecharSnackbar() {
       this.snackbar = false;
