@@ -352,7 +352,7 @@ export default {
     submit: async function() {
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
-        if(zc.dono.length === 0) {
+        if(zc.destino=="C" && zc.dono.length === 0) {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
         }
