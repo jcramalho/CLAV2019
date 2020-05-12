@@ -906,7 +906,7 @@ export default {
 </script>
 
 <style scoped>
-::v-deep .v-treeview-node {
+/* ::v-deep .v-treeview-node {
   background-color: rgba(240, 163, 10, 0.2);
-}
+} */
 </style>

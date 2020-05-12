@@ -16,7 +16,7 @@
       </v-alert>
       <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
+        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1" editable>
           <font size="4">
             <b>Informação Geral</b>
           </font>
@@ -26,7 +26,7 @@
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
+        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2" editable>
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -44,7 +44,7 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
+        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3" editable>
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
@@ -62,18 +62,29 @@
           />
           <v-alert
             width="100%"
-            :value="!!erroProdutoras[0]"
+            :value="!!erroProdutoras[0] || !!erros_relacoes[0]"
             outlined
             type="error"
             prominent
             border="left"
           >
-            As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série!
-            <ul>
-              <li v-for="(produtora, i) in erroProdutoras" :key="i">{{produtora}}</li>
-            </ul>
+            <div v-if="!!erroProdutoras[0]">
+              <b>As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série:</b>
+              <ul>
+                <li v-for="(produtora, i) in erroProdutoras" :key="i">{{produtora}}</li>
+              </ul>
+              <br />
+            </div>
+            <div v-if="!!erros_relacoes[0]">
+              <b>As seguintes relações entre classes são inválidas devido às datas:</b>
+              <ul>
+                <li
+                  v-for="(erro_rel, i) in erros_relacoes"
+                  :key="i"
+                >{{erro_rel[0] + " " + erro_rel[2].toLowerCase().trim() + " " + erro_rel[1] + ";"}}</li>
+              </ul>
+            </div>
           </v-alert>
-          <!-- <p>{{erroProdutoras}}</p> -->
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
@@ -173,7 +184,7 @@ import RelatorioExpositivo from "@/components/rada/criacao/RelatorioExpositivo.v
 import TSRada from "@/components/rada/criacao/TSRadaManual.vue";
 import InformacaoGeral from "@/components/rada/criacao/InformacaoGeral";
 
-import mixin_criacao from "@/mixins/rada/mixin_criacao";
+import mixin_criacao_rada from "@/mixins/rada/mixin_criacao_rada";
 
 export default {
   components: {
@@ -181,7 +192,7 @@ export default {
     TSRada,
     InformacaoGeral
   },
-  mixins: [mixin_criacao],
+  mixins: [mixin_criacao_rada],
   data() {
     return {
       loading_circle: false,
@@ -222,210 +233,210 @@ export default {
         tsRada: {
           titulo: "",
           classes: [
-            // {
-            //   codigo: "01",
-            //   titulo: "Classe N1 (01)",
-            //   descricao: "Descrição Classe N1 (01)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "04",
-            //   titulo: "Classe N1 (04)",
-            //   descricao: "Descrição Classe N1 (04)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "02",
-            //   titulo: "Classe N1 (02)",
-            //   descricao: "Descrição Classe N1 (02)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "03",
-            //   titulo: "Classe N1 (03)",
-            //   descricao: "Descrição Classe N1 (01)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "01.02",
-            //   titulo: "Classe N2 (01.02)",
-            //   descricao: "Descrição Classe N2 (01.02)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.01",
-            //   titulo: "Classe N2 (01.01)",
-            //   descricao: "Descrição Classe N2 (01.01)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.01.01",
-            //   titulo: "Classe N3 (01.01.01)",
-            //   descricao: "Descrição Classe N3 (01.01.01)",
-            //   eFilhoDe: "01.01",
-            //   tipo: "N3"
-            // },
-            // {
-            //   codigo: "02.01",
-            //   titulo: "Classe N2 (02.01)",
-            //   descricao: "Descrição Classe N2 (02.01)",
-            //   eFilhoDe: "02",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "03.01",
-            //   titulo: "Classe N2 (03.01)",
-            //   descricao: "Descrição Classe N2 (03.01)",
-            //   eFilhoDe: "03",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.04",
-            //   titulo: "Série (01.04)",
-            //   descricao: "Descrição Série (01.04)",
-            //   dataInicial: "2020-04-11",
-            //   dataFinal: "2020-04-13",
-            //   tUA: "Coleção",
-            //   tSerie: "Fechada",
-            //   suporte: "Papel",
-            //   medicao: "35",
-            //   UIs: [],
-            //   localizacao: ["Localização a definir..."],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [],
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
-            //     },
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
-            //     }
-            //   ],
-            //   pca: null,
-            //   formaContagem: { forma: null },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
-            //     }
-            //   ],
-            //   notaPCA: null,
-            //   notaDF: null,
-            //   eFilhoDe: "01",
-            //   tipo: "Série"
-            // },
-            // {
-            //   codigo: "01.03",
-            //   titulo: "Série (01.03)",
-            //   descricao: "Descrição Série (01.03)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   tUA: "Processo",
-            //   tSerie: "Aberta",
-            //   suporte: "Eletrónico Nativo",
-            //   UIs: ["01"],
-            //   medicao: "12",
-            //   localizacao: ["Torre do Tombo"],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [],
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   pca: "",
-            //   formaContagem: {
-            //     forma: "vc_pcaFormaContagem_extincaoDireito"
-            //   },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
-            //     }
-            //   ],
-            //   notaPCA: null,
-            //   notaDF: null,
-            //   eFilhoDe: "01",
-            //   tipo: "Série"
-            // },
-            // {
-            //   codigo: "01.04.01",
-            //   titulo: "Subsérie (01.04.01)",
-            //   descricao: "Descrição Subsérie (01.04.01)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   UIs: ["02"],
-            //   pca: "Conservação",
-            //   formaContagem: {
-            //     forma: "vc_pcaFormaContagem_extincaoDireito"
-            //   },
-            //   justificacaoPCA: [
-            //     {
-            //       tipo: "Critério Gestionário",
-            //       nota:
-            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
-            //     }
-            //   ],
-            //   df: null,
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
-            //     }
-            //   ],
-            //   notaPCA: null,
-            //   notaDF: null,
-            //   eFilhoDe: "01.04",
-            //   tipo: "Subsérie"
-            // }
+            {
+              codigo: "01",
+              titulo: "Classe N1 (01)",
+              descricao: "Descrição Classe N1 (01)",
+              eFilhoDe: null,
+              tipo: "N1"
+            },
+            {
+              codigo: "04",
+              titulo: "Classe N1 (04)",
+              descricao: "Descrição Classe N1 (04)",
+              eFilhoDe: null,
+              tipo: "N1"
+            },
+            {
+              codigo: "02",
+              titulo: "Classe N1 (02)",
+              descricao: "Descrição Classe N1 (02)",
+              tipo: "N1"
+            },
+            {
+              codigo: "03",
+              titulo: "Classe N1 (03)",
+              descricao: "Descrição Classe N1 (01)",
+              tipo: "N1"
+            },
+            {
+              codigo: "01.02",
+              titulo: "Classe N2 (01.02)",
+              descricao: "Descrição Classe N2 (01.02)",
+              eFilhoDe: "01",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.01",
+              titulo: "Classe N2 (01.01)",
+              descricao: "Descrição Classe N2 (01.01)",
+              eFilhoDe: "01",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.01.01",
+              titulo: "Classe N3 (01.01.01)",
+              descricao: "Descrição Classe N3 (01.01.01)",
+              eFilhoDe: "01.01",
+              tipo: "N3"
+            },
+            {
+              codigo: "02.01",
+              titulo: "Classe N2 (02.01)",
+              descricao: "Descrição Classe N2 (02.01)",
+              eFilhoDe: "02",
+              tipo: "N2"
+            },
+            {
+              codigo: "03.01",
+              titulo: "Classe N2 (03.01)",
+              descricao: "Descrição Classe N2 (03.01)",
+              eFilhoDe: "03",
+              tipo: "N2"
+            },
+            {
+              codigo: "01.04",
+              titulo: "Série (01.04)",
+              descricao: "Descrição Série (01.04)",
+              dataInicial: "2020-04-11",
+              dataFinal: "2020-04-13",
+              tUA: "Coleção",
+              tSerie: "Fechada",
+              suporte: "Papel",
+              medicao: "35",
+              UIs: [],
+              localizacao: ["Localização a definir..."],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [],
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.03", tipo: "Série" }
+                },
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
+                }
+              ],
+              pca: null,
+              formaContagem: { forma: null },
+              justificacaoPCA: [],
+              df: "Conservação",
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
+                }
+              ],
+              notaPCA: null,
+              notaDF: null,
+              eFilhoDe: "01",
+              tipo: "Série"
+            },
+            {
+              codigo: "01.03",
+              titulo: "Série (01.03)",
+              descricao: "Descrição Série (01.03)",
+              dataInicial: null,
+              dataFinal: null,
+              tUA: "Processo",
+              tSerie: "Aberta",
+              suporte: "Eletrónico Nativo",
+              UIs: ["01"],
+              medicao: "12",
+              localizacao: ["Torre do Tombo"],
+              entProdutoras: [],
+              tipologiasProdutoras: [],
+              legislacao: [],
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04", tipo: "Série" }
+                }
+              ],
+              pca: "",
+              formaContagem: {
+                forma: "vc_pcaFormaContagem_extincaoDireito"
+              },
+              justificacaoPCA: [],
+              df: "Conservação",
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.04" }]
+                }
+              ],
+              notaPCA: null,
+              notaDF: null,
+              eFilhoDe: "01",
+              tipo: "Série"
+            },
+            {
+              codigo: "01.04.01",
+              titulo: "Subsérie (01.04.01)",
+              descricao: "Descrição Subsérie (01.04.01)",
+              dataInicial: null,
+              dataFinal: null,
+              relacoes: [
+                {
+                  relacao: "Complementar de",
+                  serieRelacionada: { codigo: "01.04", tipo: "Série" }
+                }
+              ],
+              UIs: ["02"],
+              pca: "Conservação",
+              formaContagem: {
+                forma: "vc_pcaFormaContagem_extincaoDireito"
+              },
+              justificacaoPCA: [
+                {
+                  tipo: "Critério Gestionário",
+                  nota:
+                    "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+                }
+              ],
+              df: null,
+              justificacaoDF: [
+                {
+                  tipo: "Critério de Complementaridade Informacional",
+                  nota: "É complementar de: ",
+                  relacoes: [{ codigo: "01.04" }]
+                }
+              ],
+              notaPCA: null,
+              notaDF: null,
+              eFilhoDe: "01.04",
+              tipo: "Subsérie"
+            }
           ],
           UIs: [
-            // {
-            //   codigo: "01",
-            //   codCota: "1",
-            //   titulo: "1",
-            //   dataInicial: "2020-03-01",
-            //   dataFinal: "2020-03-03",
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
-            //   descricao: "1",
-            //   notas: "1",
-            //   localizacao: "1"
-            // },
-            // {
-            //   codigo: "02",
-            //   codCota: "2",
-            //   titulo: "2",
-            //   dataInicial: "2020-04-20",
-            //   dataFinal: "2020-04-21",
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
-            //   descricao: "2",
-            //   notas: "2",
-            //   localizacao: "2"
-            // }
+            {
+              codigo: "01",
+              codCota: "1",
+              titulo: "1",
+              dataInicial: "2020-03-01",
+              dataFinal: "2020-03-03",
+              produtor: { tipologiasProdutoras: [], entProdutoras: [] },
+              classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
+              descricao: "1",
+              notas: "1",
+              localizacao: "1"
+            },
+            {
+              codigo: "02",
+              codCota: "2",
+              titulo: "2",
+              dataInicial: "2020-04-20",
+              dataFinal: "2020-04-21",
+              produtor: { tipologiasProdutoras: [], entProdutoras: [] },
+              classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
+              descricao: "2",
+              notas: "2",
+              localizacao: "2"
+            }
           ]
         }
       }

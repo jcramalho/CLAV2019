@@ -23,28 +23,20 @@
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <tr
-                  :style="'text-align: center; background-color:' + isComplete(props.item)"
-                  v-on="on"
-                  @click="editarUI(props.item)"
-                >
-                  <td>{{ props.item.codigo }}</td>
-                  <td>{{ props.item.titulo }}</td>
-                </tr>
-              </template>
-              <span width="100%">
-                <h4>
-                  Classes associadas a:
-                  <b>{{ props.item.codigo + " - " + props.item.titulo }}</b>
-                </h4>
+            <tr
+              :style="'text-align: center; background-color:' + isComplete(props.item)"
+              @click="editarUI(props.item)"
+            >
+              <td>{{ props.item.codigo }}</td>
+              <td>{{ props.item.titulo }}</td>
+              <td>
+                <br/>
                 <ul v-if="!!props.item.classesAssociadas[0]">
                   <li v-for="(classe, i) in props.item.classesAssociadas" :key="i">{{classe.codigo}}</li>
                 </ul>
                 <p v-else>Não tem classes associadas!</p>
-              </span>
-            </v-tooltip>
+              </td>
+            </tr>
           </template>
         </v-data-table>
       </v-col>
@@ -93,7 +85,7 @@ export default {
         text: "Código",
         align: "center",
         value: "codigo",
-        width: "50%",
+        width: "30%",
         sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
@@ -102,6 +94,13 @@ export default {
         value: "titulo",
         align: "center",
         width: "50%",
+        class: ["table-header", "body-2", "font-weight-bold"]
+      },
+      {
+        text: "Classes Associadas",
+        value: "classesAssociadas",
+        align: "center",
+        width: "20%",
         class: ["table-header", "body-2", "font-weight-bold"]
       }
     ]
