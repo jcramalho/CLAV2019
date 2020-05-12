@@ -4,7 +4,7 @@
         <v-dialog v-model="dialog" width="95%">
       <v-card>
         <v-card-title class="headline">
-          {{ p.proc }} - {{ p.designacao }}
+          {{ p.codigo }} - {{ p.titulo }}
         </v-card-title>
         <v-card-text>
           <v-data-table

@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-row justify="space-around">
-      <v-btn color="primary" dark @click="filtro=''">Todos</v-btn>
-      <v-btn color="primary" dark @click="filtro='Processo Comum'">Processos Comuns</v-btn>
-      <v-btn color="primary" dark @click="filtro='Processo Específico'">Processos Específicos</v-btn>
-      <v-btn color="primary" dark @click="filtro='PR'">Processos Restantes</v-btn>
-      <v-btn outlined>{{filtro}}</v-btn>
+      <v-btn color="indigo darken-2" dark @click="filtro=''">Todos</v-btn>
+      <v-btn color="indigo darken-2" dark @click="filtro='Processo Comum'">Processos Comuns</v-btn>
+      <v-btn color="indigo darken-2" dark @click="filtro='Processo Específico'">Processos Específicos</v-btn>
+      <v-btn color="indigo darken-2" dark @click="filtro='Processo Restante'">Processos Restantes</v-btn>
+      <v-btn color="indigo darken-2" dark @click="filtro='Pré-Selecionado'">Pré-Selecionados</v-btn>
     </v-row>
 
     <v-data-table
@@ -32,19 +32,24 @@
           {{ props.item.titulo }}
         </td>
         <td>
-          <span v-if="props.item.tipoProc == 'Processo Comum'">PC</span>
-          <span v-else-if="props.item.tipoProc == 'PR'">PR</span>
-          <span v-else>PE</span>
-        </td>
-        <td>
             <v-icon v-if="props.item.dono">check</v-icon>
         </td>
         <td>
           <v-icon v-if="props.item.participante">check</v-icon>
         </td>
         <td>
-            <v-btn small color="indigo darken-4" dark
-                @click="selecionaParticipacoes(props.item)">Selecionar</v-btn>
+            <v-btn small class="ma-2"
+                  @click="selecionaParticipacoes(props.item)">
+              <v-icon dark>{{ selecionaResponsabilidadesIcon }}</v-icon>
+            </v-btn>
+            <v-btn v-if="props.item.descriptionEdited" small class="ma-2" 
+                  @click="editaBlocoDescritivo(props.item)">
+              <v-icon dark>{{ editadoIcon }}</v-icon>
+            </v-btn>
+            <v-btn v-else small class="ma-2"
+                  @click="editaBlocoDescritivo(props.item)">
+              <v-icon dark>{{ editaBlocoDescritivoIcon }}</v-icon>
+            </v-btn>
         </td>
       </tr>
     </template>
@@ -75,17 +80,25 @@
         :p = "procSel"
         @selecionadas = "selectProc($event)"/>
 
+  <EditDescritivo v-if="editaBlocoDescritivoFlag"
+        :p = "procSel"
+        @editado = "blocoDescritivoEditado($event)"/>
+
   </div>
 </template>
 
 <script>
 
 import Selresponsabilidade from "@/components/tabSel/criacaoTSPluri/SelResponsabilidade.vue";
+import EditDescritivo from "@/components/tabSel/criacaoTSPluri/EditDescritivo.vue";
+import { mdiPencil } from '@mdi/js';
+import { mdiFileDocumentEdit } from '@mdi/js';
+import { mdiCheckCircle } from '@mdi/js';
 
 export default {
   props: ["listaProcs", "listaCodigosEsp"],
   components: {
-      Selresponsabilidade
+      Selresponsabilidade, EditDescritivo
   },
 
   data: () => ({
@@ -93,8 +106,14 @@ export default {
     procSel: {},
     // Fecho Transitivo dos processos
     fechoTransitivo: {},
+    // Icons
+    selecionaResponsabilidadesIcon: mdiPencil,
+    editaBlocoDescritivoIcon: mdiFileDocumentEdit,
+    editadoIcon: mdiCheckCircle,
     // Ativador do subcomponente que tem a interface de seleção
     selecionaResponsabilidades: false,
+    // Ativador do subcomponente que tem a interface de edição do Bloco Descritivo
+    editaBlocoDescritivoFlag: false,
     // Filtro da tabela
     filtro: "",
     // Cabeçalho da tabela para selecionar os PNs comuns
@@ -102,33 +121,49 @@ export default {
       {
         text: "Processo",
         value: "codigo",
-        width: "10%",
-        class: ["body-2", "font-weight-bold"]
+        width: "15%",
+        class: ["body-2", "font-weight-bold"],
+        filterable: false
       },
       {
         text: "Título",
         value: "titulo",
-        width: "40%",
+        width: "45%",
         class: ["body-2", "font-weight-bold"],
         filterable: false
       },
       {
         text: "Tipo",
         value: "tipoProc",
-        width: "10%",
-        class: ["body-2", "font-weight-bold"]
+        width: "0%",
+        class: ["body-2", "font-weight-bold"],
+        align: ' d-none'   
+      },
+      {
+        text: "Pré-Selecionado",
+        value: "preSelectedLabel",
+        width: "0%",
+        class: ["body-2", "font-weight-bold"],
+        align: ' d-none'   
       },
       {
         text: "Dono",
         value: "dono",
         width: "10%",
-        class: ["body-2", "font-weight-bold"]
+        class: ["body-2", "font-weight-bold"],
+        filterable: false
       },
       {
-        text: "Participante",
+        text: "Partic.",
         value: "participante",
         width: "10%",
-        class: ["body-2", "font-weight-bold"]
+        class: ["body-2", "font-weight-bold"],
+        filterable: false
+      },
+      {
+        text: "Operações",
+        class: ["body-2", "font-weight-bold"],
+        filterable: false
       }
     ],
     procsFooterProps: {
@@ -183,7 +218,10 @@ export default {
           var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
           if(index != -1){
             this.listaProcs.procs[index].preSelected ++;
-            if(this.listaProcs.procs[index].preSelected == 1) this.listaProcs.numProcessosPreSelecionados++;
+            if(this.listaProcs.procs[index].preSelected == 1) {
+              this.listaProcs.numProcessosPreSelecionados++;
+              this.listaProcs.procs[index].preSelectedLabel = "Pré-Selecionado";
+            }
           } 
         }
     },
@@ -194,9 +232,22 @@ export default {
           var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
           if(index != -1){
             this.listaProcs.procs[index].preSelected --;
-            if(this.listaProcs.procs[index].preSelected == 0) this.listaProcs.numProcessosPreSelecionados--;
+            if(this.listaProcs.procs[index].preSelected == 0){
+              this.listaProcs.numProcessosPreSelecionados--;
+              this.listaProcs.procs[index].preSelectedLabel = "";
+            } 
           } 
         }
+    },
+
+    // Edição dos Blocos Descritivos dos processos
+    editaBlocoDescritivo: function(p){
+      this.procSel = p;
+      this.editaBlocoDescritivoFlag = true;
+    },
+    // Função de retorno do processo de edição do Bloco Descritivo
+    blocoDescritivoEditado: function(p){
+      this.editaBlocoDescritivoFlag = false;
     }
   }
 };
