@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="2">
-        <div class="info-label">Fonte de Legitimação:</div>
+        <div class="info-label">Fonte de Legitimação</div>
       </v-col>
       <v-col class="mt-3">{{ p.objeto.dados.ae.legislacao }}</v-col>
       <v-col cols="1">
@@ -12,7 +12,7 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <div class="info-label">Fundo:</div>
+        <div class="info-label">Fundo</div>
       </v-col>
       <v-col class="mt-3">
         <li v-for="(f, i) in p.objeto.dados.ae.fundo" :key="i">{{ f }}</li>
@@ -41,19 +41,20 @@
                   <v-list-item-title
                     v-if="item.codigo && item.referencia"
                     v-text="
-                      'Zona de Controlo - ' +
                         item.codigo +
-                        ' ' +
-                        item.referencia
+                        ', ' +
+                        item.referencia + 
+                        ' - ' +
+                        item.titulo
                     "
                   ></v-list-item-title>
                   <v-list-item-title
                     v-else-if="item.codigo"
-                    v-text="'Zona de Controlo - ' + item.codigo"
+                    v-text="item.codigo+' - '+item.titulo"
                   ></v-list-item-title>
                   <v-list-item-title
                     v-else
-                    v-text="'Zona de Controlo - ' + item.referencia"
+                    v-text="item.referencia+' - '+item.titulo"
                   ></v-list-item-title>
                 </v-list-item-content>
               </template>
@@ -61,7 +62,7 @@
                 <v-list-item-title>
                   <v-row v-if="item.codigo">
                     <v-col cols="4">
-                      <div class="info-label">Código da class:</div>
+                      <div class="info-label">Código da classe</div>
                     </v-col>
                     <v-col class="mt-3">
                       <a
@@ -80,7 +81,7 @@
                   </v-row>
                   <v-row v-if="item.referencia">
                     <v-col cols="4">
-                      <div class="info-label">Referência:</div>
+                      <div class="info-label">Referência</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.referencia }}</v-col>
                     <v-col cols="1" v-if="!item.codigo">
@@ -92,21 +93,21 @@
                   </v-row>
                   <v-row v-if="item.titulo">
                     <v-col cols="4">
-                      <div class="info-label">Título:</div>
+                      <div class="info-label">Título</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.titulo }}</v-col>
                   </v-row>
                   <v-row v-if="item.prazoConservacao">
                     <v-col cols="4">
                       <div class="info-label">
-                        Prazo de Conservação Administrativa:
+                        Prazo de Conservação Administrativa
                       </div>
                     </v-col>
-                    <v-col class="mt-3">{{ item.prazoConservacao }} Anos</v-col>
+                    <v-col class="mt-3">{{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span></v-col>
                   </v-row>
                   <v-row v-if="item.destino">
                     <v-col cols="4">
-                      <div class="info-label">Destino Final:</div>
+                      <div class="info-label">Destino Final</div>
                     </v-col>
                     <v-col class="mt-3">
                       <span v-if="item.destino === 'E'">Eliminação</span>
@@ -116,13 +117,13 @@
                   </v-row>
                   <v-row v-if="item.ni">
                     <v-col cols="4">
-                      <div class="info-label">Natureza de intervenção:</div>
+                      <div class="info-label">Natureza de intervenção</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.ni }}</v-col>
                   </v-row>
                   <v-row v-if="item.dono">
                     <v-col cols="4">
-                      <div class="info-label">Dono do PN:</div>
+                      <div class="info-label">Donos do PN</div>
                     </v-col>
                     <v-col class="mt-3">
                       <li v-for="(d, i) in item.dono" :key="i">{{ d }}</li>
@@ -136,7 +137,7 @@
                   </v-row>
                   <v-row>
                     <v-col cols="4">
-                      <div class="info-label">Data de Início:</div>
+                      <div class="info-label">Data de Início</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.dataInicio }}</v-col>
                     <v-col cols="1">
@@ -148,7 +149,7 @@
                   </v-row>
                   <v-row>
                     <v-col cols="4">
-                      <div class="info-label">Data de Fim:</div>
+                      <div class="info-label">Data de Fim</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.dataFim }}</v-col>
                     <v-col cols="1">
@@ -161,7 +162,7 @@
                   <v-row v-if="item.uiPapel">
                     <v-col cols="4">
                       <div class="info-label">
-                        Medição das UI em papel (m.l.):
+                        Medição das UI em papel (m.l.)
                       </div>
                     </v-col>
                     <v-col class="mt-3">
@@ -177,7 +178,7 @@
                   <v-row v-if="item.uiDigital">
                     <v-col cols="4">
                       <div class="info-label">
-                        Medição das UI em digital (Gb):
+                        Medição das UI em digital (Gb)
                       </div>
                     </v-col>
                     <v-col class="mt-3">
@@ -193,7 +194,7 @@
                   <v-row v-if="item.uiOutros">
                     <v-col cols="4">
                       <div class="info-label">
-                        Medição das UI noutros suportes:
+                        Medição das UI noutros suportes
                       </div>
                     </v-col>
                     <v-col class="mt-3">
@@ -208,7 +209,7 @@
                   </v-row>
                   <v-row>
                     <v-col cols="4">
-                      <div class="info-label">N.º de agregações:</div>
+                      <div class="info-label">N.º de agregações</div>
                     </v-col>
                     <v-col class="mt-3">{{ item.agregacoes.length }}</v-col>
                   </v-row>
@@ -347,11 +348,6 @@ export default {
           const novaDistribuicao = {
             estado: estado,
             responsavel: dadosUtilizador.email,
-            proximoResponsavel: {
-              nome: dados.utilizadorSelecionado.name,
-              entidade: dados.utilizadorSelecionado.entidade,
-              email: dados.utilizadorSelecionado.email,
-            },
             data: new Date(),
             despacho: dados.mensagemDespacho,
           };
@@ -367,12 +363,24 @@ export default {
           this.$router.go(-1);
         }
       } catch (e) {
-        this.erros.push({
-          sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia.",
-        });
         this.erroPedido = true;
+
+        let parsedError = Object.assign({}, e);
+        parsedError = parsedError.response;
+
+        if (parsedError !== undefined) {
+          if (parsedError.status === 422) {
+            parsedError.data.forEach((erro) => {
+              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+            });
+          }
+        } else {
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Ocorreu um erro ao aceder à ontologia.",
+          });
         //console.log("e :", e);
+        }
       }
     },
 

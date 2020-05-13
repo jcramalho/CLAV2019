@@ -134,12 +134,14 @@
             <v-col class="info-content">
               <div v-for="c in auto.zonaControlo" :key="c.codigo">
                 <strong>{{ c.codigo +" - "+c.titulo }}</strong>
-                Agregações: 
+                <div v-if="c.agregacoes.length > 0">Agregações: 
                 <li
                   class="ml-4"
                   v-for="a in c.agregacoes"
                   :key="a.codigo"
                 >{{a.codigo + " - " + a.titulo}}</li>
+                </div>
+                <div v-else>Não inseriu as agregações que pretende eliminar</div>
               </div>
             </v-col>
           </v-row>
@@ -148,7 +150,7 @@
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="green darken-4" text @click="$router.push('/')">Fechar</v-btn>
+          <v-btn color="green darken-4" text @click="$router.push('/pedidos/submissao')">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -275,10 +277,6 @@ export default {
         if(zc.destino=="C" && zc.dono.length === 0) {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
-        }
-        if(zc.agregacoes.length === 0) {
-          this.erroDialog = true;
-          this.erro = "Não existem agregações em " + zc.codigo +" - "+zc.titulo+".\n"
         }
       }
       if(this.erro==="") {

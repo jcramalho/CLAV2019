@@ -4,7 +4,7 @@
     <v-card-text class="mt-4">
       <v-row>
         <v-col :md="2">
-          <div class="info-label">Código da Classe</div>
+          <div class="info-label">Classe</div>
         </v-col>
         <v-col>
           <v-autocomplete
@@ -44,7 +44,7 @@
           ></v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Dono PN:</div>
+          <div class="info-label">Donos do PN</div>
         </v-col>
         <v-col>
           <v-autocomplete
@@ -241,7 +241,8 @@ export default {
         c => c.codigo == this.classe.split(" - ")[0]
       );
       if (c[0]) {
-        this.prazo = c[0].pca.valores + " Anos";
+        if(c[0].pca.valores=="1") this.prazo = c[0].pca.valores + " Ano";
+        else this.prazo = c[0].pca.valores + " Anos";
         if (c[0].df.valor === "C") {
           this.df = "Conservação";
           this.ni = "Participante";
