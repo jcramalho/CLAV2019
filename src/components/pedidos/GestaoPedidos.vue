@@ -6,9 +6,10 @@
           Gestão de Pedidos
         </v-card-title>
         <v-card-text class="mt-4">
-          <v-expansion-panels>
+          <v-expansion-panels :value="pesquisaPedidos.painel">
             <PedidosNovos
               :pedidos="pedidosSubmetidos"
+              :pesquisaPedidos="pesquisaPedidos"
               @distribuir="distribuiPedido($event)"
             />
 
@@ -77,11 +78,21 @@ export default {
       pedidosValidados: [],
       pedidosDevolvidos: [],
       pedidosProcessados: [],
+      pesquisaPedidos: {
+        painel: undefined,
+        pesquisa: "",
+        pagina: 1,
+      },
     };
   },
 
   async created() {
     await this.carregaPedidos();
+
+    const storage = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
+
+    if (storage.limpar) localStorage.removeItem("pesquisa-pedidos");
+    else this.pesquisaPedidos = storage;
   },
 
   methods: {
