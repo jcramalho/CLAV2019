@@ -16,7 +16,7 @@
         <v-spacer></v-spacer>
         <v-btn text rounded href="mailto:clav@dglab.gov.pt" id="contact-button">
           <unicon
-            name="contact-icon"
+            name="contacto-icon"
             width="24"
             height="24"
             viewBox="0 0 25.71 19.282"
@@ -54,7 +54,7 @@
           class="mt-3 pa-0"
         >
           <unicon
-            name="contact-icon"
+            name="contacto-icon"
             width="24"
             height="24"
             viewBox="0 0 25.71 19.282"

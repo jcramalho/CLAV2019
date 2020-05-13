@@ -22,7 +22,9 @@ import {
   menuIcon,
   arrowDownIcon,
   perfilIcon,
-  contactIcon
+  contactoIcon,
+  alterarPasswordIcon,
+  terminarSessaoIcon
 } from "./custom-icons";
 
 //import BootstrapVue from "bootstrap-vue";
@@ -49,7 +51,9 @@ Unicon.add([
   menuIcon,
   arrowDownIcon,
   perfilIcon,
-  contactIcon
+  contactoIcon,
+  alterarPasswordIcon,
+  terminarSessaoIcon
 ]);
 Vue.use(Unicon);
 

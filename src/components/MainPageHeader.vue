@@ -117,7 +117,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
-
+          <!-- Falta Gestão da Plataforma, será feito após refactor, pois há diferentes levels de acesso 
           <v-menu offset-y open-on-hover nudge-top="2">
             <template v-slot:activator="{ on }">
               <v-tab v-on="on" active-class="active">
@@ -143,6 +143,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
+          -->
 
           <v-menu offset-y open-on-hover nudge-top="2">
             <template v-slot:activator="{ on }">
