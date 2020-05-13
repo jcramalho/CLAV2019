@@ -75,9 +75,6 @@ export default {
         this.erros.push("Descrição;");
       }
 
-      if (!UI.notas) {
-        this.erros.push("Notas;");
-      }
       if (!UI.localizacao) {
         this.erros.push("Localização;");
       }

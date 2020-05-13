@@ -288,13 +288,7 @@
               <div class="info-label">Notas</div>
             </v-col>
             <v-col sm="4" md="4">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI.notas"
-                label="Notas"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI.notas" label="Notas"></v-text-field>
             </v-col>
             <v-col md="2" sm="2">
               <div class="info-label">Localização</div>
@@ -344,10 +338,7 @@ export default {
   computed: {
     getCodigos() {
       return this.classes
-        .filter(
-          e =>
-            (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
-        )
+        .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
         .map(e => {
           return {
             codigo: e.codigo,

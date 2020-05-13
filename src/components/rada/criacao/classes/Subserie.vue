@@ -192,11 +192,8 @@ export default {
         this.erros.push("Descrição;");
       }
 
-      if (
-        !!this.newSubSerie.UIs[0] == false &&
-        (!this.newSubSerie.dataInicial || !this.newSubSerie.dataFinal)
-      ) {
-        this.erros.push("Datas ou Unidades de Instalação;");
+      if (!this.newSubSerie.dataInicial || !this.newSubSerie.dataFinal) {
+        this.erros.push("Datas Extremas;");
       }
 
       if (!this.newSubSerie.eFilhoDe) {

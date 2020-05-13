@@ -7,7 +7,6 @@
       <v-col md="9" sm="9" xs="12">
         <!-- {{newSerie.UIs}} -->
         <v-combobox
-          :rules="[v => !!v[0] || 'Campo obrigatório!']"
           v-model="newSerie.UIs"
           :items="getCodigos"
           label="Unidadades de Instalação"

@@ -153,11 +153,8 @@ export default {
         this.erros.push("Descrição;");
       }
 
-      if (
-        !!this.subserie.UIs[0] == false &&
-        (!this.subserie.dataInicial || !this.subserie.dataFinal)
-      ) {
-        this.erros.push("Datas ou Unidades de Instalação;");
+      if (!this.subserie.dataInicial || !this.subserie.dataFinal) {
+        this.erros.push("Datas Extremas;");
       }
 
       if (!this.subserie.eFilhoDe) {
