@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <div>
     <!--Navbar para large screens-->
     <v-app-bar
@@ -71,22 +70,6 @@
         rounded
         dark
         id="user-button"
-=======
-  <v-app-bar app color="indigo darken-4" dark height="64px">
-    <v-btn to="/" icon>
-      <v-icon large>home</v-icon>
-    </v-btn>
-    <v-toolbar-title class="headline" @click="goHome">
-      <span class="text-uppercase" v-if="this.$store.state.name != ''">
-        CLAV | {{ this.$store.state.entidade.split("_")[1] }}
-      </span>
-
-      <span class="text-uppercase" v-if="this.$store.state.name == ''">
-        CLAV
-      </span>
-      <span class="font-weight-light" v-if="this.$store.state.name == ''">
-        - Classificação e Avaliação da Informação Pública</span
->>>>>>> e5842cbee75b64b36879b0a5c8e68e5a06680ce1
       >
         <p>{{ $store.state.name }}</p>
         <unicon
@@ -119,6 +102,32 @@
                   viewBox="0 0 25.71 25.809"
                 />
                 <p class="icon-text">Registo na Clav</p>
+              </v-tab>
+            </template>
+            <v-list rounded dark id="dark-background-list">
+              <v-list-item @click="alert('')">
+                <v-list-item-title class="text-wrap"
+                  >Como registar-se na CLAV</v-list-item-title
+                >
+              </v-list-item>
+              <v-list-item @click="alert('')">
+                <v-list-item-title class="text-wrap"
+                  >Indicação de representante da entidade</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
+
+          <v-menu offset-y open-on-hover nudge-top="2">
+            <template v-slot:activator="{ on }">
+              <v-tab v-on="on" active-class="active">
+                <unicon
+                  name="registo-icon"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 25.71 25.809"
+                />
+                <p class="icon-text">Gestão da Plataforma</p>
               </v-tab>
             </template>
             <v-list rounded dark id="dark-background-list">
@@ -353,7 +362,6 @@
         icon
         color="blue"
       >
-<<<<<<< HEAD
         <v-badge color="red" :content="n" overlap>
           <unicon
             name="perfil-icon"
@@ -380,21 +388,6 @@
           viewBox="0 0 26.358 20.71"
           fill="#e5e5e5"
         />
-=======
-        <v-badge color="blue" :content="n" overlap>
-          <v-icon large>notification_important</v-icon>
-        </v-badge>
-      </v-btn>
-      <v-btn
-        v-if="$store.state.token != '' && level >= 3.5"
-        @click="drawerEstatisticas"
-        icon
-      >
-        <v-icon large>assessment</v-icon>
-      </v-btn>
-      <v-btn v-if="this.$store.state.name != ''" @click="drawerDefinicoes" icon>
-        <v-icon large>settings</v-icon>
->>>>>>> e5842cbee75b64b36879b0a5c8e68e5a06680ce1
       </v-btn>
       <template v-slot:extension>
         <v-tabs

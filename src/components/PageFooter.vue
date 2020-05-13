@@ -1,9 +1,9 @@
 <template>
   <v-footer dark padless>
     <v-card class="flex" flat>
-      <v-card-title id="footer-bar" class="px-4 py-0">
+      <v-card-title id="footer-bar" class="hidden-sm-and-down px-4 py-0">
         <p class="big-footer-letters">DGLAB -</p>
-        <p class="regular-footer-letters">
+        <p class="regular-footer-letters pl-2">
           Direção Geral do Livro, dos Arquivos e das Bibliotecas
         </p>
         <v-spacer></v-spacer>
@@ -28,6 +28,44 @@
         <v-img
           id="footer-image"
           class="my-2"
+          :src="require('./../assets/feder.png')"
+          aspect-ratio="4.8600"
+        />
+      </v-card-title>
+      <!--Mobile Footer-->
+      <v-card-title id="footer-bar" class="hidden-md-and-up px-4 py-3">
+        <p class="big-footer-letters mt-3">DGLAB-</p>
+        <p class="regular-footer-letters mt-3">
+          Direção Geral do Livro, dos Arquivos e das Bibliotecas
+        </p>
+        <v-spacer></v-spacer>
+        <p class="body-2 mt-3">Versão: 2020-03-19</p>
+
+        <v-spacer></v-spacer>
+
+        <p v-if="ontoReady" class="body-2 mt-3">Ontologia: {{ ontologia }}</p>
+
+        <v-spacer></v-spacer>
+        <v-btn
+          text
+          rounded
+          href="mailto:clav@dglab.gov.pt"
+          id="contact-button"
+          class="mt-3 pa-0"
+        >
+          <unicon
+            name="contact-icon"
+            width="24"
+            height="24"
+            viewBox="0 0 25.71 19.282"
+            fill="#e5e5e5"
+          />
+          <p class="icon-text">Contactos</p>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-img
+          id="footer-image"
+          class="mt-3"
           :src="require('./../assets/feder.png')"
           aspect-ratio="4.8600"
         />
@@ -78,7 +116,6 @@ export default {
 }
 .regular-footer-letters {
   display: inline;
-  padding-left: 0.75em;
   font-weight: 300;
   vertical-align: text-bottom;
 }
