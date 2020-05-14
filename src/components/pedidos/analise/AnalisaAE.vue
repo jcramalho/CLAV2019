@@ -52,7 +52,7 @@
         <v-expansion-panel-content>
           <v-list>
             <v-list-group
-              v-for="item in p.objeto.dados.ae.zonaControlo"
+              v-for="(item,index) in p.objeto.dados.ae.zonaControlo"
               :key="item.codigo"
               color="grey darken-1"
               no-action
@@ -87,12 +87,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         :value="item.codigo"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].classe='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].classe='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].classe='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].classe='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -108,7 +108,7 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         :value="item.referencia"
                       />
                     </v-col>
@@ -122,7 +122,7 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         :value="item.titulo"
                       />
                     </v-col>
@@ -137,7 +137,7 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         :value="item.prazoConservacao+' Ano'"
                       />
                       <v-text-field
@@ -145,7 +145,7 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         :value="item.prazoConservacao+' Anos'"
                       />
                     </v-col>
@@ -160,7 +160,7 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         value="Eliminação"
                       />
                       <v-text-field
@@ -168,7 +168,7 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         value="Conservação"
                       />
                       <v-text-field
@@ -176,7 +176,7 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         :value="item.destino"
                       />
                     </v-col>
@@ -190,7 +190,7 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].classe"
+                        :background-color="cores.zonaControlo[index].classe"
                         :value="item.ni"
                       />
                     </v-col>
@@ -206,12 +206,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].dono[i]"
+                        :background-color="cores.zonaControlo[index].dono[i]"
                         :value="d"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].dono[i]='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].dono[i]='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].dono[i]='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].dono[i]='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -227,12 +227,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].dataInicio"
+                        :background-color="cores.zonaControlo[index].dataInicio"
                         :value="item.dataInicio"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].dataInicio='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].dataInicio='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].dataInicio='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].dataInicio='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -248,12 +248,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].dataFim"
+                        :background-color="cores.zonaControlo[index].dataFim"
                         :value="item.dataFim"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].dataFim='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].dataFim='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].dataFim='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].dataFim='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -270,12 +270,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].uiPapel"
+                        :background-color="cores.zonaControlo[index].uiPapel"
                         :value="item.uiPapel"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiPapel='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiPapel='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiPapel='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiPapel='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -285,12 +285,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros"
+                        :background-color="cores.zonaControlo[index].uiPapel"
                         value="0"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiPapel='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiPapel='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -307,12 +307,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].uiDigital"
+                        :background-color="cores.zonaControlo[index].uiDigital"
                         :value="item.uiDigital"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiDigital='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiDigital='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiDigital='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiDigital='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -322,12 +322,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros"
+                        :background-color="cores.zonaControlo[index].uiDigital"
                         value="0"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiDigital='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiDigital='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -344,12 +344,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros"
+                        :background-color="cores.zonaControlo[index].uiOutros"
                         :value="item.uiOutros"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiOutros='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiOutros='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -359,12 +359,12 @@
                         solo
                         readonly
                         hide-details
-                        :background-color="cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros"
+                        :background-color="cores.zonaControlo[index].uiOutros"
                         value="0"
                       >
                         <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].uiOutros='red lighten-3'">clear</v-icon>
+                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiOutros='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiOutros='red lighten-3'">clear</v-icon>
                           <!--<v-icon @click="">create</v-icon>-->
                           <v-icon>create</v-icon>
                         </template>
@@ -381,7 +381,7 @@
                       :search="search"
                     >
                     <template v-slot:top>
-                      <v-toolbar flat :color="cores.zonaControlo[item.codigo+'_'+item.referencia].agregacoes">
+                      <v-toolbar flat :color="cores.zonaControlo[index].agregacoes">
                         <span style="font-weight: 400; color: #1a237e; font-weight: bold;">Lista de Agregações
                         <v-btn
                           rounded
@@ -393,8 +393,8 @@
 
                         </span>
                         <v-spacer />
-                        <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].agregacoes='green lighten-3'">check</v-icon>
-                        <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[item.codigo+'_'+item.referencia].agregacoes='red lighten-3'">clear</v-icon>
+                        <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].agregacoes='green lighten-3'">check</v-icon>
+                        <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].agregacoes='red lighten-3'">clear</v-icon>
                         <v-text-field
                           v-model="search"
                           append-icon="search"
@@ -481,9 +481,9 @@ export default {
     };
     for (var i in this.p.objeto.dados.ae.fundo)
       this.cores.fundo.push("white")
+    var index = 0;
     for (var zc of this.p.objeto.dados.ae.zonaControlo) {
-      var nome = zc.codigo + "_" + zc.referencia;
-      this.cores.zonaControlo[nome] = {
+      this.cores.zonaControlo[index] = {
         classe: "white",
         dono: [],
         dataInicio: "white",
@@ -494,8 +494,8 @@ export default {
         agregacoes: "#e8eaf6"
       };
       for (var d in zc.dono)
-        this.cores.zonaControlo[nome].dono.push("white")
-      
+        this.cores.zonaControlo[index].dono.push("white")
+      index++;
     }
   },
 
@@ -514,7 +514,9 @@ export default {
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
+        let cores = JSON.parse(JSON.stringify(this.cores));
 
+        pedido.objeto.dados.cores = cores
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
@@ -536,7 +538,8 @@ export default {
         let dadosUtilizador = this.$verifyTokenUser();
 
         let pedido = JSON.parse(JSON.stringify(this.p));
-
+        let cores = JSON.parse(JSON.stringify(this.cores));
+        pedido.objeto.dados.cores = cores
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 

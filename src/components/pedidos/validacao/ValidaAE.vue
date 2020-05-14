@@ -1,37 +1,53 @@
 <template>
   <div>
+    <span style="display:none;">{{colorSwitch}}</span>
     <v-row>
       <v-col cols="2">
         <div class="info-label">Fonte de Legitimação</div>
       </v-col>
-      <v-col class="mt-3">{{ p.objeto.dados.ae.legislacao }}</v-col>
-      <v-col cols="1">
-        <v-icon color="green" @click="verifica(info)">check</v-icon>
-        <v-icon color="red" @click="anula(info)">clear</v-icon>
+      <v-col class="mr-2">
+        <v-text-field
+          solo
+          readonly
+          hide-details
+          :background-color="p.objeto.dados.cores.legislacao"
+          :value="p.objeto.dados.ae.legislacao"
+        >
+          <template slot="append">
+            <v-icon color="green" @click="p.objeto.dados.cores.legislacao='green lighten-3'">check</v-icon>
+            <v-icon color="red" @click="p.objeto.dados.cores.legislacao='red lighten-3'">clear</v-icon>
+          </template>
+        </v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="2">
         <div class="info-label">Fundo</div>
       </v-col>
-      <v-col class="mt-3">
-        <li v-for="(f, i) in p.objeto.dados.ae.fundo" :key="i">{{ f }}</li>
-      </v-col>
-      <v-col cols="1">
-        <v-icon color="green" @click="verifica(info)">check</v-icon>
-        <v-icon color="red" @click="anula(info)">clear</v-icon>
+      <v-col class="mr-2">
+          <v-text-field
+            v-for="(f, i) in p.objeto.dados.ae.fundo" :key="i"
+            class="mb-1"
+            solo
+            readonly
+            hide-details
+            :background-color="p.objeto.dados.cores.fundo[i]"
+            :value="f"
+          >
+            <template slot="append">
+              <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.fundo[i]='green lighten-3'">check</v-icon>
+              <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.fundo[i]='red lighten-3'">clear</v-icon>
+            </template>
+          </v-text-field>
       </v-col>
     </v-row>
-
     <v-expansion-panels popout>
       <v-expansion-panel class="ma-1">
-        <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
-          >Classes</v-expansion-panel-header
-        >
+        <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">Classes</v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-list>
             <v-list-group
-              v-for="item in p.objeto.dados.ae.zonaControlo"
+              v-for="(item,index) in p.objeto.dados.ae.zonaControlo"
               :key="item.codigo"
               color="grey darken-1"
               no-action
@@ -43,180 +59,311 @@
                     v-text="
                         item.codigo +
                         ', ' +
-                        item.referencia + 
+                        item.referencia +
                         ' - ' +
                         item.titulo
                     "
                   ></v-list-item-title>
                   <v-list-item-title
                     v-else-if="item.codigo"
-                    v-text="item.codigo+' - '+item.titulo"
+                    v-text="item.codigo+ ' - ' + item.titulo"
                   ></v-list-item-title>
-                  <v-list-item-title
-                    v-else
-                    v-text="item.referencia+' - '+item.titulo"
-                  ></v-list-item-title>
+                  <v-list-item-title v-else v-text="item.referencia+ ' - ' + item.titulo"></v-list-item-title>
                 </v-list-item-content>
               </template>
               <v-list-item-content>
                 <v-list-item-title>
                   <v-row v-if="item.codigo">
                     <v-col cols="4">
-                      <div class="info-label">Código da classe</div>
+                      <div class="info-label">Código da Classe</div>
                     </v-col>
-                    <v-col class="mt-3">
-                      <a
-                        v-if="!item.referencia"
-                        :href="'/classes/consultar/c' + item.codigo"
-                        >{{ item.codigo }}</a
+                    <v-col class="mr-2">
+                      <v-text-field
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        :value="item.codigo"
                       >
-                      <div v-else>{{ item.codigo }}</div>
-                    </v-col>
-                    <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)"
-                        >check</v-icon
-                      >
-                      <v-icon color="red" @click="anula(info)">clear</v-icon>
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].classe='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].classe='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
                     </v-col>
                   </v-row>
                   <v-row v-if="item.referencia">
                     <v-col cols="4">
                       <div class="info-label">Referência</div>
                     </v-col>
-                    <v-col class="mt-3">{{ item.referencia }}</v-col>
-                    <v-col cols="1" v-if="!item.codigo">
-                      <v-icon color="green" @click="verifica(info)"
-                        >check</v-icon
-                      >
-                      <v-icon color="red" @click="anula(info)">clear</v-icon>
+                    <v-col class="mr-2">
+                      <v-text-field
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        :value="item.referencia"
+                      />
                     </v-col>
                   </v-row>
                   <v-row v-if="item.titulo">
                     <v-col cols="4">
                       <div class="info-label">Título</div>
                     </v-col>
-                    <v-col class="mt-3">{{ item.titulo }}</v-col>
+                    <v-col class="mr-2">
+                      <v-text-field
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        :value="item.titulo"
+                      />
+                    </v-col>
                   </v-row>
                   <v-row v-if="item.prazoConservacao">
                     <v-col cols="4">
-                      <div class="info-label">
-                        Prazo de Conservação Administrativa
-                      </div>
+                      <div class="info-label">Prazo de Conservação Administrativa</div>
                     </v-col>
-                    <v-col class="mt-3">{{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span></v-col>
+                    <v-col class="mr-2">
+                      <v-text-field
+                        v-if="item.prazoConservacao=='1'"
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        :value="item.prazoConservacao+' Ano'"
+                      />
+                      <v-text-field
+                        v-else
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        :value="item.prazoConservacao+' Anos'"
+                      />
+                    </v-col>
                   </v-row>
                   <v-row v-if="item.destino">
                     <v-col cols="4">
                       <div class="info-label">Destino Final</div>
                     </v-col>
-                    <v-col class="mt-3">
-                      <span v-if="item.destino === 'E'">Eliminação</span>
-                      <span v-else-if="item.destino === 'C'">Conservação</span>
-                      <span v-else>{{ item.destino }}</span>
+                    <v-col class="mr-2">
+                      <v-text-field
+                        v-if="item.destino === 'E'"
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        value="Eliminação"
+                      />
+                      <v-text-field
+                        v-else-if="item.destino === 'C'"
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        value="Conservação"
+                      />
+                      <v-text-field
+                        v-else
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        :value="item.destino"
+                      />
                     </v-col>
                   </v-row>
                   <v-row v-if="item.ni">
                     <v-col cols="4">
                       <div class="info-label">Natureza de intervenção</div>
                     </v-col>
-                    <v-col class="mt-3">{{ item.ni }}</v-col>
+                    <v-col class="mr-2">
+                      <v-text-field
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].classe"
+                        :value="item.ni"
+                      />
+                    </v-col>
                   </v-row>
                   <v-row v-if="item.dono">
                     <v-col cols="4">
                       <div class="info-label">Donos do PN</div>
                     </v-col>
-                    <v-col class="mt-3">
-                      <li v-for="(d, i) in item.dono" :key="i">{{ d }}</li>
-                    </v-col>
-                    <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)"
-                        >check</v-icon
+                    <v-col class="mr-2">
+                      <v-text-field
+                        v-for="(d, i) in item.dono"
+                        :key="i"
+                        class="mb-1"
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].dono[i]"
+                        :value="d"
                       >
-                      <v-icon color="red" @click="anula(info)">clear</v-icon>
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].dono[i]='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].dono[i]='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="4">
                       <div class="info-label">Data de Início</div>
                     </v-col>
-                    <v-col class="mt-3">{{ item.dataInicio }}</v-col>
-                    <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)"
-                        >check</v-icon
+                    <v-col class="mr-2">
+                      <v-text-field
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].dataInicio"
+                        :value="item.dataInicio"
                       >
-                      <v-icon color="red" @click="anula(info)">clear</v-icon>
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].dataInicio='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].dataInicio='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="4">
                       <div class="info-label">Data de Fim</div>
                     </v-col>
-                    <v-col class="mt-3">{{ item.dataFim }}</v-col>
-                    <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)"
-                        >check</v-icon
+                    <v-col class="mr-2">
+                      <v-text-field
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].dataFim"
+                        :value="item.dataFim"
                       >
-                      <v-icon color="red" @click="anula(info)">clear</v-icon>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.uiPapel">
-                    <v-col cols="4">
-                      <div class="info-label">
-                        Medição das UI em papel (m.l.)
-                      </div>
-                    </v-col>
-                    <v-col class="mt-3">
-                      {{ item.uiPapel }}
-                    </v-col>
-                    <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)"
-                        >check</v-icon
-                      >
-                      <v-icon color="red" @click="anula(info)">clear</v-icon>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.uiDigital">
-                    <v-col cols="4">
-                      <div class="info-label">
-                        Medição das UI em digital (Gb)
-                      </div>
-                    </v-col>
-                    <v-col class="mt-3">
-                      {{ item.uiDigital }}
-                    </v-col>
-                    <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)"
-                        >check</v-icon
-                      >
-                      <v-icon color="red" @click="anula(info)">clear</v-icon>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.uiOutros">
-                    <v-col cols="4">
-                      <div class="info-label">
-                        Medição das UI noutros suportes
-                      </div>
-                    </v-col>
-                    <v-col class="mt-3">
-                      {{ item.uiOutros }}
-                    </v-col>
-                    <v-col cols="1">
-                      <v-icon color="green" @click="verifica(info)"
-                        >check</v-icon
-                      >
-                      <v-icon color="red" @click="anula(info)">clear</v-icon>
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].dataFim='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].dataFim='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="4">
-                      <div class="info-label">N.º de agregações</div>
+                      <div class="info-label">Medição das UI em papel (m.l.)</div>
                     </v-col>
-                    <v-col class="mt-3">{{ item.agregacoes.length }}</v-col>
+                    <v-col class="mr-2">
+                      <v-text-field
+                        v-if="item.uiPapel"
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].uiPapel"
+                        :value="item.uiPapel"
+                      >
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiPapel='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiPapel='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
+                      <v-text-field
+                        v-else
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].uiPapel"
+                        value="0"
+                      >
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiPapel='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiPapel='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="4">
+                      <div class="info-label">Medição das UI em digital (Gb)</div>
+                    </v-col>
+                    <v-col class="mr-2">
+                      <v-text-field
+                        v-if="item.uiDigital"
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].uiDigital"
+                        :value="item.uiDigital"
+                      >
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiDigital='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiDigital='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
+                      <v-text-field
+                        v-else
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].uiDigital"
+                        value="0"
+                      >
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiDigital='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiDigital='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="4">
+                      <div class="info-label">Medição das UI noutros suportes</div>
+                    </v-col>
+                    <v-col class="mr-2">
+                      <v-text-field
+                        v-if="item.uiOutros"
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].uiOutros"
+                        :value="item.uiOutros"
+                      >
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiOutros='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiOutros='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
+                      <v-text-field
+                        v-else
+                        solo
+                        readonly
+                        hide-details
+                        :background-color="p.objeto.dados.cores.zonaControlo[index].uiOutros"
+                        value="0"
+                      >
+                        <template slot="append">
+                          <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiOutros='green lighten-3'">check</v-icon>
+                          <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].uiOutros='red lighten-3'">clear</v-icon>
+                        </template>
+                      </v-text-field>
+                    </v-col>
                   </v-row>
                   <div class="ma-1">
-                    <v-row justify="space-between" class="info-label">
-                      <v-col>Lista de Agregações</v-col>
-                      <v-col class="mt-3">
+                    <v-data-table
+                      :headers="cabecalho"
+                      :items="item.agregacoes"
+                      :items-per-page="5"
+                      class="elevation-1 mt-3"
+                      :footer-props="footer_props"
+                      :search="search"
+                    >
+                    <template v-slot:top>
+                      <v-toolbar flat :color="p.objeto.dados.cores.zonaControlo[index].agregacoes">
+                        <span style="font-weight: 400; color: #1a237e; font-weight: bold;">Lista de Agregações
+
+                        </span>
+                        <v-spacer />
+                        <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].agregacoes='green lighten-3'">check</v-icon>
+                        <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index].agregacoes='red lighten-3'">clear</v-icon>
                         <v-text-field
                           v-model="search"
                           append-icon="search"
@@ -224,16 +371,9 @@
                           single-line
                           hide-details
                         ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-data-table
-                      :headers="cabecalho"
-                      :items="item.agregacoes"
-                      :items-per-page="5"
-                      class="elevation-1 ml-2 mt-3"
-                      :footer-props="footer_props"
-                      :search="search"
-                    />
+                      </v-toolbar>
+                    </template>
+                    </v-data-table>
                   </div>
                 </v-list-item-title>
               </v-list-item-content>
@@ -263,7 +403,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/pedidos/generic/ErroDialog";
 
 export default {
-  props: ["p"],
+  props: ["p","tipo"],
 
   components: {
     PO,
@@ -276,6 +416,7 @@ export default {
       erroPedido: false,
       dialogTipologias: false,
       search: "",
+      colorSwitch: 0,
       cabecalho: [
         { text: "Código", align: "left", sortable: false, value: "codigo" },
         { text: "Título", align: "left", value: "titulo" },
@@ -320,47 +461,56 @@ export default {
 
     async finalizarPedido(dados) {
       try {
-        let pedido = JSON.parse(JSON.stringify(this.p));
+        if(this.tipo!="AE RADA" || this.tipo!="AE PGD") {
+          let pedido = JSON.parse(JSON.stringify(this.p));
 
-        var numeroErros = 0;
+          var numeroErros = 0;
 
-        if (numeroErros > 0) {
-          this.erroPedido = true;
-        } else {
-          for (const key in pedido.objeto.dados) {
-            if (
-              pedido.objeto.dados[key] === undefined ||
-              pedido.objeto.dados[key] === null ||
-              pedido.objeto.dados[key] === ""
-            ) {
-              delete pedido.objeto.dados[key];
+          if (numeroErros > 0) {
+            this.erroPedido = true;
+          } else {
+            for (const key in pedido.objeto.dados) {
+              if (
+                pedido.objeto.dados[key] === undefined ||
+                pedido.objeto.dados[key] === null ||
+                pedido.objeto.dados[key] === ""
+              ) {
+                delete pedido.objeto.dados[key];
+              }
             }
+
+            await this.$request("post", "/autosEliminacao", {
+              auto: pedido.objeto.dados.ae,
+            });
+
+            const estado = "Validado";
+
+            let dadosUtilizador = this.$verifyTokenUser();
+
+            const novaDistribuicao = {
+              estado: estado,
+              responsavel: dadosUtilizador.email,
+              data: new Date(),
+              despacho: dados.mensagemDespacho,
+            };
+
+            pedido.estado = estado;
+            pedido.token = this.$store.state.token;
+
+            await this.$request("put", "/pedidos", {
+              pedido: pedido,
+              distribuicao: novaDistribuicao,
+            });
+
+            this.$router.go(-1);
           }
-
-          await this.$request("post", "/autosEliminacao", {
-            auto: pedido.objeto.dados.ae,
+        } else {
+          this.erroPedido = true;
+          
+          this.erros.push({
+            sobre: "RADA e PGD",
+            mensagem: "Importação de Autos Eliminação para RADA e PGD temporáriamente indisponivel",
           });
-
-          const estado = "Validado";
-
-          let dadosUtilizador = this.$verifyTokenUser();
-
-          const novaDistribuicao = {
-            estado: estado,
-            responsavel: dadosUtilizador.email,
-            data: new Date(),
-            despacho: dados.mensagemDespacho,
-          };
-
-          pedido.estado = estado;
-          pedido.token = this.$store.state.token;
-
-          await this.$request("put", "/pedidos", {
-            pedido: pedido,
-            distribuicao: novaDistribuicao,
-          });
-
-          this.$router.go(-1);
         }
       } catch (e) {
         this.erroPedido = true;
@@ -384,16 +534,6 @@ export default {
       }
     },
 
-    verifica(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "green lighten-3";
-    },
-
-    anula(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "red lighten-3";
-    },
-
     fecharErro() {
       this.erroPedido = false;
     },
@@ -402,93 +542,6 @@ export default {
       this.dialogTipologias = false;
     },
 
-    async validarEntidade(acao, dados) {
-      let numeroErros = 0;
-
-      // Designação
-      if (
-        (dados.designacao === "" || dados.designacao === null) &&
-        acao === "Criação"
-      ) {
-        this.erros.push({
-          sobre: "Nome da Entidade",
-          mensagem: "O nome da entidade não pode ser vazio.",
-        });
-        numeroErros++;
-      } else if (acao === "Criação") {
-        try {
-          let existeDesignacao = await this.$request(
-            "get",
-            "/entidades/designacao?valor=" +
-              encodeURIComponent(dados.designacao)
-          );
-          if (existeDesignacao.data) {
-            this.erros.push({
-              sobre: "Nome da Entidade",
-              mensagem: "Nome da entidade já existente na BD.",
-            });
-            numeroErros++;
-          }
-        } catch (err) {
-          numeroErros++;
-          this.erros.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação.",
-          });
-        }
-      }
-
-      // Sigla
-      if ((dados.sigla === "" || dados.sigla === null) && acao === "Criação") {
-        this.erros.push({
-          sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia.",
-        });
-        numeroErros++;
-      } else if (acao === "Criação") {
-        try {
-          let existeSigla = await this.$request(
-            "get",
-            "/entidades/sigla?valor=" + encodeURIComponent(dados.sigla)
-          );
-          if (existeSigla.data) {
-            this.erros.push({
-              sobre: "Sigla",
-              mensagem: "Sigla já existente na BD.",
-            });
-            numeroErros++;
-          }
-        } catch (err) {
-          numeroErros++;
-          this.erros.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da sigla.",
-          });
-        }
-      }
-
-      // Internacional
-      if (dados.internacional === "" || dados.internacional === null) {
-        this.erros.push({
-          sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção.",
-        });
-        numeroErros++;
-      }
-
-      // SIOE
-      if (dados.sioe !== "" && dados.sioe !== null) {
-        if (dados.sioe.length > 12) {
-          this.erros.push({
-            sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
-          });
-          numeroErros++;
-        }
-      }
-
-      return numeroErros;
-    },
   },
 };
 </script>
