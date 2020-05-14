@@ -63,7 +63,13 @@ export default {
       this.panels = [0, 1, 2];
 
       setTimeout(() => {
-        if (this.$refs.form.validate()) {
+        if (
+          this.$refs.form.validate() &&
+          !(
+            !!classe.UIs[0] == false &&
+            (!!classe.dataInicial == false || !!classe.dataFinal == false)
+          )
+        ) {
           this.$emit("atualizacao", classe);
           this.dialogState = false;
         } else {

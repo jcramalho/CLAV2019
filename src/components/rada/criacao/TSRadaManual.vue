@@ -25,12 +25,7 @@
           :formaContagem="formaContagem"
           :legislacaoProcessada="legislacaoProcessada"
         />
-        <SubSerie
-          :classes="TS.classes"
-          :UIs="TS.UIs"
-          :formaContagem="formaContagem"
-          :RE="RE"
-        />
+        <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
       </v-col>
     </v-row>
     <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ TS.classes }}</p> -->
@@ -40,11 +35,7 @@
         <div v-if="TS.classes.length > 0">
           <v-treeview hoverable :items="preparaTree" item-key="codigo">
             <template v-slot:prepend="{ item }">
-              <img
-                v-if="item.tipo == 'Série'"
-                style="width:23px; height:30px"
-                :src="svg_sr"
-              />
+              <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
               <img
                 v-else-if="item.tipo == 'Subsérie'"
                 style="width:23px; height:30px"
@@ -61,17 +52,15 @@
                       (item.temDF && !!!item.children[0]))
                 "
                 style="color:red"
-                >*</b
-              >
+              >*</b>
               <!-- Subsérie -->
               <b
                 v-show="
                   item.tipo == 'Subsérie' &&
-                    (item.eFilhoDe == null || item.temDF)
+                    (item.eFilhoDe == null || item.temDF || !item.temUIs_ou_datas)
                 "
                 style="color:red"
-                >*</b
-              >
+              >*</b>
               <!-- N1, N2 OU N3 -->
               <b
                 v-show="
@@ -79,20 +68,13 @@
                     (item.tipo == 'N2' || item.tipo == 'N3')
                 "
                 style="color:red"
-                >*</b
-              >
+              >*</b>
             </template>
           </v-treeview>
           <br />
           <b v-if="incompleto" style="color:red">*Classes por preencher</b>
         </div>
-        <v-alert
-          class="text-center"
-          v-else
-          :value="true"
-          color="amber accent-3"
-          icon="warning"
-        >
+        <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
           <b>Sem Classes!</b> É obrigatório adicionar.
         </v-alert>
         <br />
@@ -222,12 +204,11 @@ export default {
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
             eFilhoDe: this.TS.classes[i].eFilhoDe,
-            // temUIs_ou_datas: Boolean(
-            //   (this.TS.classes[i].dataInicial != undefined &&
-            //     this.TS.classes[i].dataInicial != null) ||
-            //     (this.TS.classes[i].UIs != undefined &&
-            //       this.TS.classes[i].UIs.length > 0)
-            // ),
+            temUIs_ou_datas: Boolean(
+              (Boolean(this.TS.classes[i].dataInicial) &&
+                Boolean(this.TS.classes[i].dataFinal)) ||
+                Boolean(this.TS.classes[i].UIs != undefined && !!this.TS.classes[i].UIs[0])
+            ),
             temDF: Boolean(
               (!Boolean(this.TS.classes[i].df) &&
                 !Boolean(this.TS.classes[i].notaDF)) ||
@@ -289,12 +270,11 @@ export default {
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
             eFilhoDe: this.TS.classes[i].eFilhoDe,
-            // temUIs_ou_datas: Boolean(
-            //   (this.TS.classes[i].dataInicial != undefined &&
-            //     this.TS.classes[i].dataInicial != null) ||
-            //     (this.TS.classes[i].UIs != undefined &&
-            //       this.TS.classes[i].UIs.length > 0)
-            // ),
+            temUIs_ou_datas: Boolean(
+              (Boolean(this.TS.classes[i].dataInicial) &&
+                Boolean(this.TS.classes[i].dataFinal)) ||
+                Boolean(this.TS.classes[i].UIs != undefined && !!this.TS.classes[i].UIs[0])
+            ),
             temDF: Boolean(
               (!Boolean(this.TS.classes[i].df) &&
                 !Boolean(this.TS.classes[i].notaDF)) ||

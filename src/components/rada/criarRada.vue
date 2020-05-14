@@ -413,7 +413,7 @@ export default {
             // }
           ],
           UIs: [
-            //{
+            // {
             //   codigo: "01",
             //   codCota: "1",
             //   titulo: "1",

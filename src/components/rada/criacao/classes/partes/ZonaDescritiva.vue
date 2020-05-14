@@ -30,7 +30,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              :rules="[v => !!v || 'Campo obrigatório!']"
+              :rules="[v => newSerie.tipo == 'Subsérie' || !!v || 'Campo obrigatório!']"
               v-model="newSerie.dataInicial"
               label="Data Inicial"
               prepend-icon="event"
@@ -74,7 +74,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              :rules="[v => data_final_valida(v) || 'Campo obrigatório!']"
+              :rules="[v => data_final_valida(v) || newSerie.tipo == 'Subsérie' || 'Campo obrigatório!']"
               v-model="newSerie.dataFinal"
               label="Data Final"
               prepend-icon="event"

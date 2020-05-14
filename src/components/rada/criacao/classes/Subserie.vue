@@ -192,8 +192,11 @@ export default {
         this.erros.push("Descrição;");
       }
 
-      if (!this.newSubSerie.dataInicial || !this.newSubSerie.dataFinal) {
-        this.erros.push("Datas Extremas;");
+      if (
+        !!this.newSubSerie.UIs[0] == false &&
+        (!this.newSubSerie.dataInicial || !this.newSubSerie.dataFinal)
+      ) {
+        this.erros.push("Datas Extremas ou Unidades de Instalação;");
       }
 
       if (!this.newSubSerie.eFilhoDe) {
@@ -229,7 +232,7 @@ export default {
         this.erros.push("Datas Inválidas;");
       }
     },
-    filterSeries: function() {
+    filterSeries() {
       this.panels = [0, 0, 0];
       this.isMultiple = false;
 

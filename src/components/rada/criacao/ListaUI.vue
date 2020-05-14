@@ -53,7 +53,7 @@
                     <v-list-item-content>{{classe.codigo + " - " + buscarTituloTable(classe.codigo)}}</v-list-item-content>
                   </v-list-item>
                 </v-list>
-                <p v-else>Não tem classes associadas!</p>
+                <p v-else><br/>Não tem classes associadas!</p>
               </td>
             </tr>
           </template>

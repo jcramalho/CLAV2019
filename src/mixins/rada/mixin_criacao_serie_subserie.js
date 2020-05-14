@@ -31,11 +31,12 @@ export default {
             rel =>
               rel.relacao != relacoes_sintese[i].relacao ||
               rel.serieRelacionada.codigo !=
-              relacoes_sintese[i].serieRelacionada.codigo
+                relacoes_sintese[i].serieRelacionada.codigo
           );
 
           this.remove_criterio_densidade_informacional(
-            relacoes_sintese[i].serieRelacionada.codigo, classe
+            relacoes_sintese[i].serieRelacionada.codigo,
+            classe
           );
         }
       }
@@ -132,7 +133,7 @@ export default {
         }
       }
     },
-    adicionarUIs: function (clone_nova_classe) {
+    adicionarUIs: function(clone_nova_classe) {
       for (let i = 0; i < clone_nova_classe.UIs.length; i++) {
         let UI = this.UIs.find(e => e.codigo == clone_nova_classe.UIs[i]);
 
@@ -165,7 +166,7 @@ export default {
         }
       }
     },
-    relacoes_simetricas: function (clone_nova_classe) {
+    relacoes_simetricas: function(clone_nova_classe) {
       for (let i = 0; i < clone_nova_classe.relacoes.length; i++) {
         let classe_relacionada = this.classes.find(
           e => e.codigo == clone_nova_classe.relacoes[i].serieRelacionada.codigo
@@ -293,7 +294,14 @@ export default {
       this.panels = [0, 1, 2];
 
       setTimeout(() => {
-        if (this.$refs.form.validate()) {
+        if (
+          this.$refs.form.validate() &&
+          !(
+            !!nova_classe.UIs[0] == false &&
+            (!!nova_classe.dataInicial == false ||
+              !!nova_classe.dataFinal == false)
+          )
+        ) {
           let clone_nova_classe = Object.assign({}, nova_classe);
 
           clone_nova_classe.justificacaoPCA.forEach(criterio => {
