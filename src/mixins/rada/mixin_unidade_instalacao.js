@@ -4,6 +4,7 @@ export default {
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     menu1: false,
     menu2: false,
+    classes_processadas: [],
     erros: [],
     tituloClasse: null,
     existe_erros: false,
@@ -38,6 +39,16 @@ export default {
         this.tipoClasse = c.tipo;
       } else {
         this.iscodvalido = false;
+      }
+    }
+  },
+  computed: {
+    dialogState: {
+      get() {
+        return this.dialog;
+      },
+      set(val) {
+        this.$emit("fecharDialog", false);
       }
     }
   },
@@ -105,11 +116,7 @@ export default {
     },
     eCodigoClasseValido(v) {
       if (
-        this.classes.some(
-          e =>
-            e.codigo == v &&
-            (e.dataInicial === undefined || e.dataInicial != null)
-        )
+        this.classes.some(e => e.codigo == v && e.dataInicial === undefined)
       ) {
         return "Impossível criar associação, altere o código!";
       } else {
@@ -130,5 +137,15 @@ export default {
       }
       return false;
     }
+  },
+  created() {
+    this.classes_processadas = this.classes
+      .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
+      .map(e => {
+        return {
+          codigo: e.codigo,
+          searchField: e.codigo + " - " + e.titulo
+        };
+      });
   }
 };

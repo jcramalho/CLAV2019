@@ -2,7 +2,9 @@
   <div>
     <v-row>
       <v-col cols="12" xs="12" sm="12">
-        <UI :UIs="TS.UIs" :RE="RE" :classes="TS.classes" />
+        <v-btn color="#dee2f8" class="ma-2" @click="criar_nova_ui = true">
+          <v-icon dark left>add</v-icon>Unidade de Instalação
+        </v-btn>
       </v-col>
     </v-row>
     <!-- {{TS.UIs}} -->
@@ -27,10 +29,18 @@
               :style="'text-align: center; background-color:' + isComplete(props.item)"
               @click="editarUI(props.item)"
             >
+              <td @click.stop>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-icon v-on="on" @click="nova_ui_copia(props.item)">file_copy</v-icon>
+                  </template>
+                  <span>Criar nova UI baseada nos campos de {{props.item.codigo}}!</span>
+                </v-tooltip>
+              </td>
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
               <td>
-                <br/>
+                <br />
                 <ul v-if="!!props.item.classesAssociadas[0]">
                   <li v-for="(classe, i) in props.item.classesAssociadas" :key="i">{{classe.codigo}}</li>
                 </ul>
@@ -49,6 +59,16 @@
         </v-alert>
       </v-col>
     </v-row>
+    <UI
+      :UIs="TS.UIs"
+      :RE="RE"
+      :classes="TS.classes"
+      v-if="criar_nova_ui"
+      :dialog="criar_nova_ui"
+      @fecharDialog="criar_nova_ui = false"
+      @limpar_copia="UI_para_copiar = null"
+      :UI_para_copiar="UI_para_copiar"
+    />
     <EditaUI
       v-if="dialog_editar_UI"
       :dialog="dialog_editar_UI"
@@ -73,6 +93,8 @@ export default {
     EditaUI
   },
   data: () => ({
+    UI_para_copiar: null,
+    criar_nova_ui: false,
     search: "",
     UI_clone: null,
     dialog_editar_UI: false,
@@ -82,10 +104,16 @@ export default {
     },
     headers: [
       {
+        align: "center",
+        width: "1%",
+        sortable: false,
+        class: ["table-header", "body-2", "font-weight-bold"]
+      },
+      {
         text: "Código",
         align: "center",
         value: "codigo",
-        width: "30%",
+        width: "29%",
         sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
@@ -94,6 +122,7 @@ export default {
         value: "titulo",
         align: "center",
         width: "50%",
+        sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
@@ -101,6 +130,7 @@ export default {
         value: "classesAssociadas",
         align: "center",
         width: "20%",
+        sortable: false,
         class: ["table-header", "body-2", "font-weight-bold"]
       }
     ]
@@ -113,6 +143,13 @@ export default {
         back_color = "#FFEBEE";
       }
       return back_color;
+    },
+    nova_ui_copia(item) {
+      this.UI_para_copiar = JSON.parse(JSON.stringify(item));
+
+      this.buscarTitulosClasses(this.UI_para_copiar);
+
+      this.criar_nova_ui = true;
     },
     editaClasses(UI_real, UI_copia) {
       let novo_classesAssociadas = [];
@@ -197,7 +234,7 @@ export default {
             UIs: [codigo_UI],
             notaPCA: null,
             notaDF: null,
-            pca: null,
+            pca: null, 
             formaContagem: {
               forma: null
             },
@@ -233,12 +270,12 @@ export default {
     editarUI(item) {
       this.UI_clone = JSON.parse(JSON.stringify(item));
 
-      this.buscarTitulosClasses();
+      this.buscarTitulosClasses(this.UI_clone);
 
       this.dialog_editar_UI = true;
     },
-    buscarTitulosClasses() {
-      this.UI_clone.classesAssociadas.forEach(rel => {
+    buscarTitulosClasses(UI) {
+      UI.classesAssociadas.forEach(rel => {
         let classe_relacionada = this.TS.classes.find(
           cl => cl.codigo == rel.codigo
         );

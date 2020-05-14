@@ -1,10 +1,10 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
+  <v-dialog v-model="dialogState" persistent>
+    <!-- <template v-slot:activator="{ on }">
       <v-btn color="#dee2f8" class="ma-2" v-on="on">
         <v-icon dark left>add</v-icon>Unidade de Instalação
       </v-btn>
-    </template>
+    </template>-->
     <v-card>
       <v-card-title class="indigo darken-1 white--text">Adicionar Unidade de Instalação</v-card-title>
       <br />
@@ -154,7 +154,6 @@
           </v-row>
           <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <EntidadesProdutoras :newSerie="UI.produtor" :RE="RE" />
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <!-- {{classesUI}}
           {{UI.classesAssociadas}}-->
           <v-row>
@@ -207,7 +206,7 @@
                     <v-combobox
                       :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório para associar série/subsérie!']"
                       v-model="cod"
-                      :items="getCodigos"
+                      :items="classes_processadas"
                       label="Código"
                       item-text="searchField"
                       item-value="codigo"
@@ -317,7 +316,7 @@
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="guardar">Guardar</v-btn>
       </v-card-actions>
     </v-card>
@@ -330,48 +329,21 @@ import EntidadesProdutoras from "@/components/rada/criacao/classes/partes/Entida
 import mixin_unidade_instalacao from "@/mixins/rada/mixin_unidade_instalacao";
 
 export default {
-  props: ["UIs", "RE", "classes"],
+  props: ["UIs", "RE", "classes", "dialog", "UI_para_copiar"],
   components: {
     EntidadesProdutoras
   },
   mixins: [mixin_unidade_instalacao],
-  computed: {
-    getCodigos() {
-      return this.classes
-        .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
-        .map(e => {
-          return {
-            codigo: e.codigo,
-            searchField: e.codigo + " - " + e.titulo
-          };
-        });
-    }
-  },
   data: () => ({
-    dialog: false,
-    UI: {
-      codigo: "",
-      codCota: "",
-      titulo: "",
-      dataInicial: null,
-      dataFinal: null,
-      produtor: {
-        tipologiasProdutoras: [],
-        entProdutoras: []
-      },
-      classesAssociadas: [],
-      descricao: "",
-      notas: "",
-      localizacao: ""
-    }
+    UI: null
   }),
   methods: {
-    remove: function(item) {
+    remove(item) {
       this.UI.classesAssociadas = this.UI.classesAssociadas.filter(e => {
         return e.codigo != item.codigo;
       });
     },
-    apagar: function() {
+    apagar() {
       this.existe_erros = false;
       this.erros = [];
 
@@ -392,7 +364,7 @@ export default {
       };
       this.$refs.formUI.resetValidation();
     },
-    guardar: function() {
+    guardar() {
       this.existe_erros = false;
       this.erros = [];
 
@@ -403,8 +375,8 @@ export default {
           associacao => delete associacao.titulo
         );
         this.UIs.push(Object.assign({}, this.UI));
-        this.dialog = false;
-        this.apagar();
+        this.dialogState = false;
+        // this.apagar();
       } else {
         this.recolherErros(this.UI);
       }
@@ -469,7 +441,7 @@ export default {
               formaContagem: {
                 forma: null
               },
-              justificacaoPCA: [],
+              justificacaoPCA: [], 
               df: null,
               justificacaoDF: [],
               eFilhoDe: null,
@@ -479,6 +451,29 @@ export default {
         }
       }
     }
+  },
+  created() {
+    this.UI =
+      this.UI_para_copiar != null
+        ? this.UI_para_copiar
+        : {
+            codigo: "",
+            codCota: "",
+            titulo: "",
+            dataInicial: null,
+            dataFinal: null,
+            produtor: {
+              tipologiasProdutoras: [],
+              entProdutoras: []
+            },
+            classesAssociadas: [],
+            descricao: "",
+            notas: "",
+            localizacao: ""
+          };
+  },
+  beforeDestroy() {
+    this.$emit("limpar_copia");
   }
 };
 </script>

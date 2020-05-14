@@ -9,7 +9,7 @@
       </v-col>
     </v-row>
     <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
-    <v-row v-if="!classe.UIs[0]">
+    <v-row>
       <!-- DATA INICIAL -->
       <v-col md="3" sm="3">
         <div class="info-label">Data Inicial</div>
@@ -36,7 +36,7 @@
       </v-col>
     </v-row>
     <!-- UNIDADES DE INSTALAÇÃO -->
-    <v-row v-if="classe.dataInicial == null && classe.dataFinal == null">
+    <v-row>
       <v-col md="3" sm="3">
         <div class="info-label">Unidades de Instalação</div>
       </v-col>

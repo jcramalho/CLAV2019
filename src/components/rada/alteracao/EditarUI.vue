@@ -160,7 +160,6 @@
           </v-row>
           <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <EntidadesProdutoras :newSerie="UI_clone.produtor" :RE="RE" />
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <v-row>
             <v-col md="3" sm="2">
               <div class="info-label">Série/Subsérie</div>
@@ -335,8 +334,7 @@ import mixin_unidade_instalacao from "@/mixins/rada/mixin_unidade_instalacao";
 export default {
   props: ["UI_clone", "RE", "classes", "dialog"],
   data: () => ({
-    toDelete: false,
-    classes_processadas: []
+    toDelete: false
   }),
   components: {
     EntidadesProdutoras
@@ -375,26 +373,6 @@ export default {
         this.recolherErros(this.UI_clone);
       }
     }
-  },
-  computed: {
-    dialogState: {
-      get() {
-        return this.dialog;
-      },
-      set(val) {
-        this.$emit("fecharDialog", false);
-      }
-    }
-  },
-  created() {
-    this.classes_processadas = this.classes
-      .filter(e => e.tipo == "Série" || e.tipo == "Subsérie")
-      .map(e => {
-        return {
-          codigo: e.codigo,
-          searchField: e.codigo + " - " + e.titulo
-        };
-      });
   }
 };
 </script>
