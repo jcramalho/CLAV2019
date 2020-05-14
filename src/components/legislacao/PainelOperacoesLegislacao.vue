@@ -157,6 +157,20 @@ export default {
         numeroErros++;
       }
 
+      // Data revogação
+      if (
+        this.l.data !== "" &&
+        this.l.data !== null &&
+        this.l.data !== undefined &&
+        this.l.dataRevogacao !== "" &&
+        this.l.dataRevogacao !== null &&
+        this.l.dataRevogacao !== undefined
+      ) {
+        if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
+          numeroErros++;
+        }
+      }
+
       return numeroErros;
     },
 
@@ -166,6 +180,20 @@ export default {
       // Sumário
       if (dados.sumario === "" || dados.sumario === null) {
         numeroErros++;
+      }
+
+      // Data revogação
+      if (
+        dados.data !== "" &&
+        dados.data !== null &&
+        dados.data !== undefined &&
+        dados.dataRevogacao !== "" &&
+        dados.dataRevogacao !== null &&
+        dados.dataRevogacao !== undefined
+      ) {
+        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -186,6 +214,7 @@ export default {
               break;
 
             case "Alteração":
+              erros = this.validarLegislacaoAlteracao(dataObj);
               for (const key in dataObj) {
                 if (
                   typeof dataObj[key] === "string" &&
@@ -195,7 +224,6 @@ export default {
                 }
               }
 
-              erros = this.validarLegislacaoAlteracao(dataObj);
               break;
 
             default:

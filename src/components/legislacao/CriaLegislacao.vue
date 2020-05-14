@@ -102,6 +102,20 @@
             </v-col>
           </v-row>
 
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">
+                Data de revogação
+              </div>
+            </v-col>
+            <v-col>
+              <SelecionarData
+                :d="legislacao.dataRevogacao"
+                @dataSelecionada="legislacao.dataRevogacao = $event"
+              />
+            </v-col>
+          </v-row>
+
           <!-- Blocos expansivos -->
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
@@ -199,7 +213,9 @@ export default {
         entidadesSel: [],
         processosSel: [],
         codigo: "",
+        dataRevogacao: "",
         estado: "Ativo",
+        // Revogado
       },
 
       tiposDiploma: [],

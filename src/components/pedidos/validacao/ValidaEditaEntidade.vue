@@ -352,28 +352,28 @@ export default {
               pedido.objeto.dados
             );
           }
-
-          const estado = "Validado";
-
-          let dadosUtilizador = this.$verifyTokenUser();
-
-          const novaDistribuicao = {
-            estado: estado,
-            responsavel: dadosUtilizador.email,
-            data: new Date(),
-            despacho: dados.mensagemDespacho,
-          };
-
-          pedido.estado = estado;
-          pedido.token = this.$store.state.token;
-
-          await this.$request("put", "/pedidos", {
-            pedido: pedido,
-            distribuicao: novaDistribuicao,
-          });
-
-          this.$router.go(-1);
         }
+
+        const estado = "Validado";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
       } catch (e) {
         this.erroPedido = true;
 

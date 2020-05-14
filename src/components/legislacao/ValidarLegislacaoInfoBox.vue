@@ -136,6 +136,25 @@ export default {
         numeroErros++;
       }
 
+      // Data Revogação
+      if (
+        this.l.data !== "" &&
+        this.l.data !== null &&
+        this.l.data !== undefined &&
+        this.l.dataRevogacao !== "" &&
+        this.l.dataRevogacao !== null &&
+        this.l.dataRevogacao !== undefined
+      ) {
+        if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de revogação",
+            mensagem:
+              "A data de revogação tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
+      }
+
       return numeroErros;
     },
 
@@ -151,6 +170,25 @@ export default {
         numeroErros++;
       }
 
+      // Data Revogação
+      if (
+        dados.data !== "" &&
+        dados.data !== null &&
+        dados.data !== undefined &&
+        dados.dataRevogacao !== "" &&
+        dados.dataRevogacao !== null &&
+        dados.dataRevogacao !== undefined
+      ) {
+        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de revogação",
+            mensagem:
+              "A data de revogação tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
+      }
+
       return numeroErros;
     },
 
@@ -164,6 +202,7 @@ export default {
           break;
 
         case "Alteração":
+          erros = this.validarLegislacaoAlteracao(dataObj);
           for (const key in dataObj) {
             if (
               typeof dataObj[key] === "string" &&
@@ -173,7 +212,6 @@ export default {
             }
           }
 
-          erros = this.validarLegislacaoAlteracao(dataObj);
           break;
 
         default:
