@@ -60,15 +60,48 @@ export default new Router({
     },
     // Routes da documentação de apoio
     {
-      path: "/documentacaoApoio/criar/tecnico_cientifico",
-      name: "criaEntradaCientifico",
-      component: () => import("./views/documentacaoApoio/CientificaCria.vue"),
+      path: "/documentacaoApoio/criar/classe",
+      name: "criaClasseApoio",
+      component: () => import("./views/documentacaoApoio/ApoioClasseCria.vue"),
       meta: { levels: [4, 5, 6, 7] }
     },
     {
-      path: "/documentacaoApoio/importar/tecnico_cientifico/",
-      name: "importaEntradaCientifico",
-      component: () => import("./views/documentacaoApoio/CientificaImporta.vue"),
+      path: "/documentacaoApoio/criar/entrada/:classe",
+      name: "criaEntradaApoio",
+      component: () => import("./views/documentacaoApoio/ApoioEntradaCria.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/documentacaoApoio/criar/elemento/:classe/:entrada",
+      name: "criaElementoApoio",
+      component: () =>
+        import("./views/documentacaoApoio/ApoioElementoCria.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/documentacaoApoio/editar/classe/:classe/",
+      name: "editarClasseApoio",
+      component: () => import("./views/documentacaoApoio/ApoioClasseEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/documentacaoApoio/editar/entrada/:classe/:entrada",
+      name: "editarEntradaApoio",
+      component: () =>
+        import("./views/documentacaoApoio/ApoioEntradaEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/documentacaoApoio/editar/elemento/:classe/:entrada/:elemento",
+      name: "editarElementoApoio",
+      component: () =>
+        import("./views/documentacaoApoio/ApoioElementoEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/documentacaoApoio/criar/tecnico_cientifico",
+      name: "criaEntradaCientifico",
+      component: () => import("./views/documentacaoApoio/CientificaCria.vue"),
       meta: { levels: [4, 5, 6, 7] }
     },
     {
