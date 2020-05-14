@@ -40,10 +40,19 @@
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
               <td>
-                <br />
-                <ul v-if="!!props.item.classesAssociadas[0]">
-                  <li v-for="(classe, i) in props.item.classesAssociadas" :key="i">{{classe.codigo}}</li>
-                </ul>
+                <v-list v-if="!!props.item.classesAssociadas[0]" dense :style="'background-color:' + isComplete(props.item)">
+                  <v-list-item v-for="(classe, i) in props.item.classesAssociadas" :key="i">
+                    <v-list-item-icon>
+                      <img
+                        v-if="classe.tipo == 'Série'"
+                        style="width:23px; height:30px"
+                        :src="svg_sr"
+                      />
+                      <img v-else style="width:23px; height:30px" :src="svg_ssr" />
+                    </v-list-item-icon>
+                    <v-list-item-content>{{classe.codigo + " - " + buscarTituloTable(classe.codigo)}}</v-list-item-content>
+                  </v-list-item>
+                </v-list>
                 <p v-else>Não tem classes associadas!</p>
               </td>
             </tr>
@@ -94,6 +103,8 @@ export default {
   },
   data: () => ({
     UI_para_copiar: null,
+    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     criar_nova_ui: false,
     search: "",
     UI_clone: null,
@@ -113,7 +124,7 @@ export default {
         text: "Código",
         align: "center",
         value: "codigo",
-        width: "29%",
+        width: "9%",
         sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
@@ -121,7 +132,7 @@ export default {
         text: "Título",
         value: "titulo",
         align: "center",
-        width: "50%",
+        width: "45%",
         sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
@@ -129,13 +140,18 @@ export default {
         text: "Classes Associadas",
         value: "classesAssociadas",
         align: "center",
-        width: "20%",
+        width: "45%",
         sortable: false,
         class: ["table-header", "body-2", "font-weight-bold"]
       }
     ]
   }),
   methods: {
+    buscarTituloTable(codigo) {
+      let classe = this.TS.classes.find(cl => cl.codigo == codigo);
+
+      return classe.titulo;
+    },
     isComplete(UI) {
       let back_color = "#FAFAFA";
 
@@ -234,7 +250,7 @@ export default {
             UIs: [codigo_UI],
             notaPCA: null,
             notaDF: null,
-            pca: null, 
+            pca: null,
             formaContagem: {
               forma: null
             },

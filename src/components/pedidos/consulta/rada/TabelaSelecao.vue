@@ -42,10 +42,10 @@
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
-            <tr :style="'text-align: center'" @click="showUI(props.item)">
+            <tr style="text-align: center; background-color:#ffffff" @click="showUI(props.item)">
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
-              <td>
+              <!-- <td>
                 <br/>
                 <ul v-if="!!props.item.classesAssociadas[0]">
                   <li
@@ -53,6 +53,30 @@
                     :key="i"
                   >{{ classe.codigo }}</li>
                 </ul>
+                <p v-else>Não tem classes associadas!</p>
+              </td>-->
+              <td>
+                <v-list
+                  v-if="!!props.item.classesAssociadas[0]"
+                  dense
+                  
+                >
+                  <v-list-item
+                    v-for="(classe, i) in props.item.classesAssociadas"
+                    :key="i"
+                    align-center
+                  >
+                    <v-list-item-icon>
+                      <img
+                        v-if="classe.tipo == 'Série'"
+                        style="width:23px; height:30px"
+                        :src="svg_sr"
+                      />
+                      <img v-else style="width:23px; height:30px" :src="svg_ssr" />
+                    </v-list-item-icon>
+                    <v-list-item-content>{{classe.codigo + " - " + classe.titulo}}</v-list-item-content>
+                  </v-list-item>
+                </v-list>
                 <p v-else>Não tem classes associadas!</p>
               </td>
             </tr>
@@ -122,7 +146,7 @@ export default {
         text: "Código",
         align: "center",
         value: "codigo",
-        width: "30%",
+        width: "10%",
         sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
@@ -130,14 +154,14 @@ export default {
         text: "Título",
         value: "titulo",
         align: "center",
-        width: "50%",
+        width: "45%",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
         text: "Classes Associadas",
         value: "classesAssociadas",
         align: "center",
-        width: "20%",
+        width: "45%",
         sortable: false,
         class: ["table-header", "body-2", "font-weight-bold"]
       }
@@ -275,7 +299,7 @@ export default {
           cl => cl.codigo == rel.codigo
         );
 
-        rel["titulo"] = classe_relacionada.titulo;
+        this.$set(rel, "titulo", classe_relacionada.titulo);
       });
     }
   }
