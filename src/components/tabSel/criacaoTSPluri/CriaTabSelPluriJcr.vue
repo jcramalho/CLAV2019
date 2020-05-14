@@ -8,7 +8,7 @@
           >
         </v-app-bar>
         <v-card-text class="panel-body">
-          <v-container grid-list-md fluid>
+          
             <v-stepper v-model="stepNo" vertical>
               <v-stepper-step :complete="stepNo > 1" step="1">
                 Entidades abrangidas pela TS
@@ -65,12 +65,12 @@
                 </span>
               </v-stepper-step>
               <v-stepper-content step="2">
-                <v-flex xs12 sm6 md10>
+                <v-col xs12 sm6 md10>
                   <v-text-field
                     placeholder="Designação da Nova Tabela de Seleção"
                     v-model="tabelaSelecao.designacao"
                   ></v-text-field>
-                </v-flex>
+                </v-col>
                 <v-btn color="primary" @click="stepNo = 3;"
                   >Continuar</v-btn>
               </v-stepper-content>
@@ -79,9 +79,8 @@
                 Seleção dos Processos
               </v-stepper-step>
               <v-stepper-content step="3">
-                <v-row wrap v-if="listaProcessosReady && entSelReady">
-                  <v-card class="mx-auto">
-                    <v-card-title>Selecione os processos</v-card-title>
+                <v-col v-if="listaProcessosReady && entSelReady">
+                  <v-card>
                     <v-card-text>
                       <ListaProcessos
                             :listaProcs="listaProcessos"
@@ -89,11 +88,9 @@
                       />
                     </v-card-text>
                   </v-card>
-                </v-row>
+                </v-col>
 
-                <v-row v-else>
-                  <v-col>Ainda não foi possível carregar a informação dos Processos...</v-col>
-                </v-row>
+                <v-col v-else>Ainda não foi possível carregar a informação dos Processos...</v-col>
 
               </v-stepper-content>
 
@@ -110,85 +107,17 @@
                   color="primary"
                   @click="guardarTrabalho()"
                   >Guardar trabalho
-                  <v-dialog v-model="pendenteGuardado" width="60%">
-                    <v-card>
-                      <v-card-title>Trabalho pendente guardado</v-card-title>
-                      <v-card-text>
-                        <p>
-                          Os seus dados foram guardados para que possa retomar o
-                          trabalho mais tarde.
-                        </p>
-                        <p>Registado com os seguintes dados:</p>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-list-item-title>Identificador</v-list-item-title>
-                            <v-list-item-subtitle>{{ pendente._id }}</v-list-item-subtitle>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-list-item-title>Criador</v-list-item-title>
-                            <v-list-item-subtitle>{{ pendente.criadoPor }}</v-list-item-subtitle>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-list-item-title>Data de criação</v-list-item-title>
-                            <v-list-item-subtitle>{{ pendente.dataCriacao }}</v-list-item-subtitle>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-list-item-title>Data da última atualização</v-list-item-title>
-                            <v-list-item-subtitle>{{ pendente.dataAtualizacao }}</v-list-item-subtitle>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-card-text>
-                      <v-card-actions>
-                        <v-spacer />
-                        <v-btn color="primary" dark @click="$router.push('/')"
-                          >Fechar</v-btn
-                        >
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
+                  <DialogPendenteGuardado v-if="pendenteGuardado" :pendente="pendente"/>
                 </v-btn>
                 <v-btn
                   dark
-                  text
                   color="red darken-4"
                   @click="eliminarTabela = true"
-                  >Cancelar criação
-                  <v-dialog v-model="eliminarTabela" persistent max-width="320">
-                    <v-card>
-                      <v-card-title class="headline"
-                        >Eliminar Tabela</v-card-title
-                      >
-                      <v-card-text>
-                        Pretende eliminar todo o trabalho realizado?
-                      </v-card-text>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="red" text @click="eliminarTabela = false">
-                          Cancelar
-                        </v-btn>
-                        <v-btn
-                          color="primary"
-                          text
-                          @click="
-                            eliminarTS();
-                            eliminarTabela = false;
-                          "
-                        >
-                          Confirmar
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
+                  >Sair / Cancelar
+                  <DialogCancelar v-if="eliminarTabela" @continuar="eliminarTabela=false"/>
                 </v-btn>
               </v-row>
             </v-stepper>
-          </v-container>
         </v-card-text>
       </v-card>
     </v-col>
@@ -197,10 +126,12 @@
 
 <script>
 import ListaProcessos from "@/components/tabSel/criacaoTSPluri/ListaProcessos.vue";
+import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPendenteGuardado.vue";
+import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
 
 export default {
   components: {
-    ListaProcessos
+    ListaProcessos, DialogPendenteGuardado, DialogCancelar
   },
   data() {
     return {
@@ -348,6 +279,9 @@ export default {
     guardarTrabalho: async function(){
       try {
         var userBD = this.$verifyTokenUser();
+        // Guardam-se apenas os processos que foram alterados
+        // Ao carregar será preciso fazer Merge com a LC
+        this.listaProcessos.procs = this.listaProcessos.procs.filter(p => p.edited);
         this.tabelaSelecao.listaProcessos = this.listaProcessos;
         var pendenteParams = {
           numInterv: 1,
@@ -374,11 +308,6 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       
-    },
-    
-    // Elimina todo o trabalho feito até esse momento
-    eliminarTS: async function() {
-      this.$router.push("/");
     }
   },
 
