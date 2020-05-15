@@ -6,12 +6,58 @@ export default {
     erros: [],
     panels: [0, 0, 0],
     isMultiple: false,
-    dialog: false,
     classesHierarquia: []
   }),
+  computed: {
+    dialogState: {
+      get() {
+        return this.dialog;
+      },
+      set(val) {
+        this.$emit("fecharDialog", false);
+      }
+    }
+  },
   methods: {
-    close() {
-      this.dialog = false;
+    buscarTitulosClasses(classe) {
+      for (let i = 0; i < classe.relacoes.length; i++) {
+        let classe_relacionada = this.classes.find(
+          cl => cl.codigo == classe.relacoes[i].serieRelacionada.codigo
+        );
+
+        classe.relacoes[i].serieRelacionada["titulo"] =
+          classe_relacionada.titulo;
+
+        let criterio = null;
+        if (classe.relacoes[i].relacao == "Suplemento para") {
+          criterio = classe.justificacaoPCA.find(
+            e => e.tipo == "Critério de Utilidade Administrativa"
+          );
+        }
+
+        if (classe.relacoes[i].relacao == "Complementar de") {
+          criterio = classe.justificacaoDF.find(
+            e => e.tipo == "Critério de Complementaridade Informacional"
+          );
+        }
+
+        if (
+          classe.relacoes[i].relacao == "Síntese de" ||
+          classe.relacoes[i].relacao == "Sintetizado por"
+        ) {
+          criterio = classe.justificacaoDF.find(
+            e => e.tipo == "Critério de Densidade Informacional"
+          );
+        }
+
+        if (criterio != null) {
+          let relacaoCriterio = criterio.relacoes.find(
+            e => e.codigo == classe_relacionada.codigo
+          );
+
+          this.$set(relacaoCriterio, "titulo", classe_relacionada.titulo);
+        }
+      }
     },
     validar_relacoes_sintese(classe, classes) {
       let relacoes_sintese = classe.relacoes.filter(
@@ -328,7 +374,7 @@ export default {
 
           this.classes.push(clone_nova_classe);
 
-          this.dialog = false;
+          this.dialogState = false;
           this.apagar();
         } else {
           this.isMultiple = false;

@@ -1,10 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
-      <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
-        <v-icon dark left>add</v-icon>Série
-      </v-btn>
-    </template>
+  <v-dialog v-model="dialogState" persistent>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">Adicionar Classe Série</v-card-title>
       <br />
@@ -95,7 +90,7 @@
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="save(newSerie)">Criar</v-btn>
       </v-card-actions>
     </v-card>
@@ -126,37 +121,12 @@ export default {
     "RE",
     "UIs",
     "formaContagem",
-    "legislacaoProcessada"
+    "legislacaoProcessada",
+    "dialog",
+    "classe_para_copiar"
   ],
   data: () => ({
-    newSerie: {
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: null,
-      dataFinal: null,
-      tUA: null,
-      tSerie: null,
-      suporte: null,
-      UIs: [],
-      medicao: null,
-      localizacao: [],
-      entProdutoras: [],
-      tipologiasProdutoras: [],
-      legislacao: [],
-      relacoes: [],
-      pca: null,
-      notaPCA: null,
-      notaDF: null,
-      formaContagem: {
-        forma: null
-      },
-      justificacaoPCA: [],
-      df: null,
-      justificacaoDF: [],
-      eFilhoDe: null,
-      tipo: "Série"
-    }
+    newSerie: null
   }),
   methods: {
     apagar: function() {
@@ -256,24 +226,52 @@ export default {
       if (!Boolean(this.erros[0])) {
         this.erros.push("Datas Inválidas;");
       }
-    },
-    filterSeries: function() {
-      this.isMultiple = false;
-      this.panels = [0, 0, 0];
-
-      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas.
-      this.validar_relacoes_sintese(this.newSerie, this.classes);
-
-      this.classesHierarquia = this.classes
-        .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo))
-        .map(classe => {
-          return {
-            searchField: classe.codigo + " - " + classe.titulo,
-            codigo: classe.codigo
-          };
-        });
     }
+  },
+  created() {
+    this.buscarTitulosClasses(this.classe_para_copiar);
+
+    this.newSerie =
+      this.classe_para_copiar != null
+        ? this.classe_para_copiar
+        : {
+            codigo: "",
+            titulo: "",
+            descricao: "",
+            dataInicial: null,
+            dataFinal: null,
+            tUA: null,
+            tSerie: null,
+            suporte: null,
+            UIs: [],
+            medicao: null,
+            localizacao: [],
+            entProdutoras: [],
+            tipologiasProdutoras: [],
+            legislacao: [],
+            relacoes: [],
+            pca: null,
+            notaPCA: null,
+            notaDF: null,
+            formaContagem: {
+              forma: null
+            },
+            justificacaoPCA: [],
+            df: null,
+            justificacaoDF: [],
+            eFilhoDe: null,
+            tipo: "Série"
+          };
+
+    this.classesHierarquia = this.classes
+      .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+      .sort((a, b) => a.codigo.localeCompare(b.codigo))
+      .map(classe => {
+        return {
+          searchField: classe.codigo + " - " + classe.titulo,
+          codigo: classe.codigo
+        };
+      });
   }
 };
 </script>

@@ -1,16 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
-      <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
-        <v-icon dark left>add</v-icon>Subsérie
-      </v-btn>
-    </template>
+  <v-dialog v-model="dialogState" persistent>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">Adicionar Classe Subsérie</v-card-title>
       <br />
       <v-card-text>
         <v-form ref="form" :lazy-validation="false">
-          <Identificacao :newSerie="newSubSerie" :classes="classes" />
+          <Identificacao :newSerie="newSubserie" :classes="classes" />
 
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel popout focusable>
@@ -18,7 +13,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSubSerie" :UIs="UIs" :RE="RE" />
+                <ZonaDescritiva :newSerie="newSubserie" :UIs="UIs" :RE="RE" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -27,7 +22,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <ZonaContexto
-                  :newSerie="newSubSerie"
+                  :newSerie="newSubserie"
                   :classes="classes"
                   :formaContagem="formaContagem"
                 />
@@ -40,7 +35,7 @@
               <v-expansion-panel-content>
                 <ZonaDecisoesAvaliacao
                   :rules="true"
-                  :newSerie="newSubSerie"
+                  :newSerie="newSubserie"
                   :classes="classes"
                   :formaContagem="formaContagem"
                 />
@@ -59,7 +54,7 @@
             <v-col cols="12" sm="9" md="0">
               <v-autocomplete
                 :disabled="temCriterioLegal"
-                v-model="newSubSerie.eFilhoDe"
+                v-model="newSubserie.eFilhoDe"
                 :items="classesHierarquia"
                 :rules="[v => !!v || 'Este campo é obrigatório.']"
                 item-value="codigo"
@@ -91,8 +86,8 @@
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close">Voltar</v-btn>
-        <v-btn color="success" class="mr-4" @click="save(newSubSerie)">Criar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="success" class="mr-4" @click="save(newSubserie)">Criar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -116,36 +111,24 @@ export default {
     ZonaDecisoesAvaliacao
   },
   mixins: [mixin_criacao_serie_subserie],
-  props: ["classes", "UIs", "formaContagem", "RE"],
+  props: [
+    "classes",
+    "UIs",
+    "formaContagem",
+    "RE",
+    "dialog",
+    "classe_para_copiar"
+  ],
   computed: {
     temCriterioLegal() {
       return (
-        this.newSubSerie.justificacaoDF.some(e => e.tipo == "Critério Legal") ||
-        this.newSubSerie.justificacaoPCA.some(e => e.tipo == "Critério Legal")
+        this.newSubserie.justificacaoDF.some(e => e.tipo == "Critério Legal") ||
+        this.newSubserie.justificacaoPCA.some(e => e.tipo == "Critério Legal")
       );
     }
   },
   data: () => ({
-    newSubSerie: {
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      dataInicial: null,
-      dataFinal: null,
-      UIs: [],
-      relacoes: [],
-      pca: null,
-      notaPCA: null,
-      notaDF: null,
-      formaContagem: {
-        forma: null
-      },
-      justificacaoPCA: [],
-      df: null,
-      justificacaoDF: [],
-      eFilhoDe: null,
-      tipo: "Subsérie"
-    }
+    newSubserie: null
   }),
   methods: {
     apagar: function() {
@@ -154,7 +137,7 @@ export default {
       this.isMultiple = false;
       this.panels = [0, 0, 0];
 
-      this.newSubSerie = {
+      this.newSubserie = {
         codigo: "",
         titulo: "",
         descricao: "",
@@ -180,49 +163,49 @@ export default {
     recolherErros() {
       this.existe_erros = true;
 
-      if (!this.newSubSerie.codigo) {
+      if (!this.newSubserie.codigo) {
         this.erros.push("Código;");
       }
 
-      if (!this.newSubSerie.titulo) {
+      if (!this.newSubserie.titulo) {
         this.erros.push("Título;");
       }
 
-      if (!this.newSubSerie.descricao) {
+      if (!this.newSubserie.descricao) {
         this.erros.push("Descrição;");
       }
 
       if (
-        !!this.newSubSerie.UIs[0] == false &&
-        (!this.newSubSerie.dataInicial || !this.newSubSerie.dataFinal)
+        !!this.newSubserie.UIs[0] == false &&
+        (!this.newSubserie.dataInicial || !this.newSubserie.dataFinal)
       ) {
         this.erros.push("Datas Extremas ou Unidades de Instalação;");
       }
 
-      if (!this.newSubSerie.eFilhoDe) {
+      if (!this.newSubserie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
-      if (!Boolean(this.newSubSerie.pca)) {
-        if (!Boolean(this.newSubSerie.notaPCA)) {
+      if (!Boolean(this.newSubserie.pca)) {
+        if (!Boolean(this.newSubserie.notaPCA)) {
           this.erros.push(
             "Prazo de Conservação Administrativa ou nota sobre o PCA;"
           );
         }
       }
 
-      if (!Boolean(this.newSubSerie.df)) {
-        if (!Boolean(this.newSubSerie.notaDF)) {
+      if (!Boolean(this.newSubserie.df)) {
+        if (!Boolean(this.newSubserie.notaDF)) {
           this.erros.push("Destino Final ou nota sobre o DF;");
         }
       }
 
-      if (!this.newSubSerie.formaContagem.forma) {
+      if (!this.newSubserie.formaContagem.forma) {
         this.erros.push("Forma de Contagem;");
       } else {
         if (
-          this.newSubSerie.formaContagem.forma ==
+          this.newSubserie.formaContagem.forma ==
             "vc_pcaFormaContagem_disposicaoLegal" &&
-          !this.newSubSerie.formaContagem.subforma
+          !this.newSubserie.formaContagem.subforma
         ) {
           this.erros.push("Subforma de Contagem;");
         }
@@ -231,24 +214,44 @@ export default {
       if (!Boolean(this.erros[0])) {
         this.erros.push("Datas Inválidas;");
       }
-    },
-    filterSeries() {
-      this.panels = [0, 0, 0];
-      this.isMultiple = false;
-
-      // Se o utilizador voltar atrás as relações de sintese de e sintetizado que são verificadas na inserção são removidas.
-      this.validar_relacoes_sintese(this.newSubSerie, this.classes);
-
-      this.classesHierarquia = this.classes
-        .filter(classe => classe.tipo == "Série")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo))
-        .map(classe => {
-          return {
-            searchField: classe.codigo + " - " + classe.titulo,
-            codigo: classe.codigo
-          };
-        });
     }
+  },
+  created() {
+    this.buscarTitulosClasses(this.classe_para_copiar);
+
+    this.newSubserie =
+      this.classe_para_copiar != null
+        ? this.classe_para_copiar
+        : {
+            codigo: "",
+            titulo: "",
+            descricao: "",
+            dataInicial: null,
+            dataFinal: null,
+            UIs: [],
+            relacoes: [],
+            pca: null,
+            notaPCA: null,
+            notaDF: null,
+            formaContagem: {
+              forma: null
+            },
+            justificacaoPCA: [],
+            df: null,
+            justificacaoDF: [],
+            eFilhoDe: null,
+            tipo: "Subsérie"
+          };
+
+    this.classesHierarquia = this.classes
+      .filter(classe => classe.tipo == "Série")
+      .sort((a, b) => a.codigo.localeCompare(b.codigo))
+      .map(classe => {
+        return {
+          searchField: classe.codigo + " - " + classe.titulo,
+          codigo: classe.codigo
+        };
+      });
   }
 };
 </script>

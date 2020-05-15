@@ -32,7 +32,7 @@
               <td @click.stop>
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" @click="nova_ui_copia(props.item)">file_copy</v-icon>
+                    <v-icon small v-on="on" @click="nova_ui_copia(props.item)">file_copy</v-icon>
                   </template>
                   <span>Criar nova UI baseada nos campos de {{props.item.codigo}}!</span>
                 </v-tooltip>
