@@ -315,7 +315,7 @@ export default {
 
     abortar: async function(){
       try{
-        if(pendenteGuardado){
+        if(this.pendenteGuardado){
           var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
         }
         this.$router.push("/");
