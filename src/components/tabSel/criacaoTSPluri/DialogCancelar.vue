@@ -13,7 +13,7 @@
                 <v-btn
                     color="primary"
                     text
-                    @click="$router.push('/'); dialog = false;"
+                    @click="$emit('sair'); dialog = false;"
                 >
                     Sim, confirmo.
                 </v-btn>

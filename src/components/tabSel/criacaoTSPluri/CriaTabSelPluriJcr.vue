@@ -114,7 +114,10 @@
                   color="red darken-4"
                   @click="eliminarTabela = true"
                   >Sair / Cancelar
-                  <DialogCancelar v-if="eliminarTabela" @continuar="eliminarTabela=false"/>
+                  <DialogCancelar 
+                    v-if="eliminarTabela" 
+                    @continuar="eliminarTabela=false"
+                    @sair="abortar"/>
                 </v-btn>
               </v-row>
             </v-stepper>
@@ -308,6 +311,18 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       
+    },
+
+    abortar: async function(){
+      try{
+        if(pendenteGuardado){
+          var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
+        }
+        this.$router.push("/");
+      }
+      catch(e){
+        console.log("Erro ao eliminar o pendente: " + e);
+      }
     }
   },
 
