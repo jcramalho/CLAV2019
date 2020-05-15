@@ -305,7 +305,7 @@ export default {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " \n " + l.sumario);
+          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
         }
         return myPortarias;
       } catch (error) {
@@ -362,8 +362,6 @@ export default {
         }
       }
       if(this.erro==="") {
-
-        this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
 
         var user = this.$verifyTokenUser();
 
