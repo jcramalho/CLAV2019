@@ -378,6 +378,9 @@ export default {
         this.dialogState = false;
         // this.apagar();
       } else {
+        if (!this.UI.codigo || this.UIs.some(e => e.codigo == this.UI.codigo)) {
+          this.erros.push("Código;");
+        }
         this.recolherErros(this.UI);
       }
     },
@@ -441,7 +444,7 @@ export default {
               formaContagem: {
                 forma: null
               },
-              justificacaoPCA: [], 
+              justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
               eFilhoDe: null,

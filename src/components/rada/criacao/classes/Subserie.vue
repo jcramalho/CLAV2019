@@ -163,7 +163,10 @@ export default {
     recolherErros() {
       this.existe_erros = true;
 
-      if (!this.newSubserie.codigo) {
+      if (
+        !this.newSubserie.codigo ||
+        this.classes.some(e => e.codigo == this.newSubserie.codigo)
+      ) {
         this.erros.push("Código;");
       }
 
@@ -217,7 +220,9 @@ export default {
     }
   },
   created() {
-    this.buscarTitulosClasses(this.classe_para_copiar);
+    if (this.classe_para_copiar) {
+      this.buscarTitulosClasses(this.classe_para_copiar);
+    }
 
     this.newSubserie =
       this.classe_para_copiar != null

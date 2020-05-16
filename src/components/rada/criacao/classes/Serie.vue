@@ -168,7 +168,10 @@ export default {
     recolherErros() {
       this.existe_erros = true;
 
-      if (!this.newSerie.codigo) {
+      if (
+        !this.newSerie.codigo ||
+        this.classes.some(e => e.codigo == this.newSerie.codigo)
+      ) {
         this.erros.push("Código;");
       }
 
@@ -192,7 +195,7 @@ export default {
         this.erros.push("Suporte;");
       }
 
-      if (!this.newSerie.medicao) {
+      if (!this.newSerie.medicao || new Number(this.newSerie.medicao) < 0) {
         this.erros.push("Medição;");
       }
 
@@ -229,7 +232,9 @@ export default {
     }
   },
   created() {
-    this.buscarTitulosClasses(this.classe_para_copiar);
+    if (this.classe_para_copiar) {
+      this.buscarTitulosClasses(this.classe_para_copiar);
+    }
 
     this.newSerie =
       this.classe_para_copiar != null

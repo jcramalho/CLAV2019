@@ -56,10 +56,6 @@ export default {
     recolherErros(UI) {
       this.existe_erros = true;
 
-      if (!UI.codigo) {
-        this.erros.push("Código;");
-      }
-
       if (!UI.titulo) {
         this.erros.push("Título;");
       }

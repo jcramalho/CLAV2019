@@ -77,7 +77,7 @@ export default {
             rel =>
               rel.relacao != relacoes_sintese[i].relacao ||
               rel.serieRelacionada.codigo !=
-                relacoes_sintese[i].serieRelacionada.codigo
+              relacoes_sintese[i].serieRelacionada.codigo
           );
 
           this.remove_criterio_densidade_informacional(
@@ -179,7 +179,7 @@ export default {
         }
       }
     },
-    adicionarUIs: function(clone_nova_classe) {
+    adicionarUIs: function (clone_nova_classe) {
       for (let i = 0; i < clone_nova_classe.UIs.length; i++) {
         let UI = this.UIs.find(e => e.codigo == clone_nova_classe.UIs[i]);
 
@@ -212,7 +212,7 @@ export default {
         }
       }
     },
-    relacoes_simetricas: function(clone_nova_classe) {
+    relacoes_simetricas: function (clone_nova_classe) {
       for (let i = 0; i < clone_nova_classe.relacoes.length; i++) {
         let classe_relacionada = this.classes.find(
           e => e.codigo == clone_nova_classe.relacoes[i].serieRelacionada.codigo
@@ -383,5 +383,8 @@ export default {
         }
       }, 1);
     }
+  },
+  beforeDestroy() {
+    this.$emit('limpar_copia');
   }
 };
