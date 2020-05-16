@@ -3,47 +3,31 @@
     <span style="display:none;">{{colorSwitch}}</span>
     <v-row>
       <v-col cols="2">
-        <div class="info-label">Fonte de Legitimação</div>
+        <div class="info-label" :key="cores.legislacao" :style="'background-color: '+cores.legislacao">Fonte de Legitimação</div>
       </v-col>
-      <v-col class="mr-2">
-        <v-text-field
-          solo
-          readonly
-          hide-details
-          :background-color="cores.legislacao"
-          :value="p.objeto.dados.ae.legislacao"
-        >
-          <template slot="append">
-            <v-icon color="green" @click="cores.legislacao='green lighten-3'">check</v-icon>
-            <v-icon color="red" @click="cores.legislacao='red lighten-3'">clear</v-icon>
-            <!--<v-icon @click="">create</v-icon>-->
-            <v-icon>create</v-icon>
-          </template>
-        </v-text-field>
+      <v-col class="mt-3">
+        {{p.objeto.dados.ae.legislacao}}
+      </v-col>
+      <v-col cols="1">
+        <v-icon color="green" @click="cores.legislacao='#C8E6C9'">check</v-icon>
+        <v-icon color="red" @click="cores.legislacao='#FFCDD2'">clear</v-icon>
+        <v-icon @click="abrirEditor('Fonte de Legitimação',-1)">create</v-icon>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="2">
-        <div class="info-label">Fundo</div>
+        <div class="info-label"  :key="cores.fundo" :style="'background-color: '+cores.fundo">Fundo</div>
       </v-col>
       <v-col class="mr-2">
-          <v-text-field
+          <div
             v-for="(f, i) in p.objeto.dados.ae.fundo" :key="i"
-            class="mb-1"
-            solo
-            readonly
-            hide-details
-            :background-color="cores.fundo[i]"
-            :value="f"
-          >
-            <template slot="append">
-              <v-icon color="green" @click="colorSwitch++; cores.fundo[i]='green lighten-3'">check</v-icon>
-              <v-icon color="red" @click="colorSwitch++; cores.fundo[i]='red lighten-3'">clear</v-icon>
-              <!--<v-icon @click="">create</v-icon>-->
-              <v-icon>create</v-icon>
-            </template>
-          </v-text-field>
+          >{{f}}
+          </div>
       </v-col>
+      <v-col cols="1">
+              <v-icon color="green" @click="colorSwitch++; cores.fundo='#C8E6C9'">check</v-icon>
+              <v-icon color="red" @click="colorSwitch++; cores.fundo='#FFCDD2'">clear</v-icon>
+           </v-col>
     </v-row>
 
     <v-expansion-panels popout>
@@ -58,7 +42,7 @@
               no-action
             >
               <template v-slot:activator>
-                <v-list-item-content class="info-label">
+                <v-list-item-content class="info-label" :key="cores.zonaControlo[index]" :style="'background-color: '+cores.zonaControlo[index]">
                   <v-list-item-title
                     v-if="item.codigo && item.referencia"
                     v-text="
@@ -78,299 +62,124 @@
               </template>
               <v-list-item-content>
                 <v-list-item-title>
-                  <v-row v-if="item.codigo">
-                    <v-col cols="4">
-                      <div class="info-label">Código da Classe</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        :value="item.codigo"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].classe='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].classe='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.referencia">
-                    <v-col cols="4">
-                      <div class="info-label">Referência</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        :value="item.referencia"
-                      />
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.titulo">
-                    <v-col cols="4">
-                      <div class="info-label">Título</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        :value="item.titulo"
-                      />
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.prazoConservacao">
-                    <v-col cols="4">
-                      <div class="info-label">Prazo de Conservação Administrativa</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        v-if="item.prazoConservacao=='1'"
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        :value="item.prazoConservacao+' Ano'"
-                      />
-                      <v-text-field
-                        v-else
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        :value="item.prazoConservacao+' Anos'"
-                      />
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.destino">
-                    <v-col cols="4">
-                      <div class="info-label">Destino Final</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        v-if="item.destino === 'E'"
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        value="Eliminação"
-                      />
-                      <v-text-field
-                        v-else-if="item.destino === 'C'"
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        value="Conservação"
-                      />
-                      <v-text-field
-                        v-else
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        :value="item.destino"
-                      />
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.ni">
-                    <v-col cols="4">
-                      <div class="info-label">Natureza de intervenção</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].classe"
-                        :value="item.ni"
-                      />
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="item.dono">
-                    <v-col cols="4">
-                      <div class="info-label">Donos do PN</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        v-for="(d, i) in item.dono"
-                        :key="i"
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].dono[i]"
-                        :value="d"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].dono[i]='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].dono[i]='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="4">
-                      <div class="info-label">Data de Início</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].dataInicio"
-                        :value="item.dataInicio"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].dataInicio='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].dataInicio='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="4">
-                      <div class="info-label">Data de Fim</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].dataFim"
-                        :value="item.dataFim"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].dataFim='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].dataFim='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="4">
-                      <div class="info-label">Medição das UI em papel (m.l.)</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        v-if="item.uiPapel"
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].uiPapel"
-                        :value="item.uiPapel"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiPapel='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiPapel='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                      <v-text-field
-                        v-else
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].uiPapel"
-                        value="0"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiPapel='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiPapel='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="4">
-                      <div class="info-label">Medição das UI em digital (Gb)</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        v-if="item.uiDigital"
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].uiDigital"
-                        :value="item.uiDigital"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiDigital='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiDigital='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                      <v-text-field
-                        v-else
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].uiDigital"
-                        value="0"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiDigital='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiDigital='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="4">
-                      <div class="info-label">Medição das UI noutros suportes</div>
-                    </v-col>
-                    <v-col class="mr-2">
-                      <v-text-field
-                        v-if="item.uiOutros"
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].uiOutros"
-                        :value="item.uiOutros"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiOutros='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiOutros='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                      <v-text-field
-                        v-else
-                        solo
-                        readonly
-                        hide-details
-                        :background-color="cores.zonaControlo[index].uiOutros"
-                        value="0"
-                      >
-                        <template slot="append">
-                          <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].uiOutros='green lighten-3'">check</v-icon>
-                          <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].uiOutros='red lighten-3'">clear</v-icon>
-                          <!--<v-icon @click="">create</v-icon>-->
-                          <v-icon>create</v-icon>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
+                  <table class="consulta mx-5">
+                    <tr v-if="item.codigo">
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">Código da Classe</div>
+                      </td>
+                      <td style="width:70%;">
+                        {{ item.codigo }}
+                      </td>
+                      <td style="width:10%">
+                        <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index]='#C8E6C9'">check</v-icon>
+                        <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index]='#FFCDD2'">clear</v-icon>  
+                      </td>
+                    </tr>
+                    <tr v-if="item.referencia">
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">Referência</div>
+                      </td>
+                      <td style="width:70%;">
+                        {{ item.referencia }}
+                      </td>
+                      <td style="width:10%"></td>
+                    </tr>
+                    <tr v-if="item.titulo">
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">Título</div>
+                      </td>
+                      <td style="width:80%;">
+                        {{ item.titulo }}
+                      </td>
+                    </tr>
+                    <tr v-if="item.prazoConservacao">
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">Prazo de Conservação Administrativa</div>
+                      </td>
+                      <td style="width:80%;">
+                        {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
+                      </td>
+                    </tr>
+                    <tr v-if="item.destino">
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">Destino Final</div>
+                      </td>
+                      <td v-if="item.destino === 'E'" style="width:80%;">
+                        Eliminação
+                      </td>
+                      <td v-else-if="item.destino === 'C'" style="width:80%;">
+                        Conservação
+                      </td>
+                      <td v-else style="width:80%;">
+                        {{ item.destino }}
+                      </td>
+                    </tr>
+                    <tr v-if="item.ni && item.destino === 'C'">
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">
+                          Natureza de intervenção
+                        </div>
+                      </td>
+                      <td style="width:80%;">{{ item.ni }}</td>
+                    </tr>
+                    <tr v-if="item.dono && item.destino === 'C'">
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">Donos do PN</div>
+                      </td>
+                      <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
+                    </tr>
+                    <tr>
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">Data de Início</div>
+                      </td>
+                      <td style="width:80%;">
+                        {{ item.dataInicio }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">Data de Fim</div>
+                      </td>
+                      <td style="width:80%;">{{ item.dataFim }}</td>
+                    </tr>
+                    <tr>
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">
+                          Medição das UI em papel (m.l.)
+                        </div>
+                      </td>
+                      <td style="width:70%;" v-if="item.uiPapel">{{ item.uiPapel }}</td>
+                      <td style="width:70%;" v-else>0</td>
+                      <td style="width:10%;">
+                        <v-icon @click="abrirEditor('Medição das UI em papel (m.l.)',index)">create</v-icon>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">
+                          Medição das UI em digital (Gb)
+                        </div>
+                      </td>
+                      <td style="width:70%;" v-if="item.uiDigital">{{ item.uiDigital }}</td>
+                      <td style="width:70%;" v-else>0</td>
+                      <td style="width:10%;">
+                        <v-icon @click="abrirEditor('Medição das UI em digital (Gb)',index)">create</v-icon>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width:20%;">
+                        <div class="info-label" :style="'background-color: '+cores.zonaControlo[index]">
+                          Medição das UI noutros suportes
+                        </div>
+                      </td>
+                      <td style="width:70%;" v-if="item.uiOutros">{{ item.uiOutros }}</td>
+                      <td style="width:70%;" v-else>0</td>
+                      <td style="width:10%;">
+                        <v-icon @click="abrirEditor('Medição das UI noutros suportes',index)">create</v-icon>
+                      </td>
+                    </tr>
+                  </table>
+                  
                   <div class="ma-1">
                     <v-data-table
                       :headers="cabecalho"
@@ -381,20 +190,19 @@
                       :search="search"
                     >
                     <template v-slot:top>
-                      <v-toolbar flat :color="cores.zonaControlo[index].agregacoes">
+                      <v-toolbar flat :key="cores.zonaControlo[index]" :color="cores.zonaControlo[index]">
                         <span style="font-weight: 400; color: #1a237e; font-weight: bold;">Lista de Agregações
                         <v-btn
                           rounded
                           small
-                          class="ml-2 indigo accent-4 white--text"
+                          class="ml-2 indigo darken-4 white--text"
+                          @click="abrirEditor('Agregação',index)"
                         >
                           Adicionar Agregação
                         </v-btn>
 
                         </span>
                         <v-spacer />
-                        <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index].agregacoes='green lighten-3'">check</v-icon>
-                        <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index].agregacoes='red lighten-3'">clear</v-icon>
                         <v-text-field
                           v-model="search"
                           append-icon="search"
@@ -442,11 +250,117 @@
         @devolverPedido="despacharPedido($event)"
       />
     </v-row>
+
+    <!--Dialog de Edição -->
+    <v-dialog v-model="editar" width="60%" hide-overlay>
+      <v-card>
+        <v-card>
+          <v-card-title class="primary darken-3 title white--text" dark>
+            <span v-if="editarCampo=='Agregação'">Adicionar Agregação</span>
+            <span v-else>Edição do campo: {{editarCampo}}</span> 
+          </v-card-title>
+          <v-card-text class="mt-4">
+            <v-row class="ma-2" v-if="editarCampo=='Fonte de Legitimação'">
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="portaria"
+                v-model="legislacao"
+                solo
+                dense
+              ></v-autocomplete>
+            </v-row>
+            <v-row class="ma-2" v-else-if="editarCampo=='Agregação'">
+              <v-col>
+                <v-text-field
+                  hint="Exemplo: AS_DGLAB_1/2019"
+                  label="Insira um código para a agregação"
+                  v-model="codigo"
+                  solo
+                  clearable
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  hint="Exemplo: Auditoria à Entidade A"
+                  label="Insira um título para a agregação"
+                  v-model="titulo"
+                  solo
+                  clearable
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  hint="Exemplo: 2009"
+                  label="Insira o ano de contagem do PCA"
+                  v-model="dataContagem"
+                  solo
+                  clearable
+                />
+              </v-col>
+              <v-col>
+                <v-select
+                  label="Selecione a Natureza de Intervenção"
+                  :items="natureza"
+                  v-model="ni"
+                  solo
+                  dense
+                />
+              </v-col>
+            </v-row>
+            <v-row class="ma-2" v-else>
+              <v-text-field
+                hint="Exemplo: 11.50"
+                label="Insira a medição de UI"
+                v-model="medicao"
+                solo
+                clearable
+              />
+            </v-row>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer />
+            <v-btn text color="red accent-4" @click="close()">
+              Voltar
+            </v-btn>
+            <v-btn class="indigo accent-4" dark @click="adicionar()">
+              <span v-if="editarCampo=='Agregação'">Adicionar</span>
+              <span v-else>Alterar</span>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="erroDialog" width="700" persistent>
+      <v-card outlined>
+        <v-card-title class="red darken-4 title white--text" dark
+          >Erro: Não foi possível editar o campo {{editarCampo}}</v-card-title
+        >
+
+        <v-card-text>
+          <span
+            class="subtitle-1"
+            style="white-space: pre-wrap"
+            v-html="erro"
+          ></span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="red darken-4" text @click="erroDialog = false"
+            >Fechar</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
+const help = require("@/config/help").help;
+
 export default {
   props: ["p"],
 
@@ -460,6 +374,19 @@ export default {
       search: "",
       cores: null,
       colorSwitch: 0,
+      editar: false,
+      editarCampo: "",
+      editarIndex: 0,
+      codigo: "",
+      titulo: "",
+      dataContagem: "",
+      ni: "",
+      natureza: ["Dono","Participante"],
+      medicao: "",
+      legislacao: "",
+      portaria: [],
+      erro: null,
+      erroDialog: false,
       cabecalho: [
         { text: "Código", align: "left", sortable: false, value: "codigo", width: "20%"},
         { text: "Título", align: "left", value: "titulo", width: "30%" },
@@ -475,31 +402,40 @@ export default {
 
   async created() {
     this.cores = {
-      legislacao: "white",
-      fundo: [],
+      legislacao: "#e8eaf6",
+      fundo: "#e8eaf6",
       zonaControlo: []
     };
-    for (var i in this.p.objeto.dados.ae.fundo)
-      this.cores.fundo.push("white")
-    var index = 0;
-    for (var zc of this.p.objeto.dados.ae.zonaControlo) {
-      this.cores.zonaControlo[index] = {
-        classe: "white",
-        dono: [],
-        dataInicio: "white",
-        dataFim: "white",
-        uiPapel: "white",
-        uiDigital: "white",
-        uiOutros: "white",
-        agregacoes: "#e8eaf6"
-      };
-      for (var d in zc.dono)
-        this.cores.zonaControlo[index].dono.push("white")
-      index++;
+    for (var zc in this.p.objeto.dados.ae.zonaControlo) {
+      this.cores.zonaControlo.push("#e8eaf6")
+    }
+    try {
+      if(this.tipo === "AE PGD")
+        var response = await this.$request("get", "/legislacao?fonte=PGD");
+      else if(this.tipo === "AE RADA")
+        var response = await this.$request("get", "/legislacao?fonte=RADA");
+      else
+        var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+      this.portaria = await this.prepararLeg(response.data);
+    }
+    catch (e) {
+      this.portaria = [];
     }
   },
 
   methods: {
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
+
     async despacharPedido(dados) {
       try {
         const estado = "Devolvido";
@@ -573,7 +509,115 @@ export default {
     },
 
     close() {
-      this.dialogtipologias = false;
+      this.editar = false;
+    },
+
+    abrirEditor(campo,index) {
+      this.editarCampo=campo;
+      this.editarIndex=index;
+      if(campo==="Agregação") {
+        var df = this.p.objeto.dados.ae.zonaControlo[index].destino;
+        if(df == "C" || df == "Conservação") {
+          this.natureza = ["Participante"]
+          this.ni = "Participante"
+        }
+      }
+      this.editar=true;
+    },
+
+    adicionar() {
+      const reUI = /^-?\d*(\.\d\d?)?$/;
+      if(this.editarCampo === "Fonte de Legitimação") {
+        if(!this.legislacao) {
+          this.erro = "O campo da Fonte de Legislação têm de ser preenchido";
+          this.erroDialog = true;
+        }
+        else
+          this.p.objeto.dados.ae.legislacao = this.legislacao;
+        this.legislacao = "";
+        this.editarCampo = "";
+        this.editarIndex = -1;
+        this.editar = false;
+      }
+      else if(this.editarCampo === "Medição das UI em papel (m.l.)") {
+        if(this.medicao && !reUI.test(this.medicao)) {
+          this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
+          this.erroDialog = true;
+        } else
+          this.p.objeto.dados.ae.zonaControlo[this.editarIndex].uiPapel = this.medicao;
+        this.medicao = "";
+        this.editarCampo = "";
+        this.editarIndex = -1;
+        this.editar = false;
+      }
+      else if(this.editarCampo === "Medição das UI em digital (Gb)") {
+        if(this.medicao && !reUI.test(this.medicao)) {
+          this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
+          this.erroDialog = true;
+        } else
+          this.p.objeto.dados.ae.zonaControlo[this.editarIndex].uiDigital = this.medicao;
+        this.medicao = "";
+        this.editarCampo = "";
+        this.editarIndex = -1;
+        this.editar = false;
+      }
+      else if(this.editarCampo === "Medição das UI noutros suportes") {
+        if(this.medicao && !reUI.test(this.medicao)) {
+          this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
+          this.erroDialog = true;
+        } else
+          this.p.objeto.dados.ae.zonaControlo[this.editarIndex].uiOutros = this.medicao;
+        this.medicao = "";
+        this.editarCampo = "";
+        this.editarIndex = -1;
+        this.editar = false;
+      }
+      else {
+        const re = /\d{4}/;
+        var currentTime = new Date();
+        var result = this.p.objeto.dados.ae.zonaControlo[this.editarIndex].agregacoes.filter(
+          ag => ag.codigo == this.codigo
+        );
+        if (!this.codigo || !this.titulo || !this.dataContagem) {
+          this.erro = help.AutoEliminacao.Erros.FaltaCamposAg;
+          this.erroDialog = true;
+        } else if (result.length > 0) {
+          this.erro = help.AutoEliminacao.Erros.CodigoAg;
+          this.erroDialog = true;
+        } else if (!re.test(this.dataContagem)) {
+          this.erro = help.AutoEliminacao.Erros.DataContagemP;
+          this.erroDialog = true;
+        } else {
+          var res =
+            parseInt(this.p.objeto.dados.ae.zonaControlo[this.editarIndex].prazoConservacao) +
+            parseInt(this.dataContagem) + 1;
+          var res2 =
+            parseInt(this.dataContagem) -
+            parseInt(this.p.objeto.dados.ae.zonaControlo[this.editarIndex].dataInicio);
+          if (res > currentTime.getFullYear()) {
+            this.erro = help.AutoEliminacao.Erros.DataContagem;
+            this.erroDialog = true;
+          } else if (res2 < 0) {
+            this.erro = help.AutoEliminacao.Erros.DataContagemInicio;
+            this.erroDialog = true;
+          } else {
+            this.p.objeto.dados.ae.zonaControlo[this.editarIndex].agregacoes.unshift({
+              codigo: this.codigo,
+              titulo: this.titulo,
+              dataContagem: this.dataContagem,
+              ni: this.ni
+            });
+            this.codigo = "";
+            this.titulo = "";
+            this.dataContagem = "";
+            this.ni = "";
+            this.natureza = ["Dono","Participante"];
+            this.editarCampo = "";
+            this.editarIndex = -1;
+            this.editar = false;
+          }
+        }
+      }
     }
   }
 };
@@ -615,7 +659,7 @@ export default {
   color: #1a237e; /* indigo darken-4 */
   font-weight: 400;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  /*background-color: #e8eaf6;  indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }

@@ -40,6 +40,7 @@
             <AnalisaAE
               v-else-if="pedido.objeto.tipo.includes('AE ') || pedido.objeto.tipo === 'Auto de Eliminação'"
               :p="pedido"
+              :tipo="pedido.objeto.tipo"
             />
 
             <AnalisaDefault v-else :p="pedido" />

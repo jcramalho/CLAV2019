@@ -281,8 +281,6 @@ export default {
       }
       if(this.erro==="") {
 
-        this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
-
         var user = this.$verifyTokenUser();
 
         this.auto.responsavel = user.email;
