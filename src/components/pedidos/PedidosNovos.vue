@@ -268,7 +268,7 @@ export default {
       this.$emit("distribuir", pedidoProps);
     },
 
-    showPedido: function(pedido) {
+    showPedido(pedido) {
       localStorage.setItem(
         "pesquisa-pedidos",
         JSON.stringify({
