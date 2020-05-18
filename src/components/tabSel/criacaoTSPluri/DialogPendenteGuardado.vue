@@ -35,7 +35,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
-                <v-btn color="primary" dark @click="dialog=false">Fechar</v-btn>
+                <v-btn color="primary" dark @click="dialog=false; $emit('continuar');">Fechar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

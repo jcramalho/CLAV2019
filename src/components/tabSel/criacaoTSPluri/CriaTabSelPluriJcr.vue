@@ -100,15 +100,34 @@
               
                 <v-btn v-if="stepNo>2" color="primary" @click=" stepNo = 2;">Voltar</v-btn>
 
-                <v-btn v-if="stepNo>2" color="primary" @click="submeterTS()">Submeter</v-btn>
+                <v-btn 
+                  v-if="stepNo>2" 
+                  color="primary" 
+                  @click="validarTS">
+                    Validar TS
+                  <DialogValidacaoOK 
+                    v-if="validacaoTerminada && numeroErros == 0"
+                    @continuar="fechoValidacao" />
+
+                  <DialogValidacaoErros 
+                    v-if="validacaoTerminada && numeroErros > 0"
+                    :erros="mensagensErro"
+                    @continuar="fechoValidacao" />
+                </v-btn>
 
                 <v-btn
                   v-if="stepNo>2"
                   color="primary"
                   @click="guardarTrabalho()"
                   >Guardar trabalho
-                  <DialogPendenteGuardado v-if="pendenteGuardado" :pendente="pendente"/>
+                  <DialogPendenteGuardado 
+                    v-if="pendenteGuardado" 
+                    :pendente="pendente"
+                    @continuar="pendenteGuardado = false"/>
                 </v-btn>
+
+                <v-btn v-if="stepNo>2" color="primary" @click="submeterTS()">Submeter</v-btn>
+
                 <v-btn
                   dark
                   color="red darken-4"
@@ -131,10 +150,13 @@
 import ListaProcessos from "@/components/tabSel/criacaoTSPluri/ListaProcessos.vue";
 import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPendenteGuardado.vue";
 import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
+import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
+import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
 
 export default {
   components: {
-    ListaProcessos, DialogPendenteGuardado, DialogCancelar
+    ListaProcessos, DialogPendenteGuardado, DialogCancelar,
+    DialogValidacaoOK, DialogValidacaoErros
   },
   data() {
     return {
@@ -162,6 +184,11 @@ export default {
       listaProcessos: {},
       // Lista com os códigos dos processos específicos das entidades selecionadas
       listaCodigosEsp: [],
+
+      // Tratamento de erros da validação
+      mensagensErro: [],
+      numeroErros: 0,
+      validacaoTerminada: false,
       
       // Pendente criado na BD
       pendente: {},
@@ -284,10 +311,11 @@ export default {
         var userBD = this.$verifyTokenUser();
         // Guardam-se apenas os processos que foram alterados
         // Ao carregar será preciso fazer Merge com a LC
-        this.listaProcessos.procs = this.listaProcessos.procs.filter(p => p.edited);
-        this.tabelaSelecao.listaProcessos = this.listaProcessos;
+        // É preciso forçar uma cópia para não perder a lista corrente
+        this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
+
         var pendenteParams = {
-          numInterv: 1,
           acao: "Criação",
           tipo: "TS Pluriorganizacional",
           objeto: this.tabelaSelecao,
@@ -296,15 +324,21 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await this.$request(
-          "post",
-          "/pendentes",
-          pendenteParams
-        );
+        // É preciso testar se há um Pendente criado para não criar um novo
+        if(this.pendente._id){
+          pendenteParams._id = this.pendente._id;
+          pendenteParams.numInterv = this.pendente.numInterv++;
+          var response = await this.$request("put", "/pendentes", pendenteParams);
+        }
+        else{
+          pendenteParams.numInterv = 1;
+          var response = await this.$request("post", "/pendentes", pendenteParams);
+        }
+
         this.pendente = response.data;
         this.pendenteGuardado = true;
       } catch (err) {
-        return err;
+        console.log("Erro ao guardar trabalho: " + err);
       }
     },
 
@@ -315,7 +349,7 @@ export default {
 
     abortar: async function(){
       try{
-        if(this.pendenteGuardado){
+        if(this.pendente._id){
           var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
         }
         this.$router.push("/");
@@ -323,6 +357,188 @@ export default {
       catch(e){
         console.log("Erro ao eliminar o pendente: " + e);
       }
+    },
+
+    // Funções de validação --------------------------------------
+    // Validação da TS
+    validarTS: async function(){
+      var processosSelecionados = this.listaProcessos.procs.filter(p => p.edited);
+      for(let i = 0; i < processosSelecionados.length; i++){
+        await this.validaBlocoDescritivo(processosSelecionados[i]);
+      }
+      this.validacaoTerminada = true;
+    },
+
+    fechoValidacao: function(){
+      this.validacaoTerminada = false;
+      this.numeroErros = 0;
+      this.mensagensErro = [];
+    },
+
+    notaDuplicada: function(notas) {
+      if (notas.length > 1) {
+        var lastNota = notas[notas.length - 1].nota;
+        var duplicados = notas.filter(n => n.nota == lastNota);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
+      }
+    },
+
+    exemploDuplicado: function(exemplos) {
+      if (exemplos.length > 1) {
+        var lastExemplo = exemplos[exemplos.length - 1].exemplo;
+        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
+      }
+    },
+
+    tiDuplicado: function(termos) {
+      if (termos.length > 1) {
+        var lastTermo = termos[termos.length - 1].termo;
+        var duplicados = termos.filter(t => t.termo == lastTermo);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
+      }
+    },
+
+    validaDescricao: function(p){
+      // Descrição
+      if (p.descricao == "") {
+        this.mensagensErro.push({
+          sobre: "Descrição",
+          mensagem: "A descrição não pode ser vazia."
+        });
+        this.numeroErros++;
+      }
+    },
+
+    validaNotasAp: async function(p){
+      // Notas de Aplicação
+      for (let i = 0; i < p.notasAp.length; i++) {
+        try {
+          var existeNotaAp = await this.$request(
+            "get",
+            "/notasAp/notaAp?valor=" +
+              encodeURIComponent(this.c.notasAp[i].nota)
+          );
+          if (existeNotaAp.data) {
+            this.mensagensErro.push({
+              sobre: "Nota de Aplicação(" + (i + 1) + ")",
+              mensagem: "[" + p.notasAp[i].nota + "] já existente na BD."
+            });
+            this.numeroErros++;
+          }
+        } catch (e) {
+          this.numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da NotaAp."
+          });
+        }
+      }
+      if (this.notaDuplicada(p.notasAp)) {
+        this.mensagensErro.push({
+          sobre: "Nota de Aplicação(" + (i + 1) + ")",
+          mensagem: "A última nota encontra-se duplicada."
+        });
+        this.numeroErros++;
+      }
+    },
+
+    validaExemplosNotasAp: async function(p){
+      // Exemplos de notas de Aplicação
+      for (let i = 0; i < p.exemplosNotasAp.length; i++) {
+        try {
+          var existeExemploNotaAp = await this.$request(
+            "get",
+            "/exemplosNotasAp/exemploNotaAp?valor=" +
+              encodeURIComponent(p.exemplosNotasAp[i].exemplo)
+          );
+          if (existeExemploNotaAp.data) {
+            this.mensagensErro.push({
+              sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
+              mensagem: "[" + p.exemplosNotasAp[i].exemplo + "] já existente na BD."
+            });
+            this.numeroErros++;
+          }
+        } catch (e) {
+          this.numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência do exemploNotaAp."
+          });
+        }
+      }
+      if (this.exemploDuplicado(p.exemplosNotasAp)) {
+        this.mensagensErro.push({
+          sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
+          mensagem: "O último exemplo encontra-se duplicado."
+        });
+        this.numeroErros++;
+      }
+    },
+
+    validaNotasEx: async function(p){
+      // Notas de Exclusão
+      if (this.notaDuplicada(p.notasEx)) {
+        this.mensagensErro.push({
+          sobre: "Nota de Exclusão(" + p.notasEx.length + ")",
+          mensagem: "A última nota encontra-se duplicada."
+        });
+        this.numeroErros++;
+      }
+    },
+
+    validaTIs: async function(p){
+      // Termos de Índice
+      for (let i = 0; i < p.termosInd.length; i++) {
+        try {
+          var existeTI = await this.$request(
+            "get",
+            "/termosIndice/termoIndice?valor=" +
+              encodeURIComponent(p.termosInd[i].termo)
+          );
+          if (existeTI.data) {
+            this.mensagensErro.push({
+              sobre: "Termo de Índice(" + (i + 1) + ")",
+              mensagem:
+                "[" + p.termosInd[i].termo + "] já existente na BD."
+            });
+            this.numeroErros++;
+          }
+        } catch (e) {
+          this.numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência do Termo de índice."
+          });
+        }
+      }
+      if (this.tiDuplicado(p.termosInd)) {
+        this.numeroErros++;
+        this.mensagensErro.push({
+          sobre: "Termo de Índice(" + (i + 1) + ")",
+          mensagem: "O último ti encontra-se duplicado."
+        });
+      }
+    },
+
+    validaBlocoDescritivo: async function(p){
+      this.validaDescricao(p);
+      this.validaNotasAp(p);
+      this.validaExemplosNotasAp(p);
+      this.validaNotasEx(p);
+      this.validaTIs(p);
     }
   },
 

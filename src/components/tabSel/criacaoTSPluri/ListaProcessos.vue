@@ -1,12 +1,12 @@
 <template>
   <div>
     <v-row justify="space-around">
-      <v-btn @click="filtro=''">Todos</v-btn>
-      <v-btn @click="filtro='Processo Comum'">Comuns</v-btn>
-      <v-btn @click="filtro='Processo Específico'">Específicos</v-btn>
-      <v-btn @click="filtro='Processo Restante'">Restantes</v-btn>
+      <v-btn color="primary" @click="filtro=''">Todos</v-btn>
+      <v-btn color="primary" @click="filtro='Processo Comum'">Comuns</v-btn>
+      <v-btn color="primary" @click="filtro='Processo Específico'">Específicos</v-btn>
+      <v-btn color="primary" @click="filtro='Processo Restante'">Restantes</v-btn>
       <!--v-btn color="indigo darken-2" dark @click="filtro='Selecionado'">Selecionados</v-btn-->
-      <v-btn @click="filtro='Pré-Selecionado'">Pré-Selecionados</v-btn>
+      <v-btn color="primary" @click="filtro='Pré-Selecionado'">Pré-Selecionados</v-btn>
     </v-row>
 
     <v-data-table
