@@ -271,15 +271,17 @@
               @click="goRoute('/', 'O que é')"
               style="cursor:pointer;"
             >
-              <p class="title-letters-md font-weight-bold">CLAV</p>
+              <p class="title-letters-md font-weight-bold d-inline">CLAV</p>
             </v-toolbar-title>
             <v-toolbar-title
               v-if="this.$store.state.name != ''"
               @click="goRoute('/', 'O que é')"
               style="cursor:pointer;"
             >
-              <p class="title-letters-md font-weight-bold">CLAV -</p>
-              <p class="subtitle-letter-md font-weight-light text-wrap">
+              <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
+              <p
+                class="subtitle-letter-md font-weight-light d-inline text-wrap"
+              >
                 {{ this.$store.state.entidade.split("_")[1] }}
               </p>
             </v-toolbar-title>
