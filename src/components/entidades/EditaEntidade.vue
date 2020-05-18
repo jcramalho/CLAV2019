@@ -94,6 +94,7 @@
                   <v-col>
                     <SelecionarData
                       :d="entidade.dataCriacao"
+                      :label="'Data: AAAA-MM-DD'"
                       @dataSelecionada="entidade.dataCriacao = $event"
                     />
                   </v-col>
@@ -135,6 +136,7 @@
                   <v-col>
                     <SelecionarData
                       :d="entidade.dataExtincao"
+                      :label="'Data: AAAA-MM-DD'"
                       @dataSelecionada="entidade.dataExtincao = $event"
                     />
                   </v-col>

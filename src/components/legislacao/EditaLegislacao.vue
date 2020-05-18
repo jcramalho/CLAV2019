@@ -53,6 +53,7 @@
             <v-col>
               <SelecionarData
                 :d="legislacao.dataRevogacao"
+                :label="'Data: AAAA-MM-DD'"
                 @dataSelecionada="legislacao.dataRevogacao = $event"
               />
             </v-col>

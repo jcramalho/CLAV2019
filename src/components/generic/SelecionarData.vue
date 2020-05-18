@@ -12,7 +12,7 @@
       <v-text-field
         filled
         v-model="dataValor"
-        label="Data: AAAA-MM-DD"
+        :label="label"
         prepend-icon="event"
         readonly
         v-on="on"
@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  props: ["d"],
+  props: ["d","label"],
 
   data() {
     return {
