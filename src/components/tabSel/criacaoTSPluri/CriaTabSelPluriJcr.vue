@@ -202,6 +202,9 @@ export default {
       mensagensErro: [],
       numeroErros: 0,
       validacaoTerminada: false,
+      notasApSet: [],
+      exemplosNotasApSet: [],
+      termosIndSet: [],
       
       // Pendente criado na BD
       pendente: {},
@@ -412,6 +415,13 @@ export default {
     // Validação da TS
     validarTS: async function(){
       var processosSelecionados = this.listaProcessos.procs.filter(p => p.edited);
+      // Criação das estruturas auxiliares para a validação
+      for(let i = 0; i < processosSelecionados.length; i++){
+        this.notasApSet = this.notasApSet.concat(processosSelecionados[i].notasAp);
+        this.exemplosNotasApSet = this.exemplosNotasApSet.concat(processosSelecionados[i].exemplosNotasAp);
+        this.termosIndSet = this.termosIndSet.concat(processosSelecionados[i].termosInd);
+      }
+      // Valida-se agora o bloco descritivo
       for(let i = 0; i < processosSelecionados.length; i++){
         await this.validaBlocoDescritivo(processosSelecionados[i]);
       }
@@ -422,6 +432,47 @@ export default {
       this.validacaoTerminada = false;
       this.numeroErros = 0;
       this.mensagensErro = [];
+    },
+
+    validaBlocoDescritivo: async function(p){
+      this.validaDescricao(p);
+      this.validaNotasAp(p);
+      this.validaExemplosNotasAp(p);
+      this.validaNotasEx(p);
+      this.validaTIs(p);
+    },
+
+    validaDescricao: function(p){
+      // Descrição
+      if (p.descricao == "") {
+        this.mensagensErro.push({
+          sobre: "Descrição",
+          mensagem: "A descrição não pode ser vazia."
+        });
+        this.numeroErros++;
+      }
+    },
+
+    validaNotasAp: async function(p){
+      var index;
+      for (let i = 0; i < p.notasAp.length; i++) {
+        index = this.notasApSet.findIndex(n => n.nota == p.notasAp[i].nota);
+          
+          if (index != -1) {
+            this.mensagensErro.push({
+              sobre: "Nota de Aplicação(" + (i + 1) + ")",
+              mensagem: "[" + p.notasAp[i].nota + "] já existente na BD."
+            });
+            this.numeroErros++;
+          }
+      }
+      if (this.notaDuplicada(p.notasAp)) {
+        this.mensagensErro.push({
+          sobre: "Nota de Aplicação(" + (i + 1) + ")",
+          mensagem: "A última nota encontra-se duplicada."
+        });
+        this.numeroErros++;
+      }
     },
 
     notaDuplicada: function(notas) {
@@ -460,73 +511,17 @@ export default {
       }
     },
 
-    validaDescricao: function(p){
-      // Descrição
-      if (p.descricao == "") {
-        this.mensagensErro.push({
-          sobre: "Descrição",
-          mensagem: "A descrição não pode ser vazia."
-        });
-        this.numeroErros++;
-      }
-    },
-
-    validaNotasAp: async function(p){
-      // Notas de Aplicação
-      for (let i = 0; i < p.notasAp.length; i++) {
-        try {
-          var existeNotaAp = await this.$request(
-            "get",
-            "/notasAp/notaAp?valor=" +
-              encodeURIComponent(this.c.notasAp[i].nota)
-          );
-          if (existeNotaAp.data) {
-            this.mensagensErro.push({
-              sobre: "Nota de Aplicação(" + (i + 1) + ")",
-              mensagem: "[" + p.notasAp[i].nota + "] já existente na BD."
-            });
-            this.numeroErros++;
-          }
-        } catch (e) {
-          this.numeroErros++;
-          this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da NotaAp."
-          });
-        }
-      }
-      if (this.notaDuplicada(p.notasAp)) {
-        this.mensagensErro.push({
-          sobre: "Nota de Aplicação(" + (i + 1) + ")",
-          mensagem: "A última nota encontra-se duplicada."
-        });
-        this.numeroErros++;
-      }
-    },
-
     validaExemplosNotasAp: async function(p){
-      // Exemplos de notas de Aplicação
+      var index;
       for (let i = 0; i < p.exemplosNotasAp.length; i++) {
-        try {
-          var existeExemploNotaAp = await this.$request(
-            "get",
-            "/exemplosNotasAp/exemploNotaAp?valor=" +
-              encodeURIComponent(p.exemplosNotasAp[i].exemplo)
-          );
-          if (existeExemploNotaAp.data) {
+        index = this.exemplosNotasApSet.findIndex(e => e.exemplo == p.exemplosNotasAp[i].exemplo);
+        if (index != -1) {
             this.mensagensErro.push({
               sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
               mensagem: "[" + p.exemplosNotasAp[i].exemplo + "] já existente na BD."
             });
             this.numeroErros++;
           }
-        } catch (e) {
-          this.numeroErros++;
-          this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência do exemploNotaAp."
-          });
-        }
       }
       if (this.exemploDuplicado(p.exemplosNotasAp)) {
         this.mensagensErro.push({
@@ -550,27 +545,16 @@ export default {
 
     validaTIs: async function(p){
       // Termos de Índice
+      var index;
       for (let i = 0; i < p.termosInd.length; i++) {
-        try {
-          var existeTI = await this.$request(
-            "get",
-            "/termosIndice/termoIndice?valor=" +
-              encodeURIComponent(p.termosInd[i].termo)
-          );
-          if (existeTI.data) {
-            this.mensagensErro.push({
+        index = this.termosIndSet.findIndex(t => termo == p.termosInd[i].termo);
+        if (index != -1) {
+          this.mensagensErro.push({
               sobre: "Termo de Índice(" + (i + 1) + ")",
               mensagem:
                 "[" + p.termosInd[i].termo + "] já existente na BD."
-            });
-            this.numeroErros++;
-          }
-        } catch (e) {
-          this.numeroErros++;
-          this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência do Termo de índice."
           });
+          this.numeroErros++;
         }
       }
       if (this.tiDuplicado(p.termosInd)) {
@@ -580,14 +564,6 @@ export default {
           mensagem: "O último ti encontra-se duplicado."
         });
       }
-    },
-
-    validaBlocoDescritivo: async function(p){
-      this.validaDescricao(p);
-      this.validaNotasAp(p);
-      this.validaExemplosNotasAp(p);
-      this.validaNotasEx(p);
-      this.validaTIs(p);
     }
   },
 

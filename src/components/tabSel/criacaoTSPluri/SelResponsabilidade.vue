@@ -11,7 +11,7 @@
             :items="p.entidades"
             :headers="headers"
             class="ma-1"
-            hide-default-footer
+            :footer-props="footerConfig"
           >
             <template v-slot:item="props">
                 <tr>
@@ -60,6 +60,11 @@ export default {
           { text: 'Dono', value: 'dono', class: ["table-header", "subtitle-2", "font-weight-bold"], sortable: false },
           { text: 'Participante', value: 'participante', class: ["table-header", "subtitle-2", "font-weight-bold"], sortable: false }
       ],
+      footerConfig: {
+      "items-per-page-text": "Entidades por página",
+      "items-per-page-options": [10, 20, 50, 100, -1],
+      "items-per-page-all-text": "Todos"
+    }
     }
   },
 
