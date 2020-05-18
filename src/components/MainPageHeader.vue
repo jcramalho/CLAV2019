@@ -69,7 +69,7 @@
         v-if="this.$store.state.name === ''"
         to="/users/autenticacao"
         rounded
-        color="#67CC72"
+        color="#399D44"
         :class="{
           'px-12': $vuetify.breakpoint.lgAndUp,
           'px-8': $vuetify.breakpoint.mdAndDown
@@ -289,7 +289,7 @@
               @click="dialog = false"
               v-if="this.$store.state.name === ''"
               rounded
-              color="#67CC72"
+              color="#399D44"
               class="blue--text text--darken-3 px-3 mr-3"
               id="authenticate-button-mobile"
             >
@@ -720,7 +720,7 @@ export default {
 }
 #authenticate-button:before,
 #authenticate-button-mobile:before {
-  background-color: #67cc72 !important;
+  background-color: #399d44 !important;
 }
 #user-button::before {
   background-color: transparent !important;
