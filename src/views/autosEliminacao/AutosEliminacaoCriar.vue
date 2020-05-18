@@ -36,7 +36,7 @@ export default {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " \n " + l.sumario);
+          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
         }
         return myPortarias;
       } catch (error) {

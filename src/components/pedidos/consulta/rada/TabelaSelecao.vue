@@ -42,19 +42,11 @@
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <tr :style="'text-align: center'" v-on="on" @click="showUI(props.item)">
-                  <td>{{ props.item.codigo }}</td>
-                  <td>{{ props.item.titulo }}</td>
-                </tr>
-              </template>
-              <span width="100%">
-                <h4>
-                  Classes associadas a:
-                  <b>{{ props.item.codigo + " - " + props.item.titulo }}</b>
-                </h4>
-
+            <tr style="text-align: center; background-color:#ffffff" @click="showUI(props.item)">
+              <td>{{ props.item.codigo }}</td>
+              <td>{{ props.item.titulo }}</td>
+              <!-- <td>
+                <br/>
                 <ul v-if="!!props.item.classesAssociadas[0]">
                   <li
                     v-for="(classe, i) in props.item.classesAssociadas"
@@ -62,8 +54,32 @@
                   >{{ classe.codigo }}</li>
                 </ul>
                 <p v-else>Não tem classes associadas!</p>
-              </span>
-            </v-tooltip>
+              </td>-->
+              <td>
+                <v-list
+                  v-if="!!props.item.classesAssociadas[0]"
+                  dense
+                  
+                >
+                  <v-list-item
+                    v-for="(classe, i) in props.item.classesAssociadas"
+                    :key="i"
+                    align-center
+                  >
+                    <v-list-item-icon>
+                      <img
+                        v-if="classe.tipo == 'Série'"
+                        style="width:23px; height:30px"
+                        :src="svg_sr"
+                      />
+                      <img v-else style="width:23px; height:30px" :src="svg_ssr" />
+                    </v-list-item-icon>
+                    <v-list-item-content>{{classe.codigo + " - " + classe.titulo}}</v-list-item-content>
+                  </v-list-item>
+                </v-list>
+                <p v-else>Não tem classes associadas!</p>
+              </td>
+            </tr>
           </template>
         </v-data-table>
       </v-col>
@@ -76,22 +92,13 @@
         </v-alert>
       </v-col>
     </v-row>
-    <ShowSerie
-      v-if="show_serie"
-      :dialog="show_serie"
-      @fecharDialog="show_serie = false"
+    <ShowSerieSubserie
+      v-if="show_serie_subserie"
+      :dialog="show_serie_subserie"
+      @fecharDialog="show_serie_subserie = false"
       :formaContagem="formaContagem"
       :treeview_object="treeview_object"
       :classes="TS.classes"
-      :show_a_partir_de_pedido="true"
-    />
-    <ShowSubserie
-      v-if="show_subserie"
-      :dialog="show_subserie"
-      @fecharDialog="show_subserie = false"
-      :treeview_object="treeview_object"
-      :classes="TS.classes"
-      :formaContagem="formaContagem"
       :show_a_partir_de_pedido="true"
     />
     <ShowOrganico
@@ -106,8 +113,7 @@
 </template>
 
 <script>
-import ShowSerie from "@/components/pedidos/consulta/rada/elementos/ShowSerie";
-import ShowSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSubserie";
+import ShowSerieSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSerieOuSubserie";
 import ShowOrganico from "@/components/pedidos/consulta/rada/elementos/ShowOrganico";
 import ShowUI from "@/components/pedidos/consulta/rada/elementos/ShowUI";
 
@@ -115,8 +121,7 @@ export default {
   props: ["TS"],
   components: {
     ShowOrganico,
-    ShowSubserie,
-    ShowSerie,
+    ShowSerieSubserie,
     ShowUI
   },
   data: () => ({
@@ -125,8 +130,7 @@ export default {
     search: "",
     UI: null,
     show_ui: false,
-    show_serie: false,
-    show_subserie: false,
+    show_serie_subserie: false,
     show_area_organico: false,
     treeview_object: null,
     formaContagem: {
@@ -142,7 +146,7 @@ export default {
         text: "Código",
         align: "center",
         value: "codigo",
-        width: "50%",
+        width: "10%",
         sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
@@ -150,7 +154,15 @@ export default {
         text: "Título",
         value: "titulo",
         align: "center",
-        width: "50%",
+        width: "45%",
+        class: ["table-header", "body-2", "font-weight-bold"]
+      },
+      {
+        text: "Classes Associadas",
+        value: "classesAssociadas",
+        align: "center",
+        width: "45%",
+        sortable: false,
         class: ["table-header", "body-2", "font-weight-bold"]
       }
     ]
@@ -186,19 +198,12 @@ export default {
       this.show_ui = true;
     },
     showClasse(item) {
-      switch (item.tipo) {
-        case "Série":
-          this.treeview_object = item;
-          this.show_serie = true;
-          break;
-        case "Subsérie":
-          this.treeview_object = item;
-          this.show_subserie = true;
-          break;
-        default:
-          this.treeview_object = item;
-          this.show_area_organico = true;
-          break;
+      if (item.tipo == "Série" || item.tipo == "Subsérie") {
+        this.treeview_object = item;
+        this.show_serie_subserie = true;
+      } else {
+        this.treeview_object = item;
+        this.show_area_organico = true;
       }
     },
     preparaTreeFilhos: function(pai_codigo, pai_titulo) {
@@ -294,15 +299,9 @@ export default {
           cl => cl.codigo == rel.codigo
         );
 
-        rel["titulo"] = classe_relacionada.titulo;
+        this.$set(rel, "titulo", classe_relacionada.titulo);
       });
     }
   }
 };
 </script>
-
-<style scoped>
-::v-deep .v-treeview-node {
-  background-color: rgba(240, 163, 10, 0.2);
-}
-</style>

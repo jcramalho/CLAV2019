@@ -19,7 +19,7 @@
                   <ul>
                     <li
                       v-for="publicacao in documento.publicacoes"
-                      :key="publicacao.titulo"
+                      :key="publicacao._id"
                     >
                       <b
                         ><a
@@ -34,7 +34,7 @@
                           @click="downloadFile(publicacao._id)"
                         >{{ publicacao.titulo }}</span></b
                       >, {{ publicacao.local }};
-                      <span v-for="a in publicacao.autores" :key="a"
+                      <span v-for="(a,index) in publicacao.autores" :key="`${a}${index}`"
                         >{{ a }}&nbsp;</span
                       >
                       <v-icon

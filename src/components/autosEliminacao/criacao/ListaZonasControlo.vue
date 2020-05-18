@@ -55,7 +55,7 @@
               </tr>
               <tr v-if="item.destino">
                 <td style="width:20%;">
-                  <div class="info-label">Destino Final:</div>
+                  <div class="info-label">Destino Final</div>
                 </td>
                 <td v-if="item.destino === 'E'">Eliminação</td>
                 <td v-else-if="item.destino === 'C'">Conservação</td>
@@ -212,7 +212,6 @@ export default {
     classe: null,
     ni: "Vazio",
     dono: null,
-    donos: [],
     dataInicio: null,
     dataFim: null,
     uiPapel: null,

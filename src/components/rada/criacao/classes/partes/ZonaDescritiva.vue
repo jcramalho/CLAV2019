@@ -14,8 +14,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
-    <v-row v-if="!newSerie.UIs[0]">
+    <v-row>
       <!-- DATA INICIAL -->
       <v-col md="3" sm="3">
         <div class="info-label">Data Inicial</div>
@@ -31,7 +30,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              :rules="[v => !!v || 'Campo obrigatório!']"
+              :rules="[v => newSerie.tipo == 'Subsérie' || !!v || 'Campo obrigatório!']"
               v-model="newSerie.dataInicial"
               label="Data Inicial"
               prepend-icon="event"
@@ -75,7 +74,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              :rules="[v => data_final_valida(v) || 'Campo obrigatório!']"
+              :rules="[v => data_final_valida(v) || newSerie.tipo == 'Subsérie' || 'Campo obrigatório!']"
               v-model="newSerie.dataFinal"
               label="Data Final"
               prepend-icon="event"
@@ -106,11 +105,8 @@
       </v-col>
     </v-row>
     <!-- UNIDADES DE INSTALAÇÃO -->
-    <AssociarUI
-      v-if="newSerie.dataInicial == null && newSerie.dataFinal == null"
-      :newSerie="newSerie"
-      :UIs="UIs"
-    />
+    <!-- v-if="newSerie.dataInicial == null && newSerie.dataFinal == null" -->
+    <AssociarUI :newSerie="newSerie" :UIs="UIs" />
     <div v-if="newSerie.tipo != 'Subsérie'">
       <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <v-row>
@@ -171,9 +167,10 @@
         <v-col md="3" sm="3">
           <div class="info-label">Medição</div>
         </v-col>
+
         <v-col sm="3" md="3">
           <v-text-field
-            :rules="[v => !!v || 'Campo obrigatório!']"
+            :rules="[v => (!!v && new Number(v) >= 0)|| 'Campo obrigatório!']"
             type="number"
             solo
             clearable

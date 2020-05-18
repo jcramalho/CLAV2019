@@ -162,46 +162,34 @@
         </v-card>
       </v-col>
     </v-row>
-    <ShowSerie
-      v-if="show_serie"
-      :dialog="show_serie"
-      @fecharDialog="show_serie = false"
+    <ShowSerieSubserie
+      v-if="show_serie_subserie"
+      :dialog="show_serie_subserie"
+      @fecharDialog="show_serie_subserie = false"
       :formaContagem="formaContagem"
       :show_a_partir_de_pedido="false"
       :treeview_object="treeview_object"
       :classes="classes"
-    />
-    <ShowSubserie
-      v-if="show_subserie"
-      :dialog="show_subserie"
-      @fecharDialog="show_subserie = false"
-      :treeview_object="treeview_object"
-      :show_a_partir_de_pedido="false"
-      :classes="classes"
-      :formaContagem="formaContagem"
     />
   </div>
 </template>
 
 <script>
 const labels = require("@/config/labels").criterios;
-import ShowSerie from "@/components/pedidos/consulta/rada/elementos/ShowSerie";
-import ShowSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSubserie";
+import ShowSerieSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSerieOuSubserie";
 
 export default {
   name: "RelacoesClasse",
   props: ["newSerie", "classes", "formaContagem"],
   components: {
-    ShowSerie,
-    ShowSubserie
+    ShowSerieSubserie
   },
   data() {
     return {
       svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
       svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
       snackbar: false,
-      show_serie: false,
-      show_subserie: false,
+      show_serie_subserie: false,
       tituloClasse: null,
       treeview_object: null,
       tipoClasse: null,
@@ -273,7 +261,7 @@ export default {
   watch: {
     codrel: function(novo, old) {
       let c = this.classes.find(e => e.codigo == novo);
-      if (c != undefined) {
+      if (c != undefined && (c.tipo == "Série" || c.tipo == "Subsérie")) {
         this.iscodvalido = true;
         this.tipoClasse = c.tipo;
         this.tituloClasse = c.titulo;
@@ -293,11 +281,7 @@ export default {
           children: []
         };
 
-        if (item.serieRelacionada.tipo == "Série") {
-          this.show_serie = true;
-        } else {
-          this.show_subserie = true;
-        }
+        this.show_serie_subserie = true;
       } else {
         this.snackbar = true;
       }
@@ -360,7 +344,7 @@ export default {
         }
       }
     },
-    remove: function(item) {
+    remove(item) {
       if (item.relacao == "Suplemento para") {
         this.remove_criterio(
           item.serieRelacionada.codigo,
@@ -389,7 +373,7 @@ export default {
         );
       });
     },
-    codigoIgual: function(v) {
+    codigoIgual(v) {
       if (v == null || v == "") {
         return "Campo Obrigatório";
       } else {
@@ -405,7 +389,7 @@ export default {
         }
       }
     },
-    add: async function() {
+    async add() {
       this.alertOn = false;
 
       if (this.$refs.addRel.validate()) {
@@ -514,6 +498,20 @@ export default {
         }
       }
     },
+    data_final_valida(v) {
+      if (!!v) {
+        if (this.RE.dataInicial != null) {
+          let data_inicial = new Date(this.RE.dataInicial);
+          let data_final = new Date(v);
+
+          if (data_inicial > data_final) {
+            return "Data final inválida! É anterior à data inicial.";
+          }
+        }
+        return true;
+      }
+      return false;
+    },
     validateRelacao: function() {
       if (
         this.newSerie.relacoes.some(
@@ -524,7 +522,6 @@ export default {
       } else {
         if (this.rel == "Síntese de" || this.rel == "Sintetizado por") {
           let classe = this.classes.find(cl => cl.codigo == this.codrel);
-
           if (
             classe != undefined &&
             classe.relacoes.some(e => e.relacao == this.rel)

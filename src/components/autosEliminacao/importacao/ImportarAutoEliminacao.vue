@@ -106,12 +106,13 @@
                   ></v-autocomplete>
                 </div>
                 <div v-else>
-                  <v-text-field
+                  <v-autocomplete
+                    label="Selecione a fonte de legitimação"
+                    :items="portariaRada"
                     v-model="auto.legislacao"
                     solo
                     dense
-                    label="Indique a fonte de legitimação"
-                  ></v-text-field>
+                  ></v-autocomplete>
                 </div>
                 <div style="width:100%">
                   Para submeter um auto de eliminação, selecione os ficheiros
@@ -351,6 +352,7 @@ export default {
     },
     portariaLC: [],
     portaria: [],
+    portariaRada: [],
     fundo: [],
     donos: [],
     fileSerie: null,
@@ -373,7 +375,7 @@ export default {
   methods: {
     validar: async function() {
       for(var zc of this.auto.zonaControlo) {
-        if(!zc.prazo || zc.prazo=="" || !(/^[0-9]*$/.test(zc.prazo))) {
+        if(this.tipo!="PGD_LC" && (!zc.prazo || zc.prazo=="" || !(/^[0-9]*$/.test(zc.prazo)))) {
           this.errosVal.erros.push({
             sobre: "Prazo de Conservação Administrativa",
             mensagem: "Preenchimento incorreto ou não preenchido na classe " + zc.codigo + " " + zc.referencia
@@ -425,7 +427,7 @@ export default {
       for(var zc of this.auto.zonaControlo) {
         if(this.tipo=="PGD_LC")
           delete zc["referencia"];
-        zc.prazoConservacao = zc.prazo;
+        if(this.tipo!="PGD_LC") zc.prazoConservacao = zc.prazo;
 
         if(zc.destino === "Conservação") zc.destino = "C"
         else if(zc.destino === "Eliminação") zc.destino = "E"
@@ -543,7 +545,7 @@ export default {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " \n " + l.sumario);
+          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
         }
         return myPortarias;
       } catch (error) {
@@ -576,9 +578,13 @@ export default {
       this.portariaLC = await this.prepararLeg(response.data);
       var response2 = await this.$request("get", "/legislacao?fonte=PGD");
       this.portaria = await this.prepararLeg(response2.data);
+      var response3 = await this.$request("get", "/legislacao?fonte=RADA");
+      this.portariaRada = await this.prepararLeg(response3.data);
+
     } catch (e) {
       this.portariaLC = [];
       this.portaria = [];
+      this.portariaRada = [];
     }
   },
   watch: {

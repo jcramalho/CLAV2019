@@ -98,8 +98,7 @@
               <template v-slot:activator="{ on }">
                 <v-icon v-on="on" small @click="addAgregacao">check</v-icon>
               </template>
-              <span v-if="editAG === -1">Adicionar Agregação</span>
-              <span v-else>Editar Agregação</span>
+              <span>Adicionar Agregação</span>
             </v-tooltip>
           </td>
         </tr>
@@ -119,22 +118,7 @@
                   >arrow_upward</v-icon
                 >
               </template>
-              <span>Utilizar Agregação</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-icon
-                  v-on="on"
-                  small
-                  class="mr-2"
-                  @click="
-                    editAG = prop.item;
-                    upAgregacao(prop.item);
-                  "
-                  >edit</v-icon
-                >
-              </template>
-              <span>Editar Agregação</span>
+              <span>Duplicar Agregação</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -222,7 +206,6 @@ export default {
     ni: null,
     natureza: ["Dono", "Participante"],
 
-    editAG: null,
     snackbar: false,
     search: "",
     deleteDialog: false,
@@ -269,14 +252,6 @@ export default {
       this.deleteDialog = false;
     },
     addAgregacao: function() {
-      if (this.editAG !== null) {
-        var indexAG = this.auto.zonaControlo[this.index].agregacoes
-          .map(function(x) {
-            return x.codigo;
-          })
-          .indexOf(this.editAG.codigo);
-        this.auto.zonaControlo[this.index].agregacoes.splice(indexAG, 1);
-      }
       const re = /\d{4}/;
       var currentTime = new Date();
       var result = this.auto.zonaControlo[this.index].agregacoes.filter(

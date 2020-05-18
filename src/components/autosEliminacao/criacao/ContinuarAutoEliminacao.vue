@@ -305,7 +305,7 @@ export default {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " \n " + l.sumario);
+          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
         }
         return myPortarias;
       } catch (error) {
@@ -352,7 +352,7 @@ export default {
     submit: async function() {
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
-        if(zc.dono.length === 0) {
+        if(zc.destino=="C" && zc.dono.length === 0) {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
         }
@@ -362,8 +362,6 @@ export default {
         }
       }
       if(this.erro==="") {
-
-        this.auto.legislacao = "Portaria " + this.auto.legislacao.split(" ")[1];
 
         var user = this.$verifyTokenUser();
 

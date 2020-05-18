@@ -21,7 +21,7 @@
             </v-tooltip>
           </v-card-title>
           <!-- Para a Criação de novos dados -->
-          <v-card-text v-if="pedido.objeto.acao === 'Criação'">
+          <v-card-text v-if="pedido.objeto.acao === 'Criação' || pedido.objeto.acao === 'Importação'">
             <ValidaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
@@ -38,8 +38,9 @@
             />
 
             <ValidaAE
-              v-if="pedido.objeto.tipo === 'Auto de Eliminação'"
+              v-if="pedido.objeto.tipo.includes('AE ') || pedido.objeto.tipo === 'Auto de Eliminação'"
               :p="pedido"
+              :tipo="pedido.objeto.tipo"
             />
           </v-card-text>
 

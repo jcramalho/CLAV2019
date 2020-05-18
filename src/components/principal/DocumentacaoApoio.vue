@@ -1,366 +1,226 @@
 <template>
-  <v-card class="ma-4 pa-2">
+  <Loading v-if="!conteudoReady" :message="'documentação de apoio'" />
+  <v-card v-else class="ma-4 pa-2">
     <v-toolbar :color="panelHeaderColor" dark>
       <v-toolbar-title>Documentação Técnica de Apoio</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
       <v-expansion-panels>
-        <v-expansion-panel>
-          <v-expansion-panel-header>
-            Documentos Metodológicos
+        <v-expansion-panel
+          v-for="documentacao in this.docapoio"
+          :key="documentacao.classe"
+        >
+          <v-expansion-panel-header class="white-5">
+            {{ documentacao.classe }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <v-card>
-              <v-card-text>
-                <p>
-                  Para conhecer os princípios teóricos e metodológicos que estão
-                  na base da Lista Consolidada, veja os seguintes documentos
-                  técnicos:
-                </p>
-                <ul>
-                  <li>
-                    <a
-                      href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2013/10/egov_interoperabilidade.pdf"
-                    >
-                      Governo Electrónico e Interoperabilidade: documento
-                      metodológico para a elaboração de um esquema de
-                      metainformação para a interoperabilidade e de uma
-                      macroestrutura funcional</a
-                    >
+            <v-card-text
+              v-for="entrada in documentacao.entradas"
+              :key="entrada._id"
+            >
+              <p
+                class="text-justify"
+                v-html="compiledMarkdown(entrada.descricao)"
+              ></p>
+              <ul>
+                <div v-for="elemento in entrada.elementos" :key="elemento._id">
+                  <!-- No caso de ser uma rota da API -->
+                  <li v-if="elemento.texto.rota">
+                    <p>
+                      <span
+                        v-html="
+                          compiledMarkdownOmmitParagraph(elemento.texto.pre)
+                        "
+                      ></span>
+                      <span
+                        class="fakea"
+                        @click="downloadFileRota(elemento.texto.rota)"
+                        v-html="
+                          compiledMarkdownOmmitParagraph(elemento.texto.ligacao)
+                        "
+                      ></span>
+                      <span
+                        v-html="
+                          compiledMarkdownOmmitParagraph(elemento.texto.pos)
+                        "
+                      ></span>
+                    </p>
                   </li>
-                  <li>
-                    <a
-                      href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2014/02/2013_Orient-3-niveis_PC-MF.pdf"
-                    >
-                      Orientações básicas para o desenvolvimento dos 3ºs níveis
-                      em planos de classificação conformes à macroestrutura
-                      funcional</a
-                    >
+                  <!-- No caso de ser uma ligacao com ficheiro da API -->
+                  <li v-else-if="elemento.texto.ligacao">
+                    <p>
+                      <span
+                        v-html="
+                          compiledMarkdownOmmitParagraph(elemento.texto.pre)
+                        "
+                      ></span>
+                      <span
+                        class="fakea"
+                        @click="
+                          downloadFile(
+                            documentacao._id,
+                            entrada._id,
+                            elemento._id
+                          )
+                        "
+                        v-html="
+                          compiledMarkdownOmmitParagraph(elemento.texto.ligacao)
+                        "
+                      ></span>
+                      <span
+                        v-html="
+                          compiledMarkdownOmmitParagraph(elemento.texto.pos)
+                        "
+                      ></span>
+                    </p>
                   </li>
-                  <li>
-                    <a
-                      href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2016/03/ASIA_Doc-metodologico2016-03-10.pdf"
-                    >
-                      Avaliação suprainstitucional da Informação arquivística
-                      (ASIA): Documento metodológico.</a
-                    >
-                    Contém, em anexo, as Regras para a criação de termos do
-                    índice.
-                  </li>
-                  <li>
-                    Os
-                    <a :href="`${publicPath}documentos/mapas-conceptuais.pdf`">
-                      Mapas conceptuais
-                    </a>
-                    contêm informação sobre a subdivisão lógica das Funções
-                    (MEF) e o seu desdobramento em processos de negócio (classes
-                    de 3º nível). São a base para o enquadramento conceptual e a
-                    codificação de novos processos de negócio na Lista
-                    Consolidada.
-                  </li>
-                </ul>
-              </v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-
-        <v-expansion-panel>
-          <v-expansion-panel-header>Manuais</v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-card>
-              <v-card-text>
-                <ul>
-                  <li>
-                    Para obter informação específica sobre o processo de
-                    elaboração e aplicação dos instrumentos de gestão da
-                    informação consulte as
-                    <a
-                      href="http://arquivos.dglab.gov.pt/programas-e-projectos/modernizacao-administrativa/macroestrutura-funcional-mef/fichas-tecnicas/"
-                    >
-                      fichas técnicas
-                    </a>
-                    :
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2017/08/FT1_RADA.pdf"
-                          >
-                            FT1 – Elaboração de relatórios de avaliação de
-                            documentação acumulada
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica com o procedimento para a elaboração de
-                          relatórios de avaliação de documentação acumulada e
-                          sua submissão ao Órgão de coordenação do sistema
-                          nacional de arquivos
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2017/08/FT2_LC.pdf"
-                          >
-                            FT2 – O que é a Lista Consolidada
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica que explicita a origem, percurso e
-                          etapas de elaboração do referencial para a
-                          classificação e avaliação da informação pública,
-                          denominado Lista Consolidada
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2017/08/FT3_Novo-PN.pdf"
-                          >
-                            FT3 – Apresentação de novo processo de negócio para
-                            integração na Lista Consolidada
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica com o procedimento para a elaboração de
-                          uma proposta de novo processo de negócio para
-                          integração na Lista Consolidada
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2017/08/FT4_Da-LC-a-PGD.pdf"
-                          >
-                            FT4 – Elaboração de uma Portaria de Gestão de
-                            Documentos a partir da Lista Consolidada
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica com o procedimento para a elaboração de
-                          uma Portaria de Gestão de Documentos a partir da Lista
-                          Consolidada
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2017/08/FT5_Aplicacao-TS.pdf"
-                          >
-                            FT5 – Aplicação de uma tabela de seleção
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica com os procedimentos para a aplicação de
-                          uma tabela de seleção, nomeadamente no que diz
-                          respeito à classificação (quando aplicável) e ao
-                          cumprimento das decisões de avaliação
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2019/08/FT6_ContagemPrazos_2019-07-25.pdf"
-                          >
-                            FT6 – Forma de contagem de prazos de conservação
-                            administrativa
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica com instruções para a definição da forma
-                          de contagem de prazos de conservação administrativa,
-                          no cumprimento de decisões de avaliação da informação
-                          arquivística constantes na Lista Consolidada.
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2019/08/FT7_Agregações_2019-07-25.pdf"
-                          >
-                            FT7 – Subdivisão de processos de negócio e
-                            constituição de agregaçõess
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica com os procedimentos para a subdivisão
-                          de classes relativas À informação produzida no âmbito
-                          de processos de negócio (criação de classes de 4.o
-                          nível) e para a constituição de agregações aquando da
-                          aplicação do plano de classificação e tabelas de
-                          seleção derivadas da Lista Consolidada.
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2019/08/FT8_Aplicação-DF-Dono-Participante_2019-07-25.pdf"
-                          >
-                            FT8 – Aplicação do destino final: o papel do dono e
-                            do participante
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica com os procedimentos para a aplicação do
-                          destino final presente em tabelas de seleção derivadas
-                          da Lista Consolidada, de acordo com a intervenção das
-                          entidades no processo de negócio enquanto dono ou
-                          participante.
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2019/08/FT9_Eliminacao_2019-08-20.pdf.pdf"
-                          >
-                            FT9 – Boas práticas de eliminação de documentos
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica com os procedimentos para a
-                          implementação de boas práticas de eliminação de
-                          documentos e informação.
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item two-line>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <a
-                            href="http://arquivos.dglab.gov.pt/wp-content/uploads/sites/16/2019/08/FT10_TS_Aplicação-no-tempo_2019-07-25.pdf"
-                          >
-                            FT10 – Tabelas de seleção: aplicação no tempo
-                          </a>
-                        </v-list-item-title>
-                        <p>
-                          Ficha técnica referente à aplicação no tempo das
-                          decisões de avaliação constantes na tabelas de seleção
-                          de relatórios de avaliação de documentação acumulada e
-                          em portarias de gestão de documentos.
-                        </p>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </li>
-                  <li>
-                    As
-                    <a
-                      :href="
-                        `${publicPath}documentos/Orientacoes_aplicacao_TS_20191002.pdf`
-                      "
-                    >
-                      Orientações para a aplicação de tabela de seleção derivada
-                      da Lista Consolidada
-                    </a>
-                    fornecem um conjunto de diretrizes e exemplos concretos para
-                    a utilização de uma Tabela de Seleção (TS) extraída da Lista
-                    Consolidada para a Classificação e Avaliação da Informação
-                    Arquivística (LC).
-                  </li>
-                </ul>
-              </v-card-text>
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-
-        <v-expansion-panel>
-          <v-expansion-panel-header>
-            Formulários e instruções para a CLAV
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-card>
-              <v-card-text>
-                <div class="subtitle">Lista Consolidada: novas classes</div>
-                <ul>
-                  <li>
-                    <a
-                      :href="
-                        `${publicPath}documentos/Instrucoes-Criacao-Assistida-Classes-LC.pdf`
-                      "
-                    >
-                      Instruções para criação assistida de classes na LC
-                    </a>
-                  </li>
-                </ul>
-
-                <div class="subtitle">Tabelas de seleção</div>
-                <ul>
-                  <li>
-                    Instruções para criação assistida de TS na CLAV
-                  </li>
-                  <li>
-                    Instruções para submissão de TS por exportação de Formulário
-                    pré-preenchido
-                  </li>
-                  <li>
-                    <a href="#" @click="getFormulario()">
-                      Formulário pré-preenchido para submissão de TS
-                    </a>
-                  </li>
-                </ul>
-
-                <div class="subtitle">Autos de eliminação</div>
-                <ul>
-                  <li>
-                    Instruções para criação assistida de Auto
-                  </li>
-                  <li>
-                    <a
-                      :href="
-                        `${publicPath}documentos/Instrucoes-submissao-AE-por-exportacao-formulario.pdf`
-                      "
-                    >
-                      Instruções para submissão de Auto por exportação de
-                      Formulário
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      :href="
-                        `${publicPath}documentos/FormularioAE_SERIE.csv`
-                      "
-                    >
-                      Formulário para submissão de Classes / Séries para auto de Eliminação
-                    </a>
-                  </li>
-                  <li>
-                    <a :href="`${publicPath}documentos/FormularioAE_UI.csv`">
-                      Formulário para submissão de Agregações / UI para auto de Eliminação
-                    </a>
-                  </li>
-                  <li>
-                    <a :href="`${publicPath}documentos/xml_schema_pgd_lc.xsd`">
-                      XML Schema para PGD pertencente à Lista Consolidada
-                    </a>
-                  </li>
-                  <li>
-                    <a :href="`${publicPath}documentos/xml_schema_s_lc.xsd`">
-                      XML Schema para PGD <b>não</b> pertencente à Lista
-                      Consolidada e RADA
-                    </a>
-                  </li>
-                </ul>
-              </v-card-text>
-            </v-card>
+                  <!-- No caso de ser apenas texto -->
+                  <li
+                    v-else
+                    class="text-justify"
+                    v-html="compiledMarkdown(elemento.texto)"
+                  ></li>
+                  <v-icon
+                    v-for="(operacao, index) in operacoes_elementos"
+                    @click="
+                      switchOperacaoElemento(
+                        operacao.descricao,
+                        documentacao._id,
+                        entrada._id,
+                        elemento._id
+                      )
+                    "
+                    :color="operacao.cor"
+                    :key="index"
+                    >{{ operacao.icon }}</v-icon
+                  >
+                </div>
+              </ul>
+              <v-icon
+                v-for="(operacao, index) in operacoes_entradas"
+                @click="
+                  switchOperacaoEntrada(
+                    operacao.descricao,
+                    documentacao._id,
+                    entrada._id
+                  )
+                "
+                :color="operacao.cor"
+                :key="index"
+                >{{ operacao.icon }}</v-icon
+              >
+            </v-card-text>
+            <div v-if="level >= min">
+              <v-btn
+                color="indigo accent-4"
+                dark
+                class="ma-2"
+                @click="
+                  go(`/documentacaoApoio/criar/entrada/${documentacao._id}`)
+                "
+                >Adicionar Entrada</v-btn
+              >
+              <v-btn
+                color="indigo accent-4"
+                dark
+                class="ma-2"
+                @click="
+                  go(`/documentacaoApoio/editar/classe/${documentacao._id}`)
+                "
+                >Editar Classe</v-btn
+              >
+              <v-btn
+                color="red accent-4"
+                dark
+                class="ma-2"
+                @click="eliminaClasse(documentacao._id)"
+                >Eliminar Classe</v-btn
+              >
+            </div>
           </v-expansion-panel-content>
         </v-expansion-panel>
         <DocApoioProdTecCientifica :level="level" />
       </v-expansion-panels>
+
+      <v-dialog :value="eliminarIdClasse != ''" persistent max-width="290px">
+        <v-card>
+          <v-card-title class="headline">Confirmar ação</v-card-title>
+          <v-card-text>
+            Tem a certeza que pretende eliminar o documento?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red" text @click="eliminarIdClasse = ''">
+              Cancelar
+            </v-btn>
+            <v-btn color="primary" text @click="remover('Classe')">
+              Confirmar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog :value="eliminarIdEntrada != ''" persistent max-width="290px">
+        <v-card>
+          <v-card-title class="headline">Confirmar ação</v-card-title>
+          <v-card-text>
+            Tem a certeza que pretende eliminar a entrada?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red"
+              text
+              @click="
+                eliminarIdEntrada = '';
+                eliminarIdClasse = '';
+              "
+            >
+              Cancelar
+            </v-btn>
+            <v-btn color="primary" text @click="remover('Entrada')">
+              Confirmar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog :value="eliminarIdElemento != ''" persistent max-width="290px">
+        <v-card>
+          <v-card-title class="headline">Confirmar ação</v-card-title>
+          <v-card-text>
+            Tem a certeza que pretende eliminar a elemento?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red"
+              text
+              @click="
+                eliminarIdElemento = '';
+                eliminarIdEntrada = '';
+                eliminarIdClasse = '';
+              "
+            >
+              Cancelar
+            </v-btn>
+            <v-btn color="primary" text @click="remover('Elemento')">
+              Confirmar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-snackbar
+        v-model="snackbar"
+        :color="color"
+        :timeout="timeout"
+        :top="true"
+      >
+        {{ text }}
+        <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+      </v-snackbar>
+
       <div>
         <v-btn
           v-for="item in this.fops"
@@ -377,59 +237,309 @@
 </template>
 
 <script>
+import marked from "marked";
+import Loading from "@/components/generic/Loading";
 import DocApoioProdTecCientifica from "@/components/principal/DocApoio-ProdTecCientifica.vue";
+const lhost = require("@/config/global").host;
+import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 
 export default {
+  components: {
+    Loading,
+    DocApoioProdTecCientifica
+  },
+
   data() {
     return {
+      level: "",
+      docapoio: [],
+      conteudoReady: false,
+      dialog: false,
+      snackbar: false,
+      text: "",
+      color: "",
+      timeout: 4000,
+      done: false,
       panelHeaderColor: "indigo darken-4",
       publicPath: process.env.BASE_URL,
+      operacoes_entradas: [],
+      operacoes_elementos: [],
+      eliminarIdClasse: "",
+      eliminarIdEntrada: "",
+      eliminarIdElemento: "",
       operacoes: [
+        {
+          label: "Adicionar Classe",
+          url: "/documentacaoApoio/criar/classe",
+          level: [4, 5, 6, 7]
+        },
         {
           label: "Adicionar Documento Técnico/Científico",
           url: "/documentacaoApoio/criar/tecnico_cientifico",
           level: [4, 5, 6, 7]
         }
-      ]
+      ],
+      min: NIVEL_MINIMO_ALTERAR
     };
   },
-  components: {
-    DocApoioProdTecCientifica
-  },
   methods: {
-    async getFormulario() {
-      var path = "/classes?info=esqueleto&fs=text/csv";
-      var filename = "formularioTS.csv";
-
+    preparaConteudo: async function(conteudo) {
       try {
-        var response = await this.$request("get", path);
-        var blob = new Blob([response.data], {
-          type: "text/csv;charset=utf-8;"
-        });
-
-        if (window.navigator.msSaveBlob) {
-          // FOR IE BROWSER
-          navigator.msSaveBlob(blob, filename);
-        } else {
-          // FOR OTHER BROWSERS
-          var url = URL.createObjectURL(blob);
-          var element = document.createElement("a");
-
-          element.setAttribute("href", url);
-          element.setAttribute("download", filename);
-          element.style.display = "none";
-
-          document.body.appendChild(element);
-          element.click();
-          document.body.removeChild(element);
+        var response = conteudo;
+        // Remover elementos nao visiveis consoante o nivel
+        if (this.level < NIVEL_MINIMO_ALTERAR) {
+          response = response.map(classe => {
+            classe.entradas.map(entrada => {
+              entrada.elementos.filter(elemento => elemento.visivel);
+            });
+            return classe;
+          });
         }
-      } catch (erro) {
-        this.$router.push(
-          "/?erro=" +
-            encodeURIComponent(
-              "Não foi possível o obter o formulário pré-preenchido para a submissão de uma TS. Tente novamente mais tarde!"
-            )
-        );
+
+        var res = response;
+        for (let i = 0; i < response.length; i++) {
+          var entradas = response[i].entradas;
+          for (let j = 0; j < entradas.length; j++) {
+            var elementos = entradas[j].elementos;
+            for (let k = 0; k < elementos.length; k++) {
+              var texto = elementos[k].texto;
+              var items = texto.match(/\[.*?\]\(FICHEIRO\)/gm);
+              // Caso possua um link com ficheiro
+              if (items && items[0]) {
+                var lista = texto.split(items[0]);
+                var pre_text = lista[0];
+                var pos_text = lista[1];
+                var link_text = items[0].match(/\[(.*?)\]/i)[1];
+                var texto_novo = {
+                  pre: pre_text,
+                  ligacao: link_text,
+                  pos: pos_text
+                };
+                response[i].entradas[j].elementos[k].texto = texto_novo;
+              }
+
+              //Caso possua uma rota da API
+              var itemsAPI = texto.match(/\[.*?\]\(CLAV_API\/[^\(\)]*\)/gm);
+              if (itemsAPI && itemsAPI[0]) {
+                var lista = texto.split(itemsAPI[0]);
+                var pre_text = lista[0];
+                var pos_text = lista[1];
+                var link_text = itemsAPI[0].match(/\[(.*?)\]/i)[1];
+                var route_text = itemsAPI[0]
+                  .match(/\(CLAV_API.*(?=\))/gm)[0]
+                  .split("(CLAV_API")[1];
+                var texto_novo = {
+                  pre: pre_text,
+                  ligacao: link_text,
+                  rota: route_text,
+                  pos: pos_text
+                };
+                response[i].entradas[j].elementos[k].texto = texto_novo;
+              }
+            }
+          }
+        }
+
+        return response;
+      } catch (e) {
+        return {};
+      }
+    },
+    download(path, filename) {
+      var element = document.createElement("a");
+
+      element.setAttribute("href", path);
+      element.setAttribute("download", filename);
+      element.style.display = "none";
+
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
+    async downloadFile(classe, entrada, elemento) {
+      var token = await this.$getAuthToken();
+      token = token.replace(" ", "=");
+
+      var path =
+        "/documentacaoApoio/" +
+        classe +
+        "/entradas/" +
+        entrada +
+        "/elementos/" +
+        elemento +
+        "/ficheiro";
+      path = lhost + path + "?" + token;
+      this.download(path, "");
+    },
+    async downloadFileRota(path) {
+      var token = await this.$getAuthToken();
+      token = token.replace(" ", "=");
+
+      path = lhost + path + "?" + token;
+      this.download(path, "");
+    },
+    async switchOperacaoEntrada(op, id, entrada) {
+      switch (op) {
+        case "Adição":
+          this.goAdicionarElemento(id, entrada);
+          break;
+
+        case "Alteração":
+          this.goEditarEntrada(id, entrada);
+          break;
+
+        case "Remoção":
+          this.eliminarIdClasse = id;
+          this.eliminarIdEntrada = entrada;
+          break;
+
+        default:
+          break;
+      }
+    },
+    async switchOperacaoElemento(op, id, entrada, elemento) {
+      switch (op) {
+        case "Alteração":
+          this.goEditarElemento(id, entrada, elemento);
+          break;
+
+        case "Remoção":
+          this.eliminarIdClasse = id;
+          this.eliminarIdEntrada = entrada;
+          this.eliminarIdElemento = elemento;
+          break;
+
+        default:
+          break;
+      }
+    },
+    remover(type) {
+      if (type == "Classe") {
+        this.$request("delete", "/documentacaoApoio/" + this.eliminarIdClasse)
+          .then(res => {
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.eliminarIdClasse = "";
+            this.done = true;
+            this.getDocumentacao();
+          })
+          .catch(e => {
+            this.text = e.response.data;
+            this.color = "error";
+            this.snackbar = true;
+            this.eliminarIdClasse = "";
+            this.done = false;
+          });
+      }
+      if (type == "Entrada") {
+        this.$request(
+          "delete",
+          "/documentacaoApoio/" +
+            this.eliminarIdClasse +
+            "/entradas/" +
+            this.eliminarIdEntrada
+        )
+          .then(res => {
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.eliminarIdClasse = "";
+            this.eliminarIdEntrada = "";
+            this.done = true;
+            this.getDocumentacao();
+          })
+          .catch(e => {
+            this.text = e.response.data;
+            this.color = "error";
+            this.snackbar = true;
+            this.eliminarIdEntrada = "";
+            this.done = false;
+          });
+      }
+      if (type == "Elemento") {
+        this.$request(
+          "delete",
+          "/documentacaoApoio/" +
+            this.eliminarIdClasse +
+            "/entradas/" +
+            this.eliminarIdEntrada +
+            "/elementos/" +
+            this.eliminarIdElemento
+        )
+          .then(res => {
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.eliminarIdClasse = "";
+            this.eliminarIdEntrada = "";
+            this.eliminarIdElemento = "";
+            this.done = true;
+            this.getDocumentacao();
+          })
+          .catch(e => {
+            this.text = e.response.data;
+            this.color = "error";
+            this.snackbar = true;
+            this.eliminarIdClasse = "";
+            this.eliminarIdEntrada = "";
+            this.eliminarIdElemento = "";
+            this.done = false;
+          });
+      }
+    },
+    fecharSnackbar() {
+      this.snackbar = false;
+      if (this.done == true) this.getDocumentacao();
+    },
+    async getDocumentacao() {
+      try {
+        let response = await this.$request("get", "/documentacaoApoio");
+
+        this.docapoio = await this.preparaConteudo(response.data);
+
+        this.conteudoReady = true;
+      } catch (e) {
+        return e;
+      }
+    },
+    eliminaClasse(id) {
+      this.eliminarIdClasse = id;
+    },
+    goAdicionarElemento(id, entrada) {
+      this.$router.push(
+        "/documentacaoApoio/criar/elemento/" + id + "/" + entrada
+      );
+    },
+    goEditarClasse(id) {
+      this.$router.push("/documentacaoApoio/editar/classe/" + id);
+    },
+    goEditarEntrada(id, entrada) {
+      this.$router.push(
+        "/documentacaoApoio/editar/entrada/" + id + "/" + entrada
+      );
+    },
+    goEditarElemento(id, entrada, elemento) {
+      this.$router.push(
+        "/documentacaoApoio/editar/elemento/" +
+          id +
+          "/" +
+          entrada +
+          "/" +
+          elemento
+      );
+    },
+    preparaOperacoesEntradaElemento(level) {
+      if (level >= NIVEL_MINIMO_ALTERAR) {
+        this.operacoes_entradas = [
+          { icon: "add", descricao: "Adição", cor: "indigo darken-2" },
+          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
+          { icon: "delete", descricao: "Remoção", cor: "red" }
+        ];
+        this.operacoes_elementos = [
+          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
+          { icon: "delete", descricao: "Remoção", cor: "red" }
+        ];
       }
     },
     go: function(url) {
@@ -454,6 +564,12 @@ export default {
         }
       }
       return filtered;
+    },
+    compiledMarkdown: function(d) {
+      return marked(d || "");
+    },
+    compiledMarkdownOmmitParagraph: function(d) {
+      return marked.inlineLexer(d || "", []);
     }
   },
   computed: {
@@ -461,8 +577,23 @@ export default {
       return this.filtraOps(this.operacoes);
     }
   },
+
   created: async function() {
-    this.level = this.$userLevel();
+    let response = await this.$request("get", "/documentacaoApoio");
+    this.docapoio = await this.preparaConteudo(response.data);
+    this.level = await this.$userLevel();
+    await this.preparaOperacoesEntradaElemento(this.level);
+    this.conteudoReady = true;
   }
 };
 </script>
+<style>
+.fakea:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.fakea {
+  color: #1a76d2;
+}
+</style>

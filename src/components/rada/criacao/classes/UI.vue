@@ -1,10 +1,10 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
+  <v-dialog v-model="dialogState" persistent>
+    <!-- <template v-slot:activator="{ on }">
       <v-btn color="#dee2f8" class="ma-2" v-on="on">
         <v-icon dark left>add</v-icon>Unidade de Instalação
       </v-btn>
-    </template>
+    </template>-->
     <v-card>
       <v-card-title class="indigo darken-1 white--text">Adicionar Unidade de Instalação</v-card-title>
       <br />
@@ -122,7 +122,7 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
-                    :rules="[v => data_final_valida(v) || 'Campo obrigatório!']"
+                    :rules="[v => data_final_valida(v, UI) || 'Campo obrigatório!']"
                     v-model="UI.dataFinal"
                     label="Data Final"
                     prepend-icon="event"
@@ -154,7 +154,6 @@
           </v-row>
           <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <EntidadesProdutoras :newSerie="UI.produtor" :RE="RE" />
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <!-- {{classesUI}}
           {{UI.classesAssociadas}}-->
           <v-row>
@@ -207,7 +206,7 @@
                     <v-combobox
                       :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório para associar série/subsérie!']"
                       v-model="cod"
-                      :items="getCodigos"
+                      :items="classes_processadas"
                       label="Código"
                       item-text="searchField"
                       item-value="codigo"
@@ -265,7 +264,7 @@
                   </v-col>
 
                   <v-col sm="1" xs="12">
-                    <v-btn text rounded @click="adicionarClasseUI">
+                    <v-btn text rounded @click="adicionarClasseUI(UI)">
                       <v-icon color="green lighten-1">add_circle</v-icon>
                     </v-btn>
                     <v-btn text rounded @click="$refs.addRel.reset()">
@@ -288,13 +287,7 @@
               <div class="info-label">Notas</div>
             </v-col>
             <v-col sm="4" md="4">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI.notas"
-                label="Notas"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI.notas" label="Notas"></v-text-field>
             </v-col>
             <v-col md="2" sm="2">
               <div class="info-label">Localização</div>
@@ -323,7 +316,7 @@
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
         <v-btn color="success" class="mr-4" @click="guardar">Guardar</v-btn>
       </v-card-actions>
     </v-card>
@@ -333,118 +326,24 @@
 <script>
 import EntidadesProdutoras from "@/components/rada/criacao/classes/partes/EntidadesProdutoras.vue";
 
+import mixin_unidade_instalacao from "@/mixins/rada/mixin_unidade_instalacao";
+
 export default {
-  props: ["UIs", "RE", "classes"],
+  props: ["UIs", "RE", "classes", "dialog", "UI_para_copiar"],
   components: {
     EntidadesProdutoras
   },
-  computed: {
-    getCodigos() {
-      return this.classes
-        .filter(
-          e =>
-            (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
-        )
-        .map(e => {
-          return {
-            codigo: e.codigo,
-            searchField: e.codigo + " - " + e.titulo
-          };
-        });
-    }
-  },
-  watch: {
-    cod: function(novo, old) {
-      let c = this.classes.find(e => e.codigo == novo);
-
-      if (c != undefined) {
-        this.iscodvalido = true;
-        this.tituloClasse = c.titulo;
-        this.tipoClasse = c.tipo;
-      } else {
-        this.iscodvalido = false;
-      }
-    }
-  },
+  mixins: [mixin_unidade_instalacao],
   data: () => ({
-    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
-    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
-    tituloClasse: null,
-    existe_erros: false,
-    erros: [],
-    menu1: false,
-    menu2: false,
-    alertOn: false,
-    iscodvalido: false,
-    tipoClasse: null,
-    dialog: false,
-    cod: null,
-    UI: {
-      codigo: "",
-      codCota: "",
-      titulo: "",
-      dataInicial: null,
-      dataFinal: null,
-      produtor: {
-        tipologiasProdutoras: [],
-        entProdutoras: []
-      },
-      classesAssociadas: [],
-      descricao: "",
-      notas: "",
-      localizacao: ""
-    },
-    headers: [
-      {
-        text: "Série/Subsérie Associada",
-        align: "center",
-        value: "codigo",
-        width: "95%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        value: "edicao",
-        align: "center",
-        sortable: false,
-        width: "5%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
+    UI: null
   }),
   methods: {
-    data_final_valida(v) {
-      if (!!v) {
-        if (this.UI.dataInicial != null) {
-          let data_inicial = new Date(this.UI.dataInicial);
-          let data_final = new Date(v);
-
-          if (data_inicial > data_final) {
-            return "Data final inválida! É anterior à data inicial.";
-          }
-        }
-        return true;
-      }
-      return false;
-    },
-    eCodigoClasseValido(v) {
-      if (
-        this.classes.some(
-          e =>
-            e.codigo == v &&
-            (e.dataInicial === undefined || e.dataInicial != null)
-        )
-      ) {
-        return "Impossível criar associação, altere o código!";
-      } else {
-        return false;
-      }
-    },
-    remove: function(item) {
+    remove(item) {
       this.UI.classesAssociadas = this.UI.classesAssociadas.filter(e => {
         return e.codigo != item.codigo;
       });
     },
-    apagar: function() {
+    apagar() {
       this.existe_erros = false;
       this.erros = [];
 
@@ -465,51 +364,7 @@ export default {
       };
       this.$refs.formUI.resetValidation();
     },
-    recolherErros() {
-      this.existe_erros = true;
-
-      if (!this.UI.codigo) {
-        this.erros.push("Código;");
-      }
-
-      if (!this.UI.titulo) {
-        this.erros.push("Título;");
-      }
-
-      if (!this.UI.codCota) {
-        this.erros.push("Código Cota;");
-      }
-
-      if (!this.UI.dataInicial || !this.UI.dataFinal) {
-        this.erros.push("Datas;");
-      }
-
-      if (
-        !!this.UI.produtor.entProdutoras[0] == false &&
-        !!this.UI.produtor.tipologiasProdutoras[0] == false
-      ) {
-        this.erros.push("Produtoras;");
-      }
-
-      if (!!this.UI.classesAssociadas[0] == false) {
-        this.erros.push("Classes Associadas;");
-      }
-      if (!this.UI.descricao) {
-        this.erros.push("Descrição;");
-      }
-
-      if (!this.UI.notas) {
-        this.erros.push("Notas;");
-      }
-      if (!this.UI.localizacao) {
-        this.erros.push("Localização;");
-      }
-
-      if (!Boolean(this.erros[0])) {
-        this.erros.push("Datas Inválidas;");
-      }
-    },
-    guardar: function() {
+    guardar() {
       this.existe_erros = false;
       this.erros = [];
 
@@ -520,10 +375,13 @@ export default {
           associacao => delete associacao.titulo
         );
         this.UIs.push(Object.assign({}, this.UI));
-        this.dialog = false;
-        this.apagar();
+        this.dialogState = false;
+        // this.apagar();
       } else {
-        this.recolherErros();
+        if (!this.UI.codigo || this.UIs.some(e => e.codigo == this.UI.codigo)) {
+          this.erros.push("Código;");
+        }
+        this.recolherErros(this.UI);
       }
     },
     verificaCodigoUI(v) {
@@ -595,27 +453,30 @@ export default {
           }
         }
       }
-    },
-    async adicionarClasseUI() {
-      if (this.$refs.addRel.validate()) {
-        if (!(await this.validateUI())) {
-          this.UI.classesAssociadas.push({
-            codigo: this.cod,
-            tipo: this.tipoClasse,
-            titulo: this.tituloClasse
-          });
-
-          this.$refs.addRel.reset();
-        } else {
-          this.alertOn = true;
-        }
-      }
-    },
-    validateUI: function() {
-      return this.UI.classesAssociadas.some(el => {
-        return el.codigo == this.cod;
-      });
     }
+  },
+  created() {
+    this.UI =
+      this.UI_para_copiar != null
+        ? this.UI_para_copiar
+        : {
+            codigo: "",
+            codCota: "",
+            titulo: "",
+            dataInicial: null,
+            dataFinal: null,
+            produtor: {
+              tipologiasProdutoras: [],
+              entProdutoras: []
+            },
+            classesAssociadas: [],
+            descricao: "",
+            notas: "",
+            localizacao: ""
+          };
+  },
+  beforeDestroy() {
+    this.$emit("limpar_copia");
   }
 };
 </script>
