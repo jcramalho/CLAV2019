@@ -128,11 +128,23 @@
 
                 <v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>
 
+                <v-btn 
+                    v-if="stepNo>2" 
+                    color="primary"
+                    @click="sairOperacao = true"
+                    >Sair 
+                    <DialogSair
+                        v-if="sairOperacao" 
+                        @continuar="sairOperacao=false"
+                        @sair="sair"
+                    />
+                </v-btn>
+
                 <v-btn
                   dark
                   color="red darken-4"
                   @click="eliminarTabela = true"
-                  >Sair / Cancelar
+                  >Cancelar
                   <DialogCancelar 
                     v-if="eliminarTabela" 
                     @continuar="eliminarTabela=false"
@@ -152,11 +164,12 @@ import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPen
 import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
 import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
 import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
+import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
 
 export default {
   components: {
     ListaProcessos, DialogPendenteGuardado, DialogCancelar,
-    DialogValidacaoOK, DialogValidacaoErros
+    DialogValidacaoOK, DialogValidacaoErros, DialogSair
   },
   data() {
     return {
@@ -194,6 +207,8 @@ export default {
       pendente: {},
       // Dialog de confirmação da gravação do Pendente
       pendenteGuardado: false,
+      // Dialog de confirmação de abandonar a operação
+      sairOperacao: false,
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
       // Dialog de confirmação finalização de TS
@@ -375,6 +390,10 @@ export default {
       } catch (error) {
         console.log("Erro no POST da TS: " + error);
       }
+    },
+
+    sair: async function(){
+        this.$router.push("/"); 
     },
 
     abortar: async function(){
