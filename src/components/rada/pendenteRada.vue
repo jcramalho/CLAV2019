@@ -101,7 +101,7 @@
           />
           <v-alert
             width="100%"
-            :value="!!erroProdutoras[0] || !!erros_relacoes[0]"
+            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0]"
             outlined
             type="error"
             prominent
@@ -118,6 +118,15 @@
               <b>As seguintes relações entre classes são inválidas devido às datas:</b>
               <ul>
                 <li v-for="(erro_rel, i) in erros_relacoes" :key="i">{{erro_rel[0] + " " + erro_rel[2].toLowerCase().trim() + " " + erro_rel[1] + ";"}}</li>
+              </ul>
+            </div>
+            <div v-if="!!erros_datas_uis[0]">
+              <b>As seguintes associações entre classes e unidades de instalação são inválidas devido às datas:</b>
+              <ul>
+                <li
+                  v-for="(erro_uis, i) in erros_datas_uis"
+                  :key="i"
+                >{{"Classe " + erro_uis.codigoClasse + " e UI " + erro_uis.codigoUI + ";"}}</li>
               </ul>
             </div>
           </v-alert>

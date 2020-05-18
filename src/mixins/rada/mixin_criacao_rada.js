@@ -20,7 +20,8 @@ export default {
     despacho: "",
     pedidos_novas_entidades: [],
     datas_extremas_classes: [],
-    erros_relacoes: []
+    erros_relacoes: [],
+    erros_datas_uis: []
   }),
   methods: {
     changeE1(e) {
@@ -217,7 +218,7 @@ export default {
           entidade: this.user_entidade,
           despacho: !!despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-              despacho
+            despacho
             : "Submissão inicial"
         };
 
@@ -235,23 +236,44 @@ export default {
       }
     },
     descobrir_datas_extremas(series_subseries) {
-      for (let i = 0; i < series_subseries.length; i++) {
-        let data_inicial = null;
-        let data_final = null;
+      this.erros_datas_uis = [];
 
-        if (
-          !!series_subseries[i].dataInicial &&
-          !!series_subseries[i].dataFinal
-        ) {
-          data_inicial = new Date(series_subseries[i].dataInicial);
-          data_final = new Date(series_subseries[i].dataFinal);
+      for (let i = 0; i < series_subseries.length; i++) {
+        // Se tiver datas extremas ver se UIs estão dentro dessas datas
+        if (!!series_subseries[i].dataInicial) {
+          let classe_data_inicial = new Date(series_subseries[i].dataInicial);
+          let classe_data_final = new Date(series_subseries[i].dataFinal);
+
+          for (let j = 0; j < series_subseries[i].UIs.length; j++) {
+            let ui = this.RADA.tsRada.UIs.find(
+              e => e.codigo == series_subseries[i].UIs[j]
+            );
+
+            if (
+              new Date(ui.dataInicial) < classe_data_inicial ||
+              new Date(ui.dataFinal) > classe_data_final
+            ) {
+              this.erros_datas_uis.push({
+                codigoClasse: series_subseries[i].codigo,
+                codigoUI: ui.codigo
+              });
+            }
+          }
+
+          this.datas_extremas_classes.push({
+            codigo: series_subseries[i].codigo,
+            dataInicial: classe_data_inicial,
+            dataFinal: classe_data_final
+          });
+
+          // se a classe não tiver datas extremas, tem que se descobrir através das UIs 
         } else {
           let ui = this.RADA.tsRada.UIs.find(
             e => e.codigo == series_subseries[i].UIs[0]
           );
 
-          data_inicial = new Date(ui.dataInicial);
-          data_final = new Date(ui.dataFinal);
+          let data_inicial = new Date(ui.dataInicial);
+          let data_final = new Date(ui.dataFinal);
 
           for (let z = 1; z < series_subseries[i].UIs.length; z++) {
             ui = this.RADA.tsRada.UIs.find(
@@ -269,13 +291,13 @@ export default {
               data_final = aux_data_final;
             }
           }
-        }
 
-        this.datas_extremas_classes.push({
-          codigo: series_subseries[i].codigo,
-          dataInicial: data_inicial,
-          dataFinal: data_final
-        });
+          this.datas_extremas_classes.push({
+            codigo: series_subseries[i].codigo,
+            dataInicial: data_inicial,
+            dataFinal: data_final
+          });
+        }
       }
     },
     validar_relacoes(series_subseries) {
@@ -335,13 +357,13 @@ export default {
       }
     },
     async concluir(id_remocao_pendente) {
-      // // verificar a validade das relações!
-      // let series_subseries = this.RADA.tsRada.classes.filter(
-      //   e => e.tipo == "Série" || e.tipo == "Subsérie"
-      // );
+      // verificar a validade das UIs e das relações!
+      let series_subseries = this.RADA.tsRada.classes.filter(
+        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      );
 
-      // this.descobrir_datas_extremas(series_subseries);
-      // this.validar_relacoes(series_subseries);
+      this.descobrir_datas_extremas(series_subseries);
+      this.validar_relacoes(series_subseries);
 
       //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
       //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
@@ -369,7 +391,7 @@ export default {
         });
       }
 
-      if (!!this.erroProdutoras[0] || !!this.erros_relacoes[0]) {
+      if (!!this.erroProdutoras[0] || !!this.erros_relacoes[0] || !!this.erros_datas_uis) {
         this.loading_circle_ts = false;
       } else {
         let series = this.RADA.tsRada.classes
@@ -417,7 +439,7 @@ export default {
           entidade: this.user_entidade,
           despacho: !!this.despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-              this.despacho
+            this.despacho
             : "Submissão inicial"
         };
         let response = await this.$request("post", "/pedidos", pedidoParams);
