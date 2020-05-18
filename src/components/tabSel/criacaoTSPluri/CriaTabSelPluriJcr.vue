@@ -126,7 +126,7 @@
                     @continuar="pendenteGuardado = false"/>
                 </v-btn>
 
-                <v-btn v-if="stepNo>2" color="primary" @click="submeterTS()">Submeter</v-btn>
+                <v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>
 
                 <v-btn
                   dark
@@ -344,7 +344,37 @@ export default {
 
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
+      // É preciso testar se há um Pendente criado para o apagar
+      if(this.pendente._id){
+          try{
+            var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
+          }
+          catch(e){
+            console.log("Erro ao remover o pendente na submissão da TS: " + e);
+          }
+      }
       
+      try {
+        var userBD = this.$verifyTokenUser();
+        // Guardam-se apenas os processos que foram alterados
+        this.tabelaSelecao.listaProcessos = this.listaProcessos;
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
+
+        var pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "TS Pluriorganizacional",
+          novoObjeto: this.tabelaSelecao,
+          criadoPor: userBD.email,
+          user: { email: userBD.email },
+          entidade: userBD.entidade,
+          token: this.$store.state.token
+        };
+
+        var response = await this.$request("post", "/pedidos", pedidoParams);
+        this.$router.push("/pedidos/submissao");
+      } catch (error) {
+        console.log("Erro no POST da TS: " + error);
+      }
     },
 
     abortar: async function(){
