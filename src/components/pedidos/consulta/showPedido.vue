@@ -157,7 +157,16 @@ export default {
   },
 
   methods: {
-    voltar: function() {
+    voltar() {
+      const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
+      localStorage.setItem(
+        "pesquisa-pedidos",
+        JSON.stringify({
+          ...pesquisa,
+          limpar: false,
+        })
+      );
+
       this.$router.go(-1);
     },
 
