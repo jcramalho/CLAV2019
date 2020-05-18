@@ -44,8 +44,15 @@
           :page.sync="paginaTabela"
         >
           <template v-slot:no-data>
-            <v-alert :value="true" color="error" icon="warning">
+            <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
               Não existem pedidos neste estado...
+            </v-alert>
+          </template>
+
+          <template v-slot:no-results>
+            <v-alert type="info" width="50%" class="m-auto mb-2 mt-2" outlined>
+              Sem resultados para "<strong>{{ procurar }}</strong
+              >".
             </v-alert>
           </template>
 
