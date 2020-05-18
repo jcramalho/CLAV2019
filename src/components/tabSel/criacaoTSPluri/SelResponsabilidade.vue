@@ -4,7 +4,7 @@
         <v-dialog v-model="dialog" width="95%">
       <v-card>
         <v-card-title class="headline">
-          {{ p.classe }} - {{ p.designacao }}
+          {{ p.codigo }} - {{ p.titulo }}
         </v-card-title>
         <v-card-text>
           <v-data-table
@@ -68,7 +68,7 @@ export default {
           await this.tipoParticipacao();
       }
       catch(e){
-          console.log("Erro no carregamento dos tipos de participação...");
+          console.log("Erro no carregamento da travessia ou dos tipos de participação...");
       }
   },
 
@@ -89,6 +89,7 @@ export default {
 
     // Devolve a seleção para cima
     selecionar: function(){
+        var contador = 0; // Controla se este proc entra ou não na contagem dos selecionados
         let i=0, encontreiDono=false, encontreiParticipante=false;
         while(i < this.p.entidades.length && (!encontreiDono || !encontreiParticipante)){
             if(this.p.entidades[i].dono) encontreiDono = true;
@@ -100,11 +101,22 @@ export default {
         if(encontreiParticipante) this.p.participante = true;
         else this.p.participante = false;
 
-        if(encontreiDono || encontreiParticipante) this.p.edited = true;
-        else this.p.edited = false;
-        
+        if(encontreiDono || encontreiParticipante) {
+            if(!this.p.edited){
+                this.p.edited = true;
+                contador++;
+            }
+        }
+        else{
+            if(this.p.edited){
+                this.p.edited = false;
+                contador=-1;
+            }
+        } 
+
         this.p.chave = this.p.chave * -1;
-        this.$emit("selecionadas");
+        this.p.inc = contador;
+        this.$emit("selecionadas", this.p);
     }
   }
 }

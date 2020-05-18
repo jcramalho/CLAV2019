@@ -1,7 +1,5 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
+      <v-card class="ma-2">
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
             >Nova Tabela de Seleção</v-toolbar-title
@@ -51,8 +49,6 @@
           </div>
         </v-card-text>
       </v-card>
-    </v-col>
-  </v-row>
 </template>
 
 <script>
