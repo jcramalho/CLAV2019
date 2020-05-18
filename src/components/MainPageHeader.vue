@@ -1,24 +1,59 @@
 <template>
   <div>
-    <!--Navbar para large screens-->
+    <!--Navbar para xl/lg/md/sm screens-->
     <v-app-bar
       app
       dense
       hide-on-scroll
       id="default-toolbar"
-      class="hidden-md-and-down toolbar white--text"
+      class="white--text toolbar hidden-xs-only"
     >
-      <v-toolbar-title @click="goHome" style="cursor:pointer;">
-        <p class="title-letters-lg font-weight-bold">CLAV -</p>
-        <p
-          class="subtitle-letter-lg font-weight-light text-wrap"
+      <v-toolbar-title
+        @click="goRoute('/', 'O que é')"
+        style="cursor:pointer;"
+        :class="{
+          'toolbar-title-sm': $vuetify.breakpoint.smOnly
+        }"
+      >
+        <v-tooltip bottom color="success">
+          <template v-slot:activator="{ on }">
+            <span
+              v-on="on"
+              :class="{
+                'title-letters-lg': $vuetify.breakpoint.lgAndUp,
+                'title-letters-md': $vuetify.breakpoint.mdAndDown
+              }"
+              class="d-inline font-weight-bold text-wrap"
+            >
+              CLAV -
+            </span>
+          </template>
+          <span>Voltar à página inicial</span>
+        </v-tooltip>
+        <span
+          v-on="on"
           v-if="this.$store.state.name == ''"
+          :class="{
+            'subtitle-letter-lg': $vuetify.breakpoint.lgAndUp,
+            'subtitle-letter-md': $vuetify.breakpoint.mdAndDown,
+            'subtitle-letter-sm': $vuetify.breakpoint.smOnly
+          }"
+          class="d-inline font-weight-light text-wrap"
         >
           Classificação e Avaliação da Informação Pública
-        </p>
-        <p class="subtitle-letter-lg" v-if="this.$store.state.name != ''">
+        </span>
+        <span
+          v-on="on"
+          v-if="this.$store.state.name != ''"
+          :class="{
+            'subtitle-letter-lg': $vuetify.breakpoint.lgAndUp,
+            'subtitle-letter-md': $vuetify.breakpoint.mdAndDown,
+            'subtitle-letter-sm': $vuetify.breakpoint.smOnly
+          }"
+          class="d-inline font-weight-light text-wrap"
+        >
           {{ this.$store.state.entidade.split("_")[1] }}
-        </p>
+        </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-snackbar
@@ -31,11 +66,15 @@
         <v-btn text @click="fecharSnackbar">Fechar</v-btn>
       </v-snackbar>
       <v-btn
-        to="/users/autenticacao"
         v-if="this.$store.state.name === ''"
+        to="/users/autenticacao"
         rounded
         color="#67CC72"
-        class="green--text text--darken-3 px-12 mt-1"
+        :class="{
+          'px-12': $vuetify.breakpoint.lgAndUp,
+          'px-8': $vuetify.breakpoint.mdAndDown
+        }"
+        class="green--text text--darken-3 mt-1"
         id="authenticate-button"
       >
         <unicon
@@ -45,317 +84,7 @@
           viewBox="0 0 20.711 20.862"
           fill="#ffffff"
         />
-        <p class="icon-text white--text">Iniciar Sessão</p>
-      </v-btn>
-      <v-btn
-        v-if="this.$store.state.name != ''"
-        @click="drawerNotificacoes"
-        icon
-        color="blue"
-      >
-        <v-badge color="red" :content="n" overlap>
-          <unicon
-            name="perfil-icon"
-            width="24"
-            height="24"
-            viewBox="0 0 20.71 23.677"
-            fill="#e5e5e5"
-          />
-        </v-badge>
-      </v-btn>
-      <v-btn
-        v-if="this.$store.state.name != ''"
-        @click="drawerDefinicoes"
-        text
-        rounded
-        dark
-        id="user-button"
-      >
-        <p>{{ $store.state.name }}</p>
-        <unicon
-          name="arrow-down-icon"
-          width="15"
-          height="15"
-          viewBox="0 0 26.358 20.71"
-          fill="#e5e5e5"
-        />
-      </v-btn>
-      <template v-slot:extension>
-        <v-tabs grow dark show-arrows slider-color="#f3f7fc" id="tab-bar">
-          <v-tab active-class="active">
-            <unicon
-              name="home-icon"
-              width="22"
-              height="22"
-              viewBox="0 0 25.71 25.81"
-            />
-            <p class="icon-text">O que é</p>
-          </v-tab>
-
-          <v-menu offset-y open-on-hover nudge-top="2">
-            <template v-slot:activator="{ on }">
-              <v-tab v-on="on" active-class="active">
-                <unicon
-                  name="registo-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 25.71 25.809"
-                />
-                <p class="icon-text">Registo na Clav</p>
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Como registar-se na CLAV</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Indicação de representante da entidade</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <!-- Falta Gestão da Plataforma, será feito após refactor, pois há diferentes levels de acesso 
-          <v-menu offset-y open-on-hover nudge-top="2">
-            <template v-slot:activator="{ on }">
-              <v-tab v-on="on" active-class="active">
-                <unicon
-                  name="registo-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 25.71 25.809"
-                />
-                <p class="icon-text">Gestão da Plataforma</p>
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Como registar-se na CLAV</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Indicação de representante da entidade</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          -->
-
-          <v-menu offset-y open-on-hover nudge-top="2">
-            <template v-slot:activator="{ on }">
-              <v-tab v-on="on" active-class="active">
-                <unicon
-                  name="operacoes-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 25.71 26.68"
-                />
-                <p class="icon-text">Operações</p>
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Lista Consolidada</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Tabelas de Seleção</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Autos de Eliminação</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Entidades</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Tipologias de Entidades</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Legislação</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Termos de Índice</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Exportação de dados</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >API de dados</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
-          <v-menu offset-y open-on-hover nudge-top="2">
-            <template v-slot:activator="{ on }">
-              <v-tab v-on="on" active-class="active">
-                <unicon
-                  name="documentacao-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 25.71 29.383"
-                />
-                <p class="icon-text">Documentação</p>
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Documentos Metodológicos</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap">Manuais</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Formulários e instruções para a CLAV</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Produção Técnica e Científica</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
-          <v-menu
-            offset-y
-            open-on-hover
-            nudge-top="2"
-            v-if="
-              $store.state.token != '' &&
-                level >= 3.5 &&
-                $store.state.name != ''
-            "
-          >
-            <template v-slot:activator="{ on }">
-              <v-tab
-                v-on="on"
-                active-class="active"
-                @click="$router.push('/gestao/gerais')"
-              >
-                <unicon
-                  name="estatisticas-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 20.71 20.75"
-                />
-                <p class="icon-text">Estatísticas</p>
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="$router.push('/gestao/gerais')">
-                <v-list-item-title class="text-wrap"
-                  >Métricas Gerais</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="$router.push('/gestao/metrica')">
-                <v-list-item-title class="text-wrap"
-                  >Métricas de API</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="$router.push('/gestao/classes')">
-                <v-list-item-title class="text-wrap"
-                  >Métricas de Classes</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="$router.push('/gestao/tabela')">
-                <v-list-item-title class="text-wrap"
-                  >Tabela de Indicadores</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-tab active-class="active">
-            <unicon
-              name="noticias-icon"
-              width="22"
-              height="22"
-              viewBox="0 0 25.71 25.71"
-            />
-            <p class="icon-text">Notícias</p>
-          </v-tab>
-        </v-tabs>
-      </template>
-      <!--v-btn
-        color="red"
-        v-if="this.$store.state.name != ''"
-        @click="testJWT"
-      >
-        JWT
-      </v-btn-->
-    </v-app-bar>
-    <!--Navbar para medium/small screens-->
-    <v-app-bar
-      app
-      dense
-      hide-on-scroll
-      id="default-toolbar"
-      class="hidden-lg-and-up hidden-xs-only toolbar white--text"
-    >
-      <v-toolbar-title @click="goHome" style="cursor:pointer;">
-        <p class="title-letters-md font-weight-bold">CLAV -</p>
-        <p
-          class="subtitle-letter-md font-weight-light text-wrap"
-          v-if="this.$store.state.name == ''"
-        >
-          Classificação e Avaliação da Informação Pública
-        </p>
-        <p
-          class="subtitle-letter-md font-weight-light text-wrap"
-          v-if="this.$store.state.name != ''"
-        >
-          {{ this.$store.state.entidade.split("_")[1] }}
-        </p>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-snackbar
-        v-model="snackbar"
-        :timeout="timeout"
-        :color="color"
-        :top="true"
-      >
-        {{ text }}
-        <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-      </v-snackbar>
-      <v-btn
-        to="/users/autenticacao"
-        v-if="this.$store.state.name === ''"
-        rounded
-        color="#67CC72"
-        class="blue--text text--darken-3 px-5 mt-1"
-        id="authenticate-button"
-      >
-        <unicon
-          name="login-icon"
-          width="20"
-          height="20"
-          viewBox="0 0 20.711 20.862"
-          fill="#ffffff"
-        />
-        <p class="icon-text white--text">Iniciar Sessão</p>
+        <p class="d-inline ml-3 white--text">Iniciar Sessão</p>
       </v-btn>
       <v-btn
         v-if="this.$store.state.name != ''"
@@ -395,224 +124,89 @@
           grow
           dark
           show-arrows
-          icons-and-text
-          slider-color="#f3f7fc"
+          hide-slider
           id="tab-bar"
+          :icons-and-text="$vuetify.breakpoint.mdAndDown"
         >
-          <v-tab active-class="active">
-            O que é
-            <unicon
-              name="home-icon"
-              width="22"
-              height="22"
-              viewBox="0 0 25.71 25.81"
-            />
-          </v-tab>
-
-          <v-menu offset-y open-on-hover nudge-top="2">
-            <template v-slot:activator="{ on }">
-              <v-tab v-on="on" active-class="active">
-                Registo na Clav
-                <unicon
-                  name="registo-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 25.71 25.809"
-                />
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Como registar-se na CLAV</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Indicação de representante da entidade</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
-          <v-menu offset-y open-on-hover nudge-top="2">
-            <template v-slot:activator="{ on }">
-              <v-tab v-on="on" active-class="active">
-                Operações
-                <unicon
-                  name="operacoes-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 25.71 26.68"
-                />
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Lista Consolidada</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Tabelas de Seleção</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Autos de Eliminação</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Entidades</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Tipologias de Entidades</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Legislação</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Termos de Índice</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Exportação de dados</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >API de dados</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
-          <v-menu offset-y open-on-hover nudge-top="2">
-            <template v-slot:activator="{ on }">
-              <v-tab v-on="on" active-class="active">
-                Documentação
-                <unicon
-                  name="documentacao-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 25.71 29.383"
-                />
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Documentos Metodológicos</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap">Manuais</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Formulários e instruções para a CLAV</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="alert('')">
-                <v-list-item-title class="text-wrap"
-                  >Produção Técnica e Científica</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
-          <v-menu
-            offset-y
-            open-on-hover
-            nudge-top="2"
-            v-if="
-              $store.state.token != '' &&
-                level >= 3.5 &&
-                $store.state.name != ''
-            "
+          <v-container
+            class="pa-0"
+            v-for="tab in tabsAcessiveis"
+            :key="tab.titulo"
           >
-            <template v-slot:activator="{ on }">
-              <v-tab
-                v-on="on"
-                active-class="active"
-                @click="$router.push('/gestao/gerais')"
-              >
-                Estatísticas
-                <unicon
-                  name="estatisticas-icon"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 20.71 20.75"
-                />
-              </v-tab>
-            </template>
-            <v-list rounded dark id="dark-background-list">
-              <v-list-item @click="$router.push('/gestao/gerais')">
-                <v-list-item-title class="text-wrap"
-                  >Métricas Gerais</v-list-item-title
+            <v-tab
+              v-if="!tab.menu"
+              :class="{ active: tab.titulo == tabAtiva }"
+              @click="goRoute(tab.url, tab.titulo)"
+              style="height: 49px;"
+            >
+              <p class="hidden-lg-and-up">{{ tab.titulo }}</p>
+              <unicon
+                v-if="tab.icon"
+                :name="tab.icon.nome"
+                width="22"
+                height="22"
+                :viewBox="tab.icon.viewbox"
+              />
+              <p class="ml-3 hidden-md-and-down">{{ tab.titulo }}</p>
+            </v-tab>
+            <v-menu v-if="tab.menu" offset-y open-on-hover nudge-top="2">
+              <template v-slot:activator="{ on }">
+                <v-tab
+                  v-on="on"
+                  :class="{ active: tab.titulo == tabAtiva }"
+                  style="height: 48px;"
                 >
-              </v-list-item>
-              <v-list-item @click="$router.push('/gestao/metrica')">
-                <v-list-item-title class="text-wrap"
-                  >Métricas de API</v-list-item-title
+                  <p class="hidden-lg-and-up">{{ tab.titulo }}</p>
+                  <unicon
+                    v-if="tab.icon"
+                    :name="tab.icon.nome"
+                    width="22"
+                    height="22"
+                    :viewBox="tab.icon.viewbox"
+                  />
+                  <p class="ml-3 hidden-md-and-down">{{ tab.titulo }}</p>
+                </v-tab>
+              </template>
+              <v-list rounded dark id="dark-background-list">
+                <v-list-item
+                  v-for="menuLink in tab.menu"
+                  :key="menuLink.opcao"
+                  @click="goRoute(menuLink.url, tab.titulo)"
                 >
-              </v-list-item>
-              <v-list-item @click="$router.push('/gestao/classes')">
-                <v-list-item-title class="text-wrap"
-                  >Métricas de Classes</v-list-item-title
-                >
-              </v-list-item>
-              <v-list-item @click="$router.push('/gestao/tabela')">
-                <v-list-item-title class="text-wrap"
-                  >Tabela de Indicadores</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-tab active-class="active">
-            Notícias
-            <unicon
-              name="noticias-icon"
-              width="22"
-              height="22"
-              viewBox="0 0 25.71 25.71"
-            />
-          </v-tab>
+                  <v-list-item-title class="text-wrap">{{
+                    menuLink.opcao
+                  }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-container>
         </v-tabs>
       </template>
-      <!--v-btn
+      <!--
+      <v-btn
         color="red"
         v-if="this.$store.state.name != ''"
         @click="testJWT"
       >
         JWT
-      </v-btn-->
+      </v-btn>-->
     </v-app-bar>
-    <!--Navbar para mobile screens-->
+    <!--Navbar para xs (mobile) screens-->
     <v-app-bar
       flat
       id="mobile-toolbar"
       class="hidden-sm-and-up toolbar white--text"
     >
-      <v-toolbar-title @click="goHome" style="cursor:pointer;">
-        <p class="title-letters-md font-weight-bold">CLAV -</p>
+      <v-toolbar-title @click="goRoute('/', 'O que é')" style="cursor:pointer;">
+        <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
         <p
-          class="subtitle-letter-md font-weight-light text-wrap"
+          class="subtitle-letter-md font-weight-light d-inline text-wrap"
           v-if="this.$store.state.name == ''"
         >
           Classificação e Avaliação da Informação Pública
         </p>
         <p
-          class="subtitle-letter-md font-weight-light text-wrap"
+          class="subtitle-letter-md font-weight-light d-inline text-wrap"
           v-if="this.$store.state.name != ''"
         >
           {{ this.$store.state.entidade.split("_")[1] }}
@@ -674,14 +268,14 @@
           <v-app-bar dark flat id="mobile-toolbar" class="toolbar">
             <v-toolbar-title
               v-if="this.$store.state.name == ''"
-              @click="goHome"
+              @click="goRoute('/', 'O que é')"
               style="cursor:pointer;"
             >
               <p class="title-letters-md font-weight-bold">CLAV</p>
             </v-toolbar-title>
             <v-toolbar-title
               v-if="this.$store.state.name != ''"
-              @click="goHome"
+              @click="goRoute('/', 'O que é')"
               style="cursor:pointer;"
             >
               <p class="title-letters-md font-weight-bold">CLAV -</p>
@@ -706,353 +300,74 @@
                 viewBox="0 0 20.711 20.862"
                 fill="#ffffff"
               />
-              <p class="icon-text white--text">Iniciar Sessão</p>
+              <p class="d-inline ml-3 white--text">Iniciar Sessão</p>
             </v-btn>
             <v-btn icon dark @click="dialog = false">
               <v-icon color="red">close</v-icon>
             </v-btn>
           </v-app-bar>
           <v-list rounded color="rgba(0,0,0,0)" dark two-line>
-            <v-list-item
-              @click="
-                $router.push('/');
-                dialog = false;
-              "
+            <v-container
+              class="pa-0"
+              v-for="tab in tabsAcessiveis"
+              :key="tab.titulo"
             >
-              <v-list-item-title class="px-2 font-weight-bold">
-                <unicon
-                  name="home-icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 25.71 25.81"
-                  fill="#f3f7fc"
-                />
-                <p class="inline mobile-menu-link">
-                  O que é
-                </p>
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-group no-action>
-              <template v-slot:activator>
-                <v-list-item-content>
-                  <v-list-item-title class="px-2 font-weight-bold">
-                    <unicon
-                      name="registo-icon"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 25.71 25.809"
-                      fill="#f3f7fc"
-                    />
-                    <p class="inline mobile-menu-link">
-                      Registo na Clav
-                    </p>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </template>
               <v-list-item
+                v-if="!tab.menu"
                 @click="
-                  $router.push('/');
+                  goRoute(tab.url, tab.titulo);
                   dialog = false;
                 "
               >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Como registar-se na CLAV</v-list-item-title
-                  >
-                </v-list-item-content>
+                <v-list-item-title class="px-2 font-weight-bold">
+                  <unicon
+                    v-if="tab.icon"
+                    :name="tab.icon.nome"
+                    width="24"
+                    height="24"
+                    :viewBox="tab.icon.viewbox"
+                    fill="#f3f7fc"
+                  />
+                  <p class="d-inline mobile-menu-link">{{ tab.titulo }}</p>
+                </v-list-item-title>
               </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Indicação de representante da entidade</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-group>
-            <v-list-group no-action>
-              <template v-slot:activator>
-                <v-list-item-content>
-                  <v-list-item-title class="px-2 font-weight-bold">
-                    <unicon
-                      name="operacoes-icon"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 25.71 26.68"
-                      fill="#f3f7fc"
-                    />
-                    <p class="inline mobile-menu-link">
-                      Operações
-                    </p>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </template>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Lista Consolidada</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Tabelas de Seleção</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Autos de Eliminação</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Entidades</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Tipologias de Entidades</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Legislação</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Termos de Índice</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Exportação de dados</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- API de dados</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-group>
-            <v-list-group no-action>
-              <template v-slot:activator>
-                <v-list-item-content>
-                  <v-list-item-title class="px-2 font-weight-bold">
-                    <unicon
-                      name="documentacao-icon"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 25.71 29.383"
-                      fill="#f3f7fc"
-                    />
-                    <p class="inline mobile-menu-link">
-                      Documentação
-                    </p>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </template>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Documentos Metodológicos</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Formulários e instruções para a CLAV</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Produção Técnica e Científica</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-group>
-            <v-list-group
-              no-action
-              v-if="
-                $store.state.token != '' &&
-                  level >= 3.5 &&
-                  $store.state.name != ''
-              "
-            >
-              <template v-slot:activator>
-                <v-list-item-content>
-                  <v-list-item-title class="px-2 font-weight-bold">
-                    <unicon
-                      name="estatisticas-icon"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 20.71 20.75"
-                      fill="#f3f7fc"
-                    />
-                    <p class="inline mobile-menu-link">
-                      Estatísticas
-                    </p>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </template>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Métricas Gerais</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Métricas de API</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Métricas de Classes</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item
-                @click="
-                  $router.push('/');
-                  dialog = false;
-                "
-              >
-                <v-list-item-content>
-                  <v-list-item-title class="text-wrap"
-                    >- Tabela de Indicadores</v-list-item-title
-                  >
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-group>
-            <v-list-item
-              @click="
-                $router.push('/');
-                dialog = false;
-              "
-            >
-              <v-list-item-title class="px-2 font-weight-bold">
-                <unicon
-                  name="noticias-icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 25.71 25.71"
-                  fill="#f3f7fc"
-                />
-                <p class="inline mobile-menu-link">
-                  Notícias
-                </p>
-              </v-list-item-title>
-            </v-list-item>
+              <v-list-group v-if="tab.menu" no-action>
+                <template v-slot:activator>
+                  <v-list-item-content>
+                    <v-list-item-title class="px-2 font-weight-bold">
+                      <unicon
+                        v-if="tab.icon"
+                        :name="tab.icon.nome"
+                        width="24"
+                        height="24"
+                        :viewBox="tab.icon.viewbox"
+                      />
+                      <p class="d-inline mobile-menu-link">{{ tab.titulo }}</p>
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </template>
+                <v-list-item
+                  v-for="menuLink in tab.menu"
+                  :key="menuLink.opcao"
+                  @click="
+                    goRoute(menuLink.url, tab.titulo);
+                    dialog = false;
+                  "
+                >
+                  <v-list-item-content>
+                    <v-list-item-title class="text-wrap"
+                      >- {{ menuLink.opcao }}</v-list-item-title
+                    >
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-group>
+            </v-container>
           </v-list>
         </v-card>
       </v-dialog>
     </v-app-bar>
   </div>
 </template>
-
 <script>
 import { mapGetters } from "vuex";
 
@@ -1066,11 +381,220 @@ export default {
       timeout: 4000,
       text: "",
       counter: 10,
-      level: 0
+      level: 0,
+      tabAtiva: "O que é",
+      navbar: [
+        {
+          titulo: "O que é",
+          icon: {
+            nome: "home-icon",
+            viewbox: "0 0 25.71 25.81"
+          },
+          level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+          url: "/"
+        },
+        // ? Registo visivel so para sessao nao iniciada?
+        {
+          titulo: "Registo na Clav",
+          icon: {
+            nome: "registo-icon",
+            viewbox: "0 0 25.71 25.809"
+          },
+          menu: [
+            {
+              opcao: "Como registar-se na CLAV",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/comoreg"
+            },
+            {
+              opcao: "Indicação de representante da entidade",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/indirepr"
+            }
+          ]
+        },
+        {
+          titulo: "Gestão da Plataforma",
+          icon: {
+            nome: "gestao-icon",
+            viewbox: "0 0 20.83 20.831"
+          },
+          menu: [
+            {
+              opcao: "Pedidos",
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+              url: "/pedidos"
+            },
+            {
+              opcao: "Pendentes",
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+              url: "/pendentes"
+            },
+            // ?
+            {
+              opcao: "Invariantes",
+              level: [6, 7],
+              url: "/invariantes"
+            },
+            {
+              opcao: "Utilizadores",
+              level: [5, 6, 7],
+              url: "/users"
+            },
+            {
+              opcao: "Vocabulários Controlados",
+              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/vocabularios"
+            },
+            {
+              opcao: "Chaves API",
+              level: [7],
+              url: "/gestao/api/listagem"
+            },
+            {
+              opcao: "Administração",
+              level: [7],
+              url: "/gestao/home"
+            }
+          ]
+        },
+        {
+          titulo: "Operações",
+          icon: {
+            nome: "operacoes-icon",
+            viewbox: "0 0 25.71 26.68"
+          },
+          menu: [
+            {
+              opcao: "Lista Consolidada",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/lcinfo"
+            },
+            {
+              opcao: "Tabelas de Seleção",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/tsinfo"
+            },
+            // ?
+            {
+              opcao: "Relatórios de Avaliação de Documentação Acumulada",
+              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/radainfo"
+            },
+            {
+              opcao: "Autos de Eliminação",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/autosEliminacao"
+            },
+            {
+              opcao: "Entidades",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/entidades"
+            },
+            {
+              opcao: "Tipologias de Entidades",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/tipologias"
+            },
+            {
+              opcao: "Legislação",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/legislacao"
+            },
+            {
+              opcao: "Termos de Índice",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/termosIndice"
+            },
+            {
+              opcao: "Exportação de dados",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/exportar"
+            },
+            // ?
+            {
+              opcao: "API de dados",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/docs"
+            }
+          ]
+        },
+        {
+          titulo: "Documentação",
+          icon: {
+            nome: "documentacao-icon",
+            viewbox: "0 0 25.71 29.383"
+          },
+          menu: [
+            {
+              opcao: "Documentos Metodológicos",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "docsmetdl"
+            },
+            {
+              opcao: "Manuais",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/manuais"
+            },
+            {
+              opcao: "Formulários e instruções para a CLAV",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/forminstrs"
+            },
+            {
+              opcao: "Produção Técnica e Científica",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/prodtec"
+            }
+          ]
+        },
+        {
+          titulo: "Estatísticas",
+          icon: {
+            nome: "estatisticas-icon",
+            viewbox: "0 0 20.71 20.75"
+          },
+          menu: [
+            {
+              opcao: "Métricas Gerais",
+              level: [3.5, 4, 5, 6, 7],
+              url: "/gestao/gerais"
+            },
+            {
+              opcao: "Métricas de API",
+              level: [3.5, 4, 5, 6, 7],
+              url: "/gestao/metrica"
+            },
+            {
+              opcao: "Métricas de Classes",
+              level: [3.5, 4, 5, 6, 7],
+              url: "/gestao/classes"
+            },
+            {
+              opcao: "Tabela de Indicadores",
+              level: [3.5, 4, 5, 6, 7],
+              url: "/gestao/tabela"
+            }
+          ]
+        },
+        {
+          titulo: "Notícias",
+          icon: {
+            nome: "noticias-icon",
+            viewbox: "0 0 25.71 25.71"
+          },
+          level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+          url: "/noticias"
+        }
+      ]
     };
   },
   computed: {
-    ...mapGetters(["token"])
+    ...mapGetters(["token"]),
+
+    tabsAcessiveis: function() {
+      return this.filtraTabs(this.navbar);
+    }
   },
   watch: {
     //apenas atualiza o nível quando o valor do token muda
@@ -1082,8 +606,52 @@ export default {
     this.level = this.$userLevel();
   },
   methods: {
-    goHome() {
-      this.$router.push("/");
+    goRoute: function(url, novaTab) {
+      this.tabAtiva = novaTab;
+      this.$router.push(url);
+    },
+    filtraTabs: function(navbar) {
+      var filtered = [];
+      for (var i = 0; i < navbar.length; i++) {
+        var levelsSet = new Set();
+
+        if (navbar[i].menu) {
+          navbar[i].menu.forEach(m => m.level.forEach(l => levelsSet.add(l)));
+        } else {
+          navbar[i].level.forEach(l => levelsSet.add(l));
+        }
+
+        var levels = Array.from(levelsSet);
+        if (
+          levels.includes(this.level) &&
+          navbar[i].menu &&
+          ((this.level > 0 &&
+            this.$store.state.token != "" &&
+            this.$store.state.name != "") ||
+            this.level === 0)
+        ) {
+          filtered.push({
+            titulo: navbar[i].titulo,
+            icon: navbar[i].icon,
+            menu: navbar[i].menu.filter(o => o.level.includes(this.level))
+          });
+        } else if (
+          levels.includes(this.level) &&
+          !navbar[i].menu &&
+          ((this.level > 0 &&
+            this.$store.state.token != "" &&
+            this.$store.state.name != "") ||
+            this.level === 0)
+        ) {
+          filtered.push({
+            titulo: navbar[i].titulo,
+            icon: navbar[i].icon,
+            level: navbar[i].level,
+            url: navbar[i].url
+          });
+        }
+      }
+      return filtered;
     },
     drawerNotificacoes() {
       this.$emit("drawerNotificacoes");
@@ -1120,22 +688,26 @@ export default {
   padding: 0px 20px;
 }
 .title-letters-lg {
-  display: inline;
   font-size: 2.4rem;
 }
 .title-letters-md {
-  display: inline;
-  font-size: 1.4rem;
+  font-size: 1.8rem;
 }
 .subtitle-letter-md {
-  display: inline;
+  padding-left: 6px;
   font-size: 1rem;
   vertical-align: text-bottom;
 }
 .subtitle-letter-lg {
-  display: inline;
   padding-left: 12px;
-  font-weight: 400;
+  vertical-align: text-bottom;
+}
+.toolbar-title-sm {
+  padding-top: 8px !important;
+  line-height: 1 !important;
+}
+.subtitle-letter-sm {
+  vertical-align: unset !important;
 }
 #authenticate-button,
 #authenticate-button-mobile {
@@ -1174,7 +746,7 @@ export default {
   color: #f3f7fc !important;
   fill: #f3f7fc !important;
   opacity: 1 !important;
-  min-width: 200px !important;
+  min-width: 250px !important;
 }
 .v-tabs-slider {
   background-color: #f3f7fc !important;
@@ -1183,10 +755,6 @@ export default {
 .theme--dark.v-sheet,
 .theme--dark.v-card {
   color: #e5e5e5 !important;
-}
-.icon-text {
-  margin-left: 0.625rem;
-  display: inline;
 }
 .active {
   color: #0057b7 !important;
@@ -1210,14 +778,12 @@ export default {
   font-size: 0.85rem !important;
   font-weight: 500;
 }
-.inline {
-  display: inline-block;
-}
 .mobile-menu-link {
   margin-left: 20px;
   margin-top: 10px;
 }
 .v-application .primary--text {
   color: #3899b7 !important;
+  fill: #3899b7 !important;
 }
 </style>

@@ -4,15 +4,13 @@
       :n="notificacoes ? notificacoes.length : '0'"
       @drawerNotificacoes="drawerNotificacoes()"
       @drawerDefinicoes="drawerDefinicoes()"
-      @drawerEstatisticas="drawerEstatisticas()"
     />
     <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="0">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
-    <!--Se for mobile, elimina-se o padding entre a navbar e o content-->
-    <v-content class="hidden-sm-and-up pt-0 ">
+    <v-content :class="{ 'pt-0': $vuetify.breakpoint.xsOnly }">
       <router-view />
       <Notificacoes
         v-if="this.$store.state.name != ''"
@@ -21,24 +19,11 @@
         @removerNotificacao="removerNotificacao($event)"
       />
       <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
+      <!--
       <Estatisticas
         v-if="this.$store.state.name != '' && level >= 3.5"
         :drawer="drawE"
-      />
-    </v-content>
-    <v-content>
-      <router-view />
-      <Notificacoes
-        v-if="this.$store.state.name != ''"
-        :drawer="drawN"
-        :notificacoes="notificacoes"
-        @removerNotificacao="removerNotificacao($event)"
-      />
-      <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
-      <Estatisticas
-        v-if="this.$store.state.name != '' && level >= 3.5"
-        :drawer="drawE"
-      />
+      />-->
     </v-content>
 
     <PageFooter />
@@ -49,7 +34,7 @@
 import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 import Definicoes from "@/components/principal/Definicoes.vue";
-import Estatisticas from "@/components/principal/Estatisticas.vue";
+// import Estatisticas from "@/components/principal/Estatisticas.vue";
 import Notificacoes from "@/components/principal/Notificacoes.vue";
 
 export default {
@@ -58,7 +43,7 @@ export default {
     PageFooter,
     MainPageHeader,
     Definicoes,
-    Estatisticas,
+    // Estatisticas,
     Notificacoes
   },
   watch: {
@@ -142,18 +127,18 @@ export default {
     },
     drawerNotificacoes() {
       this.drawD = false;
-      this.drawE = false;
+      // this.drawE = false;
       this.drawN = !this.drawN;
     },
     drawerDefinicoes() {
-      this.drawE = false;
+      // this.drawE = false;
       this.drawN = false;
       this.drawD = !this.drawD;
     },
     drawerEstatisticas() {
       this.drawD = false;
       this.drawN = false;
-      this.drawE = !this.drawE;
+      // this.drawE = !this.drawE;
     },
     async removerNotificacao(id) {
       try {
@@ -168,7 +153,7 @@ export default {
   },
   data: () => ({
     drawD: false,
-    drawE: false,
+    // drawE: false,
     drawN: false,
     snackbar: false,
     authenticated: false,
@@ -195,9 +180,6 @@ export default {
 }
 .v-btn {
   text-transform: none !important;
-  /*
-  TODO add this
-   */
   font-weight: 600 !important;
 }
 .v-text-field .v-label {
@@ -221,5 +203,8 @@ export default {
 b {
   font-weight: 500 !important;
   text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+}
+.theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+  fill: #ffffff !important;
 }
 </style>

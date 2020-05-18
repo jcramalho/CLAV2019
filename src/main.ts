@@ -14,6 +14,7 @@ import Unicon from "vue-unicons";
 import {
   homeIcon,
   registoIcon,
+  gestaoIcon,
   operacoesIcon,
   documentacaoIcon,
   estatisticasIcon,
@@ -43,6 +44,7 @@ Vue.component("downloadCsv", JsonCSV);
 Unicon.add([
   homeIcon,
   registoIcon,
+  gestaoIcon,
   operacoesIcon,
   documentacaoIcon,
   estatisticasIcon,
