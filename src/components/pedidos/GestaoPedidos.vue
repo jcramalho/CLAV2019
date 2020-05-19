@@ -15,17 +15,25 @@
 
             <PedidosAnalise
               :pedidos="pedidosDistribuidos"
+              :pesquisaPedidos="pesquisaPedidos"
               @analisar="analisaPedido($event)"
             />
 
             <PedidosValidacao
               :pedidos="pedidosValidados"
+              :pesquisaPedidos="pesquisaPedidos"
               @validar="validaPedido($event)"
             />
 
-            <PedidosDevolvidos :pedidos="pedidosDevolvidos" />
+            <PedidosDevolvidos
+              :pedidos="pedidosDevolvidos"
+              :pesquisaPedidos="pesquisaPedidos"
+            />
 
-            <PedidosProcessados :pedidos="pedidosProcessados" />
+            <PedidosProcessados
+              :pedidos="pedidosProcessados"
+              :pesquisaPedidos="pesquisaPedidos"
+            />
           </v-expansion-panels>
         </v-card-text>
       </v-card>
@@ -91,8 +99,12 @@ export default {
 
     const storage = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
 
-    if (storage.limpar) localStorage.removeItem("pesquisa-pedidos");
-    else this.pesquisaPedidos = storage;
+    if (storage !== null && storage !== undefined) {
+      if (storage.limpar) localStorage.removeItem("pesquisa-pedidos");
+      else this.pesquisaPedidos = storage;
+
+      localStorage.removeItem("pesquisa-pedidos");
+    }
   },
 
   methods: {

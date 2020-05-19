@@ -35,16 +35,24 @@
         <v-data-table
           :headers="headers"
           :items="dadosTabela"
-          :search="procurar"
+          :search.sync="procurar"
           class="elevation-1"
           sortDesc
           sort-by="data"
           :custom-sort="ordenaTabela"
           :footer-props="footer_props"
+          :page.sync="paginaTabela"
         >
           <template v-slot:no-data>
-            <v-alert :value="true" color="error" icon="warning">
+            <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
               Não existem pedidos neste estado...
+            </v-alert>
+          </template>
+
+          <template v-slot:no-results>
+            <v-alert type="info" width="50%" class="m-auto mb-2 mt-2" outlined>
+              Sem resultados para "<strong>{{ procurar }}</strong
+              >".
             </v-alert>
           </template>
 
@@ -74,52 +82,6 @@
             </v-tooltip>
           </template>
 
-          <!-- <template v-slot:item="props">
-            <tr>
-              <td class="subheading">{{ props.item.codigo }}</td>
-              <td class="subheading">
-                {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
-              </td>
-              <td class="subheading">
-                <span v-if="props.item.entidade">{{
-                  props.item.entidade.split("_")[1]
-                }}</span>
-              </td>
-              <td class="subheading">{{ props.item.criadoPor }}</td>
-              <td class="subheading">{{ converteData(props.item.data) }}</td>
-              <td>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon
-                      @click="showPedido(props.item)"
-                      color="indigo darken-2"
-                      v-on="on"
-                      >visibility</v-icon
-                    >
-                  </template>
-                  <span>Ver pedido...</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon
-                      @click="distribuiPedido(props.item)"
-                      color="indigo darken-2"
-                      v-on="on"
-                      >person</v-icon
-                    >
-                  </template>
-                  <span>Distribuir pedido...</span>
-                </v-tooltip>
-                <v-tooltip bottom v-if="false">
-                  <template v-slot:activator="{ on }">
-                    <v-icon color="red darken-2" v-on="on">delete</v-icon>
-                  </template>
-                  <span>Apagar pedido</span>
-                </v-tooltip>
-              </td>
-            </tr>
-          </template> -->
-
           <template v-slot:pageText="props">
             Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
             {{ props.itemsLength }}
@@ -132,11 +94,12 @@
 
 <script>
 export default {
-  props: ["pedidos", "titulo"],
+  props: ["pedidos", "pesquisaPedidos"],
 
   data: () => {
     return {
       procurar: "",
+      paginaTabela: 1,
       headers: [
         {
           text: "Código",
@@ -195,6 +158,13 @@ export default {
   watch: {
     pedidos() {
       this.atualizaPedidos();
+    },
+
+    pesquisaPedidos() {
+      if (this.pesquisaPedidos.painel !== undefined) {
+        this.paginaTabela = this.pesquisaPedidos.pagina;
+        this.procurar = this.pesquisaPedidos.pesquisa;
+      }
     },
   },
 
@@ -290,7 +260,17 @@ export default {
       return `${dia}-${mes}-${ano}`;
     },
 
-    showPedido: function(pedido) {
+    showPedido(pedido) {
+      localStorage.setItem(
+        "pesquisa-pedidos",
+        JSON.stringify({
+          painel: 3,
+          pesquisa: this.procurar,
+          pagina: this.paginaTabela,
+          limpar: true,
+        })
+      );
+
       this.$router.push("/pedidos/" + pedido.codigo);
     },
   },

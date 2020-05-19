@@ -82,6 +82,7 @@
         "
         :p="p"
       />
+      <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
       <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
@@ -118,6 +119,7 @@ import ShowEntidade from "@/components/pedidos/consulta/showEntidade";
 import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
 import ShowLegislacao from "@/components/pedidos/consulta/showLegislacao";
 import ShowTI from "@/components/pedidos/consulta/showTI";
+import ShowPGD from "@/components/pedidos/consulta/showPGD";
 
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 
@@ -135,6 +137,7 @@ export default {
     ShowLegislacao,
     ShowTI,
     SubstituirResponsavel,
+    ShowPGD
   },
 
   data() {
@@ -157,7 +160,16 @@ export default {
   },
 
   methods: {
-    voltar: function() {
+    voltar() {
+      const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
+      localStorage.setItem(
+        "pesquisa-pedidos",
+        JSON.stringify({
+          ...pesquisa,
+          limpar: false,
+        })
+      );
+
       this.$router.go(-1);
     },
 
