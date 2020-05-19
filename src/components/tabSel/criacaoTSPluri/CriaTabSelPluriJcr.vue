@@ -461,7 +461,7 @@ export default {
           if (filtradas.length > 1) {
             this.mensagensErro.push({
               sobre: "Nota de Aplicação(" + (i + 1) + ")",
-              mensagem: "[" + p.notasAp[i].nota + "] já existente na BD."
+              mensagem: "[" + p.notasAp[i].nota + "] noutro processo selecionado."
             });
             this.numeroErros++;
           }
@@ -518,7 +518,7 @@ export default {
         if (filtrados.length > 1) {
             this.mensagensErro.push({
               sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
-              mensagem: "[" + p.exemplosNotasAp[i].exemplo + "] já existente na BD."
+              mensagem: "[" + p.exemplosNotasAp[i].exemplo + "] noutro processo selecionado."
             });
             this.numeroErros++;
           }
@@ -552,7 +552,7 @@ export default {
           this.mensagensErro.push({
               sobre: "Termo de Índice(" + (i + 1) + ")",
               mensagem:
-                "[" + p.termosInd[i].termo + "] já existente na BD."
+                "[" + p.termosInd[i].termo + "] noutro processo selecionado."
           });
           this.numeroErros++;
         }
