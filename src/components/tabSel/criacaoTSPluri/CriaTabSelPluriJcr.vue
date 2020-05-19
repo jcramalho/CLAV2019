@@ -454,11 +454,11 @@ export default {
     },
 
     validaNotasAp: async function(p){
-      var index;
+      var filtradas;
       for (let i = 0; i < p.notasAp.length; i++) {
-        index = this.notasApSet.findIndex(n => n.nota == p.notasAp[i].nota);
+        filtradas = this.notasApSet.filter(n => n.nota == p.notasAp[i].nota);
           
-          if (index != -1) {
+          if (filtradas.length > 1) {
             this.mensagensErro.push({
               sobre: "Nota de Aplicação(" + (i + 1) + ")",
               mensagem: "[" + p.notasAp[i].nota + "] já existente na BD."
@@ -512,10 +512,10 @@ export default {
     },
 
     validaExemplosNotasAp: async function(p){
-      var index;
+      var filtrados;
       for (let i = 0; i < p.exemplosNotasAp.length; i++) {
-        index = this.exemplosNotasApSet.findIndex(e => e.exemplo == p.exemplosNotasAp[i].exemplo);
-        if (index != -1) {
+        filtrados = this.exemplosNotasApSet.filter(e => e.exemplo == p.exemplosNotasAp[i].exemplo);
+        if (filtrados.length > 1) {
             this.mensagensErro.push({
               sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
               mensagem: "[" + p.exemplosNotasAp[i].exemplo + "] já existente na BD."
@@ -545,10 +545,10 @@ export default {
 
     validaTIs: async function(p){
       // Termos de Índice
-      var index;
+      var filtrados;
       for (let i = 0; i < p.termosInd.length; i++) {
-        index = this.termosIndSet.findIndex(t => termo == p.termosInd[i].termo);
-        if (index != -1) {
+        filtrados = this.termosIndSet.filter(t => t.termo == p.termosInd[i].termo);
+        if (filtrados.length > 1) {
           this.mensagensErro.push({
               sobre: "Termo de Índice(" + (i + 1) + ")",
               mensagem:
@@ -565,6 +565,7 @@ export default {
         });
       }
     }
+    // ----------Fim da validação ----------------------------
   },
 
   created: async function() {
