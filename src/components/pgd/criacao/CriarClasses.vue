@@ -1,6 +1,6 @@
 <template>
   <div>
-  <v-expansion-panels flat focusable v-model="panel">
+  <v-expansion-panels flat focusable v-model="panel" class="mb-5">
     <v-expansion-panel>
       <v-expansion-panel-header disable-icon-rotate color="#dee2f8" ripple>
         <b style="color:#1a237e">Criar Classe / Série</b>
@@ -87,6 +87,13 @@
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
+  <v-data-table
+    v-if="classes.length>0"
+    :headers="headers"
+    :items="classes"
+    class="elevation-1 mt-2"
+  />
+
   <v-snackbar
     v-model="snackbar"
     :color="color"
@@ -136,6 +143,13 @@ export default {
         label: 'Conservação Parcial',
         value: 'CPP'
       }
+    ],
+    headers: [
+      { text: "Código", value: "codigo", class: "subtitle-1" },
+      { text: "Referência", value: "referencia", class: "subtitle-1" },
+      { text: "Séries Documentais", value: "seriesDocumentais", class: "subtitle-1" },
+      { text: "PCA", value: "pca", class: "subtitle-1" },
+      { text: "Destino Final", value: "df", class: "subtitle-1" }
     ]
   }),
   methods: {

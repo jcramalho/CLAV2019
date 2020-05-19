@@ -93,47 +93,23 @@
             class="mb-4"
             :classes="classes"
           />
-
-          <v-data-table
-            v-if="classes.length>0"
-            :headers="headers"
-            :items="classes"
-            class="elevation-1 mt-2"
-          />
-
         </v-stepper-content>
         <hr style="border-top: 0px" />
 
-              <v-row align="center" justify="space-around">
-              
-                <v-btn v-if="steps>2" color="primary" @click=" steps = 2;">Voltar</v-btn>
-                <v-btn color="primary" v-if="steps>2" @click="guardarTrabalho">Guardar trabalho</v-btn>
-                <!--<v-btn
-                  v-if="steps>2"
-                  color="primary"
-                  @click="guardarTrabalho()"
-                  >Guardar trabalho
-                  <DialogPendenteGuardado 
+        <v-row align="center" justify="space-around">
+          <v-btn v-if="steps>2" color="primary" @click=" steps = 2;">Voltar</v-btn>
+          <v-btn color="primary" v-if="steps>2" @click="guardarTrabalho">
+            Guardar trabalho
+            <DialogPendenteGuardado 
                     v-if="pendenteGuardado" 
                     :pendente="pendente"
-                    @continuar="pendenteGuardado = false"/>
-                </v-btn>-->
+                    @continuar="pendenteGuardado = false"/>  
+          </v-btn>
 
-                <v-btn color="primary" v-if="steps>2 && classes.length>0" @click="submeter">Submeter</v-btn>
-                <!--<v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>-->
+          <v-btn color="primary" v-if="steps>2 && classes.length>0" @click="submeter">Submeter</v-btn>
 
-                <v-btn dark color="red darken-4">Sair / Cancelar</v-btn> 
-                <!--<v-btn
-                  dark
-                  color="red darken-4"
-                  @click="eliminarTabela = true"
-                  >Sair / Cancelar
-                  <DialogCancelar 
-                    v-if="eliminarTabela" 
-                    @continuar="eliminarTabela=false"
-                    @sair="abortar"/>
-                </v-btn>-->
-              </v-row>
+          <v-btn dark color="red darken-4">Sair / Cancelar</v-btn> 
+        </v-row>
       </v-stepper>
     </v-card-text>
   </v-card>
@@ -141,12 +117,15 @@
 <script>
 import SelecionarData from "@/components/generic/SelecionarData";
 import CriarClassesPGD from "@/components/pgd/criacao/CriarClasses.vue"
+import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPendenteGuardado.vue";
+
 
 export default {
-  props: ["entidades"],
+  props: ["entidades","obj"],
   components: {
     CriarClassesPGD,
-    SelecionarData
+    SelecionarData,
+    DialogPendenteGuardado
   },
   data: () => ({
     steps: 1,
@@ -155,17 +134,20 @@ export default {
     classes: [],
     dataCriacao: "",
     menu1: false,
-    basicRule: [v => !!v || "Campo de preenchimento obrigatório!"],
-    headers: [
-      { text: "Código", value: "codigo", class: "subtitle-1" },
-      { text: "Referência", value: "referencia", class: "subtitle-1" },
-      { text: "Séries Documentais", value: "seriesDocumentais", class: "subtitle-1" },
-      { text: "PCA", value: "pca", class: "subtitle-1" },
-      { text: "Destino Final", value: "df", class: "subtitle-1" }
-    ]
+    pendente: {},
+    pendenteGuardado: false,
+    basicRule: [v => !!v || "Campo de preenchimento obrigatório!"]
   }),
 
   created: async function () {
+    if(this.obj) {
+      this.entSel = this.obj.objeto.entidades;
+      this.dataCriacao = this.obj.objeto.dataCriacao;
+      this.designacao = this.obj.objeto.designacao;
+      this.classes = this.obj.objeto.classes;
+      this.pendente._id = this.obj._id;
+      this.steps = 3;
+    } else {
     try {
       var user = await this.$verifyTokenUser();
 
@@ -181,15 +163,25 @@ export default {
     catch (e) {
       this.entSel = [];
     }
+    }
   },
   methods: {
     submeter: async function() {
+      if(this.pendente._id){
+          try{
+            var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
+          }
+          catch(e){
+            console.log("Erro ao remover o pendente na submissão da TS: " + e);
+          }
+      }
+
       var user = this.$verifyTokenUser();
       var obj = {
         entidades: this.entSel,
         dataCriacao: this.dataCriacao,
         designacao: this.designacao,
-        classes: this.classes
+        classes: this.classes.sort((a,b) => (a.referencia <= b.referencia) ? -1 : 1).sort((a,b) => (a.codigo <= b.codigo) ? -1 : 1)
       }
 
       var pedidoParams = {
@@ -211,30 +203,41 @@ export default {
 
     },
     guardarTrabalho: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          var userBD = this.$verifyTokenUser();
-          var pendenteParams = {
-            numInterv: 1,
-            acao: "Criação",
-            tipo: "Portaria de Gestão de Documentos",
-            objeto: this.auto,
-            criadoPor: userBD.email,
-            user: { email: userBD.email },
-            token: this.$store.state.token
-          };
+      try { 
+        var userBD = this.$verifyTokenUser();
+        var obj = {
+          entidades: this.entSel,
+          dataCriacao: this.dataCriacao,
+          designacao: this.designacao,
+          classes: this.classes.sort((a,b) => (a.referencia <= b.referencia) ? -1 : 1).sort((a,b) => (a.codigo <= b.codigo) ? -1 : 1)
+        }
+        var pendenteParams = {
+          acao: "Criação",
+          tipo: "PGD",
+          objeto: obj,
+          criadoPor: userBD.email,
+          user: { email: userBD.email },
+          token: this.$store.state.token
+        };
+
+        if(this.pendente._id) {
+          pendenteParams._id = this.pendente._id;
+          pendenteParams.numInterv = this.pendente.numInterv++;
+          var response = await this.$request("put", "/pendentes", pendenteParams);
+        }
+        else {
+          pendenteParams.numInterv = 1;
           var response = await this.$request(
             "post",
             "/pendentes",
             pendenteParams
           );
-          this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
         }
+        this.pendenteGuardado = true;
+        this.pendente = response.data;
+      
       } catch (error) {
-        return error;
+        console.log("Erro ao guardar trabalho: " + err);
       }
     },
   }
