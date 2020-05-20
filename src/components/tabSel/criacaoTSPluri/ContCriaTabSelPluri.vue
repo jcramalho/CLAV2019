@@ -433,6 +433,9 @@ export default {
       this.validacaoTerminada = false;
       this.numeroErros = 0;
       this.mensagensErro = [];
+      this.notasApSet = [];
+      this.exemplosNotasApSet = [];
+      this.termosIndSet = [];
     },
 
     validaBlocoDescritivo: async function(p){
