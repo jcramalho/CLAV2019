@@ -7,14 +7,40 @@
       <v-card-text>
         <v-form ref="form" :lazy-validation="false">
           <Identificacao :newSerie="newSerie" :classes="classes" />
-
+          <v-row>
+            <v-col md="3" sm="3">
+              <div class="info-label">Classe Pai</div>
+            </v-col>
+            <v-col sm="9" md="9">
+              <v-autocomplete
+                v-model="newSerie.eFilhoDe"
+                :items="classesHierarquia"
+                :rules="[v => !!v || 'Campo obrigatório!']"
+                item-value="codigo"
+                item-text="searchField"
+                solo
+                clearable
+                label="Classe Pai"
+                chips
+              >
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão
+                      não existe!
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+              </v-autocomplete>
+            </v-col>
+          </v-row>
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSerie" :UIs="UIs" :RE="RE" />
+                <ZonaDescritiva :newSerie="newSerie" :classes="classes" :UIs="UIs" :RE="RE" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -46,36 +72,6 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-          <br />
-
-          <h5>Hierarquia</h5>
-          <v-divider></v-divider>
-          <v-row>
-            <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai</div>
-            </v-col>
-            <v-col sm="9" md="9">
-              <v-autocomplete
-                v-model="newSerie.eFilhoDe"
-                :items="classesHierarquia"
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                item-value="codigo"
-                item-text="searchField"
-                solo
-                clearable
-                label="Classe Pai"
-                chips
-              >
-                <template v-slot:no-data>
-                  <v-list-item>
-                    <v-list-item-title>
-                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
-                    </v-list-item-title>
-                  </v-list-item>
-                </template>
-              </v-autocomplete>
-            </v-col>
-          </v-row>
         </v-form>
       </v-card-text>
 
@@ -83,7 +79,7 @@
         <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
           É necessário preencher os campos seguintes:
           <ul>
-            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+            <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>

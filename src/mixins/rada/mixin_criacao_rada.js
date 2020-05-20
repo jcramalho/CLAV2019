@@ -218,7 +218,7 @@ export default {
           entidade: this.user_entidade,
           despacho: !!despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-            despacho
+              despacho
             : "Submissão inicial"
         };
 
@@ -236,68 +236,34 @@ export default {
       }
     },
     descobrir_datas_extremas(series_subseries) {
+      // verificar se UIs estão dentro das datas extremas
       this.erros_datas_uis = [];
 
       for (let i = 0; i < series_subseries.length; i++) {
-        // Se tiver datas extremas ver se UIs estão dentro dessas datas
-        if (!!series_subseries[i].dataInicial) {
-          let classe_data_inicial = new Date(series_subseries[i].dataInicial);
-          let classe_data_final = new Date(series_subseries[i].dataFinal);
+        let classe_data_inicial = new Date(series_subseries[i].dataInicial);
+        let classe_data_final = new Date(series_subseries[i].dataFinal);
 
-          for (let j = 0; j < series_subseries[i].UIs.length; j++) {
-            let ui = this.RADA.tsRada.UIs.find(
-              e => e.codigo == series_subseries[i].UIs[j]
-            );
-
-            if (
-              new Date(ui.dataInicial) < classe_data_inicial ||
-              new Date(ui.dataFinal) > classe_data_final
-            ) {
-              this.erros_datas_uis.push({
-                codigoClasse: series_subseries[i].codigo,
-                codigoUI: ui.codigo
-              });
-            }
-          }
-
-          this.datas_extremas_classes.push({
-            codigo: series_subseries[i].codigo,
-            dataInicial: classe_data_inicial,
-            dataFinal: classe_data_final
-          });
-
-          // se a classe não tiver datas extremas, tem que se descobrir através das UIs 
-        } else {
+        for (let j = 0; j < series_subseries[i].UIs.length; j++) {
           let ui = this.RADA.tsRada.UIs.find(
-            e => e.codigo == series_subseries[i].UIs[0]
+            e => e.codigo == series_subseries[i].UIs[j]
           );
 
-          let data_inicial = new Date(ui.dataInicial);
-          let data_final = new Date(ui.dataFinal);
-
-          for (let z = 1; z < series_subseries[i].UIs.length; z++) {
-            ui = this.RADA.tsRada.UIs.find(
-              e => e.codigo == series_subseries[i].UIs[z]
-            );
-
-            let aux_data_inicial = new Date(ui.dataInicial);
-            let aux_data_final = new Date(ui.dataFinal);
-
-            if (aux_data_inicial < data_inicial) {
-              data_inicial = aux_data_inicial;
-            }
-
-            if (aux_data_final > data_final) {
-              data_final = aux_data_final;
-            }
+          if (
+            new Date(ui.dataInicial) < classe_data_inicial ||
+            new Date(ui.dataFinal) > classe_data_final
+          ) {
+            this.erros_datas_uis.push({
+              codigoClasse: series_subseries[i].codigo,
+              codigoUI: ui.codigo
+            });
           }
-
-          this.datas_extremas_classes.push({
-            codigo: series_subseries[i].codigo,
-            dataInicial: data_inicial,
-            dataFinal: data_final
-          });
         }
+
+        this.datas_extremas_classes.push({
+          codigo: series_subseries[i].codigo,
+          dataInicial: classe_data_inicial,
+          dataFinal: classe_data_final
+        });
       }
     },
     validar_relacoes(series_subseries) {
@@ -391,7 +357,11 @@ export default {
         });
       }
 
-      if (!!this.erroProdutoras[0] || !!this.erros_relacoes[0] || !!this.erros_datas_uis) {
+      if (
+        !!this.erroProdutoras[0] ||
+        !!this.erros_relacoes[0] ||
+        !!this.erros_datas_uis
+      ) {
         this.loading_circle_ts = false;
       } else {
         let series = this.RADA.tsRada.classes
@@ -439,7 +409,7 @@ export default {
           entidade: this.user_entidade,
           despacho: !!this.despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-            this.despacho
+              this.despacho
             : "Submissão inicial"
         };
         let response = await this.$request("post", "/pedidos", pedidoParams);

@@ -2,7 +2,7 @@
   <v-dialog v-model="dialogState" persistent>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
-        <b>{{ 'Alterar a subsérie: ' + treeview_object.titulo }}</b>
+        <b>{{ "Alterar a subsérie: " + treeview_object.titulo }}</b>
         <v-spacer />
         <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
@@ -11,10 +11,10 @@
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
             <v-card>
-              <v-card-title
-                class="headline grey lighten-2"
-                primary-title
-              >Pretende mesmo eliminar a classe {{ treeview_object.titulo }} ?</v-card-title>
+              <v-card-title class="headline grey lighten-2" primary-title>
+                Pretende mesmo eliminar a classe
+                {{ treeview_object.titulo }} ?
+              </v-card-title>
 
               <v-card-text align="center">
                 <br />
@@ -26,14 +26,40 @@
         </v-row>
         <v-form ref="form" :lazy-validation="false">
           <Identificacao :newSerie="subserie" />
-
+          <v-row>
+            <v-col md="3" sm="3">
+              <div class="info-label">Classe Pai</div>
+            </v-col>
+            <v-col cols="12" sm="9" md="0">
+              <v-autocomplete
+                :disabled="temCriterioLegal"
+                v-model="subserie.eFilhoDe"
+                :items="classesHierarquia"
+                :rules="[v => !!v || 'Este campo é obrigatório.']"
+                item-value="codigo"
+                item-text="searchField"
+                solo
+                clearable
+                placeholder="Classe Pai"
+                chips
+              >
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Série</strong> em questão não existe!
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+              </v-autocomplete>
+            </v-col>
+          </v-row>
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="subserie" :UIs="UIs" :RE="RE" />
+                <ZonaDescritiva :newSerie="subserie" :UIs="UIs" :RE="RE" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -62,44 +88,13 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-          <br />
-
-          <h5>Hierarquia</h5>
-          <v-divider></v-divider>
-          <v-row>
-            <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai</div>
-            </v-col>
-            <v-col cols="12" sm="9" md="0">
-              <v-autocomplete
-                :disabled="temCriterioLegal"
-                v-model="subserie.eFilhoDe"
-                :items="classesHierarquia"
-                :rules="[v => !!v || 'Este campo é obrigatório.']"
-                item-value="codigo"
-                item-text="searchField"
-                solo
-                clearable
-                placeholder="Classe Pai"
-                chips
-              >
-                <template v-slot:no-data>
-                  <v-list-item>
-                    <v-list-item-title>
-                      <strong>Classe Série</strong> em questão não existe!
-                    </v-list-item-title>
-                  </v-list-item>
-                </template>
-              </v-autocomplete>
-            </v-col>
-          </v-row>
         </v-form>
       </v-card-text>
       <v-card-actions>
         <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
           É necessário preencher os campos seguintes:
           <ul>
-            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+            <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
@@ -153,11 +148,8 @@ export default {
         this.erros.push("Descrição;");
       }
 
-      if (
-        !!this.subserie.UIs[0] == false &&
-        (!this.subserie.dataInicial || !this.subserie.dataFinal)
-      ) {
-        this.erros.push("Datas Extremas ou Unidades de Instalação;");
+      if (!this.subserie.dataInicial || !this.subserie.dataFinal) {
+        this.erros.push("Datas extremas;");
       }
 
       if (!this.subserie.eFilhoDe) {

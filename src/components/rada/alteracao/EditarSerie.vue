@@ -11,10 +11,10 @@
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
             <v-card>
-              <v-card-title
-                class="headline grey lighten-2"
-                primary-title
-              >Pretende mesmo eliminar a classe {{ treeview_object.titulo }} ?</v-card-title>
+              <v-card-title class="headline grey lighten-2" primary-title>
+                Pretende mesmo eliminar a classe
+                {{ treeview_object.titulo }} ?
+              </v-card-title>
 
               <v-card-text align="center">
                 <br />
@@ -26,48 +26,6 @@
         </v-row>
         <v-form ref="form" :lazy-validation="false">
           <Identificacao :newSerie="serie" />
-
-          <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <b>Zona Descritiva</b>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE" />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <b>Zona de Contexto de Avaliação</b>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <ZonaContexto
-                  :newSerie="serie"
-                  :classes="classes"
-                  :legislacao="legislacao"
-                  :RE="RE"
-                  :legislacaoProcessada="legislacaoProcessada"
-                  :formaContagem="formaContagem"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel popout focusable v-if="!(!!(treeview_object.children[0]))">
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <b>Zona de Decisões de Avaliação</b>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <ZonaDecisoesAvaliacao
-                  :rules="true"
-                  :newSerie="serie"
-                  :classes="classes"
-                  :formaContagem="formaContagem"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-          <br />
-          <h5>Hierarquia</h5>
-          <v-divider></v-divider>
           <v-row>
             <v-col md="3" sm="3">
               <div class="info-label">Classe Pai</div>
@@ -87,13 +45,53 @@
                 <template v-slot:no-data>
                   <v-list-item>
                     <v-list-item-title>
-                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão
+                      não existe!
                     </v-list-item-title>
                   </v-list-item>
                 </template>
               </v-autocomplete>
             </v-col>
           </v-row>
+
+          <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona Descritiva</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE" :classes="classes" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona de Contexto de Avaliação</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaContexto
+                  :newSerie="serie"
+                  :classes="classes"
+                  :legislacao="legislacao"
+                  :RE="RE"
+                  :legislacaoProcessada="legislacaoProcessada"
+                  :formaContagem="formaContagem"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel popout focusable v-if="!!!treeview_object.children[0]">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <b>Zona de Decisões de Avaliação</b>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <ZonaDecisoesAvaliacao
+                  :rules="true"
+                  :newSerie="serie"
+                  :classes="classes"
+                  :formaContagem="formaContagem"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-form>
       </v-card-text>
 
@@ -101,7 +99,7 @@
         <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
           É necessário preencher os campos seguintes:
           <ul>
-            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+            <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
