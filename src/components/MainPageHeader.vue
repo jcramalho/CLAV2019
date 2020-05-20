@@ -716,13 +716,14 @@ export default {
   box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.4),
     0 2px 4px -1px rgba(255, 255, 255, 0.36) !important;
   text-decoration: none;
+  background-color: #46c354 !important;
 }
 #authenticate-button-mobile {
   height: 29px !important;
 }
 #authenticate-button:before,
 #authenticate-button-mobile:before {
-  background-color: #399d44 !important;
+  background-color: #46c354 !important;
 }
 #user-button::before {
   background-color: transparent !important;
@@ -733,7 +734,7 @@ export default {
 }
 #authenticate-button:hover,
 #authenticate-button-mobile:hover {
-  background-color: rgba(103, 204, 114, 0.8) !important;
+  background-color: rgb(70, 195, 84, 0.8) !important;
 }
 #authenticate-button:hover:before,
 #authenticate-button-mobile:hover:before {
