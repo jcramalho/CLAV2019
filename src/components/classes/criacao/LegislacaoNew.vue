@@ -34,7 +34,7 @@
             </v-col>
 
             <v-col xs12 md3>
-              <SelecionarData :d="data" @dataSelecionada="data = $event" />
+              <SelecionarData :d="data" :label="'Data: AAAA-MM-DD'" @dataSelecionada="data = $event" />
             </v-col>
           </v-row>
         </v-container>

@@ -12,7 +12,7 @@
       <v-text-field
         filled
         v-model="dataValor"
-        label="Data: AAAA-MM-DD"
+        :label="label"
         prepend-icon="event"
         readonly
         v-on="on"
@@ -26,7 +26,7 @@
       show-current
       first-day-of-week="1"
       :max="new Date().toISOString().substr(0, 10)"
-      min="1900-01-01"
+      :min="minData"
       locale="pt"
       @input="
         menu1 = false;
@@ -38,7 +38,17 @@
 
 <script>
 export default {
-  props: ["d"],
+  props: ["d", "label", "dataMinima"],
+
+  data() {
+    return {
+      minData: "",
+    };
+  },
+
+  mounted() {
+    this.minData = this.dataMinima || "1800-01-01";
+  },
 
   data() {
     return {

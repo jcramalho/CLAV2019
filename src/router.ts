@@ -236,6 +236,13 @@ export default new Router({
       component: () => import("./views/rada/criarRada.vue"),
       meta: { levels: [4, 5, 6, 7] },
     },
+    // Routes das PGD
+    {
+      path: "/pgd/criar",
+      name: "criarPGD",
+      component: () => import("./views/pgd/PGDCriar.vue"),
+      meta: { levels: [3, 3.5, 4, 5, 6, 7]}
+    },
     // Routes dos Autos de Eliminação
     {
       path: "/autosEliminacao",
