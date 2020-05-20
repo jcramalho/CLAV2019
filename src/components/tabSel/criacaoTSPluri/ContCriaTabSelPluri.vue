@@ -430,12 +430,12 @@ export default {
     },
 
     fechoValidacao: function(){
-      this.validacaoTerminada = false;
       this.numeroErros = 0;
       this.mensagensErro = [];
       this.notasApSet = [];
       this.exemplosNotasApSet = [];
       this.termosIndSet = [];
+      this.validacaoTerminada = false;
     },
 
     validaBlocoDescritivo: async function(p){

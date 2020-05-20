@@ -9,7 +9,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
-                <v-btn color="success" dark @click="dialog=false">Continuar</v-btn>
+                <v-btn color="success" dark @click="dialog=false; $emit('continuar');">Continuar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

@@ -428,13 +428,13 @@ export default {
       this.validacaoTerminada = true;
     },
 
-    fechoValidacao: function(){
-      this.validacaoTerminada = false;
+    fechoValidacao: async function(){
       this.numeroErros = 0;
       this.mensagensErro = [];
       this.notasApSet = [];
       this.exemplosNotasApSet = [];
       this.termosIndSet = [];
+      this.validacaoTerminada = false;
     },
 
     validaBlocoDescritivo: async function(p){
@@ -463,7 +463,7 @@ export default {
           
           if (filtradas.length > 1) {
             this.mensagensErro.push({
-              sobre: "Nota de Aplicação(" + (i + 1) + ")",
+              sobre: "Processo: " + p.codigo + "; Nota de Aplicação(" + (i + 1) + ")",
               mensagem: "[" + p.notasAp[i].nota + "] noutro processo selecionado."
             });
             this.numeroErros++;
@@ -520,7 +520,7 @@ export default {
         filtrados = this.exemplosNotasApSet.filter(e => e.exemplo == p.exemplosNotasAp[i].exemplo);
         if (filtrados.length > 1) {
             this.mensagensErro.push({
-              sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
+              sobre: "Processo: " + p.codigo + "; Exemplo de nota de Aplicação(" + (i + 1) + ")",
               mensagem: "[" + p.exemplosNotasAp[i].exemplo + "] noutro processo selecionado."
             });
             this.numeroErros++;
@@ -553,7 +553,7 @@ export default {
         filtrados = this.termosIndSet.filter(t => t.termo == p.termosInd[i].termo);
         if (filtrados.length > 1) {
           this.mensagensErro.push({
-              sobre: "Termo de Índice(" + (i + 1) + ")",
+              sobre: "Processo: " + p.codigo + "; Termo de Índice(" + (i + 1) + ")",
               mensagem:
                 "[" + p.termosInd[i].termo + "] noutro processo selecionado."
           });
