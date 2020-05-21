@@ -96,10 +96,6 @@
 export default {
   props: ["p"],
 
-  created: function(){
-    console.dir(this.p);
-  },
-
   data: () => ({
     tsHeaders: [
       { text: "Código", value: "codigo", class: "subtitle-1" },
