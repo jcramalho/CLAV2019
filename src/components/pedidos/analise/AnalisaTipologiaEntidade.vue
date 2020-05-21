@@ -288,6 +288,7 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.pedido));
 
+        pedido.infoPedido = this.infoPedido;
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
@@ -312,6 +313,7 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.pedido));
 
+        pedido.infoPedido = this.infoPedido;
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
