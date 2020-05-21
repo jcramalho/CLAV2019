@@ -360,7 +360,7 @@ export default {
       if (
         !!this.erroProdutoras[0] ||
         !!this.erros_relacoes[0] ||
-        !!this.erros_datas_uis
+        !!this.erros_datas_uis[0]
       ) {
         this.loading_circle_ts = false;
       } else {
