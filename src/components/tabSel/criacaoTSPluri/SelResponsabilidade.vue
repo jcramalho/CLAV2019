@@ -7,15 +7,15 @@
           {{ p.codigo }} - {{ p.titulo }}
         </v-card-title>
         <v-card-text>
-          <v-row>
+          <v-row justify="end">
             <v-col cols="2">
               <span class="table-header subtitle-2 font-weight-bold">Aplica a todos</span>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="1">
               <span class="table-header subtitle-2 font-weight-bold">Dono</span>
               <v-checkbox color="indigo darken-4" v-model="todosDonos"></v-checkbox>
             </v-col>
-            <v-col cols="8">
+            <v-col cols="7">
               <span class="table-header subtitle-2 font-weight-bold">Participante</span>
               <v-radio-group row v-model="todosParticipantes">
                 <v-radio label="Não part." value="NP"></v-radio>
@@ -28,6 +28,7 @@
                   </v-radio-group>
             </v-col>
           </v-row>
+
           <v-data-table
             :items="p.entidades"
             :headers="headers"
