@@ -635,6 +635,9 @@ export default {
         case "Antecessora de":
           relacao_inversa = "Sucessora de";
           break;
+        case "Cruzado de":
+          relacao_inversa = "Cruzado de";
+          break;
         case "Sucessora de":
           relacao_inversa = "Antecessora de";
           break;
@@ -827,6 +830,9 @@ export default {
       switch (relacao.relacao) {
         case "Antecessora de":
           relacao_inversa = "Sucessora de";
+          break;
+        case "Cruzado de":
+          relacao_inversa = "Cruzado de";
           break;
         case "Sucessora de":
           relacao_inversa = "Antecessora de";
