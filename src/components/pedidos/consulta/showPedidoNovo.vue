@@ -74,7 +74,7 @@
           </v-card-text>
         </v-card>
         <ShowTSPluri
-          v-if="p.objeto.tipo == 'TS Pluriorganizacional web'"
+          v-if="p.objeto.tipo == 'TS Pluriorganizacional'"
           :p="p"
         />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
