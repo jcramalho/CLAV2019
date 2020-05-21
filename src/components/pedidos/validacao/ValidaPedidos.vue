@@ -8,25 +8,30 @@
             Validação do pedido: {{ pedido.codigo }} -
             {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
-
             <v-spacer />
 
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-icon @click="showDespachos()" color="white" v-on="on">
-                  comment
-                </v-icon>
+                <v-icon @click="showDespachos()" color="white" v-on="on"
+                  >comment</v-icon
+                >
               </template>
               <span>Ver despachos...</span>
             </v-tooltip>
           </v-card-title>
           <!-- Para a Criação de novos dados -->
-          <v-card-text v-if="pedido.objeto.acao === 'Criação' || pedido.objeto.acao === 'Importação'">
+          <v-card-text
+            v-if="
+              pedido.objeto.acao === 'Criação' ||
+                pedido.objeto.acao === 'Importação'
+            "
+          >
             <ValidaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
             />
 
+            <ValidaRADA v-if="pedido.objeto.tipo === 'RADA'" :p="pedido" />
             <ValidaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
@@ -38,7 +43,10 @@
             />
 
             <ValidaAE
-              v-if="pedido.objeto.tipo.includes('AE ') || pedido.objeto.tipo === 'Auto de Eliminação'"
+              v-if="
+                pedido.objeto.tipo.includes('AE ') ||
+                  pedido.objeto.tipo === 'Auto de Eliminação'
+              "
               :p="pedido"
               :tipo="pedido.objeto.tipo"
             />
@@ -90,6 +98,7 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
+import ValidaRADA from "@/components/pedidos/validacao/ValidaRADA";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
@@ -114,6 +123,7 @@ export default {
     Loading,
     VerDespachos,
     ErroDialog,
+    ValidaRADA
   },
 
   data() {
@@ -122,7 +132,7 @@ export default {
       pedido: {},
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       pedidoLoaded: false,
       despachosDialog: false,
@@ -130,9 +140,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" },
+        { text: "Despacho", value: "despacho" }
       ],
-      etapas: [],
+      etapas: []
     };
   },
 
@@ -160,7 +170,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>
