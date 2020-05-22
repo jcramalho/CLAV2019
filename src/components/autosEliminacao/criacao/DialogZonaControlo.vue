@@ -48,6 +48,7 @@
         </v-col>
         <v-col>
           <v-autocomplete
+            deletable-chips
             label="Selecione a entidade dona do processo"
             :items="donos"
             v-model="dono"
@@ -266,6 +267,7 @@ export default {
       this.uiOutros = null;
     },
     adicionarZC: async function() {
+      const date = new Date()
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
@@ -274,6 +276,8 @@ export default {
       var uiPapel = parseFloat(this.uiPapel) || 0;
       var uiDigital = parseFloat(this.uiDigital) || 0;
       var uiOutros = parseFloat(this.uiOutros) || 0;
+      var dataInicio = parseInt(this.dataInicio) || 0;
+      var dataFim = parseInt(this.dataFim) || 0;
       if (!this.classe || !this.dataInicio || !this.dataFim) {
         this.erro = help.AutoEliminacao.Erros.FaltaCampos;
         this.erroDialog = true;
@@ -284,11 +288,18 @@ export default {
         !re.test(this.dataInicio) ||
         !re.test(this.dataFim) ||
         this.dataInicio.length != 4 ||
-        this.dataFim.length != 4
+        this.dataFim.length != 4 
       ) {
         this.erro = help.AutoEliminacao.Erros.DatasExtremas;
         this.erroDialog = true;
-      } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
+      } else if(dataInicio < date.getFullYear()-100) {
+        this.erro = "Não é permitido eliminar documentação com mais de 100 anos, porfavor verifique a Data de Início";
+        this.erroDialog = true;
+      } else if(dataFim > date.getFullYear()) {
+        this.erro = "A Data de Fim deve ser anterior à data atual";
+        this.erroDialog = true;
+      }
+      else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
         this.erro = help.AutoEliminacao.Erros.DataInicio;
         this.erroDialog = true;
       } else if (this.uiPapel && !reUI.test(this.uiPapel)) {

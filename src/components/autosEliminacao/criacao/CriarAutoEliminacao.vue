@@ -30,6 +30,7 @@
               </v-col>
               <v-col>
                 <v-autocomplete
+                  deletable-chips
                   label="Selecione a entidade responsável pelo fundo"
                   :items="entidades"
                   v-model="auto.fundo"

@@ -192,15 +192,7 @@
                     <template v-slot:top>
                       <v-toolbar flat :key="cores.zonaControlo[index]" :color="cores.zonaControlo[index]">
                         <span style="font-weight: 400; color: #1a237e; font-weight: bold;">Lista de Agregações
-                        <v-btn
-                          rounded
-                          small
-                          class="ml-2 indigo darken-4 white--text"
-                          @click="abrirEditor('Agregação',index)"
-                        >
-                          Adicionar Agregação
-                        </v-btn>
-
+                        
                         </span>
                         <v-spacer />
                         <v-text-field
@@ -218,19 +210,6 @@
                         <td style=" text-align: left">{{ prop.item.titulo }}</td>
                         <td style=" text-align: center">{{ prop.item.dataContagem }}</td>
                         <td style=" text-align: center">{{ prop.item.ni }}</td>
-                        <td style=" text-align: right">
-                          <v-tooltip top>
-                            <template v-slot:activator="{ on }">
-                              <v-icon
-                                v-on="on"
-                                color="red"
-                                @click="apagarAgregacao(item.agregacoes,prop.item)"
-                                >delete</v-icon
-                              >
-                            </template>
-                            <span>Remover Agregação</span>
-                          </v-tooltip>
-                        </td>
                       </tr>
                     </template>
                     </v-data-table>
@@ -256,8 +235,7 @@
       <v-card>
         <v-card>
           <v-card-title class="primary darken-3 title white--text" dark>
-            <span v-if="editarCampo=='Agregação'">Adicionar Agregação</span>
-            <span v-else>Edição do campo: {{editarCampo}}</span> 
+            <span>Edição do campo: {{editarCampo}}</span> 
           </v-card-title>
           <v-card-text class="mt-4">
             <v-row class="ma-2" v-if="editarCampo=='Fonte de Legitimação'">
@@ -268,44 +246,6 @@
                 solo
                 dense
               ></v-autocomplete>
-            </v-row>
-            <v-row class="ma-2" v-else-if="editarCampo=='Agregação'">
-              <v-col>
-                <v-text-field
-                  hint="Exemplo: AS_DGLAB_1/2019"
-                  label="Insira um código para a agregação"
-                  v-model="codigo"
-                  solo
-                  clearable
-                />
-              </v-col>
-              <v-col>
-                <v-text-field
-                  hint="Exemplo: Auditoria à Entidade A"
-                  label="Insira um título para a agregação"
-                  v-model="titulo"
-                  solo
-                  clearable
-                />
-              </v-col>
-              <v-col>
-                <v-text-field
-                  hint="Exemplo: 2009"
-                  label="Insira o ano de contagem do PCA"
-                  v-model="dataContagem"
-                  solo
-                  clearable
-                />
-              </v-col>
-              <v-col>
-                <v-select
-                  label="Selecione a Natureza de Intervenção"
-                  :items="natureza"
-                  v-model="ni"
-                  solo
-                  dense
-                />
-              </v-col>
             </v-row>
             <v-row class="ma-2" v-else>
               <v-text-field
@@ -324,8 +264,7 @@
               Voltar
             </v-btn>
             <v-btn class="indigo accent-4" dark @click="adicionar()">
-              <span v-if="editarCampo=='Agregação'">Adicionar</span>
-              <span v-else>Alterar</span>
+              <span>Alterar</span>
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -391,8 +330,7 @@ export default {
         { text: "Código", align: "left", sortable: false, value: "codigo", width: "20%"},
         { text: "Título", align: "left", value: "titulo", width: "30%" },
         { text: "Data de Contagem", align: "center", value: "dataContagem", width: "15%"},
-        { text: "Natureza de Intervenção", align: "center", value: "ni", width: "25%" },
-        { text: "Operações", sortable: false, align: "right", width: "10%" }
+        { text: "Natureza de Intervenção", align: "center", value: "ni", width: "25%" }
       ],
       footer_props: {
         "items-per-page-text": "Mostrar"
@@ -502,12 +440,6 @@ export default {
       }
     },
 
-    apagarAgregacao(agregacoes, ag) {
-      const index = agregacoes.findIndex(a => a.codigo === ag.codigo)
-      if(index!== -1)
-        agregacoes.splice(index,1)
-    },
-
     close() {
       this.editar = false;
     },
@@ -515,13 +447,6 @@ export default {
     abrirEditor(campo,index) {
       this.editarCampo=campo;
       this.editarIndex=index;
-      if(campo==="Agregação") {
-        var df = this.p.objeto.dados.ae.zonaControlo[index].destino;
-        if(df == "C" || df == "Conservação") {
-          this.natureza = ["Participante"]
-          this.ni = "Participante"
-        }
-      }
       this.editar=true;
     },
 
@@ -571,52 +496,6 @@ export default {
         this.editarCampo = "";
         this.editarIndex = -1;
         this.editar = false;
-      }
-      else {
-        const re = /\d{4}/;
-        var currentTime = new Date();
-        var result = this.p.objeto.dados.ae.zonaControlo[this.editarIndex].agregacoes.filter(
-          ag => ag.codigo == this.codigo
-        );
-        if (!this.codigo || !this.titulo || !this.dataContagem) {
-          this.erro = help.AutoEliminacao.Erros.FaltaCamposAg;
-          this.erroDialog = true;
-        } else if (result.length > 0) {
-          this.erro = help.AutoEliminacao.Erros.CodigoAg;
-          this.erroDialog = true;
-        } else if (!re.test(this.dataContagem)) {
-          this.erro = help.AutoEliminacao.Erros.DataContagemP;
-          this.erroDialog = true;
-        } else {
-          var res =
-            parseInt(this.p.objeto.dados.ae.zonaControlo[this.editarIndex].prazoConservacao) +
-            parseInt(this.dataContagem) + 1;
-          var res2 =
-            parseInt(this.dataContagem) -
-            parseInt(this.p.objeto.dados.ae.zonaControlo[this.editarIndex].dataInicio);
-          if (res > currentTime.getFullYear()) {
-            this.erro = help.AutoEliminacao.Erros.DataContagem;
-            this.erroDialog = true;
-          } else if (res2 < 0) {
-            this.erro = help.AutoEliminacao.Erros.DataContagemInicio;
-            this.erroDialog = true;
-          } else {
-            this.p.objeto.dados.ae.zonaControlo[this.editarIndex].agregacoes.unshift({
-              codigo: this.codigo,
-              titulo: this.titulo,
-              dataContagem: this.dataContagem,
-              ni: this.ni
-            });
-            this.codigo = "";
-            this.titulo = "";
-            this.dataContagem = "";
-            this.ni = "";
-            this.natureza = ["Dono","Participante"];
-            this.editarCampo = "";
-            this.editarIndex = -1;
-            this.editar = false;
-          }
-        }
       }
     }
   }
