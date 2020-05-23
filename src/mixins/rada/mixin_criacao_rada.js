@@ -20,7 +20,8 @@ export default {
     despacho: "",
     pedidos_novas_entidades: [],
     datas_extremas_classes: [],
-    erros_relacoes: []
+    erros_relacoes: [],
+    erros_datas_uis: []
   }),
   methods: {
     changeE1(e) {
@@ -235,46 +236,33 @@ export default {
       }
     },
     descobrir_datas_extremas(series_subseries) {
-      for (let i = 0; i < series_subseries.length; i++) {
-        let data_inicial = null;
-        let data_final = null;
+      // verificar se UIs estão dentro das datas extremas
+      this.erros_datas_uis = [];
 
-        if (
-          !!series_subseries[i].dataInicial &&
-          !!series_subseries[i].dataFinal
-        ) {
-          data_inicial = new Date(series_subseries[i].dataInicial);
-          data_final = new Date(series_subseries[i].dataFinal);
-        } else {
+      for (let i = 0; i < series_subseries.length; i++) {
+        let classe_data_inicial = new Date(series_subseries[i].dataInicial);
+        let classe_data_final = new Date(series_subseries[i].dataFinal);
+
+        for (let j = 0; j < series_subseries[i].UIs.length; j++) {
           let ui = this.RADA.tsRada.UIs.find(
-            e => e.codigo == series_subseries[i].UIs[0]
+            e => e.codigo == series_subseries[i].UIs[j]
           );
 
-          data_inicial = new Date(ui.dataInicial);
-          data_final = new Date(ui.dataFinal);
-
-          for (let z = 1; z < series_subseries[i].UIs.length; z++) {
-            ui = this.RADA.tsRada.UIs.find(
-              e => e.codigo == series_subseries[i].UIs[z]
-            );
-
-            let aux_data_inicial = new Date(ui.dataInicial);
-            let aux_data_final = new Date(ui.dataFinal);
-
-            if (aux_data_inicial < data_inicial) {
-              data_inicial = aux_data_inicial;
-            }
-
-            if (aux_data_final > data_final) {
-              data_final = aux_data_final;
-            }
+          if (
+            new Date(ui.dataInicial) < classe_data_inicial ||
+            new Date(ui.dataFinal) > classe_data_final
+          ) {
+            this.erros_datas_uis.push({
+              codigoClasse: series_subseries[i].codigo,
+              codigoUI: ui.codigo
+            });
           }
         }
 
         this.datas_extremas_classes.push({
           codigo: series_subseries[i].codigo,
-          dataInicial: data_inicial,
-          dataFinal: data_final
+          dataInicial: classe_data_inicial,
+          dataFinal: classe_data_final
         });
       }
     },
@@ -335,13 +323,13 @@ export default {
       }
     },
     async concluir(id_remocao_pendente) {
-      // // verificar a validade das relações!
-      // let series_subseries = this.RADA.tsRada.classes.filter(
-      //   e => e.tipo == "Série" || e.tipo == "Subsérie"
-      // );
+      // verificar a validade das UIs e das relações!
+      let series_subseries = this.RADA.tsRada.classes.filter(
+        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      );
 
-      // this.descobrir_datas_extremas(series_subseries);
-      // this.validar_relacoes(series_subseries);
+      this.descobrir_datas_extremas(series_subseries);
+      this.validar_relacoes(series_subseries);
 
       //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
       //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
@@ -369,7 +357,11 @@ export default {
         });
       }
 
-      if (!!this.erroProdutoras[0] || !!this.erros_relacoes[0]) {
+      if (
+        !!this.erroProdutoras[0] ||
+        !!this.erros_relacoes[0] ||
+        !!this.erros_datas_uis[0]
+      ) {
         this.loading_circle_ts = false;
       } else {
         let series = this.RADA.tsRada.classes

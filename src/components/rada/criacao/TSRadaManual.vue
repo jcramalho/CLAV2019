@@ -98,7 +98,7 @@
                 <b
                   v-show="
                   item.tipo == 'Subsérie' &&
-                    (item.eFilhoDe == null || item.temDF || !item.temUIs_ou_datas)
+                    (item.eFilhoDe == null || item.temDF)
                 "
                   style="color:red"
                 >*</b>
@@ -258,14 +258,6 @@ export default {
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
             eFilhoDe: this.TS.classes[i].eFilhoDe,
-            temUIs_ou_datas: Boolean(
-              (Boolean(this.TS.classes[i].dataInicial) &&
-                Boolean(this.TS.classes[i].dataFinal)) ||
-                Boolean(
-                  this.TS.classes[i].UIs != undefined &&
-                    !!this.TS.classes[i].UIs[0]
-                )
-            ),
             temDF: Boolean(
               (!Boolean(this.TS.classes[i].df) &&
                 !Boolean(this.TS.classes[i].notaDF)) ||
@@ -327,14 +319,6 @@ export default {
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
             eFilhoDe: this.TS.classes[i].eFilhoDe,
-            temUIs_ou_datas: Boolean(
-              (Boolean(this.TS.classes[i].dataInicial) &&
-                Boolean(this.TS.classes[i].dataFinal)) ||
-                Boolean(
-                  this.TS.classes[i].UIs != undefined &&
-                    !!this.TS.classes[i].UIs[0]
-                )
-            ),
             temDF: Boolean(
               (!Boolean(this.TS.classes[i].df) &&
                 !Boolean(this.TS.classes[i].notaDF)) ||
@@ -651,6 +635,9 @@ export default {
         case "Antecessora de":
           relacao_inversa = "Sucessora de";
           break;
+        case "Cruzado de":
+          relacao_inversa = "Cruzado de";
+          break;
         case "Sucessora de":
           relacao_inversa = "Antecessora de";
           break;
@@ -843,6 +830,9 @@ export default {
       switch (relacao.relacao) {
         case "Antecessora de":
           relacao_inversa = "Sucessora de";
+          break;
+        case "Cruzado de":
+          relacao_inversa = "Cruzado de";
           break;
         case "Sucessora de":
           relacao_inversa = "Antecessora de";

@@ -12,7 +12,9 @@
               info.conteudo !== undefined
           "
         >
-          <div class="info-label">{{ info.campo }}</div>
+          <div :class="['info-label', info.cor]">
+            {{ info.campo }}
+          </div>
         </v-col>
 
         <!-- Conteudo -->
@@ -56,16 +58,16 @@
                 >
                   Adicionar Entidades
                 </v-btn>
-
-                <v-spacer />
-                <v-icon color="green" @click="verifica(info)">check</v-icon>
-                <v-icon color="red" @click="anula(info)">clear</v-icon>
               </v-toolbar>
             </template>
           </v-data-table>
 
           <!-- Se o conteudo for texto -->
-          <v-text-field
+          <div v-else class="info-content">
+            {{ info.conteudo }}
+          </div>
+
+          <!-- <v-text-field
             v-else
             solo
             readonly
@@ -76,10 +78,20 @@
             <template slot="append">
               <v-icon color="green" @click="verifica(info)">check</v-icon>
               <v-icon color="red" @click="anula(info)">clear</v-icon>
-              <!--<v-icon @click="">create</v-icon>-->
               <v-icon>create</v-icon>
             </template>
-          </v-text-field>
+          </v-text-field> -->
+        </v-col>
+        <v-col cols="1" class="ma-2">
+          <v-icon color="green" @click="verifica(info)">
+            check
+          </v-icon>
+          <v-icon color="red" @click="anula(info)">
+            clear
+          </v-icon>
+          <v-icon @click="edita(info)">
+            create
+          </v-icon>
         </v-col>
       </v-row>
 
@@ -276,6 +288,7 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.pedido));
 
+        pedido.infoPedido = this.infoPedido;
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
@@ -300,6 +313,7 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.pedido));
 
+        pedido.infoPedido = this.infoPedido;
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
@@ -330,12 +344,17 @@ export default {
 
     verifica(obj) {
       const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "green lighten-3";
+      this.infoPedido[i].cor = "info-label-verde";
     },
 
     anula(obj) {
       const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "red lighten-3";
+      this.infoPedido[i].cor = "info-label-vermelho";
+    },
+
+    edita(obj) {
+      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      this.infoPedido[i].cor = "info-label-amarelo";
     },
 
     close() {
@@ -356,8 +375,22 @@ export default {
   border-radius: 3px;
 }
 
+.info-label-verde {
+  background-color: #c8e6c9; /* lighten-4 */
+}
+
+.info-label-vermelho {
+  background-color: #ffcdd2; /* lighten-4 */
+}
+
+.info-label-amarelo {
+  background-color: #ffe0b2; /* lighten-4 */
+}
+
 .info-content {
+  margin-top: 5px;
   padding: 5px;
+  font-weight: 400;
   width: 100%;
   border: 1px solid #283593;
   border-radius: 3px;

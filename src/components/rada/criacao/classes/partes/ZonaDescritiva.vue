@@ -16,7 +16,7 @@
     </v-row>
     <v-row>
       <!-- DATA INICIAL -->
-      <v-col md="3" sm="3">
+      <v-col :cols="newSerie.tipo == 'Subsérie' ? 2 : 3">
         <div class="info-label">Data Inicial</div>
       </v-col>
       <v-col sm="3" md="3">
@@ -30,7 +30,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              :rules="[v => newSerie.tipo == 'Subsérie' || !!v || 'Campo obrigatório!']"
+              :rules="[v => !!v || 'Campo obrigatório!']"
               v-model="newSerie.dataInicial"
               label="Data Inicial"
               prepend-icon="event"
@@ -60,7 +60,7 @@
         </v-menu>
       </v-col>
       <!-- DATA FINAL -->
-      <v-col md="3" sm="3">
+      <v-col :cols="newSerie.tipo == 'Subsérie' ? 2 : 3">
         <div class="info-label">Data Final</div>
       </v-col>
       <v-col sm="3" md="3">
@@ -74,7 +74,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              :rules="[v => data_final_valida(v) || newSerie.tipo == 'Subsérie' || 'Campo obrigatório!']"
+              :rules="[v => data_final_valida(v) || 'Campo obrigatório!']"
               v-model="newSerie.dataFinal"
               label="Data Final"
               prepend-icon="event"
@@ -102,6 +102,18 @@
             </v-btn>
           </v-date-picker>
         </v-menu>
+      </v-col>
+      <v-col v-if="newSerie.tipo == 'Subsérie'" cols="2">
+        <v-btn
+          :disabled="!Boolean(newSerie.eFilhoDe)"
+          @click="herdarDatasExtremas()"
+          class="ma-2"
+          color="indigo darken-2"
+          rounded
+          style="width:100%;"
+        >
+          <font style="color: white">Herdar Datas</font>
+        </v-btn>
       </v-col>
     </v-row>
     <!-- UNIDADES DE INSTALAÇÃO -->
@@ -204,7 +216,7 @@
 import AssociarUI from "@/components/rada/criacao/classes/partes/AssociarUI";
 
 export default {
-  props: ["newSerie", "UIs", "RE"],
+  props: ["newSerie", "classes", "UIs", "RE"],
   components: {
     AssociarUI
   },
@@ -221,6 +233,14 @@ export default {
     ]
   }),
   methods: {
+    herdarDatasExtremas() {
+      let classe_pai = this.classes.find(
+        e => e.codigo == this.newSerie.eFilhoDe
+      );
+
+      this.newSerie.dataInicial = classe_pai.dataInicial;
+      this.newSerie.dataFinal = classe_pai.dataFinal;
+    },
     data_final_valida(v) {
       if (!!v) {
         if (this.newSerie.dataInicial != null) {

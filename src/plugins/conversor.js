@@ -136,23 +136,25 @@ var excel2Json = function(file, tipo) {
 };
 
 var verificarSerie = function(str) {
-  var arr = str.split(/[,;]/);
-  if (arr[0].trim() != "Código de classificação da série ou subsérie")
-    return false;
-  if (arr[1].trim() != "Número de referência") return false;
-  if (arr[2].trim() != "Título da série ou subsérie") return false;
-  if (arr[3].trim() != "Data inicial da documentação proposta para eliminação")
-    return false;
-  if (arr[4].trim() != "Data final da documentação proposta para eliminação")
-    return false;
-  if (arr[5].trim() != "Nº de agregações simples / UI – unidade de instalação")
-    return false;
-  if (arr[6].trim() != "Medição das agregações / UI em papel (m.l.)")
-    return false;
-  if (arr[7].trim() != "Medição das agregações / UI em digital (Gb)")
-    return false;
-  if (arr[8].trim() != "Medição das agregações / UI noutros suportes")
-    return false;
+  var arr = str.split(/[,;]/)
+  if(arr[0].trim() != "Código de classificação da série ou subsérie") return false;
+  console.log(arr[0])
+  if(arr[1].trim() != "Número de referência") return false;
+  console.log(arr[1])
+  if(arr[2].trim() != "Título da série ou subsérie") return false;
+  console.log(arr[2])
+  if(arr[3].trim() != "Data inicial da documentação proposta para eliminação") return false;
+  console.log(arr[3])
+  if(arr[4].trim() != "Data final da documentação proposta para eliminação") return false;
+  console.log(arr[4])
+  if(arr[5].trim() != "Nº de agregações simples / UI – unidade de instalação") return false;
+  console.log(arr[5])
+  if(arr[6].trim() != "Medição das agregações / UI em papel (m.l.)") return false;
+  console.log(arr[6])
+  if(arr[7].trim() != "Medição das agregações / UI em digital (Gb)") return false;
+  console.log(arr[7])
+  if(arr[8].trim() != "Medição das agregações / UI noutros suportes") return false;
+  console.log(arr[8])
   return true;
 };
 
@@ -174,20 +176,14 @@ var verificarAgregacoes = function(str) {
 var validarCSVs = function(fileSerie, fileAgreg, tipo) {
   return new Promise(function(resolve, reject) {
     var enc = new TextDecoder("utf-8");
-    var series = enc.decode(fileSerie).split("\n");
-    var agregacoes = enc.decode(fileAgreg).split("\n");
-    if (!verificarSerie(series[0]))
-      reject({
-        msg: "Verifique se inseriu o ficheiro de classe / série correto",
-        numErros: 1
-      });
-    if (!verificarAgregacoes(agregacoes[0]))
-      reject({
-        msg: "Verifique se inseriu o ficheiro de agregações / UI correto",
-        numErros: 1
-      });
-    series.shift();
-    agregacoes.shift();
+    var series = enc.decode(fileSerie).replace(/['"]/g,'').split("\n")
+    var agregacoes = enc.decode(fileAgreg).replace(/['"]/g,'').split("\n")
+    if(!verificarSerie(series[0]))
+      reject({msg: "Verifique se inseriu o ficheiro de classe / série correto", numErros: 1})
+    if(!verificarAgregacoes(agregacoes[0]))
+      reject({msg: "Verifique se inseriu o ficheiro de agregações / UI correto", numErros: 1})
+    series.shift()
+    agregacoes.shift()
     var errosSerie = {
       codigosRepetidos: [],
       referenciasRepetidas: [],

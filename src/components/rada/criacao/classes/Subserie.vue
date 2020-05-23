@@ -8,6 +8,32 @@
       <v-card-text>
         <v-form ref="form" :lazy-validation="false">
           <Identificacao :newSerie="newSubserie" :classes="classes" />
+          <v-row>
+            <v-col md="3" sm="3">
+              <div class="info-label">Classe Pai</div>
+            </v-col>
+            <v-col cols="12" sm="9" md="0">
+              <v-autocomplete
+                :disabled="temCriterioLegal"
+                v-model="newSubserie.eFilhoDe"
+                :items="classesHierarquia"
+                :rules="[v => !!v || 'Este campo é obrigatório.']"
+                item-value="codigo"
+                item-text="searchField"
+                solo
+                clearable
+                label="Classe Pai"
+              >
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Série</strong> em questão não existe!
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+              </v-autocomplete>
+            </v-col>
+          </v-row>
 
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel popout focusable>
@@ -15,7 +41,7 @@
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSubserie" :UIs="UIs" :RE="RE" />
+                <ZonaDescritiva :newSerie="newSubserie" :UIs="UIs" :RE="RE" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel popout focusable>
@@ -44,44 +70,13 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-
-          <br />
-
-          <h5>Hierarquia</h5>
-          <v-divider></v-divider>
-          <v-row>
-            <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai</div>
-            </v-col>
-            <v-col cols="12" sm="9" md="0">
-              <v-autocomplete
-                :disabled="temCriterioLegal"
-                v-model="newSubserie.eFilhoDe"
-                :items="classesHierarquia"
-                :rules="[v => !!v || 'Este campo é obrigatório.']"
-                item-value="codigo"
-                item-text="searchField"
-                solo
-                clearable
-                label="Classe Pai"
-              >
-                <template v-slot:no-data>
-                  <v-list-item>
-                    <v-list-item-title>
-                      <strong>Classe Série</strong> em questão não existe!
-                    </v-list-item-title>
-                  </v-list-item>
-                </template>
-              </v-autocomplete>
-            </v-col>
-          </v-row>
         </v-form>
       </v-card-text>
       <v-card-actions>
         <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
           É necessário preencher os campos seguintes:
           <ul>
-            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+            <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
@@ -180,11 +175,8 @@ export default {
         this.erros.push("Descrição;");
       }
 
-      if (
-        !!this.newSubserie.UIs[0] == false &&
-        (!this.newSubserie.dataInicial || !this.newSubserie.dataFinal)
-      ) {
-        this.erros.push("Datas Extremas ou Unidades de Instalação;");
+      if (!this.newSubserie.dataInicial || !this.newSubserie.dataFinal) {
+        this.erros.push("Datas extremas;");
       }
 
       if (!this.newSubserie.eFilhoDe) {

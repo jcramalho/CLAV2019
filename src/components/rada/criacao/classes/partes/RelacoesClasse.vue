@@ -204,7 +204,8 @@ export default {
         "Sintetizado por",
         "Síntese de",
         "Suplemento de",
-        "Suplemento para"
+        "Suplemento para",
+        "Cruzado de"
       ],
       headers: [
         {

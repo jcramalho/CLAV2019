@@ -14,7 +14,7 @@
           :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.legislacao"
           :items="legislacaoProcessada"
-          label="Selecione a legislação associada à série."
+          label="Selecione a legislação associada à série"
           multiple
           item-text="legislacao"
           return-object

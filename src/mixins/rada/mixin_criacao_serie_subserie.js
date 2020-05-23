@@ -283,6 +283,9 @@ export default {
           case "Sucessora de":
             relacao_inversa = "Antecessora de";
             break;
+          case "Cruzado de":
+            relacao_inversa = "Cruzado de";
+            break;
           case "Complementar de":
             relacao_inversa = "Complementar de";
             this.adiciona_criterio_a_relacionada(
