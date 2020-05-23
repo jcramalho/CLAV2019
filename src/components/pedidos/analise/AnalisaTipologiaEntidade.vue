@@ -27,7 +27,7 @@
         >
           <!-- Se o conteudo for uma lista de entidades-->
           <v-data-table
-            v-if="info.campo == 'Entidades'"
+            v-if="info.campo === 'Entidades'"
             :headers="headersEntidades"
             :items="info.conteudo"
             class="elevation-1"
@@ -82,14 +82,27 @@
             </template>
           </v-text-field> -->
         </v-col>
-        <v-col cols="1" class="ma-2">
-          <v-icon color="green" @click="verifica(info)">
+        <v-col
+          cols="1"
+          v-if="
+            info.conteudo !== '' &&
+              info.conteudo !== null &&
+              info.conteudo !== undefined
+          "
+          class="ma-2"
+        >
+          <v-icon class="mr-1 ml-1" color="green" @click="verifica(info)">
             check
           </v-icon>
-          <v-icon color="red" @click="anula(info)">
+          <v-icon class="mr-1 ml-1" color="red" @click="anula(info)">
             clear
           </v-icon>
-          <v-icon @click="edita(info)">
+          <v-icon
+            v-if="info.campo !== 'Entidades'"
+            class="mr-1 ml-1"
+            color="orange"
+            @click="edita(info)"
+          >
             create
           </v-icon>
         </v-col>
@@ -104,6 +117,15 @@
         />
       </v-row>
     </div>
+
+    <!-- Dialog de edição-->
+    <v-dialog v-model="editaCampo.visivel" width="50%" persistent>
+      <EditarCamposDialog
+        :campo="editaCampo"
+        @fechar="fechaEditaCampoDialog"
+        @editarCampo="editarCampo($event)"
+      />
+    </v-dialog>
 
     <!-- Dialog de erros -->
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
@@ -125,6 +147,7 @@
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
+import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -139,11 +162,17 @@ export default {
     Loading,
     ErroDialog,
     SelecionaAutocomplete,
+    EditarCamposDialog,
   },
 
   data() {
     return {
       loading: true,
+      editaCampo: {
+        visivel: false,
+        campo: "",
+        key: "",
+      },
       erroDialog: {
         visivel: false,
         mensagem: null,
@@ -190,16 +219,19 @@ export default {
       {
         campo: "Sigla",
         conteudo: this.pedido.objeto.dados.sigla,
+        key: "sigla",
         cor: null,
       },
       {
         campo: "Designação",
         conteudo: this.pedido.objeto.dados.designacao,
+        key: "desigancao",
         cor: null,
       },
       {
         campo: "Entidades",
         conteudo: this.pedido.objeto.dados.entidadesSel,
+        key: "entidadesSel",
         cor: null,
       },
     ];
@@ -247,11 +279,18 @@ export default {
           this.entidades.sort(comparaSigla);
         }
         this.pedido.objeto.dados.entidadesSel.splice(index, 1);
+
+        const i = this.infoPedido.findIndex((o) => o.campo === "Entidades");
+        this.infoPedido[i].cor = "info-label-amarelo";
       }
     },
 
     adicionaEntidades(entidades) {
       this.pedido.objeto.dados.entidadesSel.push(...entidades);
+
+      const i = this.infoPedido.findIndex((o) => o.campo === "Entidades");
+      this.infoPedido[i].cor = "info-label-amarelo";
+
       this.dialogEntidades = false;
     },
 
@@ -343,22 +382,33 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
       this.infoPedido[i].cor = "info-label-verde";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
       this.infoPedido[i].cor = "info-label-vermelho";
     },
 
     edita(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
       this.infoPedido[i].cor = "info-label-amarelo";
+
+      this.editaCampo = {
+        visivel: true,
+        campo: this.infoPedido[i].campo,
+        key: this.infoPedido[i].key,
+      };
     },
 
-    close() {
-      this.dialogtipologias = false;
+    fechaEditaCampoDialog() {
+      this.editaCampo.visivel = false;
+    },
+
+    editarCampo(event) {
+      console.log("event", event);
+      this.editaCampo.visivel = false;
     },
   },
 };
