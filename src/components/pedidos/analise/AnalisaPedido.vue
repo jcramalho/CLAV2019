@@ -27,6 +27,11 @@
               :p="pedido"
             />
 
+            <AnalisaRADA
+              v-else-if="pedido.objeto.tipo === 'RADA'"
+              :p="pedido"
+            />
+
             <AnalisaLeg
               v-else-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
@@ -104,6 +109,7 @@
 
 <script>
 import AnalisaLeg from "@/components/pedidos/analise/AnalisaLegislacao";
+import AnalisaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
 import AnalisaAE from "@/components/pedidos/analise/AnalisaAE";
@@ -113,17 +119,18 @@ import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLeg
 import AnalisaEditaTipologiaEntidade from "@/components/pedidos/analise/AnalisaEditaTipologiaEntidade";
 
 import AnalisaDefault from "@/components/pedidos/analise/AnalisaDefault";
+import ErroDialog from "@/components/generic/ErroDialog";
 
 import VerDespachos from "@/components/pedidos/generic/VerDespachos";
 
 import Loading from "@/components/generic/Loading";
-import ErroDialog from "@/components/generic/ErroDialog";
 
 export default {
   props: ["idp"],
 
   components: {
     AnalisaEntidade,
+    AnalisaRADA,
     AnalisaLeg,
     Loading,
     AnalisaTipologiaEntidade,
