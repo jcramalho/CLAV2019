@@ -171,7 +171,7 @@ export default {
       loading: true,
       editaCampo: {
         visivel: false,
-        campo: "",
+        nome: "",
         key: "",
       },
       erroDialog: {
@@ -396,7 +396,7 @@ export default {
       const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
       this.editaCampo = {
         visivel: true,
-        campo: this.infoPedido[i].campo,
+        nome: this.infoPedido[i].campo,
         key: this.infoPedido[i].key,
       };
     },
@@ -411,9 +411,9 @@ export default {
     editarCampo(event) {
       console.log("event", event);
       console.log("dados", event.dados);
-      console.log("campo", event.campo);
+      console.log("campo", event.nome);
       this.editaCampo.visivel = false;
-      const i = this.infoPedido.findIndex((o) => o.campo === event.campo);
+      const i = this.infoPedido.findIndex((o) => o.campo === event.nome);
       this.infoPedido[i].cor = "info-label-amarelo";
     },
   },
