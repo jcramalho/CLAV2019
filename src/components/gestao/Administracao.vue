@@ -17,14 +17,14 @@
                   Realiza o reload da cache do servidor API. Faz o reset das
                   travessias especiais, o reload da cache das classes, o reload
                   da cache do índice de pesquisa, o reload da cache da
-                  legislação e gera o ficheiro com toda a informação das
-                  classes.
+                  legislação, o reload da cache das entidades e gera o ficheiro
+                  com toda a informação das classes.
                 </p>
                 <p class="font-weight-bold">
                   <span style="color:red">CUIDADO:</span> Pedido pesado que deve
-                  ser apenas executado se houver alterações nas classes ou na
-                  legislação. Este pedido deve ser executado fora das 'horas de
-                  ponta' do servidor.
+                  ser apenas executado se houver alterações nas classes, na
+                  legislação ou nas entidades. Este pedido deve ser executado
+                  fora das 'horas de ponta' do servidor.
                 </p>
                 <v-row>
                   <v-col class="text-center">
