@@ -216,9 +216,6 @@ export default {
       if (this.t.texto == "" || this.t.texto == null) {
         this.numeroErros++;
       }
-      if (this.t.visivel == "" || this.t.visivel == null) {
-        this.numeroErros++;
-      }
       if (
         this.t.ficheiro != null &&
         this.t.texto.search(/\[.+\]\(FICHEIRO\)/) == -1
