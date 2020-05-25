@@ -3,10 +3,110 @@
     <v-card-title class="indigo darken-4 title white--text" dark>
       <v-icon color="white" class="ma-1">create</v-icon>
       Editar o campo:
-      {{ campo.campo }}
+      {{ campo.nome }}
     </v-card-title>
-    <v-card-text>
+
+    <!-- Se o pedido for uma Entidade -->
+    <v-card-text v-if="tipoPedido === 'Entidade'">
+      <v-row v-if="campo.nome === 'Designação'">
+        <v-col cols="2">
+          <div class="info-label">
+            Nome da Entidade
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            maxlength="150"
+            label="Nome da Entidade"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.nome === 'Sigla'">
+        <v-col cols="2">
+          <div class="info-label">
+            Sigla
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            maxlength="10"
+            label="Sigla"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.nome === 'Internacional'">
+        <v-col cols="2">
+          <div class="info-label">Internacional</div>
+        </v-col>
+        <v-col>
+          <v-select
+            v-model="valorEditado"
+            :items="['Sim', 'Não']"
+            label="Selecione uma opção"
+            item-color="indigo"
+            color="indigo"
+            filled
+          />
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.nome === 'SIOE'">
+        <v-col cols="2">
+          <div class="info-label">SIOE</div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            :rules="regraSIOE"
+            label="SIOE"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.nome === 'Data Criação'">
+        <v-col cols="2">
+          <div class="info-label">Data de criação</div>
+        </v-col>
+        <v-col>
+          <SelecionarData
+            :label="'Data: AAAA-MM-DD'"
+            @dataSelecionada="valorEditado = $event"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.nome === 'Data Extinção'">
+        <v-col cols="2">
+          <div class="info-label">Data de extinção</div>
+        </v-col>
+        <v-col>
+          <SelecionarData
+            :label="'Data: AAAA-MM-DD'"
+            @dataSelecionada="valorEditado = $event"
+          />
+        </v-col>
+      </v-row>
       <p>Teste</p>
+    </v-card-text>
+
+    <v-card-text v-if="tipoPedido === 'Tipologia'">
+      {{ tipoPedido }}
     </v-card-text>
 
     <v-card-actions>
@@ -23,25 +123,30 @@
 </template>
 
 <script>
+import SelecionarData from "@/components/generic/SelecionarData";
 export default {
-  props: ["campo"],
+  props: ["campo", "tipoPedido"],
+
+  components: {
+    SelecionarData,
+  },
 
   data() {
     return {
-      campos: {
-        sigla: "teste",
-      },
+      valorEditado: "",
     };
   },
 
   methods: {
     fechar() {
-      this.$emit("fechar");
+      this.$emit("fechar", this.campo.nome);
     },
 
     editar() {
-      const dados = this.campos[this.campo.key];
-      this.$emit("editarCampo", dados);
+      this.$emit("editarCampo", {
+        dados: this.valorEditado,
+        nome: this.campo.nome,
+      });
     },
   },
 };
