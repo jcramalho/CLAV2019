@@ -122,7 +122,8 @@
     <v-dialog v-model="editaCampo.visivel" width="50%" persistent>
       <EditarCamposDialog
         :campo="editaCampo"
-        @fechar="fechaEditaCampoDialog"
+        :tipoPedido="p.objeto.tipo"
+        @fechar="fechaEditaCampoDialog($event)"
         @editarCampo="editarCampo($event)"
       />
     </v-dialog>
@@ -393,8 +394,6 @@ export default {
 
     edita(obj) {
       const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
-      this.infoPedido[i].cor = "info-label-amarelo";
-
       this.editaCampo = {
         visivel: true,
         campo: this.infoPedido[i].campo,
@@ -402,13 +401,20 @@ export default {
       };
     },
 
-    fechaEditaCampoDialog() {
+    fechaEditaCampoDialog(campo) {
+      console.log("campo", campo);
       this.editaCampo.visivel = false;
+      const i = this.infoPedido.findIndex((o) => o.campo === campo);
+      this.infoPedido[i].cor = null;
     },
 
     editarCampo(event) {
       console.log("event", event);
+      console.log("dados", event.dados);
+      console.log("campo", event.campo);
       this.editaCampo.visivel = false;
+      const i = this.infoPedido.findIndex((o) => o.campo === event.campo);
+      this.infoPedido[i].cor = "info-label-amarelo";
     },
   },
 };
