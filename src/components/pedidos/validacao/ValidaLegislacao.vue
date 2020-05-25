@@ -489,6 +489,8 @@ export default {
           });
 
           this.$router.go(-1);
+        } else {
+          this.erroPedido = true;
         }
       } catch (e) {
         this.erroPedido = true;
@@ -522,6 +524,7 @@ export default {
     },
 
     fecharErro() {
+      this.erros = [];
       this.erroPedido = false;
     },
 
