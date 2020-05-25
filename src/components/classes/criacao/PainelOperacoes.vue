@@ -630,7 +630,7 @@ export default {
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
-              tipoObjeto: "Classe",
+              tipoObjeto: "Classe_N" + this.c.nivel,
               novoObjeto: this.c,
               user: { email: userBD.email },
               entidade: userBD.entidade,
