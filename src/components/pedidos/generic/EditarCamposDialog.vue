@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="indigo darken-4 title white--text" dark>
+    <v-card-title class="indigo darken-4 title white--text mb-4" dark>
       <v-icon color="white" class="ma-1">create</v-icon>
       Editar o campo:
       {{ campo.nome }}
@@ -8,7 +8,7 @@
 
     <!-- Se o pedido for uma Entidade -->
     <v-card-text v-if="tipoPedido === 'Entidade'">
-      <v-row v-if="campo.nome === 'Designação'">
+      <v-row v-if="campo.key === 'designacao'">
         <v-col cols="2">
           <div class="info-label">
             Nome da Entidade
@@ -27,7 +27,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="campo.nome === 'Sigla'">
+      <v-row v-if="campo.key === 'sigla'">
         <v-col cols="2">
           <div class="info-label">
             Sigla
@@ -46,7 +46,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="campo.nome === 'Internacional'">
+      <v-row v-if="campo.key === 'internacional'">
         <v-col cols="2">
           <div class="info-label">Internacional</div>
         </v-col>
@@ -62,7 +62,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="campo.nome === 'SIOE'">
+      <v-row v-if="campo.key === 'sioe'">
         <v-col cols="2">
           <div class="info-label">SIOE</div>
         </v-col>
@@ -79,7 +79,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="campo.nome === 'Data Criação'">
+      <v-row v-if="campo.key === 'dataCriacao'">
         <v-col cols="2">
           <div class="info-label">Data de criação</div>
         </v-col>
@@ -91,7 +91,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="campo.nome === 'Data Extinção'">
+      <v-row v-if="campo.key === 'dataExtincao'">
         <v-col cols="2">
           <div class="info-label">Data de extinção</div>
         </v-col>
@@ -102,11 +102,153 @@
           />
         </v-col>
       </v-row>
-      <p>Teste</p>
     </v-card-text>
 
+    <!-- Se o pedido for uma Tipologia -->
     <v-card-text v-if="tipoPedido === 'Tipologia'">
-      {{ tipoPedido }}
+      <v-row v-if="campo.key === 'designacao'">
+        <v-col cols="2">
+          <div class="info-label">Nome da Tipologia</div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            maxlength="50"
+            label="Nome da Tipologia"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'sigla'">
+        <v-col cols="2">
+          <div class="info-label">Sigla</div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            maxlength="10"
+            label="Sigla"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </v-card-text>
+
+    <!-- Se o pedido for uma Legislação-->
+    <v-card-text v-if="tipoPedido === 'Legislação'">
+      <v-row v-if="campo.key === 'tipo'">
+        <v-col cols="2">
+          <div class="info-label">Tipo de diploma</div>
+        </v-col>
+        <v-col>
+          <v-select
+            filled
+            item-color="indigo"
+            color="indigo"
+            v-model="valorEditado"
+            :items="tiposDiploma"
+            label="Selecione uma opção"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'numero'">
+        <v-col cols="2">
+          <div class="info-label">Número de diploma</div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            label="Número do diploma"
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'data'">
+        <v-col cols="2">
+          <div class="info-label">Data do diploma</div>
+        </v-col>
+        <v-col>
+          <SelecionarData
+            :label="'Data: AAAA-MM-DD'"
+            @dataSelecionada="valorEditado = $event"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'sumario'">
+        <v-col cols="2">
+          <div class="info-label">Sumário</div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            label="Sumário"
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'link'">
+        <v-col cols="2">
+          <div class="info-label">Link</div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="valorEditado"
+            filled
+            label="Link"
+            clearable
+            color="indigo"
+            single-line
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'diplomaFonte'">
+        <v-col cols="2">
+          <div class="info-label">Tipo de fonte de legitimação</div>
+        </v-col>
+        <v-col>
+          <v-select
+            filled
+            label="Selecione uma opção"
+            item-color="indigo"
+            color="indigo"
+            v-model="valorEditado"
+            :items="['Não especificada', 'PGD', 'PGD/LC', 'RADA']"
+            dense
+          />
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'dataRevogacao'">
+        <v-col cols="2">
+          <div class="info-label">
+            Data de revogação
+          </div>
+        </v-col>
+        <v-col>
+          <SelecionarData
+            :label="'Data: AAAA-MM-DD'"
+            @dataSelecionada="valorEditado = $event"
+          />
+        </v-col>
+      </v-row>
     </v-card-text>
 
     <v-card-actions>
@@ -133,20 +275,40 @@ export default {
 
   data() {
     return {
-      valorEditado: "",
+      tiposDiploma: [],
     };
   },
 
+  created() {
+    this.loadTipoDiploma();
+  },
+
   methods: {
+    async loadTipoDiploma() {
+      try {
+        let response = await this.$request(
+          "get",
+          "/vocabularios/vc_tipoDiplomaLegislativo"
+        );
+        for (let i = 0; i < response.data.length; i++) {
+          this.tiposDiploma[i] = response.data[i].termo;
+        }
+        this.tiposDiploma.sort();
+      } catch (error) {
+        return error;
+      }
+    },
     fechar() {
       this.$emit("fechar", this.campo.nome);
+      this.valorEditado = "";
     },
 
     editar() {
       this.$emit("editarCampo", {
         dados: this.valorEditado,
-        nome: this.campo.nome,
+        campo: this.campo,
       });
+      this.valorEditado = "";
     },
   },
 };
