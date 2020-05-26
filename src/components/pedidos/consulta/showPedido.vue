@@ -1,7 +1,16 @@
 <template>
   <v-card class="ma-8">
     <v-card-title class="pa-2 indigo darken-4 title white--text"
-      >Consulta do pedido: {{ p.codigo }}</v-card-title
+      >Consulta do pedido: {{ p.codigo }} <v-spacer />
+      <v-chip
+        v-if="etapaPedido"
+        color="indigo accent-4"
+        text-color="white"
+        label
+      >
+        <v-icon class="mr-1">label</v-icon>
+        <b>{{ etapaPedido }}</b>
+      </v-chip></v-card-title
     >
     <v-card-text>
       <v-row class="mt-1">
@@ -124,7 +133,7 @@ import ShowPGD from "@/components/pedidos/consulta/showPGD";
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 
 export default {
-  props: ["p"],
+  props: ["p", "etapaPedido"],
 
   components: {
     ShowTSPluri,
@@ -137,7 +146,7 @@ export default {
     ShowLegislacao,
     ShowTI,
     SubstituirResponsavel,
-    ShowPGD
+    ShowPGD,
   },
 
   data() {

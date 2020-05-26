@@ -1,6 +1,6 @@
 <template>
   <div v-if="pedidoLoaded">
-    <ShowPedido :p="selectedPedido" />
+    <ShowPedido :p="selectedPedido" :etapaPedido="etapaPedido" />
   </div>
 
   <div v-else style="text-align:center;" class="mt-4">
@@ -18,19 +18,44 @@ export default {
   components: { ShowPedido },
 
   data: () => ({
+    etapaPedido: null,
     selectedPedido: {},
-    pedidoLoaded: false
+    pedidoLoaded: false,
   }),
 
   mounted: function() {
     this.$request("get", "/pedidos/" + this.idp)
-      .then(response => {
-        this.selectedPedido = response.data;
+      .then((response) => {
+        const pedido = response.data;
+        this.selectedPedido = pedido;
+        console.log("response.data", pedido);
+
+        switch (pedido.estado) {
+          case "Submetido":
+            this.etapaPedido = "Pedidos Novos";
+            break;
+          case "Distribuído":
+            this.etapaPedido = "Pedidos em Apreciação Técnica";
+            break;
+          case "Apreciado":
+            this.etapaPedido = "Pedidos em Validação";
+            break;
+          case "Devolvido":
+            this.etapaPedido = "Pedidos Devolvidos";
+            break;
+          case "Validado":
+            this.etapaPedido = "Pedidos Processados";
+            break;
+
+          default:
+            break;
+        }
+
         this.pedidoLoaded = true;
       })
-      .catch(error => {
+      .catch((error) => {
         return error;
       });
-  }
+  },
 };
 </script>
