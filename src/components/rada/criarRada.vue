@@ -115,24 +115,6 @@
         </v-dialog>
       </v-row>
       <v-row justify-center>
-        <v-dialog v-model="dialogRADACriado" persistent width="50%">
-          <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >Pedido de Criação do RADA Submetido.</v-card-title>
-            <v-card-text>
-              <br />
-              {{ mensagemPedidoCriadoOK }}
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-      <v-row justify-center>
         <v-dialog v-model="toSave" width="50%">
           <v-card>
             <v-card-title

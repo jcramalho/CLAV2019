@@ -7,8 +7,6 @@ export default {
     toDelete: false,
     toSave: false,
     dialogRADAPendente: false,
-    mensagemPedidoCriadoOK: "",
-    dialogRADACriado: false,
     entidades: [],
     tipologias: [],
     legislacao: [],
@@ -218,7 +216,7 @@ export default {
           entidade: this.user_entidade,
           despacho: !!despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-              despacho
+            despacho
             : "Submissão inicial"
         };
 
@@ -409,7 +407,7 @@ export default {
           entidade: this.user_entidade,
           despacho: !!this.despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-              this.despacho
+            this.despacho
             : "Submissão inicial"
         };
         let response = await this.$request("post", "/pedidos", pedidoParams);
@@ -417,8 +415,7 @@ export default {
           // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
           await this.$request("delete", "/pendentes/" + id_remocao_pendente);
         }
-        this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-        this.dialogRADACriado = true;
+        this.$router.push('/pedidos/submissao');
       }
     }
   },

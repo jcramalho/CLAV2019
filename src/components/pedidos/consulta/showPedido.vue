@@ -95,6 +95,7 @@
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
       <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
+      <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
@@ -119,6 +120,7 @@
 </template>
 
 <script>
+import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
@@ -137,6 +139,7 @@ export default {
 
   components: {
     ShowTSPluri,
+    ShowRADA,
     ShowTSOrg,
     ShowClasse,
     ShowDefault,
