@@ -455,8 +455,8 @@ export default {
           _id: this.idPendente,
           objeto: {
             rada: this.RADA,
-            entidades: this.entidades.filter(e => e.estado == "Nova"),
-            legislacao: this.legislacao.filter(e => e.estado == "Nova")
+            entidades: this.entidades.filter(e => e.estado_no_sistema == "Nova"),
+            legislacao: this.legislacao.filter(e => e.estado_no_sistema == "Nova")
           }
         };
 
@@ -482,8 +482,8 @@ export default {
           tipo: "RADA",
           objeto: {
             rada: this.RADA,
-            entidades: this.entidades.filter(e => e.estado == "Nova"),
-            legislacao: this.legislacao.filter(e => e.estado == "Nova")
+            entidades: this.entidades.filter(e => e.estado_no_sistema == "Nova"),
+            legislacao: this.legislacao.filter(e => e.estado_no_sistema == "Nova")
           },
           criadoPor: this.userEmail,
           user: { email: this.userEmail },

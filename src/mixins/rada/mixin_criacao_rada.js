@@ -61,7 +61,7 @@ export default {
       //  filtrar as novas entidaaddes criadas e que estão associadas a classes ou UIs
       let entidades = this.entidades.filter(
         e =>
-          e.estado == "Nova" &&
+          e.estado_no_sistema == "Nova" &&
           (series.some(cl =>
             cl.entProdutoras.some(ent => ent == e.sigla + " - " + e.designacao)
           ) ||
@@ -77,7 +77,7 @@ export default {
           tipoPedido: "Criação",
           tipoObjeto: "Entidade",
           novoObjeto: {
-            estado: "Ativa",
+            estado: entidades[i].estado,
             designacao: entidades[i].designacao,
             internacional: entidades[i].internacional,
             sigla: entidades[i].sigla,
@@ -91,6 +91,7 @@ export default {
               };
             }),
             dataCriacao: entidades[i].dataCriacao,
+            dataExtincao: entidades[i].dataExtincao,
             codigo: ""
           },
           user: {

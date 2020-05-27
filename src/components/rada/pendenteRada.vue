@@ -181,8 +181,8 @@ export default {
         _id: this.obj._id,
         objeto: {
           rada: this.RADA,
-          entidades: this.entidades.filter(e => e.estado == "Nova"),
-          legislacao: this.legislacao.filter(e => e.estado == "Nova")
+          entidades: this.entidades.filter(e => e.estado_no_sistema == "Nova"),
+          legislacao: this.legislacao.filter(e => e.estado_no_sistema == "Nova")
         }
       };
 
