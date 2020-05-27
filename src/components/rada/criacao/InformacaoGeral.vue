@@ -56,7 +56,9 @@ export default {
   props: ["RADA", "entidades"],
   computed: {
     entidadesProcessadas() {
-      return this.entidades.map(item => {
+      return this.entidades
+      .filter(item => item.estado !== "Inativa")
+      .map(item => {
         return item.sigla + " - " + item.designacao;
       });
     }

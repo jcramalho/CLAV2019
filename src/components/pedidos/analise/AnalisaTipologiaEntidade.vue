@@ -66,21 +66,6 @@
           <div v-else class="info-content">
             {{ info.conteudo }}
           </div>
-
-          <!-- <v-text-field
-            v-else
-            solo
-            readonly
-            hide-details
-            :background-color="info.cor"
-            :value="info.conteudo"
-          >
-            <template slot="append">
-              <v-icon color="green" @click="verifica(info)">check</v-icon>
-              <v-icon color="red" @click="anula(info)">clear</v-icon>
-              <v-icon>create</v-icon>
-            </template>
-          </v-text-field> -->
         </v-col>
         <v-col
           cols="1"
@@ -119,10 +104,11 @@
     </div>
 
     <!-- Dialog de edição-->
-    <v-dialog v-model="editaCampo.visivel" width="50%" persistent>
+    <v-dialog v-model="editaCampo.visivel" width="70%" persistent>
       <EditarCamposDialog
         :campo="editaCampo"
-        @fechar="fechaEditaCampoDialog"
+        :tipoPedido="p.objeto.tipo"
+        @fechar="fechaEditaCampoDialog($event)"
         @editarCampo="editarCampo($event)"
       />
     </v-dialog>
@@ -170,7 +156,7 @@ export default {
       loading: true,
       editaCampo: {
         visivel: false,
-        campo: "",
+        nome: "",
         key: "",
       },
       erroDialog: {
@@ -225,7 +211,7 @@ export default {
       {
         campo: "Designação",
         conteudo: this.pedido.objeto.dados.designacao,
-        key: "desigancao",
+        key: "designacao",
         cor: null,
       },
       {
@@ -393,22 +379,29 @@ export default {
 
     edita(obj) {
       const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
-      this.infoPedido[i].cor = "info-label-amarelo";
-
       this.editaCampo = {
         visivel: true,
-        campo: this.infoPedido[i].campo,
+        nome: this.infoPedido[i].campo,
         key: this.infoPedido[i].key,
       };
     },
 
-    fechaEditaCampoDialog() {
+    fechaEditaCampoDialog(campo) {
+      console.log("campo", campo);
       this.editaCampo.visivel = false;
+      const i = this.infoPedido.findIndex((o) => o.campo === campo);
+      this.infoPedido[i].cor = null;
     },
 
     editarCampo(event) {
       console.log("event", event);
+      console.log("dados", event.dados);
+      console.log("campo", event.campo);
+
       this.editaCampo.visivel = false;
+
+      const i = this.infoPedido.findIndex((o) => o.campo === event.campo.nome);
+      this.infoPedido[i].cor = "info-label-amarelo";
     },
   },
 };

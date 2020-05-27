@@ -123,7 +123,7 @@ export default {
           filterable: true,
         },
         {
-          text: "Responsável",
+          text: "Criador",
           value: "responsavel",
           class: "title",
           sortable: true,

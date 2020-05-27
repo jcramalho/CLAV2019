@@ -2,7 +2,11 @@
   <v-card class="ma-8">
     <div v-if="!erroDialog.visivel">
       <v-card-title class="pa-2 indigo darken-4 title white--text">
-        Consulta do pedido: {{ p.codigo }}
+        Consulta do pedido: {{ p.codigo }} <v-spacer />
+        <v-chip color="indigo accent-4" text-color="white" label>
+          <v-icon class="mr-1">label</v-icon>
+          <b>Pedidos Novos</b>
+        </v-chip>
       </v-card-title>
       <v-card-text>
         <v-row class="mt-1">
@@ -73,10 +77,7 @@
             </v-data-table>
           </v-card-text>
         </v-card>
-        <ShowTSPluri
-          v-if="p.objeto.tipo == 'TS Pluriorganizacional'"
-          :p="p"
-        />
+        <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
         <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />

@@ -408,6 +408,7 @@ export default {
     },
 
     fecharErro() {
+      this.erros = [];
       this.erroPedido = false;
     },
 

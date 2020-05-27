@@ -1,7 +1,16 @@
 <template>
   <v-card class="ma-8">
     <v-card-title class="pa-2 indigo darken-4 title white--text"
-      >Consulta do pedido: {{ p.codigo }}</v-card-title
+      >Consulta do pedido: {{ p.codigo }} <v-spacer />
+      <v-chip
+        v-if="etapaPedido"
+        color="indigo accent-4"
+        text-color="white"
+        label
+      >
+        <v-icon class="mr-1">label</v-icon>
+        <b>{{ etapaPedido }}</b>
+      </v-chip></v-card-title
     >
     <v-card-text>
       <v-row class="mt-1">
@@ -86,6 +95,7 @@
       <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
       <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
       <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
+      <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
@@ -110,6 +120,7 @@
 </template>
 
 <script>
+import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
@@ -124,10 +135,11 @@ import ShowPGD from "@/components/pedidos/consulta/showPGD";
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 
 export default {
-  props: ["p"],
+  props: ["p", "etapaPedido"],
 
   components: {
     ShowTSPluri,
+    ShowRADA,
     ShowTSOrg,
     ShowClasse,
     ShowDefault,
@@ -137,7 +149,7 @@ export default {
     ShowLegislacao,
     ShowTI,
     SubstituirResponsavel,
-    ShowPGD
+    ShowPGD,
   },
 
   data() {

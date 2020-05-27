@@ -83,13 +83,6 @@ export default {
         });
         this.numeroErros++;
       }
-      if (this.t.visivel == "" || this.t.visivel == null) {
-        this.mensagensErro.push({
-          sobre: "Visibilidade",
-          mensagem: "A visibilidade não pode ser vazia."
-        });
-        this.numeroErros++;
-      }
       if (
         this.t.ficheiro != null &&
         this.t.texto.search(/\[.+\]\(FICHEIRO\)/) == -1

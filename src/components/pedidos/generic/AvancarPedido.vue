@@ -105,6 +105,7 @@ export default {
     cancelar() {
       this.utilizadorSelecionado = null;
       this.mensagemDespacho = null;
+      this.procuraUtilizador = null;
       this.$emit("fecharDialog");
     },
 
@@ -120,6 +121,7 @@ export default {
 
       this.utilizadorSelecionado = null;
       this.mensagemDespacho = null;
+      this.procuraUtilizador = null;
     },
   },
 };

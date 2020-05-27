@@ -162,22 +162,6 @@
           </v-card>
         </v-dialog>
       </v-row>
-      <v-row justify-center>
-        <v-dialog v-model="dialogRADACriado" persistent max-width="60%">
-          <v-card>
-            <v-card-title class="headline"
-              >Pedido de Criação do RADA Submetido</v-card-title
-            >
-            <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/')"
-                >Fechar</v-btn
-              >
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
     </v-card-text>
   </v-card>
 </template>
@@ -210,8 +194,8 @@ export default {
         _id: this.obj._id,
         objeto: {
           rada: this.RADA,
-          entidades: this.entidades.filter(e => e.estado == "Nova"),
-          legislacao: this.legislacao.filter(e => e.estado == "Nova")
+          entidades: this.entidades.filter(e => e.estado_no_sistema == "Nova"),
+          legislacao: this.legislacao.filter(e => e.estado_no_sistema == "Nova")
         }
       };
 
