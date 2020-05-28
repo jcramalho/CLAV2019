@@ -217,8 +217,8 @@ export default {
             label:
               "Informação completa? Ou pretende apenas o esqueleto para criar uma TS?",
             desc:
-              "Caso seja um valor que não 'completa' e 'esqueleto' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve numa estrutura pronta a ser preenchida para a criação de uma Tabela de Seleção, devolve os campos: código, título, descrição, PCA, DF dono (a ser preenchido pelo utilizador) e participante (a ser preenchido pelo utilizador).",
-            enum: ["Por definir", "completa", "esqueleto"],
+              "Caso seja um valor que não 'completa', 'esqueleto' ou 'pre-selecionados' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve numa estrutura pronta a ser preenchida para a criação de uma Tabela de Seleção, devolve os campos: código, título, descrição, PCA, DF, dono (a ser preenchido pelo utilizador) e participante (a ser preenchido pelo utilizador). Caso o valor seja 'pre-selecionados' devolve os campos: código, título, descrição, PCA, DF, dono e participante.",
+            enum: ["Por definir", "completa", "esqueleto", "pre-selecionados"],
             multiple: false
           },
           fs: fs,
