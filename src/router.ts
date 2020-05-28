@@ -237,7 +237,13 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] },
     },
     // Routes das PGD
-    
+    {
+      path: "/pgd/:idPGD",
+      name: "consultaPDG",
+      component: () =>
+        import("./views/pgd/PGDConsultar.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
     // Routes dos Autos de Eliminação
     {
       path: "/autosEliminacao",
