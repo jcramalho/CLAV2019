@@ -205,38 +205,32 @@ export default {
       const objAlterado = JSON.parse(JSON.stringify(this.t));
       const objOriginal = JSON.parse(JSON.stringify(this.original));
 
-      const historico = [];
+      const historico = {};
 
       for (const key in objOriginal) {
         if (typeof objOriginal[key] === "string") {
           if (objOriginal[key] !== objAlterado[key]) {
-            historico.push({
-              [key]: {
-                cor: null,
-                alteracao: this.objAlterado[key],
-                despacho: null,
-              },
-            });
+            historico[key] = {
+              cor: "amarelo",
+              alteracao: objAlterado[key],
+              despacho: null,
+            };
           }
         } else if (objOriginal[key] instanceof Array) {
           if (objOriginal[key].length !== objAlterado[key].length) {
-            historico.push({
-              [key]: {
-                cor: "amarelo",
-                alteracao: objAlterado[key],
-                despacho: null,
-              },
-            });
+            historico[key] = {
+              cor: "amarelo",
+              alteracao: objAlterado[key],
+              despacho: null,
+            };
           } else if (
             !comparaArraySel(objOriginal[key], objAlterado[key], "sigla")
           ) {
-            historico.push({
-              [key]: {
-                cor: "amarelo",
-                alteracao: objAlterado[key],
-                despacho: null,
-              },
-            });
+            historico[key] = {
+              cor: "amarelo",
+              alteracao: objAlterado[key],
+              despacho: null,
+            };
           }
         }
       }
@@ -272,7 +266,7 @@ export default {
 
               erros = await this.validarTipologiasAlteracao(dataObj);
 
-              historico.push(...this.extrairAlteracoes());
+              historico.push(this.extrairAlteracoes());
 
               break;
 
@@ -280,6 +274,7 @@ export default {
               break;
           }
 
+          console.log("Aqui");
           if (erros == 0) {
             var userBD = this.$verifyTokenUser();
 
