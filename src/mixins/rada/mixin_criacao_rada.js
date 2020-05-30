@@ -7,8 +7,6 @@ export default {
     toDelete: false,
     toSave: false,
     dialogRADAPendente: false,
-    mensagemPedidoCriadoOK: "",
-    dialogRADACriado: false,
     entidades: [],
     tipologias: [],
     legislacao: [],
@@ -63,7 +61,7 @@ export default {
       //  filtrar as novas entidaaddes criadas e que estão associadas a classes ou UIs
       let entidades = this.entidades.filter(
         e =>
-          e.estado == "Nova" &&
+          e.estado_no_sistema == "Nova" &&
           (series.some(cl =>
             cl.entProdutoras.some(ent => ent == e.sigla + " - " + e.designacao)
           ) ||
@@ -79,7 +77,7 @@ export default {
           tipoPedido: "Criação",
           tipoObjeto: "Entidade",
           novoObjeto: {
-            estado: "Ativa",
+            estado: entidades[i].estado,
             designacao: entidades[i].designacao,
             internacional: entidades[i].internacional,
             sigla: entidades[i].sigla,
@@ -93,6 +91,7 @@ export default {
               };
             }),
             dataCriacao: entidades[i].dataCriacao,
+            dataExtincao: entidades[i].dataExtincao,
             codigo: ""
           },
           user: {
@@ -218,7 +217,7 @@ export default {
           entidade: this.user_entidade,
           despacho: !!despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-              despacho
+            despacho
             : "Submissão inicial"
         };
 
@@ -409,7 +408,7 @@ export default {
           entidade: this.user_entidade,
           despacho: !!this.despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-              this.despacho
+            this.despacho
             : "Submissão inicial"
         };
         let response = await this.$request("post", "/pedidos", pedidoParams);
@@ -417,8 +416,7 @@ export default {
           // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
           await this.$request("delete", "/pendentes/" + id_remocao_pendente);
         }
-        this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-        this.dialogRADACriado = true;
+        this.$router.push('/pedidos/submissao');
       }
     }
   },

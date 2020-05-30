@@ -44,32 +44,44 @@ export function comparaSigla(a, b) {
   const keyA = a.sigla;
   const keyB = b.sigla;
 
-  let comparison = 0;
+  let comparation = 0;
   if (keyA > keyB) {
-    comparison = 1;
+    comparation = 1;
   } else if (keyA < keyB) {
-    comparison = -1;
+    comparation = -1;
   }
 
-  return comparison;
+  return comparation;
 }
 
 export function comparaCodigo(a, b) {
   const keyA = a.codigo;
   const keyB = b.codigo;
 
-  let comparison = 0;
+  let comparation = 0;
   if (keyA > keyB) {
-    comparison = 1;
+    comparation = 1;
   } else if (keyA < keyB) {
-    comparison = -1;
+    comparation = -1;
   }
 
-  return comparison;
+  return comparation;
+}
+
+export function comparaArraySel(arrA, arrB, key) {
+  var arraysIguais = false;
+
+  const keysA = arrA.map((el) => el[key]).sort();
+  const keysB = arrB.map((el) => el[key]).sort();
+
+  arraysIguais = JSON.stringify(keysA) === JSON.stringify(keysB);
+
+  return arraysIguais;
 }
 
 export default {
   filtraNivel,
   comparaSigla,
   comparaCodigo,
+  comparaArraySel,
 };

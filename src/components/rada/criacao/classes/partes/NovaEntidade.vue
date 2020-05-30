@@ -13,24 +13,29 @@
           <v-card flat color="indigo lighten-5">
             <v-card-text>
               <v-form ref="form" :lazy-validation="false">
-                <v-row>
-                  <v-col>
+                <v-row cols="12">
+                  <v-col md="3" sm="3">
                     <v-text-field :rules="siglaRules" v-model="sigla" label="Sigla"></v-text-field>
                   </v-col>
 
-                  <v-col>
+                  <v-col md="3" sm="3">
                     <v-text-field
                       :rules="[v => /^[0-9]*$/.test(v) || v == null || 'Apenas são aceites caracteres numéricos.']"
                       v-model="sioe"
                       label="SIOE"
                     ></v-text-field>
                   </v-col>
-                  <v-col>
+                  <v-col md="6" sm="6">
+                    <v-text-field :rules="designacaoRules" v-model="designacao" label="Designação"></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col sm="4" md="4">
                     <v-menu
                       ref="menu2"
-                      v-model="data_menu"
+                      v-model="data_menu_2"
                       :close-on-content-click="false"
-                      :return-value.sync="data"
+                      :return-value.sync="data_criacao"
                       transition="scale-transition"
                       offset-y
                       max-width="290px"
@@ -38,8 +43,8 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field
                           :rules="[v => !!v || 'Campo obrigatório!']"
-                          v-model="data"
-                          label="Data"
+                          v-model="data_criacao"
+                          label="Data de Criação"
                           prepend-icon="event"
                           readonly
                           v-on="on"
@@ -48,26 +53,61 @@
                       </template>
                       <v-date-picker
                         full-width
-                        v-model="data"
+                        v-model="data_criacao"
                         color="amber accent-3"
                         locale="pt"
                         :max="new Date().toISOString().split('T')[0]"
                       >
                         <v-spacer></v-spacer>
-                        <v-btn text @click="data_menu = false">
+                        <v-btn text @click="data_menu_2 = false">
                           <v-icon>keyboard_backspace</v-icon>
                         </v-btn>
-                        <v-btn text @click="$refs.menu2.save(data)">
+                        <v-btn text @click="$refs.menu2.save(data_criacao)">
                           <v-icon>check</v-icon>
                         </v-btn>
                       </v-date-picker>
                     </v-menu>
                   </v-col>
-                </v-row>
-                <v-row>
-                  <v-col sm="8" md="8">
-                    <v-text-field :rules="designacaoRules" v-model="designacao" label="Designação"></v-text-field>
+                  <v-col sm="4" md="4">
+                    <v-menu
+                      ref="menu1"
+                      v-model="data_menu_1"
+                      :close-on-content-click="false"
+                      :return-value.sync="data_extincao"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          :rules="[v => !!data_criacao ? data_final_valida(v) : true]"
+                          v-model="data_extincao"
+                          label="Data de Extinção"
+                          prepend-icon="event"
+                          readonly
+                          v-on="on"
+                          clearable
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        full-width
+                        v-model="data_extincao"
+                        color="amber accent-3"
+                        locale="pt"
+                        :max="new Date().toISOString().split('T')[0]"
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text @click="data_menu_1 = false">
+                          <v-icon>keyboard_backspace</v-icon>
+                        </v-btn>
+                        <v-btn text @click="$refs.menu1.save(data_extincao)">
+                          <v-icon>check</v-icon>
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                    
                   </v-col>
+                  
                   <v-col sm="4" md="4">
                     <v-select
                       :rules="[v => !!v || 'Campo obrigatório!']"
@@ -112,9 +152,6 @@
                     <v-alert dismissible dense text type="success">Entidade adicionada com sucesso!</v-alert>
                   </v-col>
                 </v-row>
-                <!-- <v-btn dark fab bottom left color="pink">
-                    <v-icon>add</v-icon>
-                </v-btn>-->
               </v-form>
             </v-card-text>
             <v-card-text style="position: relative">
@@ -138,8 +175,10 @@ export default {
   data: function() {
     return {
       panel: [0],
-      data_menu: false,
-      data: null,
+      data_menu_1: false,
+      data_menu_2: false,
+      data_criacao: null,
+      data_extincao: null,
       alertOn: false,
       sucessOn: false,
       sigla: "",
@@ -163,7 +202,20 @@ export default {
   },
 
   methods: {
-    newEntidade: async function() {
+     data_final_valida(v) {
+      if (!!v) {
+        if (this.data_criacao != null) {
+          let data_inicial = new Date(this.data_criacao);
+          let data_final = new Date(v);
+
+          if (data_inicial > data_final) {
+            return "Data final inválida! É anterior à data de criação.";
+          }
+        }
+      }
+      return true;
+    },
+    async newEntidade() {
       this.alertOn = false;
 
       if (this.$refs.form.validate()) {
@@ -171,14 +223,17 @@ export default {
           if (this.sioe == null) {
             this.sioe = "";
           }
+          console.log(!!this.data_extincao);
           let entidade = {
-            estado: "Nova",
+            estado_no_sistema: "Nova",
+            estado: !!this.data_extincao ? "Inativa" : "Ativa",
             id: "ent_" + this.sigla,
             sigla: this.sigla,
             sioe: this.sioe,
             designacao: this.designacao,
             internacional: this.internacional,
-            dataCriacao: this.data,
+            dataCriacao: this.data_criacao,
+            dataExtincao: !!this.data_extincao ? this.data_extincao : "",
             tipologiasSel: this.tipologiasSel
           };
 
@@ -210,7 +265,7 @@ export default {
       }
     },
     // Provavelmente vai ter que se alterar
-    validaEntidade: async function() {
+    async validaEntidade() {
       return this.entidades.some(el => {
         return el.sigla == this.sigla || el.designacao == this.designacao;
       });

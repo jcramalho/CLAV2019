@@ -29,7 +29,7 @@
         </template>
 
         <template v-slot:item="props">
-          <tr>
+          <tr v-if="tipo!='TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS (Ontologia)'">
             <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="index == 'link'">
                 <a :href="campo">{{ campo }}</a>
@@ -37,6 +37,13 @@
 
               <div v-else>{{ campo }}</div>
             </td>
+          </tr>
+          <tr v-else @click="$router.push('/pgd/'+props.item.idPGD)">
+            <td>{{ props.item.data }}</td>
+            <td>{{ props.item.tipo }}</td>
+            <td>{{ props.item.numero }}</td>
+            <td>{{ props.item.sumario }}</td>
+            <td><a :href="props.item.link">{{ props.item.link }}</a></td>
           </tr>
         </template>
 
