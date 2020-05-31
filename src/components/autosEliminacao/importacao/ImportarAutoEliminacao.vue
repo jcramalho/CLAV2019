@@ -522,6 +522,7 @@ export default {
                     return; //ERROS
                   }
 
+                  zc.idClasse = classe.classe;
                   zc.titulo = classe.titulo;
                   zc.prazoConservacao = classe.pca;
                   if(classe.df == "E")
