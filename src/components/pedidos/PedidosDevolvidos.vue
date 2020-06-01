@@ -173,7 +173,7 @@ export default {
       this.dadosTabela = this.pedidos.map((pedido) => {
         const dados = {};
         dados.codigo = pedido.codigo;
-        dados.tipo = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
+        dados.tipo = `${pedido.objeto.tipo} - ${pedido.objeto.acao}`;
         if (pedido.entidade !== undefined)
           dados.entidade = pedido.entidade.split("_")[1];
         dados.responsavel = pedido.criadoPor;
