@@ -77,6 +77,7 @@
             </v-data-table>
           </v-card-text>
         </v-card>
+
         <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
@@ -293,7 +294,7 @@ export default {
 <style scoped>
 .info-label {
   color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
+  padding: 5px;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
@@ -301,6 +302,7 @@ export default {
 }
 
 .info-content {
+  margin-top: 5px;
   padding: 5px;
   width: 100%;
   border: 1px solid #1a237e;
