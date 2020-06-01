@@ -11,6 +11,16 @@
       />
     </div>
     <div>
+      <Loading v-if="!fontesPGDTSReady" :message="'fontes de legitimação'" />
+      <ListagemLeg
+        v-else
+        :lista="fontesPGDTS"
+        tipo="TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS (Ontologia)"
+        :cabecalho="cabecalhos"
+        :campos="campos"
+      />
+    </div>
+    <div>
       <Loading v-if="!fontesPGDLCReady" :message="'fontes de legitimação'" />
       <ListagemLeg
         v-else
@@ -32,10 +42,12 @@ export default {
   data: () => ({
     fontesPGD: [],
     fontesPGDLC: [],
+    fontesPGDTS: [],
     campos: [],
     cabecalhos: [],
     fontesPGDReady: false,
-    fontesPGDLCReady: false
+    fontesPGDLCReady: false,
+    fontesPGDTSReady: false
   }),
 
   components: {
@@ -76,6 +88,24 @@ export default {
           };
         });
         this.fontesPGDReady = true;
+      })
+      .catch(e2 => {
+        return e2;
+      });
+    
+    this.$request("get", "/pgd")
+      .then(response => {
+        this.fontesPGDTS = response.data.map(f => {
+          return {
+            idPGD: f.idPGD,
+            data: f.data,
+            tipo: f.tipo,
+            numero: f.numero,
+            sumario: f.sumario,
+            link: f.link
+          };
+        });
+        this.fontesPGDTSReady = true;
       })
       .catch(e2 => {
         return e2;

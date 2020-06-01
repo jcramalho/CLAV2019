@@ -208,34 +208,14 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
     var codigosSerie = [];
     var referenciasSerie = [];
 
-    series.forEach((s, index) => {
-      var serie = s.split(/[;,]/);
-      if (serie.length >= 7) {
-        if (tipo != "RADA" && serie[0] == "") {
-          errosSerie.codigo.push(index + 2);
-          errosSerie.numeroErros++;
-        } else if (tipo == "RADA" && serie[0] == "" && serie[1] == "") {
-          errosSerie.referencia.push(index + 2);
-          errosSerie.numeroErros++;
-        }
-        if (serie[0] != "")
-          if (!codigosSerie.find(elem => elem == serie[0]))
-            codigosSerie.push(serie[0]);
-          else {
-            errosSerie.codigosRepetidos.push(index + 2);
-            errosSerie.numeroErros++;
-          }
-        if (serie[1] != "")
-          if (!referenciasSerie.find(elem => elem == serie[1]))
-            referenciasSerie.push(serie[1]);
-          else {
-            errosSerie.referenciasRepetidas.push(index + 2);
-            errosSerie.numeroErros++;
-          }
-        if (serie[2] == "") {
-          errosSerie.titulo.push(index + 2);
-          errosSerie.numeroErros++;
-        }
+    series.forEach((s,index) => {
+      var serie = s.split(/[;,]/)
+      if(serie.length>=7) {
+        if(tipo == "PGD_LC" && serie[0] == "") {errosSerie.codigo.push(index+2);errosSerie.numeroErros++;}
+        else if(tipo == "RADA" && serie[0] == "" && serie[1] == "") {errosSerie.referencia.push(index+2);errosSerie.numeroErros++;}
+        if(serie[0]!="") if(!codigosSerie.find(elem => elem == serie[0])) codigosSerie.push(serie[0]); else {errosSerie.codigosRepetidos.push(index+2); errosSerie.numeroErros++; }
+        if(serie[1]!="") if(!referenciasSerie.find(elem => elem == serie[1])) referenciasSerie.push(serie[1]); else {errosSerie.referenciasRepetidas.push(index+2); errosSerie.numeroErros++; }
+        if(serie[2]=="") {errosSerie.titulo.push(index+2); errosSerie.numeroErros++;}
         var dataInicio = parseInt(serie[3]) || 0;
         var dataFim = parseInt(serie[4]) || 0;
         if (!serie[3].match(/[0-9]{4}/) || dataInicio < 1000) {
@@ -324,6 +304,18 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
             errosAgregacoes.referencia.push(index + 2);
             errosAgregacoes.numeroErros++;
           }
+        }
+        if(numero != serie[5]) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++}
+      } 
+    })
+    agregacoes.forEach((a,index) => {
+      var agregacao = a.split(/[;,]/)
+      if(agregacao.length>=5) {
+        if(tipo == "PGD_LC" && agregacao[0] == "") {errosAgregacoes.codigo.push(index+2);errosAgregacoes.numeroErros++;}
+        else if(tipo == "RADA" && agregacao[0] == "" && agregacao[1] == "") {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
+        else {
+          if(agregacao[0]!="" && !codigosSerie.find(elem => elem == agregacao[0])) {errosAgregacoes.codigo.push(index+2);errosAgregacoes.numeroErros++;}
+          if(agregacao[1]!="" && !referenciasSerie.find(elem => elem == agregacao[1])) {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
         }
       }
     });
@@ -438,7 +430,7 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
           if(agregacao[0]==zc.codigo && agregacao[1]==zc.referencia) {
             var ag = {
               codigo: agregacao[2].replace(/[ -.,!/]/g, "_"),
-              titulo: agregacao[3],
+              titulo: agregacao[3].replace(/^\"|\"$/g,""),
               dataContagem: agregacao[4],
               ni: agregacao[5]
             };

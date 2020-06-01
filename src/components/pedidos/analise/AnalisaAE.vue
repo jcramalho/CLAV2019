@@ -82,7 +82,10 @@
                       <td style="width:70%;">
                         {{ item.referencia }}
                       </td>
-                      <td style="width:10%"></td>
+                      <td v-if="!item.codigo" style="width:10%">
+                        <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index]='#C8E6C9'">check</v-icon>
+                        <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index]='#FFCDD2'">clear</v-icon>  
+                      </td>
                     </tr>
                     <tr v-if="item.titulo">
                       <td style="width:20%;">

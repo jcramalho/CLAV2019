@@ -649,7 +649,7 @@ export default {
           }
         }
       } catch (error) {
-        return error;
+        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
       }
     },
 
