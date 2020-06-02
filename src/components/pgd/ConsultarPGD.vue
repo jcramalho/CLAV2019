@@ -117,5 +117,7 @@ export default {
 .info-content {
   padding: 8px;
   width: 100%;
+  border: 1px solid #1a237e;
+  border-radius: 3px;
 }
 </style>

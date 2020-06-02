@@ -30,7 +30,7 @@
               <a :href="'/entidades/' + auto.entidade">{{ (auto.entidade || "").split("_")[1] +" - "+auto.entidadeNome}}</a>{{" ("+auto.responsavel+")"}}
             </td>
           </tr>
-          <tr>
+          <tr v-if="auto.legislacao">
             <td style="width:20%;">
               <div class="info-label">Fonte de Legitimação</div>
             </td>
@@ -38,6 +38,14 @@
               {{auto.tipo+" - "}}
               <a v-if="auto.tipo=='PGD'" :href="'/pgd/pgd_' + auto.refLegislacao">{{ auto.legislacao }}</a>
               <a v-else :href="'/legislacao/' + auto.refLegislacao">{{ auto.legislacao }}</a>
+            </td>
+          </tr>
+          <tr v-else>
+            <td style="width:20%;">
+              <div class="info-label">Referencial Classificativo</div>
+            </td>
+            <td style="width:80%;">
+              {{auto.referencialLabel}}
             </td>
           </tr>
           <tr>
@@ -81,7 +89,7 @@
                             <div class="info-label">Código da classe</div>
                           </td>
                           <td style="width:80%;">
-                            <div v-if="auto.tipo=='PGD/LC'">
+                            <div v-if="auto.tipo=='TS/LC'">
                               <a
                                 :href="'/classes/consultar/c' + item.codigo"
                                 >{{ item.codigo }}</a

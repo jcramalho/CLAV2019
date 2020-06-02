@@ -17,11 +17,17 @@
               {{ p.entidade }}
             </td>
           </tr>
-          <tr>
+          <tr v-if="p.objeto.dados.ae.legislacao">
             <td style="width:20%;">
               <div class="info-label">Fonte de Legitimação</div>
             </td>
             <td style="width:80%;">{{ p.objeto.dados.ae.legislacao }}</td>
+          </tr>
+          <tr v-else>
+            <td style="width:20%;">
+              <div class="info-label">Referencial Classificativo</div>
+            </td>
+            <td style="width:80%;">Lista Consolidada</td>
           </tr>
           <tr>
             <td style="width:20%;">

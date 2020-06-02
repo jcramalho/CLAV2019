@@ -29,7 +29,7 @@
         </template>
 
         <template v-slot:item="props">
-          <tr v-if="tipo!='TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS (Ontologia)'">
+          <tr v-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS'">
             <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="index == 'link'">
                 <a :href="campo">{{ campo }}</a>

@@ -89,8 +89,9 @@ export default {
   created: async function () {
     try {
       this.idPGD = window.location.pathname.split("/")[2];
-      this.idLegislacao = window.location.pathname.split("/")[2].split("pgd_")[1];
-
+      this.idLegislacao = this.idPGD.split("pgd_")[1];
+      if(this.idLegislacao.includes("lc_")) this.idLegislacao = this.idLegislacao.split("lc_")[1]
+      
       var response = await this.$request("get","/pgd/"+this.idPGD)
       this.classes = await this.prepararClasses(response.data)
 
@@ -104,6 +105,7 @@ export default {
     } 
     catch (e) {
       this.classes = []
+      this.legislacao = null
     }
   }
 }

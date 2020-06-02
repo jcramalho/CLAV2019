@@ -1,9 +1,6 @@
 <template>
   <CriarAuto
     v-bind:entidades="entidades"
-    v-bind:portarias="portarias"
-    v-bind:classes="classes"
-    v-bind:classesCompletas="classesCompletas"
   />
 </template>
 
@@ -15,10 +12,7 @@ export default {
     CriarAuto
   },
   data: () => ({
-    entidades: [],
-    portarias: [],
-    classes: [],
-    classesCompletas: []
+    entidades: []
   }),
   methods: {
     prepararEntidade: async function(ent) {
@@ -78,30 +72,10 @@ export default {
   },
   created: async function() {
     try {
-      var response2 = await this.$request("get", "/legislacao?fonte=PGD/LC");
-      this.portarias = await this.prepararLeg(response2.data);
-
       var response = await this.$request("get", "/entidades/");
       this.entidades = await this.prepararEntidade(response.data);
-
-      var response3 = await this.$request(
-        "get",
-        "/classes?nivel=3&info=completa"
-      );
-      var response4 = await this.$request(
-        "get",
-        "/classes?nivel=4&info=completa"
-      );
-      this.classesCompletas = await this.prepararClassesCompletas(
-        response3.data,
-        response4.data
-      );
-      this.classes = await this.prepararClasses(this.classesCompletas);
     } catch (e) {
       this.entidades = [];
-      this.portarias = [];
-      this.classes = [];
-      this.classesCompletas = [];
     }
   }
 };
