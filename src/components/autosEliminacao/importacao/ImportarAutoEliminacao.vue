@@ -544,7 +544,7 @@ export default {
                     this.erro =
                       "Codigo da classe <b>" +
                       zc.codigo +
-                      "</b> não foi encontrado na "+this.auto.legislacao.split(" - ")[0];
+                      "</b> não foi encontrado em "+this.auto.legislacao.split(" - ")[0];
                     return; //ERROS
                   }
 
