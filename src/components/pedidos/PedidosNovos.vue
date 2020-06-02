@@ -133,7 +133,7 @@ export default {
           filterable: true,
         },
         {
-          text: "Criardor",
+          text: "Criador",
           value: "responsavel",
           class: "title",
           sortable: true,
