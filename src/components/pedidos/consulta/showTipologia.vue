@@ -1,118 +1,19 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title"
-      >{{ p.objeto.acao }} da Tipologia</v-card-title
-    >
+    <v-card-title class="indigo darken-4 white--text title">
+      {{ p.objeto.acao }} da Tipologia
+      <v-spacer />
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-icon @click="verHistorico()" color="white" v-on="on">
+            history
+          </v-icon>
+        </template>
+        <span>Ver histórico de alterações...</span>
+      </v-tooltip>
+    </v-card-title>
 
-    <v-card-text v-if="p.objeto.acao === 'Alteração'">
-      <v-row>
-        <v-col>
-          <h4>Original</h4>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Designação</div>
-            </v-col>
-
-            <v-col>
-              <div class="info-content">
-                {{ tipologiaOriginal.designacao }}
-              </div>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Sigla</div>
-            </v-col>
-
-            <v-col>
-              <div class="info-content">{{ tipologiaOriginal.sigla }}</div>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Entidades:</div>
-            </v-col>
-
-            <v-col>
-              <v-data-table
-                :headers="headers"
-                :items="tipologiaOriginal.entidadesSel"
-                class="elevation-1"
-                hide-default-footer
-              >
-                <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
-                    Nenhuma entidade selecionada...
-                  </v-alert>
-                </template>
-              </v-data-table>
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col v-if="(p.objeto.acao = 'Alteração')" cols="6">
-          <h4>Alterado</h4>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Designação</div>
-            </v-col>
-
-            <v-col>
-              <div class="info-content">
-                {{ tipologiaCriadaAlterada.designacao }}
-              </div>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Sigla</div>
-            </v-col>
-
-            <v-col>
-              <div class="info-content">
-                {{ tipologiaCriadaAlterada.sigla }}
-              </div>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Entidades:</div>
-            </v-col>
-
-            <v-col>
-              <v-data-table
-                :headers="headers"
-                :items="tipologiaCriadaAlterada.entidadesSel"
-                class="elevation-1"
-                hide-default-footer
-              >
-                <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
-                    Nenhuma entidade selecionada...
-                  </v-alert>
-                </template>
-              </v-data-table>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-card-text>
-
-    <v-card-text v-else>
+    <v-card-text>
       <v-row>
         <v-col cols="2">
           <div class="info-label">Designação</div>
@@ -165,14 +66,8 @@
 </template>
 
 <script>
-import VerHistorico from "@/components/pedidos/generic/VerHistorico";
-
 export default {
   props: ["p"],
-
-  // components: {
-  //   VerHistorico,
-  // },
 
   data() {
     return {
@@ -193,8 +88,15 @@ export default {
     tipologiaOriginal() {
       return this.p.objeto.dadosOriginais;
     },
+
     tipologiaCriadaAlterada() {
       return this.p.objeto.dados;
+    },
+  },
+
+  methods: {
+    verHistorico() {
+      this.$emit("verHistorico");
     },
   },
 };

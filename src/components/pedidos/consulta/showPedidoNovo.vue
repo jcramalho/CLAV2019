@@ -91,7 +91,11 @@
           :p="p"
         />
         <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
-        <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
+        <ShowTipologia
+          v-else-if="p.objeto.tipo == 'Tipologia'"
+          :p="p"
+          @verHistorico="verHistorico()"
+        />
         <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
         <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
         <ShowDefault v-else :p="p" />
@@ -118,9 +122,15 @@
         />
       </v-dialog>
     </div>
+
     <!-- Dialog de erros -->
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
+    </v-dialog>
+
+    <!-- Dialog Ver Historico de Alterações-->
+    <v-dialog v-model="verHistoricoDialog" width="80%">
+      <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
     </v-dialog>
   </v-card>
 </template>
@@ -140,6 +150,8 @@ import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
 
 import ErroDialog from "@/components/generic/ErroDialog";
+
+import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
 import { filtraNivel } from "@/utils/utils";
@@ -161,9 +173,11 @@ export default {
     ShowRADA,
     ShowPGD,
     ErroDialog,
+    VerHistorico,
   },
 
   data: () => ({
+    verHistoricoDialog: false,
     distribuir: false,
     utilizadores: [],
     erroDialog: {
@@ -269,6 +283,14 @@ export default {
       } catch (e) {
         //console.log("e :", e);
       }
+    },
+
+    verHistorico() {
+      this.verHistoricoDialog = true;
+    },
+
+    fecharHistorico() {
+      this.verHistoricoDialog = false;
     },
 
     fecharDialog() {
