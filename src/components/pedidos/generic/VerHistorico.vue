@@ -15,18 +15,44 @@
               color="indigo lighten-5"
             >
               <v-card-text>
-                <v-row v-for="(info, campo) in h" :key="campo">
-                  <v-col cols="2">
-                    <div class="info-descricao">
-                      {{ transformaKeys(campo) }}
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <div class="info-conteudo">
-                      {{ info }}
-                    </div>
-                  </v-col>
-                </v-row>
+                <div v-for="(info, campo) in h" :key="campo">
+                  <v-row v-if="info !== '' && info !== null">
+                    <v-col cols="2">
+                      <div class="info-descricao">
+                        {{ transformaKeys(campo) }}
+                      </div>
+                    </v-col>
+                    <v-col>
+                      <div
+                        v-if="!(info instanceof Array)"
+                        class="info-conteudo"
+                      >
+                        {{ info }}
+                      </div>
+
+                      <div v-else>
+                        <v-data-table
+                          v-if="campo === 'entidadesSel'"
+                          :headers="entidadesHeaders"
+                          :items="info"
+                          class="elevation-1"
+                          hide-default-footer
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
               </v-card-text>
             </v-card>
 
@@ -34,18 +60,44 @@
               v-else
               shaped
               class="rounded-card pa-4"
-              color="deep-orange lighten-5"
+              color="orange lighten-5"
             >
               <v-card-text>
                 <v-row v-for="(info, campo) in h" :key="campo">
                   <v-col cols="2">
-                    <div class="info-descricao">
+                    <div
+                      :class="['info-descricao', `info-descricao-${info.cor}`]"
+                    >
                       {{ transformaKeys(campo) }}
                     </div>
                   </v-col>
                   <v-col>
-                    <div class="info-conteudo">
-                      {{ info }}
+                    <div
+                      v-if="!(info.alteracao instanceof Array)"
+                      class="info-conteudo"
+                    >
+                      {{ info.alteracao }}
+                    </div>
+
+                    <div v-else>
+                      <v-data-table
+                        v-if="campo === 'entidadesSel'"
+                        :headers="entidadesHeaders"
+                        :items="info.alteracao"
+                        class="elevation-1"
+                        hide-default-footer
+                      >
+                        <template v-slot:no-data>
+                          <v-alert
+                            type="error"
+                            width="100%"
+                            class="m-auto mb-2 mt-2"
+                            outlined
+                          >
+                            Nenhuma entidade selecionada...
+                          </v-alert>
+                        </template>
+                      </v-data-table>
                     </div>
                   </v-col>
                 </v-row>
@@ -60,8 +112,8 @@
           </v-btn>
           <v-item-group v-model="onboarding" class="text-center" mandatory>
             <v-item
-              v-for="n in dados"
-              :key="`btn-${n}`"
+              v-for="(n, i) in dados"
+              :key="`btn-${i}`"
               v-slot:default="{ active, toggle }"
             >
               <v-btn :input-value="active" icon @click="toggle">
@@ -93,6 +145,10 @@ export default {
     return {
       onboarding: 0,
       dados: [],
+      entidadesHeaders: [
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+      ],
     };
   },
 
@@ -135,6 +191,7 @@ export default {
           break;
 
         default:
+          descricao = key.charAt(0).toUpperCase() + key.slice(1);
           break;
       }
 
@@ -160,6 +217,18 @@ export default {
   background-color: #c5cae9;
   font-weight: bold;
   border-radius: 3px;
+}
+
+.info-descricao-verde {
+  background-color: #c8e6c9; /* lighten-4 */
+}
+
+.info-descricao-vermelho {
+  background-color: #ffcdd2; /* lighten-4 */
+}
+
+.info-descricao-amarelo {
+  background-color: #ffe0b2; /* lighten-4 */
 }
 
 .info-conteudo {

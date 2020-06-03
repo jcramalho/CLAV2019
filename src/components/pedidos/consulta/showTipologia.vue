@@ -3,7 +3,15 @@
     <v-card-title class="indigo darken-4 white--text title">
       {{ p.objeto.acao }} da Tipologia
       <v-spacer />
-      <v-tooltip bottom>
+      <v-tooltip
+        v-if="
+          !(
+            p.objeto.acao === 'Criação' &&
+            (p.estado === 'Submetido' || p.estado === 'Distribuído')
+          )
+        "
+        bottom
+      >
         <template v-slot:activator="{ on }">
           <v-icon @click="verHistorico()" color="white" v-on="on">
             history

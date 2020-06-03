@@ -129,7 +129,7 @@
     </v-dialog>
 
     <!-- Dialog Ver Historico de Alterações-->
-    <v-dialog v-model="verHistoricoDialog" width="80%">
+    <v-dialog v-model="verHistoricoDialog" width="70%">
       <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
     </v-dialog>
   </v-card>
