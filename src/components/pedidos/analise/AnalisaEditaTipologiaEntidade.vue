@@ -2,32 +2,70 @@
   <div>
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
-      <v-row v-for="(info, i) in infoPedido" :key="i">
-        <!-- Label -->
-        <v-col
-          cols="2"
+      <div v-for="(info, campo) in tipologia" :key="campo">
+        <v-row
           v-if="
-            info.campo !== 'Sigla' &&
-              info.campo !== 'Código' &&
-              info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
+            info !== '' &&
+              info !== null &&
+              campo !== 'sigla' &&
+              campo !== 'codigo'
           "
         >
-          <div class="info-label">{{ info.campo }}</div>
-        </v-col>
+          <v-col cols="2">
+            <div class="info-descricao">
+              {{ transformaKeys(campo) }}
+            </div>
+          </v-col>
+          <v-col>
+            <div v-if="!(info instanceof Array)" class="info-conteudo">
+              {{ info }}
+            </div>
 
-        <!-- Conteudo -->
-        <v-col
-          v-if="
-            info.campo !== 'Sigla' &&
-              info.campo !== 'Código' &&
-              info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
-          "
-        >
-          <!-- Se o conteudo for uma lista de tipologias-->
+            <div v-else>
+              <v-data-table
+                v-if="campo === 'entidadesSel'"
+                :headers="entidadesHeaders"
+                :items="info"
+                class="elevation-1"
+                hide-default-footer
+              >
+                <template v-slot:no-data>
+                  <v-alert
+                    type="error"
+                    width="100%"
+                    class="m-auto mb-2 mt-2"
+                    outlined
+                  >
+                    Nenhuma entidade selecionada...
+                  </v-alert>
+                </template>
+
+                <template v-slot:item.operacao="{ item }">
+                  <v-icon color="red" @click="removeEntidade(item)">
+                    delete
+                  </v-icon>
+                </template>
+
+                <template v-slot:top>
+                  <v-toolbar flat>
+                    <v-btn
+                      rounded
+                      class="indigo accent-4 white--text"
+                      @click="abreEntidadesDialog()"
+                    >
+                      Adicionar Entidades
+                    </v-btn>
+                  </v-toolbar>
+                </template>
+              </v-data-table>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
+
+      <!-- 
+      <v-row>
+        
           <v-data-table
             v-if="info.campo == 'Entidades'"
             :headers="headersEntidades"
@@ -67,25 +105,7 @@
               </v-toolbar>
             </template>
           </v-data-table>
-
-          <!-- Se o conteudo for texto -->
-          <v-text-field
-            v-else
-            solo
-            readonly
-            hide-details
-            :background-color="info.cor"
-            :value="info.conteudo"
-          >
-            <template slot="append">
-              <v-icon color="green" @click="verifica(info)">check</v-icon>
-              <v-icon color="red" @click="anula(info)">clear</v-icon>
-              <!--<v-icon @click="">create</v-icon>-->
-              <v-icon>create</v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-      </v-row>
+      </v-row> -->
 
       <v-row>
         <v-spacer />
@@ -140,7 +160,7 @@ export default {
         visivel: false,
         mensagem: null,
       },
-      headersEntidades: [
+      entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
         {
@@ -162,6 +182,20 @@ export default {
       infoPedido: [],
       pedido: null,
     };
+  },
+
+  computed: {
+    tipologia() {
+      return this.p.objeto.dados;
+    },
+
+    tipologiaOriginal() {
+      return this.p.objeto.dadosOriginais;
+    },
+
+    historico() {
+      return this.p.historico;
+    },
   },
 
   async created() {
@@ -204,6 +238,25 @@ export default {
   },
 
   methods: {
+    transformaKeys(key) {
+      let descricao = "";
+      switch (key) {
+        case "designacao":
+          descricao = "Nome";
+          break;
+
+        case "entidadesSel":
+          descricao = "Entidades";
+          break;
+
+        default:
+          descricao = key.charAt(0).toUpperCase() + key.slice(1);
+          break;
+      }
+
+      return descricao;
+    },
+
     abreEntidadesDialog() {
       this.pedido.objeto.dados.entidadesSel.forEach((entSel) => {
         const index = this.entidades.findIndex(
@@ -344,20 +397,31 @@ export default {
 </script>
 
 <style scoped>
-.info-label {
+.info-conteudo {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #283593;
+  border-radius: 3px;
+}
+
+.info-descricao {
   color: #283593; /* indigo darken-3 */
   padding: 5px;
-  font-weight: 400;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }
 
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
+.info-descricao-verde {
+  background-color: #c8e6c9; /* lighten-4 */
+}
+
+.info-descricao-vermelho {
+  background-color: #ffcdd2; /* lighten-4 */
+}
+
+.info-descricao-amarelo {
+  background-color: #ffe0b2; /* lighten-4 */
 }
 </style>
