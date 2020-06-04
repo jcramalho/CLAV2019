@@ -162,7 +162,7 @@ var verificarAgregacoes = function(str) {
 
 var validarCSVs = function(fileSerie, fileAgreg, tipo) {
   return new Promise(function(resolve, reject) {
-    console.log(tipo)
+    var currentTime = new Date();
     var enc = new TextDecoder("utf-8");
     var series = enc.decode(fileSerie).replace(/['"]/g,'').split("\n")
     var agregacoes = enc.decode(fileAgreg).replace(/['"]/g,'').split("\n")
@@ -179,7 +179,9 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       referencia: [],
       titulo: [],
       dataInicio: [],
+      dataInicioValidacao: [],
       dataFim: [],
+      dataFimValidacao: [],
       agregacoes: [],
       medicoes: [],
       numeroErros: 0
@@ -199,6 +201,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
     series.forEach((s,index) => {
       var serie = s.split(/[;,]/)
       if(serie.length>=7) {
+        
         if(tipo === "TS_LC" && serie[0] == "") {errosSerie.codigo.push(index+2);errosSerie.numeroErros++;}
         if(serie[0] == "" && serie[1] == "") {errosSerie.referencia.push(index+2);errosSerie.numeroErros++;}
         if(serie[0]!="") 
@@ -211,6 +214,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         if(!serie[3].match(/[0-9]{4}/) || dataInicio<1000) {errosSerie.dataInicio.push(index+2); errosSerie.numeroErros++;}
         else if(!serie[4].match(/[0-9]{4}/) || dataFim<1000 || dataInicio>dataFim) {errosSerie.dataFim.push(index+2); errosSerie.numeroErros++;}
         if(!serie[5].match(/[0-9]+/) || parseInt(serie[5])<1) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++;}
+        if(dataIncio < dataFim) {errosSerie.dataFimValidacao.push(index+2); errosSerie.numeroErros++;}
         var uiPapel = parseFloat(serie[6]) || 0;
         var uiDigital = parseFloat(serie[7]) || 0;
         var uiOutros = parseFloat(serie[8]) || 0;
@@ -279,6 +283,11 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       if(errosSerie.dataFim.length>0) errosVal.erros.push({
         sobre: "Data final da documentação proposta para eliminação",
         mensagem: "A data final é obrigatória e deve constar de quatro digitos",
+        linhasSerie: errosSerie.dataFim
+      })
+      if(errosSerie.dataFimValidacao.length>0) errosVal.erros.push({
+        sobre: "Data final da documentação proposta para eliminação",
+        mensagem: "A data final deve ser superior à data de inicio.",
         linhasSerie: errosSerie.dataFim
       })
       if(errosSerie.agregacoes.length>0) errosVal.erros.push({

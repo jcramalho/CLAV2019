@@ -295,6 +295,9 @@ export default {
       } else if(dataInicio < date.getFullYear()-100) {
         this.erro = "Não é permitido eliminar documentação com mais de 100 anos, porfavor verifique a Data de Início";
         this.erroDialog = true;
+      } else if(dataInicio > data.getFullYear() - this.prazo) {
+        this.erro = "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+        this.erroDialog = true;
       } else if(dataFim > date.getFullYear()) {
         this.erro = "A Data de Fim deve ser anterior à data atual";
         this.erroDialog = true;

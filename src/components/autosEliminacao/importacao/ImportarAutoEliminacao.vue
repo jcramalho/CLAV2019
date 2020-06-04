@@ -496,6 +496,7 @@ export default {
         .then(() => {
           conversor(this.fileSerie, this.fileAgreg, this.tipo)
             .then(async res => {
+              var currentDate = new Date();
               this.auto.zonaControlo = res.auto.zonaControlo;
               if (this.tipo == "TS_LC") {
                 //VERIFICA AS CLASSES DA LC
@@ -510,6 +511,14 @@ export default {
                       zc.codigo +
                       "</b> não foi encontrado na Lista Consolidada";
                     return; //ERROS
+                  }
+                  var pca = classe.pca.valor;
+                  if(parseInt(zc.dataInicio) < currentDate.getFullYear() - parseInt(pca)) {
+                    this.flagAE = true;
+                    this.erro = "A Data de inicio da classe " +
+                     zc.codigo
+                     +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+                    return;
                   }
                   delete this.auto["legislacao"]
                   //Para já apenas LC
@@ -546,6 +555,24 @@ export default {
                       zc.codigo +
                       "</b> não foi encontrado em "+this.auto.legislacao.split(" - ")[0];
                     return; //ERROS
+                  }
+                  
+                  var pca = classe.pca.valor;
+                  if(parseInt(zc.dataInicio) < currentDate.getFullYear() - parseInt(pca)) {
+                    this.flagAE = true;
+                    if(zc.codigo && zc.referencia)
+                      this.erro = "A Data de inicio da classe " +
+                        zc.codigo +" - "+zc.referencia
+                        +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+                    else if(zc.codigo)
+                      this.erro = "A Data de inicio da classe " +
+                        zc.codigo
+                        +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+                    else 
+                      this.erro = "A Data de inicio da classe " +
+                        zc.referencia
+                        +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+                    return;
                   }
 
                   zc.idClasse = classe.classe;
