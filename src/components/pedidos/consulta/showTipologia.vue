@@ -22,53 +22,40 @@
     </v-card-title>
 
     <v-card-text>
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">Designação</div>
-        </v-col>
+      <div v-for="(info, campo) in tipologiaCriadaAlterada" :key="campo">
+        <v-row v-if="info !== '' && info !== null && info !== undefined">
+          <v-col cols="2">
+            <div class="info-descricao">{{ transformaKeys(campo) }}</div>
+          </v-col>
 
-        <v-col>
-          <div class="info-content">
-            {{ tipologiaCriadaAlterada.designacao }}
-          </div>
-        </v-col>
-      </v-row>
+          <v-col>
+            <div v-if="!(info instanceof Array)" class="info-conteudo">
+              {{ info }}
+            </div>
 
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">Sigla</div>
-        </v-col>
-
-        <v-col>
-          <div class="info-content">{{ tipologiaCriadaAlterada.sigla }}</div>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">Entidades:</div>
-        </v-col>
-
-        <v-col>
-          <v-data-table
-            :headers="headers"
-            :items="tipologiaCriadaAlterada.entidadesSel"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:no-data>
-              <v-alert
-                type="error"
-                width="100%"
-                class="m-auto mb-2 mt-2"
-                outlined
+            <div v-else>
+              <v-data-table
+                v-if="campo === 'entidadesSel'"
+                :headers="entidadesHeaders"
+                :items="info"
+                class="elevation-1"
+                hide-default-footer
               >
-                Nenhuma entidade selecionada...
-              </v-alert>
-            </template>
-          </v-data-table>
-        </v-col>
-      </v-row>
+                <template v-slot:no-data>
+                  <v-alert
+                    type="error"
+                    width="100%"
+                    class="m-auto mb-2 mt-2"
+                    outlined
+                  >
+                    Nenhuma entidade selecionada...
+                  </v-alert>
+                </template>
+              </v-data-table>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -79,13 +66,7 @@ export default {
 
   data() {
     return {
-      // tipologiaInfo: [
-      //   { campo: "Tipologia", conteudo: this.p.objeto.dados.designacao },
-      //   { campo: "Sigla", conteudo: this.p.objeto.dados.sigla },
-      //   { campo: "Entidades", conteudo: this.p.objeto.dados.entidadesSel },
-      //   { campo: "Código", conteudo: this.p.objeto.dados.codigo },
-      // ],
-      headers: [
+      entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
@@ -106,25 +87,43 @@ export default {
     verHistorico() {
       this.$emit("verHistorico");
     },
+
+    transformaKeys(key) {
+      let descricao = "";
+      switch (key) {
+        case "designacao":
+          descricao = "Nome";
+          break;
+
+        case "entidadesSel":
+          descricao = "Entidades";
+          break;
+
+        default:
+          descricao = key.charAt(0).toUpperCase() + key.slice(1);
+          break;
+      }
+
+      return descricao;
+    },
   },
 };
 </script>
 
 <style scoped>
-.info-label {
+.info-conteudo {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #283593;
+  border-radius: 3px;
+}
+
+.info-descricao {
   color: #283593; /* indigo darken-3 */
   padding: 5px;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-content {
-  margin-top: 5px;
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
   border-radius: 3px;
 }
 

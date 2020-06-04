@@ -179,6 +179,7 @@ export default {
       this.onboarding =
         this.onboarding - 1 < 0 ? this.length - 1 : this.onboarding - 1;
     },
+
     transformaKeys(key) {
       let descricao = "";
       switch (key) {
@@ -210,6 +211,13 @@ export default {
   border-radius: 10px;
 }
 
+.info-conteudo {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #283593;
+  border-radius: 3px;
+}
+
 .info-descricao {
   color: #283593; /* indigo darken-3 */
   padding: 5px;
@@ -229,12 +237,5 @@ export default {
 
 .info-descricao-amarelo {
   background-color: #ffe0b2; /* lighten-4 */
-}
-
-.info-conteudo {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
 }
 </style>

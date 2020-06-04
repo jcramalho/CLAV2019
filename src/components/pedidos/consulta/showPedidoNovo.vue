@@ -68,10 +68,9 @@
                   <td class="subheading">{{ props.item.estado }}</td>
                   <td class="subheading">{{ props.item.data }}</td>
                   <td class="subheading">{{ props.item.responsavel }}</td>
-                  <td
-                    class="subheading"
-                    v-html="despacho_para_html(props.item.despacho)"
-                  ></td>
+                  <td class="subheading">
+                    {{ props.item.despacho }}
+                  </td>
                 </tr>
               </template>
             </v-data-table>
@@ -92,7 +91,7 @@
         />
         <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
         <ShowTipologia
-          v-else-if="p.objeto.tipo == 'Tipologia'"
+          v-else-if="p.objeto.tipo === 'Tipologia'"
           :p="p"
           @verHistorico="verHistorico()"
         />

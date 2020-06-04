@@ -10,8 +10,8 @@
       >
         <v-icon class="mr-1">label</v-icon>
         <b>{{ etapaPedido }}</b>
-      </v-chip></v-card-title
-    >
+      </v-chip>
+    </v-card-title>
     <v-card-text>
       <v-row class="mt-1">
         <v-col cols="2">
@@ -93,7 +93,7 @@
       />
       <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
       <ShowTipologia
-        v-else-if="p.objeto.tipo == 'Tipologia'"
+        v-else-if="p.objeto.tipo === 'Tipologia'"
         :p="p"
         @verHistorico="verHistorico()"
       />
@@ -122,8 +122,8 @@
     </v-dialog>
 
     <!-- Dialog Ver Historico de Alterações-->
-    <v-dialog v-model="verHistoricoDialog" width="80%">
-      <VerHistorico @fecharDialog="fecharHistorico()" />
+    <v-dialog v-model="verHistoricoDialog" width="70%">
+      <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
     </v-dialog>
   </v-card>
 </template>

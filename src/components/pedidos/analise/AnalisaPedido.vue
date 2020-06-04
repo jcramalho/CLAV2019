@@ -9,10 +9,37 @@
             {{ pedido.objeto.tipo }}
 
             <v-spacer />
+            <v-tooltip
+              v-if="
+                !(
+                  pedido.objeto.acao === 'Criação' &&
+                  (pedido.estado === 'Submetido' ||
+                    pedido.estado === 'Distribuído')
+                )
+              "
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  @click="verHistorico()"
+                  color="white"
+                  v-on="on"
+                  class="ml-4"
+                >
+                  history
+                </v-icon>
+              </template>
+              <span>Ver histórico de alterações...</span>
+            </v-tooltip>
 
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-icon @click="showDespachos()" color="white" v-on="on">
+                <v-icon
+                  @click="showDespachos()"
+                  color="white"
+                  v-on="on"
+                  class="ml-2"
+                >
                   comment
                 </v-icon>
               </template>
@@ -21,7 +48,12 @@
           </v-card-title>
 
           <!-- Para a Criação de novos dados -->
-          <v-card-text v-if="pedido.objeto.acao === 'Criação' || pedido.objeto.acao === 'Importação'">
+          <v-card-text
+            v-if="
+              pedido.objeto.acao === 'Criação' ||
+                pedido.objeto.acao === 'Importação'
+            "
+          >
             <AnalisaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
@@ -43,7 +75,10 @@
             />
 
             <AnalisaAE
-              v-else-if="pedido.objeto.tipo.includes('AE ') || pedido.objeto.tipo === 'Auto de Eliminação'"
+              v-else-if="
+                pedido.objeto.tipo.includes('AE ') ||
+                  pedido.objeto.tipo === 'Auto de Eliminação'
+              "
               :p="pedido"
               :tipo="pedido.objeto.tipo"
             />
@@ -104,6 +139,11 @@
         @fecharDialog="fecharDialog()"
       />
     </v-dialog>
+
+    <!-- Dialog Ver Historico de Alterações-->
+    <v-dialog v-model="verHistoricoDialog" width="70%">
+      <VerHistorico :pedido="pedido" @fecharDialog="fecharHistorico()" />
+    </v-dialog>
   </v-row>
 </template>
 
@@ -122,6 +162,7 @@ import AnalisaDefault from "@/components/pedidos/analise/AnalisaDefault";
 import ErroDialog from "@/components/generic/ErroDialog";
 
 import VerDespachos from "@/components/pedidos/generic/VerDespachos";
+import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import Loading from "@/components/generic/Loading";
 
@@ -141,10 +182,12 @@ export default {
     AnalisaDefault,
     VerDespachos,
     ErroDialog,
+    VerHistorico,
   },
 
   data() {
     return {
+      verHistoricoDialog: false,
       loading: true,
       snackbar: {
         visivel: false,
@@ -186,6 +229,14 @@ export default {
   },
 
   methods: {
+    verHistorico() {
+      this.verHistoricoDialog = true;
+    },
+
+    fecharHistorico() {
+      this.verHistoricoDialog = false;
+    },
+
     showDespachos() {
       this.despachosDialog = true;
     },
