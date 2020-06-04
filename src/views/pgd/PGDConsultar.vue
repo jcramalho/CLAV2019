@@ -1,6 +1,7 @@
 <template>
   <div>
-    <ConsultarPGD 
+    <Loading v-if="classes.length==0" :message="'Portaria de Gestão Documental'" />
+    <ConsultarPGD v-else
       :classes="classes"
       :titulo="titulo"
       :objeto="legislacao"
@@ -9,10 +10,12 @@
 </template>
 <script>
 import ConsultarPGD from "@/components/pgd/ConsultarPGD.vue"
+import Loading from "@/components/generic/Loading";
 
 export default {
   components: {
-    ConsultarPGD
+    ConsultarPGD,
+    Loading
   },
   data: () => ({
     classes: [],
@@ -93,7 +96,23 @@ export default {
       if(this.idLegislacao.includes("lc_")) this.idLegislacao = this.idLegislacao.split("lc_")[1]
       
       var response = await this.$request("get","/pgd/"+this.idPGD)
-      this.classes = await this.prepararClasses(response.data)
+      this.classes = response.data.map(c => {
+        return {
+          idClasse: c.classe,
+          codigo: c.codigo,
+          referencia: c.referencia,
+          titulo: c.titulo,
+          descricao: c.descricao,
+          df: (c.df=="E") ? "Eliminação" : (c.df=="C") ? "Conservação" : (c.df=="C") ? "Conservação Parcial" : c.df,
+          notaDF: c.notaDF,
+          pca: c.pca,
+          notaPCA: c.notaPCA,
+          formaContagem: c.formaContagem,
+          subFormaContagem: c.subFormaContagem,
+          designacaoParticipante: c.designacaoParticipante,
+          designacaoDono: c.designacaoDono
+        }
+      })
 
       var response2 = await this.$request(
         "get",
