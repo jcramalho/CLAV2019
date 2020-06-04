@@ -10,7 +10,7 @@
         <v-card-text class="panel-body">
             <v-stepper v-model="stepNo" vertical>
               <v-stepper-step :complete="stepNo > 1" step="1">
-                Identificação da entidade da tabela de seleção:
+                Identificação da entidade ou tipologia da tabela de seleção:
                 <span v-if="stepNo > 1">
                   <v-chip
                     class="ma-2"
@@ -24,21 +24,42 @@
                 </span>
               </v-stepper-step>
               <v-stepper-content step="1">
-                <v-col>
+                <div v-if="entidadeDGLAB">
+                    <v-col >
+                        <v-autocomplete
+                            :items="entidades"
+                            label="Selecione a entidade"
+                            v-model="ent"
+                            prepend-icon="account_balance"
+                        >
+                        </v-autocomplete>
+                    </v-col>
+                    <v-btn
+                        v-if="ent != ''"
+                        color="primary"
+                        @click="guardaEntidade"
+                    >Continuar</v-btn>
+                </div>
+                <div v-else>
+                    <v-col>
+                        <span class="subtitle-2">Pretende:</span>
+                        <v-radio-group v-model="tipoTS" column>
+                          <v-radio label="Criar uma Tabela de Seleção para a minha organização" value="utilizador"></v-radio>
+                          <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+                </div>
+                <div v-if="tipoTS=='tipologia' && tipologiasReady">
                   <v-autocomplete
-                    :items="entidades"
-                    label="Selecione a entidade"
-                    v-model="ent"
+                    :items="tipologias"
+                    item-text="label"
+                    label="Selecione a tipologia"
+                    v-model="tipSel"
                     prepend-icon="account_balance"
                   >
                   </v-autocomplete>
-                </v-col>
-                <v-btn
-                  v-if="ent != ''"
-                  color="primary"
-                  @click="guardaEntidade"
-                  >Continuar</v-btn
-                >
+                </div>
+                
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 2" step="2">
@@ -58,17 +79,6 @@
               </v-stepper-step>
               <v-stepper-content step="2">
                 <v-col>
-                  <v-autocomplete
-                    v-model="tipSel"
-                    :items="tipologias"
-                    item-text="label"
-                    placeholder="Selecione as tipologias de entidade a que pertence"
-                    multiple
-                    chips
-                    deletable-chips
-                    return-object
-                  >
-                  </v-autocomplete>
                 </v-col>
                 <hr style="border-top: 0px" />
                 <v-btn
@@ -139,22 +149,12 @@
 
                 <v-btn
                   color="primary"
-                  @click="
-                    stepNo = stepNo + 1;
-                    barra(42);
-                    procPreSelEspecificos();
-                    loadProcEspRestantes();
-                  "
+                  @click="stepNo = stepNo + 1;"
                   >Continuar</v-btn>
                 <v-btn
                   text
-                  @click="
-                    stepNo = stepNo - 1;
-                    barra(14);
-                  ">Voltar</v-btn>
+                  @click="stepNo = stepNo - 1;">Voltar</v-btn>
               </v-stepper-content>
-
-              
 
               <hr style="border-top: 0px" />
 
@@ -238,27 +238,30 @@ export default {
       tabelaSelecao: {
         idEntidade: "",
         designacaoEntidade: "",
-        designacao: "",
+        idTipologia: "",
+        designacaoTipologia: "",
+        designacaoTS: "",
         tipologias: [],
         listaProcessos: []
       },
       // Numero do passo da criação de TS
       stepNo: null,
-      // Valor da barra de progresso
-      valorBarra: 0,
-      // Se a entidade do utilizador for a DGLAB, o primeiro passo deve ser a seleção
-      // da entidade que se quer fazer a TS. Pois a DGLAB irá fazer TS para outras entidades.
+      
       entidadeDGLAB: false,
       entidades: [],
       entidadesReady: false,
       ent: "",
+      // Flag de controlo: indica que a TS é a entidade do utilizador
+      tipoTS: "",
+      // Flag de controlo: indica se a TS é para uma tipologia
+      tipologiaTS: false,
       // Lista de todas as tipologias existentes
       tipologias: [],
       // True quando a lista de tipologias estiver carregada
       tipologiasReady: false,
-      // Lista com as tipologias selecionadas
+      // Tipologia ou tipologias selecionadas
       tipSel: [],
-      // Lista com todos os processos comuns
+      // Lista com todos os processos
       listaProcessos: [],
       // True quando a lista de todos os processos comuns existentes estiver completa
       listaProcessosReady: false,
@@ -286,16 +289,12 @@ export default {
         this.entidadeDGLAB = true;
         this.loadEntidades();
       } else {
-        var resEnt = await this.$request(
-          "get",
-          "/entidades/" + resUser.entidade
-        );
+        var resEnt = await this.$request("get", "/entidades/" + resUser.entidade);
 
-        this.tabelaSelecao.designacao = resEnt.data.designacao;
+        this.tabelaSelecao.designacaoTS = resEnt.data.designacao;
         this.tabelaSelecao.idEntidade = resUser.entidade;
         this.tabelaSelecao.designacaoEntidade = resEnt.data.designacao;
-        this.stepNo = 2;
-        await this.loadTipologias();
+        this.stepNo = 1;
       }
     },
     // Vai à API buscar todas as entidades
@@ -316,6 +315,7 @@ export default {
           console.log("Erro ao recuperar a lista de entidades: " + err);
       }
     },
+
     guardaEntidade: async function() {
       try {
         this.tabelaSelecao.designacao = this.ent.split(" - ")[1];
@@ -323,25 +323,14 @@ export default {
         this.tabelaSelecao.idEntidade = "ent_" + this.ent.split(" - ")[0];
         await this.loadTipologias();
         this.stepNo = this.stepNo + 1;
-        this.barra(0);
       } catch (err) {
         return err;
       }
     },
-    // Vai à API buscar todas as tipologias e as tipologias especificas da entidade do utilizador
-    loadTipologias: async function() {
-      try {
-        var response = await this.$request("get", "/tipologias/");
-        this.tipologias = response.data.map(function(item) {
-          return {
-            sigla: item.sigla,
-            designacao: item.designacao,
-            id: item.id,
-            label: item.sigla + " - " + item.designacao
-          };
-        });
-        this.tipologiasReady = true;
 
+    // Vai à API buscar todas as tipologias a que pertence a entidade do utilizador
+    loadTipologiasUtilizador: async function() {
+      try {
         // Tipologias onde a entidade se encontra
         var tipologias = await this.$request(
           "get",
@@ -354,9 +343,28 @@ export default {
             id: item.id,
             label: item.sigla + " - " + item.designacao
           };
-        }); 
-      } catch (error) {
-        return error;
+        });
+      }
+      catch(e){
+        console.log("Erro ao carregar as tipologias da entidade do utilizador: " + e);
+      }
+    },
+
+    // Vai à API buscar todas as tipologias
+    loadTipologias: async function() {
+      try {
+        var response = await this.$request("get", "/tipologias/");
+        this.tipologias = response.data.map(function(item) {
+          return {
+            sigla: item.sigla,
+            designacao: item.designacao,
+            id: item.id,
+            label: item.sigla + " - " + item.designacao
+          };
+        });
+        this.tipologiasReady = true;
+      } catch (e) {
+        console.log("Erro ao carregar as tipologias: " + e);
       }
     },
 
@@ -437,22 +445,6 @@ export default {
       }
     },
 
-    // Retira da lista de tipologias selecionadas
-    unselectTipologia: function(tipologia) {
-      this.tipologias.push(tipologia);
-      var index = this.tipSel.findIndex(e => e.id === tipologia.id);
-      this.tipSel.splice(index, 1);
-    },
-    // Coloca na lista de tipologias selecionadas
-    selectTipologia: function(tipologia) {
-      this.tipSel.push(tipologia);
-      var index = this.tipologias.findIndex(e => e.id === tipologia.id);
-      this.tipologias.splice(index, 1);
-    },
-    // Valor da barra de progresso
-    barra: async function(valor) {
-      this.valorBarra = valor;
-    },
     // Carrega os processos específicos da entidade e das tipologias em causa
     loadProcEspecificos: async function() {
       try {
@@ -492,259 +484,7 @@ export default {
         return error;
       }
     },
-    // Contador dos processos selecionados comuns
-    contadorProcSelCom: function(procSelec) {
-      this.numProcSelCom = procSelec.length;
-      this.tabelaSelecao.procComuns = procSelec;
-    },
-    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs comuns
-    procPreSelResTravCom: function(procPreSelResTravCom) {
-      this.procPreSelResTravComum = procPreSelResTravCom;
-    },
-    // Contador dos processos pre selecionados comuns
-    contadorProcPreSelCom: function(lista) {
-      this.numProcPreSelCom = lista.length;
-    },
-    // Contador dos processos selecionados pelo sistema
-    contadorProcSelComSistema: function(procSelec) {
-      this.numProcSelComSistema = procSelec.length;
-    },
-    contadorComDecrementarSistema: function(listaDec) {
-      this.numProcSelComSistema--;
-    },
-    contadorEspDecrementarSistema: function(listaDec) {
-      this.numProcSelEspSistema--;
-    },
-    contadorEspResDecrementarSistema: function(listaDec) {
-      this.numProcSelEspResSistema--;
-    },
-    contadorProcSelComUtilizador: function(procSelec) {
-      this.numProcSelComUtilizador =
-        procSelec.length - this.numProcSelComSistema;
-    },
-    // Processos pre selecionados especificos resultantes das travessias da tabela de processos comuns
-    procPreSelEspecificos: function() {
-      if (!this.listaProcEspReady) {
-        for (var i = 0; i < this.listaProcEsp.length; i++) {
-          if (
-            this.procPreSelResTravComum.includes(this.listaProcEsp[i].classe)
-          ) {
-            this.numProcPreSelEsp += 1;
-          }
-        }
-      }
-      this.listaProcEspReady = true;
-    },
-    // Carrega todos os processos especificos restantes
-    loadProcEspRestantes: async function() {
-      try {
-        if (!this.listaProcEspResReady) {
-          var response = await this.$request("get", "/classes?tipo=especifico");
-          this.listaTotalProcEsp = response.data;
-          for (var i = 0; i < this.listaTotalProcEsp.length; i++) {
-            var espEntTip = false;
-            for (var j = 0; j < this.listaProcEsp.length; j++) {
-              if (
-                this.listaTotalProcEsp[i].codigo === this.listaProcEsp[j].classe
-              ) {
-                espEntTip = true;
-                break;
-              }
-            }
-            if (espEntTip === false) {
-              if (this.listaTotalProcEsp[i].transversal === "S") {
-                this.listaProcEspRes.push({
-                  classe: this.listaTotalProcEsp[i].codigo,
-                  designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: false,
-                  participante: false
-                });
-              } else {
-                this.listaProcEspRes.push({
-                  classe: this.listaTotalProcEsp[i].codigo,
-                  designacao: this.listaTotalProcEsp[i].titulo,
-                  dono: true
-                });
-              }
-            }
-          }
-          this.listaProcEspRes.sort((a, b) => (a.classe > b.classe ? 1 : -1));
-        }
-      } catch (error) {
-        return error;
-      }
-    },
-    // Contador dos processos selecionados especificos
-    contadorProcSelEsp: function(procSelec) {
-      this.numProcSelEsp = procSelec.length;
-      this.tabelaSelecao.procEspecificos = procSelec;
-    },
-    // Contador dos processos pre selecionados especificos
-    contadorProcPreSelEsp: function(lista) {
-      this.numProcPreSelEsp = lista.length;
-    },
-    // Lista dos processos pre selecionados restantes, resultantes das travessias dos PNs especificos
-    procPreSelResTravEsp: function(procPreSelResTravEsp) {
-      this.procPreSelResTravEspecifico = procPreSelResTravEsp;
-    },
-    // Contador dos processos selecionados pelo sistema
-    contadorProcSelEspSistema: function(procSelec) {
-      this.numProcSelEspSistema = procSelec.length;
-    },
-    // Contador dos processos selecionados pelo utilizador
-    contadorProcSelEspUtilizador: function(procSelec) {
-      this.numProcSelEspUtilizador =
-        procSelec.length - this.numProcSelEspSistema;
-    },
-    // Processos pre selecionados restantes especificos resultantes das travessias da tabela de processos comuns e especificos
-    procPreSelRestantes: function() {
-      if (!this.listaProcEspResReady) {
-        for (var i = 0; i < this.listaProcEspRes.length; i++) {
-          if (
-            this.procPreSelResTravComum.includes(
-              this.listaProcEspRes[i].classe
-            ) ||
-            this.procPreSelResTravEspecifico.includes(
-              this.listaProcEspRes[i].classe
-            )
-          ) {
-            this.procPreSelEspRestantes.push(this.listaProcEspRes[i].classe);
-            this.numProcPreSelRes += 1;
-          }
-        }
-      }
-      this.listaProcEspResReady = true;
-    },
-    // Contador dos processos selecionados restantes
-    contadorProcSelRes: function(procSelec) {
-      this.numProcSelRes = procSelec.length;
-      this.tabelaSelecao.procEspRestantes = procSelec;
-    },
-    // Lista dos processos pre selecionados especificos restantes, resultantes das travessias dos PNs especificos
-    procPreSelResTravRes: function(procPreSelResTravRes) {
-      this.procPreSelResTravRestante = procPreSelResTravRes;
-    },
-    // Contador dos processos pre selecionados restantes
-    contadorProcPreSelRes: function(lista) {
-      this.numProcPreSelRes = lista.length;
-    },
-    // Contador dos processos selecionados pelo sistema
-    contadorProcSelEspResSistema: function(procSelec) {
-      this.numProcSelEspResSistema = procSelec.length;
-    },
-    contadorProcSelEspResUtilizador: function(procSelec) {
-      this.numProcSelEspResUtilizador =
-        procSelec.length - this.numProcSelEspResSistema;
-    },
-    // Carrega os ultimos processos (processos que não foram selecionados nas 3 etapas anteriores)
-    loadUltimosProcessos: function() {
-      if (!this.listaProcUltReady) {
-        // Vai a lista dos processos comuns e, caso estes ainda não se encontrem selecionados, coloca na lista dos ultimos processos
-        for (var i = 0; i < this.listaProcComuns.length; i++) {
-          var procSelecionado = false;
-          for (var j = 0; j < this.tabelaSelecao.procComuns.length; j++) {
-            if (
-              this.listaProcComuns[i].classe ===
-              this.tabelaSelecao.procComuns[j].classe
-            ) {
-              procSelecionado = true;
-              break;
-            }
-          }
-          if (procSelecionado == false) {
-            var jaExiste = false;
-            for (var a = 0; a < this.listaProcUlt.length; a++) {
-              if (
-                this.listaProcUlt[a].classe === this.listaProcComuns[i].classe
-              ) {
-                jaExiste = true;
-                break;
-              }
-            }
-            if (jaExiste == false) {
-              this.listaProcUlt.push(this.listaProcComuns[i]);
-            }
-          }
-        }
-        // Lista com todos os processos especificos já selecionados (especificos e especificos restantes)
-        var procSelecionados = this.tabelaSelecao.procEspecificos.concat(
-          this.tabelaSelecao.procEspRestantes
-        );
-        // Caso esse processo ainda não se encontre selecionado, irá para a lista listaProcUlt
-        for (var f = 0; f < this.listaTotalProcEsp.length; f++) {
-          procSelecionado = false;
-          for (var m = 0; m < procSelecionados.length; m++) {
-            if (
-              this.listaTotalProcEsp[f].codigo === procSelecionados[m].classe
-            ) {
-              procSelecionado = true;
-              break;
-            }
-          }
-          if (procSelecionado == false) {
-            jaExiste = false;
-            for (var c = 0; c < this.listaProcUlt.length; c++) {
-              if (
-                this.listaProcUlt[c].classe === this.listaTotalProcEsp[f].codigo
-              ) {
-                jaExiste = true;
-                break;
-              }
-            }
-            if (jaExiste == false) {
-              this.listaProcUlt.push({
-                classe: this.listaTotalProcEsp[f].codigo,
-                designacao: this.listaTotalProcEsp[f].titulo,
-                dono: false,
-                participante: false
-              });
-            }
-          }
-        }
-        this.listaProcUlt.sort((a, b) => (a.classe > b.classe ? 1 : -1));
-        if (this.listaProcUlt.length) {
-          this.listaProcUltReady = true;
-        }
-      }
-    },
-    // Processos pre selecionados para o ultimo componente resultantes das travessias da tabela de processos comuns, especificos e restantes especificos
-    procPreSelUlt: function() {
-      for (var i = 0; i < this.listaProcUlt.length; i++) {
-        if (
-          this.procPreSelResTravComum.includes(this.listaProcUlt[i].classe) ||
-          this.procPreSelResTravEspecifico.includes(
-            this.listaProcUlt[i].classe
-          ) ||
-          this.procPreSelResTravRestante.includes(this.listaProcUlt[i].classe)
-        ) {
-          this.procPreSelUltimos.push(this.listaProcUlt[i].classe);
-          this.numProcPreSelUlt += 1;
-        }
-      }
-    },
-    // Contador dos processos selecionados ultimos
-    contadorProcSelUlt: function(procSelec) {
-      this.numProcSelUlt = procSelec.length;
-      this.tabelaSelecao.procUltimos = procSelec;
-    },
-    // Contador dos ultimos processos pre selecionados
-    contadorProcPreSelUlt: function(lista) {
-      this.numProcPreSelUlt = lista.length;
-    },
-    parseProcessosSel: function() {
-      if (!this.listaTotalProcSel.length) {
-        this.listaTotalProcSel = this.listaTotalProcSel
-          .concat(this.tabelaSelecao.procComuns)
-          .concat(this.tabelaSelecao.procEspecificos)
-          .concat(this.tabelaSelecao.procEspRestantes)
-          .concat(this.tabelaSelecao.procUltimos);
-        this.listaTotalProcSel.sort((a, b) => (a.classe > b.classe ? 1 : -1));
-        this.listaTotalProcSelReady = true;
-      }
-    },
-    listaTotalSelUpdate: function(proc) {
-      this.listaTotalProcSelUpdate = proc;
-    },
+    
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
@@ -822,6 +562,7 @@ export default {
   },
   created: async function() {
     await this.infoUserEnt();
+    await this.loadTipologias();
     await this.loadProcessos();
   }
 };
