@@ -11,7 +11,7 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
 
-    <div class="body-2">Versão: 2020-06-02</div>
+    <div class="body-2">Versão: 2020-06-04</div>
 
     <v-spacer></v-spacer>
 
