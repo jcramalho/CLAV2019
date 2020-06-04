@@ -11,7 +11,7 @@
             <v-stepper v-model="stepNo" vertical>
               <v-stepper-step :complete="stepNo > 1" step="1">
                 Identificação da entidade ou tipologia da tabela de seleção:
-                <span v-if="stepNo > 1">
+                <span v-if="stepNo > 1 && tipoTS!='tipologia'">
                   <v-chip
                     class="ma-2"
                     color="indigo darken-4"
@@ -20,6 +20,17 @@
                   >
                     <v-icon left>account_balance</v-icon>
                     {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
+                  </v-chip>
+                </span>
+                <span v-else-if="stepNo > 1 && tipoTS=='tipologia'">
+                  <v-chip
+                    class="ma-2"
+                    color="indigo darken-4"
+                    text-color="white"
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ tabelaSelecao.idTipologia.split("_")[1] + ": " + tabelaSelecao.designacaoTipologia }}
                   </v-chip>
                 </span>
               </v-stepper-step>
@@ -50,50 +61,34 @@
                     </v-col>
                 </div>
                 <div v-if="tipoTS=='tipologia' && tipologiasReady">
-                  <v-autocomplete
-                    :items="tipologias"
-                    item-text="label"
-                    label="Selecione a tipologia"
-                    v-model="tipSel"
-                    prepend-icon="account_balance"
-                  >
-                  </v-autocomplete>
+                  <v-col>
+                    <v-autocomplete
+                      :items="tipologias"
+                      item-text="label"
+                      return-object
+                      label="Selecione a tipologia"
+                      v-model="tipSel"
+                      prepend-icon="account_balance"
+                    >
+                    </v-autocomplete>
+                  </v-col>
+                  <v-btn
+                    color="primary"
+                    @click="guardaTipologia"
+                  >Continuar</v-btn>
+                </div>
+                <div v-if="tipoTS=='utilizador'">
+                  <v-btn
+                    color="primary"
+                    @click="guardaEntidadeUtilizador"
+                  >Continuar</v-btn>
                 </div>
                 
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 2" step="2">
-                Tipologias de entidade a que pertence
-                <span v-if="stepNo > 2">
-                  <v-chip
-                    v-for="(t,i) in tipSel" :key="i"
-                    class="ma-2"
-                    color="indigo darken-4"
-                    text-color="white"
-                    label
-                  >
-                    <v-icon left>account_balance</v-icon>
-                    {{ t.label }}
-                  </v-chip>
-                </span>
-              </v-stepper-step>
-              <v-stepper-content step="2">
-                <v-col>
-                </v-col>
-                <hr style="border-top: 0px" />
-                <v-btn
-                  color="primary"
-                  @click="
-                    stepNo = stepNo + 1;
-                    barra(14);
-                  "
-                  >Continuar</v-btn
-                >
-              </v-stepper-content>
-
-              <v-stepper-step :complete="stepNo > 3" step="3">
                 Designação da Tabela de Seleção
-                <span v-if="stepNo > 3">
+                <span v-if="stepNo > 1">
                   <v-chip
                     class="ma-2"
                     color="indigo darken-4"
@@ -104,7 +99,7 @@
                   </v-chip>
                 </span>
               </v-stepper-step>
-              <v-stepper-content step="3">
+              <v-stepper-content step="2">
                 <v-flex xs12 sm6 md10>
                   <v-text-field
                     :placeholder="tabelaSelecao.designacao"
@@ -115,25 +110,16 @@
                   color="primary"
                   @click="
                     stepNo = stepNo + 1;
-                    barra(28);
                     loadProcEspecificos();
                   "
                   >Continuar</v-btn
                 >
-                <v-btn
-                  text
-                  @click="
-                    stepNo = stepNo - 1;
-                    barra(0);
-                  "
-                  >Voltar</v-btn
-                >
               </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 4" step="4">
+              <v-stepper-step :complete="stepNo > 3" step="3">
                 Seleção dos Processos
               </v-stepper-step>
-              <v-stepper-content step="4">
+              <v-stepper-content step="3">
                 <v-col v-if="listaProcessosReady">
                   <v-card>
                     <v-card-text>
@@ -251,7 +237,9 @@ export default {
       entidades: [],
       entidadesReady: false,
       ent: "",
-      // Flag de controlo: indica que a TS é a entidade do utilizador
+      // Estrutura onde se guarda a entidade do utilizador
+      entidadeUtilizador: {},
+      // Flag de controlo: indica que a TS é para a entidade do utilizador
       tipoTS: "",
       // Flag de controlo: indica se a TS é para uma tipologia
       tipologiaTS: false,
@@ -290,10 +278,7 @@ export default {
         this.loadEntidades();
       } else {
         var resEnt = await this.$request("get", "/entidades/" + resUser.entidade);
-
-        this.tabelaSelecao.designacaoTS = resEnt.data.designacao;
-        this.tabelaSelecao.idEntidade = resUser.entidade;
-        this.tabelaSelecao.designacaoEntidade = resEnt.data.designacao;
+        this.entidadeUtilizador = resEnt.data;
         this.stepNo = 1;
       }
     },
@@ -326,6 +311,22 @@ export default {
       } catch (err) {
         return err;
       }
+    },
+
+    guardaTipologia: function() {
+      // id e designação
+      this.tabelaSelecao.designacao = "Tabela de seleção de " + this.tipSel.designacao;
+      this.tabelaSelecao.designacaoTipologia = this.tipSel.designacao;
+      this.tabelaSelecao.idTipologia = this.tipSel.id;
+      this.stepNo = this.stepNo + 1;
+    },
+
+    guardaEntidadeUtilizador: function() {
+      // id e designação
+      this.tabelaSelecao.designacao = "Tabela de seleção de " + this.entidadeUtilizador.designacao;
+      this.tabelaSelecao.designacaoEntidade = this.entidadeUtilizador.designacao;
+      this.tabelaSelecao.idEntidade = this.entidadeUtilizador.id;
+      this.stepNo = this.stepNo + 1;
     },
 
     // Vai à API buscar todas as tipologias a que pertence a entidade do utilizador
