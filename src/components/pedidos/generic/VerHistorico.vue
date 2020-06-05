@@ -156,7 +156,6 @@ export default {
     if (this.pedido.objeto.acao !== "Criação") {
       this.dados.push(this.pedidoOriginal);
       this.dados.push(...this.historico);
-      console.log("this.dados", this.dados);
     }
   },
 

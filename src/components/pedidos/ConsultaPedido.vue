@@ -28,7 +28,6 @@ export default {
       .then((response) => {
         const pedido = response.data;
         this.selectedPedido = pedido;
-        console.log("response.data", pedido);
 
         switch (pedido.estado) {
           case "Submetido":

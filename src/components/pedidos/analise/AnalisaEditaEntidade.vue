@@ -215,7 +215,6 @@ export default {
     p: {
       handler(newP, oldP) {
         if (newP !== oldP) {
-          console.log("this.p :>> ", this.p);
           this.pedido = JSON.parse(JSON.stringify(this.p));
         }
       },
