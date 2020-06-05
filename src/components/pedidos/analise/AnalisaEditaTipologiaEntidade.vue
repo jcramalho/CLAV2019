@@ -10,12 +10,20 @@
               campo !== 'sigla' &&
               campo !== 'codigo'
           "
+          dense
+          class="ma-1"
         >
           <v-col cols="2">
-            <div class="info-descricao">
+            <div
+              :class="[
+                'info-descricao',
+                `info-descricao-${novoHistorico[campo].cor}`,
+              ]"
+            >
               {{ transformaKeys(campo) }}
             </div>
           </v-col>
+
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
               {{ info }}
@@ -60,52 +68,26 @@
               </v-data-table>
             </div>
           </v-col>
+
+          <!-- Operações -->
+          <v-col cols="1">
+            <v-icon class="mr-1" color="green" @click="verifica(campo)">
+              check
+            </v-icon>
+            <v-icon class="mr-1" color="red" @click="anula(campo)">
+              clear
+            </v-icon>
+            <v-icon
+              v-if="!(info instanceof Array)"
+              class="mr-1"
+              color="orange"
+              @click="edita(campo)"
+            >
+              create
+            </v-icon>
+          </v-col>
         </v-row>
       </div>
-
-      <!-- 
-      <v-row>
-        
-          <v-data-table
-            v-if="info.campo == 'Entidades'"
-            :headers="headersEntidades"
-            :items="info.conteudo"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:no-data>
-              Não existem entidades selecionadas
-            </template>
-
-            <template v-slot:item="props">
-              <tr>
-                <td>{{ props.item.sigla }}</td>
-                <td>{{ props.item.designacao }}</td>
-                <td>
-                  <v-icon color="red" @click="removeEntidade(props.item)">
-                    delete
-                  </v-icon>
-                </td>
-              </tr>
-            </template>
-
-            <template v-slot:top>
-              <v-toolbar flat :color="info.cor">
-                <v-btn
-                  rounded
-                  class="indigo accent-4 white--text"
-                  @click="abreEntidadesDialog()"
-                >
-                  Adicionar Entidades
-                </v-btn>
-
-                <v-spacer />
-                <v-icon color="green" @click="verifica(info)">check</v-icon>
-                <v-icon color="red" @click="anula(info)">clear</v-icon>
-              </v-toolbar>
-            </template>
-          </v-data-table>
-      </v-row> -->
 
       <v-row>
         <v-spacer />
@@ -116,6 +98,16 @@
         />
       </v-row>
     </div>
+
+    <!-- Dialog de edição-->
+    <v-dialog v-model="editaCampo.visivel" width="70%" persistent>
+      <EditarCamposDialog
+        :campo="editaCampo"
+        :tipoPedido="p.objeto.tipo"
+        @fechar="fechaEditaCampoDialog($event)"
+        @editarCampo="editarCampo($event)"
+      />
+    </v-dialog>
 
     <!-- Dialog de erros -->
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
@@ -137,6 +129,7 @@
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
+import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -151,11 +144,19 @@ export default {
     Loading,
     ErroDialog,
     SelecionaAutocomplete,
+    EditarCamposDialog,
   },
 
   data() {
     return {
+      novoHistorico: {},
       loading: true,
+      editaCampo: {
+        visivel: false,
+        nome: "",
+        key: "",
+      },
+
       erroDialog: {
         visivel: false,
         mensagem: null,
@@ -179,7 +180,6 @@ export default {
       },
       dialogEntidades: false,
       entidades: [],
-      infoPedido: [],
       pedido: null,
     };
   },
@@ -211,30 +211,19 @@ export default {
   },
 
   mounted() {
-    this.infoPedido = [
-      {
-        campo: "Designação",
-        conteudo: this.pedido.objeto.dados.designacao,
-        cor: null,
-      },
-      {
-        campo: "Entidades",
-        conteudo: this.pedido.objeto.dados.entidadesSel,
-        cor: null,
-      },
-    ];
+    this.novoHistorico = this.historico[this.historico.length - 1];
   },
 
   watch: {
-    p: {
-      handler(newP, oldP) {
-        if (newP !== oldP) {
-          this.pedido = JSON.parse(JSON.stringify(this.p));
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
+    // p: {
+    //   handler(newP, oldP) {
+    //     if (newP !== oldP) {
+    //       this.pedido = JSON.parse(JSON.stringify(this.p));
+    //     }
+    //   },
+    //   deep: true,
+    //   immediate: true,
+    // },
   },
 
   methods: {
@@ -258,7 +247,7 @@ export default {
     },
 
     abreEntidadesDialog() {
-      this.pedido.objeto.dados.entidadesSel.forEach((entSel) => {
+      this.tipologia.entidadesSel.forEach((entSel) => {
         const index = this.entidades.findIndex(
           (ent) => ent.sigla === entSel.sigla
         );
@@ -274,7 +263,7 @@ export default {
     },
 
     removeEntidade(entidade) {
-      const index = this.pedido.objeto.dados.entidadesSel.findIndex(
+      const index = this.tipologia.entidadesSel.findIndex(
         (entSel) => entSel.sigla === entidade.sigla
       );
 
@@ -285,13 +274,15 @@ export default {
           this.entidades.push(entidade);
           this.entidades.sort(comparaSigla);
         }
-        this.pedido.objeto.dados.entidadesSel.splice(index, 1);
+        this.tipologia.entidadesSel.splice(index, 1);
+        this.novoHistorico.entidadesSel.cor = "amarelo";
       }
     },
 
     adicionaEntidades(entidades) {
-      this.pedido.objeto.dados.entidadesSel.push(...entidades);
+      this.tipologia.entidadesSel.push(...entidades);
       this.dialogEntidades = false;
+      this.novoHistorico.entidadesSel.cor = "amarelo";
     },
 
     async loadEntidades() {
@@ -379,14 +370,43 @@ export default {
       }
     },
 
-    verifica(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "green lighten-3";
+    verifica(campo) {
+      this.novoHistorico[campo] = { cor: "verde" };
+      // const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      // this.infoPedido[i].cor = "green lighten-3";
     },
 
-    anula(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "red lighten-3";
+    anula(campo) {
+      this.novoHistorico[campo] = { cor: "vermelho" };
+      // const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      // this.infoPedido[i].cor = "red lighten-3";
+    },
+
+    edita(campo) {
+      this.editaCampo = {
+        visivel: true,
+        nome: this.transformaKeys(campo),
+        key: campo,
+      };
+    },
+
+    fechaEditaCampoDialog(campo) {
+      this.editaCampo.visivel = false;
+      this.novoHistorico[campo].cor = null;
+    },
+
+    editarCampo(event) {
+      console.log("event", event);
+      console.log("dados", event.dados);
+      console.log("campo", event.campo);
+
+      this.editaCampo.visivel = false;
+
+      this.tipologia[event.campo.key] = event.dados;
+      this.novoHistorico[event.campo.key] = {
+        alteracao: event.dados,
+        cor: "amarelo",
+      };
     },
 
     close() {
