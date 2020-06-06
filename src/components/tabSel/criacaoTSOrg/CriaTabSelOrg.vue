@@ -255,7 +255,7 @@ export default {
       listaProcessosReady: false,
       // Lista com os códigos dos processos específicos da entidade selecionada
       listaCodigosEsp: [],
-      
+
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
       // Dialog de confirmação de eliminação de TS
@@ -414,7 +414,8 @@ export default {
             this.listaProcessos.procs[i].preSelected = 0;
             // Para poder ser filtrado na tabela
             this.listaProcessos.procs[i].preSelectedLabel = "";
-            this.listaProcessos.procs[i].entidades = [];
+            this.listaProcessos.procs[i].dono = false;
+            this.listaProcessos.procs[i].participante = "NP";
           } 
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;
@@ -562,9 +563,27 @@ export default {
     }
   },
   created: async function() {
-    await this.infoUserEnt();
-    await this.loadTipologias();
-    await this.loadProcessos();
+    try{
+      await this.infoUserEnt();
+    }
+    catch(e){
+      console.log("Erro na recuperação da informação do utilizador: " + e);
+    }
+    
+    try{
+      await this.loadTipologias();
+    }
+    catch(e){
+      console.log("Erro no carregamento das tipologias: " + e);
+    }
+
+    try{
+      await this.loadProcessos();
+    }
+    catch(e){
+      console.log("Erro no carregamento dos processos: " + e);
+    }
+
   }
 };
 </script>

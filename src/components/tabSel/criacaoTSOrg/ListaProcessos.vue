@@ -1,12 +1,15 @@
 <template>
   <div>
-    <v-row justify="space-around">
-      <v-btn color="primary" @click="filtro=''">Todos</v-btn>
-      <v-btn color="primary" @click="filtro='Processo Comum'">Comuns</v-btn>
-      <v-btn color="primary" @click="filtro='Processo Específico'">Específicos</v-btn>
-      <v-btn color="primary" @click="filtro='Processo Restante'">Restantes</v-btn>
-      <!--v-btn color="indigo darken-2" dark @click="filtro='Selecionado'">Selecionados</v-btn-->
-      <v-btn color="primary" @click="filtro='Pré-Selecionado'">Pré-Selecionados</v-btn>
+    <v-row>
+      <v-col>
+        <v-radio-group v-model="filtroLabel" row>
+            <v-radio label="Todos" @click="filtro=''; filtroLabel='Todos'" value="Todos"></v-radio>
+            <v-radio label="Comuns" @click="filtro='Processo Comum'; filtroLabel='Processo Comum'" value="Processo Comum"></v-radio>
+            <v-radio label="Específicos" @click="filtro='Processo Específico'; filtroLabel='Processo Específico'" value="Processo Específico"></v-radio>
+            <v-radio label="Restantes" @click="filtro='Processo Restante'; filtroLabel='Processo Restante'" value="Processo Restante"></v-radio>
+            <v-radio label="Pré-Selecionados" @click="filtro='Pré-Selecionado'; filtroLabel='Pré-Selecionado'" value="Pré-Selecionado"></v-radio>
+          </v-radio-group>
+      </v-col>
     </v-row>
 
     <v-data-table
@@ -21,7 +24,7 @@
     <template v-slot:item="props">
       <tr
         :style="{
-          backgroundColor: props.item.edited
+          backgroundColor: props.item.dono || props.item.participante!= 'NP'
               ? '#BBDEFB'
               : (props.item.preSelected > 0 ? '#FFECB3' : 'transparent')
         }"
@@ -33,16 +36,29 @@
           {{ props.item.titulo }}
         </td>
         <td>
-            <v-icon v-if="props.item.dono">check</v-icon>
-        </td>
-        <td>
-          <v-icon v-if="props.item.participante">check</v-icon>
-        </td>
-        <td>
-            <v-btn small class="ma-2"
-                  @click="selecionaParticipacoes(props.item)">
-              <v-icon dark>{{ selecionaResponsabilidadesIcon }}</v-icon>
+            <v-btn v-if="props.item.dono" small class="ma-2" 
+                  @click="desselecionaDono(props.item)">
+              <v-icon dark>{{ donoSelecionado }}</v-icon>
             </v-btn>
+            <v-btn v-else small class="ma-2" 
+                  @click="selecionaDono(props.item)">
+              <v-icon dark>{{ donoDesselecionado }}</v-icon>
+            </v-btn>
+            <!--v-checkbox color="indigo darken-4" v-model="props.item.dono"></v-checkbox-->
+        </td>
+        <td>
+          <v-radio-group v-model="props.item.participante" row>
+            <v-radio label="Não part." value="NP"></v-radio>
+            <v-radio 
+              v-for="p in participacao"
+              :key="p.idtermo" 
+              :label="p.termo.substring(0,3)" 
+              :value="p.termo"
+              @click="selecionaParticipacao(props.item, p.termo)"
+              class="caption"></v-radio>
+          </v-radio-group>
+        </td>
+        <td>
             <v-btn v-if="props.item.descriptionEdited" small class="ma-2" 
                   @click="editaBlocoDescritivo(props.item)">
               <v-icon dark>{{ editadoIcon }}</v-icon>
@@ -62,24 +78,14 @@
 
   <v-row wrap>
     <v-col>
-        <v-text-field
-            readonly
-            label="Nº de processos selecionados"
-            v-model="listaProcs.numProcessosSelecionados"
-        ></v-text-field>
+        Nº de processos selecionados: 
+        {{ numProcessosSelecionados }}
     </v-col>
     <v-col>
-        <v-text-field
-            readonly
-            label="Nº de processos pré-selecionados"
-            v-model="listaProcs.numProcessosPreSelecionados"
-        ></v-text-field>
+        Nº de processos pré-selecionados: 
+        {{ numProcessosPreSelecionados }}
     </v-col>
   </v-row>
-
-  <Selresponsabilidade v-if="selecionaResponsabilidades" 
-        :p = "procSel"
-        @selecionadas = "selectProc($event)"/>
 
   <EditDescritivo v-if="editaBlocoDescritivoFlag"
         :p = "procSel"
@@ -90,16 +96,17 @@
 
 <script>
 
-import Selresponsabilidade from "@/components/tabSel/criacaoTSPluri/SelResponsabilidade.vue";
 import EditDescritivo from "@/components/tabSel/criacaoTSPluri/EditDescritivo.vue";
 import { mdiPencil } from '@mdi/js';
 import { mdiFileDocumentEdit } from '@mdi/js';
 import { mdiCheckCircle } from '@mdi/js';
+import { mdiCheckBoxOutline } from '@mdi/js';
+import { mdiCheckboxBlankOutline } from '@mdi/js';
 
 export default {
   props: ["listaProcs", "listaCodigosEsp"],
   components: {
-      Selresponsabilidade, EditDescritivo
+      EditDescritivo
   },
 
   data: () => ({
@@ -107,29 +114,39 @@ export default {
     procSel: {},
     // Fecho Transitivo dos processos
     fechoTransitivo: {},
+    // Tipos de participação carregados da BD
+    participacao: [],
+    // Número de processos selecionados
+    numProcessosSelecionados: 0,
+    // Número de processos pré-selecionados
+    numProcessosPreSelecionados: 0,
+      
     // Icons
     selecionaResponsabilidadesIcon: mdiPencil,
     editaBlocoDescritivoIcon: mdiFileDocumentEdit,
     editadoIcon: mdiCheckCircle,
+    donoSelecionado: mdiCheckBoxOutline,
+    donoDesselecionado: mdiCheckboxBlankOutline,
     // Ativador do subcomponente que tem a interface de seleção
     selecionaResponsabilidades: false,
     // Ativador do subcomponente que tem a interface de edição do Bloco Descritivo
     editaBlocoDescritivoFlag: false,
     // Filtro da tabela
     filtro: "",
+    filtroLabel: "Todos",
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
         text: "Processo",
         value: "codigo",
-        width: "15%",
+        width: "10%",
         class: ["body-2", "font-weight-bold"],
         filterable: false
       },
       {
         text: "Título",
         value: "titulo",
-        width: "45%",
+        width: "30%",
         class: ["body-2", "font-weight-bold"],
         filterable: false
       },
@@ -150,14 +167,13 @@ export default {
       {
         text: "Dono",
         value: "dono",
-        width: "10%",
+        width: "5%",
         class: ["body-2", "font-weight-bold"],
         filterable: false
       },
       {
         text: "Partic.",
         value: "participante",
-        width: "10%",
         class: ["body-2", "font-weight-bold"],
         filterable: false
       },
@@ -182,36 +198,57 @@ export default {
     catch(e){
       console.log("Erro ao carregar o fecho transitivo: " + e);
     }
+
+    try{
+      var resPar = await this.$request("get", "/vocabularios/vc_processoTipoParticipacao");
+      this.participacao = resPar.data;
+    }
+    catch(e){
+      console.log("Erro no carregamento dos tipos de participação: " + e);
+    }
   },
 
   methods: {
+    selecionaParticipacao: async function(proc, participacao){
+      if(!proc.dono && proc.participante == 'NP'){
+        this.listaProcs.numProcessosSelecionados++;
+        this.numProcessosSelecionados++;
+        await this.acrescentaFecho(proc);
+      }
+      else if(!proc.dono && participacao == 'NP'){
+        this.listaProcs.numProcessosSelecionados--;
+        this.numProcessosSelecionados--;
+        await this.retiraFecho(proc);
+      }
+      proc.participante = participacao;
+    },
+
+    // Seleciona um processo como dono
+    selecionaDono: async function(proc){
+      proc.dono = true;
+      // Se ainda não tinha sido selecionado
+      if(proc.participante == 'NP'){
+        this.listaProcs.numProcessosSelecionados++;
+        this.numProcessosSelecionados++;
+        await this.acrescentaFecho(proc);
+      }
+    },
+
+    // Desseleciona um processo como dono
+    desselecionaDono: async function(proc){
+      proc.dono = false;
+      // Se vai ficar desselecionado...
+      if(proc.participante == 'NP'){
+        this.listaProcs.numProcessosSelecionados--;
+        this.numProcessosSelecionados--;
+        await this.retiraFecho(proc);
+      }
+    },
+
     // Filtra os processos na tabela
     filtraProcessos: function (value, search, item) {
         return (item.tipoProc == "");
       },
-
-    // Seleção das participações
-    selecionaParticipacoes: function(proc){
-        this.procSel = proc;
-        this.selecionaResponsabilidades = true;
-    },
-
-    // Função de retorno do processo de seleção  
-    selectProc: async function(p){
-        try{
-          this.selecionaResponsabilidades = false;
-          this.listaProcs.numProcessosSelecionados += p.inc;
-          if(p.inc > 0){ // foi selecionado
-              await this.acrescentaFecho(p);
-          }
-          else if(p.inc < 0){
-              await this.retiraFecho(p);
-          }
-        }
-        catch (err) {
-        return err;
-      }
-    },
     
     acrescentaFecho: function(processo) {
         var fecho = this.fechoTransitivo[processo.codigo];
@@ -221,6 +258,7 @@ export default {
             this.listaProcs.procs[index].preSelected ++;
             if(this.listaProcs.procs[index].preSelected == 1) {
               this.listaProcs.numProcessosPreSelecionados++;
+              this.numProcessosPreSelecionados++;
               this.listaProcs.procs[index].preSelectedLabel = "Pré-Selecionado";
             }
           } 
@@ -235,6 +273,7 @@ export default {
             this.listaProcs.procs[index].preSelected --;
             if(this.listaProcs.procs[index].preSelected == 0){
               this.listaProcs.numProcessosPreSelecionados--;
+              this.numProcessosPreSelecionados--;
               this.listaProcs.procs[index].preSelectedLabel = "";
             } 
           } 
