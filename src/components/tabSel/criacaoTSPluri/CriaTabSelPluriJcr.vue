@@ -128,8 +128,8 @@
 
                 <v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>
 
-                <v-btn 
-                    v-if="stepNo>2" 
+                <v-btn  
+                    v-if="stepNo>2"
                     color="primary"
                     @click="sairOperacao = true"
                     >Sair 
@@ -141,6 +141,7 @@
                 </v-btn>
 
                 <v-btn
+                  v-if="stepNo>2"
                   dark
                   color="red darken-4"
                   @click="eliminarTabela = true"

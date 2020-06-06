@@ -1,7 +1,7 @@
 <template>
     <v-container>
       <v-row>
-        <v-dialog v-model="dialog" width="95%">
+        <v-dialog v-model="dialog" width="95%" persistent>
       <v-card>
         <v-card-title class="headline">
           {{ p.codigo }} - {{ p.titulo }}
@@ -60,6 +60,7 @@
         </v-card-text>
         <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn color="red darken-4" text dark rounded @click="cancelar">Cancelar</v-btn>
             <v-btn color="indigo darken-4" text dark rounded @click="selecionar">Guardar</v-btn>
         </v-card-actions>
       </v-card>
@@ -125,6 +126,11 @@ export default {
       );
       
       this.participacao = resPar.data;
+    },
+
+    // Cancela sem alterar nada
+    cancelar: function(){
+      this.$emit("cancelada");
     },
 
     // Devolve a seleção para cima
