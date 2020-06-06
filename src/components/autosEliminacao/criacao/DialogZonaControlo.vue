@@ -238,8 +238,11 @@ export default {
   },
   methods: {
     defClasse: async function() {
-      var c = this.classesCompletas.filter(
-        c => c.codigo == this.classe.split(" - ")[0]
+      var c = this.classesCompletas.filter(c => {
+          if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+          else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
+          else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
+        }
       );
       if (c[0]) {
         if(c[0].pca.valores=="1") this.prazo = c[0].pca.valores + " Ano";
@@ -295,7 +298,7 @@ export default {
       } else if(dataInicio < date.getFullYear()-100) {
         this.erro = "Não é permitido eliminar documentação com mais de 100 anos, porfavor verifique a Data de Início";
         this.erroDialog = true;
-      } else if(dataInicio > data.getFullYear() - this.prazo) {
+      } else if(dataInicio > date.getFullYear() - parseInt(this.prazo)) {
         this.erro = "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
         this.erroDialog = true;
       } else if(dataFim > date.getFullYear()) {
@@ -321,11 +324,18 @@ export default {
         this.erro = help.AutoEliminacao.Erros.Medicoes;
         this.erroDialog = true;
       } else {
-        var codigo = this.classe.split(" - ")[0];
-        var classe = await this.$request("get", "/classes/c" + codigo);
-        var titulo = classe.data.titulo;
-        var prazoConservacao = classe.data.pca.valores;
-        var destino = classe.data.df.valor;
+        var classe = this.classesCompletas.filter(c => {
+            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+            else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
+            else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
+          }
+        );
+        var idClasse = classe[0].idClasse || ""
+        var codigo = classe[0].codigo || "";
+        var referencia = classe[0].referencia || ""
+        var titulo = classe[0].titulo;
+        var prazoConservacao = classe[0].pca.valores;
+        var destino = classe[0].df.valor;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = this.ni;
@@ -343,7 +353,9 @@ export default {
         for(var i in this.auto.zonaControlo) {
           if(this.auto.zonaControlo[i].codigo > codigo) {
             this.auto.zonaControlo.splice(i,0,{
+              idClasse: idClasse,
               codigo: codigo,
+              referencia: referencia,
               titulo: titulo,
               prazoConservacao: prazoConservacao,
               destino: destino,
@@ -361,7 +373,9 @@ export default {
           }
         }
         if(added == false) this.auto.zonaControlo.push({
+              idClasse: idClasse,
               codigo: codigo,
+              referencia: referencia,
               titulo: titulo,
               prazoConservacao: prazoConservacao,
               destino: destino,
@@ -380,6 +394,7 @@ export default {
       }
     },
     editarZC: async function() {
+      const date = new Date()
       var backup = this.auto.zonaControlo[this.index];
       this.auto.zonaControlo[this.index] = {};
       const re = /\d{4}/;
@@ -407,6 +422,18 @@ export default {
         this.erro = help.AutoEliminacao.Erros.DatasExtremas;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup;
+      } else if(parseInt(this.dataInicio) < date.getFullYear()-100) {
+        this.erro = "Não é permitido eliminar documentação com mais de 100 anos, porfavor verifique a Data de Início";
+        this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup;
+      } else if(parseInt(this.dataInicio) > date.getFullYear() - parseInt(this.prazo)) {
+        this.erro = "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+        this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup;
+      } else if(parseInt(this.dataFim) > date.getFullYear()) {
+        this.erro = "A Data de Fim deve ser anterior à data atual";
+        this.erroDialog = true;
+        this.auto.zonaControlo[this.index] = backup;
       } else if (parseInt(this.dataInicio) > parseInt(this.dataFim)) {
         this.erro = help.AutoEliminacao.Erros.DataInicio;
         this.erroDialog = true;
@@ -431,11 +458,18 @@ export default {
         this.erro = help.AutoEliminacao.Erros.Medicoes;
         this.erroDialog = true;
       }  else {
-        var codigo = this.classe.split(" - ")[0];
-        var classe = await this.$request("get", "/classes/c" + codigo);
-        var titulo = classe.data.titulo;
-        var prazoConservacao = classe.data.pca.valores;
-        var destino = classe.data.df.valor;
+        var classe = this.classesCompletas.filter(c => {
+            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+            else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
+            else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
+          }
+        );
+        var idClasse = classe[0].idClasse || ""
+        var codigo = classe[0].codigo || "";
+        var referencia = classe[0].referencia || ""
+        var titulo = classe[0].titulo;
+        var prazoConservacao = classe[0].pca.valores;
+        var destino = classe[0].df.valor;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = this.ni;
@@ -448,8 +482,21 @@ export default {
         if (!this.uiOutros || this.uiOutros == "0") uiOutros = "";
         else uiOutros = this.uiOutros;
 
+        var newAgregacoes = backup.agregacoes.filter(ag=> (parseInt(ag.dataContagem) + parseInt(prazoConservacao) + 1)<= date.getFullYear()).map(ag => {
+          if((destino=="C" || destino=="Conservação") && ag.ni == "Dono")
+            return {
+              codigo: ag.codigo,
+              titulo: ag.titulo,
+              dataContagem: ag.dataContagem,
+              ni: "Participante"
+            }
+          else return ag;
+        })
+
         this.auto.zonaControlo[this.index] = {
+          idClasse: idClasse,
           codigo: codigo,
+          referencia: referencia,
           titulo: titulo,
           prazoConservacao: prazoConservacao,
           destino: destino,
@@ -460,7 +507,7 @@ export default {
           uiPapel: uiPapel,
           uiDigital: uiDigital,
           uiOutros: uiOutros,
-          agregacoes: backup.agregacoes
+          agregacoes: newAgregacoes
         };
 
         this.closeZC();

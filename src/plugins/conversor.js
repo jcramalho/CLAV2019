@@ -162,7 +162,6 @@ var verificarAgregacoes = function(str) {
 
 var validarCSVs = function(fileSerie, fileAgreg, tipo) {
   return new Promise(function(resolve, reject) {
-    var currentTime = new Date();
     var enc = new TextDecoder("utf-8");
     var series = enc.decode(fileSerie).replace(/['"]/g,'').split("\n")
     var agregacoes = enc.decode(fileAgreg).replace(/['"]/g,'').split("\n")
@@ -170,6 +169,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       reject({msg: "Verifique se inseriu o ficheiro de classe / série correto", numErros: 1})
     if(!verificarAgregacoes(agregacoes[0]))
       reject({msg: "Verifique se inseriu o ficheiro de agregações / UI correto", numErros: 1})
+    
     series.shift()
     agregacoes.shift()
     var errosSerie = {
@@ -214,7 +214,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         if(!serie[3].match(/[0-9]{4}/) || dataInicio<1000) {errosSerie.dataInicio.push(index+2); errosSerie.numeroErros++;}
         else if(!serie[4].match(/[0-9]{4}/) || dataFim<1000 || dataInicio>dataFim) {errosSerie.dataFim.push(index+2); errosSerie.numeroErros++;}
         if(!serie[5].match(/[0-9]+/) || parseInt(serie[5])<1) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++;}
-        if(dataIncio < dataFim) {errosSerie.dataFimValidacao.push(index+2); errosSerie.numeroErros++;}
+        if(dataInicio > dataFim) {errosSerie.dataFimValidacao.push(index+2); errosSerie.numeroErros++;}
         var uiPapel = parseFloat(serie[6]) || 0;
         var uiDigital = parseFloat(serie[7]) || 0;
         var uiOutros = parseFloat(serie[8]) || 0;
@@ -236,6 +236,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         if(numero != serie[5]) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++}
       } 
     })
+    
     agregacoes.forEach((a,index) => {
       var agregacao = a.split(/[;,]/)
       if(agregacao.length>=5) {
@@ -243,6 +244,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         else if(agregacao[0] == "" && agregacao[1] == "") {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
       }
     })
+    
     if(errosSerie.numeroErros + errosAgregacoes.numeroErros >0) {
       var errosVal = {
         erros: [],
@@ -320,6 +322,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         mensagem: "Natureza de intervenção obrigatória quando constante da LC",
         linhasUI: errosAgregacoes.ni
       })
+      
       reject(errosVal)
     }
     else resolve("Ficheiros em anexo validados com sucesso!")
@@ -351,6 +354,7 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
           uiPapel: serie[6].replace(/['"]/g,''),
           uiDigital: serie[7].replace(/['"]/g,''),
           uiOutros: serie[8].replace(/['"]/g,''),
+          dono: [],
           agregacoes: []
         }
         agregacoes.forEach(a => {

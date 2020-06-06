@@ -45,8 +45,8 @@
             <v-expansion-panel-content>
               <v-list>
                 <v-list-group
-                  v-for="item in p.objeto.dados.ae.zonaControlo"
-                  :key="item.codigo"
+                  v-for="(item,index) in p.objeto.dados.ae.zonaControlo"
+                  :key="index"
                   color="grey darken-1"
                   no-action
                 >

@@ -15,13 +15,72 @@
                 <div class="info-label">Fonte de legitimação</div>
               </v-col>
               <v-col>
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="portarias"
-                  v-model="auto.legislacao"
-                  solo
-                  dense
-                ></v-autocomplete>
+                <v-radio-group row v-model="tipo" :mandatory="true" :disabled="steps > 1">
+                  <v-radio value="TS_LC">
+                    <template v-slot:label>
+                      <div class="mt-2">
+                        TS/LC
+                      </div>
+                    </template>
+                  </v-radio>
+                  <v-radio value="PGD_LC">
+                    <template v-slot:label>
+                      <div class="mt-2">
+                        PGD/LC
+                      </div>
+                    </template>
+                  </v-radio>
+                  <v-radio value="PGD">
+                    <template v-slot:label>
+                      <div class="mt-2">
+                        PGD
+                      </div>
+                    </template>
+                  </v-radio>
+                  <v-radio disabled value="RADA">
+                    <template v-slot:label>
+                      <div class="mt-2">
+                        RADA
+                      </div>
+                    </template>
+                  </v-radio>
+                </v-radio-group>
+                <div v-if="tipo=='PGD_LC'">
+                  <v-autocomplete
+                    label="Selecione a fonte de legitimação"
+                    :items="portariaLC"
+                    v-model="auto.legislacao"
+                    solo
+                    dense
+                  ></v-autocomplete>
+                </div>
+                <div v-else-if="tipo=='TS_LC'">
+                  <v-autocomplete
+                    label="Selecione a Tabela de Seleção"
+                    :items="tabelasSelecao"
+                    v-model="auto.legislacao"
+                    solo 
+                    dense
+                  />
+                </div>
+                <div v-else-if="tipo=='PGD'">
+                  <v-autocomplete
+                    label="Selecione a fonte de legitimação"
+                    :items="portaria"
+                    v-model="auto.legislacao"
+                    solo
+                    dense
+                  ></v-autocomplete>
+                </div>
+                <div v-else>
+                  <v-autocomplete
+                    label="Selecione a fonte de legitimação"
+                    :items="portariaRada"
+                    v-model="auto.legislacao"
+                    solo
+                    dense
+                  ></v-autocomplete>
+                </div>
               </v-col>
             </v-row>
             <v-row>
@@ -133,8 +192,10 @@
             </v-col>
 
             <v-col class="info-content">
-              <div v-for="c in auto.zonaControlo" :key="c.codigo">
-                <strong>{{ c.codigo +" - "+c.titulo }}</strong>
+              <div v-for="(c,index) in auto.zonaControlo" :key="index">
+                <strong v-if="c.codigo && c.referencia">{{ c.codigo + " " + c.referencia +" - "+c.titulo }}</strong>
+                <strong v-else-if="c.codigo">{{ c.codigo +" - "+c.titulo }}</strong>
+                <strong v-else-if="c.referencia">{{ c.referencia +" - "+c.titulo }}</strong>
                 <div v-if="c.agregacoes.length > 0">Agregações: 
                 <li
                   class="ml-4"
@@ -235,17 +296,24 @@ import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasC
 const help = require("@/config/help").help;
 
 export default {
-  props: ["entidades", "portarias", "classes", "classesCompletas"],
+  props: ["entidades"],
   components: {
     AdicionarZonaControlo,
     ListaZonasControlo
   },
   data: () => ({
+    classes: [],
+    classesCompletas: [],
     auto: {
       legislacao: null,
       fundo: [],
       zonaControlo: []
     },
+    portariaLC: [],
+    portaria: [],
+    portariaRada: [],
+    tabelasSelecao: [],
+    tipo: "TS_LC",
     donos: [],
     steps: 1,
     erro: null,
@@ -267,8 +335,21 @@ export default {
       this.auto.fundo.push(
         user_entidade.data.sigla + " - " + user_entidade.data.designacao
       );
+
+      var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+      this.portariaLC = await this.prepararLeg(response.data);
+      var response2 = await this.$request("get", "/pgd");
+      this.portaria = await this.prepararLeg(response2.data);
+      var response3 = await this.$request("get", "/legislacao?fonte=RADA");
+      this.portariaRada = await this.prepararLeg(response3.data);
+      this.tabelasSelecao.push("Lista Consolidada")
+
     } catch (e) {
       this.auto.fundo = [];
+      this.portariaLC = [];
+      this.portaria = [];
+      this.portariaRada = [];
+      this.tabelasSelecao = [];
     }
   },
   methods: {
@@ -336,6 +417,49 @@ export default {
         return error;
       }
     },
+    prepararClasses: async function(classes) {
+      try {
+        var myClasses = [];
+        for (var c of classes)
+          myClasses.push(c.codigo + " - " + c.titulo);
+        return myClasses;
+      } catch (error) {
+        return [];
+      }
+    },
+    prepararClassesCompletas: async function(classes, nivel4) {
+      try {
+        var myClasses = [];
+        for (var c of classes) {
+          if (c.df.valor && c.df.valor !== "NE") myClasses.push(c);
+          else {
+            var indexs = 0;
+            for (var n of nivel4) {
+              if (n.codigo.includes(c.codigo)) {
+                myClasses.push(n);
+                indexs++;
+              } else break;
+            }
+            nivel4.splice(0, indexs);
+          }
+        }
+        return myClasses;
+      } catch (error) {
+        return [];
+      }
+    },
+    
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
     filtrarDonos: async function() {
       this.donos = this.entidades
 
@@ -346,7 +470,66 @@ export default {
           zc.dono = zc.dono.filter(e => !e.includes(f))
         }
       }
+
+      if(this.tipo == "TS_LC") {
+        var response = await this.$request(
+          "get",
+          "/classes?nivel=3&info=completa"
+        );
+        var response2 = await this.$request(
+          "get",
+          "/classes?nivel=4&info=completa"
+        );
+        this.classesCompletas = await this.prepararClassesCompletas(
+          response.data,
+          response2.data
+        );
+        this.classes = await this.prepararClasses(this.classesCompletas);
+      }
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC") {
+        var response = await this.$request(
+          "get",
+          "/legislacao"
+        )
+
+        var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[1])
+
+        if(this.tipo=="PGD") 
+          var response2 = await this.$request(
+            "get",
+            "/pgd/pgd_"+leg[0].id
+          )
+        else 
+          var response2 = await this.$request(
+            "get",
+            "/pgd/pgd_lc_"+leg[0].id
+          )
+        this.classes = response2.data.filter(c => c.nivel>2).map(c => {
+            if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+            else if(c.codigo) return ""+c.codigo+" - "+c.titulo
+            else if(c.referencia) return ""+c.referencia+" - "+c.titulo
+        })
+        this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
+            return {
+              idClasse: c.classe,
+              codigo: c.codigo,
+              referencia: c.referencia,
+              titulo: c.titulo,
+              df: {valor: c.df},
+              pca: {valores: c.pca},
+            }
+          })
+      }
+      else {
+        this.classes = [];
+        this.classesCompletas = [];
+      }
     }
+  },
+  watch: {
+    tipo: function() {
+      this.auto.legislacao = null;
+    } 
   }
 };
 </script>
