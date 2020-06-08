@@ -35,7 +35,7 @@
                 :headers="entidadesHeaders"
                 :items="info"
                 class="elevation-1"
-                hide-default-footer
+                :footer-props="footerProps"
               >
                 <template v-slot:no-data>
                   <v-alert
@@ -134,7 +134,7 @@ import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog"
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla } from "@/utils/utils";
+import { comparaSigla, mapKeys } from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -173,6 +173,11 @@ export default {
           align: "center",
         },
       ],
+      footerProps: {
+        "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
 
       mensagemAutocomplete: {
         titulo: "entidades",
@@ -211,39 +216,14 @@ export default {
   },
 
   mounted() {
-    this.novoHistorico = this.historico[this.historico.length - 1];
-  },
-
-  watch: {
-    // p: {
-    //   handler(newP, oldP) {
-    //     if (newP !== oldP) {
-    //       this.pedido = JSON.parse(JSON.stringify(this.p));
-    //     }
-    //   },
-    //   deep: true,
-    //   immediate: true,
-    // },
+    this.novoHistorico = JSON.parse(
+      JSON.stringify(this.historico[this.historico.length - 1])
+    );
   },
 
   methods: {
     transformaKeys(key) {
-      let descricao = "";
-      switch (key) {
-        case "designacao":
-          descricao = "Nome";
-          break;
-
-        case "entidadesSel":
-          descricao = "Entidades";
-          break;
-
-        default:
-          descricao = key.charAt(0).toUpperCase() + key.slice(1);
-          break;
-      }
-
-      return descricao;
+      return mapKeys(key);
     },
 
     abreEntidadesDialog() {
@@ -276,6 +256,7 @@ export default {
         }
         this.tipologia.entidadesSel.splice(index, 1);
         this.novoHistorico.entidadesSel.cor = "amarelo";
+        this.novoHistorico.entidadesSel.dados = this.tipologia.entidadesSel;
       }
     },
 
@@ -283,6 +264,7 @@ export default {
       this.tipologia.entidadesSel.push(...entidades);
       this.dialogEntidades = false;
       this.novoHistorico.entidadesSel.cor = "amarelo";
+      this.novoHistorico.entidadesSel.dados = this.tipologia.entidadesSel;
     },
 
     async loadEntidades() {
@@ -316,10 +298,12 @@ export default {
           despacho: dados.mensagemDespacho,
         };
 
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -340,10 +324,12 @@ export default {
 
         let dadosUtilizador = this.$verifyTokenUser();
 
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        pedido.historico.push(this.novoHistorico);
 
         const novaDistribuicao = {
           estado: estado,
@@ -371,15 +357,20 @@ export default {
     },
 
     verifica(campo) {
-      this.novoHistorico[campo] = { cor: "verde" };
-      // const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      // this.infoPedido[i].cor = "green lighten-3";
+      this.novoHistorico[campo] = {
+        dados: this.tipologia[campo],
+        cor: "verde",
+      };
     },
 
     anula(campo) {
-      this.novoHistorico[campo] = { cor: "vermelho" };
-      // const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      // this.infoPedido[i].cor = "red lighten-3";
+      this.novoHistorico[campo] = {
+        dados: this.tipologia[campo],
+        cor: "vermelho",
+      };
+
+      // Abrir dialog com despacho
+      // Guardar despacho
     },
 
     edita(campo) {
@@ -388,6 +379,9 @@ export default {
         nome: this.transformaKeys(campo),
         key: campo,
       };
+
+      // Abrir dialog com despacho (Opcional)
+      // Guardar despacho
     },
 
     fechaEditaCampoDialog(campo) {
@@ -404,7 +398,7 @@ export default {
 
       this.tipologia[event.campo.key] = event.dados;
       this.novoHistorico[event.campo.key] = {
-        alteracao: event.dados,
+        dados: event.dados,
         cor: "amarelo",
       };
     },

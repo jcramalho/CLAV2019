@@ -212,7 +212,7 @@ export default {
           if (objOriginal[key] !== objAlterado[key]) {
             historico[key] = {
               cor: "amarelo",
-              alteracao: objAlterado[key],
+              dados: objAlterado[key],
               despacho: null,
             };
           }
@@ -220,7 +220,7 @@ export default {
           if (objOriginal[key].length !== objAlterado[key].length) {
             historico[key] = {
               cor: "amarelo",
-              alteracao: objAlterado[key],
+              dados: objAlterado[key],
               despacho: null,
             };
           } else if (
@@ -228,7 +228,7 @@ export default {
           ) {
             historico[key] = {
               cor: "amarelo",
-              alteracao: objAlterado[key],
+              dados: objAlterado[key],
               despacho: null,
             };
           }

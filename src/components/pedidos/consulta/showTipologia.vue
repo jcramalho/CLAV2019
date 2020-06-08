@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { mapKeys } from "@/utils/utils";
+
 export default {
   props: ["p"],
 
@@ -89,22 +91,7 @@ export default {
     },
 
     transformaKeys(key) {
-      let descricao = "";
-      switch (key) {
-        case "designacao":
-          descricao = "Nome";
-          break;
-
-        case "entidadesSel":
-          descricao = "Entidades";
-          break;
-
-        default:
-          descricao = key.charAt(0).toUpperCase() + key.slice(1);
-          break;
-      }
-
-      return descricao;
+      return mapKeys(key);
     },
   },
 };
