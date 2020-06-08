@@ -276,6 +276,7 @@ export default {
   data() {
     return {
       tiposDiploma: [],
+      valorEditado: "",
     };
   },
 
@@ -299,7 +300,7 @@ export default {
       }
     },
     fechar() {
-      this.$emit("fechar", this.campo.nome);
+      this.$emit("fechar", this.campo.key);
       this.valorEditado = "";
     },
 

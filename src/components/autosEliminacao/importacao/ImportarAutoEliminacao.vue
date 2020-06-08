@@ -47,6 +47,19 @@
               </v-col>
               <v-col>
                 <v-radio-group row v-model="tipo" :mandatory="true" :disabled="steps > 1">
+                  <v-radio value="TS_LC">
+                    <template v-slot:label>
+                      <div class="mt-2">
+                        TS/LC
+                        <InfoBox
+                          header="Fonte de Legitimação - TS/LC"
+                          :text="myhelp.AutoEliminacao.Campos.TS_LC"
+                          helpColor="indigo darken-4"
+                          dialogColor="#E0F2F1"
+                        />
+                      </div>
+                    </template>
+                  </v-radio>
                   <v-radio value="PGD_LC">
                     <template v-slot:label>
                       <div class="mt-2">
@@ -95,6 +108,15 @@
                     solo
                     dense
                   ></v-autocomplete>
+                </div>
+                <div v-else-if="tipo=='TS_LC'">
+                  <v-autocomplete
+                    label="Selecione a Tabela de Seleção"
+                    :items="tabelasSelecao"
+                    v-model="auto.legislacao"
+                    solo 
+                    dense
+                  />
                 </div>
                 <div v-else-if="tipo=='PGD'">
                   <v-autocomplete
@@ -183,7 +205,7 @@
               medium
               color="primary darken-4"
               @click="validar"
-              :disabled="!fileSerie || !fileAgreg || !auto.fundo || !auto.legislacao"
+              :disabled="!fileSerie || !fileAgreg || !auto.fundo "
               class="ma-2"
             >Validar Auto de Eliminação</v-btn>
           </v-stepper-content>
@@ -337,12 +359,13 @@ const help = require("@/config/help").help;
 import ValidarAE from "@/components/autosEliminacao/importacao/ValidarAutoEliminacao.vue"
 
 export default {
-  props: ["entidades", "classes"],
+  props: ["entidades"],
   components: {
     InfoBox,
     ValidarAE
   },
   data: () => ({
+    classes: [],
     steps: 1,
     codigoPedido: "",
     auto: {
@@ -353,11 +376,12 @@ export default {
     portariaLC: [],
     portaria: [],
     portariaRada: [],
+    tabelasSelecao: [],
     fundo: [],
     donos: [],
     fileSerie: null,
     fileAgreg: null,
-    tipo: "PGD_LC",
+    tipo: "TS_LC",
     flagAE: false,
     successDialog: false,
     success: "",
@@ -375,7 +399,7 @@ export default {
   methods: {
     validar: async function() {
       for(var zc of this.auto.zonaControlo) {
-        if(this.tipo!="PGD_LC" && (!zc.prazo || zc.prazo=="" || !(/^[0-9]*$/.test(zc.prazo)))) {
+        if(this.tipo=="RADA" && (!zc.prazo || zc.prazo=="" || !(/^[0-9]*$/.test(zc.prazo)))) {
           this.errosVal.erros.push({
             sobre: "Prazo de Conservação Administrativa",
             mensagem: "Preenchimento incorreto ou não preenchido na classe " + zc.codigo + " " + zc.referencia
@@ -407,14 +431,14 @@ export default {
           if(res1 > currentTime.getFullYear()) {
             this.errosVal.erros.push({
               sobre: "Data Contagem",
-              mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente."
+              mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente. Classe: "+ zc.codigo + " " + zc.referencia+" - Agregação: "+ag.codigo
             })
             this.errosVal.numErros++
           }
           if(res2 < 0) {
             this.errosVal.erros.push({
               sobre: "Data Contagem",
-              mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe."
+              mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe. Classe: "+ zc.codigo + " " + zc.referencia+" - Agregação: "+ag.codigo
             })
             this.errosVal.numErros++
           }
@@ -425,9 +449,9 @@ export default {
     },
     submit: async function() {
       for(var zc of this.auto.zonaControlo) {
-        if(this.tipo=="PGD_LC")
+        if(this.tipo=="PGD_LC" || this.tipo=="TS_LC")
           delete zc["referencia"];
-        if(this.tipo!="PGD_LC") zc.prazoConservacao = zc.prazo;
+        if(this.tipo=="RADA") zc.prazoConservacao = zc.prazo;
 
         if(zc.destino === "Conservação") zc.destino = "C"
         else if(zc.destino === "Eliminação") zc.destino = "E"
@@ -442,7 +466,7 @@ export default {
       this.auto.responsavel = user.email;
       this.auto.entidade = user.entidade;
       var tipo = this.tipo
-      if (tipo == "PGD_LC") tipo = "PGD/LC";
+      if (tipo == "PGD_LC" || tipo == "TS_LC") tipo = tipo.replace(/_/g,"/");
       tipo = "AE " + tipo;
 
       var pedidoParams = {
@@ -472,8 +496,9 @@ export default {
         .then(() => {
           conversor(this.fileSerie, this.fileAgreg, this.tipo)
             .then(async res => {
+              var currentDate = new Date();
               this.auto.zonaControlo = res.auto.zonaControlo;
-              if (this.tipo == "PGD_LC") {
+              if (this.tipo == "TS_LC") {
                 //VERIFICA AS CLASSES DA LC
                 this.auto.zonaControlo.forEach(zc => {
                   var classe = this.classes.find(
@@ -487,6 +512,17 @@ export default {
                       "</b> não foi encontrado na Lista Consolidada";
                     return; //ERROS
                   }
+                  var pca = classe.pca.valor;
+                  if(parseInt(zc.dataInicio) < currentDate.getFullYear() - parseInt(pca)) {
+                    this.flagAE = true;
+                    this.erro = "A Data de inicio da classe " +
+                     zc.codigo
+                     +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+                    return;
+                  }
+                  delete this.auto["legislacao"]
+                  //Para já apenas LC
+                  this.auto.referencial = "lc1"
 
                   delete zc["referencia"];
                   zc.titulo = classe.titulo;
@@ -497,6 +533,57 @@ export default {
                     zc.destino = "Conservação";
                   else zc.destino = classe.df.valor;
                 });
+              }
+              else if(this.tipo == "PGD_LC" || this.tipo == "PGD") {
+                this.auto.zonaControlo.forEach(zc => {
+                  if(zc.codigo && zc.referencia)
+                    var classe = this.classes.find(
+                      elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
+                    )
+                  else if(zc.codigo)
+                    var classe = this.classes.find(
+                      elem => elem.codigo == zc.codigo
+                    )
+                  else 
+                    var classe = this.classes.find(
+                      elem => elem.referencia == zc.referencia
+                    )
+                  if (!classe) {
+                    this.flagAE = true;
+                    this.erro =
+                      "Codigo da classe <b>" +
+                      zc.codigo +
+                      "</b> não foi encontrado em "+this.auto.legislacao.split(" - ")[0];
+                    return; //ERROS
+                  }
+                  
+                  var pca = classe.pca.valor;
+                  if(parseInt(zc.dataInicio) < currentDate.getFullYear() - parseInt(pca)) {
+                    this.flagAE = true;
+                    if(zc.codigo && zc.referencia)
+                      this.erro = "A Data de inicio da classe " +
+                        zc.codigo +" - "+zc.referencia
+                        +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+                    else if(zc.codigo)
+                      this.erro = "A Data de inicio da classe " +
+                        zc.codigo
+                        +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+                    else 
+                      this.erro = "A Data de inicio da classe " +
+                        zc.referencia
+                        +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
+                    return;
+                  }
+
+                  zc.idClasse = classe.classe;
+                  zc.titulo = classe.titulo;
+                  zc.prazoConservacao = classe.pca;
+                  if(classe.df == "E")
+                    zc.destino = "Eliminação";
+                  else if(classe.df == "C")
+                    zc.destino = "Conservação";
+                  else zc.destino = classe.df;
+                })
               }
               if (this.flagAE) this.erroDialog = true;
               else this.steps=3;
@@ -552,11 +639,68 @@ export default {
         return [];
       }
     },
+    prepararClassesCompletas: async function(classes, nivel4) {
+      try {
+        var myClasses = [];
+        for (var c of classes) {
+          if (c.df.valor && c.df.valor !== "NE") myClasses.push(c);
+          else {
+            var indexs = 0;
+            for (var n of nivel4) {
+              if (n.codigo.includes(c.codigo)) {
+                myClasses.push(n);
+                indexs++;
+              } else break;
+            }
+            nivel4.splice(0, indexs);
+          }
+        }
+        return myClasses;
+      } catch (error) {
+        return [];
+      }
+    },
     filtrarDonos: async function() {
       this.donos = this.entidades
 
       for(var f of this.auto.fundo)
         this.donos = this.donos.filter(e => !e.includes(f))
+
+      if(this.tipo == "TS_LC") {
+        var response = await this.$request(
+          "get",
+          "/classes?nivel=3&info=completa"
+        );
+        var response2 = await this.$request(
+          "get",
+          "/classes?nivel=4&info=completa"
+        );
+        this.classes = await this.prepararClassesCompletas(
+          response.data,
+          response2.data
+        );
+      }
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC") {
+        var response = await this.$request(
+          "get",
+          "/legislacao"
+        )
+
+        var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[1])
+
+        if(this.tipo=="PGD") 
+          var response2 = await this.$request(
+            "get",
+            "/pgd/pgd_"+leg[0].id
+          )
+        else 
+          var response2 = await this.$request(
+            "get",
+            "/pgd/pgd_lc_"+leg[0].id
+          )
+        this.classes = response2.data
+      }
+      else this.classes = [];
 
     }
   },
@@ -576,15 +720,16 @@ export default {
       
       var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
       this.portariaLC = await this.prepararLeg(response.data);
-      var response2 = await this.$request("get", "/legislacao?fonte=PGD");
+      var response2 = await this.$request("get", "/pgd");
       this.portaria = await this.prepararLeg(response2.data);
       var response3 = await this.$request("get", "/legislacao?fonte=RADA");
       this.portariaRada = await this.prepararLeg(response3.data);
-
+      this.tabelasSelecao.push("Lista Consolidada")
     } catch (e) {
       this.portariaLC = [];
       this.portaria = [];
       this.portariaRada = [];
+      this.tabelasSelecao = [];
     }
   },
   watch: {

@@ -114,6 +114,8 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
+import { comparaArraySel } from "@/utils/utils";
+
 export default {
   props: ["t", "acao", "original"],
 
@@ -199,6 +201,43 @@ export default {
       return numeroErros;
     },
 
+    extrairAlteracoes() {
+      const objAlterado = JSON.parse(JSON.stringify(this.t));
+      const objOriginal = JSON.parse(JSON.stringify(this.original));
+
+      const historico = {};
+
+      for (const key in objOriginal) {
+        if (typeof objOriginal[key] === "string") {
+          if (objOriginal[key] !== objAlterado[key]) {
+            historico[key] = {
+              cor: "amarelo",
+              alteracao: objAlterado[key],
+              despacho: null,
+            };
+          }
+        } else if (objOriginal[key] instanceof Array) {
+          if (objOriginal[key].length !== objAlterado[key].length) {
+            historico[key] = {
+              cor: "amarelo",
+              alteracao: objAlterado[key],
+              despacho: null,
+            };
+          } else if (
+            !comparaArraySel(objOriginal[key], objAlterado[key], "sigla")
+          ) {
+            historico[key] = {
+              cor: "amarelo",
+              alteracao: objAlterado[key],
+              despacho: null,
+            };
+          }
+        }
+      }
+
+      return historico;
+    },
+
     // Lança o pedido de criação da tipologia no worflow
     async criarAlterarTipologia() {
       try {
@@ -207,6 +246,8 @@ export default {
         } else {
           let erros = 0;
           let dataObj = JSON.parse(JSON.stringify(this.t));
+
+          const historico = [];
 
           switch (this.acao) {
             case "Criação":
@@ -224,16 +265,18 @@ export default {
               }
 
               erros = await this.validarTipologiasAlteracao(dataObj);
+
+              historico.push(this.extrairAlteracoes());
+
               break;
 
             default:
               break;
           }
 
+          console.log("Aqui");
           if (erros == 0) {
             var userBD = this.$verifyTokenUser();
-
-            // dataObj.codigo = "tip_" + this.t.sigla;
 
             let pedidoParams = {
               tipoPedido: this.acao,
@@ -242,6 +285,7 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
+              historico: historico,
             };
 
             if (this.original !== undefined)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <span style="display:none;">{{colorSwitch}}</span>
-    <v-row>
+    <v-row v-if="p.objeto.dados.ae.legislacao">
       <v-col cols="2">
         <div class="info-label" :key="cores.legislacao" :style="'background-color: '+cores.legislacao">Fonte de Legitimação</div>
       </v-col>
@@ -12,6 +12,18 @@
         <v-icon color="green" @click="cores.legislacao='#C8E6C9'">check</v-icon>
         <v-icon color="red" @click="cores.legislacao='#FFCDD2'">clear</v-icon>
         <v-icon @click="abrirEditor('Fonte de Legitimação',-1)">create</v-icon>
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col cols="2">
+        <div class="info-label" :key="cores.legislacao" :style="'background-color: '+cores.legislacao">Referencial Classificativo</div>
+      </v-col>
+      <v-col class="mt-3">
+        Lista Consolidada
+      </v-col>
+      <v-col cols="1">
+        <v-icon color="green" @click="cores.legislacao='#C8E6C9'">check</v-icon>
+        <v-icon color="red" @click="cores.legislacao='#FFCDD2'">clear</v-icon>
       </v-col>
     </v-row>
     <v-row>
@@ -82,7 +94,10 @@
                       <td style="width:70%;">
                         {{ item.referencia }}
                       </td>
-                      <td style="width:10%"></td>
+                      <td v-if="!item.codigo" style="width:10%">
+                        <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index]='#C8E6C9'">check</v-icon>
+                        <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index]='#FFCDD2'">clear</v-icon>  
+                      </td>
                     </tr>
                     <tr v-if="item.titulo">
                       <td style="width:20%;">

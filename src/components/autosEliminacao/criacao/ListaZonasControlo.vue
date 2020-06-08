@@ -14,7 +14,9 @@
                   <div class="info-label">Classe</div>
                 </v-col>
                 <v-col>
-                  <div class="mt-2">{{item.codigo}} - {{item.titulo}}</div>
+                  <div class="mt-2" v-if="item.codigo && item.referencia">{{ item.codigo + " " + item.referencia +" - "+item.titulo }}</div>
+                  <div class="mt-2" v-else-if="item.codigo">{{ item.codigo +" - "+item.titulo }}</div>
+                  <div class="mt-2" v-else-if="item.referencia">{{ item.referencia +" - "+item.titulo }}</div>
                 </v-col>
               </v-row>
             </v-list-item-title>
@@ -104,6 +106,7 @@
             <ListaAgregacoes
               v-bind:auto="auto"
               v-bind:index="index"
+              v-bind:agregacoes="auto.zonaControlo[index].agregacoes"
             />
             
           </v-list-item-title>

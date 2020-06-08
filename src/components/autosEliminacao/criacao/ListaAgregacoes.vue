@@ -14,11 +14,13 @@
     </v-row>
     <v-data-table
       :headers="cabecalho"
-      :items="auto.zonaControlo[index].agregacoes"
+      :items="agregacoes"
+      item-key="codigo"
       :items-per-page="5"
       class="elevation-1 ml-2 mt-3"
       :footer-props="footer_props"
       :search="search"
+      v-bind="changeSwitch"
     >
       <template v-slot:no-data>
         <tr>
@@ -58,7 +60,7 @@
         </tr>
       </template>
 
-      <template slot="item" slot-scope="prop">
+      <template v-slot:item="prop">
         <tr v-if="prop.index === 0">
           <td>
             <v-text-field
@@ -195,7 +197,7 @@
 const help = require("@/config/help").help;
 
 export default {
-  props: ["auto", "index"],
+  props: ["auto", "index","agregacoes"],
 
   components: {},
 
@@ -205,7 +207,7 @@ export default {
     dataContagem: null,
     ni: null,
     natureza: ["Dono", "Participante"],
-
+    changeSwitch: 0,
     snackbar: false,
     search: "",
     deleteDialog: false,
@@ -238,23 +240,27 @@ export default {
       if(this.auto.zonaControlo[this.index].destino =="C") {
         this.ni = "Participante"
         this.natureza = ["Participante"]
-      } else 
+      } else {
         this.ni = "Dono";
+        this.natureza = ["Dono","Participante"];
+      }
       this.editAG = null;
+      this.search=" ";
     },
     deleteAG: function() {
-      var indexAG = this.auto.zonaControlo[this.index].agregacoes
+      var indexAG = this.agregacoes
         .map(function(x) {
           return x.codigo;
         })
         .indexOf(this.deleteObj.codigo);
-      this.auto.zonaControlo[this.index].agregacoes.splice(indexAG, 1);
+      this.agregacoes.splice(indexAG, 1);
       this.deleteDialog = false;
+      this.limparAG();
     },
     addAgregacao: function() {
       const re = /\d{4}/;
       var currentTime = new Date();
-      var result = this.auto.zonaControlo[this.index].agregacoes.filter(
+      var result = this.agregacoes.filter(
         ag => ag.codigo == this.codigo
       );
       if (!this.codigo || !this.titulo || !this.dataContagem) {
@@ -281,7 +287,7 @@ export default {
           this.erro = help.AutoEliminacao.Erros.DataContagemInicio;
           this.erroDialog = true;
         } else {
-          this.auto.zonaControlo[this.index].agregacoes.unshift({
+          this.agregacoes.unshift({
             codigo: this.codigo,
             titulo: this.titulo,
             dataContagem: this.dataContagem,
@@ -290,6 +296,7 @@ export default {
           this.limparAG();
         }
       }
+      this.changeSwitch++;
     },
     upAgregacao: function(item) {
       this.codigo = item.codigo;

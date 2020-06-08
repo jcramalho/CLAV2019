@@ -1,12 +1,16 @@
 <template>
   <div>
-    <v-row justify="space-around">
-      <v-btn color="primary" @click="filtro=''">Todos</v-btn>
-      <v-btn color="primary" @click="filtro='Processo Comum'">Comuns</v-btn>
-      <v-btn color="primary" @click="filtro='Processo Específico'">Específicos</v-btn>
-      <v-btn color="primary" @click="filtro='Processo Restante'">Restantes</v-btn>
-      <!--v-btn color="indigo darken-2" dark @click="filtro='Selecionado'">Selecionados</v-btn-->
-      <v-btn color="primary" @click="filtro='Pré-Selecionado'">Pré-Selecionados</v-btn>
+  
+    <v-row>
+      <v-col>
+        <v-radio-group v-model="filtroLabel" row>
+            <v-radio label="Todos" @click="filtro=''; filtroLabel='Todos'" value="Todos"></v-radio>
+            <v-radio label="Comuns" @click="filtro='Processo Comum'; filtroLabel='Processo Comum'" value="Processo Comum"></v-radio>
+            <v-radio label="Específicos" @click="filtro='Processo Específico'; filtroLabel='Processo Específico'" value="Processo Específico"></v-radio>
+            <v-radio label="Restantes" @click="filtro='Processo Restante'; filtroLabel='Processo Restante'" value="Processo Restante"></v-radio>
+            <v-radio label="Pré-Selecionados" @click="filtro='Pré-Selecionado'; filtroLabel='Pré-Selecionado'" value="Pré-Selecionado"></v-radio>
+          </v-radio-group>
+      </v-col>
     </v-row>
 
     <v-data-table
@@ -79,7 +83,8 @@
 
   <Selresponsabilidade v-if="selecionaResponsabilidades" 
         :p = "procSel"
-        @selecionadas = "selectProc($event)"/>
+        @selecionadas = "selectProc($event)"
+        @cancelada = "selecaoCancelada" />
 
   <EditDescritivo v-if="editaBlocoDescritivoFlag"
         :p = "procSel"
@@ -117,6 +122,7 @@ export default {
     editaBlocoDescritivoFlag: false,
     // Filtro da tabela
     filtro: "",
+    filtroLabel: "Todos",
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
@@ -194,6 +200,11 @@ export default {
     selecionaParticipacoes: function(proc){
         this.procSel = proc;
         this.selecionaResponsabilidades = true;
+    },
+
+    // Função de retorno do processo de seleção
+    selecaoCancelada: function(){
+      this.selecionaResponsabilidades = false;
     },
 
     // Função de retorno do processo de seleção  

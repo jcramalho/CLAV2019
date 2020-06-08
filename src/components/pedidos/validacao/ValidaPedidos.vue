@@ -9,12 +9,39 @@
             {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
             <v-spacer />
+            <v-tooltip
+              v-if="
+                !(
+                  pedido.objeto.acao === 'Criação' &&
+                  (pedido.estado === 'Submetido' ||
+                    pedido.estado === 'Distribuído')
+                )
+              "
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  @click="verHistorico()"
+                  color="white"
+                  v-on="on"
+                  class="ml-4"
+                >
+                  history
+                </v-icon>
+              </template>
+              <span>Ver histórico de alterações...</span>
+            </v-tooltip>
 
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-icon @click="showDespachos()" color="white" v-on="on"
-                  >comment</v-icon
+                <v-icon
+                  @click="showDespachos()"
+                  color="white"
+                  v-on="on"
+                  class="ml-2"
                 >
+                  comment
+                </v-icon>
               </template>
               <span>Ver despachos...</span>
             </v-tooltip>
@@ -90,6 +117,11 @@
         @fecharDialog="fecharDialog()"
       />
     </v-dialog>
+
+    <!-- Dialog Ver Historico de Alterações-->
+    <v-dialog v-model="verHistoricoDialog" width="70%">
+      <VerHistorico :pedido="pedido" @fecharDialog="fecharHistorico()" />
+    </v-dialog>
   </v-row>
 </template>
 
@@ -105,6 +137,7 @@ import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLeg
 import ValidaEditaTipologiaEntidade from "@/components/pedidos/validacao/ValidaEditaTipologiaEntidade";
 
 import VerDespachos from "@/components/pedidos/generic/VerDespachos";
+import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -123,16 +156,18 @@ export default {
     Loading,
     VerDespachos,
     ErroDialog,
-    ValidaRADA
+    ValidaRADA,
+    VerHistorico,
   },
 
   data() {
     return {
+      verHistoricoDialog: false,
       loading: true,
       pedido: {},
       erroDialog: {
         visivel: false,
-        mensagem: null
+        mensagem: null,
       },
       pedidoLoaded: false,
       despachosDialog: false,
@@ -140,9 +175,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" }
+        { text: "Despacho", value: "despacho" },
       ],
-      etapas: []
+      etapas: [],
     };
   },
 
@@ -164,13 +199,21 @@ export default {
   },
 
   methods: {
+    verHistorico() {
+      this.verHistoricoDialog = true;
+    },
+
+    fecharHistorico() {
+      this.verHistoricoDialog = false;
+    },
+
     showDespachos() {
       this.despachosDialog = true;
     },
 
     fecharDialog() {
       this.despachosDialog = false;
-    }
-  }
+    },
+  },
 };
 </script>

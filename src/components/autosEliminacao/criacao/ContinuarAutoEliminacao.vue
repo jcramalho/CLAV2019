@@ -132,7 +132,7 @@
             </v-col>
 
             <v-col class="info-content">
-              <div v-for="c in auto.zonaControlo" :key="c.codigo">
+              <div v-for="(c,index) in auto.zonaControlo" :key="index">
                 <strong>{{ c.codigo +" - "+c.titulo }}</strong>
                 Agregações: 
                 <li

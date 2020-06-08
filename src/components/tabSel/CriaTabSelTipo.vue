@@ -18,7 +18,7 @@
                   v-model="tipo"
                 ></v-select>
               </v-flex>
-              <v-flex xs12 sm4>
+              <!--v-flex xs12 sm4>
                 <v-btn
                   medium
                   @click="infoButton = true"
@@ -31,7 +31,7 @@
                 <v-btn medium v-if="infoButton" color="info" @click="passos()">
                   <v-icon left>info</v-icon>Info dos seguintes passos
                 </v-btn>
-              </v-flex>
+              </v-flex-->
             </v-layout>
           </v-container>
           <div class="text-xs-center">

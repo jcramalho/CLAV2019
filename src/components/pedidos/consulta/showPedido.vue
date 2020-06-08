@@ -10,8 +10,8 @@
       >
         <v-icon class="mr-1">label</v-icon>
         <b>{{ etapaPedido }}</b>
-      </v-chip></v-card-title
-    >
+      </v-chip>
+    </v-card-title>
     <v-card-text>
       <v-row class="mt-1">
         <v-col cols="2">
@@ -92,7 +92,11 @@
         :p="p"
       />
       <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
-      <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
+      <ShowTipologia
+        v-else-if="p.objeto.tipo === 'Tipologia'"
+        :p="p"
+        @verHistorico="verHistorico()"
+      />
       <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
       <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
       <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
@@ -116,6 +120,11 @@
     <v-dialog v-model="substituirResponsavelDialog" width="80%" persistent>
       <SubstituirResponsavel :pedido="p" @fecharDialog="fecharDialog()" />
     </v-dialog>
+
+    <!-- Dialog Ver Historico de Alterações-->
+    <v-dialog v-model="verHistoricoDialog" width="70%">
+      <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
+    </v-dialog>
   </v-card>
 </template>
 
@@ -134,6 +143,8 @@ import ShowPGD from "@/components/pedidos/consulta/showPGD";
 
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 
+import VerHistorico from "@/components/pedidos/generic/VerHistorico";
+
 export default {
   props: ["p", "etapaPedido"],
 
@@ -150,11 +161,13 @@ export default {
     ShowTI,
     SubstituirResponsavel,
     ShowPGD,
+    VerHistorico,
   },
 
   data() {
     return {
       substituirResponsavelDialog: false,
+      verHistoricoDialog: false,
       headers: [
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
@@ -183,6 +196,14 @@ export default {
       );
 
       this.$router.go(-1);
+    },
+
+    verHistorico() {
+      this.verHistoricoDialog = true;
+    },
+
+    fecharHistorico() {
+      this.verHistoricoDialog = false;
     },
 
     fecharDialog() {

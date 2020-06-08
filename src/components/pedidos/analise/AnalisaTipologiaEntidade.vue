@@ -411,7 +411,6 @@ export default {
 .info-label {
   color: #283593; /* indigo darken-3 */
   padding: 5px;
-  font-weight: 400;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;

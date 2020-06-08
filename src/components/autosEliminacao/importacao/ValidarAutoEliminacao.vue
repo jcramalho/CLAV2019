@@ -84,7 +84,7 @@
             </v-col>
             <v-col>
               <v-select 
-                v-if="tipo!='PGD_LC'" 
+                v-if="tipo=='RADA'" 
                 :items="df" 
                 v-model="item.destino" 
                 label="Eliminação / Conservação"
