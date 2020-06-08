@@ -194,7 +194,6 @@ export default {
       },
       dialogEntidades: false,
       entidades: [],
-      pedido: null,
     };
   },
 
@@ -264,16 +263,22 @@ export default {
           this.entidades.sort(comparaSigla);
         }
         this.tipologia.entidadesSel.splice(index, 1);
-        this.novoHistorico.entidadesSel.cor = "amarelo";
-        this.novoHistorico.entidadesSel.dados = this.tipologia.entidadesSel;
+        this.novoHistorico.entidadesSel = {
+          ...this.novoHistorico.entidadesSel,
+          cor: "amarelo",
+          dados: this.tipologia.entidadesSel,
+        };
       }
     },
 
     adicionaEntidades(entidades) {
       this.tipologia.entidadesSel.push(...entidades);
       this.dialogEntidades = false;
-      this.novoHistorico.entidadesSel.cor = "amarelo";
-      this.novoHistorico.entidadesSel.dados = this.tipologia.entidadesSel;
+      this.novoHistorico.entidadesSel = {
+        ...this.novoHistorico.entidadesSel,
+        cor: "amarelo",
+        dados: this.tipologia.entidadesSel,
+      };
     },
 
     async loadEntidades() {
@@ -431,11 +436,17 @@ export default {
     },
 
     verifica(campo) {
-      this.novoHistorico[campo] = { cor: "verde" };
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "verde",
+      };
     },
 
     anula(campo) {
-      this.novoHistorico[campo] = { cor: "vermelho" };
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "vermelho",
+      };
 
       // Abrir dialog com despacho
       // Guardar despacho
@@ -466,7 +477,8 @@ export default {
 
       this.tipologia[event.campo.key] = event.dados;
       this.novoHistorico[event.campo.key] = {
-        alteracao: event.dados,
+        ...this.novoHistorico[event.campo.key],
+        dados: event.dados,
         cor: "amarelo",
       };
     },
