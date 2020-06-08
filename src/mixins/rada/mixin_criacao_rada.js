@@ -140,7 +140,7 @@ export default {
 
       let legislacao = this.legislacao
         .filter(
-          e =>
+          e => 
             e.estado == "Nova" &&
             series.some(cl =>
               cl.legislacao.some(
@@ -405,7 +405,7 @@ export default {
           },
           token: this.$store.state.token,
           criadoPor: this.userEmail,
-          entidade: this.user_entidade,
+          entidade: this.user_entidade, 
           despacho: !!this.despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
             this.despacho
@@ -455,5 +455,24 @@ export default {
     let userBD = this.$verifyTokenUser();
     this.userEmail = userBD.email;
     this.user_entidade = userBD.entidade;
+
+    // Se for pendente
+    if(!!this.obj){
+      this.obj.objeto.entidades.forEach(ent => {
+        this.entidades.push(ent);
+        this.entidadesProcessadas.push({
+          entidade: ent.sigla + " - " + ent.designacao,
+          disabled: false
+        });
+      });
+
+      this.obj.objeto.legislacao.forEach(leg => {
+        this.legislacao.push(leg);
+        this.legislacaoProcessada.push({
+          id: leg.id,
+          legislacao: leg.tipo + " " + leg.numero + " - " + leg.sumario
+        });
+      });
+    }
   }
 };

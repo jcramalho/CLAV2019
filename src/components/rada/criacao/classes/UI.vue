@@ -265,10 +265,10 @@
 
                   <v-col sm="1" xs="12">
                     <v-btn text rounded @click="adicionarClasseUI(UI)">
-                      <v-icon color="green lighten-1">add_circle</v-icon>
+                      <v-icon size="35" color="green lighten-1">add_circle</v-icon>
                     </v-btn>
                     <v-btn text rounded @click="$refs.addRel.reset()">
-                      <v-icon color="red lighten-1">delete_sweep</v-icon>
+                      <v-icon size="35" color="red lighten-1">delete_sweep</v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -317,7 +317,7 @@
           <v-icon>delete_sweep</v-icon>
         </v-btn>
         <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="success" class="mr-4" @click="guardar">Guardar</v-btn>
+        <v-btn color="success" class="mr-4" @click="guardar">Criar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

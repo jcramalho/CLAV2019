@@ -501,7 +501,7 @@ export default {
               e => e.estado_no_sistema == "Nova"
             ),
             legislacao: this.legislacao.filter(
-              e => e.estado_no_sistema == "Nova"
+              e => e.estado == "Nova"
             )
           }
         };
@@ -532,7 +532,7 @@ export default {
               e => e.estado_no_sistema == "Nova"
             ),
             legislacao: this.legislacao.filter(
-              e => e.estado_no_sistema == "Nova"
+              e => e.estado == "Nova"
             )
           },
           criadoPor: this.userEmail,

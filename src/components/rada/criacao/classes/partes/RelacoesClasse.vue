@@ -92,7 +92,7 @@
               </v-row>
 
               <v-row>
-                <v-col sm="6" xs="12">
+                <v-col sm="5" xs="12">
                   <v-autocomplete
                     :rules="[v => !!v || 'Campo obrigatório!']"
                     v-model="rel"
@@ -134,12 +134,12 @@
                     </template>
                   </v-select>
                 </v-col>
-                <v-col sm="1" xs="12">
+                <v-col sm="2" xs="12">
                   <v-btn text rounded @click="add()">
-                    <v-icon color="green lighten-1">add_circle</v-icon>
+                    <v-icon size="35" color="green lighten-1">add_circle</v-icon>
                   </v-btn>
                   <v-btn text rounded @click="$refs.addRel.reset()">
-                    <v-icon color="red lighten-1">delete_sweep</v-icon>
+                    <v-icon size="35" color="red lighten-1">delete_sweep</v-icon>
                   </v-btn>
                 </v-col>
               </v-row>

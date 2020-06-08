@@ -173,13 +173,13 @@ export default {
 
           // PUSH NO ARRAY DE LEGISLAÇÕES PROCESSADAS PARA OS AUTOCOMPLETES
           this.legislacaoProcessada.push({
-            id: "-",
+            id: legis.id,
             legislacao: legis.tipo + " " + legis.numero + " - " + legis.sumario
           });
 
           // PUSH NO ARRAY DE LEGISLAÇÕES SELECIONADAS PARA A SÉRIE
           this.newSerie.legislacao.push({
-            id: "-",
+            id: legis.id,
             legislacao: legis.tipo + " " + legis.numero + " - " + legis.sumario
           });
           this.sucessOn = true;
