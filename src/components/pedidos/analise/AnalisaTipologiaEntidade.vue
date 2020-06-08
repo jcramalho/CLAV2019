@@ -389,7 +389,6 @@ export default {
 
     fechaEditaCampoDialog(campo) {
       this.editaCampo.visivel = false;
-      this.novoHistorico[campo].cor = null;
     },
 
     editarCampo(event) {
