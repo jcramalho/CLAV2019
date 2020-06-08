@@ -160,10 +160,8 @@ export default {
   },
 
   created() {
-    if (this.pedido.objeto.acao !== "Criação") {
-      this.dados.push(this.pedidoOriginal);
-      this.dados.push(...this.historico);
-    }
+    this.dados.push(this.pedidoOriginal);
+    this.dados.push(...this.historico);
   },
 
   computed: {
@@ -172,7 +170,7 @@ export default {
     },
 
     pedidoOriginal() {
-      return this.pedido.objeto.dadosOriginais || this.pedido.objeto.dados;
+      return this.pedido.objeto.dadosOriginais;
     },
   },
 

@@ -185,17 +185,12 @@ export default {
       },
       dialogEntidades: false,
       entidades: [],
-      pedido: null,
     };
   },
 
   computed: {
     tipologia() {
       return this.p.objeto.dados;
-    },
-
-    tipologiaOriginal() {
-      return this.p.objeto.dadosOriginais;
     },
 
     historico() {

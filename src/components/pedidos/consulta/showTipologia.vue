@@ -39,7 +39,7 @@
                 :headers="entidadesHeaders"
                 :items="info"
                 class="elevation-1"
-                hide-default-footer
+                :footer-props="footerProps"
               >
                 <template v-slot:no-data>
                   <v-alert
@@ -72,6 +72,11 @@ export default {
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
+      footerProps: {
+        "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
     };
   },
 

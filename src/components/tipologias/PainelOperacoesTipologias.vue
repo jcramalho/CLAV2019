@@ -274,7 +274,6 @@ export default {
               break;
           }
 
-          console.log("Aqui");
           if (erros == 0) {
             var userBD = this.$verifyTokenUser();
 
@@ -290,6 +289,7 @@ export default {
 
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
+            else pedidoParams.objetoOriginal = dataObj;
 
             const codigoPedido = await this.$request(
               "post",
