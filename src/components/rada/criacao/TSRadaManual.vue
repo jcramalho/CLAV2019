@@ -67,7 +67,6 @@
       :formaContagem="formaContagem"
       :RE="RE"
     />
-    <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ TS.classes }}</p> -->
     <!-- {{ TS.classes }} -->
     <v-row>
       <v-col cols="12" xs="12" sm="12">

@@ -231,9 +231,22 @@ export default new Router({
     },
     // Routes dos RADA
     {
+      path: "/rada",
+      name: "Rada",
+      component: () => import("./views/rada/Radas.vue"),
+      meta: { levels: [4, 5, 6, 7] },
+    },
+    {
       path: "/rada/criar",
       name: "criarRada",
       component: () => import("./views/rada/criarRada.vue"),
+      meta: { levels: [4, 5, 6, 7] },
+    },
+    {
+      path: "/rada/:id",
+      name: "consultaRADA",
+      component: () =>
+        import("./views/rada/ConsultaRADA.vue"),
       meta: { levels: [4, 5, 6, 7] },
     },
     // Routes das PGD

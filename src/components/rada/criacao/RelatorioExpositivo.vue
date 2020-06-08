@@ -111,6 +111,7 @@
               color="amber accent-3"
               scrollable
               locale="pt"
+              :max="new Date().toJSON().slice(0,10)"
             >
               <v-spacer></v-spacer>
               <v-btn text @click="menu1 = false">
@@ -153,6 +154,7 @@
               color="amber accent-3"
               scrollable
               locale="pt"
+              :max="new Date().toJSON().slice(0,10)"
             >
               <v-spacer></v-spacer>
               <v-btn text @click="menu2 = false">

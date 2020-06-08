@@ -350,12 +350,12 @@ export default {
           .map(t => t.tipologia);
 
         this.RADA.RE.tipologiasProd.forEach(tip => {
-          if (!tipologias_selecionadas.some(e == tip)) {
+          if (!tipologias_selecionadas.some(e => e == tip)) {
             this.erroProdutoras.push(tip);
           }
         });
       }
-
+      
       if (
         !!this.erroProdutoras[0] ||
         !!this.erros_relacoes[0] ||
