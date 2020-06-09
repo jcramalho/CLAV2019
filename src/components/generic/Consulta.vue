@@ -182,6 +182,57 @@
         </v-card-text>
       </v-card>
 
+      <!-- Consulta de Tipologia: entidades pertencentes à Tipologia -->
+      <v-row v-if="tipo === 'Tipologias' && listaEnt.length">
+        <v-col cols="2">
+          <div class="info-label">
+            Entidades
+            <InfoBox
+              header="Entidades"
+              :text="myhelp.Tipologias.Campos.Entidades"
+              helpColor="indigo darken-4"
+            />
+          </div>
+        </v-col>
+        <v-col>
+          <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
+            <li v-for="(l, index) in listaEnt" v-bind:key="index">
+              <a :href="'/entidades/' + l.id">{{ l.sigla }}</a>
+              -
+              {{ l.designacao }}
+            </li>
+          </ul>
+          <a @click="entCollapsed = !entCollapsed" v-if="listaEnt.length > 6">
+            <span v-if="entCollapsed" style="color:#283593;"
+              >Mostrar mais...</span
+            >
+            <span v-else style="color:#283593;">Mostrar menos...</span>
+          </a>
+        </v-col>
+      </v-row>
+
+      <!-- Consulta de legislação: processos regulados -->
+      <v-row v-if="tipo === 'Legislação' && listaReg.length">
+        <v-col cols="2">
+          <div class="info-label">
+            Processos de negócio que regula ou enquadra
+            <InfoBox
+              header="Processos de negócio que regula ou enquadra"
+              :text="myhelp.Legislacao.Campos.ProcessosRegulados"
+              helpColor="indigo darken-4"
+            />
+          </div>
+        </v-col>
+        <v-col>
+          <ul class="info-content">
+            <li v-for="(l, index) in listaReg" v-bind:key="index">
+              <a :href="'/classes/consultar/' + l.id">{{ l.codigo }}</a>
+              - {{ l.titulo }}
+            </li>
+          </ul>
+        </v-col>
+      </v-row>
+
       <!-- Consulta de Tipologia: Natureza de intervenção nos PNs -->
       <v-card v-if="tipo === 'Tipologias' && listaProcD.length">
         <v-card-title class="indigo darken-4 white--text"
@@ -274,58 +325,6 @@
           </v-row>
         </v-card-text>
       </v-card>
-
-      <!-- Consulta de Tipologia: entidades pertencentes à Tipologia -->
-      <v-row v-if="tipo === 'Tipologias' && listaEnt.length">
-        <v-col cols="2">
-          <div class="info-label">
-            Entidades
-            <InfoBox
-              header="Entidades"
-              :text="myhelp.Tipologias.Campos.Entidades"
-              helpColor="indigo darken-4"
-            />
-          </div>
-        </v-col>
-        <v-col>
-          <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
-            <li v-for="(l, index) in listaEnt" v-bind:key="index">
-              <a :href="'/entidades/' + l.id">{{ l.sigla }}</a>
-              -
-              {{ l.designacao }}
-            </li>
-          </ul>
-          <a @click="entCollapsed = !entCollapsed" v-if="listaEnt.length > 6">
-            <span v-if="entCollapsed" style="color:#283593;"
-              >Mostrar mais...</span
-            >
-            <span v-else style="color:#283593;">Mostrar menos...</span>
-          </a>
-        </v-col>
-      </v-row>
-
-      <!-- Consulta de legislação: processos regulados -->
-      <v-row v-if="tipo === 'Legislação' && listaReg.length">
-        <v-col cols="2">
-          <div class="info-label">
-            Processos de negócio que regula ou enquadra
-            <InfoBox
-              header="Processos de negócio que regula ou enquadra"
-              :text="myhelp.Legislacao.Campos.ProcessosRegulados"
-              helpColor="indigo darken-4"
-            />
-          </div>
-        </v-col>
-        <v-col>
-          <ul class="info-content">
-            <li v-for="(l, index) in listaReg" v-bind:key="index">
-              <a :href="'/classes/consultar/' + l.id">{{ l.codigo }}</a>
-              - {{ l.titulo }}
-            </li>
-          </ul>
-        </v-col>
-      </v-row>
-
       <v-spacer />
 
       <v-row>
@@ -355,10 +354,10 @@ export default {
     "listaProcP",
     "listaEnt",
     "listaReg",
-    "parts"
+    "parts",
   ],
   components: {
-    InfoBox
+    InfoBox,
   },
   data: () => ({
     domainCollapsed: true,
@@ -369,7 +368,7 @@ export default {
       Comunicador: true,
       Decisor: true,
       Executor: true,
-      Iniciador: true
+      Iniciador: true,
     },
     participationsDic: {
       Apreciador: "Apreciar",
@@ -377,10 +376,10 @@ export default {
       Comunicador: "Comunicar",
       Decisor: "Decidir",
       Executor: "Executar",
-      Iniciador: "Iniciar"
+      Iniciador: "Iniciar",
     },
-    myhelp: help
-  })
+    myhelp: help,
+  }),
 };
 </script>
 
