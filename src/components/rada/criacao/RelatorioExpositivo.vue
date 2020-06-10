@@ -82,88 +82,49 @@
           <div class="info-label">Data Inicial da Documentação</div>
         </v-col>
         <v-col xs="12" sm="9">
-          <v-menu
-            ref="menu1"
-            v-model="menu1"
-            :close-on-content-click="false"
-            :return-value.sync="RE.dataInicial"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
+          <SelecionarData
+            :d="RE.dataInicial"
+            label="Data Inicial"
+            @dataSelecionada="RE.dataInicial = $event"
+            data-minima="1200-01-01"
           >
-            <template v-slot:activator="{ on }">
+            <template v-slot:default="slotProps">
               <v-text-field
                 :disabled="bloquearData()"
-                :rules="basicRule"
-                v-model="RE.dataInicial"
-                label="Data Inicial"
+                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                v-model="slotProps.item.dataValor"
+                :label="slotProps.item.label"
                 prepend-icon="event"
                 readonly
-                v-on="on"
+                v-on="slotProps.item.on"
                 solo
-                clearable
               ></v-text-field>
             </template>
-            <v-date-picker
-              full-width
-              v-model="RE.dataInicial"
-              color="amber accent-3"
-              scrollable
-              locale="pt"
-              :max="new Date().toJSON().slice(0,10)"
-            >
-              <v-spacer></v-spacer>
-              <v-btn text @click="menu1 = false">
-                <v-icon>keyboard_backspace</v-icon>
-              </v-btn>
-              <v-btn text @click="$refs.menu1.save(RE.dataInicial)">
-                <v-icon>check</v-icon>
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
+          </SelecionarData>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Data Final da Documentação</div>
         </v-col>
         <v-col xs="12" sm="9">
-          <v-menu
-            ref="menu2"
-            v-model="menu2"
-            :close-on-content-click="false"
-            :return-value.sync="RE.dataFinal"
-            transition="scale-transition"
-            max-width="290px"
+          <SelecionarData
+            :d="RE.dataFinal"
+            label="Data Final"
+            @dataSelecionada="RE.dataFinal = $event"
+            data-minima="1200-01-01"
           >
-            <template v-slot:activator="{ on }">
+            <template v-slot:default="slotProps">
               <v-text-field
                 :disabled="bloquearData()"
                 :rules="[v => data_final_valida(v) || 'Campo de preenchimento obrigatório!']"
-                v-model="RE.dataFinal"
-                label="Data Final"
+                v-model="slotProps.item.dataValor"
+                :label="slotProps.item.label"
                 prepend-icon="event"
                 readonly
-                v-on="on"
+                v-on="slotProps.item.on"
                 solo
-                clearable
               ></v-text-field>
             </template>
-            <v-date-picker
-              full-width
-              v-model="RE.dataFinal"
-              color="amber accent-3"
-              scrollable
-              locale="pt"
-              :max="new Date().toJSON().slice(0,10)"
-            >
-              <v-spacer></v-spacer>
-              <v-btn text @click="menu2 = false">
-                <v-icon>keyboard_backspace</v-icon>
-              </v-btn>
-              <v-btn text @click="$refs.menu2.save(RE.dataFinal)">
-                <v-icon>check</v-icon>
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
+          </SelecionarData>
         </v-col>
       </v-row>
       <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
@@ -271,6 +232,7 @@
 
 <script>
 import NovaEntidade from "./classes/partes/NovaEntidade";
+import SelecionarData from "@/components/generic/SelecionarData";
 
 export default {
   props: [
@@ -282,7 +244,8 @@ export default {
     "entidadesProcessadas"
   ],
   components: {
-    NovaEntidade
+    NovaEntidade,
+    SelecionarData
   },
   data: () => ({
     panels: [0, 0, 0],

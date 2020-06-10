@@ -75,87 +75,49 @@
               <div class="info-label">Data Inicial da Documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
-              <v-menu
-                ref="menu1"
-                v-model="menu1"
-                :close-on-content-click="false"
-                :return-value.sync="UI_clone.dataInicial"
-                transition="scale-transition"
-                max-width="290px"
+              <SelecionarData
+                label="Data Inicial"
+                :d="UI_clone.dataInicial"
+                @dataSelecionada="UI_clone.dataInicial = $event"
+                :dataMinima="RE.dataInicial"
+                :dataMaxima="RE.dataFinal"
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:default="slotProps">
                   <v-text-field
                     :rules="[v => !!v || 'Campo obrigatório!']"
-                    v-model="UI_clone.dataInicial"
-                    label="Data Inicial"
+                    v-model="slotProps.item.dataValor"
+                    :label="slotProps.item.label"
                     prepend-icon="event"
                     readonly
-                    v-on="on"
-                    clearable
+                    v-on="slotProps.item.on"
                     solo
                   ></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="UI_clone.dataInicial"
-                  color="amber accent-3"
-                  full-width
-                  scrollable
-                  locale="pt"
-                  :min="RE.dataInicial"
-                  :max="RE.dataFinal"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu1 = false">
-                    <v-icon>keyboard_backspace</v-icon>
-                  </v-btn>
-                  <v-btn text color="primary" @click="$refs.menu1.save(UI_clone.dataInicial)">
-                    <v-icon>check</v-icon>
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
+              </SelecionarData>
             </v-col>
             <v-col xs="12" sm="3">
               <div class="info-label">Data Final da Documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
-              <v-menu
-                ref="menu2"
-                v-model="menu2"
-                :close-on-content-click="false"
-                :return-value.sync="UI_clone.dataFinal"
-                transition="scale-transition"
-                max-width="290px"
+              <SelecionarData
+                :d="UI_clone.dataFinal"
+                label="Data Final"
+                @dataSelecionada="UI_clone.dataFinal = $event"
+                :dataMinima="RE.dataInicial"
+                :dataMaxima="RE.dataFinal"
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:default="slotProps">
                   <v-text-field
                     :rules="[v => data_final_valida(v, UI_clone) || 'Campo obrigatório!']"
-                    v-model="UI_clone.dataFinal"
-                    label="Data Final"
+                    v-model="slotProps.item.dataValor"
+                    :label="slotProps.item.label"
                     prepend-icon="event"
                     readonly
-                    v-on="on"
-                    clearable
+                    v-on="slotProps.item.on"
                     solo
                   ></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="UI_clone.dataFinal"
-                  color="amber accent-3"
-                  full-width
-                  scrollable
-                  locale="pt"
-                  :min="RE.dataInicial"
-                  :max="RE.dataFinal"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu2 = false">
-                    <v-icon>keyboard_backspace</v-icon>
-                  </v-btn>
-                  <v-btn text color="primary" @click="$refs.menu2.save(UI_clone.dataFinal)">
-                    <v-icon>check</v-icon>
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
+              </SelecionarData>
             </v-col>
           </v-row>
           <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
@@ -328,6 +290,7 @@
 
 <script>
 import EntidadesProdutoras from "@/components/rada/criacao/classes/partes/EntidadesProdutoras.vue";
+import SelecionarData from "@/components/generic/SelecionarData";
 
 import mixin_unidade_instalacao from "@/mixins/rada/mixin_unidade_instalacao";
 
@@ -337,7 +300,8 @@ export default {
     toDelete: false
   }),
   components: {
-    EntidadesProdutoras
+    EntidadesProdutoras,
+    SelecionarData
   },
   mixins: [mixin_unidade_instalacao],
   methods: {
