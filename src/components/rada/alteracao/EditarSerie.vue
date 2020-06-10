@@ -183,9 +183,6 @@ export default {
         this.erros.push("Produtoras;");
       }
 
-      if (!!this.serie.legislacao[0] == false) {
-        this.erros.push("Legislação;");
-      }
       if (!!this.treeview_object.children[0] == 0) {
         if (!Boolean(this.serie.pca)) {
           if (!Boolean(this.serie.notaPCA)) {

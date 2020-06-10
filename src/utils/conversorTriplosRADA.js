@@ -102,7 +102,7 @@ async function triplosSerie(classe, codigoRADA) {
                                     clav:tipoSerie "${classe.tSerie}" ;
                                     clav:suporte "${classe.suporte}" ;
                                     clav:medicao "${classe.medicao}" ;
-                                    clav:reguladaPor clav:${classe.legislacao.map(e => e.id).join(", clav:")} ;
+                                    ${!!classe.legislacao[0] ? `clav:reguladaPor clav:${classe.legislacao.map(e => e.id).join(", clav:")} ;` : '' }
                                     clav:produzidaPor clav:${
             !!classe.entProdutoras[0]
                 ? classe.entProdutoras.map(e => "ent_" + e.split(" - ")[0]).join(", clav:")

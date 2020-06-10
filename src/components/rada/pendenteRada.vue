@@ -98,6 +98,7 @@
             :entidades="entidades"
             :legislacaoProcessada="legislacaoProcessada"
             :loading_circle.sync="loading_circle_ts"
+            :toSave.sync="toSave"
           />
           <v-alert
             width="100%"

@@ -101,7 +101,6 @@
                 readonly
                 v-on="on"
                 solo
-
                 clearable
               ></v-text-field>
             </template>
@@ -262,7 +261,7 @@
       </v-expansion-panels>
     </v-form>
     <br />
-    <v-btn dark color="indigo darken-1" @click="next">Continuar</v-btn>
+    <v-btn dark color="indigo darken-4" @click="next">Continuar</v-btn>
     <v-btn @click="$emit('seguinte', 1)">Voltar</v-btn>
     <v-btn color="indigo darken-4" text @click="apagar">
       <v-icon>delete_sweep</v-icon>

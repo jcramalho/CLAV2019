@@ -178,19 +178,31 @@
       indeterminate
     ></v-progress-circular>
     <div v-else>
-      <v-btn
-        :disabled="
+      <v-row>
+        <v-col>
+          <v-btn
+            :disabled="
           !Boolean(TS.classes[0]) ||
             UIs_validas ||
             incompleto ||
             !Boolean(TS.titulo)
         "
-        color="#3949ab"
-        @click="sendToFather()"
-      >
-        <font style="color: white">Criar RADA</font>
-      </v-btn>
-      <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
+            color="indigo darken-4"
+            @click="sendToFather()"
+          >
+            <font style="color: white">Criar RADA</font>
+          </v-btn>
+
+          <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col align="right">
+          <v-btn color="indigo darken-4" dark @click="$emit('update:toSave', true)">
+            Guardar Trabalho
+            <v-icon right>save</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </div>
   </v-card>
 </template>
@@ -213,7 +225,8 @@ export default {
     "RE",
     "legislacao",
     "legislacaoProcessada",
-    "loading_circle"
+    "loading_circle",
+    "toSave"
   ],
   components: {
     AddOrgFunc,

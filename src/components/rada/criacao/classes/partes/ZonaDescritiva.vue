@@ -159,7 +159,6 @@
           ></v-select>
         </v-col>
       </v-row>
-      <!-- {{newSerie}} -->
       <v-row>
         <v-col md="3" sm="3">
           <div class="info-label">Suporte</div>
@@ -177,7 +176,6 @@
         <v-col md="3" sm="3">
           <div class="info-label">Medição</div>
         </v-col>
-
         <v-col sm="3" md="3">
           <v-text-field
             :rules="[v => (!!v && new Number(v) >= 0)|| 'Campo obrigatório!']"
