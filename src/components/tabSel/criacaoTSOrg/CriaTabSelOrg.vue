@@ -134,10 +134,6 @@
                 <v-col v-else>Ainda não foi possível carregar a informação dos Processos...</v-col>
 
                 <v-btn
-                  color="primary"
-                  @click="stepNo = stepNo + 1;"
-                  >Continuar</v-btn>
-                <v-btn
                   text
                   @click="stepNo = stepNo - 1;">Voltar</v-btn>
               </v-stepper-content>
