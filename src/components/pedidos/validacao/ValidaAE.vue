@@ -1,12 +1,24 @@
 <template>
   <div>
     <span style="display:none;">{{colorSwitch}}</span>
-    <v-row>
+    <v-row v-if="p.objeto.dados.ae.legislacao">
       <v-col cols="2">
         <div class="info-label" :key="p.objeto.dados.cores.legislacao" :style="'background-color: '+p.objeto.dados.cores.legislacao">Fonte de Legitimação</div>
       </v-col>
       <v-col class="mt-3">
         {{p.objeto.dados.ae.legislacao}}
+      </v-col>
+      <v-col cols="1">
+        <v-icon color="green" @click="p.objeto.dados.cores.legislacao='#C8E6C9'">check</v-icon>
+        <v-icon color="red" @click="p.objeto.dados.cores.legislacao='#FFCDD2'">clear</v-icon>
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col cols="2">
+        <div class="info-label" :key="p.objeto.dados.cores.legislacao" :style="'background-color: '+p.objeto.dados.cores.legislacao">Referencial Classificativo</div>
+      </v-col>
+      <v-col class="mt-3">
+        Lista Consolidada
       </v-col>
       <v-col cols="1">
         <v-icon color="green" @click="p.objeto.dados.cores.legislacao='#C8E6C9'">check</v-icon>
@@ -306,7 +318,7 @@ export default {
 
     async finalizarPedido(dados) {
       try {
-        if(this.tipo!="AE RADA" || this.tipo!="AE PGD") {
+        if(this.tipo!="AE RADA") {
           let pedido = JSON.parse(JSON.stringify(this.p));
 
           var numeroErros = 0;

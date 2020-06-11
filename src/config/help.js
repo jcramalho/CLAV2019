@@ -325,6 +325,7 @@ module.exports.help = {
     Campos: {
       FonteLegitimacao:
         "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
+      TS: "Tabela de Seleção conforme à Lista Consolidada",
       PGD_LC: "Portaria de Gestão de Documentos conforme à Lista Consolidada",
       PGD: "Portaria de Gestão de Documentos",
       RADA: "Relatório de Avaliação de Documentação Acumulada"

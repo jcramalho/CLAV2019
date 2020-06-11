@@ -21,6 +21,7 @@
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/generic/ErroDialog";
+import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
 
 export default {
   data: () => ({
@@ -68,7 +69,9 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        //await this.$request("post", "/entidades", pedido.objeto.dados);
+        let triplos = await converterParaTriplosRADA(pedido.objeto.dados);
+        
+        await this.$request("post", "/rada", { triplos });
 
         let dadosUtilizador = this.$verifyTokenUser();
 

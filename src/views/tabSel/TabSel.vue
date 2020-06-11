@@ -59,10 +59,11 @@ export default {
     this.cabecalhos = ["Data", "Tipo", "Número", "Sumário", "Acesso"];
     this.campos = ["data", "tipo", "numero", "sumario", "link"];
 
-    this.$request("get", "/legislacao?fonte=PGD/LC")
+    this.$request("get", "/pgd/lc")
       .then(response2 => {
         this.fontesPGDLC = response2.data.map(f => {
           return {
+            idPGD: f.idPGD,
             data: f.data,
             tipo: f.tipo,
             numero: f.numero,

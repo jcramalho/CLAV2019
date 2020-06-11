@@ -143,10 +143,12 @@ export default {
       // Número Diploma
       if (this.l.numero === "" || this.l.numero === null) {
         numeroErros++;
+      } else if (!/^\d{4}\/(\d{2}|\d{4})$/.test(this.l.numero)) {
+        numeroErros++;
       }
 
-      // Data
       if (this.l.data === "" || this.l.data === null) {
+        // Data
         numeroErros++;
       } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.l.data)) {
         numeroErros++;

@@ -13,7 +13,7 @@
         <v-col cols="2">
           <div class="info-label">PCA</div>
         </v-col>
-        <v-col cols="2">
+        <v-col>
           <div class="info-content">{{classe.pca}}</div>
         </v-col>
         <v-col cols="2" v-if="classe.notaPCA">
@@ -23,11 +23,26 @@
           <div class="info-content">{{classe.notaPCA}}</div>
         </v-col>
       </v-row>
+      
+      <v-row v-if="classe.formaContagem">
+        <v-col cols="2">
+          <div class="info-label">Forma de Contagem</div>
+        </v-col>
+        <v-col>
+          <div class="info-content">{{classe.formaContagem}}</div>
+        </v-col>
+        <v-col cols="2" v-if="classe.subFormaContagem">
+          <div class="info-label">Subforma de Contagem</div>
+        </v-col>
+        <v-col v-if="classe.subFormaContagem">
+          <div class="info-content">{{classe.subFormaContagem}}</div>
+        </v-col>
+      </v-row>
       <v-row v-if="classe.df">
         <v-col cols="2">
           <div class="info-label">Destino Final</div>
         </v-col>
-        <v-col cols="2">
+        <v-col>
           <div class="info-content">
             <span v-if="classe.df=='E'">Eliminação</span>
             <span v-else-if="classe.df=='C'">Conservação</span>
@@ -40,6 +55,21 @@
         </v-col>
         <v-col v-if="classe.notaDF">
           <div class="info-content">{{classe.notaDF}}</div>
+        </v-col>
+      </v-row>
+      
+      <v-row v-if="classe.designacaoDono">
+        <v-col cols="2">
+          <div class="info-label">Dono</div>
+        </v-col>
+        <v-col>
+          <div class="info-content">{{classe.designacaoDono}}</div>
+        </v-col>
+        <v-col cols="2">
+          <div class="info-label">Participante</div>
+        </v-col>
+        <v-col>
+          <div class="info-content">{{classe.designacaoParticipante}}</div>
         </v-col>
       </v-row>
         <v-list v-if="classe.filhos.length>0">

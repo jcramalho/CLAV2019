@@ -206,9 +206,11 @@ export default {
         RE: {
           entidadesProd: [
             // "ACSS - Administração Central do Sistema de Saúde, IP",
-            // "ADSE - Instituto de Proteção e Assistência na Doença, I.P."
+            // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
           ],
-          tipologiasProd: [],
+          tipologiasProd: [
+            //  "AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"
+          ],
           // dataInicial: "2020-01-02",
           // dataFinal: "2020-06-01",
           dataInicial: null,
@@ -229,164 +231,144 @@ export default {
         },
         tsRada: {
           titulo: "",
+          UIs: [
+            // {
+            //   codigo: "1",
+            //   codCota: "3",
+            //   titulo: "Unidade de Instalação",
+            //   dataInicial: "2020-05-13",
+            //   dataFinal: "2020-05-27",
+            //   produtor: {
+            //     tipologiasProdutoras: ["AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"],
+            //     entProdutoras: [
+            //       // "ACSS - Administração Central do Sistema de Saúde, IP",
+            //       // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //     ]
+            //   },
+            //   classesAssociadas: [
+            //     { codigo: "01.02", tipo: "Série" },
+            //     { codigo: "01.02.01", tipo: "Subsérie" }
+            //   ],
+            //   descricao: "Descrição da UI 1",
+            //   notas: "Sem notas! ",
+            //   localizacao: "Felgueiras"
+            // }
+          ],
           classes: [
             // {
             //   codigo: "01",
-            //   titulo: "Classe N1 (01)",
-            //   descricao: "Descrição Classe N1 (01)",
+            //   titulo: "Classe 01",
+            //   descricao: "Descrição",
             //   eFilhoDe: null,
             //   tipo: "N1"
             // },
-            // {
-            //   codigo: "04",
-            //   titulo: "Classe N1 (04)",
-            //   descricao: "Descrição Classe N1 (04)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "02",
-            //   titulo: "Classe N1 (02)",
-            //   descricao: "Descrição Classe N1 (02)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "03",
-            //   titulo: "Classe N1 (03)",
-            //   descricao: "Descrição Classe N1 (01)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "01.02",
-            //   titulo: "Classe N2 (01.02)",
-            //   descricao: "Descrição Classe N2 (01.02)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
-            // },
+
             // {
             //   codigo: "01.01",
-            //   titulo: "Classe N2 (01.01)",
-            //   descricao: "Descrição Classe N2 (01.01)",
+            //   titulo: "Classe 01.01",
+            //   descricao: "Descrição",
             //   eFilhoDe: "01",
             //   tipo: "N2"
             // },
+
             // {
             //   codigo: "01.01.01",
-            //   titulo: "Classe N3 (01.01.01)",
-            //   descricao: "Descrição Classe N3 (01.01.01)",
+            //   titulo: "Classe 01.01.01",
+            //   descricao: "Descrição 01.01.01",
             //   eFilhoDe: "01.01",
             //   tipo: "N3"
             // },
+
             // {
-            //   codigo: "02.01",
-            //   titulo: "Classe N2 (02.01)",
-            //   descricao: "Descrição Classe N2 (02.01)",
-            //   eFilhoDe: "02",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "03.01",
-            //   titulo: "Classe N2 (03.01)",
-            //   descricao: "Descrição Classe N2 (03.01)",
-            //   eFilhoDe: "03",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.04",
-            //   titulo: "Série (01.04)",
-            //   descricao: "Descrição Série (01.04)",
-            //   dataInicial: "2020-04-11",
-            //   dataFinal: "2020-04-13",
+            //   codigo: "01.02",
+            //   titulo: "Serie 01.02",
+            //   descricao: "Descrição 01.02",
+            //   dataInicial: "2020-05-01",
+            //   dataFinal: "2020-05-28",
             //   tUA: "Coleção",
-            //   tSerie: "Fechada",
-            //   suporte: "Papel",
-            //   medicao: "35",
-            //   UIs: [],
-            //   localizacao: ["Localização a definir..."],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
+            //   tSerie: "Aberta",
+            //   suporte: "Eletrónico Digitalizado",
+            //   UIs: ["1"],
+            //   medicao: "56",
+            //   localizacao: ["Lisboa"],
+            //   entProdutoras: [
+            //     // "ACSS - Administração Central do Sistema de Saúde, IP",
+            //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //   ],
+            //   tipologiasProdutoras: [
+            //     "AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"
+            //   ],
             //   legislacao: [],
             //   relacoes: [
             //     {
-            //       relacao: "Complementar de",
+            //       relacao: "Síntese de",
             //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
             //     },
             //     {
             //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
+            //       serieRelacionada: { codigo: "01.02.01", tipo: "Subsérie" }
+            //     },
+            //     {
+            //       relacao: "Suplemento para",
+            //       serieRelacionada: { codigo: "01.05", tipo: "Série" }
             //     }
             //   ],
-            //   pca: null,
-            //   formaContagem: { forma: null },
-            //   justificacaoPCA: [],
+            //   pca: "5",
+            //   notaPCA: "Sem notas",
+            //   notaDF: "Sem notas DF",
+            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+            //   justificacaoPCA: [
+            //     {
+            //       tipo: "Critério Gestionário",
+            //       nota:
+            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+            //     },
+            //     {
+            //       tipo: "Critério de Utilidade Administrativa",
+            //       nota:
+            //         "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de: ",
+            //       relacoes: [{ codigo: "01.05" }]
+            //     }
+            //   ],
             //   df: "Conservação",
             //   justificacaoDF: [
             //     {
+            //       tipo: "Critério de Densidade Informacional",
+            //       nota: "Sintetiza a informação de: ",
+            //       relacoes: [{ codigo: "01.03" }]
+            //     },
+            //     {
             //       tipo: "Critério de Complementaridade Informacional",
             //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
+            //       relacoes: [{ codigo: "01.02.01" }]
             //     }
             //   ],
-            //   notaPCA: null,
-            //   notaDF: null,
             //   eFilhoDe: "01",
             //   tipo: "Série"
             // },
             // {
-            //   codigo: "01.03",
-            //   titulo: "Série (01.03)",
-            //   descricao: "Descrição Série (01.03)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   tUA: "Processo",
-            //   tSerie: "Aberta",
-            //   suporte: "Eletrónico Nativo",
-            //   UIs: ["01"],
-            //   medicao: "12",
-            //   localizacao: ["Torre do Tombo"],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [],
+            //   codigo: "01.02.01",
+            //   titulo: "Subsérie 01.02.01",
+            //   descricao: "Descrição 01.02.01",
+            //   dataInicial: "2020-05-01",
+            //   dataFinal: "2020-05-28",
             //   relacoes: [
             //     {
             //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   pca: "",
-            //   formaContagem: {
-            //     forma: "vc_pcaFormaContagem_extincaoDireito"
-            //   },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [
+            //       serieRelacionada: { codigo: "01.02", tipo: "Série" }
+            //     },
             //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
+            //       relacao: "Cruzado de",
+            //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
             //     }
             //   ],
-            //   notaPCA: null,
-            //   notaDF: null,
-            //   eFilhoDe: "01",
-            //   tipo: "Série"
-            // },
-            // {
-            //   codigo: "01.04.01",
-            //   titulo: "Subsérie (01.04.01)",
-            //   descricao: "Descrição Subsérie (01.04.01)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   UIs: ["02"],
-            //   pca: "Conservação",
+            //   UIs: ["1"],
+            //   pca: "10",
+            //   notaPCA: "Sem ntoas PCA",
+            //   notaDF: "12",
             //   formaContagem: {
-            //     forma: "vc_pcaFormaContagem_extincaoDireito"
+            //     forma: "vc_pcaFormaContagem_disposicaoLegal",
+            //     subforma: "vc_pcaSubformaContagem_F01.02"
             //   },
             //   justificacaoPCA: [
             //     {
@@ -395,44 +377,104 @@ export default {
             //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
             //     }
             //   ],
-            //   df: null,
+            //   df: "Conservação",
             //   justificacaoDF: [
             //     {
             //       tipo: "Critério de Complementaridade Informacional",
             //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
+            //       relacoes: [{ codigo: "01.02" }]
             //     }
             //   ],
+            //   eFilhoDe: "01.03",
+            //   tipo: "Subsérie"
+            // },
+
+            // {
+            //   codigo: "01.03",
+            //   titulo: "Série 01.03",
+            //   descricao: "Descrição 01.03",
+            //   dataInicial: "2020-05-01",
+            //   dataFinal: "2020-05-28",
+            //   tUA: "Processo",
+            //   tSerie: "Aberta",
+            //   suporte: "Outro",
+            //   medicao: "12",
+            //   localizacao: ["Porto"],
+            //   entProdutoras: [
+            //     // "ACSS - Administração Central do Sistema de Saúde, IP"
+            //   ],
+            //   tipologiasProdutoras: [
+            //     "AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"
+            //   ],
+            //   legislacao: [],
+            //   relacoes: [
+            //     {
+            //       relacao: "Sintetizado por",
+            //       serieRelacionada: { codigo: "01.02", tipo: "Série" }
+            //     },
+            //     {
+            //       relacao: "Cruzado de",
+            //       serieRelacionada: { codigo: "01.02.01", tipo: "Subsérie" }
+            //     }
+            //   ],
+            //   UIs: [],
+            //   pca: null,
             //   notaPCA: null,
             //   notaDF: null,
-            //   eFilhoDe: "01.04",
-            //   tipo: "Subsérie"
-            // }
-          ],
-          UIs: [
-            // {
-            //   codigo: "01",
-            //   codCota: "1",
-            //   titulo: "1",
-            //   dataInicial: "2020-03-01",
-            //   dataFinal: "2020-03-03",
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
-            //   descricao: "1",
-            //   notas: "1",
-            //   localizacao: "1"
+            //   formaContagem: { forma: null },
+            //   justificacaoPCA: [],
+            //   df: "Eliminação",
+            //   justificacaoDF: [
+            //     {
+            //       tipo: "Critério de Densidade Informacional",
+            //       nota: "Informação sintetizada e recuperável em: ",
+            //       relacoes: [{ codigo: "01.02" }]
+            //     }
+            //   ],
+            //   eFilhoDe: "01",
+            //   tipo: "Série"
             // },
+
             // {
-            //   codigo: "02",
-            //   codCota: "2",
-            //   titulo: "2",
-            //   dataInicial: "2020-04-20",
-            //   dataFinal: "2020-04-21",
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
-            //   descricao: "2",
-            //   notas: "2",
-            //   localizacao: "2"
+            //   codigo: "01.05",
+            //   titulo: "Série 01.05",
+            //   descricao: "Descrição 01.05",
+            //   dataInicial: "2020-05-01",
+            //   dataFinal: "2020-05-28",
+            //   tUA: "Processo",
+            //   tSerie: "Aberta",
+            //   suporte: "Papel",
+            //   medicao: "90",
+            //   localizacao: ["Braga"],
+            //   entProdutoras: [
+            //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //   ],
+            //   tipologiasProdutoras: [
+            //     "AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"
+            //   ],
+            //   legislacao: [],
+            //   relacoes: [
+            //     {
+            //       relacao: "Suplemento de",
+            //       serieRelacionada: { codigo: "01.02", tipo: "Série" }
+            //     }
+            //   ],
+            //   UIs: [],
+            //   pca: null,
+            //   notaPCA: "Tem notas porque não tem PCA",
+            //   notaDF: "",
+            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+            //   justificacaoPCA: [
+            //     {
+            //       tipo: "Critério Gestionário",
+            //       nota:
+            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+            //     }
+            //   ],
+            //   df: "Conservação Parcial",
+            //   justificacaoDF: [],
+            //   eFilhoDe: "01",
+            //   tipo: "Série"
             // }
           ]
         }
@@ -461,8 +503,12 @@ export default {
           _id: this.idPendente,
           objeto: {
             rada: this.RADA,
-            entidades: this.entidades.filter(e => e.estado_no_sistema == "Nova"),
-            legislacao: this.legislacao.filter(e => e.estado_no_sistema == "Nova")
+            entidades: this.entidades.filter(
+              e => e.estado_no_sistema == "Nova"
+            ),
+            legislacao: this.legislacao.filter(
+              e => e.estado_no_sistema == "Nova"
+            )
           }
         };
 
@@ -488,8 +534,12 @@ export default {
           tipo: "RADA",
           objeto: {
             rada: this.RADA,
-            entidades: this.entidades.filter(e => e.estado_no_sistema == "Nova"),
-            legislacao: this.legislacao.filter(e => e.estado_no_sistema == "Nova")
+            entidades: this.entidades.filter(
+              e => e.estado_no_sistema == "Nova"
+            ),
+            legislacao: this.legislacao.filter(
+              e => e.estado_no_sistema == "Nova"
+            )
           },
           criadoPor: this.userEmail,
           user: { email: this.userEmail },

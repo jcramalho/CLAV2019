@@ -17,11 +17,17 @@
               {{ p.entidade }}
             </td>
           </tr>
-          <tr>
+          <tr v-if="p.objeto.dados.ae.legislacao">
             <td style="width:20%;">
               <div class="info-label">Fonte de Legitimação</div>
             </td>
             <td style="width:80%;">{{ p.objeto.dados.ae.legislacao }}</td>
+          </tr>
+          <tr v-else>
+            <td style="width:20%;">
+              <div class="info-label">Referencial Classificativo</div>
+            </td>
+            <td style="width:80%;">Lista Consolidada</td>
           </tr>
           <tr>
             <td style="width:20%;">
@@ -39,8 +45,8 @@
             <v-expansion-panel-content>
               <v-list>
                 <v-list-group
-                  v-for="item in p.objeto.dados.ae.zonaControlo"
-                  :key="item.codigo"
+                  v-for="(item,index) in p.objeto.dados.ae.zonaControlo"
+                  :key="index"
                   color="grey darken-1"
                   no-action
                 >

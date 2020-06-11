@@ -43,18 +43,13 @@ export default {
   data() {
     return {
       minData: "",
+      dataValor: this.d,
+      menu1: false,
     };
   },
 
   mounted() {
     this.minData = this.dataMinima || "1800-01-01";
-  },
-
-  data() {
-    return {
-      dataValor: this.d,
-      menu1: false,
-    };
   },
 
   methods: {

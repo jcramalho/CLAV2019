@@ -90,6 +90,18 @@
               </template>
               <span>Distribuir pedido...</span>
             </v-tooltip>
+
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  @click="devolverPedido(item)"
+                  color="indigo darken-2"
+                  v-on="on"
+                  >assignment_return
+                </v-icon>
+              </template>
+              <span>Devolver pedido...</span>
+            </v-tooltip>
           </template>
 
           <template v-slot:pageText="props">
@@ -99,15 +111,42 @@
         </v-data-table>
       </v-card>
     </v-expansion-panel-content>
+
+    <!-- Campo despacho -->
+    <v-dialog v-model="devolverPedidoDialog" width="60%">
+      <DevolverPedido
+        @fecharDialog="fecharDialog()"
+        @devolverPedido="despacharPedido($event)"
+      />
+    </v-dialog>
+
+    <!-- Dialog de erros -->
+    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
+      <ErroDialog :erros="erroDialog.mensagem" uri="/" />
+    </v-dialog>
   </v-expansion-panel>
 </template>
 
 <script>
+import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
+import ErroDialog from "@/components/generic/ErroDialog";
+
 export default {
   props: ["pedidos", "pesquisaPedidos"],
 
+  components: {
+    DevolverPedido,
+    ErroDialog,
+  },
+
   data: () => {
     return {
+      devolverPedidoDialog: false,
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
+      },
+      pedidoADevolver: "",
       procurar: "",
       paginaTabela: 1,
       headers: [
@@ -133,7 +172,7 @@ export default {
           filterable: true,
         },
         {
-          text: "Criardor",
+          text: "Criador",
           value: "responsavel",
           class: "title",
           sortable: true,
@@ -183,7 +222,7 @@ export default {
       this.dadosTabela = this.pedidos.map((pedido) => {
         const dados = {};
         dados.codigo = pedido.codigo;
-        dados.tipo = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
+        dados.tipo = `${pedido.objeto.tipo} - ${pedido.objeto.acao}`;
         if (pedido.entidade !== undefined)
           dados.entidade = pedido.entidade.split("_")[1];
         dados.responsavel = pedido.criadoPor;
@@ -273,6 +312,52 @@ export default {
     distribuiPedido(pedido) {
       const pedidoProps = this.pedidos.find((p) => p.codigo === pedido.codigo);
       this.$emit("distribuir", pedidoProps);
+    },
+
+    fecharDialog() {
+      this.devolverPedidoDialog = false;
+      this.pedidoADevolver = "";
+    },
+
+    devolverPedido(pedido) {
+      const pedidoEncontrado = this.pedidos.find(
+        (p) => p.codigo === pedido.codigo
+      );
+
+      this.pedidoADevolver = pedidoEncontrado;
+      this.devolverPedidoDialog = true;
+    },
+
+    async despacharPedido(dados) {
+      try {
+        const estado = "Devolvido";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
+
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.fecharDialog();
+        location.reload();
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao devolver o pedido, por favor tente novamente";
+      }
     },
 
     showPedido(pedido) {

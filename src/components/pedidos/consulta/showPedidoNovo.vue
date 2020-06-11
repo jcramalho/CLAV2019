@@ -68,15 +68,15 @@
                   <td class="subheading">{{ props.item.estado }}</td>
                   <td class="subheading">{{ props.item.data }}</td>
                   <td class="subheading">{{ props.item.responsavel }}</td>
-                  <td
-                    class="subheading"
-                    v-html="despacho_para_html(props.item.despacho)"
-                  ></td>
+                  <td class="subheading">
+                    {{ props.item.despacho }}
+                  </td>
                 </tr>
               </template>
             </v-data-table>
           </v-card-text>
         </v-card>
+
         <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
@@ -90,7 +90,11 @@
           :p="p"
         />
         <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
-        <ShowTipologia v-else-if="p.objeto.tipo == 'Tipologia'" :p="p" />
+        <ShowTipologia
+          v-else-if="p.objeto.tipo === 'Tipologia'"
+          :p="p"
+          @verHistorico="verHistorico()"
+        />
         <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
         <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
         <ShowDefault v-else :p="p" />
@@ -117,9 +121,15 @@
         />
       </v-dialog>
     </div>
+
     <!-- Dialog de erros -->
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
+    </v-dialog>
+
+    <!-- Dialog Ver Historico de Alterações-->
+    <v-dialog v-model="verHistoricoDialog" width="70%">
+      <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
     </v-dialog>
   </v-card>
 </template>
@@ -139,6 +149,8 @@ import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
 
 import ErroDialog from "@/components/generic/ErroDialog";
+
+import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
 import { filtraNivel } from "@/utils/utils";
@@ -160,9 +172,11 @@ export default {
     ShowRADA,
     ShowPGD,
     ErroDialog,
+    VerHistorico,
   },
 
   data: () => ({
+    verHistoricoDialog: false,
     distribuir: false,
     utilizadores: [],
     erroDialog: {
@@ -270,6 +284,14 @@ export default {
       }
     },
 
+    verHistorico() {
+      this.verHistoricoDialog = true;
+    },
+
+    fecharHistorico() {
+      this.verHistoricoDialog = false;
+    },
+
     fecharDialog() {
       this.distribuir = false;
     },
@@ -293,7 +315,7 @@ export default {
 <style scoped>
 .info-label {
   color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
+  padding: 5px;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
@@ -301,6 +323,7 @@ export default {
 }
 
 .info-content {
+  margin-top: 5px;
   padding: 5px;
   width: 100%;
   border: 1px solid #1a237e;

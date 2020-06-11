@@ -6,6 +6,24 @@
       </v-card-title>
       <v-card-text>
         <Identificacao :classe="classe" />
+        
+        <v-row>
+          <v-col md="3" sm="3">
+            <div class="info-label">Classe Pai</div>
+          </v-col>
+          <v-col sm="9" md="9">
+            <v-combobox
+              readonly
+              label="Sem classe pai"
+              v-model="treeview_object.eFilhoDe"
+              :items="[]"
+              item-value="codigo"
+              item-text="searchField"
+              solo
+              chips
+            ></v-combobox>
+          </v-col>
+        </v-row>
 
         <v-expansion-panels accordion>
           <v-expansion-panel popout focusable>
@@ -33,26 +51,6 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <br /> 
-        <h5>Hierarquia</h5>
-        <v-divider></v-divider>
-        <v-row>
-          <v-col md="3" sm="3">
-            <div class="info-label">Classe Pai</div>
-          </v-col>
-          <v-col sm="9" md="9">
-            <v-combobox
-              readonly
-              label="Sem classe pai"
-              v-model="treeview_object.eFilhoDe"
-              :items="[]"
-              item-value="codigo"
-              item-text="searchField"
-              solo
-              chips
-            ></v-combobox>
-          </v-col>
-        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
