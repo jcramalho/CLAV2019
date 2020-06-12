@@ -416,125 +416,126 @@ export default {
 
       return numeroErros;
     },
-  },
 
-  async finalizarPedido(dados) {
-    try {
-      let pedido = JSON.parse(JSON.stringify(this.p));
+    async finalizarPedido(dados) {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
-      let numeroErros = await this.validarEntidade(
-        pedido.objeto.acao,
-        pedido.objeto.dados
-      );
+        let numeroErros = await this.validarEntidade(
+          pedido.objeto.acao,
+          pedido.objeto.dados
+        );
 
-      if (numeroErros === 0) {
-        for (const key in pedido.objeto.dados) {
-          if (
-            pedido.objeto.dados[key] === null ||
-            pedido.objeto.dados[key] === ""
-          ) {
-            delete pedido.objeto.dados[key];
+        if (numeroErros === 0) {
+          for (const key in pedido.objeto.dados) {
+            if (
+              pedido.objeto.dados[key] === null ||
+              pedido.objeto.dados[key] === ""
+            ) {
+              delete pedido.objeto.dados[key];
+            }
           }
+
+          await this.$request("post", "/entidades", pedido.objeto.dados);
+
+          const estado = "Validado";
+
+          let dadosUtilizador = this.$verifyTokenUser();
+
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho,
+          };
+
+          pedido.estado = estado;
+          pedido.token = this.$store.state.token;
+
+          pedido.historico.push(this.novoHistorico);
+
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao,
+          });
+
+          this.$router.go(-1);
+        } else {
+          this.erroPedido = true;
         }
-
-        await this.$request("post", "/entidades", pedido.objeto.dados);
-
-        const estado = "Validado";
-
-        let dadosUtilizador = this.$verifyTokenUser();
-
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho,
-        };
-
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
-
-        pedido.historico.push(this.novoHistorico);
-
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao,
-        });
-
-        this.$router.go(-1);
-      } else {
+      } catch (e) {
         this.erroPedido = true;
-      }
-    } catch (e) {
-      this.erroPedido = true;
 
-      let parsedError = Object.assign({}, e);
-      parsedError = parsedError.response;
+        let parsedError = Object.assign({}, e);
+        parsedError = parsedError.response;
 
-      if (parsedError !== undefined) {
-        if (parsedError.status === 422) {
-          parsedError.data.forEach((erro) => {
-            this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+        if (parsedError !== undefined) {
+          if (parsedError.status === 422) {
+            parsedError.data.forEach((erro) => {
+              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+            });
+          }
+        } else {
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Ocorreu um erro ao aceder à ontologia.",
           });
         }
-      } else {
-        this.erros.push({
-          sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia.",
-        });
       }
-    }
-  },
+    },
 
-  verifica(campo) {
-    this.novoHistorico[campo] = {
-      ...this.novoHistorico[campo],
-      cor: "verde",
-    };
-  },
+    verifica(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "verde",
+      };
+    },
 
-  anula(campo) {
-    this.novoHistorico[campo] = {
-      ...this.novoHistorico[campo],
-      cor: "vermelho",
-    };
+    anula(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "vermelho",
+      };
 
-    // Abrir dialog com despacho
-    // Guardar despacho
-  },
+      // Abrir dialog com despacho
+      // Guardar despacho
+    },
 
-  edita(campo) {
-    this.editaCampo = {
-      visivel: true,
-      nome: this.transformaKeys(campo),
-      key: campo,
-    };
+    edita(campo) {
+      console.log("campo", campo);
+      this.editaCampo = {
+        visivel: true,
+        nome: this.transformaKeys(campo),
+        key: campo,
+      };
 
-    // Abrir dialog com despacho (Opcional)
-    // Guardar despacho
-  },
+      // Abrir dialog com despacho (Opcional)
+      // Guardar despacho
+    },
 
-  fechaEditaCampoDialog(campo) {
-    this.editaCampo.visivel = false;
-  },
+    fechaEditaCampoDialog(campo) {
+      this.editaCampo.visivel = false;
+    },
 
-  editarCampo(event) {
-    console.log("event", event);
-    console.log("dados", event.dados);
-    console.log("campo", event.campo);
+    editarCampo(event) {
+      console.log("event", event);
+      console.log("dados", event.dados);
+      console.log("campo", event.campo);
 
-    this.editaCampo.visivel = false;
+      this.editaCampo.visivel = false;
 
-    this.dados[event.campo.key] = event.dados;
-    this.novoHistorico[event.campo.key] = {
-      ...this.novoHistorico[event.campo.key],
-      dados: event.dados,
-      cor: "amarelo",
-    };
-  },
+      this.dados[event.campo.key] = event.dados;
+      this.novoHistorico[event.campo.key] = {
+        ...this.novoHistorico[event.campo.key],
+        dados: event.dados,
+        cor: "amarelo",
+      };
+    },
 
-  fecharErro() {
-    this.erros = [];
-    this.erroPedido = false;
+    fecharErro() {
+      this.erros = [];
+      this.erroPedido = false;
+    },
   },
 };
 </script>
