@@ -64,7 +64,7 @@
                               class="m-auto mb-2 mt-2"
                               outlined
                             >
-                              Nenhuma entidade selecionada...
+                              Nenhuma tipologia selecionada...
                             </v-alert>
                           </template>
                         </v-data-table>
@@ -82,44 +82,68 @@
               color="orange lighten-5"
             >
               <v-card-text>
-                <v-row v-for="(info, campo) in h" :key="campo">
-                  <v-col cols="2">
-                    <div
-                      :class="['info-descricao', `info-descricao-${info.cor}`]"
-                    >
-                      {{ transformaKeys(campo) }}
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <div
-                      v-if="!(info.dados instanceof Array)"
-                      class="info-conteudo"
-                    >
-                      {{ info.dados }}
-                    </div>
-
-                    <div v-else>
-                      <v-data-table
-                        v-if="campo === 'entidadesSel'"
-                        :headers="entidadesHeaders"
-                        :items="info.dados"
-                        class="elevation-1"
-                        :footer-props="footerProps"
+                <div v-for="(info, campo) in h" :key="campo">
+                  <v-row v-if="info.dados !== '' && info.dados !== null">
+                    <v-col cols="2">
+                      <div
+                        :class="[
+                          'info-descricao',
+                          `info-descricao-${info.cor}`,
+                        ]"
                       >
-                        <template v-slot:no-data>
-                          <v-alert
-                            type="error"
-                            width="100%"
-                            class="m-auto mb-2 mt-2"
-                            outlined
-                          >
-                            Nenhuma entidade selecionada...
-                          </v-alert>
-                        </template>
-                      </v-data-table>
-                    </div>
-                  </v-col>
-                </v-row>
+                        {{ transformaKeys(campo) }}
+                      </div>
+                    </v-col>
+                    <v-col>
+                      <div
+                        v-if="!(info.dados instanceof Array)"
+                        class="info-conteudo"
+                      >
+                        {{ info.dados }}
+                      </div>
+
+                      <div v-else>
+                        <v-data-table
+                          v-if="campo === 'entidadesSel'"
+                          :headers="entidadesHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerProps"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-if="campo === 'tipologiasSel'"
+                          :headers="tipologiasHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsTipologias"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma tipologia selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
               </v-card-text>
             </v-card>
           </v-window-item>
