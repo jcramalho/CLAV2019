@@ -36,7 +36,26 @@
                           :headers="entidadesHeaders"
                           :items="info"
                           class="elevation-1"
-                          :footer-props="footerProps"
+                          :footer-props="footerPropsEntidades"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-if="campo === 'tipologiasSel'"
+                          :headers="tipologiasHeaders"
+                          :items="info"
+                          class="elevation-1"
+                          :footer-props="footerPropsTipologias"
                         >
                           <template v-slot:no-data>
                             <v-alert
@@ -151,8 +170,18 @@ export default {
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
-      footerProps: {
+      footerPropsEntidades: {
         "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
+
+      tipologiasHeaders: [
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+      ],
+      footerPropsTipologias: {
+        "items-per-page-text": "Tipologias por página",
         "items-per-page-options": [5, 10, -1],
         "items-per-page-all-text": "Todas",
       },

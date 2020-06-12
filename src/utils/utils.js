@@ -90,6 +90,10 @@ export function mapKeys(key) {
       descricao = "Entidades";
       break;
 
+    case "tipologiasSel":
+      descricao = "Tipologias";
+      break;
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;

@@ -275,7 +275,7 @@ export default {
           }
 
           if (erros == 0) {
-            var userBD = this.$verifyTokenUser();
+            let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
               tipoPedido: this.acao,
