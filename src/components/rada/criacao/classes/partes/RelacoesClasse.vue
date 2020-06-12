@@ -50,7 +50,7 @@
                     :rules="[v => codigoIgual(v)]"
                     v-model="codrel"
                     :items="getCodigos"
-                    label="Classe"
+                    label="Código"
                     item-value="codigo"
                     item-text="searchField"
                     solo
@@ -115,7 +115,7 @@
                   <v-select
                     :disabled="iscodvalido"
                     :rules="[v => !!v || 'Campo obrigatório!']"
-                    label="Tipo de Classe"
+                    label="Série / Subsérie"
                     v-model="tipoClasse"
                     :items="['Série', 'Subsérie']"
                     chips

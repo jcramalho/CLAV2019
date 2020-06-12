@@ -5,7 +5,7 @@
     <v-row>
       <!-- {{newSerie}} -->
       <v-col md="3" sm="3">
-        <div class="info-label">Prazo de Conservação Administrativa</div>
+        <div class="info-label">Prazo de Conservação Administrativo</div>
       </v-col>
       <v-col sm="9" md="9">
         <v-text-field

@@ -52,6 +52,12 @@ export default {
     InformacaoGeral,
     RelatorioExpositivo,
     TSRada
+  },
+  created(){
+    if(!this.p.objeto.dados){
+      this.p.objeto.dados = this.p.objeto.rada;
+      delete this.p.objeto["rada"];
+    }
   }
 };
 </script>

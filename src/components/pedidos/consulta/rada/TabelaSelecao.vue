@@ -53,7 +53,7 @@
                     :key="i"
                   >{{ classe.codigo }}</li>
                 </ul>
-                <p v-else>Não tem classes associadas!</p>
+                <p v-else>Não tem séries/subséries associadas!</p>
               </td>-->
               <td>
                 <v-list
@@ -77,7 +77,7 @@
                     <v-list-item-content>{{classe.codigo + " - " + classe.titulo}}</v-list-item-content>
                   </v-list-item>
                 </v-list>
-                <p v-else>Não tem classes associadas!</p>
+                <p v-else>Não tem séries/subséries associadas!</p>
               </td>
             </tr>
           </template>
@@ -158,7 +158,7 @@ export default {
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
-        text: "Classes Associadas",
+        text: "Séries/Subséries Associadas",
         value: "classesAssociadas",
         align: "center",
         width: "45%",

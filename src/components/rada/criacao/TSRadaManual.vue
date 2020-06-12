@@ -25,16 +25,6 @@
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_subserie = true">
           <v-icon dark left>add</v-icon>Subsérie
         </v-btn>
-        <!-- <AddOrgFunc :classes="TS.classes" />
-        <Serie
-          :classes="TS.classes"
-          :legislacao="legislacao"
-          :RE="RE"
-          :UIs="TS.UIs"
-          :formaContagem="formaContagem"
-          :legislacaoProcessada="legislacaoProcessada"
-        />
-        <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />-->
       </v-col>
     </v-row>
     <AddOrgFunc
@@ -81,7 +71,6 @@
               />
             </template>
             <template v-slot:label="{ item }">
-              <!-- @mouseout="console.log($event)" -->
               <div @mouseover="mostrar_botao_copia = item" @mouseout="mostrar_botao_copia = false">
                 <b text @click="editarClasse(item)">{{ item.titulo }}</b>
                 <!-- Série -->
@@ -120,7 +109,7 @@
             </template>
           </v-treeview>
           <br />
-          <b v-if="incompleto" style="color:red">*Classes por preencher</b>
+          <b v-if="incompleto" style="color:red">*Campos por preencher</b>
         </div>
         <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
           <b>Sem Classes!</b> É obrigatório adicionar.

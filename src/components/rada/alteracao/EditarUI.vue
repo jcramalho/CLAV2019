@@ -46,16 +46,10 @@
           </v-row>
           <v-row>
             <v-col md="2" sm="2">
-              <div class="info-label">Código Classificação/Cota</div>
+              <div class="info-label">Cota</div>
             </v-col>
             <v-col sm="2" md="2">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI_clone.codCota"
-                label="Código Classificação/Cota"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI_clone.codCota" label="Cota"></v-text-field>
             </v-col>
             <v-col md="2" sm="2">
               <div class="info-label">Descrição</div>
@@ -183,6 +177,19 @@
                       clearable
                       chips
                     >
+                      <template v-slot:item="{item}">
+                        <img
+                          v-if="item.tipo == 'Série'"
+                          style="width:23px; height:30px"
+                          :src="svg_sr"
+                        />
+                        <img
+                          v-else-if="item.tipo == 'Subsérie'"
+                          style="width:23px; height:30px"
+                          :src="svg_ssr"
+                        />
+                        <span style="padding-left: 20px;">{{ item.searchField }}</span>
+                      </template>
                       <template v-slot:no-data>
                         <v-list-item>
                           <v-list-item-content>
@@ -208,14 +215,14 @@
                       solo
                       clearable
                       v-model="tituloClasse"
-                      label="Título da Série/Subsérie"
+                      label="Título"
                     ></v-text-field>
                   </v-col>
                   <v-col sm="2" xs="12">
                     <v-select
                       :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
                       :disabled="iscodvalido"
-                      label="Tipo de Classe"
+                      label="Série / Subsérie"
                       v-model="tipoClasse"
                       :items="['Série', 'Subsérie']"
                       chips
@@ -261,13 +268,7 @@
               <div class="info-label">Localização</div>
             </v-col>
             <v-col sm="4" md="4">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI_clone.localizacao"
-                label="Localização"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI_clone.localizacao" label="Localização"></v-text-field>
             </v-col>
           </v-row>
         </v-form>

@@ -22,7 +22,7 @@
           </v-row>
           <v-row>
             <v-col md="2" sm="2">
-              <div class="info-label">Código Classificação/Cota</div>
+              <div class="info-label">Cota</div>
             </v-col>
             <v-col sm="2" md="2">
               <v-text-field solo v-model="UI.codCota" readonly></v-text-field>

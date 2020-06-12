@@ -3,9 +3,11 @@
     <v-card-title class="pa-2 indigo darken-4 title white--text">
         Consulta do objeto do pendente: {{ p._id }} ({{p.acao}}-{{p.tipo}})</v-card-title>
     <v-card-text>
+      {{ p }}
       <ShowTSOrg v-if="p.tipo == 'TS Organizacional'" :p="p" />
       <ShowTSPluri v-else-if="p.tipo == 'TS Pluriorganizacional'" :p="p" />
       <ShowClasse v-else-if="p.tipo == 'Classe'" :p="p" />  
+      <ShowRADA v-else-if="p.tipo == 'RADA'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
@@ -15,6 +17,7 @@
 </template>
 
 <script>
+import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowClasse from "@/components/pendentes/consulta/ShowClasse.vue";
 import ShowTSOrg from "@/components/pendentes/consulta/ShowTSOrg.vue";
 import ShowTSPluri from "@/components/pendentes/consulta/ShowTSPluri.vue";
@@ -27,7 +30,8 @@ export default {
     ShowClasse,
     ShowTSOrg,
     ShowTSPluri,
-    ShowDefault
+    ShowDefault,
+    ShowRADA
   },
 
   data: () => ({

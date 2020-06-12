@@ -51,6 +51,7 @@
         <v-text-field readonly v-model="RE.dataFinal" prepend-icon="event"></v-text-field>
       </v-col>
     </v-row>
+    <div v-if="!!RE.dimSuporte.nSeries">
     <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <v-card flat outlined>
       <div class="info-label">Dimensão e Suporte</div>
@@ -98,6 +99,7 @@
         </v-row>
       </v-card-text>
     </v-card>
+    </div>
     <br />
     <v-expansion-panels accordion>
       <v-expansion-panel popout focusable>

@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col md="3" sm="3">
-        <div class="info-label">Prazo de Conservação Administrativa</div>
+        <div class="info-label">Prazo de Conservação Administrativo</div>
       </v-col>
       <!-- v-model="classe.pca" -->
       <v-col sm="9" md="9">
@@ -10,7 +10,7 @@
           readonly
           :value="!!classe.pca ? classe.pca : 'Não especificado'"
           solo
-          label="Sem prazo de conservação administrativa"
+          label="Sem prazo de conservação administrativo"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -123,7 +123,7 @@
           dense
           icon="warning"
           color="amber accent-3"
-        >Não existe justificação do Prazo de Conservação Administrativa!</v-alert>
+        >Não existe justificação do Prazo de Conservação Administrativo!</v-alert>
       </v-col>
     </v-row>
     <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>

@@ -187,7 +187,7 @@ export default {
         if (!Boolean(this.serie.pca)) {
           if (!Boolean(this.serie.notaPCA)) {
             this.erros.push(
-              "Prazo de Conservação Administrativa ou nota sobre o PCA;"
+              "Prazo de Conservação Administrativo ou nota sobre o PCA;"
             );
           }
         }

@@ -101,7 +101,7 @@
             <v-expansion-panel-content>
               <br />
               <v-card outlined>
-                <div class="info-label">Prazo de Conservação Administrativa</div>
+                <div class="info-label">Prazo de Conservação Administrativo</div>
                 <v-card-text>
                   <RADAEntry v-if="!!classe.pca.pca" label="PCA" :value="classe.pca.pca" />
                   <RADAEntry
