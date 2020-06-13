@@ -39,7 +39,7 @@
                 :headers="entidadesHeaders"
                 :items="info"
                 class="elevation-1"
-                hide-default-footer
+                :footer-props="footerProps"
               >
                 <template v-slot:no-data>
                   <v-alert
@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { mapKeys } from "@/utils/utils";
+
 export default {
   props: ["p"],
 
@@ -70,6 +72,11 @@ export default {
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
+      footerProps: {
+        "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
     };
   },
 
@@ -89,22 +96,7 @@ export default {
     },
 
     transformaKeys(key) {
-      let descricao = "";
-      switch (key) {
-        case "designacao":
-          descricao = "Nome";
-          break;
-
-        case "entidadesSel":
-          descricao = "Entidades";
-          break;
-
-        default:
-          descricao = key.charAt(0).toUpperCase() + key.slice(1);
-          break;
-      }
-
-      return descricao;
+      return mapKeys(key);
     },
   },
 };

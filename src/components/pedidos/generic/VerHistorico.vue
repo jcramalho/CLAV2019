@@ -36,7 +36,7 @@
                           :headers="entidadesHeaders"
                           :items="info"
                           class="elevation-1"
-                          hide-default-footer
+                          :footer-props="footerPropsEntidades"
                         >
                           <template v-slot:no-data>
                             <v-alert
@@ -46,6 +46,25 @@
                               outlined
                             >
                               Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-if="campo === 'tipologiasSel'"
+                          :headers="tipologiasHeaders"
+                          :items="info"
+                          class="elevation-1"
+                          :footer-props="footerPropsTipologias"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma tipologia selecionada...
                             </v-alert>
                           </template>
                         </v-data-table>
@@ -63,44 +82,68 @@
               color="orange lighten-5"
             >
               <v-card-text>
-                <v-row v-for="(info, campo) in h" :key="campo">
-                  <v-col cols="2">
-                    <div
-                      :class="['info-descricao', `info-descricao-${info.cor}`]"
-                    >
-                      {{ transformaKeys(campo) }}
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <div
-                      v-if="!(info.alteracao instanceof Array)"
-                      class="info-conteudo"
-                    >
-                      {{ info.alteracao }}
-                    </div>
-
-                    <div v-else>
-                      <v-data-table
-                        v-if="campo === 'entidadesSel'"
-                        :headers="entidadesHeaders"
-                        :items="info.alteracao"
-                        class="elevation-1"
-                        hide-default-footer
+                <div v-for="(info, campo) in h" :key="campo">
+                  <v-row v-if="info.dados !== '' && info.dados !== null">
+                    <v-col cols="2">
+                      <div
+                        :class="[
+                          'info-descricao',
+                          `info-descricao-${info.cor}`,
+                        ]"
                       >
-                        <template v-slot:no-data>
-                          <v-alert
-                            type="error"
-                            width="100%"
-                            class="m-auto mb-2 mt-2"
-                            outlined
-                          >
-                            Nenhuma entidade selecionada...
-                          </v-alert>
-                        </template>
-                      </v-data-table>
-                    </div>
-                  </v-col>
-                </v-row>
+                        {{ transformaKeys(campo) }}
+                      </div>
+                    </v-col>
+                    <v-col>
+                      <div
+                        v-if="!(info.dados instanceof Array)"
+                        class="info-conteudo"
+                      >
+                        {{ info.dados }}
+                      </div>
+
+                      <div v-else>
+                        <v-data-table
+                          v-if="campo === 'entidadesSel'"
+                          :headers="entidadesHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerProps"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-if="campo === 'tipologiasSel'"
+                          :headers="tipologiasHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsTipologias"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma tipologia selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
               </v-card-text>
             </v-card>
           </v-window-item>
@@ -138,6 +181,8 @@
 </template>
 
 <script>
+import { mapKeys } from "@/utils/utils";
+
 export default {
   props: ["pedido"],
 
@@ -149,14 +194,27 @@ export default {
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
+      footerPropsEntidades: {
+        "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
+
+      tipologiasHeaders: [
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+      ],
+      footerPropsTipologias: {
+        "items-per-page-text": "Tipologias por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
     };
   },
 
   created() {
-    if (this.pedido.objeto.acao !== "Criação") {
-      this.dados.push(this.pedidoOriginal);
-      this.dados.push(...this.historico);
-    }
+    this.dados.push(this.pedidoOriginal);
+    this.dados.push(...this.historico);
   },
 
   computed: {
@@ -165,7 +223,7 @@ export default {
     },
 
     pedidoOriginal() {
-      return this.pedido.objeto.dadosOriginais || this.pedido.objeto.dados;
+      return this.pedido.objeto.dadosOriginais;
     },
   },
 
@@ -180,22 +238,7 @@ export default {
     },
 
     transformaKeys(key) {
-      let descricao = "";
-      switch (key) {
-        case "designacao":
-          descricao = "Nome";
-          break;
-
-        case "entidadesSel":
-          descricao = "Entidades";
-          break;
-
-        default:
-          descricao = key.charAt(0).toUpperCase() + key.slice(1);
-          break;
-      }
-
-      return descricao;
+      return mapKeys(key);
     },
 
     cancelar() {

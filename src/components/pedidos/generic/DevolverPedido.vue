@@ -41,7 +41,6 @@ export default {
 
   methods: {
     cancelar() {
-      this.utilizadorSelecionado = null;
       this.mensagemDespacho = null;
       this.$emit("fecharDialog");
     },
