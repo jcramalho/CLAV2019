@@ -114,7 +114,6 @@
               </SelecionarData>
             </v-col>
           </v-row>
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <EntidadesProdutoras :newSerie="UI_clone.produtor" :RE="RE" />
           <v-row>
             <v-col md="3" sm="2">
@@ -255,8 +254,6 @@
               </v-form>
             </v-card-text>
           </v-card>
-
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <v-row>
             <v-col md="2" sm="2">
               <div class="info-label">Notas</div>

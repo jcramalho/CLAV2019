@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="12" xs="12" sm="12">
+      <v-col xs="11" sm="11">
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_area = true">
           <v-icon dark left>add</v-icon>área orgânico-funcional
         </v-btn>
@@ -25,6 +25,20 @@
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_subserie = true">
           <v-icon dark left>add</v-icon>Subsérie
         </v-btn>
+      </v-col>
+       <v-col xs="1" sm="1">
+        <v-tooltip top v-if="!!TS.classes[0]">
+          <template v-slot:activator="{ on }">
+            <v-switch
+              prepend-icon="table_view"
+              inset
+              hide-details
+              v-model="tree_ou_tabela"
+              v-on="on"
+            ></v-switch>
+          </template>
+          <span>Alterar modo de visualização das classes</span>
+        </v-tooltip>
       </v-col>
     </v-row>
     <AddOrgFunc
@@ -58,7 +72,7 @@
       :RE="RE"
     />
     <!-- {{ TS.classes }} -->
-    <v-row>
+    <v-row v-if="!tree_ou_tabela">
       <v-col cols="12" xs="12" sm="12">
         <div v-if="TS.classes.length > 0">
           <v-treeview hoverable :items="preparaTree" item-key="codigo">
@@ -117,7 +131,9 @@
         <br />
       </v-col>
     </v-row>
-    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+    <v-row v-else>
+      <TabelaClassesRADA background_color="#fafafa;" :formaContagem="formaContagem" :classes="TS.classes" @editarClasse="editarClasse" />
+    </v-row>
     <v-row>
       <v-col sm="12" xs="12">
         <ListaUI :TS="TS" :RE="RE" />
@@ -203,6 +219,7 @@ import SubSerie from "@/components/rada/criacao/classes/Subserie";
 import EditarOrganicaFunc from "@/components/rada/alteracao/EditarOrganicaFunc";
 import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
+import TabelaClassesRADA from "@/components/rada/consulta/TabelaClassesRADA";
 import ListaUI from "@/components/rada/criacao/ListaUI";
 
 const labels = require("@/config/labels").criterios;
@@ -224,9 +241,11 @@ export default {
     EditarOrganicaFunc,
     EditarSubserie,
     EditarSerie,
-    ListaUI
+    ListaUI,
+    TabelaClassesRADA
   },
   data: () => ({
+    tree_ou_tabela: false,
     classe_copia: null,
     mostrar_botao_copia: false,
     criar_area: false,
@@ -931,9 +950,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-/* ::v-deep .v-treeview-node {
-  background-color: rgba(240, 163, 10, 0.2);
-} */
-</style>

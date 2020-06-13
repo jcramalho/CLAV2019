@@ -1,14 +1,23 @@
 <template>
   <v-card flat class="mb-12">
-    <v-row>
-      <v-col cols="12" xs="12" sm="3">
-        <div class="info-label">Título</div>
-      </v-col>
-      <v-col xs="12" sm="9">
-        <v-text-field readonly v-model="TS.titulo" solo></v-text-field>
+    <v-row align="start" justify="end">
+      <v-col xs="1" sm="1">
+        <v-tooltip top v-if="!!TS.classes[0]">
+          <template v-slot:activator="{ on }">
+            <v-switch
+              prepend-icon="table_view"
+              inset
+              hide-details
+              v-model="tree_ou_tabela"
+              v-on="on"
+            ></v-switch>
+          </template>
+          <span>Alterar modo de visualização das classes</span>
+        </v-tooltip>
       </v-col>
     </v-row>
-    <v-row>
+    <RADAEntry label="Título" :value="TS.titulo" />
+    <v-row v-if="!tree_ou_tabela">
       <v-col cols="12">
         <v-treeview hoverable :items="preparaTree" item-key="codigo">
           <template v-slot:prepend="{ item }">
@@ -20,6 +29,13 @@
           </template>
         </v-treeview>
       </v-col>
+    </v-row>
+    <v-row v-else>
+      <TabelaClassesRADA
+        :formaContagem="formaContagem"
+        :classes="TS.classes"
+        @editarClasse="showClasse"
+      />
     </v-row>
     <br />
     <br />
@@ -56,11 +72,7 @@
                 <p v-else>Não tem séries/subséries associadas!</p>
               </td>-->
               <td>
-                <v-list
-                  v-if="!!props.item.classesAssociadas[0]"
-                  dense
-                  
-                >
+                <v-list v-if="!!props.item.classesAssociadas[0]" dense>
                   <v-list-item
                     v-for="(classe, i) in props.item.classesAssociadas"
                     :key="i"
@@ -116,13 +128,18 @@
 import ShowSerieSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSerieOuSubserie";
 import ShowOrganico from "@/components/pedidos/consulta/rada/elementos/ShowOrganico";
 import ShowUI from "@/components/pedidos/consulta/rada/elementos/ShowUI";
+import TabelaClassesRADA from "@/components/rada/consulta/TabelaClassesRADA";
+
+import RADAEntry from "@/components/rada/consulta/elementos/campos/RadaEntry.vue";
 
 export default {
   props: ["TS"],
   components: {
     ShowOrganico,
     ShowSerieSubserie,
-    ShowUI
+    ShowUI,
+    TabelaClassesRADA,
+    RADAEntry
   },
   data: () => ({
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
@@ -133,6 +150,7 @@ export default {
     show_serie_subserie: false,
     show_area_organico: false,
     treeview_object: null,
+    tree_ou_tabela: false,
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
@@ -302,6 +320,16 @@ export default {
         this.$set(rel, "titulo", classe_relacionada.titulo);
       });
     }
+    
   }
 };
 </script>
+
+<style>
+.table-header {
+  color: #1a237e;
+  font-weight: 400;
+  background-color: #dee2f8;
+  font-weight: bold;
+}
+</style>
