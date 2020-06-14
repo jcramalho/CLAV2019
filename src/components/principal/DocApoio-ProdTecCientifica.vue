@@ -35,7 +35,7 @@
                         >{{ publicacao.titulo }}</span></b
                       >, {{ publicacao.local }};
                       <span v-for="(a,index) in publicacao.autores" :key="`${a}${index}`"
-                        >{{ a }}&nbsp;</span
+                        >{{ nameWithComma(a, index, publicacao.autores.length) }}&nbsp;</span
                       >
                       <v-icon
                         v-for="(operacao, index) in operacoes"
@@ -129,6 +129,13 @@ export default {
     Loading
   },
   methods: {
+    nameWithComma(a, index, length){
+      if(index !== length-1){
+        return `${a}, `;
+      }else{
+        return a;
+      }
+    },
     groupBy: function(key, array) {
       var result = [];
       for (var i = 0; i < array.length; i++) {
