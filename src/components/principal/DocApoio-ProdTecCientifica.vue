@@ -131,7 +131,7 @@ export default {
   methods: {
     nameWithComma(a, index, length){
       if(index !== length-1){
-        return `${a}, `;
+        return `${a}; `;
       }else{
         return a;
       }
