@@ -22,6 +22,23 @@
                 class="text-justify"
                 v-html="compiledMarkdown(entrada.descricao)"
               ></p>
+              <v-tooltip bottom v-for="(operacao, index) in operacoes_entradas" :key="index">
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    @click="
+                      switchOperacaoEntrada(
+                        operacao.descricao,
+                        documentacao._id,
+                        entrada._id
+                      )
+                    "
+                    :color="operacao.cor"
+                    v-on="on"
+                    >{{ operacao.icon }}</v-icon
+                  >
+                </template>
+                <span>{{ operacao.tooltip }}</span>
+              </v-tooltip>
               <ul>
                 <div v-for="elemento in entrada.elementos" :key="elemento._id">
                   <!-- No caso de ser uma rota da API -->
@@ -80,35 +97,26 @@
                     class="text-justify"
                     v-html="compiledMarkdown(elemento.texto)"
                   ></li>
-                  <v-icon
-                    v-for="(operacao, index) in operacoes_elementos"
-                    @click="
-                      switchOperacaoElemento(
-                        operacao.descricao,
-                        documentacao._id,
-                        entrada._id,
-                        elemento._id
-                      )
-                    "
-                    :color="operacao.cor"
-                    :key="index"
-                    >{{ operacao.icon }}</v-icon
-                  >
+                  <v-tooltip bottom v-for="(operacao, index) in operacoes_elementos" :key="index">
+                    <template v-slot:activator="{ on }">
+                      <v-icon
+                        @click="
+                          switchOperacaoElemento(
+                            operacao.descricao,
+                            documentacao._id,
+                            entrada._id,
+                            elemento._id
+                          )
+                        "
+                        :color="operacao.cor"
+                        v-on="on"
+                        >{{ operacao.icon }}</v-icon
+                      >
+                    </template>
+                    <span>{{ operacao.tooltip }}</span>
+                  </v-tooltip>
                 </div>
               </ul>
-              <v-icon
-                v-for="(operacao, index) in operacoes_entradas"
-                @click="
-                  switchOperacaoEntrada(
-                    operacao.descricao,
-                    documentacao._id,
-                    entrada._id
-                  )
-                "
-                :color="operacao.cor"
-                :key="index"
-                >{{ operacao.icon }}</v-icon
-              >
             </v-card-text>
             <div v-if="level >= min">
               <v-btn
@@ -532,13 +540,13 @@ export default {
     preparaOperacoesEntradaElemento(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes_entradas = [
-          { icon: "add", descricao: "Adição", cor: "indigo darken-2" },
-          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
-          { icon: "delete", descricao: "Remoção", cor: "red" }
+          { icon: "add", descricao: "Adição", cor: "indigo darken-2", tooltip: "Adicionar Elemento" },
+          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2", tooltip: "Editar Entrada" },
+          { icon: "delete", descricao: "Remoção", cor: "red", tooltip: "Remover Entrada" }
         ];
         this.operacoes_elementos = [
-          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
-          { icon: "delete", descricao: "Remoção", cor: "red" }
+          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2", tooltip: "Editar Elemento" },
+          { icon: "delete", descricao: "Remoção", cor: "red", tooltip: "Remover Elemento" }
         ];
       }
     },
