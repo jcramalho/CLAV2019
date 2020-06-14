@@ -19,7 +19,6 @@
           v-model="classe.dataInicial"
           prepend-icon="event"
           readonly
-          label="Sem data inicial"
         ></v-text-field>
       </v-col>
       <!-- DATA FINAL -->
@@ -31,7 +30,6 @@
           v-model="classe.dataFinal"
           prepend-icon="event"
           readonly
-          label="Sem data final"
         ></v-text-field>
       </v-col>
     </v-row>

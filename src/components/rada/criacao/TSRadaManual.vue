@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="12" xs="12" sm="12">
+      <v-col xs="11" sm="11">
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_area = true">
           <v-icon dark left>add</v-icon>área orgânico-funcional
         </v-btn>
@@ -25,16 +25,20 @@
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_subserie = true">
           <v-icon dark left>add</v-icon>Subsérie
         </v-btn>
-        <!-- <AddOrgFunc :classes="TS.classes" />
-        <Serie
-          :classes="TS.classes"
-          :legislacao="legislacao"
-          :RE="RE"
-          :UIs="TS.UIs"
-          :formaContagem="formaContagem"
-          :legislacaoProcessada="legislacaoProcessada"
-        />
-        <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />-->
+      </v-col>
+       <v-col xs="1" sm="1">
+        <v-tooltip top v-if="!!TS.classes[0]">
+          <template v-slot:activator="{ on }">
+            <v-switch
+              prepend-icon="table_view"
+              inset
+              hide-details
+              v-model="tree_ou_tabela"
+              v-on="on"
+            ></v-switch>
+          </template>
+          <span>Alterar modo de visualização das classes</span>
+        </v-tooltip>
       </v-col>
     </v-row>
     <AddOrgFunc
@@ -67,9 +71,8 @@
       :formaContagem="formaContagem"
       :RE="RE"
     />
-    <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ TS.classes }}</p> -->
     <!-- {{ TS.classes }} -->
-    <v-row>
+    <v-row v-if="!tree_ou_tabela">
       <v-col cols="12" xs="12" sm="12">
         <div v-if="TS.classes.length > 0">
           <v-treeview hoverable :items="preparaTree" item-key="codigo">
@@ -82,7 +85,6 @@
               />
             </template>
             <template v-slot:label="{ item }">
-              <!-- @mouseout="console.log($event)" -->
               <div @mouseover="mostrar_botao_copia = item" @mouseout="mostrar_botao_copia = false">
                 <b text @click="editarClasse(item)">{{ item.titulo }}</b>
                 <!-- Série -->
@@ -121,7 +123,7 @@
             </template>
           </v-treeview>
           <br />
-          <b v-if="incompleto" style="color:red">*Classes por preencher</b>
+          <b v-if="incompleto" style="color:red">*Campos por preencher</b>
         </div>
         <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
           <b>Sem Classes!</b> É obrigatório adicionar.
@@ -129,7 +131,9 @@
         <br />
       </v-col>
     </v-row>
-    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+    <v-row v-else>
+      <TabelaClassesRADA background_color="#fafafa;" :formaContagem="formaContagem" :classes="TS.classes" @editarClasse="editarClasse" />
+    </v-row>
     <v-row>
       <v-col sm="12" xs="12">
         <ListaUI :TS="TS" :RE="RE" />
@@ -179,19 +183,31 @@
       indeterminate
     ></v-progress-circular>
     <div v-else>
-      <v-btn
-        :disabled="
+      <v-row>
+        <v-col>
+          <v-btn
+            :disabled="
           !Boolean(TS.classes[0]) ||
             UIs_validas ||
             incompleto ||
             !Boolean(TS.titulo)
         "
-        color="#3949ab"
-        @click="sendToFather()"
-      >
-        <font style="color: white">Criar RADA</font>
-      </v-btn>
-      <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
+            color="indigo darken-4"
+            @click="sendToFather()"
+          >
+            <font style="color: white">Criar RADA</font>
+          </v-btn>
+
+          <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col align="right">
+          <v-btn color="indigo darken-4" dark @click="$emit('update:toSave', true)">
+            Guardar Trabalho
+            <v-icon right>save</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </div>
   </v-card>
 </template>
@@ -203,6 +219,7 @@ import SubSerie from "@/components/rada/criacao/classes/Subserie";
 import EditarOrganicaFunc from "@/components/rada/alteracao/EditarOrganicaFunc";
 import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
+import TabelaClassesRADA from "@/components/rada/consulta/TabelaClassesRADA";
 import ListaUI from "@/components/rada/criacao/ListaUI";
 
 const labels = require("@/config/labels").criterios;
@@ -214,7 +231,8 @@ export default {
     "RE",
     "legislacao",
     "legislacaoProcessada",
-    "loading_circle"
+    "loading_circle",
+    "toSave"
   ],
   components: {
     AddOrgFunc,
@@ -223,9 +241,11 @@ export default {
     EditarOrganicaFunc,
     EditarSubserie,
     EditarSerie,
-    ListaUI
+    ListaUI,
+    TabelaClassesRADA
   },
   data: () => ({
+    tree_ou_tabela: false,
     classe_copia: null,
     mostrar_botao_copia: false,
     criar_area: false,
@@ -930,9 +950,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-/* ::v-deep .v-treeview-node {
-  background-color: rgba(240, 163, 10, 0.2);
-} */
-</style>

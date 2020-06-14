@@ -79,9 +79,33 @@ export function comparaArraySel(arrA, arrB, key) {
   return arraysIguais;
 }
 
+export function mapKeys(key) {
+  let descricao = "";
+  switch (key) {
+    case "designacao":
+      descricao = "Nome";
+      break;
+
+    case "entidadesSel":
+      descricao = "Entidades";
+      break;
+
+    case "tipologiasSel":
+      descricao = "Tipologias";
+      break;
+
+    default:
+      descricao = key.charAt(0).toUpperCase() + key.slice(1);
+      break;
+  }
+
+  return descricao;
+}
+
 export default {
   filtraNivel,
   comparaSigla,
   comparaCodigo,
   comparaArraySel,
+  mapKeys,
 };

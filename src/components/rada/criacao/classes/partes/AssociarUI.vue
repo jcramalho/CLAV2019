@@ -9,7 +9,7 @@
         <v-combobox
           v-model="newSerie.UIs"
           :items="getCodigos"
-          label="Unidadades de Instalação"
+          label="Unidades de Instalação"
           clearable
           multiple
           item-text="searchField"

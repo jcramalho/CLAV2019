@@ -5,6 +5,8 @@ export default {
     menu1: false,
     menu2: false,
     classes_processadas: [],
+    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     erros: [],
     tituloClasse: null,
     existe_erros: false,
@@ -60,10 +62,6 @@ export default {
         this.erros.push("Título;");
       }
 
-      if (!UI.codCota) {
-        this.erros.push("Código Cota;");
-      }
-
       if (!UI.dataInicial || !UI.dataFinal) {
         this.erros.push("Datas;");
       }
@@ -82,10 +80,6 @@ export default {
         this.erros.push("Descrição;");
       }
 
-      if (!UI.localizacao) {
-        this.erros.push("Localização;");
-      }
-
       if (!Boolean(this.erros[0])) {
         this.erros.push("Datas Inválidas;");
       }
@@ -102,6 +96,10 @@ export default {
           this.$refs.addRel.reset();
         } else {
           this.alertOn = true;
+
+          setTimeout(() => {
+            this.alertOn = false;
+          }, 3000);
         }
       }
     },
@@ -140,7 +138,8 @@ export default {
       .map(e => {
         return {
           codigo: e.codigo,
-          searchField: e.codigo + " - " + e.titulo
+          searchField: e.codigo + " - " + e.titulo,
+          tipo: e.tipo
         };
       });
   }

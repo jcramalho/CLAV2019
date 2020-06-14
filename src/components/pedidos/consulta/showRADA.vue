@@ -1,6 +1,6 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title">{{ p.objeto.acao }} do RADA</v-card-title>
+    <v-card-title class="indigo darken-4 white--text title">{{ !!p.objeto.acao ?  p.objeto.acao : 'Criação'}} do RADA</v-card-title>
     <v-card-text>
       <br />
       <v-stepper v-model="e1" vertical class="elevation-0">
@@ -52,6 +52,12 @@ export default {
     InformacaoGeral,
     RelatorioExpositivo,
     TSRada
+  },
+  created(){
+    if(!this.p.objeto.dados){
+      this.p.objeto.dados = this.p.objeto.rada;
+      delete this.p.objeto["rada"];
+    }
   }
 };
 </script>

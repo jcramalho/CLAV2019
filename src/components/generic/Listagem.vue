@@ -61,7 +61,29 @@
               switchOperacao($event.operacao.descricao, props.item.id)
             "
           />
-
+          <tr
+            v-else-if="tipo == 'Relatórios de Avaliação de Documentação Acumulada'"
+            @click="$router.push('/rada/' + props.item.codigo)"
+          >
+            <td>{{props.item.dataAprovacao}}</td>
+            <td>{{props.item.titulo}}</td>
+            <td>
+              <ul>
+                <li v-for="(entidade, i) in props.item.entResp" :key="i">
+                  <a :href="'/entidades/ent_' + entidade.sigla">{{ entidade.sigla + " - " + entidade.designacao}}</a>
+                </li>
+              </ul>
+            </td>
+            <!-- <td v-for="(campo, index) in props.item" v-bind:key="index">
+              <div v-if="props.item">
+                <div v-if="index === 'entidade'">
+                  <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
+                </div>
+                <div v-else>{{ campo }}</div>
+              </div>
+            </td> -->
+          </tr>
+        
           <tr
             v-else-if="tipo == 'Autos de Eliminação'"
             @click="go(props.item.id)"

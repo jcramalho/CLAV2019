@@ -2,96 +2,87 @@
   <div>
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
-      <v-row v-for="(info, i) in infoPedido" :key="i">
-        <!-- Label -->
-        <v-col
-          cols="2"
-          v-if="
-            info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
-          "
+      <div v-for="(info, campo) in tipologia" :key="campo">
+        <v-row
+          v-if="info !== '' && info !== null && campo !== 'codigo'"
+          dense
+          class="ma-1"
         >
-          <div :class="['info-label', info.cor]">
-            {{ info.campo }}
-          </div>
-        </v-col>
+          <v-col cols="2">
+            <div
+              :class="[
+                'info-descricao',
+                `info-descricao-${novoHistorico[campo].cor}`,
+              ]"
+            >
+              {{ transformaKeys(campo) }}
+            </div>
+          </v-col>
 
-        <!-- Conteudo -->
-        <v-col
-          v-if="
-            info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
-          "
-        >
-          <!-- Se o conteudo for uma lista de entidades-->
-          <v-data-table
-            v-if="info.campo === 'Entidades'"
-            :headers="headersEntidades"
-            :items="info.conteudo"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:no-data>
-              Não existem entidades selecionadas
-            </template>
+          <v-col>
+            <div v-if="!(info instanceof Array)" class="info-conteudo">
+              {{ info }}
+            </div>
 
-            <template v-slot:item="props">
-              <tr>
-                <td>{{ props.item.sigla }}</td>
-                <td>{{ props.item.designacao }}</td>
-                <td>
-                  <v-icon color="red" @click="removeEntidade(props.item)">
+            <div v-else>
+              <v-data-table
+                v-if="campo === 'entidadesSel'"
+                :headers="entidadesHeaders"
+                :items="info"
+                class="elevation-1"
+                :footer-props="footerProps"
+              >
+                <template v-slot:no-data>
+                  <v-alert
+                    type="error"
+                    width="100%"
+                    class="m-auto mb-2 mt-2"
+                    outlined
+                  >
+                    Nenhuma entidade selecionada...
+                  </v-alert>
+                </template>
+
+                <template v-slot:item.operacao="{ item }">
+                  <v-icon color="red" @click="removeEntidade(item)">
                     delete
                   </v-icon>
-                </td>
-              </tr>
-            </template>
+                </template>
 
-            <template v-slot:top>
-              <v-toolbar flat :color="info.cor">
-                <v-btn
-                  rounded
-                  class="indigo accent-4 white--text"
-                  @click="abreEntidadesDialog()"
-                >
-                  Adicionar Entidades
-                </v-btn>
-              </v-toolbar>
-            </template>
-          </v-data-table>
+                <template v-slot:top>
+                  <v-toolbar flat>
+                    <v-btn
+                      rounded
+                      class="indigo accent-4 white--text"
+                      @click="abreEntidadesDialog()"
+                    >
+                      Adicionar Entidades
+                    </v-btn>
+                  </v-toolbar>
+                </template>
+              </v-data-table>
+            </div>
+          </v-col>
 
-          <!-- Se o conteudo for texto -->
-          <div v-else class="info-content">
-            {{ info.conteudo }}
-          </div>
-        </v-col>
-        <v-col
-          cols="1"
-          v-if="
-            info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
-          "
-          class="ma-2"
-        >
-          <v-icon class="mr-1 ml-1" color="green" @click="verifica(info)">
-            check
-          </v-icon>
-          <v-icon class="mr-1 ml-1" color="red" @click="anula(info)">
-            clear
-          </v-icon>
-          <v-icon
-            v-if="info.campo !== 'Entidades'"
-            class="mr-1 ml-1"
-            color="orange"
-            @click="edita(info)"
-          >
-            create
-          </v-icon>
-        </v-col>
-      </v-row>
+          <!-- Operações -->
+          <v-col cols="1">
+            <v-icon class="mr-1" color="green" @click="verifica(campo)">
+              check
+            </v-icon>
+            <v-icon class="mr-1" color="red" @click="anula(campo)">
+              clear
+            </v-icon>
+            <v-icon
+              v-if="!(info instanceof Array)"
+              class="mr-1"
+              color="orange"
+              @click="edita(campo)"
+            >
+              create
+            </v-icon>
+          </v-col>
+        </v-row>
+      </div>
 
       <v-row>
         <v-spacer />
@@ -138,7 +129,7 @@ import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog"
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla } from "@/utils/utils";
+import { comparaSigla, mapKeys } from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -153,6 +144,7 @@ export default {
 
   data() {
     return {
+      novoHistorico: {},
       loading: true,
       editaCampo: {
         visivel: false,
@@ -163,7 +155,7 @@ export default {
         visivel: false,
         mensagem: null,
       },
-      headersEntidades: [
+      entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
         {
@@ -175,6 +167,11 @@ export default {
           align: "center",
         },
       ],
+      footerProps: {
+        "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
 
       mensagemAutocomplete: {
         titulo: "entidades",
@@ -182,9 +179,17 @@ export default {
       },
       dialogEntidades: false,
       entidades: [],
-      infoPedido: [],
-      pedido: null,
     };
+  },
+
+  computed: {
+    tipologia() {
+      return this.p.objeto.dados;
+    },
+
+    historico() {
+      return this.p.historico;
+    },
   },
 
   async created() {
@@ -193,7 +198,6 @@ export default {
 
       this.loading = false;
     } catch (e) {
-      console.log("e :", e);
       this.erroDialog.visivel = true;
       this.erroDialog.mensagem =
         "Erro ao carregar os dados, por favor tente novamente";
@@ -201,43 +205,26 @@ export default {
   },
 
   mounted() {
-    this.infoPedido = [
-      {
-        campo: "Sigla",
-        conteudo: this.pedido.objeto.dados.sigla,
-        key: "sigla",
-        cor: null,
-      },
-      {
-        campo: "Designação",
-        conteudo: this.pedido.objeto.dados.designacao,
-        key: "designacao",
-        cor: null,
-      },
-      {
-        campo: "Entidades",
-        conteudo: this.pedido.objeto.dados.entidadesSel,
-        key: "entidadesSel",
-        cor: null,
-      },
-    ];
-  },
+    const criaNovoHistorico = {};
+    Object.keys(this.tipologia).forEach((key) => {
+      if (key !== "codigo")
+        criaNovoHistorico[key] = {
+          cor: "verde",
+          dados: this.tipologia[key],
+          despacho: null,
+        };
+    });
 
-  watch: {
-    p: {
-      handler(newP, oldP) {
-        if (newP !== oldP) {
-          this.pedido = JSON.parse(JSON.stringify(this.p));
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
+    this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
   },
 
   methods: {
+    transformaKeys(key) {
+      return mapKeys(key);
+    },
+
     abreEntidadesDialog() {
-      this.pedido.objeto.dados.entidadesSel.forEach((entSel) => {
+      this.tipologia.entidadesSel.forEach((entSel) => {
         const index = this.entidades.findIndex(
           (ent) => ent.sigla === entSel.sigla
         );
@@ -253,7 +240,7 @@ export default {
     },
 
     removeEntidade(entidade) {
-      const index = this.pedido.objeto.dados.entidadesSel.findIndex(
+      const index = this.tipologia.entidadesSel.findIndex(
         (entSel) => entSel.sigla === entidade.sigla
       );
 
@@ -264,20 +251,23 @@ export default {
           this.entidades.push(entidade);
           this.entidades.sort(comparaSigla);
         }
-        this.pedido.objeto.dados.entidadesSel.splice(index, 1);
-
-        const i = this.infoPedido.findIndex((o) => o.campo === "Entidades");
-        this.infoPedido[i].cor = "info-label-amarelo";
+        this.tipologia.entidadesSel.splice(index, 1);
+        this.novoHistorico.entidadesSel = {
+          ...this.novoHistorico.entidadesSel,
+          cor: "amarelo",
+          dados: this.tipologia.entidadesSel,
+        };
       }
     },
 
     adicionaEntidades(entidades) {
-      this.pedido.objeto.dados.entidadesSel.push(...entidades);
-
-      const i = this.infoPedido.findIndex((o) => o.campo === "Entidades");
-      this.infoPedido[i].cor = "info-label-amarelo";
-
+      this.tipologia.entidadesSel.push(...entidades);
       this.dialogEntidades = false;
+      this.novoHistorico.entidadesSel = {
+        ...this.novoHistorico.entidadesSel,
+        cor: "amarelo",
+        dados: this.tipologia.entidadesSel,
+      };
     },
 
     async loadEntidades() {
@@ -311,11 +301,12 @@ export default {
           despacho: dados.mensagemDespacho,
         };
 
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
-        pedido.infoPedido = this.infoPedido;
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -336,11 +327,12 @@ export default {
 
         let dadosUtilizador = this.$verifyTokenUser();
 
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
-        pedido.infoPedido = this.infoPedido;
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        pedido.historico.push(this.novoHistorico);
 
         const novaDistribuicao = {
           estado: estado,
@@ -367,30 +359,36 @@ export default {
       }
     },
 
-    verifica(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
-      this.infoPedido[i].cor = "info-label-verde";
-    },
-
-    anula(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
-      this.infoPedido[i].cor = "info-label-vermelho";
-    },
-
-    edita(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo === obj.campo);
-      this.editaCampo = {
-        visivel: true,
-        nome: this.infoPedido[i].campo,
-        key: this.infoPedido[i].key,
+    verifica(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "verde",
       };
     },
 
+    anula(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "vermelho",
+      };
+
+      // Abrir dialog com despacho
+      // Guardar despacho
+    },
+
+    edita(campo) {
+      this.editaCampo = {
+        visivel: true,
+        nome: this.transformaKeys(campo),
+        key: campo,
+      };
+
+      // Abrir dialog com despacho (Opcional)
+      // Guardar despacho
+    },
+
     fechaEditaCampoDialog(campo) {
-      console.log("campo", campo);
       this.editaCampo.visivel = false;
-      const i = this.infoPedido.findIndex((o) => o.campo === campo);
-      this.infoPedido[i].cor = null;
     },
 
     editarCampo(event) {
@@ -400,15 +398,30 @@ export default {
 
       this.editaCampo.visivel = false;
 
-      const i = this.infoPedido.findIndex((o) => o.campo === event.campo.nome);
-      this.infoPedido[i].cor = "info-label-amarelo";
+      this.tipologia[event.campo.key] = event.dados;
+      this.novoHistorico[event.campo.key] = {
+        ...this.novoHistorico[event.campo.key],
+        dados: event.dados,
+        cor: "amarelo",
+      };
+    },
+
+    close() {
+      this.dialogtipologias = false;
     },
   },
 };
 </script>
 
 <style scoped>
-.info-label {
+.info-conteudo {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #283593;
+  border-radius: 3px;
+}
+
+.info-descricao {
   color: #283593; /* indigo darken-3 */
   padding: 5px;
   width: 100%;
@@ -417,24 +430,15 @@ export default {
   border-radius: 3px;
 }
 
-.info-label-verde {
+.info-descricao-verde {
   background-color: #c8e6c9; /* lighten-4 */
 }
 
-.info-label-vermelho {
+.info-descricao-vermelho {
   background-color: #ffcdd2; /* lighten-4 */
 }
 
-.info-label-amarelo {
+.info-descricao-amarelo {
   background-color: #ffe0b2; /* lighten-4 */
-}
-
-.info-content {
-  margin-top: 5px;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
 }
 </style>

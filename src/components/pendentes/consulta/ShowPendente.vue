@@ -6,6 +6,7 @@
       <ShowTSOrg v-if="p.tipo == 'TS Organizacional'" :p="p" />
       <ShowTSPluri v-else-if="p.tipo == 'TS Pluriorganizacional'" :p="p" />
       <ShowClasse v-else-if="p.tipo == 'Classe'" :p="p" />  
+      <ShowRADA v-else-if="p.tipo == 'RADA'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
@@ -15,6 +16,7 @@
 </template>
 
 <script>
+import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowClasse from "@/components/pendentes/consulta/ShowClasse.vue";
 import ShowTSOrg from "@/components/pendentes/consulta/ShowTSOrg.vue";
 import ShowTSPluri from "@/components/pendentes/consulta/ShowTSPluri.vue";
@@ -27,7 +29,8 @@ export default {
     ShowClasse,
     ShowTSOrg,
     ShowTSPluri,
-    ShowDefault
+    ShowDefault,
+    ShowRADA
   },
 
   data: () => ({

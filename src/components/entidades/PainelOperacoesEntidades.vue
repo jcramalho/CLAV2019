@@ -122,8 +122,9 @@
 
 <script>
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
-
 import DialogEntidadeSucesso from "@/components/entidades/DialogEntidadeSucesso";
+
+import { comparaArraySel } from "@/utils/utils";
 
 export default {
   props: ["e", "acao", "original"],
@@ -138,9 +139,9 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,
+      codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
-      codigoPedido: "",
     };
   },
 
@@ -289,6 +290,43 @@ export default {
       return numeroErros;
     },
 
+    extrairAlteracoes() {
+      const objAlterado = JSON.parse(JSON.stringify(this.e));
+      const objOriginal = JSON.parse(JSON.stringify(this.original));
+
+      const historico = {};
+
+      for (const key in objOriginal) {
+        if (typeof objOriginal[key] === "string") {
+          if (objOriginal[key] !== objAlterado[key]) {
+            historico[key] = {
+              cor: "amarelo",
+              dados: objAlterado[key],
+              despacho: null,
+            };
+          }
+        } else if (objOriginal[key] instanceof Array) {
+          if (objOriginal[key].length !== objAlterado[key].length) {
+            historico[key] = {
+              cor: "amarelo",
+              dados: objAlterado[key],
+              despacho: null,
+            };
+          } else if (
+            !comparaArraySel(objOriginal[key], objAlterado[key], "sigla")
+          ) {
+            historico[key] = {
+              cor: "amarelo",
+              dados: objAlterado[key],
+              despacho: null,
+            };
+          }
+        }
+      }
+
+      return historico;
+    },
+
     // Lança o pedido de criação da entidade no worflow
     async criarAlterarEntidade() {
       try {
@@ -297,6 +335,8 @@ export default {
         } else {
           let erros = 0;
           let dataObj = JSON.parse(JSON.stringify(this.e));
+
+          const historico = [];
 
           switch (this.acao) {
             case "Criação":
@@ -321,6 +361,8 @@ export default {
               }
 
               erros = await this.validarEntidadeAlteracao(dataObj);
+
+              historico.push(this.extrairAlteracoes());
               break;
 
             case "Extinção":
@@ -330,6 +372,14 @@ export default {
                 if (key !== "sigla" && key !== "dataExtincao")
                   delete dataObj[key];
               }
+
+              historico.push({
+                dataExtincao: {
+                  cor: "amarelo",
+                  dados: dataObj.dataExtincao,
+                  despacho: null,
+                },
+              });
               break;
 
             default:
@@ -339,8 +389,6 @@ export default {
           if (erros === 0) {
             let userBD = this.$verifyTokenUser();
 
-            // dataObj.codigo = "ent_" + this.e.sigla;
-
             let pedidoParams = {
               tipoPedido: this.acao,
               tipoObjeto: "Entidade",
@@ -348,10 +396,12 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
+              historico: historico,
             };
 
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
+            else pedidoParams.objetoOriginal = dataObj;
 
             const codigoPedido = await this.$request(
               "post",

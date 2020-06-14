@@ -1,72 +1,204 @@
 <template>
   <v-dialog v-model="dialogState">
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">
+      <v-card-title class="indigo darken-4 white--text">
         <b>{{ treeview_object.tipo + ": " + treeview_object.titulo }}</b>
       </v-card-title>
       <v-card-text>
-        <Identificacao :classe="classe" />
-
-        <v-expansion-panels accordion>
-          <v-expansion-panel popout focusable>
-            <v-expansion-panel-header class="expansion-panel-heading">
-              <b>Zona Descritiva</b>
-            </v-expansion-panel-header>
+        <RADAEntry label="Código" :value="classe.codigo" />
+        <RADAEntry label="Titulo" :value="classe.titulo" />
+        <RADAEntry label="Descrição" :value="classe.descricao" />
+        <RADAEntry label="Classe Pai" :value="classe.eFilhoDe" />
+        <RADAEntryDouble
+          label_1="Data Inicial"
+          :value_1="classe.dataInicial"
+          label_2="Data Final"
+          :value_2="classe.dataFinal"
+        />
+        <RADAEntryDouble
+          label_1="Data Inicial"
+          :value_1="classe.dataInicial"
+          label_2="Data Final"
+          :value_2="classe.dataFinal"
+        />
+        <RADAEntry v-if="!!classe.UIs[0]" label="Unidades de Instalação">
+          <template v-slot:valor>
+            <ul>
+              <li v-for="(ui, i) in classe.UIs" :key="i">{{ui}}</li>
+            </ul>
+          </template>
+        </RADAEntry>
+        <RADAEntryDouble
+          v-if="classe.tipo != 'Subsérie'"
+          label_1="Tipo de Unidade Arquivística"
+          :value_1="classe.tUA"
+          label_2="Tipo de Série"
+          :value_2="classe.tSerie"
+        />
+        <RADAEntryDouble
+          v-if="classe.tipo != 'Subsérie'"
+          label_1="Suporte"
+          :value_1="classe.suporte"
+          label_2="Medição"
+          :value_2="classe.medicao"
+        />
+        <RADAEntry
+          label="Localização"
+          v-if="classe.tipo != 'Subsérie'"
+          :value="classe.localizacao.join(', ')"
+        />
+        <v-expansion-panels>
+          <v-expansion-panel class="ma-1">
+            <v-expansion-panel-header
+              class="pa-2 indigo darken-4 title white--text"
+            >Zona de Contexto de Avaliação</v-expansion-panel-header>
             <v-expansion-panel-content>
-              <ZonaDescritiva :classe="classe" />
+              <RADAEntry
+                label="Produtoras da Série"
+                v-if="classe.tipo != 'Subsérie' && classe.entProdutoras.length > 0"
+              >
+                <template v-slot:valor>
+                  <ul>
+                    <li v-for="(produtora, i) in classe.entProdutoras" :key="i">{{ produtora }}</li>
+                  </ul>
+                </template>
+              </RADAEntry>
+              <RADAEntry v-else-if="classe.tipo != 'Subsérie'" label="Produtoras da Série">
+                <template v-slot:valor>
+                  <ul>
+                    <li
+                      v-for="(produtora, i) in classe.tipologiasProdutoras"
+                      :key="i"
+                    >{{ produtora }}</li>
+                  </ul>
+                </template>
+              </RADAEntry>
+              <RADAEntry
+                label="Legislação"
+                v-if=" classe.tipo != 'Subsérie' && !!classe.legislacao[0]"
+              >
+                <template v-slot:valor>
+                  <ul>
+                    <li
+                      v-for="(legislacao, i) in classe.legislacao"
+                      :key="i"
+                    >{{ legislacao.legislacao }}</li>
+                  </ul>
+                </template>
+              </RADAEntry>
+              <RADAEntry label="Séries/Subséries Relacionadas" v-if="!!classe.relacoes[0]">
+                <template v-slot:valor>
+                  <v-data-table
+                    :items-per-page="relacoes.length"
+                    locale="pt"
+                    :headers="headers"
+                    :items="relacoes"
+                    class="elevation-1"
+                    hide-default-footer
+                  >
+                    <template v-slot:item.classes="props">
+                      <ul>
+                        <li v-for="(rel, i) in props.item.classes" :key="i">{{rel}}</li>
+                      </ul>
+                    </template>
+                  </v-data-table>
+                </template>
+              </RADAEntry>
             </v-expansion-panel-content>
           </v-expansion-panel>
-          <v-expansion-panel popout focusable>
-            <v-expansion-panel-header class="expansion-panel-heading">
-              <b>Zona de Contexto de Avaliação</b>
-            </v-expansion-panel-header>
+          <v-expansion-panel class="ma-1" v-if="!!classe.pca || !!classe.notaPCA">
+            <v-expansion-panel-header
+              class="pa-2 indigo darken-4 title white--text"
+            >Zona de Decisões de Avaliação</v-expansion-panel-header>
             <v-expansion-panel-content>
-              <ZonaContexto :classe="classe" />
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <v-expansion-panel popout focusable v-if="!(!!(treeview_object.children[0]))">
-            <v-expansion-panel-header class="expansion-panel-heading">
-              <b>Zona de Decisões de Avaliação</b>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <ZonaDecisoesAvaliacao :classe="classe" :formaContagem="formaContagem" />
+              <br />
+              <v-card outlined>
+                <div class="info-label">Prazo de Conservação Administrativo</div>
+                <v-card-text>
+                  <RADAEntry v-if="!!classe.pca" label="PCA" :value="classe.pca" />
+                  <RADAEntry
+                    v-if="!!classe.notaPCA"
+                    label="Nota sobre PCA"
+                    :value="classe.notaPCA"
+                  />
+                  <RADAEntry v-if="!!forma" label="Forma de Contagem do PCA" :value="forma.label"></RADAEntry>
+                  <RADAEntry
+                    v-if="!!subforma"
+                    label="Subforma de Contagem do PCA"
+                    :value="subforma.label"
+                  />
+                  <RADAEntry label="Justificação do PCA" v-if="!!classe.justificacaoPCA[0]">
+                    <template v-slot:valor>
+                      <RADAEntry
+                        v-for="(criterio, cindex) in classe.justificacaoPCA"
+                        :key="cindex"
+                        :label="criterio.tipo"
+                      >
+                        <template v-slot:valor>
+                          {{ criterio.nota }}
+                          <ul v-if="criterio.tipo == 'Critério de Utilidade Administrativa'">
+                            <li
+                              v-for="(rel, i) in criterio.relacoes"
+                              :key="i"
+                            >{{rel.codigo + " - " + rel.titulo}}</li>
+                          </ul>
+                          <ul v-else-if="criterio.tipo == 'Critério Legal'">
+                            <li v-for="(rel, i) in criterio.relacoes" :key="i">{{rel }}</li>
+                          </ul>
+                        </template>
+                      </RADAEntry>
+                    </template>
+                  </RADAEntry>
+                </v-card-text>
+              </v-card>
+              <br />
+              <v-card outlined>
+                <div class="info-label">Destino Final</div>
+                <v-card-text>
+                  <RADAEntry v-if="!!classe.df" label="DF" :value="classe.df" />
+                  <RADAEntry v-if="!!classe.notaDF" label="Nota sobre o DF" :value="classe.notaDF" />
+                  <RADAEntry label="Justificação do DF" v-if="!!classe.justificacaoDF[0]">
+                    <template v-slot:valor>
+                      <RADAEntry
+                        v-for="(criterio, cindex) in classe.justificacaoDF"
+                        :key="cindex"
+                        :label="criterio.tipo"
+                      >
+                        <template v-slot:valor>
+                          {{ criterio.nota }}
+                          <div v-if="!!criterio.relacoes[0]">
+                            <br />
+                            <ul v-if="criterio.tipo != 'Critério Legal'">
+                              <li
+                                v-for="(rel, i) in criterio.relacoes"
+                                :key="i"
+                              >{{rel.codigo + " - " + rel.titulo}}</li>
+                            </ul>
+                            <ul v-else>
+                              <li v-for="(rel, i) in criterio.relacoes" :key="i">{{rel }}</li>
+                            </ul>
+                          </div>
+                        </template>
+                      </RADAEntry>
+                    </template>
+                  </RADAEntry>
+                </v-card-text>
+              </v-card>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <br /> 
-        <h5>Hierarquia</h5>
-        <v-divider></v-divider>
-        <v-row>
-          <v-col md="3" sm="3">
-            <div class="info-label">Classe Pai</div>
-          </v-col>
-          <v-col sm="9" md="9">
-            <v-combobox
-              readonly
-              label="Sem classe pai"
-              v-model="treeview_object.eFilhoDe"
-              :items="[]"
-              item-value="codigo"
-              item-text="searchField"
-              solo
-              chips
-            ></v-combobox>
-          </v-col>
-        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
       </v-card-actions>
-    </v-card> 
+    </v-card>
   </v-dialog>
 </template>
 
 <script>
-import Identificacao from "./partes/Identificacao";
-import ZonaDescritiva from "./partes/ZonaDescritiva";
-import ZonaContexto from "./partes/ZonaContextoAvaliacao";
-import ZonaDecisoesAvaliacao from "./partes/ZonaDecisoesAvaliacao";
+import RADAEntry from "@/components/rada/consulta/elementos/campos/RadaEntry.vue";
+import RADAEntryDouble from "@/components/rada/consulta/elementos/campos/RadaEntryDouble.vue";
 
 export default {
   props: [
@@ -77,13 +209,28 @@ export default {
     "dialog"
   ],
   data: () => ({
-    classe: {}
+    forma: null,
+    subforma: null,
+    relacoes: [],
+    classe: {},
+    headers: [
+      {
+        text: "Relação",
+        value: "rel",
+        width: "30%",
+        class: ["table-header", "body-2", "font-weight-bold"]
+      },
+      {
+        text: "Série/Subsérie",
+        value: "classes",
+        width: "70%",
+        class: ["table-header", "body-2", "font-weight-bold"]
+      }
+    ]
   }),
   components: {
-    Identificacao,
-    ZonaDescritiva,
-    ZonaContexto,
-    ZonaDecisoesAvaliacao
+    RADAEntry,
+    RADAEntryDouble
   },
   computed: {
     dialogState: {
@@ -146,6 +293,39 @@ export default {
           });
         }
       });
+    }
+
+    for (let i = 0; i < this.classe.relacoes.length; i++) {
+      let r = this.relacoes.find(e => e.rel == this.classe.relacoes[i].relacao);
+
+      if (r != undefined) {
+        r.classes.push(
+          this.classe.relacoes[i].serieRelacionada.codigo +
+            " - " +
+            this.classe.relacoes[i].serieRelacionada.titulo
+        );
+      } else {
+        this.relacoes.push({
+          rel: this.classe.relacoes[i].relacao,
+          classes: [
+            this.classe.relacoes[i].serieRelacionada.codigo +
+              " - " +
+              this.classe.relacoes[i].serieRelacionada.titulo
+          ]
+        });
+      }
+    }
+
+    if (this.classe.formaContagem != undefined) {
+      this.forma = this.formaContagem.formasContagem.find(
+        e => e.value == this.classe.formaContagem.forma
+      );
+
+      if (!!this.classe.formaContagem.subforma) {
+        this.subforma = this.formaContagem.subFormasContagem.find(
+          e => e.value == this.classe.formaContagem.subforma
+        );
+      }
     }
   }
 };
