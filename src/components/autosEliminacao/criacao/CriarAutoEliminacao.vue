@@ -362,7 +362,11 @@ export default {
         }
       }
       if(this.erro==="") {
-
+        if(this.tipo=="TS_LC") {
+          delete this.auto["legislacao"]
+          //Para já apenas LC
+          this.auto.referencial = "lc1"
+        }
         var user = this.$verifyTokenUser();
 
         this.auto.responsavel = user.email;

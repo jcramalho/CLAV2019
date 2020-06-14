@@ -18,10 +18,26 @@
               v-for="entrada in documentacao.entradas"
               :key="entrada._id"
             >
-              <p
-                class="text-justify"
-                v-html="compiledMarkdown(entrada.descricao)"
-              ></p>
+              <p class="text-justify">
+                <span v-html="compiledMarkdownOmmitParagraph(entrada.descricao)"></span>
+                <v-tooltip bottom v-for="(operacao, index) in operacoes_entradas" :key="index">
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      @click="
+                        switchOperacaoEntrada(
+                          operacao.descricao,
+                          documentacao._id,
+                          entrada._id
+                        )
+                      "
+                      :color="operacao.cor"
+                      v-on="on"
+                      >{{ operacao.icon }}</v-icon
+                    >
+                  </template>
+                  <span>{{ operacao.tooltip }}</span>
+                </v-tooltip>
+              </p>
               <ul>
                 <div v-for="elemento in entrada.elementos" :key="elemento._id">
                   <!-- No caso de ser uma rota da API -->
@@ -44,6 +60,24 @@
                           compiledMarkdownOmmitParagraph(elemento.texto.pos)
                         "
                       ></span>
+                      <v-tooltip bottom v-for="(operacao, index) in operacoes_elementos" :key="index">
+                        <template v-slot:activator="{ on }">
+                          <v-icon
+                            @click="
+                              switchOperacaoElemento(
+                                operacao.descricao,
+                                documentacao._id,
+                                entrada._id,
+                                elemento._id
+                              )
+                            "
+                            :color="operacao.cor"
+                            v-on="on"
+                            >{{ operacao.icon }}</v-icon
+                          >
+                        </template>
+                        <span>{{ operacao.tooltip }}</span>
+                      </v-tooltip>
                     </p>
                   </li>
                   <!-- No caso de ser uma ligacao com ficheiro da API -->
@@ -72,43 +106,53 @@
                           compiledMarkdownOmmitParagraph(elemento.texto.pos)
                         "
                       ></span>
+                      <v-tooltip bottom v-for="(operacao, index) in operacoes_elementos" :key="index">
+                        <template v-slot:activator="{ on }">
+                          <v-icon
+                            @click="
+                              switchOperacaoElemento(
+                                operacao.descricao,
+                                documentacao._id,
+                                entrada._id,
+                                elemento._id
+                              )
+                            "
+                            :color="operacao.cor"
+                            v-on="on"
+                            >{{ operacao.icon }}</v-icon
+                          >
+                        </template>
+                        <span>{{ operacao.tooltip }}</span>
+                      </v-tooltip>
                     </p>
                   </li>
                   <!-- No caso de ser apenas texto -->
                   <li
                     v-else
                     class="text-justify"
-                    v-html="compiledMarkdown(elemento.texto)"
-                  ></li>
-                  <v-icon
-                    v-for="(operacao, index) in operacoes_elementos"
-                    @click="
-                      switchOperacaoElemento(
-                        operacao.descricao,
-                        documentacao._id,
-                        entrada._id,
-                        elemento._id
-                      )
-                    "
-                    :color="operacao.cor"
-                    :key="index"
-                    >{{ operacao.icon }}</v-icon
-                  >
+                  > 
+                    <span v-html="compiledMarkdownOmmitParagraph(elemento.texto)"></span>
+                    <v-tooltip bottom v-for="(operacao, index) in operacoes_elementos" :key="index">
+                      <template v-slot:activator="{ on }">
+                        <v-icon
+                          @click="
+                            switchOperacaoElemento(
+                              operacao.descricao,
+                              documentacao._id,
+                              entrada._id,
+                              elemento._id
+                            )
+                          "
+                          :color="operacao.cor"
+                          v-on="on"
+                          >{{ operacao.icon }}</v-icon
+                        >
+                      </template>
+                      <span>{{ operacao.tooltip }}</span>
+                    </v-tooltip>
+                  </li>
                 </div>
               </ul>
-              <v-icon
-                v-for="(operacao, index) in operacoes_entradas"
-                @click="
-                  switchOperacaoEntrada(
-                    operacao.descricao,
-                    documentacao._id,
-                    entrada._id
-                  )
-                "
-                :color="operacao.cor"
-                :key="index"
-                >{{ operacao.icon }}</v-icon
-              >
             </v-card-text>
             <div v-if="level >= min">
               <v-btn
@@ -127,14 +171,14 @@
                 @click="
                   go(`/documentacaoApoio/editar/classe/${documentacao._id}`)
                 "
-                >Editar Classe</v-btn
+                >Editar Secção</v-btn
               >
               <v-btn
                 color="red accent-4"
                 dark
                 class="ma-2"
                 @click="eliminaClasse(documentacao._id)"
-                >Eliminar Classe</v-btn
+                >Eliminar Secção</v-btn
               >
             </div>
           </v-expansion-panel-content>
@@ -146,7 +190,7 @@
         <v-card>
           <v-card-title class="headline">Confirmar ação</v-card-title>
           <v-card-text>
-            Tem a certeza que pretende eliminar o documento?
+            Tem a certeza que pretende eliminar a secção?
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -189,7 +233,7 @@
         <v-card>
           <v-card-title class="headline">Confirmar ação</v-card-title>
           <v-card-text>
-            Tem a certeza que pretende eliminar a elemento?
+            Tem a certeza que pretende eliminar o elemento?
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -269,7 +313,7 @@ export default {
       eliminarIdElemento: "",
       operacoes: [
         {
-          label: "Adicionar Classe",
+          label: "Adicionar Secção",
           url: "/documentacaoApoio/criar/classe",
           level: [4, 5, 6, 7]
         },
@@ -532,13 +576,13 @@ export default {
     preparaOperacoesEntradaElemento(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes_entradas = [
-          { icon: "add", descricao: "Adição", cor: "indigo darken-2" },
-          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
-          { icon: "delete", descricao: "Remoção", cor: "red" }
+          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2", tooltip: "Editar Entrada" },
+          { icon: "delete", descricao: "Remoção", cor: "red", tooltip: "Remover Entrada" },
+          { icon: "add", descricao: "Adição", cor: "indigo darken-2", tooltip: "Adicionar Elemento" }
         ];
         this.operacoes_elementos = [
-          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
-          { icon: "delete", descricao: "Remoção", cor: "red" }
+          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2", tooltip: "Editar Elemento" },
+          { icon: "delete", descricao: "Remoção", cor: "red", tooltip: "Remover Elemento" }
         ];
       }
     },
