@@ -127,14 +127,14 @@
                 @click="
                   go(`/documentacaoApoio/editar/classe/${documentacao._id}`)
                 "
-                >Editar Classe</v-btn
+                >Editar Secção</v-btn
               >
               <v-btn
                 color="red accent-4"
                 dark
                 class="ma-2"
                 @click="eliminaClasse(documentacao._id)"
-                >Eliminar Classe</v-btn
+                >Eliminar Secção</v-btn
               >
             </div>
           </v-expansion-panel-content>
@@ -146,7 +146,7 @@
         <v-card>
           <v-card-title class="headline">Confirmar ação</v-card-title>
           <v-card-text>
-            Tem a certeza que pretende eliminar o documento?
+            Tem a certeza que pretende eliminar a secção?
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -189,7 +189,7 @@
         <v-card>
           <v-card-title class="headline">Confirmar ação</v-card-title>
           <v-card-text>
-            Tem a certeza que pretende eliminar a elemento?
+            Tem a certeza que pretende eliminar o elemento?
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -269,7 +269,7 @@ export default {
       eliminarIdElemento: "",
       operacoes: [
         {
-          label: "Adicionar Classe",
+          label: "Adicionar Secção",
           url: "/documentacaoApoio/criar/classe",
           level: [4, 5, 6, 7]
         },

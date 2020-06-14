@@ -6,7 +6,7 @@
       rounded
       class="indigo darken-3"
       @click="validarClasseDocumentacaoApoio"
-      >Validar Classe da Documentação de Apoio</v-btn
+      >Validar Secção da Documentação de Apoio</v-btn
     >
 
     <!-- Erros na Validação ....................... -->
@@ -79,16 +79,16 @@ export default {
       // Classe
       if (this.t.classe == "" || this.t.classe == null) {
         this.mensagensErro.push({
-          sobre: "Classe",
-          mensagem: "A classe não pode ser vazia."
+          sobre: "Designação",
+          mensagem: "A designação não pode ser vazia."
         });
         this.numeroErros++;
       }
       let index = this.classes.indexOf(this.t.classe);
       if (index > -1) {
         this.mensagensErro.push({
-          sobre: "Classe",
-          mensagem: "A classe já existe."
+          sobre: "Designação",
+          mensagem: "A secção já existe."
         });
         this.numeroErros++;
       }

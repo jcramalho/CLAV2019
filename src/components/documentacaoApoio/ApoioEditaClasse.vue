@@ -5,7 +5,7 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
           <v-toolbar-title class="card-heading"
-            >Editar Classe de Documentação de Apoio</v-toolbar-title
+            >Editar Secção de Documentação de Apoio</v-toolbar-title
           >
         </v-app-bar>
 

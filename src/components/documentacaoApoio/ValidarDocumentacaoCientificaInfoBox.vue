@@ -79,8 +79,8 @@ export default {
       // Tipo
       if (this.t.classe == "" || this.t.classe == null) {
         this.mensagensErro.push({
-          sobre: "Tipo",
-          mensagem: "O tipo não pode ser vazio."
+          sobre: "Subsecção",
+          mensagem: "A subsecção não pode ser vazia."
         });
         this.numeroErros++;
       }
