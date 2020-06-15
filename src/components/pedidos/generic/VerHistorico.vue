@@ -16,7 +16,9 @@
             >
               <v-card-text>
                 <div v-for="(info, campo) in h" :key="campo">
-                  <v-row v-if="info !== '' && info !== null">
+                  <v-row
+                    v-if="info !== '' && info !== null && campo !== 'estado'"
+                  >
                     <v-col cols="2">
                       <div class="info-descricao">
                         {{ transformaKeys(campo) }}
@@ -83,7 +85,13 @@
             >
               <v-card-text>
                 <div v-for="(info, campo) in h" :key="campo">
-                  <v-row v-if="info.dados !== '' && info.dados !== null">
+                  <v-row
+                    v-if="
+                      info.dados !== '' &&
+                        info.dados !== null &&
+                        campo !== 'estado'
+                    "
+                  >
                     <v-col cols="2">
                       <div
                         :class="[
@@ -108,7 +116,7 @@
                           :headers="entidadesHeaders"
                           :items="info.dados"
                           class="elevation-1"
-                          :footer-props="footerProps"
+                          :footer-props="footerPropsEntidades"
                         >
                           <template v-slot:no-data>
                             <v-alert
@@ -160,7 +168,8 @@
               v-slot:default="{ active, toggle }"
             >
               <v-btn :input-value="active" icon @click="toggle">
-                <v-icon>fiber_manual_record</v-icon>
+                <b>{{ i + 1 }}</b>
+                <!-- <v-icon>fiber_manual_record</v-icon> -->
               </v-btn>
             </v-item>
           </v-item-group>
