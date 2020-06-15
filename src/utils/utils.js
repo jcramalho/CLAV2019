@@ -110,10 +110,54 @@ export function mapKeys(key) {
   return descricao;
 }
 
+export function criarHistorico(objeto, objetoOriginal) {
+  const objAlterado = JSON.parse(JSON.stringify(objeto));
+  const objOriginal = JSON.parse(JSON.stringify(objetoOriginal));
+
+  const historico = {};
+
+  for (const key in objAlterado) {
+    if (typeof objAlterado[key] === "string") {
+      if (objAlterado[key] !== objOriginal[key]) {
+        historico[key] = {
+          cor: "amarelo",
+          dados: objAlterado[key],
+          despacho: null,
+        };
+      }
+    } else if (objAlterado[key] instanceof Array) {
+      if (objAlterado[key].length !== objOriginal[key].length) {
+        historico[key] = {
+          cor: "amarelo",
+          dados: objAlterado[key],
+          despacho: null,
+        };
+      } else if (
+        !comparaArraySel(objAlterado[key], objOriginal[key], "sigla")
+      ) {
+        historico[key] = {
+          cor: "amarelo",
+          dados: objAlterado[key],
+          despacho: null,
+        };
+      } else {
+        historico[key] = {
+          cor: "verde",
+          dados: objOriginal[key],
+          despacho: null,
+        };
+      }
+    }
+  }
+
+  return historico;
+}
+
 export default {
   filtraNivel,
   comparaSigla,
   comparaCodigo,
   comparaArraySel,
   mapKeys,
+  criarHistorico,
 };
