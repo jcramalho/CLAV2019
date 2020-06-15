@@ -94,6 +94,14 @@ export function mapKeys(key) {
       descricao = "Tipologias";
       break;
 
+    case "dataCriacao":
+      descricao = "Data de Criação";
+      break;
+
+    case "dataExtincao":
+      descricao = "Data de Extinção";
+      break;
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;
