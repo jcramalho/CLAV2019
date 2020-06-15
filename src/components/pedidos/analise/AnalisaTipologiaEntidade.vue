@@ -2,9 +2,14 @@
   <div>
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
-      <div v-for="(info, campo) in tipologia" :key="campo">
+      <div v-for="(info, campo) in dados" :key="campo">
         <v-row
-          v-if="info !== '' && info !== null && campo !== 'codigo'"
+          v-if="
+            info !== '' &&
+              info !== null &&
+              campo !== 'codigo' &&
+              campo !== 'estado'
+          "
           dense
           class="ma-1"
         >
@@ -183,7 +188,7 @@ export default {
   },
 
   computed: {
-    tipologia() {
+    dados() {
       return this.p.objeto.dados;
     },
 
@@ -206,11 +211,11 @@ export default {
 
   mounted() {
     const criaNovoHistorico = {};
-    Object.keys(this.tipologia).forEach((key) => {
+    Object.keys(this.dados).forEach((key) => {
       if (key !== "codigo")
         criaNovoHistorico[key] = {
           cor: "verde",
-          dados: this.tipologia[key],
+          dados: this.dados[key],
           despacho: null,
         };
     });
@@ -224,7 +229,7 @@ export default {
     },
 
     abreEntidadesDialog() {
-      this.tipologia.entidadesSel.forEach((entSel) => {
+      this.dados.entidadesSel.forEach((entSel) => {
         const index = this.entidades.findIndex(
           (ent) => ent.sigla === entSel.sigla
         );
@@ -240,7 +245,7 @@ export default {
     },
 
     removeEntidade(entidade) {
-      const index = this.tipologia.entidadesSel.findIndex(
+      const index = this.dados.entidadesSel.findIndex(
         (entSel) => entSel.sigla === entidade.sigla
       );
 
@@ -251,22 +256,22 @@ export default {
           this.entidades.push(entidade);
           this.entidades.sort(comparaSigla);
         }
-        this.tipologia.entidadesSel.splice(index, 1);
+        this.dados.entidadesSel.splice(index, 1);
         this.novoHistorico.entidadesSel = {
           ...this.novoHistorico.entidadesSel,
           cor: "amarelo",
-          dados: this.tipologia.entidadesSel,
+          dados: this.dados.entidadesSel,
         };
       }
     },
 
     adicionaEntidades(entidades) {
-      this.tipologia.entidadesSel.push(...entidades);
+      this.dados.entidadesSel.push(...entidades);
       this.dialogEntidades = false;
       this.novoHistorico.entidadesSel = {
         ...this.novoHistorico.entidadesSel,
         cor: "amarelo",
-        dados: this.tipologia.entidadesSel,
+        dados: this.dados.entidadesSel,
       };
     },
 
@@ -398,16 +403,12 @@ export default {
 
       this.editaCampo.visivel = false;
 
-      this.tipologia[event.campo.key] = event.dados;
+      this.dados[event.campo.key] = event.dados;
       this.novoHistorico[event.campo.key] = {
         ...this.novoHistorico[event.campo.key],
         dados: event.dados,
         cor: "amarelo",
       };
-    },
-
-    close() {
-      this.dialogtipologias = false;
     },
   },
 };
