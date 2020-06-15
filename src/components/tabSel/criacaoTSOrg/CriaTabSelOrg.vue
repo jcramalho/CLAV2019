@@ -35,11 +35,13 @@
                 </span>
               </v-stepper-step>
               <v-stepper-content step="1">
-                <div v-if="entidadeDGLAB">
+                <div v-if="entidadeDGLAB && entidadesReady">
                     <v-col >
                         <v-autocomplete
                             :items="entidades"
                             label="Selecione a entidade"
+                            item-text="label"
+                            return-object
                             v-model="ent"
                             prepend-icon="account_balance"
                         >
@@ -270,8 +272,8 @@ export default {
 
       if (resUser.entidade === "ent_DGLAB") {
         this.stepNo = 1;
+        await this.loadEntidades();
         this.entidadeDGLAB = true;
-        this.loadEntidades();
       } else {
         var resEnt = await this.$request("get", "/entidades/" + resUser.entidade);
         this.entidadeUtilizador = resEnt.data;
@@ -298,15 +300,15 @@ export default {
     },
 
     guardaEntidade: async function() {
+      this.tabelaSelecao.designacao = "Tabela de Seleção de " + this.ent.designacao;
+      this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
+      this.tabelaSelecao.idEntidade = "ent_" + this.ent.sigla;
       try {
-        this.tabelaSelecao.designacao = this.ent.split(" - ")[1];
-        this.tabelaSelecao.designacaoEntidade = this.ent.split(" - ")[1];
-        this.tabelaSelecao.idEntidade = "ent_" + this.ent.split(" - ")[0];
         await this.loadTipologias();
-        this.stepNo = this.stepNo + 1;
-      } catch (err) {
-        return err;
+      } catch (e) {
+        console.log("Erro ao carregar as tipologias: " + e);
       }
+      this.stepNo = this.stepNo + 1;
     },
 
     guardaTipologia: function() {
