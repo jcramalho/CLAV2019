@@ -296,28 +296,34 @@ export default {
 
       const historico = {};
 
-      for (const key in objOriginal) {
-        if (typeof objOriginal[key] === "string") {
-          if (objOriginal[key] !== objAlterado[key]) {
+      for (const key in objAlterado) {
+        if (typeof objAlterado[key] === "string") {
+          if (objAlterado[key] !== objOriginal[key]) {
             historico[key] = {
               cor: "amarelo",
               dados: objAlterado[key],
               despacho: null,
             };
           }
-        } else if (objOriginal[key] instanceof Array) {
-          if (objOriginal[key].length !== objAlterado[key].length) {
+        } else if (objAlterado[key] instanceof Array) {
+          if (objAlterado[key].length !== objOriginal[key].length) {
             historico[key] = {
               cor: "amarelo",
               dados: objAlterado[key],
               despacho: null,
             };
           } else if (
-            !comparaArraySel(objOriginal[key], objAlterado[key], "sigla")
+            !comparaArraySel(objAlterado[key], objOriginal[key], "sigla")
           ) {
             historico[key] = {
               cor: "amarelo",
               dados: objAlterado[key],
+              despacho: null,
+            };
+          } else {
+            historico[key] = {
+              cor: "verde",
+              dados: objOriginal[key],
               despacho: null,
             };
           }
@@ -369,7 +375,11 @@ export default {
               erros = this.validarEntidadeExtincao(dataObj);
 
               for (const key in dataObj) {
-                if (key !== "sigla" && key !== "dataExtincao")
+                if (
+                  key !== "sigla" &&
+                  key !== "dataExtincao" &&
+                  key !== "dataCriacao"
+                )
                   delete dataObj[key];
               }
 
