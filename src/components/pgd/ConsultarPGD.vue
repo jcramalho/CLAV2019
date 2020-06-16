@@ -36,14 +36,15 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="2" class="mt-3">
+        <v-col xs="2" sm="2" class="mt-3">
           <div class="info-label">
             Tabela de Seleção
           </div>
         </v-col>
-        <v-col cols="4"/>
-        <v-col cols="6">
-          <v-text-field 
+        <v-col xs="4" sm="4"/>
+        <v-col xs="5" sm="5">
+          <v-text-field
+            v-if="!tree_ou_tabela" 
             label="Procurar" 
             v-model="search"
             append-icon="search"
@@ -51,12 +52,26 @@
             hide-details
           />
         </v-col>
+        <v-col xs="1" sm="1">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-switch
+                prepend-icon="table_view"
+                inset
+                hide-details
+                v-model="tree_ou_tabela"
+                v-on="on"
+              ></v-switch>
+            </template>
+            <span>Alterar modo de visualização da Tabela de Seleção</span>
+          </v-tooltip>
+        </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <!--v-list>
+          <v-list v-if="tree_ou_tabela">
             <v-list-group
-              v-for="(classe, i) in classes"
+              v-for="(classe, i) in classesTree"
               :key="i"
               multiple
             >
@@ -70,8 +85,8 @@
               </template>
                 <ShowPGD :classe="classe"/>
             </v-list-group>
-          </v-list-->
-          <v-data-table
+          </v-list>
+          <v-data-table v-else
             :headers="headers"
             :items="classes"
             item-key="idClasse"
@@ -155,14 +170,15 @@
 <script>
 import ShowPGD from "@/components/pgd/ShowPGD.vue"
 export default {
-  props: ["classes","objeto","titulo"],
+  props: ["classes","classesTree","objeto","titulo"],
   components: {
-    //ShowPGD
+    ShowPGD
   },
   data: () => ({
     search: "",
     expanded: [],
     singleExpand: false,
+    tree_ou_tabela: false,
     headers: [
       {text: "Código", sortable: false, value: "codigo"},
       {text: "Referência", sortable: false, value: "referencia"},

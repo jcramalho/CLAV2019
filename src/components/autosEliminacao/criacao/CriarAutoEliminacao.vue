@@ -113,6 +113,7 @@
               v-bind:auto="auto"
               v-bind:classesCompletas="classesCompletas"
               v-bind:donos="donos"
+              v-bind:tipo="tipo"
             />
 
             <!-- Zonas de Controlo -->
@@ -122,6 +123,7 @@
               v-bind:entidades="entidades"
               v-bind:classesCompletas="classesCompletas"
               v-bind:donos="donos"
+              v-bind:tipo="tipo"
             />
 
             <div class="mx-2">
@@ -138,12 +140,12 @@
               <v-btn
                 medium
                 color="primary darken-4"
-                @click="submit"
+                @click="successDialog=true"
                 :disabled="
                   !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-              >Criar Auto de Eliminação</v-btn>
+              >Submeter Auto de Eliminação</v-btn>
             </div>
             
           </v-stepper-content>
@@ -155,64 +157,18 @@
         <v-card-title
           class="teal darken-4 title white--text"
           dark
-        >Pedido de criação de auto de eliminação criado com sucesso: {{ codigoPedido }}</v-card-title>
+        >Validação de auto de eliminação executada com sucesso</v-card-title>
 
         <v-card-text>
-          <v-row class="my-2">
-            <v-col cols="2">
-              <div class="info-label">Código do pedido</div>
-            </v-col>
-
-            <v-col class="info-content">
-              <div>{{ codigoPedido }}</div>
-            </v-col>
-          </v-row>
-
-          <v-row class="my-2">
-            <v-col cols="2">
-              <div class="info-label">Fonte de Legitimação</div>
-            </v-col>
-
-            <v-col class="info-content">
-              <div>{{ auto.legislacao }}</div>
-            </v-col>
-          </v-row>
-          <v-row class="my-2">
-            <v-col cols="2">
-              <div class="info-label">Fundo</div>
-            </v-col>
-
-            <v-col class="info-content">
-              <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
-            </v-col>
-          </v-row>
-          <v-row class="mt-2">
-            <v-col cols="2">
-              <div class="info-label">Classes e Agregações</div>
-            </v-col>
-
-            <v-col class="info-content">
-              <div v-for="(c,index) in auto.zonaControlo" :key="index">
-                <strong v-if="c.codigo && c.referencia">{{ c.codigo + " " + c.referencia +" - "+c.titulo }}</strong>
-                <strong v-else-if="c.codigo">{{ c.codigo +" - "+c.titulo }}</strong>
-                <strong v-else-if="c.referencia">{{ c.referencia +" - "+c.titulo }}</strong>
-                <div v-if="c.agregacoes.length > 0">Agregações: 
-                <li
-                  class="ml-4"
-                  v-for="a in c.agregacoes"
-                  :key="a.codigo"
-                >{{a.codigo + " - " + a.titulo}}</li>
-                </div>
-                <div v-else>Não inseriu as agregações que pretende eliminar</div>
-              </div>
-            </v-col>
-          </v-row>
+          Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação, selecione "Confirmar". Caso ainda pretenda realizar alguma alteração ao AE, clique em "Voltar".
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="green darken-4" text @click="$router.push('/pedidos/submissao')">Fechar</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-4" text @click="successDialog=false">Voltar</v-btn>
+          <v-btn color="green darken-4" text @click="successDialog=false; submit()">Confirmar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -356,7 +312,7 @@ export default {
     submit: async function() {
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
-        if(zc.destino=="C" && zc.dono.length === 0) {
+        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA' && this.tipo!='PGD') {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
         }
@@ -389,9 +345,7 @@ export default {
           pedidoParams
         );
 
-        this.codigoPedido = codigoPedido.data;
-
-        this.successDialog = true;
+        this.$router.push('/pedidos/submissao')
       }
     },
     guardarTrabalho: async function() {

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="expansion-panel-heading">Classe</v-card-title>
+    <v-card-title class="expansion-panel-heading">Classe {{tipo}}</v-card-title>
     <v-card-text class="mt-4">
       <v-row>
         <v-col :md="2">
@@ -31,7 +31,7 @@
           <v-text-field :value="df" solo dense readonly></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="df== 'Conservação'">
+      <v-row v-if="df=='Conservação' && tipo!='RADA' && tipo!='PGD'">
         <v-col>
           <div class="info-label">Natureza de Intervenção</div>
         </v-col>
@@ -184,7 +184,8 @@ export default {
     "zona",
     "index",
     "classesCompletas",
-    "donos"
+    "donos",
+    "tipo"
   ],
   data: () => ({
     classe: null,
@@ -317,7 +318,7 @@ export default {
       } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
-      } else if(this.df == "Conservação" && this.dono.length==0) {
+      } else if(this.df == "Conservação" && this.dono.length==0 && this.tipo!="RADA" && this.tipo!="PGD") {
         this.erro = help.AutoEliminacao.Erros.DonoPN;
         this.erroDialog = true;
       } else if(uiPapel+uiDigital+uiOutros<=0) {
@@ -450,7 +451,7 @@ export default {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup;
-      } else if(this.df == "Conservação" && this.dono.length==0) {
+      } else if(this.df == "Conservação" && this.dono.length==0 && this.tipo!="RADA" && this.tipo!="PGD") {
         this.erro = help.AutoEliminacao.Erros.DonoPN;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup;

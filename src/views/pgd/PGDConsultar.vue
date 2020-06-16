@@ -1,8 +1,9 @@
 <template>
   <div>
-    <Loading v-if="classes.length==0" :message="'Portaria de Gestão Documental'" />
+    <Loading v-if="classes.length==0 && classesTree.length==0" :message="'Portaria de Gestão Documental'" />
     <ConsultarPGD v-else
       :classes="classes"
+      :classesTree="this.classesTree"
       :titulo="titulo"
       :objeto="legislacao"
     />
@@ -19,6 +20,7 @@ export default {
   },
   data: () => ({
     classes: [],
+    classesTree: [],
     legislacao: null,
     titulo: "",
     idLegislacao: "",
@@ -96,6 +98,7 @@ export default {
       if(this.idLegislacao.includes("lc_")) this.idLegislacao = this.idLegislacao.split("lc_")[1]
       
       var response = await this.$request("get","/pgd/"+this.idPGD)
+      this.classesTree = await this.prepararClasses(response.data)
       this.classes = response.data.map(c => {
         return {
           idClasse: c.classe,
