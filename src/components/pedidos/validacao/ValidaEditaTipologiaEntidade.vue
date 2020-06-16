@@ -8,7 +8,8 @@
             info !== '' &&
               info !== null &&
               campo !== 'sigla' &&
-              campo !== 'codigo'
+              campo !== 'codigo' &&
+              campo !== 'estado'
           "
           dense
           class="ma-1"

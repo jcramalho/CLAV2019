@@ -84,7 +84,12 @@
       />
       <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
-      <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
+      <ShowEntidade
+        v-else-if="p.objeto.tipo == 'Entidade'"
+        :p="p"
+        @verHistorico="verHistorico()"
+      />
+
       <ShowAE
         v-else-if="
           p.objeto.tipo.includes('AE ') || p.objeto.tipo == 'Auto de Eliminação'

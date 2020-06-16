@@ -4,7 +4,12 @@
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
         <v-row
-          v-if="info !== '' && info !== null && campo !== 'codigo'"
+          v-if="
+            info !== '' &&
+              info !== null &&
+              campo !== 'codigo' &&
+              campo !== 'estado'
+          "
           dense
           class="ma-1"
         >

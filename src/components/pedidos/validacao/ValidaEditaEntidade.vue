@@ -8,7 +8,8 @@
             info !== '' &&
               info !== null &&
               campo !== 'sigla' &&
-              campo !== 'codigo'
+              campo !== 'codigo' &&
+              campo !== 'estado'
           "
           dense
           class="ma-1"
@@ -20,7 +21,6 @@
                 `info-descricao-${novoHistorico[campo].cor}`,
               ]"
             >
-              {{ novoHistorico[campo].cor }}
               {{ transformaKeys(campo) }}
             </div>
           </v-col>
@@ -69,26 +69,26 @@
               </v-data-table>
             </div>
           </v-col>
+
+          <!-- Operações -->
+          <v-col cols="1">
+            <v-icon class="mr-1" color="green" @click="verifica(campo)">
+              check
+            </v-icon>
+            <v-icon class="mr-1" color="red" @click="anula(campo)">
+              clear
+            </v-icon>
+            <v-icon
+              v-if="!(info instanceof Array)"
+              class="mr-1"
+              color="orange"
+              @click="edita(campo)"
+            >
+              create
+            </v-icon>
+          </v-col>
         </v-row>
       </div>
-
-      <!-- Operações -->
-      <v-col cols="1">
-        <v-icon class="mr-1" color="green" @click="verifica(campo)">
-          check
-        </v-icon>
-        <v-icon class="mr-1" color="red" @click="anula(campo)">
-          clear
-        </v-icon>
-        <v-icon
-          v-if="!(info instanceof Array)"
-          class="mr-1"
-          color="orange"
-          @click="edita(campo)"
-        >
-          create
-        </v-icon>
-      </v-col>
 
       <v-row>
         <v-spacer />

@@ -114,7 +114,7 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
-import { comparaArraySel } from "@/utils/utils";
+import { comparaArraySel, criarHistorico } from "@/utils/utils";
 
 export default {
   props: ["t", "acao", "original"],
@@ -201,43 +201,6 @@ export default {
       return numeroErros;
     },
 
-    extrairAlteracoes() {
-      const objAlterado = JSON.parse(JSON.stringify(this.t));
-      const objOriginal = JSON.parse(JSON.stringify(this.original));
-
-      const historico = {};
-
-      for (const key in objOriginal) {
-        if (typeof objOriginal[key] === "string") {
-          if (objOriginal[key] !== objAlterado[key]) {
-            historico[key] = {
-              cor: "amarelo",
-              dados: objAlterado[key],
-              despacho: null,
-            };
-          }
-        } else if (objOriginal[key] instanceof Array) {
-          if (objOriginal[key].length !== objAlterado[key].length) {
-            historico[key] = {
-              cor: "amarelo",
-              dados: objAlterado[key],
-              despacho: null,
-            };
-          } else if (
-            !comparaArraySel(objOriginal[key], objAlterado[key], "sigla")
-          ) {
-            historico[key] = {
-              cor: "amarelo",
-              dados: objAlterado[key],
-              despacho: null,
-            };
-          }
-        }
-      }
-
-      return historico;
-    },
-
     // Lança o pedido de criação da tipologia no worflow
     async criarAlterarTipologia() {
       try {
@@ -266,7 +229,7 @@ export default {
 
               erros = await this.validarTipologiasAlteracao(dataObj);
 
-              historico.push(this.extrairAlteracoes());
+              historico.push(criarHistorico(this.t, this.original));
 
               break;
 
