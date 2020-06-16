@@ -3,9 +3,18 @@
     <v-card class="ma-4">
     <v-card-title class="indigo darken-4 white--text">
       {{ titulo }}
+      <v-spacer/>
+      <v-tooltip left>
+            <template v-slot:activator="{ on }">
+              <v-btn @click="csvExport()" color="white" icon v-on="on">
+                <v-icon>get_app</v-icon>
+              </v-btn>
+            </template>
+            <span>Transferir Tabela de Seleção</span>
+          </v-tooltip>
     </v-card-title>
 
-    <v-card-text>
+    <v-card-text class="ma-1">
       <v-row v-for="(item, index) in objeto" v-bind:key="index">
         <v-col cols="2" v-if="item.text">
           <div class="info-label">
@@ -41,7 +50,7 @@
             Tabela de Seleção
           </div>
         </v-col>
-        <v-col xs="4" sm="4"/>
+        <v-col xs="3" sm="3"/>
         <v-col xs="5" sm="5">
           <v-text-field
             v-if="!tree_ou_tabela" 
@@ -52,7 +61,7 @@
             hide-details
           />
         </v-col>
-        <v-col xs="1" sm="1">
+        <v-col xs="2" sm="2">
           <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-switch
@@ -93,9 +102,9 @@
             :search="search"
             class="elevation-1"
             :footer-props="footer_props"
+            :page.sync="paginaTabela"
             :expanded="expanded"
             :single-expand="true"
-            :hide-default-footer="true"
             @click:row="clicked">
           >
             <template v-slot:expanded-item="{headers,item}">
@@ -179,6 +188,7 @@ export default {
     expanded: [],
     singleExpand: false,
     tree_ou_tabela: false,
+    paginaTabela: 1,
     headers: [
       {text: "Código", sortable: false, value: "codigo"},
       {text: "Referência", sortable: false, value: "referencia"},
@@ -187,19 +197,77 @@ export default {
       {text: "Destino Final", sortable: false, value: "df"},
     ],
     footer_props: {
-      "items-per-page-options": [],
-      "items-per-page-text": "Mostrar"
+      "items-per-page-options": [10,25,-1],
+      "items-per-page-text": "Mostrar",
+      "items-per-page-all-text": "Todos"
     }
   }),
   methods: {
+    csvExport() { 
+      //let csvContent = "data:text/csv;charset=utf-8,";
+      let headers
+      let csvContent
+      if(this.objeto.fonte.text == "PGD/LC") {
+        headers = "Código,N.º Referência,Título,Descrição,Dono PN,Participante PN,PCA,Nota PCA,Forma de Contagem PCA,DF,Nota DF"
+        csvContent = [headers,
+          ...this.classes.map(item => {
+              var str = '"' + (item.codigo || "") + '",' 
+                      + '"' + (item.referencia || "") + '",' 
+                      + '"' + (item.titulo || "") + '",' 
+                      + '"' + (item.descricao || "") + '",' 
+                      + '"' + (item.designacaoDono ? 'X' : "") + '",' 
+                      + '"' + (item.designacaoParticipante ? 'X' : "") + '",' 
+                      + '"' + (item.pca || "") + '",' 
+                      + '"' + (item.notaPCA || "") + '",' 
+                      + '"' 
+              if(item.formaContagem == "Data de conclusão do procedimento") str += "F04"
+              else if(item.formaContagem == "Data de cessação da vigência") str += "F05"
+              else if(item.formaContagem == "Data de início do procedimento") str += "F02"
+              else if(item.formaContagem == "Data de emissão do título") str += "F03"
+              else if(item.formaContagem == "Data de extinção da entidade sobre a qual recai o procedimento") str += "F06"
+              else if(item.formaContagem == "Data de extinção do direito") str += "F07"
+              else if(item.formaContagem == "Conforme disposição legal") {
+                str += "F01."
+                if(item.subFormaContagem ) str+= item.subFormaContagem.split("F01.")[1]
+              }
+      
+              str += '","' + (item.df || "") + '",' 
+                    + '"' + (item.notaDF || "") + '"'
+              return str;
+            })
+          ]
+            .join("\n")
+            .replace(/(^\[)|(\]$)/gm, "");
+      }
+      else {
+        headers = "Código,N.º Referência,Título,Descrição,PCA,Nota PCA,DF,Nota DF"
+        csvContent = [
+          headers,
+          ...this.classes.map(item => {
+            return '"' + (item.codigo || "") + '",' 
+                  + '"' + (item.referencia || "") + '",' 
+                  + '"' + (item.titulo || "") + '",' 
+                  + '"' + (item.descricao || "") + '",' 
+                  + '"' + (item.pca || "") + '",' 
+                  + '"' + (item.notaPCA || "") + '",' 
+                  + '"' + (item.df || "") + '",' 
+                  + '"' + (item.notaDF || "") + '"'
+          })
+        ]
+          .join("\n")
+          .replace(/(^\[)|(\]$)/gm, "");
+      }
+      const data = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + data);
+      link.setAttribute("download", this.titulo.replace(/ /g,'_') +".csv");
+      link.click();
+    },
     clicked(value) {
       if(value.descricao || value.notaDF || value.notaPCA || value.formaContagem || value.subFormaContagem || value.designacaoParticipante || value.designacaoDono)
         if(this.expanded[0] == value) this.expanded.pop();
         else this.expanded = [value]
     }
-  },
-  created: function() {
-    this.footer_props["items-per-page-options"].push(this.classes.length)
   }
 }
 </script>
