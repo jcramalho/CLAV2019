@@ -114,7 +114,11 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
-import { comparaArraySel, criarHistorico } from "@/utils/utils";
+import {
+  comparaArraySel,
+  criarHistorico,
+  extrairAlteracoes,
+} from "@/utils/utils";
 
 export default {
   props: ["t", "acao", "original"],
@@ -218,14 +222,7 @@ export default {
               break;
 
             case "Alteração":
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "sigla") delete dataObj[key];
-                }
-              }
+              dataObj = extrairAlteracoes(this.t, this.original);
 
               erros = await this.validarTipologiasAlteracao(dataObj);
 
@@ -237,7 +234,7 @@ export default {
               break;
           }
 
-          if (erros == 0) {
+          if (erros === 0) {
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {

@@ -124,7 +124,11 @@
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
 import DialogEntidadeSucesso from "@/components/entidades/DialogEntidadeSucesso";
 
-import { comparaArraySel, criarHistorico } from "@/utils/utils";
+import {
+  comparaArraySel,
+  criarHistorico,
+  extrairAlteracoes,
+} from "@/utils/utils";
 
 export default {
   props: ["e", "acao", "original"],
@@ -314,14 +318,7 @@ export default {
               break;
 
             case "Alteração":
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "sigla") delete dataObj[key];
-                }
-              }
+              dataObj = extrairAlteracoes(this.e, this.original);
 
               erros = await this.validarEntidadeAlteracao(dataObj);
 
