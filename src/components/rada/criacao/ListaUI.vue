@@ -23,6 +23,7 @@
           :items="TS.UIs"
           :search="search"
           :footer-props="footer_props"
+          :items-per-page="5"
         >
           <template v-slot:item="props">
             <tr
@@ -110,7 +111,7 @@ export default {
     UI_clone: null,
     dialog_editar_UI: false,
     footer_props: {
-      "items-per-page-options": [10, 20, 100],
+      "items-per-page-options": [1, 5, 10, -1],
       "items-per-page-text": "Mostrar"
     },
     headers: [
