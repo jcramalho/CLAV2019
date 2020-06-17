@@ -53,7 +53,7 @@
                     <v-list-item-content>{{classe.codigo + " - " + buscarTituloTable(classe.codigo)}}</v-list-item-content>
                   </v-list-item>
                 </v-list>
-                <p v-else><br/>Não tem classes associadas!</p>
+                <p v-else><br/>Não tem séries/subséries associadas!</p>
               </td>
             </tr>
           </template>
@@ -137,7 +137,7 @@ export default {
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
-        text: "Classes Associadas",
+        text: "Séries/Subséries Associadas",
         value: "classesAssociadas",
         align: "center",
         width: "45%",

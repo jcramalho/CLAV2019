@@ -11,7 +11,6 @@
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-autocomplete
-          :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.legislacao"
           :items="legislacaoProcessada"
           label="Selecione a legislação associada à série"

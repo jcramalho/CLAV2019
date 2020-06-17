@@ -104,6 +104,7 @@
             :entidades="entidades"
             :legislacaoProcessada="legislacaoProcessada"
             :loading_circle.sync="loading_circle_ts"
+            :toSave.sync="toSave"
           />
           <v-alert
             width="100%"
@@ -123,7 +124,10 @@
             <div v-if="!!erros_relacoes[0]">
               <b>As seguintes relações entre classes são inválidas devido às datas:</b>
               <ul>
-                <li v-for="(erro_rel, i) in erros_relacoes" :key="i">{{erro_rel[0] + " " + erro_rel[2].toLowerCase().trim() + " " + erro_rel[1] + ";"}}</li>
+                <li
+                  v-for="(erro_rel, i) in erros_relacoes"
+                  :key="i"
+                >{{erro_rel[0] + " " + erro_rel[2].toLowerCase().trim() + " " + erro_rel[1] + ";"}}</li>
               </ul>
             </div>
             <div v-if="!!erros_datas_uis[0]">
@@ -195,7 +199,7 @@ export default {
         objeto: {
           rada: this.RADA,
           entidades: this.entidades.filter(e => e.estado_no_sistema == "Nova"),
-          legislacao: this.legislacao.filter(e => e.estado_no_sistema == "Nova")
+          legislacao: this.legislacao.filter(e => e.estado == "Nova")
         }
       };
 

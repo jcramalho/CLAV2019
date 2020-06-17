@@ -208,9 +208,6 @@ export default {
         this.erros.push("Produtoras da Série;");
       }
 
-      if (!!this.newSerie.legislacao[0] == false) {
-        this.erros.push("Legislação;");
-      }
 
       if (!this.newSerie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");

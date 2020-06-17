@@ -63,6 +63,7 @@
             :entidades="entidades"
             :legislacaoProcessada="legislacaoProcessada"
             :loading_circle.sync="loading_circle_ts"
+            :toSave.sync="toSave"
           />
           <v-alert
             width="100%"
@@ -507,7 +508,7 @@ export default {
               e => e.estado_no_sistema == "Nova"
             ),
             legislacao: this.legislacao.filter(
-              e => e.estado_no_sistema == "Nova"
+              e => e.estado == "Nova"
             )
           }
         };
@@ -538,7 +539,7 @@ export default {
               e => e.estado_no_sistema == "Nova"
             ),
             legislacao: this.legislacao.filter(
-              e => e.estado_no_sistema == "Nova"
+              e => e.estado == "Nova"
             )
           },
           criadoPor: this.userEmail,

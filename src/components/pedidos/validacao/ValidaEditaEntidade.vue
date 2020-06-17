@@ -2,86 +2,93 @@
   <div>
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
-      <v-row v-for="(info, i) in infoPedido" :key="i">
-        <!-- Label -->
-        <v-col
-          cols="2"
+      <div v-for="(info, campo) in dados" :key="campo">
+        <v-row
           v-if="
-            info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
+            info !== '' &&
+              info !== null &&
+              campo !== 'sigla' &&
+              campo !== 'codigo' &&
+              campo !== 'estado'
           "
+          dense
+          class="ma-1"
         >
-          <div class="info-label">{{ info.campo }}</div>
-        </v-col>
+          <v-col cols="2">
+            <div
+              :class="[
+                'info-descricao',
+                `info-descricao-${novoHistorico[campo].cor}`,
+              ]"
+            >
+              {{ transformaKeys(campo) }}
+            </div>
+          </v-col>
 
-        <!-- Conteudo -->
-        <v-col
-          v-if="
-            info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
-          "
-        >
-          <!-- Se o conteudo for uma lista de tipologias-->
-          <v-data-table
-            v-if="info.campo === 'Tipologias'"
-            :headers="headersTipologias"
-            :items="info.conteudo"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:no-data>
-              Não existem tipologias selecionadas.
-            </template>
+          <v-col>
+            <div v-if="!(info instanceof Array)" class="info-conteudo">
+              {{ info }}
+            </div>
 
-            <template v-slot:item="props">
-              <tr>
-                <td>{{ props.item.sigla }}</td>
-                <td>{{ props.item.designacao }}</td>
-                <td>
-                  <v-icon color="red" @click="removeTipologia(props.item)">
+            <div v-else>
+              <v-data-table
+                v-if="campo === 'tipologiasSel'"
+                :headers="tipologiasHeaders"
+                :items="info"
+                class="elevation-1"
+                :footer-props="footerProps"
+              >
+                <template v-slot:no-data>
+                  <v-alert
+                    type="error"
+                    width="100%"
+                    class="m-auto mb-2 mt-2"
+                    outlined
+                  >
+                    Nenhuma tipologia selecionada...
+                  </v-alert>
+                </template>
+
+                <template v-slot:item.operacao="{ item }">
+                  <v-icon color="red" @click="removeTipologia(item)">
                     delete
                   </v-icon>
-                </td>
-              </tr>
-            </template>
+                </template>
 
-            <template v-slot:top>
-              <v-toolbar flat :color="info.cor">
-                <v-btn
-                  rounded
-                  class="indigo accent-4 white--text"
-                  @click="abreTipologiasDialog()"
-                >
-                  Adicionar Tipologias
-                </v-btn>
+                <template v-slot:top>
+                  <v-toolbar flat>
+                    <v-btn
+                      rounded
+                      class="indigo accent-4 white--text"
+                      @click="abreTipologiasDialog()"
+                    >
+                      Adicionar Tipologias
+                    </v-btn>
+                  </v-toolbar>
+                </template>
+              </v-data-table>
+            </div>
+          </v-col>
 
-                <v-spacer />
-                <v-icon color="green" @click="verifica(info)">check</v-icon>
-                <v-icon color="red" @click="anula(info)">clear</v-icon>
-              </v-toolbar>
-            </template>
-          </v-data-table>
-
-          <!-- Se o conteudo for texto -->
-          <v-text-field
-            v-else
-            solo
-            readonly
-            hide-details
-            :background-color="info.cor"
-            :value="info.conteudo"
-          >
-            <template slot="append">
-              <v-icon color="green" @click="verifica(info)">check</v-icon>
-              <v-icon color="red" @click="anula(info)">clear</v-icon>
-              <!--<v-icon @click="">create</v-icon>-->
-              <v-icon>create</v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-      </v-row>
+          <!-- Operações -->
+          <v-col cols="1">
+            <v-icon class="mr-1" color="green" @click="verifica(campo)">
+              check
+            </v-icon>
+            <v-icon class="mr-1" color="red" @click="anula(campo)">
+              clear
+            </v-icon>
+            <v-icon
+              v-if="!(info instanceof Array)"
+              class="mr-1"
+              color="orange"
+              @click="edita(campo)"
+            >
+              create
+            </v-icon>
+          </v-col>
+        </v-row>
+      </div>
 
       <v-row>
         <v-spacer />
@@ -92,6 +99,16 @@
         />
       </v-row>
     </div>
+
+    <!-- Dialog de edição-->
+    <v-dialog v-model="editaCampo.visivel" width="70%" persistent>
+      <EditarCamposDialog
+        :campo="editaCampo"
+        :tipoPedido="p.objeto.tipo"
+        @fechar="fechaEditaCampoDialog($event)"
+        @editarCampo="editarCampo($event)"
+      />
+    </v-dialog>
 
     <!-- Dialog de erros da API -->
     <v-dialog v-model="erroPedido" width="50%" persistent>
@@ -118,12 +135,13 @@
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
+import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
 
 import Loading from "@/components/generic/Loading";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla } from "@/utils/utils";
+import { comparaSigla, mapKeys } from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -134,18 +152,26 @@ export default {
     Loading,
     ErroDialog,
     SelecionaAutocomplete,
+    EditarCamposDialog,
   },
 
   data() {
     return {
+      novoHistorico: {},
       loading: true,
+      editaCampo: {
+        visivel: false,
+        nome: "",
+        key: "",
+      },
+
       erros: [],
       erroPedido: false,
       erroDialog: {
         visivel: false,
         mensagem: null,
       },
-      headersTipologias: [
+      tipologiasHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
         {
@@ -157,6 +183,11 @@ export default {
           align: "center",
         },
       ],
+      footerProps: {
+        "items-per-page-text": "Tipologias por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
 
       mensagemAutocomplete: {
         titulo: "tipologias",
@@ -164,9 +195,21 @@ export default {
       },
       dialogTipologias: false,
       tipologias: [],
-      infoPedido: [],
-      pedido: null,
     };
+  },
+
+  computed: {
+    dados() {
+      return this.p.objeto.dados;
+    },
+
+    dadosOriginais() {
+      return this.p.objeto.dadosOriginais;
+    },
+
+    historico() {
+      return this.p.historico;
+    },
   },
 
   async created() {
@@ -182,51 +225,18 @@ export default {
   },
 
   mounted() {
-    this.infoPedido = [
-      {
-        campo: "Designação",
-        conteudo: this.pedido.objeto.dados.designacao,
-        cor: null,
-      },
-      {
-        campo: "Internacional",
-        conteudo: this.pedido.objeto.dados.internacional,
-        cor: null,
-      },
-      { campo: "SIOE", conteudo: this.pedido.objeto.dados.sioe, cor: null },
-      {
-        campo: "Tipologias",
-        conteudo: this.pedido.objeto.dados.tipologiasSel,
-        cor: null,
-      },
-      {
-        campo: "Data Extinção",
-        conteudo: this.pedido.objeto.dados.dataExtincao,
-        cor: null,
-      },
-      {
-        campo: "Data Criação",
-        conteudo: this.pedido.objeto.dados.dataCriacao,
-        cor: null,
-      },
-    ];
-  },
-
-  watch: {
-    p: {
-      handler(newP, oldP) {
-        if (newP !== oldP) {
-          this.pedido = JSON.parse(JSON.stringify(this.p));
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
+    this.novoHistorico = JSON.parse(
+      JSON.stringify(this.historico[this.historico.length - 1])
+    );
   },
 
   methods: {
+    transformaKeys(key) {
+      return mapKeys(key);
+    },
+
     abreTipologiasDialog() {
-      this.pedido.objeto.dados.tipologiasSel.forEach((tipSel) => {
+      this.dados.tipologiasSel.forEach((tipSel) => {
         const index = this.tipologias.findIndex(
           (tip) => tip.sigla === tipSel.sigla
         );
@@ -242,7 +252,7 @@ export default {
     },
 
     removeTipologia(tipologia) {
-      const index = this.pedido.objeto.dados.tipologiasSel.findIndex(
+      const index = this.dados.tipologiasSel.findIndex(
         (tipSel) => tipSel.sigla === tipologia.sigla
       );
 
@@ -255,14 +265,23 @@ export default {
           this.tipologias.push(tipologia);
           this.tipologias.sort(comparaSigla);
         }
-
-        this.pedido.objeto.dados.tipologiasSel.splice(index, 1);
+        this.dados.tipologiasSel.splice(index, 1);
+        this.novoHistorico.tipologiasSel = {
+          ...this.novoHistorico.tipologiasSel,
+          cor: "amarelo",
+          dados: this.dados.tipologiasSel,
+        };
       }
     },
 
     adicionaTipologias(tipologias) {
-      this.pedido.objeto.dados.tipologiasSel.push(...tipologias);
+      this.dados.tipologiasSel.push(...tipologias);
       this.dialogTipologias = false;
+      this.novoHistorico.tipologiasSel = {
+        ...this.novoHistorico.tipologiasSel,
+        cor: "amarelo",
+        dados: this.dados.tipologiasSel,
+      };
     },
 
     async loadTipologias() {
@@ -296,10 +315,12 @@ export default {
           despacho: dados.mensagemDespacho,
         };
 
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -316,7 +337,7 @@ export default {
 
     async finalizarPedido(dados) {
       try {
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
         if (pedido.objeto.acao === "Extinção") {
           await this.$request(
@@ -367,6 +388,8 @@ export default {
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -423,43 +446,87 @@ export default {
       return numeroErros;
     },
 
-    verifica(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "green lighten-3";
+    verifica(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "verde",
+      };
     },
 
-    anula(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "red lighten-3";
+    anula(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "vermelho",
+      };
+
+      // Abrir dialog com despacho
+      // Guardar despacho
+    },
+
+    edita(campo) {
+      this.editaCampo = {
+        visivel: true,
+        nome: this.transformaKeys(campo),
+        key: campo,
+      };
+
+      // Abrir dialog com despacho (Opcional)
+      // Guardar despacho
+    },
+
+    fechaEditaCampoDialog(campo) {
+      this.editaCampo.visivel = false;
+    },
+
+    editarCampo(event) {
+      console.log("event", event);
+      console.log("dados", event.dados);
+      console.log("campo", event.campo);
+
+      this.editaCampo.visivel = false;
+
+      this.dados[event.campo.key] = event.dados;
+      this.novoHistorico[event.campo.key] = {
+        ...this.novoHistorico[event.campo.key],
+        dados: event.dados,
+        cor: "amarelo",
+      };
     },
 
     fecharErro() {
       this.erros = [];
       this.erroPedido = false;
     },
-
-    close() {
-      this.dialogTipologias = false;
-    },
   },
 };
 </script>
 
 <style scoped>
-.info-label {
+.info-conteudo {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #283593;
+  border-radius: 3px;
+}
+
+.info-descricao {
   color: #283593; /* indigo darken-3 */
   padding: 5px;
-  font-weight: 400;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }
 
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
+.info-descricao-verde {
+  background-color: #c8e6c9; /* lighten-4 */
+}
+
+.info-descricao-vermelho {
+  background-color: #ffcdd2; /* lighten-4 */
+}
+
+.info-descricao-amarelo {
+  background-color: #ffe0b2; /* lighten-4 */
 }
 </style>

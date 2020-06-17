@@ -9,7 +9,7 @@
           rounded
           class="indigo accent-4 white--text"
           @click="criarClasseDocumentacaoApoio"
-          >Criar Classe da Documentação de Apoio</v-btn
+          >Criar Secção da Documentação de Apoio</v-btn
         >
 
         <v-btn
@@ -17,7 +17,7 @@
           rounded
           class="indigo accent-4 white--text"
           @click="criarClasseDocumentacaoApoio"
-          >Editar Classe da Documentação de Apoio</v-btn
+          >Editar Secção da Documentação de Apoio</v-btn
         >
       </v-col>
 
@@ -86,13 +86,13 @@
       <v-dialog v-model="dialogClasseDocumentacaoApoioCriada" width="70%">
         <v-card>
           <v-card-title
-            >{{ acao }} de Classe de Documentação de Apoio
+            >{{ acao }} de Secção de Documentação de Apoio
             Submetida</v-card-title
           >
           <v-card-text>
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Classe:</div>
+                <div class="info-label">Designação:</div>
               </v-col>
 
               <v-col>
@@ -116,12 +116,12 @@
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
           <v-card-title
-            >Cancelamento e eliminação do pedido de {{ acao }} da Classe da
+            >Cancelamento e eliminação do pedido de {{ acao }} da Secção da
             Documentação de apoio</v-card-title
           >
           <v-card-text>
             <p>
-              Selecionou o cancelamento da {{ acao }} da Classe da Documentação
+              Selecionou o cancelamento da {{ acao }} da Secção da Documentação
               de apoio.
             </p>
             <p>Toda a informação introduzida será eliminada.</p>

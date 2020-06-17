@@ -122,8 +122,13 @@
 
 <script>
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
-
 import DialogEntidadeSucesso from "@/components/entidades/DialogEntidadeSucesso";
+
+import {
+  comparaArraySel,
+  criarHistorico,
+  extrairAlteracoes,
+} from "@/utils/utils";
 
 export default {
   props: ["e", "acao", "original"],
@@ -138,9 +143,9 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,
+      codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
-      codigoPedido: "",
     };
   },
 
@@ -298,6 +303,8 @@ export default {
           let erros = 0;
           let dataObj = JSON.parse(JSON.stringify(this.e));
 
+          const historico = [];
+
           switch (this.acao) {
             case "Criação":
               if (
@@ -311,25 +318,32 @@ export default {
               break;
 
             case "Alteração":
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "sigla") delete dataObj[key];
-                }
-              }
+              dataObj = extrairAlteracoes(this.e, this.original);
 
               erros = await this.validarEntidadeAlteracao(dataObj);
+
+              historico.push(criarHistorico(this.e, this.original));
               break;
 
             case "Extinção":
               erros = this.validarEntidadeExtincao(dataObj);
 
               for (const key in dataObj) {
-                if (key !== "sigla" && key !== "dataExtincao")
+                if (
+                  key !== "sigla" &&
+                  key !== "dataExtincao" &&
+                  key !== "dataCriacao"
+                )
                   delete dataObj[key];
               }
+
+              historico.push({
+                dataExtincao: {
+                  cor: "amarelo",
+                  dados: dataObj.dataExtincao,
+                  despacho: null,
+                },
+              });
               break;
 
             default:
@@ -339,8 +353,6 @@ export default {
           if (erros === 0) {
             let userBD = this.$verifyTokenUser();
 
-            // dataObj.codigo = "ent_" + this.e.sigla;
-
             let pedidoParams = {
               tipoPedido: this.acao,
               tipoObjeto: "Entidade",
@@ -348,10 +360,12 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
+              historico: historico,
             };
 
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
+            else pedidoParams.objetoOriginal = dataObj;
 
             const codigoPedido = await this.$request(
               "post",

@@ -110,6 +110,12 @@
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 import DialogLegislacaoSucesso from "@/components/legislacao/DialogLegislacaoSucesso";
 
+import {
+  comparaArraySel,
+  criarHistorico,
+  extrairAlteracoes,
+} from "@/utils/utils";
+
 export default {
   props: ["l", "acao", "original"],
 
@@ -210,21 +216,19 @@ export default {
           let erros = 0;
           let dataObj = JSON.parse(JSON.stringify(this.l));
 
+          const historico = [];
+
           switch (this.acao) {
             case "Criação":
               erros = await this.validarLegislacaoCriacao();
               break;
 
             case "Alteração":
+              dataObj = extrairAlteracoes(this.l, this.original);
+
               erros = this.validarLegislacaoAlteracao(dataObj);
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "id") delete dataObj[key];
-                }
-              }
+
+              historico.push(criarHistorico(this.l, this.original));
 
               break;
 
@@ -232,7 +236,9 @@ export default {
               break;
           }
 
-          if (erros == 0) {
+          console.log("dataObj", dataObj);
+
+          if (erros === 0) {
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
@@ -242,10 +248,12 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
+              historico: historico,
             };
 
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
+            else pedidoParams.objetoOriginal = dataObj;
 
             const codigoPedido = await this.$request(
               "post",
@@ -261,6 +269,7 @@ export default {
           }
         }
       } catch (err) {
+        console.log("err", err);
         return err;
       }
     },

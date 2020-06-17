@@ -267,7 +267,7 @@ export default {
     // Provavelmente vai ter que se alterar
     async validaEntidade() {
       return this.entidades.some(el => {
-        return el.sigla == this.sigla || el.designacao == this.designacao;
+        return el.sigla.toLowerCase() == this.sigla.toLowerCase() || el.designacao.toLowerCase() == this.designacao.toLowerCase();
       });
     }
   }

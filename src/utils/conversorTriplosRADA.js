@@ -102,7 +102,7 @@ async function triplosSerie(classe, codigoRADA) {
                                     clav:tipoSerie "${classe.tSerie}" ;
                                     clav:suporte "${classe.suporte}" ;
                                     clav:medicao "${classe.medicao}" ;
-                                    clav:reguladaPor clav:${classe.legislacao.map(e => e.id).join(", clav:")} ;
+                                    ${!!classe.legislacao[0] ? `clav:reguladaPor clav:${classe.legislacao.map(e => e.id).join(", clav:")} ;` : '' }
                                     clav:produzidaPor clav:${
             !!classe.entProdutoras[0]
                 ? classe.entProdutoras.map(e => "ent_" + e.split(" - ")[0]).join(", clav:")
@@ -326,11 +326,11 @@ function triplosUnidadeInstalacao(UIs) {
     for (let i = 0; i < UIs.length; i++) {
         triplos += `clav:${UIs[i].id} rdf:type owl:NamedIndividual , clav:UnidadeInstalacao ;
                         clav:produzidaPor clav:${!!UIs[i].produtor.entProdutoras[0] ? UIs[i].produtor.entProdutoras.map(e =>  "ent_" + e.split(" - ")[0]).join(", clav:") : UIs[i].produtor.tipologiasProdutoras.map(e =>  "tip_" + e.split(" - ")[0]).join(", clav:")} ;
-                        clav:codigoClassificacao "${UIs[i].codCota}" ;
+                        ${!!UIs[i].codCota ? `clav:codigoClassificacao "${UIs[i].codCota}" ;` : ''}
                         clav:dataFinal "${UIs[i].dataFinal}" ;
                         clav:dataInicial "${UIs[i].dataInicial}" ;
                         clav:descricao "${UIs[i].descricao}" ;
-                        clav:localizacao "${UIs[i].localizacao}" ;
+                        ${!!UIs[i].localizacao ? `clav:localizacao "${UIs[i].localizacao}" ;` : ''}
                         ${!!UIs[i].notas ? `clav:notas "${UIs[i].notas}" ;` : ''}
                         clav:titulo "${UIs[i].titulo}" ;
                         clav:codigo "${UIs[i].codigo}" .\n`

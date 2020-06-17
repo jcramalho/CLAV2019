@@ -106,7 +106,7 @@
                 Participante
               </v-col>
             </v-row>
-            <v-row>
+            <v-row v-if="tipo!='RADA' && tipo!='PGD'">
               <v-col cols="3">
                 <div class="info-label">Dono do PN</div>
               </v-col>
@@ -115,6 +115,7 @@
                 label="Selecione as entidades donas do processo"
                 :items="donos"
                 v-model="item.dono"
+                deletable-chips
                 solo
                 dense
                 chips

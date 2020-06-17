@@ -414,7 +414,9 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
         agregacoes.forEach(a => {
           a = a.replace(/[\r\n]+/g,'');
           var agregacao = a.split(/[;,]/)
-          if(agregacao[0]==zc.codigo && agregacao[1]==zc.referencia) {
+          var agCodigo = agregacao[0] || "";
+          var agReferencia = agregacao[1] || "";
+          if(agCodigo.replace(/['"]/g,'')==zc.codigo && agReferencia.replace(/['"]/g,'')==zc.referencia) {
             var ag = {
               codigo: agregacao[2].replace(/[ -.,!/]/g, "_").replace(/['"]/g,''),
               titulo: agregacao[3].replace(/^\"|\"$/g,"").replace(/['"]/g,''),

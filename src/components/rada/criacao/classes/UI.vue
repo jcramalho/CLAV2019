@@ -39,16 +39,10 @@
           </v-row>
           <v-row>
             <v-col md="2" sm="2">
-              <div class="info-label">Código Classificação/Cota</div>
+              <div class="info-label">Cota</div>
             </v-col>
             <v-col sm="2" md="2">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI.codCota"
-                label="Código Classificação/Cota"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI.codCota" label="Cota"></v-text-field>
             </v-col>
 
             <v-col md="2" sm="2">
@@ -69,90 +63,51 @@
               <div class="info-label">Data Inicial da Documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
-              <v-menu
-                ref="menu1"
-                v-model="menu1"
-                :close-on-content-click="false"
-                :return-value.sync="UI.dataInicial"
-                transition="scale-transition"
-                max-width="290px"
+              <SelecionarData
+                label="Data Inicial"
+                :d="UI.dataInicial"
+                @dataSelecionada="UI.dataInicial = $event"
+                :dataMinima="RE.dataInicial"
+                :dataMaxima="RE.dataFinal"
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:default="slotProps">
                   <v-text-field
                     :rules="[v => !!v || 'Campo obrigatório!']"
-                    v-model="UI.dataInicial"
-                    label="Data Inicial"
+                    v-model="slotProps.item.dataValor"
+                    :label="slotProps.item.label"
                     prepend-icon="event"
                     readonly
-                    v-on="on"
-                    clearable
+                    v-on="slotProps.item.on"
                     solo
                   ></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="UI.dataInicial"
-                  full-width
-                  color="amber accent-3"
-                  scrollable
-                  locale="pt"
-                  :min="RE.dataInicial"
-                  :max="RE.dataFinal"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text @click="menu1 = false">
-                    <v-icon>keyboard_backspace</v-icon>
-                  </v-btn>
-                  <v-btn text @click="$refs.menu1.save(UI.dataInicial)">
-                    <v-icon>check</v-icon>
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
+              </SelecionarData>
             </v-col>
             <v-col xs="12" sm="3">
               <div class="info-label">Data Final da Documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
-              <v-menu
-                ref="menu2"
-                v-model="menu2"
-                :close-on-content-click="false"
-                :return-value.sync="UI.dataFinal"
-                transition="scale-transition"
-                max-width="290px"
+              <SelecionarData
+                label="Data Inicial"
+                :d="UI.dataFinal"
+                @dataSelecionada="UI.dataFinal = $event"
+                :dataMinima="RE.dataInicial"
+                :dataMaxima="RE.dataFinal"
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:default="slotProps">
                   <v-text-field
                     :rules="[v => data_final_valida(v, UI) || 'Campo obrigatório!']"
-                    v-model="UI.dataFinal"
-                    label="Data Final"
+                    v-model="slotProps.item.dataValor"
+                    :label="slotProps.item.label"
                     prepend-icon="event"
                     readonly
-                    v-on="on"
-                    clearable
+                    v-on="slotProps.item.on"
                     solo
                   ></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="UI.dataFinal"
-                  full-width
-                  color="amber accent-3"
-                  scrollable
-                  locale="pt"
-                  :min="RE.dataInicial"
-                  :max="RE.dataFinal"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu2 = false">
-                    <v-icon>keyboard_backspace</v-icon>
-                  </v-btn>
-                  <v-btn text color="primary" @click="$refs.menu2.save(UI.dataFinal)">
-                    <v-icon>check</v-icon>
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
+              </SelecionarData>
             </v-col>
           </v-row>
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <EntidadesProdutoras :newSerie="UI.produtor" :RE="RE" />
           <!-- {{classesUI}}
           {{UI.classesAssociadas}}-->
@@ -215,6 +170,19 @@
                       clearable
                       chips
                     >
+                      <template v-slot:item="{item}">
+                        <img
+                          v-if="item.tipo == 'Série'"
+                          style="width:23px; height:30px"
+                          :src="svg_sr"
+                        />
+                        <img
+                          v-else-if="item.tipo == 'Subsérie'"
+                          style="width:23px; height:30px"
+                          :src="svg_ssr"
+                        />
+                        <span style="padding-left: 20px;">{{ item.searchField }}</span>
+                      </template>
                       <template v-slot:no-data>
                         <v-list-item>
                           <v-list-item-content>
@@ -240,14 +208,14 @@
                       solo
                       clearable
                       v-model="tituloClasse"
-                      label="Título da Série/Subsérie"
+                      label="Título"
                     ></v-text-field>
                   </v-col>
                   <v-col sm="2" xs="12">
                     <v-select
                       :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
                       :disabled="iscodvalido"
-                      label="Tipo de Classe"
+                      label="Série / Subsérie"
                       v-model="tipoClasse"
                       :items="['Série', 'Subsérie']"
                       chips
@@ -265,10 +233,10 @@
 
                   <v-col sm="1" xs="12">
                     <v-btn text rounded @click="adicionarClasseUI(UI)">
-                      <v-icon color="green lighten-1">add_circle</v-icon>
+                      <v-icon size="35" color="green lighten-1">add_circle</v-icon>
                     </v-btn>
                     <v-btn text rounded @click="$refs.addRel.reset()">
-                      <v-icon color="red lighten-1">delete_sweep</v-icon>
+                      <v-icon size="35" color="red lighten-1">delete_sweep</v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -280,8 +248,6 @@
               </v-form>
             </v-card-text>
           </v-card>
-
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <v-row>
             <v-col md="2" sm="2">
               <div class="info-label">Notas</div>
@@ -293,13 +259,7 @@
               <div class="info-label">Localização</div>
             </v-col>
             <v-col sm="4" md="4">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI.localizacao"
-                label="Localização"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI.localizacao" label="Localização"></v-text-field>
             </v-col>
           </v-row>
         </v-form>
@@ -317,7 +277,7 @@
           <v-icon>delete_sweep</v-icon>
         </v-btn>
         <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="success" class="mr-4" @click="guardar">Guardar</v-btn>
+        <v-btn color="success" class="mr-4" @click="guardar">Criar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -325,13 +285,15 @@
 
 <script>
 import EntidadesProdutoras from "@/components/rada/criacao/classes/partes/EntidadesProdutoras.vue";
+import SelecionarData from "@/components/generic/SelecionarData";
 
 import mixin_unidade_instalacao from "@/mixins/rada/mixin_unidade_instalacao";
 
 export default {
   props: ["UIs", "RE", "classes", "dialog", "UI_para_copiar"],
   components: {
-    EntidadesProdutoras
+    EntidadesProdutoras,
+    SelecionarData
   },
   mixins: [mixin_unidade_instalacao],
   data: () => ({

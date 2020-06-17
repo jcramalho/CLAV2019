@@ -16,7 +16,14 @@
             >
               <v-card-text>
                 <div v-for="(info, campo) in h" :key="campo">
-                  <v-row v-if="info !== '' && info !== null">
+                  <v-row
+                    v-if="
+                      info !== '' &&
+                        info !== null &&
+                        campo !== 'estado' &&
+                        campo !== 'id'
+                    "
+                  >
                     <v-col cols="2">
                       <div class="info-descricao">
                         {{ transformaKeys(campo) }}
@@ -36,7 +43,7 @@
                           :headers="entidadesHeaders"
                           :items="info"
                           class="elevation-1"
-                          :footer-props="footerProps"
+                          :footer-props="footerPropsEntidades"
                         >
                           <template v-slot:no-data>
                             <v-alert
@@ -46,6 +53,44 @@
                               outlined
                             >
                               Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'tipologiasSel'"
+                          :headers="tipologiasHeaders"
+                          :items="info"
+                          class="elevation-1"
+                          :footer-props="footerPropsTipologias"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma tipologia selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'processosSel'"
+                          :headers="processosHeaders"
+                          :items="info"
+                          class="elevation-1"
+                          :footer-props="footerPropsProcessos"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhum processo selecionado...
                             </v-alert>
                           </template>
                         </v-data-table>
@@ -63,44 +108,94 @@
               color="orange lighten-5"
             >
               <v-card-text>
-                <v-row v-for="(info, campo) in h" :key="campo">
-                  <v-col cols="2">
-                    <div
-                      :class="['info-descricao', `info-descricao-${info.cor}`]"
-                    >
-                      {{ transformaKeys(campo) }}
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <div
-                      v-if="!(info.dados instanceof Array)"
-                      class="info-conteudo"
-                    >
-                      {{ info.dados }}
-                    </div>
-
-                    <div v-else>
-                      <v-data-table
-                        v-if="campo === 'entidadesSel'"
-                        :headers="entidadesHeaders"
-                        :items="info.dados"
-                        class="elevation-1"
-                        :footer-props="footerProps"
+                <div v-for="(info, campo) in h" :key="campo">
+                  <v-row
+                    v-if="
+                      info.dados !== '' &&
+                        info.dados !== null &&
+                        campo !== 'estado' &&
+                        campo !== 'id'
+                    "
+                  >
+                    <v-col cols="2">
+                      <div
+                        :class="[
+                          'info-descricao',
+                          `info-descricao-${info.cor}`,
+                        ]"
                       >
-                        <template v-slot:no-data>
-                          <v-alert
-                            type="error"
-                            width="100%"
-                            class="m-auto mb-2 mt-2"
-                            outlined
-                          >
-                            Nenhuma entidade selecionada...
-                          </v-alert>
-                        </template>
-                      </v-data-table>
-                    </div>
-                  </v-col>
-                </v-row>
+                        {{ transformaKeys(campo) }}
+                      </div>
+                    </v-col>
+                    <v-col>
+                      <div
+                        v-if="!(info.dados instanceof Array)"
+                        class="info-conteudo"
+                      >
+                        {{ info.dados }}
+                      </div>
+
+                      <div v-else>
+                        <v-data-table
+                          v-if="campo === 'entidadesSel'"
+                          :headers="entidadesHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsEntidades"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'tipologiasSel'"
+                          :headers="tipologiasHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsTipologias"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma tipologia selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'processosSel'"
+                          :headers="processosHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsProcessos"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhum processo selecionado...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
               </v-card-text>
             </v-card>
           </v-window-item>
@@ -117,7 +212,8 @@
               v-slot:default="{ active, toggle }"
             >
               <v-btn :input-value="active" icon @click="toggle">
-                <v-icon>fiber_manual_record</v-icon>
+                <b>{{ i + 1 }}</b>
+                <!-- <v-icon>fiber_manual_record</v-icon> -->
               </v-btn>
             </v-item>
           </v-item-group>
@@ -151,8 +247,28 @@ export default {
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
-      footerProps: {
+      footerPropsEntidades: {
         "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
+
+      tipologiasHeaders: [
+        { text: "Sigla", value: "sigla", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
+      ],
+      footerPropsTipologias: {
+        "items-per-page-text": "Tipologias por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
+
+      processosHeaders: [
+        { text: "Código", value: "codigo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" },
+      ],
+      footerPropsProcessos: {
+        "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
         "items-per-page-all-text": "Todas",
       },

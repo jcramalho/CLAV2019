@@ -43,7 +43,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-btn color="indigo darken-1" dark @click="next">Continuar</v-btn>
+    <v-btn color="indigo darken-4" dark @click="next">Continuar</v-btn>
     <v-btn color="indigo darken-4" text @click="apagar">
       <v-icon>delete_sweep</v-icon>
     </v-btn>

@@ -90,7 +90,7 @@
           <v-card-text>
             <v-row>
               <v-col cols="2">
-                <div class="info-label">Tipo:</div>
+                <div class="info-label">Subsecção:</div>
               </v-col>
 
               <v-col>

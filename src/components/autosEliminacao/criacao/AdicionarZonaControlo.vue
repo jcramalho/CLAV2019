@@ -11,6 +11,7 @@
         v-bind:closeZC="closeZC"
         v-bind:classesCompletas="classesCompletas"
         v-bind:donos="donos"
+        v-bind:tipo="tipo"
       />
     </v-dialog>
     <v-snackbar v-model="snackbar" color="success">
@@ -25,7 +26,7 @@
 import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaControlo.vue";
 
 export default {
-  props: ["classes", "entidades", "auto", "classesCompletas","donos"],
+  props: ["classes", "entidades", "auto", "classesCompletas","donos","tipo"],
   components: {
     DialogZonaControlo
   },

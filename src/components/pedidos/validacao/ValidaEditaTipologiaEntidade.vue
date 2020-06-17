@@ -2,13 +2,14 @@
   <div>
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
-      <div v-for="(info, campo) in tipologia" :key="campo">
+      <div v-for="(info, campo) in dados" :key="campo">
         <v-row
           v-if="
             info !== '' &&
               info !== null &&
               campo !== 'sigla' &&
-              campo !== 'codigo'
+              campo !== 'codigo' &&
+              campo !== 'estado'
           "
           dense
           class="ma-1"
@@ -119,7 +120,7 @@
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
     </v-dialog>
 
-    <!-- Dialog de tipologias-->
+    <!-- Dialog de entidades-->
     <v-dialog v-model="dialogEntidades" width="50%" persistent>
       <SelecionaAutocomplete
         :mensagem="mensagemAutocomplete"
@@ -198,11 +199,11 @@ export default {
   },
 
   computed: {
-    tipologia() {
+    dados() {
       return this.p.objeto.dados;
     },
 
-    tipologiaOriginal() {
+    dadosOriginais() {
       return this.p.objeto.dadosOriginais;
     },
 
@@ -235,7 +236,7 @@ export default {
     },
 
     abreEntidadesDialog() {
-      this.tipologia.entidadesSel.forEach((entSel) => {
+      this.dados.entidadesSel.forEach((entSel) => {
         const index = this.entidades.findIndex(
           (ent) => ent.sigla === entSel.sigla
         );
@@ -251,7 +252,7 @@ export default {
     },
 
     removeEntidade(entidade) {
-      const index = this.tipologia.entidadesSel.findIndex(
+      const index = this.dados.entidadesSel.findIndex(
         (entSel) => entSel.sigla === entidade.sigla
       );
 
@@ -262,22 +263,22 @@ export default {
           this.entidades.push(entidade);
           this.entidades.sort(comparaSigla);
         }
-        this.tipologia.entidadesSel.splice(index, 1);
+        this.dados.entidadesSel.splice(index, 1);
         this.novoHistorico.entidadesSel = {
           ...this.novoHistorico.entidadesSel,
           cor: "amarelo",
-          dados: this.tipologia.entidadesSel,
+          dados: this.dados.entidadesSel,
         };
       }
     },
 
     adicionaEntidades(entidades) {
-      this.tipologia.entidadesSel.push(...entidades);
+      this.dados.entidadesSel.push(...entidades);
       this.dialogEntidades = false;
       this.novoHistorico.entidadesSel = {
         ...this.novoHistorico.entidadesSel,
         cor: "amarelo",
-        dados: this.tipologia.entidadesSel,
+        dados: this.dados.entidadesSel,
       };
     },
 
@@ -351,8 +352,8 @@ export default {
             }
 
             if (
-              pedido.objeto.dados[key] === "" ||
-              pedido.objeto.dados[key] === null
+              pedido.objeto.dados[key] === null ||
+              pedido.objeto.dados[key] === ""
             )
               delete pedido.objeto.dados[key];
           }
@@ -474,7 +475,7 @@ export default {
 
       this.editaCampo.visivel = false;
 
-      this.tipologia[event.campo.key] = event.dados;
+      this.dados[event.campo.key] = event.dados;
       this.novoHistorico[event.campo.key] = {
         ...this.novoHistorico[event.campo.key],
         dados: event.dados,
@@ -485,10 +486,6 @@ export default {
     fecharErro() {
       this.erros = [];
       this.erroPedido = false;
-    },
-
-    close() {
-      this.dialogtipologias = false;
     },
   },
 };
