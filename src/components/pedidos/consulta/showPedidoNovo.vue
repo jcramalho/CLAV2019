@@ -99,7 +99,11 @@
           :p="p"
           @verHistorico="verHistorico()"
         />
-        <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
+        <ShowLegislacao
+          v-else-if="p.objeto.tipo == 'Legislação'"
+          :p="p"
+          @verHistorico="verHistorico()"
+        />
         <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
         <ShowDefault v-else :p="p" />
       </v-card-text>
