@@ -493,6 +493,7 @@ export default {
           this.erroPedido = true;
         }
       } catch (e) {
+        console.log("e", e);
         this.erroPedido = true;
 
         let parsedError = Object.assign({}, e);
@@ -536,9 +537,6 @@ export default {
     async validarLegislacao(acao, dados) {
       let numeroErros = 0;
 
-      let parseAno = dados.numero.split("/");
-      let anoDiploma = parseInt(parseAno[1]);
-
       //Tipo
       if (dados.tipo === "" || dados.tipo === null) {
         this.erros.push({
@@ -557,7 +555,7 @@ export default {
         });
 
         numeroErros++;
-      } else if (!/^\d{4}\/(\d{2}|\d{4})$/.test(this.l.numero)) {
+      } else if (!/^\d{4}\/(\d{2}|\d{4})$/.test(dados.numero)) {
         this.erros.push({
           sobre: "Número de Diploma",
           mensagem: "O número de diploma está no formato errado.",
