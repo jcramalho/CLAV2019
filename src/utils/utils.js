@@ -94,12 +94,28 @@ export function mapKeys(key) {
       descricao = "Tipologias";
       break;
 
+    case "processosSel":
+      descricao = "Processos";
+      break;
+
     case "dataCriacao":
       descricao = "Data de Criação";
       break;
 
     case "dataExtincao":
       descricao = "Data de Extinção";
+      break;
+
+    case "numero":
+      descricao = "Número";
+      break;
+
+    case "sumario":
+      descricao = "Sumário";
+      break;
+
+    case "diplomaFonte":
+      descricao = "Fonte do Diploma";
       break;
 
     default:

@@ -17,7 +17,12 @@
               <v-card-text>
                 <div v-for="(info, campo) in h" :key="campo">
                   <v-row
-                    v-if="info !== '' && info !== null && campo !== 'estado'"
+                    v-if="
+                      info !== '' &&
+                        info !== null &&
+                        campo !== 'estado' &&
+                        campo !== 'id'
+                    "
                   >
                     <v-col cols="2">
                       <div class="info-descricao">
@@ -53,7 +58,7 @@
                         </v-data-table>
 
                         <v-data-table
-                          v-if="campo === 'tipologiasSel'"
+                          v-else-if="campo === 'tipologiasSel'"
                           :headers="tipologiasHeaders"
                           :items="info"
                           class="elevation-1"
@@ -67,6 +72,25 @@
                               outlined
                             >
                               Nenhuma tipologia selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'processosSel'"
+                          :headers="processosHeaders"
+                          :items="info"
+                          class="elevation-1"
+                          :footer-props="footerPropsProcessos"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhum processo selecionado...
                             </v-alert>
                           </template>
                         </v-data-table>
@@ -89,7 +113,8 @@
                     v-if="
                       info.dados !== '' &&
                         info.dados !== null &&
-                        campo !== 'estado'
+                        campo !== 'estado' &&
+                        campo !== 'id'
                     "
                   >
                     <v-col cols="2">
@@ -131,7 +156,7 @@
                         </v-data-table>
 
                         <v-data-table
-                          v-if="campo === 'tipologiasSel'"
+                          v-else-if="campo === 'tipologiasSel'"
                           :headers="tipologiasHeaders"
                           :items="info.dados"
                           class="elevation-1"
@@ -145,6 +170,25 @@
                               outlined
                             >
                               Nenhuma tipologia selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'processosSel'"
+                          :headers="processosHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsProcessos"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhum processo selecionado...
                             </v-alert>
                           </template>
                         </v-data-table>
@@ -215,6 +259,16 @@ export default {
       ],
       footerPropsTipologias: {
         "items-per-page-text": "Tipologias por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
+
+      processosHeaders: [
+        { text: "Código", value: "codigo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" },
+      ],
+      footerPropsProcessos: {
+        "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
         "items-per-page-all-text": "Todas",
       },
