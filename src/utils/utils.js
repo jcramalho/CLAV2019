@@ -110,6 +110,31 @@ export function mapKeys(key) {
   return descricao;
 }
 
+export function extrairAlteracoes(objeto, objetoOriginal) {
+  const dados = JSON.parse(JSON.stringify(objeto));
+  const dadosOriginais = JSON.parse(JSON.stringify(objetoOriginal));
+
+  for (const key in dados) {
+    if (typeof dados[key] === "string") {
+      if (dados[key] === dadosOriginais[key] && key !== "sigla")
+        delete dados[key];
+    } else if (dados[key] instanceof Array) {
+      if (
+        key !== "processosSel" &&
+        comparaArraySel(dados[key], dadosOriginais[key], "sigla")
+      )
+        delete dados[key];
+      else if (
+        key === "processosSel" &&
+        comparaArraySel(dados[key], dadosOriginais[key], "codigo")
+      )
+        delete dados[key];
+    }
+  }
+
+  return dados;
+}
+
 export function criarHistorico(objeto, objetoOriginal) {
   const objAlterado = JSON.parse(JSON.stringify(objeto));
   const objOriginal = JSON.parse(JSON.stringify(objetoOriginal));
@@ -159,5 +184,6 @@ export default {
   comparaCodigo,
   comparaArraySel,
   mapKeys,
+  extrairAlteracoes,
   criarHistorico,
 };
