@@ -10,6 +10,8 @@
               campo !== 'codigo' &&
               campo !== 'estado'
           "
+          dense
+          class="ma-1"
         >
           <!-- Label -->
           <v-col cols="2">
