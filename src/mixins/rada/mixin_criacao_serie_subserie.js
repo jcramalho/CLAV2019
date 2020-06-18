@@ -5,8 +5,7 @@ export default {
     existe_erros: false,
     erros: [],
     panels: [0, 0, 0],
-    isMultiple: false,
-    classesHierarquia: []
+    isMultiple: false
   }),
   computed: {
     dialogState: {
@@ -386,8 +385,5 @@ export default {
         }
       }, 1);
     }
-  },
-  beforeDestroy() {
-    this.$emit('limpar_copia');
   }
 };

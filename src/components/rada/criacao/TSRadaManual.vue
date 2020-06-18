@@ -52,10 +52,11 @@
       @fecharDialog="criar_area = false"
       :classes="TS.classes"
     />
+    <!-- v-if="criar_serie" -->
     <Serie
       :dialog="criar_serie"
-      v-if="criar_serie"
-      @fecharDialog="criar_serie = false"
+      @fecharDialog="criar_serie = false;
+                      classe_copia = null;"
       @limpar_copia="classe_copia = null"
       :classe_para_copiar="classe_copia"
       :classes="TS.classes"
@@ -67,9 +68,9 @@
     />
     <SubSerie
       :dialog="criar_subserie"
-      v-if="criar_subserie"
       :classe_para_copiar="classe_copia"
-      @fecharDialog="criar_subserie = false"
+      @fecharDialog="criar_subserie = false;
+      classe_copia = null;"
       @limpar_copia="classe_copia = null"
       :classes="TS.classes"
       :UIs="TS.UIs"

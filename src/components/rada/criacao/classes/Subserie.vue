@@ -120,11 +120,73 @@ export default {
         this.newSubserie.justificacaoDF.some(e => e.tipo == "Critério Legal") ||
         this.newSubserie.justificacaoPCA.some(e => e.tipo == "Critério Legal")
       );
+    },
+    classesHierarquia() {
+      return this.classes
+        .filter(classe => classe.tipo == "Série")
+        .sort((a, b) => a.codigo.localeCompare(b.codigo))
+        .map(classe => {
+          return {
+            searchField: classe.codigo + " - " + classe.titulo,
+            codigo: classe.codigo
+          };
+        });
     }
   },
   data: () => ({
-    newSubserie: null
+    newSubserie: {
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: null,
+      dataFinal: null,
+      UIs: [],
+      relacoes: [],
+      pca: null,
+      notaPCA: null,
+      notaDF: null,
+      formaContagem: {
+        forma: null
+      },
+      justificacaoPCA: [],
+      df: null,
+      justificacaoDF: [],
+      eFilhoDe: null,
+      tipo: "Subsérie"
+    }
   }),
+  watch: {
+    classe_para_copiar(value) {
+      if (!!value) {
+        if (this.classe_para_copiar) {
+          this.buscarTitulosClasses(this.classe_para_copiar);
+        }
+
+        this.newSubserie = this.classe_para_copiar;
+      } else {
+        this.newSubserie = {
+          codigo: "",
+          titulo: "",
+          descricao: "",
+          dataInicial: null,
+          dataFinal: null,
+          UIs: [],
+          relacoes: [],
+          pca: null,
+          notaPCA: null,
+          notaDF: null,
+          formaContagem: {
+            forma: null
+          },
+          justificacaoPCA: [],
+          df: null,
+          justificacaoDF: [],
+          eFilhoDe: null,
+          tipo: "Subsérie"
+        };
+      }
+    }
+  },
   methods: {
     apagar: function() {
       this.existe_erros = false;
@@ -210,45 +272,35 @@ export default {
         this.erros.push("Datas Inválidas;");
       }
     }
-  },
-  created() {
-    if (this.classe_para_copiar) {
-      this.buscarTitulosClasses(this.classe_para_copiar);
-    }
-
-    this.newSubserie =
-      this.classe_para_copiar != null
-        ? this.classe_para_copiar
-        : {
-            codigo: "",
-            titulo: "",
-            descricao: "",
-            dataInicial: null,
-            dataFinal: null,
-            UIs: [],
-            relacoes: [],
-            pca: null,
-            notaPCA: null,
-            notaDF: null,
-            formaContagem: {
-              forma: null
-            },
-            justificacaoPCA: [],
-            df: null,
-            justificacaoDF: [],
-            eFilhoDe: null,
-            tipo: "Subsérie"
-          };
-
-    this.classesHierarquia = this.classes
-      .filter(classe => classe.tipo == "Série")
-      .sort((a, b) => a.codigo.localeCompare(b.codigo))
-      .map(classe => {
-        return {
-          searchField: classe.codigo + " - " + classe.titulo,
-          codigo: classe.codigo
-        };
-      });
   }
+  // created() {
+  //   if (this.classe_para_copiar) {
+  //     this.buscarTitulosClasses(this.classe_para_copiar);
+  //   }
+
+  //   this.newSubserie =
+  //     this.classe_para_copiar != null
+  //       ? this.classe_para_copiar
+  //       : {
+  //           codigo: "",
+  //           titulo: "",
+  //           descricao: "",
+  //           dataInicial: null,
+  //           dataFinal: null,
+  //           UIs: [],
+  //           relacoes: [],
+  //           pca: null,
+  //           notaPCA: null,
+  //           notaDF: null,
+  //           formaContagem: {
+  //             forma: null
+  //           },
+  //           justificacaoPCA: [],
+  //           df: null,
+  //           justificacaoDF: [],
+  //           eFilhoDe: null,
+  //           tipo: "Subsérie"
+  //         };
+  // }
 };
 </script>

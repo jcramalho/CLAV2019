@@ -122,8 +122,88 @@ export default {
     "classe_para_copiar"
   ],
   data: () => ({
-    newSerie: null
+    newSerie: {
+      codigo: "",
+      titulo: "",
+      descricao: "",
+      dataInicial: null,
+      dataFinal: null,
+      tUA: null,
+      tSerie: null,
+      suporte: null,
+      UIs: [],
+      medicao: null,
+      localizacao: [],
+      entProdutoras: [],
+      tipologiasProdutoras: [],
+      legislacao: [],
+      relacoes: [],
+      pca: null,
+      notaPCA: null,
+      notaDF: null,
+      formaContagem: {
+        forma: null
+      },
+      justificacaoPCA: [],
+      df: null,
+      justificacaoDF: [],
+      eFilhoDe: null,
+      tipo: "Série"
+    }
   }),
+  computed: {
+    classesHierarquia() {
+      return this.classes
+        .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+        .sort((a, b) => a.codigo.localeCompare(b.codigo))
+        .map(classe => {
+          return {
+            searchField: classe.codigo + " - " + classe.titulo,
+            codigo: classe.codigo
+          };
+        });
+    }
+  },
+  watch: {
+    classe_para_copiar(value) {
+      if (!!value) {
+        if (this.classe_para_copiar) {
+          this.buscarTitulosClasses(this.classe_para_copiar);
+        }
+
+        this.newSerie = this.classe_para_copiar;
+      } else {
+        this.newSerie = {
+          codigo: "",
+          titulo: "",
+          descricao: "",
+          dataInicial: null,
+          dataFinal: null,
+          tUA: null,
+          tSerie: null,
+          UIs: [],
+          suporte: null,
+          medicao: null,
+          notaPCA: null,
+          notaDF: null,
+          localizacao: [],
+          entProdutoras: [],
+          tipologiasProdutoras: [],
+          legislacao: [],
+          relacoes: [],
+          pca: null,
+          formaContagem: {
+            forma: null
+          },
+          justificacaoPCA: [],
+          df: null,
+          justificacaoDF: [],
+          eFilhoDe: null,
+          tipo: "Série"
+        };
+      }
+    }
+  },
   methods: {
     apagar: function() {
       this.isMultiple = false;
@@ -206,7 +286,6 @@ export default {
         this.erros.push("Produtoras da Série;");
       }
 
-
       if (!this.newSerie.eFilhoDe) {
         this.erros.push("Relação de Hierarquia;");
       }
@@ -223,53 +302,6 @@ export default {
         this.erros.push("Datas Inválidas;");
       }
     }
-  },
-  created() {
-    if (this.classe_para_copiar) {
-      this.buscarTitulosClasses(this.classe_para_copiar);
-    }
-
-    this.newSerie =
-      this.classe_para_copiar != null
-        ? this.classe_para_copiar
-        : {
-            codigo: "",
-            titulo: "",
-            descricao: "",
-            dataInicial: null,
-            dataFinal: null,
-            tUA: null,
-            tSerie: null,
-            suporte: null,
-            UIs: [],
-            medicao: null,
-            localizacao: [],
-            entProdutoras: [],
-            tipologiasProdutoras: [],
-            legislacao: [],
-            relacoes: [],
-            pca: null,
-            notaPCA: null,
-            notaDF: null,
-            formaContagem: {
-              forma: null
-            },
-            justificacaoPCA: [],
-            df: null,
-            justificacaoDF: [],
-            eFilhoDe: null,
-            tipo: "Série"
-          };
-
-    this.classesHierarquia = this.classes
-      .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
-      .sort((a, b) => a.codigo.localeCompare(b.codigo))
-      .map(classe => {
-        return {
-          searchField: classe.codigo + " - " + classe.titulo,
-          codigo: classe.codigo
-        };
-      });
   }
 };
 </script>
