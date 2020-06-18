@@ -181,12 +181,6 @@ export function criarHistorico(objeto, objetoOriginal) {
           dados: objAlterado[key],
           despacho: null,
         };
-      } else {
-        historico[key] = {
-          cor: "verde",
-          dados: objOriginal[key],
-          despacho: null,
-        };
       }
     }
   }
