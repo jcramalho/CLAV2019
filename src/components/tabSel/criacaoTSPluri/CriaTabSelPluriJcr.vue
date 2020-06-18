@@ -400,15 +400,15 @@ export default {
     },
 
     abortar: async function(){
-      try{
-        if(this.pendente._id){
+      if(this.pendente._id){
+        try{
           var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
         }
-        this.$router.push("/");
+        catch(e){
+          console.log("Erro ao eliminar o pendente: " + e);
+        }
       }
-      catch(e){
-        console.log("Erro ao eliminar o pendente: " + e);
-      }
+      this.$router.push("/");
     },
 
     // Funções de validação --------------------------------------

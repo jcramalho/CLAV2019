@@ -160,7 +160,7 @@
           <v-btn
             v-if="stepNo>2"
             color="primary"
-            @click="guardarTrabalho()"
+            @click="guardarTrabalho"
             >Guardar trabalho
 
             <DialogPendenteGuardado 
@@ -226,7 +226,7 @@ export default {
         designacaoTipologia: "",
         designacaoTS: "",
         tipologias: [],
-        listaProcessos: []
+        listaProcessos: {}
       },
       // Numero do passo da criação de TS
       stepNo: null,
@@ -248,7 +248,7 @@ export default {
       // Tipologia ou tipologias selecionadas
       tipSel: [],
       // Lista com todos os processos
-      listaProcessos: [],
+      listaProcessos: {},
       // True quando a lista de todos os processos comuns existentes estiver completa
       listaProcessosReady: false,
       // Lista com os códigos dos processos específicos da entidade selecionada
@@ -261,6 +261,9 @@ export default {
       notasApSet: [],
       exemplosNotasApSet: [],
       termosIndSet: [],
+
+      // Se houver gravações intermédias, há um pendente
+      pendente: {},
 
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
@@ -533,17 +536,11 @@ export default {
     guardarTrabalho: async function() {
       try {
         var userBD = this.$verifyTokenUser();
-
-        this.tabelaSelecao.tipologias = this.tipSel;
-
-        if (this.listaTotalProcSelUpdate.length) {
-          this.listaTotalProcSel = this.listaTotalProcSelUpdate;
-        }
-
-        this.debug(this.listaTotalProcSel)
-        this.tabelaSelecao.listaProcSel = JSON.stringify(
-          this.listaTotalProcSel
-        );
+        // Guardam-se apenas os processos que foram alterados
+        // Ao carregar será preciso fazer Merge com a LC
+        // É preciso forçar uma cópia para não perder a lista corrente
+        this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
 
         var pendenteParams = {
           numInterv: 1,
@@ -555,14 +552,21 @@ export default {
           token: this.$store.state.token
         };
 
-        var response = await this.$request(
-          "post",
-          "/pendentes",
-          pendenteParams
-        );
+        // É preciso testar se há um Pendente criado para não criar um novo
+        if(this.pendente._id){
+          pendenteParams._id = this.pendente._id;
+          pendenteParams.numInterv = this.pendente.numInterv++;
+          var response = await this.$request("put", "/pendentes", pendenteParams);
+        }
+        else{
+          pendenteParams.numInterv = 1;
+          var response = await this.$request("post", "/pendentes", pendenteParams);
+        }
+
+        this.pendente = response.data;
         this.pendenteGuardado = true;
-      } catch (err) {
-        return err;
+      } catch (e) {
+        console.log("Erro ao guardar trabalho: " + e);
       }
     },
     // Elimina todo o trabalho feito até esse momento
@@ -588,6 +592,19 @@ export default {
     // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
     sair: async function(){
         this.$router.push("/"); 
+    },
+
+    // Abortar a operação apagando o pendente se existir
+    abortar: async function(){
+      if(this.pendente && this.pendente._id){
+        try{
+          var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
+        }
+        catch(e){
+          console.log("Erro ao eliminar o pendente: " + e);
+        }
+      }
+      this.$router.push("/");
     },
 
   },
