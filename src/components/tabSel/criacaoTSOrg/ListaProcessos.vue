@@ -36,11 +36,11 @@
           {{ props.item.titulo }}
         </td>
         <td>
-            <v-btn v-if="props.item.dono" small class="ma-2" 
+            <v-btn v-if="props.item.dono" small text class="ma-2"
                   @click="desselecionaDono(props.item)">
               <v-icon dark>{{ donoSelecionado }}</v-icon>
             </v-btn>
-            <v-btn v-else small class="ma-2" 
+            <v-btn v-else small text class="ma-2"
                   @click="selecionaDono(props.item)">
               <v-icon dark>{{ donoDesselecionado }}</v-icon>
             </v-btn>
@@ -172,7 +172,7 @@ export default {
         filterable: false
       },
       {
-        text: "Partic.",
+        text: "Participante",
         value: "participante",
         class: ["body-2", "font-weight-bold"],
         filterable: false

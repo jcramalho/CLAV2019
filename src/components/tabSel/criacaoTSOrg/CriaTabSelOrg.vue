@@ -134,76 +134,70 @@
                 </v-col>
 
                 <v-col v-else>Ainda não foi possível carregar a informação dos Processos...</v-col>
-
-                <v-btn
-                  text
-                  @click="stepNo = stepNo - 1;">Voltar</v-btn>
               </v-stepper-content>
-
-              <hr style="border-top: 0px" />
-
-              <v-row align="center" justify="center">
-                <v-btn color="primary" v-if="stepNo > 8" @click="submeterTS()"
-                  >Submeter
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  v-else-if="stepNo >= 1"
-                  @click="guardarTrabalho()"
-                  >Guardar trabalho
-                  <v-dialog v-model="pendenteGuardado" width="60%">
-                    <v-card>
-                      <v-card-title>Trabalho pendente guardado</v-card-title>
-                      <v-card-text>
-                        <p>
-                          Os seus dados foram guardados para que possa retomar o
-                          trabalho mais tarde.
-                        </p>
-                      </v-card-text>
-                      <v-card-actions>
-                        <v-spacer />
-                        <v-btn color="primary" dark @click="$router.push('/')"
-                          >Fechar</v-btn
-                        >
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-btn>
-
-                <v-btn
-                  dark
-                  text
-                  color="red darken-4"
-                  @click="eliminarTabela = true"
-                  >Cancelar criação
-                  <v-dialog v-model="eliminarTabela" persistent max-width="320">
-                    <v-card>
-                      <v-card-title class="title">Eliminar Tabela</v-card-title>
-                      <v-card-text>
-                        <p>Pretende eliminar todo o trabalho realizado?</p>
-                      </v-card-text>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="red" text @click="eliminarTabela = false">
-                          Cancelar
-                        </v-btn>
-                        <v-btn
-                          color="primary"
-                          text
-                          @click="
-                            eliminarTS();
-                            eliminarTabela = false;
-                          "
-                        >
-                          Confirmar
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-btn>
-              </v-row>
             </v-stepper>
         </v-card-text>
+        <v-card-actions>
+          <v-btn v-if="stepNo>2" color="primary" @click="stepNo--;">Voltar</v-btn>
+
+          <v-btn 
+            v-if="stepNo>2" 
+            color="primary" 
+            @click="validarTS">
+              Validar TS
+                  
+            <DialogValidacaoOK 
+              v-if="validacaoTerminada && numeroErros == 0"
+              @continuar="fechoValidacao" />
+
+            <DialogValidacaoErros 
+                v-if="validacaoTerminada && numeroErros > 0"
+                :erros="mensagensErro"
+                @continuar="fechoValidacao" />
+              
+          </v-btn>
+
+          <v-btn
+            v-if="stepNo>2"
+            color="primary"
+            @click="guardarTrabalho()"
+            >Guardar trabalho
+
+            <DialogPendenteGuardado 
+              v-if="pendenteGuardado" 
+              :pendente="pendente"
+              @continuar="pendenteGuardado = false"/>
+            
+          </v-btn>
+
+          <v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>
+
+          <v-btn 
+            v-if="stepNo>2" 
+            color="primary"
+            @click="sairOperacao = true"
+            >Sair 
+                    
+            <DialogSair
+              v-if="sairOperacao" 
+              @continuar="sairOperacao=false"
+              @sair="sair"
+            />
+
+          </v-btn>
+
+          <v-btn
+            dark
+            color="red darken-4"
+            @click="eliminarTabela = true"
+            >Cancelar
+                  
+              <DialogCancelar 
+                v-if="eliminarTabela" 
+                @continuar="eliminarTabela=false"
+                @sair="abortar"/>
+              </v-btn>
+        </v-card-actions>
       </v-card>
     </v-col>
   </v-row>
@@ -211,10 +205,16 @@
 
 <script>
 import ListaProcessos from "@/components/tabSel/criacaoTSOrg/ListaProcessos.vue";
+import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPendenteGuardado.vue";
+import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
+import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
+import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
+import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
 
 export default {
   components: {
-    ListaProcessos
+    ListaProcessos, DialogPendenteGuardado, DialogCancelar,
+    DialogValidacaoOK, DialogValidacaoErros, DialogSair
   },
   data() {
     return {
@@ -254,12 +254,22 @@ export default {
       // Lista com os códigos dos processos específicos da entidade selecionada
       listaCodigosEsp: [],
 
+      // Tratamento de erros da validação
+      mensagensErro: [],
+      numeroErros: 0,
+      validacaoTerminada: false,
+      notasApSet: [],
+      exemplosNotasApSet: [],
+      termosIndSet: [],
+
       // Para o snackbar de pedido criado e trabalho guardado
       pendenteGuardado: false,
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
       // Dialog de confirmação finalização de TS
       finalizaUltPasso: false,
+      // Dialog de confirmação de abandonar a operação
+      sairOperacao: false
     };
   },
   methods: {
@@ -558,7 +568,28 @@ export default {
     // Elimina todo o trabalho feito até esse momento
     eliminarTS: async function() {
       this.$router.push("/");
-    }
+    },
+
+    // Valida a TS construída até ao momento
+    validarTS: function(){
+      return true;
+    },
+
+    // Quando a validação termina chama-se esta rotina para fazer reset ao estado da Validação
+    fechoValidacao: async function(){
+      this.numeroErros = 0;
+      this.mensagensErro = [];
+      //this.notasApSet = [];
+      //this.exemplosNotasApSet = [];
+      //this.termosIndSet = [];
+      this.validacaoTerminada = false;
+    },
+
+    // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
+    sair: async function(){
+        this.$router.push("/"); 
+    },
+
   },
   created: async function() {
     try{
