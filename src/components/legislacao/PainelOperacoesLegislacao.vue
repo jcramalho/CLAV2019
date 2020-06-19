@@ -236,8 +236,6 @@ export default {
               break;
           }
 
-          console.log("dataObj", dataObj);
-
           if (erros === 0) {
             let userBD = this.$verifyTokenUser();
 

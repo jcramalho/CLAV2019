@@ -106,7 +106,7 @@ export default {
       footerPropsProcessos: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todos",
       },
     };
   },
