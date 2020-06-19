@@ -80,7 +80,11 @@
         <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
-        <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" />
+        <ShowEntidade
+          v-else-if="p.objeto.tipo == 'Entidade'"
+          :p="p"
+          @verHistorico="verHistorico()"
+        />
         <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
         <ShowAE
           v-else-if="
@@ -95,7 +99,11 @@
           :p="p"
           @verHistorico="verHistorico()"
         />
-        <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" />
+        <ShowLegislacao
+          v-else-if="p.objeto.tipo == 'Legislação'"
+          :p="p"
+          @verHistorico="verHistorico()"
+        />
         <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
         <ShowDefault v-else :p="p" />
       </v-card-text>

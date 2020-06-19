@@ -132,7 +132,7 @@
                       </td>
                       <td style="width:80%;">{{ item.ni }}</td>
                     </tr>
-                    <tr v-if="item.dono && item.destino === 'C'">
+                    <tr v-if="item.dono && item.dono.length>0 && item.destino === 'C'">
                       <td style="width:20%;">
                         <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Donos do PN</div>
                       </td>

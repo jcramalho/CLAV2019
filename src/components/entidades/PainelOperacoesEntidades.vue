@@ -124,7 +124,11 @@
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
 import DialogEntidadeSucesso from "@/components/entidades/DialogEntidadeSucesso";
 
-import { comparaArraySel } from "@/utils/utils";
+import {
+  comparaArraySel,
+  criarHistorico,
+  extrairAlteracoes,
+} from "@/utils/utils";
 
 export default {
   props: ["e", "acao", "original"],
@@ -290,43 +294,6 @@ export default {
       return numeroErros;
     },
 
-    extrairAlteracoes() {
-      const objAlterado = JSON.parse(JSON.stringify(this.e));
-      const objOriginal = JSON.parse(JSON.stringify(this.original));
-
-      const historico = {};
-
-      for (const key in objOriginal) {
-        if (typeof objOriginal[key] === "string") {
-          if (objOriginal[key] !== objAlterado[key]) {
-            historico[key] = {
-              cor: "amarelo",
-              dados: objAlterado[key],
-              despacho: null,
-            };
-          }
-        } else if (objOriginal[key] instanceof Array) {
-          if (objOriginal[key].length !== objAlterado[key].length) {
-            historico[key] = {
-              cor: "amarelo",
-              dados: objAlterado[key],
-              despacho: null,
-            };
-          } else if (
-            !comparaArraySel(objOriginal[key], objAlterado[key], "sigla")
-          ) {
-            historico[key] = {
-              cor: "amarelo",
-              dados: objAlterado[key],
-              despacho: null,
-            };
-          }
-        }
-      }
-
-      return historico;
-    },
-
     // Lança o pedido de criação da entidade no worflow
     async criarAlterarEntidade() {
       try {
@@ -351,25 +318,22 @@ export default {
               break;
 
             case "Alteração":
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "sigla") delete dataObj[key];
-                }
-              }
+              dataObj = extrairAlteracoes(this.e, this.original);
 
               erros = await this.validarEntidadeAlteracao(dataObj);
 
-              historico.push(this.extrairAlteracoes());
+              historico.push(criarHistorico(this.e, this.original));
               break;
 
             case "Extinção":
               erros = this.validarEntidadeExtincao(dataObj);
 
               for (const key in dataObj) {
-                if (key !== "sigla" && key !== "dataExtincao")
+                if (
+                  key !== "sigla" &&
+                  key !== "dataExtincao" &&
+                  key !== "dataCriacao"
+                )
                   delete dataObj[key];
               }
 

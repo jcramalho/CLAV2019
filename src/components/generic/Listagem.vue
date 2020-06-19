@@ -86,7 +86,7 @@
         
           <tr
             v-else-if="tipo == 'Autos de Eliminação'"
-            @click="go(props.item.id)"
+            @click="go(props.item.id.replace(/\//g,'_'))"
           >
             <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="props.item">

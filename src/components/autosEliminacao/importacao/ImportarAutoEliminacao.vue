@@ -413,7 +413,7 @@ export default {
           })
           this.errosVal.numErros++
         }
-        else if((zc.destino=="C" || zc.destino=="Conservação") && zc.dono.length===0) {
+        else if((zc.destino=="C" || zc.destino=="Conservação") && this.tipo!="RADA" && this.tipo!="PGD" && zc.dono.length===0) {
           this.errosVal.erros.push({
             sobre: "Dono do PN",
             mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " " + zc.referencia
@@ -485,10 +485,8 @@ export default {
         "/pedidos",
         pedidoParams
       );
-
-      this.codigoPedido = codigoPedido.data;
-
-      this.successDialog = true;
+      
+      this.$router.push('/pedidos/submissao')
 
     },
     converter: async function() {

@@ -8,7 +8,8 @@
             info !== '' &&
               info !== null &&
               campo !== 'sigla' &&
-              campo !== 'codigo'
+              campo !== 'codigo' &&
+              campo !== 'estado'
           "
           dense
           class="ma-1"
@@ -202,10 +203,6 @@ export default {
       return this.p.objeto.dados;
     },
 
-    dadosOriginais() {
-      return this.p.objeto.dadosOriginais;
-    },
-
     historico() {
       return this.p.historico;
     },
@@ -338,10 +335,7 @@ export default {
 
         let numeroErros = 0;
         if (pedido.objeto.dados.hasOwnProperty("designacao")) {
-          numeroErros = await this.validar(
-            pedido.objeto.acao,
-            pedido.objeto.dados
-          );
+          numeroErros = await this.validar(pedido.objeto.dados);
         }
 
         if (numeroErros === 0) {
@@ -385,6 +379,8 @@ export default {
           });
 
           this.$router.go(-1);
+        } else {
+          this.erroPedido = true;
         }
       } catch (e) {
         this.erroPedido = true;

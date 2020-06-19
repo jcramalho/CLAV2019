@@ -2,181 +2,133 @@
   <div>
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
-      <v-row v-for="(info, i) in infoPedido" :key="i">
-        <!-- Label -->
-        <v-col
-          cols="2"
+      <div v-for="(info, campo) in dados" :key="campo">
+        <v-row
           v-if="
-            info.campo !== 'Código' &&
-              info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
+            info !== '' &&
+              info !== null &&
+              campo !== 'sigla' &&
+              campo !== 'codigo' &&
+              campo !== 'estado'
           "
+          dense
+          class="ma-1"
         >
-          <div class="info-label">{{ info.campo }}</div>
-        </v-col>
+          <!-- Label -->
+          <v-col cols="2">
+            <div
+              :class="[
+                'info-descricao',
+                `info-descricao-${novoHistorico[campo].cor}`,
+              ]"
+            >
+              {{ transformaKeys(campo) }}
+            </div>
+          </v-col>
 
-        <!-- Conteudo -->
-        <v-col
-          v-if="
-            info.campo !== 'Código' &&
-              info.conteudo !== '' &&
-              info.conteudo !== null &&
-              info.conteudo !== undefined
-          "
-        >
-          <!-- Se o conteudo for uma lista de entidades -->
-          <v-data-table
-            v-if="info.campo === 'Entidades'"
-            :headers="headersEntidades"
-            :items="info.conteudo"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:no-data>
-              Não existem entidades selecionadas.
-            </template>
-
-            <template v-slot:item="props">
-              <tr>
-                <td>{{ props.item.sigla }}</td>
-                <td>{{ props.item.designacao }}</td>
-                <td>
-                  <v-icon color="red" @click="removeEntidade(props.item)"
-                    >delete</v-icon
+          <!-- Conteudo -->
+          <v-col>
+            <div v-if="!(info instanceof Array)" class="info-conteudo">
+              {{ info }}
+            </div>
+            <div v-else>
+              <!-- Se o conteudo for uma lista de entidades -->
+              <v-data-table
+                v-if="campo === 'entidadesSel'"
+                :headers="entidadesHeaders"
+                :items="info"
+                class="elevation-1"
+                :footer-props="footerPropsEntidades"
+              >
+                <template v-slot:no-data>
+                  <v-alert
+                    type="error"
+                    width="100%"
+                    class="m-auto mb-2 mt-2"
+                    outlined
                   >
-                </td>
-              </tr>
-            </template>
+                    Nenhuma entidade selecionada...
+                  </v-alert>
+                </template>
 
-            <template v-slot:top>
-              <v-toolbar flat :color="info.cor">
-                <v-btn
-                  rounded
-                  class="indigo accent-4 white--text"
-                  @click="abreEntidadesDialog()"
-                >
-                  Adicionar Entidades
-                </v-btn>
-
-                <v-spacer />
-                <v-icon color="green" @click="verifica(info)">check</v-icon>
-                <v-icon color="red" @click="anula(info)">clear</v-icon>
-              </v-toolbar>
-            </template>
-          </v-data-table>
-
-          <!-- Se o conteudo for uma lista de processos -->
-          <v-data-table
-            v-else-if="info.campo === 'Processos'"
-            :headers="headersProcessos"
-            :items="info.conteudo"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:no-data>
-              Não existem processos selecionados.
-            </template>
-
-            <template v-slot:item="props">
-              <tr>
-                <td>{{ props.item.codigo }}</td>
-                <td>{{ props.item.titulo }}</td>
-                <td>
-                  <v-icon color="red" @click="removeProcesso(props.item)">
+                <template v-slot:item.operacao="{ item }">
+                  <v-icon color="red" @click="removeEntidade(item)">
                     delete
                   </v-icon>
-                </td>
-              </tr>
-            </template>
+                </template>
 
-            <template v-slot:top>
-              <v-toolbar flat :color="info.cor">
-                <v-btn
-                  rounded
-                  class="indigo accent-4 white--text"
-                  @click="abreProcessosDialog()"
-                >
-                  Adicionar Processos
-                </v-btn>
-
-                <v-spacer />
-                <v-icon color="green" @click="verifica(info)">check</v-icon>
-                <v-icon color="red" @click="anula(info)">clear</v-icon>
-              </v-toolbar>
-            </template>
-          </v-data-table>
-
-          <!-- Se o conteudo for uma lista de processos -->
-          <v-data-table
-            v-else-if="info.campo === 'Processos'"
-            :headers="headersProcessos"
-            :items="info.conteudo"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:item="props">
-              <tr>
-                <td>{{ props.item.codigo }}</td>
-                <td>{{ props.item.titulo }}</td>
-                <td><v-icon color="red">delete</v-icon></td>
-              </tr>
-            </template>
-
-            <template v-slot:top>
-              <v-toolbar flat :color="info.cor">
-                <v-dialog v-model="dialogProcessos" max-width="500px">
-                  <template v-slot:activator="{ on }">
+                <template v-slot:top>
+                  <v-toolbar flat>
                     <v-btn
                       rounded
                       class="indigo accent-4 white--text"
-                      v-on="on"
+                      @click="abreEntidadesDialog()"
+                    >
+                      Adicionar Entidades
+                    </v-btn>
+                  </v-toolbar>
+                </template>
+              </v-data-table>
+
+              <!-- Se o conteudo for uma lista de processos -->
+              <v-data-table
+                v-else-if="campo === 'processosSel'"
+                :headers="processosHeaders"
+                :items="info"
+                class="elevation-1"
+                :footer-props="footerPropsProcessos"
+              >
+                <template v-slot:no-data>
+                  <v-alert
+                    type="error"
+                    width="100%"
+                    class="m-auto mb-2 mt-2"
+                    outlined
+                  >
+                    Nenhum processo selecionado...
+                  </v-alert>
+                </template>
+
+                <template v-slot:item.operacao="{ item }">
+                  <v-icon color="red" @click="removeProcesso(item)">
+                    delete
+                  </v-icon>
+                </template>
+
+                <template v-slot:top>
+                  <v-toolbar flat>
+                    <v-btn
+                      rounded
+                      class="indigo accent-4 white--text"
+                      @click="abreProcessosDialog()"
                     >
                       Adicionar Processos
                     </v-btn>
-                  </template>
-                  <v-card>
-                    <v-card-title>
-                      <span class="headline"
-                        >Selecione os processos em falta
-                      </span>
-                    </v-card-title>
+                  </v-toolbar>
+                </template>
+              </v-data-table>
+            </div>
+          </v-col>
 
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="indigo darken-1" text @click="close"
-                        >Fechar</v-btn
-                      >
-                      <!-- <v-btn color="blue darken-1" text @click="save">Save</v-btn> -->
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <v-spacer />
-                <v-icon color="green" @click="verifica(info)">check</v-icon>
-                <v-icon color="red" @click="anula(info)">clear</v-icon>
-              </v-toolbar>
-            </template>
-          </v-data-table>
-
-          <!-- Se o contudo for texto -->
-          <v-text-field
-            v-else
-            solo
-            readonly
-            hide-details
-            :background-color="info.cor"
-            :value="info.conteudo"
-          >
-            <template slot="append">
-              <v-icon color="green" @click="verifica(info)">check</v-icon>
-              <v-icon color="red" @click="anula(info)">clear</v-icon>
-              <!--<v-icon @click="">create</v-icon>-->
-              <v-icon>create</v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-      </v-row>
-
+          <!-- Operações -->
+          <v-col cols="1">
+            <v-icon class="mr-1" color="green" @click="verifica(campo)">
+              check
+            </v-icon>
+            <v-icon class="mr-1" color="red" @click="anula(campo)">
+              clear
+            </v-icon>
+            <v-icon
+              v-if="!(info instanceof Array)"
+              class="mr-1"
+              color="orange"
+              @click="edita(campo)"
+            >
+              create
+            </v-icon>
+          </v-col>
+        </v-row>
+      </div>
       <v-row>
         <v-spacer />
         <PO
@@ -186,6 +138,16 @@
         />
       </v-row>
     </div>
+
+    <!-- Dialog de edição-->
+    <v-dialog v-model="editaCampo.visivel" width="70%" persistent>
+      <EditarCamposDialog
+        :campo="editaCampo"
+        :tipoPedido="p.objeto.tipo"
+        @fechar="fechaEditaCampoDialog($event)"
+        @editarCampo="editarCampo($event)"
+      />
+    </v-dialog>
 
     <!-- Dialog de erros -->
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
@@ -217,11 +179,12 @@
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
+import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla, comparaCodigo } from "@/utils/utils";
+import { comparaSigla, comparaCodigo, mapKeys } from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -231,16 +194,23 @@ export default {
     Loading,
     ErroDialog,
     SelecionaAutocomplete,
+    EditarCamposDialog,
   },
 
   data() {
     return {
+      novoHistorico: {},
       loading: true,
+      editaCampo: {
+        visivel: false,
+        nome: "",
+        key: "",
+      },
       erroDialog: {
         visivel: false,
         mensagem: null,
       },
-      headersEntidades: [
+      entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
         { text: "Designação", value: "designacao", class: "subtitle-1" },
         {
@@ -252,7 +222,12 @@ export default {
           align: "center",
         },
       ],
-      headersProcessos: [
+      footerPropsEntidades: {
+        "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
+      processosHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
         { text: "Título", value: "titulo", class: "subtitle-1" },
         {
@@ -264,6 +239,11 @@ export default {
           align: "center",
         },
       ],
+      footerPropsProcessos: {
+        "items-per-page-text": "Processos por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todos",
+      },
 
       mensagemAutocompleteEntidades: {
         titulo: "entidades",
@@ -277,9 +257,17 @@ export default {
       dialogProcessos: false,
       entidades: [],
       processos: [],
-      infoPedido: [],
-      pedido: null,
     };
+  },
+
+  computed: {
+    dados() {
+      return this.p.objeto.dados;
+    },
+
+    historico() {
+      return this.p.historico;
+    },
   },
 
   async created() {
@@ -296,58 +284,18 @@ export default {
   },
 
   mounted() {
-    this.infoPedido = [
-      {
-        campo: "Tipo de Diploma",
-        conteudo: this.pedido.objeto.dados.tipo,
-        cor: null,
-      },
-      {
-        campo: "Fonte do Diploma",
-        conteudo: this.pedido.objeto.dados.diplomaFonte,
-        cor: null,
-      },
-      {
-        campo: "Número do Diploma",
-        conteudo: this.pedido.objeto.dados.numero,
-        cor: null,
-      },
-      { campo: "Data", conteudo: this.pedido.objeto.dados.data, cor: null },
-      {
-        campo: "Sumário",
-        conteudo: this.pedido.objeto.dados.sumario,
-        cor: null,
-      },
-      { campo: "Link", conteudo: this.pedido.objeto.dados.link, cor: null },
-      { campo: "Código", conteudo: this.pedido.objeto.dados.codigo, cor: null },
-      {
-        campo: "Entidades",
-        conteudo: this.pedido.objeto.dados.entidadesSel,
-        cor: null,
-      },
-      {
-        campo: "Processos",
-        conteudo: this.pedido.objeto.dados.processosSel,
-        cor: null,
-      },
-    ];
-  },
-
-  watch: {
-    p: {
-      handler(newP, oldP) {
-        if (newP !== oldP) {
-          this.pedido = JSON.parse(JSON.stringify(this.p));
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
+    this.novoHistorico = JSON.parse(
+      JSON.stringify(this.historico[this.historico.length - 1])
+    );
   },
 
   methods: {
+    transformaKeys(key) {
+      return mapKeys(key);
+    },
+
     abreEntidadesDialog() {
-      this.pedido.objeto.dados.entidadesSel.forEach((entSel) => {
+      this.dados.entidadesSel.forEach((entSel) => {
         const index = this.entidades.findIndex(
           (ent) => ent.sigla === entSel.sigla
         );
@@ -359,7 +307,7 @@ export default {
     },
 
     abreProcessosDialog() {
-      this.pedido.objeto.dados.processosSel.forEach((procSel) => {
+      this.dados.processosSel.forEach((procSel) => {
         const index = this.processos.findIndex(
           (proc) => proc.codigo === procSel.codigo
         );
@@ -379,7 +327,7 @@ export default {
     },
 
     removeEntidade(entidade) {
-      const index = this.pedido.objeto.dados.entidadesSel.findIndex(
+      const index = this.dados.entidadesSel.findIndex(
         (entSel) => entSel.sigla === entidade.sigla
       );
 
@@ -391,12 +339,17 @@ export default {
           this.entidades.sort(comparaSigla);
         }
 
-        this.pedido.objeto.dados.entidadesSel.splice(index, 1);
+        this.dados.entidadesSel.splice(index, 1);
+        this.novoHistorico.entidadesSel = {
+          ...this.novoHistorico.entidadesSel,
+          cor: "amarelo",
+          dados: this.dados.entidadesSel,
+        };
       }
     },
 
     removeProcesso(processo) {
-      const index = this.pedido.objeto.dados.processosSel.findIndex(
+      const index = this.dados.processosSel.findIndex(
         (procSel) => procSel.codigo === processo.codigo
       );
 
@@ -410,18 +363,33 @@ export default {
           this.processos.sort(comparaCodigo);
         }
 
-        this.pedido.objeto.dados.processosSel.splice(index, 1);
+        this.dados.processosSel.splice(index, 1);
+        this.novoHistorico.processosSel = {
+          ...this.novoHistorico.processosSel,
+          cor: "amarelo",
+          dados: this.dados.processosSel,
+        };
       }
     },
 
     adicionaEntidades(entidades) {
-      this.pedido.objeto.dados.entidadesSel.push(...entidades);
+      this.dados.entidadesSel.push(...entidades);
       this.dialogEntidades = false;
+      this.novoHistorico.entidadesSel = {
+        ...this.novoHistorico.entidadesSel,
+        cor: "amarelo",
+        dados: this.dados.entidadesSel,
+      };
     },
 
     adicionaProcessos(processos) {
-      this.pedido.objeto.dados.processosSel.push(...processos);
+      this.dados.processosSel.push(...processos);
       this.dialogProcessos = false;
+      this.novoHistorico.processosSel = {
+        ...this.novoHistorico.processosSel,
+        cor: "amarelo",
+        dados: this.dados.processosSel,
+      };
     },
 
     async loadEntidades() {
@@ -471,10 +439,12 @@ export default {
           despacho: dados.mensagemDespacho,
         };
 
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -495,10 +465,12 @@ export default {
 
         let dadosUtilizador = this.$verifyTokenUser();
 
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        pedido.historico.push(this.novoHistorico);
 
         const novaDistribuicao = {
           estado: estado,
@@ -525,39 +497,82 @@ export default {
       }
     },
 
-    verifica(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "green lighten-3";
+    verifica(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "verde",
+      };
     },
 
-    anula(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
-      this.infoPedido[i].cor = "red lighten-3";
+    anula(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "vermelho",
+      };
+
+      // Abrir dialog com despacho
+      // Guardar despacho
     },
 
-    close() {
-      this.dialogEnditades = false;
-      this.dialogProcessos = false;
+    edita(campo) {
+      this.editaCampo = {
+        visivel: true,
+        nome: this.transformaKeys(campo),
+        key: campo,
+      };
+
+      // Abrir dialog com despacho (Opcional)
+      // Guardar despacho
+    },
+
+    fechaEditaCampoDialog(campo) {
+      this.editaCampo.visivel = false;
+    },
+
+    editarCampo(event) {
+      console.log("event", event);
+      console.log("dados", event.dados);
+      console.log("campo", event.campo);
+
+      this.editaCampo.visivel = false;
+
+      this.dados[event.campo.key] = event.dados;
+      this.novoHistorico[event.campo.key] = {
+        ...this.novoHistorico[event.campo.key],
+        dados: event.dados,
+        cor: "amarelo",
+      };
     },
   },
 };
 </script>
 
 <style scoped>
-.info-label {
+.info-conteudo {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #283593;
+  border-radius: 3px;
+}
+
+.info-descricao {
   color: #283593; /* indigo darken-3 */
   padding: 5px;
-  font-weight: 400;
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }
 
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
+.info-descricao-verde {
+  background-color: #c8e6c9; /* lighten-4 */
+}
+
+.info-descricao-vermelho {
+  background-color: #ffcdd2; /* lighten-4 */
+}
+
+.info-descricao-amarelo {
+  background-color: #ffe0b2; /* lighten-4 */
 }
 </style>

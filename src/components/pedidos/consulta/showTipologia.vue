@@ -2,7 +2,9 @@
   <v-card class="mt-4">
     <v-card-title class="indigo darken-4 white--text title">
       {{ p.objeto.acao }} da Tipologia
+
       <v-spacer />
+
       <v-tooltip
         v-if="
           !(
@@ -22,7 +24,7 @@
     </v-card-title>
 
     <v-card-text>
-      <div v-for="(info, campo) in tipologiaCriadaAlterada" :key="campo">
+      <div v-for="(info, campo) in dados" :key="campo">
         <v-row v-if="info !== '' && info !== null && info !== undefined">
           <v-col cols="2">
             <div class="info-descricao">{{ transformaKeys(campo) }}</div>
@@ -81,11 +83,7 @@ export default {
   },
 
   computed: {
-    tipologiaOriginal() {
-      return this.p.objeto.dadosOriginais;
-    },
-
-    tipologiaCriadaAlterada() {
+    dados() {
       return this.p.objeto.dados;
     },
   },
@@ -117,9 +115,5 @@ export default {
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
-}
-
-.rounded-card {
-  border-radius: 10px;
 }
 </style>

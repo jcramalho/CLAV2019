@@ -4,7 +4,12 @@
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
         <v-row
-          v-if="info !== '' && info !== null && campo !== 'codigo'"
+          v-if="
+            info !== '' &&
+              info !== null &&
+              campo !== 'codigo' &&
+              campo !== 'estado'
+          "
           dense
           class="ma-1"
         >
@@ -195,10 +200,6 @@ export default {
   computed: {
     dados() {
       return this.p.objeto.dados;
-    },
-
-    dadosOriginais() {
-      return this.p.objeto.dadosOriginais;
     },
 
     historico() {

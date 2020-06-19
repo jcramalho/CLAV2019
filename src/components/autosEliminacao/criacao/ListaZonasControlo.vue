@@ -53,13 +53,13 @@
                 <td v-else-if="item.destino === 'C'">Conservação</td>
                 <td v-else>{{ item.destino }}</td>
               </tr>
-              <tr v-if="item.ni  && item.df!='Eliminação'">
+              <tr v-if="item.ni  && item.df!='Eliminação' && tipo!='RADA' && tipo!='PGD'">
                 <td style="width:20%;">
                   <div class="info-label">Natureza de intervenção</div>
                 </td>
                 <td>{{ item.ni }}</td>
               </tr>
-              <tr v-if="item.destino === 'C'">
+              <tr v-if="item.destino === 'C' && tipo!='RADA' && tipo!='PGD'">
                 <td style="width:20%;">
                   <div class="info-label">Dono do PN <v-icon color="red" v-if="item.dono.length==0">warning</v-icon></div>
                 </td>
@@ -121,6 +121,7 @@
             v-bind:index="editarIndex"
             v-bind:classesCompletas="classesCompletas"
             v-bind:donos="donos"
+            v-bind:tipo="tipo"
           />
         </v-dialog>
         <v-dialog v-model="deleteDialog" width="700" persistent>
@@ -187,7 +188,7 @@ import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaC
 import ListaAgregacoes from "@/components/autosEliminacao/criacao/ListaAgregacoes.vue"
 
 export default {
-  props: ["classes", "entidades", "auto", "classesCompletas","donos"],
+  props: ["classes", "entidades", "auto", "classesCompletas","donos","tipo"],
   components: {
     DialogZonaControlo,
     ListaAgregacoes

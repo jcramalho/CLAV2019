@@ -94,6 +94,30 @@ export function mapKeys(key) {
       descricao = "Tipologias";
       break;
 
+    case "processosSel":
+      descricao = "Processos";
+      break;
+
+    case "dataCriacao":
+      descricao = "Data de Criação";
+      break;
+
+    case "dataExtincao":
+      descricao = "Data de Extinção";
+      break;
+
+    case "numero":
+      descricao = "Número";
+      break;
+
+    case "sumario":
+      descricao = "Sumário";
+      break;
+
+    case "diplomaFonte":
+      descricao = "Fonte do Diploma";
+      break;
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;
@@ -102,10 +126,74 @@ export function mapKeys(key) {
   return descricao;
 }
 
+export function extrairAlteracoes(objeto, objetoOriginal) {
+  const dados = JSON.parse(JSON.stringify(objeto));
+  const dadosOriginais = JSON.parse(JSON.stringify(objetoOriginal));
+
+  for (const key in dados) {
+    if (typeof dados[key] === "string") {
+      if (dados[key] === dadosOriginais[key] && key !== "sigla")
+        delete dados[key];
+    } else if (dados[key] instanceof Array) {
+      if (
+        key !== "processosSel" &&
+        comparaArraySel(dados[key], dadosOriginais[key], "sigla")
+      )
+        delete dados[key];
+      else if (
+        key === "processosSel" &&
+        comparaArraySel(dados[key], dadosOriginais[key], "codigo")
+      )
+        delete dados[key];
+    }
+  }
+
+  return dados;
+}
+
+export function criarHistorico(objeto, objetoOriginal) {
+  const objAlterado = JSON.parse(JSON.stringify(objeto));
+  const objOriginal = JSON.parse(JSON.stringify(objetoOriginal));
+
+  const historico = {};
+
+  for (const key in objAlterado) {
+    if (typeof objAlterado[key] === "string") {
+      if (objAlterado[key] !== objOriginal[key]) {
+        historico[key] = {
+          cor: "amarelo",
+          dados: objAlterado[key],
+          despacho: null,
+        };
+      }
+    } else if (objAlterado[key] instanceof Array) {
+      if (objAlterado[key].length !== objOriginal[key].length) {
+        historico[key] = {
+          cor: "amarelo",
+          dados: objAlterado[key],
+          despacho: null,
+        };
+      } else if (
+        !comparaArraySel(objAlterado[key], objOriginal[key], "sigla")
+      ) {
+        historico[key] = {
+          cor: "amarelo",
+          dados: objAlterado[key],
+          despacho: null,
+        };
+      }
+    }
+  }
+
+  return historico;
+}
+
 export default {
   filtraNivel,
   comparaSigla,
   comparaCodigo,
   comparaArraySel,
   mapKeys,
+  extrairAlteracoes,
+  criarHistorico,
 };
