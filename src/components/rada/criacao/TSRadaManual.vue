@@ -526,7 +526,7 @@ export default {
         let UIs_igual = serie_classe.UIs.find(ui => ui == c.UIs[i]);
 
         if (UIs_igual == undefined) {
-          this.adicionaUI(c.UIs[i], serie_classe);
+          this.adicionaUI(c.UIs[i], serie_classe, c);
         }
         novo_UIs.push(c.UIs[i]);
       }
@@ -548,7 +548,7 @@ export default {
         e => e.codigo != serie_classe.codigo
       );
     },
-    adicionaUI(novaUI, serie_classe) {
+    adicionaUI(novaUI, serie_classe, c) {
       let UI = this.TS.UIs.find(e => e.codigo == novaUI);
 
       if (UI != undefined) {
@@ -564,8 +564,14 @@ export default {
           dataInicial: null,
           dataFinal: null,
           produtor: {
-            tipologiasProdutoras: [],
-            entProdutoras: []
+            tipologiasProdutoras:
+              !!c.tipologiasProdutoras && c.tipologiasProdutoras.length == 1
+                ? [...c.tipologiasProdutoras]
+                : [],
+            entProdutoras:
+              !!c.entProdutoras && c.entProdutoras.length == 1
+                ? [...c.entProdutoras]
+                : []
           },
           classesAssociadas: [
             {

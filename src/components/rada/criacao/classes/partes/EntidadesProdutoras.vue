@@ -61,6 +61,27 @@
 <script>
 export default {
   name: "EntidadesProdutores",
-  props: ["newSerie", "RE"]
+  props: ["newSerie", "RE"],
+  created() {
+    if (
+      this.newSerie.entProdutoras.length == 0 &&
+      this.newSerie.tipologiasProdutoras.length == 0
+    ) {
+      this.newSerie.entProdutoras = JSON.parse(
+        JSON.stringify(this.RE.entidadesProd)
+      );
+      this.newSerie.tipologiasProdutoras = JSON.parse(
+        JSON.stringify(this.RE.tipologiasProd)
+      );
+    }
+  },
+  watch: {
+    "RE.entidadesProd": function(newValue) {
+      this.newSerie.entProdutoras = JSON.parse(JSON.stringify(newValue));
+    },
+    "RE.tipologiasProd": function(newValue) {
+      this.newSerie.tipologiasProdutoras = JSON.parse(JSON.stringify(newValue));
+    }
+  }
 };
 </script>

@@ -195,8 +195,8 @@ export default {
             dataInicial: null,
             dataFinal: null,
             produtor: {
-              tipologiasProdutoras: [],
-              entProdutoras: []
+              tipologiasProdutoras: !!clone_nova_classe.tipologiasProdutoras && clone_nova_classe.tipologiasProdutoras.length == 1 ? [...clone_nova_classe.tipologiasProdutoras] : [],
+              entProdutoras: !!clone_nova_classe.entProdutoras && clone_nova_classe.entProdutoras.length == 1 ? [...clone_nova_classe.entProdutoras] : []
             },
             classesAssociadas: [
               {

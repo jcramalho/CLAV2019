@@ -187,8 +187,10 @@ export default {
           notaPCA: null,
           notaDF: null,
           localizacao: [],
-          entProdutoras: [],
-          tipologiasProdutoras: [],
+          entProdutoras: JSON.parse(JSON.stringify(this.RE.entidadesProd)),
+          tipologiasProdutoras: JSON.parse(
+            JSON.stringify(this.RE.tipologiasProd)
+          ),
           legislacao: [],
           relacoes: [],
           pca: null,
@@ -225,8 +227,10 @@ export default {
         notaPCA: null,
         notaDF: null,
         localizacao: [],
-        entProdutoras: [],
-        tipologiasProdutoras: [],
+        entProdutoras: JSON.parse(JSON.stringify(this.RE.entidadesProd)),
+        tipologiasProdutoras: JSON.parse(
+          JSON.stringify(this.RE.tipologiasProd)
+        ),
         legislacao: [],
         relacoes: [],
         pca: null,
