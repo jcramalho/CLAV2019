@@ -35,24 +35,53 @@
                 </span>
               </v-stepper-step>
               <v-stepper-content step="1">
-                <div v-if="entidadeDGLAB && entidadesReady">
-                    <v-col >
-                        <v-autocomplete
-                            :items="entidades"
-                            label="Selecione a entidade"
-                            item-text="label"
-                            return-object
-                            v-model="ent"
-                            prepend-icon="account_balance"
-                        >
-                        </v-autocomplete>
+                <div v-if="entidadeDGLAB">
+                  <v-col>
+                        <span class="subtitle-2">Pretende:</span>
+                        <v-radio-group v-model="tipoTS" column>
+                          <v-radio label="Criar uma Tabela de Seleção para uma entidade" value="entidade"></v-radio>
+                          <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
+                        </v-radio-group>
+
+                        <div v-if="tipoTS=='entidade' && entidadesReady">
+                          <v-col >
+                            <v-autocomplete
+                              :items="entidades"
+                              label="Selecione a entidade"
+                              item-text="label"
+                              return-object
+                              v-model="ent"
+                              prepend-icon="account_balance"
+                            >
+                            </v-autocomplete>
+                          </v-col>
+                          <v-btn
+                            v-if="ent != ''"
+                            color="primary"
+                            @click="guardaEntidade"
+                          >Continuar</v-btn>
+                        </div>
+
+                        <div v-if="tipoTS=='tipologia' && tipologiasReady">
+                          <v-col>
+                            <v-autocomplete
+                              :items="tipologias"
+                              item-text="label"
+                              return-object
+                              label="Selecione a tipologia"
+                              v-model="tipSel"
+                              prepend-icon="account_balance"
+                            >
+                            </v-autocomplete>
+                          </v-col>
+                          <v-btn
+                            color="primary"
+                            @click="guardaTipologia"
+                          >Continuar</v-btn>
+                        </div>
                     </v-col>
-                    <v-btn
-                        v-if="ent != ''"
-                        color="primary"
-                        @click="guardaEntidade"
-                    >Continuar</v-btn>
                 </div>
+
                 <div v-else>
                     <v-col>
                         <span class="subtitle-2">Pretende:</span>
@@ -60,32 +89,35 @@
                           <v-radio label="Criar uma Tabela de Seleção para a minha organização" value="utilizador"></v-radio>
                           <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
                         </v-radio-group>
-                    </v-col>
-                </div>
-                <div v-if="tipoTS=='tipologia' && tipologiasReady">
-                  <v-col>
-                    <v-autocomplete
-                      :items="tipologias"
-                      item-text="label"
-                      return-object
-                      label="Selecione a tipologia"
-                      v-model="tipSel"
-                      prepend-icon="account_balance"
-                    >
-                    </v-autocomplete>
+
+                    <div v-if="tipoTS=='utilizador'">
+                      <v-btn
+                        color="primary"
+                        @click="guardaEntidadeUtilizador"
+                      >Continuar</v-btn>
+                    </div>
+
+                    <div v-if="tipoTS=='tipologia' && tipologiasReady">
+                          <v-col>
+                            <v-autocomplete
+                              :items="tipologias"
+                              item-text="label"
+                              return-object
+                              label="Selecione a tipologia"
+                              v-model="tipSel"
+                              prepend-icon="account_balance"
+                            >
+                            </v-autocomplete>
+                          </v-col>
+                          <v-btn
+                            color="primary"
+                            @click="guardaTipologia"
+                          >Continuar</v-btn>
+                    </div>
+
                   </v-col>
-                  <v-btn
-                    color="primary"
-                    @click="guardaTipologia"
-                  >Continuar</v-btn>
                 </div>
-                <div v-if="tipoTS=='utilizador'">
-                  <v-btn
-                    color="primary"
-                    @click="guardaEntidadeUtilizador"
-                  >Continuar</v-btn>
-                </div>
-                
+
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 2" step="2">
