@@ -55,6 +55,7 @@
                   :RE="RE"
                   :legislacaoProcessada="legislacaoProcessada"
                   :formaContagem="formaContagem"
+                  :tipos="tipos"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -119,7 +120,8 @@ export default {
     "formaContagem",
     "legislacaoProcessada",
     "dialog",
-    "classe_para_copiar"
+    "classe_para_copiar",
+    "tipos"
   ],
   data: () => ({
     newSerie: {
@@ -130,9 +132,8 @@ export default {
       dataFinal: null,
       tUA: null,
       tSerie: null,
-      suporte: null,
+      suporte_e_medicao: [{ suporte: null, medicao: null }],
       UIs: [],
-      medicao: null,
       localizacao: [],
       entProdutoras: [],
       tipologiasProdutoras: [],
@@ -182,8 +183,7 @@ export default {
           tUA: null,
           tSerie: null,
           UIs: [],
-          suporte: null,
-          medicao: null,
+          suporte_e_medicao: [{ suporte: null, medicao: null }],
           notaPCA: null,
           notaDF: null,
           localizacao: [],
@@ -222,8 +222,7 @@ export default {
         tUA: null,
         tSerie: null,
         UIs: [],
-        suporte: null,
-        medicao: null,
+        suporte_e_medicao: [{ suporte: null, medicao: null }],
         notaPCA: null,
         notaDF: null,
         localizacao: [],
@@ -271,23 +270,17 @@ export default {
         this.erros.push("Tipo de Unidade Arquivistica;");
       }
 
-      if (!this.newSerie.suporte) {
-        this.erros.push("Suporte;");
-      }
-
-      if (!this.newSerie.medicao || new Number(this.newSerie.medicao) < 0) {
-        this.erros.push("Medição;");
+      if (
+        this.newSerie.suporte_e_medicao.some(
+          e =>
+            e.suporte == null || e.medicao == null || new Number(e.medicao) < 0
+        )
+      ) {
+        this.erros.push("Suporte ou medição!");
       }
 
       if (!!this.newSerie.localizacao[0] == false) {
         this.erros.push("Localização;");
-      }
-
-      if (
-        !!this.newSerie.entProdutoras[0] == false &&
-        !!this.newSerie.tipologiasProdutoras[0] == false
-      ) {
-        this.erros.push("Produtoras da Série;");
       }
 
       if (!this.newSerie.eFilhoDe) {

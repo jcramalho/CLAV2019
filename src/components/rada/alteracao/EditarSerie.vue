@@ -75,6 +75,8 @@
                   :RE="RE"
                   :legislacaoProcessada="legislacaoProcessada"
                   :formaContagem="formaContagem"
+                  :editar="true"
+                  :tipos="tipos"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -128,7 +130,8 @@ export default {
     "UIs",
     "formaContagem",
     "legislacaoProcessada",
-    "dialog"
+    "dialog",
+    "tipos"
   ],
   components: {
     Identificacao,
@@ -164,23 +167,17 @@ export default {
         this.erros.push("Tipo de Unidade Arquivistica;");
       }
 
-      if (!this.serie.suporte) {
-        this.erros.push("Suporte;");
-      }
-
-      if (!this.serie.medicao) {
-        this.erros.push("Medição;");
+      if (
+        this.serie.suporte_e_medicao.some(
+          e =>
+            e.suporte == null || e.medicao == null || new Number(e.medicao) < 0
+        )
+      ) {
+        this.erros.push("Suporte ou medição!");
       }
 
       if (!!this.serie.localizacao[0] == false) {
         this.erros.push("Localização;");
-      }
-
-      if (
-        !!this.serie.entProdutoras[0] == false &&
-        !!this.serie.tipologiasProdutoras[0] == false
-      ) {
-        this.erros.push("Produtoras;");
       }
 
       if (!!this.treeview_object.children[0] == 0) {

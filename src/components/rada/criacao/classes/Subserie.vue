@@ -273,34 +273,5 @@ export default {
       }
     }
   }
-  // created() {
-  //   if (this.classe_para_copiar) {
-  //     this.buscarTitulosClasses(this.classe_para_copiar);
-  //   }
-
-  //   this.newSubserie =
-  //     this.classe_para_copiar != null
-  //       ? this.classe_para_copiar
-  //       : {
-  //           codigo: "",
-  //           titulo: "",
-  //           descricao: "",
-  //           dataInicial: null,
-  //           dataFinal: null,
-  //           UIs: [],
-  //           relacoes: [],
-  //           pca: null,
-  //           notaPCA: null,
-  //           notaDF: null,
-  //           formaContagem: {
-  //             forma: null
-  //           },
-  //           justificacaoPCA: [],
-  //           df: null,
-  //           justificacaoDF: [],
-  //           eFilhoDe: null,
-  //           tipo: "Subsérie"
-  //         };
-  // }
 };
 </script>

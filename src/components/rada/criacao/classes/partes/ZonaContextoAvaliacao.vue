@@ -1,13 +1,14 @@
 <template>
   <div>
     <div v-if="newSerie.tipo != 'Subsérie'">
-      <EntidadesProdutoras :newSerie="newSerie" :RE="RE" />
+      <EntidadesProdutoras :newSerie="newSerie" :RE="RE" :editar="editar" />
       <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <Legislacao
         :newSerie="newSerie"
         :legislacao="legislacao"
         :classes="classes"
         :legislacaoProcessada="legislacaoProcessada"
+        :tipos="tipos"
       />
       <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     </div>
@@ -27,7 +28,9 @@ export default {
     "legislacao",
     "RE",
     "legislacaoProcessada",
-    "formaContagem"
+    "formaContagem",
+    "editar",
+    "tipos"
   ],
   components: {
     EntidadesProdutoras,

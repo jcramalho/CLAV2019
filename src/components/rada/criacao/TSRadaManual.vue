@@ -65,6 +65,7 @@
       :UIs="TS.UIs"
       :formaContagem="formaContagem"
       :legislacaoProcessada="legislacaoProcessada"
+      :tipos="tipos"
     />
     <SubSerie
       :dialog="criar_subserie"
@@ -170,6 +171,7 @@
       :UIs="TS.UIs"
       :formaContagem="formaContagem"
       @remover="remover_classe"
+      :tipos="tipos"
     />
     <EditarSubserie
       v-if="editar_subserie"
@@ -263,6 +265,7 @@ export default {
     TabelaClassesRADA
   },
   data: () => ({
+    tipos: [],
     search: null,
     tree_ou_tabela: false,
     classe_copia: null,
@@ -417,8 +420,7 @@ export default {
       serie_classe.dataInicial = c.dataInicial;
       serie_classe.dataFinal = c.dataFinal;
       serie_classe.tSerie = c.tSerie;
-      serie_classe.suporte = c.suporte;
-      serie_classe.medicao = c.medicao;
+      serie_classe.suporte_e_medicao = c.suporte_e_medicao;
       serie_classe.localizacao = c.localizacao;
       serie_classe.entProdutoras = c.entProdutoras;
       serie_classe.tipologiasProdutoras = c.tipologiasProdutoras;
@@ -635,8 +637,7 @@ export default {
             dataFinal: null,
             tUA: null,
             tSerie: null,
-            suporte: null,
-            medicao: null,
+            suporte_e_medicao: [{ suporte: null, medicao: null }],
             localizacao: [],
             entProdutoras: [],
             tipologiasProdutoras: [],
@@ -955,7 +956,16 @@ export default {
       );
     }
   },
-  created: async function() {
+  async created() {
+    let responseTipos = await this.$request(
+      "get",
+      "/vocabularios/vc_tipoDiplomaLegislativo"
+    );
+
+    this.tipos = responseTipos.data.map(t => {
+      return { label: t.termo, value: t.termo };
+    });
+
     let responseFC = await this.$request(
       "get",
       "/vocabularios/vc_pcaFormaContagem"

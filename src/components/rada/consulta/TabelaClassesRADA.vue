@@ -33,6 +33,14 @@
           <li v-for="(leg, i) in item.legislacao" :key="i">{{ leg.legislacao.split(' - ')[0] }}</li>
         </ul>
       </template>
+      <template v-slot:item.suporte_e_medicao="{ item }">
+        <ul>
+          <li
+            v-for="(valores, i) in item.suporte_e_medicao"
+            :key="i"
+          >{{ valores.suporte + ": " + valores.medicao}}</li>
+        </ul>
+      </template>
       <template v-slot:item.relacoes="{ item }">
         <ul>
           <li v-for="(rel, i) in item.relacoes" :key="i">
@@ -186,19 +194,11 @@ export default {
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
-        text: "Suporte",
+        text: "Suporte e Medição",
         align: "left",
         sortable: true,
         align: "center",
-        value: "suporte",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Medição",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "medicao",
+        value: "suporte_e_medicao",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {

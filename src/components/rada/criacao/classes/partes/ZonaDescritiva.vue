@@ -20,7 +20,6 @@
         <div class="info-label">Data Inicial</div>
       </v-col>
       <v-col sm="3" md="3">
-      
         <SelecionarData
           :d="newSerie.dataInicial"
           label="Data Inicial"
@@ -83,7 +82,6 @@
     <!-- v-if="newSerie.dataInicial == null && newSerie.dataFinal == null" -->
     <AssociarUI :newSerie="newSerie" :UIs="UIs" />
     <div v-if="newSerie.tipo != 'Subsérie'">
-      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <v-row>
         <!-- TUArq -->
         <v-col md="3" sm="3">
@@ -122,34 +120,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col md="3" sm="3">
-          <div class="info-label">Suporte</div>
-        </v-col>
-        <v-col sm="3" md="3">
-          <v-select
-            :rules="[v => !!v || 'Campo obrigatório!']"
-            :items="suporte_items"
-            solo
-            clearable
-            v-model="newSerie.suporte"
-            label="Suporte"
-          ></v-select>
-        </v-col>
-        <v-col md="3" sm="3">
-          <div class="info-label">Medição</div>
-        </v-col>
-        <v-col sm="3" md="3">
-          <v-text-field
-            :rules="[v => (!!v && new Number(v) >= 0)|| 'Campo obrigatório!']"
-            type="number"
-            solo
-            clearable
-            v-model="newSerie.medicao"
-            label="Medição"
-          ></v-text-field>
-        </v-col>
-      </v-row>
+      <SuporteMedicao :newSerie="newSerie" />
       <v-row>
         <v-col md="3" sm="3">
           <div class="info-label">Localização</div>
@@ -174,24 +145,20 @@
 <script>
 import SelecionarData from "@/components/generic/SelecionarData";
 import AssociarUI from "@/components/rada/criacao/classes/partes/AssociarUI";
+import SuporteMedicao from "@/components/rada/criacao/classes/partes/SuporteMedicao";
 
 export default {
   props: ["newSerie", "classes", "UIs", "RE"],
   components: {
     AssociarUI,
-    SelecionarData
+    SelecionarData,
+    SuporteMedicao
   },
   data: () => ({
     data_inicial_menu: false,
     data_final_menu: false,
     tiposUA: ["Processo", "Coleção", "Dossier", "Registo"],
-    aberto_fechado: ["Aberta", "Fechada"],
-    suporte_items: [
-      "Eletrónico Digitalizado",
-      "Eletrónico Nativo",
-      "Papel",
-      "Outro"
-    ]
+    aberto_fechado: ["Aberta", "Fechada"]
   }),
   methods: {
     herdarDatasExtremas() {

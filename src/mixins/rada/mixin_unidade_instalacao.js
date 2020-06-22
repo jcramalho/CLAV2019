@@ -66,13 +66,6 @@ export default {
         this.erros.push("Datas;");
       }
 
-      if (
-        !!UI.produtor.entProdutoras[0] == false &&
-        !!UI.produtor.tipologiasProdutoras[0] == false
-      ) {
-        this.erros.push("Produtoras;");
-      }
-
       if (!!UI.classesAssociadas[0] == false) {
         this.erros.push("Classes Associadas;");
       }

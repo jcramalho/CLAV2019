@@ -114,7 +114,7 @@
               </SelecionarData>
             </v-col>
           </v-row>
-          <EntidadesProdutoras :newSerie="UI_clone.produtor" :RE="RE" />
+          <EntidadesProdutoras :newSerie="UI_clone.produtor" :RE="RE" :editar="true"/>
           <v-row>
             <v-col md="3" sm="2">
               <div class="info-label">Série/Subsérie</div>

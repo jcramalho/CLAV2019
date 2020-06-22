@@ -30,12 +30,16 @@
             label_2="Tipo de Série"
             :value_2="classe.tipoSerie"
           />
-          <RADAEntryDouble
-            label_1="Suporte"
-            :value_1="classe.suporte"
-            label_2="Medição"
-            :value_2="classe.medicao"
-          />
+          <v-card outlined>
+            <RADAEntryDouble
+              v-for="(valores, i) in classe.suporte_e_medicao"
+              :key="i"
+              :label_1="'Suporte (' + (i + 1) + ')'"
+              :value_1="valores.suporte"
+              :label_2="'Medição (' + (i + 1) + ')'"
+              :value_2="valores.medicao"
+            />
+          </v-card>
           <RADAEntry label="Localização" :value="classe.localizacao" />
         </div>
         <v-expansion-panels>
@@ -44,7 +48,10 @@
               class="pa-2 indigo darken-4 title white--text"
             >Zona de Contexto de Avaliação</v-expansion-panel-header>
             <v-expansion-panel-content>
-              <RADAEntry label="Produtoras da Série" v-if="classe.tipo != 'subserie'">
+              <RADAEntry
+                label="Produtoras da Série"
+                v-if="classe.tipo != 'subserie' && !!classe.produtoras[0]"
+              >
                 <template v-slot:valor>
                   <ul>
                     <li v-for="(produtora, i) in classe.produtoras" :key="i">

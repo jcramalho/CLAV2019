@@ -8,29 +8,20 @@
         <v-text-field solo v-model="classe.descricao" readonly label="Sem descrição"></v-text-field>
       </v-col>
     </v-row>
-    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <v-row>
       <!-- DATA INICIAL -->
       <v-col md="3" sm="3">
         <div class="info-label">Data Inicial</div>
       </v-col>
       <v-col sm="3" md="3">
-        <v-text-field
-          v-model="classe.dataInicial"
-          prepend-icon="event"
-          readonly
-        ></v-text-field>
+        <v-text-field v-model="classe.dataInicial" prepend-icon="event" readonly></v-text-field>
       </v-col>
       <!-- DATA FINAL -->
       <v-col md="3" sm="3">
         <div class="info-label">Data Final</div>
       </v-col>
       <v-col sm="3" md="3">
-        <v-text-field
-          v-model="classe.dataFinal"
-          prepend-icon="event"
-          readonly
-        ></v-text-field>
+        <v-text-field v-model="classe.dataFinal" prepend-icon="event" readonly></v-text-field>
       </v-col>
     </v-row>
     <!-- UNIDADES DE INSTALAÇÃO -->
@@ -91,27 +82,28 @@
           ></v-select>
         </v-col>
       </v-row>
-
-      <v-row>
-        <v-col md="3" sm="3">
-          <div class="info-label">Suporte</div>
-        </v-col>
-        <v-col sm="3" md="3">
-          <v-select
-            :items="suporte_items"
-            label="Sem suporte"
-            solo
-            v-model="classe.suporte"
-            readonly
-          ></v-select>
-        </v-col>
-        <v-col md="3" sm="3">
-          <div class="info-label">Medição</div>
-        </v-col>
-        <v-col sm="3" md="3">
-          <v-text-field type="number" label="Sem medição" solo v-model="classe.medicao" readonly></v-text-field>
-        </v-col>
-      </v-row>
+      <v-card outlined>
+        <v-row v-for="(valores, i) in newSerie.suporte_e_medicao" :key="i">
+          <v-col md="3" sm="3">
+            <div class="info-label">Suporte ({{ i+1 }})</div>
+          </v-col>
+          <v-col sm="3" md="3">
+            <v-select
+              :items="suporte_items"
+              label="Sem suporte"
+              solo
+              v-model="valores.suporte"
+              readonly
+            ></v-select>
+          </v-col>
+          <v-col md="3" sm="3">
+            <div class="info-label">Medição ({{ i+1 }})</div>
+          </v-col>
+          <v-col sm="3" md="3">
+            <v-text-field type="number" label="Sem medição" solo v-model="valores.medicao" readonly></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card>
       <v-row>
         <v-col md="3" sm="3">
           <div class="info-label">Localização</div>
