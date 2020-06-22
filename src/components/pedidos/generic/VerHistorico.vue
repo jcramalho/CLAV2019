@@ -2,6 +2,11 @@
   <v-card>
     <v-card-title class="indigo darken-4 title white--text" dark>
       Histórico de alterações
+      <v-spacer />
+      <v-chip color="indigo accent-4" text-color="white" label>
+        <v-icon class="mr-1">label</v-icon>
+        <b>{{ etapaReferente }}</b>
+      </v-chip>
     </v-card-title>
 
     <v-card-text class="mt-2">
@@ -213,7 +218,6 @@
             >
               <v-btn :input-value="active" icon @click="toggle">
                 <b>{{ i + 1 }}</b>
-                <!-- <v-icon>fiber_manual_record</v-icon> -->
               </v-btn>
             </v-item>
           </v-item-group>
@@ -241,6 +245,7 @@ export default {
 
   data() {
     return {
+      etapaReferente: "Pedido Original",
       onboarding: 0,
       dados: [],
       entidadesHeaders: [
@@ -276,8 +281,18 @@ export default {
   },
 
   created() {
-    this.dados.push(this.pedidoOriginal);
-    this.dados.push(...this.historico);
+    if (
+      this.pedido.estado === "Validado" ||
+      this.pedido.estado === "Devolvido"
+    ) {
+      this.dados.push(this.pedidoOriginal);
+      if (this.pedido.objeto.acao === "Alteração")
+        this.dados.push(this.historico[0]);
+      this.dados.push(this.historico[this.historico.length - 1]);
+    } else {
+      this.dados.push(this.pedidoOriginal);
+      this.dados.push(...this.historico);
+    }
   },
 
   computed: {
@@ -288,16 +303,38 @@ export default {
     pedidoOriginal() {
       return this.pedido.objeto.dadosOriginais;
     },
+
+    distribuicao() {
+      return this.pedido.distribuicao;
+    },
+  },
+
+  watch: {
+    onboarding() {
+      if (
+        this.onboarding !== undefined &&
+        this.distribuicao[this.onboarding].estado !== undefined
+      ) {
+        if (this.onboarding === 0) this.etapaReferente = "Pedido Original";
+        else if (this.pedido.objeto.acao === "Alteração")
+          if (this.onboarding === 1)
+            this.etapaReferente = "Alteração Submetida";
+          else
+            this.etapaReferente = this.distribuicao[this.onboarding + 1].estado;
+        else
+          this.etapaReferente = this.distribuicao[this.onboarding + 1].estado;
+      }
+    },
   },
 
   methods: {
     next() {
-      this.onboarding =
-        this.onboarding + 1 === this.length ? 0 : this.onboarding + 1;
+      if (this.onboarding + 1 < this.dados.length) this.onboarding++;
+      else this.onboarding = 0;
     },
     prev() {
-      this.onboarding =
-        this.onboarding - 1 < 0 ? this.length - 1 : this.onboarding - 1;
+      if (this.onboarding - 1 < 0) this.onboarding = this.dados.length - 1;
+      else this.onboarding--;
     },
 
     transformaKeys(key) {

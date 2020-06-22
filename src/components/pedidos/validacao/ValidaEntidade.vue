@@ -202,10 +202,6 @@ export default {
       return this.p.objeto.dados;
     },
 
-    dadosOriginais() {
-      return this.p.objeto.dadosOriginais;
-    },
-
     historico() {
       return this.p.historico;
     },
