@@ -199,6 +199,18 @@
                         </v-data-table>
                       </div>
                     </v-col>
+
+                    <!-- Operação -->
+                    <v-col cols="1">
+                      <v-tooltip v-if="info.despacho" bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on" @click="verDespacho(info.despacho)">
+                            message
+                          </v-icon>
+                        </template>
+                        <span>Ver nota relativa ao campo...</span>
+                      </v-tooltip>
+                    </v-col>
                   </v-row>
                 </div>
               </v-card-text>
@@ -234,6 +246,30 @@
         Cancelar
       </v-btn>
     </v-card-actions>
+
+    <!-- Ver despacho dialog -->
+    <v-dialog v-model="dialogVerDespacho.visivel" width="50%">
+      <v-card>
+        <v-card-title class="indigo darken-4 title white--text">
+          Nota
+        </v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <div class="info-conteudo">{{ dialogVerDespacho.despacho }}</div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="red darken-4" dark @click="fecharDialogVerDespacho()">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -245,6 +281,10 @@ export default {
 
   data() {
     return {
+      dialogVerDespacho: {
+        visivel: false,
+        despacho: "",
+      },
       etapaReferente: "Pedido Original",
       onboarding: 0,
       dados: [],
@@ -328,10 +368,21 @@ export default {
   },
 
   methods: {
+    verDespacho(despacho) {
+      this.dialogVerDespacho.despacho = despacho;
+      this.dialogVerDespacho.visivel = true;
+    },
+
+    fecharDialogVerDespacho() {
+      this.dialogVerDespacho.despacho = "";
+      this.dialogVerDespacho.visivel = false;
+    },
+
     next() {
       if (this.onboarding + 1 < this.dados.length) this.onboarding++;
       else this.onboarding = 0;
     },
+
     prev() {
       if (this.onboarding - 1 < 0) this.onboarding = this.dados.length - 1;
       else this.onboarding--;
