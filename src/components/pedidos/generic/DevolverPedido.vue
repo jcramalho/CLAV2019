@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title>Insira uma mensagem para devolução</v-card-title>
+    <v-card-title class="indigo darken-3 white--text">
+      Insira uma mensagem para devolução
+    </v-card-title>
     <v-card-text>
       <v-row>
         <v-col cols="2">

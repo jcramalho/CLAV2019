@@ -97,7 +97,8 @@
                   @click="devolverPedido(item)"
                   color="indigo darken-2"
                   v-on="on"
-                  >assignment_return
+                >
+                  assignment_return
                 </v-icon>
               </template>
               <span>Devolver pedido...</span>
