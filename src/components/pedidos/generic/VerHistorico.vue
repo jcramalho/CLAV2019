@@ -328,7 +328,8 @@ export default {
       this.dados.push(this.pedidoOriginal);
       if (this.pedido.objeto.acao === "Alteração")
         this.dados.push(this.historico[0]);
-      this.dados.push(this.historico[this.historico.length - 1]);
+      if (this.pedido.distribuicao.length > 2)
+        this.dados.push(this.historico[this.historico.length - 1]);
     } else {
       this.dados.push(this.pedidoOriginal);
       this.dados.push(...this.historico);
@@ -353,7 +354,7 @@ export default {
     onboarding(novoValor, antigoValor) {
       if (
         novoValor !== undefined &&
-        this.distribuicao[novoValor].estado !== undefined
+        this.distribuicao[novoValor] !== undefined
       ) {
         if (novoValor === 0) this.etapaReferente = "Pedido Original";
         else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
@@ -368,7 +369,8 @@ export default {
         else if (this.pedido.objeto.acao === "Criação")
           this.etapaReferente = this.distribuicao[novoValor + 1].estado;
         else this.etapaReferente = this.distribuicao[novoValor].estado;
-      }
+      } else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
+        this.etapaReferente = "Alteração Submetida";
     },
   },
 
