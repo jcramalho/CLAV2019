@@ -66,7 +66,9 @@
               <template v-slot:item="props">
                 <tr>
                   <td class="subheading">{{ props.item.estado }}</td>
-                  <td class="subheading">{{ props.item.data }}</td>
+                  <td class="subheading">
+                    {{ converteData(props.item.data) }}
+                  </td>
                   <td class="subheading">{{ props.item.responsavel }}</td>
                   <td class="subheading">
                     {{ props.item.despacho }}
@@ -179,7 +181,7 @@ import ErroDialog from "@/components/generic/ErroDialog";
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
-import { filtraNivel } from "@/utils/utils";
+import { filtraNivel, converteData } from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -236,8 +238,20 @@ export default {
   },
 
   methods: {
+    converteData(data) {
+      let dataFormatada = "";
+      let dataConvertida = new Date(data);
+
+      dataFormatada += `${data.split("T")[0]} - ${dataConvertida.getHours()}:`;
+
+      if (dataConvertida.getMinutes() < 10)
+        dataFormatada += `0${dataConvertida.getMinutes()}`;
+      else dataFormatada += dataConvertida.getMinutes();
+
+      return dataFormatada;
+    },
+
     async despacharPedido(dados) {
-      console.log("dados", dados);
       try {
         const estado = "Devolvido";
 
