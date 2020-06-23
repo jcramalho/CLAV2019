@@ -14,13 +14,13 @@
             <v-card-text>
               <v-form ref="form" :lazy-validation="false">
                 <v-row>
-                  <v-col v-if="!!listaTipos[0]">
+                  <v-col v-if="!!tipos[0]">
                     <v-select
                       :rules="rule"
                       item-text="label"
                       item-value="value"
                       v-model="tipo"
-                      :items="listaTipos"
+                      :items="tipos"
                       label="Tipo"
                     />
                   </v-col>
@@ -121,13 +121,12 @@
 const nanoid = require("nanoid");
 
 export default {
-  props: ["legislacao", "newSerie", "legislacaoProcessada"],
+  props: ["legislacao", "newSerie", "legislacaoProcessada", "tipos"],
   data: function() {
     return {
       panel: [0],
       data_menu: false,
       rule: [v => !!v || "Campo é obrigatório."],
-      listaTipos: [],
       alertOn: false,
       sucessOn: false,
       tipo: "",
@@ -136,20 +135,6 @@ export default {
       data: "",
       link: ""
     };
-  },
-
-  created: async function() {
-    try {
-      var tipos = await this.$request(
-        "get",
-        "/vocabularios/vc_tipoDiplomaLegislativo"
-      );
-      this.listaTipos = tipos.data.map(t => {
-        return { label: t.termo, value: t.termo };
-      });
-    } catch (e) {
-      return e;
-    }
   },
 
   methods: {

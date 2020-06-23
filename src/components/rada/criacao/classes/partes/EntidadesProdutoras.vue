@@ -7,7 +7,6 @@
       </v-col>
       <v-col xs="12" sm="9">
         <v-autocomplete
-          :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.entProdutoras"
           :items="RE.entidadesProd"
           label="Selecione as Entidades Produtoras"
@@ -35,7 +34,6 @@
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-autocomplete
-          :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.tipologiasProdutoras"
           :items="RE.tipologiasProd"
           label="Selecione as Tipologias da Entidades produtoras"
@@ -61,6 +59,28 @@
 <script>
 export default {
   name: "EntidadesProdutores",
-  props: ["newSerie", "RE"]
+  props: ["newSerie", "RE", "editar"],
+  created() {
+    if (
+      !this.editar &&
+      this.newSerie.entProdutoras.length == 0 &&
+      this.newSerie.tipologiasProdutoras.length == 0
+    ) {
+      this.newSerie.entProdutoras = JSON.parse(
+        JSON.stringify(this.RE.entidadesProd)
+      );
+      this.newSerie.tipologiasProdutoras = JSON.parse(
+        JSON.stringify(this.RE.tipologiasProd)
+      );
+    }
+  },
+  watch: {
+    "RE.entidadesProd": function(newValue) {
+      this.newSerie.entProdutoras = JSON.parse(JSON.stringify(newValue));
+    },
+    "RE.tipologiasProd": function(newValue) {
+      this.newSerie.tipologiasProdutoras = JSON.parse(JSON.stringify(newValue));
+    }
+  }
 };
 </script>

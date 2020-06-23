@@ -1,36 +1,39 @@
 <template>
-  <div style="overflow: auto; width:100%;">
+  <div>
     <v-data-table
       flat
-      :style="`background-color:${!!background_color ? background_color : '#ffffff;'} `"
+      style="background-color:#ffffff;"
       :headers="headers"
       :items="classes"
       class="elevation-1 mytable"
-      :footer-props="footer_props"
-      @click:row="editarClasse"
-      :search="search"
       :items-per-page="5"
+      :footer-props="footer_props"
       dense
+      @click:row="consultaClasse"
+      :search="search"
     >
       <template v-slot:item.tipo="{ item }">
-        <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
-        <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
-        <i v-else>{{ item.tipo }}</i>
+        <img v-if="item.tipo == 'serie'" style="width:23px; height:30px" :src="svg_sr" />
+        <img v-else-if="item.tipo == 'subserie'" style="width:23px; height:30px" :src="svg_ssr" />
+        <i v-else>{{ item.nivel }}</i>
       </template>
       <template v-slot:item.produtoras="{ item }">
         <ul>
-          <li
-            v-for="(tipologia, i) in item.tipologiasProdutoras"
-            :key="i"
-          >{{ tipologia.split(' - ')[0]}}</li>
-        </ul>
-        <ul>
-          <li v-for="(entidade, i) in item.entProdutoras" :key="i">{{ entidade.split(' - ')[0]}}</li>
+          <li v-for="(entidade, i) in item.produtoras" :key="i">
+            <a
+              v-if="entidade.ent_or_tip.split('#')[1].split('_')[0] == 'tip'"
+              :href="`${entidade.ent_or_tip.split('#')[1].split('_')[0] == 'tip' ? '/tipologias/' : '/entidades/'}` + entidade.ent_or_tip.split('#')[1]"
+            >{{ entidade.sigla + " - "+ entidade.designacao}}</a>
+          </li>
         </ul>
       </template>
       <template v-slot:item.legislacao="{ item }">
         <ul>
-          <li v-for="(leg, i) in item.legislacao" :key="i">{{ leg.legislacao.split(' - ')[0] }}</li>
+          <li v-for="(leg, i) in item.legislacao" :key="i">
+            <a
+              :href="'/legislacao/' + leg.leg.split('#')[1]"
+            >{{ leg.tipo + " " + leg.numero + " - " + leg.sumario }}</a>
+          </li>
         </ul>
       </template>
       <template v-slot:item.suporte_e_medicao="{ item }">
@@ -41,52 +44,56 @@
           >{{ valores.suporte + ": " + valores.medicao}}</li>
         </ul>
       </template>
+      <template v-slot:item.UIs="{ item }">
+        <ul>
+          <li v-for="(ui, i) in item.UIs" :key="i">{{ ui.codigo }}</li>
+        </ul>
+      </template>
+
       <template v-slot:item.relacoes="{ item }">
         <ul>
-          <li v-for="(rel, i) in item.relacoes" :key="i">
-            <b>{{ rel.relacao }}</b>
-            - {{rel.serieRelacionada.codigo }}
-          </li>
+          <li
+            v-for="(rel, i) in filtraRelacoes(item)"
+            :key="i"
+          >{{ relacaoCorreta(rel.rel) + ": " + rel.codigo }}</li>
         </ul>
       </template>
       <template v-slot:item.justificacaoPCA="{ item }">
-        <ul>
-          <li v-for="(criterio, i) in item.justificacaoPCA" :key="i">
-            <b>{{ criterio.tipo }}</b>
-            - {{ criterio.nota}}
-            <i
-              v-for="(rel, j) in criterio.relacoes"
-              :key="j"
-            >{{rel.codigo }}</i>
+        <ul v-if="!!item.pca">
+          <li v-for="(criterio, i) in item.pca.justificacaoPCA" :key="i">
+            <b>{{criterio.tipo == 'CriterioJustificacaoGestionario' ? 'Critério Gestionário' : (criterio.tipo == 'CriterioJustificacaoLegal' ? 'Critério Legal' : 'Critério de Utilidade Administrativa') + ": "}}</b>
+            {{ criterio.conteudo }}
+            <ul v-if="criterio.relacoes">
+              <li
+                v-for="(rel, j) in criterio.relacoes"
+                :key="j"
+              >{{!!rel.codigo ? rel.codigo : rel.tipo + " " + rel.numero}}</li>
+            </ul>
           </li>
         </ul>
       </template>
 
       <template v-slot:item.justificacaoDF="{ item }">
-        <ul>
-          <li v-for="(criterio, i) in item.justificacaoDF" :key="i">
-            <b>{{ criterio.tipo }}</b>
-            - {{ criterio.nota}}
-            <i
-              v-for="(rel, j) in criterio.relacoes"
-              :key="j"
-            >{{rel.codigo }}</i>
+        <ul v-if="!!item.df">
+          <li v-for="(criterio, i) in item.df.justificacaoDF" :key="i">
+            <b>{{criterio.tipo == 'CriterioJustificacaoComplementaridadeInfo' ? 'Critério de Complementaridade Informacional' : (criterio.tipo == 'CriterioJustificacaoLegal' ? 'Critério Legal' : 'Critério de Densidade Informacional') + ": "}}</b>
+            {{ criterio.conteudo }}
+            <ul v-if="criterio.relacoes">
+              <li
+                v-for="(rel, j) in criterio.relacoes"
+                :key="j"
+              >{{!!rel.codigo ? rel.codigo : rel.tipo + " " + rel.numero}}</li>
+            </ul>
           </li>
         </ul>
       </template>
 
-      <template v-slot:item.completo="{ item }">
-        <v-icon
-          color="red"
-          v-if="(item.tipo == 'Série' && (item.eFilhoDe == null || (item.temDF && !!!item.children[0]))) || (item.tipo == 'Subsérie' && (item.eFilhoDe == null || item.temDF)) || (item.eFilhoDe == null &&
-                    (item.tipo == 'N2' || item.tipo == 'N3'))"
-        >report</v-icon>
-      </template>
-
       <template v-slot:item.formaContagem="{ item }">
-        {{ !!item.formaContagem ? (!!item.formaContagem.forma ? descobrirForma(item.formaContagem.forma): '') : '' }}
-        <br />
-        {{ !!item.formaContagem ? (!!item.formaContagem.subforma ? descobrirSubforma(item.formaContagem.subforma): '') : '' }}
+        <div v-if="!!item.pca">
+          {{ !!item.pca.formaLabel ? "Forma: " + item.pca.formaLabel : ''}}
+          <br />
+          {{ !!item.pca.subformaLabel ? "Subforma: " + item.pca.subformaLabel : '' }}
+        </div>
       </template>
     </v-data-table>
   </div>
@@ -94,47 +101,18 @@
 
 <script>
 export default {
-  props: ["classes", "formaContagem", "background_color", "search"],
-  methods: {
-    descobrirForma(forma) {
-      let forma_certa = this.formaContagem.formasContagem.find(
-        e => e.value == forma
-      );
-
-      return "Forma: " + forma_certa.label;
-    },
-    descobrirSubforma(subforma) {
-      let subforma_certa = this.formaContagem.subFormasContagem.find(
-        e => e.value == subforma
-      );
-      return "Subforma: " + subforma_certa.label.split(": ")[1];
-    },
-    editarClasse(item) {
-      this.$emit("editarClasse", {
-        tipo: item.tipo,
-        titulo: item.titulo,
-        codigo: item.codigo,
-        children: [this.classes.find(e => e.eFilhoDe == item.codigo)],
-        temDF: Boolean(
-          (!Boolean(item.df) && !Boolean(item.notaDF)) ||
-            (!Boolean(item.pca) && !Boolean(item.notaPCA)) ||
-            item.formaContagem.forma == null
-        )
-      });
-    }
-  },
+  props: ["classes", "formaContagem", "search"],
   data: () => ({
+    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     footer_props: {
       "items-per-page-options": [1, 5, 10, -1],
       "items-per-page-text": "Mostrar"
     },
-    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
-    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
-    class: ["table-header", "body-2", "font-weight-bold"],
     headers: [
       {
         text: "Tipo",
-        sortable: true,
+        sortable: false,
         value: "tipo",
         align: "center",
         class: ["table-header", "body-2", "font-weight-bold"]
@@ -182,7 +160,7 @@ export default {
         align: "left",
         sortable: true,
         align: "center",
-        value: "tUA",
+        value: "tipoUA",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
@@ -190,7 +168,7 @@ export default {
         align: "left",
         sortable: true,
         align: "center",
-        value: "tSerie",
+        value: "tipoSerie",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
@@ -212,7 +190,7 @@ export default {
       {
         text: "Localização",
         align: "left",
-        sortable: false,
+        sortable: true,
         align: "center",
         value: "localizacao",
         class: ["table-header", "body-2", "font-weight-bold"]
@@ -246,7 +224,7 @@ export default {
         align: "left",
         sortable: true,
         align: "center",
-        value: "pca",
+        value: "pca.pca",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
@@ -254,7 +232,7 @@ export default {
         align: "left",
         sortable: true,
         align: "center",
-        value: "notaPCA",
+        value: "pca.notaPCA",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
 
@@ -279,7 +257,7 @@ export default {
         align: "left",
         sortable: true,
         align: "center",
-        value: "df",
+        value: "df.df",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
 
@@ -288,7 +266,7 @@ export default {
         align: "left",
         sortable: true,
         align: "center",
-        value: "notaDF",
+        value: "df.notadf",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
@@ -303,23 +281,52 @@ export default {
         text: "Pai",
         sortable: true,
         align: "center",
-        value: "eFilhoDe",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        sortable: true,
-        align: "center",
-        value: "completo",
+        value: "pai",
         class: ["table-header", "body-2", "font-weight-bold"]
       }
     ]
-  })
+  }),
+  methods: {
+    consultaClasse(item) {
+      this.$emit("consultarClasse", item);
+    },
+    filtraRelacoes(item) {
+      if (item.relacoes) {
+        return item.relacoes.filter(e => e.rel != "temPai" && e.rel != "temFilho");
+      } else {
+        return []
+      }
+    },
+    relacaoCorreta(relacao) {
+      let traducao = "";
+      switch (relacao) {
+        case "eAntecessorDe":
+          traducao = "Antecessor de";
+          break;
+        case "eSucessorDe":
+          traducao = "Sucessora de";
+          break;
+        case "eCruzadoCom":
+          traducao = "Cruzado com";
+          break;
+        case "eComplementarDe":
+          traducao = "Complementar de";
+          break;
+        case "eSintetizadoPor":
+          traducao = "Sintetizado por";
+          break;
+        case "eSinteseDe":
+          traducao = "Síntese de";
+          break;
+        case "eSuplementoDe":
+          traducao = "Suplemento de";
+          break;
+        case "eSuplementoPara":
+          traducao = "Suplemento para";
+          break;
+      }
+      return traducao;
+    }
+  }
 };
 </script>
-<style scoped>
-.mytable table tr {
-  background-color: #333;
-  overflow: auto;
-  white-space: nowrap;
-}
-</style>

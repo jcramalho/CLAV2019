@@ -15,12 +15,6 @@
           label_2="Data Final"
           :value_2="classe.dataFinal"
         />
-        <RADAEntryDouble
-          label_1="Data Inicial"
-          :value_1="classe.dataInicial"
-          label_2="Data Final"
-          :value_2="classe.dataFinal"
-        />
         <RADAEntry v-if="!!classe.UIs[0]" label="Unidades de Instalação">
           <template v-slot:valor>
             <ul>
@@ -35,13 +29,16 @@
           label_2="Tipo de Série"
           :value_2="classe.tSerie"
         />
-        <RADAEntryDouble
-          v-if="classe.tipo != 'Subsérie'"
-          label_1="Suporte"
-          :value_1="classe.suporte"
-          label_2="Medição"
-          :value_2="classe.medicao"
-        />
+        <v-card outlined v-if="classe.tipo != 'Subsérie'">
+          <RADAEntryDouble
+            v-for="(valores, i) in classe.suporte_e_medicao"
+            :key="i"
+            :label_1="'Suporte (' + (i + 1) + ')'"
+            :value_1="valores.suporte"
+            :label_2="'Medição (' + (i + 1) + ')'"
+            :value_2="valores.medicao"
+          />
+        </v-card>
         <RADAEntry
           label="Localização"
           v-if="classe.tipo != 'Subsérie'"
@@ -63,7 +60,10 @@
                   </ul>
                 </template>
               </RADAEntry>
-              <RADAEntry v-else-if="classe.tipo != 'Subsérie'" label="Produtoras da Série">
+              <RADAEntry
+                v-else-if="classe.tipo != 'Subsérie' && classe.tipologiasProdutoras.length > 0"
+                label="Produtoras da Série"
+              >
                 <template v-slot:valor>
                   <ul>
                     <li

@@ -35,26 +35,30 @@ export default {
         ui["id"] = "rada_" + this.RADA.id + "_ui_" + ui.codigo;
         return ui;
       }).length;
-      this.RADA.RE.dimSuporte.medicaoUI_papel = series
-        .filter(e => e.suporte == "Papel")
-        .reduce((acc, a) => {
-          return acc + Number(a.medicao);
-        }, 0);
-      this.RADA.RE.dimSuporte.medicaoUI_digital = series
-        .filter(
-          e =>
-            e.suporte == "Eletrónico Digitalizado" ||
-            e.suporte == "Eletrónico Nativo"
-        )
-        .reduce((acc, a) => {
-          return acc + Number(a.medicao);
-        }, 0);
 
-      this.RADA.RE.dimSuporte.medicaoUI_outros = series
-        .filter(e => e.suporte == "Outro")
-        .reduce((acc, a) => {
-          return acc + Number(a.medicao);
-        }, 0);
+      this.RADA.RE.dimSuporte.medicaoUI_papel = 0;
+      this.RADA.RE.dimSuporte.medicaoUI_digital = 0;
+      this.RADA.RE.dimSuporte.medicaoUI_outros = 0;
+
+      for (let i = 0; i < series.length; i++) {
+        for (let j = 0; j < series[i].suporte_e_medicao.length; j++) {
+          switch (series[i].suporte_e_medicao[j].suporte) {
+            case "Papel":
+              this.RADA.RE.dimSuporte.medicaoUI_papel +=
+                Number(series[i].suporte_e_medicao[j].medicao);
+              break;
+            case "Eletrónico Digitalizado" || "Eletrónico Nativo":
+              this.RADA.RE.dimSuporte.medicaoUI_digital +=
+                Number(series[i].suporte_e_medicao[j].medicao);
+              break;
+            case "Outro":
+              this.RADA.RE.dimSuporte.medicaoUI_outros +=
+                Number(series[i].suporte_e_medicao[j].medicao);
+
+              break;
+          }
+        }
+      }
     },
     // Fazer pedidos para as entidades
     async fazer_pedidos_entidades(series) {
@@ -140,7 +144,7 @@ export default {
 
       let legislacao = this.legislacao
         .filter(
-          e => 
+          e =>
             e.estado == "Nova" &&
             series.some(cl =>
               cl.legislacao.some(
@@ -355,7 +359,7 @@ export default {
           }
         });
       }
-      
+
       if (
         !!this.erroProdutoras[0] ||
         !!this.erros_relacoes[0] ||
@@ -405,7 +409,7 @@ export default {
           },
           token: this.$store.state.token,
           criadoPor: this.userEmail,
-          entidade: this.user_entidade, 
+          entidade: this.user_entidade,
           despacho: !!this.despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
             this.despacho
@@ -416,7 +420,7 @@ export default {
           // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
           await this.$request("delete", "/pendentes/" + id_remocao_pendente);
         }
-        this.$router.push('/pedidos/submissao');
+        this.$router.push("/pedidos/submissao");
       }
     }
   },
@@ -457,7 +461,7 @@ export default {
     this.user_entidade = userBD.entidade;
 
     // Se for pendente
-    if(!!this.obj){
+    if (!!this.obj) {
       this.obj.objeto.entidades.forEach(ent => {
         this.entidades.push(ent);
         this.entidadesProcessadas.push({

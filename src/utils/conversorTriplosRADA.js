@@ -3,12 +3,12 @@ let classes_rada = '';
 
 export async function converterParaTriplosRADA(obj) {
     classes_rada = obj.tsRada.classes;
-    
+
     let triplos = `clav:rada_${obj.id} rdf:type owl:NamedIndividual, clav:RADA;
                             clav:contemRE clav:rada_${obj.id}_re ;
                             clav:contemTS clav:rada_${obj.id}_ts ;
                             clav:codigo "${obj.id}" ;
-                            clav:dataAprovacao "${new Date().toLocaleString("pt-pt", {timeZone: "Europe/London"})}" ;
+                            clav:dataAprovacao "${new Date().toLocaleString("pt-pt", { timeZone: "Europe/London" })}" ;
                             clav:eDaResponsabilidadeDe clav:${obj.entRes
             .map(e => "ent_" + e.split(" - ")[0])
             .join(", clav:")} ;
@@ -100,18 +100,19 @@ async function triplosSerie(classe, codigoRADA) {
                                     clav:dataFinal "${classe.dataFinal}" ;
                                     clav:tipoUA "${classe.tUA}" ;
                                     clav:tipoSerie "${classe.tSerie}" ;
-                                    clav:suporte "${classe.suporte}" ;
-                                    clav:medicao "${classe.medicao}" ;
-                                    ${!!classe.legislacao[0] ? `clav:reguladaPor clav:${classe.legislacao.map(e => e.id).join(", clav:")} ;` : '' }
-                                    clav:produzidaPor clav:${
-            !!classe.entProdutoras[0]
-                ? classe.entProdutoras.map(e => "ent_" + e.split(" - ")[0]).join(", clav:")
-                : classe.tipologiasProdutoras.map(e => "tip_" + e.split(" - ")[0]).join(", clav:")
-            } ;
+                                    ${!!classe.legislacao[0] ? `clav:reguladaPor clav:${classe.legislacao.map(e => e.id).join(", clav:")} ;` : ''}
+                                    ${!!classe.entProdutoras[0] || !!classe.tipologiasProdutoras[0] ? `clav:produzidaPor clav:${
+                !!classe.entProdutoras[0]
+                    ? classe.entProdutoras.map(e => "ent_" + e.split(" - ")[0]).join(", clav:")
+                    : classe.tipologiasProdutoras.map(e => "tip_" + e.split(" - ")[0]).join(", clav:")
+                } ;` : ''}
+                                    
                                     clav:localizacao "${classe.localizacao.join(" ,")}" ;
                                     ${!!classe.UIs[0] ? "clav:ePaiDeUI " + classe.UIs.map(e => "clav:rada_" + codigoRADA + "_ui_" + e).join(", ") + " ;" : ''}
                                     clav:temPai clav:rada_${codigoRADA + "_organico_funcional_" + classe.eFilhoDe} .\n\n`
         triplos += await triplosRelacoes(classe, codigoRADA);
+
+        triplos += await triplosSuporteMedicao(classe);
 
         if ("pca" in classe && "df" in classe) {
             triplos += await triplosPCA(classe, codigoRADA);
@@ -120,6 +121,22 @@ async function triplosSerie(classe, codigoRADA) {
 
         return triplos;
 
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+async function triplosSuporteMedicao(classe) {
+    try {
+        let triplos = '';
+
+        for (let i = 0; i < classe.suporte_e_medicao.length; i++) {
+            triplos += `clav:${classe.id}_suporte_medicao_${i + 1} rdf:type owl:NamedIndividual , clav:SuporteMedicao ;
+                                    clav:suporte "${classe.suporte_e_medicao[i].suporte}" ;
+                                    clav:medicao "${classe.suporte_e_medicao[i].medicao}".\n\nclav:${classe.id} clav:temSuporteMedicao clav:${classe.id}_suporte_medicao_${i + 1}.\n\n`
+
+        }
+        return triplos;
     } catch (err) {
         console.log(err);
     }
@@ -198,10 +215,10 @@ async function triplosDF(classe, codigoRADA) {
     }
 }
 
-function destinoFinal(df){
+function destinoFinal(df) {
     let destino = '';
 
-    switch(df){
+    switch (df) {
         case 'Conservação':
             destino = 'C';
             break;
@@ -285,9 +302,9 @@ async function triplosJustificacaoDFCriterios(criterio, i, classe, codigoRADA) {
                 triplos += `clav:crit_just_df_${classe.id}_${i} rdf:type owl:NamedIndividual , clav:CriterioJustificacaoLegal;
                                 clav:conteudo "${criterio.nota}" ;
                                 clav:criTemLegAssoc clav:${!!classe.legislacao ? criterio.relacoes.map(e => {
-                                        let l = classe.legislacao.find(leg => leg.legislacao == e);
-                                        return l.id;
-                                }).join(", clav:") : await criterioLegalSubserie(criterio, classe, "df")} .\n`
+                    let l = classe.legislacao.find(leg => leg.legislacao == e);
+                    return l.id;
+                }).join(", clav:") : await criterioLegalSubserie(criterio, classe, "df")} .\n`
                 break;
             case 'Critério de Densidade Informacional':
                 if (classe.relacoes.some(e => e.relacao == "Síntese de")) {
@@ -307,10 +324,10 @@ async function triplosJustificacaoDFCriterios(criterio, i, classe, codigoRADA) {
         console.log(err);
     }
 }
-function criterioLegalSubserie(criterio, classe, frase){
+function criterioLegalSubserie(criterio, classe, frase) {
     try {
         let pai = classes_rada.find(e => e.codigo == classe.eFilhoDe);
-        
+
         return criterio.relacoes.map(e => {
             let l = pai.legislacao.find(leg => leg.legislacao == e);
             return l.id;
@@ -325,7 +342,7 @@ function triplosUnidadeInstalacao(UIs) {
 
     for (let i = 0; i < UIs.length; i++) {
         triplos += `clav:${UIs[i].id} rdf:type owl:NamedIndividual , clav:UnidadeInstalacao ;
-                        clav:produzidaPor clav:${!!UIs[i].produtor.entProdutoras[0] ? UIs[i].produtor.entProdutoras.map(e =>  "ent_" + e.split(" - ")[0]).join(", clav:") : UIs[i].produtor.tipologiasProdutoras.map(e =>  "tip_" + e.split(" - ")[0]).join(", clav:")} ;
+                        clav:produzidaPor clav:${!!UIs[i].produtor.entProdutoras[0] ? UIs[i].produtor.entProdutoras.map(e => "ent_" + e.split(" - ")[0]).join(", clav:") : UIs[i].produtor.tipologiasProdutoras.map(e => "tip_" + e.split(" - ")[0]).join(", clav:")} ;
                         ${!!UIs[i].codCota ? `clav:codigoClassificacao "${UIs[i].codCota}" ;` : ''}
                         clav:dataFinal "${UIs[i].dataFinal}" ;
                         clav:dataInicial "${UIs[i].dataInicial}" ;

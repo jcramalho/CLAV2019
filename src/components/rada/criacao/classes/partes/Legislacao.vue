@@ -4,6 +4,7 @@
       :legislacao="legislacao"
       :newSerie="newSerie"
       :legislacaoProcessada="legislacaoProcessada"
+      :tipos="tipos"
     />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
@@ -45,7 +46,7 @@
 import NovaLegislacao from "./NovaLegislacao";
 
 export default {
-  props: ["newSerie", "legislacao", "classes", "legislacaoProcessada"],
+  props: ["newSerie", "legislacao", "classes", "legislacaoProcessada", "tipos"],
   components: {
     NovaLegislacao
   },

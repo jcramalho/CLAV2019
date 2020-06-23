@@ -210,7 +210,8 @@ export default {
             // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
           ],
           tipologiasProd: [
-            //  "AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"
+            // "AAGR - Assembleias de apuramento geral dos resultados",
+            // "ACE - Administração Central do Estado"
           ],
           // dataInicial: "2020-01-02",
           // dataFinal: "2020-06-01",
@@ -240,7 +241,10 @@ export default {
             //   dataInicial: "2020-05-13",
             //   dataFinal: "2020-05-27",
             //   produtor: {
-            //     tipologiasProdutoras: ["AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"],
+            //     tipologiasProdutoras: [
+            //       "AAGR - Assembleias de apuramento geral dos resultados",
+            //       "ACE - Administração Central do Estado"
+            //     ],
             //     entProdutoras: [
             //       // "ACSS - Administração Central do Sistema de Saúde, IP",
             //       // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
@@ -288,16 +292,19 @@ export default {
             //   dataFinal: "2020-05-28",
             //   tUA: "Coleção",
             //   tSerie: "Aberta",
-            //   suporte: "Eletrónico Digitalizado",
+            //   suporte_e_medicao: [
+            //     { suporte: "Eletrónico Digitalizado", medicao: "56" }
+            //   ],
             //   UIs: ["1"],
-            //   medicao: "56",
+
             //   localizacao: ["Lisboa"],
             //   entProdutoras: [
             //     // "ACSS - Administração Central do Sistema de Saúde, IP",
             //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"
+            //     "AAGR - Assembleias de apuramento geral dos resultados",
+            //     "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -398,14 +405,14 @@ export default {
             //   dataFinal: "2020-05-28",
             //   tUA: "Processo",
             //   tSerie: "Aberta",
-            //   suporte: "Outro",
-            //   medicao: "12",
+            //   suporte_e_medicao: [{ suporte: "Outro", medicao: "12" }],
             //   localizacao: ["Porto"],
             //   entProdutoras: [
             //     // "ACSS - Administração Central do Sistema de Saúde, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"
+            //     "AAGR - Assembleias de apuramento geral dos resultados",
+            //     "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -444,14 +451,14 @@ export default {
             //   dataFinal: "2020-05-28",
             //   tUA: "Processo",
             //   tSerie: "Aberta",
-            //   suporte: "Papel",
-            //   medicao: "90",
+            //   suporte_e_medicao: [{ suporte: "Papel", medicao: "90" }],
             //   localizacao: ["Braga"],
             //   entProdutoras: [
             //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados", "ACE - Administração Central do Estado"
+            //     "AAGR - Assembleias de apuramento geral dos resultados",
+            //     "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -507,9 +514,7 @@ export default {
             entidades: this.entidades.filter(
               e => e.estado_no_sistema == "Nova"
             ),
-            legislacao: this.legislacao.filter(
-              e => e.estado == "Nova"
-            )
+            legislacao: this.legislacao.filter(e => e.estado == "Nova")
           }
         };
 
@@ -538,9 +543,7 @@ export default {
             entidades: this.entidades.filter(
               e => e.estado_no_sistema == "Nova"
             ),
-            legislacao: this.legislacao.filter(
-              e => e.estado == "Nova"
-            )
+            legislacao: this.legislacao.filter(e => e.estado == "Nova")
           },
           criadoPor: this.userEmail,
           user: { email: this.userEmail },

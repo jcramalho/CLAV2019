@@ -42,7 +42,7 @@ export default {
   },
   async mounted() {
     var response = await this.$request("get", "/rada/" + this.$route.params.id);
-    this.rada = response.data[0];
+    this.rada = response.data;
 
     this.rada.tsRada.forEach(async e => {
       let pai = e.pai.split("_");

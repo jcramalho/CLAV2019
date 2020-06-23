@@ -1,6 +1,15 @@
 <template>
   <v-card flat class="mb-12">
-    <v-row align="start" justify="end">
+    <RADAEntry label="Título" :value="TS.titulo" />
+    <v-row>
+      <v-col xs="11" sm="11">
+        <v-text-field
+          v-model="searchClasse"
+          label="Pesquise a classe"
+          clearable
+          append-icon="search"
+        ></v-text-field>
+      </v-col>
       <v-col xs="1" sm="1">
         <v-tooltip top v-if="!!TS.classes[0]">
           <template v-slot:activator="{ on }">
@@ -16,10 +25,16 @@
         </v-tooltip>
       </v-col>
     </v-row>
-    <RADAEntry label="Título" :value="TS.titulo" />
+
     <v-row v-if="!tree_ou_tabela">
       <v-col cols="12">
-        <v-treeview hoverable :items="preparaTree" item-key="codigo">
+        <v-treeview
+          hoverable
+          :items="preparaTree"
+          item-key="codigo"
+          :search="searchClasse"
+          :filter="filter"
+        >
           <template v-slot:prepend="{ item }">
             <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
             <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
@@ -35,6 +50,7 @@
         :formaContagem="formaContagem"
         :classes="TS.classes"
         @editarClasse="showClasse"
+        :search="searchClasse"
       />
     </v-row>
     <br />
@@ -56,6 +72,7 @@
           :items="TS.UIs"
           :search="search"
           :footer-props="footer_props"
+          :items-per-page="5"
         >
           <template v-slot:item="props">
             <tr style="text-align: center; background-color:#ffffff" @click="showUI(props.item)">
@@ -145,6 +162,7 @@ export default {
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     search: "",
+    searchClasse: null,
     UI: null,
     show_ui: false,
     show_serie_subserie: false,
@@ -156,7 +174,7 @@ export default {
       formasContagem: []
     },
     footer_props: {
-      "items-per-page-options": [10, 20, 100],
+      "items-per-page-options": [1, 5, 10, -1],
       "items-per-page-text": "Mostrar"
     },
     headers: [
@@ -186,6 +204,14 @@ export default {
     ]
   }),
   computed: {
+    filter() {
+      return (item, searchClasse) => {
+        return (
+          item.codigo.indexOf(searchClasse) > -1 ||
+          item.titulo.indexOf(searchClasse) > -1
+        );
+      };
+    },
     preparaTree() {
       var myTree = [];
 
@@ -320,7 +346,6 @@ export default {
         this.$set(rel, "titulo", classe_relacionada.titulo);
       });
     }
-    
   }
 };
 </script>

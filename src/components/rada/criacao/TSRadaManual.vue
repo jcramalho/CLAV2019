@@ -14,7 +14,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row justify="center">
+    <v-row>
       <v-col xs="11" sm="11">
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_area = true">
           <v-icon dark left>add</v-icon>área orgânico-funcional
@@ -26,7 +26,12 @@
           <v-icon dark left>add</v-icon>Subsérie
         </v-btn>
       </v-col>
-       <v-col xs="1" sm="1">
+    </v-row>
+    <v-row>
+      <v-col xs="11" sm="11">
+        <v-text-field v-model="search" label="Pesquise a classe" clearable append-icon="search"></v-text-field>
+      </v-col>
+      <v-col xs="1" sm="1">
         <v-tooltip top v-if="!!TS.classes[0]">
           <template v-slot:activator="{ on }">
             <v-switch
@@ -47,10 +52,11 @@
       @fecharDialog="criar_area = false"
       :classes="TS.classes"
     />
+    <!-- v-if="criar_serie" -->
     <Serie
       :dialog="criar_serie"
-      v-if="criar_serie"
-      @fecharDialog="criar_serie = false"
+      @fecharDialog="criar_serie = false;
+                      classe_copia = null;"
       @limpar_copia="classe_copia = null"
       :classe_para_copiar="classe_copia"
       :classes="TS.classes"
@@ -59,12 +65,13 @@
       :UIs="TS.UIs"
       :formaContagem="formaContagem"
       :legislacaoProcessada="legislacaoProcessada"
+      :tipos="tipos"
     />
     <SubSerie
       :dialog="criar_subserie"
-      v-if="criar_subserie"
       :classe_para_copiar="classe_copia"
-      @fecharDialog="criar_subserie = false"
+      @fecharDialog="criar_subserie = false;
+      classe_copia = null;"
       @limpar_copia="classe_copia = null"
       :classes="TS.classes"
       :UIs="TS.UIs"
@@ -75,7 +82,13 @@
     <v-row v-if="!tree_ou_tabela">
       <v-col cols="12" xs="12" sm="12">
         <div v-if="TS.classes.length > 0">
-          <v-treeview hoverable :items="preparaTree" item-key="codigo">
+          <v-treeview
+            hoverable
+            :items="preparaTree"
+            item-key="codigo"
+            :search="search"
+            :filter="filter"
+          >
             <template v-slot:prepend="{ item }">
               <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
               <img
@@ -132,7 +145,13 @@
       </v-col>
     </v-row>
     <v-row v-else>
-      <TabelaClassesRADA background_color="#fafafa;" :formaContagem="formaContagem" :classes="TS.classes" @editarClasse="editarClasse" />
+      <TabelaClassesRADA
+        background_color="#fafafa;"
+        :formaContagem="formaContagem"
+        :classes="TS.classes"
+        :search="search"
+        @editarClasse="editarClasse"
+      />
     </v-row>
     <v-row>
       <v-col sm="12" xs="12">
@@ -152,6 +171,7 @@
       :UIs="TS.UIs"
       :formaContagem="formaContagem"
       @remover="remover_classe"
+      :tipos="tipos"
     />
     <EditarSubserie
       v-if="editar_subserie"
@@ -245,6 +265,8 @@ export default {
     TabelaClassesRADA
   },
   data: () => ({
+    tipos: [],
+    search: null,
     tree_ou_tabela: false,
     classe_copia: null,
     mostrar_botao_copia: false,
@@ -264,6 +286,13 @@ export default {
     editar_area_organico: false
   }),
   computed: {
+    filter() {
+      return (item, search) => {
+        return (
+          item.codigo.indexOf(search) > -1 || item.titulo.indexOf(search) > -1
+        );
+      };
+    },
     preparaTree() {
       var myTree = [];
 
@@ -391,8 +420,7 @@ export default {
       serie_classe.dataInicial = c.dataInicial;
       serie_classe.dataFinal = c.dataFinal;
       serie_classe.tSerie = c.tSerie;
-      serie_classe.suporte = c.suporte;
-      serie_classe.medicao = c.medicao;
+      serie_classe.suporte_e_medicao = c.suporte_e_medicao;
       serie_classe.localizacao = c.localizacao;
       serie_classe.entProdutoras = c.entProdutoras;
       serie_classe.tipologiasProdutoras = c.tipologiasProdutoras;
@@ -500,7 +528,7 @@ export default {
         let UIs_igual = serie_classe.UIs.find(ui => ui == c.UIs[i]);
 
         if (UIs_igual == undefined) {
-          this.adicionaUI(c.UIs[i], serie_classe);
+          this.adicionaUI(c.UIs[i], serie_classe, c);
         }
         novo_UIs.push(c.UIs[i]);
       }
@@ -522,7 +550,7 @@ export default {
         e => e.codigo != serie_classe.codigo
       );
     },
-    adicionaUI(novaUI, serie_classe) {
+    adicionaUI(novaUI, serie_classe, c) {
       let UI = this.TS.UIs.find(e => e.codigo == novaUI);
 
       if (UI != undefined) {
@@ -538,8 +566,14 @@ export default {
           dataInicial: null,
           dataFinal: null,
           produtor: {
-            tipologiasProdutoras: [],
-            entProdutoras: []
+            tipologiasProdutoras:
+              !!c.tipologiasProdutoras && c.tipologiasProdutoras.length == 1
+                ? [...c.tipologiasProdutoras]
+                : [],
+            entProdutoras:
+              !!c.entProdutoras && c.entProdutoras.length == 1
+                ? [...c.entProdutoras]
+                : []
           },
           classesAssociadas: [
             {
@@ -603,8 +637,7 @@ export default {
             dataFinal: null,
             tUA: null,
             tSerie: null,
-            suporte: null,
-            medicao: null,
+            suporte_e_medicao: [{ suporte: null, medicao: null }],
             localizacao: [],
             entProdutoras: [],
             tipologiasProdutoras: [],
@@ -923,7 +956,16 @@ export default {
       );
     }
   },
-  created: async function() {
+  async created() {
+    let responseTipos = await this.$request(
+      "get",
+      "/vocabularios/vc_tipoDiplomaLegislativo"
+    );
+
+    this.tipos = responseTipos.data.map(t => {
+      return { label: t.termo, value: t.termo };
+    });
+
     let responseFC = await this.$request(
       "get",
       "/vocabularios/vc_pcaFormaContagem"
