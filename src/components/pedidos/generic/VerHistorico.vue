@@ -350,19 +350,24 @@ export default {
   },
 
   watch: {
-    onboarding() {
+    onboarding(novoValor, antigoValor) {
       if (
-        this.onboarding !== undefined &&
-        this.distribuicao[this.onboarding].estado !== undefined
+        novoValor !== undefined &&
+        this.distribuicao[novoValor].estado !== undefined
       ) {
-        if (this.onboarding === 0) this.etapaReferente = "Pedido Original";
-        else if (this.pedido.objeto.acao === "Alteração")
-          if (this.onboarding === 1)
-            this.etapaReferente = "Alteração Submetida";
-          else
-            this.etapaReferente = this.distribuicao[this.onboarding + 1].estado;
-        else
-          this.etapaReferente = this.distribuicao[this.onboarding + 1].estado;
+        if (novoValor === 0) this.etapaReferente = "Pedido Original";
+        else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
+          this.etapaReferente = "Alteração Submetida";
+        else if (
+          this.pedido.estado === "Validado" ||
+          this.pedido.estado === "Devolvido"
+        )
+          this.etapaReferente = this.distribuicao[
+            this.distribuicao.length - 1
+          ].estado;
+        else if (this.pedido.objeto.acao === "Criação")
+          this.etapaReferente = this.distribuicao[novoValor + 1].estado;
+        else this.etapaReferente = this.distribuicao[novoValor].estado;
       }
     },
   },
