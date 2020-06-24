@@ -105,6 +105,12 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] }
     },
     {
+      path: "/documentacaoApoio/importar/tecnico_cientifico",
+      name: "importarTecnicoCientifico",
+      component: () => import("./views/documentacaoApoio/CientificaImporta.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/documentacaoApoio/editar/tecnico_cientifico/:id",
       name: "editaEntradaCientifico",
       component: () => import("./views/documentacaoApoio/CientificaEdita.vue"),
