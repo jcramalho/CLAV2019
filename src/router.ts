@@ -367,6 +367,12 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] },
     },
     {
+      path: "/colaboracoes/importar",
+      name: "importarColaboracoes",
+      component: () => import("./views/colaboracoes/ColaboracoesImporta.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/colaboracoes/editar/:idColaboracao",
       name: "editaColaboracao",
       component: () => import("./views/colaboracoes/ColaboracoesEdita.vue"),

@@ -41,9 +41,9 @@ export default {
     return {  
       colecoes : [
         {
-          nome: "Notícias", 
-          importar: "/noticias/importar",
-          exportar: "/noticias"
+          nome: "Colaborações", 
+          importar: "/colaboracoes/importar",
+          exportar: "/colaboracoes"
         },
         {
           nome: "Documentação de Apoio", 
@@ -54,7 +54,12 @@ export default {
           nome: "Documentação Técnica/Científica", 
           importar: "/documentacaoApoio/importar/tecnico_cientifico",
           exportar: "/documentacaoCientifica"
-        }
+        },
+        {
+          nome: "Notícias", 
+          importar: "/noticias/importar",
+          exportar: "/noticias"
+        },
       ],
       min: NIVEL_MINIMO_ALTERAR
     };
