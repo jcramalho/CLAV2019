@@ -86,7 +86,7 @@
               create
             </v-icon>
 
-            <v-icon>
+            <v-icon @click="abrirNotaDialog(campo)">
               add_comment
             </v-icon>
           </v-col>
@@ -102,6 +102,16 @@
         />
       </v-row>
     </div>
+
+    <!-- Dialog da nota -->
+    <v-dialog v-model="notaDialog.visivel" width="70%" persistent>
+      <AdicionarNota
+        :campo="notaDialog.campo"
+        :notaAtual="notaDialog.nota"
+        @fechar="notaDialog.visivel = false"
+        @adicionar="adicionarNota($event)"
+      />
+    </v-dialog>
 
     <!-- Dialog de edição-->
     <v-dialog v-model="editaCampo.visivel" width="70%" persistent>
@@ -134,6 +144,7 @@
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
 import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
+import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -149,16 +160,23 @@ export default {
     ErroDialog,
     SelecionaAutocomplete,
     EditarCamposDialog,
+    AdicionarNota,
   },
 
   data() {
     return {
+      notaDialog: {
+        visivel: false,
+        campo: "",
+        nota: "",
+      },
       novoHistorico: {},
       loading: true,
       editaCampo: {
         visivel: false,
         nome: "",
         key: "",
+        valorAtual: "",
       },
       erroDialog: {
         visivel: false,
@@ -387,7 +405,24 @@ export default {
         visivel: true,
         nome: this.transformaKeys(campo),
         key: campo,
+        valorAtual: this.dados[campo],
       };
+    },
+
+    adicionarNota(dados) {
+      console.log("dados", dados);
+      this.notaDialog.visivel = false;
+      this.novoHistorico[dados.campo] = {
+        ...this.novoHistorico[dados.campo],
+        nota: dados.nota,
+      };
+    },
+
+    abrirNotaDialog(campo) {
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = campo;
+      if (this.novoHistorico[campo].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico[campo].nota;
     },
 
     fechaEditaCampoDialog(campo) {
