@@ -341,7 +341,7 @@ export default {
                 dataExtincao: {
                   cor: "amarelo",
                   dados: dataObj.dataExtincao,
-                  despacho: null,
+                  nota: null,
                 },
               });
               break;

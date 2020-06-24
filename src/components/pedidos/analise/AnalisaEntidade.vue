@@ -217,7 +217,7 @@ export default {
         criaNovoHistorico[key] = {
           cor: "verde",
           dados: this.dados[key],
-          despacho: null,
+          nota: null,
         };
     });
 
@@ -380,9 +380,6 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
-
-      // Abrir dialog com despacho
-      // Guardar despacho
     },
 
     edita(campo) {
@@ -391,9 +388,6 @@ export default {
         nome: this.transformaKeys(campo),
         key: campo,
       };
-
-      // Abrir dialog com despacho (Opcional)
-      // Guardar despacho
     },
 
     fechaEditaCampoDialog(campo) {

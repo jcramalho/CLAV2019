@@ -202,9 +202,9 @@
 
                     <!-- Operação -->
                     <v-col cols="1">
-                      <v-tooltip v-if="info.despacho" bottom>
+                      <v-tooltip v-if="info.nota" bottom>
                         <template v-slot:activator="{ on }">
-                          <v-icon v-on="on" @click="verDespacho(info.despacho)">
+                          <v-icon v-on="on" @click="verNota(info.nota)">
                             message
                           </v-icon>
                         </template>
@@ -247,8 +247,8 @@
       </v-btn>
     </v-card-actions>
 
-    <!-- Ver despacho dialog -->
-    <v-dialog v-model="dialogVerDespacho.visivel" width="50%">
+    <!-- Ver nota dialog -->
+    <v-dialog v-model="dialogVerNota.visivel" width="50%">
       <v-card>
         <v-card-title class="indigo darken-4 title white--text">
           Nota
@@ -257,14 +257,14 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <div class="info-conteudo">{{ dialogVerDespacho.despacho }}</div>
+              <div class="info-conteudo">{{ dialogVerNota.nota }}</div>
             </v-col>
           </v-row>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="fecharDialogVerDespacho()">
+          <v-btn class="red darken-4" dark @click="fecharDialogVerNota()">
             Fechar
           </v-btn>
         </v-card-actions>
@@ -281,9 +281,9 @@ export default {
 
   data() {
     return {
-      dialogVerDespacho: {
+      dialogVerNota: {
         visivel: false,
-        despacho: "",
+        nota: "",
       },
       etapaReferente: "Pedido Original",
       onboarding: 0,
@@ -375,14 +375,14 @@ export default {
   },
 
   methods: {
-    verDespacho(despacho) {
-      this.dialogVerDespacho.despacho = despacho;
-      this.dialogVerDespacho.visivel = true;
+    verNota(nota) {
+      this.dialogVerNota.nota = nota;
+      this.dialogVerNota.visivel = true;
     },
 
-    fecharDialogVerDespacho() {
-      this.dialogVerDespacho.despacho = "";
-      this.dialogVerDespacho.visivel = false;
+    fecharDialogVerNota() {
+      this.dialogVerNota.nota = "";
+      this.dialogVerNota.visivel = false;
     },
 
     next() {
