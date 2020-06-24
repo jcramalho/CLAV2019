@@ -353,6 +353,31 @@ export default new Router({
       component: () => import("./views/noticias/NoticiasConsulta.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
     },
+    // Routes das colaborações/equipas de trabalho
+    {
+      path: "/colaboracoes",
+      name: "colaboracoes",
+      component: () => import("./views/colaboracoes/Colaboracoes.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
+    {
+      path: "/colaboracoes/criar",
+      name: "criaColaboracao",
+      component: () => import("./views/colaboracoes/ColaboracoesCria.vue"),
+      meta: { levels: [4, 5, 6, 7] },
+    },
+    {
+      path: "/colaboracoes/editar/:idColaboracao",
+      name: "editaColaboracao",
+      component: () => import("./views/colaboracoes/ColaboracoesEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] },
+    },
+    {
+      path: "/colaboracoes/:idColaboracao",
+      name: "consultaColaboracao",
+      component: () => import("./views/colaboracoes/ColaboracoesConsulta.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
     // Routes dos pedidos
     {
       path: "/pedidos",
