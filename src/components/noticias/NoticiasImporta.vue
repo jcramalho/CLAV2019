@@ -5,7 +5,7 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
           <v-toolbar-title class="card-heading"
-            >Importação de Dados na Documentação Técnica/Científica</v-toolbar-title
+            >Importação de Dados nas Notícias</v-toolbar-title
           >
         </v-app-bar>
         <!-- Content -->
@@ -93,7 +93,7 @@ export default {
       }
       this.$request(
         "post",
-        "/documentacaoCientifica/importar",
+        "/noticias/importar",
         formData
       )
         .then(res => {

@@ -111,6 +111,12 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] }
     },
     {
+      path: "/documentacaoApoio/importar/documentacao_apoio",
+      name: "importarApoio",
+      component: () => import("./views/documentacaoApoio/ApoioImporta.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/documentacaoApoio/editar/tecnico_cientifico/:id",
       name: "editaEntradaCientifico",
       component: () => import("./views/documentacaoApoio/CientificaEdita.vue"),
@@ -328,6 +334,12 @@ export default new Router({
       name: "criaNoticia",
       component: () => import("./views/noticias/NoticiasCria.vue"),
       meta: { levels: [4, 5, 6, 7] },
+    },
+    {
+      path: "/noticias/importar",
+      name: "importarNoticias",
+      component: () => import("./views/noticias/NoticiasImporta.vue"),
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/noticias/editar/:idNoticia",
