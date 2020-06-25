@@ -257,10 +257,6 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <!-- <div class="info-conteudo">
-                <pre> {{ dialogVerNota.nota }} </pre>
-              </div> -->
-
               <v-textarea
                 :value="dialogVerNota.nota"
                 auto-grow

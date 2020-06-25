@@ -527,10 +527,6 @@ export default {
     },
 
     editarCampo(event) {
-      console.log("event", event);
-      console.log("dados", event.dados);
-      console.log("campo", event.campo);
-
       this.editaCampo.visivel = false;
 
       this.dados[event.campo.key] = event.dados;

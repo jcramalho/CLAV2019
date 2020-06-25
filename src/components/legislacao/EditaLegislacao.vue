@@ -168,10 +168,10 @@ export default {
         data: "",
         link: "",
         diplomaFonte: "Não especificada",
-        entidadesSel: [],
-        processosSel: [],
         codigo: "",
         dataRevogacao: "",
+        entidadesSel: [],
+        processosSel: [],
       },
       legislacaoOriginal: {},
 
