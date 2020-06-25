@@ -1,10 +1,8 @@
 <template>
   <v-dialog v-model="dialogState" persistent>
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">
+      <v-card-title class="indigo darken-4 white--text">
         <b>Editar Unidade de Instalação: {{ UI_clone.codigo + " - " + UI_clone.titulo}}</b>
-        <v-spacer />
-        <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -17,8 +15,13 @@
 
               <v-card-text align="center">
                 <br />
-                <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
-                <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarUI">Sim</v-btn>
+                <v-btn
+                  class="ma-3 pa-3"
+                  color="indigo darken-4"
+                  dark
+                  @click="toDelete = false"
+                >Voltar</v-btn>
+                <v-btn class="ma-3 pa-5" color="red darken-4" dark @click="eliminarUI">Sim</v-btn>
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -114,7 +117,7 @@
               </SelecionarData>
             </v-col>
           </v-row>
-          <EntidadesProdutoras :newSerie="UI_clone.produtor" :RE="RE" :editar="true"/>
+          <EntidadesProdutoras :newSerie="UI_clone.produtor" :RE="RE" :editar="true" />
           <v-row>
             <v-col md="3" sm="2">
               <div class="info-label">Série/Subsérie</div>
@@ -163,7 +166,7 @@
               <!-- FORMULÁRIO PARA NOVA CLASSE -->
               <v-form ref="addRel" :lazy-validation="false">
                 <v-row>
-                  <v-col sm="3" xs="12">
+                  <v-col cols="4" xs="12">
                     <v-combobox
                       :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório para associar série/subsérie!']"
                       v-model="cod"
@@ -236,14 +239,20 @@
                       </template>
                     </v-select>
                   </v-col>
-
-                  <v-col sm="1" xs="12">
-                    <v-btn text rounded @click="adicionarClasseUI(UI_clone)">
-                      <v-icon size="35" color="green lighten-1">add_circle</v-icon>
-                    </v-btn>
-                    <v-btn text rounded @click="$refs.addRel.reset()">
-                      <v-icon size="35" color="red lighten-1">delete_sweep</v-icon>
-                    </v-btn>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="text-right">
+                    <v-icon
+                      @click="adicionarClasseUI(UI_clone)"
+                      size="35"
+                      color="green lighten-1"
+                    >add_circle</v-icon>
+                    <v-btn
+                      style="margin-left: 10px"
+                      dark
+                      color="red darken-4"
+                      @click="$refs.addRel.reset()"
+                    >Limpar</v-btn>
                   </v-col>
                 </v-row>
                 <v-row v-if="!!alertOn">
@@ -278,9 +287,9 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-
-        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="success" class="mr-4" @click="guardar">Atualizar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="guardar">Atualizar</v-btn>
+        <v-btn @click="toDelete = true" dark color="red darken-4">Eliminar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

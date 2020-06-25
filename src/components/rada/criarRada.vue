@@ -2,12 +2,6 @@
   <v-card class="ma-4" style="background-color:#fafafa">
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
-      <v-spacer />
-      <v-btn v-if="guardar" color="indigo darken-4" dark @click="toSave = true">
-        Guardar Trabalho
-        <v-icon right>save</v-icon>
-      </v-btn>
-      <v-icon v-if="pode_remover" dark color="red" @click="toDelete = true" right>delete_sweep</v-icon>
     </v-card-title>
     <v-card-text>
       <br />
@@ -53,13 +47,15 @@
           <TSRada
             @done="concluir(idPendente)"
             @voltar="changeE1"
+            @guardar="guardarTrabalho"
+            @remover="toDelete = true"
             :legislacao="legislacao"
             :RE="RADA.RE"
             :TS="RADA.tsRada"
             :entidades="entidades"
             :legislacaoProcessada="legislacaoProcessada"
             :loading_circle.sync="loading_circle_ts"
-            :toSave.sync="toSave"
+            :pode_remover="pode_remover"
           />
           <v-alert
             width="100%"
@@ -115,40 +111,6 @@
           </v-card>
         </v-dialog>
       </v-row>
-      <v-row justify-center>
-        <v-dialog v-model="toSave" width="50%">
-          <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >Pretende continuar o trabalho neste momento?</v-card-title>
-
-            <v-card-text align="center">
-              <br />
-              <v-progress-circular
-                v-if="loading_circle"
-                :size="70"
-                :width="7"
-                color="amber accent-3"
-                indeterminate
-              ></v-progress-circular>
-              <div v-else>
-                <v-spacer></v-spacer>
-                <v-btn
-                  class="ma-3 pa-3"
-                  color="indigo lighten-3"
-                  @click="guardarTrabalho('nao')"
-                >Não, pretendo continuar depois</v-btn>
-                <v-btn
-                  class="ma-3 pa-3"
-                  color="indigo lighten-3"
-                  @click="guardarTrabalho('sim')"
-                >Sim</v-btn>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-      </v-row>
       <v-row>
         <v-dialog v-model="toDelete" width="50%">
           <v-card>
@@ -187,7 +149,7 @@ export default {
   mixins: [mixin_criacao_rada],
   data() {
     return {
-      loading_circle: false,
+      //loading_circle: false,
       pode_remover: false,
       idPendente: null,
       RADA: {
@@ -261,7 +223,6 @@ export default {
             //   eFilhoDe: null,
             //   tipo: "N1"
             // },
-
             // {
             //   codigo: "01.01",
             //   titulo: "Classe 01.01",
@@ -269,7 +230,6 @@ export default {
             //   eFilhoDe: "01",
             //   tipo: "N2"
             // },
-
             // {
             //   codigo: "01.01.01",
             //   titulo: "Classe 01.01.01",
@@ -277,7 +237,6 @@ export default {
             //   eFilhoDe: "01.01",
             //   tipo: "N3"
             // },
-
             // {
             //   codigo: "01.02",
             //   titulo: "Serie 01.02",
@@ -290,7 +249,6 @@ export default {
             //     { suporte: "Eletrónico Digitalizado", medicao: "56" }
             //   ],
             //   UIs: ["1"],
-
             //   localizacao: ["Lisboa"],
             //   entProdutoras: [
             //     // "ACSS - Administração Central do Sistema de Saúde, IP",
@@ -390,7 +348,6 @@ export default {
             //   eFilhoDe: "01.03",
             //   tipo: "Subsérie"
             // },
-
             // {
             //   codigo: "01.03",
             //   titulo: "Série 01.03",
@@ -436,7 +393,6 @@ export default {
             //   eFilhoDe: "01",
             //   tipo: "Série"
             // },
-
             // {
             //   codigo: "01.05",
             //   titulo: "Série 01.05",
@@ -499,7 +455,7 @@ export default {
       );
     },
     guardarTrabalho(continuar_ou_nao) {
-      this.loading_circle = true;
+      //this.loading_circle = true;
       if (this.idPendente != null) {
         let updatePendente = {
           _id: this.idPendente,
@@ -524,8 +480,6 @@ export default {
               this.alert_guardar = false;
             }, 5000);
           }
-          this.loading_circle = false;
-          this.toSave = false;
         });
       } else {
         let pendenteParams = {
@@ -558,9 +512,6 @@ export default {
           } else {
             this.dialogRADAPendente = true;
           }
-
-          this.toSave = false;
-          this.loading_circle = false;
         });
       }
     }

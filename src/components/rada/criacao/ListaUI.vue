@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="12" xs="12" sm="12">
-        <v-btn color="#dee2f8" class="ma-2" @click="criar_nova_ui = true">
+        <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_nova_ui = true">
           <v-icon dark left>add</v-icon>Unidade de Instalação
         </v-btn>
       </v-col>
