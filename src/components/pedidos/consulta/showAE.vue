@@ -80,12 +80,7 @@
                             <div class="info-label">Código da classe</div>
                           </td>
                           <td style="width:80%;">
-                            <a
-                              v-if="!item.referencia"
-                              :href="'/classes/consultar/c' + item.codigo"
-                              >{{ item.codigo }}</a
-                            >
-                            <div v-else>{{ item.codigo }}</div>
+                            {{ item.codigo }}
                           </td>
                         </tr>
                         <tr v-if="item.referencia">
@@ -126,7 +121,7 @@
                             {{ item.destino }}
                           </td>
                         </tr>
-                        <tr v-if="item.ni && item.destino === 'C'">
+                        <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
                           <td style="width:20%;">
                             <div class="info-label">
                               Natureza de intervenção
@@ -134,7 +129,7 @@
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
-                        <tr v-if="item.dono && item.dono.length>0 && item.destino === 'C'">
+                        <tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
                           <td style="width:20%;">
                             <div class="info-label">Donos do PN</div>
                           </td>

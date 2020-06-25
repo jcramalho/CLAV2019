@@ -1,65 +1,40 @@
 <template>
-  <v-card class="ma-2 panel panel-default panel-custom">
+<v-card class="my-2 panel panel-default panel-custom">
     <v-card-title class="pa-2 indigo darken-4 title white--text" dark>
-      Auto de Eliminação
+      {{ p.acao }} de {{p.tipo}}
     </v-card-title>
     <v-card-text class="panel-body">
       <div class="form-group">
-        <table class="consulta ma-3">
+        <table class="consulta">
           <tr>
             <td style="width:20%;">
-              <div class="info-label">Número</div>
+              <div class="info-label">Criador:</div>
             </td>
             <td style="width:80%;">
-              {{ ((auto.id || "").split("ae_")[1] || "").replace(/\_/g,"/") }}
+              {{ p.criadoPor }}
             </td>
           </tr>
-          <tr>
-            <td style="width:20%;">
-              <div class="info-label">Data de Autenticação</div>
-            </td>
-            <td style="width:80%;">
-              {{ auto.data }}
-            </td>
-          </tr>
-          <tr>
-            <td style="width:20%;">
-              <div class="info-label">Entidade Responsável</div>
-            </td>
-            <td style="width:80%;">
-              <a :href="'/entidades/' + auto.entidade">{{ (auto.entidade || "").split("_")[1] +" - "+auto.entidadeNome}}</a>{{" ("+auto.responsavel+")"}}
-            </td>
-          </tr>
-          <tr v-if="auto.legislacao">
+          <tr v-if="p.objeto.legislacao">
             <td style="width:20%;">
               <div class="info-label">Fonte de Legitimação</div>
             </td>
-            <td style="width:80%;">
-              {{auto.tipo+" - "}}
-              <a v-if="auto.tipo=='PGD'" :href="'/pgd/pgd_' + auto.refLegislacao">{{ auto.legislacao }}</a>
-              <a v-else :href="'/legislacao/' + auto.refLegislacao">{{ auto.legislacao }}</a>
-            </td>
+            <td style="width:80%;">{{ p.objeto.legislacao }}</td>
           </tr>
           <tr v-else>
             <td style="width:20%;">
               <div class="info-label">Referencial Classificativo</div>
             </td>
-            <td style="width:80%;">
-              {{auto.referencialLabel}}
-            </td>
+            <td style="width:80%;">Lista Consolidada</td>
           </tr>
           <tr>
             <td style="width:20%;">
               <div class="info-label">Fundo</div>
             </td>
-            <td style="width:80%;">
-              <li v-for="(f,i) in auto.fundo" :key="i">
-                <a :href="'/entidades/' + f">{{ (f.fundo || "").split("_")[1] +" - "+f.nome}}</a>
-              </li>
-            </td>
+            <td style="width:80%;"><div v-for="(f,i) in p.objeto.fundo" :key="i">{{f}}</div></td>
           </tr>
         </table>
-        <v-expansion-panels v-model="panel" multiple popout>
+
+        <v-expansion-panels popout>
           <v-expansion-panel class="ma-1">
             <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
               >Classes</v-expansion-panel-header
@@ -67,18 +42,31 @@
             <v-expansion-panel-content>
               <v-list>
                 <v-list-group
-                  v-for="item in auto.zonaControlo"
-                  :key="item.codigo"
+                  v-for="(item,index) in p.objeto.zonaControlo"
+                  :key="index"
                   color="grey darken-1"
                   no-action
                 >
                   <template v-slot:activator>
                     <v-list-item-content class="info-label">
-                      <v-list-item-title class="mx-2">
-                        <div v-if="item.codigo && item.referencia">{{item.codigo + ': ' + item.referencia + ' - ' + item.titulo}}</div>
-                        <div v-else-if="item.codigo">{{item.codigo + ' - ' + item.titulo}}</div>
-                        <div v-else>{{item.referencia + ' - ' + item.titulo}}</div>
-                      </v-list-item-title>
+                      <v-list-item-title
+                        v-if="item.codigo && item.referencia"
+                        v-text="
+                          item.codigo +
+                            ', ' +
+                          item.referencia +
+                            ' - ' +
+                          item.titulo                           
+                        "
+                      ></v-list-item-title>
+                      <v-list-item-title
+                        v-else-if="item.codigo"
+                        v-text="item.codigo + ' - ' + item.titulo"
+                      ></v-list-item-title>
+                      <v-list-item-title
+                        v-else
+                        v-text="item.referencia + ' - ' + item.titulo"
+                      ></v-list-item-title>
                     </v-list-item-content>
                   </template>
                   <v-list-item-content>
@@ -89,13 +77,7 @@
                             <div class="info-label">Código da classe</div>
                           </td>
                           <td style="width:80%;">
-                            <div v-if="auto.tipo=='TS/LC'">
-                              <a
-                                :href="'/classes/consultar/c' + item.codigo"
-                                >{{ item.codigo }}</a
-                              >
-                            </div>
-                            <div v-else>{{item.codigo}}</div>
+                            {{ item.codigo }}
                           </td>
                         </tr>
                         <tr v-if="item.referencia">
@@ -103,7 +85,7 @@
                             <div class="info-label">Referência</div>
                           </td>
                           <td style="width:80%;">
-                            <div>{{item.referencia}}</div>
+                            {{ item.referencia }}
                           </td>
                         </tr>
                         <tr v-if="item.titulo">
@@ -114,15 +96,15 @@
                             {{ item.titulo }}
                           </td>
                         </tr>
-                        <tr v-if="item.pca && item.pca != 'NE'">
+                        <tr v-if="item.prazoConservacao">
                           <td style="width:20%;">
                             <div class="info-label">Prazo de Conservação Administrativa</div>
                           </td>
                           <td style="width:80%;">
-                            {{ item.pca }} Anos
+                            {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
                           </td>
                         </tr>
-                        <tr v-if="item.destino && item.destino != 'NE'">
+                        <tr v-if="item.destino">
                           <td style="width:20%;">
                             <div class="info-label">Destino Final</div>
                           </td>
@@ -136,7 +118,7 @@
                             {{ item.destino }}
                           </td>
                         </tr>
-                        <tr v-if="item.ni">
+                        <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
                           <td style="width:20%;">
                             <div class="info-label">
                               Natureza de intervenção
@@ -144,13 +126,11 @@
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
-                        <tr v-if="item.dono && item.dono.length>0 ">
+                        <tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
                           <td style="width:20%;">
-                            <div class="info-label">Dono do PN</div>
+                            <div class="info-label">Donos do PN</div>
                           </td>
-                          <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">
-                            <a :href='"/entidade/"+d.dono' >{{ (d.dono || "").split("_")[1] +" - "+d.nome }}</a>
-                          </li></td>
+                          <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
@@ -174,29 +154,29 @@
                           </td>
                           <td style="width:80%;">{{ item.agregacoes.length }}</td>
                         </tr>
-                        <tr v-if="item.UIpapel">
+                        <tr v-if="item.uiPapel">
                           <td style="width:20%;">
                             <div class="info-label">
                               Medição das UI em papel (m.l.)
                             </div>
                           </td>
-                          <td style="width:80%;">{{ item.UIpapel }}</td>
+                          <td style="width:80%;">{{ item.uiPapel }}</td>
                         </tr>
-                        <tr v-if="item.UIdigital">
+                        <tr v-if="item.uiDigital">
                           <td style="width:20%;">
                             <div class="info-label">
                               Medição das UI em digital (Gb)
                             </div>
                           </td>
-                          <td style="width:80%;">{{ item.UIdigital }}</td>
+                          <td style="width:80%;">{{ item.uiDigital }}</td>
                         </tr>
-                        <tr v-if="item.UIoutros">
+                        <tr v-if="item.uiOutros">
                           <td style="width:20%;">
                             <div class="info-label">
                               Medição das UI noutros suportes
                             </div>
                           </td>
-                          <td style="width:80%;">{{ item.UIoutros }}</td>
+                          <td style="width:80%;">{{ item.uiOutros }}</td>
                         </tr>
                       </table>
                       <div class="ma-1">
@@ -229,21 +209,16 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
-      <div>
-        <v-btn medium class="primary darken-4" @click="$router.go(-1)">
-          Voltar
-        </v-btn>
-      </div>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 export default {
-  props: ["auto"],
+  props: ["p"],
+
   data: () => ({
     search: "",
-    panel: [0],
     cabecalho: [
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", align: "left", value: "titulo" },

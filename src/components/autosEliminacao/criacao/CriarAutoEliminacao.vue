@@ -7,7 +7,33 @@
 
       <v-card-text>
         <v-stepper v-model="steps" vertical>
-          <v-stepper-step :complete="steps > 1" step="1">Seleção de Fonte e Fundo</v-stepper-step>
+          <v-stepper-step :complete="steps > 1" step="1">
+            Seleção de Fonte e Fundo
+            <span v-if="steps > 1">
+              <v-chip 
+                class="ma-2"
+                color="indigo darken-4"
+                text-color="white"
+                label
+              >
+                <v-icon left>description</v-icon>
+                {{ auto.legislacao.split(" - ")[0] }}
+              </v-chip>
+            </span>
+            <span v-if="steps > 1">
+              <v-chip 
+                v-for="fundo in auto.fundo"
+                :key="fundo"
+                class="ma-2"
+                color="indigo darken-4"
+                text-color="white"
+                label
+              >
+                <v-icon left>account_balance</v-icon>
+                {{ fundo }}
+              </v-chip>
+            </span>
+          </v-stepper-step>
 
           <v-stepper-content step="1">
             <v-row>
@@ -127,7 +153,6 @@
             />
 
             <div class="mx-2">
-              <v-btn @click="steps = 1" class="ma-2">Voltar</v-btn>
               <v-btn
                 medium
                 color="warning darken-2"
@@ -353,6 +378,7 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
+          this.auto.tipo = this.tipo
           var userBD = this.$verifyTokenUser();
           var pendenteParams = {
             numInterv: 1,
@@ -399,6 +425,7 @@ export default {
               } else break;
             }
             nivel4.splice(0, indexs);
+            if(indexs==0) myClasses.push(c);
           }
         }
         return myClasses;
