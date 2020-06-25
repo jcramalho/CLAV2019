@@ -302,7 +302,7 @@ export default {
     },
 
     criacaoCreditoTerminado: function() {
-      this.$router.push("/");
+      this.$router.push("/colaboracoes");
     },
 
     // Cancela a criação do credito
@@ -311,7 +311,7 @@ export default {
     },
 
     cancelarCriacaoCredito: function() {
-      this.$router.push("/");
+      this.$router.push("/colaboracoes");
     }
   }
 };
