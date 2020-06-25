@@ -45,6 +45,15 @@
             {{ props.itemsLength }}
           </template>
         </v-data-table>
+        <v-row>
+          <v-col>
+            <v-btn
+              class="indigo accent-4 white--text mr-4"
+              @click="mainPage()"
+              >Voltar</v-btn
+            >
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-dialog :value="eliminarId != ''" persistent max-width="290px">
         <v-card>
@@ -183,6 +192,9 @@ export default {
       return myTree;
     },
 
+    mainPage() {
+      this.$router.push("/");
+    },
     go(id) {
       this.$router.push("/colaboracoes/" + id);
     },
