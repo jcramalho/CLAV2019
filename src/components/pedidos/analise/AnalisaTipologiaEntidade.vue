@@ -410,7 +410,6 @@ export default {
     },
 
     adicionarNota(dados) {
-      console.log("dados", dados);
       this.notaDialog.visivel = false;
       this.novoHistorico[dados.campo] = {
         ...this.novoHistorico[dados.campo],
