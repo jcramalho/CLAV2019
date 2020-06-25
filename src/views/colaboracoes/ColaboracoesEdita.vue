@@ -27,7 +27,9 @@ export default {
           nome: not.nome,
           filiacao: not.filiacao,
           funcao: not.funcao,
-          desc: not.desc
+          desc: not.desc,
+          data_inicio: not.data_inicio === undefined ? "" : not.data_inicio,
+          data_fim: not.data_fim === undefined ? "" : not.data_fim,
         };
         return myCredito;
       } catch (e) {
