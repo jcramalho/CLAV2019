@@ -410,7 +410,6 @@ export default {
     },
 
     adicionarNota(dados) {
-      console.log("dados", dados);
       this.notaDialog.visivel = false;
       this.novoHistorico[dados.campo] = {
         ...this.novoHistorico[dados.campo],
@@ -430,10 +429,6 @@ export default {
     },
 
     editarCampo(event) {
-      console.log("event", event);
-      console.log("dados", event.dados);
-      console.log("campo", event.campo);
-
       this.editaCampo.visivel = false;
 
       this.dados[event.campo.key] = event.dados;

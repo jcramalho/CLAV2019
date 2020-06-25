@@ -88,8 +88,8 @@ export default {
     tipologia: {
       designacao: "",
       sigla: "",
-      entidadesSel: [],
       codigo: "",
+      entidadesSel: [],
     },
     tipologiaOriginal: {},
     acao: "Alteração",

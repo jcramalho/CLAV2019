@@ -212,12 +212,11 @@ export default {
         data: "",
         link: "",
         diplomaFonte: "Não especificada",
-        entidadesSel: [],
-        processosSel: [],
         codigo: "",
         dataRevogacao: "",
         estado: "Ativo",
-        // Revogado
+        entidadesSel: [],
+        processosSel: [],
       },
 
       tiposDiploma: [],

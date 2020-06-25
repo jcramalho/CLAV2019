@@ -257,7 +257,13 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <div class="info-conteudo">{{ dialogVerNota.nota }}</div>
+              <v-textarea
+                :value="dialogVerNota.nota"
+                auto-grow
+                outlined
+                readonly
+                color="indigo"
+              />
             </v-col>
           </v-row>
         </v-card-text>
