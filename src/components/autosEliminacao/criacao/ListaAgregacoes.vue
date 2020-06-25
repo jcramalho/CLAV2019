@@ -15,7 +15,7 @@
     <v-data-table
       :headers="cabecalho"
       :items="agregacoes"
-      item-key="codigo"
+      :key="codigo"
       :items-per-page="5"
       class="elevation-1 ml-2 mt-3"
       :footer-props="footer_props"
@@ -227,7 +227,7 @@ export default {
     erroDialog: false
   }),
   created: function() {
-    if(this.auto.zonaControlo[this.index].destino =="C") {
+    if(this.auto.zonaControlo[this.index].destino =="C" || this.auto.zonaControlo[this.index].destino =="Conservação") {
       this.ni = "Participante"
       this.natureza = ["Participante"] 
     }
@@ -237,15 +237,7 @@ export default {
       this.codigo = null;
       this.titulo = null;
       this.dataContagem = null;
-      if(this.auto.zonaControlo[this.index].destino =="C") {
-        this.ni = "Participante"
-        this.natureza = ["Participante"]
-      } else {
-        this.ni = "Dono";
-        this.natureza = ["Dono","Participante"];
-      }
       this.editAG = null;
-      this.search=" ";
     },
     deleteAG: function() {
       var indexAG = this.agregacoes
@@ -296,7 +288,6 @@ export default {
           this.limparAG();
         }
       }
-      this.changeSwitch++;
     },
     upAgregacao: function(item) {
       this.codigo = item.codigo;

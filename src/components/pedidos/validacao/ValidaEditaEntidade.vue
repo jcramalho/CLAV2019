@@ -71,7 +71,7 @@
           </v-col>
 
           <!-- Operações -->
-          <v-col cols="1">
+          <v-col cols="auto">
             <v-icon class="mr-1" color="green" @click="verifica(campo)">
               check
             </v-icon>
@@ -86,6 +86,10 @@
             >
               create
             </v-icon>
+
+            <v-icon @click="abrirNotaDialog(campo)">
+              add_comment
+            </v-icon>
           </v-col>
         </v-row>
       </div>
@@ -99,6 +103,16 @@
         />
       </v-row>
     </div>
+
+    <!-- Dialog da nota -->
+    <v-dialog v-model="notaDialog.visivel" width="70%" persistent>
+      <AdicionarNota
+        :campo="notaDialog.campo"
+        :notaAtual="notaDialog.nota"
+        @fechar="notaDialog.visivel = false"
+        @adicionar="adicionarNota($event)"
+      />
+    </v-dialog>
 
     <!-- Dialog de edição-->
     <v-dialog v-model="editaCampo.visivel" width="70%" persistent>
@@ -136,6 +150,7 @@
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
 import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
+import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 
 import Loading from "@/components/generic/Loading";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
@@ -153,10 +168,16 @@ export default {
     ErroDialog,
     SelecionaAutocomplete,
     EditarCamposDialog,
+    AdicionarNota,
   },
 
   data() {
     return {
+      notaDialog: {
+        visivel: false,
+        campo: "",
+        nota: "",
+      },
       novoHistorico: {},
       loading: true,
       editaCampo: {
@@ -225,9 +246,13 @@ export default {
   },
 
   mounted() {
-    this.novoHistorico = JSON.parse(
+    const copiaHistorico = JSON.parse(
       JSON.stringify(this.historico[this.historico.length - 1])
     );
+
+    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+    this.novoHistorico = copiaHistorico;
   },
 
   methods: {
@@ -458,9 +483,6 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
-
-      // Abrir dialog com despacho
-      // Guardar despacho
     },
 
     edita(campo) {
@@ -469,9 +491,21 @@ export default {
         nome: this.transformaKeys(campo),
         key: campo,
       };
+    },
 
-      // Abrir dialog com despacho (Opcional)
-      // Guardar despacho
+    adicionarNota(dados) {
+      this.notaDialog.visivel = false;
+      this.novoHistorico[dados.campo] = {
+        ...this.novoHistorico[dados.campo],
+        nota: dados.nota,
+      };
+    },
+
+    abrirNotaDialog(campo) {
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = campo;
+      if (this.novoHistorico[campo].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico[campo].nota;
     },
 
     fechaEditaCampoDialog(campo) {
@@ -479,10 +513,6 @@ export default {
     },
 
     editarCampo(event) {
-      console.log("event", event);
-      console.log("dados", event.dados);
-      console.log("campo", event.campo);
-
       this.editaCampo.visivel = false;
 
       this.dados[event.campo.key] = event.dados;

@@ -554,6 +554,22 @@ export default {
             },
           ],
         },
+        {
+          entidade: "Colaborações",
+          texto: "As colaborações são constituídas por um grupo de pessoas que participaram no desenvolvimento da plataforma.",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/colaboracoes",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
+              label: "Adicionar",
+              url: "/colaboracoes/criar",
+              level: [4, 5, 6, 7],
+            },
+          ],
+        },
       ],
     };
   },

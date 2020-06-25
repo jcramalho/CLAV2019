@@ -2,6 +2,11 @@
   <v-card>
     <v-card-title class="indigo darken-4 title white--text" dark>
       Histórico de alterações
+      <v-spacer />
+      <v-chip color="indigo accent-4" text-color="white" label>
+        <v-icon class="mr-1">label</v-icon>
+        <b>{{ etapaReferente }}</b>
+      </v-chip>
     </v-card-title>
 
     <v-card-text class="mt-2">
@@ -194,6 +199,18 @@
                         </v-data-table>
                       </div>
                     </v-col>
+
+                    <!-- Operação -->
+                    <v-col cols="1">
+                      <v-tooltip v-if="info.nota" bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on" @click="verNota(info.nota)">
+                            message
+                          </v-icon>
+                        </template>
+                        <span>Ver nota relativa ao campo...</span>
+                      </v-tooltip>
+                    </v-col>
                   </v-row>
                 </div>
               </v-card-text>
@@ -213,7 +230,6 @@
             >
               <v-btn :input-value="active" icon @click="toggle">
                 <b>{{ i + 1 }}</b>
-                <!-- <v-icon>fiber_manual_record</v-icon> -->
               </v-btn>
             </v-item>
           </v-item-group>
@@ -230,6 +246,36 @@
         Cancelar
       </v-btn>
     </v-card-actions>
+
+    <!-- Ver nota dialog -->
+    <v-dialog v-model="dialogVerNota.visivel" width="50%">
+      <v-card>
+        <v-card-title class="indigo darken-4 title white--text">
+          Nota
+        </v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-textarea
+                :value="dialogVerNota.nota"
+                auto-grow
+                outlined
+                readonly
+                color="indigo"
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="red darken-4" dark @click="fecharDialogVerNota()">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -241,6 +287,11 @@ export default {
 
   data() {
     return {
+      dialogVerNota: {
+        visivel: false,
+        nota: "",
+      },
+      etapaReferente: "Pedido Original",
       onboarding: 0,
       dados: [],
       entidadesHeaders: [
@@ -276,8 +327,19 @@ export default {
   },
 
   created() {
-    this.dados.push(this.pedidoOriginal);
-    this.dados.push(...this.historico);
+    if (
+      this.pedido.estado === "Validado" ||
+      this.pedido.estado === "Devolvido"
+    ) {
+      this.dados.push(this.pedidoOriginal);
+      if (this.pedido.objeto.acao === "Alteração")
+        this.dados.push(this.historico[0]);
+      if (this.pedido.distribuicao.length > 2)
+        this.dados.push(this.historico[this.historico.length - 1]);
+    } else {
+      this.dados.push(this.pedidoOriginal);
+      this.dados.push(...this.historico);
+    }
   },
 
   computed: {
@@ -288,16 +350,55 @@ export default {
     pedidoOriginal() {
       return this.pedido.objeto.dadosOriginais;
     },
+
+    distribuicao() {
+      return this.pedido.distribuicao;
+    },
+  },
+
+  watch: {
+    onboarding(novoValor, antigoValor) {
+      if (
+        novoValor !== undefined &&
+        this.distribuicao[novoValor] !== undefined
+      ) {
+        if (novoValor === 0) this.etapaReferente = "Pedido Original";
+        else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
+          this.etapaReferente = "Alteração Submetida";
+        else if (
+          this.pedido.estado === "Validado" ||
+          this.pedido.estado === "Devolvido"
+        )
+          this.etapaReferente = this.distribuicao[
+            this.distribuicao.length - 1
+          ].estado;
+        else if (this.pedido.objeto.acao === "Criação")
+          this.etapaReferente = this.distribuicao[novoValor + 1].estado;
+        else this.etapaReferente = this.distribuicao[novoValor].estado;
+      } else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
+        this.etapaReferente = "Alteração Submetida";
+    },
   },
 
   methods: {
-    next() {
-      this.onboarding =
-        this.onboarding + 1 === this.length ? 0 : this.onboarding + 1;
+    verNota(nota) {
+      this.dialogVerNota.nota = nota;
+      this.dialogVerNota.visivel = true;
     },
+
+    fecharDialogVerNota() {
+      this.dialogVerNota.nota = "";
+      this.dialogVerNota.visivel = false;
+    },
+
+    next() {
+      if (this.onboarding + 1 < this.dados.length) this.onboarding++;
+      else this.onboarding = 0;
+    },
+
     prev() {
-      this.onboarding =
-        this.onboarding - 1 < 0 ? this.length - 1 : this.onboarding - 1;
+      if (this.onboarding - 1 < 0) this.onboarding = this.dados.length - 1;
+      else this.onboarding--;
     },
 
     transformaKeys(key) {

@@ -284,6 +284,26 @@ export default {
     this.loadTipoDiploma();
   },
 
+  computed: {
+    valorAtual() {
+      return this.campo.valorAtual;
+    },
+  },
+
+  watch: {
+    valorAtual(novoValor, antigoValor) {
+      if (novoValor !== null && novoValor !== undefined)
+        this.valorEditado = novoValor;
+      else this.valorEditado = "";
+    },
+  },
+
+  mounted() {
+    if (this.valorAtual !== null && this.valorAtual !== undefined)
+      this.valorEditado = this.valorAtual;
+    else this.valorEditado = "";
+  },
+
   methods: {
     async loadTipoDiploma() {
       try {
@@ -299,17 +319,20 @@ export default {
         return error;
       }
     },
+
     fechar() {
       this.$emit("fechar", this.campo.key);
-      this.valorEditado = "";
     },
 
     editar() {
-      this.$emit("editarCampo", {
-        dados: this.valorEditado,
-        campo: this.campo,
-      });
-      this.valorEditado = "";
+      if (this.valorAtual !== this.valorEditado) {
+        this.$emit("editarCampo", {
+          dados: this.valorEditado,
+          campo: this.campo,
+        });
+      } else {
+        this.fechar();
+      }
     },
   },
 };

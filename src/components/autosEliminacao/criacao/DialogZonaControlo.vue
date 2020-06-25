@@ -1,13 +1,13 @@
 <template>
   <v-card>
-    <v-card-title class="expansion-panel-heading">Classe {{tipo}}</v-card-title>
+    <v-card-title class="expansion-panel-heading">Classe {{tipo.replace(/\_/g,"/")}}</v-card-title>
     <v-card-text class="mt-4">
       <v-row>
         <v-col :md="2">
           <div class="info-label">Classe</div>
         </v-col>
         <v-col>
-          <v-autocomplete
+          <v-autocomplete v-if="!this.zona"
             label="Selecione a classe"
             :items="classes"
             v-model="classe"
@@ -15,9 +15,25 @@
             solo
             dense
           ></v-autocomplete>
+           <v-text-field v-else :value="classe" solo dense readonly></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="prazo && df">
+      <v-row v-if="df == 'NE' || prazo == 'NE'">
+        <v-col :md="2">
+          <div class="info-label">Classe a Seguir</div>
+        </v-col>
+        <v-col>
+          <v-autocomplete
+            label="Selecione a classe detentora do PCA e DF"
+            :items="classes"
+            v-model="classeDet"
+            @change="defClasseDet()"
+            solo
+            dense
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
+      <v-row v-else-if="prazo && df">
         <v-col :md="2">
           <div class="info-label">Prazo de Conservação Administrativa</div>
         </v-col>
@@ -189,6 +205,7 @@ export default {
   ],
   data: () => ({
     classe: null,
+    classeDet: null,
     ni: null,
     dono: [],
     dataInicio: null,
@@ -226,7 +243,8 @@ export default {
     if (this.zona) {
       this.classe = this.zona.codigo + " - " + this.zona.titulo;
       if(this.zona.destino=="C") this.df = "Conservação"
-      else this.df = "Eliminação"
+      else if(this.zona.destino=="E") this.df = "Eliminação"
+      else this.df = "Conservação Parcial"
       this.prazo = this.zona.prazoConservacao + " Anos"
       this.ni = this.zona.ni;
       this.dono = this.zona.dono;
@@ -243,6 +261,26 @@ export default {
           if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
           else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
           else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
+        }
+      );
+      if (c[0]) {
+        if(c[0].pca.valores=="1") this.prazo = c[0].pca.valores + " Ano";
+        else this.prazo = c[0].pca.valores + " Anos";
+        if (c[0].df.valor === "C") {
+          this.df = "Conservação";
+          this.ni = "Participante";
+        } else if (c[0].df.valor === "E") {
+          this.df = "Eliminação";
+          this.ni = null;
+          this.dono = []
+        } else this.df = c[0].df.valor;
+      }
+    },
+    defClasseDet: async function() {
+      var c = this.classesCompletas.filter(c => {
+          if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classeDet.split(" - ")[0])
+          else if(c.codigo) return (c.codigo == this.classeDet.split(" - ")[0]) 
+          else if(c.referencia) return (c.referencia == this.classeDet.split(" - ")[0]) 
         }
       );
       if (c[0]) {
@@ -335,8 +373,8 @@ export default {
         var codigo = classe[0].codigo || "";
         var referencia = classe[0].referencia || ""
         var titulo = classe[0].titulo;
-        var prazoConservacao = classe[0].pca.valores;
-        var destino = classe[0].df.valor;
+        var prazoConservacao = this.prazo.split(" ")[0];
+        var destino = this.df;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = this.ni;
@@ -469,8 +507,8 @@ export default {
         var codigo = classe[0].codigo || "";
         var referencia = classe[0].referencia || ""
         var titulo = classe[0].titulo;
-        var prazoConservacao = classe[0].pca.valores;
-        var destino = classe[0].df.valor;
+        var prazoConservacao = this.prazo.split(" ")[0];
+        var destino = this.df;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
         var ni = this.ni;

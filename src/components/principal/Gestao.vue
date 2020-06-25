@@ -29,6 +29,7 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <ImportacaoExportacao :level="level"/>
       </v-expansion-panels>
     </v-card-text>
   </v-card>
@@ -36,9 +37,13 @@
 
 <script>
 const help = require("@/config/help").help;
+import ImportacaoExportacao from "@/components/principal/ImportacaoExportacao";
 
 export default {
   props: ["level"],
+  components:{
+    ImportacaoExportacao
+  },
   methods: {
     go: function(url) {
       this.$router.push(url);

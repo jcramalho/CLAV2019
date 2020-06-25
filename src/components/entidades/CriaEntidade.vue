@@ -165,11 +165,11 @@ export default {
       sigla: "",
       internacional: "",
       sioe: "",
-      tipologiasSel: [],
       codigo: "",
       dataCriacao: "",
       dataExtincao: "",
       estado: "Ativa",
+      tipologiasSel: [],
     },
 
     // Para o seletor de processos

@@ -2,46 +2,40 @@
   <div>
     <v-card class="ma-4">
       <v-app-bar color="expansion-panel-heading" dark>
-        <v-toolbar-title class="card-heading">Novo Auto de Eliminação</v-toolbar-title>
+        <v-toolbar-title class="card-heading">Continuar Auto de Eliminação</v-toolbar-title>
       </v-app-bar>
 
       <v-card-text>
         <v-stepper v-model="steps" vertical>
-          <v-stepper-step :complete="steps > 1" step="1">Seleção de Fonte e Fundo</v-stepper-step>
+          <v-stepper-step :complete="steps > 1" step="1">
+            Seleção de Fonte e Fundo
+            <span v-if="steps > 1">
+              <v-chip 
+                class="ma-2"
+                color="indigo darken-4"
+                text-color="white"
+                label
+              >
+                <v-icon left>description</v-icon>
+                {{ auto.legislacao.split(" - ")[0] }}
+              </v-chip>
+            </span>
+            <span v-if="steps > 1">
+              <v-chip 
+                v-for="fundo in auto.fundo"
+                :key="fundo"
+                class="ma-2"
+                color="indigo darken-4"
+                text-color="white"
+                label
+              >
+                <v-icon left>account_balance</v-icon>
+                {{ fundo }}
+              </v-chip>
+            </span>
+          </v-stepper-step>
 
-          <v-stepper-content step="1">
-            <v-row>
-              <v-col :md="2">
-                <div class="info-label">Fonte de legitimação</div>
-              </v-col>
-              <v-col>
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="portarias"
-                  v-model="auto.legislacao"
-                  solo
-                  dense
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col :md="2">
-                <div class="info-label">Fundo</div>
-              </v-col>
-              <v-col>
-                <v-autocomplete
-                  label="Selecione a entidade responsável pelo fundo"
-                  :items="entidades"
-                  v-model="auto.fundo"
-                  solo
-                  dense
-                  chips
-                  multiple
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-            <v-btn class="ma-2" color="primary darken-4" @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Avançar</v-btn>
-          </v-stepper-content>
+
 
           <v-stepper-step step="2">Tratamento das classes de controlo</v-stepper-step>
 
@@ -53,6 +47,7 @@
               v-bind:auto="auto"
               v-bind:classesCompletas="classesCompletas"
               v-bind:donos="donos"
+              v-bind:tipo="tipo"
             />
 
             <!-- Zonas de Controlo -->
@@ -62,10 +57,10 @@
               v-bind:entidades="entidades"
               v-bind:classesCompletas="classesCompletas"
               v-bind:donos="donos"
+              v-bind:tipo="tipo"
             />
 
             <div class="mx-2">
-              <v-btn @click="steps = 1" class="ma-2">Voltar</v-btn>
               <v-btn
                 medium
                 color="warning darken-2"
@@ -78,12 +73,12 @@
               <v-btn
                 medium
                 color="primary darken-4"
-                @click="submit"
+                @click="successDialog=true"
                 :disabled="
                   !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-              >Criar Auto de Eliminação</v-btn>
+              >Submeter Auto de Eliminação</v-btn>
             </div>
             
           </v-stepper-content>
@@ -95,60 +90,18 @@
         <v-card-title
           class="teal darken-4 title white--text"
           dark
-        >Pedido de criação de auto de eliminação criado com sucesso: {{ codigoPedido }}</v-card-title>
+        >Validação de auto de eliminação executada com sucesso</v-card-title>
 
         <v-card-text>
-          <v-row class="my-2">
-            <v-col cols="2">
-              <div class="info-label">Código do pedido</div>
-            </v-col>
-
-            <v-col class="info-content">
-              <div>{{ codigoPedido }}</div>
-            </v-col>
-          </v-row>
-
-          <v-row class="my-2">
-            <v-col cols="2">
-              <div class="info-label">Fonte de Legitimação</div>
-            </v-col>
-
-            <v-col class="info-content">
-              <div>{{ auto.legislacao }}</div>
-            </v-col>
-          </v-row>
-          <v-row class="my-2">
-            <v-col cols="2">
-              <div class="info-label">Fundo</div>
-            </v-col>
-
-            <v-col class="info-content">
-              <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
-            </v-col>
-          </v-row>
-          <v-row class="mt-2">
-            <v-col cols="2">
-              <div class="info-label">Classes e Agregações</div>
-            </v-col>
-
-            <v-col class="info-content">
-              <div v-for="(c,index) in auto.zonaControlo" :key="index">
-                <strong>{{ c.codigo +" - "+c.titulo }}</strong>
-                Agregações: 
-                <li
-                  class="ml-4"
-                  v-for="a in c.agregacoes"
-                  :key="a.codigo"
-                >{{a.codigo + " - " + a.titulo}}</li>
-              </div>
-            </v-col>
-          </v-row>
+          Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação, selecione "Confirmar". Caso ainda pretenda realizar alguma alteração ao AE, clique em "Voltar".
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="green darken-4" text @click="$router.push('/')">Fechar</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-4" text @click="successDialog=false">Voltar</v-btn>
+          <v-btn color="green darken-4" text @click="successDialog=false; submit()">Confirmar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -226,6 +179,7 @@
   </div>
 </template>
 
+
 <script>
 import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/AdicionarZonaControlo.vue";
 import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue";
@@ -239,7 +193,10 @@ export default {
   },
   data: () => ({
     entidades: [],
-    portarias: [],
+    portariaLC: [],
+    portaria: [],
+    portariaRada: [],
+    tabelasSelecao: [],
     classes: [],
     classesCompletas: [],
     auto: {
@@ -247,8 +204,10 @@ export default {
       fundo: [],
       zonaControlo: []
     },
+    tipo: "",
+    donos: [],
     apagarAE: false,
-    steps: 1,
+    steps: 2,
     erro: null,
     erroDialog: false,
     success: null,
@@ -258,33 +217,37 @@ export default {
   }),
   created: async function() {
     try {
-      var response2 = await this.$request("get", "/legislacao?fonte=PGD/LC");
-      this.portarias = await this.prepararLeg(response2.data);
+      var user = this.$verifyTokenUser();
+      let user_entidade = await this.$request(
+        "get",
+        "/entidades/" + user.entidade
+      );
 
+      this.auto.fundo.push(
+        user_entidade.data.sigla + " - " + user_entidade.data.designacao
+      );
+
+      var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+      this.portariaLC = await this.prepararLeg(response.data);
+      var response2 = await this.$request("get", "/pgd");
+      this.portaria = await this.prepararLeg(response2.data);
+      var response3 = await this.$request("get", "/legislacao?fonte=RADA");
+      this.portariaRada = await this.prepararLeg(response3.data);
+      this.tabelasSelecao.push("Lista Consolidada")
+      
       var response = await this.$request("get", "/entidades/");
       this.entidades = await this.prepararEntidade(response.data);
-
-      var response3 = await this.$request(
-        "get",
-        "/classes?nivel=3&info=completa"
-      );
-      var response4 = await this.$request(
-        "get",
-        "/classes?nivel=4&info=completa"
-      );
-      this.classesCompletas = await this.prepararClassesCompletas(
-        response3.data,
-        response4.data
-      );
-      this.classes = await this.prepararClasses(this.classesCompletas);
-
+      
       this.auto = this.obj.objeto;
+      this.tipo = this.auto.tipo;
+
+      this.filtrarDonos()
       this.pendenteID = this.obj._id;
     } catch (e) {
-      this.entidades = [];
-      this.portarias = [];
-      this.classes = [];
-
+      this.portariaLC = [];
+      this.portaria = [];
+      this.portariaRada = [];
+      this.tabelasSelecao = [];
       this.auto = this.obj.objeto;
       this.pendenteID = this.obj._id;
     }
@@ -297,17 +260,6 @@ export default {
             myEntidades.push(e.sigla + " - " + e.designacao);
         }
         return myEntidades;
-      } catch (error) {
-        return [];
-      }
-    },
-    prepararLeg: async function(leg) {
-      try {
-        var myPortarias = [];
-        for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
-        }
-        return myPortarias;
       } catch (error) {
         return [];
       }
@@ -326,7 +278,7 @@ export default {
       try {
         var myClasses = [];
         for (var c of classes) {
-          if (c.df.valor !== "NE") myClasses.push(c);
+          if (c.df.valor && c.df.valor !== "NE") myClasses.push(c);
           else {
             var indexs = 0;
             for (var n of nivel4) {
@@ -336,10 +288,21 @@ export default {
               } else break;
             }
             nivel4.splice(0, indexs);
+            if(indexs==0) myClasses.push(c);
           }
         }
-        
         return myClasses;
+      } catch (error) {
+        return [];
+      }
+    },
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
+        }
+        return myPortarias;
       } catch (error) {
         return [];
       }
@@ -352,17 +315,17 @@ export default {
     submit: async function() {
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
-        if(zc.destino=="C" && zc.dono.length === 0) {
+        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA' && this.tipo!='PGD') {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
         }
-        if(zc.agregacoes.length === 0) {
-          this.erroDialog = true;
-          this.erro = "Não existem agregações em " + zc.codigo +" - "+zc.titulo+".\n"
-        }
       }
       if(this.erro==="") {
-
+        if(this.tipo=="TS_LC") {
+          delete this.auto["legislacao"]
+          //Para já apenas LC
+          this.auto.referencial = "lc1"
+        }
         var user = this.$verifyTokenUser();
 
         this.auto.responsavel = user.email;
@@ -385,10 +348,9 @@ export default {
           pedidoParams
         );
 
-        this.codigoPedido = codigoPedido.data;
 
-      this.$request("delete", "/pendentes/" + this.obj._id);
-      this.successDialog = true;
+        this.$request("delete", "/pendentes/" + this.obj._id);
+        this.$router.push('/pedidos/submissao')
       }
     },
     guardarTrabalho: async function() {
@@ -425,6 +387,60 @@ export default {
         for(var zc of this.auto.zonaControlo) {
           zc.dono = zc.dono.filter(e => !e.includes(f))
         }
+      }
+
+      if(this.tipo == "TS_LC") {
+        var response = await this.$request(
+          "get",
+          "/classes?nivel=3&info=completa"
+        );
+        var response2 = await this.$request(
+          "get",
+          "/classes?nivel=4&info=completa"
+        );
+        this.classesCompletas = await this.prepararClassesCompletas(
+          response.data,
+          response2.data
+        );
+        this.classes = await this.prepararClasses(this.classesCompletas);
+      }
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC") {
+        var response = await this.$request(
+          "get",
+          "/legislacao"
+        )
+
+        var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[1])
+
+        if(this.tipo=="PGD") 
+          var response2 = await this.$request(
+            "get",
+            "/pgd/pgd_"+leg[0].id
+          )
+        else 
+          var response2 = await this.$request(
+            "get",
+            "/pgd/pgd_lc_"+leg[0].id
+          )
+        this.classes = response2.data.filter(c => c.nivel>2).map(c => {
+            if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+            else if(c.codigo) return ""+c.codigo+" - "+c.titulo
+            else if(c.referencia) return ""+c.referencia+" - "+c.titulo
+        })
+        this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
+            return {
+              idClasse: c.classe,
+              codigo: c.codigo,
+              referencia: c.referencia,
+              titulo: c.titulo,
+              df: {valor: c.df},
+              pca: {valores: c.pca},
+            }
+          })
+      }
+      else {
+        this.classes = [];
+        this.classesCompletas = [];
       }
     }
   }

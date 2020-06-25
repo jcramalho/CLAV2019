@@ -70,7 +70,7 @@
           </v-col>
 
           <!-- Operações -->
-          <v-col cols="1">
+          <v-col cols="auto">
             <v-icon class="mr-1" color="green" @click="verifica(campo)">
               check
             </v-icon>
@@ -85,6 +85,10 @@
             >
               create
             </v-icon>
+
+            <v-icon @click="abrirNotaDialog(campo)">
+              add_comment
+            </v-icon>
           </v-col>
         </v-row>
       </div>
@@ -98,6 +102,16 @@
         />
       </v-row>
     </div>
+
+    <!-- Dialog da nota -->
+    <v-dialog v-model="notaDialog.visivel" width="70%" persistent>
+      <AdicionarNota
+        :campo="notaDialog.campo"
+        :notaAtual="notaDialog.nota"
+        @fechar="notaDialog.visivel = false"
+        @adicionar="adicionarNota($event)"
+      />
+    </v-dialog>
 
     <!-- Dialog de edição-->
     <v-dialog v-model="editaCampo.visivel" width="70%" persistent>
@@ -130,6 +144,7 @@
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
 import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
+import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -145,10 +160,16 @@ export default {
     ErroDialog,
     SelecionaAutocomplete,
     EditarCamposDialog,
+    AdicionarNota,
   },
 
   data() {
     return {
+      notaDialog: {
+        visivel: false,
+        campo: "",
+        nota: "",
+      },
       novoHistorico: {},
       loading: true,
       editaCampo: {
@@ -203,7 +224,6 @@ export default {
 
       this.loading = false;
     } catch (e) {
-      console.log("e :", e);
       this.erroDialog.visivel = true;
       this.erroDialog.mensagem =
         "Erro ao carregar os dados, por favor tente novamente";
@@ -217,7 +237,7 @@ export default {
         criaNovoHistorico[key] = {
           cor: "verde",
           dados: this.dados[key],
-          despacho: null,
+          nota: null,
         };
     });
 
@@ -367,53 +387,58 @@ export default {
           "Erro ao distribuir o pedido, por favor tente novamente";
       }
     },
-  },
 
-  verifica(campo) {
-    this.novoHistorico[campo] = {
-      ...this.novoHistorico[campo],
-      cor: "verde",
-    };
-  },
+    verifica(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "verde",
+      };
+    },
 
-  anula(campo) {
-    this.novoHistorico[campo] = {
-      ...this.novoHistorico[campo],
-      cor: "vermelho",
-    };
+    anula(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "vermelho",
+      };
+    },
 
-    // Abrir dialog com despacho
-    // Guardar despacho
-  },
+    edita(campo) {
+      this.editaCampo = {
+        visivel: true,
+        nome: this.transformaKeys(campo),
+        key: campo,
+      };
+    },
 
-  edita(campo) {
-    this.editaCampo = {
-      visivel: true,
-      nome: this.transformaKeys(campo),
-      key: campo,
-    };
+    adicionarNota(dados) {
+      this.notaDialog.visivel = false;
+      this.novoHistorico[dados.campo] = {
+        ...this.novoHistorico[dados.campo],
+        nota: dados.nota,
+      };
+    },
 
-    // Abrir dialog com despacho (Opcional)
-    // Guardar despacho
-  },
+    abrirNotaDialog(campo) {
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = campo;
+      if (this.novoHistorico[campo].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico[campo].nota;
+    },
 
-  fechaEditaCampoDialog(campo) {
-    this.editaCampo.visivel = false;
-  },
+    fechaEditaCampoDialog(campo) {
+      this.editaCampo.visivel = false;
+    },
 
-  editarCampo(event) {
-    console.log("event", event);
-    console.log("dados", event.dados);
-    console.log("campo", event.campo);
+    editarCampo(event) {
+      this.editaCampo.visivel = false;
 
-    this.editaCampo.visivel = false;
-
-    this.tipologia[event.campo.key] = event.dados;
-    this.novoHistorico[event.campo.key] = {
-      ...this.novoHistorico[event.campo.key],
-      dados: event.dados,
-      cor: "amarelo",
-    };
+      this.tipologia[event.campo.key] = event.dados;
+      this.novoHistorico[event.campo.key] = {
+        ...this.novoHistorico[event.campo.key],
+        dados: event.dados,
+        cor: "amarelo",
+      };
+    },
   },
 };
 </script>

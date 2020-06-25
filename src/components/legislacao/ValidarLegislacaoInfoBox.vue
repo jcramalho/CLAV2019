@@ -88,12 +88,6 @@ export default {
           mensagem: "O número de diploma não pode ser vazio.",
         });
         numeroErros++;
-      } else if (!/^\d{4}\/(\d{2}|\d{4})$/.test(this.l.numero)) {
-        this.mensagensErro.push({
-          sobre: "Número de Diploma",
-          mensagem: "O número de diploma está no formato errado.",
-        });
-        numeroErros++;
       } else {
         try {
           let existeNumero = await this.$request(
