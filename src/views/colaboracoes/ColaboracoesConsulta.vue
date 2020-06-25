@@ -25,13 +25,33 @@
           </div>
         </v-col>
       </v-row> 
-      <v-row v-if="this.credito.desc !== null && this.credito.desc !== ''">
+      <v-row v-if="this.credito.desc !== undefined && this.credito.desc !== null && this.credito.desc !== ''">
         <v-col cols="2">
           <div class="info-label">Descrição</div>
         </v-col>
         <v-col>
           <div class="info-content">
             <p class="text-justify">{{ this.credito.desc }}</p>
+          </div>
+        </v-col>
+      </v-row>
+      <v-row v-if="this.credito.data_inicio !== undefined && this.credito.data_inicio !== null && this.credito.data_inicio !== ''">
+        <v-col cols="2">
+          <div class="info-label">Início</div>
+        </v-col>
+        <v-col>
+          <div class="info-content">
+            <p class="text-justify">{{ this.credito.data_inicio }}</p>
+          </div>
+        </v-col>
+      </v-row>
+      <v-row v-if="this.credito.data_fim !== undefined && this.credito.data_fim !== null && this.credito.data_fim !== ''">
+        <v-col cols="2">
+          <div class="info-label">Fim</div>
+        </v-col>
+        <v-col>
+          <div class="info-content">
+            <p class="text-justify">{{ this.credito.data_fim }}</p>
           </div>
         </v-col>
       </v-row>  
@@ -64,7 +84,9 @@ export default {
       nome: "",
       filiacao: "",
       funcao : "",
-      desc: ""
+      desc: "",
+      data_inicio: "",
+      data_fim: ""
     },
     creditoReady: false
   }),
@@ -75,7 +97,9 @@ export default {
           nome: cred.nome,
           filiacao: cred.filiacao,
           funcao : cred.funcao,
-          desc: cred.desc
+          desc: cred.desc,
+          data_inicio: cred.data_inicio === undefined ? "" : cred.data_inicio,
+          data_fim: cred.data_fim === undefined ? "" : cred.data_fim,
         };
         return myCredito;
       } catch (e) {

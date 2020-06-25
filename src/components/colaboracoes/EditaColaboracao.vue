@@ -77,6 +77,34 @@
             </v-col>
           </v-row>
 
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Início</div>
+            </v-col>
+            <v-col>
+              <SelecionarData 
+                :dataMinima="data_minima" 
+                :d="credito.data_inicio"
+                @dataSelecionada="credito.data_inicio = $event"
+                :label="'AAAA-MM-DD'"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Fim</div>
+            </v-col>
+            <v-col>
+              <SelecionarData 
+                :dataMinima="data_minima" 
+                :d="credito.data_fim"
+                @dataSelecionada="credito.data_fim = $event"
+                :label="'AAAA-MM-DD'"
+              />
+            </v-col>
+          </v-row>
+
         </v-card-text>
         <!-- Painel Operações -->
         <PainelOpsCreditos :t="credito" :acao="'Alteração'" />
@@ -88,6 +116,7 @@
 <script>
 import marked from "marked";
 import PainelOpsCreditos from "@/components/colaboracoes/PainelOperacoesColaboracoes.vue";
+import SelecionarData from "@/components/generic/SelecionarData.vue";
 
 export default {
   props: ["t"],
@@ -96,14 +125,18 @@ export default {
       nome: "",
       filiacao: "",
       funcao: "",
-      desc: ""
+      desc: "",
+      data_inicio: "",
+      data_fim: ""
     },
     snackbar: false,
-    text: ""
+    text: "",
+    data_minima: "2016-01-01"
   }),
 
   components: {
-    PainelOpsCreditos
+    PainelOpsCreditos,
+    SelecionarData
   },
 
   methods: {

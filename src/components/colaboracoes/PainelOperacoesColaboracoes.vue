@@ -93,13 +93,33 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="t.desc !== null && t.desc !== ''">
+            <v-row v-if="t.desc !== undefined && t.desc !== null && t.desc !== ''">
               <v-col cols="2">
                 <div class="info-label">Descrição</div>
               </v-col>
 
               <v-col>
                 <div class="info-content">{{ t.desc }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="t.data_inicio !== undefined && t.data_inicio !== null && t.data_inicio !== ''">
+              <v-col cols="2">
+                <div class="info-label">Início</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ t.data_inicio }}</div>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="t.data_fim !== undefined && t.data_fim !== null && t.data_fim !== ''">
+              <v-col cols="2">
+                <div class="info-label">Fim</div>
+              </v-col>
+
+              <v-col>
+                <div class="info-content">{{ t.data_fim }}</div>
               </v-col>
             </v-row>
           </v-card-text>
@@ -174,7 +194,9 @@ export default {
         { text: "Nome", value: "nome", class: "subtitle-1" },
         { text: "Filiação", value: "filiacao", class: "subtitle-1" },
         { text: "Função", value: "funcao", class: "subtitle-1" },
-        { text: "Descrição", value: "desc", class: "subtitle-1" }
+        { text: "Descrição", value: "desc", class: "subtitle-1" },
+        { text: "Início", value: "desc", class: "subtitle-1" },
+        { text: "Fim", value: "desc", class: "subtitle-1" }
       ]
     };
   },
@@ -213,9 +235,21 @@ export default {
                   nome: this.t.nome,
                   filiacao: this.t.filiacao,
                   funcao: this.t.funcao,
-                  desc: this.t.desc,
                   token: this.$store.state.token
                 };
+
+                // Devido à validação na API, opcionais só devem ser enviados se não forem nulos 
+                if (this.t.desc !== null && this.t.desc !== ""){
+                  creditoParams.desc = this.t.desc;
+                }
+
+                if (this.t.data_inicio !== null && this.t.data_inicio !== ""){
+                  creditoParams.data_inicio = this.t.data_inicio;
+                }
+
+                if (this.t.data_fim !== null && this.t.data_fim !== ""){
+                  creditoParams.data_fim = this.t.data_fim;
+                }
                 
                 let response = await this.$request(
                   "put",
@@ -234,10 +268,21 @@ export default {
                   nome: this.t.nome,
                   filiacao: this.t.filiacao,
                   funcao: this.t.funcao,
-                  desc: this.t.desc,
                   token: this.$store.state.token
                 };
-                
+
+                // Devido à validação na API, opcionais só devem ser enviados se não forem nulos 
+                if (this.t.desc !== null && this.t.desc !== ""){
+                  creditoParams.desc = this.t.desc;
+                }
+
+                if (this.t.data_inicio !== null && this.t.data_inicio !== ""){
+                  creditoParams.data_inicio = this.t.data_inicio;
+                }
+
+                if (this.t.data_fim !== null && this.t.data_fim !== ""){
+                  creditoParams.data_fim = this.t.data_fim;
+                }
                 let response = await this.$request(
                   "post",
                   "/colaboracoes/",
