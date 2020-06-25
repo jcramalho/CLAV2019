@@ -202,9 +202,9 @@
 
                     <!-- Operação -->
                     <v-col cols="1">
-                      <v-tooltip v-if="info.despacho" bottom>
+                      <v-tooltip v-if="info.nota" bottom>
                         <template v-slot:activator="{ on }">
-                          <v-icon v-on="on" @click="verDespacho(info.despacho)">
+                          <v-icon v-on="on" @click="verNota(info.nota)">
                             message
                           </v-icon>
                         </template>
@@ -247,8 +247,8 @@
       </v-btn>
     </v-card-actions>
 
-    <!-- Ver despacho dialog -->
-    <v-dialog v-model="dialogVerDespacho.visivel" width="50%">
+    <!-- Ver nota dialog -->
+    <v-dialog v-model="dialogVerNota.visivel" width="50%">
       <v-card>
         <v-card-title class="indigo darken-4 title white--text">
           Nota
@@ -257,14 +257,14 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <div class="info-conteudo">{{ dialogVerDespacho.despacho }}</div>
+              <div class="info-conteudo">{{ dialogVerNota.nota }}</div>
             </v-col>
           </v-row>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="fecharDialogVerDespacho()">
+          <v-btn class="red darken-4" dark @click="fecharDialogVerNota()">
             Fechar
           </v-btn>
         </v-card-actions>
@@ -281,9 +281,9 @@ export default {
 
   data() {
     return {
-      dialogVerDespacho: {
+      dialogVerNota: {
         visivel: false,
-        despacho: "",
+        nota: "",
       },
       etapaReferente: "Pedido Original",
       onboarding: 0,
@@ -328,7 +328,8 @@ export default {
       this.dados.push(this.pedidoOriginal);
       if (this.pedido.objeto.acao === "Alteração")
         this.dados.push(this.historico[0]);
-      this.dados.push(this.historico[this.historico.length - 1]);
+      if (this.pedido.distribuicao.length > 2)
+        this.dados.push(this.historico[this.historico.length - 1]);
     } else {
       this.dados.push(this.pedidoOriginal);
       this.dados.push(...this.historico);
@@ -350,32 +351,38 @@ export default {
   },
 
   watch: {
-    onboarding() {
+    onboarding(novoValor, antigoValor) {
       if (
-        this.onboarding !== undefined &&
-        this.distribuicao[this.onboarding].estado !== undefined
+        novoValor !== undefined &&
+        this.distribuicao[novoValor] !== undefined
       ) {
-        if (this.onboarding === 0) this.etapaReferente = "Pedido Original";
-        else if (this.pedido.objeto.acao === "Alteração")
-          if (this.onboarding === 1)
-            this.etapaReferente = "Alteração Submetida";
-          else
-            this.etapaReferente = this.distribuicao[this.onboarding + 1].estado;
-        else
-          this.etapaReferente = this.distribuicao[this.onboarding + 1].estado;
-      }
+        if (novoValor === 0) this.etapaReferente = "Pedido Original";
+        else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
+          this.etapaReferente = "Alteração Submetida";
+        else if (
+          this.pedido.estado === "Validado" ||
+          this.pedido.estado === "Devolvido"
+        )
+          this.etapaReferente = this.distribuicao[
+            this.distribuicao.length - 1
+          ].estado;
+        else if (this.pedido.objeto.acao === "Criação")
+          this.etapaReferente = this.distribuicao[novoValor + 1].estado;
+        else this.etapaReferente = this.distribuicao[novoValor].estado;
+      } else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
+        this.etapaReferente = "Alteração Submetida";
     },
   },
 
   methods: {
-    verDespacho(despacho) {
-      this.dialogVerDespacho.despacho = despacho;
-      this.dialogVerDespacho.visivel = true;
+    verNota(nota) {
+      this.dialogVerNota.nota = nota;
+      this.dialogVerNota.visivel = true;
     },
 
-    fecharDialogVerDespacho() {
-      this.dialogVerDespacho.despacho = "";
-      this.dialogVerDespacho.visivel = false;
+    fecharDialogVerNota() {
+      this.dialogVerNota.nota = "";
+      this.dialogVerNota.visivel = false;
     },
 
     next() {

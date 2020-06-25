@@ -491,12 +491,6 @@ export default {
         });
 
         numeroErros++;
-      } else if (!/^\d{4}\/(\d{2}|\d{4})$/.test(dados.numero)) {
-        this.erros.push({
-          sobre: "Número de Diploma",
-          mensagem: "O número de diploma está no formato errado.",
-        });
-        numeroErros++;
       } else {
         try {
           const existeNumero = await this.$request(
@@ -700,9 +694,6 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
-
-      // Abrir dialog com despacho
-      // Guardar despacho
     },
 
     edita(campo) {
@@ -711,9 +702,6 @@ export default {
         nome: this.transformaKeys(campo),
         key: campo,
       };
-
-      // Abrir dialog com despacho (Opcional)
-      // Guardar despacho
     },
 
     fechaEditaCampoDialog(campo) {

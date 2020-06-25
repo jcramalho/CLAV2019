@@ -105,6 +105,18 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] }
     },
     {
+      path: "/documentacaoApoio/importar/tecnico_cientifico",
+      name: "importarTecnicoCientifico",
+      component: () => import("./views/documentacaoApoio/CientificaImporta.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/documentacaoApoio/importar/documentacao_apoio",
+      name: "importarApoio",
+      component: () => import("./views/documentacaoApoio/ApoioImporta.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/documentacaoApoio/editar/tecnico_cientifico/:id",
       name: "editaEntradaCientifico",
       component: () => import("./views/documentacaoApoio/CientificaEdita.vue"),
@@ -324,6 +336,12 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] },
     },
     {
+      path: "/noticias/importar",
+      name: "importarNoticias",
+      component: () => import("./views/noticias/NoticiasImporta.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
       path: "/noticias/editar/:idNoticia",
       name: "editaNoticia",
       component: () => import("./views/noticias/NoticiasEdita.vue"),
@@ -333,6 +351,37 @@ export default new Router({
       path: "/noticias/:idNoticia",
       name: "consultaNoticia",
       component: () => import("./views/noticias/NoticiasConsulta.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
+    // Routes das colaborações/equipas de trabalho
+    {
+      path: "/colaboracoes",
+      name: "colaboracoes",
+      component: () => import("./views/colaboracoes/Colaboracoes.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
+    {
+      path: "/colaboracoes/criar",
+      name: "criaColaboracao",
+      component: () => import("./views/colaboracoes/ColaboracoesCria.vue"),
+      meta: { levels: [4, 5, 6, 7] },
+    },
+    {
+      path: "/colaboracoes/importar",
+      name: "importarColaboracoes",
+      component: () => import("./views/colaboracoes/ColaboracoesImporta.vue"),
+      meta: { levels: [4, 5, 6, 7] }
+    },
+    {
+      path: "/colaboracoes/editar/:idColaboracao",
+      name: "editaColaboracao",
+      component: () => import("./views/colaboracoes/ColaboracoesEdita.vue"),
+      meta: { levels: [4, 5, 6, 7] },
+    },
+    {
+      path: "/colaboracoes/:idColaboracao",
+      name: "consultaColaboracao",
+      component: () => import("./views/colaboracoes/ColaboracoesConsulta.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
     },
     // Routes dos pedidos

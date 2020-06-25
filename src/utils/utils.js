@@ -163,7 +163,7 @@ export function criarHistorico(objeto, objetoOriginal) {
         historico[key] = {
           cor: "amarelo",
           dados: objAlterado[key],
-          despacho: null,
+          nota: null,
         };
       }
     } else if (objAlterado[key] instanceof Array) {
@@ -171,7 +171,7 @@ export function criarHistorico(objeto, objetoOriginal) {
         historico[key] = {
           cor: "amarelo",
           dados: objAlterado[key],
-          despacho: null,
+          nota: null,
         };
       } else if (
         !comparaArraySel(objAlterado[key], objOriginal[key], "sigla")
@@ -179,7 +179,7 @@ export function criarHistorico(objeto, objetoOriginal) {
         historico[key] = {
           cor: "amarelo",
           dados: objAlterado[key],
-          despacho: null,
+          nota: null,
         };
       }
     }

@@ -81,7 +81,7 @@
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
-    <div v-if="this.level >= this.min">
+    <!--div v-if="this.level >= this.min">
       <v-btn
         color="indigo accent-4"
         dark
@@ -98,7 +98,7 @@
         @click="exportarFicheiro()"
         >Exportar</v-btn
       >
-    </div>
+    </div-->
   </v-expansion-panel>
 </template>
 

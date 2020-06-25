@@ -70,7 +70,9 @@
             <template v-slot:item="props">
               <tr>
                 <td class="subheading">{{ props.item.estado }}</td>
-                <td class="subheading">{{ props.item.data }}</td>
+                <td class="subheading">
+                  {{ converteData(props.item.data) }}
+                </td>
                 <td class="subheading">{{ props.item.responsavel }}</td>
                 <td class="subheading">{{ props.item.despacho }}</td>
               </tr>
@@ -194,6 +196,19 @@ export default {
   },
 
   methods: {
+    converteData(data) {
+      let dataFormatada = "";
+      let dataConvertida = new Date(data);
+
+      dataFormatada += `${data.split("T")[0]} - ${dataConvertida.getHours()}:`;
+
+      if (dataConvertida.getMinutes() < 10)
+        dataFormatada += `0${dataConvertida.getMinutes()}`;
+      else dataFormatada += dataConvertida.getMinutes();
+
+      return dataFormatada;
+    },
+
     voltar() {
       const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
       localStorage.setItem(
