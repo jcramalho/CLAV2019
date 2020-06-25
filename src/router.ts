@@ -264,7 +264,7 @@ export default new Router({
       path: "/rada/:id",
       name: "consultaRADA",
       component: () =>
-        import("./views/rada/ConsultaRada.vue"),
+        import("./views/rada/ConsultaRADA.vue"),
       meta: { levels: [4, 5, 6, 7] },
     },
     // Routes das PGD
