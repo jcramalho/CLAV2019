@@ -2,7 +2,7 @@
   <div>
     <div v-if="newSerie.tipo != 'Subsérie'">
       <EntidadesProdutoras :newSerie="newSerie" :RE="RE" :editar="editar" />
-      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+
       <Legislacao
         :newSerie="newSerie"
         :legislacao="legislacao"
@@ -10,7 +10,6 @@
         :legislacaoProcessada="legislacaoProcessada"
         :tipos="tipos"
       />
-      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     </div>
     <RelacoesEntidades :newSerie="newSerie" :classes="classes" :formaContagem="formaContagem" />
   </div>

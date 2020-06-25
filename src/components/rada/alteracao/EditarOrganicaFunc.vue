@@ -1,10 +1,8 @@
 <template>
   <v-dialog v-model="dialogState" persistent>
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">
+      <v-card-title class="indigo darken-4 white--text">
         <b>{{ 'Alterar a classe: ' + treeview_object.titulo }}</b>
-        <v-spacer />
-        <v-icon dark color="red" @click="toDelete = true" right>delete_sweep</v-icon>
       </v-card-title>
       <br />
       <v-card-text>
@@ -18,8 +16,8 @@
 
               <v-card-text align="center">
                 <br />
-                <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
-                <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarClasse">Sim</v-btn>
+                <v-btn class="ma-3 pa-3" color="indigo darken-4" dark @click="toDelete = false">Voltar</v-btn>
+                <v-btn class="ma-3 pa-5" color="red darken-4" dark @click="eliminarClasse">Sim</v-btn>
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -54,8 +52,6 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <h5>Hierarquia</h5>
-          <v-divider></v-divider>
 
           <v-row>
             <v-col md="3" sm="3">
@@ -94,8 +90,9 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="save">Atualizar</v-btn>
+        <v-btn dark color="red darken-4" @click="toDelete = true">Eliminar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

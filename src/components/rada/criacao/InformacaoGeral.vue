@@ -42,8 +42,8 @@
       </v-row>
     </v-form>
     <v-btn color="indigo darken-4" dark @click="next">Continuar</v-btn>
-    <v-btn color="indigo darken-4" text @click="apagar">
-      <v-icon>delete_sweep</v-icon>
+    <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">
+      Limpar
     </v-btn>
     <br />
   </v-card>

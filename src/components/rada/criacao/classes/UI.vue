@@ -6,7 +6,7 @@
       </v-btn>
     </template>-->
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">Adicionar Unidade de Instalação</v-card-title>
+      <v-card-title class="indigo darken-4 white--text">Adicionar Unidade de Instalação</v-card-title>
       <br />
 
       <v-card-text>
@@ -201,7 +201,7 @@
                       </template>
                     </v-combobox>
                   </v-col>
-                  <v-col sm="5" xs="12">
+                  <v-col sm="6" xs="12">
                     <v-text-field
                       :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
                       :disabled="iscodvalido"
@@ -230,14 +230,20 @@
                       </template>
                     </v-select>
                   </v-col>
-
-                  <v-col sm="1" xs="12">
-                    <v-btn text rounded @click="adicionarClasseUI(UI)">
-                      <v-icon size="35" color="green lighten-1">add_circle</v-icon>
-                    </v-btn>
-                    <v-btn text rounded @click="$refs.addRel.reset()">
-                      <v-icon size="35" color="red lighten-1">delete_sweep</v-icon>
-                    </v-btn>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="text-right">
+                    <v-icon
+                      @click="adicionarClasseUI(UI)"
+                      size="35"
+                      color="green lighten-1"
+                    >add_circle</v-icon>
+                    <v-btn
+                      style="margin-left: 10px"
+                      dark
+                      color="red darken-4"
+                      @click="$refs.addRel.reset()"
+                    >Limpar</v-btn>
                   </v-col>
                 </v-row>
                 <v-row v-if="!!alertOn">
@@ -273,11 +279,9 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-        </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="success" class="mr-4" @click="guardar">Criar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="guardar">Adicionar</v-btn>
+        <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

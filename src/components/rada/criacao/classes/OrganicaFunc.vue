@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialogState" persistent>
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">
+      <v-card-title class="indigo darken-4 white--text">
         <b>Adicionar Classe Área Orgânico-Funcional</b>
       </v-card-title>
       <br />
@@ -49,8 +49,6 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <h5>Hierarquia</h5>
-          <v-divider></v-divider>
           <v-row>
             <v-col md="3" sm="3">
               <div class="info-label">Classe Pai</div>
@@ -87,12 +85,9 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-        </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
-        <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
-        <v-btn color="success" class="mr-4" @click="save">Criar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="save">Adicionar</v-btn>
+        <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
