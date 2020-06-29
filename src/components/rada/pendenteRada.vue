@@ -2,37 +2,8 @@
   <v-card class="ma-4" style="background-color:#fafafa">
     <v-card-title class="indigo darken-4 white--text">
       Criar Relatório de Avaliação de Documentação Acumulada
-      <v-spacer />
-      <v-btn style="background-color: #1a237e;" dark @click="toSave = true">
-        Guardar Trabalho
-        <v-icon right>save</v-icon>
-      </v-btn>
-
-      <v-icon dark color="red" @click="toDelete = true" right>delete_sweep</v-icon>
     </v-card-title>
     <v-card-text>
-      <v-row justify-center>
-        <v-dialog v-model="toSave" width="50%">
-          <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >Pretende continuar o trabalho neste momento?</v-card-title>
-
-            <v-card-text align="center">
-              <br />
-              <v-spacer></v-spacer>
-
-              <v-btn
-                class="ma-3 pa-3"
-                color="indigo lighten-3"
-                @click="guardarTrabalho('nao')"
-              >Não, pretendo continuar depois</v-btn>
-              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="guardarTrabalho('sim')">Sim</v-btn>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-      </v-row>
       <v-row>
         <v-dialog v-model="toDelete" width="50%">
           <v-card>
@@ -98,7 +69,9 @@
             :entidades="entidades"
             :legislacaoProcessada="legislacaoProcessada"
             :loading_circle.sync="loading_circle_ts"
-            :toSave.sync="toSave"
+            :pode_remover="true"
+            @guardar="guardarTrabalho"
+            @remover="toDelete = true"
           />
           <v-alert
             width="100%"
@@ -194,10 +167,8 @@ export default {
 
       response.then(resp => {
         if (continuar_ou_nao == "nao") {
-          this.toSave = false;
           this.dialogRADAPendente = true;
         } else {
-          this.toSave = false;
           this.alert_guardar = true;
 
           setTimeout(() => {

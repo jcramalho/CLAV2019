@@ -255,6 +255,12 @@ export default new Router({
       meta: { levels: [4, 5, 6, 7] },
     },
     {
+      path: "/rada/importar",
+      name: "importarRADA",
+      component: () => import("./views/rada/ImportarRada.vue"),
+      meta: { levels: [4, 5, 6, 7] },
+    },
+    {
       path: "/rada/:id",
       name: "consultaRADA",
       component: () =>

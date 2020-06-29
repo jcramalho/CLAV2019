@@ -340,7 +340,7 @@ export default {
       this.isMultiple = true;
       this.panels = [0, 1, 2];
 
-      setTimeout(() => {
+      setTimeout(async () => {
         if (
           this.$refs.form.validate() &&
           !(
@@ -356,6 +356,8 @@ export default {
               criterio.relacoes.map(rel => delete rel.titulo);
             }
           });
+
+          await this.validar_relacoes_sintese(clone_nova_classe, this.classes);
 
           clone_nova_classe.justificacaoDF.forEach(criterio => {
             if (
@@ -383,6 +385,63 @@ export default {
           this.recolherErros();
         }
       }, 1);
+    },
+    validar_relacoes_sintese(classe, classes) {
+      let relacoes_sintese = classe.relacoes.filter(
+        e => e.relacao == "Síntese de" || e.relacao == "Sintetizado por"
+      );
+
+      for (let i = 0; i < relacoes_sintese.length; i++) {
+        let existe_classe = classes.some(
+          cl =>
+            cl.codigo == relacoes_sintese[i].serieRelacionada.codigo &&
+            cl.relacoes.some(rel => rel.relacao == relacoes_sintese[i].relacao)
+        );
+
+        if (existe_classe) {
+          // Verificar esta expressão
+          classe.relacoes = classe.relacoes.filter(
+            rel =>
+              rel.relacao != relacoes_sintese[i].relacao ||
+              rel.serieRelacionada.codigo !=
+              relacoes_sintese[i].serieRelacionada.codigo
+          );
+
+          this.remove_criterio_densidade_informacional(
+            relacoes_sintese[i].serieRelacionada.codigo, classe
+          );
+        }
+      }
+    },
+    remove_criterio_densidade_informacional(codigoClasse, classe) {
+      let criterio = classe.justificacaoDF.find(
+        crit => crit.tipo == "Critério de Densidade Informacional"
+      );
+
+      if (criterio != undefined) {
+        criterio.relacoes = criterio.relacoes.filter(
+          e => e.codigo != codigoClasse
+        );
+
+        if (criterio.relacoes.length == 0) {
+          this.alteraDF(classe);
+
+          classe.justificacaoDF = classe.justificacaoDF.filter(
+            e => e.tipo != "Critério de Densidade Informacional"
+          );
+        }
+      }
+    },
+    alteraDF(classe) {
+      if (
+        classe.justificacaoDF.some(
+          e => e.tipo == "Critério de Complementaridade Informacional"
+        )
+      ) {
+        classe.df = "Conservação";
+      } else {
+        classe.df = null;
+      }
     }
   }
 };
