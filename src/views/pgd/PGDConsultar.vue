@@ -103,7 +103,7 @@ export default {
           fonte: {campo: "Fonte de Legitimação", text: "RADA"},
           entidade: {campo: "Entidade", text: this.id.split("_")[2]}
         }
-        this.titulo = `Tabela de Seleção do RADA da entidade ${this.id.split("_")[2]}, relativo ao ano de ${this.id.split("_")[3]}`;
+        this.titulo = `Tabela de Seleção do RADA de ${this.id.split("_")[2]}, relativo ao ano ${this.id.split("_")[3]}`;
         var response = await this.$request("get","/pgd/rada/"+this.id)
         this.classesTree = await this.prepararClasses(response.data)
         this.classes = response.data.map(c => {

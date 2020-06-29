@@ -200,7 +200,7 @@
               :submit="submit" 
               :tipo="tipo"
             />
-            <v-btn @click="steps = 2" color="idnigo darken-4" dark class="ma-2">Voltar</v-btn>
+            <v-btn @click="steps = 2" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
             <v-btn
               medium
               color="indigo darken-4"
