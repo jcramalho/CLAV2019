@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Loading v-if="classes.length==0 && classesTree.length==0" :message="'Portaria de Gestão Documental'" />
+    <Loading v-if="classes.length==0 && classesTree.length==0" :message="message" />
     <ConsultarPGD v-else
       :classes="classes"
-      :classesTree="this.classesTree"
+      :classesTree="classesTree"
       :titulo="titulo"
       :objeto="legislacao"
     />
@@ -22,9 +22,10 @@ export default {
     classes: [],
     classesTree: [],
     legislacao: null,
+    message: 'Portaria de Gestão Documental',
     titulo: "",
     idLegislacao: "",
-    idPGD: ""
+    id: ""
   }),
   methods: {
     parseEntidades: async function(ent) {
@@ -93,37 +94,66 @@ export default {
   },
   created: async function () {
     try {
-      this.idPGD = window.location.pathname.split("/")[2];
-      this.idLegislacao = this.idPGD.split("pgd_")[1];
-      if(this.idLegislacao.includes("lc_")) this.idLegislacao = this.idLegislacao.split("lc_")[1]
-      
-      var response = await this.$request("get","/pgd/"+this.idPGD)
-      this.classesTree = await this.prepararClasses(response.data)
-      this.classes = response.data.map(c => {
-        return {
-          idClasse: c.classe,
-          codigo: c.codigo,
-          referencia: c.referencia,
-          titulo: c.titulo,
-          descricao: c.descricao,
-          df: (c.df=="E") ? "Eliminação" : (c.df=="C") ? "Conservação" : (c.df=="C") ? "Conservação Parcial" : c.df,
-          notaDF: c.notaDF,
-          pca: c.pca,
-          notaPCA: c.notaPCA,
-          formaContagem: c.formaContagem,
-          subFormaContagem: c.subFormaContagem,
-          designacaoParticipante: c.designacaoParticipante,
-          designacaoDono: c.designacaoDono
+      this.id = window.location.pathname.split("/")[2];
+      if(this.id.split("_")[0]=="tsRada") {
+        this.message = "Relatório de Avaliação de Documentação Acumulada"
+        this.legislacao = {
+          data: {campo: "Data da Tabela de Seleção", text: this.id.split("_")[3]},
+          sumario: {campo: "Sumário", text: "Tabela de Seleção do RADA pertencente à entidade "+this.id.split("_")[2]},
+          fonte: {campo: "Fonte de Legitimação", text: "RADA"},
+          entidade: {campo: "Entidade", text: this.id.split("_")[2]}
         }
-      })
+        this.titulo = `Tabela de Seleção do RADA da entidade ${this.id.split("_")[2]}, relativo ao ano de ${this.id.split("_")[3]}`;
+        var response = await this.$request("get","/pgd/rada/"+this.id)
+        this.classesTree = await this.prepararClasses(response.data)
+        this.classes = response.data.map(c => {
+          return {
+            idClasse: c.classe,
+            codigo: c.codigo,
+            referencia: c.referencia,
+            titulo: c.titulo,
+            descricao: c.descricao,
+            diplomas: c.diplomas,
+            df: (c.df=="E") ? "Eliminação" : (c.df=="C") ? "Conservação" : (c.df=="C") ? "Conservação Parcial" : c.df,
+            notaDF: c.notaDF,
+            justificacaoDF: c.justificacaoDF,
+            pca: c.pca,
+            notaPCA: c.notaPCA,
+            formaContagem: c.formaContagem,
+            justificacaoPCA: c.justificacaoPCA,
+          }
+        })
+      } else {
+        this.idLegislacao = this.id.split("pgd_")[1];
+        if(this.idLegislacao.includes("lc_")) this.idLegislacao = this.idLegislacao.split("lc_")[1]
+        
+        var response = await this.$request("get","/pgd/"+this.id)
+        this.classesTree = await this.prepararClasses(response.data)
+        this.classes = response.data.map(c => {
+          return {
+            idClasse: c.classe,
+            codigo: c.codigo,
+            referencia: c.referencia,
+            titulo: c.titulo,
+            descricao: c.descricao,
+            df: (c.df=="E") ? "Eliminação" : (c.df=="C") ? "Conservação" : (c.df=="C") ? "Conservação Parcial" : c.df,
+            notaDF: c.notaDF,
+            pca: c.pca,
+            notaPCA: c.notaPCA,
+            formaContagem: c.formaContagem,
+            subFormaContagem: c.subFormaContagem,
+            designacaoParticipante: c.designacaoParticipante,
+            designacaoDono: c.designacaoDono
+          }
+        })
 
-      var response2 = await this.$request(
-        "get",
-        "/legislacao/" + this.idLegislacao
-      );
-      this.legislacao = await this.preparaLegislacao(response2.data);
-      this.titulo = `Tabela de Seleção da ${response2.data.tipo} ${response2.data.numero}`;
-
+        var response2 = await this.$request(
+          "get",
+          "/legislacao/" + this.idLegislacao
+        );
+        this.legislacao = await this.preparaLegislacao(response2.data);
+        this.titulo = `Tabela de Seleção da ${response2.data.tipo} ${response2.data.numero}`;
+      }
     } 
     catch (e) {
       this.classes = []

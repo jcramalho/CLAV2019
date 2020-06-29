@@ -119,6 +119,14 @@
                         <div class="info-content">{{item.descricao}}</div>
                       </v-col>
                     </v-row>
+                    <v-row v-if="item.diplomas">
+                      <v-col cols="2">
+                        <div class="info-label">Diplomas Jurídico-Administrativo</div>
+                      </v-col>
+                      <v-col>
+                        <div class="info-content"><div v-for="(d,index) in item.diplomas.split('#')" :key="index">{{d}}</div></div>
+                      </v-col>
+                    </v-row>
                     <v-row v-if="item.notaPCA">
                       <v-col cols="2">
                         <div class="info-label">Nota do PCA</div>
@@ -142,12 +150,31 @@
                         <div class="info-content">{{item.subFormaContagem}}</div>
                       </v-col>
                     </v-row>
+                    
+                    <v-row v-if="item.justificacaoPCA">
+                      <v-col cols="2">
+                        <div class="info-label">Justificação do PCA</div>
+                      </v-col>
+                      <v-col>
+                        <div class="info-content">{{item.justificacaoPCA}}</div>
+                      </v-col>
+                    </v-row>
+
                     <v-row v-if="item.notaDF">
                       <v-col cols="2">
                         <div class="info-label">Nota do Destino Final</div>
                       </v-col>
                       <v-col>
                         <div class="info-content">{{item.notaDF}}</div>
+                      </v-col>
+                    </v-row>
+                    
+                    <v-row v-if="item.justificacaoDF">
+                      <v-col cols="2">
+                        <div class="info-label">Justificação do DF</div>
+                      </v-col>
+                      <v-col>
+                        <div class="info-content">{{item.justificacaoDF}}</div>
                       </v-col>
                     </v-row>
                     
@@ -207,7 +234,32 @@ export default {
       //let csvContent = "data:text/csv;charset=utf-8,";
       let headers
       let csvContent
-      if(this.objeto.fonte.text == "PGD/LC") {
+      let fileName = this.titulo.replace(/ /g,'_');
+      if(this.objeto.fonte.text == "RADA") {
+        headers = "Código,N.º Referência,Título,Descrição,Diplomas Jurídico-Administrativo,PCA,Nota PCA,Forma de Contagem PCA,Justificação do PCA,DF,Nota DF,Justificação do DF"
+        csvContent = [
+          headers,
+          ...this.classes.map(item => {
+            return '"' + (item.codigo || "") + '",' 
+                  + '"' + (item.referencia || "") + '",' 
+                  + '"' + (item.titulo || "") + '",' 
+                  + '"' + (item.descricao || "") + '",'
+                  + '"' + (item.diplomas || "").replace(/#/g,"; ") + '",' 
+                  + '"' + (item.pca || "") + '",' 
+                  + '"' + (item.notaPCA || "") + '",' 
+                  + '"' + (item.formaContagem || "") + '",'
+                  + '"' + (item.justificacaoPCA || "") + '",'
+                  + '"' + (item.df || "") + '",' 
+                  + '"' + (item.notaDF || "") + '",'
+                  + '"' + (item.justificacaoDF || "") + '"'
+          })
+        ]
+          .join("\n")
+          .replace(/(^\[)|(\]$)/gm, "");
+
+        fileName = "TS_RADA_"+this.objeto.entidade.text+"_"+this.objeto.data.text;
+      }
+      else if(this.objeto.fonte.text == "PGD/LC") {
         headers = "Código,N.º Referência,Título,Descrição,Dono PN,Participante PN,PCA,Nota PCA,Forma de Contagem PCA,DF,Nota DF"
         csvContent = [headers,
           ...this.classes.map(item => {
@@ -260,7 +312,7 @@ export default {
       const data = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + data);
-      link.setAttribute("download", this.titulo.replace(/ /g,'_') +".csv");
+      link.setAttribute("download", fileName +".csv");
       link.click();
     },
     clicked(value) {

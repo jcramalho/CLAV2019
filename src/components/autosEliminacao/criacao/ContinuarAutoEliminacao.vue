@@ -63,22 +63,45 @@
             <div class="mx-2">
               <v-btn
                 medium
-                color="warning darken-2"
+                color="indigo darken-4"
+                dark
                 @click="guardarTrabalho"
                 :disabled="
                   !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-              >Guardar Auto de Eliminação</v-btn>
+              >Guardar Trabalho <v-icon right>save</v-icon></v-btn>
               <v-btn
                 medium
-                color="primary darken-4"
+                color="indigo darken-4"
+                dark
+                @click="continuarDepois"
+                :disabled="
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                "
+                class="ma-2"
+              >Continuar Depois <v-icon right>save</v-icon></v-btn>
+              <v-btn
+                medium
+                color="indigo darken-4"
+                dark
                 @click="successDialog=true"
                 :disabled="
                   !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-              >Submeter Auto de Eliminação</v-btn>
+              >Submeter</v-btn>
+              
+              <v-btn
+                medium
+                color="red darken-4"
+                dark
+                @click="eliminar=true"
+                :disabled="
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                "
+                class="ma-2"
+              >Eliminar</v-btn>
             </div>
             
           </v-stepper-content>
@@ -105,6 +128,40 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="eliminar" width="950" persistent>
+      <v-card outlined>
+        <v-card-title
+          class="warning darken-4 title white--text"
+          dark
+        >Apagar Auto de Eliminação</v-card-title>
+
+        <v-card-text>
+          Esta ação elimina toda a informação do auto de eliminação, tem a certeza que deseja continuar?.
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-4" text @click="eliminar=false">Cancelar</v-btn>
+          <v-btn color="red darken-4" text @click="eliminar=false; eliminarAE()">Eliminar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-snackbar
+      color="success"
+      v-model="guardadoSuccess"
+      timeout="5000"
+    >
+      Auto de Eliminação guardado com sucesso! 
+      <v-btn
+        dark
+        text
+        @click="guardadoSuccess = false"
+      >
+        Fechar
+      </v-btn>
+    </v-snackbar>
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title
@@ -213,7 +270,9 @@ export default {
     success: null,
     successDialog: false,
     pendenteGuardado: false,
-    pendenteGuardadoInfo: null
+    pendenteGuardadoInfo: null,
+    guardadoSuccess: false,
+    eliminar: false,
   }),
   created: async function() {
     try {
@@ -308,7 +367,6 @@ export default {
       }
     },
     eliminarAE: async function() {
-      this.apagarAE = false;
       this.$request("delete", "/pendentes/" + this.obj._id);
       this.$router.push("/");
     },
@@ -354,6 +412,31 @@ export default {
       }
     },
     guardarTrabalho: async function() {
+      try {
+        this.obj.numInterv++;
+        var cDate = Date.now();
+
+        var pendenteParams = {
+          _id: this.obj._id,
+          dataAtualizacao: cDate,
+          numInterv: this.obj.numInterv,
+          acao: this.obj.acao,
+          tipo: this.obj.tipo,
+          objeto: this.auto,
+          criadoPor: this.obj.criadoPor,
+          user: {
+            token: this.$store.state.token
+          }
+        };
+
+        var response = await this.$request("put", "/pendentes", pendenteParams);
+        this.obj = response.data
+        this.guardadoSuccess = true;
+      } catch (error) {
+        return error;
+      }
+    },
+    continuarDepois: async function() {
       try {
         this.obj.numInterv++;
         var cDate = Date.now();

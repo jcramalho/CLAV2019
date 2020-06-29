@@ -9,6 +9,16 @@
           <div class="info-content">{{classe.descricao}}</div>
         </v-col>
       </v-row>
+      
+      <v-row v-if="classe.diplomas">
+        <v-col cols="2">
+          <div class="info-label">Diplomas Jurídico-Administrativo</div>
+        </v-col>
+        <v-col>
+          <div class="info-content"><div v-for="(d,index) in classe.diplomas.split('#')" :key="index">{{d}}</div></div>
+        </v-col>
+      </v-row>
+
       <v-row v-if="classe.pca">
         <v-col cols="2">
           <div class="info-label">PCA</div>
@@ -38,6 +48,16 @@
           <div class="info-content">{{classe.subFormaContagem}}</div>
         </v-col>
       </v-row>
+      
+      <v-row v-if="classe.justificacaoPCA">
+        <v-col cols="2">
+          <div class="info-label">Justificação do PCA</div>
+        </v-col>
+        <v-col>
+          <div class="info-content">{{classe.justificacaoPCA}}</div>
+        </v-col>
+      </v-row>
+
       <v-row v-if="classe.df">
         <v-col cols="2">
           <div class="info-label">Destino Final</div>
@@ -55,6 +75,15 @@
         </v-col>
         <v-col v-if="classe.notaDF">
           <div class="info-content">{{classe.notaDF}}</div>
+        </v-col>
+      </v-row>
+      
+      <v-row v-if="classe.justificacaoDF">
+        <v-col cols="2">
+          <div class="info-label">Justificação do DF</div>
+        </v-col>
+        <v-col>
+          <div class="info-content">{{classe.justificacaoDF}}</div>
         </v-col>
       </v-row>
       
