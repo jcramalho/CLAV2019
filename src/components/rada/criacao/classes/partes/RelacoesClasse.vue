@@ -93,7 +93,7 @@
                 </v-col>
               </v-row>
 
-              <v-row>
+              <v-row justify="center">
                 <v-col sm="5" xs="12">
                   <v-autocomplete
                     :rules="[v => !!v || 'Campo obrigatório!']"
@@ -113,7 +113,7 @@
                     </template>
                   </v-autocomplete>
                 </v-col>
-                <v-col sm="5" xs="12">
+                <v-col sm="4" xs="12">
                   <v-select
                     :disabled="iscodvalido"
                     :rules="[v => !!v || 'Campo obrigatório!']"
@@ -136,13 +136,9 @@
                     </template>
                   </v-select>
                 </v-col>
-                <v-col sm="2" xs="12">
-                  <v-btn text rounded @click="add()">
-                    <v-icon size="35" color="green lighten-1">add_circle</v-icon>
-                  </v-btn>
-                  <v-btn text rounded @click="$refs.addRel.reset()">
-                    <v-icon size="35" color="red lighten-1">delete_sweep</v-icon>
-                  </v-btn>
+                <v-col md="3" sm="3" xs="12" class="text-right">
+                  <v-icon @click="add()" size="35" color="green lighten-1">add_circle</v-icon>
+                  <v-btn style="margin-left: 10px" dark color="red darken-4" @click="$refs.addRel.reset()">Limpar</v-btn>
                 </v-col>
               </v-row>
               <v-row v-if="!!alertOn">
@@ -275,6 +271,7 @@ export default {
     showClasse(item) {
       if (this.classes.some(cl => cl.codigo == item.serieRelacionada.codigo)) {
         this.treeview_object = {
+          tipo: item.serieRelacionada.tipo,
           codigo: item.serieRelacionada.codigo,
           titulo:
             item.serieRelacionada.codigo + " - " + item.serieRelacionada.titulo,

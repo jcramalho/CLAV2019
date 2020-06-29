@@ -114,7 +114,7 @@
                             {{ item.titulo }}
                           </td>
                         </tr>
-                        <tr v-if="item.pca">
+                        <tr v-if="item.pca && item.pca != 'NE'">
                           <td style="width:20%;">
                             <div class="info-label">Prazo de Conservação Administrativa</div>
                           </td>
@@ -122,7 +122,7 @@
                             {{ item.pca }} Anos
                           </td>
                         </tr>
-                        <tr v-if="item.destino">
+                        <tr v-if="item.destino && item.destino != 'NE'">
                           <td style="width:20%;">
                             <div class="info-label">Destino Final</div>
                           </td>
@@ -144,7 +144,7 @@
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
-                        <tr v-if="item.dono && item.destino === 'C'">
+                        <tr v-if="item.dono && item.dono.length>0 ">
                           <td style="width:20%;">
                             <div class="info-label">Dono do PN</div>
                           </td>

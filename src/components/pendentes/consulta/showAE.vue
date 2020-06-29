@@ -1,27 +1,24 @@
 <template>
-  <v-card class="my-2 panel panel-default panel-custom">
+<v-card class="my-2 panel panel-default panel-custom">
     <v-card-title class="pa-2 indigo darken-4 title white--text" dark>
-      {{ p.objeto.acao }} do Auto de Eliminação
+      {{ p.acao }} de {{p.tipo}}
     </v-card-title>
     <v-card-text class="panel-body">
       <div class="form-group">
         <table class="consulta">
           <tr>
             <td style="width:20%;">
-              <div class="info-label">Entidade Responsável:</div>
+              <div class="info-label">Criador:</div>
             </td>
-            <td style="width:80%;" v-if="p.objeto.dados.ae.entidade">
-              {{ p.objeto.dados.ae.entidade }}
-            </td>
-            <td style="width:80%;" v-else>
-              {{ p.entidade }}
+            <td style="width:80%;">
+              {{ p.criadoPor }}
             </td>
           </tr>
-          <tr v-if="p.objeto.dados.ae.legislacao">
+          <tr v-if="p.objeto.legislacao">
             <td style="width:20%;">
               <div class="info-label">Fonte de Legitimação</div>
             </td>
-            <td style="width:80%;">{{ p.objeto.dados.ae.legislacao }}</td>
+            <td style="width:80%;">{{ p.objeto.legislacao }}</td>
           </tr>
           <tr v-else>
             <td style="width:20%;">
@@ -33,7 +30,7 @@
             <td style="width:20%;">
               <div class="info-label">Fundo</div>
             </td>
-            <td style="width:80%;"><div v-for="(f,i) in p.objeto.dados.ae.fundo" :key="i">{{f}}</div></td>
+            <td style="width:80%;"><div v-for="(f,i) in p.objeto.fundo" :key="i">{{f}}</div></td>
           </tr>
         </table>
 
@@ -45,7 +42,7 @@
             <v-expansion-panel-content>
               <v-list>
                 <v-list-group
-                  v-for="(item,index) in p.objeto.dados.ae.zonaControlo"
+                  v-for="(item,index) in p.objeto.zonaControlo"
                   :key="index"
                   color="grey darken-1"
                   no-action
@@ -114,10 +111,7 @@
                           <td v-if="item.destino === 'E'" style="width:80%;">
                             Eliminação
                           </td>
-                          <td
-                            v-else-if="item.destino === 'C'"
-                            style="width:80%;"
-                          >
+                          <td v-else-if="item.destino === 'C'" style="width:80%;">
                             Conservação
                           </td>
                           <td v-else style="width:80%;">
@@ -158,9 +152,7 @@
                               N.º de agregações
                             </div>
                           </td>
-                          <td style="width:80%;">
-                            {{ item.agregacoes.length }}
-                          </td>
+                          <td style="width:80%;">{{ item.agregacoes.length }}</td>
                         </tr>
                         <tr v-if="item.uiPapel">
                           <td style="width:20%;">

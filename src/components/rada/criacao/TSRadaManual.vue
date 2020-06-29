@@ -27,12 +27,12 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="!!TS.classes[0]">
       <v-col xs="11" sm="11">
         <v-text-field v-model="search" label="Pesquise a classe" clearable append-icon="search"></v-text-field>
       </v-col>
       <v-col xs="1" sm="1">
-        <v-tooltip top v-if="!!TS.classes[0]">
+        <v-tooltip top>
           <template v-slot:activator="{ on }">
             <v-switch
               prepend-icon="table_view"
@@ -203,9 +203,32 @@
       indeterminate
     ></v-progress-circular>
     <div v-else>
-      <v-row>
-        <v-col>
+      <v-row no-gutters>
+        <v-col cols="12">
           <v-btn
+            color="indigo darken-4"
+            dark
+            @click="$emit('voltar', 2)"
+          >Voltar</v-btn>
+          <v-btn
+            style="margin-left: 10px"
+            color="indigo darken-4"
+            dark
+            @click="$emit('guardar', 'sim')"
+          >
+            Guardar Trabalho
+            <v-icon right>save</v-icon>
+          </v-btn>
+          <v-btn
+            style="margin-left: 10px"
+            color="indigo darken-4"
+            dark
+            @click="$emit('guardar', 'nao')"
+          >
+            Continuar Depois
+          </v-btn>
+          <v-btn
+            style="margin-left: 10px"
             :disabled="
           !Boolean(TS.classes[0]) ||
             UIs_validas ||
@@ -215,16 +238,10 @@
             color="indigo darken-4"
             @click="sendToFather()"
           >
-            <font style="color: white">Criar RADA</font>
+            <font style="color: white">Submeter</font>
           </v-btn>
-
-          <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
-        </v-col>
-        <v-spacer></v-spacer>
-        <v-col align="right">
-          <v-btn color="indigo darken-4" dark @click="$emit('update:toSave', true)">
-            Guardar Trabalho
-            <v-icon right>save</v-icon>
+          <v-btn style="margin-left: 10px" color="red darken-4" dark v-if="pode_remover" @click="$emit('remover')">
+            Eliminar
           </v-btn>
         </v-col>
       </v-row>
@@ -252,7 +269,8 @@ export default {
     "legislacao",
     "legislacaoProcessada",
     "loading_circle",
-    "toSave"
+    "toSave",
+    "pode_remover"
   ],
   components: {
     AddOrgFunc,

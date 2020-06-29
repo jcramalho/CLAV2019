@@ -1,9 +1,8 @@
 <template>
   <div>
     <!-- 1 -->
-    <!-- {{ JSON.stringify(newSerie.pca) }} -->
     <v-row>
-      <!-- {{newSerie}} -->
+
       <v-col md="3" sm="3">
         <div class="info-label">Prazo de Conservação Administrativo</div>
       </v-col>
@@ -36,7 +35,6 @@
     <FormaContagem :newSerie="newSerie" :formaContagem="formaContagem" :rules="rules" />
     <!-- 3 -->
     <JustificacaoPCA :newSerie="newSerie" :classes="classes" :rules="rules" />
-    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     <!-- 4 -->
     <JustificacaoDF :newSerie="newSerie" :classes="classes" :rules="rules" />
   </div>

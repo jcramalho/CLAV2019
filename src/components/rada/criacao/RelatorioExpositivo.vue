@@ -8,7 +8,6 @@
           :tipologias="tipologias"
           :entidadesProcessadas="entidadesProcessadas"
         />
-        <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Entidades Produtoras</div>
@@ -76,7 +75,6 @@
           </v-autocomplete>
         </v-col>
       </v-row>
-      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Data Inicial da Documentação</div>
@@ -128,8 +126,8 @@
         </v-col>
       </v-row>
       <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
-        <v-expansion-panel popout focusable>
-          <v-expansion-panel-header class="expansion-panel-heading">
+        <v-expansion-panel class="ma-1" popout focusable>
+          <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
             <b>Contexto</b>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -163,8 +161,8 @@
             </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
-        <v-expansion-panel popout focusable>
-          <v-expansion-panel-header class="expansion-panel-heading">
+        <v-expansion-panel class="ma-1" popout focusable>
+          <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
             <b>Conteúdo e Estrutura</b>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -184,8 +182,8 @@
             </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
-        <v-expansion-panel popout focusable>
-          <v-expansion-panel-header class="expansion-panel-heading">
+        <v-expansion-panel class="ma-1" popout focusable>
+          <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
             <b>Condições de Acesso e Utilização</b>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -222,11 +220,9 @@
       </v-expansion-panels>
     </v-form>
     <br />
-    <v-btn dark color="indigo darken-4" @click="next">Continuar</v-btn>
-    <v-btn @click="$emit('seguinte', 1)">Voltar</v-btn>
-    <v-btn color="indigo darken-4" text @click="apagar">
-      <v-icon>delete_sweep</v-icon>
-    </v-btn>
+    <v-btn color="indigo darken-4" dark @click="$emit('seguinte', 1)">Voltar</v-btn>
+    <v-btn dark color="indigo darken-4" style="margin-left: 10px" @click="next">Continuar</v-btn>
+    <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">Limpar</v-btn>
   </v-card>
 </template>
 
