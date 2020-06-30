@@ -11,7 +11,6 @@
       <v-col cols="1">
         <v-icon color="green" @click="cores.legislacao='#C8E6C9'">check</v-icon>
         <v-icon color="red" @click="cores.legislacao='#FFCDD2'">clear</v-icon>
-        <v-icon @click="abrirEditor('Fonte de Legitimação',-1)">create</v-icon>
       </v-col>
     </v-row>
     <v-row v-else>
@@ -253,16 +252,7 @@
             <span>Edição do campo: {{editarCampo}}</span> 
           </v-card-title>
           <v-card-text class="mt-4">
-            <v-row class="ma-2" v-if="editarCampo=='Fonte de Legitimação'">
-              <v-autocomplete
-                label="Selecione a fonte de legitimação"
-                :items="portaria"
-                v-model="legislacao"
-                solo
-                dense
-              ></v-autocomplete>
-            </v-row>
-            <v-row class="ma-2" v-else>
+            <v-row class="ma-2">
               <v-text-field
                 hint="Exemplo: 11.50"
                 label="Insira a medição de UI"
@@ -467,24 +457,14 @@ export default {
 
     adicionar() {
       const reUI = /^-?\d*(\.\d\d?)?$/;
-      if(this.editarCampo === "Fonte de Legitimação") {
-        if(!this.legislacao) {
-          this.erro = "O campo da Fonte de Legislação têm de ser preenchido";
-          this.erroDialog = true;
-        }
-        else
-          this.p.objeto.dados.ae.legislacao = this.legislacao;
-        this.legislacao = "";
-        this.editarCampo = "";
-        this.editarIndex = -1;
-        this.editar = false;
-      }
-      else if(this.editarCampo === "Medição das UI em papel (m.l.)") {
+      if(this.editarCampo === "Medição das UI em papel (m.l.)") {
         if(this.medicao && !reUI.test(this.medicao)) {
           this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
           this.erroDialog = true;
-        } else
+        } else {
           this.p.objeto.dados.ae.zonaControlo[this.editarIndex].uiPapel = this.medicao;
+          this.cores.zonaControlo[this.editarIndex] = "#ffe0b2"
+        }
         this.medicao = "";
         this.editarCampo = "";
         this.editarIndex = -1;
@@ -494,8 +474,10 @@ export default {
         if(this.medicao && !reUI.test(this.medicao)) {
           this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
           this.erroDialog = true;
-        } else
+        } else {
           this.p.objeto.dados.ae.zonaControlo[this.editarIndex].uiDigital = this.medicao;
+          this.cores.zonaControlo[this.editarIndex] = "#ffe0b2"
+        }
         this.medicao = "";
         this.editarCampo = "";
         this.editarIndex = -1;
@@ -505,8 +487,10 @@ export default {
         if(this.medicao && !reUI.test(this.medicao)) {
           this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
           this.erroDialog = true;
-        } else
+        } else {
           this.p.objeto.dados.ae.zonaControlo[this.editarIndex].uiOutros = this.medicao;
+          this.cores.zonaControlo[this.editarIndex] = "#ffe0b2"
+        }
         this.medicao = "";
         this.editarCampo = "";
         this.editarIndex = -1;
