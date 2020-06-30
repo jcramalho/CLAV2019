@@ -71,21 +71,22 @@
 
           <!-- Operações -->
           <v-col cols="auto">
-            <v-icon class="mr-1" color="green" @click="verifica(campo)">
-              check
-            </v-icon>
-            <v-icon class="mr-1" color="red" @click="anula(campo)">
-              clear
-            </v-icon>
-            <v-icon
-              v-if="!(info instanceof Array)"
-              class="mr-1"
-              color="orange"
-              @click="edita(campo)"
-            >
-              create
-            </v-icon>
-
+            <span v-if="!esconderOperacoes[campo]">
+              <v-icon class="mr-1" color="green" @click="verifica(campo)">
+                check
+              </v-icon>
+              <v-icon class="mr-1" color="red" @click="anula(campo)">
+                clear
+              </v-icon>
+              <v-icon
+                v-if="!(info instanceof Array)"
+                class="mr-1"
+                color="orange"
+                @click="edita(campo)"
+              >
+                create
+              </v-icon>
+            </span>
             <v-icon @click="abrirNotaDialog(campo)">
               add_comment
             </v-icon>
@@ -165,6 +166,7 @@ export default {
 
   data() {
     return {
+      esconderOperacoes: {},
       notaDialog: {
         visivel: false,
         campo: "",
@@ -240,6 +242,8 @@ export default {
           dados: this.dados[key],
           nota: null,
         };
+
+      this.esconderOperacoes[key] = false;
     });
 
     this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
@@ -391,6 +395,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+
+      this.esconderOperacoes[campo] = true;
     },
 
     anula(campo) {
@@ -398,6 +404,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+
+      this.esconderOperacoes[campo] = true;
     },
 
     edita(campo) {
@@ -437,6 +445,8 @@ export default {
         dados: event.dados,
         cor: "amarelo",
       };
+
+      this.esconderOperacoes[event.campo.key] = true;
     },
   },
 };
