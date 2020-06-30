@@ -85,7 +85,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="indigo darken-4" dark @click="cancelar">
-                  Cancelar
+                  Voltar
                 </v-btn>
                 <v-btn color="indigo darken-4" dark @click="executar">
                   Exportar
