@@ -92,7 +92,7 @@
               (tipo == 'Organizacional' && entidade_tipologia == null)
           "
         >
-          Enviar
+          Importar
         </v-btn>
       </v-card-actions>
     </v-card>

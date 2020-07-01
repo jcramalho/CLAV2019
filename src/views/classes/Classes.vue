@@ -29,7 +29,7 @@
           <v-btn
             @click="
               search = '';
-              showClasses = false;
+              showClasses = !showClasses;
             "
           >
             <v-icon left>filter_list</v-icon>Pesquisa Avançada
@@ -234,9 +234,17 @@
               class="mx-2"
               dark
               color="indigo accent-4"
+              @click="showClasses = true"
+            >
+              Voltar
+            </v-btn>
+            <v-btn
+              class="mx-2"
+              dark
+              color="red"
               @click="cancelarPesquisa"
             >
-              Cancelar
+              Limpar
             </v-btn>
             <v-btn
               class="mx-2"
@@ -480,7 +488,7 @@ export default {
       this.cleanNome();
       this.opLogicas = ["E", "OU"];
       this.conetor = "E";
-      this.showClasses = true;
+      //this.showClasses = true;
     },
 
     advancedFilter: async function(classes, op) {

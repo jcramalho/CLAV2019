@@ -17,9 +17,9 @@
       />
     </div>
     <div>
-      <Loading v-if="!fontesRADAReady" :message="'fontes de legitimação'" />
+      <!--Loading v-if="!fontesRADAReady" :message="'fontes de legitimação'" /-->
       <ListagemLeg
-        v-else
+        v-if="fontesRADA.length>0"
         :lista="fontesRADA"
         tipo="TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE DOCUMENTAÇÃO ACUMULADA"
       />
@@ -73,7 +73,7 @@ export default {
             data: f.rada.split("_")[3],
             tipo: "RADA",
             entidade: f.entidade.split("_")[1],
-            sumario: "Tabela de Seleção para Documentação Acumulada da entidade " + f.entidade.split("_")[1] + ", no ano de " + f.rada.split("_")[3] +".",
+            sumario: "Tabela de Seleção para Documentação Acumulada de " + f.entidade.split("_")[1] + ", relativo ao ano " + f.rada.split("_")[3] +".",
             link: ""
           };
         });
