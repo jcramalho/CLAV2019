@@ -11,7 +11,7 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
 
-    <div class="body-2">Versão: 2020-06-29</div>
+    <div class="body-2">Versão: {{ interfaceVersion }}</div>
 
     <v-spacer></v-spacer>
 
@@ -28,11 +28,14 @@
 </template>
 
 <script>
+const interfaceVersion = require("@/config/global").interfaceVersion;
+
 export default {
   data: function() {
     return {
       ontoReady: false,
-      ontologia: ""
+      ontologia: "",
+      interfaceVersion: interfaceVersion
     };
   },
 
