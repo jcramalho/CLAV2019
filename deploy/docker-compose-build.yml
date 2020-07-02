@@ -9,6 +9,7 @@ services:
       args:
         - VUE_APP_API_URL=${API_URL}
         - VUE_APP_API_VERSION=${API_VERSION}
+        - VUE_APP_INTERFACE_VERSION=${INTERFACE_VERSION}
     restart: always
     environment:
       - SERVER_URL=${SERVER_URL}
