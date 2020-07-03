@@ -284,7 +284,7 @@ export default {
         this.novoHistorico.tipologiasSel = {
           ...this.novoHistorico.tipologiasSel,
           cor: "amarelo",
-          dados: this.tipologia.tipologiasSel,
+          dados: this.dados.tipologiasSel,
         };
       }
     },
@@ -295,7 +295,7 @@ export default {
       this.novoHistorico.tipologiasSel = {
         ...this.novoHistorico.tipologiasSel,
         cor: "amarelo",
-        dados: this.tipologia.tipologiasSel,
+        dados: this.dados.tipologiasSel,
       };
     },
 
@@ -432,7 +432,7 @@ export default {
     editarCampo(event) {
       this.editaCampo.visivel = false;
 
-      this.tipologia[event.campo.key] = event.dados;
+      this.dados[event.campo.key] = event.dados;
       this.novoHistorico[event.campo.key] = {
         ...this.novoHistorico[event.campo.key],
         dados: event.dados,

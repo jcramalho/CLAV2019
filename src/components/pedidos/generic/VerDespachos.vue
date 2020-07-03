@@ -35,7 +35,7 @@
     <v-card-actions>
       <v-spacer />
       <v-btn color="red darken-4" text rounded dark @click="cancelar()">
-        Cancelar
+        Fechar
       </v-btn>
     </v-card-actions>
   </v-card>
