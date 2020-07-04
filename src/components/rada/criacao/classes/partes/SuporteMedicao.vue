@@ -19,7 +19,7 @@
       </v-col>
       <v-col sm="2" md="2">
         <v-text-field
-          :rules="[v => (!!v && new Number(v) >= 0) || 'Campo obrigatório!']"
+          :rules="[v => regra_medicao(v)]"
           type="number"
           solo
           clearable
@@ -61,6 +61,17 @@ export default {
     ]
   }),
   methods: {
+    regra_medicao(v){
+      if(!!v){
+        if(new Number(v) >= 0){
+          return true;
+        } else {
+          return 'Valor tem que ser inteiro!'
+        }
+      } else {
+        return 'Campo obrigatório!'
+      }
+    },
     add() {
       this.newSerie.suporte_e_medicao.push({ suporte: null, medicao: null });
     },

@@ -176,7 +176,7 @@ export default {
           let data_final = new Date(v);
 
           if (data_inicial > data_final) {
-            return "Data final inválida! É anterior à data inicial.";
+            return "Data final inválida. Data selecionada é anterior à data inicial.";
           }
         }
         return true;

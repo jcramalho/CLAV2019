@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
-      <div v-if="!RE.tipologiasProd[0]">
+      <div v-if="RE.tipologiasProd == null">
         <NovaEntidade
           :entidades="entidades"
           :produtoras="RE.entidadesProd"
@@ -19,7 +19,7 @@
               :items="entidadesProcessadas"
               item-text="entidade"
               item-value="entidade"
-              placeholder="Selecione as Entidades Produtoras."
+              placeholder="Selecione as Entidades Produtoras"
               multiple
               solo
             >
@@ -48,14 +48,16 @@
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
-            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
+            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
             v-model="RE.tipologiasProd"
             :items="tipologias"
             item-text="tipologia"
             item-value="tipologia"
-            placeholder="Selecione as Tipologias das Entidades Produtoras."
-            multiple
+            placeholder="Selecione as Tipologias das Entidades Produtoras"
             solo
+            :disabled="produtoraTipologiaClasse(RE.tipologiasProd)"
+            chips
+            deletable-chips
           >
             <template v-slot:no-data>
               <v-list-item>
@@ -63,14 +65,6 @@
                   <strong>Tipologia</strong> em questão não existe!
                 </v-list-item-title>
               </v-list-item>
-            </template>
-            <template v-slot:selection="data">
-              <v-chip
-                v-bind="data.attrs"
-                :input-value="data.selected"
-                :close="produtoraTipologiaClasse(data.item, data.item.tipologia)"
-                @click:close="removeTip(data.item)"
-              >{{ data.item.tipologia }}</v-chip>
             </template>
           </v-autocomplete>
         </v-col>
@@ -258,7 +252,7 @@ export default {
           let data_final = new Date(v);
 
           if (data_inicial > data_final) {
-            return "Data final inválida! É anterior à data inicial.";
+            return "Data final inválida. Data selecionada é anterior à data inicial.";
           }
         }
         return true;
@@ -299,10 +293,6 @@ export default {
       const index = this.RE.entidadesProd.findIndex(i => i === item.entidade);
       if (index >= 0) this.RE.entidadesProd.splice(index, 1);
     },
-    removeTip: function(item) {
-      const index = this.RE.tipologiasProd.findIndex(i => i === item.tipologia);
-      if (index >= 0) this.RE.tipologiasProd.splice(index, 1);
-    },
     produtoraEntidadeClasse(item, entidade) {
       let classes = this.classes.filter(
         e => e.tipo == "Série" && e.entProdutoras.some(ent => ent == entidade)
@@ -320,24 +310,19 @@ export default {
       item.disabled = false;
       return true;
     },
-    produtoraTipologiaClasse(item, tipologia) {
+    produtoraTipologiaClasse(tipologia) {
       let classes = this.classes.filter(
-        e =>
-          e.tipo == "Série" &&
-          e.tipologiasProdutoras.some(tip => tip == tipologia)
+        e => e.tipo == "Série" && e.tipologiasProdutoras == tipologia
       );
 
-      let uis = this.UIs.filter(e =>
-        e.produtor.tipologiasProdutoras.some(tip => tip == tipologia)
+      let uis = this.UIs.filter(
+        e => e.produtor.tipologiasProdutoras == tipologia
       );
 
       if (classes.length > 0 || uis.length > 0) {
-        item.disabled = true;
-        return false;
+        return true;
       }
-
-      item.disabled = false;
-      return true;
+      return false;
     }
   }
 };

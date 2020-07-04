@@ -69,8 +69,7 @@
         ></v-text-field>
         <v-data-table
           :headers="headers"
-          :items="TS.UIs"
-          :search="search"
+          :items="filtrar_uis"
           :footer-props="footer_props"
           :items-per-page="5"
         >
@@ -204,6 +203,23 @@ export default {
     ]
   }),
   computed: {
+    filtrar_uis() {
+      if (!!this.search) {
+        return this.TS.UIs.filter(
+          e =>
+            e.codigo.includes(this.search) ||
+            e.titulo.includes(this.search) ||
+            e.classesAssociadas.some(
+              e =>
+                e.codigo.includes(this.search) ||
+                e.tipo.includes(this.search) ||
+                e.titulo.includes(this.search)
+            )
+        );
+      } else {
+        return this.TS.UIs;
+      }
+    },
     filter() {
       return (item, searchClasse) => {
         return (

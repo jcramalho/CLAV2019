@@ -88,7 +88,7 @@
             </v-col>
             <v-col xs="12" sm="3">
               <SelecionarData
-                label="Data Inicial"
+                label="Data Final"
                 :d="UI.dataFinal"
                 @dataSelecionada="UI.dataFinal = $event"
                 :dataMinima="RE.dataInicial"

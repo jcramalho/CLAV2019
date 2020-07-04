@@ -16,7 +16,12 @@
 
               <v-card-text align="center">
                 <br />
-                <v-btn class="ma-3 pa-3" color="indigo darken-4" dark @click="toDelete = false">Voltar</v-btn>
+                <v-btn
+                  class="ma-3 pa-3"
+                  color="indigo darken-4"
+                  dark
+                  @click="toDelete = false"
+                >Voltar</v-btn>
                 <v-btn class="ma-3 pa-5" color="red darken-4" dark @click="eliminarClasse">Sim</v-btn>
               </v-card-text>
             </v-card>
@@ -35,7 +40,12 @@
               <div class="info-label">Título</div>
             </v-col>
             <v-col sm="3" md="3">
-              <v-text-field v-model="classe.titulo" solo></v-text-field>
+              <v-text-field
+                v-model="classe.titulo"
+                :rules="[v => !!v || 'Campo obrigatório!']"
+                clearable
+                solo
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -251,9 +261,11 @@ export default {
       }
     },
     async save() {
-      await this.tipo();
-      this.$emit("atualizacao", this.classe);
-      this.dialogState = false;
+      if (this.$refs.form.validate()) {
+        await this.tipo();
+        this.$emit("atualizacao", this.classe);
+        this.dialogState = false;
+      }
     },
     eliminarClasse() {
       this.$emit("remover", this.classe);

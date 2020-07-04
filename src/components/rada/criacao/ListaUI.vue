@@ -20,8 +20,7 @@
         <v-data-table
           style="background-color:#fafafa"
           :headers="headers"
-          :items="TS.UIs"
-          :search="search"
+          :items="filtrar_uis"
           :footer-props="footer_props"
           :items-per-page="5"
         >
@@ -41,7 +40,11 @@
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
               <td>
-                <v-list v-if="!!props.item.classesAssociadas[0]" dense :style="'background-color:' + isComplete(props.item)">
+                <v-list
+                  v-if="!!props.item.classesAssociadas[0]"
+                  dense
+                  :style="'background-color:' + isComplete(props.item)"
+                >
                   <v-list-item v-for="(classe, i) in props.item.classesAssociadas" :key="i">
                     <v-list-item-icon>
                       <img
@@ -54,7 +57,9 @@
                     <v-list-item-content>{{classe.codigo + " - " + buscarTituloTable(classe.codigo)}}</v-list-item-content>
                   </v-list-item>
                 </v-list>
-                <p v-else><br/>Não tem séries/subséries associadas!</p>
+                <p v-else>
+                  <br />Não tem séries/subséries associadas!
+                </p>
               </td>
             </tr>
           </template>
@@ -147,6 +152,23 @@ export default {
       }
     ]
   }),
+  computed: {
+    filtrar_uis() {
+      if (!!this.search) {
+        return this.TS.UIs.filter(
+          e =>
+            e.codigo.includes(this.search) ||
+            e.titulo.includes(this.search) ||
+            e.classesAssociadas.some(
+              e =>
+                e.codigo.includes(this.search) || e.tipo.includes(this.search) || this.buscarTituloTable(e.codigo).includes(this.search)
+            )
+        );
+      } else {
+        return this.TS.UIs;
+      }
+    }
+  },
   methods: {
     buscarTituloTable(codigo) {
       let classe = this.TS.classes.find(cl => cl.codigo == codigo);
