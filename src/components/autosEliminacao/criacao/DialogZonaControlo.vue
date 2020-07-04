@@ -150,20 +150,20 @@
         </v-col>
       </v-row>
       <v-row justify="end">
-        <v-btn color="red darken-4" v-if="!this.zona" dark text @click="limparZC">Limpar</v-btn>
-        <v-btn color="red darken-4" v-else dark text @click="closeZC">Fechar</v-btn>
+        <v-btn class="mx-1" color="indigo darken-4" dark @click="closeZC">Voltar</v-btn>
         <v-btn
           v-if="!this.zona"
-          color="green darken-4"
+          class="mx-1" 
+          color="indigo darken-4"
           dark
-          text
           @click="adicionarZC"
         >
           Adicionar
         </v-btn>
-        <v-btn v-else color="green darken-4" dark text @click="editarZC">
+        <v-btn v-else class="mx-1" color="indigo darken-4" dark @click="editarZC">
           Guardar
         </v-btn>
+        <v-btn class="mx-1" color="red darken-4" dark @click="limparZC">Limpar</v-btn>
       </v-row>
     </v-card-text>
     <v-dialog v-model="erroDialog" width="700" persistent>

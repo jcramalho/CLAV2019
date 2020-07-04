@@ -163,7 +163,7 @@
                 ></v-autocomplete>
               </v-col>
             </v-row>
-            <v-btn class="ma-2" color="primary darken-4" @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Avançar</v-btn>
+            <v-btn class="ma-2" color="indigo darken-4" dark @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Continuar</v-btn>
           </v-stepper-content>
 
           <v-stepper-step :complete="steps > 2" step="2">Importação dos ficheiros de submissão</v-stepper-step>
@@ -186,9 +186,9 @@
               </v-col>
             </v-row>
             
-            <v-btn @click="steps = 1" class="ma-2">Voltar</v-btn>
-            <v-btn class="ma-2" color="primary darken-4" @click="converter()" :disabled="!fileSerie || !fileAgreg">Validar Ficheiros e Avançar</v-btn>
-            <v-btn class="ma-2" text @click="fileSerie=null; fileAgreg=null"><span class="red--text">Limpar</span></v-btn>
+            <v-btn @click="steps = 1" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
+            <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie || !fileAgreg">Validar Ficheiros e Continuar</v-btn>
+            <v-btn class="ma-2" color="red darken-4" dark @click="fileSerie=null; fileAgreg=null">Limpar</v-btn>
           </v-stepper-content>
 
           <v-stepper-step step="3">Validação de Séries / Agregações</v-stepper-step>
@@ -200,14 +200,15 @@
               :submit="submit" 
               :tipo="tipo"
             />
-            <v-btn @click="steps = 2" class="ma-2">Voltar</v-btn>
+            <v-btn @click="steps = 2" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
             <v-btn
               medium
-              color="primary darken-4"
+              color="indigo darken-4"
+              dark
               @click="validar"
               :disabled="!fileSerie || !fileAgreg || !auto.fundo "
               class="ma-2"
-            >Validar Auto de Eliminação</v-btn>
+            >Validar e Submeter</v-btn>
           </v-stepper-content>
         </v-stepper>
       </v-card-text>
@@ -472,14 +473,14 @@ export default {
       var pedidoParams = {
         tipoPedido: "Importação",
         tipoObjeto: tipo,
-        novoObjeto: {
-          ae: this.auto
-        },
+        novoObjeto: this.auto,
         user: { email: user.email },
         entidade: user.entidade,
         token: this.$store.state.token
       };
 
+      pedidoParams.objetoOriginal = this.auto;
+      
       const codigoPedido = await this.$request(
         "post",
         "/pedidos",

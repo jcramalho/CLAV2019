@@ -156,6 +156,8 @@ export default {
         )
       );
 
+      delete distribuicao.despacho;
+
       distribuicao.data = new Date().toISOString();
       distribuicao.proximoResponsavel = {
         nome: this.utilizadorSelecionado.name,
@@ -172,6 +174,9 @@ export default {
           `/pedidos/${this.pedido.codigo}/distribuicao`,
           distribuicao
         );
+
+        this.utilizadorSelecionado = null;
+        this.mensagemDespacho = null;
 
         this.$router.push("/pedidos");
       } catch (err) {

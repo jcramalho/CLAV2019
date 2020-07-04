@@ -41,7 +41,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="indigo darken-4" dark @click="cancelar">
+              <v-btn color="red" dark @click="cancelar">
                 Cancelar
               </v-btn>
               <v-btn color="indigo darken-4" dark @click="executar">

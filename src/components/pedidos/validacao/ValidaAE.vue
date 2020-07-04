@@ -1,43 +1,52 @@
 <template>
-  <div>
-    <span style="display:none;">{{colorSwitch}}</span>
-    <v-row v-if="p.objeto.dados.ae.legislacao">
+  <Loading v-if="loading" :message="'pedido'" />
+  <div v-else>
+    <v-row v-if="dados.legislacao">
       <v-col cols="2">
-        <div class="info-label" :key="p.objeto.dados.cores.legislacao" :style="'background-color: '+p.objeto.dados.cores.legislacao">Fonte de Legitimação</div>
+        <div :class="[
+          'info-descricao',
+          `info-descricao-${novoHistorico.legislacao.cor}`
+        ]">Fonte de Legitimação</div>
       </v-col>
       <v-col class="mt-3">
-        {{p.objeto.dados.ae.legislacao}}
+        {{dados.legislacao}}
       </v-col>
       <v-col cols="1">
-        <v-icon color="green" @click="p.objeto.dados.cores.legislacao='#C8E6C9'">check</v-icon>
-        <v-icon color="red" @click="p.objeto.dados.cores.legislacao='#FFCDD2'">clear</v-icon>
+        <v-icon color="green" @click="novoHistorico.legislacao.cor='verde'">check</v-icon>
+        <v-icon color="red" @click="novoHistorico.legislacao.cor='vermelho'">clear</v-icon>
       </v-col>
     </v-row>
     <v-row v-else>
       <v-col cols="2">
-        <div class="info-label" :key="p.objeto.dados.cores.legislacao" :style="'background-color: '+p.objeto.dados.cores.legislacao">Referencial Classificativo</div>
+        <div :class="[
+          'info-descricao',
+          `info-descricao-${novoHistorico.referencial.cor}`
+        ]">Referencial Classificativo</div>
       </v-col>
       <v-col class="mt-3">
         Lista Consolidada
       </v-col>
       <v-col cols="1">
-        <v-icon color="green" @click="p.objeto.dados.cores.legislacao='#C8E6C9'">check</v-icon>
-        <v-icon color="red" @click="p.objeto.dados.cores.legislacao='#FFCDD2'">clear</v-icon>
+        <v-icon color="green" @click="novoHistorico.referencial.cor='verde'">check</v-icon>
+        <v-icon color="red" @click="novoHistorico.referencial.cor='vermelho'">clear</v-icon>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="2">
-        <div class="info-label"  :key="p.objeto.dados.cores.fundo" :style="'background-color: '+p.objeto.dados.cores.fundo">Fundo</div>
+        <div :class="[
+          'info-descricao',
+          `info-descricao-${novoHistorico.fundo.cor}`
+        ]">Fundo</div>
       </v-col>
       <v-col class="mr-2">
           <div
-            v-for="(f, i) in p.objeto.dados.ae.fundo" :key="i"
+            v-for="(f, i) in dados.fundo" :key="i"
           >{{f}}
           </div>
       </v-col>
       <v-col cols="1">
-              <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.fundo='#C8E6C9'">check</v-icon>
-              <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.fundo='#FFCDD2'">clear</v-icon>
+              <v-icon color="green" @click="novoHistorico.fundo.cor='verde'">check</v-icon>
+              <v-icon color="red" @click="novoHistorico.fundo.cor='vermelho'">clear</v-icon>
            </v-col>
     </v-row>
 
@@ -47,13 +56,16 @@
         <v-expansion-panel-content>
           <v-list>
             <v-list-group
-              v-for="(item,index) in p.objeto.dados.ae.zonaControlo"
+              v-for="(item,index) in dados.zonaControlo"
               :key="item.codigo"
               color="grey darken-1"
               no-action
             >
               <template v-slot:activator>
-                <v-list-item-content class="info-label" :key="p.objeto.dados.cores.zonaControlo[index]" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">
+                <v-list-item-content :class="[
+                  'info-descricao',
+                  `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                ]">
                   <v-list-item-title
                     v-if="item.codigo && item.referencia"
                     v-text="
@@ -76,27 +88,40 @@
                   <table class="consulta mx-5">
                     <tr v-if="item.codigo">
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Código da Classe</div>
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Código da Classe</div>
                       </td>
                       <td style="width:70%;">
                         {{ item.codigo }}
                       </td>
                       <td style="width:10%">
-                        <v-icon color="green" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index]='#C8E6C9'">check</v-icon>
-                        <v-icon color="red" @click="colorSwitch++; p.objeto.dados.cores.zonaControlo[index]='#FFCDD2'">clear</v-icon>  
+                        <v-icon color="green" @click="novoHistorico.zonaControlo[index].cor='verde'">check</v-icon>
+                        <v-icon color="red" @click="novoHistorico.zonaControlo[index].cor='vermelho'">clear</v-icon>  
                       </td>
                     </tr>
                     <tr v-if="item.referencia">
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Referência</div>
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Referência</div>
                       </td>
-                      <td style="width:80%;">
+                      <td style="width:70%;">
                         {{ item.referencia }}
+                      </td>
+                      <td v-if="!item.codigo" style="width:10%">
+                        <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index]='#C8E6C9'">check</v-icon>
+                        <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index]='#FFCDD2'">clear</v-icon>  
                       </td>
                     </tr>
                     <tr v-if="item.titulo">
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Título</div>
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Título</div>
                       </td>
                       <td style="width:80%;">
                         {{ item.titulo }}
@@ -104,7 +129,10 @@
                     </tr>
                     <tr v-if="item.prazoConservacao">
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Prazo de Conservação Administrativa</div>
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Prazo de Conservação Administrativa</div>
                       </td>
                       <td style="width:80%;">
                         {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
@@ -112,7 +140,10 @@
                     </tr>
                     <tr v-if="item.destino">
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Destino Final</div>
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Destino Final</div>
                       </td>
                       <td v-if="item.destino === 'E'" style="width:80%;">
                         Eliminação
@@ -126,7 +157,10 @@
                     </tr>
                     <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">
                           Natureza de intervenção
                         </div>
                       </td>
@@ -134,13 +168,19 @@
                     </tr>
                     <tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Donos do PN</div>
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Donos do PN</div>
                       </td>
                       <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
                     </tr>
                     <tr>
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Data de Início</div>
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Data de Início</div>
                       </td>
                       <td style="width:80%;">
                         {{ item.dataInicio }}
@@ -148,33 +188,48 @@
                     </tr>
                     <tr>
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">Data de Fim</div>
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Data de Fim</div>
                       </td>
                       <td style="width:80%;">{{ item.dataFim }}</td>
                     </tr>
-                    <tr v-if="item.uiPapel">
+                    <tr>
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">
                           Medição das UI em papel (m.l.)
                         </div>
                       </td>
-                      <td style="width:80%;" v-if="item.uiPapel">{{ item.uiPapel }}</td>
+                      <td style="width:70%;" v-if="item.uiPapel">{{ item.uiPapel }}</td>
+                      <td style="width:70%;" v-else>0</td>
                     </tr>
-                    <tr v-if="item.uiDigital">
+                    <tr>
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">
                           Medição das UI em digital (Gb)
                         </div>
                       </td>
-                      <td style="width:80%;" v-if="item.uiDigital">{{ item.uiDigital }}</td>
+                      <td style="width:70%;" v-if="item.uiDigital">{{ item.uiDigital }}</td>
+                      <td style="width:70%;" v-else>0</td>
                     </tr>
-                    <tr v-if="item.uiOutros">
+                    <tr>
                       <td style="width:20%;">
-                        <div class="info-label" :style="'background-color: '+p.objeto.dados.cores.zonaControlo[index]">
+                        <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">
                           Medição das UI noutros suportes
                         </div>
                       </td>
-                      <td style="width:80%;" v-if="item.uiOutros">{{ item.uiOutros }}</td>
+                      <td style="width:70%;" v-if="item.uiOutros">{{ item.uiOutros }}</td>
+                      <td style="width:70%;" v-else>0</td>
                     </tr>
                   </table>
                   
@@ -188,16 +243,24 @@
                       :search="search"
                     >
                     <template v-slot:top>
-                      <v-toolbar flat :key="p.objeto.dados.cores.zonaControlo[index]" :color="p.objeto.dados.cores.zonaControlo[index]">
-                        <span style="font-weight: 400; color: #1a237e; font-weight: bold;">Lista de Agregações</span>
-                        <v-spacer />
+                      <v-toolbar flat>
+                        <v-row>
+                          <v-col cols="3">
+                        <div :class="['info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Lista de Agregações
+                        
+                        </div>
+                        </v-col>
+                        <v-col>
                         <v-text-field
                           v-model="search"
                           append-icon="search"
                           label="Procura"
                           single-line
                           hide-details
-                        ></v-text-field>
+                        ></v-text-field></v-col>
+                        </v-row>
                       </v-toolbar>
                     </template>
                     <template v-slot:item="prop">
@@ -258,16 +321,20 @@
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/pedidos/generic/ErroDialog";
 
+import Loading from "@/components/generic/Loading";
+
 export default {
   props: ["p","tipo"],
 
   components: {
     PO,
     ErroDialog,
+    Loading
   },
 
   data() {
     return {
+      novoHistorico: null,
       erros: [],
       erroPedido: false,
       dialogTipologias: false,
@@ -284,6 +351,30 @@ export default {
         "items-per-page-text": "Mostrar",
       },
     };
+  },
+
+  computed: {
+    dados() {
+      return this.p.objeto.dados;
+    },
+
+    historico() {
+      return this.p.historico;
+    },
+  },
+  
+  async created() {
+    this.loading = false;
+  },
+  
+  mounted() {
+    const copiaHistorico = JSON.parse(
+      JSON.stringify(this.historico[this.historico.length - 1])
+    );
+
+    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+    this.novoHistorico = copiaHistorico;
   },
 
   methods: {
@@ -337,7 +428,7 @@ export default {
             }
 
             await this.$request("post", "/autosEliminacao", {
-              auto: pedido.objeto.dados.ae,
+              auto: pedido.objeto.dados,
             });
 
             const estado = "Validado";
@@ -435,5 +526,26 @@ export default {
 .consulta td:nth-of-type(2) {
   vertical-align: middle;
   padding-left: 15px;
+}
+
+.info-descricao {
+  color: #283593; /* indigo darken-3 */
+  padding: 5px;
+  width: 100%;
+  background-color: #e8eaf6; /* indigo lighten-5 */
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.info-descricao-verde {
+  background-color: #c8e6c9; /* lighten-4 */
+}
+
+.info-descricao-vermelho {
+  background-color: #ffcdd2; /* lighten-4 */
+}
+
+.info-descricao-amarelo {
+  background-color: #ffe0b2; /* lighten-4 */
 }
 </style>

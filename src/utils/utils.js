@@ -106,6 +106,10 @@ export function mapKeys(key) {
       descricao = "Data de Extinção";
       break;
 
+    case "dataRevogacao":
+      descricao = "Data de Revogação";
+      break;
+
     case "numero":
       descricao = "Número";
       break;

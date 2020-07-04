@@ -243,7 +243,7 @@
     <v-card-actions>
       <v-spacer />
       <v-btn color="red darken-4" text rounded dark @click="cancelar()">
-        Cancelar
+        Fechar
       </v-btn>
     </v-card-actions>
 
@@ -291,7 +291,7 @@ export default {
         visivel: false,
         nota: "",
       },
-      etapaReferente: "Pedido Original",
+      etapaReferente: "",
       onboarding: 0,
       dados: [],
       entidadesHeaders: [
@@ -340,6 +340,10 @@ export default {
       this.dados.push(this.pedidoOriginal);
       this.dados.push(...this.historico);
     }
+
+    if (this.pedido.objeto.acao === "Criação")
+      this.etapaReferente = "Pedido Submetido";
+    else this.etapaReferente = "Objeto Atual no Sistema";
   },
 
   computed: {
@@ -362,8 +366,19 @@ export default {
         novoValor !== undefined &&
         this.distribuicao[novoValor] !== undefined
       ) {
-        if (novoValor === 0) this.etapaReferente = "Pedido Original";
-        else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
+        if (
+          novoValor === 0 &&
+          (this.pedido.objeto.acao === "Alteração" ||
+            this.pedido.objeto.acao === "Extinção")
+        )
+          this.etapaReferente = "Objeto Atual no Sistema";
+        else if (novoValor === 0 && this.pedido.objeto.acao === "Criação")
+          this.etapaReferente = "Pedido Submetido";
+        else if (
+          (this.pedido.objeto.acao === "Alteração" ||
+            this.pedido.objeto.acao === "Extinção") &&
+          novoValor === 1
+        )
           this.etapaReferente = "Alteração Submetida";
         else if (
           this.pedido.estado === "Validado" ||
@@ -375,7 +390,11 @@ export default {
         else if (this.pedido.objeto.acao === "Criação")
           this.etapaReferente = this.distribuicao[novoValor + 1].estado;
         else this.etapaReferente = this.distribuicao[novoValor].estado;
-      } else if (this.pedido.objeto.acao === "Alteração" && novoValor === 1)
+      } else if (
+        (this.pedido.objeto.acao === "Alteração" ||
+          this.pedido.objeto.acao === "Extinção") &&
+        novoValor === 1
+      )
         this.etapaReferente = "Alteração Submetida";
     },
   },
@@ -393,11 +412,10 @@ export default {
 
     next() {
       if (this.onboarding + 1 < this.dados.length) this.onboarding++;
-      else this.onboarding = 0;
     },
 
     prev() {
-      if (this.onboarding - 1 < 0) this.onboarding = this.dados.length - 1;
+      if (this.onboarding - 1 < 0) this.onboarding = 0;
       else this.onboarding--;
     },
 
