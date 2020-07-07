@@ -107,6 +107,120 @@
             </v-card>
 
             <v-card
+              v-else-if="
+                (pedido.objeto.acao === 'Alteração' ||
+                  pedido.objeto.acao === 'Extinção') &&
+                  i === 1
+              "
+              shaped
+              class="rounded-card pa-4"
+              color="indigo lighten-5"
+            >
+              <v-card-text>
+                <div v-for="(info, campo) in h" :key="campo">
+                  <v-row
+                    v-if="
+                      info.dados !== '' &&
+                        info.dados !== null &&
+                        campo !== 'estado' &&
+                        campo !== 'id'
+                    "
+                  >
+                    <v-col cols="2">
+                      <div
+                        :class="[
+                          'info-descricao',
+                          `info-descricao-${info.cor}`,
+                        ]"
+                      >
+                        {{ transformaKeys(campo) }}
+                      </div>
+                    </v-col>
+                    <v-col>
+                      <div
+                        v-if="!(info.dados instanceof Array)"
+                        class="info-conteudo"
+                      >
+                        {{ info.dados }}
+                      </div>
+
+                      <div v-else>
+                        <v-data-table
+                          v-if="campo === 'entidadesSel'"
+                          :headers="entidadesHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsEntidades"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'tipologiasSel'"
+                          :headers="tipologiasHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsTipologias"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma tipologia selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'processosSel'"
+                          :headers="processosHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsProcessos"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhum processo selecionado...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+                      </div>
+                    </v-col>
+
+                    <!-- Operação -->
+                    <v-col cols="1">
+                      <v-tooltip v-if="info.nota" bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on" @click="verNota(info.nota)">
+                            message
+                          </v-icon>
+                        </template>
+                        <span>Ver nota relativa ao campo...</span>
+                      </v-tooltip>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card-text>
+            </v-card>
+
+            <v-card
               v-else
               shaped
               class="rounded-card pa-4"
