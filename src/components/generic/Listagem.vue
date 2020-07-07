@@ -36,7 +36,16 @@
           />
 
           <ListagemTE
-            v-else-if="tipo == 'Entidades' || tipo == 'Tipologias de Entidade'"
+            v-else-if="tipo == 'Tipologias de Entidade'"
+            :item="props.item"
+            @rowClicked="go($event.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
+          />
+
+          <ListagemE
+            v-else-if="tipo == 'Entidades'"
             :item="props.item"
             @rowClicked="go($event.id)"
             @iconClicked="
@@ -121,6 +130,7 @@
 <script>
 import ListagemTI from "@/components/generic/ListagemTI";
 import ListagemTE from "@/components/generic/ListagemTE";
+import ListagemE from "@/components/generic/ListagemE";
 import ListagemLegislacao from "@/components/generic/ListagemLegislacao";
 import ListagemNot from "@/components/generic/ListagemNot";
 
@@ -129,6 +139,7 @@ export default {
   components: {
     ListagemTI,
     ListagemTE,
+    ListagemE,
     ListagemLegislacao,
     ListagemNot,
   },
