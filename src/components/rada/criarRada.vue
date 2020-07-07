@@ -165,10 +165,7 @@ export default {
             // "ACSS - Administração Central do Sistema de Saúde, IP",
             // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
           ],
-          tipologiasProd: [
-            // "AAGR - Assembleias de apuramento geral dos resultados",
-            // "ACE - Administração Central do Estado"
-          ],
+          tipologiasProd: null,
           // dataInicial: "2020-01-02",
           // dataFinal: "2020-06-01",
           dataInicial: null,
@@ -198,8 +195,8 @@ export default {
             //   dataFinal: "2020-05-27",
             //   produtor: {
             //     tipologiasProdutoras: [
-            //       "AAGR - Assembleias de apuramento geral dos resultados",
-            //       "ACE - Administração Central do Estado"
+            //       // "AAGR - Assembleias de apuramento geral dos resultados",
+            //       // "ACE - Administração Central do Estado"
             //     ],
             //     entProdutoras: [
             //       // "ACSS - Administração Central do Sistema de Saúde, IP",
@@ -209,6 +206,32 @@ export default {
             //   classesAssociadas: [
             //     { codigo: "01.02", tipo: "Série" },
             //     { codigo: "01.02.01", tipo: "Subsérie" }
+            //   ],
+            //   descricao: "Descrição da UI 1",
+            //   notas: "Sem notas! ",
+            //   localizacao: "Felgueiras"
+            // },
+            // {
+            //   codigo: "2",
+            //   codCota: "3",
+            //   titulo: "Unidade de Instalação bem fixe",
+            //   dataInicial: "2020-05-13",
+            //   dataFinal: "2020-05-27",
+            //   produtor: {
+            //     tipologiasProdutoras: [
+            //       // "AAGR - Assembleias de apuramento geral dos resultados",
+            //       // "ACE - Administração Central do Estado"
+            //     ],
+            //     entProdutoras: [
+            //       // "ACSS - Administração Central do Sistema de Saúde, IP",
+            //       // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //     ]
+            //   },
+            //   classesAssociadas: [
+            //     { codigo: "01.02", tipo: "Série" },
+            //     { codigo: "01.03", tipo: "Subsérie" },
+            //     { codigo: "01.02.01", tipo: "Subsérie" },
+            //     { codigo: "01.05", tipo: "Série" }
             //   ],
             //   descricao: "Descrição da UI 1",
             //   notas: "Sem notas! ",
@@ -255,8 +278,8 @@ export default {
             //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados",
-            //     "ACE - Administração Central do Estado"
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -362,8 +385,8 @@ export default {
             //     // "ACSS - Administração Central do Sistema de Saúde, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados",
-            //     "ACE - Administração Central do Estado"
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -407,8 +430,8 @@ export default {
             //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados",
-            //     "ACE - Administração Central do Estado"
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -557,7 +580,7 @@ export default {
   color: #1a237e;
   padding: 6px;
   font-weight: 400;
-  height: 35px;
+  height: auto;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;

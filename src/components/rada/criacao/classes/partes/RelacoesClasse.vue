@@ -494,20 +494,6 @@ export default {
         }
       }
     },
-    data_final_valida(v) {
-      if (!!v) {
-        if (this.RE.dataInicial != null) {
-          let data_inicial = new Date(this.RE.dataInicial);
-          let data_final = new Date(v);
-
-          if (data_inicial > data_final) {
-            return "Data final inválida! É anterior à data inicial.";
-          }
-        }
-        return true;
-      }
-      return false;
-    },
     validateRelacao: function() {
       if (
         this.newSerie.relacoes.some(

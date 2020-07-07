@@ -4,30 +4,28 @@
       class="indigo darken-4 white--text"
     >Importar Relatório de Avaliação de Documentação Acumulada</v-card-title>
     <v-card-text>
-      <v-row>
+      <v-row justify="end">
         <v-col md="3" sm="3">
           <div class="info-label">Ficheiro</div>
         </v-col>
         <v-col sm="9" md="9">
-          <!-- <v-file-input
+          <v-file-input
             placeholder="Selecione o ficheiro a submeter"
-            v-model="ficheiro"
             show-size
             clearable
             single-line
-            accept="*"
             solo
-          ></v-file-input>-->
-          <input type="file" id="fileRADA" ref="myFiles" @change="previewFileRADA" />
+            @change="transformar_buffer"
+            :rules="[v => v == undefined || v.name.split('.')[1] == 'xls' || v.name.split('.')[1] == 'xlsx' || 'Ficheiro no formato errado. Apenas .xls ou .xlsx.']"
+          ></v-file-input>
         </v-col>
       </v-row>
       <v-row>
         <v-spacer></v-spacer>
         <v-col sm="1" md="1">
-          <v-btn @click="importar">Importar</v-btn>
+          <v-btn :disabled="!ficheiro" @click="importar">Importar</v-btn>
         </v-col>
       </v-row>
-      <v-alert :value="erroDialog" dense outlined type="error">{{ erro }}</v-alert>
     </v-card-text>
   </v-card>
 </template>
@@ -38,8 +36,8 @@ const conversor = require("@/plugins/conversorRADA").excel2Json;
 export default {
   data: () => ({
     ficheiro: null,
-    erro: "",
-    erroDialog: false
+    erroDialog: false,
+    reader: null
   }),
   methods: {
     importar() {
@@ -47,24 +45,26 @@ export default {
         .then(res => console.log(res))
         .catch(err => console.log(err));
     },
-    previewFileRADA(ev) {
-      const file = ev.target.files[0];
-      var fileName = file.name.split(".");
-      if (fileName[fileName.length - 1] == "xls") {
-        const reader = new FileReader();
-        reader.onload = e => (this.ficheiro = e.target.result);
-        reader.readAsArrayBuffer(file);
-      } else {
-        ev.target.value = "";
-        this.erro = "Por favor verifique se o ficheiro está no formato .xls";
-        this.erroDialog = true;
-        this.ficheiro = null;
+    transformar_buffer(file) {
+      if (file) {
+        this.erroDialog = false;
+        let extensao = file.name.split(".")[1];
 
-        setTimeout(() => {
-          this.erroDialog = false;
-        }, 3000);
+        if (extensao == "xls" || extensao == "xlsx") {
+          this.reader.onload = e => (this.ficheiro = e.target.result);
+          this.reader.readAsArrayBuffer(file);
+        } else {
+          this.ficheiro = null;
+          this.erroDialog = true;
+        }
+      } else {
+        this.ficheiro = null;
       }
     }
+  },
+
+  created() {
+    this.reader = new FileReader();
   }
 };
 </script>

@@ -349,15 +349,9 @@ export default {
           }
         });
       } else {
-        let tipologias_selecionadas = this.tipologias
-          .filter(t => t.disabled == true)
-          .map(t => t.tipologia);
-
-        this.RADA.RE.tipologiasProd.forEach(tip => {
-          if (!tipologias_selecionadas.some(e => e == tip)) {
-            this.erroProdutoras.push(tip);
-          }
-        });
+        if(!this.RADA.tsRada.classes.some(e => e.tipologiasProdutoras && e.tipologiasProdutoras == this.RADA.RE.tipologiasProd)){
+          this.erroProdutoras.push(this.RADA.RE.tipologiasProd);
+        }
       }
 
       if (
@@ -451,8 +445,7 @@ export default {
     response = await this.$request("get", "/tipologias");
     this.tipologias = response.data.map(item => {
       return {
-        tipologia: item.sigla + " - " + item.designacao,
-        disabled: false
+        tipologia: item.sigla + " - " + item.designacao
       };
     });
 

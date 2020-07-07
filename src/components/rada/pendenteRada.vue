@@ -212,7 +212,7 @@ export default {
   color: #1a237e;
   padding: 6px;
   font-weight: 400;
-  height: 35px;
+  height: auto;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;

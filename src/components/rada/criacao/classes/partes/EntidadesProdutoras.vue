@@ -35,7 +35,7 @@
       <v-col cols="12" xs="12" sm="9">
         <v-autocomplete
           v-model="newSerie.tipologiasProdutoras"
-          :items="RE.tipologiasProd"
+          :items="[RE.tipologiasProd]"
           label="Selecione as Tipologias da Entidades produtoras"
           multiple
           chips
@@ -69,9 +69,7 @@ export default {
       this.newSerie.entProdutoras = JSON.parse(
         JSON.stringify(this.RE.entidadesProd)
       );
-      this.newSerie.tipologiasProdutoras = JSON.parse(
-        JSON.stringify(this.RE.tipologiasProd)
-      );
+      this.newSerie.tipologiasProdutoras = [this.RE.tipologiasProd];
     }
   },
   watch: {
@@ -79,7 +77,7 @@ export default {
       this.newSerie.entProdutoras = JSON.parse(JSON.stringify(newValue));
     },
     "RE.tipologiasProd": function(newValue) {
-      this.newSerie.tipologiasProdutoras = JSON.parse(JSON.stringify(newValue));
+      this.newSerie.tipologiasProdutoras = [newValue];
     }
   }
 };
