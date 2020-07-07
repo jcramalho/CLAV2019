@@ -251,6 +251,28 @@ export default {
             width: "13%",
             class: "subtitle-3",
           };
+        else if (
+          this.campos[i] === "sigla" ||
+          this.campos[i] === "estado" ||
+          this.campos[i] === "internacional"
+        )
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "start",
+            sortable: true,
+            width: "20%",
+            class: "subtitle-3",
+          };
+        else if (this.campos[i] === "designacao")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "start",
+            sortable: true,
+            width: "35%",
+            class: "subtitle-3",
+          };
         else
           this.headers[i] = {
             text: this.cabecalho[i],

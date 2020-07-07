@@ -2,6 +2,8 @@
   <tr @click="onRowClick(item)">
     <td class="subheading">{{ item.id }}</td>
     <td class="subheading">{{ item.designacao }}</td>
+    <td class="subheading">{{ item.estado }}</td>
+    <td class="subheading">{{ item.internacional }}</td>
     <td @click.stop align="right">
       <v-icon
         v-for="(operacao, index) in item.operacoes"
@@ -26,7 +28,7 @@ export default {
 
     onRowClick(item) {
       this.$emit("rowClicked", item);
-    }
-  }
+    },
+  },
 };
 </script>
