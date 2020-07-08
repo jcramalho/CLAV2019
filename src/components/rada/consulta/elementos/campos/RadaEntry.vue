@@ -21,7 +21,7 @@ export default {
 <style scoped>
 .info-label {
   color: #1a237e;
-  padding: 6px;
+  padding: auto;
   font-weight: 400;
   height: auto;
   width: 100%;

@@ -30,7 +30,24 @@
                   </v-col>
 
                   <v-col>
-                    <v-menu
+                     <SelecionarData
+                      :d="data"
+                      label="Data"
+                      @dataSelecionada="data = $event"
+                    >
+                      <template v-slot:default="slotProps">
+                        <v-text-field
+                          :rules="[v => !!v || 'Campo obrigatório!']"
+                          v-model="slotProps.item.dataValor"
+                          :label="slotProps.item.label"
+                          prepend-icon="event"
+                          readonly
+                          v-on="slotProps.item.on"
+                          clearable
+                        ></v-text-field>
+                      </template>
+                    </SelecionarData>
+                    <!-- <v-menu
                       ref="menu2"
                       v-model="data_menu"
                       :close-on-content-click="false"
@@ -65,7 +82,7 @@
                           <v-icon>check</v-icon>
                         </v-btn>
                       </v-date-picker>
-                    </v-menu>
+                    </v-menu> -->
                   </v-col>
                 </v-row>
                 <v-row>
@@ -119,9 +136,13 @@
 
 <script>
 const nanoid = require("nanoid");
+import SelecionarData from "@/components/generic/SelecionarData";
 
 export default {
   props: ["legislacao", "newSerie", "legislacaoProcessada", "tipos"],
+  components: { 
+    SelecionarData
+  },
   data: function() {
     return {
       panel: [0],

@@ -7,108 +7,66 @@
       :items="classes"
       class="elevation-1 mytable"
       :footer-props="footer_props"
-      @click:row="editarClasse"
       :search="search"
       :items-per-page="5"
-      dense
+      show-expand
+      single-expand
+      item-key="codigo"
     >
       <template v-slot:item.tipo="{ item }">
         <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
         <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
         <i v-else>{{ item.tipo }}</i>
       </template>
-      <template v-slot:item.produtoras="{ item }">
-        <ul>
-          <li
-            v-for="(tipologia, i) in item.tipologiasProdutoras"
-            :key="i"
-          >{{ tipologia.split(' - ')[0]}}</li>
-        </ul>
-        <ul>
-          <li v-for="(entidade, i) in item.entProdutoras" :key="i">{{ entidade.split(' - ')[0]}}</li>
-        </ul>
-      </template>
-      <template v-slot:item.legislacao="{ item }">
-        <ul>
-          <li v-for="(leg, i) in item.legislacao" :key="i">{{ leg.legislacao.split(' - ')[0] }}</li>
-        </ul>
-      </template>
-      <template v-slot:item.suporte_e_medicao="{ item }">
-        <ul>
-          <li
-            v-for="(valores, i) in item.suporte_e_medicao"
-            :key="i"
-          >{{ valores.suporte + ": " + valores.medicao}}</li>
-        </ul>
-      </template>
-      <template v-slot:item.relacoes="{ item }">
-        <ul>
-          <li v-for="(rel, i) in item.relacoes" :key="i">
-            <b>{{ rel.relacao }}</b>
-            - {{rel.serieRelacionada.codigo }}
-          </li>
-        </ul>
-      </template>
-      <template v-slot:item.justificacaoPCA="{ item }">
-        <ul>
-          <li v-for="(criterio, i) in item.justificacaoPCA" :key="i">
-            <b>{{ criterio.tipo }}</b>
-            - {{ criterio.nota}}
-            <i
-              v-for="(rel, j) in criterio.relacoes"
-              :key="j"
-            >{{rel.codigo }}</i>
-          </li>
-        </ul>
-      </template>
 
-      <template v-slot:item.justificacaoDF="{ item }">
-        <ul>
-          <li v-for="(criterio, i) in item.justificacaoDF" :key="i">
-            <b>{{ criterio.tipo }}</b>
-            - {{ criterio.nota}}
-            <i
-              v-for="(rel, j) in criterio.relacoes"
-              :key="j"
-            >{{rel.codigo }}</i>
-          </li>
-        </ul>
+      <template v-slot:item.df="{ item }">{{ !classes.some(e => e.eFilhoDe == item.codigo) ? item.df : '' }}</template>
+
+      <template v-slot:item.pca="{ item }">{{ !classes.some(e => e.eFilhoDe == item.codigo) ? item.pca : '' }}</template>
+
+      <template v-slot:item.editar="{ item }">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on" v-if="true" @click="editarClasse(item)">edit</v-icon>
+          </template>
+          <span>Clique para editar</span>
+        </v-tooltip>
       </template>
 
       <template v-slot:item.completo="{ item }">
-        <v-icon
-          color="red"
-          v-if="(item.tipo == 'Série' && (item.eFilhoDe == null || (item.temDF && !!!item.children[0]))) || (item.tipo == 'Subsérie' && (item.eFilhoDe == null || item.temDF)) || (item.eFilhoDe == null &&
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              color="red"
+              v-on="on"
+              v-if="(item.tipo == 'Série' && (item.eFilhoDe == null || (item.temDF && !!!item.children[0]))) || (item.tipo == 'Subsérie' && (item.eFilhoDe == null || item.temDF)) || (item.eFilhoDe == null &&
                     (item.tipo == 'N2' || item.tipo == 'N3'))"
-        >report</v-icon>
+            >report</v-icon>
+          </template>
+          <span>Classe incompleta</span>
+        </v-tooltip>
       </template>
 
-      <template v-slot:item.formaContagem="{ item }">
-        {{ !!item.formaContagem ? (!!item.formaContagem.forma ? descobrirForma(item.formaContagem.forma): '') : '' }}
-        <br />
-        {{ !!item.formaContagem ? (!!item.formaContagem.subforma ? descobrirSubforma(item.formaContagem.subforma): '') : '' }}
+      <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length">
+          <AreaOrganica :classe="item" v-if="item.tipo != 'Série' && item.tipo != 'Subsérie'" />
+          <SerieSubserie :classe="item" :formaContagem="formaContagem" :classes="classes" v-else />
+        </td>
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script>
+import AreaOrganica from "@/components/rada/consulta/elementos_tabela/AreaOrganica";
+import SerieSubserie from "@/components/rada/consulta/elementos_tabela/SerieSubserie";
+
 export default {
   props: ["classes", "formaContagem", "background_color", "search"],
+  components: {
+    AreaOrganica,
+    SerieSubserie
+  },
   methods: {
-    descobrirForma(forma) {
-      let forma_certa = this.formaContagem.formasContagem.find(
-        e => e.value == forma
-      );
-
-      return "Forma: " + forma_certa.label;
-    },
-    descobrirSubforma(subforma) {
-      let subforma_certa = this.formaContagem.subFormasContagem.find(
-        e => e.value == subforma
-      );
-      return "Subforma: " + subforma_certa.label.split(": ")[1];
-    },
     editarClasse(item) {
       this.$emit("editarClasse", {
         tipo: item.tipo,
@@ -133,6 +91,13 @@ export default {
     class: ["table-header", "body-2", "font-weight-bold"],
     headers: [
       {
+        sortable: false,
+        value: "editar",
+        align: "right",
+        width: "5%",
+        class: ["table-header", "body-2", "font-weight-bold"]
+      },
+      {
         text: "Tipo",
         sortable: true,
         value: "tipo",
@@ -154,124 +119,11 @@ export default {
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
-        text: "Descrição",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "descricao",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Data Inicial",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "dataInicial",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Data Final",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "dataFinal",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Tipo de Unidade Arquivistica",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "tUA",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Tipo Serie",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "tSerie",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Suporte e Medição",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "suporte_e_medicao",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Unidades de Instalação",
-        align: "left",
-        sortable: false,
-        align: "center",
-        value: "UIs",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Localização",
-        align: "left",
-        sortable: false,
-        align: "center",
-        value: "localizacao",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Produtoras",
-        align: "left",
-        sortable: false,
-        align: "center",
-        value: "produtoras",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Legislação",
-        align: "left",
-        sortable: false,
-        align: "center",
-        value: "legislacao",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Relações",
-        align: "left",
-        sortable: false,
-        align: "center",
-        value: "relacoes",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
         text: "PCA",
         align: "left",
         sortable: true,
         align: "center",
         value: "pca",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Nota PCA",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "notaPCA",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-
-      {
-        text: "Forma Contagem PCA",
-        align: "left",
-        sortable: false,
-        align: "center",
-        value: "formaContagem",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Justificação PCA",
-        align: "left",
-        sortable: false,
-        align: "center",
-        value: "justificacaoPCA",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
       {
@@ -282,34 +134,14 @@ export default {
         value: "df",
         class: ["table-header", "body-2", "font-weight-bold"]
       },
-
       {
-        text: "Nota DF",
-        align: "left",
-        sortable: true,
-        align: "center",
-        value: "notaDF",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Justificação DF",
-        align: "left",
-        sortable: false,
-        align: "center",
-        value: "justificacaoDF",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Pai",
-        sortable: true,
-        align: "center",
-        value: "eFilhoDe",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        sortable: true,
         align: "center",
         value: "completo",
+        class: ["table-header", "body-2", "font-weight-bold"]
+      },
+      {
+        text: "",
+        value: "data-table-expand",
         class: ["table-header", "body-2", "font-weight-bold"]
       }
     ]

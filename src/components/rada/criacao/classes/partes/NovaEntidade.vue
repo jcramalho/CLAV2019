@@ -31,83 +31,43 @@
                 </v-row>
                 <v-row>
                   <v-col sm="4" md="4">
-                    <v-menu
-                      ref="menu2"
-                      v-model="data_menu_2"
-                      :close-on-content-click="false"
-                      :return-value.sync="data_criacao"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
+                    <SelecionarData
+                      :d="data_criacao"
+                      label="Data de Criação"
+                      @dataSelecionada="data_criacao = $event"
                     >
-                      <template v-slot:activator="{ on }">
+                      <template v-slot:default="slotProps">
                         <v-text-field
                           :rules="[v => !!v || 'Campo obrigatório!']"
-                          v-model="data_criacao"
-                          label="Data de Criação"
+                          v-model="slotProps.item.dataValor"
+                          :label="slotProps.item.label"
                           prepend-icon="event"
                           readonly
-                          v-on="on"
+                          v-on="slotProps.item.on"
                           clearable
                         ></v-text-field>
                       </template>
-                      <v-date-picker
-                        full-width
-                        v-model="data_criacao"
-                        color="amber accent-3"
-                        locale="pt"
-                        :max="new Date().toISOString().split('T')[0]"
-                      >
-                        <v-spacer></v-spacer>
-                        <v-btn text @click="data_menu_2 = false">
-                          <v-icon>keyboard_backspace</v-icon>
-                        </v-btn>
-                        <v-btn text @click="$refs.menu2.save(data_criacao)">
-                          <v-icon>check</v-icon>
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
+                    </SelecionarData>
                   </v-col>
                   <v-col sm="4" md="4">
-                    <v-menu
-                      ref="menu1"
-                      v-model="data_menu_1"
-                      :close-on-content-click="false"
-                      :return-value.sync="data_extincao"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
+                    <SelecionarData
+                      :d="data_extincao"
+                      label="Data de Extinção"
+                      @dataSelecionada="data_extincao = $event"
                     >
-                      <template v-slot:activator="{ on }">
+                      <template v-slot:default="slotProps">
                         <v-text-field
                           :rules="[v => !!data_criacao ? data_final_valida(v) : true]"
-                          v-model="data_extincao"
-                          label="Data de Extinção"
+                          v-model="slotProps.item.dataValor"
+                          :label="slotProps.item.label"
                           prepend-icon="event"
                           readonly
-                          v-on="on"
+                          v-on="slotProps.item.on"
                           clearable
                         ></v-text-field>
                       </template>
-                      <v-date-picker
-                        full-width
-                        v-model="data_extincao"
-                        color="amber accent-3"
-                        locale="pt"
-                        :max="new Date().toISOString().split('T')[0]"
-                      >
-                        <v-spacer></v-spacer>
-                        <v-btn text @click="data_menu_1 = false">
-                          <v-icon>keyboard_backspace</v-icon>
-                        </v-btn>
-                        <v-btn text @click="$refs.menu1.save(data_extincao)">
-                          <v-icon>check</v-icon>
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                    
+                    </SelecionarData>
                   </v-col>
-                  
                   <v-col sm="4" md="4">
                     <v-select
                       :rules="[v => !!v || 'Campo obrigatório!']"
@@ -170,8 +130,13 @@
 </template>
 
 <script>
+import SelecionarData from "@/components/generic/SelecionarData";
+
 export default {
   props: ["entidades", "produtoras", "tipologias", "entidadesProcessadas"],
+  components: {
+    SelecionarData
+  },
   data: function() {
     return {
       panel: [0],
@@ -202,7 +167,7 @@ export default {
   },
 
   methods: {
-     data_final_valida(v) {
+    data_final_valida(v) {
       if (!!v) {
         if (this.data_criacao != null) {
           let data_inicial = new Date(this.data_criacao);
@@ -223,7 +188,6 @@ export default {
           if (this.sioe == null) {
             this.sioe = "";
           }
-          console.log(!!this.data_extincao);
           let entidade = {
             estado_no_sistema: "Nova",
             estado: !!this.data_extincao ? "Inativa" : "Ativa",
@@ -267,7 +231,10 @@ export default {
     // Provavelmente vai ter que se alterar
     async validaEntidade() {
       return this.entidades.some(el => {
-        return el.sigla.toLowerCase() == this.sigla.toLowerCase() || el.designacao.toLowerCase() == this.designacao.toLowerCase();
+        return (
+          el.sigla.toLowerCase() == this.sigla.toLowerCase() ||
+          el.designacao.toLowerCase() == this.designacao.toLowerCase()
+        );
       });
     }
   }
