@@ -26,6 +26,12 @@
           @click="criarClasse"
         >
           Criar classe
+          <DialogClasseCriada 
+            v-if="classeCriada" 
+            :c="c"
+            :codigoPedido="codigoPedido"
+            acao="criação"
+            @sair="classeCriada = false"/>
         </v-btn>
       </v-col>
 
@@ -98,24 +104,6 @@
       </v-dialog>
     </v-row>
 
-    <!-- Pedido de criação de classe submetido com sucesso ........... -->
-    <v-row justify-center>
-      <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
-        <v-card>
-          <v-card-title class="headline">
-            Pedido de Criação de Classe Submetido
-          </v-card-title>
-          <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="criacaoClasseTerminada">
-              Fechar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
-
     <!-- Cancelamento da criação duma classe: confirmação ........... -->
     <v-row justify-center>
       <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
@@ -159,20 +147,21 @@
 
 <script>
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
+import DialogClasseCriada from "@/components/classes/criacao/DialogClasseCriada.vue";
 
 export default {
   props: ["c", "pendenteId"],
   components: {
-    ValidaClasseInfoBox
+    ValidaClasseInfoBox, DialogClasseCriada
   },
   data() {
     return {
       pendenteGuardado: false,
       pendenteGuardadoInfo: "",
-      dialogClasseCriada: false,
+      classeCriada: false,
       pedidoEliminado: false,
       pedidoCriado: false,
-      mensagemPedidoCriadoOK: "",
+      codigoPedido: "",
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Classe!",
       numeroErros: 0,
@@ -643,8 +632,8 @@ export default {
               "/pedidos",
               pedidoParams
             );
-            this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-            this.dialogClasseCriada = true;
+            this.codigoPedido = JSON.stringify(response.data);
+            this.classeCriada = true;
           } else {
             this.errosValidacao = true;
           }
