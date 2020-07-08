@@ -184,6 +184,7 @@ export default {
         visivel: false,
         nome: "",
         key: "",
+        valorAtual: "",
       },
 
       erros: [],
@@ -475,6 +476,7 @@ export default {
         visivel: true,
         nome: this.transformaKeys(campo),
         key: campo,
+        valorAtual: this.dados[campo],
       };
     },
 
