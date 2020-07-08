@@ -15,12 +15,12 @@
 
     <v-card-text>
       <v-data-table
+        v-if="this.headers[this.cabecalho.length - 1]"
+        class="elevation-1"
         :headers="headers"
         :items="lista"
         :search="search"
-        class="elevation-1"
         :footer-props="footer_props"
-        v-if="this.headers[this.cabecalho.length - 1]"
       >
         <template v-slot:no-results>
           <v-alert :value="true" color="error" icon="warning"
@@ -36,7 +36,16 @@
           />
 
           <ListagemTE
-            v-else-if="tipo == 'Entidades' || tipo == 'Tipologias de Entidade'"
+            v-else-if="tipo == 'Tipologias de Entidade'"
+            :item="props.item"
+            @rowClicked="go($event.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
+          />
+
+          <ListagemE
+            v-else-if="tipo == 'Entidades'"
             :item="props.item"
             @rowClicked="go($event.id)"
             @iconClicked="
@@ -62,15 +71,19 @@
             "
           />
           <tr
-            v-else-if="tipo == 'Relatórios de Avaliação de Documentação Acumulada'"
+            v-else-if="
+              tipo == 'Relatórios de Avaliação de Documentação Acumulada'
+            "
             @click="$router.push('/rada/' + props.item.codigo)"
           >
-            <td>{{props.item.dataAprovacao}}</td>
-            <td>{{props.item.titulo}}</td>
+            <td>{{ props.item.dataAprovacao }}</td>
+            <td>{{ props.item.titulo }}</td>
             <td>
               <ul>
                 <li v-for="(entidade, i) in props.item.entResp" :key="i">
-                  <a :href="'/entidades/ent_' + entidade.sigla">{{ entidade.sigla + " - " + entidade.designacao}}</a>
+                  <a :href="'/entidades/ent_' + entidade.sigla">{{
+                    entidade.sigla + " - " + entidade.designacao
+                  }}</a>
                 </li>
               </ul>
             </td>
@@ -83,10 +96,10 @@
               </div>
             </td> -->
           </tr>
-        
+
           <tr
             v-else-if="tipo == 'Autos de Eliminação'"
-            @click="go(props.item.id.replace(/\//g,'_'))"
+            @click="go(props.item.id.replace(/\//g, '_'))"
           >
             <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="props.item">
@@ -117,6 +130,7 @@
 <script>
 import ListagemTI from "@/components/generic/ListagemTI";
 import ListagemTE from "@/components/generic/ListagemTE";
+import ListagemE from "@/components/generic/ListagemE";
 import ListagemLegislacao from "@/components/generic/ListagemLegislacao";
 import ListagemNot from "@/components/generic/ListagemNot";
 
@@ -125,8 +139,9 @@ export default {
   components: {
     ListagemTI,
     ListagemTE,
+    ListagemE,
     ListagemLegislacao,
-    ListagemNot
+    ListagemNot,
   },
   data: () => ({
     search: "",
@@ -134,8 +149,8 @@ export default {
     dialog: false,
     footer_props: {
       "items-per-page-options": [10, 20, 100],
-      "items-per-page-text": "Mostrar"
-    }
+      "items-per-page-text": "Mostrar",
+    },
   }),
   methods: {
     go(id) {
@@ -206,7 +221,7 @@ export default {
         default:
           break;
       }
-    }
+    },
   },
   created: function() {
     try {
@@ -216,17 +231,71 @@ export default {
             text: this.cabecalho[i],
             value: this.campos[i],
             align: "end",
-            width: "10%"
+            width: "auto",
+            sortable: false,
+            class: "subtitle-3",
+          };
+        else if (this.campos[i] === "sumario")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "start",
+            sortable: false,
+            width: "25%",
+            class: "subtitle-3",
+          };
+        else if (this.campos[i] === "entidades")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "start",
+            sortable: true,
+            width: "15%",
+            class: "subtitle-3",
+          };
+        else if (this.campos[i] === "data" || this.campos[i] === "numero")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "start",
+            sortable: true,
+            width: "13%",
+            class: "subtitle-3",
+          };
+        else if (
+          this.campos[i] === "sigla" ||
+          this.campos[i] === "estado" ||
+          this.campos[i] === "internacional"
+        )
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "start",
+            sortable: true,
+            width: "20%",
+            class: "subtitle-3",
+          };
+        else if (this.campos[i] === "designacao")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            align: "start",
+            sortable: true,
+            width: "35%",
+            class: "subtitle-3",
           };
         else
           this.headers[i] = {
             text: this.cabecalho[i],
-            value: this.campos[i]
+            value: this.campos[i],
+            align: "start",
+            sortable: true,
+            class: "subtitle-3",
           };
       }
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

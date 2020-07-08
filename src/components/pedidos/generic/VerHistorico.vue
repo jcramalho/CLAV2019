@@ -99,6 +99,14 @@
                             </v-alert>
                           </template>
                         </v-data-table>
+                        
+                        <div class="info-conteudo" v-else-if="campo === 'zonaControlo'">
+                          <ZonaControlo :info="info"/>
+                        </div>
+
+                        <div class="info-conteudo" v-else>
+                          <span v-for="i in info" :key="i">{{i}}</span>
+                        </div>
                       </div>
                     </v-col>
                   </v-row>
@@ -107,10 +115,14 @@
             </v-card>
 
             <v-card
-              v-else
+              v-else-if="
+                (pedido.objeto.acao === 'Alteração' ||
+                  pedido.objeto.acao === 'Extinção') &&
+                  i === 1
+              "
               shaped
               class="rounded-card pa-4"
-              color="orange lighten-5"
+              color="indigo lighten-5"
             >
               <v-card-text>
                 <div v-for="(info, campo) in h" :key="campo">
@@ -215,6 +227,129 @@
                 </div>
               </v-card-text>
             </v-card>
+
+            <v-card
+              v-else
+              shaped
+              class="rounded-card pa-4"
+              color="orange lighten-5"
+            >
+              <v-card-text>
+                <div v-for="(info, campo) in h" :key="campo">
+                  <v-row
+                    v-if="
+                      info.dados !== '' &&
+                        info.dados !== null &&
+                        campo !== 'estado' &&
+                        campo !== 'id'
+                    "
+                  >
+                    <v-col cols="2">
+                      <div v-if="info.cor"
+                        :class="[
+                          'info-descricao',
+                          `info-descricao-${info.cor}`,
+                        ]"
+                      >
+                        {{ transformaKeys(campo) }}
+                      </div>
+                      <div v-else
+                        :class="[
+                            'info-descricao',
+                            'info-descricao-verde',
+                        ]"
+                      >
+                          {{ transformaKeys(campo) }}
+                      </div>
+                    </v-col>
+                    <v-col>
+                      <div
+                        v-if="!(info.dados instanceof Array)"
+                        class="info-conteudo"
+                      >
+                        <ZonaControlo v-if="campo === 'zonaControlo'" :info="info" :tipo="true"/>
+                        <span v-else>{{ info.dados }}</span>
+                      </div>
+
+                      <div v-else>
+                        <v-data-table
+                          v-if="campo === 'entidadesSel'"
+                          :headers="entidadesHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsEntidades"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma entidade selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'tipologiasSel'"
+                          :headers="tipologiasHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsTipologias"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhuma tipologia selecionada...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <v-data-table
+                          v-else-if="campo === 'processosSel'"
+                          :headers="processosHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                          :footer-props="footerPropsProcessos"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                            >
+                              Nenhum processo selecionado...
+                            </v-alert>
+                          </template>
+                        </v-data-table>
+
+                        <div :class="['info-conteudo',`info-conteudo-${info.cor}`]" v-else>
+                          <span v-for="i in info.dados" :key="i">{{i}}</span>
+                        </div>
+                      </div>
+                    </v-col>
+
+                    <!-- Operação -->
+                    <v-col cols="1">
+                      <v-tooltip v-if="info.nota" bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on" @click="verNota(info.nota)">
+                            message
+                          </v-icon>
+                        </template>
+                        <span>Ver nota relativa ao campo...</span>
+                      </v-tooltip>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card-text>
+            </v-card>
           </v-window-item>
         </v-window>
 
@@ -281,10 +416,13 @@
 
 <script>
 import { mapKeys } from "@/utils/utils";
+import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 
 export default {
   props: ["pedido"],
-
+  components: {
+    ZonaControlo
+  },
   data() {
     return {
       dialogVerNota: {

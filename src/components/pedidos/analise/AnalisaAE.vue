@@ -14,6 +14,9 @@
       <v-col cols="1">
         <v-icon color="green" @click="novoHistorico.legislacao.cor='verde'">check</v-icon>
         <v-icon color="red" @click="novoHistorico.legislacao.cor='vermelho'">clear</v-icon>
+        <v-icon @click="abrirNotaDialog('legislacao',-1)">
+          add_comment
+        </v-icon>
       </v-col>
     </v-row>
     <v-row v-else>
@@ -29,6 +32,9 @@
       <v-col cols="1">
         <v-icon color="green" @click="novoHistorico.referencial.cor='verde'">check</v-icon>
         <v-icon color="red" @click="novoHistorico.referencial.cor='vermelho'">clear</v-icon>
+        <v-icon @click="abrirNotaDialog('referencial',-1)">
+          add_comment
+        </v-icon>
       </v-col>
     </v-row>
     <v-row>
@@ -45,9 +51,12 @@
           </div>
       </v-col>
       <v-col cols="1">
-              <v-icon color="green" @click="novoHistorico.fundo.cor='verde'">check</v-icon>
-              <v-icon color="red" @click="novoHistorico.fundo.cor='vermelho'">clear</v-icon>
-           </v-col>
+        <v-icon color="green" @click="novoHistorico.fundo.cor='verde'">check</v-icon>
+        <v-icon color="red" @click="novoHistorico.fundo.cor='vermelho'">clear</v-icon>
+        <v-icon @click="abrirNotaDialog('fundo',-1)">
+          add_comment
+        </v-icon>
+      </v-col>
     </v-row>
 
     <v-expansion-panels popout>
@@ -98,7 +107,10 @@
                       </td>
                       <td style="width:10%" v-if="novoHistorico.zonaControlo[index].cor!='amarelo'">
                         <v-icon color="green" @click="novoHistorico.zonaControlo[index].cor='verde'">check</v-icon>
-                        <v-icon color="red" @click="novoHistorico.zonaControlo[index].cor='vermelho'">clear</v-icon>  
+                        <v-icon color="red" @click="novoHistorico.zonaControlo[index].cor='vermelho'">clear</v-icon>
+                        <v-icon @click="abrirNotaDialog('zonaControlo',index)">
+                          add_comment
+                        </v-icon>
                       </td>
                     </tr>
                     <tr v-if="item.referencia">
@@ -207,7 +219,7 @@
                       <td style="width:70%;" v-if="item.uiPapel">{{ item.uiPapel }}</td>
                       <td style="width:70%;" v-else>0</td>
                       <td style="width:10%;">
-                        <v-icon @click="abrirEditor('Medição das UI em papel (m.l.)',index)">create</v-icon>
+                        <v-icon color="orange" @click="abrirEditor('Medição das UI em papel (m.l.)',index)">create</v-icon>
                       </td>
                     </tr>
                     <tr>
@@ -222,7 +234,7 @@
                       <td style="width:70%;" v-if="item.uiDigital">{{ item.uiDigital }}</td>
                       <td style="width:70%;" v-else>0</td>
                       <td style="width:10%;">
-                        <v-icon @click="abrirEditor('Medição das UI em digital (Gb)',index)">create</v-icon>
+                        <v-icon color="orange" @click="abrirEditor('Medição das UI em digital (Gb)',index)">create</v-icon>
                       </td>
                     </tr>
                     <tr>
@@ -237,7 +249,7 @@
                       <td style="width:70%;" v-if="item.uiOutros">{{ item.uiOutros }}</td>
                       <td style="width:70%;" v-else>0</td>
                       <td style="width:10%;">
-                        <v-icon @click="abrirEditor('Medição das UI noutros suportes',index)">create</v-icon>
+                        <v-icon color="orange" @click="abrirEditor('Medição das UI noutros suportes',index)">create</v-icon>
                       </td>
                     </tr>
                   </table>
@@ -297,6 +309,47 @@
         @devolverPedido="despacharPedido($event)"
       />
     </v-row>
+
+    <!-- Dialog da nota -->
+    <v-dialog v-model="notaDialog.visivel" width="70%" persistent>
+      <v-card>
+        <v-card-title class="indigo darken-4 title white--text mb-4" dark>
+          Nota relativa ao campo: {{ converteCampo(notaDialog.campo) }}
+        </v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">
+                Nota
+              </div>
+            </v-col>
+
+            <v-col>
+              <v-textarea
+                clearable
+                filled
+                auto-grow
+                color="indigo"
+                v-model="notaDialog.nota"
+                label="Nota"
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="red darken-4" text rounded dark @click="notaDialog.visivel = false">
+            Cancelar
+          </v-btn>
+
+          <v-btn color="indigo accent-4 white--text" rounded @click="adicionarNota()">
+            Adicionar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!--Dialog de Edição -->
     <v-dialog v-model="editar" width="60%" hide-overlay>
@@ -361,6 +414,8 @@ const help = require("@/config/help").help;
 
 import Loading from "@/components/generic/Loading";
 
+import { mapKeys } from "@/utils/utils";
+
 export default {
   props: ["p"],
 
@@ -371,6 +426,12 @@ export default {
 
   data() {
     return {
+      notaDialog: {
+        visivel: false,
+        campo: "",
+        index: -1,
+        nota: "",
+      },
       novoHistorico: null,
       dialogTipologias: false,
       search: "",
@@ -413,9 +474,6 @@ export default {
   },
 
   async created() {
-    this.loading = false;
-  },
-  mounted() {
     const criaNovoHistorico = {};
     Object.keys(this.dados).forEach((key) => {
       if (key !== "zonaControlo")
@@ -437,7 +495,9 @@ export default {
     });
 
     this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
+    this.loading = false;
   },
+
   methods: {
     prepararLeg: async function(leg) {
       try {
@@ -526,6 +586,39 @@ export default {
       this.editarCampo=campo;
       this.editarIndex=index;
       this.editar=true;
+    },
+
+    converteCampo(campo) {
+      return mapKeys(campo);
+    },
+
+    abrirNotaDialog(campo,index) {
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = campo;
+      this.notaDialog.index = index;
+      if(index == -1) {
+        if (this.novoHistorico[campo].nota !== undefined)
+          this.notaDialog.nota = this.novoHistorico[campo].nota;
+      }
+      else {
+        if(this.novoHistorico[campo][index].nota !== undefined)
+          this.notaDialog.nota = this.novoHistorico[campo][index].nota;
+      }
+    },
+
+    adicionarNota() {
+      if(this.notaDialog.index == -1) {
+        this.novoHistorico[this.notaDialog.campo].nota = this.notaDialog.nota;
+      }
+      else
+        this.novoHistorico[this.notaDialog.campo][this.notaDialog.index].nota = this.notaDialog.nota;
+      
+      this.notaDialog = {
+        visivel: false,
+        campo: "",
+        index: -1,
+        nota: "",
+      }
     },
 
     adicionar() {

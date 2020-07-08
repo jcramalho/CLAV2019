@@ -14,6 +14,9 @@
       <v-col cols="1">
         <v-icon color="green" @click="novoHistorico.legislacao.cor='verde'">check</v-icon>
         <v-icon color="red" @click="novoHistorico.legislacao.cor='vermelho'">clear</v-icon>
+        <v-icon @click="abrirNotaDialog('legislacao',-1)">
+          add_comment
+        </v-icon>
       </v-col>
     </v-row>
     <v-row v-else>
@@ -29,6 +32,9 @@
       <v-col cols="1">
         <v-icon color="green" @click="novoHistorico.referencial.cor='verde'">check</v-icon>
         <v-icon color="red" @click="novoHistorico.referencial.cor='vermelho'">clear</v-icon>
+        <v-icon @click="abrirNotaDialog('referencial',-1)">
+          add_comment
+        </v-icon>
       </v-col>
     </v-row>
     <v-row>
@@ -45,9 +51,12 @@
           </div>
       </v-col>
       <v-col cols="1">
-              <v-icon color="green" @click="novoHistorico.fundo.cor='verde'">check</v-icon>
-              <v-icon color="red" @click="novoHistorico.fundo.cor='vermelho'">clear</v-icon>
-           </v-col>
+        <v-icon color="green" @click="novoHistorico.fundo.cor='verde'">check</v-icon>
+        <v-icon color="red" @click="novoHistorico.fundo.cor='vermelho'">clear</v-icon>
+        <v-icon @click="abrirNotaDialog('fundo',-1)">
+          add_comment
+        </v-icon>   
+      </v-col>
     </v-row>
 
     <v-expansion-panels popout>
@@ -99,6 +108,9 @@
                       <td style="width:10%">
                         <v-icon color="green" @click="novoHistorico.zonaControlo[index].cor='verde'">check</v-icon>
                         <v-icon color="red" @click="novoHistorico.zonaControlo[index].cor='vermelho'">clear</v-icon>  
+                        <v-icon @click="abrirNotaDialog('zonaControlo',index)">
+                          add_comment
+                        </v-icon>
                       </td>
                     </tr>
                     <tr v-if="item.referencia">
@@ -206,6 +218,9 @@
                       </td>
                       <td style="width:70%;" v-if="item.uiPapel">{{ item.uiPapel }}</td>
                       <td style="width:70%;" v-else>0</td>
+                      <td style="width:10%;">
+                        <v-icon color="orange" @click="abrirEditor('Medição das UI em papel (m.l.)',index)">create</v-icon>
+                      </td>
                     </tr>
                     <tr>
                       <td style="width:20%;">
@@ -218,6 +233,9 @@
                       </td>
                       <td style="width:70%;" v-if="item.uiDigital">{{ item.uiDigital }}</td>
                       <td style="width:70%;" v-else>0</td>
+                      <td style="width:10%;">
+                        <v-icon color="orange" @click="abrirEditor('Medição das UI em digital (Gb)',index)">create</v-icon>
+                      </td>
                     </tr>
                     <tr>
                       <td style="width:20%;">
@@ -230,6 +248,9 @@
                       </td>
                       <td style="width:70%;" v-if="item.uiOutros">{{ item.uiOutros }}</td>
                       <td style="width:70%;" v-else>0</td>
+                      <td style="width:10%;">
+                        <v-icon color="orange" @click="abrirEditor('Medição das UI noutros suportes',index)">create</v-icon>
+                      </td>
                     </tr>
                   </table>
                   
@@ -284,14 +305,109 @@
       <v-spacer />
       <PO
         operacao="Validar"
-        @finalizarPedido="finalizarPedido($event)"
+        @finalizarPedido="verificaCores($event)"
         @devolverPedido="despacharPedido($event)"
       />
     </v-row>
 
+    <!-- Dialog da nota -->
+    <v-dialog v-model="notaDialog.visivel" width="70%" persistent>
+      <v-card>
+        <v-card-title class="indigo darken-4 title white--text mb-4" dark>
+          Nota relativa ao campo: {{ converteCampo(notaDialog.campo) }}
+        </v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">
+                Nota
+              </div>
+            </v-col>
+
+            <v-col>
+              <v-textarea
+                clearable
+                filled
+                auto-grow
+                color="indigo"
+                v-model="notaDialog.nota"
+                label="Nota"
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="red darken-4" text rounded dark @click="notaDialog.visivel = false">
+            Cancelar
+          </v-btn>
+
+          <v-btn color="indigo accent-4 white--text" rounded @click="adicionarNota()">
+            Adicionar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!--Dialog de Edição -->
+    <v-dialog v-model="editar" width="60%" hide-overlay>
+      <v-card>
+        <v-card>
+          <v-card-title class="primary darken-3 title white--text" dark>
+            <span>Edição do campo: {{editarCampo}}</span> 
+          </v-card-title>
+          <v-card-text class="mt-4">
+            <v-row class="ma-2">
+              <v-text-field
+                hint="Exemplo: 11.50"
+                label="Insira a medição de UI"
+                v-model="medicao"
+                solo
+                clearable
+              />
+            </v-row>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer />
+            <v-btn text color="red accent-4" @click="close()">
+              Voltar
+            </v-btn>
+            <v-btn class="indigo accent-4" dark @click="adicionar()">
+              <span>Alterar</span>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-card>
+    </v-dialog>
+
     <!-- Dialog se existir erros no pedido à API -->
     <v-dialog v-model="erroPedido" width="80%" hide-overlay>
       <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
+
+    <v-dialog v-model="colorDialog" width="700" persistent>
+      <v-card outlined>
+        <v-card-title
+          class="orange darken-4 title white--text"
+          dark
+        >Campos por validar!</v-card-title>
+
+        <v-card-text>
+          <span class="subtitle-1" style="white-space: pre-wrap">
+            O Pedido de criação do Auto de Eliminação contem campos por validar, deseja continuar?
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="red darken-4" text @click="colorDialog=false">Fechar</v-btn>
+          <v-btn color="indigo darken-4" text @click="colorDialog=false; finalizarPedido(addDados)">Continuar</v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
 
     <v-dialog v-model="sucessDialog" width="700" persistent>
@@ -322,6 +438,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/pedidos/generic/ErroDialog";
 
 import Loading from "@/components/generic/Loading";
+import { mapKeys } from "@/utils/utils";
 
 export default {
   props: ["p","tipo"],
@@ -334,12 +451,24 @@ export default {
 
   data() {
     return {
+      addDados: null,
+      notaDialog: {
+        visivel: false,
+        campo: "",
+        index: -1,
+        nota: "",
+      },
       novoHistorico: null,
       erros: [],
       erroPedido: false,
       dialogTipologias: false,
       sucessDialog: false,
+      colorDialog: false,
       search: "",
+      editar: false,
+      editarCampo: "",
+      editarIndex: 0,
+      medicao: "",
       colorSwitch: 0,
       cabecalho: [
         { text: "Código", align: "left", sortable: false, value: "codigo" },
@@ -364,10 +493,6 @@ export default {
   },
   
   async created() {
-    this.loading = false;
-  },
-  
-  mounted() {
     const copiaHistorico = JSON.parse(
       JSON.stringify(this.historico[this.historico.length - 1])
     );
@@ -375,7 +500,10 @@ export default {
     Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
 
     this.novoHistorico = copiaHistorico;
+    
+    this.loading = false;
   },
+  
 
   methods: {
     async despacharPedido(dados) {
@@ -405,6 +533,26 @@ export default {
       } catch (e) {
         //console.log("e :", e);
       }
+    },
+    
+    verificaCores(dados) {
+      var valida = true;
+      if(this.novoHistorico.legislacao && this.novoHistorico.legislacao.cor != "verde") valida = false;
+      else if(this.novoHistorico.referencial && this.novoHistorico.referencial.cor != "verde") valida = false;
+      else if(this.novoHistorico.fundo && this.novoHistorico.fundo.cor != "verde") valida = false;
+      else if(this.novoHistorico.zonaControlo) {
+        for(var zc of this.novoHistorico.zonaControlo)
+          if(zc.cor != "verde") {
+            valida = false;
+            break;
+          }
+      }
+
+      if(!valida) {
+        this.addDados = dados;
+        this.colorDialog = true;
+      }
+      else this.finalizarPedido(dados);
     },
 
     async finalizarPedido(dados) {
@@ -480,14 +628,53 @@ export default {
         }
       }
     },
+    
+    close() {
+      this.editar = false;
+    },
+
+    abrirEditor(campo,index) {
+      this.editarCampo=campo;
+      this.editarIndex=index;
+      this.editar=true;
+    },
+
+    converteCampo(campo) {
+      return mapKeys(campo);
+    },
+
+    abrirNotaDialog(campo,index) {
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = campo;
+      this.notaDialog.index = index;
+      if(index == -1) {
+        if (this.novoHistorico[campo].nota !== undefined)
+          this.notaDialog.nota = this.novoHistorico[campo].nota;
+      }
+      else {
+        if(this.novoHistorico[campo][index].nota !== undefined)
+          this.notaDialog.nota = this.novoHistorico[campo][index].nota;
+      }
+    },
+
+    adicionarNota() {
+      if(this.notaDialog.index == -1) {
+        this.novoHistorico[this.notaDialog.campo].nota = this.notaDialog.nota;
+      }
+      else
+        this.novoHistorico[this.notaDialog.campo][this.notaDialog.index].nota = this.notaDialog.nota;
+      
+      this.notaDialog = {
+        visivel: false,
+        campo: "",
+        index: -1,
+        nota: "",
+      }
+    },
 
     fecharErro() {
       this.erroPedido = false;
-    },
-
-    close() {
-      this.dialogTipologias = false;
-    },
+    }
 
   },
 };

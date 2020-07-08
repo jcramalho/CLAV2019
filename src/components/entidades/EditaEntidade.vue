@@ -22,7 +22,11 @@
               <div class="ma-4">
                 <v-radio-group v-model="acao" row>
                   <v-radio label="Editar" value="Alteração"></v-radio>
-                  <v-radio label="Extinguir" value="Extinção"></v-radio>
+                  <v-radio
+                    v-if="entidade.estado === 'Ativa'"
+                    label="Extinguir"
+                    value="Extinção"
+                  ></v-radio>
                 </v-radio-group>
               </div>
 

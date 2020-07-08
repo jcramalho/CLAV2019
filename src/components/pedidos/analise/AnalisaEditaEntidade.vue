@@ -180,6 +180,7 @@ export default {
         visivel: false,
         nome: "",
         key: "",
+        valorAtual: "",
       },
 
       erroDialog: {
@@ -404,6 +405,7 @@ export default {
         visivel: true,
         nome: this.transformaKeys(campo),
         key: campo,
+        valorAtual: this.dados[campo],
       };
     },
 
