@@ -78,15 +78,15 @@
               <v-icon class="mr-1" color="red" @click="anula(campo)">
                 clear
               </v-icon>
-              <v-icon
-                v-if="!(info instanceof Array)"
-                class="mr-1"
-                color="orange"
-                @click="edita(campo)"
-              >
-                create
-              </v-icon>
             </span>
+            <v-icon
+              v-if="!(info instanceof Array)"
+              class="mr-1"
+              color="orange"
+              @click="edita(campo)"
+            >
+              create
+            </v-icon>
             <v-icon @click="abrirNotaDialog(campo)">
               add_comment
             </v-icon>
@@ -395,8 +395,6 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
-
-      this.esconderOperacoes[campo] = true;
     },
 
     anula(campo) {
@@ -404,8 +402,6 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
-
-      this.esconderOperacoes[campo] = true;
     },
 
     edita(campo) {
@@ -470,6 +466,7 @@ export default {
 }
 
 .info-descricao-verde {
+  transition: background-color;
   background-color: #c8e6c9; /* lighten-4 */
 }
 

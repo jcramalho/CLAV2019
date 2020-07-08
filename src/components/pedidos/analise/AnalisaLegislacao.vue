@@ -112,12 +112,14 @@
 
           <!-- Operações -->
           <v-col cols="auto">
-            <v-icon class="mr-1" color="green" @click="verifica(campo)">
-              check
-            </v-icon>
-            <v-icon class="mr-1" color="red" @click="anula(campo)">
-              clear
-            </v-icon>
+            <span v-if="!esconderOperacoes[campo]">
+              <v-icon class="mr-1" color="green" @click="verifica(campo)">
+                check
+              </v-icon>
+              <v-icon class="mr-1" color="red" @click="anula(campo)">
+                clear
+              </v-icon>
+            </span>
             <v-icon
               v-if="!(info instanceof Array)"
               class="mr-1"
@@ -216,6 +218,7 @@ export default {
 
   data() {
     return {
+      esconderOperacoes: {},
       notaDialog: {
         visivel: false,
         campo: "",
@@ -315,6 +318,8 @@ export default {
           dados: this.dados[key],
           nota: null,
         };
+
+      this.esconderOperacoes[key] = false;
     });
 
     this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
@@ -579,6 +584,8 @@ export default {
         dados: event.dados,
         cor: "amarelo",
       };
+
+      this.esconderOperacoes[event.campo.key] = true;
     },
   },
 };
