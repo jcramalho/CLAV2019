@@ -9,7 +9,8 @@
     </td>
     <td class="subheading">{{ item.numero }}</td>
     <td class="subheading">{{ item.sumario }}</td>
-    <td @click.stop align="right">
+    <td class="subheading">{{ item.estado }}</td>
+    <td v-if="item.operacoes" @click.stop align="right">
       <v-icon
         v-for="(operacao, index) in item.operacoes"
         @click="doOperation(item, operacao)"
@@ -33,7 +34,7 @@ export default {
 
     onRowClick(item) {
       this.$emit("rowClicked", item);
-    }
-  }
+    },
+  },
 };
 </script>

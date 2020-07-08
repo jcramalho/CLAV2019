@@ -81,6 +81,8 @@ export default {
           myTree.push({
             id: listaEntidades[i].sigla,
             designacao: listaEntidades[i].designacao,
+            estado: listaEntidades[i].estado,
+            internacional: listaEntidades[i].internacional,
           });
         }
       }
