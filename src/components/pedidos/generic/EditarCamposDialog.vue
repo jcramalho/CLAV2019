@@ -53,7 +53,7 @@
         <v-col>
           <v-select
             v-model="valorEditado"
-            :items="['Sim', 'Não']"
+            :items="internacionalItems"
             label="Selecione uma opção"
             item-color="indigo"
             color="indigo"
@@ -230,7 +230,7 @@
             item-color="indigo"
             color="indigo"
             v-model="valorEditado"
-            :items="['Não especificada', 'PGD', 'PGD/LC', 'RADA']"
+            :items="diplomaFonteItems"
             dense
           />
         </v-col>
@@ -261,6 +261,33 @@
         Editar
       </v-btn>
     </v-card-actions>
+
+    <v-dialog v-model="erroDialog" width="50%">
+      <v-card>
+        <v-card-title class="warning title white--text" dark>
+          <v-icon color="white" class="ma-1">warning</v-icon>
+          Aviso
+        </v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col cols="3">
+              <div class="info-label">Mensagem</div>
+            </v-col>
+            <v-col>
+              <div class="info-content">O campo não pode estar vazio.</div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="indigo accent-4" rounded dark @click="fecharDialog()">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -276,7 +303,10 @@ export default {
   data() {
     return {
       tiposDiploma: [],
+      internacionalItems: ["Sim", "Não"],
+      diplomaFonteItems: ["Não especificada", "PGD", "PGD/LC", "RADA"],
       valorEditado: "",
+      erroDialog: false,
     };
   },
 
@@ -325,7 +355,9 @@ export default {
     },
 
     editar() {
-      if (this.valorAtual !== this.valorEditado) {
+      if (this.valorEditado === "" || this.valorEditado === null) {
+        this.erroDialog = true;
+      } else if (this.valorAtual !== this.valorEditado) {
         this.$emit("editarCampo", {
           dados: this.valorEditado,
           campo: this.campo,
@@ -333,6 +365,13 @@ export default {
       } else {
         this.fechar();
       }
+    },
+
+    fecharDialog() {
+      if (this.valorAtual !== null && this.valorAtual !== undefined)
+        this.valorEditado = this.valorAtual;
+
+      this.erroDialog = false;
     },
   },
 };
