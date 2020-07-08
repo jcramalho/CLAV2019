@@ -192,14 +192,14 @@
           <div class="info-label">Sumário</div>
         </v-col>
         <v-col>
-          <v-text-field
+          <v-textarea
+            auto-grow
             filled
             label="Sumário"
             clearable
             color="indigo"
-            single-line
             v-model="valorEditado"
-          ></v-text-field>
+          ></v-textarea>
         </v-col>
       </v-row>
 

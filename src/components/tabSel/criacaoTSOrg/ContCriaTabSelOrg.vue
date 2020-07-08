@@ -1350,7 +1350,8 @@ export default {
           novoObjeto: { ts: tsObj },
           user: { email: userBD.email },
           entidade: userBD.entidade,
-          token: this.$store.state.token
+          token: this.$store.state.token,
+          historico: []
         };
 
         var response = await this.$request("post", "/pedidos", pedidoParams);

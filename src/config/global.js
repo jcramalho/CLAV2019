@@ -10,6 +10,6 @@ const dominioDefault = "http://clav.di.uminho.pt"; //para o nginx proxy quando a
 const dominio = process.env.API_URL || dominioDefault;
 const apiVersion = process.env.API_VERSION || "v2";
 
-module.exports.interfaceVersion = process.env.INTERFACE_VERSION || "2020-07-02";
+module.exports.interfaceVersion = process.env.INTERFACE_VERSION || "2020-07-07";
 
 module.exports.host = dominio + "/" + apiVersion;

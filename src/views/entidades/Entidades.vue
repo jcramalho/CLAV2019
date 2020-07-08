@@ -43,30 +43,38 @@ export default {
 
     preparaCabecalhos(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
-        this.cabecalhos = ["Sigla", "Designação", "Operações"];
-        this.campos = ["id", "designacao", "operacoes"];
+        this.cabecalhos = [
+          "Sigla",
+          "Designação",
+          "Estado",
+          "Internacional",
+          "Operações",
+        ];
+        this.campos = [
+          "id",
+          "designacao",
+          "estado",
+          "internacional",
+          "operacoes",
+        ];
       } else {
-        this.cabecalhos = ["Sigla", "Designação"];
-        this.campos = ["id", "designacao"];
+        this.cabecalhos = ["Sigla", "Designação", "Estado", "Internacional"];
+        this.campos = ["id", "designacao", "estado", "internacional"];
       }
     },
 
     preparaLista(listaEntidades) {
       let myTree = [];
 
-      if (this.operacoes.length != 0) {
+      if (this.operacoes.length !== 0) {
         for (let i = 0; i < listaEntidades.length; i++) {
-          if (listaEntidades[i].estado === "Ativa")
-            myTree.push({
-              id: listaEntidades[i].sigla,
-              designacao: listaEntidades[i].designacao,
-              operacoes: this.operacoes,
-            });
-          else
-            myTree.push({
-              id: listaEntidades[i].sigla,
-              designacao: listaEntidades[i].designacao,
-            });
+          myTree.push({
+            id: listaEntidades[i].sigla,
+            designacao: listaEntidades[i].designacao,
+            estado: listaEntidades[i].estado,
+            internacional: listaEntidades[i].internacional,
+            operacoes: this.operacoes,
+          });
         }
       } else {
         for (let i = 0; i < listaEntidades.length; i++) {
@@ -81,7 +89,7 @@ export default {
     },
   },
 
-  created: async function () {
+  created: async function() {
     try {
       let response = await this.$request("get", "/entidades");
 
