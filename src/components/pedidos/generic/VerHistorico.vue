@@ -99,6 +99,14 @@
                             </v-alert>
                           </template>
                         </v-data-table>
+                        
+                        <div class="info-conteudo" v-else-if="campo === 'zonaControlo'">
+                          <ZonaControlo :info="info"/>
+                        </div>
+
+                        <div class="info-conteudo" v-else>
+                          <span v-for="i in info" :key="i">{{i}}</span>
+                        </div>
                       </div>
                     </v-col>
                   </v-row>
@@ -123,7 +131,7 @@
                     "
                   >
                     <v-col cols="2">
-                      <div
+                      <div v-if="info.cor"
                         :class="[
                           'info-descricao',
                           `info-descricao-${info.cor}`,
@@ -131,13 +139,22 @@
                       >
                         {{ transformaKeys(campo) }}
                       </div>
+                      <div v-else
+                        :class="[
+                            'info-descricao',
+                            'info-descricao-verde',
+                        ]"
+                      >
+                          {{ transformaKeys(campo) }}
+                      </div>
                     </v-col>
                     <v-col>
                       <div
                         v-if="!(info.dados instanceof Array)"
                         class="info-conteudo"
                       >
-                        {{ info.dados }}
+                        <ZonaControlo v-if="campo === 'zonaControlo'" :info="info" :tipo="true"/>
+                        <span v-else>{{ info.dados }}</span>
                       </div>
 
                       <div v-else>
@@ -197,6 +214,10 @@
                             </v-alert>
                           </template>
                         </v-data-table>
+
+                        <div :class="['info-conteudo',`info-conteudo-${info.cor}`]" v-else>
+                          <span v-for="i in info.dados" :key="i">{{i}}</span>
+                        </div>
                       </div>
                     </v-col>
 
@@ -281,10 +302,13 @@
 
 <script>
 import { mapKeys } from "@/utils/utils";
+import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 
 export default {
   props: ["pedido"],
-
+  components: {
+    ZonaControlo
+  },
   data() {
     return {
       dialogVerNota: {
