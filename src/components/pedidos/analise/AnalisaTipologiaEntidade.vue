@@ -15,6 +15,7 @@
         >
           <v-col cols="2">
             <div
+              :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
               class="info-descricao"
               :class="`info-descricao-${novoHistorico[campo].cor}`"
             >
@@ -164,6 +165,7 @@ export default {
 
   data() {
     return {
+      animacoes: {},
       esconderOperacoes: {},
       notaDialog: {
         visivel: false,
@@ -242,6 +244,7 @@ export default {
         };
 
       this.esconderOperacoes[key] = false;
+      this.animacoes[key] = true;
     });
 
     this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
@@ -393,6 +396,7 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     anula(campo) {
@@ -400,6 +404,7 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     edita(campo) {
@@ -441,6 +446,7 @@ export default {
       };
 
       this.esconderOperacoes[event.campo.key] = true;
+      this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
     },
   },
 };
@@ -464,15 +470,38 @@ export default {
 }
 
 .info-descricao-verde {
-  transition: background-color;
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #c8e6c9; /* lighten-4 */
 }
 
 .info-descricao-vermelho {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffcdd2; /* lighten-4 */
 }
 
 .info-descricao-amarelo {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffe0b2; /* lighten-4 */
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>
