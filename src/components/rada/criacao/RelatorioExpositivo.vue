@@ -1,6 +1,13 @@
 <template>
   <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
+      <v-row v-if="!this.classes.some(e => e.tipo == 'Série' || e.tipo == 'Subsérie')">
+        <v-col cols="12" class="text-right">
+          <v-btn color="indigo lighten-2" dark class="ma-2" @click="importar_re = true">
+            <v-icon dark left>add</v-icon>Importar Relatório Expositivo
+          </v-btn>
+        </v-col>
+      </v-row>
       <div v-if="RE.tipologiasProd == null">
         <NovaEntidade
           :entidades="entidades"
@@ -212,6 +219,13 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
+      <ImportarRE
+        :dialog="importar_re"
+        @fecharDialog="importar_re = false"
+        :entidades="entidades"
+        :tipologias="tipologias"
+        :RE="RE"
+      />
     </v-form>
     <br />
     <v-btn color="indigo darken-4" dark @click="$emit('seguinte', 1)">Voltar</v-btn>
@@ -223,6 +237,7 @@
 <script>
 import NovaEntidade from "./classes/partes/NovaEntidade";
 import SelecionarData from "@/components/generic/SelecionarData";
+import ImportarRE from "@/components/rada/importacao/importarRE";
 
 export default {
   props: [
@@ -235,14 +250,16 @@ export default {
   ],
   components: {
     NovaEntidade,
-    SelecionarData
+    SelecionarData,
+    ImportarRE
   },
   data: () => ({
     panels: [0, 0, 0],
     menu1: false,
     menu2: false,
     isMultiple: false,
-    basicRule: [v => !!v || "Campo de preenchimento obrigatório!"]
+    basicRule: [v => !!v || "Campo de preenchimento obrigatório!"],
+    importar_re: false
   }),
   methods: {
     data_final_valida(v) {
@@ -275,8 +292,19 @@ export default {
       }
       return false;
     },
-    apagar: function() {
-      this.$refs.form.reset();
+    apagar() {
+      this.RE.hist_admin = "";
+      this.RE.hist_cust = "";
+      this.RE.sist_org = "";
+      this.RE.localizacao = "";
+      this.RE.est_conser = "";
+
+      if (!this.classes.some(e => e.tipo == "Série" || e.tipo == "Subsérie")) {
+        this.RE.entidadesProd = [];
+        this.RE.tipologiasProd = null;
+        this.RE.dataInicial = null;
+        this.RE.dataFinal = null;
+      }
       this.isMultiple = false;
       this.panels = [0, 0, 0];
     },

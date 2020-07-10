@@ -1,77 +1,56 @@
 var Excel = require("exceljs");
 const nanoid = require("nanoid");
 
-var excel2Json = function(file) {
-  console.log("Conversor", file);
+var importarRE = (file, entidades, tipologias, RE) => {
   return new Promise((resolve, reject) => {
-    let workbook = new Excel.Workbook();
-    workbook.xlsx
-      .load(file)
-      .then(wb => {
+    let enc = new TextDecoder("utf-8");
+    let re = enc.decode(file).replace(/['"]/g, '').split("\n")
+    //console.log(re);
+    let erros = {}
 
-        let RADA = {
-          id: nanoid(),
-          titulo: wb.getWorksheet(1).getRow(2).getCell(2).text,
-          despachoAprovacao: null,
-          dataAprovacao: null,
-          despachoRevogacao: null,
-          dataRevogacao: null,
-          entRes: [wb.getWorksheet(1).getRow(3).getCell(2).text],
-          RE: {
-            entidadesProd: [
-              [wb.getWorksheet(2).getRow(3).getCell(2).text]
-            ],
-            tipologiasProd: [],
-            // dataInicial: "2020-01-02",
-            // dataFinal: "2020-06-01",
-            dataInicial: wb.getWorksheet(2).getRow(5).getCell(2).text,
-            dataFinal: wb.getWorksheet(2).getRow(5).getCell(2).text,
-            dimSuporte: {
-              nSeries: null,
-              nSubseries: null,
-              nUI: null,
-              medicaoUI_papel: null,
-              medicaoUI_digital: null,
-              medicaoUI_outros: null
-            },
-            hist_admin: wb.getWorksheet(2).getRow(9).getCell(2).text,
-            hist_cust: wb.getWorksheet(2).getRow(10).getCell(2).text,
-            sist_org: wb.getWorksheet(2).getRow(12).getCell(2).text,
-            localizacao: wb.getWorksheet(2).getRow(14).getCell(2).text,
-            est_conser: wb.getWorksheet(2).getRow(15).getCell(2).text
-          },
-          tsRada: {
-            titulo: "Necessário adicionar título TS",
-            UIs: [],
-            classes: []
-          }
+    // Produtoras
+    let entProd = re[1].split(';').slice(0, 2)
+
+    // Verificar se existe entidades
+    if (entProd[1] == "") {
+      let tipProd = re[2].split(';').slice(0, 2)
+
+      if (tipProd[1] != "") {
+        let tip = tipologias.find(e => e.tipologia.split(' - ')[1] == tipProd[1]);
+
+        if (tip != undefined) {
+          RE.tipologiasProd = tip.tipologia;
+        } else {
+          erros["produtoras"] = "Tipologia associada não existe no sistema!"
         }
-        // // Tratamento de Autos de Eliminação
-        // // Os autos de eliminação vão ser carregados num array para validações
-        // var index = -1;
+      }
 
-        // //Array de Erros
-        // var err = [];
+    } else {
+      let ent = entidades.find(e => e.designacao == entProd[1]);
 
-        // var currentTime = new Date();
-        // //Processamento dos Autos de Eliminação
-        // var auto = {
-        //   tipo: tipo,
-        //   entidade: wb
-        //     .getWorksheet(1)
-        //     .getRow(1)
-        //     .getCell(2).text,
-        //   fundo: wb
-        //     .getWorksheet(1)
-        //     .getRow(3)
-        //     .getCell(2).text,
-        //   zonaControlo: []
-        // };
-        // , wb.getWorksheet(1).getRow(1).getCell(2).text
-        resolve(RADA);
-      })
-      .catch(err => reject(new Error("Error no EXCEL", err)));
-  });
-};
+      if (ent != undefined) {
+        RE.entidadesProd = [ent.sigla + " - " + ent.designacao];
+      } else {
+        erros["produtoras"] = "Entidades associadas não existem no sistema!"
+      }
+    }
+    if (erros.produtoras) {
+      reject({ erros })
+    }
+    // DATAS
+    RE["dataInicial"] = re[3].split(';').slice(0, 2)[1] + "-01-01";
+    RE["dataFinal"] = re[4].split(';').slice(0, 2)[1] + "-12-31";
 
-export { excel2Json };
+    // CAMPOS RESTANTES
+    RE.hist_admin = re[6].split(';').slice(0, 2)[1];
+    RE.hist_cust = re[7].split(';').slice(0, 2)[1];
+    RE.sist_org = re[9].split(';').slice(0, 2)[1];
+    RE.localizacao = re[11].split(';').slice(0, 2)[1];
+    RE.est_conser = re[12].split(';').slice(0, 2)[1];
+
+    resolve({ RE });
+
+  })
+}
+
+export { importarRE };

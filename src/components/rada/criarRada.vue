@@ -1,8 +1,8 @@
 <template>
   <v-card class="ma-4" style="background-color:#fafafa">
-    <v-card-title class="indigo darken-4 white--text">
-      Criar Relatório de Avaliação de Documentação Acumulada
-    </v-card-title>
+    <v-card-title
+      class="indigo darken-4 white--text"
+    >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title>
     <v-card-text>
       <br />
       <v-alert :value="alert_guardar" outlined type="success" text dismissible border="left">
@@ -214,7 +214,7 @@ export default {
             //   descricao: "Descrição da UI 1",
             //   notas: "Sem notas! ",
             //   localizacao: "Felgueiras"
-            // },
+            // }
             // {
             //   codigo: "2",
             //   codCota: "3",

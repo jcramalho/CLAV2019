@@ -28,7 +28,7 @@
       </v-col>
       <v-spacer></v-spacer>
       <v-col class="text-right">
-        <v-btn color="indigo lighten-2" dark class="ma-2" disabled @click="importar_classes = true">
+        <v-btn color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
           <v-icon dark left>add</v-icon>Importar Classes
         </v-btn>
       </v-col>

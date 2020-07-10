@@ -11,8 +11,8 @@
         single-line
         solo
         @change="transformar_buffer"
+        :rules="[v => ficheiroValido(v)]"
       ></v-file-input>
-      <!-- :rules="[v => v == undefined || v.name.split('.')[1] == 'csv' || 'Ficheiro no formato errado. Apenas .xls ou .xlsx.']" -->
     </v-col>
   </v-row>
 </template>
@@ -21,31 +21,36 @@
 export default {
   props: ["label"],
   data: () => ({
-    ficheiro: null,
-    erroDialog: false
+    reader: null
   }),
   methods: {
     transformar_buffer(file) {
       if (file) {
-        this.erroDialog = false;
         let extensao = file.name.split(".")[1];
 
-        if (extensao == "xlsx") {
-          let reader = new FileReader();
-          reader.onload = e => (this.ficheiro = e.target.result);
-          reader.readAsArrayBuffer(file);
-          console.log("fiz emit", this.ficheiro, file);
-          this.$emit("ficheiro", this.ficheiro);
-        } else {
-          console.log("nao");
-          this.ficheiro = null;
+        if (extensao == "csv") {
+          this.reader.onload = e => {
+            this.$emit("ficheiro", e.target.result);
+          };
+          this.reader.readAsArrayBuffer(file);
         }
+      }
+    },
+    ficheiroValido(v) {
+      if (!!v) {
+        if (v.name.split(".")[1] != "csv") {
+          return "Ficheiro no formato errado. Apenas .csv";
+        }
+
+        return true;
       } else {
-        console.log("nao");
-        this.ficheiro = null;
+        return "Campo Obrigatório!";
       }
     }
   },
+  created() {
+    this.reader = new FileReader();
+  }
 };
 </script>
 

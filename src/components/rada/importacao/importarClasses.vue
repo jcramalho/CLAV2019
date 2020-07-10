@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="dialogState">
+  <v-dialog v-model="dialogState">
     <v-card>
       <v-card-title class="indigo darken-4 white--text">Importar Classes</v-card-title>
       <v-card-text>
