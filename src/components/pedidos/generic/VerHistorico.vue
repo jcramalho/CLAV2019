@@ -2,11 +2,27 @@
   <v-card>
     <v-card-title class="indigo darken-4 title white--text" dark>
       Histórico de alterações
+
       <v-spacer />
+
       <v-chip color="indigo accent-4" text-color="white" label>
         <v-icon class="mr-1">label</v-icon>
         <b>{{ etapaReferente }}</b>
       </v-chip>
+
+      <v-tooltip v-if="historico.length > 1" bottom>
+        <template v-slot:activator="{ on }">
+          <v-icon
+            @click="dialogVerHistoricoEmTabela = true"
+            color="white"
+            v-on="on"
+            class="ml-4"
+          >
+            table_chart
+          </v-icon>
+        </template>
+        <span>Comparar duas etapas do histórico em formato tabela...</span>
+      </v-tooltip>
     </v-card-title>
 
     <v-card-text class="mt-2">
@@ -99,13 +115,16 @@
                             </v-alert>
                           </template>
                         </v-data-table>
-                        
-                        <div class="info-conteudo" v-else-if="campo === 'zonaControlo'">
-                          <ZonaControlo :info="info"/>
+
+                        <div
+                          class="info-conteudo"
+                          v-else-if="campo === 'zonaControlo'"
+                        >
+                          <ZonaControlo :info="info" />
                         </div>
 
                         <div class="info-conteudo" v-else>
-                          <span v-for="i in info" :key="i">{{i}}</span>
+                          <span v-for="i in info" :key="i">{{ i }}</span>
                         </div>
                       </div>
                     </v-col>
@@ -245,7 +264,8 @@
                     "
                   >
                     <v-col cols="2">
-                      <div v-if="info.cor"
+                      <div
+                        v-if="info.cor"
                         :class="[
                           'info-descricao',
                           `info-descricao-${info.cor}`,
@@ -253,13 +273,11 @@
                       >
                         {{ transformaKeys(campo) }}
                       </div>
-                      <div v-else
-                        :class="[
-                            'info-descricao',
-                            'info-descricao-verde',
-                        ]"
+                      <div
+                        v-else
+                        :class="['info-descricao', 'info-descricao-verde']"
                       >
-                          {{ transformaKeys(campo) }}
+                        {{ transformaKeys(campo) }}
                       </div>
                     </v-col>
                     <v-col>
@@ -267,7 +285,11 @@
                         v-if="!(info.dados instanceof Array)"
                         class="info-conteudo"
                       >
-                        <ZonaControlo v-if="campo === 'zonaControlo'" :info="info" :tipo="true"/>
+                        <ZonaControlo
+                          v-if="campo === 'zonaControlo'"
+                          :info="info"
+                          :tipo="true"
+                        />
                         <span v-else>{{ info.dados }}</span>
                       </div>
 
@@ -329,8 +351,14 @@
                           </template>
                         </v-data-table>
 
-                        <div :class="['info-conteudo',`info-conteudo-${info.cor}`]" v-else>
-                          <span v-for="i in info.dados" :key="i">{{i}}</span>
+                        <div
+                          :class="[
+                            'info-conteudo',
+                            `info-conteudo-${info.cor}`,
+                          ]"
+                          v-else
+                        >
+                          <span v-for="i in info.dados" :key="i">{{ i }}</span>
                         </div>
                       </div>
                     </v-col>
@@ -382,6 +410,15 @@
       </v-btn>
     </v-card-actions>
 
+    <!-- Ver historico em tabela dialog -->
+    <v-dialog v-model="dialogVerHistoricoEmTabela" width="80%">
+      <VerHistoricoEmTabela
+        :historico="historico"
+        :distribuicao="JSON.parse(JSON.stringify(distribuicao))"
+        :tipoPedido="pedido.objeto.acao"
+      />
+    </v-dialog>
+
     <!-- Ver nota dialog -->
     <v-dialog v-model="dialogVerNota.visivel" width="50%">
       <v-card>
@@ -418,13 +455,17 @@
 import { mapKeys } from "@/utils/utils";
 import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 
+import VerHistoricoEmTabela from "@/components/pedidos/generic/VerHistoricoEmTabela";
+
 export default {
   props: ["pedido"],
   components: {
-    ZonaControlo
+    ZonaControlo,
+    VerHistoricoEmTabela,
   },
   data() {
     return {
+      dialogVerHistoricoEmTabela: false,
       dialogVerNota: {
         visivel: false,
         nota: "",
