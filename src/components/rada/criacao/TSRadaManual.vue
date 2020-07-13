@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col xs="11" sm="11">
+      <v-col cols="auto">
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_area = true">
           <v-icon dark left>add</v-icon>área orgânico-funcional
         </v-btn>
@@ -24,6 +24,12 @@
         </v-btn>
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_subserie = true">
           <v-icon dark left>add</v-icon>Subsérie
+        </v-btn>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col class="text-right">
+        <v-btn color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
+          <v-icon dark left>add</v-icon>Importar Classes
         </v-btn>
       </v-col>
     </v-row>
@@ -158,6 +164,13 @@
         <ListaUI :TS="TS" :RE="RE" />
       </v-col>
     </v-row>
+    <!-- IMPORTAR CLASSES -->
+    <ImportarClasses
+      v-if="importar_classes"
+      :dialog="importar_classes"
+      @fecharDialog="importar_classes = false"
+    />
+    <!-- CRIAR CLASSES -->
     <EditarSerie
       v-if="editar_serie"
       :dialog="editar_serie"
@@ -205,11 +218,7 @@
     <div v-else>
       <v-row no-gutters>
         <v-col cols="12">
-          <v-btn
-            color="indigo darken-4"
-            dark
-            @click="$emit('voltar', 2)"
-          >Voltar</v-btn>
+          <v-btn color="indigo darken-4" dark @click="$emit('voltar', 2)">Voltar</v-btn>
           <v-btn
             style="margin-left: 10px"
             color="indigo darken-4"
@@ -224,9 +233,7 @@
             color="indigo darken-4"
             dark
             @click="$emit('guardar', 'nao')"
-          >
-            Continuar Depois
-          </v-btn>
+          >Continuar Depois</v-btn>
           <v-btn
             style="margin-left: 10px"
             :disabled="
@@ -240,9 +247,13 @@
           >
             <font style="color: white">Submeter</font>
           </v-btn>
-          <v-btn style="margin-left: 10px" color="red darken-4" dark v-if="pode_remover" @click="$emit('remover')">
-            Eliminar
-          </v-btn>
+          <v-btn
+            style="margin-left: 10px"
+            color="red darken-4"
+            dark
+            v-if="pode_remover"
+            @click="$emit('remover')"
+          >Eliminar</v-btn>
         </v-col>
       </v-row>
     </div>
@@ -258,6 +269,7 @@ import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
 import TabelaClassesRADA from "@/components/rada/consulta/TabelaClassesRADA";
 import ListaUI from "@/components/rada/criacao/ListaUI";
+import ImportarClasses from "@/components/rada/importacao/importarClasses";
 
 const labels = require("@/config/labels").criterios;
 
@@ -273,6 +285,7 @@ export default {
     "pode_remover"
   ],
   components: {
+    ImportarClasses,
     AddOrgFunc,
     Serie,
     SubSerie,
@@ -283,6 +296,7 @@ export default {
     TabelaClassesRADA
   },
   data: () => ({
+    importar_classes: false,
     tipos: [],
     search: null,
     tree_ou_tabela: false,

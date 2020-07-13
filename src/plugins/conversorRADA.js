@@ -1,38 +1,56 @@
 var Excel = require("exceljs");
+const nanoid = require("nanoid");
 
-var excel2Json = function(file) {
+var importarRE = (file, entidades, tipologias, RE) => {
   return new Promise((resolve, reject) => {
-    var workbook = new Excel.Workbook();
-    workbook.xlsx
-      .load(file)
-      .then(wb => {
-          console.log(wb)
-        // // Tratamento de Autos de Eliminação
-        // // Os autos de eliminação vão ser carregados num array para validações
-        // var index = -1;
+    let enc = new TextDecoder("utf-8");
+    let re = enc.decode(file).replace(/['"]/g, '').split("\n")
+    //console.log(re);
+    let erros = {}
 
-        // //Array de Erros
-        // var err = [];
+    // Produtoras
+    let entProd = re[1].split(';').slice(0, 2)
 
-        // var currentTime = new Date();
-        // //Processamento dos Autos de Eliminação
-        // var auto = {
-        //   tipo: tipo,
-        //   entidade: wb
-        //     .getWorksheet(1)
-        //     .getRow(1)
-        //     .getCell(2).text,
-        //   fundo: wb
-        //     .getWorksheet(1)
-        //     .getRow(3)
-        //     .getCell(2).text,
-        //   zonaControlo: []
-        // };
-        // , wb.getWorksheet(1).getRow(1).getCell(2).text
-        resolve('tranki');
-      })
-      .catch(ERR => reject(new Error("Error no EXCEL", ERR)));
-  });
-};
+    // Verificar se existe entidades
+    if (entProd[1] == "") {
+      let tipProd = re[2].split(';').slice(0, 2)
 
-export { excel2Json };
+      if (tipProd[1] != "") {
+        let tip = tipologias.find(e => e.tipologia.split(' - ')[1] == tipProd[1]);
+
+        if (tip != undefined) {
+          RE.tipologiasProd = tip.tipologia;
+        } else {
+          erros["produtoras"] = "Tipologia associada não existe no sistema!"
+        }
+      }
+
+    } else {
+      let ent = entidades.find(e => e.designacao == entProd[1]);
+
+      if (ent != undefined) {
+        RE.entidadesProd = [ent.sigla + " - " + ent.designacao];
+      } else {
+        erros["produtoras"] = "Entidades associadas não existem no sistema!"
+      }
+    }
+    if (erros.produtoras) {
+      reject({ erros })
+    }
+    // DATAS
+    RE["dataInicial"] = re[3].split(';').slice(0, 2)[1] + "-01-01";
+    RE["dataFinal"] = re[4].split(';').slice(0, 2)[1] + "-12-31";
+
+    // CAMPOS RESTANTES
+    RE.hist_admin = re[6].split(';').slice(0, 2)[1];
+    RE.hist_cust = re[7].split(';').slice(0, 2)[1];
+    RE.sist_org = re[9].split(';').slice(0, 2)[1];
+    RE.localizacao = re[11].split(';').slice(0, 2)[1];
+    RE.est_conser = re[12].split(';').slice(0, 2)[1];
+
+    resolve({ RE });
+
+  })
+}
+
+export { importarRE };

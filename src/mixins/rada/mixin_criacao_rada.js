@@ -19,7 +19,8 @@ export default {
     pedidos_novas_entidades: [],
     datas_extremas_classes: [],
     erros_relacoes: [],
-    erros_datas_uis: []
+    erros_datas_uis: [],
+    existe_serie: true
   }),
   methods: {
     changeE1(e) {
@@ -326,101 +327,102 @@ export default {
       }
     },
     async concluir(id_remocao_pendente) {
-      // verificar a validade das UIs e das relações!
-      let series_subseries = this.RADA.tsRada.classes.filter(
-        e => e.tipo == "Série" || e.tipo == "Subsérie"
-      );
-
-      this.descobrir_datas_extremas(series_subseries);
-      this.validar_relacoes(series_subseries);
-
-      //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
-      //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
-      this.erroProdutoras = [];
-
-      if (!!this.RADA.RE.entidadesProd[0]) {
-        let entidades_selecionadas = this.entidadesProcessadas
-          .filter(e => e.disabled == true)
-          .map(e => e.entidade);
-
-        this.RADA.RE.entidadesProd.forEach(ent => {
-          if (!entidades_selecionadas.some(e => e == ent)) {
-            this.erroProdutoras.push(ent);
-          }
-        });
-      } else {
-        let tipologias_selecionadas = this.tipologias
-          .filter(t => t.disabled == true)
-          .map(t => t.tipologia);
-
-        this.RADA.RE.tipologiasProd.forEach(tip => {
-          if (!tipologias_selecionadas.some(e => e == tip)) {
-            this.erroProdutoras.push(tip);
-          }
-        });
-      }
-
-      if (
-        !!this.erroProdutoras[0] ||
-        !!this.erros_relacoes[0] ||
-        !!this.erros_datas_uis[0]
-      ) {
+      if (!this.RADA.tsRada.classes.some(e => e.tipo == "Série")) {
+        this.existe_serie = false;
         this.loading_circle_ts = false;
       } else {
-        let series = this.RADA.tsRada.classes
-          // adicionar os IDS a todas as classes
-          .map(e => {
-            let tipo = null;
-            switch (e.tipo) {
-              case "Série":
-                tipo = "serie";
-                break;
-              case "Subsérie":
-                tipo = "subserie";
-                break;
-              default:
-                tipo = "organico_funcional";
-                break;
+        this.existe_serie = true;
+        // verificar a validade das UIs e das relações!
+        let series_subseries = this.RADA.tsRada.classes.filter(
+          e => e.tipo == "Série" || e.tipo == "Subsérie"
+        );
+
+        this.descobrir_datas_extremas(series_subseries);
+        this.validar_relacoes(series_subseries);
+
+        //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
+        //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
+        this.erroProdutoras = [];
+
+        if (!!this.RADA.RE.entidadesProd[0]) {
+          let entidades_selecionadas = this.entidadesProcessadas
+            .filter(e => e.disabled == true)
+            .map(e => e.entidade);
+
+          this.RADA.RE.entidadesProd.forEach(ent => {
+            if (!entidades_selecionadas.some(e => e == ent)) {
+              this.erroProdutoras.push(ent);
             }
-            e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
-            return e;
-          })
-          .filter(e => e.tipo == "Série");
-
-        // Nesta função será removida a zona de decisões de avaliação respeitando o invariante;
-        this.removerDecisoesAvaliacao(series);
-
-        // Calcular os valores de dimensão e suporte no relatório expositivo
-        this.calcular_dimensao_suporte(series);
-
-        // Tratar dos pedidos da novas entidades
-        await this.fazer_pedidos_entidades(series);
-
-        // Tratar dos pedidos das novas legislações
-        await this.fazer_pedidos_legislacao(series);
-
-        // Fazer pedido do RADA
-        let pedidoParams = {
-          tipoPedido: "Criação",
-          tipoObjeto: "RADA",
-          novoObjeto: this.RADA,
-          user: {
-            email: this.userEmail
-          },
-          token: this.$store.state.token,
-          criadoPor: this.userEmail,
-          entidade: this.user_entidade,
-          despacho: !!this.despacho
-            ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
-            this.despacho
-            : "Submissão inicial"
-        };
-        let response = await this.$request("post", "/pedidos", pedidoParams);
-        if (id_remocao_pendente != null) {
-          // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
-          await this.$request("delete", "/pendentes/" + id_remocao_pendente);
+          });
+        } else {
+          if (!this.RADA.tsRada.classes.some(e => e.tipologiasProdutoras && e.tipologiasProdutoras == this.RADA.RE.tipologiasProd)) {
+            this.erroProdutoras.push(this.RADA.RE.tipologiasProd);
+          }
         }
-        this.$router.push("/pedidos/submissao");
+
+        if (
+          !!this.erroProdutoras[0] ||
+          !!this.erros_relacoes[0] ||
+          !!this.erros_datas_uis[0]
+        ) {
+          this.loading_circle_ts = false;
+        } else {
+          let series = this.RADA.tsRada.classes
+            // adicionar os IDS a todas as classes
+            .map(e => {
+              let tipo = null;
+              switch (e.tipo) {
+                case "Série":
+                  tipo = "serie";
+                  break;
+                case "Subsérie":
+                  tipo = "subserie";
+                  break;
+                default:
+                  tipo = "organico_funcional";
+                  break;
+              }
+              e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
+              return e;
+            })
+            .filter(e => e.tipo == "Série");
+
+          // Nesta função será removida a zona de decisões de avaliação respeitando o invariante;
+          this.removerDecisoesAvaliacao(series);
+
+          // Calcular os valores de dimensão e suporte no relatório expositivo
+          this.calcular_dimensao_suporte(series);
+
+          // Tratar dos pedidos da novas entidades
+          await this.fazer_pedidos_entidades(series);
+
+          // Tratar dos pedidos das novas legislações
+          await this.fazer_pedidos_legislacao(series);
+
+          // Fazer pedido do RADA
+          let pedidoParams = {
+            tipoPedido: "Criação",
+            tipoObjeto: "RADA",
+            novoObjeto: this.RADA,
+            historico: [],
+            user: {
+              email: this.userEmail
+            },
+            token: this.$store.state.token,
+            criadoPor: this.userEmail,
+            entidade: this.user_entidade,
+            despacho: !!this.despacho
+              ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
+              this.despacho
+              : "Submissão inicial"
+          };
+          let response = await this.$request("post", "/pedidos", pedidoParams);
+          if (id_remocao_pendente != null) {
+            // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
+            await this.$request("delete", "/pendentes/" + id_remocao_pendente);
+          }
+          this.$router.push("/pedidos/submissao");
+        }
       }
     }
   },
@@ -451,8 +453,7 @@ export default {
     response = await this.$request("get", "/tipologias");
     this.tipologias = response.data.map(item => {
       return {
-        tipologia: item.sigla + " - " + item.designacao,
-        disabled: false
+        tipologia: item.sigla + " - " + item.designacao
       };
     });
 

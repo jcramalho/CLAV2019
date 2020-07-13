@@ -1,6 +1,6 @@
 <template>
   <v-card flat class="mb-12">
-    <RADAEntry v-if="!RE.tipologiasProd[0]" label="Entidades Produtoras">
+    <RADAEntry v-if="!RE.tipologiasProd" label="Entidades Produtoras">
       <template v-slot:valor>
         <ul>
           <li v-for="(ent, i) in RE.entidadesProd" :key="i">{{ent}}</li>
@@ -11,7 +11,7 @@
     <RADAEntry v-if="!RE.entidadesProd[0]" label="Tipologias das Entidades Produtoras">
       <template v-slot:valor>
         <ul>
-          <li v-for="(ent, i) in RE.tipologiasProd" :key="i">{{ent}}</li>
+          <li>{{ RE.tipologiasProd }}</li>
         </ul>
       </template>
     </RADAEntry>

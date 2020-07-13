@@ -79,10 +79,11 @@
           />
           <v-alert
             width="100%"
-            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0]"
+            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie"
             outlined
             type="error"
             prominent
+            dismissible
             border="left"
           >
             <div v-if="!!erroProdutoras[0]">
@@ -109,6 +110,9 @@
                   :key="i"
                 >{{"Classe " + erro_uis.codigoClasse + " e UI " + erro_uis.codigoUI + ";"}}</li>
               </ul>
+            </div>
+            <div v-if="!existe_serie">
+              <b>Deve adicionar séries ao RADA, antes de o submeter. Tem possibilidade de associar unidades de instalação às séries em avaliação.</b>
             </div>
           </v-alert>
         </v-stepper-content>
@@ -223,7 +227,7 @@ export default {
   color: #1a237e;
   padding: 6px;
   font-weight: 400;
-  height: 35px;
+  height: auto;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;

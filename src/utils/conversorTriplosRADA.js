@@ -27,7 +27,7 @@ async function triplosRE(RE, codigoRADA) {
             clav:avaliaDocProduzidaPor clav:${
             !!RE.entidadesProd[0]
                 ? RE.entidadesProd.map(e => "ent_" + e.split(" - ")[0]).join(", clav:")
-                : RE.tipologiasProd.map(e => "tip_" + e.split(" - ")[0]).join(", clav:")
+                : "tip_" + RE.tipologiasProd.split(" - ")[0]
             } ;
             clav:dataFinal "${RE.dataFinal}" ;
             clav:dataInicial "${RE.dataInicial}" ;

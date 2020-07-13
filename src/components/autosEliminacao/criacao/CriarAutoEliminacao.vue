@@ -243,7 +243,7 @@
     <v-snackbar
       color="success"
       v-model="guardadoSuccess"
-      timeout="5000"
+      :timeout="5000"
     >
       Auto de Eliminação guardado com sucesso! 
       <v-btn
@@ -343,7 +343,7 @@ export default {
     classes: [],
     classesCompletas: [],
     auto: {
-      legislacao: null,
+      legislacao: "",
       fundo: [],
       zonaControlo: []
     },
@@ -421,13 +421,14 @@ export default {
         var pedidoParams = {
           tipoPedido: "Criação",
           tipoObjeto: "Auto de Eliminação",
-          novoObjeto: {
-            ae: this.auto
-          },
+          novoObjeto: this.auto,
           user: { email: user.email },
           entidade: user.entidade,
-          token: this.$store.state.token
+          token: this.$store.state.token,
+          historico: []
         };
+
+        pedidoParams.objetoOriginal = this.auto;
 
         const codigoPedido = await this.$request(
           "post",

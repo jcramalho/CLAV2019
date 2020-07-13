@@ -1,8 +1,8 @@
 <template>
   <v-card class="ma-4" style="background-color:#fafafa">
-    <v-card-title class="indigo darken-4 white--text">
-      Criar Relatório de Avaliação de Documentação Acumulada
-    </v-card-title>
+    <v-card-title
+      class="indigo darken-4 white--text"
+    >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title>
     <v-card-text>
       <br />
       <v-alert :value="alert_guardar" outlined type="success" text dismissible border="left">
@@ -63,11 +63,12 @@
           />
           <v-alert
             width="100%"
-            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0]"
+            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie"
             outlined
             type="error"
             prominent
             border="left"
+            dismissible
           >
             <div v-if="!!erroProdutoras[0]">
               <b>As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série:</b>
@@ -93,6 +94,9 @@
                   :key="i"
                 >{{"Classe " + erro_uis.codigoClasse + " e UI " + erro_uis.codigoUI + ";"}}</li>
               </ul>
+            </div>
+            <div v-if="!existe_serie">
+              <b>Deve adicionar séries ao RADA, antes de o submeter. Tem possibilidade de associar unidades de instalação às séries em avaliação.</b>
             </div>
           </v-alert>
         </v-stepper-content>
@@ -171,10 +175,7 @@ export default {
             // "ACSS - Administração Central do Sistema de Saúde, IP",
             // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
           ],
-          tipologiasProd: [
-            // "AAGR - Assembleias de apuramento geral dos resultados",
-            // "ACE - Administração Central do Estado"
-          ],
+          tipologiasProd: null,
           // dataInicial: "2020-01-02",
           // dataFinal: "2020-06-01",
           dataInicial: null,
@@ -204,8 +205,8 @@ export default {
             //   dataFinal: "2020-05-27",
             //   produtor: {
             //     tipologiasProdutoras: [
-            //       "AAGR - Assembleias de apuramento geral dos resultados",
-            //       "ACE - Administração Central do Estado"
+            //       // "AAGR - Assembleias de apuramento geral dos resultados",
+            //       // "ACE - Administração Central do Estado"
             //     ],
             //     entProdutoras: [
             //       // "ACSS - Administração Central do Sistema de Saúde, IP",
@@ -215,6 +216,32 @@ export default {
             //   classesAssociadas: [
             //     { codigo: "01.02", tipo: "Série" },
             //     { codigo: "01.02.01", tipo: "Subsérie" }
+            //   ],
+            //   descricao: "Descrição da UI 1",
+            //   notas: "Sem notas! ",
+            //   localizacao: "Felgueiras"
+            // }
+            // {
+            //   codigo: "2",
+            //   codCota: "3",
+            //   titulo: "Unidade de Instalação bem fixe",
+            //   dataInicial: "2020-05-13",
+            //   dataFinal: "2020-05-27",
+            //   produtor: {
+            //     tipologiasProdutoras: [
+            //       // "AAGR - Assembleias de apuramento geral dos resultados",
+            //       // "ACE - Administração Central do Estado"
+            //     ],
+            //     entProdutoras: [
+            //       // "ACSS - Administração Central do Sistema de Saúde, IP",
+            //       // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //     ]
+            //   },
+            //   classesAssociadas: [
+            //     { codigo: "01.02", tipo: "Série" },
+            //     { codigo: "01.03", tipo: "Subsérie" },
+            //     { codigo: "01.02.01", tipo: "Subsérie" },
+            //     { codigo: "01.05", tipo: "Série" }
             //   ],
             //   descricao: "Descrição da UI 1",
             //   notas: "Sem notas! ",
@@ -261,8 +288,8 @@ export default {
             //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados",
-            //     "ACE - Administração Central do Estado"
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -368,8 +395,8 @@ export default {
             //     // "ACSS - Administração Central do Sistema de Saúde, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados",
-            //     "ACE - Administração Central do Estado"
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -413,8 +440,8 @@ export default {
             //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
             //   ],
             //   tipologiasProdutoras: [
-            //     "AAGR - Assembleias de apuramento geral dos resultados",
-            //     "ACE - Administração Central do Estado"
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
             //   relacoes: [
@@ -563,7 +590,7 @@ export default {
   color: #1a237e;
   padding: 6px;
   font-weight: 400;
-  height: 35px;
+  height: auto;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;

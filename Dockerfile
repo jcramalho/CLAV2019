@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:14.5
 COPY ./ /app
 WORKDIR /app
 ARG VUE_APP_API_URL
@@ -11,6 +11,6 @@ RUN npm install
 RUN npm audit fix
 RUN npm run build
 
-FROM nginx
+FROM nginx:1.19
 RUN mkdir /app
 COPY --from=0 /app/dist /app

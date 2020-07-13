@@ -106,6 +106,10 @@ export function mapKeys(key) {
       descricao = "Data de Extinção";
       break;
 
+    case "dataRevogacao":
+      descricao = "Data de Revogação";
+      break;
+
     case "numero":
       descricao = "Número";
       break;
@@ -117,7 +121,22 @@ export function mapKeys(key) {
     case "diplomaFonte":
       descricao = "Fonte do Diploma";
       break;
-
+    case "legislacao":
+      descricao = "Fonte de Legitimação";
+      break;
+    
+    case "zonaControlo":
+      descricao = "Classes / Séries";
+      break;
+    
+    case "responsavel":
+      descricao = "Responsável";
+      break;
+  
+    case "referencial":
+      descricao = "Referencial Classificativo";
+      break;
+        
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;

@@ -473,14 +473,15 @@ export default {
       var pedidoParams = {
         tipoPedido: "Importação",
         tipoObjeto: tipo,
-        novoObjeto: {
-          ae: this.auto
-        },
+        novoObjeto: this.auto,
         user: { email: user.email },
         entidade: user.entidade,
-        token: this.$store.state.token
+        token: this.$store.state.token,
+        historico: []
       };
 
+      pedidoParams.objetoOriginal = this.auto;
+      
       const codigoPedido = await this.$request(
         "post",
         "/pedidos",

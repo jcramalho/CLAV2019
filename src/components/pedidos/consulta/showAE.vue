@@ -10,18 +10,18 @@
             <td style="width:20%;">
               <div class="info-label">Entidade Responsável:</div>
             </td>
-            <td style="width:80%;" v-if="p.objeto.dados.ae.entidade">
-              {{ p.objeto.dados.ae.entidade }}
+            <td style="width:80%;" v-if="p.objeto.dados.entidade">
+              {{ p.objeto.dados.entidade }}
             </td>
             <td style="width:80%;" v-else>
               {{ p.entidade }}
             </td>
           </tr>
-          <tr v-if="p.objeto.dados.ae.legislacao">
+          <tr v-if="p.objeto.dados.legislacao">
             <td style="width:20%;">
               <div class="info-label">Fonte de Legitimação</div>
             </td>
-            <td style="width:80%;">{{ p.objeto.dados.ae.legislacao }}</td>
+            <td style="width:80%;">{{ p.objeto.dados.legislacao }}</td>
           </tr>
           <tr v-else>
             <td style="width:20%;">
@@ -33,7 +33,7 @@
             <td style="width:20%;">
               <div class="info-label">Fundo</div>
             </td>
-            <td style="width:80%;"><div v-for="(f,i) in p.objeto.dados.ae.fundo" :key="i">{{f}}</div></td>
+            <td style="width:80%;"><div v-for="(f,i) in p.objeto.dados.fundo" :key="i">{{f}}</div></td>
           </tr>
         </table>
 
@@ -45,7 +45,7 @@
             <v-expansion-panel-content>
               <v-list>
                 <v-list-group
-                  v-for="(item,index) in p.objeto.dados.ae.zonaControlo"
+                  v-for="(item,index) in p.objeto.dados.zonaControlo"
                   :key="index"
                   color="grey darken-1"
                   no-action
