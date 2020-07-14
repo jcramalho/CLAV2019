@@ -116,7 +116,7 @@
               <v-col>
                 <v-autocomplete
                   deletable-chips
-                  label="Selecione a entidade responsável pelo fundo"
+                  label="Selecione a(s) entidade(s) produtira(s) da documentação"
                   :items="entidades"
                   v-model="auto.fundo"
                   solo
@@ -129,7 +129,7 @@
             <v-btn class="ma-2" color="indigo darken-4" dark @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Continuar</v-btn>
           </v-stepper-content>
 
-          <v-stepper-step step="2">Tratamento das classes de controlo</v-stepper-step>
+          <v-stepper-step step="2">Identificação de Classes e Agregações</v-stepper-step>
 
           <v-stepper-content step="2">
             <!-- Adicionar Zona Controlo -->
@@ -547,7 +547,7 @@ export default {
         return [];
       }
     },
-    prepararClassesCompletas: async function(classes, nivel4) {
+    prepararClassesCompletasOLD: async function(classes, nivel4) {
       try {
         var myClasses = [];
         for (var c of classes) {
@@ -563,6 +563,30 @@ export default {
             nivel4.splice(0, indexs);
             if(indexs==0) myClasses.push(c);
           }
+        }
+        return myClasses;
+      } catch (error) {
+        return [];
+      }
+    },
+    validaPCAeDF: function(classe) {
+      if((!classe.pca.valores || classe.pca.valores=="NE") && !classe.pca.notas) return false;
+      else if((!classe.df.valor || classe.df.valor=="NE") && !classe.df.nota) return false;
+      else return true
+    },
+    prepararClassesCompletas: async function(classes, nivel4) {
+      try {
+        var myClasses = [];
+        for (var c of classes) {
+            var indexs = 0;
+            for (var n of nivel4) {
+              if (n.codigo.includes(c.codigo) && this.validaPCAeDF(n)) {
+                myClasses.push(n);
+                indexs++;
+              } else break;
+            }
+            nivel4.splice(0, indexs);
+            if(indexs==0 && this.validaPCAeDF(c)) myClasses.push(c);
         }
         return myClasses;
       } catch (error) {
@@ -625,21 +649,25 @@ export default {
             "get",
             "/pgd/pgd_lc_"+leg[0].id
           )
-        this.classes = response2.data.filter(c => c.nivel>2).map(c => {
+        this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
+            return {
+              idClasse: c.classe,
+              nivel: c.nivel,
+              codigo: c.codigo,
+              referencia: c.referencia,
+              titulo: c.titulo,
+              df: {valor: c.df, nota: c.notaDF},
+              pca: {valores: c.pca, notas: c.notaPCA},
+            }
+          })
+        this.classesCompletas = this.classesCompletas.filter(c => this.validaPCAeDF(c))
+
+        this.classes = this.classesCompletas.map(c => {
             if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
             else if(c.codigo) return ""+c.codigo+" - "+c.titulo
             else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
-        this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
-            return {
-              idClasse: c.classe,
-              codigo: c.codigo,
-              referencia: c.referencia,
-              titulo: c.titulo,
-              df: {valor: c.df},
-              pca: {valores: c.pca},
-            }
-          })
+        
       }
       else {
         this.classes = [];
