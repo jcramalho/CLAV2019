@@ -8,7 +8,7 @@
       <v-stepper v-model="etapa" alt-labels>
         <v-stepper-header>
           <!-- Step 1 -->
-          <v-stepper-step :complete="etapa > 1" step="1" editable>
+          <v-stepper-step :complete="etapa > 1" step="1">
             Etapas a comparar
           </v-stepper-step>
 
@@ -21,19 +21,27 @@
         </v-stepper-header>
         <v-stepper-items>
           <v-stepper-content step="1">
-            <v-autocomplete
+            <v-select
               v-model="etapasSelecionadas"
               :items="etapasHistorico"
+              label="Escolha duas etapas a comparar"
               filled
+              clearable
               multiple
               chips
               hide-selected
               deletable-chips
               class="m-2 mt-4"
             >
-            </v-autocomplete>
+              <template slot="no-data">
+                <v-alert type="info" width="99%" class="m-auto " outlined>
+                  Sem mais dados a mostrar.
+                </v-alert>
+              </template>
+            </v-select>
 
             <v-btn
+              class="mt-9"
               :disabled="etapasSelecionadas.length !== 2"
               color="primary"
               @click="gerarTabela()"
@@ -43,13 +51,75 @@
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-data-table :items="dadosTabela" class="elevation-1">
-            </v-data-table>
+            <v-card class="ma-1">
+              <v-data-table
+                v-if="defaultHeaders.length !== 0"
+                :headers="defaultHeaders"
+                :items="dadosTabela"
+                hide-default-footer
+                calculate-widths
+                class="elevation-1"
+                :footer-props="footerProps"
+              >
+                <template v-slot:item.campo="{ item }">
+                  <span class="font-weight-bold"> {{ item.campo }}</span>
+                </template>
+
+                <template v-slot:item.colunaA="{ item }">
+                  <v-alert
+                    v-if="
+                      item.colunaA.dados === '' || item.colunaA.dados === null
+                    "
+                    border="right"
+                    class="pa-2 ma-2 ml-0 mr-0"
+                    text
+                    color="grey"
+                  >
+                    Campo não preenchido
+                  </v-alert>
+
+                  <v-alert
+                    v-else
+                    border="right"
+                    class="pa-2 ma-2 ml-0 mr-0"
+                    text
+                    :color="cores(item.colunaA.cor)"
+                  >
+                    {{ item.colunaA.dados }}
+                  </v-alert>
+                </template>
+
+                <template v-slot:item.colunaB="{ item }">
+                  <v-alert
+                    v-if="
+                      item.colunaB.dados === '' || item.colunaB.dados === null
+                    "
+                    border="right"
+                    class="pa-2 ma-2 ml-0 mr-0"
+                    text
+                    color="grey"
+                  >
+                    Campo não preenchido
+                  </v-alert>
+
+                  <v-alert
+                    v-else
+                    border="right"
+                    class="pa-2 ma-2 ml-0 mr-0"
+                    text
+                    :color="cores(item.colunaB.cor)"
+                  >
+                    {{ item.colunaB.dados }}
+                  </v-alert>
+                </template>
+              </v-data-table>
+            </v-card>
 
             <v-btn
+              class="mt-5"
               :disabled="etapasSelecionadas.length !== 2"
               color="primary"
-              @click="etapa = 1"
+              @click="voltar()"
             >
               Voltar
             </v-btn>
@@ -60,7 +130,7 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-btn color="red darken-4" text rounded dark @click="fechar()">
+      <v-btn color="red darken-4" rounded dark @click="fechar()">
         Fechar
       </v-btn>
     </v-card-actions>
@@ -68,6 +138,8 @@
 </template>
 
 <script>
+import { mapKeys } from "@/utils/utils";
+
 export default {
   props: ["historico", "distribuicao", "tipoPedido"],
 
@@ -78,15 +150,14 @@ export default {
       etapasHistorico: [],
       etapasSelecionadas: [],
       defaultHeaders: [],
+      footerProps: {
+        "items-per-page-options": [-1],
+      },
     };
   },
 
   created() {
-    const index = this.distribuicao.findIndex(
-      (dist) => dist.estado === "Distribuído"
-    );
-
-    this.distribuicao.splice(index, 1);
+    this.removeEstados();
 
     switch (this.tipoPedido) {
       case "Criação":
@@ -100,12 +171,70 @@ export default {
       default:
         break;
     }
-
-    this.preparaDadosTabela();
   },
 
   methods: {
+    cores(cor) {
+      let retornaCor;
+
+      switch (cor) {
+        case "verde":
+          retornaCor = "green";
+          break;
+
+        case "amarelo":
+          retornaCor = "orange";
+          break;
+
+        case "vermelho":
+          retornaCor = "red";
+          break;
+
+        default:
+          break;
+      }
+
+      return retornaCor;
+    },
+
+    removeEstados() {
+      const distI = this.distribuicao.findIndex(
+        (dist) => dist.estado === "Distribuído"
+      );
+
+      if (distI !== -1) this.distribuicao.splice(distI, 1);
+
+      const devoI = this.distribuicao.findIndex(
+        (dist) => dist.estado === "Devolvido"
+      );
+
+      if (devoI !== -1) this.distribuicao.splice(devoI, 1);
+
+      const procI = this.distribuicao.findIndex(
+        (dist) => dist.estado === "Processado"
+      );
+
+      if (procI !== -1) this.distribuicao.splice(procI, 1);
+    },
+
+    voltar() {
+      this.defaultHeaders = [];
+      this.dadosTabela = [];
+      this.etapasSelecionadas = [];
+
+      this.etapa = 1;
+    },
+
     gerarTabela() {
+      this.removeEstados();
+
+      this.defaultHeaders.push({
+        text: "Campo",
+        value: "campo",
+        class: "title",
+        width: "20%",
+        sortable: false,
+      });
       let indexA;
       let indexB;
 
@@ -129,7 +258,58 @@ export default {
           (dist) => dist.estado === this.etapasSelecionadas[1]
         );
 
-      // if (this.etapasSelecionadas[0] ===)
+      if (indexA > indexB) {
+        let temporario = indexA;
+        indexA = indexB;
+        indexB = temporario;
+
+        this.defaultHeaders.push(
+          {
+            text: this.etapasSelecionadas[1],
+            value: "colunaA",
+            class: "title",
+            width: "40%",
+            sortable: false,
+          },
+          {
+            text: this.etapasSelecionadas[0],
+            value: "colunaB",
+            class: "title",
+            width: "40%",
+            sortable: false,
+          }
+        );
+      } else {
+        this.defaultHeaders.push(
+          {
+            text: this.etapasSelecionadas[0],
+            value: "colunaA",
+            class: "title",
+            width: "40%",
+            sortable: false,
+          },
+          {
+            text: this.etapasSelecionadas[1],
+            value: "colunaB",
+            class: "title",
+            width: "40%",
+            sortable: false,
+          }
+        );
+      }
+
+      let campos = [];
+
+      Object.keys(this.historico[0]).forEach((item) => campos.push(item));
+
+      campos.forEach((campo) => {
+        this.dadosTabela.push({
+          campo: mapKeys(campo),
+          colunaA: this.historico[indexA][campo],
+          colunaB: this.historico[indexB][campo],
+        });
+      });
+
       this.etapa = 2;
     },
 
@@ -149,11 +329,9 @@ export default {
       });
     },
 
-    preparaDadosTabela() {
-      this.historico.forEach((h) => this.dadosTabela.push(h));
-    },
+    fechar() {
+      this.voltar();
 
-    cancelar() {
       this.$emit("fecharDialog");
     },
   },

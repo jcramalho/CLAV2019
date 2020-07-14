@@ -411,11 +411,12 @@
     </v-card-actions>
 
     <!-- Ver historico em tabela dialog -->
-    <v-dialog v-model="dialogVerHistoricoEmTabela" width="80%">
+    <v-dialog v-model="dialogVerHistoricoEmTabela" width="80%" persistent>
       <VerHistoricoEmTabela
         :historico="historico"
         :distribuicao="JSON.parse(JSON.stringify(distribuicao))"
         :tipoPedido="pedido.objeto.acao"
+        @fecharDialog="dialogVerHistoricoEmTabela = false"
       />
     </v-dialog>
 
