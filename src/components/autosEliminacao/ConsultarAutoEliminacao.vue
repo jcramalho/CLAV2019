@@ -119,7 +119,8 @@
                             <div class="info-label">Prazo de Conservação Administrativa</div>
                           </td>
                           <td style="width:80%;">
-                            {{ item.pca }} Anos
+                            <span v-if="item.pca=='1'">{{ item.pca }} Ano</span>
+                            <span v-else>{{ item.pca }} Anos</span>
                           </td>
                         </tr>
                         <tr v-if="item.destino && item.destino != 'NE'">

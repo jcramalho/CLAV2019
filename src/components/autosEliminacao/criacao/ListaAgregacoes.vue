@@ -15,12 +15,11 @@
     <v-data-table
       :headers="cabecalho"
       :items="agregacoes"
-      :key="codigo"
+      item-key="codigo"
       :items-per-page="5"
       class="elevation-1 ml-2 mt-3"
       :footer-props="footer_props"
       :search="search"
-      v-bind="changeSwitch"
     >
       <template v-slot:no-data>
         <tr>

@@ -11,7 +11,7 @@
             <v-list-item-title>
               <v-row>
                 <v-col :md="2">
-                  <div class="info-label">Classe</div>
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Classe</v-card>
                 </v-col>
                 <v-col>
                   <div class="mt-2" v-if="item.codigo && item.referencia">{{ item.codigo + " " + item.referencia +" - "+item.titulo }}</div>
@@ -46,75 +46,84 @@
                 <span>Remover Classe</span>
               </v-tooltip>
             </v-row>
-            <table class="consulta">
-              <tr v-if="item.prazoConservacao">
-                <td style="width:20%;">
-                  <div class="info-label">
-                    Prazo de Conservação Administrativa
-                  </div>
-                </td>
-                <td>{{ item.prazoConservacao }} Anos</td>
-              </tr>
-              <tr v-if="item.destino">
-                <td style="width:20%;">
-                  <div class="info-label">Destino Final</div>
-                </td>
-                <td v-if="item.destino === 'E'">Eliminação</td>
-                <td v-else-if="item.destino === 'C'">Conservação</td>
-                <td v-else>{{ item.destino }}</td>
-              </tr>
-              <tr v-if="item.ni  && item.df!='Eliminação' && tipo!='RADA' && tipo!='PGD'">
-                <td style="width:20%;">
-                  <div class="info-label">Natureza de intervenção</div>
-                </td>
-                <td>{{ item.ni }}</td>
-              </tr>
-              <tr v-if="item.destino === 'C' && tipo!='RADA' && tipo!='PGD'">
-                <td style="width:20%;">
-                  <div class="info-label">Dono do PN <v-icon color="red" v-if="item.dono.length==0">warning</v-icon></div>
-                </td>
-                <td>
-                  <p v-for="d in item.dono" :key="d">{{ d }}</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="width:20%;">
-                  <div class="info-label">Data de Início</div>
-                </td>
-                <td>{{ item.dataInicio }}</td>
-              </tr>
-              <tr>
-                <td style="width:20%;">
-                  <div class="info-label">Data de Fim</div>
-                </td>
-                <td>{{ item.dataFim }}</td>
-              </tr>
-              <tr>
-                <td style="width:20%;">
-                  <div class="info-label">N.º de agregações</div>
-                </td>
-                <td>{{ item.agregacoes.length }}</td>
-              </tr>
-              <tr v-if="item.uiPapel">
-                <td style="width:20%;">
-                  <div class="info-label">Medição das UI em papel (m.l.)</div>
-                </td>
-                <td>{{ item.uiPapel }}</td>
-              </tr>
-              <tr v-if="item.uiDigital">
-                <td style="width:20%;">
-                  <div class="info-label">Medição das UI em digital (Gb)</div>
-                </td>
-                <td>{{ item.uiDigital }}</td>
-              </tr>
-              <tr v-if="item.uiOutros">
-                <td style="width:20%;">
-                  <div class="info-label">Medição das UI noutros suportes</div>
-                </td>
-                <td>{{ item.uiOutros }}</td>
-              </tr>
-            </table>
 
+              <v-row v-if="item.prazoConservacao">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Prazo de Conservação Administrativa</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">
+                  <span v-if="item.prazoConservacao=='1'">{{ item.prazoConservacao }} Ano</span>
+                  <span v-else>{{ item.prazoConservacao }} Anos</span>
+                </v-card></v-col>
+              </v-row>
+              <v-row v-if="item.notasPCA">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Notas do PCA</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.notasPCA }}</v-card></v-col>
+              </v-row>
+              <v-row v-if="item.destino">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Destino Final</v-card>
+                </v-col>
+                <v-col v-if="item.destino === 'E'"><v-card class="mt-2" style="color: #757575" elevation="0">Eliminação</v-card></v-col>
+                <v-col v-else-if="item.destino === 'C'"><v-card class="mt-2" style="color: #757575" elevation="0">Conservação</v-card></v-col>
+                <v-col v-else><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.destino }}</v-card></v-col>
+              </v-row>
+              <v-row v-if="item.ni  && item.df!='Eliminação' && tipo!='RADA' && tipo!='PGD'">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Natureza de intervenção</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.ni }}</v-card></v-col>
+              </v-row>
+              <v-row v-if="item.destino === 'C' && tipo!='RADA' && tipo!='PGD'">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Dono do PN <v-icon color="red" v-if="item.dono.length==0">warning</v-icon></v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0"><p v-for="d in item.dono" :key="d">{{ d }}</p></v-card></v-col>
+              </v-row>
+              <v-row v-if="item.notaDF">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Nota do DF</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.notaDF }}</v-card></v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Data de Início</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.dataInicio }}</v-card></v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Data de Fim</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.dataFim }}</v-card></v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">N.º de agregações</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.agregacoes.length }}</v-card></v-col>
+              </v-row>
+              <v-row v-if="item.uiPapel">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Medição das UI em papel (m.l.)</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.uiPapel }}</v-card></v-col>
+              </v-row>
+              <v-row v-if="item.uiDigital">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Medição das UI em digital (Gb)</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.uiDigital }}</v-card></v-col>
+              </v-row>
+              <v-row v-if="item.uiOutros">
+                <v-col cols="3">
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Medição das UI noutros suportes</v-card>
+                </v-col>
+                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.uiOutros }}</v-card></v-col>
+              </v-row>
             <!-- Lista de Agregacoes -->
             <ListaAgregacoes
               v-bind:auto="auto"

@@ -8,7 +8,7 @@
         <table class="consulta">
           <tr>
             <td style="width:20%;">
-              <div class="info-label">Entidade Responsável:</div>
+              <div class="info-label">Entidade Responsável</div>
             </td>
             <td style="width:80%;" v-if="p.objeto.dados.entidade">
               {{ p.objeto.dados.entidade }}
