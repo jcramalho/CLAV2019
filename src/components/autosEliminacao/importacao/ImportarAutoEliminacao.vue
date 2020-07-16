@@ -153,7 +153,7 @@
               <v-col class="mt-2">
                 <v-autocomplete
                   deletable-chips
-                  label="Selecione a entidade responsável pelo fundo"
+                  label="Selecione a(s) entidade(s) produtira(s) da documentação"
                   :items="entidades"
                   v-model="auto.fundo"
                   solo
