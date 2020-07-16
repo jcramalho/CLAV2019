@@ -74,8 +74,33 @@
                     class="pa-2 ma-2 ml-0 mr-0"
                     text
                     color="grey"
+                    icon="not_interested"
                   >
                     Campo não preenchido
+                  </v-alert>
+
+                  <v-alert
+                    v-else-if="item.colunaA.dados instanceof Array"
+                    border="right"
+                    class="pa-2 ma-2 ml-0 mr-0"
+                    text
+                    :color="cores(item.colunaA.cor)"
+                    :icon="icons(item.colunaA.cor)"
+                  >
+                    <v-chip
+                      v-if="item.colunaA.dados.length === 0"
+                      color="grey"
+                      label
+                      outlined
+                    >
+                      A lista está vazia.
+                    </v-chip>
+
+                    <ul v-else class="ma-0">
+                      <li v-for="dado in item.colunaA.dados" :key="dado.sigla">
+                        {{ dado.sigla }}
+                      </li>
+                    </ul>
                   </v-alert>
 
                   <v-alert
@@ -84,6 +109,7 @@
                     class="pa-2 ma-2 ml-0 mr-0"
                     text
                     :color="cores(item.colunaA.cor)"
+                    :icon="icons(item.colunaA.cor)"
                   >
                     {{ item.colunaA.dados }}
                   </v-alert>
@@ -98,8 +124,33 @@
                     class="pa-2 ma-2 ml-0 mr-0"
                     text
                     color="grey"
+                    icon="not_interested"
                   >
                     Campo não preenchido
+                  </v-alert>
+
+                  <v-alert
+                    v-else-if="item.colunaB.dados instanceof Array"
+                    border="right"
+                    class="pa-2 ma-2 ml-0 mr-0"
+                    text
+                    :color="cores(item.colunaB.cor)"
+                    :icon="icons(item.colunaB.cor)"
+                  >
+                    <v-chip
+                      v-if="item.colunaB.dados.length === 0"
+                      color="grey"
+                      label
+                      outlined
+                    >
+                      A lista está vazia.
+                    </v-chip>
+
+                    <ul v-else class="ma-0">
+                      <li v-for="dado in item.colunaB.dados" :key="dado.sigla">
+                        {{ dado.sigla }}
+                      </li>
+                    </ul>
                   </v-alert>
 
                   <v-alert
@@ -108,6 +159,7 @@
                     class="pa-2 ma-2 ml-0 mr-0"
                     text
                     :color="cores(item.colunaB.cor)"
+                    :icon="icons(item.colunaB.cor)"
                   >
                     {{ item.colunaB.dados }}
                   </v-alert>
@@ -195,6 +247,29 @@ export default {
       }
 
       return retornaCor;
+    },
+
+    icons(cor) {
+      let retornaIcon;
+
+      switch (cor) {
+        case "verde":
+          retornaIcon = "done";
+          break;
+
+        case "amarelo":
+          retornaIcon = "create";
+          break;
+
+        case "vermelho":
+          retornaIcon = "clear";
+          break;
+
+        default:
+          break;
+      }
+
+      return retornaIcon;
     },
 
     removeEstados() {
