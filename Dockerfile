@@ -1,7 +1,9 @@
-FROM node:10
+FROM node:14.5.0 
 COPY ./ /app
 WORKDIR /app
-RUN npm install && npm audit fix && npm run build
+RUN npm install
+RUN npm audit fix 
+RUN npm run build
 
 FROM nginx
 RUN mkdir /app
