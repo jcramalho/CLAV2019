@@ -78,17 +78,6 @@ export default {
             to.matched.some(record => record.meta.levels.includes(this.level))
           ) {
             this.authenticated = true;
-            try {
-              /** fix with sockets */
-              let response = await this.$request(
-                "get",
-                "/notificacoes"
-              ); /** fix with sockets */
-              this.notificacoes = response.data; /** fix with sockets */
-            } catch (error) {
-              /** fix with sockets */
-              return error; /** fix with sockets */
-            } /** fix with sockets */
           } else {
             this.text = "Não tem permissões para aceder a esta página!";
             this.color = "error";
@@ -104,17 +93,6 @@ export default {
         }
       } else {
         this.authenticated = true;
-        try {
-          /** fix with sockets */
-          let response = await this.$request(
-            "get",
-            "/notificacoes"
-          ); /** fix with sockets */
-          this.notificacoes = response.data; /** fix with sockets */
-        } catch (error) {
-          /** fix with sockets */
-          return error; /** fix with sockets */
-        } /** fix with sockets */
       }
 
       if (this.$route.query.erro) {
@@ -154,6 +132,20 @@ export default {
       this.drawD = false;
       this.drawN = false;
       this.drawE = !this.drawE;
+    },
+    consume(username){
+      // Consumer
+      open.then((conn) => conn.createChannel())
+          .then((ch) => {
+              return ch.assertQueue(username)
+          .then((ok) => {
+              ch.consume(username, (msg) => {
+                  console.log(" [x] %s:'%s'", msg.fields.routingKey, msg.content.toString());
+              }, {
+                  noAck: true
+              });
+          });
+        }).catch(console.warn);
     },
     async removerNotificacao(id) {
       try {
