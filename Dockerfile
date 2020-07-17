@@ -1,4 +1,4 @@
-FROM node:14.5
+FROM node:14.5 
 COPY ./ /app
 WORKDIR /app
 ARG VUE_APP_API_URL
