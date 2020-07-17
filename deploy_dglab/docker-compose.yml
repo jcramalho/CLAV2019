@@ -1,0 +1,31 @@
+version: '3.5'
+services:
+  interface:
+    image: ${INTERFACE_IMG}
+    container_name: interface
+    restart: always
+    environment:
+      - SERVER_URL=${SERVER_URL}
+      - CERTS=${CERT_FOLDER}
+      - API_VERSION=${API_VERSION}
+    volumes:
+      - ${PWD}/${NGINX_FILE}:/etc/nginx/nginx.conf.template
+      - ${PWD}/beforeStart.sh:/beforeStart.sh
+      - ${PWD}/afterStart.sh:/afterStart.sh
+      - acme-interface-data:${ACME_FOLDER}
+      - crontabs-interface:/var/spool/cron/crontabs/
+      - ${PWD}/../../apiCert/fullchain.pem:/fullchain.pem
+      - ${PWD}/../../apiCert/key.pem:/key.pem
+    command: /bin/bash -c "/beforeStart.sh ${CERT_FOLDER} && envsubst '$$SERVER_URL $$CERTS $$API_VERSION' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && (nginx -g 'daemon off;' &) && /afterStart.sh -c ${CERT_FOLDER} -a ${ACME_FOLDER} ${DOMAINS} && tail -f /dev/null"
+    ports:
+      - "${HTTP_PORT}:7779"
+      - "${HTTPS_PORT}:7780"
+      - "80:7779"
+      - "443:7780"
+volumes:
+  acme-interface-data:
+    external: false
+    name: acme-interface-data
+  crontabs-interface:
+    external: false
+    name: crontabs-interface
