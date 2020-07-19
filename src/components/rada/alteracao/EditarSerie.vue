@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogState" persistent>
+  <v-dialog v-model="dialogState" persistent max-width="90%">
     <v-card>
       <v-card-title class="indigo darken-4 white--text">
         <b>{{ "Alterar a série: " + treeview_object.titulo }}</b>

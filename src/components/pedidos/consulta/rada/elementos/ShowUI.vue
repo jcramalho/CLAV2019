@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogState">
+  <v-dialog v-model="dialogState" max-width="90%">
     <v-card>
       <v-card-title class="indigo darken-4 white--text">
         <b>Unidade de Instalação: {{ UI.codigo + " - " + UI.titulo }}</b>

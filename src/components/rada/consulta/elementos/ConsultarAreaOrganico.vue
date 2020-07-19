@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogState">
+  <v-dialog v-model="dialogState" max-width="90%">
     <v-card>
       <v-card-title class="indigo darken-4 white--text">Consultar Classe Área Orgânico Funcional</v-card-title>
 
@@ -11,7 +11,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
       </v-card-actions> 
     </v-card>
   </v-dialog>

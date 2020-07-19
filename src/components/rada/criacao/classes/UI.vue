@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogState" persistent>
+  <v-dialog v-model="dialogState" persistent max-width="90%">
     <!-- <template v-slot:activator="{ on }">
       <v-btn color="#dee2f8" class="ma-2" v-on="on">
         <v-icon dark left>add</v-icon>Unidade de Instalação

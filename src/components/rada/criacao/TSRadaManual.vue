@@ -28,7 +28,7 @@
       </v-col>
       <v-spacer></v-spacer>
       <v-col class="text-right">
-        <v-btn color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
+        <v-btn disabled color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
           <v-icon dark left>add</v-icon>Importar Classes
         </v-btn>
       </v-col>
@@ -168,7 +168,11 @@
     <ImportarClasses
       v-if="importar_classes"
       :dialog="importar_classes"
+      :classes="TS.classes"
+      :RE="RE"
+      :legislacao="legislacaoProcessada"
       @fecharDialog="importar_classes = false"
+      @pendurarNovasClasses="mergeClasses"
     />
     <!-- CRIAR CLASSES -->
     <EditarSerie
@@ -373,6 +377,11 @@ export default {
     }
   },
   methods: {
+    mergeClasses(novas_classes) {
+      for (let i = 0; i < novas_classes.length; i++) {
+        this.TS.classes.push(novas_classes[i]);
+      }
+    },
     editarClasse(item) {
       switch (item.tipo) {
         case "Série":

@@ -1,9 +1,9 @@
 <template>
-  <v-row justify="end">
-    <v-col md="3" sm="3">
+  <v-row>
+    <v-col cols="3">
       <div class="info-label">{{ label }}</div>
     </v-col>
-    <v-col sm="9" md="9">
+    <v-col>
       <v-file-input
         placeholder="Selecione o ficheiro a submeter"
         show-size
@@ -41,7 +41,6 @@ export default {
         if (v.name.split(".")[1] != "csv") {
           return "Ficheiro no formato errado. Apenas .csv";
         }
-
         return true;
       } else {
         return "Campo Obrigatório!";
@@ -59,7 +58,7 @@ export default {
   color: #1a237e;
   padding: 6px;
   font-weight: 400;
-  height: 35px;
+  height: auto;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;
