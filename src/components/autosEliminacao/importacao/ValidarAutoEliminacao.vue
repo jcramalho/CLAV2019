@@ -59,7 +59,8 @@
               <div class="info-label">Prazo de Conservação Administrativa</div>
             </v-col>
             <v-col class="mt-2">
-              {{ item.prazoConservacao }} Anos
+              <span v-if="item.prazoConservacao=='1'">{{ item.prazoConservacao }} Ano</span>
+              <span v-else>{{ item.prazoConservacao }} Anos</span>
             </v-col>
           </v-row>
           <v-row v-else>

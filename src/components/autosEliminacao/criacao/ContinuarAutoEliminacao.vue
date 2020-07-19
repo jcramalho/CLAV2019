@@ -37,7 +37,7 @@
 
 
 
-          <v-stepper-step step="2">Tratamento das classes de controlo</v-stepper-step>
+          <v-stepper-step step="2">Identificação de Classes e Agregações</v-stepper-step>
 
           <v-stepper-content step="2">
             <!-- Adicionar Zona Controlo -->
