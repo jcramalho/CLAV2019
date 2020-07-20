@@ -221,6 +221,20 @@ export function criarHistorico(objeto, objetoOriginal = null) {
   return historico;
 }
 
+export function converterDadosOriginais(dados) {
+  const dadosConvertidos = {};
+
+  for (const key in dados) {
+    dadosConvertidos[key] = {
+      cor: null,
+      dados: dados[key],
+      nota: null,
+    };
+  }
+
+  return dadosConvertidos;
+}
+
 export default {
   filtraNivel,
   comparaSigla,
@@ -229,4 +243,5 @@ export default {
   mapKeys,
   extrairAlteracoes,
   criarHistorico,
+  converterDadosOriginais,
 };
