@@ -234,20 +234,18 @@ export default {
   },
 
   mounted() {
-    const criaNovoHistorico = {};
     Object.keys(this.dados).forEach((key) => {
-      if (key !== "codigo")
-        criaNovoHistorico[key] = {
-          cor: "verde",
-          dados: this.dados[key],
-          nota: null,
-        };
-
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
     });
 
-    this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
+    const copiaHistorico = JSON.parse(
+      JSON.stringify(this.historico[this.historico.length - 1])
+    );
+
+    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+    this.novoHistorico = copiaHistorico;
   },
 
   methods: {

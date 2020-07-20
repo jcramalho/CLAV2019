@@ -219,6 +219,9 @@ export default {
           switch (this.acao) {
             case "Criação":
               erros = await this.validarTipologiaCriacao();
+
+              historico.push(criarHistorico(dataObj));
+
               break;
 
             case "Alteração":

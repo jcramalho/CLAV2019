@@ -121,22 +121,23 @@ export function mapKeys(key) {
     case "diplomaFonte":
       descricao = "Fonte do Diploma";
       break;
+
     case "legislacao":
       descricao = "Fonte de Legitimação";
       break;
-    
+
     case "zonaControlo":
       descricao = "Classes / Séries";
       break;
-    
+
     case "responsavel":
       descricao = "Responsável";
       break;
-  
+
     case "referencial":
       descricao = "Referencial Classificativo";
       break;
-        
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;
@@ -170,34 +171,47 @@ export function extrairAlteracoes(objeto, objetoOriginal) {
   return dados;
 }
 
-export function criarHistorico(objeto, objetoOriginal) {
-  const objAlterado = JSON.parse(JSON.stringify(objeto));
-  const objOriginal = JSON.parse(JSON.stringify(objetoOriginal));
+export function criarHistorico(objeto, objetoOriginal = null) {
+  const objSubmetido = JSON.parse(JSON.stringify(objeto));
 
   const historico = {};
 
-  for (const key in objAlterado) {
-    if (typeof objAlterado[key] === "string") {
-      if (objAlterado[key] !== objOriginal[key]) {
-        historico[key] = {
-          cor: "amarelo",
-          dados: objAlterado[key],
-          nota: null,
-        };
+  if (objetoOriginal !== null) {
+    const objOriginal = JSON.parse(JSON.stringify(objetoOriginal));
+
+    for (const key in objSubmetido) {
+      if (typeof objSubmetido[key] === "string") {
+        if (objSubmetido[key] !== objOriginal[key]) {
+          historico[key] = {
+            cor: "amarelo",
+            dados: objSubmetido[key],
+            nota: null,
+          };
+        }
+      } else if (objSubmetido[key] instanceof Array) {
+        if (objSubmetido[key].length !== objOriginal[key].length) {
+          historico[key] = {
+            cor: "amarelo",
+            dados: objSubmetido[key],
+            nota: null,
+          };
+        } else if (
+          !comparaArraySel(objSubmetido[key], objOriginal[key], "sigla")
+        ) {
+          historico[key] = {
+            cor: "amarelo",
+            dados: objSubmetido[key],
+            nota: null,
+          };
+        }
       }
-    } else if (objAlterado[key] instanceof Array) {
-      if (objAlterado[key].length !== objOriginal[key].length) {
+    }
+  } else {
+    for (const key in objSubmetido) {
+      if (key !== "estado" && key !== "codigo") {
         historico[key] = {
-          cor: "amarelo",
-          dados: objAlterado[key],
-          nota: null,
-        };
-      } else if (
-        !comparaArraySel(objAlterado[key], objOriginal[key], "sigla")
-      ) {
-        historico[key] = {
-          cor: "amarelo",
-          dados: objAlterado[key],
+          cor: "verde",
+          dados: objSubmetido[key],
           nota: null,
         };
       }
