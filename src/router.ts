@@ -460,6 +460,12 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
     },
     {
+      path: "/users/logout",
+      name: "logout",
+      component: () => import("./views/users/Logout.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
       path: "/users/recuperacao",
       name: "recuperacao",
       component: () => import("./views/users/Recuperacao.vue"),
