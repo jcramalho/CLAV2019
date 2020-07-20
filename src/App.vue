@@ -36,6 +36,8 @@ import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias t
 import Definicoes from "@/components/principal/Definicoes.vue";
 // import Estatisticas from "@/components/principal/Estatisticas.vue";
 import Notificacoes from "@/components/principal/Notificacoes.vue";
+import io from "socket.io-client"
+const lhost = require("@/config/global").host;
 
 export default {
   name: "App",
@@ -47,6 +49,18 @@ export default {
     Notificacoes
   },
   watch: {
+    authenticated(val){
+      if(this.$store.state.token) {
+        var socket = io.connect('lhost');
+        socket.emit('email', {
+          email: this.$verifyTokenUser().email
+        });
+        socket.on(this.$verifyTokenUser().email, (data) => {
+          console.log(data)
+          this.notificacoes.push(JSON.parse(data))
+        })
+      } 
+    },
     async $route(to, from) {
       //verifica se o utilizador está autenticado
       if (this.$store.state.token != "") {
@@ -95,7 +109,6 @@ export default {
       }
     }
   },
-
   methods: {
     fecharSnackbar() {
       this.snackbar = false;
@@ -118,20 +131,6 @@ export default {
       this.drawN = false;
       // this.drawE = !this.drawE;
     },
-    consume(username){
-      // Consumer
-      open.then((conn) => conn.createChannel())
-          .then((ch) => {
-              return ch.assertQueue(username)
-          .then((ok) => {
-              ch.consume(username, (msg) => {
-                  console.log(" [x] %s:'%s'", msg.fields.routingKey, msg.content.toString());
-              }, {
-                  noAck: true
-              });
-          });
-        }).catch(console.warn);
-    },
     async removerNotificacao(id) {
       try {
         await this.$request("delete", "/notificacoes/" + id);
@@ -148,6 +147,7 @@ export default {
     // drawE: false,
     drawN: false,
     snackbar: false,
+    notificacoes: [],
     authenticated: false,
     color: "",
     text: "",
