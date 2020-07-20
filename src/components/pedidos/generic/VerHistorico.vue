@@ -10,7 +10,7 @@
         <b>{{ etapaReferente }}</b>
       </v-chip>
 
-      <v-tooltip v-if="historico.length > 1" bottom>
+      <v-tooltip v-if="dados.length > 1" bottom>
         <template v-slot:activator="{ on }">
           <v-icon
             @click="dialogVerHistoricoEmTabela = true"
