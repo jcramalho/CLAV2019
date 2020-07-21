@@ -47,6 +47,20 @@
                   </v-alert>
                 </template>
 
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    left
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
+                </template>
+
                 <template v-slot:item.operacao="{ item }">
                   <v-icon color="red" @click="removeEntidade(item)">
                     delete
@@ -246,9 +260,30 @@ export default {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
     });
+
+    console.log(
+      "extrairRemovidos",
+      extrairRemovidos(
+        this.historico[this.historico.length - 1],
+        this.novoHistorico,
+        "entidadesSel"
+      )
+    );
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      const hist = this.historico[this.historico.length - 1];
+
+      if ((lista = "entidadesSel")) {
+        return !hist.entidadesSel.dados.some((ent) => {
+          return ent.sigla === item.sigla;
+        });
+      }
+
+      return false;
+    },
+
     transformaKeys(key) {
       return mapKeys(key);
     },
