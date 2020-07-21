@@ -234,11 +234,6 @@ export default {
   },
 
   mounted() {
-    Object.keys(this.dados).forEach((key) => {
-      this.esconderOperacoes[key] = false;
-      this.animacoes[key] = true;
-    });
-
     const copiaHistorico = JSON.parse(
       JSON.stringify(this.historico[this.historico.length - 1])
     );
@@ -246,6 +241,11 @@ export default {
     Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
 
     this.novoHistorico = copiaHistorico;
+
+    Object.keys(this.dados).forEach((key) => {
+      this.esconderOperacoes[key] = false;
+      this.animacoes[key] = true;
+    });
   },
 
   methods: {
@@ -287,6 +287,9 @@ export default {
           cor: "amarelo",
           dados: this.dados.entidadesSel,
         };
+
+        this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+        this.esconderOperacoes.entidadesSel = true;
       }
     },
 
@@ -298,6 +301,9 @@ export default {
         cor: "amarelo",
         dados: this.dados.entidadesSel,
       };
+
+      this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+      this.esconderOperacoes.entidadesSel = true;
     },
 
     async loadEntidades() {
@@ -394,6 +400,7 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+
       this.animacoes[campo] = !this.animacoes[campo];
     },
 
@@ -402,6 +409,7 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+
       this.animacoes[campo] = !this.animacoes[campo];
     },
 

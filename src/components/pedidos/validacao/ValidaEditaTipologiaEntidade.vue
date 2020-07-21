@@ -16,10 +16,9 @@
         >
           <v-col cols="2">
             <div
-              :class="[
-                'info-descricao',
-                `info-descricao-${novoHistorico[campo].cor}`,
-              ]"
+              :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
+              class="info-descricao"
+              :class="`info-descricao-${novoHistorico[campo].cor}`"
             >
               {{ transformaKeys(campo) }}
             </div>
@@ -175,6 +174,7 @@ export default {
 
   data() {
     return {
+      animacoes: {},
       esconderOperacoes: {},
       notaDialog: {
         visivel: false,
@@ -256,6 +256,7 @@ export default {
 
     Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
+      this.animacoes[key] = true;
     });
   },
 
@@ -298,6 +299,9 @@ export default {
           cor: "amarelo",
           dados: this.dados.entidadesSel,
         };
+
+        this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+        this.esconderOperacoes.entidadesSel = true;
       }
     },
 
@@ -309,6 +313,9 @@ export default {
         cor: "amarelo",
         dados: this.dados.entidadesSel,
       };
+
+      this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+      this.esconderOperacoes.entidadesSel = true;
     },
 
     async loadEntidades() {
@@ -469,6 +476,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     anula(campo) {
@@ -476,6 +485,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     edita(campo) {
@@ -517,6 +528,7 @@ export default {
       };
 
       this.esconderOperacoes[event.campo.key] = true;
+      this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
     },
 
     fecharErro() {
@@ -545,14 +557,38 @@ export default {
 }
 
 .info-descricao-verde {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #c8e6c9; /* lighten-4 */
 }
 
 .info-descricao-vermelho {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffcdd2; /* lighten-4 */
 }
 
 .info-descricao-amarelo {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffe0b2; /* lighten-4 */
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>
