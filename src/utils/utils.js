@@ -235,6 +235,24 @@ export function converterDadosOriginais(dados) {
   return dadosConvertidos;
 }
 
+export function extrairRemovidos(objetoAnterior, objetoAtual, lista) {
+  const dadosAnteriores = JSON.parse(JSON.stringify(objetoAnterior));
+  const dadosAtuais = JSON.parse(JSON.stringify(objetoAtual));
+
+  const removidos = [];
+
+  if (lista === "entidadesSel") {
+    dadosAtuais.entidadesSel.dados.forEach((dado) => {
+      if (
+        !dadosAnteriores.entidadesSel.dados.some((s) => s.sigla === dado.sigla)
+      )
+        removidos.push(dado.sigla);
+    });
+  }
+
+  return removidos;
+}
+
 export default {
   filtraNivel,
   comparaSigla,
@@ -244,4 +262,5 @@ export default {
   extrairAlteracoes,
   criarHistorico,
   converterDadosOriginais,
+  extrairRemovidos,
 };

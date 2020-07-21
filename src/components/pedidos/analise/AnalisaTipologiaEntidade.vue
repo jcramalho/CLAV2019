@@ -163,7 +163,7 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla, mapKeys } from "@/utils/utils";
+import { comparaSigla, mapKeys, extrairRemovidos } from "@/utils/utils";
 
 export default {
   props: ["p"],
