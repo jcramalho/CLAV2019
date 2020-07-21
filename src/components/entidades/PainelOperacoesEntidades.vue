@@ -315,6 +315,9 @@ export default {
                 dataObj.estado = "Inativa";
 
               erros = await this.validarEntidadeCriacao();
+
+              historico.push(criarHistorico(dataObj));
+
               break;
 
             case "Alteração":
