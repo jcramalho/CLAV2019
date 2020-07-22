@@ -790,13 +790,14 @@ export default {
 }
 
 .info-label {
-  color: #1a237e;
-  padding: 6px;
-  font-weight: 400;
-  height: 35px;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 </style>

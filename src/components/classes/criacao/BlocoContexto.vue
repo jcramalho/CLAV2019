@@ -1,30 +1,54 @@
 <template>
-  <v-expansion-panel popout focusable>
+  <v-expansion-panel popout>
     <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-    <v-expansion-panel-header class="expansion-panel-heading">
-      <div>
-        Contexto de Avaliação
-        <InfoBox header="Contexto de Avaliação" :text="myhelp.Classe.BlocoContexto"  helpColor="white"/>
+    <v-expansion-panel-header
+      style="outline: none;"
+      :class="{
+        'text-center': $vuetify.breakpoint.smAndDown,
+        'text-left': $vuetify.breakpoint.mdAndUp
+      }"
+      class="pa-0"
+    >
+      <div
+        :class="{
+          'px-3': $vuetify.breakpoint.mdAndUp
+        }"
+        class="separador"
+      >
+        <unicon
+          class="mt-3"
+          name="folder-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 20.71 23.668"
+          fill="#ffffff"
+        />
+        <span class="ml-3 mr-1">Contexto de Avaliação</span>
+        <InfoBox
+          header="Contexto de Avaliação"
+          :text="myhelp.Classe.BlocoContexto"
+          helpColor="info"
+        />
       </div>
-      <template v-slot:actions>
-        <v-icon color="white">expand_more</v-icon>
-      </template>
     </v-expansion-panel-header>
-    <v-expansion-panel-content v-if="c.nivel == 3">
+    <v-expansion-panel-content v-if="c.nivel == 3" id="expanded-content">
       <!-- TIPO DE PROCESSO -->
       <BlocoContextoSelTipoProcesso :c="c" />
 
       <!-- PROCESSO TRANVERSAL -->
       <BlocoContextoSelTransversalidade :c="c" />
-      
-      <hr style="border: 3px solid indigo; border-radius: 2px;" />
+
+      <hr style="border-top: 2px dashed #dee2f8;" />
 
       <!-- DONOS -->
-      <DonosOps :entidades="c.donos" @unselectEntidade="unselectEntidade($event)" />
+      <DonosOps
+        :entidades="c.donos"
+        @unselectEntidade="unselectEntidade($event)"
+      />
 
       <v-row>
         <v-col>
-          <hr style="border-top: 1px dashed indigo;" />
+          <hr style="border-top: 1px dashed #dee2f8;" />
         </v-col>
       </v-row>
 
@@ -34,14 +58,26 @@
         :entidades="donos"
       />
 
-      <v-snackbar v-model="erroEntidadeDuplicada" :color="'error'" :timeout="60000">
+      <v-snackbar
+        v-model="erroEntidadeDuplicada"
+        :color="'error'"
+        :timeout="60000"
+      >
         {{ mensagemEntidadeDuplicada }}
-        <v-btn dark text @click="erroEntidadeDuplicada = false">Fechar</v-btn>
+        <v-btn icon color="white" @click="erroEntidadeDuplicada = false">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
       </v-snackbar>
 
       <v-row>
         <v-col>
-          <hr style="border-top: 1px dashed indigo;" />
+          <hr style="border-top: 1px dashed #dee2f8;" />
         </v-col>
       </v-row>
 
@@ -51,7 +87,7 @@
         @selectEntidade="selectEntidade($event)"
       />
 
-      <hr style="border: 3px solid indigo; border-radius: 2px;" />
+      <hr style="border-top: 2px dashed #dee2f8;" />
 
       <!-- PARTICIPANTES -->
       <div v-if="c.procTrans != 'N'">
@@ -60,7 +96,7 @@
           @unselectParticipante="unselectParticipante($event)"
         />
 
-        <hr style="border-top: 1px dashed indigo;" />
+        <hr style="border-top: 1px dashed #dee2f8;" />
 
         <ParticipantesNew
           @newEntidade="newEntidade($event, c.participantes)"
@@ -68,20 +104,31 @@
           :entidades="participantes"
         />
 
-        <hr style="border-top: 1px dashed indigo;" />
+        <hr style="border-top: 1px dashed #dee2f8;" />
 
         <ParticipantesSelect
           :entidadesReady="semaforos.entidadesReady"
           :entidades="participantes"
           @selectParticipante="selectParticipante($event)"
         />
-
-        <v-snackbar v-model="erroIntervencaoIndefinida" :color="'error'" :timeout="60000">
+        <v-snackbar
+          v-model="erroIntervencaoIndefinida"
+          :color="'error'"
+          :timeout="60000"
+        >
           {{ mensagemIntervencaoIndefinida }}
-          <v-btn dark text @click="erroIntervencaoIndefinida = false">Fechar</v-btn>
+          <v-btn icon color="white" @click="erroIntervencaoIndefinida = false">
+            <unicon
+              name="remove-icon"
+              width="15"
+              height="15"
+              viewBox="0 0 20.71 20.697"
+              fill="#ffffff"
+            />
+          </v-btn>
         </v-snackbar>
 
-        <hr style="border: 3px solid indigo; border-radius: 2px;" />
+        <hr style="border-top: 2px dashed #dee2f8;" />
       </div>
 
       <!-- PROCESSOS RELACIONADOS -->
@@ -90,7 +137,7 @@
         @unselectProcRel="unselectProcesso($event)"
       />
 
-      <hr style="border-top: 1px dashed indigo;" />
+      <hr style="border-top: 1px dashed #dee2f8;" />
 
       <ProcessosRelacionadosSelect
         :procReady="semaforos.classesReady"
@@ -98,20 +145,26 @@
         @selectProcesso="selectProcesso($event)"
       />
 
-      <hr style="border: 3px solid indigo; border-radius: 2px;" />
+      <hr style="border-top: 2px dashed #dee2f8;" />
 
       <!-- LEGISLAÇÂO -->
-      <LegislacaoOps :legs="c.legislacao" @unselectDiploma="unselectDiploma($event)" />
+      <LegislacaoOps
+        :legs="c.legislacao"
+        @unselectDiploma="unselectDiploma($event)"
+      />
 
-      <v-row ma-2>
+      <v-row>
         <v-col>
-          <hr style="border-top: 1px dashed #1A237E;" />
+          <hr style="border-top: 1px dashed #dee2f8;" />
         </v-col>
       </v-row>
 
-      <LegislacaoNew :legislacao="c.legislacao" @newLegislacao="newLegislacao($event, c.legislacao)" />
+      <LegislacaoNew
+        :legislacao="c.legislacao"
+        @newLegislacao="newLegislacao($event, c.legislacao)"
+      />
 
-      <hr style="border-top: 1px dashed #1A237E;" />
+      <hr style="border-top: 1px dashed #dee2f8;" />
 
       <LegislacaoSelect
         :legs="legs"
@@ -169,7 +222,8 @@ export default {
       mensagemEntidadeDuplicada: "Entidade duplicada! Não será adicionada.",
 
       erroIntervencaoIndefinida: false,
-      mensagemIntervencaoIndefinida: "Tem de selecionar uma intervanção para o participante!",
+      mensagemIntervencaoIndefinida:
+        "Tem de selecionar uma intervanção para o participante!",
 
       textoCriterioUtilidadeAdministrativa:
         "Prazo decorrente da necessidade de consulta para apuramento da " +
@@ -204,10 +258,8 @@ export default {
 
     newEntidade: function(entidade, lista) {
       var index = lista.findIndex(e => e.id === entidade.id);
-      if(index == -1)
-        lista.push(entidade);
-      else
-        this.erroEntidadeDuplicada = true;
+      if (index == -1) lista.push(entidade);
+      else this.erroEntidadeDuplicada = true;
     },
 
     newLegislacao: function(leg, lista) {
@@ -223,9 +275,9 @@ export default {
     },
 
     selectParticipante: function(entidade) {
-      if(entidade.intervencao == "Indefinido")
-        this.erroIntervencaoIndefinida = true
-      else{
+      if (entidade.intervencao == "Indefinido")
+        this.erroIntervencaoIndefinida = true;
+      else {
         this.c.participantes.push(entidade);
       }
     },
@@ -593,33 +645,39 @@ export default {
       var index = this.legs.findIndex(l => l.id === leg.id);
       this.legs.splice(index, 1);
       // Remove critérios legais pois houve alteração no contexto
-      if(!this.c.temSubclasses4Nivel){
-        index = this.c.pca.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
-        if(index != -1){
+      if (!this.c.temSubclasses4Nivel) {
+        index = this.c.pca.justificacao.findIndex(
+          crit => crit.tipo == "CriterioJustificacaoLegal"
+        );
+        if (index != -1) {
           this.c.pca.justificacao.splice(index, 1);
           this.semaforos.critLegalAdicionadoPCA = false;
         }
-        index = this.c.df.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
-        if(index != -1){
+        index = this.c.df.justificacao.findIndex(
+          crit => crit.tipo == "CriterioJustificacaoLegal"
+        );
+        if (index != -1) {
           this.c.df.justificacao.splice(index, 1);
           this.semaforos.critLegalAdicionadoDF = false;
         }
-      }
-      else{
-        for(let i=0; i < this.c.subclasses.length; i++){
-          index = this.c.subclasses[i].pca.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
-          if(index != -1){
+      } else {
+        for (let i = 0; i < this.c.subclasses.length; i++) {
+          index = this.c.subclasses[i].pca.justificacao.findIndex(
+            crit => crit.tipo == "CriterioJustificacaoLegal"
+          );
+          if (index != -1) {
             this.c.subclasses[i].pca.justificacao.splice(index, 1);
             this.c.subclasses[i].semaforos.critLegalAdicionadoPCA = false;
           }
-          index = this.c.subclasses[i].df.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
-          if(index != -1){
+          index = this.c.subclasses[i].df.justificacao.findIndex(
+            crit => crit.tipo == "CriterioJustificacaoLegal"
+          );
+          if (index != -1) {
             this.c.subclasses[i].df.justificacao.splice(index, 1);
             this.c.subclasses[i].semaforos.critLegalAdicionadoDF = false;
           }
         }
       }
-      
     },
 
     unselectDiploma: function(diploma) {
@@ -696,37 +754,34 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .info-label {
-  color: #2e7d32; 
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8f5e9; 
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
 }
-
 .separador {
-  color: white; 
-  padding: 5px;
+  color: white;
   font-weight: 400;
+  padding: 5px;
+  margin: 5px;
   width: 100%;
-  background-color: #1A237E; 
+  min-height: 55px;
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
   font-size: 14pt;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  border-radius: 10px 10px 0 0;
 }
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+#expanded-content {
+  margin-left: 5px;
+  margin-top: -1.1rem;
+  border: 1px solid #dee2f8;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
 }
 </style>

@@ -4,7 +4,6 @@
       Tabela de Seleção para a entidade {{ p.objeto.dados.ts.entidade }}
     </v-card-title>
     <v-card-text>
-
       <v-data-table
         :headers="tsHeaders"
         :items="p.objeto.dados.ts.processos"
@@ -27,7 +26,11 @@
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td><span v-if="props.item.dono">X</span></td>
-            <td><span v-if="props.item.participante">{{ props.item.participante }}</span></td>
+            <td>
+              <span v-if="props.item.participante">{{
+                props.item.participante
+              }}</span>
+            </td>
           </tr>
         </template>
 
@@ -75,8 +78,9 @@ export default {
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

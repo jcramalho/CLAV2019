@@ -35,7 +35,7 @@
           :texto="{
             textoTitulo: 'Distribuição',
             textoAlert: 'análise',
-            textoBotao: 'Distribuir',
+            textoBotao: 'Distribuir'
           }"
           :pedido="pedidoParaDistribuir.codigo"
           @fecharDialog="fecharDialog()"
@@ -64,7 +64,7 @@ export default {
     PedidosValidacao,
     PedidosDevolvidos,
     PedidosProcessados,
-    AvancarPedido,
+    AvancarPedido
   },
 
   data() {
@@ -76,7 +76,7 @@ export default {
       pedidosDistribuidos: [],
       pedidosValidados: [],
       pedidosDevolvidos: [],
-      pedidosProcessados: [],
+      pedidosProcessados: []
     };
   },
 
@@ -90,13 +90,13 @@ export default {
         let pedidos = await this.$request("get", "/pedidos");
         pedidos = pedidos.data;
 
-        this.pedidosSubmetidos = pedidos.filter((p) => p.estado == "Submetido");
+        this.pedidosSubmetidos = pedidos.filter(p => p.estado == "Submetido");
         this.pedidosDistribuidos = pedidos.filter(
-          (p) => p.estado == "Distribuído"
+          p => p.estado == "Distribuído"
         );
-        this.pedidosValidados = pedidos.filter((p) => p.estado == "Apreciado");
-        this.pedidosDevolvidos = pedidos.filter((p) => p.estado == "Devolvido");
-        this.pedidosProcessados = pedidos.filter((p) => p.estado == "Validado");
+        this.pedidosValidados = pedidos.filter(p => p.estado == "Apreciado");
+        this.pedidosDevolvidos = pedidos.filter(p => p.estado == "Devolvido");
+        this.pedidosProcessados = pedidos.filter(p => p.estado == "Validado");
 
         await this.listaUtilizadores();
       } catch (e) {
@@ -150,15 +150,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.carregaPedidos();
@@ -167,27 +167,29 @@ export default {
       } catch (e) {
         console.log("e :", e);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {

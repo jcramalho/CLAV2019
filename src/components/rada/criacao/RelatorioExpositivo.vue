@@ -34,9 +34,12 @@
                 <v-chip
                   v-bind="data.attrs"
                   :input-value="data.selected"
-                  :close="produtoraEntidadeClasse(data.item, data.item.entidade)"
+                  :close="
+                    produtoraEntidadeClasse(data.item, data.item.entidade)
+                  "
                   @click:close="removeEnt(data.item)"
-                >{{ data.item.entidade }}</v-chip>
+                  >{{ data.item.entidade }}</v-chip
+                >
               </template>
             </v-autocomplete>
           </v-col>
@@ -67,9 +70,12 @@
               <v-chip
                 v-bind="data.attrs"
                 :input-value="data.selected"
-                :close="produtoraTipologiaClasse(data.item, data.item.tipologia)"
+                :close="
+                  produtoraTipologiaClasse(data.item, data.item.tipologia)
+                "
                 @click:close="removeTip(data.item)"
-              >{{ data.item.tipologia }}</v-chip>
+                >{{ data.item.tipologia }}</v-chip
+              >
             </template>
           </v-autocomplete>
         </v-col>
@@ -133,7 +139,11 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 :disabled="bloquearData()"
-                :rules="[v => data_final_valida(v) || 'Campo de preenchimento obrigatório!']"
+                :rules="[
+                  v =>
+                    data_final_valida(v) ||
+                    'Campo de preenchimento obrigatório!'
+                ]"
                 v-model="RE.dataFinal"
                 label="Data Final"
                 prepend-icon="event"
@@ -414,12 +424,14 @@ export default {
 }
 
 .info-label {
-  color: #1a237e;
-  padding: 6px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 </style>

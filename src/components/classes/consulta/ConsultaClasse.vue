@@ -1,85 +1,146 @@
 <template>
-  <v-container style="max-width:100%">
+  <v-container style="max-width:100%" class="mt-12">
     <v-row>
       <!-- MENU LATERAL -->
-      <v-col xs="12" sm="3">
+      <v-col cols="12" lg="3">
         <ClassesArvoreLateral :classeId="idc.split('c')[1]" />
       </v-col>
-      <v-col xs="12" sm="9">
-        <!-- HEADER -->
-        <v-card v-if="classeLoaded">
-          <v-app-bar color="indigo darken-4" dark>
-            <v-toolbar-title>
-              {{ this.classe.codigo }}:
-              {{ this.classe.titulo }}
-            </v-toolbar-title>
-            <v-spacer />
-            <v-btn color="indigo accent-4" @click="goToSearch()">
-              Voltar para
-              <span v-if="this.savedSearch">
-                os resultados
-              </span>
-              <span v-else>
-                as classes
-              </span>
-            </v-btn>
-          </v-app-bar>
+      <!-- HEADER -->
+      <v-col cols="12" lg="9">
+        <v-btn
+          @click="goToSearch()"
+          rounded
+          class="white--text mb-6"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="default-button"
+        >
+          <unicon
+            name="arrow-back-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 37.261"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Voltar</p>
+        </v-btn>
 
-          <v-card-text>
+        <!-- DESCENDÊNCIA -->
+        <v-card
+          v-if="classeLoaded"
+          flat
+          style="border-radius: 10px !important;"
+        >
+          <p
+            class="content-title-2 pa-5"
+            style="color: #4da0d0 !important; text-align: center;"
+          >
+            {{ this.classe.codigo }}: {{ this.classe.titulo }}
+          </p>
+          <v-card-text
+            :class="{
+              'mt-0': $vuetify.breakpoint.smAndDown
+            }"
+          >
             <ClassesFilho
               :subclasses="classe.filhos"
               v-if="classe.filhos.length > 0"
             />
 
-            <v-expansion-panels>
+            <v-expansion-panels flat>
               <v-expansion-panel popout>
                 <!-- DESCRITIVO DA CLASSE -->
-                <v-expansion-panel-header>
-                  <div class="separador">
-                    Descritivo da Classe
+                <v-expansion-panel-header
+                  style="outline: none"
+                  :class="{
+                    'text-center': $vuetify.breakpoint.smAndDown,
+                    'text-left': $vuetify.breakpoint.mdAndUp
+                  }"
+                  class="pa-3"
+                >
+                  <div
+                    :class="{
+                      'px-3': $vuetify.breakpoint.mdAndUp
+                    }"
+                    class="separador"
+                  >
+                    <unicon
+                      class="mt-3"
+                      name="descricao-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20.71 23.668"
+                      fill="#ffffff"
+                    />
+                    <span class="ml-3 mr-1">Descritivo da Classe</span>
                     <InfoBox
-                        header="Descritivo da Classe"
-                        :text="myhelp.Classe.BlocoDescritivo"
-                        helpColor="white"
-                      />
+                      header="Descritivo da Classe"
+                      :text="myhelp.Classe.BlocoDescritivo"
+                      helpColor="info"
+                    />
                   </div>
                 </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-row>
+                <v-expansion-panel-content id="expanded-content">
+                  <v-row
+                    :class="{
+                      'mt-10': $vuetify.breakpoint.smAndDown,
+                      'mt-8': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- ESTADO -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Estado
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content" v-if="classe.status == 'A'">
+                    <v-col cols="12" lg="10">
+                      <div
+                        class="info-content pa-4"
+                        v-if="classe.status == 'A'"
+                        style="color: #46c354 !important;"
+                      >
                         Ativa
                       </div>
                       <div
-                        class="info-content"
+                        class="info-content pa-4"
                         v-else-if="classe.status == 'H'"
+                        style="color: #dfb83a !important;"
                       >
                         Em revisão...
                       </div>
-                      <div class="info-content" v-else>Inativa</div>
+                      <div
+                        class="info-content pa-4"
+                        v-else
+                        style="color: #f44336 !important;"
+                      >
+                        Inativa
+                      </div>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- DESCRIÇÂO -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Descrição
                         <InfoBox
                           header="Descrição"
                           :text="myhelp.Classe.Campos.Descricao"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">{{ classe.descricao }}</div>
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4">
+                        {{ classe.descricao }}
+                      </div>
                     </v-col>
                   </v-row>
 
@@ -107,48 +168,78 @@
 
               <v-expansion-panel popout v-if="classe.nivel == 3">
                 <!-- CONTEXTO DA CLASSE -->
-                <v-expansion-panel-header>
-                  <div class="separador">
-                    Contexto de Avaliação
+                <v-expansion-panel-header
+                  style="outline: none"
+                  :class="{
+                    'text-center': $vuetify.breakpoint.smAndDown,
+                    'text-left': $vuetify.breakpoint.mdAndUp
+                  }"
+                  class="pa-3"
+                >
+                  <div
+                    :class="{
+                      'px-3': $vuetify.breakpoint.mdAndUp
+                    }"
+                    class="separador"
+                  >
+                    <unicon
+                      class="mt-3"
+                      name="folder-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20.71 18.121"
+                      fill="#ffffff"
+                    />
+                    <span class="ml-3 mr-1">Contexto de Avaliação</span>
                     <InfoBox
-                        header="Contexto de Avaliação"
-                        :text="myhelp.Classe.BlocoContexto"
-                        helpColor="white"
-                      />
+                      header="Contexto de Avaliação"
+                      :text="myhelp.Classe.BlocoContexto"
+                      helpColor="info"
+                    />
                   </div>
                 </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-row>
+                <v-expansion-panel-content id="expanded-content">
+                  <v-row
+                    :class="{
+                      'mt-10': $vuetify.breakpoint.smAndDown,
+                      'mt-8': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- TIPO DE PROCESSO -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Tipo de Processo
                         <InfoBox
                           header="Tipo de Processo"
                           :text="myhelp.Classe.Campos.TipoProcesso"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">{{ classe.tipoProc }}</div>
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4">{{ classe.tipoProc }}</div>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- TRANSVERSALIDADE -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Processo Transversal
                         <InfoBox
                           header="Processo Transversal"
                           :text="myhelp.Classe.Campos.ProcessoTransversal"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4">
                         {{ classe.procTrans == "S" ? "Sim" : "Não" }}
                       </div>
                     </v-col>
@@ -181,128 +272,189 @@
                     classe.nivel == 4
                 "
               >
-                <v-expansion-panel-header>
-                  <div class="separador">
-                    Decisões de Avaliação
+                <v-expansion-panel-header
+                  style="outline: none"
+                  :class="{
+                    'text-center': $vuetify.breakpoint.smAndDown,
+                    'text-left': $vuetify.breakpoint.mdAndUp
+                  }"
+                  class="pa-3"
+                >
+                  <div
+                    :class="{
+                      'px-3': $vuetify.breakpoint.mdAndUp
+                    }"
+                    class="separador"
+                  >
+                    <unicon
+                      class="mt-3"
+                      name="decisao-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20.71 20.71"
+                      fill="#ffffff"
+                    />
+                    <span class="ml-3 mr-1">Decisões de Avaliação</span>
                     <InfoBox
-                        header="Decisões de Avaliação"
-                        :text="myhelp.Classe.BlocoDecisoes"
-                        helpColor="white"
-                      />
+                      header="Decisões de Avaliação"
+                      :text="myhelp.Classe.BlocoDecisoes"
+                      helpColor="info"
+                    />
                   </div>
                 </v-expansion-panel-header>
-                <v-expansion-panel-content>
+                <v-expansion-panel-content id="expanded-content">
                   <v-row>
-                    <v-col xs="12" sm="12">
+                    <v-col>
                       <v-toolbar
-                        color="indigo darken-4"
-                        class="caption font-weight-regular"
+                        color="#083581"
+                        class="caption mt-5"
                         dark
-                        height="25"
+                        height="45"
+                        style="border-radius: 6px;"
                       >
-                        <v-toolbar-title>
+                        <v-toolbar-title
+                          :class="{
+                            'mx-auto': $vuetify.breakpoint.smAndDown,
+                            'mx-0': $vuetify.breakpoint.mdAndUp
+                          }"
+                        >
                           Prazo de Conservação Administrativa
                         </v-toolbar-title>
                       </v-toolbar>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- PRAZO -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Prazo
                         <InfoBox
                           header="Prazo"
                           :text="myhelp.Classe.Campos.Prazo"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content" v-if="classe.pca.valores > 1">
+                    <v-col cols="12" lg="10">
+                      <div
+                        class="info-content pa-4"
+                        v-if="classe.pca.valores > 1"
+                      >
                         {{ classe.pca.valores + " anos" }}
                       </div>
                       <div
-                        class="info-content"
+                        class="info-content pa-4"
                         v-else-if="classe.pca.valores == 1"
                       >
                         {{ classe.pca.valores + " ano" }}
                       </div>
-                      <div class="info-content" v-else>
+                      <div class="info-content pa-4" v-else>
                         Não especificado
                       </div>
                     </v-col>
                   </v-row>
 
-                  <v-row v-if="classe.pca.notas != ''">
+                  <v-row
+                    v-if="classe.pca.notas != ''"
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- NOTAS -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Notas
                         <InfoBox
                           header="Notas ao PCA"
                           :text="myhelp.Classe.Campos.Notas"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">{{ classe.pca.notas }}</div>
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4">
+                        {{ classe.pca.notas }}
+                      </div>
                     </v-col>
                   </v-row>
 
-                  <v-row v-if="classe.pca.formaContagem">
+                  <v-row
+                    v-if="classe.pca.formaContagem"
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- FORMA DE CONTAGEM -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Forma de Contagem
                         <InfoBox
                           header="Forma de Contagem"
                           :text="myhelp.Classe.Campos.FormaContagem"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4">
                         {{ classe.pca.formaContagem }}
                       </div>
                     </v-col>
                   </v-row>
 
-                  <v-row v-if="classe.pca.subFormaContagem">
+                  <v-row
+                    v-if="classe.pca.subFormaContagem"
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- SUBFORMA DE CONTAGEM -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Subforma de Contagem
                         <InfoBox
                           header="Subforma de Contagem"
                           :text="myhelp.Classe.Campos.SubformaContagem"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4">
                         {{ classe.pca.subFormaContagem }}
                       </div>
                     </v-col>
                   </v-row>
 
-                  <v-row v-if="classe.pca.justificacao">
+                  <v-row
+                    v-if="classe.pca.justificacao"
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- JUSTIFICAÇÂO -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Justificação
                         <InfoBox
                           header="Justificação do PCA"
                           :text="myhelp.Classe.Campos.JustificacaoPCA"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4" style="min-height: 61px;">
                         <div
                           v-for="c in classe.pca.justificacao"
                           :key="c.tipoId"
@@ -311,11 +463,13 @@
                           <v-row
                             v-if="c.tipoId == 'CriterioJustificacaoGestionario'"
                           >
-                            <v-col xs="2" sm="2">
-                              <div class="info-label">Critério Gestionário</div>
+                            <v-col cols="3" class="pt-0">
+                              <div class="sub-info-label">
+                                Critério Gestionário
+                              </div>
                             </v-col>
-                            <v-col xs="10" sm="10">
-                              <div class="info-content">
+                            <v-col cols="9" class="pt-0">
+                              <div>
                                 {{
                                   /* texto normalizado:
                                   mylabels.textoCriterioJustificacaoGestionario
@@ -333,13 +487,13 @@
                                 'CriterioJustificacaoUtilidadeAdministrativa'
                             "
                           >
-                            <v-col xs="2" sm="2">
-                              <div class="info-label">
+                            <v-col cols="3" class="pt-0">
+                              <div class="sub-info-label">
                                 Critério de Utilidade Administrativa
                               </div>
                             </v-col>
-                            <v-col xs="10" sm="10">
-                              <div class="info-content">
+                            <v-col cols="9" class="pt-0">
+                              <div>
                                 {{ c.conteudo }}
                                 <br />
                                 <br />
@@ -357,11 +511,11 @@
 
                           <!-- Critério Legal ...................................-->
                           <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
-                            <v-col xs="2" sm="2">
-                              <div class="info-label">Critério Legal</div>
+                            <v-col cols="3" class="pt-0">
+                              <div class="sub-info-label">Critério Legal</div>
                             </v-col>
-                            <v-col xs="10" sm="10">
-                              <div class="info-content">
+                            <v-col cols="9" class="pt-0">
+                              <div>
                                 {{ c.conteudo }}
                                 <br />
                                 <br />
@@ -383,32 +537,44 @@
                   <!-- DESTINO FINAL ................................................... -->
 
                   <v-row>
-                    <v-col xs="12" sm="12">
+                    <v-col>
                       <v-toolbar
-                        color="indigo darken-4"
-                        class="caption font-weight-regular"
+                        color="#083581"
+                        class="caption mt-5"
                         dark
-                        height="25"
+                        height="45"
+                        style="border-radius: 6px;"
                       >
-                        <v-toolbar-title>Destino Final</v-toolbar-title>
+                        <v-toolbar-title
+                          :class="{
+                            'mx-auto': $vuetify.breakpoint.smAndDown,
+                            'mx-0': $vuetify.breakpoint.mdAndUp
+                          }"
+                          >Destino Final</v-toolbar-title
+                        >
                       </v-toolbar>
                     </v-col>
                   </v-row>
 
-                  <v-row>
+                  <v-row
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- VALOR -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Destino Final
                         <InfoBox
                           header="Destino Final"
                           :text="myhelp.Classe.Campos.DF"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4">
                         <span v-if="classe.df.valor == 'E'">Eliminação</span>
                         <span v-else-if="classe.df.valor == 'C'">
                           Conservação
@@ -421,48 +587,60 @@
                     </v-col>
                   </v-row>
 
-                  <v-row v-if="classe.df.nota">
+                  <v-row
+                    v-if="classe.df.nota"
+                    ::class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- NOTA ao DF -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Nota
                         <InfoBox
                           header="Nota ao DF"
                           :text="myhelp.Classe.Campos.NotasDF"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">{{ classe.df.nota }}</div>
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4">{{ classe.df.nota }}</div>
                     </v-col>
                   </v-row>
 
-                  <v-row v-if="classe.df.justificacao">
+                  <v-row
+                    v-if="classe.df.justificacao"
+                    :class="{
+                      'mt-7': $vuetify.breakpoint.smAndDown,
+                      'mt-6': $vuetify.breakpoint.mdAndUp
+                    }"
+                  >
                     <!-- JUSTIFICAÇÂO -->
-                    <v-col xs="2" sm="2">
+                    <v-col cols="12" lg="2">
                       <div class="info-label">
                         Justificação
                         <InfoBox
                           header="Justificação do DF"
                           :text="myhelp.Classe.Campos.JustificacaoDF"
-                          helpColor="indigo darken-4"
+                          helpColor="info"
                         />
                       </div>
                     </v-col>
-                    <v-col xs="10" sm="10">
-                      <div class="info-content">
+                    <v-col cols="12" lg="10">
+                      <div class="info-content pa-4" style="min-height: 61px;">
                         <div
                           v-for="c in classe.df.justificacao"
                           :key="c.tipoId"
                         >
                           <!-- Critério Legal ...................................-->
                           <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
-                            <v-col xs="2" sm="2">
-                              <div class="info-label">Critério Legal</div>
+                            <v-col cols="3" class="pt-0">
+                              <div class="sub-info-label">Critério Legal</div>
                             </v-col>
-                            <v-col xs="10" sm="10">
-                              <div class="info-content">
+                            <v-col cols="9" class="pt-0">
+                              <div>
                                 {{ c.conteudo }}
                                 <br />
                                 <br />
@@ -483,13 +661,13 @@
                               c.tipoId == 'CriterioJustificacaoDensidadeInfo'
                             "
                           >
-                            <v-col xs="2" sm="2">
-                              <div class="info-label">
+                            <v-col cols="3" class="pt-0">
+                              <div class="sub-info-label">
                                 Critério de Densidade Informacional
                               </div>
                             </v-col>
-                            <v-col xs="10" sm="10">
-                              <div class="info-content">
+                            <v-col cols="9" class="pt-0">
+                              <div>
                                 {{
                                   /* texto normalizado:
                                   mylabels.textoCriterioDensidadeInfo
@@ -517,13 +695,13 @@
                                 'CriterioJustificacaoComplementaridadeInfo'
                             "
                           >
-                            <v-col xs="2" sm="2">
-                              <div class="info-label">
+                            <v-col cols="3" class="pt-0">
+                              <div class="sub-info-label">
                                 Critério de Complementaridade Informacional
                               </div>
                             </v-col>
-                            <v-col xs="10" sm="10">
-                              <div class="info-content">
+                            <v-col cols="9" class="pt-0">
+                              <div>
                                 {{
                                   /* texto normalizado:
                                   mylabels.textoCriterioComplementaridade
@@ -707,39 +885,48 @@ export default {
 };
 </script>
 
-<style>
-.myPanelHeader {
-  color: #304ffe;
-}
-
+<style scoped>
 .separador {
-  color: white; 
+  color: white;
   padding: 5px;
+  margin: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #1A237E; 
+  min-height: 50px;
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
   font-size: 14pt;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  border-radius: 10px 10px 0 0;
 }
-
 .info-label {
-  color: #1a237e;
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
+.sub-info-label {
+  color: #1976d2;
+  font-weight: bold;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+}
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+#expanded-content {
+  margin-right: 12px !important;
+  margin-left: 17px !important;
+  margin-top: -1.1rem;
+  border: 1px solid #dee2f8;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
 }
 </style>

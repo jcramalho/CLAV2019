@@ -1,10 +1,25 @@
 <template>
   <div>
-    <v-layout>
-      <v-toolbar color="indigo darken-4 body-2 font-weight-bold" dark height="30">
-        <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
-      </v-toolbar>
-    </v-layout>
+    <v-row class="mx-n4">
+      <v-col class="mx-1">
+        <v-toolbar
+          color="#083581"
+          class="caption mt-5"
+          dark
+          height="45"
+          style="border-radius: 6px;"
+        >
+          <v-toolbar-title
+            :class="{
+              'mx-auto': $vuetify.breakpoint.smAndDown,
+              'mx-0': $vuetify.breakpoint.mdAndUp
+            }"
+          >
+            Decisões de Avaliação
+          </v-toolbar-title>
+        </v-toolbar>
+      </v-col>
+    </v-row>
 
     <DecisaoComSubPCA
       :c="c"
@@ -12,8 +27,6 @@
       :pcaFormasContagem="pcaFormasContagem"
       :pcaSubFormasContagem="pcaSubFormasContagem"
     />
-
-    <hr style="border-top: 2px dashed #1A237E;" />
 
     <DecisaoComSubDF
       :c="c"

@@ -1,13 +1,12 @@
 <template>
   <v-flex xs12>
-    {{ae}}
+    {{ ae }}
     <div v-if="valida">
-      Conformidades
-      Total de agregações conformes para eliminação
+      Conformidades Total de agregações conformes para eliminação
     </div>
     <div v-else>
-      Não Conformidades
-      Ausência de indicação do dono em PN's com destino final de conservação
+      Não Conformidades Ausência de indicação do dono em PN's com destino final
+      de conservação
     </div>
   </v-flex>
 </template>
@@ -17,7 +16,7 @@ export default {
   props: ["ae"],
 
   data: () => ({
-    valida: true,
+    valida: true
   }),
 
   mounted: function() {
@@ -29,7 +28,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
   color: white;
   padding: 5px;
@@ -40,9 +39,10 @@ export default {
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {

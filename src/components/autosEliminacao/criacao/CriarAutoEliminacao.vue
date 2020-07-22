@@ -96,7 +96,8 @@
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
         <v-card-title class="teal darken-4 title white--text" dark>
-          Pedido de criação de auto de eliminação criado com sucesso: {{ codigoPedido }}
+          Pedido de criação de auto de eliminação criado com sucesso:
+          {{ codigoPedido }}
         </v-card-title>
 
         <v-card-text>
@@ -115,7 +116,7 @@
             </v-col>
 
             <v-col class="info-content">
-              <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
+              <div v-for="(f, i) in auto.fundo" :key="i">{{ f }}</div>
             </v-col>
           </v-row>
           <v-row class="mt-2">
@@ -125,8 +126,10 @@
 
             <v-col class="info-content">
               <div v-for="c in auto.zonaControlo" :key="c.codigo">
-                {{ c.codigo +" - "+c.titulo }}
-                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">{{+a.codigo + " - " + a.titulo}}</li>
+                {{ c.codigo + " - " + c.titulo }}
+                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">
+                  {{ +a.codigo + " - " + a.titulo }}
+                </li>
               </div>
             </v-col>
           </v-row>
@@ -166,11 +169,13 @@
       <v-card>
         <v-card-title>Trabalho pendente guardado</v-card-title>
         <v-card-text>
-          <div><strong>
-            Os seus dados foram guardados para que possa retomar o trabalho mais
-            tarde.
-          </strong></div>
-          
+          <div>
+            <strong>
+              Os seus dados foram guardados para que possa retomar o trabalho
+              mais tarde.
+            </strong>
+          </div>
+
           <v-row v-if="auto.legislacao" class="my-2">
             <v-col cols="2">
               <div class="info-label">Fonte de Legitimação:</div>
@@ -186,7 +191,7 @@
             </v-col>
 
             <v-col v-if="auto.fundo" class="info-content">
-              <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
+              <div v-for="(f, i) in auto.fundo" :key="i">{{ f }}</div>
             </v-col>
           </v-row>
           <v-row v-if="auto.zonaControlo" class="mt-2">
@@ -196,8 +201,10 @@
 
             <v-col class="info-content">
               <div v-for="c in auto.zonaControlo" :key="c.codigo">
-                {{ c.codigo +" - "+c.titulo }}
-                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">{{+a.codigo + " - " + a.titulo}}</li>
+                {{ c.codigo + " - " + c.titulo }}
+                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">
+                  {{ +a.codigo + " - " + a.titulo }}
+                </li>
               </div>
             </v-col>
           </v-row>
@@ -256,13 +263,13 @@ export default {
         user: { email: user.email },
         entidade: user.entidade,
         token: this.$store.state.token
-      }
-      
+      };
+
       const codigoPedido = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+        "post",
+        "/pedidos",
+        pedidoParams
+      );
 
       this.codigoPedido = codigoPedido.data;
 
@@ -299,16 +306,17 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
-  color: #1a237e; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #dee2f8; /* green lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .expansion-panel-heading {
@@ -324,9 +332,10 @@ export default {
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .consulta tr {
@@ -345,5 +354,4 @@ export default {
   vertical-align: middle;
   padding-left: 15px;
 }
-
 </style>

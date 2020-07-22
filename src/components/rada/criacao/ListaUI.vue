@@ -23,14 +23,24 @@
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
-            <EditaUI @remover="remover_UI" :UI="props.item" :RE="RE" :classes="TS.classes" />
+            <EditaUI
+              @remover="remover_UI"
+              :UI="props.item"
+              :RE="RE"
+              :classes="TS.classes"
+            />
           </template>
         </v-data-table>
       </v-col>
     </v-row>
     <v-row v-else>
       <v-col cols="12" xs="12" sm="12">
-        <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
+        <v-alert
+          class="text-center"
+          :value="true"
+          color="amber accent-3"
+          icon="warning"
+        >
           Ainda não foram adicionadas
           <b>Unidades de Instalação</b>.
         </v-alert>
@@ -81,7 +91,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .table-header {
   color: #1a237e;
   font-weight: 400;

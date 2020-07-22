@@ -5,17 +5,17 @@
     :close-on-content-click="false"
     :return-value.sync="dataValor"
     transition="scale-transition"
-    offset-y
     min-width="290px"
   >
     <template v-slot:activator="{ on }">
       <v-text-field
-        filled
         v-model="dataValor"
+        v-on="on"
         label="Data: AAAA-MM-DD"
         prepend-icon="event"
         readonly
-        v-on="on"
+        single-line
+        color="blue darken-3"
       />
     </template>
 
@@ -23,6 +23,7 @@
       v-model="dataValor"
       no-title
       scrollable
+      color="blue darken-3"
       show-current
       first-day-of-week="1"
       :max="new Date().toISOString().substr(0, 10)"
@@ -43,7 +44,7 @@ export default {
   data() {
     return {
       dataValor: this.d,
-      menu1: false,
+      menu1: false
     };
   },
 
@@ -52,7 +53,7 @@ export default {
       this.$refs.menu1.save(this.dataValor);
       this.$emit("dataSelecionada", this.dataValor);
       this.dataValor = "";
-    },
-  },
+    }
+  }
 };
 </script>

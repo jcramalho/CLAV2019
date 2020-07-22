@@ -104,7 +104,7 @@
           :texto="{
             textoTitulo: 'Distribuição',
             textoAlert: 'análise',
-            textoBotao: 'Distribuir',
+            textoBotao: 'Distribuir'
           }"
           :pedido="p.codigo"
           @fecharDialog="fecharDialog()"
@@ -152,7 +152,7 @@ export default {
     ShowTI,
     AvancarPedido,
     ShowRADA,
-    ErroDialog,
+    ErroDialog
   },
 
   data: () => ({
@@ -160,21 +160,21 @@ export default {
     utilizadores: [],
     erroDialog: {
       visivel: false,
-      mensagem: null,
+      mensagem: null
     },
     headers: [
       { text: "Estado", align: "left", sortable: false, value: "estado" },
       { text: "Data", value: "data" },
       { text: "Responsável", value: "responsavel" },
       { text: "Despacho", value: "despacho" },
-      { text: "Objeto", value: "objeto" },
+      { text: "Objeto", value: "objeto" }
     ],
     distHeaders: [
       { text: "Estado", value: "estado", class: "subtitle-1" },
       { text: "Data", value: "data", class: "subtitle-1" },
       { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Despacho", value: "despacho", class: "subtitle-1" },
-    ],
+      { text: "Despacho", value: "despacho", class: "subtitle-1" }
+    ]
   }),
 
   async created() {
@@ -216,15 +216,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.fecharDialog();
@@ -240,25 +240,28 @@ export default {
 
     voltar: function() {
       this.$router.go(-1);
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

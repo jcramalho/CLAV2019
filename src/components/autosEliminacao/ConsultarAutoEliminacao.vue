@@ -11,7 +11,7 @@
               <div class="info-label">Número</div>
             </td>
             <td style="width:80%;">
-              {{ ((auto.id || "").split("ae_")[1] || "").replace(/\_/g,"/") }}
+              {{ ((auto.id || "").split("ae_")[1] || "").replace(/\_/g, "/") }}
             </td>
           </tr>
           <tr>
@@ -27,7 +27,10 @@
               <div class="info-label">Entidade Responsável</div>
             </td>
             <td style="width:80%;">
-              <a :href="'/entidades/' + auto.entidade">{{ (auto.entidade || "").split("_")[1] +" - "+auto.entidadeNome}}</a>{{" ("+auto.responsavel+")"}}
+              <a :href="'/entidades/' + auto.entidade">{{
+                (auto.entidade || "").split("_")[1] + " - " + auto.entidadeNome
+              }}</a
+              >{{ " (" + auto.responsavel + ")" }}
             </td>
           </tr>
           <tr>
@@ -35,7 +38,10 @@
               <div class="info-label">Fonte de Legitimação</div>
             </td>
             <td style="width:80%;">
-              {{auto.tipo+" - "}}<a :href="'/legislacao/' + auto.refLegislacao">{{ auto.legislacao }}</a>
+              {{ auto.tipo + " - "
+              }}<a :href="'/legislacao/' + auto.refLegislacao">{{
+                auto.legislacao
+              }}</a>
             </td>
           </tr>
           <tr>
@@ -43,8 +49,10 @@
               <div class="info-label">Fundo</div>
             </td>
             <td style="width:80%;">
-              <li v-for="(f,i) in auto.fundo" :key="i">
-                <a :href="'/entidades/' + f">{{ (f.fundo || "").split("_")[1] +" - "+f.nome}}</a>
+              <li v-for="(f, i) in auto.fundo" :key="i">
+                <a :href="'/entidades/' + f">{{
+                  (f.fundo || "").split("_")[1] + " - " + f.nome
+                }}</a>
               </li>
             </td>
           </tr>
@@ -52,7 +60,8 @@
 
         <v-expansion-panels popout>
           <v-expansion-panel class="ma-1">
-            <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
+            <v-expansion-panel-header
+              class="pa-2 indigo darken-4 title white--text"
               >Classes</v-expansion-panel-header
             >
             <v-expansion-panel-content>
@@ -78,10 +87,9 @@
                             <div class="info-label">Código da class:</div>
                           </td>
                           <td style="width:80%;">
-                            <a
-                              :href="'/classes/consultar/c' + item.codigo"
-                              >{{ item.codigo }}</a
-                            >
+                            <a :href="'/classes/consultar/c' + item.codigo">{{
+                              item.codigo
+                            }}</a>
                           </td>
                         </tr>
                         <tr v-if="item.titulo">
@@ -94,11 +102,11 @@
                         </tr>
                         <tr v-if="item.pca">
                           <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa:</div>
+                            <div class="info-label">
+                              Prazo de Conservação Administrativa:
+                            </div>
                           </td>
-                          <td style="width:80%;">
-                            {{ item.pca }} Anos
-                          </td>
+                          <td style="width:80%;">{{ item.pca }} Anos</td>
                         </tr>
                         <tr v-if="item.destino">
                           <td style="width:20%;">
@@ -107,7 +115,10 @@
                           <td v-if="item.destino === 'E'" style="width:80%;">
                             Eliminação
                           </td>
-                          <td v-else-if="item.destino === 'C'" style="width:80%;">
+                          <td
+                            v-else-if="item.destino === 'C'"
+                            style="width:80%;"
+                          >
                             Conservação
                           </td>
                           <td v-else style="width:80%;">
@@ -126,9 +137,13 @@
                           <td style="width:20%;">
                             <div class="info-label">Dono do PN:</div>
                           </td>
-                          <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">
-                            <a :href='"/entidade/"+d.dono' >{{ (d.dono || "").split("_")[1] +" - "+d.nome }}</a>
-                          </li></td>
+                          <td style="width:80%;">
+                            <li v-for="(d, i) in item.dono" :key="i">
+                              <a :href="'/entidade/' + d.dono">{{
+                                (d.dono || "").split("_")[1] + " - " + d.nome
+                              }}</a>
+                            </li>
+                          </td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
@@ -150,7 +165,9 @@
                               N.º de agregações:
                             </div>
                           </td>
-                          <td style="width:80%;">{{ item.agregacoes.length }}</td>
+                          <td style="width:80%;">
+                            {{ item.agregacoes.length }}
+                          </td>
                         </tr>
                         <tr v-if="item.UIpapel">
                           <td style="width:20%;">
@@ -177,6 +194,7 @@
                           <td style="width:80%;">{{ item.UIoutros }}</td>
                         </tr>
                       </table>
+
                       <div class="ma-1">
                         <v-row justify="space-between" class="info-label">
                           <v-col>Lista de Agregações</v-col>
@@ -234,7 +252,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .panel-custom .panel-heading {
   background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
 }
@@ -267,19 +285,22 @@ export default {
 }
 
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .panel-info-custom .panel-body {

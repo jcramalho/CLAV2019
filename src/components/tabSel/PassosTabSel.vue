@@ -248,7 +248,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .header {
   color: beige !important;
   background-color: #0d47a1 !important;

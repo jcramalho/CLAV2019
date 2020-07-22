@@ -2,13 +2,13 @@
   <div>
     <v-row>
       <v-col>
-        <Info v-if="this.$store.state.name === ''"/>
+        <Info v-if="this.$store.state.name === ''" />
         <Operacoes :level="level" />
         <Noticias :level="level" />
       </v-col>
       <v-col>
         <DocumentacaoApoio />
-        <Registo v-if="this.$store.state.name === ''"/>
+        <Registo v-if="this.$store.state.name === ''" />
         <Gestao v-if="level > 0" :level="level" />
       </v-col>
     </v-row>

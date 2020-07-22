@@ -115,7 +115,7 @@ export default {
 
   components: {
     ValidarLegislacaoInfoBox,
-    DialogLegislacaoSucesso,
+    DialogLegislacaoSucesso
   },
 
   data() {
@@ -127,7 +127,7 @@ export default {
       dialogLegislacaoCriada: false,
       codigoPedido: "",
       errosValidacao: false,
-      pedidoEliminado: false,
+      pedidoEliminado: false
     };
   },
 
@@ -211,7 +211,7 @@ export default {
               novoObjeto: dataObj,
               user: { email: userBD.email },
               entidade: userBD.entidade,
-              token: this.$store.state.token,
+              token: this.$store.state.token
             };
 
             if (this.original !== undefined)
@@ -246,26 +246,28 @@ export default {
 
     cancelarCriacaoLegislacao: function() {
       this.$router.push("/");
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

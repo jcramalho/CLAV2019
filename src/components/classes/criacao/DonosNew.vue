@@ -1,34 +1,58 @@
 <template>
-  <v-row class="ma-2 indigo lighten-5">
-    <v-col cols="2">
-      <div class="info-label">Entidade nova</div>
-      <v-btn small dark rounded class="indigo darken-2" @click="newDono">
-        Adicionar
-        <v-icon small dark right>add_circle_outline</v-icon>
-      </v-btn>
-    </v-col>
-    <v-col>
-      <v-form v-model="valid">
-        <v-container>
-          <v-row>
-
-            <v-col>
-              <v-text-field v-model="sigla" label="Sigla" required></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-text-field v-model="sioe" label="SIOE"></v-text-field>
-            </v-col>
-
-            <v-col>
+  <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-row>
+      <v-col cols="12" lg="2" style="text-align: center;" class="mb-n6">
+        <div class="info-label">
+          Entidade nova
+        </div>
+        <v-tooltip top color="info" open-delay="600">
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" color="success" icon @click="newDono" class="mb-4">
+              <unicon
+                name="adicionar-icon"
+                width="15"
+                height="15"
+                viewBox="0 0 20.71 20.71"
+                fill="#4caf50"
+              />
+            </v-btn>
+          </template>
+          <span>Adicionar nova entidade</span>
+        </v-tooltip>
+      </v-col>
+      <v-col cols="12" lg="10" class="px-4">
+        <v-form v-model="valid">
+          <v-row class="info-content mx-0 mb-1 pa-4" style="min-height: 60px;">
+            <v-col cols="12" sm="6" class="mt-n4">
               <v-text-field
-                v-model="designacao"
-                label="Designação"
+                v-model="sigla"
+                label="Sigla"
                 required
+                color="blue darken-3"
               ></v-text-field>
             </v-col>
 
-            <v-col>
+            <v-col cols="12" sm="6" class="mt-n4">
+              <v-text-field
+                v-model="sioe"
+                label="SIOE"
+                color="blue darken-3"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" class="mt-n7">
+              <v-textarea
+                v-model="designacao"
+                label="Designação"
+                required
+                auto-grow
+                hide-details
+                rows="1"
+                color="blue darken-3"
+              ></v-textarea>
+            </v-col>
+
+            <v-col cols="12" md="6" class="mt-n4">
               <v-select
                 prefix="Internacional: "
                 item-text="label"
@@ -36,20 +60,28 @@
                 v-model="internacional"
                 :items="simNao"
                 label="Internacional"
-                solo
-                dense
+                hide-details
+                single-line
               />
             </v-col>
           </v-row>
-        </v-container>
-      </v-form>
-    </v-col>
+        </v-form>
+      </v-col>
 
-    <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
-      <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
-      <v-btn dark text @click="fecharErros">Fechar</v-btn>
-    </v-snackbar>
-  </v-row>
+      <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
+        <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
+        <v-btn icon color="white" @click="fecharErros">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
+      </v-snackbar>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -114,16 +146,15 @@ export default {
       if (
         this.validaSigla(this.sigla) &&
         this.validaDesignacao(this.designacao)
-        ) 
-      {
+      ) {
         var entidade = {
-            estado: "Nova",
-            id: "ent_" + this.sigla,
-            sigla: this.sigla,
-            tipo: "Entidade",
-            sioe: this.sioe,
-            designacao: this.designacao,
-            internacional: this.internacional
+          estado: "Nova",
+          id: "ent_" + this.sigla,
+          sigla: this.sigla,
+          tipo: "Entidade",
+          sioe: this.sioe,
+          designacao: this.designacao,
+          internacional: this.internacional
         };
         this.sigla = "";
         this.sioe = "";
@@ -137,25 +168,22 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

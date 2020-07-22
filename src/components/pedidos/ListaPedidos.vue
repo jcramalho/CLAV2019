@@ -86,7 +86,11 @@
             <div v-else>
               <p>
                 Tarefa atribuída a:
-                <b>{{ selectedUser.name }} ({{ selectedUser.entidade.split("_")[1] }})</b>.
+                <b
+                  >{{ selectedUser.name }} ({{
+                    selectedUser.entidade.split("_")[1]
+                  }})</b
+                >.
               </p>
               <div class="info-label">Despacho</div>
               <v-textarea
@@ -237,9 +241,10 @@ export default {
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {

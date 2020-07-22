@@ -5,8 +5,9 @@
     right
     absolute
     height="50%"
+    style="position:fixed; top:38px;"
   >
-    <v-toolbar dark class="d-flex justify-center pt-1">
+    <v-toolbar dark class="d-flex justify-center pt-4 mt-12">
       <v-toolbar-title class="font-weight-medium" id="drawer-title">
         Definições de Utilizador
       </v-toolbar-title>
@@ -38,7 +39,7 @@
               name="terminar-sessao-icon"
               width="22"
               height="22"
-              viewBox="0 0 20.71 12.943"
+              viewBox="0 0 20.71 23.481"
               fill="#ef5350"
             />
           </v-list-item>

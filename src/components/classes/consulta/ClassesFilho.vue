@@ -1,23 +1,36 @@
 <template>
-  <v-row ma-2>
+  <v-row class="ma-2">
     <!-- DESCENDÊNCIA -->
-    <v-col cols="12" xs="2" sm="2">
-      <div class="info-label">
+    <v-col>
+      <div
+        class="info-label mb-n1 pa-2 px-3 pt-3"
+        :class="{
+          'text-center': $vuetify.breakpoint.smAndDown,
+          'text-left': $vuetify.breakpoint.mdAndUp
+        }"
+        style="min-height: 50px;"
+      >
         Descendência
         <InfoBox
           header="Descendência"
           :text="myhelp.Classe.Campos.Descendencia"
-          helpColor="indigo darken-4"
-          dialogColor="#E0F2F1"
+          helpColor="info"
         />
       </div>
-    </v-col>
-    <v-col xs="10" sm="10">
-      <v-data-table :items="subclasses" class="elevation-1" hide-default-header hide-default-footer :items-per-page="subclasses.length">
+      <v-data-table
+        id="tabela"
+        class="font-weight-medium"
+        :items="subclasses"
+        hide-default-header
+        hide-default-footer
+        :items-per-page="subclasses.length"
+      >
         <template v-slot:item="props">
           <tr>
             <td>
-              <a :href="'/classes/consultar/c' + props.item.codigo">{{ props.item.codigo }}</a>
+              <a :href="'/classes/consultar/c' + props.item.codigo">{{
+                props.item.codigo
+              }}</a>
               - {{ props.item.titulo }}
             </td>
           </tr>
@@ -39,13 +52,21 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
   color: #1a237e;
   padding: 5px;
-  font-weight: 400;
   width: 100%;
   background-color: #dee2f8;
+  border-radius: 10px 10px 0 0;
   font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+}
+#tabela {
+  border: 1px solid #dee2f8 !important;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12);
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
 }
 </style>

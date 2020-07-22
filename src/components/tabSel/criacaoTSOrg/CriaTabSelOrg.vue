@@ -21,7 +21,11 @@
                     label
                   >
                     <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
+                    {{
+                      tabelaSelecao.idEntidade.split("_")[1] +
+                        ": " +
+                        tabelaSelecao.designacaoEntidade
+                    }}
                   </v-chip>
                 </span>
               </v-stepper-step>
@@ -35,10 +39,7 @@
                   >
                   </v-autocomplete>
                 </v-col>
-                <v-btn
-                  v-if="ent != ''"
-                  color="primary"
-                  @click="guardaEntidade"
+                <v-btn v-if="ent != ''" color="primary" @click="guardaEntidade"
                   >Continuar</v-btn
                 >
               </v-stepper-content>
@@ -47,7 +48,8 @@
                 Tipologias de entidade a que pertence
                 <span v-if="stepNo > 2">
                   <v-chip
-                    v-for="(t,i) in tipSel" :key="i"
+                    v-for="(t, i) in tipSel"
+                    :key="i"
                     class="ma-2"
                     color="indigo darken-4"
                     text-color="white"
@@ -212,13 +214,16 @@
                     procPreSelEspecificos();
                     loadProcEspRestantes();
                   "
-                  >Continuar</v-btn>
+                  >Continuar</v-btn
+                >
                 <v-btn
                   text
                   @click="
                     stepNo = stepNo - 1;
                     barra(14);
-                  ">Voltar</v-btn>
+                  "
+                  >Voltar</v-btn
+                >
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 5" step="5"
@@ -751,7 +756,7 @@ export default {
     };
   },
   methods: {
-    debug: function(obj){
+    debug: function(obj) {
       alert(JSON.stringify(obj));
     },
     // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
@@ -827,7 +832,7 @@ export default {
             id: item.id,
             searchField: item.sigla + " - " + item.designacao
           };
-        }); 
+        });
       } catch (error) {
         return error;
       }
@@ -1243,7 +1248,7 @@ export default {
           this.listaTotalProcSel = this.listaTotalProcSelUpdate;
         }
 
-        this.debug(this.listaTotalProcSel)
+        this.debug(this.listaTotalProcSel);
         this.tabelaSelecao.listaProcSel = JSON.stringify(
           this.listaTotalProcSel
         );
@@ -1280,7 +1285,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .expansion-panel-heading {
   color: #1a237e !important;
   background-image: linear-gradient(to bottom, #bac1eb 0, #8c9eff 100%);
@@ -1288,20 +1293,21 @@ export default {
 
 .info-label {
   color: #1a237e !important;
-  padding: 5px;
-  font-weight: 400;
-  width: auto;
-  height: auto;
-  background-color: #e8eaf6;
+  padding: 8px;
+  width: 100%;
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .card-heading {
