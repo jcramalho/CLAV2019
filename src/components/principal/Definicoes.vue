@@ -50,7 +50,7 @@
 
 <script>
 export default {
-  props: ["level", "drawer"],
+  props: ["level", "drawer","socket"],
   methods: {
     logoutUtilizador() {
       this.text = "Logout efetuado com sucesso!";
@@ -61,6 +61,7 @@ export default {
       this.$store.commit("guardaTokenUtilizador", "");
       this.$store.commit("guardaNomeUtilizador", "");
       this.$store.commit("guardaEntidade", "");
+      this.socket.disconnect();
 
       //se já está na página inicial (home)
       if (this.$route.path == "/") {

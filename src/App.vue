@@ -18,7 +18,11 @@
         :notificacoes="notificacoes"
         @removerNotificacao="removerNotificacao($event)"
       />
-      <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
+      <Definicoes 
+        v-if="this.$store.state.name != ''" 
+        :drawer="drawD"
+        :socket="socket"
+      />
       <!--
       <Estatisticas
         v-if="this.$store.state.name != '' && level >= 3.5"
@@ -37,6 +41,7 @@ import Definicoes from "@/components/principal/Definicoes.vue";
 // import Estatisticas from "@/components/principal/Estatisticas.vue";
 import Notificacoes from "@/components/principal/Notificacoes.vue";
 import io from "socket.io-client"
+import { bus } from "./main"
 const lhost = require("@/config/global").host;
 
 export default {
@@ -49,23 +54,13 @@ export default {
     Notificacoes
   },
   watch: {
-    authenticated(val){
-      if(this.$store.state.token) {
-        var socket = io.connect('lhost');
-        socket.emit('email', {
-          email: this.$verifyTokenUser().email
-        });
-        socket.on(this.$verifyTokenUser().email, (data) => {
-          console.log(data)
-          this.notificacoes.push(JSON.parse(data))
-        })
-      } 
-    },
     async $route(to, from) {
       //verifica se o utilizador está autenticado
       if (this.$store.state.token != "") {
         var user = this.$verifyTokenUser();
         this.level = user.level;
+      } else {
+        if(this.socket) this.socket.disconnect();
       }
 
       this.authenticated = false;
@@ -131,18 +126,32 @@ export default {
       this.drawN = false;
       // this.drawE = !this.drawE;
     },
-    async removerNotificacao(id) {
-      try {
-        await this.$request("delete", "/notificacoes/" + id);
-        this.notificacoes = this.notificacoes.filter(notificacao => {
-          return notificacao._id !== id;
-        });
-      } catch (error) {
-        return error;
+    removerNotificacao(msg) {
+      const index = this.notificacoes.indexOf(msg);
+      if (index > -1) {
+        this.notificacoes.splice(index, 1);
       }
+      this.socket.emit('remove', msg);
+    },
+    consume() {
+      this.socket = io.connect("http://localhost:7779"); //lhost.replace('/v2', '')
+      console.log(this.$verifyTokenUser().email)
+      this.socket.emit('email', {
+        email: this.$verifyTokenUser().email
+      });
+      this.socket.on(this.$verifyTokenUser().email, (data) => {
+        this.notificacoes.push(JSON.parse(data))
+      })
     }
   },
+  created(){
+    if (this.$store.state.token != "") this.consume()
+    bus.$on('notificacoes', (d) => {
+      this.consume()
+    })
+  },
   data: () => ({
+    socket: null,
     drawD: false,
     // drawE: false,
     drawN: false,

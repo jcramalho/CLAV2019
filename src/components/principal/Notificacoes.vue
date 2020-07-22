@@ -23,7 +23,7 @@
               <v-icon color="#67cc72">$expand</v-icon>
             </template>
             <p class="font-weight-medium">Pedido: {{ item.pedido }}</p>
-            <v-btn text small @click="removerNotificacao(item._id)">
+            <v-btn text small @click="removerNotificacao(item)">
               <v-icon color="red">
                 clear
               </v-icon>

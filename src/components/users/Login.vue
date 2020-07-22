@@ -54,6 +54,8 @@
 </template>
 
 <script>
+import { bus } from "../../main"
+
 export default {
   name: "login",
   data() {
@@ -91,6 +93,7 @@ export default {
               this.$store.commit("guardaNomeUtilizador", res.data.name);
               this.$store.commit("guardaEntidade", res.data.entidade);
               this.$router.push("/");
+              this.notificacoes();
               // this.$store.state.name = res.data.name;
               // this.$store.state.token = res.data.token;
             } else {
@@ -114,6 +117,9 @@ export default {
         this.snackbar = true;
         this.done = false;
       }
+    },
+    notificacoes() {
+      bus.$emit("notificacoes", "logged")
     },
     fecharSnackbar() {
       this.snackbar = false;
