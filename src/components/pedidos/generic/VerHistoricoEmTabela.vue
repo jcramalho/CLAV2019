@@ -100,7 +100,7 @@
 
                     <ul v-else class="ma-0">
                       <span
-                        v-for="dado in item.colunaB.dados"
+                        v-for="dado in item.colunaA.dados"
                         :key="dado.sigla"
                       >
                         <li v-if="dado.sigla">
