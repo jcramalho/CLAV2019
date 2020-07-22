@@ -63,7 +63,7 @@
                       </div>
                     </template>
                   </v-radio>
-                  <v-radio disabled value="RADA">
+                  <v-radio value="RADA">
                     <template v-slot:label>
                       <div class="mt-2">
                         RADA
@@ -99,13 +99,30 @@
                   ></v-autocomplete>
                 </div>
                 <div v-else>
-                  <v-autocomplete
-                    label="Selecione a fonte de legitimação"
-                    :items="portariaRada"
-                    v-model="auto.legislacao"
-                    solo
-                    dense
-                  ></v-autocomplete>
+
+                  <v-row>
+                  <v-col cols="3">
+                    <v-switch class="ma-1" v-model="switchRada" :label="radaLabel"></v-switch>
+                  </v-col>
+                  <v-col>
+                    <v-autocomplete
+                      v-if="switchRada"
+                      label="Selecione a Tabela de Selação"
+                      :items="tsRada"
+                      v-model="auto.legislacao"
+                      solo
+                      dense
+                    ></v-autocomplete>
+                    <v-autocomplete
+                      v-else
+                      label="Selecione a fonte de legitimação"
+                      :items="portariaRada"
+                      v-model="auto.legislacao"
+                      solo
+                      dense
+                    ></v-autocomplete>
+                  </v-col>
+                  </v-row>
                 </div>
               </v-col>
             </v-row>
@@ -351,9 +368,11 @@ export default {
     portaria: [],
     portariaRada: [],
     tabelasSelecao: [],
+    tsRada: [],
     numInterv: 0,
     _id: null,
     tipo: "TS_LC",
+    switchRada: false,
     donos: [],
     steps: 1,
     erro: null,
@@ -366,6 +385,11 @@ export default {
     pendenteGuardadoInfo: null,
     eliminar: false
   }),
+  computed: {
+    radaLabel: function() {
+      return this.switchRada ? "Tabela de Seleção" : "Fonte de Legitimação"
+    }
+  },
   created: async function() {
     try {
       var user = this.$verifyTokenUser();
@@ -385,6 +409,11 @@ export default {
       var response3 = await this.$request("get", "/legislacao?fonte=RADA");
       this.portariaRada = await this.prepararLeg(response3.data);
       this.tabelasSelecao.push("Lista Consolidada")
+      var response4 = await this.$request("get","/rada");
+      this.tsRada = response4.data.map(ts => {
+        return "" + ts.titulo + " (" + ts.dataAprovacao + ")"
+      })
+      console.log(response4.data)
 
     } catch (e) {
       this.auto.fundo = [];
@@ -392,6 +421,7 @@ export default {
       this.portaria = [];
       this.portariaRada = [];
       this.tabelasSelecao = [];
+      this.tsRada = [];
     }
   },
   methods: {
@@ -677,6 +707,9 @@ export default {
   },
   watch: {
     tipo: function() {
+      this.auto.legislacao = null;
+    },
+    switchRada: function() {
       this.auto.legislacao = null;
     } 
   }

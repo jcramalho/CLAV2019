@@ -73,7 +73,7 @@
                     </v-list-item-content>
                   </template>
                   <v-list-item-content>
-                    <v-list-item-title>
+                    <v-list-item-title class="wrap-text">
                       <table class="consulta mx-5">
                         <tr v-if="item.codigo">
                           <td style="width:20%;">
@@ -107,6 +107,14 @@
                             {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
                           </td>
                         </tr>
+                        <tr v-if="item.notasPCA">
+                          <td style="width:20%;">
+                            <div class="info-label">
+                              Notas do PCA
+                            </div>
+                          </td>
+                          <td style="width:80%;">{{ item.notasPCA }}</td>
+                        </tr>
                         <tr v-if="item.destino">
                           <td style="width:20%;">
                             <div class="info-label">Destino Final</div>
@@ -120,6 +128,23 @@
                           <td v-else style="width:80%;">
                             {{ item.destino }}
                           </td>
+                        </tr>
+                        <tr v-if="item.notaDF">
+                          <td style="width:20%;">
+                            <div class="info-label">
+                              Nota do DF
+                            </div>
+                          </td>
+                          <td style="width:80%;">{{ item.notaDF }}</td>
+                        </tr>
+                        
+                        <tr v-if="item.destino=='CP' && item.justificaDF">
+                          <td style="width:20%;">
+                            <div class="info-label">
+                              Justificação do DF
+                            </div>
+                          </td>
+                          <td style="width:80%;"><span v-for="(just,index) in item.justificaDF" :key="index">{{ just }}</span></td>
                         </tr>
                         <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
                           <td style="width:20%;">
@@ -308,5 +333,10 @@ li .panel-body li {
 
 .is-collapsed li:nth-child(n + 5) {
   display: none;
+}
+
+.wrap-text {
+  -webkit-line-clamp: unset !important;
+  white-space: normal;
 }
 </style>

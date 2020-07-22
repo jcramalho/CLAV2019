@@ -29,7 +29,7 @@
         </v-list-item-content>
       </template>
       <v-list-item-content>
-        <v-list-item-title>
+        <v-list-item-title class="wrap-text">
           <v-row v-if="item.codigo">
             <v-col cols="3">
               <div class="info-label">Código da classe</div>
@@ -171,6 +171,27 @@
             </v-col>
             <v-col class="mt-2">{{ item.uiOutros }}</v-col>
           </v-row>
+          <v-row style="margin:0px !important;">
+            <v-checkbox dense v-if="item.notasPCA" v-model="item.validaNotaPCA">
+              <template v-slot:label>
+                <span  style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a condição do PCA <b>"{{item.notasPCA}}"</b></span>
+              </template>
+            </v-checkbox>
+          </v-row>
+          <v-row style="margin:0px !important;">
+            <v-checkbox dense v-if="item.notaDF" v-model="item.validaNotaDF">
+              <template v-slot:label>
+                <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a condição do DF <b>"{{item.notaDF}}"</b></span>
+              </template>
+            </v-checkbox>
+          </v-row>
+          <v-row style="margin:0px !important;" v-for="(just,index) in item.justificaDF" :key="index" >
+            <v-checkbox dense v-if="(tipo=='TS_LC' || tipo=='PGD_LC') && item.destino=='CP'" v-model="item.validaJustificaDF">
+              <template v-slot:label>
+                <div style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem as condição de justificação do DF <b>"{{just}}"</b></div>
+              </template>
+            </v-checkbox>
+          </v-row>
         <div class="ma-1">
           <v-row justify="space-between" class="info-label">
             <v-col>Lista de Agregações</v-col>
@@ -287,4 +308,10 @@ li .panel-body li {
 .is-collapsed li:nth-child(n + 5) {
   display: none;
 }
+
+.wrap-text {
+  -webkit-line-clamp: unset !important;
+  white-space: normal;
+}
+
 </style>

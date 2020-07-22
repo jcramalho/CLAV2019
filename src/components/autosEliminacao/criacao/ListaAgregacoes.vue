@@ -212,11 +212,11 @@ export default {
     deleteDialog: false,
     deleteObj: null,
     cabecalho: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" },
-      { text: "Título", align: "left", value: "titulo" },
-      { text: "Data de Contagem", align: "center", value: "dataContagem" },
-      { text: "Natureza de Intervenção", align: "center", value: "ni" },
-      { text: "Ações", align: "center", sortable: false, value: "action" }
+      { text: "Código", align: "left", sortable: false, value: "codigo" , width: "20%"},
+      { text: "Título", align: "left", value: "titulo", width: "30%" },
+      { text: "Data de Contagem", align: "center", value: "dataContagem" , width: "15%"},
+      { text: "Natureza de Intervenção", align: "center", value: "ni", width: "20%" },
+      { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
     ],
     footer_props: {
       "items-per-page-text": "Mostrar"

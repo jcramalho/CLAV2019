@@ -407,6 +407,28 @@ export default {
           })
           this.errosVal.numErros++
         }
+        if(zc.notasPCA && !zc.validaNotaPCA) {
+          this.errosVal.erros.push({
+            sobre: "Notas do PCA",
+            mensagem: "É necessária confirmação de cumprimento da nota do PCA \""+zc.notasPCA+"\""
+          })
+          this.errosVal.numErros++;
+        } 
+        if(zc.notaDF && !zc.validaNotaDF) {
+          this.errosVal.erros.push({
+            sobre: "Nota do DF",
+            mensagem: "É necessária confirmação de cumprimento da nota do DF \""+zc.notaDF+"\""
+          })
+          this.errosVal.numErros++;
+        } 
+        if((this.tipo=="TS_LC" || this.tipo=="PGD_LC") && zc.destino=="CP" && !zc.validaJustificaDF) {
+          for(var just of zc.justificaDF)
+            this.errosVal.erros.push({
+              sobre: "Notas do PCA",
+              mensagem: "É necessária confirmação de cumprimento da justificação do DF \""+just+"\"\n"
+            })
+            this.errosVal.numErros++;
+        } 
         if(!zc.destino || zc.destino=="") {
           this.errosVal.erros.push({
             sobre: "Destino Final",
@@ -525,8 +547,16 @@ export default {
                   this.auto.referencial = "lc1"
 
                   delete zc["referencia"];
+                  
                   zc.titulo = classe.titulo;
                   zc.prazoConservacao = classe.pca.valores;
+                  zc.notasPCA = classe.pca.notas;
+                  zc.notaDF = classe.df.nota;
+                  if(classe.df.justificacao)
+                    zc.justificaDF = classe.df.justificacao.map(just => {return just.conteudo})
+                  zc.validaNotaDF = false;
+                  zc.validaNotaPCA = false;
+                  zc.validaJustificaDF = false;
                   if(classe.df.valor == "E")
                     zc.destino = "Eliminação";
                   else if(classe.df.valor == "C")
@@ -574,15 +604,22 @@ export default {
                         +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                     return;
                   }
-
+                  
                   zc.idClasse = classe.classe;
                   zc.titulo = classe.titulo;
-                  zc.prazoConservacao = classe.pca;
-                  if(classe.df == "E")
+                  zc.prazoConservacao = classe.pca.valores;
+                  zc.notasPCA = classe.pca.notas;
+                  zc.notaDF = classe.df.nota;
+                  if(classe.df.justificacao)
+                    zc.justificaDF = classe.df.justificacao.map(just => {return just.conteudo})
+                  zc.validaNotaDF = false;
+                  zc.validaNotaPCA = false;
+                  zc.validaJustificaDF = false;
+                  if(classe.df.valor == "E")
                     zc.destino = "Eliminação";
-                  else if(classe.df == "C")
+                  else if(classe.df.valor == "C")
                     zc.destino = "Conservação";
-                  else zc.destino = classe.df;
+                  else zc.destino = classe.df.valor;
                 })
               }
               if (this.flagAE) this.erroDialog = true;
@@ -698,7 +735,17 @@ export default {
             "get",
             "/pgd/pgd_lc_"+leg[0].id
           )
-        this.classes = response2.data
+        this.classes = response2.data.filter(c=> c.nivel>2).map(c => {
+            return {
+              idClasse: c.classe,
+              nivel: c.nivel,
+              codigo: c.codigo,
+              referencia: c.referencia,
+              titulo: c.titulo,
+              df: {valor: c.df, nota: c.notaDF},
+              pca: {valores: c.pca, notas: c.notaPCA},
+            }
+        })
       }
       else this.classes = [];
 

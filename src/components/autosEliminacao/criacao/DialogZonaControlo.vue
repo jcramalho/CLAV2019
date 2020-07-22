@@ -148,6 +148,13 @@
           </template>
         </v-checkbox>
       </v-row>
+      <v-row style="margin:0px !important;" v-for="(just,index) in justificaDF" :key="index" >
+        <v-checkbox dense v-if="(tipo=='TS_LC' || tipo=='PGD_LC') && df=='CP'" v-model="validaJustificaDF">
+          <template v-slot:label>
+            <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem as condição de justificação do DF <b>"{{just}}"</b></span>
+          </template>
+        </v-checkbox>
+      </v-row>
       <v-row justify="end">
         <v-btn class="mx-1" color="indigo darken-4" dark @click="closeZC">Voltar</v-btn>
         <v-btn
@@ -215,6 +222,8 @@ export default {
     df: "",
     notaDF: "",
     validaNotaDF: false,
+    justificaDF: "",
+    validaJustificaDF: false,
     prazo: "",
     notasPCA: "",
     validaNotaPCA: false,
@@ -233,7 +242,7 @@ export default {
       
         if(this.zona.destino=="C") this.df = "Conservação"
         else if(this.zona.destino=="E") this.df = "Eliminação"
-        else this.df = "Conservação Parcial"
+        else this.df = this.zona.destino
         this.prazo = this.zona.prazoConservacao;
         this.notasPCA = this.zona.notasPCA;
         this.ni = this.zona.ni;
@@ -255,7 +264,7 @@ export default {
 
       if(this.zona.destino=="C") this.df = "Conservação"
       else if(this.zona.destino=="E") this.df = "Eliminação"
-      else this.df = "Conservação Parcial"
+      else this.df = this.zona.destino
       if(this.zona.prazoConservacao=="1") this.prazo = this.zona.prazoConservacao + " Ano"
       else this.prazo = this.zona.prazoConservacao + " Anos"
       this.notasPCA = this.zona.notasPCA;
@@ -282,6 +291,7 @@ export default {
         else this.prazo = (c[0].pca.valores || "") + " Anos";
         if(c[0].pca.notas) this.notasPCA = c[0].pca.notas
         if(c[0].df.nota) this.notaDF = c[0].df.nota
+        if((this.tipo=="TS_LC" || this.tipo=="PGD_LC") && c[0].df.valor=="CP" && c[0].df.justificacao) this.justificaDF = c[0].df.justificacao.map(just => {return just.conteudo})
         if (c[0].df.valor === "C") {
           this.df = "Conservação";
           this.ni = "Participante";
@@ -303,6 +313,8 @@ export default {
       this.dono = "";
       this.notaDF = "";
       this.validaNotaDF = false;
+      this.justificaDF = "";
+      this.validaJustificaDF = false;
       this.dataInicio = "";
       this.dataFim = "";
       this.uiPapel = "";
@@ -339,10 +351,15 @@ export default {
         this.erro = "Não é permitido eliminar documentação com mais de 100 anos, por favor verifique a Data de Início";
         this.erroDialog = true;
       } else if(this.notasPCA && !this.validaNotaPCA) {
-        this.erro = "É necessária confirmação de cumprimento da nota do PCA \""+this.notasPCA+"\""
+        this.erro = "É necessária confirmação de cumprimento da nota do PCA <b>\""+this.notasPCA+"\"</b>"
         this.erroDialog = true;
       } else if(this.notaDF && !this.validaNotaDF) {
-        this.erro = "É necessária confirmação de cumprimento da nota do DF \""+this.notaDF+"\""
+        this.erro = "É necessária confirmação de cumprimento da nota do DF <b>\""+this.notaDF+"\"</b>"
+        this.erroDialog = true;
+      } else if((this.tipo=="TS_LC" || this.tipo=="PGD_LC") && this.df=="CP" && !this.validaJustificaDF) {
+        this.erro = ""
+        for(var just of this.justificaDF)
+          this.erro += "<p>É necessária confirmação de cumprimento da justificação do DF <b>\""+just+"\"</b></p>\n"
         this.erroDialog = true;
       } else if(dataInicio > date.getFullYear() - parseInt(this.prazo)) {
         this.erro = "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
@@ -478,10 +495,15 @@ export default {
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup;
       } else if(this.notasPCA && !this.validaNotaPCA) {
-        this.erro = "É necessária confirmação de cumprimento da nota do PCA \""+this.notasPCA+"\""
+        this.erro = "É necessária confirmação de cumprimento da nota do PCA <b>\""+this.notasPCA+"\"</b>"
         this.erroDialog = true;
       } else if(this.notaDF && !this.validaNotaDF) {
-        this.erro = "É necessária confirmação de cumprimento da nota do DF \""+this.notaDF+"\""
+        this.erro = "É necessária confirmação de cumprimento da nota do DF <b>\""+this.notaDF+"\"</b>"
+        this.erroDialog = true;
+      } else if((this.tipo=="TS_LC" || this.tipo=="PGD_LC") && this.df=="CP" && !this.validaJustificaDF) {
+        this.erro = ""
+        for(var just of this.justificaDF)
+          this.erro += "<p>É necessária confirmação de cumprimento da justificação do DF <b>\""+just+"\"</b></p>\n"
         this.erroDialog = true;
       } else if(parseInt(this.dataInicio) > date.getFullYear() - parseInt(this.prazo)) {
         this.erro = "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
