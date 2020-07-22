@@ -99,9 +99,18 @@
                     </v-chip>
 
                     <ul v-else class="ma-0">
-                      <li v-for="dado in item.colunaA.dados" :key="dado.sigla">
-                        {{ dado.sigla }}
-                      </li>
+                      <span
+                        v-for="dado in item.colunaA.dados"
+                        :key="dado.sigla"
+                      >
+                        <li v-if="dado.sigla">
+                          {{ dado.sigla }}
+                        </li>
+
+                        <li v-else>
+                          {{ dado.codigo }}
+                        </li>
+                      </span>
                     </ul>
                   </v-alert>
 
@@ -151,9 +160,18 @@
                     </v-chip>
 
                     <ul v-else class="ma-0">
-                      <li v-for="dado in item.colunaB.dados" :key="dado.sigla">
-                        {{ dado.sigla }}
-                      </li>
+                      <span
+                        v-for="dado in item.colunaB.dados"
+                        :key="dado.sigla"
+                      >
+                        <li v-if="dado.sigla">
+                          {{ dado.sigla }}
+                        </li>
+
+                        <li v-else>
+                          {{ dado.codigo }}
+                        </li>
+                      </span>
                     </ul>
                   </v-alert>
 
@@ -330,7 +348,7 @@ export default {
       let campos = [];
 
       Object.keys(this.historico[indexA]).forEach((item) => {
-        if (item !== "estado") campos.push(item);
+        if (item !== "estado" && item !== "id") campos.push(item);
       });
 
       campos.forEach((campo) => {
