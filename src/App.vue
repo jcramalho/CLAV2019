@@ -30,6 +30,8 @@ import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 import Definicoes from "@/components/principal/Definicoes.vue";
 import Notificacoes from "@/components/principal/Notificacoes.vue";
+import io from "socket.io-client"
+const lhost = require("@/config/global").host;
 
 export default {
   name: "App",
@@ -40,6 +42,18 @@ export default {
     Notificacoes
   },
   watch: {
+    authenticated(val){
+      if(this.$store.state.token) {
+        var socket = io.connect('lhost');
+        socket.emit('email', {
+          email: this.$verifyTokenUser().email
+        });
+        socket.on(this.$verifyTokenUser().email, (data) => {
+          console.log(data)
+          this.notificacoes.push(JSON.parse(data))
+        })
+      } 
+    },
     async $route(to, from) {
       //verifica se o utilizador está autenticado
       if (this.$store.state.token != "") {
@@ -56,17 +70,6 @@ export default {
             to.matched.some(record => record.meta.levels.includes(this.level))
           ) {
             this.authenticated = true;
-            try {
-              /** fix with sockets */
-              let response = await this.$request(
-                "get",
-                "/notificacoes"
-              ); /** fix with sockets */
-              this.notificacoes = response.data; /** fix with sockets */
-            } catch (error) {
-              /** fix with sockets */
-              return error; /** fix with sockets */
-            } /** fix with sockets */
           } else {
             this.text = "Não tem permissões para aceder a esta página!";
             this.color = "error";
@@ -82,17 +85,6 @@ export default {
         }
       } else {
         this.authenticated = true;
-        try {
-          /** fix with sockets */
-          let response = await this.$request(
-            "get",
-            "/notificacoes"
-          ); /** fix with sockets */
-          this.notificacoes = response.data; /** fix with sockets */
-        } catch (error) {
-          /** fix with sockets */
-          return error; /** fix with sockets */
-        } /** fix with sockets */
       }
 
       if (this.$route.query.erro) {
@@ -110,7 +102,6 @@ export default {
       }
     }
   },
-
   methods: {
     fecharSnackbar() {
       this.snackbar = false;
@@ -149,6 +140,7 @@ export default {
     // drawE: false,
     drawN: false,
     snackbar: false,
+    notificacoes: [],
     authenticated: false,
     color: "",
     text: "",
