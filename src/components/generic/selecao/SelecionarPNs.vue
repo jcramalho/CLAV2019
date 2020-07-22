@@ -80,14 +80,14 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  padding: 5px;
-  font-weight: 400;
-  width: auto;
-  height: auto;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  color: #1a237e !important;
+  padding: 8px;
+  width: 100%;
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 </style>

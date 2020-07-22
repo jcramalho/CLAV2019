@@ -277,7 +277,7 @@ export default {
   props: ["p"],
 
   components: {
-    PO,
+    PO
   },
 
   data() {
@@ -288,11 +288,11 @@ export default {
         { text: "Código", align: "left", sortable: false, value: "codigo" },
         { text: "Título", align: "left", value: "titulo" },
         { text: "Data de Contagem", align: "center", value: "dataContagem" },
-        { text: "Natureza de Intervenção", align: "center", value: "ni" },
+        { text: "Natureza de Intervenção", align: "center", value: "ni" }
       ],
       footer_props: {
-        "items-per-page-text": "Mostrar",
-      },
+        "items-per-page-text": "Mostrar"
+      }
     };
   },
 
@@ -307,7 +307,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -317,7 +317,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -343,15 +343,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -361,23 +361,23 @@ export default {
     },
 
     verifica(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
       this.infoPedido[i].cor = "green lighten-3";
     },
 
     anula(obj) {
-      const i = this.infoPedido.findIndex((o) => o.campo == obj.campo);
+      const i = this.infoPedido.findIndex(o => o.campo == obj.campo);
       this.infoPedido[i].cor = "red lighten-3";
     },
 
     close() {
       this.dialogtipologias = false;
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
+<style scoped>
 .panel-custom .panel-heading {
   background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
 }
@@ -410,19 +410,22 @@ export default {
 }
 
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .panel-info-custom .panel-body {

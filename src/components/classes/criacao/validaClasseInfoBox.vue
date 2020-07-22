@@ -2,36 +2,49 @@
   <v-col>
     <!-- Infobox com os resultados da VALIDAÇÂO -->
     <v-btn
-      v-bind:disabled="c.codigo == ''"
-      dark
-      rounded
-      class="indigo darken-4"
       @click="validarClasse"
+      rounded
+      class="white--text"
+      :class="{
+        'px-8': $vuetify.breakpoint.lgAndUp,
+        'px-2': $vuetify.breakpoint.mdAndDown
+      }"
+      id="default-button"
     >
-      Validar classe
+      <unicon
+        name="validar-icon"
+        width="20"
+        height="20"
+        viewBox="0 0 20.709 20.696"
+        fill="#ffffff"
+      />
+      <p class="ml-2">Validar</p>
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
     <v-dialog v-model="dialog" width="80%">
-      <v-card>
-        <v-card-title class="headline">
+      <v-card dark class="info-card">
+        <v-card-title class="headline mb-4">
           Erros detetados na validação: {{ mensagensErro.length }}
         </v-card-title>
-        <v-card-text>
-          <v-row ma-2 v-for="(m, i) in mensagensErro" :key="i">
-            <v-col cols="4">
-              <div class="info-label">{{ m.sobre }}</div>
+        <v-card-text class="font-weight-medium">
+          <v-row v-for="(m, i) in mensagensErro" :key="i">
+            <v-col cols="3">
+              <div class="info-label px-3">{{ m.sobre }}</div>
             </v-col>
             <v-col>
-              <div class="info-content">{{ m.mensagem }}</div>
+              <div class="info-content px-3">{{ m.mensagem }}</div>
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
+          <v-spacer></v-spacer>
           <v-btn
-            class="red darken-4 white--text"
+            color="red darken-4"
             rounded
             dark
+            elevation="0"
+            class="px-4"
             @click="dialog = false"
           >
             Fechar
@@ -43,16 +56,21 @@
     <!-- Validação não detetou erros ........... -->
     <v-row justify-center>
       <v-dialog v-model="dialogSemErros" persistent max-width="60%">
-        <v-card>
-          <v-card-title class="headline">Validação sem erros</v-card-title>
-          <v-card-text>
-            <p>A informação introduzida não apresenta erros.</p>
-          </v-card-text>
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2">Validação sem erros</v-card-title>
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>A informação introduzida não apresenta erros.</p>
+            </v-card-text>
+          </div>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              class="green darken-1 white--text"
-              text
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
               @click="dialogSemErros = false"
             >
               Fechar
@@ -146,7 +164,7 @@ export default {
 
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
-    validaCodigo: async function(){
+    validaCodigo: async function() {
       // Codigo
       if (this.c.codigo) {
         if (this.c.nivel > 1) {
@@ -202,7 +220,7 @@ export default {
       }
     },
 
-    validaTitulo: async function(){
+    validaTitulo: async function() {
       // Título
       if (this.c.titulo == "") {
         this.mensagensErro.push({
@@ -233,12 +251,12 @@ export default {
       }
     },
 
-    validaMeta: async function(){
+    validaMeta: async function() {
       this.validaCodigo();
       this.validaTitulo();
     },
 
-    validaDescricao: function(){
+    validaDescricao: function() {
       // Descrição
       if (this.c.descricao == "") {
         this.mensagensErro.push({
@@ -249,7 +267,7 @@ export default {
       }
     },
 
-    validaNotasAp: async function(){
+    validaNotasAp: async function() {
       // Notas de Aplicação
       for (let i = 0; i < this.c.notasAp.length; i++) {
         try {
@@ -282,7 +300,7 @@ export default {
       }
     },
 
-    validaExemplosNotasAp: async function(){
+    validaExemplosNotasAp: async function() {
       // Exemplos de notas de Aplicação
       for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
@@ -318,7 +336,7 @@ export default {
       }
     },
 
-    validaNotasEx: async function(){
+    validaNotasEx: async function() {
       // Notas de Exclusão
       if (this.notaDuplicada(this.c.notasEx)) {
         this.mensagensErro.push({
@@ -329,7 +347,7 @@ export default {
       }
     },
 
-    validaTIs: async function(){
+    validaTIs: async function() {
       // Termos de Índice
       for (let i = 0; i < this.c.termosInd.length; i++) {
         try {
@@ -363,7 +381,7 @@ export default {
       }
     },
 
-    validaBlocoDescritivo: async function(){
+    validaBlocoDescritivo: async function() {
       this.validaDescricao();
       this.validaNotasAp();
       this.validaExemplosNotasAp();
@@ -371,18 +389,23 @@ export default {
       this.validaTIs();
     },
 
-    validaBlocoContexto: function(){
+    validaBlocoContexto: function() {
       // Um PN Transversal tem de ter 1 dono ou 1 participante
-      if((this.c.procTrans == "S")&&(this.c.donos.length==0)&&(this.c.participantes.length==0)){
+      if (
+        this.c.procTrans == "S" &&
+        this.c.donos.length == 0 &&
+        this.c.participantes.length == 0
+      ) {
         this.mensagensErro.push({
-            sobre: "Invariante da Transversalidade",
-            mensagem: "Um processo Transversal deve ter um dono ou um participante."
-          });
-          this.numeroErros++;
+          sobre: "Invariante da Transversalidade",
+          mensagem:
+            "Um processo Transversal deve ter um dono ou um participante."
+        });
+        this.numeroErros++;
       }
     },
 
-    validaDecisoesSemSub: async function(){
+    validaDecisoesSemSub: async function() {
       // Decisões
       // Sem subdivisão
       if (this.c.nivel == 3 && !this.c.temSubclasses4Nivel) {
@@ -432,14 +455,18 @@ export default {
       }
     },
 
-    validaDecisoesComSub: function(){
+    validaDecisoesComSub: function() {
       // Com subdivisão
       if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        
+
         for (let i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
-          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+          if (
+            this.c.subclasses.filter(
+              s => s.titulo == this.c.subclasses[i].titulo
+            ).length > 1
+          ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
               mensagem: "Está repetido noutra subclasse."
@@ -500,13 +527,13 @@ export default {
 
     validarClasse: async function() {
       var i = 0;
-    
+
       this.validaMeta();
       this.validaBlocoDescritivo();
       this.validaBlocoContexto();
       this.validaDecisoesSemSub();
       this.validaDecisoesComSub();
-      
+
       if (this.numeroErros > 0) {
         this.dialog = true;
       } else {
@@ -521,25 +548,25 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  color: #1a237e !important;
+  padding: 8px;
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
 }
-
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  color: #606060;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
 }
 </style>

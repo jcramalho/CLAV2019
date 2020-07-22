@@ -1,16 +1,30 @@
 <template>
   <div>
-    <v-row class="justify-start align-start">
+    <v-row
+      v-if="!o.objeto.codigo == ''"
+      class="align-center pa-3"
+      style="text-align:center;"
+    >
       <!-- Guardar trabalho......................... -->
       <v-col>
         <v-btn
-          dark
-          rounded
-          class="ma-2 indigo darken-4"
           @click="guardarTrabalho"
-          v-bind:disabled="o.objeto.codigo == ''"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="default-button"
         >
-          Guardar trabalho
+          <unicon
+            name="guardar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.71"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Guardar Trabalho</p>
         </v-btn>
       </v-col>
 
@@ -19,48 +33,76 @@
       <!-- Criar classe......................... -->
       <v-col>
         <v-btn
-          v-bind:disabled="o.objeto.codigo == ''"
-          dark
-          rounded
-          class="ma-2 indigo darken-4"
           @click="criarClasse"
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+outline: none !important;"
         >
-          Criar classe
+          <unicon
+            name="adicionar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.71"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Criar Classe</p>
         </v-btn>
       </v-col>
 
       <!-- Cancelar criação......................... -->
       <v-col>
         <v-btn
-          v-bind:disabled="o.objeto.codigo == ''"
-          dark
-          rounded
-          class="ma-2 red darken-4"
           @click="eliminarClasse"
+          color="red darken-4"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+outline: none !important;"
         >
-          Cancelar criação
+          <unicon
+            name="remove-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Cancelar Criação</p>
         </v-btn>
       </v-col>
     </v-row>
-
     <!-- Erros de Validação .................................... -->
     <v-row justify-center>
       <v-dialog v-model="errosValidacao" width="60%">
-        <v-card>
-          <v-card-title class="headline">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2">
             Erros detetados na validação
           </v-card-title>
-          <v-card-text>
-            <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
-            </p>
-          </v-card-text>
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Há erros de validação. Selecione "Validar" para ver exatamente
+                quais e proceder à sua correção.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
+            <v-spacer></v-spacer>
             <v-btn
               color="red darken-4"
-              round
+              rounded
               dark
+              elevation="0"
+              class="px-4"
               @click="errosValidacao = false"
             >
               Fechar
@@ -73,22 +115,27 @@
     <!-- Trabalho pendente guardado com sucesso ........... -->
     <v-row justify-center>
       <v-dialog v-model="pendenteGuardado" persistent max-width="60%">
-        <v-card>
-          <v-card-title class="headline">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-4">
             Trabalho pendente guardado
           </v-card-title>
-          <v-card-text>
-            <p>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
-            </p>
-            <p>{{ pendenteGuardadoInfo }}</p>
-          </v-card-text>
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Os seus dados foram guardados para que possa retomar o trabalho
+                mais tarde.
+              </p>
+              <p>{{ pendenteGuardadoInfo }}</p>
+            </v-card-text>
+          </div>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              color="green darken-1"
-              text
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
               @click="criacaoPendenteTerminada"
             >
               Fechar
@@ -101,14 +148,25 @@
     <!-- Pedido de criação de classe submetido com sucesso ........... -->
     <v-row justify-center>
       <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
-        <v-card>
-          <v-card-title class="headline">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-4">
             Pedido de Criação de Classe Submetido
           </v-card-title>
-          <v-card-text>{{ mensagemPedidoCriadoOK }}</v-card-text>
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">{{
+              mensagemPedidoCriadoOK
+            }}</v-card-text>
+          </div>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="criacaoClasseTerminada">
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="criacaoClasseTerminada"
+            >
               Fechar
             </v-btn>
           </v-card-actions>
@@ -119,23 +177,40 @@
     <!-- Cancelamento da criação duma classe: confirmação ........... -->
     <v-row justify-center>
       <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
-        <v-card>
-          <v-card-title class="headline">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-4">
             Cancelamento e eliminação do pedido de criação de classe
           </v-card-title>
-          <v-card-text>
-            <p>Selecionou o cancelamento da criação da classe.</p>
-            <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
-          </v-card-text>
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>Selecionou o cancelamento da criação da classe.</p>
+              <p>Toda a informação introduzida será eliminada.</p>
+              <p>
+                Confirme a decisão para ser reencaminhado para a página
+                principal.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="cancelarCriacaoClasse">
+            <v-btn
+              color="success darken-1"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="cancelarCriacaoClasse"
+            >
               Confirmo
             </v-btn>
-            <v-btn color="red darken-1" text @click="pedidoEliminado = false">
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="pedidoEliminado = false"
+            >
               Enganei-me, desejo continuar o trabalho
             </v-btn>
           </v-card-actions>
@@ -151,7 +226,15 @@
         :top="true"
       >
         {{ loginErrorMessage }}
-        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+        <v-btn icon color="white" @click="loginErrorSnackbar = false">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
       </v-snackbar>
     </v-row>
   </div>
@@ -189,8 +272,8 @@ export default {
     };
   },
 
-  created: function(){
-      this.c = this.o.objeto;
+  created: function() {
+    this.c = this.o.objeto;
   },
 
   watch: {
@@ -587,10 +670,14 @@ export default {
       // Com subdivisão
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        
+
         for (i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
-          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+          if (
+            this.c.subclasses.filter(
+              s => s.titulo == this.c.subclasses[i].titulo
+            ).length > 1
+          ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
               mensagem: "Está repetido noutra subclasse."
@@ -661,7 +748,7 @@ export default {
     },
 
     criacaoClasseTerminada: function() {
-      this.$router.push("/");
+      this.$router.push("/lcinfo");
     },
 
     // Cancela a criação da classe
@@ -670,30 +757,14 @@ export default {
     },
 
     cancelarCriacaoClasse: function() {
-      this.$router.push("/");
+      this.$router.push("/lcinfo");
     }
   }
 };
 </script>
-<style>
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+<style scoped>
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
 }
 </style>

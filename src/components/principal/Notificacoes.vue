@@ -5,13 +5,14 @@
     right
     absolute
     height="80%"
+    style="position:fixed; top:38px;"
   >
     <v-toolbar
       :color="panelHeaderColor"
       dark
-      class="d-flex justify-center pt-1"
+      class="d-flex justify-center pt-4 mt-12"
     >
-      <v-toolbar-title class="font-weight-medium " id="drawer-title">
+      <v-toolbar-title class="font-weight-medium" id="drawer-title">
         Notificações
       </v-toolbar-title>
     </v-toolbar>

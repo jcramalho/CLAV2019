@@ -4,28 +4,29 @@
       Tabela de Seleção Pluriorganizacional
     </v-card-title>
     <v-card-text>
-        <v-row v-if="p.objeto.dados.ts.entidades">
-            <v-col xs="2" sm="2">
-                <div class="info-label">
-                        Entidades
-                </div>
-            </v-col>
-            <v-col>
-                <span>
-                  <v-chip
-                    v-for="(e,i) in p.objeto.dados.ts.entidades" :key="i"
-                    class="ma-2"
-                    color="indigo darken-4"
-                    outlined
-                    label
-                  >
-                    <v-icon left>account_balance</v-icon>
-                    {{ e.searchField }}
-                  </v-chip>
-                </span>
-            </v-col>
-        </v-row>
-        
+      <v-row v-if="p.objeto.dados.ts.entidades">
+        <v-col xs="2" sm="2">
+          <div class="info-label">
+            Entidades
+          </div>
+        </v-col>
+        <v-col>
+          <span>
+            <v-chip
+              v-for="(e, i) in p.objeto.dados.ts.entidades"
+              :key="i"
+              class="ma-2"
+              color="indigo darken-4"
+              outlined
+              label
+            >
+              <v-icon left>account_balance</v-icon>
+              {{ e.searchField }}
+            </v-chip>
+          </span>
+        </v-col>
+      </v-row>
+
       <v-data-table
         :headers="tsHeaders"
         :items="p.objeto.dados.ts.processos"
@@ -48,36 +49,36 @@
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
-                <span v-if="props.item.entidades.length > 0">
-                    <span v-for="(e,i) in props.item.entidades" :key="i">
-                        <v-chip
-                            v-if="e.dono"
-                            class="ml-1"
-                            color="indigo darken-4"
-                            outlined
-                            label
-                            x-small
-                        >
-                            {{ e.sigla }}
-                        </v-chip>
-                    </span>
+              <span v-if="props.item.entidades.length > 0">
+                <span v-for="(e, i) in props.item.entidades" :key="i">
+                  <v-chip
+                    v-if="e.dono"
+                    class="ml-1"
+                    color="indigo darken-4"
+                    outlined
+                    label
+                    x-small
+                  >
+                    {{ e.sigla }}
+                  </v-chip>
                 </span>
+              </span>
             </td>
             <td>
-                <span v-if="props.item.entidades.length > 0">
-                    <span v-for="(e,i) in props.item.entidades" :key="i">
-                        <v-chip
-                            v-if="e.participante"
-                            class="ml-1"
-                            color="indigo darken-4"
-                            outlined
-                            label
-                            x-small
-                        >
-                            {{ e.sigla }}-{{ e.participante }}
-                        </v-chip>
-                    </span>
+              <span v-if="props.item.entidades.length > 0">
+                <span v-for="(e, i) in props.item.entidades" :key="i">
+                  <v-chip
+                    v-if="e.participante"
+                    class="ml-1"
+                    color="indigo darken-4"
+                    outlined
+                    label
+                    x-small
+                  >
+                    {{ e.sigla }}-{{ e.participante }}
+                  </v-chip>
                 </span>
+              </span>
             </td>
           </tr>
         </template>
@@ -126,8 +127,9 @@ export default {
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

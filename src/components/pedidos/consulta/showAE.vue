@@ -1,5 +1,5 @@
 <template>
-<v-card class="my-2 panel panel-default panel-custom">
+  <v-card class="my-2 panel panel-default panel-custom">
     <v-card-title class="pa-2 indigo darken-4 title white--text" dark>
       {{ p.objeto.acao }} do Auto de Eliminação
     </v-card-title>
@@ -27,13 +27,18 @@
             <td style="width:20%;">
               <div class="info-label">Fundo:</div>
             </td>
-            <td style="width:80%;"><li v-for="(f,i) in p.objeto.dados.ae.fundo" :key="i">{{f}}</li></td>
+            <td style="width:80%;">
+              <li v-for="(f, i) in p.objeto.dados.ae.fundo" :key="i">
+                {{ f }}
+              </li>
+            </td>
           </tr>
         </table>
 
         <v-expansion-panels popout>
           <v-expansion-panel class="ma-1">
-            <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
+            <v-expansion-panel-header
+              class="pa-2 indigo darken-4 title white--text"
               >Classes</v-expansion-panel-header
             >
             <v-expansion-panel-content>
@@ -99,7 +104,9 @@
                         </tr>
                         <tr v-if="item.prazoConservacao">
                           <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa:</div>
+                            <div class="info-label">
+                              Prazo de Conservação Administrativa:
+                            </div>
                           </td>
                           <td style="width:80%;">
                             {{ item.prazoConservacao }} Anos
@@ -112,7 +119,10 @@
                           <td v-if="item.destino === 'E'" style="width:80%;">
                             Eliminação
                           </td>
-                          <td v-else-if="item.destino === 'C'" style="width:80%;">
+                          <td
+                            v-else-if="item.destino === 'C'"
+                            style="width:80%;"
+                          >
                             Conservação
                           </td>
                           <td v-else style="width:80%;">
@@ -131,7 +141,11 @@
                           <td style="width:20%;">
                             <div class="info-label">Dono do PN:</div>
                           </td>
-                          <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
+                          <td style="width:80%;">
+                            <li v-for="(d, i) in item.dono" :key="i">
+                              {{ d }}
+                            </li>
+                          </td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
@@ -153,7 +167,9 @@
                               N.º de agregações:
                             </div>
                           </td>
-                          <td style="width:80%;">{{ item.agregacoes.length }}</td>
+                          <td style="width:80%;">
+                            {{ item.agregacoes.length }}
+                          </td>
                         </tr>
                         <tr v-if="item.uiPapel">
                           <td style="width:20%;">
@@ -180,6 +196,7 @@
                           <td style="width:80%;">{{ item.uiOutros }}</td>
                         </tr>
                       </table>
+
                       <div class="ma-1">
                         <v-row justify="space-between" class="info-label">
                           <v-col>Lista de Agregações</v-col>
@@ -305,7 +322,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .panel-custom .panel-heading {
   background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
 }
@@ -338,21 +355,23 @@ export default {
 }
 
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
-
 .panel-info-custom .panel-body {
   font-size: 1pc;
   font-family: "Times New Roman", Times, serif;

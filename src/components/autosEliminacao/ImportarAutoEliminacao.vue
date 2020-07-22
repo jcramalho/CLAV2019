@@ -1,178 +1,198 @@
 <template>
   <div>
-        <v-card class="ma-4">
-          <v-app-bar color="expansion-panel-heading" dark>
-            <v-toolbar-title class="card-heading">
-              Importar Auto de Eliminação
-            </v-toolbar-title>
-          </v-app-bar>
-          <v-card-text class="panel-body">
-            <div class="ma-3">
-              A Plataforma CLAV permite a submissão de Autos de Eliminação (AE) através da
-              importação de ficheiros. Para tal são disponibilizados dois tipos de formulários que
-              devem ser preenchidos previamente offline:
+    <v-card class="ma-4">
+      <v-app-bar color="expansion-panel-heading" dark>
+        <v-toolbar-title class="card-heading">
+          Importar Auto de Eliminação
+        </v-toolbar-title>
+      </v-app-bar>
+      <v-card-text class="panel-body">
+        <div class="ma-3">
+          A Plataforma CLAV permite a submissão de Autos de Eliminação (AE)
+          através da importação de ficheiros. Para tal são disponibilizados dois
+          tipos de formulários que devem ser preenchidos previamente offline:
 
-              <li>Um formulário para as séries (veja <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download>aqui</a>)</li>
-              <li>um formulário para as agregações simples / unidades de instalação (veja <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download>aqui</a>)</li>
+          <li>
+            Um formulário para as séries (veja
+            <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download
+              >aqui</a
+            >)
+          </li>
+          <li>
+            um formulário para as agregações simples / unidades de instalação
+            (veja
+            <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download
+              >aqui</a
+            >)
+          </li>
 
-              <p>
-                Consulte
-                <a
-                  :href="
-                    `${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`
-                  "
-                >
-                  aqui
-                </a>
-                as instruções de preenchimento.
-              </p>
-            </div>
-            <v-row>
-              <v-col :md="3">
-                <div class="info-label">Fonte de legitimação<InfoBox
-                        header="Fonte de Legitimação"
-                        :text="myhelp.AutoEliminacao.Campos.FonteLegitimacao"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      /></div>
-              </v-col>
-              <v-col>
-                <v-radio-group row v-model="tipo" :mandatory="true">
-                      <v-radio value="PGD_LC">
-                        <template v-slot:label>
-                          <div class="mt-2">
-                            PGD/LC
-                            <InfoBox
-                              header="Fonte de Legitimação - PGD/LC"
-                              :text="myhelp.AutoEliminacao.Campos.PGD_LC"
-                              helpColor="indigo darken-4"
-                              dialogColor="#E0F2F1"
-                            />
-                          </div>
-                        </template>
-                      </v-radio>
-                      <v-radio value="PGD">
-                        <template v-slot:label>
-                          <div class="mt-2">
-                            PGD
-                            <InfoBox
-                              header="Fonte de Legitimação - PGD"
-                              :text="myhelp.AutoEliminacao.Campos.PGD"
-                              helpColor="indigo darken-4"
-                              dialogColor="#E0F2F1"
-                            />
-                          </div>
-                        </template>
-                      </v-radio>
-                      <v-radio value="RADA">
-                        <template v-slot:label>
-                          <div class="mt-2">
-                            RADA
-                            <InfoBox
-                              header="Fonte de Legitimação - RADA"
-                              :text="myhelp.AutoEliminacao.Campos.RADA"
-                              helpColor="indigo darken-4"
-                              dialogColor="#E0F2F1"
-                            />
-                          </div>
-                        </template>
-                      </v-radio>
-                    </v-radio-group>
-                    <div v-if="tipo=='PGD_LC'">
-                      <v-autocomplete
-                        label="Selecione a fonte de legitimação"
-                        :items="portariaLC"
-                        v-model="auto.legislacao"
-                        solo
-                        dense
-                      ></v-autocomplete>
-                    </div>
-                    <div v-else-if="tipo=='PGD'">
-                      <v-autocomplete
-                        label="Selecione a fonte de legitimação"
-                        :items="portaria"
-                        v-model="auto.legislacao"
-                        solo
-                        dense
-                      ></v-autocomplete>
-                    </div>
-                    <div v-else>
-                      <v-text-field v-model="auto.legislacao" solo dense label="Indique a fonte de legitimação"></v-text-field>
-                    </div>
-                    <div style="width:100%">
-                      Para submeter um auto de eliminação, selecione os ficheiros
-                      que preencheu e guardou previamente.
-                    </div>
-                    <div>
-                      Em seguida, para concluir, execute o comando
-                      <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
-                    </div>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col :md="3">
-                <div class="info-label">Fundo</div>
-              </v-col>
-              <v-col class="mt-2">
-                <v-autocomplete
-                        label="Selecione a entidade responsável pelo fundo"
-                        :items="entidades"
-                        v-model="auto.fundo"
-                        solo
-                        dense
-                        chips
-                        multiple
-                      ></v-autocomplete>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col :md="3">
-                    <div class="info-label">Ficheiro série</div>
-              </v-col>
-              <v-col class="mt-2">
-                      <input
-                        type="file"
-                        id="fileSerie"
-                        ref="myFiles"
-                        @change="previewFileSerie"
-                      />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col :md="3">
-                    <div class="info-label">Ficheiro Agregações / Unidades de instalação</div>
-                  </v-col>
-              <v-col class="mt-2">
-                      <input
-                        type="file"
-                        id="fileAgreg"
-                        ref="myFiles"
-                        @change="previewFileAgreg"
-                      />
-              </v-col>
-            </v-row>
-         </v-card-text>
-        </v-card>
-        <div style="text-align:center">
-          <v-btn
-            medium
-            color="primary"
-            @click="submit"
-            :disabled="!fileSerie || !fileAgreg || !auto.fundo || !auto.legislacao"
-            class="ma-2"
-          >
-            Submeter Auto de Eliminação
-          </v-btn>
-          <v-btn
-            medium
-            color="warning"
-            @click="validar"
-            :disabled="!fileSerie || !fileAgreg"
-            class="ma-2"
-          >
-            Validar Auto de Eliminação
-          </v-btn>
+          <p>
+            Consulte
+            <a
+              :href="
+                `${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`
+              "
+            >
+              aqui
+            </a>
+            as instruções de preenchimento.
+          </p>
         </div>
+        <v-row>
+          <v-col :md="3">
+            <div class="info-label">
+              Fonte de legitimação<InfoBox
+                header="Fonte de Legitimação"
+                :text="myhelp.AutoEliminacao.Campos.FonteLegitimacao"
+                helpColor="indigo darken-4"
+                dialogColor="#E0F2F1"
+              />
+            </div>
+          </v-col>
+          <v-col>
+            <v-radio-group row v-model="tipo" :mandatory="true">
+              <v-radio value="PGD_LC">
+                <template v-slot:label>
+                  <div class="mt-2">
+                    PGD/LC
+                    <InfoBox
+                      header="Fonte de Legitimação - PGD/LC"
+                      :text="myhelp.AutoEliminacao.Campos.PGD_LC"
+                      helpColor="indigo darken-4"
+                      dialogColor="#E0F2F1"
+                    />
+                  </div>
+                </template>
+              </v-radio>
+              <v-radio value="PGD">
+                <template v-slot:label>
+                  <div class="mt-2">
+                    PGD
+                    <InfoBox
+                      header="Fonte de Legitimação - PGD"
+                      :text="myhelp.AutoEliminacao.Campos.PGD"
+                      helpColor="indigo darken-4"
+                      dialogColor="#E0F2F1"
+                    />
+                  </div>
+                </template>
+              </v-radio>
+              <v-radio value="RADA">
+                <template v-slot:label>
+                  <div class="mt-2">
+                    RADA
+                    <InfoBox
+                      header="Fonte de Legitimação - RADA"
+                      :text="myhelp.AutoEliminacao.Campos.RADA"
+                      helpColor="indigo darken-4"
+                      dialogColor="#E0F2F1"
+                    />
+                  </div>
+                </template>
+              </v-radio>
+            </v-radio-group>
+            <div v-if="tipo == 'PGD_LC'">
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="portariaLC"
+                v-model="auto.legislacao"
+                solo
+                dense
+              ></v-autocomplete>
+            </div>
+            <div v-else-if="tipo == 'PGD'">
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="portaria"
+                v-model="auto.legislacao"
+                solo
+                dense
+              ></v-autocomplete>
+            </div>
+            <div v-else>
+              <v-text-field
+                v-model="auto.legislacao"
+                solo
+                dense
+                label="Indique a fonte de legitimação"
+              ></v-text-field>
+            </div>
+            <div style="width:100%">
+              Para submeter um auto de eliminação, selecione os ficheiros que
+              preencheu e guardou previamente.
+            </div>
+            <div>
+              Em seguida, para concluir, execute o comando
+              <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
+            </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :md="3">
+            <div class="info-label">Fundo</div>
+          </v-col>
+          <v-col class="mt-2">
+            <v-autocomplete
+              label="Selecione a entidade responsável pelo fundo"
+              :items="entidades"
+              v-model="auto.fundo"
+              solo
+              dense
+              chips
+              multiple
+            ></v-autocomplete>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :md="3">
+            <div class="info-label">Ficheiro série</div>
+          </v-col>
+          <v-col class="mt-2">
+            <input
+              type="file"
+              id="fileSerie"
+              ref="myFiles"
+              @change="previewFileSerie"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :md="3">
+            <div class="info-label">
+              Ficheiro Agregações / Unidades de instalação
+            </div>
+          </v-col>
+          <v-col class="mt-2">
+            <input
+              type="file"
+              id="fileAgreg"
+              ref="myFiles"
+              @change="previewFileAgreg"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+    <div style="text-align:center">
+      <v-btn
+        medium
+        color="primary"
+        @click="submit"
+        :disabled="!fileSerie || !fileAgreg || !auto.fundo || !auto.legislacao"
+        class="ma-2"
+      >
+        Submeter Auto de Eliminação
+      </v-btn>
+      <v-btn
+        medium
+        color="warning"
+        @click="validar"
+        :disabled="!fileSerie || !fileAgreg"
+        class="ma-2"
+      >
+        Validar Auto de Eliminação
+      </v-btn>
+    </div>
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
         <v-card-title class="teal darken-4 title white--text" dark>
@@ -195,7 +215,7 @@
             </v-col>
 
             <v-col class="info-content">
-              <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
+              <div v-for="(f, i) in auto.fundo" :key="i">{{ f }}</div>
             </v-col>
           </v-row>
           <v-row class="mt-2">
@@ -209,7 +229,9 @@
           </v-row>
           <v-row class="mt-2">
             <v-col cols="2">
-              <div class="info-label">Ficheiro Agregações / Unidades de Instalação</div>
+              <div class="info-label">
+                Ficheiro Agregações / Unidades de Instalação
+              </div>
             </v-col>
 
             <v-col class="info-content">
@@ -245,7 +267,7 @@
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="green darken-4" text @click="valDialog=false">
+          <v-btn color="green darken-4" text @click="valDialog = false">
             Fechar
           </v-btn>
         </v-card-actions>
@@ -254,7 +276,7 @@
     <v-dialog v-model="errosValDialog" width="700" persistent>
       <v-card outlined>
         <v-card-title class="title" dark>
-          Ficheiros anexo com {{errosVal.numErros}} erros
+          Ficheiros anexo com {{ errosVal.numErros }} erros
         </v-card-title>
 
         <v-card-text v-if="errosVal.erros">
@@ -265,13 +287,19 @@
             <v-col class="info-content">
               <div>{{ m.mensagem }}</div>
               <div></div>
-              <div v-if="m.linhasSerie && m.linhasSerie.length>0">Erro em ficheiro Classe / Série nas linhas: <span v-for="l in m.linhasSerie" :key="l">{{l}}; </span></div>
-              <div v-if="m.linhasUI && m.linhasUI.length>0">Erro em ficheiro Agregações / UI nas linhas: <span v-for="l in m.linhasUI" :key="l">{{l}}; </span></div>
+              <div v-if="m.linhasSerie && m.linhasSerie.length > 0">
+                Erro em ficheiro Classe / Série nas linhas:
+                <span v-for="l in m.linhasSerie" :key="l">{{ l }}; </span>
+              </div>
+              <div v-if="m.linhasUI && m.linhasUI.length > 0">
+                Erro em ficheiro Agregações / UI nas linhas:
+                <span v-for="l in m.linhasUI" :key="l">{{ l }}; </span>
+              </div>
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-text v-else>
-          <div>{{errosVal.msg}}</div>
+          <div>{{ errosVal.msg }}</div>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -314,7 +342,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["entidades","classes"],
+  props: ["entidades", "classes"],
   components: {
     InfoBox
   },
@@ -353,102 +381,106 @@ export default {
         .catch(err => {
           this.errosVal = err;
           this.errosValDialog = true;
-        })
+        });
     },
     submit: async function() {
       validador(this.fileSerie, this.fileAgreg, this.tipo)
-        .then(()=> {
+        .then(() => {
           conversor(this.fileSerie, this.fileAgreg, this.tipo)
-          .then(async res => {
-            const eliminacao = res.auto
-            eliminacao.fundo = this.auto.fundo
-            eliminacao.legislacao = this.auto.legislacao
-            if(this.tipo=="PGD_LC") {
-              //VERIFICA AS CLASSES DA LC
-              eliminacao.zonaControlo.forEach( zc => {
-                var classe = this.classes.find(elem => elem.codigo == zc.codigo) 
-                if(!classe) {
-                  this.flagAE = true;
-                  this.erro = "Codigo da classe <b>"+zc.codigo+"</b> não foi encontrado na Lista Consolidada"
-                  return; //ERROS
-                }
+            .then(async res => {
+              const eliminacao = res.auto;
+              eliminacao.fundo = this.auto.fundo;
+              eliminacao.legislacao = this.auto.legislacao;
+              if (this.tipo == "PGD_LC") {
+                //VERIFICA AS CLASSES DA LC
+                eliminacao.zonaControlo.forEach(zc => {
+                  var classe = this.classes.find(
+                    elem => elem.codigo == zc.codigo
+                  );
+                  if (!classe) {
+                    this.flagAE = true;
+                    this.erro =
+                      "Codigo da classe <b>" +
+                      zc.codigo +
+                      "</b> não foi encontrado na Lista Consolidada";
+                    return; //ERROS
+                  }
 
-                delete zc["referencia"]
-                zc.titulo = classe.titulo
-                zc.prazoConservacao = classe.pca.valores
-                zc.destino = classe.df.valor
-              })
-            }
-            if(this.flagAE) this.erroDialog = true
-            else {
-              var user = this.$verifyTokenUser();
-
-              eliminacao.responsavel = user.email;
-              eliminacao.entidade = user.entidade;
-
-              if(this.tipo == "PGD_LC") this.tipo = "PGD/LC"
-              this.tipo = "AE " + this.tipo
-
-              var pedidoParams = {
-                tipoPedido: "Importação",
-                tipoObjeto: this.tipo,
-                novoObjeto: {
-                  ae: eliminacao
-                },
-                user: { email: user.email },
-                entidade: user.entidade,
-                token: this.$store.state.token
+                  delete zc["referencia"];
+                  zc.titulo = classe.titulo;
+                  zc.prazoConservacao = classe.pca.valores;
+                  zc.destino = classe.df.valor;
+                });
               }
-              
-              const codigoPedido = await this.$request(
-                      "post",
-                      "/pedidos",
-                      pedidoParams
-                    );
+              if (this.flagAE) this.erroDialog = true;
+              else {
+                var user = this.$verifyTokenUser();
 
-              this.codigoPedido = codigoPedido.data;
+                eliminacao.responsavel = user.email;
+                eliminacao.entidade = user.entidade;
 
-              this.auto.legislacao = eliminacao.legislacao;
-              this.successDialog = true;
-            }
-          })
-          .catch(err => {
-            this.erro = err;
-            this.erroDialog = true;
-          });
+                if (this.tipo == "PGD_LC") this.tipo = "PGD/LC";
+                this.tipo = "AE " + this.tipo;
+
+                var pedidoParams = {
+                  tipoPedido: "Importação",
+                  tipoObjeto: this.tipo,
+                  novoObjeto: {
+                    ae: eliminacao
+                  },
+                  user: { email: user.email },
+                  entidade: user.entidade,
+                  token: this.$store.state.token
+                };
+
+                const codigoPedido = await this.$request(
+                  "post",
+                  "/pedidos",
+                  pedidoParams
+                );
+
+                this.codigoPedido = codigoPedido.data;
+
+                this.auto.legislacao = eliminacao.legislacao;
+                this.successDialog = true;
+              }
+            })
+            .catch(err => {
+              this.erro = err;
+              this.erroDialog = true;
+            });
         })
         .catch(err => {
           this.errosVal = err;
           this.errosValDialog = true;
-        })
+        });
     },
     previewFileSerie: function(ev) {
       const file = ev.target.files[0];
-      var fileName = file.name.split(".")
-      if(fileName[fileName.length-1] == "csv") {
+      var fileName = file.name.split(".");
+      if (fileName[fileName.length - 1] == "csv") {
         const reader = new FileReader();
         reader.onload = e => (this.fileSerie = e.target.result);
         reader.readAsArrayBuffer(file);
-      }
-      else {
-        ev.target.value = ""
-        this.erro = "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>"
+      } else {
+        ev.target.value = "";
+        this.erro =
+          "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>";
         this.erroDialog = true;
         this.fileSerie = null;
       }
-
     },
     previewFileAgreg: function(ev) {
       const file = ev.target.files[0];
-      var fileName = file.name.split(".")
-      if(fileName[fileName.length-1] == "csv") {
+      var fileName = file.name.split(".");
+      if (fileName[fileName.length - 1] == "csv") {
         const reader = new FileReader();
         reader.onload = e => (this.fileAgreg = e.target.result);
         reader.readAsArrayBuffer(file);
-      }
-      else {
-        ev.target.value = ""
-        this.erro = "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>"
+      } else {
+        ev.target.value = "";
+        this.erro =
+          "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>";
         this.erroDialog = true;
         this.fileAgreg = null;
       }
@@ -466,25 +498,25 @@ export default {
     }
   },
   created: async function() {
-    try{
-      var response = await this.$request("get","/legislacao?fonte=PGD/LC")
-      this.portariaLC = await this.prepararLeg(response.data)
-      var response2 = await this.$request("get","/legislacao?fonte=PGD")
-      this.portaria = await this.prepararLeg(response2.data)
+    try {
+      var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+      this.portariaLC = await this.prepararLeg(response.data);
+      var response2 = await this.$request("get", "/legislacao?fonte=PGD");
+      this.portaria = await this.prepararLeg(response2.data);
     } catch (e) {
       this.portariaLC = [];
       this.portaria = [];
     }
   },
   watch: {
-    'tipo': function () {
-      this.auto.legislacao = null
+    tipo: function() {
+      this.auto.legislacao = null;
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .consulta tr {
   vertical-align: top;
   border-bottom: 1px solid #ddd;
@@ -502,20 +534,22 @@ export default {
   padding-left: 15px;
 }
 .info-label {
-  color: #1a237e; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #dee2f8; /* green lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #696969;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .expansion-panel-heading {
@@ -531,9 +565,10 @@ export default {
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {

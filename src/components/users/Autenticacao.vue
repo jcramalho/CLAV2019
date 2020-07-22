@@ -1,137 +1,118 @@
 <template>
-  <v-row class="ma-8">
-    <v-col cols="6">
-      <v-card>
-        <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>
-          Como proceder à autenticação?
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Na plataforma CLAV é possível proceder à autenticação através das
-            seguintes formas:
-          </p>
-          <ul>
-            <li>
-              Cartão de Cidadão.
-            </li>
-            <li>
-              Chave Móvel Digital.
-            </li>
-            <li>
-              Email pessoal institucional e respetiva senha de acesso.
-            </li>
-          </ul>
-          <p>
-            Para tal, basta escolher o método de autenticação pretendido,
-            através do botão de login correspondente.
-          </p>
-        </v-card-text>
-      </v-card>
-    </v-col>
-    <v-col cols="6">
-      <v-card>
-        <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>
-          Autenticação
-        </v-card-title>
-        <v-card-text>
-          <p>
-            De modo a aceder à plataforma CLAV, por favor escolha um dos
-            seguintes métodos de autenticação.
-          </p>
-        </v-card-text>
-        <v-card-actions>
-          <v-row>
-            <v-col cols="12" class="d-flex flex-row-reverse">
-              <form
-                action="https://preprod.autenticacao.gov.pt/fa/Default.aspx"
-                action_comment="https://autenticacao.gov.pt/fa/Default.aspx"
-                method="POST"
-              >
-                <input
-                  type="hidden"
-                  name="SAMLRequest"
-                  v-bind:value="createSAML('CC')"
-                />
-                <v-btn color="primary" type="submit">Cartão de Cidadão</v-btn>
-              </form>
-            </v-col>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+    class="mb-n5"
+  >
+    <v-container fluid class="pa-0 ma-auto">
+      <v-row style="min-height: 400px;">
+        <v-card flat style="border-radius: 10px !important; width:100%;">
+          <v-tabs-items v-model="active_tab">
+            <v-tab-item v-for="item in tab_items" :key="item.id">
+              <v-row>
+                <v-col class="pt-0">
+                  <p
+                    class="content-title-1 py-5"
+                    style="color: #4da0d0 !important;  text-align:center;"
+                  >
+                    {{ item.tab }}
+                  </p>
+                  <v-card-text class="px-12 content-text">
+                    <p v-if="item.texto1">{{ item.texto1 }}</p>
+                    <div v-if="item.item_ul" class="pt-5">
+                      <ul v-for="i_ul in item.item_ul" :key="i_ul.elemento">
+                        <li>{{ i_ul.elemento }}</li>
+                      </ul>
+                    </div>
 
-            <v-col cols="12" class="d-flex flex-row-reverse">
-              <form
-                action="https://preprod.autenticacao.gov.pt/fa/Default.aspx"
-                action_comment="https://autenticacao.gov.pt/fa/Default.aspx"
-                method="POST"
-              >
-                <input
-                  type="hidden"
-                  name="SAMLRequest"
-                  v-bind:value="createSAML('CMD')"
-                />
-                <v-btn color="primary" type="submit">Chave Móvel Digital</v-btn>
-              </form>
-            </v-col>
-
-            <v-col class="d-flex flex-row-reverse">
-              <v-btn color="primary" type="submit" @click="loginEmail">
-                Email pessoal institucional
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-card-actions>
-      </v-card>
-      <v-card>
-        <!--<v-card-actions>
-      <v-flex>
-        É a primeira vez que utiliza estes serviços?
-      </v-flex>
-      <v-flex class="text-xs-right">
-        <v-btn color="primary" type="submit" @click="registarUtilizador">Registar</v-btn>
-      </v-flex>
-      </v-card-actions>-->
-        <v-card-text>
-          Esqueceu a sua password?
-        </v-card-text>
-        <v-card-actions>
-          <v-flex class="d-flex flex-row-reverse">
-            <v-btn color="primary" type="submit" @click="recuperarPw">
-              Recuperar
-            </v-btn>
-          </v-flex>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-
-    <v-col cols="6">
-      <v-card>
-        <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>
-          Registo de chaves API
-        </v-card-title>
-        <v-card-text>
-          <p>É um fornecedor de serviços? Registe aqui a sua chave API</p>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" type="submit" @click="registarApi">
-            Registar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    <v-col cols="6">
-      <v-card>
-        <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>
-          Renovação de chaves API
-        </v-card-title>
-        <v-card-text>
-          <p>A sua chave API expirou? Peça aqui a renovação da sua chave API</p>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" type="submit" @click="renovarApi">
-            Renovar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+                    <v-row
+                      v-if="item.botoes"
+                      class="align-center pa-3 mt-8"
+                      style="text-align:center;"
+                    >
+                      <v-col
+                        v-for="botao in item.botoes"
+                        :key="botao.descricao"
+                      >
+                        <v-btn
+                          v-if="!botao.form_action"
+                          type="submit"
+                          @click="HandleFunctionCall(botao.click_event)"
+                          rounded
+                          class="white--text"
+                          :class="{
+                            'px-8': $vuetify.breakpoint.lgAndUp,
+                            'px-2': $vuetify.breakpoint.mdAndDown
+                          }"
+                          id="default-button"
+                        >
+                          <unicon
+                            :name="botao.icon.nome"
+                            width="20"
+                            height="20"
+                            :viewBox="botao.icon.viewbox"
+                            fill="#ffffff"
+                          />
+                          <p class="ml-2">{{ botao.descricao }}</p>
+                        </v-btn>
+                        <form
+                          v-else
+                          :action="botao.form_action"
+                          :action_comment="botao.form_action_comment"
+                          method="POST"
+                        >
+                          <input
+                            type="hidden"
+                            name="SAMLRequest"
+                            v-bind:value="createSAML(botao.saml_type)"
+                          />
+                          <v-btn
+                            type="submit"
+                            rounded
+                            class="white--text"
+                            :class="{
+                              'px-8': $vuetify.breakpoint.lgAndUp,
+                              'px-2': $vuetify.breakpoint.mdAndDown
+                            }"
+                            id="default-button"
+                          >
+                            <unicon
+                              :name="botao.icon.nome"
+                              width="20"
+                              height="20"
+                              :viewBox="botao.icon.viewbox"
+                              fill="#ffffff"
+                            />
+                            <p class="ml-2">{{ botao.descricao }}</p>
+                          </v-btn>
+                        </form>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-col>
+              </v-row>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-card>
+      </v-row>
+      <v-row color="#f3f7fc">
+        <hr style="border-top: 2px solid #d8d8d8; width: 100%;" class="mx-7" />
+        <v-tabs
+          v-model="active_tab"
+          grow
+          show-arrows
+          background-color="#f3f7fc"
+        >
+          <v-tabs-slider color="blue darken-3"></v-tabs-slider>
+          <v-tab v-for="item in tab_items" :key="item.id">
+            {{ item.tab }}
+          </v-tab>
+        </v-tabs>
+      </v-row>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
@@ -146,7 +127,102 @@ import X509Certificate from "!raw-loader!./../../certificates/x509_certificate.c
 
 export default {
   name: "autenticacao",
+  data() {
+    return {
+      active_tab: 1,
+      tab_items: [
+        {
+          id: 0,
+          tab: "Como proceder à autenticação?",
+          texto1:
+            "Na plataforma CLAV é possível proceder à autenticação através de um dos seguintes métodos, mediante o botão de login correspondente na aba “Autenticação”:",
+          item_ul: [
+            { elemento: "Cartão de Cidadão;" },
+            { elemento: "Chave Móvel Digital;" },
+            {
+              elemento:
+                "Email pessoal institucional e respetiva senha de acesso."
+            }
+          ]
+        },
+        {
+          id: 1,
+          tab: "Autenticação",
+          texto1:
+            "De modo a aceder à plataforma CLAV, por favor escolha um dos seguintes métodos de autenticação:",
+          botoes: [
+            {
+              descricao: "Cartão de Cidadão",
+              form_action:
+                "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
+              form_action_comment:
+                "https://autenticacao.gov.pt/fa/Default.aspx",
+              saml_type: "CC",
+              icon: {
+                nome: "cc-icon",
+                viewbox: "0 0 20.71 15.532"
+              }
+            },
+            {
+              descricao: "Chave Móvel Digital",
+              form_action:
+                "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
+              form_action_comment:
+                "https://autenticacao.gov.pt/fa/Default.aspx",
+              saml_type: "CMD",
+              icon: {
+                nome: "cmd-icon",
+                viewbox: "0 0 20.711 22.947"
+              }
+            },
+            {
+              descricao: "Email Pessoal Institucional",
+              icon: {
+                nome: "email-icon",
+                viewbox: "0 0 20.71 20.005"
+              },
+              click_event: "loginEmail"
+            }
+          ]
+        },
+        {
+          id: 2,
+          tab: "Registo de chaves API",
+          texto1: "É um fornecedor de serviços? Registe aqui a sua chave API",
+          botoes: [
+            {
+              descricao: "Registar",
+              icon: {
+                nome: "api-icon",
+                viewbox: "0 0 20.71 20.71"
+              },
+              click_event: "registarApi"
+            }
+          ]
+        },
+        {
+          id: 3,
+          tab: "Renovação de chaves API",
+          texto1:
+            "A sua chave API expirou? Peça aqui a renovação da sua chave API",
+          botoes: [
+            {
+              descricao: "Renovar",
+              icon: {
+                nome: "renovar-api-icon",
+                viewbox: "0 0 20.71 20.404"
+              },
+              click_event: "renovarApi"
+            }
+          ]
+        }
+      ]
+    };
+  },
   methods: {
+    HandleFunctionCall(function_name) {
+      this[function_name]();
+    },
     registarUtilizador() {
       this.$router.push("/users/registo");
     },
@@ -175,7 +251,7 @@ export default {
             "@IssueInstant": new Date().toISOString(),
             "@Destination":
               "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
-              //Versão prod: "https://autenticacao.gov.pt/fa/Default.aspx",
+            //Versão prod: "https://autenticacao.gov.pt/fa/Default.aspx",
             "@ProtocolBinding":
               "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
             "@AssertionConsumerServiceURL": lhost + "/users/callback",
@@ -305,9 +381,28 @@ export default {
       if (type == "CC") xml = this.ccXML(uuid);
       else if (type == "CMD") xml = this.cmdXML(uuid);
       else throw "ERRO: tipo inválido";
-
       return btoa(this.stripExtension(this.buildSamlRequest(xml, uuid)));
     }
   }
 };
 </script>
+<style scoped>
+.v-tab {
+  text-transform: none !important;
+}
+ul li {
+  list-style: none;
+  color: #606060;
+  font-size: 0.9em;
+  margin-bottom: 1rem;
+  position: relative;
+}
+ul li::before {
+  content: "\2022";
+  position: absolute;
+  left: -1.8rem;
+  top: -0.3rem;
+  font-size: 4em;
+  color: #4da0d0;
+}
+</style>

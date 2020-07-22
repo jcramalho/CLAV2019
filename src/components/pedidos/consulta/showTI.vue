@@ -1,8 +1,8 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title
-      class="pa-2 indigo darken-4 title white--text"
-    >{{ p.objeto.acao }} do Termo de Índice</v-card-title>
+    <v-card-title class="pa-2 indigo darken-4 title white--text"
+      >{{ p.objeto.acao }} do Termo de Índice</v-card-title
+    >
     <v-card-text>
       <v-row v-for="t in legislacaoInfo" :key="t.campo">
         <v-col cols="2" v-if="t.conteudo != ''">
@@ -35,18 +35,21 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

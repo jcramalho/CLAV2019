@@ -4,7 +4,13 @@
       <v-subheader class="info-label">Tipologias selecionadas</v-subheader>
     </v-col>
     <v-col v-if="tipologias.length > 0">
-      <v-data-table :headers="headers" :items="tipologias" :items-per-page="100" class="elevation-1" hide-default-footer>
+      <v-data-table
+        :headers="headers"
+        :items="tipologias"
+        :items-per-page="100"
+        class="elevation-1"
+        hide-default-footer
+      >
         <template v-slot:headers="props">
           <tr>
             <th v-for="h in props.headers" :key="h.text">{{ h.text }}</th>
@@ -16,7 +22,13 @@
             <td>{{ props.item.sigla }}</td>
             <td>{{ props.item.designacao }}</td>
             <td>
-              <v-btn small color="red darken-2" dark rounded @click="unselectTipologia(props.item)">
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                rounded
+                @click="unselectTipologia(props.item)"
+              >
                 <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
@@ -25,7 +37,9 @@
       </v-data-table>
     </v-col>
     <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem tipologias selecionadas...</v-alert>
+      <v-alert :value="true" type="warning"
+        >Não tem tipologias selecionadas...</v-alert
+      >
     </v-col>
   </v-row>
 </template>
@@ -54,15 +68,14 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  padding: 5px;
-  font-weight: 400;
-  width: auto;
-  height: auto;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  color: #1a237e !important;
+  padding: 8px;
+  width: 100%;
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 </style>
-

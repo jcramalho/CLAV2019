@@ -26,7 +26,11 @@
                   </v-col>
 
                   <v-col>
-                    <v-text-field :rules="rule" v-model="numero" label="Número"></v-text-field>
+                    <v-text-field
+                      :rules="rule"
+                      v-model="numero"
+                      label="Número"
+                    ></v-text-field>
                   </v-col>
 
                   <v-col>
@@ -70,7 +74,11 @@
                 </v-row>
                 <v-row>
                   <v-col>
-                    <v-text-field :rules="rule" v-model="sumario" label="Sumário"></v-text-field>
+                    <v-text-field
+                      :rules="rule"
+                      v-model="sumario"
+                      label="Sumário"
+                    ></v-text-field>
                   </v-col>
 
                   <v-col>
@@ -79,17 +87,16 @@
                 </v-row>
                 <v-row v-if="!!alertOn">
                   <v-col>
-                    <v-alert dismissible dense text type="error">Legislação já existe!</v-alert>
+                    <v-alert dismissible dense text type="error"
+                      >Legislação já existe!</v-alert
+                    >
                   </v-col>
                 </v-row>
                 <v-row v-if="sucessOn">
                   <v-col>
-                    <v-alert
-                      dismissible
-                      dense
-                      text
-                      type="success"
-                    >Legislação adicionada com sucesso!</v-alert>
+                    <v-alert dismissible dense text type="success"
+                      >Legislação adicionada com sucesso!</v-alert
+                    >
                   </v-col>
                 </v-row>
               </v-form>
@@ -295,20 +302,22 @@ export default {
 </script>
 <style scoped>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {

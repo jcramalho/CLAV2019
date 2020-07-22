@@ -1,167 +1,276 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <!-- HEADER -->
-      <v-card>
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Criar Classe</v-toolbar-title>
-        </v-app-bar>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
+    <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+      <v-row>
+        <v-col class="pt-0">
+          <!-- HEADER -->
+          <v-card flat style="border-radius: 10px !important;">
+            <p
+              class="content-title-1 py-5"
+              style="color: #4da0d0 !important;  text-align:center;"
+            >
+              Criar Classe
+            </p>
 
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nível</div>
-            </v-col>
-            <v-col>
-              <v-radio-group v-model="classe.nivel" row>
-                <v-radio
-                  v-for="(n, i) in classeNiveis"
-                  :key="i"
-                  :label="n.label"
-                  :value="n.value"
-                  color="indigo darken-3"
-                ></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" lg="2">
+                  <div class="info-label">Nível</div>
+                </v-col>
+                <v-col cols="12" lg="10">
+                  <div
+                    class="info-content info-content pa-4 pb-4"
+                    style="min-height: 50px;"
+                  >
+                    <v-radio-group
+                      v-model="classe.nivel"
+                      row
+                      hide-details
+                      :class="{
+                        'px-0': $vuetify.breakpoint.smAndDown,
+                        'px-3': $vuetify.breakpoint.mdAndUp
+                      }"
+                      class="mt-1"
+                    >
+                      <v-radio
+                        v-for="(n, i) in classeNiveis"
+                        :key="i"
+                        :label="n.label"
+                        :value="n.value"
+                        color="blue"
+                        :class="{
+                          'mx-auto': $vuetify.breakpoint.smAndDown
+                        }"
+                      ></v-radio>
+                    </v-radio-group>
+                  </div>
+                </v-col>
+              </v-row>
 
-          <!-- CLASSE PAI -->
-          <v-row v-if="classe.nivel > 1">
-            <v-col cols="2">
-              <div class="info-label">
-                Classe Pai
-                <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
-              </div>
-            </v-col>
-            <v-col>
-              <v-select
-                item-text="label"
-                item-value="value"
-                v-model="classe.pai.codigo"
-                :items="classesPai"
-                label="Selecione uma classe de nível superior"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
+              <!-- CLASSE PAI -->
+              <v-row
+                v-if="classe.nivel > 1"
+                :class="{
+                  'mt-7': $vuetify.breakpoint.smAndDown,
+                  'mt-6': $vuetify.breakpoint.mdAndUp
+                }"
+              >
+                <v-col cols="12" lg="2">
+                  <div class="info-label">
+                    Classe Pai
+                    <InfoBox
+                      header="Classe Pai"
+                      :text="myhelp.Classe.Campos.Pai"
+                      helpColor="info"
+                    />
+                  </div>
+                </v-col>
+                <v-col cols="12" lg="10">
+                  <div
+                    class="info-content pa-4 px-5 pb-6"
+                    style="min-height: 50px;"
+                  >
+                    <v-select
+                      class="mt-n5 px-3"
+                      item-text="label"
+                      item-value="value"
+                      v-model="classe.pai.codigo"
+                      :items="classesPai"
+                      label="Selecione uma classe de nível superior"
+                      clearable
+                      hide-details
+                      single-line
+                    />
+                  </div>
+                </v-col>
+              </v-row>
 
-          <!-- CÓDIGO DA NOVA CLASSE -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
-            <v-col cols="2">
-              <div class="info-label">
-                Código
-                <InfoBox
-                  header="Código da Classe"
-                  :text="myhelp.Classe.Campos.Codigo"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="classe.codigo"
-                label="Código"
-                solo
-                clearable
-              ></v-text-field>
-              <span style="color: red">{{ mensValCodigo }}</span>
-            </v-col>
-          </v-row>
+              <!-- CÓDIGO DA NOVA CLASSE -->
+              <v-row
+                v-if="classe.nivel == 1 || classe.pai.codigo"
+                :class="{
+                  'mt-7': $vuetify.breakpoint.smAndDown,
+                  'mt-6': $vuetify.breakpoint.mdAndUp
+                }"
+              >
+                <v-col cols="12" lg="2">
+                  <div class="info-label">
+                    Código
+                    <InfoBox
+                      header="Código da Classe"
+                      :text="myhelp.Classe.Campos.Codigo"
+                      helpColor="info"
+                    />
+                  </div>
+                </v-col>
+                <v-col cols="12" lg="10">
+                  <div
+                    class="info-content pa-4 px-5 pb-0"
+                    style="min-height: 50px;"
+                  >
+                    <v-text-field
+                      class="mt-n3 px-3"
+                      v-model="classe.codigo"
+                      label="Código"
+                      text
+                      hide-details
+                      single-line
+                      clearable
+                      color="blue darken-3"
+                    ></v-text-field>
+                    <span style="color: red" class="px-3">{{
+                      mensValCodigo
+                    }}</span>
+                  </div>
+                </v-col>
+              </v-row>
 
-          <!-- TÍTULO -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
-            <v-col cols="2">
-              <div class="info-label">
-                Título
-                <InfoBox
-                  header="Título da Classe"
-                  :text="myhelp.Classe.Campos.Titulo"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="classe.titulo"
-                label="Título"
-                solo
-                clearable
-              ></v-text-field>
-            </v-col>
-          </v-row>
+              <!-- TÍTULO -->
+              <v-row
+                v-if="classe.nivel == 1 || classe.pai.codigo"
+                :class="{
+                  'mt-7': $vuetify.breakpoint.smAndDown,
+                  'mt-6': $vuetify.breakpoint.mdAndUp
+                }"
+              >
+                <v-col cols="12" lg="2">
+                  <div class="info-label">
+                    Título
+                    <InfoBox
+                      header="Título da Classe"
+                      :text="myhelp.Classe.Campos.Titulo"
+                      helpColor="info"
+                    />
+                  </div>
+                </v-col>
+                <v-col cols="12" lg="10">
+                  <div
+                    class="info-content pa-4 px-5 pb-6"
+                    style="min-height: 50px;"
+                  >
+                    <v-text-field
+                      class="mt-n4 px-3"
+                      v-model="classe.titulo"
+                      label="Título"
+                      text
+                      hide-details
+                      single-line
+                      clearable
+                      color="blue darken-3"
+                    ></v-text-field>
+                  </div>
+                </v-col>
+              </v-row>
 
-          <v-expansion-panels>
-            <!-- DESCRITIVO DA CLASSE -->
-            <BlocoDescritivo :c="classe" />
+              <v-expansion-panels flat class="mt-6">
+                <!-- DESCRITIVO DA CLASSE -->
+                <BlocoDescritivo :c="classe" class="mt-6" />
 
-            <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-            <BlocoContexto
-              :c="classe"
-              :semaforos="semaforos"
-              :donos="entidadesD"
-              :participantes="entidadesP"
-              :procRel="listaProcessos"
-              :legs="listaLegislacao"
-              v-if="classe.nivel == 3"
-            />
-
-            <!-- DECISÕES DE AVALIAÇÂO -->
-            <v-expansion-panel popout focusable v-if="classe.nivel == 3">
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Decisões de Avaliação
-                  <InfoBox header="Decisões de Avaliação" :text="myhelp.Classe.BlocoDecisoes"  helpColor="white"/>
-                </div>
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-
-              <v-expansion-panel-content>
-                <!-- HÁ SUBDIVISÃO? -->
-                <Subdivisao3Nivel :c="classe" />
-
-                <hr style="border: 3px solid #1A237E; border-radius: 2px;" />
-
-                <!-- DECISÃO SEM SUBDIVISÃO -->
-                <DecisaoSemSubPCA
+                <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+                <BlocoContexto
+                  class="mt-6"
                   :c="classe"
                   :semaforos="semaforos"
-                  :pcaFormasContagem="pcaFormasContagem"
-                  :pcaSubFormasContagem="pcaSubFormasContagem"
+                  :donos="entidadesD"
+                  :participantes="entidadesP"
+                  :procRel="listaProcessos"
+                  :legs="listaLegislacao"
+                  v-if="classe.nivel == 3"
                 />
 
-                <hr
-                  style="border-top: 3px dashed #1A237E; border-radius: 2px;"
+                <!-- DECISÕES DE AVALIAÇÂO -->
+                <v-expansion-panel v-if="classe.nivel == 3" popout class="mt-6">
+                  <v-expansion-panel-header
+                    style="outline: none;"
+                    :class="{
+                      'text-center': $vuetify.breakpoint.smAndDown,
+                      'text-left': $vuetify.breakpoint.mdAndUp
+                    }"
+                    class="pa-0"
+                  >
+                    <div
+                      :class="{
+                        'px-3': $vuetify.breakpoint.mdAndUp
+                      }"
+                      class="separador"
+                    >
+                      <unicon
+                        class="mt-3"
+                        name="decisao-icon"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20.71 23.668"
+                        fill="#ffffff"
+                      />
+                      <span class="ml-3 mr-1">Decisões de Avaliação</span>
+
+                      <InfoBox
+                        header="Decisões de Avaliação"
+                        :text="myhelp.Classe.BlocoDecisoes"
+                        helpColor="info"
+                      />
+                    </div>
+                  </v-expansion-panel-header>
+
+                  <v-expansion-panel-content id="expanded-content">
+                    <!-- HÁ SUBDIVISÃO? -->
+                    <Subdivisao3Nivel :c="classe" />
+
+                    <!--<hr style="border: 2px dashed #dee2f8;" /> -->
+
+                    <!-- DECISÃO SEM SUBDIVISÃO -->
+                    <DecisaoSemSubPCA
+                      :c="classe"
+                      :semaforos="semaforos"
+                      :pcaFormasContagem="pcaFormasContagem"
+                      :pcaSubFormasContagem="pcaSubFormasContagem"
+                    />
+
+                    <!--<hr style="border-top: 3px dashed #1A237E; border-radius: 2px;"/> -->
+
+                    <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
+
+                    <!-- DECISÃO COM SUBDIVISÃO -->
+                    <Subclasses4Nivel
+                      :c="classe"
+                      :semaforos="semaforos"
+                      :pcaFormasContagem="pcaFormasContagem"
+                      :pcaSubFormasContagem="pcaSubFormasContagem"
+                    />
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-card-text>
+
+            <v-snackbar
+              v-model="loginErrorSnackbar"
+              :timeout="8000"
+              color="error"
+              :top="true"
+            >
+              {{ loginErrorMessage }}
+              <v-btn icon color="white" @click="loginErrorSnackbar = false">
+                <unicon
+                  name="remove-icon"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 20.71 20.697"
+                  fill="#ffffff"
                 />
+              </v-btn>
+            </v-snackbar>
 
-                <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-
-            <!-- DECISÃO COM SUBDIVISÃO -->
-            <Subclasses4Nivel
-              :c="classe"
-              :semaforos="semaforos"
-              :pcaFormasContagem="pcaFormasContagem"
-              :pcaSubFormasContagem="pcaSubFormasContagem"
-            />
-          </v-expansion-panels>
-        </v-card-text>
-
-        <v-snackbar
-          v-model="loginErrorSnackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
-        >
-          {{ loginErrorMessage }}
-          <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
-      
-      <PainelOperacoes :c="classe" :pendenteId="''" />
-    </v-col>
-  </v-row>
+            <PainelOperacoes :c="classe" :pendenteId="''" />
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
@@ -908,49 +1017,42 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .separador {
-  color: white; 
-  padding: 5px;
+  color: white;
   font-weight: 400;
+  padding: 5px;
+  margin: 5px;
   width: 100%;
-  background-color: #1A237E; 
+  min-height: 55px;
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
   font-size: 14pt;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  border-radius: 10px 10px 0 0;
 }
-
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+#expanded-content {
+  margin-left: 5px;
+  margin-top: -1.1rem;
+  border: 1px solid #dee2f8;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
 }
 </style>

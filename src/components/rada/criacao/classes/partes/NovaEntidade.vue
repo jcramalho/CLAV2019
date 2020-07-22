@@ -15,12 +15,21 @@
               <v-form ref="form" :lazy-validation="false">
                 <v-row>
                   <v-col>
-                    <v-text-field :rules="siglaRules" v-model="sigla" label="Sigla"></v-text-field>
+                    <v-text-field
+                      :rules="siglaRules"
+                      v-model="sigla"
+                      label="Sigla"
+                    ></v-text-field>
                   </v-col>
 
                   <v-col>
                     <v-text-field
-                      :rules="[v => /^[0-9]*$/.test(v) || v == null || 'Apenas são aceites caracteres numéricos.']"
+                      :rules="[
+                        v =>
+                          /^[0-9]*$/.test(v) ||
+                          v == null ||
+                          'Apenas são aceites caracteres numéricos.'
+                      ]"
                       v-model="sioe"
                       label="SIOE"
                     ></v-text-field>
@@ -66,7 +75,11 @@
                 </v-row>
                 <v-row>
                   <v-col sm="8" md="8">
-                    <v-text-field :rules="designacaoRules" v-model="designacao" label="Designação"></v-text-field>
+                    <v-text-field
+                      :rules="designacaoRules"
+                      v-model="designacao"
+                      label="Designação"
+                    ></v-text-field>
                   </v-col>
                   <v-col sm="4" md="4">
                     <v-select
@@ -104,12 +117,16 @@
                 </v-row>
                 <v-row v-if="!!alertOn">
                   <v-col>
-                    <v-alert dismissible dense text type="error">Entidade já existe!</v-alert>
+                    <v-alert dismissible dense text type="error"
+                      >Entidade já existe!</v-alert
+                    >
                   </v-col>
                 </v-row>
                 <v-row v-if="sucessOn">
                   <v-col>
-                    <v-alert dismissible dense text type="success">Entidade adicionada com sucesso!</v-alert>
+                    <v-alert dismissible dense text type="success"
+                      >Entidade adicionada com sucesso!</v-alert
+                    >
                   </v-col>
                 </v-row>
                 <!-- <v-btn dark fab bottom left color="pink">
@@ -119,7 +136,15 @@
             </v-card-text>
             <v-card-text style="position: relative">
               <v-fab-transition>
-                <v-btn @click="newEntidade" color="indigo darken-2" dark absolute right bottom fab>
+                <v-btn
+                  @click="newEntidade"
+                  color="indigo darken-2"
+                  dark
+                  absolute
+                  right
+                  bottom
+                  fab
+                >
                   <v-icon>add</v-icon>
                 </v-btn>
               </v-fab-transition>
@@ -220,20 +245,22 @@ export default {
 </script>
 <style scoped>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {

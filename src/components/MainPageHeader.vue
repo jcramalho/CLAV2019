@@ -9,13 +9,13 @@
       class="white--text toolbar hidden-xs-only"
     >
       <v-toolbar-title
-        @click="goRoute('/', 'O que é')"
+        @click="goRoute('/')"
         style="cursor:pointer;"
         :class="{
           'toolbar-title-sm': $vuetify.breakpoint.smOnly
         }"
       >
-        <v-tooltip bottom color="success">
+        <v-tooltip bottom color="info">
           <template v-slot:activator="{ on }">
             <span
               v-on="on"
@@ -136,7 +136,7 @@
             <v-tab
               v-if="!tab.menu"
               :class="{ active: tab.titulo == tabAtiva }"
-              @click="goRoute(tab.url, tab.titulo)"
+              @click="goRoute(tab.url)"
               style="height: 49px;"
             >
               <p class="hidden-lg-and-up">{{ tab.titulo }}</p>
@@ -171,7 +171,7 @@
                 <v-list-item
                   v-for="menuLink in tab.menu"
                   :key="menuLink.opcao"
-                  @click="goRoute(menuLink.url, tab.titulo)"
+                  @click="goRoute(menuLink.url)"
                 >
                   <v-list-item-title class="text-wrap">{{
                     menuLink.opcao
@@ -197,7 +197,7 @@
       id="mobile-toolbar"
       class="hidden-sm-and-up toolbar white--text"
     >
-      <v-toolbar-title @click="goRoute('/', 'O que é')" style="cursor:pointer;">
+      <v-toolbar-title @click="goRoute('/')" style="cursor:pointer;">
         <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
         <p
           class="subtitle-letter-md font-weight-light d-inline text-wrap"
@@ -268,14 +268,14 @@
           <v-app-bar dark flat id="mobile-toolbar" class="toolbar">
             <v-toolbar-title
               v-if="this.$store.state.name == ''"
-              @click="goRoute('/', 'O que é')"
+              @click="goRoute('/')"
               style="cursor:pointer;"
             >
               <p class="title-letters-md font-weight-bold d-inline">CLAV</p>
             </v-toolbar-title>
             <v-toolbar-title
               v-if="this.$store.state.name != ''"
-              @click="goRoute('/', 'O que é')"
+              @click="goRoute('/')"
               style="cursor:pointer;"
             >
               <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
@@ -317,7 +317,7 @@
               <v-list-item
                 v-if="!tab.menu"
                 @click="
-                  goRoute(tab.url, tab.titulo);
+                  goRoute(tab.url);
                   dialog = false;
                 "
               >
@@ -352,7 +352,7 @@
                   v-for="menuLink in tab.menu"
                   :key="menuLink.opcao"
                   @click="
-                    goRoute(menuLink.url, tab.titulo);
+                    goRoute(menuLink.url);
                     dialog = false;
                   "
                 >
@@ -395,7 +395,6 @@ export default {
           level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
           url: "/"
         },
-        // ? Registo visivel so para sessao nao iniciada?
         {
           titulo: "Registo na Clav",
           icon: {
@@ -406,12 +405,12 @@ export default {
             {
               opcao: "Como registar-se na CLAV",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/comoreg"
+              url: "/registo"
             },
             {
               opcao: "Indicação de representante da entidade",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/indirepr"
+              url: "/indrepr"
             }
           ]
         },
@@ -432,7 +431,6 @@ export default {
               level: [1, 3, 3.5, 4, 5, 6, 7],
               url: "/pendentes"
             },
-            // ?
             {
               opcao: "Invariantes",
               level: [6, 7],
@@ -441,7 +439,7 @@ export default {
             {
               opcao: "Utilizadores",
               level: [5, 6, 7],
-              url: "/users"
+              url: "/usersInfo"
             },
             {
               opcao: "Vocabulários Controlados",
@@ -456,7 +454,7 @@ export default {
             {
               opcao: "Administração",
               level: [7],
-              url: "/gestao/home"
+              url: "/gestaoInfo"
             }
           ]
         },
@@ -477,11 +475,10 @@ export default {
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
               url: "/tsinfo"
             },
-            // ?
             {
               opcao: "Relatórios de Avaliação de Documentação Acumulada",
               level: [1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/radainfo"
+              url: "/rada/criar"
             },
             {
               opcao: "Autos de Eliminação",
@@ -513,7 +510,6 @@ export default {
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
               url: "/exportar"
             },
-            // ?
             {
               opcao: "API de dados",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
@@ -531,7 +527,7 @@ export default {
             {
               opcao: "Documentos Metodológicos",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "docsmetdl"
+              url: "/docsmetdl"
             },
             {
               opcao: "Manuais",
@@ -541,7 +537,7 @@ export default {
             {
               opcao: "Formulários e instruções para a CLAV",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/forminstrs"
+              url: "/forminstr"
             },
             {
               opcao: "Produção Técnica e Científica",
@@ -602,14 +598,17 @@ export default {
     //apenas atualiza o nível quando o valor do token muda
     async token(oldToken, newToken) {
       this.level = this.$userLevel();
+    },
+    "$route.meta.tabAtiva": function(newValue) {
+      this.tabAtiva = newValue;
     }
   },
   created: async function() {
     this.level = this.$userLevel();
+    this.tabAtiva = this.$route.meta.tabAtiva;
   },
   methods: {
-    goRoute: function(url, novaTab) {
-      this.tabAtiva = novaTab;
+    goRoute: function(url) {
       this.$router.push(url);
     },
     filtraTabs: function(navbar) {
@@ -767,7 +766,6 @@ export default {
 }
 .v-menu__content {
   text-align: center;
-  border-radius: 0px 0px 10px 10px !important;
   background-color: #09337f !important;
   max-width: 180px !important;
 }

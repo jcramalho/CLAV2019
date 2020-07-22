@@ -6,7 +6,13 @@
           <div class="info-label">Entidades Produtoras</div>
         </v-col>
         <v-col xs="12" sm="9">
-          <v-combobox v-model="classe.entProdutoras" :items="[]" readonly multiple chips></v-combobox>
+          <v-combobox
+            v-model="classe.entProdutoras"
+            :items="[]"
+            readonly
+            multiple
+            chips
+          ></v-combobox>
         </v-col>
       </v-row>
       <v-row v-else>
@@ -14,7 +20,13 @@
           <div class="info-label">Tipologias Produtoras</div>
         </v-col>
         <v-col xs="12" sm="9">
-          <v-combobox v-model="classe.tipologiasProdutoras" :items="[]" readonly multiple chips></v-combobox>
+          <v-combobox
+            v-model="classe.tipologiasProdutoras"
+            :items="[]"
+            readonly
+            multiple
+            chips
+          ></v-combobox>
         </v-col>
       </v-row>
       <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
@@ -49,13 +61,13 @@
           hide-default-footer
         >
           <template v-slot:item.relacao="props">
-            {{
-            props.item.relacao
-            }}
+            {{ props.item.relacao }}
           </template>
           <template v-slot:item.serieRelacionada="props">
             {{
-            props.item.serieRelacionada.codigo + " - " + props.item.serieRelacionada.titulo
+              props.item.serieRelacionada.codigo +
+                " - " +
+                props.item.serieRelacionada.titulo
             }}
           </template>
         </v-data-table>
@@ -65,7 +77,8 @@
           dense
           icon="warning"
           color="amber accent-3"
-        >Esta classe não possuí relações!</v-alert>
+          >Esta classe não possuí relações!</v-alert
+        >
       </v-col>
     </v-row>
   </div>
@@ -95,7 +108,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .table-header {
   color: #1a237e;
   font-weight: 400;

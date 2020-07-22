@@ -13,7 +13,7 @@
         :sort-desc="[true]"
       >
         <template v-slot:no-data>
-          <br/>
+          <br />
           <v-alert :value="true" color="error" icon="warning">
             Não foi possível apresentar uma lista dos trabalhos guardados...
           </v-alert>
@@ -32,7 +32,7 @@
             <td class="subheading">{{ props.item.acao }}</td>
             <td class="subheading">{{ props.item.tipo }}</td>
             <td class="subheading">
-              <PainelOperacoesPendentes 
+              <PainelOperacoesPendentes
                 @continuar="continuarTrabalho(props.item)"
                 @show="showPendente(props.item)"
                 @apagar="apagarTrabalho(props.item)"
@@ -49,18 +49,20 @@
     </v-card-text>
 
     <v-dialog v-model="pendenteRemovido" width="50%">
-        <v-card>
-          <v-card-title>Eliminação do trabalho</v-card-title>
-          <v-card-text>
-            <p>O seu pedido de eliminação foi processado com sucesso.</p>
-            <p>Toda a informação associada foi eliminada.</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn color="indigo darken-4" dark @click="pendenteRemovido = false">Fechar</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <v-card>
+        <v-card-title>Eliminação do trabalho</v-card-title>
+        <v-card-text>
+          <p>O seu pedido de eliminação foi processado com sucesso.</p>
+          <p>Toda a informação associada foi eliminada.</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="indigo darken-4" dark @click="pendenteRemovido = false"
+            >Fechar</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -145,20 +147,19 @@ export default {
       // Apagar da BD e apagar da lista carregada
       try {
         var response = await this.$request("delete", "/pendentes/" + item._id);
-        if(response.status == 200){
+        if (response.status == 200) {
           this.pendenteRemovido = true;
           var index = this.pendentes.findIndex(p => p._id === item._id);
           this.pendentes.splice(index, 1);
-        } 
-      } 
-      catch (e) {
+        }
+      } catch (e) {
         return e;
       }
     }
   }
 };
 </script>
-<style>
+<style scoped>
 .myPanelHeader {
   color: #304ffe;
 }
@@ -173,9 +174,10 @@ export default {
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {
