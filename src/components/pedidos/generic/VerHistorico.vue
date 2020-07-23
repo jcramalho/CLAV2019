@@ -75,6 +75,20 @@
                               Nenhuma entidade selecionada...
                             </v-alert>
                           </template>
+
+                          <template v-slot:item.sigla="{ item }">
+                            <v-badge
+                              v-if="novoItemAdicionado(item, campo)"
+                              right
+                              dot
+                              inline
+                              >{{ item.sigla }}</v-badge
+                            >
+
+                            <span v-else>
+                              {{ item.sigla }}
+                            </span>
+                          </template>
                         </v-data-table>
 
                         <v-data-table
@@ -94,6 +108,20 @@
                               Nenhuma tipologia selecionada...
                             </v-alert>
                           </template>
+
+                          <template v-slot:item.sigla="{ item }">
+                            <v-badge
+                              v-if="novoItemAdicionado(item, campo)"
+                              right
+                              dot
+                              inline
+                              >{{ item.sigla }}</v-badge
+                            >
+
+                            <span v-else>
+                              {{ item.sigla }}
+                            </span>
+                          </template>
                         </v-data-table>
 
                         <v-data-table
@@ -112,6 +140,20 @@
                             >
                               Nenhum processo selecionado...
                             </v-alert>
+                          </template>
+
+                          <template v-slot:item.codigo="{ item }">
+                            <v-badge
+                              v-if="novoItemAdicionado(item, campo)"
+                              right
+                              dot
+                              inline
+                              >{{ item.codigo }}</v-badge
+                            >
+
+                            <span v-else>
+                              {{ item.codigo }}
+                            </span>
                           </template>
                         </v-data-table>
 
@@ -217,7 +259,11 @@
 </template>
 
 <script>
-import { mapKeys, converterDadosOriginais } from "@/utils/utils";
+import {
+  mapKeys,
+  converterDadosOriginais,
+  identificaItemAdicionado,
+} from "@/utils/utils";
 import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 
 import VerHistoricoEmTabela from "@/components/pedidos/generic/VerHistoricoEmTabela";
@@ -230,6 +276,7 @@ export default {
   },
   data() {
     return {
+      identificarNovos: [],
       distribuicaoFormatada: [],
       dialogVerHistoricoEmTabela: false,
       dialogVerNota: {
@@ -305,6 +352,16 @@ export default {
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      if (this.onboarding === 0) return false;
+
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.dados[this.onboarding - 1]
+      );
+    },
+
     /**
      * Distribuição simples apenas com estados
      */

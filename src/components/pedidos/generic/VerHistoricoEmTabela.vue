@@ -165,11 +165,43 @@
                         :key="dado.sigla"
                       >
                         <li v-if="dado.sigla">
-                          {{ dado.sigla }}
+                          <v-badge
+                            v-if="
+                              novoItemAdicionado(
+                                dado.sigla,
+                                item.colunaA,
+                                'sigla'
+                              )
+                            "
+                            right
+                            dot
+                            inline
+                            >{{ dado.sigla }}</v-badge
+                          >
+
+                          <span v-else>
+                            {{ dado.sigla }}
+                          </span>
                         </li>
 
                         <li v-else>
-                          {{ dado.codigo }}
+                          <v-badge
+                            v-if="
+                              novoItemAdicionado(
+                                dado.codigo,
+                                item.colunaA,
+                                'codigo'
+                              )
+                            "
+                            right
+                            dot
+                            inline
+                            >{{ dado.codigo }}</v-badge
+                          >
+
+                          <span v-else>
+                            {{ dado.codigo }}
+                          </span>
                         </li>
                       </span>
                     </ul>
@@ -212,7 +244,7 @@
 </template>
 
 <script>
-import { mapKeys } from "@/utils/utils";
+import { mapKeys, identificaItemEmTabela } from "@/utils/utils";
 
 export default {
   props: ["historico", "distribuicao", "tipoPedido"],
@@ -235,6 +267,9 @@ export default {
   },
 
   methods: {
+    novoItemAdicionado(item, lista, siglaOuCodigo) {
+      return identificaItemEmTabela(item, lista, siglaOuCodigo);
+    },
     cores(cor) {
       let retornaCor;
 

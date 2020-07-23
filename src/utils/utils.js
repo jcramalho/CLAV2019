@@ -271,6 +271,12 @@ export function identificaItemAdicionado(item, lista, historicoAnterior) {
   return false;
 }
 
+export function identificaItemEmTabela(item, listaA, siglaOuCodigo) {
+  return !listaA.dados.some((dado) => {
+    return dado[siglaOuCodigo] === item;
+  });
+}
+
 export default {
   filtraNivel,
   comparaSigla,
@@ -282,4 +288,5 @@ export default {
   converterDadosOriginais,
   extrairRemovidos,
   identificaItemAdicionado,
+  identificaItemEmTabela,
 };

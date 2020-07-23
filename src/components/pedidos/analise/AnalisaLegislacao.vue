@@ -53,7 +53,7 @@
                 <template v-slot:item.sigla="{ item }">
                   <v-badge
                     v-if="novoItemAdicionado(item, campo)"
-                    left
+                    right
                     dot
                     inline
                     >{{ item.sigla }}</v-badge
@@ -105,7 +105,7 @@
                 <template v-slot:item.codigo="{ item }">
                   <v-badge
                     v-if="novoItemAdicionado(item, campo)"
-                    left
+                    right
                     dot
                     inline
                     >{{ item.codigo }}</v-badge

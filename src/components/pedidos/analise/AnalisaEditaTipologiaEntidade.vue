@@ -51,21 +51,7 @@
                 <template v-slot:item.sigla="{ item }">
                   <v-badge
                     v-if="novoItemAdicionado(item, campo)"
-                    left
-                    dot
-                    inline
-                    >{{ item.sigla }}</v-badge
-                  >
-
-                  <span v-else>
-                    {{ item.sigla }}
-                  </span>
-                </template>
-
-                <template v-slot:item.sigla="{ item }">
-                  <v-badge
-                    v-if="novoItemAdicionado(item, campo)"
-                    left
+                    right
                     dot
                     inline
                     >{{ item.sigla }}</v-badge
