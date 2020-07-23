@@ -84,16 +84,7 @@
               <div class="info-label">Destino Final</div>
             </v-col>
             <v-col>
-              <v-select 
-                v-if="tipo=='RADA'" 
-                :items="df" 
-                v-model="item.destino" 
-                label="Eliminação / Conservação"
-                filled
-                dense
-                solo
-                ></v-select>
-              <span v-else>{{item.destino}}</span>
+              {{item.destino}}
             </v-col>
           </v-row>
           <div v-if="item.destino==='Conservação' || item.destino==='C'">

@@ -17,7 +17,7 @@
                 label
               >
                 <v-icon left>description</v-icon>
-                {{ auto.legislacao.split(" - ")[0] }}
+                <span v-if="auto.legislacao">{{ auto.legislacao.split(" - ")[0] }}</span>
               </v-chip>
             </span>
             <span v-if="steps > 1">
@@ -99,29 +99,30 @@
                   ></v-autocomplete>
                 </div>
                 <div v-else>
-
                   <v-row>
-                  <v-col cols="3">
-                    <v-switch class="ma-1" v-model="switchRada" :label="radaLabel"></v-switch>
-                  </v-col>
-                  <v-col>
-                    <v-autocomplete
-                      v-if="switchRada"
-                      label="Selecione a Tabela de Selação"
-                      :items="tsRada"
-                      v-model="auto.legislacao"
-                      solo
-                      dense
-                    ></v-autocomplete>
-                    <v-autocomplete
-                      v-else
-                      label="Selecione a fonte de legitimação"
-                      :items="portariaRada"
-                      v-model="auto.legislacao"
-                      solo
-                      dense
-                    ></v-autocomplete>
-                  </v-col>
+                    <v-col cols="3">
+                      <v-switch class="ma-1" v-model="switchRada" :label="radaLabel"></v-switch>
+                    </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        v-if="switchRada"
+                        label="Selecione a Tabela de Selação"
+                        :items="tsRada"
+                        item-text="titulo"
+                        return-object
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                      <v-autocomplete
+                        v-else
+                        label="Selecione a fonte de legitimação"
+                        :items="portariaRada"
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                    </v-col>
                   </v-row>
                 </div>
               </v-col>
@@ -410,10 +411,7 @@ export default {
       this.portariaRada = await this.prepararLeg(response3.data);
       this.tabelasSelecao.push("Lista Consolidada")
       var response4 = await this.$request("get","/rada");
-      this.tsRada = response4.data.map(ts => {
-        return "" + ts.titulo + " (" + ts.dataAprovacao + ")"
-      })
-      console.log(response4.data)
+      this.tsRada = response4.data
 
     } catch (e) {
       this.auto.fundo = [];
@@ -441,13 +439,19 @@ export default {
         if(this.tipo=="TS_LC") {
           delete this.auto["legislacao"]
           //Para já apenas LC
-          this.auto.referencial = "lc1"
+          this.auto.referencial = "Lista Consolidada#lc1"
+        }
+        if(this.tipo=="RADA" && this.switchRada) {
+          this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
+          delete this.auto["legislacao"]
+
         }
         var user = this.$verifyTokenUser();
 
         this.auto.responsavel = user.email;
         this.auto.entidade = user.entidade;
-
+        this.auto.tipo = this.tipo;
+        
         var pedidoParams = {
           tipoPedido: "Criação",
           tipoObjeto: "Auto de Eliminação",
@@ -628,7 +632,7 @@ export default {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
+          myPortarias.push(l.tipo + " " + l.numero + " - " + l.sumario);
         }
         return myPortarias;
       } catch (error) {
@@ -636,6 +640,10 @@ export default {
       }
     },
     filtrarDonos: async function() {
+      if(typeof this.auto.legislacao != "string") {
+        this.auto.referencial = this.auto.legislacao.codigo;
+        this.auto.legislacao = this.auto.legislacao.titulo;
+      }
       this.donos = this.entidades
 
       for(var f of this.auto.fundo) {
@@ -661,7 +669,7 @@ export default {
         );
         this.classes = await this.prepararClasses(this.classesCompletas);
       }
-      else if(this.tipo == "PGD" || this.tipo == "PGD_LC") {
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC" || (this.tipo=="RADA" && !this.switchRada)) {
         var response = await this.$request(
           "get",
           "/legislacao"
@@ -674,10 +682,15 @@ export default {
             "get",
             "/pgd/pgd_"+leg[0].id
           )
-        else 
+        else if(this.tipo=="PGD_LC")
           var response2 = await this.$request(
             "get",
             "/pgd/pgd_lc_"+leg[0].id
+          )
+        else 
+          var response2 = await this.$request(
+            "get",
+            "/pgd/rada/tsRada_"+leg[0].id
           )
         this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
             return {
@@ -698,6 +711,26 @@ export default {
             else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
         
+      } else if(this.tipo == "RADA" && this.switchRada) {
+        var response = await this.$request(
+          "get",
+          "/rada/"+this.auto.referencial
+        )
+        this.classesCompletas = response.data.tsRada.filter(c=> c.df && c.pca).map(c=> {
+          return {
+            idClasse: c.classes.split("#")[1],
+            codigo: c.codigo,
+            referencia: c.referencia,
+            titulo: c.titulo,
+            df: {valor: c.df.df, nota: c.df.notadf},
+            pca: {valores: c.pca.pca, notas: c.pca.notaPCA}
+          }
+        })
+        this.classes = this.classesCompletas.map(c => {
+          if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+          else if(c.codigo) return ""+c.codigo+" - "+c.titulo
+          else if(c.referencia) return ""+c.referencia+" - "+c.titulo
+        })
       }
       else {
         this.classes = [];

@@ -37,6 +37,7 @@
             <td style="width:80%;">
               {{auto.tipo+" - "}}
               <a v-if="auto.tipo=='PGD'" :href="'/pgd/pgd_' + auto.refLegislacao">{{ auto.legislacao }}</a>
+              <a v-else-if="auto.tipo=='RADA'" :href="'/pgd/tsRada_' + auto.refLegislacao">{{ auto.legislacao }}</a>
               <a v-else :href="'/legislacao/' + auto.refLegislacao">{{ auto.legislacao }}</a>
             </td>
           </tr>
@@ -45,7 +46,8 @@
               <div class="info-label">Referencial Classificativo</div>
             </td>
             <td style="width:80%;">
-              {{auto.referencialLabel}}
+              <span v-if="auto.referencialLabel">{{auto.referencialLabel}}</span>
+              <span v-else>{{auto.referencialTitulo}}</span>
             </td>
           </tr>
           <tr>

@@ -27,7 +27,7 @@
         ]">Referencial Classificativo</div>
       </v-col>
       <v-col class="mt-3">
-        Lista Consolidada
+        {{dados.referencial.split('#')[0]}}
       </v-col>
       <v-col cols="1">
         <v-icon color="green" @click="novoHistorico.referencial.cor='verde'">check</v-icon>
@@ -536,7 +536,7 @@ export default {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
+          myPortarias.push(l.tipo + " " + l.numero + " - " + l.sumario);
         }
         return myPortarias;
       } catch (error) {
