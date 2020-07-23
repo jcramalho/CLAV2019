@@ -253,6 +253,24 @@ export function extrairRemovidos(objetoAnterior, objetoAtual, lista) {
   return removidos;
 }
 
+export function identificaItemAdicionado(item, lista, historicoAnterior) {
+  if (lista === "entidadesSel") {
+    return !historicoAnterior.entidadesSel.dados.some((ent) => {
+      return ent.sigla === item.sigla;
+    });
+  } else if (lista === "tipologiasSel") {
+    return !historicoAnterior.tipologiasSel.dados.some((tip) => {
+      return tip.sigla === item.sigla;
+    });
+  } else if (lista === "processosSel") {
+    return !historicoAnterior.processosSel.dados.some((proc) => {
+      return proc.codigo === item.codigo;
+    });
+  }
+
+  return false;
+}
+
 export default {
   filtraNivel,
   comparaSigla,
@@ -263,4 +281,5 @@ export default {
   criarHistorico,
   converterDadosOriginais,
   extrairRemovidos,
+  identificaItemAdicionado,
 };

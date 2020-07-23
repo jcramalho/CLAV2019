@@ -51,6 +51,20 @@
                   </v-alert>
                 </template>
 
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    left
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
+                </template>
+
                 <template v-slot:item.operacao="{ item }">
                   <v-icon color="red" @click="removeTipologia(item)">
                     delete
@@ -154,7 +168,7 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla, mapKeys } from "@/utils/utils";
+import { comparaSigla, mapKeys, identificaItemAdicionado } from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -255,6 +269,14 @@ export default {
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.historico[this.historico.length - 1]
+      );
+    },
+
     transformaKeys(key) {
       return mapKeys(key);
     },

@@ -163,7 +163,12 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla, mapKeys, extrairRemovidos } from "@/utils/utils";
+import {
+  comparaSigla,
+  mapKeys,
+  extrairRemovidos,
+  identificaItemAdicionado,
+} from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -273,15 +278,11 @@ export default {
 
   methods: {
     novoItemAdicionado(item, lista) {
-      const hist = this.historico[this.historico.length - 1];
-
-      if ((lista = "entidadesSel")) {
-        return !hist.entidadesSel.dados.some((ent) => {
-          return ent.sigla === item.sigla;
-        });
-      }
-
-      return false;
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.historico[this.historico.length - 1]
+      );
     },
 
     transformaKeys(key) {
