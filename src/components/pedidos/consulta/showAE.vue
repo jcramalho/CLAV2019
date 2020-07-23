@@ -11,7 +11,7 @@
               <div class="info-label">Entidade Responsável</div>
             </td>
             <td style="width:80%;" v-if="p.objeto.dados.entidade">
-              {{ p.objeto.dados.entidade }}
+              {{ p.objeto.dados.entidade.split("_")[1] }}
             </td>
             <td style="width:80%;" v-else>
               {{ p.entidade }}
@@ -27,7 +27,12 @@
             <td style="width:20%;">
               <div class="info-label">Referencial Classificativo</div>
             </td>
-            <td style="width:80%;">Lista Consolidada</td>
+            <td style="width:80%;">
+              <a v-if="p.objeto.dados.tipo=='RADA'" :href="'/rada/'+p.objeto.dados.referencial.split('#')[1]">
+                {{p.objeto.dados.referencial.split("#")[0]}}
+              </a>
+              <span v-else>{{p.objeto.dados.referencial.split("#")[0]}}</span>
+            </td>
           </tr>
           <tr>
             <td style="width:20%;">

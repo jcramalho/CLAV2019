@@ -27,7 +27,7 @@
         ]">Referencial Classificativo</div>
       </v-col>
       <v-col class="mt-3">
-        Lista Consolidada
+        {{dados.referencial.split('#')[0]}}
       </v-col>
       <v-col cols="1">
         <v-icon color="green" @click="novoHistorico.referencial.cor='verde'">check</v-icon>
@@ -590,7 +590,6 @@ export default {
 
     async finalizarPedido(dados) {
       try {
-        if(this.tipo!="AE RADA") {
           let pedido = JSON.parse(JSON.stringify(this.p));
 
           var numeroErros = 0;
@@ -632,14 +631,6 @@ export default {
             });
             this.sucessDialog = true;
           }
-        } else {
-          this.erroPedido = true;
-          
-          this.erros.push({
-            sobre: "RADA e PGD",
-            mensagem: "Importação de Autos Eliminação para RADA e PGD temporáriamente indisponivel",
-          });
-        }
       } catch (e) {
         this.erroPedido = true;
 
