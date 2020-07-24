@@ -48,6 +48,7 @@
             <v-col>
               <SelecionarData
                 :d="legislacao.data"
+                :label="'Data: AAAA-MM-DD'"
                 @dataSelecionada="legislacao.data = $event"
               />
             </v-col>
@@ -98,6 +99,21 @@
                 v-model="legislacao.diplomaFonte"
                 :items="diplomaFonteTipo"
                 dense
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">
+                Data de revogação
+              </div>
+            </v-col>
+            <v-col>
+              <SelecionarData
+                :d="legislacao.dataRevogacao"
+                :label="'Data: AAAA-MM-DD'"
+                @dataSelecionada="legislacao.dataRevogacao = $event"
               />
             </v-col>
           </v-row>
@@ -196,10 +212,11 @@ export default {
         data: "",
         link: "",
         diplomaFonte: "Não especificada",
+        codigo: "",
+        dataRevogacao: "",
+        estado: "Ativo",
         entidadesSel: [],
         processosSel: [],
-        codigo: "",
-        estado: "Ativo",
       },
 
       tiposDiploma: [],

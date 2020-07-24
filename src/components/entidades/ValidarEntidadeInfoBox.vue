@@ -149,25 +149,23 @@ export default {
         }
       }
 
-      // Data Criação
-      // if (this.e.dataCriacao === "" || this.e.dataCriacao === null || this.e.dataCriacao === undefined) {
-      //   this.mensagensErro.push({
-      //     sobre: "Data de Criação",
-      //     mensagem: "A data de criação não pode ser vazia."
-      //   });
-      //   this.numeroErros++;
-      // } else
+      // Datas
       if (
-        this.e.dataCriacao !== undefined &&
         this.e.dataCriacao !== "" &&
         this.e.dataCriacao !== null &&
-        !/[0-9]+-[0-9]+-[0-9]+/.test(this.e.dataCriacao)
+        this.e.dataCriacao !== undefined &&
+        this.e.dataExtincao !== "" &&
+        this.e.dataExtincao !== null &&
+        this.e.dataExtincao !== undefined
       ) {
-        this.mensagensErro.push({
-          sobre: "Data",
-          mensagem: "A data está no formato errado.",
-        });
-        numeroErros++;
+        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) {
+          this.mensagensErro.push({
+            sobre: "Datas",
+            mensagem:
+              "A data de extinção tem de ser superior à data de criação.",
+          });
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -228,16 +226,23 @@ export default {
           }
       }
 
-      // Data Criação
+      // Datas
       if (
+        dados.dataCriacao !== "" &&
+        dados.dataCriacao !== null &&
         dados.dataCriacao !== undefined &&
-        !/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataCriacao)
+        dados.dataExtincao !== "" &&
+        dados.dataExtincao !== null &&
+        dados.dataExtincao !== undefined
       ) {
-        this.mensagensErro.push({
-          sobre: "Data de Criação",
-          mensagem: "A data de criação está no formato errado.",
-        });
-        numeroErros++;
+        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+          this.mensagensErro.push({
+            sobre: "Datas",
+            mensagem:
+              "A data de extinção tem de ser superior à data de criação.",
+          });
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -246,7 +251,7 @@ export default {
     validarEntidadeExtincao(dados) {
       let numeroErros = 0;
 
-      // Data Extinção
+      // Datas
       if (
         dados.dataExtincao === "" ||
         dados.dataExtincao === null ||
@@ -257,12 +262,22 @@ export default {
           mensagem: "A data não pode ser vazia.",
         });
         numeroErros++;
-      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(dados.dataExtincao)) {
-        this.mensagensErro.push({
-          sobre: "Data de extinção",
-          mensagem: "A data está no formato errado.",
-        });
-        numeroErros++;
+      } else if (
+        dados.dataCriacao !== "" &&
+        dados.dataCriacao !== null &&
+        dados.dataCriacao !== undefined &&
+        dados.dataExtincao !== "" &&
+        dados.dataExtincao !== null &&
+        dados.dataExtincao !== undefined
+      ) {
+        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+          this.mensagensErro.push({
+            sobre: "Datas",
+            mensagem:
+              "A data de extinção tem de ser superior à data de criação.",
+          });
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -285,19 +300,19 @@ export default {
             ) {
               if (key !== "sigla") delete dataObj[key];
             }
-
-            if (key === "dataExtincao") delete dataObj[key];
           }
 
           erros = await this.validarEntidadeAlteracao(dataObj);
+
           break;
 
         case "Extinção":
+          erros = this.validarEntidadeExtincao(dataObj);
+
           for (const key in dataObj) {
             if (key !== "sigla" && key !== "dataExtincao") delete dataObj[key];
           }
 
-          erros = this.validarEntidadeExtincao(dataObj);
           break;
 
         default:

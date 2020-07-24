@@ -1,35 +1,30 @@
 <template>
-  <v-card class="mt-4">
-    <v-card-title class="info-label title" dark>
-      Tabela de Seleção Pluriorganizacional
-    </v-card-title>
-    <v-card-text>
-      <v-row v-if="p.objeto.dados.ts.entidades">
-        <v-col xs="2" sm="2">
-          <div class="info-label">
-            Entidades
-          </div>
+  <div>
+      <v-row class="mt-1">
+        <v-col cols="2">
+          <div class="info-label">Entidades</div>
         </v-col>
         <v-col>
-          <span>
-            <v-chip
-              v-for="(e, i) in p.objeto.dados.ts.entidades"
-              :key="i"
-              class="ma-2"
-              color="indigo darken-4"
-              outlined
-              label
-            >
-              <v-icon left>account_balance</v-icon>
-              {{ e.searchField }}
-            </v-chip>
-          </span>
+          <div class="info-content">
+              <span>
+                  <v-chip
+                    v-for="e in p.objeto.dados.entidades" :key="e.sigla"
+                    class="ma-2"
+                    color="indigo darken-4"
+                    outlined
+                    label
+                  >
+                    <v-icon left>account_balance</v-icon>
+                    {{ e.label }}
+                  </v-chip>
+                </span>
+          </div>
         </v-col>
       </v-row>
 
       <v-data-table
         :headers="tsHeaders"
-        :items="p.objeto.dados.ts.processos"
+        :items="p.objeto.dados.listaProcessos.procs"
         class="elevation-1"
         :footer-props="tsFooterProps"
       >
@@ -45,7 +40,7 @@
         </template>
 
         <template v-slot:item="props">
-          <tr>
+          <tr v-if="props.item.edited">
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
@@ -66,16 +61,16 @@
             </td>
             <td>
               <span v-if="props.item.entidades.length > 0">
-                <span v-for="(e, i) in props.item.entidades" :key="i">
+                <span v-for="(e,i) in props.item.entidades" :key="i">
                   <v-chip
-                    v-if="e.participante"
-                    class="ml-1"
-                    color="indigo darken-4"
-                    outlined
-                    label
-                    x-small
+                      v-if="e.participante != 'NP'"
+                      class="ml-1"
+                      color="indigo darken-4"
+                      outlined
+                      label
+                      x-small
                   >
-                    {{ e.sigla }}-{{ e.participante }}
+                      {{ e.sigla }}-{{ e.participante }}
                   </v-chip>
                 </span>
               </span>
@@ -89,11 +84,12 @@
         </template>
       </v-data-table>
 
-      <!--div class="info-content">
-        {{ JSON.stringify(p) }}
-      </div-->
-    </v-card-text>
-  </v-card>
+      <!--v-row class="mt-1">
+        <v-col>
+          <div class="info-content">{{ JSON.stringify(p.objeto.listaProcessos.procs[0]) }}</div>
+        </v-col>
+      </v-row-->
+  </div>
 </template>
 
 <script>

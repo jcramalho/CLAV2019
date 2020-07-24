@@ -41,7 +41,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="indigo darken-4" dark @click="cancelar">
+              <v-btn color="red" dark @click="cancelar">
                 Cancelar
               </v-btn>
               <v-btn color="indigo darken-4" dark @click="executar">
@@ -184,6 +184,10 @@ export default {
           }
           this.alertType = "error";
           return;
+        }
+
+        if (this.tipo.path == "users/") {
+          delete response.data.temPass;
         }
 
         var filename = this.tipo.filename + ".json";

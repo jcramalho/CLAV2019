@@ -74,6 +74,12 @@ outline: none !important;"
             fill="#ffffff"
           />
           <p class="ml-2">Submeter</p>
+          <DialogClasseCriada 
+            v-if="classeCriada" 
+            :c="c"
+            :codigoPedido="codigoPedido"
+            acao="criação"
+            @sair="classeCriada = false"/>
         </v-btn>
       </v-col>
 
@@ -168,35 +174,6 @@ outline: none !important;"
       </v-dialog>
     </v-row>
 
-    <!-- Pedido de criação de classe submetido com sucesso ........... -->
-    <v-row justify-center>
-      <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
-        <v-card dark class="info-card">
-          <v-card-title class="headline mb-2">
-            Pedido de Criação de Classe Submetido
-          </v-card-title>
-          <div class="info-content px-3 mx-6 mb-2">
-            <v-card-text class="pa-2 px-4 font-weight-medium">{{
-              mensagemPedidoCriadoOK
-            }}</v-card-text>
-          </div>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="red darken-4"
-              rounded
-              dark
-              elevation="0"
-              class="px-4"
-              @click="criacaoClasseTerminada"
-            >
-              Fechar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
-
     <!-- Cancelamento da criação duma classe: confirmação ........... -->
     <v-row justify-center>
       <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
@@ -265,20 +242,21 @@ outline: none !important;"
 
 <script>
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
+import DialogClasseCriada from "@/components/classes/criacao/DialogClasseCriada.vue";
 
 export default {
   props: ["c", "pendenteId"],
   components: {
-    ValidaClasseInfoBox
+    ValidaClasseInfoBox, DialogClasseCriada
   },
   data() {
     return {
       pendenteGuardado: false,
       pendenteGuardadoInfo: "",
-      dialogClasseCriada: false,
+      classeCriada: false,
       pedidoEliminado: false,
       pedidoCriado: false,
-      mensagemPedidoCriadoOK: "",
+      codigoPedido: "",
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Classe!",
       numeroErros: 0,
@@ -740,11 +718,12 @@ export default {
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
-              tipoObjeto: "Classe",
+              tipoObjeto: "Classe_N" + this.c.nivel,
               novoObjeto: this.c,
               user: { email: userBD.email },
               entidade: userBD.entidade,
-              token: this.$store.state.token
+              token: this.$store.state.token,
+              historico: []
             };
 
             var response = await this.$request(
@@ -752,14 +731,14 @@ export default {
               "/pedidos",
               pedidoParams
             );
-            this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-            this.dialogClasseCriada = true;
+            this.codigoPedido = JSON.stringify(response.data);
+            this.classeCriada = true;
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (error) {
-        return error;
+        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
       }
     },
 

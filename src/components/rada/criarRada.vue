@@ -1,14 +1,8 @@
 <template>
   <v-card class="ma-4" style="background-color:#fafafa">
-    <v-card-title class="indigo darken-4 white--text">
-      Criar Relatório de Avaliação de Documentação Acumulada
-      <v-spacer />
-      <v-btn v-if="guardar" color="indigo darken-4" dark @click="toSave = true">
-        Guardar Trabalho
-        <v-icon right>save</v-icon>
-      </v-btn>
-      <v-icon v-if="pode_remover" dark color="red" @click="toDelete = true" right>delete_sweep</v-icon>
-    </v-card-title>
+    <v-card-title
+      class="indigo darken-4 white--text"
+    >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title>
     <v-card-text>
       <br />
       <v-alert :value="alert_guardar" outlined type="success" text dismissible border="left">
@@ -51,14 +45,56 @@
         </v-stepper-step>
         <v-stepper-content step="3">
           <TSRada
-            @done="concluir"
+            @done="concluir(idPendente)"
             @voltar="changeE1"
+            @guardar="guardarTrabalho"
+            @remover="toDelete = true"
             :legislacao="legislacao"
             :RE="RADA.RE"
             :TS="RADA.tsRada"
             :entidades="entidades"
             :legislacaoProcessada="legislacaoProcessada"
+            :loading_circle.sync="loading_circle_ts"
+            :pode_remover="pode_remover"
           />
+          <v-alert
+            width="100%"
+            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie"
+            outlined
+            type="error"
+            prominent
+            border="left"
+            dismissible
+          >
+            <div v-if="!!erroProdutoras[0]">
+              <b>As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série:</b>
+              <ul>
+                <li v-for="(produtora, i) in erroProdutoras" :key="i">{{produtora}}</li>
+              </ul>
+              <br />
+            </div>
+            <div v-if="!!erros_relacoes[0]">
+              <b>As seguintes relações entre classes são inválidas devido às datas:</b>
+              <ul>
+                <li
+                  v-for="(erro_rel, i) in erros_relacoes"
+                  :key="i"
+                >{{erro_rel[0] + " " + erro_rel[2].toLowerCase().trim() + " " + erro_rel[1] + ";"}}</li>
+              </ul>
+            </div>
+            <div v-if="!!erros_datas_uis[0]">
+              <b>As seguintes associações entre classes e unidades de instalação são inválidas devido às datas:</b>
+              <ul>
+                <li
+                  v-for="(erro_uis, i) in erros_datas_uis"
+                  :key="i"
+                >{{"Classe " + erro_uis.codigoClasse + " e UI " + erro_uis.codigoUI + ";"}}</li>
+              </ul>
+            </div>
+            <div v-if="!existe_serie">
+              <b>Deve adicionar séries ao RADA, antes de o submeter. Tem possibilidade de associar unidades de instalação às séries em avaliação.</b>
+            </div>
+          </v-alert>
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
@@ -71,64 +107,11 @@
                 Os seus dados foram guardados para que possa retomar o trabalho
                 mais tarde. Aceda aos pendentes para continuar.
               </p>
-              <!-- <p>{{ mensagemPendenteCriadoOK }}</p> -->
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
             </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-      <v-row justify-center>
-        <v-dialog v-model="dialogRADACriado" persistent width="50%">
-          <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >Pedido de Criação do RADA Submetido.</v-card-title>
-            <v-card-text>
-              <br />
-              {{ mensagemPedidoCriadoOK }}
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-      <v-row justify-center>
-        <v-dialog v-model="toSave" width="50%">
-          <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >Pretende continuar o trabalho neste momento?</v-card-title>
-
-            <v-card-text align="center">
-              <br />
-              <v-progress-circular
-                v-if="loading_circle"
-                :size="70"
-                :width="7"
-                color="amber accent-3"
-                indeterminate
-              ></v-progress-circular> 
-              <div v-else>
-                <v-spacer></v-spacer>
-                <v-btn
-                  class="ma-3 pa-3"
-                  color="indigo lighten-3"
-                  @click="guardarTrabalho('nao')"
-                >Não, pretendo continuar depois.</v-btn>
-                <v-btn
-                  class="ma-3 pa-3"
-                  color="indigo lighten-3"
-                  @click="guardarTrabalho('sim')"
-                >Sim.</v-btn>
-              </div>
-            </v-card-text>
           </v-card>
         </v-dialog>
       </v-row>
@@ -159,33 +142,20 @@ import RelatorioExpositivo from "@/components/rada/criacao/RelatorioExpositivo.v
 import TSRada from "@/components/rada/criacao/TSRadaManual.vue";
 import InformacaoGeral from "@/components/rada/criacao/InformacaoGeral";
 
+import mixin_criacao_rada from "@/mixins/rada/mixin_criacao_rada";
+
 export default {
   components: {
     RelatorioExpositivo,
     TSRada,
     InformacaoGeral
   },
+  mixins: [mixin_criacao_rada],
   data() {
     return {
-      loading_circle: false,
-      user_entidade: null,
-      alert_guardar: false,
+      //loading_circle: false,
       pode_remover: false,
       idPendente: null,
-      toDelete: false,
-      toSave: false,
-      mensagemPendenteCriadoOK: "",
-      dialogRADAPendente: false,
-      mensagemPedidoCriadoOK: "",
-      dialogRADACriado: false,
-      entidades: [],
-      tipologias: [],
-      legislacao: [],
-      legislacaoProcessada: [],
-      entidadesProcessadas: [],
-      e1: 1,
-      titulo: "",
-      guardar: false,
       RADA: {
         id: nanoid(),
         titulo: "",
@@ -194,13 +164,16 @@ export default {
         despachoRevogacao: null,
         dataRevogacao: null,
         entRes: [],
-        pedidosLegislacao: [],
-        pedidosEntidades: [],
         RE: {
-          entidadesProd: [],
-          tipologiasProd: [],
-          dataInicial: "2020-02-27",
-          dataFinal: "2020-05-01",
+          entidadesProd: [
+            // "ACSS - Administração Central do Sistema de Saúde, IP",
+            // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+          ],
+          tipologiasProd: null,
+          // dataInicial: "2020-01-02",
+          // dataFinal: "2020-06-01",
+          dataInicial: null,
+          dataFinal: null,
           dimSuporte: {
             nSeries: null,
             nSubseries: null,
@@ -217,168 +190,172 @@ export default {
         },
         tsRada: {
           titulo: "",
+          UIs: [
+            // {
+            //   codigo: "1",
+            //   codCota: "3",
+            //   titulo: "Unidade de Instalação",
+            //   dataInicial: "2020-05-13",
+            //   dataFinal: "2020-05-27",
+            //   produtor: {
+            //     tipologiasProdutoras: [
+            //       // "AAGR - Assembleias de apuramento geral dos resultados",
+            //       // "ACE - Administração Central do Estado"
+            //     ],
+            //     entProdutoras: [
+            //       // "ACSS - Administração Central do Sistema de Saúde, IP",
+            //       // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //     ]
+            //   },
+            //   classesAssociadas: [
+            //     { codigo: "01.02", tipo: "Série" },
+            //     { codigo: "01.02.01", tipo: "Subsérie" }
+            //   ],
+            //   descricao: "Descrição da UI 1",
+            //   notas: "Sem notas! ",
+            //   localizacao: "Felgueiras"
+            // }
+            // {
+            //   codigo: "2",
+            //   codCota: "3",
+            //   titulo: "Unidade de Instalação bem fixe",
+            //   dataInicial: "2020-05-13",
+            //   dataFinal: "2020-05-27",
+            //   produtor: {
+            //     tipologiasProdutoras: [
+            //       // "AAGR - Assembleias de apuramento geral dos resultados",
+            //       // "ACE - Administração Central do Estado"
+            //     ],
+            //     entProdutoras: [
+            //       // "ACSS - Administração Central do Sistema de Saúde, IP",
+            //       // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //     ]
+            //   },
+            //   classesAssociadas: [
+            //     { codigo: "01.02", tipo: "Série" },
+            //     { codigo: "01.03", tipo: "Subsérie" },
+            //     { codigo: "01.02.01", tipo: "Subsérie" },
+            //     { codigo: "01.05", tipo: "Série" }
+            //   ],
+            //   descricao: "Descrição da UI 1",
+            //   notas: "Sem notas! ",
+            //   localizacao: "Felgueiras"
+            // }
+          ],
           classes: [
             // {
             //   codigo: "01",
-            //   titulo: "Classe N1 (01)",
-            //   descricao: "Descrição Classe N1 (01)",
+            //   titulo: "Classe 01",
+            //   descricao: "Descrição",
             //   eFilhoDe: null,
             //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "04",
-            //   titulo: "Classe N1 (04)",
-            //   descricao: "Descrição Classe N1 (04)",
-            //   eFilhoDe: null,
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "02",
-            //   titulo: "Classe N1 (02)",
-            //   descricao: "Descrição Classe N1 (02)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "03",
-            //   titulo: "Classe N1 (03)",
-            //   descricao: "Descrição Classe N1 (01)",
-            //   tipo: "N1"
-            // },
-            // {
-            //   codigo: "01.02",
-            //   titulo: "Classe N2 (01.02)",
-            //   descricao: "Descrição Classe N2 (01.02)",
-            //   eFilhoDe: "01",
-            //   tipo: "N2"
             // },
             // {
             //   codigo: "01.01",
-            //   titulo: "Classe N2 (01.01)",
-            //   descricao: "Descrição Classe N2 (01.01)",
+            //   titulo: "Classe 01.01",
+            //   descricao: "Descrição",
             //   eFilhoDe: "01",
             //   tipo: "N2"
             // },
             // {
             //   codigo: "01.01.01",
-            //   titulo: "Classe N3 (01.01.01)",
-            //   descricao: "Descrição Classe N3 (01.01.01)",
+            //   titulo: "Classe 01.01.01",
+            //   descricao: "Descrição 01.01.01",
             //   eFilhoDe: "01.01",
             //   tipo: "N3"
             // },
             // {
-            //   codigo: "02.01",
-            //   titulo: "Classe N2 (02.01)",
-            //   descricao: "Descrição Classe N2 (02.01)",
-            //   eFilhoDe: "02",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "03.01",
-            //   titulo: "Classe N2 (03.01)",
-            //   descricao: "Descrição Classe N2 (03.01)",
-            //   eFilhoDe: "03",
-            //   tipo: "N2"
-            // },
-            // {
-            //   codigo: "01.04",
-            //   titulo: "Série (01.04)",
-            //   descricao: "Descrição Série (01.04)",
-            //   dataInicial: "2020-04-11",
-            //   dataFinal: "2020-04-13",
+            //   codigo: "01.02",
+            //   titulo: "Serie 01.02",
+            //   descricao: "Descrição 01.02",
+            //   dataInicial: "2020-05-01",
+            //   dataFinal: "2020-05-28",
             //   tUA: "Coleção",
-            //   tSerie: "Fechada",
-            //   suporte: "Papel",
-            //   medicao: "35",
-            //   UIs: [],
-            //   localizacao: ["Localização a definir..."],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
+            //   tSerie: "Aberta",
+            //   suporte_e_medicao: [
+            //     { suporte: "Eletrónico Digitalizado", medicao: "56" }
+            //   ],
+            //   UIs: ["1"],
+            //   localizacao: ["Lisboa"],
+            //   entProdutoras: [
+            //     // "ACSS - Administração Central do Sistema de Saúde, IP",
+            //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //   ],
+            //   tipologiasProdutoras: [
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
+            //   ],
             //   legislacao: [],
             //   relacoes: [
             //     {
-            //       relacao: "Complementar de",
+            //       relacao: "Síntese de",
             //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
             //     },
             //     {
             //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04.01", tipo: "Subsérie" }
+            //       serieRelacionada: { codigo: "01.02.01", tipo: "Subsérie" }
+            //     },
+            //     {
+            //       relacao: "Suplemento para",
+            //       serieRelacionada: { codigo: "01.05", tipo: "Série" }
             //     }
             //   ],
-            //   pca: null,
-            //   formaContagem: { forma: null },
-            //   justificacaoPCA: [],
+            //   pca: "5",
+            //   notaPCA: "Sem notas",
+            //   notaDF: "Sem notas DF",
+            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+            //   justificacaoPCA: [
+            //     {
+            //       tipo: "Critério Gestionário",
+            //       nota:
+            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+            //     },
+            //     {
+            //       tipo: "Critério de Utilidade Administrativa",
+            //       nota:
+            //         "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de: ",
+            //       relacoes: [{ codigo: "01.05" }]
+            //     }
+            //   ],
             //   df: "Conservação",
             //   justificacaoDF: [
             //     {
+            //       tipo: "Critério de Densidade Informacional",
+            //       nota: "Sintetiza a informação de: ",
+            //       relacoes: [{ codigo: "01.03" }]
+            //     },
+            //     {
             //       tipo: "Critério de Complementaridade Informacional",
             //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.03" }, { codigo: "01.04.01" }]
+            //       relacoes: [{ codigo: "01.02.01" }]
             //     }
             //   ],
-            //   notas: "Notas da Série (01.04)",
             //   eFilhoDe: "01",
             //   tipo: "Série"
             // },
             // {
-            //   codigo: "01.03",
-            //   titulo: "Série (01.03)",
-            //   descricao: "Descrição Série (01.03)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   tUA: "Processo",
-            //   tSerie: "Aberta",
-            //   suporte: "Eletrónico Nativo",
-            //   UIs: ["01"],
-            //   medicao: "12",
-            //   localizacao: ["Torre do Tombo"],
-            //   entProdutoras: [],
-            //   tipologiasProdutoras: [],
-            //   legislacao: [],
+            //   codigo: "01.02.01",
+            //   titulo: "Subsérie 01.02.01",
+            //   descricao: "Descrição 01.02.01",
+            //   dataInicial: "2020-05-01",
+            //   dataFinal: "2020-05-28",
             //   relacoes: [
             //     {
             //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   pca: 2,
-            //   formaContagem: {
-            //     forma: {
-            //       label: "Data de extinção do direito",
-            //       value: "vc_pcaFormaContagem_extincaoDireito"
-            //     }
-            //   },
-            //   justificacaoPCA: [],
-            //   df: "Conservação",
-            //   justificacaoDF: [
+            //       serieRelacionada: { codigo: "01.02", tipo: "Série" }
+            //     },
             //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
+            //       relacao: "Cruzado de",
+            //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
             //     }
             //   ],
-            //   notas: "",
-            //   eFilhoDe: "01",
-            //   tipo: "Série"
-            // },
-            // {
-            //   codigo: "01.04.01",
-            //   titulo: "Subsérie (01.04.01)",
-            //   descricao: "Descrição Subsérie (01.04.01)",
-            //   dataInicial: null,
-            //   dataFinal: null,
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.04", tipo: "Série" }
-            //     }
-            //   ],
-            //   UIs: ["02"],
-            //   pca: "2",
+            //   UIs: ["1"],
+            //   pca: "10",
+            //   notaPCA: "Sem ntoas PCA",
+            //   notaDF: "12",
             //   formaContagem: {
-            //     forma: {
-            //       label: "Data de extinção do direito",
-            //       value: "vc_pcaFormaContagem_extincaoDireito"
-            //     }
+            //     forma: "vc_pcaFormaContagem_disposicaoLegal",
+            //     subforma: "vc_pcaSubformaContagem_F01.02"
             //   },
             //   justificacaoPCA: [
             //     {
@@ -392,43 +369,101 @@ export default {
             //     {
             //       tipo: "Critério de Complementaridade Informacional",
             //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.04" }]
+            //       relacoes: [{ codigo: "01.02" }]
             //     }
             //   ],
-            //   notas: "Notas do Destino Final",
-            //   eFilhoDe: "01.04",
+            //   eFilhoDe: "01.03",
             //   tipo: "Subsérie"
-            // }
-          ],
-          UIs: [
-            // {
-            //   codigo: "01",
-            //   codCota: "1",
-            //   titulo: "1",
-            //   dataInicial: "2020-03-01",
-            //   dataFinal: "2020-03-03",
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.03", tipo: "Série" }],
-            //   descricao: "1",
-            //   notas: "1",
-            //   localizacao: "1"
             // },
             // {
-            //   codigo: "02",
-            //   codCota: "2",
-            //   titulo: "2",
-            //   dataInicial: "2020-04-20",
-            //   dataFinal: "2020-04-21",
-            //   produtor: { tipologiasProdutoras: [], entProdutoras: [] },
-            //   classesAssociadas: [{ codigo: "01.04.01", tipo: "Subsérie" }],
-            //   descricao: "2",
-            //   notas: "2",
-            //   localizacao: "2"
+            //   codigo: "01.03",
+            //   titulo: "Série 01.03",
+            //   descricao: "Descrição 01.03",
+            //   dataInicial: "2020-05-01",
+            //   dataFinal: "2020-05-28",
+            //   tUA: "Processo",
+            //   tSerie: "Aberta",
+            //   suporte_e_medicao: [{ suporte: "Outro", medicao: "12" }],
+            //   localizacao: ["Porto"],
+            //   entProdutoras: [
+            //     // "ACSS - Administração Central do Sistema de Saúde, IP"
+            //   ],
+            //   tipologiasProdutoras: [
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
+            //   ],
+            //   legislacao: [],
+            //   relacoes: [
+            //     {
+            //       relacao: "Sintetizado por",
+            //       serieRelacionada: { codigo: "01.02", tipo: "Série" }
+            //     },
+            //     {
+            //       relacao: "Cruzado de",
+            //       serieRelacionada: { codigo: "01.02.01", tipo: "Subsérie" }
+            //     }
+            //   ],
+            //   UIs: [],
+            //   pca: null,
+            //   notaPCA: null,
+            //   notaDF: null,
+            //   formaContagem: { forma: null },
+            //   justificacaoPCA: [],
+            //   df: "Eliminação",
+            //   justificacaoDF: [
+            //     {
+            //       tipo: "Critério de Densidade Informacional",
+            //       nota: "Informação sintetizada e recuperável em: ",
+            //       relacoes: [{ codigo: "01.02" }]
+            //     }
+            //   ],
+            //   eFilhoDe: "01",
+            //   tipo: "Série"
+            // },
+            // {
+            //   codigo: "01.05",
+            //   titulo: "Série 01.05",
+            //   descricao: "Descrição 01.05",
+            //   dataInicial: "2020-05-01",
+            //   dataFinal: "2020-05-28",
+            //   tUA: "Processo",
+            //   tSerie: "Aberta",
+            //   suporte_e_medicao: [{ suporte: "Papel", medicao: "90" }],
+            //   localizacao: ["Braga"],
+            //   entProdutoras: [
+            //     // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
+            //   ],
+            //   tipologiasProdutoras: [
+            //     // "AAGR - Assembleias de apuramento geral dos resultados",
+            //     // "ACE - Administração Central do Estado"
+            //   ],
+            //   legislacao: [],
+            //   relacoes: [
+            //     {
+            //       relacao: "Suplemento de",
+            //       serieRelacionada: { codigo: "01.02", tipo: "Série" }
+            //     }
+            //   ],
+            //   UIs: [],
+            //   pca: null,
+            //   notaPCA: "Tem notas porque não tem PCA",
+            //   notaDF: "",
+            //   formaContagem: { forma: "vc_pcaFormaContagem_cessacaoVigencia" },
+            //   justificacaoPCA: [
+            //     {
+            //       tipo: "Critério Gestionário",
+            //       nota:
+            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+            //     }
+            //   ],
+            //   df: "Conservação Parcial",
+            //   justificacaoDF: [],
+            //   eFilhoDe: "01",
+            //   tipo: "Série"
             // }
           ]
         }
-      },
-      userEmail: ""
+      }
     };
   },
   watch: {
@@ -447,13 +482,15 @@ export default {
       );
     },
     guardarTrabalho(continuar_ou_nao) {
-      this.loading_circle = true;
+      //this.loading_circle = true;
       if (this.idPendente != null) {
         let updatePendente = {
           _id: this.idPendente,
           objeto: {
             rada: this.RADA,
-            entidades: this.entidades.filter(e => e.estado == "Nova"),
+            entidades: this.entidades.filter(
+              e => e.estado_no_sistema == "Nova"
+            ),
             legislacao: this.legislacao.filter(e => e.estado == "Nova")
           }
         };
@@ -470,8 +507,6 @@ export default {
               this.alert_guardar = false;
             }, 5000);
           }
-          this.loading_circle = false;
-          this.toSave = false;
         });
       } else {
         let pendenteParams = {
@@ -480,7 +515,9 @@ export default {
           tipo: "RADA",
           objeto: {
             rada: this.RADA,
-            entidades: this.entidades.filter(e => e.estado == "Nova"),
+            entidades: this.entidades.filter(
+              e => e.estado_no_sistema == "Nova"
+            ),
             legislacao: this.legislacao.filter(e => e.estado == "Nova")
           },
           criadoPor: this.userEmail,
@@ -502,258 +539,12 @@ export default {
           } else {
             this.dialogRADAPendente = true;
           }
-
-          this.toSave = false;
-          this.loading_circle = false;
         });
       }
-    },
-    changeE1: function(e) {
-      this.e1 = e;
-    },
-    calcular_dimensao_suporte(series) {
-      this.RADA.RE.dimSuporte.nSeries = series.length;
-      this.RADA.RE.dimSuporte.nSubseries = this.RADA.tsRada.classes.filter(
-        e => e.tipo == "Subsérie"
-      ).length;
-      // adicionar ids às UIs
-      this.RADA.RE.dimSuporte.nUI = this.RADA.tsRada.UIs.map(ui => {
-        ui["id"] = "rada_" + this.RADA.id + "_ui_" + ui.codigo;
-        return ui;
-      }).length;
-      this.RADA.RE.dimSuporte.medicaoUI_papel = series
-        .filter(e => e.suporte == "Papel")
-        .reduce((acc, a) => {
-          return acc + Number(a.medicao);
-        }, 0);
-      this.RADA.RE.dimSuporte.medicaoUI_digital = series
-        .filter(
-          e =>
-            e.suporte == "Eletrónico Digitalizado" ||
-            e.suporte == "Eletrónico Nativo"
-        )
-        .reduce((acc, a) => {
-          return acc + Number(a.medicao);
-        }, 0);
-
-      this.RADA.RE.dimSuporte.medicaoUI_outros = series
-        .filter(e => e.suporte == "Outro")
-        .reduce((acc, a) => {
-          return acc + Number(a.medicao);
-        }, 0);
-    },
-    // Fazer pedidos para as entidades
-    async fazer_pedidos_entidades(series) {
-      //  filtrar as novas entidaaddes criadas e que estão associadas a classes ou UIs
-      let entidades = this.entidades.filter(
-        e =>
-          e.estado == "Nova" &&
-          (series.some(cl =>
-            cl.entProdutoras.some(ent => ent == e.sigla + " - " + e.designacao)
-          ) ||
-            this.RADA.tsRada.UIs.some(ui =>
-              ui.produtor.entProdutoras.some(
-                ent => ent == e.sigla + " - " + e.designacao
-              )
-            ))
-      );
-
-      for (let i = 0; i < entidades.length; i++) {
-        let pedidoEntidades = {
-          tipoPedido: "Criação",
-          tipoObjeto: "Entidade",
-          novoObjeto: {
-            estado: "Ativa",
-            designacao: entidades[i].designacao,
-            internacional: entidades[i].internacional,
-            sigla: entidades[i].sigla,
-            sioe: entidades[i].sioe,
-            tipologiasSel: entidades[i].tipologiasSel.map(tipologia => {
-              let tip = tipologia.split(" - ");
-              return {
-                sigla: tip[0],
-                designacao: tip[1],
-                id: "tip_" + tip[0]
-              };
-            }),
-            dataCriacao: entidades[i].dataCriacao,
-            codigo: ""
-          },
-          user: {
-            email: this.userEmail
-          },
-          token: this.$store.state.token,
-          criadoPor: this.userEmail,
-          entidade: this.user_entidade
-        };
-
-        let response = await this.$request("post", "/pedidos", pedidoEntidades);
-
-        this.RADA.pedidosEntidades.push(response.data);
-      }
-    },
-    async fazer_pedidos_legislacao(series) {
-      let legislacao = this.legislacao
-        .filter(
-          e =>
-            e.estado == "Nova" &&
-            series.some(cl =>
-              cl.legislacao.some(
-                legis =>
-                  legis.legislacao ==
-                  e.tipo + " " + e.numero + " - " + e.sumario
-              )
-            )
-        )
-        .map(leg => {
-          leg["codigo"] = "";
-          leg["diplomaFonte"] = "RADA";
-          leg["estado"] = "Ativo";
-          leg["processosSel"] = [];
-          if (leg.link == null) {
-            leg["link"] = "";
-          }
-          // Adicionar série à qual está relacionada;
-          leg["processosSel"] = series
-            .filter(cl =>
-              cl.legislacao.some(
-                legis =>
-                  legis.legislacao ==
-                  leg.tipo + " " + leg.numero + " - " + leg.sumario
-              )
-            )
-            .map(cl => {
-              return {
-                codigo: cl.codigo,
-                titulo: cl.titulo,
-                id: cl.id,
-                tituloRada: this.RADA.titulo
-              };
-            });
-          // Adicionar entidades relacionadas com a criação legislação
-          leg["entidadesSel"] = this.RADA.entRes.map(entidade => {
-            let ent = entidade.split(" - ");
-
-            return {
-              designacao: ent[1],
-              sigla: ent[0],
-              id: "ent_" + ent[0]
-            };
-          });
-
-          return leg;
-        });
-
-      for (let i = 0; i < legislacao.length; i++) {
-        let pedidoLegis = {
-          tipoPedido: "Criação",
-          tipoObjeto: "Legislação",
-          novoObjeto: legislacao[i],
-          user: {
-            email: this.userEmail
-          },
-          token: this.$store.state.token,
-          criadoPor: this.userEmail,
-          entidade: this.user_entidade
-        };
-
-        let response = await this.$request("post", "/pedidos", pedidoLegis);
-
-        this.RADA.pedidosLegislacao.push(response.data);
-      }
-    },
-    concluir: async function() {
-      let series = this.RADA.tsRada.classes
-        // adicionar os IDS a todas as classes
-        .map(e => {
-          let tipo = null;
-
-          switch (e.tipo) {
-            case "Série":
-              tipo = "serie";
-              break;
-            case "Subsérie":
-              tipo = "subserie";
-              break;
-            default:
-              tipo = "organico_funcional";
-              break;
-          }
-
-          e["id"] = "rada_" + this.RADA.id + "_" + tipo + "_" + e.codigo;
-
-          return e;
-        })
-        .filter(e => e.tipo == "Série");
-
-      // Calcular os valores de dimensão e suporte no relatório expositivo
-      this.calcular_dimensao_suporte(series);
-
-      // Tratar dos pedidos das novas legislações
-      await this.fazer_pedidos_legislacao(series);
-
-      // Tratar dos pedidos da novas entidades
-      await this.fazer_pedidos_entidades(series);
-
-      // Fazer pedido do RADA
-      let pedidoParams = {
-        tipoPedido: "Criação",
-        tipoObjeto: "RADA",
-        novoObjeto: this.RADA,
-        user: {
-          email: this.userEmail
-        },
-        token: this.$store.state.token,
-        criadoPor: this.userEmail,
-        entidade: this.user_entidade
-      };
-
-      let response = await this.$request("post", "/pedidos", pedidoParams);
-
-      if (this.idPendente != null) {
-        // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
-        await this.$request("delete", "/pendentes/" + this.idPendente);
-      }
-      this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-      this.dialogRADACriado = true;
     }
   },
-  created: async function() {
-    // Pedido para a legislação e processamento para formulários!
-    let l = await this.$request("get", "/legislacao");
-    this.legislacao = l.data;
-
-    this.legislacaoProcessada = l.data.map(item => {
-      return {
-        id: item.id,
-        legislacao: item.tipo + " " + item.numero + " - " + item.sumario
-      };
-    });
-
-    // Pedido para as entidades e processamento para formulários!
-    let response = await this.$request("get", "/entidades");
-    this.entidades = response.data;
-
-    this.entidadesProcessadas = response.data.map(item => {
-      return {
-        entidade: item.sigla + " - " + item.designacao,
-        disabled: false
-      };
-    });
-
-    // Pedido para tipologias e seu processamento para formulários!
-    response = await this.$request("get", "/tipologias");
-    this.tipologias = response.data.map(item => {
-      return {
-        tipologia: item.sigla + " - " + item.designacao,
-        disabled: false
-      };
-    });
-
+  async created() {
     let userBD = this.$verifyTokenUser();
-    this.userEmail = userBD.email;
-
-    this.user_entidade = userBD.entidade;
 
     let user_entidade_completa = await this.$request(
       "get",
@@ -790,8 +581,10 @@ export default {
 }
 
 .info-label {
-  color: #1a237e !important;
-  padding: 8px;
+  color: #1a237e;
+  padding: 6px;
+  font-weight: 400;
+  height: auto;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;

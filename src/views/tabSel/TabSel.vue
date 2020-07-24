@@ -1,13 +1,11 @@
 <template>
   <div>
     <div>
-      <Loading v-if="!fontesPGDReady" :message="'fontes de legitimação'" />
+      <Loading v-if="!fontesPGDTSReady" :message="'fontes de legitimação'" />
       <ListagemLeg
         v-else
-        :lista="fontesPGD"
+        :lista="fontesPGDTS"
         tipo="TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
-        :cabecalho="cabecalhos"
-        :campos="campos"
       />
     </div>
     <div>
@@ -16,10 +14,9 @@
         v-else
         :lista="fontesPGDLC"
         tipo="TABELAS DE SELEÇÃO (DERIVADAS DA LC) INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
-        :cabecalho="cabecalhos"
-        :campos="campos"
       />
     </div>
+    
   </div>
 </template>
 <script>
@@ -32,10 +29,9 @@ export default {
   data: () => ({
     fontesPGD: [],
     fontesPGDLC: [],
-    campos: [],
-    cabecalhos: [],
-    fontesPGDReady: false,
-    fontesPGDLCReady: false
+    fontesPGDTS: [],
+    fontesPGDLCReady: false,
+    fontesPGDTSReady: false
   }),
 
   components: {
@@ -44,13 +40,11 @@ export default {
   },
 
   created: async function() {
-    this.cabecalhos = ["Data", "Tipo", "Número", "Sumário", "Acesso"];
-    this.campos = ["data", "tipo", "numero", "sumario", "link"];
-
-    this.$request("get", "/legislacao?fonte=PGD/LC")
+    await this.$request("get", "/pgd/lc")
       .then(response2 => {
         this.fontesPGDLC = response2.data.map(f => {
           return {
+            idPGD: f.idPGD,
             data: f.data,
             tipo: f.tipo,
             numero: f.numero,
@@ -64,7 +58,7 @@ export default {
         return e;
       });
 
-    this.$request("get", "/legislacao?fonte=PGD")
+    await this.$request("get", "/legislacao?fonte=PGD")
       .then(response => {
         this.fontesPGD = response.data.map(f => {
           return {
@@ -76,6 +70,36 @@ export default {
           };
         });
         this.fontesPGDReady = true;
+      })
+      .catch(e2 => {
+        return e2;
+      });
+    
+    await this.$request("get", "/pgd")
+      .then(response => {
+        this.fontesPGDTS = this.fontesPGD.map(f => {
+          var obj = response.data.find(res => res.tipo == f.tipo && res.numero == f.numero)
+          if(obj) 
+            return {
+              idPGD: obj.idPGD,
+              data: obj.data,
+              tipo: obj.tipo,
+              numero: obj.numero,
+              sumario: obj.sumario,
+              link: obj.link
+            };
+          else 
+            return {
+              idPGD: "",
+              data: f.data,
+              tipo: f.tipo,
+              numero: f.numero,
+              sumario: f.sumario,
+              link: f.link
+            };
+
+        });
+        this.fontesPGDTSReady = true;
       })
       .catch(e2 => {
         return e2;

@@ -1,7 +1,5 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
+      <v-card class="ma-2">
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
             >Nova Tabela de Seleção</v-toolbar-title
@@ -20,7 +18,7 @@
                   v-model="tipo"
                 ></v-select>
               </v-flex>
-              <v-flex xs12 sm4>
+              <!--v-flex xs12 sm4>
                 <v-btn
                   medium
                   @click="infoButton = true"
@@ -33,7 +31,7 @@
                 <v-btn medium v-if="infoButton" color="info" @click="passos()">
                   <v-icon left>info</v-icon>Info dos seguintes passos
                 </v-btn>
-              </v-flex>
+              </v-flex-->
             </v-layout>
           </v-container>
           <div class="text-xs-center">
@@ -51,8 +49,6 @@
           </div>
         </v-card-text>
       </v-card>
-    </v-col>
-  </v-row>
 </template>
 
 <script>

@@ -137,38 +137,39 @@ var excel2Json = function(file, tipo) {
 
 var verificarSerie = function(str) {
   var arr = str.split(/[,;]/)
-  if(arr[0].trim() != "Código de classificação da série ou subsérie") return false;
-  if(arr[1].trim() != "Número de referência") return false;
-  if(arr[2].trim() != "Título da série ou subsérie") return false;
-  if(arr[3].trim() != "Data inicial da documentação proposta para eliminação") return false;
-  if(arr[4].trim() != "Data final da documentação proposta para eliminação") return false;
-  if(arr[5].trim() != "Nº de agregações simples / UI – unidade de instalação") return false;
-  if(arr[6].trim() != "Medição das agregações / UI em papel (m.l.)") return false;
-  if(arr[7].trim() != "Medição das agregações / UI em digital (Gb)") return false;
-  if(arr[8].trim() != "Medição das agregações / UI noutros suportes") return false;
+  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da série ou subsérie") return false;
+  if(arr[1].replace(/['"]/g,'').trim() != "Número de referência") return false;
+  if(arr[2].replace(/['"]/g,'').trim() != "Título da série ou subsérie") return false;
+  if(arr[3].replace(/['"]/g,'').trim() != "Data inicial da documentação proposta para eliminação") return false;
+  if(arr[4].replace(/['"]/g,'').trim() != "Data final da documentação proposta para eliminação") return false;
+  if(arr[5].replace(/['"]/g,'').trim() != "Nº de agregações simples / UI – unidade de instalação") return false;
+  if(arr[6].replace(/['"]/g,'').trim() != "Medição das agregações / UI em papel (m.l.)") return false;
+  if(arr[7].replace(/['"]/g,'').trim() != "Medição das agregações / UI em digital (Gb)") return false;
+  if(arr[8].replace(/['"]/g,'').trim() != "Medição das agregações / UI noutros suportes") return false;
   return true;
 }
 
 var verificarAgregacoes = function(str) {
   var arr = str.split(/[,;]/)
-  if(arr[0].trim() != "Código de classificação da série ou subsérie") return false;
-  if(arr[1].trim() != "Número de referência") return false;
-  if(arr[2].trim() != "Código da agregação simples / UI - unidade de instalação") return false;
-  if(arr[3].trim() != "Título da agregação / UI") return false;
-  if(arr[4].trim() != "Data de início de contagem do PCA") return false;
-  if(arr[5].trim() != "Natureza da intervenção") return false;
+  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da série ou subsérie") return false;
+  if(arr[1].replace(/['"]/g,'').trim() != "Número de referência") return false;
+  if(arr[2].replace(/['"]/g,'').trim() != "Código da agregação simples / UI - unidade de instalação") return false;
+  if(arr[3].replace(/['"]/g,'').trim() != "Título da agregação / UI") return false;
+  if(arr[4].replace(/['"]/g,'').trim() != "Data de início de contagem do PCA") return false;
+  if(arr[5].replace(/['"]/g,'').trim() != "Natureza da intervenção") return false;
   return true;
 }
 
 var validarCSVs = function(fileSerie, fileAgreg, tipo) {
   return new Promise(function(resolve, reject) {
     var enc = new TextDecoder("utf-8");
-    var series = enc.decode(fileSerie).split("\n")
-    var agregacoes = enc.decode(fileAgreg).split("\n")
+    var series = enc.decode(fileSerie).replace(/['"]/g,'').split("\n")
+    var agregacoes = enc.decode(fileAgreg).replace(/['"]/g,'').split("\n")
     if(!verificarSerie(series[0]))
       reject({msg: "Verifique se inseriu o ficheiro de classe / série correto", numErros: 1})
     if(!verificarAgregacoes(agregacoes[0]))
       reject({msg: "Verifique se inseriu o ficheiro de agregações / UI correto", numErros: 1})
+    
     series.shift()
     agregacoes.shift()
     var errosSerie = {
@@ -178,7 +179,9 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       referencia: [],
       titulo: [],
       dataInicio: [],
+      dataInicioValidacao: [],
       dataFim: [],
+      dataFimValidacao: [],
       agregacoes: [],
       medicoes: [],
       numeroErros: 0
@@ -198,9 +201,12 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
     series.forEach((s,index) => {
       var serie = s.split(/[;,]/)
       if(serie.length>=7) {
-        if(tipo != "RADA" && serie[0] == "") {errosSerie.codigo.push(index+2);errosSerie.numeroErros++;}
-        else if(tipo == "RADA" && serie[0] == "" && serie[1] == "") {errosSerie.referencia.push(index+2);errosSerie.numeroErros++;}
-        if(serie[0]!="") if(!codigosSerie.find(elem => elem == serie[0])) codigosSerie.push(serie[0]); else {errosSerie.codigosRepetidos.push(index+2); errosSerie.numeroErros++; }
+        
+        if(tipo === "TS_LC" && serie[0] == "") {errosSerie.codigo.push(index+2);errosSerie.numeroErros++;}
+        if(serie[0] == "" && serie[1] == "") {errosSerie.referencia.push(index+2);errosSerie.numeroErros++;}
+        if(serie[0]!="") 
+          if(!codigosSerie.find(elem => elem == serie[0])) codigosSerie.push(serie[0]); 
+          else {errosSerie.codigosRepetidos.push(index+2); errosSerie.numeroErros++; }
         if(serie[1]!="") if(!referenciasSerie.find(elem => elem == serie[1])) referenciasSerie.push(serie[1]); else {errosSerie.referenciasRepetidas.push(index+2); errosSerie.numeroErros++; }
         if(serie[2]=="") {errosSerie.titulo.push(index+2); errosSerie.numeroErros++;}
         var dataInicio = parseInt(serie[3]) || 0;
@@ -208,6 +214,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         if(!serie[3].match(/[0-9]{4}/) || dataInicio<1000) {errosSerie.dataInicio.push(index+2); errosSerie.numeroErros++;}
         else if(!serie[4].match(/[0-9]{4}/) || dataFim<1000 || dataInicio>dataFim) {errosSerie.dataFim.push(index+2); errosSerie.numeroErros++;}
         if(!serie[5].match(/[0-9]+/) || parseInt(serie[5])<1) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++;}
+        if(dataInicio > dataFim) {errosSerie.dataFimValidacao.push(index+2); errosSerie.numeroErros++;}
         var uiPapel = parseFloat(serie[6]) || 0;
         var uiDigital = parseFloat(serie[7]) || 0;
         var uiOutros = parseFloat(serie[8]) || 0;
@@ -229,17 +236,15 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         if(numero != serie[5]) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++}
       } 
     })
+    
     agregacoes.forEach((a,index) => {
       var agregacao = a.split(/[;,]/)
       if(agregacao.length>=5) {
-        if(tipo != "RADA" && agregacao[0] == "") {errosAgregacoes.codigo.push(index+2);errosAgregacoes.numeroErros++;}
-        else if(tipo == "RADA" && agregacao[0] == "" && agregacao[1] == "") {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
-        else {
-          if(agregacao[0]!="" && !codigosSerie.find(elem => elem == agregacao[0])) {errosAgregacoes.codigo.push(index+2);errosAgregacoes.numeroErros++;}
-          if(agregacao[1]!="" && !referenciasSerie.find(elem => elem == agregacao[1])) {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
-        }
+        if(tipo == "TS_LC" && agregacao[0] == "") {errosAgregacoes.codigo.push(index+2);errosAgregacoes.numeroErros++;}
+        else if(agregacao[0] == "" && agregacao[1] == "") {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
       }
     })
+    
     if(errosSerie.numeroErros + errosAgregacoes.numeroErros >0) {
       var errosVal = {
         erros: [],
@@ -257,7 +262,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       })
       if(errosSerie.codigo.length>0 || errosAgregacoes.codigo.length>0) errosVal.erros.push({
         sobre: "Código da série ou subsérie",
-        mensagem: "O código é obrigatório nas PGD",
+        mensagem: "O código é obrigatório nas Tabelas de Seleção",
         linhasSerie: errosSerie.codigo,
         linhasUI: errosAgregacoes.codigo
       })
@@ -280,6 +285,11 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       if(errosSerie.dataFim.length>0) errosVal.erros.push({
         sobre: "Data final da documentação proposta para eliminação",
         mensagem: "A data final é obrigatória e deve constar de quatro digitos",
+        linhasSerie: errosSerie.dataFim
+      })
+      if(errosSerie.dataFimValidacao.length>0) errosVal.erros.push({
+        sobre: "Data final da documentação proposta para eliminação",
+        mensagem: "A data final deve ser superior à data de inicio.",
         linhasSerie: errosSerie.dataFim
       })
       if(errosSerie.agregacoes.length>0) errosVal.erros.push({
@@ -312,6 +322,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         mensagem: "Natureza de intervenção obrigatória quando constante da LC",
         linhasUI: errosAgregacoes.ni
       })
+      
       reject(errosVal)
     }
     else resolve("Ficheiros em anexo validados com sucesso!")
@@ -335,25 +346,28 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
       var serie = s.split(/[;,]/)
       if(serie[0] || serie[1]) {
         var zc = {
-          codigo: serie[0],
-          referencia: serie[1],
-          titulo: serie[2],
-          dataInicio: serie[3],
-          dataFim: serie[4],
-          uiPapel: serie[6],
-          uiDigital: serie[7],
-          uiOutros: serie[8],
+          codigo: serie[0].replace(/['"]/g,''),
+          referencia: serie[1].replace(/['"]/g,''),
+          titulo: serie[2].replace(/['"]/g,''),
+          dataInicio: serie[3].replace(/['"]/g,''),
+          dataFim: serie[4].replace(/['"]/g,''),
+          uiPapel: serie[6].replace(/['"]/g,''),
+          uiDigital: serie[7].replace(/['"]/g,''),
+          uiOutros: serie[8].replace(/['"]/g,''),
+          dono: [],
           agregacoes: []
         }
         agregacoes.forEach(a => {
           a = a.replace(/[\r\n]+/g,'');
           var agregacao = a.split(/[;,]/)
-          if(agregacao[0]==zc.codigo && agregacao[1]==zc.referencia) {
+          var agCodigo = agregacao[0] || "";
+          var agReferencia = agregacao[1] || "";
+          if(agCodigo.replace(/['"]/g,'')==zc.codigo && agReferencia.replace(/['"]/g,'')==zc.referencia) {
             var ag = {
-              codigo: agregacao[2].replace(/[ -.,!/]/g, "_"),
-              titulo: agregacao[3],
-              dataContagem: agregacao[4],
-              ni: agregacao[5]
+              codigo: agregacao[2].replace(/[ -.,!/]/g, "_").replace(/['"]/g,''),
+              titulo: agregacao[3].replace(/^\"|\"$/g,"").replace(/['"]/g,''),
+              dataContagem: agregacao[4].replace(/['"]/g,''),
+              ni: agregacao[5].replace(/['"]/g,'')
             }
             zc.agregacoes.push(ag)
           }

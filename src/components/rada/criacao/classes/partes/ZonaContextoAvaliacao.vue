@@ -1,17 +1,17 @@
 <template>
   <div>
     <div v-if="newSerie.tipo != 'Subsérie'">
-      <EntidadesProdutoras :newSerie="newSerie" :RE="RE" />
-      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+      <EntidadesProdutoras :newSerie="newSerie" :RE="RE" :editar="editar" />
+
       <Legislacao
         :newSerie="newSerie"
         :legislacao="legislacao"
         :classes="classes"
         :legislacaoProcessada="legislacaoProcessada"
+        :tipos="tipos"
       />
-      <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
     </div>
-    <RelacoesEntidades :newSerie="newSerie" :classes="classes" />
+    <RelacoesEntidades :newSerie="newSerie" :classes="classes" :formaContagem="formaContagem" />
   </div>
 </template>
 
@@ -21,7 +21,16 @@ import Legislacao from "./Legislacao";
 import RelacoesEntidades from "./RelacoesClasse";
 
 export default {
-  props: ["newSerie", "classes", "legislacao", "RE", "legislacaoProcessada"],
+  props: [
+    "newSerie",
+    "classes",
+    "legislacao",
+    "RE",
+    "legislacaoProcessada",
+    "formaContagem",
+    "editar",
+    "tipos"
+  ],
   components: {
     EntidadesProdutoras,
     Legislacao,

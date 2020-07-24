@@ -411,16 +411,33 @@ export default {
             },
           ],
         },
+        /*{
+          entidade: "Portaria de Gestão de Documentos",
+          html: true,
+          texto: "Texto para as PGD",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/pgd",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            }
+          ]
+        },*/
         {
           entidade: "Relatórios de Avaliação de Documentação Acumulada",
           texto: "Texto para os Rada.",
           html: true,
           ops: [
             {
+              label: "Consultar",
+              url: "/rada",
+              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
               label: "Criar",
               url: "/rada/criar",
               level: [1, 2, 3, 3.5, 4, 5, 6, 7],
-            },
+            }
           ],
         },
         {
@@ -529,6 +546,22 @@ export default {
               label: "Aceder",
               url: lhost + "/docs",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+          ],
+        },
+        {
+          entidade: "Colaborações",
+          texto: "As colaborações são constituídas por um grupo de pessoas que participaram no desenvolvimento da plataforma.",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/colaboracoes",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
+              label: "Adicionar",
+              url: "/colaboracoes/criar",
+              level: [4, 5, 6, 7],
             },
           ],
         },

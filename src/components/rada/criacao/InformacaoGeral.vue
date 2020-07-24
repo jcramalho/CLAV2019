@@ -28,6 +28,7 @@
             placeholder="Selecione as Entidades Responsáveis."
             chips
             multiple
+            solo
           >
             <template v-slot:no-data>
               <v-list-item>
@@ -40,9 +41,9 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-btn color="indigo darken-1" dark @click="next">Continuar</v-btn>
-    <v-btn color="indigo darken-4" text @click="apagar">
-      <v-icon>delete_sweep</v-icon>
+    <v-btn color="indigo darken-4" dark @click="next">Continuar</v-btn>
+    <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">
+      Limpar
     </v-btn>
     <br />
   </v-card>
@@ -53,7 +54,9 @@ export default {
   props: ["RADA", "entidades"],
   computed: {
     entidadesProcessadas() {
-      return this.entidades.map(item => {
+      return this.entidades
+      .filter(item => item.estado !== "Inativa")
+      .map(item => {
         return item.sigla + " - " + item.designacao;
       });
     }

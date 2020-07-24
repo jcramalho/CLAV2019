@@ -14,13 +14,13 @@
             <v-card-text>
               <v-form ref="form" :lazy-validation="false">
                 <v-row>
-                  <v-col v-if="!!listaTipos[0]">
+                  <v-col v-if="!!tipos[0]">
                     <v-select
                       :rules="rule"
                       item-text="label"
                       item-value="value"
                       v-model="tipo"
-                      :items="listaTipos"
+                      :items="tipos"
                       label="Tipo"
                     />
                   </v-col>
@@ -34,7 +34,24 @@
                   </v-col>
 
                   <v-col>
-                    <v-menu
+                     <SelecionarData
+                      :d="data"
+                      label="Data"
+                      @dataSelecionada="data = $event"
+                    >
+                      <template v-slot:default="slotProps">
+                        <v-text-field
+                          :rules="[v => !!v || 'Campo obrigatório!']"
+                          v-model="slotProps.item.dataValor"
+                          :label="slotProps.item.label"
+                          prepend-icon="event"
+                          readonly
+                          v-on="slotProps.item.on"
+                          clearable
+                        ></v-text-field>
+                      </template>
+                    </SelecionarData>
+                    <!-- <v-menu
                       ref="menu2"
                       v-model="data_menu"
                       :close-on-content-click="false"
@@ -69,7 +86,7 @@
                           <v-icon>check</v-icon>
                         </v-btn>
                       </v-date-picker>
-                    </v-menu>
+                    </v-menu> -->
                   </v-col>
                 </v-row>
                 <v-row>
@@ -122,106 +139,22 @@
     </v-expansion-panels>
     <br />
   </div>
-  <!-- <v-row class="ma-2 indigo lighten-5">
-    <v-col cols="2" md="2" sm="2">
-      <div class="info-label">Legislação nova</div>
-      <v-btn small dark rounded color="indigo darken-2" @click="newLegislacao">
-        Adicionar
-        <v-icon small dark right>add_circle_outline</v-icon>
-      </v-btn>
-    </v-col>
-    <v-col>
-      <v-form ref="form" :lazy-validation="false">
-        <v-container>
-          <v-row>
-            <v-col v-if="!!listaTipos[0]">
-              <v-select
-                :rules="rule"
-                item-text="label"
-                item-value="value"
-                v-model="tipo"
-                :items="listaTipos"
-                label="Tipo"
-              />
-            </v-col>
-
-            <v-col>
-              <v-text-field :rules="rule" v-model="numero" label="Número"></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-menu
-                ref="menu2"
-                v-model="data_menu"
-                :close-on-content-click="false"
-                :return-value.sync="data"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    :rules="[v => !!v || 'Campo obrigatório!']"
-                    v-model="data"
-                    label="Data"
-                    prepend-icon="event"
-                    readonly
-                    v-on="on"
-                    clearable
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  full-width
-                  v-model="data"
-                  color="amber accent-3"
-                  locale="pt"
-                  :max="new Date().toISOString().split('T')[0]"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text @click="data_menu = false">
-                    <v-icon>keyboard_backspace</v-icon>
-                  </v-btn>
-                  <v-btn text @click="$refs.menu2.save(data)">
-                    <v-icon>check</v-icon>
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field :rules="rule" v-model="sumario" label="Sumário"></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-text-field v-model="link" label="Link"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row v-if="!!alertOn">
-            <v-col>
-              <v-alert dismissible dense text type="error">Legislação já existe!</v-alert>
-            </v-col>
-          </v-row>
-          <v-row v-if="sucessOn">
-            <v-col>
-              <v-alert dismissible dense text type="success">Legislação adicionada com sucesso!</v-alert>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
-    </v-col>
-  </v-row>-->
 </template>
 
 <script>
+const nanoid = require("nanoid");
+import SelecionarData from "@/components/generic/SelecionarData";
+
 export default {
-  props: ["legislacao", "newSerie", "legislacaoProcessada"],
+  props: ["legislacao", "newSerie", "legislacaoProcessada", "tipos"],
+  components: { 
+    SelecionarData
+  },
   data: function() {
     return {
       panel: [0],
       data_menu: false,
       rule: [v => !!v || "Campo é obrigatório."],
-      listaTipos: [],
       alertOn: false,
       sucessOn: false,
       tipo: "",
@@ -232,20 +165,6 @@ export default {
     };
   },
 
-  created: async function() {
-    try {
-      var tipos = await this.$request(
-        "get",
-        "/vocabularios/vc_tipoDiplomaLegislativo"
-      );
-      this.listaTipos = tipos.data.map(t => {
-        return { label: t.termo, value: t.termo };
-      });
-    } catch (e) {
-      return e;
-    }
-  },
-
   methods: {
     newLegislacao: async function() {
       this.alertOn = false;
@@ -253,7 +172,7 @@ export default {
       if (this.$refs.form.validate()) {
         if (!(await this.validaLegislacao())) {
           let legis = {
-            id: "-",
+            id: "leg_" + nanoid(),
             estado: "Nova",
             tipo: this.tipo,
             numero: this.numero,
@@ -267,13 +186,13 @@ export default {
 
           // PUSH NO ARRAY DE LEGISLAÇÕES PROCESSADAS PARA OS AUTOCOMPLETES
           this.legislacaoProcessada.push({
-            id: "-",
+            id: legis.id,
             legislacao: legis.tipo + " " + legis.numero + " - " + legis.sumario
           });
 
           // PUSH NO ARRAY DE LEGISLAÇÕES SELECIONADAS PARA A SÉRIE
           this.newSerie.legislacao.push({
-            id: "-",
+            id: legis.id,
             legislacao: legis.tipo + " " + legis.numero + " - " + legis.sumario
           });
           this.sucessOn = true;

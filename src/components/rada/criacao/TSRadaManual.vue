@@ -14,59 +14,135 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row justify="center">
-      <v-col cols="12" xs="12" sm="12">
-        <AddOrgFunc :classes="TS.classes" />
-        <Serie
-          :classes="TS.classes"
-          :legislacao="legislacao"
-          :RE="RE"
-          :UIs="TS.UIs"
-          :formaContagem="formaContagem"
-          :legislacaoProcessada="legislacaoProcessada"
-        />
-        <SubSerie :classes="TS.classes" :UIs="TS.UIs" :formaContagem="formaContagem" :RE="RE" />
+    <v-row>
+      <v-col cols="auto">
+        <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_area = true">
+          <v-icon dark left>add</v-icon>área orgânico-funcional
+        </v-btn>
+        <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_serie = true">
+          <v-icon dark left>add</v-icon>Série
+        </v-btn>
+        <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_subserie = true">
+          <v-icon dark left>add</v-icon>Subsérie
+        </v-btn>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col class="text-right">
+        <v-btn disabled color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
+          <v-icon dark left>add</v-icon>Importar Classes
+        </v-btn>
       </v-col>
     </v-row>
-    <!-- <p v-for="(classe, i) in TS.classes" :key="i">{{ classe }}</p> -->
-    <v-row>
+    <v-row v-if="!!TS.classes[0]">
+      <v-col xs="11" sm="11">
+        <v-text-field v-model="search" label="Pesquise a classe" clearable append-icon="search"></v-text-field>
+      </v-col>
+      <v-col xs="1" sm="1">
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-switch
+              prepend-icon="table_view"
+              inset
+              hide-details
+              v-model="tree_ou_tabela"
+              v-on="on"
+            ></v-switch>
+          </template>
+          <span>Alterar modo de visualização das classes</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
+    <AddOrgFunc
+      :dialog="criar_area"
+      v-if="criar_area"
+      @fecharDialog="criar_area = false"
+      :classes="TS.classes"
+    />
+    <!-- v-if="criar_serie" -->
+    <Serie
+      :dialog="criar_serie"
+      @fecharDialog="criar_serie = false;
+                      classe_copia = null;"
+      @limpar_copia="classe_copia = null"
+      :classe_para_copiar="classe_copia"
+      :classes="TS.classes"
+      :legislacao="legislacao"
+      :RE="RE"
+      :UIs="TS.UIs"
+      :formaContagem="formaContagem"
+      :legislacaoProcessada="legislacaoProcessada"
+      :tipos="tipos"
+    />
+    <SubSerie
+      :dialog="criar_subserie"
+      :classe_para_copiar="classe_copia"
+      @fecharDialog="criar_subserie = false;
+      classe_copia = null;"
+      @limpar_copia="classe_copia = null"
+      :classes="TS.classes"
+      :UIs="TS.UIs"
+      :formaContagem="formaContagem"
+      :RE="RE"
+    />
+    <!-- {{ TS.classes }} -->
+    <v-row v-if="!tree_ou_tabela">
       <v-col cols="12" xs="12" sm="12">
         <div v-if="TS.classes.length > 0">
-          <v-treeview hoverable :items="preparaTree" item-key="codigo">
-            <template v-slot:label="{ item }">
-              <EditarSerie
-                v-if="item.tipo == 'Série'"
-                @atualizacao="atualizacao_serie"
-                :treeview_object="item"
-                :classes="TS.classes"
-                :legislacao="legislacao"
-                :legislacaoProcessada="legislacaoProcessada"
-                :RE="RE"
-                :UIs="TS.UIs"
-                :formaContagem="formaContagem"
-                @remover="remover_classe"
-              />
-              <EditarSubserie
+          <v-treeview
+            hoverable
+            :items="preparaTree"
+            item-key="codigo"
+            :search="search"
+            :filter="filter"
+          >
+            <template v-slot:prepend="{ item }">
+              <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
+              <img
                 v-else-if="item.tipo == 'Subsérie'"
-                @atualizacao="atualizacao_subserie"
-                @remover="remover_classe"
-                :treeview_object="item"
-                :classes="TS.classes"
-                :RE="RE"
-                :UIs="TS.UIs"
-                :formaContagem="formaContagem"
+                style="width:23px; height:30px"
+                :src="svg_ssr"
               />
-              <EditarOrganicaFunc
-                v-else
-                @atualizacao="atualizacao_area_organico"
-                @remover="remover_classe"
-                :classes="TS.classes"
-                :treeview_object="item"
-              />
+            </template>
+            <template v-slot:label="{ item }">
+              <div @mouseover="mostrar_botao_copia = item" @mouseout="mostrar_botao_copia = false">
+                <b text @click="editarClasse(item)">{{ item.titulo }}</b>
+                <!-- Série -->
+                <b
+                  v-show="
+                  item.tipo == 'Série' &&
+                    (item.eFilhoDe == null ||
+                      (item.temDF && !!!item.children[0]))
+                "
+                  style="color:red"
+                >*</b>
+                <!-- Subsérie -->
+                <b
+                  v-show="
+                  item.tipo == 'Subsérie' &&
+                    (item.eFilhoDe == null || item.temDF)
+                "
+                  style="color:red"
+                >*</b>
+                <!-- N1, N2 OU N3 -->
+                <b
+                  v-show="
+                  item.eFilhoDe == null &&
+                    (item.tipo == 'N2' || item.tipo == 'N3')
+                "
+                  style="color:red"
+                >*</b>
+
+                <v-icon
+                  v-if="mostrar_botao_copia === item && (item.tipo == 'Série' || item.tipo == 'Subsérie')"
+                  @click="nova_classe_copia(item)"
+                  style="padding-left: 15px;"
+                  small
+                >file_copy</v-icon>
+              </div>
             </template>
           </v-treeview>
           <br />
-          <b v-if="incompleto" style="color:red">*Classes por preencher</b>
+          <b v-if="incompleto" style="color:red">*Campos por preencher</b>
         </div>
         <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
           <b>Sem Classes!</b> É obrigatório adicionar.
@@ -74,12 +150,67 @@
         <br />
       </v-col>
     </v-row>
-    <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
+    <v-row v-else>
+      <TabelaClassesRADA
+        background_color="#fafafa;"
+        :formaContagem="formaContagem"
+        :classes="TS.classes"
+        :search="search"
+        @editarClasse="editarClasse"
+      />
+    </v-row>
     <v-row>
       <v-col sm="12" xs="12">
         <ListaUI :TS="TS" :RE="RE" />
       </v-col>
     </v-row>
+    <!-- IMPORTAR CLASSES -->
+    <ImportarClasses
+      v-if="importar_classes"
+      :dialog="importar_classes"
+      :classes="TS.classes"
+      :RE="RE"
+      :legislacao="legislacaoProcessada"
+      @fecharDialog="importar_classes = false"
+      @pendurarNovasClasses="mergeClasses"
+    />
+    <!-- CRIAR CLASSES -->
+    <EditarSerie
+      v-if="editar_serie"
+      :dialog="editar_serie"
+      @fecharDialog="editar_serie = false"
+      @atualizacao="atualizacao_serie"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :legislacao="legislacao"
+      :legislacaoProcessada="legislacaoProcessada"
+      :RE="RE"
+      :UIs="TS.UIs"
+      :formaContagem="formaContagem"
+      @remover="remover_classe"
+      :tipos="tipos"
+    />
+    <EditarSubserie
+      v-if="editar_subserie"
+      :dialog="editar_subserie"
+      @fecharDialog="editar_subserie = false"
+      @atualizacao="atualizacao_subserie"
+      @remover="remover_classe"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :RE="RE"
+      :UIs="TS.UIs"
+      :formaContagem="formaContagem"
+    />
+    <EditarOrganicaFunc
+      v-if="editar_area_organico"
+      :dialog="editar_area_organico"
+      @fecharDialog="editar_area_organico = false"
+      @atualizacao="atualizacao_area_organico"
+      @remover="remover_classe"
+      :classes="TS.classes"
+      :treeview_object="treeview_object"
+    />
 
     <v-progress-circular
       v-if="loading_circle"
@@ -89,14 +220,46 @@
       indeterminate
     ></v-progress-circular>
     <div v-else>
-      <v-btn
-        :disabled="!Boolean(TS.classes[0]) || UIs_validas || incompleto || !Boolean(TS.titulo)"
-        color="#3949ab"
-        @click="sendToFather()"
-      >
-        <font style="color: white">Criar RADA</font>
-      </v-btn>
-      <v-btn @click="$emit('voltar', 2)">Voltar</v-btn>
+      <v-row no-gutters>
+        <v-col cols="12">
+          <v-btn color="indigo darken-4" dark @click="$emit('voltar', 2)">Voltar</v-btn>
+          <v-btn
+            style="margin-left: 10px"
+            color="indigo darken-4"
+            dark
+            @click="$emit('guardar', 'sim')"
+          >
+            Guardar Trabalho
+            <v-icon right>save</v-icon>
+          </v-btn>
+          <v-btn
+            style="margin-left: 10px"
+            color="indigo darken-4"
+            dark
+            @click="$emit('guardar', 'nao')"
+          >Continuar Depois</v-btn>
+          <v-btn
+            style="margin-left: 10px"
+            :disabled="
+          !Boolean(TS.classes[0]) ||
+            UIs_validas ||
+            incompleto ||
+            !Boolean(TS.titulo)
+        "
+            color="indigo darken-4"
+            @click="sendToFather()"
+          >
+            <font style="color: white">Submeter</font>
+          </v-btn>
+          <v-btn
+            style="margin-left: 10px"
+            color="red darken-4"
+            dark
+            v-if="pode_remover"
+            @click="$emit('remover')"
+          >Eliminar</v-btn>
+        </v-col>
+      </v-row>
     </div>
   </v-card>
 </template>
@@ -108,29 +271,64 @@ import SubSerie from "@/components/rada/criacao/classes/Subserie";
 import EditarOrganicaFunc from "@/components/rada/alteracao/EditarOrganicaFunc";
 import EditarSerie from "@/components/rada/alteracao/EditarSerie";
 import EditarSubserie from "@/components/rada/alteracao/EditarSubserie";
+import TabelaClassesRADA from "@/components/rada/consulta/TabelaClassesRADA";
 import ListaUI from "@/components/rada/criacao/ListaUI";
+import ImportarClasses from "@/components/rada/importacao/importarClasses";
 
 const labels = require("@/config/labels").criterios;
 
 export default {
-  props: ["TS", "entidades", "RE", "legislacao", "legislacaoProcessada"],
+  props: [
+    "TS",
+    "entidades",
+    "RE",
+    "legislacao",
+    "legislacaoProcessada",
+    "loading_circle",
+    "toSave",
+    "pode_remover"
+  ],
   components: {
+    ImportarClasses,
     AddOrgFunc,
     Serie,
     SubSerie,
     EditarOrganicaFunc,
     EditarSubserie,
     EditarSerie,
-    ListaUI
+    ListaUI,
+    TabelaClassesRADA
   },
   data: () => ({
-    loading_circle: false,
+    importar_classes: false,
+    tipos: [],
+    search: null,
+    tree_ou_tabela: false,
+    classe_copia: null,
+    mostrar_botao_copia: false,
+    criar_area: false,
+    criar_subserie: false,
+    criar_serie: false,
+    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+    erros_ts: [],
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
-    }
+    },
+    treeview_object: null,
+    editar_serie: false,
+    editar_subserie: false,
+    editar_area_organico: false
   }),
   computed: {
+    filter() {
+      return (item, search) => {
+        return (
+          item.codigo.indexOf(search) > -1 || item.titulo.indexOf(search) > -1
+        );
+      };
+    },
     preparaTree() {
       var myTree = [];
 
@@ -145,16 +343,11 @@ export default {
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
             eFilhoDe: this.TS.classes[i].eFilhoDe,
-            temUIs_ou_datas: Boolean(
-              (this.TS.classes[i].dataInicial != undefined &&
-                this.TS.classes[i].dataInicial != null) ||
-                (this.TS.classes[i].UIs != undefined &&
-                  this.TS.classes[i].UIs.length > 0)
-            ),
             temDF: Boolean(
-              this.TS.classes[i].df == null ||
-                this.TS.classes[i].pca == null ||
-                this.TS.classes[i].pca == "" ||
+              (!Boolean(this.TS.classes[i].df) &&
+                !Boolean(this.TS.classes[i].notaDF)) ||
+                (!Boolean(this.TS.classes[i].pca) &&
+                  !Boolean(this.TS.classes[i].notaPCA)) ||
                 this.TS.classes[i].formaContagem.forma == null
             ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
@@ -168,22 +361,12 @@ export default {
         e =>
           (e.tipo == "Série" &&
             ((!this.TS.classes.some(cl => cl.eFilhoDe == e.codigo) &&
-              (e.df == null ||
-                e.pca == null ||
-                e.pca == "" ||
+              ((!Boolean(e.df) && !Boolean(e.notaDF)) ||
+                (!Boolean(e.pca) && !Boolean(e.notaPCA)) ||
                 e.formaContagem.forma == null)) ||
-              e.eFilhoDe == null ||
-              !(
-                (e.dataInicial != undefined && e.dataInicial != null) ||
-                (e.UIs != undefined && e.UIs.length > 0)
-              ))) ||
+              e.eFilhoDe == null)) ||
           (e.tipo == "Subsérie" &&
-            (e.df == null ||
-              e.eFilhoDe == null ||
-              !(
-                (e.dataInicial != undefined && e.dataInicial != null) ||
-                (e.UIs != undefined && e.UIs.length > 0)
-              ))) ||
+            ((!Boolean(e.df) && !Boolean(e.notaDF)) || e.eFilhoDe == null)) ||
           (e.eFilhoDe == null && (e.tipo == "N2" || e.tipo == "N3"))
       );
     },
@@ -194,6 +377,27 @@ export default {
     }
   },
   methods: {
+    mergeClasses(novas_classes) {
+      for (let i = 0; i < novas_classes.length; i++) {
+        this.TS.classes.push(novas_classes[i]);
+      }
+    },
+    editarClasse(item) {
+      switch (item.tipo) {
+        case "Série":
+          this.treeview_object = item;
+          this.editar_serie = true;
+          break;
+        case "Subsérie":
+          this.treeview_object = item;
+          this.editar_subserie = true;
+          break;
+        default:
+          this.treeview_object = item;
+          this.editar_area_organico = true;
+          break;
+      }
+    },
     preparaTreeFilhos: function(pai) {
       let children = [];
 
@@ -205,16 +409,11 @@ export default {
               this.TS.classes[i].codigo + " - " + this.TS.classes[i].titulo,
             tipo: this.TS.classes[i].tipo,
             eFilhoDe: this.TS.classes[i].eFilhoDe,
-            temUIs_ou_datas: Boolean(
-              (this.TS.classes[i].dataInicial != undefined &&
-                this.TS.classes[i].dataInicial != null) ||
-                (this.TS.classes[i].UIs != undefined &&
-                  this.TS.classes[i].UIs.length > 0)
-            ),
             temDF: Boolean(
-              this.TS.classes[i].df == null ||
-                this.TS.classes[i].pca == null ||
-                this.TS.classes[i].pca == "" ||
+              (!Boolean(this.TS.classes[i].df) &&
+                !Boolean(this.TS.classes[i].notaDF)) ||
+                (!Boolean(this.TS.classes[i].pca) &&
+                  !Boolean(this.TS.classes[i].notaPCA)) ||
                 this.TS.classes[i].formaContagem.forma == null
             ),
             children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
@@ -224,8 +423,19 @@ export default {
 
       return children;
     },
+    nova_classe_copia(item) {
+      this.classe_copia = JSON.parse(
+        JSON.stringify(this.TS.classes.find(e => e.codigo == item.codigo))
+      );
+
+      if (item.tipo == "Série") {
+        this.criar_serie = true;
+      } else {
+        this.criar_subserie = true;
+      }
+    },
     sendToFather: function() {
-      this.loading_circle = true;
+      this.$emit("update:loading_circle", true);
       this.$emit("done");
     },
     atualizacao_area_organico(c) {
@@ -251,15 +461,15 @@ export default {
       serie_classe.dataInicial = c.dataInicial;
       serie_classe.dataFinal = c.dataFinal;
       serie_classe.tSerie = c.tSerie;
-      serie_classe.suporte = c.suporte;
-      serie_classe.medicao = c.medicao;
+      serie_classe.suporte_e_medicao = c.suporte_e_medicao;
       serie_classe.localizacao = c.localizacao;
       serie_classe.entProdutoras = c.entProdutoras;
       serie_classe.tipologiasProdutoras = c.tipologiasProdutoras;
       serie_classe.legislacao = c.legislacao;
       serie_classe.pca = c.pca;
       serie_classe.formaContagem = c.formaContagem;
-      serie_classe.notas = c.notas;
+      serie_classe.notaPCA = c.notaPCA;
+      serie_classe.notaDF = c.notaDF;
       serie_classe.justificacaoPCA = c.justificacaoPCA;
       serie_classe.df = c.df;
       serie_classe.justificacaoDF = c.justificacaoDF;
@@ -292,7 +502,8 @@ export default {
       subserie_classe.descricao = c.descricao;
       subserie_classe.pca = c.pca;
       subserie_classe.formaContagem = c.formaContagem;
-      subserie_classe.notas = c.notas;
+      subserie_classe.notaPCA = c.notaPCA;
+      subserie_classe.notaDF = c.notaDF;
       subserie_classe.justificacaoPCA = c.justificacaoPCA;
       subserie_classe.df = c.df;
       subserie_classe.justificacaoDF = c.justificacaoDF;
@@ -358,7 +569,7 @@ export default {
         let UIs_igual = serie_classe.UIs.find(ui => ui == c.UIs[i]);
 
         if (UIs_igual == undefined) {
-          this.adicionaUI(c.UIs[i], serie_classe);
+          this.adicionaUI(c.UIs[i], serie_classe, c);
         }
         novo_UIs.push(c.UIs[i]);
       }
@@ -380,7 +591,7 @@ export default {
         e => e.codigo != serie_classe.codigo
       );
     },
-    adicionaUI(novaUI, serie_classe) {
+    adicionaUI(novaUI, serie_classe, c) {
       let UI = this.TS.UIs.find(e => e.codigo == novaUI);
 
       if (UI != undefined) {
@@ -396,8 +607,14 @@ export default {
           dataInicial: null,
           dataFinal: null,
           produtor: {
-            tipologiasProdutoras: [],
-            entProdutoras: []
+            tipologiasProdutoras:
+              !!c.tipologiasProdutoras && c.tipologiasProdutoras.length == 1
+                ? [...c.tipologiasProdutoras]
+                : [],
+            entProdutoras:
+              !!c.entProdutoras && c.entProdutoras.length == 1
+                ? [...c.entProdutoras]
+                : []
           },
           classesAssociadas: [
             {
@@ -461,13 +678,14 @@ export default {
             dataFinal: null,
             tUA: null,
             tSerie: null,
-            suporte: null,
-            medicao: null,
+            suporte_e_medicao: [{ suporte: null, medicao: null }],
             localizacao: [],
             entProdutoras: [],
             tipologiasProdutoras: [],
             legislacao: [],
             relacoes: [],
+            notaPCA: null,
+            notaDF: null,
             UIs: [],
             pca: null,
             formaContagem: {
@@ -476,7 +694,6 @@ export default {
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
-            notas: "",
             eFilhoDe: null,
             tipo: "Série"
           };
@@ -490,13 +707,14 @@ export default {
             relacoes: [],
             UIs: [],
             pca: null,
+            notaPCA: null,
+            notaDF: null,
             formaContagem: {
               forma: null
             },
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
-            notas: "",
             eFilhoDe: null,
             tipo: "Subsérie"
           };
@@ -510,6 +728,9 @@ export default {
       switch (relacao.relacao) {
         case "Antecessora de":
           relacao_inversa = "Sucessora de";
+          break;
+        case "Cruzado de":
+          relacao_inversa = "Cruzado de";
           break;
         case "Sucessora de":
           relacao_inversa = "Antecessora de";
@@ -704,6 +925,9 @@ export default {
         case "Antecessora de":
           relacao_inversa = "Sucessora de";
           break;
+        case "Cruzado de":
+          relacao_inversa = "Cruzado de";
+          break;
         case "Sucessora de":
           relacao_inversa = "Antecessora de";
           break;
@@ -773,7 +997,16 @@ export default {
       );
     }
   },
-  created: async function() {
+  async created() {
+    let responseTipos = await this.$request(
+      "get",
+      "/vocabularios/vc_tipoDiplomaLegislativo"
+    );
+
+    this.tipos = responseTipos.data.map(t => {
+      return { label: t.termo, value: t.termo };
+    });
+
     let responseFC = await this.$request(
       "get",
       "/vocabularios/vc_pcaFormaContagem"
@@ -800,9 +1033,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-::v-deep .v-treeview-node {
-  background-color: rgba(240, 163, 10, 0.2);
-}
-</style>

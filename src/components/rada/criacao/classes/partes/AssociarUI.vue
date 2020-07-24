@@ -7,15 +7,15 @@
       <v-col md="9" sm="9" xs="12">
         <!-- {{newSerie.UIs}} -->
         <v-combobox
-          :rules="[v => !!v[0] || 'Campo obrigatório!']"
           v-model="newSerie.UIs"
           :items="getCodigos"
-          placeholder="Unidadades de Instalação"
+          label="Unidades de Instalação"
           clearable
           multiple
           item-text="searchField"
           item-value="codigo"
           chips
+          solo
           deletable-chips
           :return-object="false"
         >

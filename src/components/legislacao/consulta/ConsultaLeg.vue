@@ -5,25 +5,33 @@
     </v-card-title>
 
     <v-card-text>
-      <v-row v-for="(item, index) in objeto" v-bind:key="index">
-        <v-col cols="2" v-if="item.text">
-          <div class="info-label">
-            {{ item.campo }}
+      <div v-for="(item, index) in objeto" :key="index">
+        <v-row
+          v-if="
+            (item.text instanceof Array && item.text.length > 0) ||
+              (!(item.text instanceof Array) &&
+                item.text !== null &&
+                item.text !== '' &&
+                item.text !== undefined)
+          "
+        >
+          <v-col cols="2" v-if="item.text">
+            <div class="info-label">
+              {{ item.campo }}
 
-            <InfoBox
-              v-if="item.tipo === 'Legislação'"
-              :header="item.campo"
-              :text="myhelp.Legislacao.Campos[item.campo]"
-            />
-          </div>
-        </v-col>
+              <InfoBox
+                v-if="item.tipo === 'Legislação'"
+                :header="item.campo"
+                :text="myhelp.Legislacao.Campos[item.campo]"
+              />
+            </div>
+          </v-col>
 
-        <v-col v-if="item.text">
-          <div v-if="item.campo === 'Link'" class="info-content">
-            <a :href="item.text" target="_blank">{{ item.text }}</a>
-          </div>
-          <div v-else>
-            <div v-if="item.campo === 'Entidades'" class="info-content">
+          <v-col v-if="item.text">
+            <div v-if="item.campo === 'Link'" class="info-content">
+              <a :href="item.text" target="_blank">{{ item.text }}</a>
+            </div>
+            <div v-else-if="item.campo === 'Entidades'" class="info-content">
               <ul>
                 <li v-for="(ent, i) in item.text" :key="i">
                   <a :href="'/entidades/ent_' + ent.sigla">{{ ent.sigla }}</a>
@@ -31,9 +39,9 @@
               </ul>
             </div>
             <div v-else class="info-content">{{ item.text }}</div>
-          </div>
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+      </div>
 
       <!-- Consulta de legislação: processos regulados -->
       <v-row v-if="listaReg.length">
@@ -85,10 +93,10 @@ export default {
     "listaProcP",
     "listaEnt",
     "listaReg",
-    "parts"
+    "parts",
   ],
   components: {
-    InfoBox
+    InfoBox,
   },
   data: () => ({
     domainCollapsed: true,
@@ -99,7 +107,7 @@ export default {
       Comunicador: true,
       Decisor: true,
       Executor: true,
-      Iniciador: true
+      Iniciador: true,
     },
     participationsDic: {
       Apreciador: "Apreciar",
@@ -107,10 +115,10 @@ export default {
       Comunicador: "Comunicar",
       Decisor: "Decidir",
       Executor: "Executar",
-      Iniciador: "Iniciar"
+      Iniciador: "Iniciar",
     },
-    myhelp: help
-  })
+    myhelp: help,
+  }),
 };
 </script>
 

@@ -8,12 +8,38 @@
             Validação do pedido: {{ pedido.codigo }} -
             {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
-
             <v-spacer />
+            <v-tooltip
+              v-if="
+                !(
+                  pedido.objeto.acao === 'Criação' &&
+                  (pedido.estado === 'Submetido' ||
+                    pedido.estado === 'Distribuído')
+                )
+              "
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  @click="verHistorico()"
+                  color="white"
+                  v-on="on"
+                  class="ml-4"
+                >
+                  history
+                </v-icon>
+              </template>
+              <span>Ver histórico de alterações...</span>
+            </v-tooltip>
 
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-icon @click="showDespachos()" color="white" v-on="on">
+                <v-icon
+                  @click="showDespachos()"
+                  color="white"
+                  v-on="on"
+                  class="ml-2"
+                >
                   comment
                 </v-icon>
               </template>
@@ -21,12 +47,18 @@
             </v-tooltip>
           </v-card-title>
           <!-- Para a Criação de novos dados -->
-          <v-card-text v-if="pedido.objeto.acao === 'Criação'">
+          <v-card-text
+            v-if="
+              pedido.objeto.acao === 'Criação' ||
+                pedido.objeto.acao === 'Importação'
+            "
+          >
             <ValidaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
             />
 
+            <ValidaRADA v-if="pedido.objeto.tipo === 'RADA'" :p="pedido" />
             <ValidaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
@@ -38,8 +70,12 @@
             />
 
             <ValidaAE
-              v-if="pedido.objeto.tipo === 'Auto de Eliminação'"
+              v-if="
+                pedido.objeto.tipo.includes('AE ') ||
+                  pedido.objeto.tipo === 'Auto de Eliminação'
+              "
               :p="pedido"
+              :tipo="pedido.objeto.tipo"
             />
           </v-card-text>
 
@@ -81,6 +117,11 @@
         @fecharDialog="fecharDialog()"
       />
     </v-dialog>
+
+    <!-- Dialog Ver Historico de Alterações-->
+    <v-dialog v-model="verHistoricoDialog" width="70%">
+      <VerHistorico :pedido="pedido" @fecharDialog="fecharHistorico()" />
+    </v-dialog>
   </v-row>
 </template>
 
@@ -89,12 +130,14 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
+import ValidaRADA from "@/components/pedidos/validacao/ValidaRADA";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
 import ValidaEditaTipologiaEntidade from "@/components/pedidos/validacao/ValidaEditaTipologiaEntidade";
 
 import VerDespachos from "@/components/pedidos/generic/VerDespachos";
+import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -113,10 +156,13 @@ export default {
     Loading,
     VerDespachos,
     ErroDialog,
+    ValidaRADA,
+    VerHistorico,
   },
 
   data() {
     return {
+      verHistoricoDialog: false,
       loading: true,
       pedido: {},
       erroDialog: {
@@ -153,6 +199,14 @@ export default {
   },
 
   methods: {
+    verHistorico() {
+      this.verHistoricoDialog = true;
+    },
+
+    fecharHistorico() {
+      this.verHistoricoDialog = false;
+    },
+
     showDespachos() {
       this.despachosDialog = true;
     },

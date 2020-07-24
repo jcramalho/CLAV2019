@@ -87,7 +87,21 @@
             <v-col>
               <SelecionarData
                 :d="entidade.dataCriacao"
+                :label="'Data: AAAA-MM-DD'"
                 @dataSelecionada="entidade.dataCriacao = $event"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Data de extinção</div>
+            </v-col>
+            <v-col>
+              <SelecionarData
+                :d="entidade.dataExtincao"
+                :label="'Data: AAAA-MM-DD'"
+                @dataSelecionada="entidade.dataExtincao = $event"
               />
             </v-col>
           </v-row>
@@ -151,10 +165,11 @@ export default {
       sigla: "",
       internacional: "",
       sioe: "",
-      tipologiasSel: [],
       codigo: "",
       dataCriacao: "",
+      dataExtincao: "",
       estado: "Ativa",
+      tipologiasSel: [],
     },
 
     // Para o seletor de processos

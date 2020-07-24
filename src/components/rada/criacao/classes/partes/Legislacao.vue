@@ -4,6 +4,7 @@
       :legislacao="legislacao"
       :newSerie="newSerie"
       :legislacaoProcessada="legislacaoProcessada"
+      :tipos="tipos"
     />
     <v-row>
       <v-col cols="12" xs="12" sm="3">
@@ -11,13 +12,14 @@
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-autocomplete
-          :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.legislacao"
           :items="legislacaoProcessada"
-          placeholder="Selecione a legislação associada à série."
+          label="Selecione a legislação associada à série"
           multiple
           item-text="legislacao"
           return-object
+          solo
+          clearable
         >
           <template v-slot:no-data>
             <v-list-item>
@@ -44,7 +46,7 @@
 import NovaLegislacao from "./NovaLegislacao";
 
 export default {
-  props: ["newSerie", "legislacao", "classes", "legislacaoProcessada"],
+  props: ["newSerie", "legislacao", "classes", "legislacaoProcessada", "tipos"],
   components: {
     NovaLegislacao
   },

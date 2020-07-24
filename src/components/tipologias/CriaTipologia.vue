@@ -101,8 +101,8 @@ export default {
       designacao: "",
       sigla: "",
       estado: "Ativa",
-      entidadesSel: [],
       codigo: "",
+      entidadesSel: [],
     },
 
     // Para o seletor

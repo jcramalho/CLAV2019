@@ -8,30 +8,32 @@
         <table class="consulta">
           <tr>
             <td style="width:20%;">
-              <div class="info-label">Entidade Responsável:</div>
+              <div class="info-label">Entidade Responsável</div>
             </td>
-            <td style="width:80%;" v-if="p.objeto.dados.ae.entidade">
-              {{ p.objeto.dados.ae.entidade }}
+            <td style="width:80%;" v-if="p.objeto.dados.entidade">
+              {{ p.objeto.dados.entidade }}
             </td>
             <td style="width:80%;" v-else>
               {{ p.entidade }}
             </td>
           </tr>
-          <tr>
+          <tr v-if="p.objeto.dados.legislacao">
             <td style="width:20%;">
-              <div class="info-label">Fonte de Legitimação:</div>
+              <div class="info-label">Fonte de Legitimação</div>
             </td>
-            <td style="width:80%;">{{ p.objeto.dados.ae.legislacao }}</td>
+            <td style="width:80%;">{{ p.objeto.dados.legislacao }}</td>
+          </tr>
+          <tr v-else>
+            <td style="width:20%;">
+              <div class="info-label">Referencial Classificativo</div>
+            </td>
+            <td style="width:80%;">Lista Consolidada</td>
           </tr>
           <tr>
             <td style="width:20%;">
-              <div class="info-label">Fundo:</div>
+              <div class="info-label">Fundo</div>
             </td>
-            <td style="width:80%;">
-              <li v-for="(f, i) in p.objeto.dados.ae.fundo" :key="i">
-                {{ f }}
-              </li>
-            </td>
+            <td style="width:80%;"><div v-for="(f,i) in p.objeto.dados.fundo" :key="i">{{f}}</div></td>
           </tr>
         </table>
 
@@ -44,8 +46,8 @@
             <v-expansion-panel-content>
               <v-list>
                 <v-list-group
-                  v-for="item in p.objeto.dados.ae.zonaControlo"
-                  :key="item.codigo"
+                  v-for="(item,index) in p.objeto.dados.zonaControlo"
+                  :key="index"
                   color="grey darken-1"
                   no-action
                 >
@@ -54,41 +56,37 @@
                       <v-list-item-title
                         v-if="item.codigo && item.referencia"
                         v-text="
-                          'Zona de Controlo - ' +
-                            item.codigo +
-                            ' ' +
-                            item.referencia
+                          item.codigo +
+                            ', ' +
+                          item.referencia +
+                            ' - ' +
+                          item.titulo                           
                         "
                       ></v-list-item-title>
                       <v-list-item-title
                         v-else-if="item.codigo"
-                        v-text="'Zona de Controlo - ' + item.codigo"
+                        v-text="item.codigo + ' - ' + item.titulo"
                       ></v-list-item-title>
                       <v-list-item-title
                         v-else
-                        v-text="'Zona de Controlo - ' + item.referencia"
+                        v-text="item.referencia + ' - ' + item.titulo"
                       ></v-list-item-title>
                     </v-list-item-content>
                   </template>
                   <v-list-item-content>
-                    <v-list-item-title>
+                    <v-list-item-title class="wrap-text">
                       <table class="consulta mx-5">
                         <tr v-if="item.codigo">
                           <td style="width:20%;">
-                            <div class="info-label">Código da class:</div>
+                            <div class="info-label">Código da classe</div>
                           </td>
                           <td style="width:80%;">
-                            <a
-                              v-if="!item.referencia"
-                              :href="'/classes/consultar/c' + item.codigo"
-                              >{{ item.codigo }}</a
-                            >
-                            <div v-else>{{ item.codigo }}</div>
+                            {{ item.codigo }}
                           </td>
                         </tr>
                         <tr v-if="item.referencia">
                           <td style="width:20%;">
-                            <div class="info-label">Referência:</div>
+                            <div class="info-label">Referência</div>
                           </td>
                           <td style="width:80%;">
                             {{ item.referencia }}
@@ -96,7 +94,7 @@
                         </tr>
                         <tr v-if="item.titulo">
                           <td style="width:20%;">
-                            <div class="info-label">Título:</div>
+                            <div class="info-label">Título</div>
                           </td>
                           <td style="width:80%;">
                             {{ item.titulo }}
@@ -104,17 +102,23 @@
                         </tr>
                         <tr v-if="item.prazoConservacao">
                           <td style="width:20%;">
-                            <div class="info-label">
-                              Prazo de Conservação Administrativa:
-                            </div>
+                            <div class="info-label">Prazo de Conservação Administrativa</div>
                           </td>
                           <td style="width:80%;">
-                            {{ item.prazoConservacao }} Anos
+                            {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
                           </td>
+                        </tr>
+                        <tr v-if="item.notasPCA">
+                          <td style="width:20%;">
+                            <div class="info-label">
+                              Notas do PCA
+                            </div>
+                          </td>
+                          <td style="width:80%;">{{ item.notasPCA }}</td>
                         </tr>
                         <tr v-if="item.destino">
                           <td style="width:20%;">
-                            <div class="info-label">Destino Final:</div>
+                            <div class="info-label">Destino Final</div>
                           </td>
                           <td v-if="item.destino === 'E'" style="width:80%;">
                             Eliminação
@@ -129,17 +133,34 @@
                             {{ item.destino }}
                           </td>
                         </tr>
-                        <tr v-if="item.ni && item.destino === 'C'">
+                        <tr v-if="item.notaDF">
                           <td style="width:20%;">
                             <div class="info-label">
-                              Natureza de intervenção:
+                              Nota do DF
+                            </div>
+                          </td>
+                          <td style="width:80%;">{{ item.notaDF }}</td>
+                        </tr>
+                        
+                        <tr v-if="item.destino=='CP' && item.justificaDF">
+                          <td style="width:20%;">
+                            <div class="info-label">
+                              Justificação do DF
+                            </div>
+                          </td>
+                          <td style="width:80%;"><span v-for="(just,index) in item.justificaDF" :key="index">{{ just }}</span></td>
+                        </tr>
+                        <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
+                          <td style="width:20%;">
+                            <div class="info-label">
+                              Natureza de intervenção
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
-                        <tr v-if="item.dono && item.destino === 'C'">
+                        <tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
                           <td style="width:20%;">
-                            <div class="info-label">Dono do PN:</div>
+                            <div class="info-label">Donos do PN</div>
                           </td>
                           <td style="width:80%;">
                             <li v-for="(d, i) in item.dono" :key="i">
@@ -149,7 +170,7 @@
                         </tr>
                         <tr>
                           <td style="width:20%;">
-                            <div class="info-label">Data de Início:</div>
+                            <div class="info-label">Data de Início</div>
                           </td>
                           <td style="width:80%;">
                             {{ item.dataInicio }}
@@ -157,14 +178,14 @@
                         </tr>
                         <tr>
                           <td style="width:20%;">
-                            <div class="info-label">Data de Fim:</div>
+                            <div class="info-label">Data de Fim</div>
                           </td>
                           <td style="width:80%;">{{ item.dataFim }}</td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
                             <div class="info-label">
-                              N.º de agregações:
+                              N.º de agregações
                             </div>
                           </td>
                           <td style="width:80%;">
@@ -174,7 +195,7 @@
                         <tr v-if="item.uiPapel">
                           <td style="width:20%;">
                             <div class="info-label">
-                              Medição das UI em papel (m.l.):
+                              Medição das UI em papel (m.l.)
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.uiPapel }}</td>
@@ -182,7 +203,7 @@
                         <tr v-if="item.uiDigital">
                           <td style="width:20%;">
                             <div class="info-label">
-                              Medição das UI em digital (Gb):
+                              Medição das UI em digital (Gb)
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.uiDigital }}</td>
@@ -190,7 +211,7 @@
                         <tr v-if="item.uiOutros">
                           <td style="width:20%;">
                             <div class="info-label">
-                              Medição das UI noutros suportes:
+                              Medição das UI noutros suportes
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.uiOutros }}</td>
@@ -219,78 +240,6 @@
                           :search="search"
                         />
                       </div>
-
-                      <!--<v-expansion-panels>
-                        <v-expansion-panel class="ma-2">
-                          <v-expansion-panel-header class="pa-4 indigo darken-4 title white--text"
-                            >Zonas de Agregação</v-expansion-panel-header
-                          >
-                          <v-expansion-panel-content>
-                            <v-list class="ma-1">
-                              <v-list-group
-                                v-for="subItem in item.agregacoes"
-                                :key="subItem.codigo"
-                                color="grey darken-1"
-                                no-action
-                              >
-                                <template v-slot:activator>
-                                  <v-list-item-content class="info-label mx-3">
-                                    <v-list-item-title
-                                      v-text="'Agregação ' + subItem.codigo"
-                                    ></v-list-item-title>
-                                  </v-list-item-content>
-                                </template>
-                                <v-list-item-content>
-                                  <v-list-item-title>
-                                    <table class="consulta mx-8">
-                                      <tr>
-                                        <td style="width:20%;">
-                                          <div class="info-label">
-                                            Código da agregações:
-                                          </div>
-                                        </td>
-                                        <td style="width:80%;">
-                                          {{ subItem.codigo }}
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="width:20%;">
-                                          <div class="info-label">
-                                            Título da agregações:
-                                          </div>
-                                        </td>
-                                        <td style="width:80%;">
-                                          {{ subItem.titulo }}
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="width:20%;">
-                                          <div class="info-label">
-                                            Data de Contagem do PCA:
-                                          </div>
-                                        </td>
-                                        <td style="width:80%;">
-                                          {{ subItem.dataContagem }}
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="width:20%;">
-                                          <div class="info-label">
-                                            Natureza de Intervenção:
-                                          </div>
-                                        </td>
-                                        <td style="width:80%;">
-                                          {{ subItem.ni }}
-                                        </td>
-                                      </tr>
-                                    </table>
-                                  </v-list-item-title>
-                                </v-list-item-content>
-                              </v-list-group>
-                            </v-list>
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                      </v-expansion-panels>-->
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-group>
@@ -397,5 +346,10 @@ li .panel-body li {
 
 .is-collapsed li:nth-child(n + 5) {
   display: none;
+}
+
+.wrap-text {
+  -webkit-line-clamp: unset !important;
+  white-space: normal;
 }
 </style>

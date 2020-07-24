@@ -129,14 +129,16 @@ export default {
     },
     consume() {
       this.notificacoes = []
-      this.socket = io.connect("http://localhost:7779"); //lhost.replace('/v2', '')
-      console.log(this.$verifyTokenUser().email)
-      this.socket.emit('email', {
-        email: this.$verifyTokenUser().email
-      });
-      this.socket.on(this.$verifyTokenUser().email, (data) => {
-        this.notificacoes.push(JSON.parse(data))
-      })
+      var email = this.$verifyTokenUser().email
+      if(email){
+        this.socket = io.connect("http://localhost:7779"); //lhost.replace('/v2', '')
+        this.socket.emit('email', {
+          email: email
+        });
+        this.socket.on(this.$verifyTokenUser().email, (data) => {
+          this.notificacoes.push(JSON.parse(data))
+        })
+      }
     }
   },
   created(){

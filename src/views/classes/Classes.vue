@@ -493,7 +493,7 @@ export default {
         text: "Termos de Índice",
         value: { nome: "ti", enum: [] }
       },
-      { text: "PCA", value: { nome: "pca", mask: "#########", enum: [] } },
+      { text: "PCA", value: { nome: "pca", enum: [] } },
       { text: "Forma de contagem do PCA", value: { nome: "fc_pca", enum: [] } },
       {
         text: "Subforma de contagem do PCA",
@@ -507,7 +507,8 @@ export default {
           enum: [
             { text: "Conservação", value: "C" },
             { text: "Conservação Parcial", value: "CP" },
-            { text: "Eliminação", value: "E" }
+            { text: "Eliminação", value: "E" },
+            { text: "Não Especificado", value: "NE" }
           ]
         }
       },
