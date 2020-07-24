@@ -47,6 +47,20 @@
                   </v-alert>
                 </template>
 
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    right
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
+                </template>
+
                 <template v-slot:item.operacao="{ item }">
                   <v-icon color="red" @click="removeEntidade(item)">
                     delete
@@ -149,7 +163,11 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla, mapKeys } from "@/utils/utils";
+import {
+  comparaSigla,
+  mapKeys,
+  identificaItemAdicionado,
+} from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -234,23 +252,30 @@ export default {
   },
 
   mounted() {
-    const criaNovoHistorico = {};
-    Object.keys(this.dados).forEach((key) => {
-      if (key !== "codigo")
-        criaNovoHistorico[key] = {
-          cor: "verde",
-          dados: this.dados[key],
-          nota: null,
-        };
+    const copiaHistorico = JSON.parse(
+      JSON.stringify(this.historico[this.historico.length - 1])
+    );
 
+    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+    this.novoHistorico = copiaHistorico;
+
+    Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
     });
 
-    this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.historico[this.historico.length - 1]
+      );
+    },
+
     transformaKeys(key) {
       return mapKeys(key);
     },
@@ -289,6 +314,9 @@ export default {
           cor: "amarelo",
           dados: this.dados.entidadesSel,
         };
+
+        this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+        this.esconderOperacoes.entidadesSel = true;
       }
     },
 
@@ -300,6 +328,9 @@ export default {
         cor: "amarelo",
         dados: this.dados.entidadesSel,
       };
+
+      this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+      this.esconderOperacoes.entidadesSel = true;
     },
 
     async loadEntidades() {
@@ -396,6 +427,7 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+
       this.animacoes[campo] = !this.animacoes[campo];
     },
 
@@ -404,6 +436,7 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+
       this.animacoes[campo] = !this.animacoes[campo];
     },
 

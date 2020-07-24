@@ -128,13 +128,31 @@
                   ></v-autocomplete>
                 </div>
                 <div v-else>
-                  <v-autocomplete
-                    label="Selecione a fonte de legitimação"
-                    :items="portariaRada"
-                    v-model="auto.legislacao"
-                    solo
-                    dense
-                  ></v-autocomplete>
+                  <v-row>
+                    <v-col cols="3">
+                      <v-switch class="ma-1" v-model="switchRada" :label="radaLabel"></v-switch>
+                    </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        v-if="switchRada"
+                        label="Selecione a Tabela de Selação"
+                        :items="tsRada"
+                        item-text="titulo"
+                        return-object
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                      <v-autocomplete
+                        v-else
+                        label="Selecione a fonte de legitimação"
+                        :items="portariaRada"
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                    </v-col>
+                  </v-row>
                 </div>
                 <div style="width:100%">
                   Para submeter um auto de eliminação, selecione os ficheiros
@@ -378,11 +396,13 @@ export default {
     portaria: [],
     portariaRada: [],
     tabelasSelecao: [],
+    tsRada: [],
     fundo: [],
     donos: [],
     fileSerie: null,
     fileAgreg: null,
     tipo: "TS_LC",
+    switchRada: false,
     flagAE: false,
     successDialog: false,
     success: "",
@@ -397,16 +417,36 @@ export default {
     publicPath: process.env.BASE_URL,
     myhelp: help
   }),
+  computed: {
+    radaLabel: function() {
+      return this.switchRada ? "Tabela de Seleção" : "Fonte de Legitimação"
+    }
+  },
   methods: {
     validar: async function() {
       for(var zc of this.auto.zonaControlo) {
-        if(this.tipo=="RADA" && (!zc.prazo || zc.prazo=="" || !(/^[0-9]*$/.test(zc.prazo)))) {
+        if(zc.notasPCA && !zc.validaNotaPCA) {
           this.errosVal.erros.push({
-            sobre: "Prazo de Conservação Administrativa",
-            mensagem: "Preenchimento incorreto ou não preenchido na classe " + zc.codigo + " " + zc.referencia
+            sobre: "Notas do PCA",
+            mensagem: "É necessária confirmação de cumprimento da nota do PCA \""+zc.notasPCA+"\""
           })
-          this.errosVal.numErros++
-        }
+          this.errosVal.numErros++;
+        } 
+        if(zc.notaDF && !zc.validaNotaDF) {
+          this.errosVal.erros.push({
+            sobre: "Nota do DF",
+            mensagem: "É necessária confirmação de cumprimento da nota do DF \""+zc.notaDF+"\""
+          })
+          this.errosVal.numErros++;
+        } 
+        if((this.tipo=="TS_LC" || this.tipo=="PGD_LC") && zc.destino=="CP" && !zc.validaJustificaDF) {
+          for(var just of zc.justificaDF)
+            this.errosVal.erros.push({
+              sobre: "Notas do PCA",
+              mensagem: "É necessária confirmação de cumprimento da justificação do DF \""+just+"\"\n"
+            })
+            this.errosVal.numErros++;
+        } 
         if(!zc.destino || zc.destino=="") {
           this.errosVal.erros.push({
             sobre: "Destino Final",
@@ -452,7 +492,6 @@ export default {
       for(var zc of this.auto.zonaControlo) {
         if(this.tipo=="PGD_LC" || this.tipo=="TS_LC")
           delete zc["referencia"];
-        if(this.tipo=="RADA") zc.prazoConservacao = zc.prazo;
 
         if(zc.destino === "Conservação") zc.destino = "C"
         else if(zc.destino === "Eliminação") zc.destino = "E"
@@ -466,6 +505,7 @@ export default {
 
       this.auto.responsavel = user.email;
       this.auto.entidade = user.entidade;
+      this.auto.tipo = this.tipo;
       var tipo = this.tipo
       if (tipo == "PGD_LC" || tipo == "TS_LC") tipo = tipo.replace(/_/g,"/");
       tipo = "AE " + tipo;
@@ -522,11 +562,19 @@ export default {
                   }
                   delete this.auto["legislacao"]
                   //Para já apenas LC
-                  this.auto.referencial = "lc1"
+                  this.auto.referencial = "Lista Consolidada#lc1"
 
                   delete zc["referencia"];
+                  
                   zc.titulo = classe.titulo;
                   zc.prazoConservacao = classe.pca.valores;
+                  zc.notasPCA = classe.pca.notas;
+                  zc.notaDF = classe.df.nota;
+                  if(classe.df.justificacao)
+                    zc.justificaDF = classe.df.justificacao.map(just => {return just.conteudo})
+                  zc.validaNotaDF = false;
+                  zc.validaNotaPCA = false;
+                  zc.validaJustificaDF = false;
                   if(classe.df.valor == "E")
                     zc.destino = "Eliminação";
                   else if(classe.df.valor == "C")
@@ -534,7 +582,11 @@ export default {
                   else zc.destino = classe.df.valor;
                 });
               }
-              else if(this.tipo == "PGD_LC" || this.tipo == "PGD") {
+              else {
+                if(this.tipo == "RADA" && this.switchRada) {
+                  this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
+                  delete this.auto["legislacao"]
+                }
                 this.auto.zonaControlo.forEach(zc => {
                   if(zc.codigo && zc.referencia)
                     var classe = this.classes.find(
@@ -550,10 +602,22 @@ export default {
                     )
                   if (!classe) {
                     this.flagAE = true;
-                    this.erro =
-                      "Codigo da classe <b>" +
-                      zc.codigo +
-                      "</b> não foi encontrado em "+this.auto.legislacao.split(" - ")[0];
+                    if(zc.codigo && zc.referencia) 
+                      this.erro =
+                        "Codigo da classe <b>" +
+                        zc.codigo +
+                        "</b> e Referência <b>"+ zc.referencia +
+                        "</b> não foram encontrados em "+this.auto.legislacao.split(" - ")[0];
+                    else if(zc.codigo) 
+                      this.erro =
+                        "Codigo da classe <b>" +
+                        zc.codigo +
+                        "</b> não foi encontrado em "+this.auto.legislacao.split(" - ")[0];
+                    else
+                      this.erro =
+                        "Referência <b>" +
+                        zc.referencia +
+                        "</b> não foi encontrada em "+this.auto.legislacao.split(" - ")[0];
                     return; //ERROS
                   }
                   
@@ -574,15 +638,22 @@ export default {
                         +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                     return;
                   }
-
-                  zc.idClasse = classe.classe;
+                  
+                  zc.idClasse = classe.idClasse;
                   zc.titulo = classe.titulo;
-                  zc.prazoConservacao = classe.pca;
-                  if(classe.df == "E")
+                  zc.prazoConservacao = classe.pca.valores;
+                  zc.notasPCA = classe.pca.notas;
+                  zc.notaDF = classe.df.nota;
+                  if(classe.df.justificacao)
+                    zc.justificaDF = classe.df.justificacao.map(just => {return just.conteudo})
+                  zc.validaNotaDF = false;
+                  zc.validaNotaPCA = false;
+                  zc.validaJustificaDF = false;
+                  if(classe.df.valor == "E")
                     zc.destino = "Eliminação";
-                  else if(classe.df == "C")
+                  else if(classe.df.valor == "C")
                     zc.destino = "Conservação";
-                  else zc.destino = classe.df;
+                  else zc.destino = classe.df.valor;
                 })
               }
               if (this.flagAE) this.erroDialog = true;
@@ -632,7 +703,7 @@ export default {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
+          myPortarias.push(l.tipo + " " + l.numero + " - " + l.sumario);
         }
         return myPortarias;
       } catch (error) {
@@ -661,6 +732,10 @@ export default {
       }
     },
     filtrarDonos: async function() {
+      if(typeof this.auto.legislacao != "string") {
+        this.auto.referencial = this.auto.legislacao.codigo;
+        this.auto.legislacao = this.auto.legislacao.titulo;
+      }
       this.donos = this.entidades
 
       for(var f of this.auto.fundo)
@@ -680,7 +755,7 @@ export default {
           response2.data
         );
       }
-      else if(this.tipo == "PGD" || this.tipo == "PGD_LC") {
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC"|| (this.tipo=="RADA" && !this.switchRada)) {
         var response = await this.$request(
           "get",
           "/legislacao"
@@ -693,12 +768,42 @@ export default {
             "get",
             "/pgd/pgd_"+leg[0].id
           )
-        else 
+        else  if(this.tipo=="PGD_LC")
           var response2 = await this.$request(
             "get",
             "/pgd/pgd_lc_"+leg[0].id
           )
-        this.classes = response2.data
+        else 
+          var response2 = await this.$request(
+            "get",
+            "/pgd/rada/tsRada_"+leg[0].id
+          )
+        this.classes = response2.data.filter(c=> c.nivel>2).map(c => {
+            return {
+              idClasse: c.classe,
+              nivel: c.nivel,
+              codigo: c.codigo,
+              referencia: c.referencia,
+              titulo: c.titulo,
+              df: {valor: c.df, nota: c.notaDF},
+              pca: {valores: c.pca, notas: c.notaPCA},
+            }
+        })
+      } else if(this.tipo == "RADA" && this.switchRada) {
+        var response = await this.$request(
+          "get",
+          "/rada/"+this.auto.referencial
+        )
+        this.classes = response.data.tsRada.filter(c=> c.df && c.pca).map(c=> {
+          return {
+            idClasse: c.classes.split("#")[1],
+            codigo: c.codigo,
+            referencia: c.referencia,
+            titulo: c.titulo,
+            df: {valor: c.df.df, nota: c.df.notadf},
+            pca: {valores: c.pca.pca, notas: c.pca.notaPCA}
+          }
+        })
       }
       else this.classes = [];
 
@@ -725,15 +830,21 @@ export default {
       var response3 = await this.$request("get", "/legislacao?fonte=RADA");
       this.portariaRada = await this.prepararLeg(response3.data);
       this.tabelasSelecao.push("Lista Consolidada")
+      var response4 = await this.$request("get","/rada");
+      this.tsRada = response4.data
     } catch (e) {
       this.portariaLC = [];
       this.portaria = [];
       this.portariaRada = [];
       this.tabelasSelecao = [];
+      this.tsRada = [];
     }
   },
   watch: {
     tipo: function() {
+      this.auto.legislacao = null;
+    },
+    switchRada: function() {
       this.auto.legislacao = null;
     } 
   }

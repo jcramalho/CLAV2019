@@ -39,11 +39,12 @@ export default {
       .then(response2 => {
         this.fontesRADA = response2.data.map(f => {
           return {
-            data: f.rada.split("_")[3],
-            tipo: "RADA",
-            entidade: f.entidade.split("_")[1],
-            sumario: "Tabela de Seleção para Documentação Acumulada de " + f.entidade.split("_")[1] + ", relativo ao ano " + f.rada.split("_")[3] +".",
-            link: ""
+            idRADA: f.idRADA,
+            data: f.data,
+            tipo: f.tipo,
+            numero: f.numero,
+            sumario: f.sumario,
+            link: f.link
           };
         });
         this.fontesRADAReady = true;

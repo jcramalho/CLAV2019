@@ -115,7 +115,6 @@ import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInf
 import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
 import {
-  comparaArraySel,
   criarHistorico,
   extrairAlteracoes,
 } from "@/utils/utils";
@@ -219,6 +218,9 @@ export default {
           switch (this.acao) {
             case "Criação":
               erros = await this.validarTipologiaCriacao();
+
+              historico.push(criarHistorico(dataObj));
+
               break;
 
             case "Alteração":

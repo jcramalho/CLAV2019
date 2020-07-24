@@ -10,7 +10,7 @@
         <b>{{ etapaReferente }}</b>
       </v-chip>
 
-      <v-tooltip v-if="historico.length > 1" bottom>
+      <v-tooltip v-if="dados.length > 1" bottom>
         <template v-slot:activator="{ on }">
           <v-icon
             @click="dialogVerHistoricoEmTabela = true"
@@ -29,120 +29,7 @@
       <v-card flat tile>
         <v-window v-model="onboarding" class="mt-2">
           <v-window-item v-for="(h, i) in dados" :key="i">
-            <v-card
-              v-if="i === 0"
-              shaped
-              class="rounded-card pa-4"
-              color="indigo lighten-5"
-            >
-              <v-card-text>
-                <div v-for="(info, campo) in h" :key="campo">
-                  <v-row
-                    v-if="
-                      info !== '' &&
-                        info !== null &&
-                        campo !== 'estado' &&
-                        campo !== 'id'
-                    "
-                  >
-                    <v-col cols="2">
-                      <div class="info-descricao">
-                        {{ transformaKeys(campo) }}
-                      </div>
-                    </v-col>
-                    <v-col>
-                      <div
-                        v-if="!(info instanceof Array)"
-                        class="info-conteudo"
-                      >
-                        {{ info }}
-                      </div>
-
-                      <div v-else>
-                        <v-data-table
-                          v-if="campo === 'entidadesSel'"
-                          :headers="entidadesHeaders"
-                          :items="info"
-                          class="elevation-1"
-                          :footer-props="footerPropsEntidades"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                            >
-                              Nenhuma entidade selecionada...
-                            </v-alert>
-                          </template>
-                        </v-data-table>
-
-                        <v-data-table
-                          v-else-if="campo === 'tipologiasSel'"
-                          :headers="tipologiasHeaders"
-                          :items="info"
-                          class="elevation-1"
-                          :footer-props="footerPropsTipologias"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                            >
-                              Nenhuma tipologia selecionada...
-                            </v-alert>
-                          </template>
-                        </v-data-table>
-
-                        <v-data-table
-                          v-else-if="campo === 'processosSel'"
-                          :headers="processosHeaders"
-                          :items="info"
-                          class="elevation-1"
-                          :footer-props="footerPropsProcessos"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                            >
-                              Nenhum processo selecionado...
-                            </v-alert>
-                          </template>
-                        </v-data-table>
-
-                        <div
-                          class="info-conteudo"
-                          v-else-if="campo === 'zonaControlo'"
-                        >
-                          <ZonaControlo :info="info" />
-                        </div>
-
-                        <div class="info-conteudo" v-else>
-                          <span v-for="i in info" :key="i">{{ i }}</span>
-                        </div>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card-text>
-            </v-card>
-
-            <v-card
-              v-else-if="
-                (pedido.objeto.acao === 'Alteração' ||
-                  pedido.objeto.acao === 'Extinção') &&
-                  i === 1
-              "
-              shaped
-              class="rounded-card pa-4"
-              color="indigo lighten-5"
-            >
+            <v-card shaped class="rounded-card pa-4" :color="cor(i)">
               <v-card-text>
                 <div v-for="(info, campo) in h" :key="campo">
                   <v-row
@@ -155,14 +42,13 @@
                   >
                     <v-col cols="2">
                       <div
-                        :class="[
-                          'info-descricao',
-                          `info-descricao-${info.cor}`,
-                        ]"
+                        class="info-descricao"
+                        :class="`info-descricao-${info.cor}`"
                       >
                         {{ transformaKeys(campo) }}
                       </div>
                     </v-col>
+
                     <v-col>
                       <div
                         v-if="!(info.dados instanceof Array)"
@@ -189,127 +75,19 @@
                               Nenhuma entidade selecionada...
                             </v-alert>
                           </template>
-                        </v-data-table>
 
-                        <v-data-table
-                          v-else-if="campo === 'tipologiasSel'"
-                          :headers="tipologiasHeaders"
-                          :items="info.dados"
-                          class="elevation-1"
-                          :footer-props="footerPropsTipologias"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
+                          <template v-slot:item.sigla="{ item }">
+                            <v-badge
+                              v-if="novoItemAdicionado(item, campo)"
+                              right
+                              dot
+                              inline
+                              >{{ item.sigla }}</v-badge
                             >
-                              Nenhuma tipologia selecionada...
-                            </v-alert>
-                          </template>
-                        </v-data-table>
 
-                        <v-data-table
-                          v-else-if="campo === 'processosSel'"
-                          :headers="processosHeaders"
-                          :items="info.dados"
-                          class="elevation-1"
-                          :footer-props="footerPropsProcessos"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                            >
-                              Nenhum processo selecionado...
-                            </v-alert>
-                          </template>
-                        </v-data-table>
-                      </div>
-                    </v-col>
-
-                    <!-- Operação -->
-                    <v-col cols="1">
-                      <v-tooltip v-if="info.nota" bottom>
-                        <template v-slot:activator="{ on }">
-                          <v-icon v-on="on" @click="verNota(info.nota)">
-                            message
-                          </v-icon>
-                        </template>
-                        <span>Ver nota relativa ao campo...</span>
-                      </v-tooltip>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card-text>
-            </v-card>
-
-            <v-card
-              v-else
-              shaped
-              class="rounded-card pa-4"
-              color="orange lighten-5"
-            >
-              <v-card-text>
-                <div v-for="(info, campo) in h" :key="campo">
-                  <v-row
-                    v-if="
-                      info.dados !== '' &&
-                        info.dados !== null &&
-                        campo !== 'estado' &&
-                        campo !== 'id'
-                    "
-                  >
-                    <v-col cols="2">
-                      <div
-                        v-if="info.cor"
-                        :class="[
-                          'info-descricao',
-                          `info-descricao-${info.cor}`,
-                        ]"
-                      >
-                        {{ transformaKeys(campo) }}
-                      </div>
-                      <div
-                        v-else
-                        :class="['info-descricao', 'info-descricao-verde']"
-                      >
-                        {{ transformaKeys(campo) }}
-                      </div>
-                    </v-col>
-                    <v-col>
-                      <div
-                        v-if="!(info.dados instanceof Array)"
-                        class="info-conteudo"
-                      >
-                        <ZonaControlo
-                          v-if="campo === 'zonaControlo'"
-                          :info="info"
-                          :tipo="true"
-                        />
-                        <span v-else>{{ info.dados }}</span>
-                      </div>
-
-                      <div v-else>
-                        <v-data-table
-                          v-if="campo === 'entidadesSel'"
-                          :headers="entidadesHeaders"
-                          :items="info.dados"
-                          class="elevation-1"
-                          :footer-props="footerPropsEntidades"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                            >
-                              Nenhuma entidade selecionada...
-                            </v-alert>
+                            <span v-else>
+                              {{ item.sigla }}
+                            </span>
                           </template>
                         </v-data-table>
 
@@ -330,6 +108,20 @@
                               Nenhuma tipologia selecionada...
                             </v-alert>
                           </template>
+
+                          <template v-slot:item.sigla="{ item }">
+                            <v-badge
+                              v-if="novoItemAdicionado(item, campo)"
+                              right
+                              dot
+                              inline
+                              >{{ item.sigla }}</v-badge
+                            >
+
+                            <span v-else>
+                              {{ item.sigla }}
+                            </span>
+                          </template>
                         </v-data-table>
 
                         <v-data-table
@@ -348,17 +140,32 @@
                             >
                               Nenhum processo selecionado...
                             </v-alert>
+                          </template>
+
+                          <template v-slot:item.codigo="{ item }">
+                            <v-badge
+                              v-if="novoItemAdicionado(item, campo)"
+                              right
+                              dot
+                              inline
+                              >{{ item.codigo }}</v-badge
+                            >
+
+                            <span v-else>
+                              {{ item.codigo }}
+                            </span>
                           </template>
                         </v-data-table>
 
                         <div
-                          :class="[
-                            'info-conteudo',
-                            `info-conteudo-${info.cor}`,
-                          ]"
-                          v-else
+                          class="info-conteudo"
+                          v-else-if="campo === 'zonaControlo'"
                         >
-                          <span v-for="i in info.dados" :key="i">{{ i }}</span>
+                          <ZonaControlo :info="info" />
+                        </div>
+
+                        <div class="info-conteudo" v-else>
+                          <span v-for="i in info" :key="i">{{ i }}</span>
                         </div>
                       </div>
                     </v-col>
@@ -413,9 +220,8 @@
     <!-- Ver historico em tabela dialog -->
     <v-dialog v-model="dialogVerHistoricoEmTabela" width="80%" persistent>
       <VerHistoricoEmTabela
-        :historico="historico"
-        :distribuicao="JSON.parse(JSON.stringify(distribuicao))"
-        :tipoPedido="pedido.objeto.acao"
+        :historico="dados"
+        :distribuicao="distribuicaoFormatada"
         @fecharDialog="dialogVerHistoricoEmTabela = false"
       />
     </v-dialog>
@@ -453,7 +259,11 @@
 </template>
 
 <script>
-import { mapKeys } from "@/utils/utils";
+import {
+  mapKeys,
+  converterDadosOriginais,
+  identificaItemAdicionado,
+} from "@/utils/utils";
 import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 
 import VerHistoricoEmTabela from "@/components/pedidos/generic/VerHistoricoEmTabela";
@@ -466,6 +276,8 @@ export default {
   },
   data() {
     return {
+      identificarNovos: [],
+      distribuicaoFormatada: [],
       dialogVerHistoricoEmTabela: false,
       dialogVerNota: {
         visivel: false,
@@ -507,23 +319,16 @@ export default {
   },
 
   created() {
-    if (
-      this.pedido.estado === "Validado" ||
-      this.pedido.estado === "Devolvido"
-    ) {
-      this.dados.push(this.pedidoOriginal);
-      if (this.pedido.objeto.acao === "Alteração")
-        this.dados.push(this.historico[0]);
-      if (this.pedido.distribuicao.length > 2)
-        this.dados.push(this.historico[this.historico.length - 1]);
-    } else {
-      this.dados.push(this.pedidoOriginal);
-      this.dados.push(...this.historico);
-    }
+    this.preparaDistribuicao();
 
-    if (this.pedido.objeto.acao === "Criação")
+    if (this.pedido.objeto.acao === "Criação") {
+      this.dados.push(...this.historico);
       this.etapaReferente = "Pedido Submetido";
-    else this.etapaReferente = "Objeto Atual no Sistema";
+    } else {
+      this.dados.push(converterDadosOriginais(this.pedidoOriginal));
+      this.dados.push(...this.historico);
+      this.etapaReferente = "Objeto Atual no Sistema";
+    }
   },
 
   computed: {
@@ -542,44 +347,65 @@ export default {
 
   watch: {
     onboarding(novoValor, antigoValor) {
-      if (
-        novoValor !== undefined &&
-        this.distribuicao[novoValor] !== undefined
-      ) {
-        if (
-          novoValor === 0 &&
-          (this.pedido.objeto.acao === "Alteração" ||
-            this.pedido.objeto.acao === "Extinção")
-        )
-          this.etapaReferente = "Objeto Atual no Sistema";
-        else if (novoValor === 0 && this.pedido.objeto.acao === "Criação")
-          this.etapaReferente = "Pedido Submetido";
-        else if (
-          (this.pedido.objeto.acao === "Alteração" ||
-            this.pedido.objeto.acao === "Extinção") &&
-          novoValor === 1
-        )
-          this.etapaReferente = "Alteração Submetida";
-        else if (
-          this.pedido.estado === "Validado" ||
-          this.pedido.estado === "Devolvido"
-        )
-          this.etapaReferente = this.distribuicao[
-            this.distribuicao.length - 1
-          ].estado;
-        else if (this.pedido.objeto.acao === "Criação")
-          this.etapaReferente = this.distribuicao[novoValor + 1].estado;
-        else this.etapaReferente = this.distribuicao[novoValor].estado;
-      } else if (
-        (this.pedido.objeto.acao === "Alteração" ||
-          this.pedido.objeto.acao === "Extinção") &&
-        novoValor === 1
-      )
-        this.etapaReferente = "Alteração Submetida";
+      this.etapaReferente = this.distribuicaoFormatada[novoValor];
     },
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      if (this.onboarding === 0) return false;
+
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.dados[this.onboarding - 1]
+      );
+    },
+
+    /**
+     * Distribuição simples apenas com estados
+     */
+    preparaDistribuicao() {
+      const distribuicaoAlterada = JSON.parse(
+        JSON.stringify(this.distribuicao)
+      );
+
+      // Remove os estados duplicados (Quando há alteração de responsável e quando há nova apreciação)
+      // Substitui o nome das labels a apresentar
+      const distribuicaoSemRepetidos = distribuicaoAlterada.reduce(
+        (semRepetidos, valorAtual) => {
+          if (
+            !semRepetidos.some((obj) => obj.estado === valorAtual.estado) &&
+            valorAtual.estado !== "Distribuído"
+          ) {
+            if (valorAtual.estado === "Submetido")
+              semRepetidos.push(
+                this.pedido.objeto.acao === "Criação"
+                  ? "Pedido Submetido"
+                  : "Alteração Submetida"
+              );
+            else semRepetidos.push(valorAtual.estado);
+          }
+
+          return semRepetidos;
+        },
+        []
+      );
+
+      // Adiciona na distribuição o estado para o pedido original
+      if (this.pedido.objeto.acao !== "Criação")
+        distribuicaoSemRepetidos.splice(0, 0, "Objeto Atual no Sistema");
+
+      this.distribuicaoFormatada = distribuicaoSemRepetidos;
+    },
+
+    cor(index) {
+      if (index === 0) return "indigo lighten-5";
+      else if (index === 1 && this.pedido.objeto.acao !== "Criação")
+        return "indigo lighten-5";
+      else return "orange lighten-5";
+    },
+
     verNota(nota) {
       this.dialogVerNota.nota = nota;
       this.dialogVerNota.visivel = true;
@@ -604,6 +430,7 @@ export default {
     },
 
     cancelar() {
+      this.onboarding = 0;
       this.$emit("fecharDialog");
     },
   },

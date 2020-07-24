@@ -68,7 +68,9 @@
                 <template v-slot:item.colunaA="{ item }">
                   <v-alert
                     v-if="
-                      item.colunaA.dados === '' || item.colunaA.dados === null
+                      item.colunaA === undefined ||
+                        item.colunaA.dados === '' ||
+                        item.colunaA.dados === null
                     "
                     border="right"
                     class="pa-2 ma-2 ml-0 mr-0"
@@ -97,9 +99,18 @@
                     </v-chip>
 
                     <ul v-else class="ma-0">
-                      <li v-for="dado in item.colunaA.dados" :key="dado.sigla">
-                        {{ dado.sigla }}
-                      </li>
+                      <span
+                        v-for="dado in item.colunaA.dados"
+                        :key="dado.sigla"
+                      >
+                        <li v-if="dado.sigla">
+                          {{ dado.sigla }}
+                        </li>
+
+                        <li v-else>
+                          {{ dado.codigo }}
+                        </li>
+                      </span>
                     </ul>
                   </v-alert>
 
@@ -118,7 +129,9 @@
                 <template v-slot:item.colunaB="{ item }">
                   <v-alert
                     v-if="
-                      item.colunaB.dados === '' || item.colunaB.dados === null
+                      item.colunaB === undefined ||
+                        item.colunaB.dados === '' ||
+                        item.colunaB.dados === null
                     "
                     border="right"
                     class="pa-2 ma-2 ml-0 mr-0"
@@ -147,9 +160,50 @@
                     </v-chip>
 
                     <ul v-else class="ma-0">
-                      <li v-for="dado in item.colunaB.dados" :key="dado.sigla">
-                        {{ dado.sigla }}
-                      </li>
+                      <span
+                        v-for="dado in item.colunaB.dados"
+                        :key="dado.sigla"
+                      >
+                        <li v-if="dado.sigla">
+                          <v-badge
+                            v-if="
+                              novoItemAdicionado(
+                                dado.sigla,
+                                item.colunaA,
+                                'sigla'
+                              )
+                            "
+                            right
+                            dot
+                            inline
+                            >{{ dado.sigla }}</v-badge
+                          >
+
+                          <span v-else>
+                            {{ dado.sigla }}
+                          </span>
+                        </li>
+
+                        <li v-else>
+                          <v-badge
+                            v-if="
+                              novoItemAdicionado(
+                                dado.codigo,
+                                item.colunaA,
+                                'codigo'
+                              )
+                            "
+                            right
+                            dot
+                            inline
+                            >{{ dado.codigo }}</v-badge
+                          >
+
+                          <span v-else>
+                            {{ dado.codigo }}
+                          </span>
+                        </li>
+                      </span>
                     </ul>
                   </v-alert>
 
@@ -190,7 +244,7 @@
 </template>
 
 <script>
-import { mapKeys } from "@/utils/utils";
+import { mapKeys, identificaItemEmTabela } from "@/utils/utils";
 
 export default {
   props: ["historico", "distribuicao", "tipoPedido"],
@@ -209,23 +263,13 @@ export default {
   },
 
   created() {
-    this.removeEstados();
-
-    switch (this.tipoPedido) {
-      case "Criação":
-        this.preparaHistoricoCriacao();
-        break;
-      case "Alteração":
-      case "Extinção":
-        this.preparaHistoricoAlteracao();
-        break;
-
-      default:
-        break;
-    }
+    this.etapasHistorico = this.distribuicao;
   },
 
   methods: {
+    novoItemAdicionado(item, lista, siglaOuCodigo) {
+      return identificaItemEmTabela(item, lista, siglaOuCodigo);
+    },
     cores(cor) {
       let retornaCor;
 
@@ -272,26 +316,6 @@ export default {
       return retornaIcon;
     },
 
-    removeEstados() {
-      const distI = this.distribuicao.findIndex(
-        (dist) => dist.estado === "Distribuído"
-      );
-
-      if (distI !== -1) this.distribuicao.splice(distI, 1);
-
-      const devoI = this.distribuicao.findIndex(
-        (dist) => dist.estado === "Devolvido"
-      );
-
-      if (devoI !== -1) this.distribuicao.splice(devoI, 1);
-
-      const procI = this.distribuicao.findIndex(
-        (dist) => dist.estado === "Processado"
-      );
-
-      if (procI !== -1) this.distribuicao.splice(procI, 1);
-    },
-
     voltar() {
       this.defaultHeaders = [];
       this.dadosTabela = [];
@@ -301,8 +325,6 @@ export default {
     },
 
     gerarTabela() {
-      this.removeEstados();
-
       this.defaultHeaders.push({
         text: "Campo",
         value: "campo",
@@ -310,28 +332,13 @@ export default {
         width: "20%",
         sortable: false,
       });
-      let indexA;
-      let indexB;
 
-      if (
-        this.etapasSelecionadas[0] === "Pedido Submetido" ||
-        this.etapasSelecionadas[0] === "Alteração Submetida"
-      )
-        indexA = 0;
-      else
-        indexA = this.distribuicao.findIndex(
-          (dist) => dist.estado === this.etapasSelecionadas[0]
-        );
-
-      if (
-        this.etapasSelecionadas[1] === "Pedido Submetido" ||
-        this.etapasSelecionadas[1] === "Alteração Submetida"
-      )
-        indexB = 0;
-      else
-        indexB = this.distribuicao.findIndex(
-          (dist) => dist.estado === this.etapasSelecionadas[1]
-        );
+      let indexA = this.distribuicao.findIndex(
+        (dist) => dist === this.etapasSelecionadas[0]
+      );
+      let indexB = this.distribuicao.findIndex(
+        (dist) => dist === this.etapasSelecionadas[1]
+      );
 
       if (indexA > indexB) {
         let temporario = indexA;
@@ -375,7 +382,9 @@ export default {
 
       let campos = [];
 
-      Object.keys(this.historico[0]).forEach((item) => campos.push(item));
+      Object.keys(this.historico[indexA]).forEach((item) => {
+        if (item !== "estado" && item !== "id") campos.push(item);
+      });
 
       campos.forEach((campo) => {
         this.dadosTabela.push({
@@ -386,22 +395,6 @@ export default {
       });
 
       this.etapa = 2;
-    },
-
-    preparaHistoricoCriacao() {
-      this.distribuicao.forEach((dist) => {
-        if (dist.estado === "Submetido")
-          this.etapasHistorico.push("Pedido Submetido");
-        else this.etapasHistorico.push(dist.estado);
-      });
-    },
-
-    preparaHistoricoAlteracao() {
-      this.distribuicao.forEach((dist) => {
-        if (dist.estado === "Submetido")
-          this.etapasHistorico.push("Alteração Submetida");
-        else this.etapasHistorico.push(dist.estado);
-      });
     },
 
     fechar() {

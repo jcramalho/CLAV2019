@@ -71,11 +71,16 @@ export default {
     },
 
     adicionar() {
-      this.$emit("adicionar", {
-        nota: this.nota,
-        campo: this.campo,
-      });
-      this.nota = "";
+      if (this.notaAtual === this.nota) {
+        this.fechar();
+      } else {
+        this.$emit("adicionar", {
+          nota: this.nota,
+          campo: this.campo,
+        });
+
+        this.nota = "";
+      }
     },
   },
 };

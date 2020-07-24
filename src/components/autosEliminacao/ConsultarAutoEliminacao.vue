@@ -37,6 +37,7 @@
             <td style="width:80%;">
               {{auto.tipo+" - "}}
               <a v-if="auto.tipo=='PGD'" :href="'/pgd/pgd_' + auto.refLegislacao">{{ auto.legislacao }}</a>
+              <a v-else-if="auto.tipo=='RADA'" :href="'/pgd/tsRada_' + auto.refLegislacao">{{ auto.legislacao }}</a>
               <a v-else :href="'/legislacao/' + auto.refLegislacao">{{ auto.legislacao }}</a>
             </td>
           </tr>
@@ -45,7 +46,8 @@
               <div class="info-label">Referencial Classificativo</div>
             </td>
             <td style="width:80%;">
-              {{auto.referencialLabel}}
+              <span v-if="auto.referencialLabel">{{auto.referencialLabel}}</span>
+              <span v-else>{{auto.referencialTitulo}}</span>
             </td>
           </tr>
           <tr>
@@ -82,7 +84,7 @@
                     </v-list-item-content>
                   </template>
                   <v-list-item-content>
-                    <v-list-item-title>
+                    <v-list-item-title class="wrap-text">
                       <table class="consulta mx-5">
                         <tr v-if="item.codigo">
                           <td style="width:20%;">
@@ -167,7 +169,7 @@
                           </td>
                           <td style="width:80%;">{{ item.dataFim }}</td>
                         </tr>
-                        <tr>
+                        <tr v-if="item.agregacoes && item.agregacoes.length>0">
                           <td style="width:20%;">
                             <div class="info-label">
                               N.º de agregações
@@ -200,7 +202,7 @@
                           <td style="width:80%;">{{ item.UIoutros }}</td>
                         </tr>
                       </table>
-                      <div class="ma-1">
+                      <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length>0">
                         <v-row justify="space-between" class="info-label">
                           <v-col>Lista de Agregações</v-col>
                           <v-col>
@@ -331,5 +333,9 @@ li .panel-body li {
 
 .is-collapsed li:nth-child(n + 5) {
   display: none;
+}
+.wrap-text {
+  -webkit-line-clamp: unset !important;
+  white-space: normal;
 }
 </style>

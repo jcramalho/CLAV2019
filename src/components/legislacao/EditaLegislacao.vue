@@ -316,7 +316,6 @@ export default {
         });
       }
     } catch (e) {
-      //console.log("e :", e);
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
@@ -332,7 +331,6 @@ export default {
         });
       }
     } catch (e) {
-      //console.log("e :", e);
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }

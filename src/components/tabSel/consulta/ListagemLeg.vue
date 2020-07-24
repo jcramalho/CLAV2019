@@ -16,7 +16,7 @@
     <v-card-text>
       <v-data-table
         v-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE DOCUMENTAÇÃO ACUMULADA'"
-        :headers="headersRADA"
+        :headers="headers"
         :items="lista"
         :search="search"
         class="elevation-1"
@@ -40,7 +40,7 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon color="indigo darken-3" @click="$router.push('/pgd/tsRada_ent_'+item.entidade+'_'+item.data)"
+                  <v-btn icon color="indigo darken-3" @click="$router.push('/pgd/'+item.idRADA)"
                   v-on="on">
                     <v-icon>remove_red_eye</v-icon>
                   </v-btn>
@@ -109,13 +109,6 @@ export default {
       {text: "Data", value: "data", width: "8%"},
       {text: "Tipo", value: "tipo", width: "10%"},
       {text: "Número", value: "numero", width: "10%"},
-      {text: "Sumário", value: "sumario", width: "64%"},
-      {text: "Acesso", value: "link", width: "8%"},
-    ],
-    headersRADA: [
-      {text: "Data", value: "data", width: "8%"},
-      {text: "Tipo", value: "tipo", width: "10%"},
-      {text: "Entidade", value: "entidade", width: "10%"},
       {text: "Sumário", value: "sumario", width: "64%"},
       {text: "Acesso", value: "link", width: "8%"},
     ],
