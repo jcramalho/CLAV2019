@@ -233,24 +233,6 @@ export function converterDadosOriginais(dados) {
   return dadosConvertidos;
 }
 
-export function extrairRemovidos(objetoAnterior, objetoAtual, lista) {
-  const dadosAnteriores = JSON.parse(JSON.stringify(objetoAnterior));
-  const dadosAtuais = JSON.parse(JSON.stringify(objetoAtual));
-
-  const removidos = [];
-
-  if (lista === "entidadesSel") {
-    dadosAtuais.entidadesSel.dados.forEach((dado) => {
-      if (
-        !dadosAnteriores.entidadesSel.dados.some((s) => s.sigla === dado.sigla)
-      )
-        removidos.push(dado.sigla);
-    });
-  }
-
-  return removidos;
-}
-
 export function identificaItemAdicionado(item, lista, historicoAnterior) {
   if (lista === "entidadesSel") {
     return !historicoAnterior.entidadesSel.dados.some((ent) => {
@@ -280,9 +262,19 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
 
   let siglaOuCodigo = "sigla";
   let designacaoOuTitulo = "designacao";
-  if (listaAnterior[0].sigla === undefined) {
-    siglaOuCodigo = "codigo";
-    designacaoOuTitulo = "titulo";
+
+  if (listaAnterior[0] !== undefined) {
+    if (listaAnterior[0].sigla === undefined) {
+      siglaOuCodigo = "codigo";
+      designacaoOuTitulo = "titulo";
+    }
+  } else if (listaAtual[0] !== undefined) {
+    if (listaAtual[0].sigla === undefined) {
+      siglaOuCodigo = "codigo";
+      designacaoOuTitulo = "titulo";
+    }
+  } else {
+    return null;
   }
 
   listaAnterior.forEach((itemAnterior) => {
@@ -294,8 +286,9 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
       notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
   });
 
-  if (notaComRemovidos === "\nItens removidos:") notaComRemovidos = null;
-  else notaComRemovidos = notaComRemovidos.replace(/.$/, ".");
+  if (notaComRemovidos === "\nItens removidos:") return null;
+
+  notaComRemovidos = notaComRemovidos.replace(/.$/, ".");
 
   return notaComRemovidos;
 }
@@ -304,12 +297,11 @@ export default {
   filtraNivel,
   comparaSigla,
   comparaCodigo,
-  comparaArraySel,
   mapKeys,
   extrairAlteracoes,
   criarHistorico,
   converterDadosOriginais,
-  extrairRemovidos,
   identificaItemAdicionado,
   identificaItemEmTabela,
+  notasComRemovidos,
 };

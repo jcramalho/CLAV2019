@@ -166,7 +166,6 @@ import ErroDialog from "@/components/generic/ErroDialog";
 import {
   comparaSigla,
   mapKeys,
-  extrairRemovidos,
   identificaItemAdicionado,
 } from "@/utils/utils";
 
@@ -266,14 +265,6 @@ export default {
       this.animacoes[key] = true;
     });
 
-    console.log(
-      "extrairRemovidos",
-      extrairRemovidos(
-        this.historico[this.historico.length - 1],
-        this.novoHistorico,
-        "entidadesSel"
-      )
-    );
   },
 
   methods: {
