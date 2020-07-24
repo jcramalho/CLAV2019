@@ -221,9 +221,6 @@ export default {
 .theme--light.v-expansion-panels
   .v-expansion-panel-header
   .v-expansion-panel-header__icon
-  .v-icon {
-  color: white !important;
-}
 .theme--light.v-text-field.v-input--is-disabled .v-input__slot::before {
   border-image: repeating-linear-gradient(
       to right,
