@@ -1,5 +1,4 @@
 var Excel = require("exceljs");
-const nanoid = require("nanoid");
 
 var importarRE = (file, entidades, tipologias, RE) => {
   return new Promise((resolve, reject) => {
@@ -46,7 +45,7 @@ var importarRE = (file, entidades, tipologias, RE) => {
     RE["dataInicial"] = di > 0 ? di + "-01-01" : null;
 
     let df = new Number(re[4].split(';').slice(0, 2)[1]);
-    RE["dataFinal"] = df > 0 ? df + "-12-31" : null;
+    RE["dataFinal"] = df >= di ? df + "-12-31" : null;
 
     // CAMPOS RESTANTES
     RE.hist_admin = re[6].split(';').slice(0, 2)[1];
@@ -60,9 +59,8 @@ var importarRE = (file, entidades, tipologias, RE) => {
   })
 }
 
-var validarClasses = (file, classes_originais, re, legislacao) => {
+var validarClasses = (file, classes_originais, re, legislacao, formaContagem) => {
   return new Promise((resolve, reject) => {
-    console.log(re);
     let enc = new TextDecoder("utf-8");
     let ts = enc.decode(file).replace(/['"]/g, '').split("\n")
     let ts_length = ts.length;
@@ -85,7 +83,7 @@ var validarClasses = (file, classes_originais, re, legislacao) => {
 
 
     for (let i = 1; i < ts_length; i++) {
-      let classe = ts[i].split(/ *; */).slice(0, 22);
+      let classe = ts[i].split(/ *; */).slice(0, 23);
 
       classe[2] = Number(classe[2]);
 
@@ -124,15 +122,12 @@ var validarClasses = (file, classes_originais, re, legislacao) => {
       if (classe[0] != "") {
         switch (classe[2]) {
           case 1: case 2: case 3:
-            console.log("tipo", classe[2])
             validarArea(classe, pai, erros, novas_classes);
             break;
           case 4:
-            console.log("tipo", classe[2])
-            validarSerie(classe, pai, erros, novas_classes, re, legislacao);
+            validarSerie(classe, pai, erros, novas_classes, re, legislacao, formaContagem);
             break;
           case 5:
-            console.log("tipo", classe[2])
             validarSubserie(classe, pai, erros, novas_classes);
             break;
           default:
@@ -142,10 +137,13 @@ var validarClasses = (file, classes_originais, re, legislacao) => {
       } else {
         erros.sem_codigo.push(i);
       }
-
-
     }
-    resolve({ novas_classes, erros })
+
+    if (!!erros.sem_codigo[0] || !!erros.codigo[0] || !!erros.erros_area[0] || !!erros.tipo[0] || !!erros.series[0] || !!erros.area[0] || !!erros.subseries[0]) {
+      reject({ erros })
+    } else {
+      resolve({ novas_classes })
+    }
   })
 }
 // var validarClasses = (file, classes_originais) => {
@@ -211,63 +209,212 @@ function validarArea(classe, pai, erros, novas_classes) {
   novas_classes.push(area);
 }
 
-function validarSerie(classe, pai, erros, novas_classes, re, legislacao) {
+function validarSerie(classe, pai, erros, novas_classes, re, legislacao, formaContagem) {
   let serie = {
     codigo: classe[0],
     titulo: !!classe[1] ? classe[1] : adicionarErro(erros, "series", classe[0], "Título"),
     descricao: !!classe[3] ? classe[3] : adicionarErro(erros, "series", classe[0], "Descrição"),
     dataInicial: new Number(classe[4]) > 0 ? classe[4] + "-01-01" : adicionarErro(erros, "series", classe[0], "Data Inicial"),
-    dataFinal: new Number(classe[5]) > 0 ? classe[5] + "-12-31" : adicionarErro(erros, "series", classe[0], "Data Final"),
+    dataFinal: new Number(classe[5]) >= new Number(classe[4]) ? classe[5] + "-12-31" : adicionarErro(erros, "series", classe[0], "Data Final"),
     tUA: ["Processo", "Coleção", "Dossier", "Registo"].includes(classe[6]) ? classe[6] : adicionarErro(erros, "series", classe[0], "Tipo de Unidade Arquivistica"),
     tSerie: classe[7] == "Fechada" || classe[7] == "Aberta" ? classe[7] : adicionarErro(erros, "series", classe[0], "Tipo de Série"),
     suporte_e_medicao: suporte_e_medicao(classe, erros),
     UIs: [],
     localizacao: !!classe[10] ? [classe[10]] : adicionarErro(erros, "series", classe[0], "Localização"),
     legislacao: validarLegislacao(classe, legislacao, erros),
-    relacoes: [],
+    relacoes: preencherRelacoes(classe, erros, "series"),
     pca: !!classe[15] ? classe[15] : null,
     notaPCA: !!classe[16] ? classe[16] : null,
-    notaDF: !!classe[20] ? classe[20] : null,
-    formaContagem: {
-      forma: null
-    },
-    justificacaoPCA: [],
-    df: null,
-    justificacaoDF: [],
+    notaDF: !!classe[21] ? classe[21] : null,
+    formaContagem: preencherFormaContagem(classe, formaContagem, erros, "series"),
+    justificacaoPCA: preencherJustPCA(classe, erros, "series"),
+    df: validarDF(classe, erros, "series"),
+    justificacaoDF: preencherJustDF(classe, erros, "series"),
     eFilhoDe: pai,
     tipo: "Série"
   }
 
   produtoras(serie, classe, erros, re);
-  novas_classes.push(serie);
-  console.log(serie)
-}
 
+  novas_classes.push(serie);
+}
 
 
 function validarSubserie(classe, pai, erros, novas_classes) {
   let subserie = {
     codigo: classe[0],
-    titulo: classe[1],
-    descricao: classe[3],
-    dataInicial: classe[4],
-    dataFinal: classe[5],
+    titulo: !!classe[1] ? classe[1] : adicionarErro(erros, "subseries", classe[0], "Título"),
+    descricao: !!classe[3] ? classe[3] : adicionarErro(erros, "subseries", classe[0], "Descrição"),
+    dataInicial: new Number(classe[4]) > 0 ? classe[4] + "-01-01" : adicionarErro(erros, "subseries", classe[0], "Data Inicial"),
+    dataFinal: new Number(classe[5]) >= new Number(classe[4]) ? classe[5] + "-12-31" : adicionarErro(erros, "subseries", classe[0], "Data Final"),
     UIs: [],
-    relacoes: [],
-    pca: null,
-    notaPCA: null,
-    notaDF: null,
-    formaContagem: {
-      forma: null
-    },
-    justificacaoPCA: [],
-    df: null,
-    justificacaoDF: [],
+    relacoes: preencherRelacoes(classe, erros, "series"),
+    pca: !!classe[15] ? classe[15] : null,
+    notaPCA: !!classe[16] ? classe[16] : null,
+    notaDF: !!classe[21] ? classe[21] : null,
+    formaContagem: preencherFormaContagem(classe, formaContagem, erros, "subseries"),
+    justificacaoPCA: preencherJustPCA(classe, erros, "subseries"),
+    df: validarDF(classe, erros, "subseries"),
+    justificacaoDF: preencherJustDF(classe, erros, "subseries"),
     eFilhoDe: pai,
     tipo: "Subsérie"
   }
-  //novas_classes.push(subserie);
-  console.log(subserie)
+  novas_classes.push(subserie);
+}
+
+/* 
+  Função para preencher a forma de contagem
+*/
+function preencherFormaContagem(classe, formaContagem, erros, tipo) {
+
+  console.log("FORMA", JSON.stringify(formaContagem));
+
+  return {
+    forma: null
+  }
+}
+
+/* 
+  Função para preencher a just do PCA de uma série
+*/
+function preencherJustPCA(classe, erros, tipo) {
+  let criterios = classe[19].split("#").filter(e => e != "");
+
+  let justificacaoPCA = [];
+
+  for (let i = 0; i < criterios.length; i++) {
+    if (criterios[i].includes('Critério gestionário')) {
+      justificacaoPCA.push({
+        tipo: "Critério Gestionário",
+        nota: criterios[i].split('Critério gestionário:')[1]
+      });
+
+    } else {
+      if (criterios[i].includes('Critério de utilidade administrativa')) {
+        justificacaoPCA.push({
+          tipo: "Critério de Utilidade Administrativa",
+          nota: criterios[i].split('Critério de utilidade administrativa:')[1],
+          relacoes: []
+        });
+      } else {
+        if (criterios[i].includes('Critério legal')) {
+          justificacaoPCA.push({
+            tipo: "Critério Legal",
+            nota: "Prazo prescricional estabelecido em: ",
+            relacoes: []
+          });
+        } else {
+          erros[tipo].push({ classe: classe[0], erro: "Justificação PCA! Critério Inválido!" })
+        }
+      }
+    }
+  }
+  return justificacaoPCA;
+}
+
+/* 
+  Função para preencher a just do DF de uma série
+*/
+function preencherJustDF(classe, erros, tipo) {
+  let criterios = classe[22].split("#").filter(e => e != "");
+
+  let justificacaoDF = [];
+
+  for (let i = 0; i < criterios.length; i++) {
+    if (criterios[i].includes('Critério de complementaridade informacional')) {
+
+      justificacaoDF.push({
+        tipo: "Critério de Complementaridade Informacional",
+        nota: criterios[i].split('Critério de complementaridade informacional:')[1],
+        relacoes: []
+      });
+
+    } else {
+      if (criterios[i].includes('Critério de densidade informacional')) {
+
+        justificacaoDF.push({
+          tipo: "Critério de Densidade Informacional",
+          nota: criterios[i].split('Critério de densidade informacional:')[1],
+          relacoes: []
+        });
+      } else {
+        if (criterios[i].includes('Critério legal')) {
+          justificacaoDF.push({
+            tipo: "Critério Legal",
+            nota: "Prazo prescricional estabelecido em: ",
+            relacoes: []
+          });
+        } else {
+          erros[tipo].push({ classe: classe[0], erro: "Justificação DF! Critério Inválido!" })
+        }
+      }
+    }
+  }
+  return justificacaoDF;
+}
+
+
+/* 
+  Função para validar o DF de uma série
+*/
+function validarDF(classe, erros, tipo) {
+  let df = null;
+
+  switch (classe[20]) {
+    case "C":
+      df = "Conservação";
+      break;
+    case "E":
+      df = "Eliminação";
+      break;
+    case "CP":
+      df = "Conservação Parcial";
+      break;
+    default:
+      erros[tipo].push({ classe: classe[0], erro: "Destino final inválido!" })
+  }
+
+  return df;
+}
+
+/* 
+  Função para preencher as relações de uma série
+*/
+function preencherRelacoes(classe, erros, tipo) {
+  let classesRelacionadas = classe[13].split('#').filter(e => e != "");
+  let classesRelacao = classe[14].split('#').filter(e => e != "");
+
+  let relacoes = [];
+
+  if (classesRelacionadas.length == classesRelacao.length) {
+
+    for (let i = 0; i < classesRelacionadas.length; i++) {
+      switch (classesRelacao[i]) {
+        case "Antecessora de":
+        case "Cruzado de":
+        case "Sucessora de":
+        case "Complementar de":
+        case "Sintetizado por":
+        case "Síntese de":
+        case "Suplemento de":
+        case "Suplemento para":
+          relacoes.push({
+            relacao: classesRelacao[i],
+            serieRelacionada: {
+              codigo: classesRelacionadas[i]
+            }
+          })
+          break;
+        default:
+          erros[tipo].push({ classe: classe[0], erro: "Relação inválida, nº " + (i + 1) })
+      }
+    }
+  }
+  else {
+    erros[tipo].push({ classe: classe[0], erro: "Relações inválidas!" })
+  }
+  return relacoes;
+
 }
 
 /* 
@@ -276,7 +423,8 @@ function validarSubserie(classe, pai, erros, novas_classes) {
 function validarLegislacao(classe, legislacao, erros) {
 
   let novas_l = [];
-  let legis = classe[12].split('#')
+
+  let legis = classe[12].split('#').filter(e => e != "")
 
   for (let i = 0; i < legis.length; i++) {
     let l = legislacao.find(e => e.legislacao.split(' - ')[0] == legis[i]);
