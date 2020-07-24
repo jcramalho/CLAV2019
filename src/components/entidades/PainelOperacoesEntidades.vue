@@ -124,11 +124,7 @@
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
 import DialogEntidadeSucesso from "@/components/entidades/DialogEntidadeSucesso";
 
-import {
-  comparaArraySel,
-  criarHistorico,
-  extrairAlteracoes,
-} from "@/utils/utils";
+import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 
 export default {
   props: ["e", "acao", "original"],

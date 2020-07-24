@@ -110,11 +110,7 @@
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 import DialogLegislacaoSucesso from "@/components/legislacao/DialogLegislacaoSucesso";
 
-import {
-  comparaArraySel,
-  criarHistorico,
-  extrairAlteracoes,
-} from "@/utils/utils";
+import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 
 export default {
   props: ["l", "acao", "original"],

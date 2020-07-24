@@ -115,7 +115,6 @@ import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInf
 import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
 import {
-  comparaArraySel,
   criarHistorico,
   extrairAlteracoes,
 } from "@/utils/utils";

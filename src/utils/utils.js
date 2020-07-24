@@ -68,8 +68,17 @@ export function comparaCodigo(a, b) {
   return comparation;
 }
 
-export function comparaArraySel(arrA, arrB, key) {
+export function comparaArraySel(arrA, arrB) {
   var arraysIguais = false;
+
+  let key = "sigla";
+  if (arrA[0] !== undefined) {
+    if (arrA[0].sigla === undefined) key = "codigo";
+  } else if (arrB[0] !== undefined) {
+    if (arrB[0].sigla === undefined) key = "codigo";
+  } else {
+    return true;
+  }
 
   const keysA = arrA.map((el) => el[key]).sort();
   const keysB = arrB.map((el) => el[key]).sort();
@@ -155,16 +164,7 @@ export function extrairAlteracoes(objeto, objetoOriginal) {
       if (dados[key] === dadosOriginais[key] && key !== "sigla")
         delete dados[key];
     } else if (dados[key] instanceof Array) {
-      if (
-        key !== "processosSel" &&
-        comparaArraySel(dados[key], dadosOriginais[key], "sigla")
-      )
-        delete dados[key];
-      else if (
-        key === "processosSel" &&
-        comparaArraySel(dados[key], dadosOriginais[key], "codigo")
-      )
-        delete dados[key];
+      if (comparaArraySel(dados[key], dadosOriginais[key])) delete dados[key];
     }
   }
 
@@ -193,15 +193,13 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null,
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
           };
-        } else if (
-          !comparaArraySel(objSubmetido[key], objOriginal[key], "sigla")
-        ) {
+        } else if (!comparaArraySel(objSubmetido[key], objOriginal[key])) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null,
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
           };
         }
       }
@@ -275,6 +273,31 @@ export function identificaItemEmTabela(item, listaA, siglaOuCodigo) {
   return !listaA.dados.some((dado) => {
     return dado[siglaOuCodigo] === item;
   });
+}
+
+export function notasComRemovidos(listaAnterior, listaAtual) {
+  let notaComRemovidos = "\nItens removidos:";
+
+  let siglaOuCodigo = "sigla";
+  let designacaoOuTitulo = "designacao";
+  if (listaAnterior[0].sigla === undefined) {
+    siglaOuCodigo = "codigo";
+    designacaoOuTitulo = "titulo";
+  }
+
+  listaAnterior.forEach((itemAnterior) => {
+    if (
+      !listaAtual.some(
+        (itemAtual) => itemAtual[siglaOuCodigo] === itemAnterior[siglaOuCodigo]
+      )
+    )
+      notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
+  });
+
+  if (notaComRemovidos === "\nItens removidos:") notaComRemovidos = null;
+  else notaComRemovidos = notaComRemovidos.replace(/.$/, ".");
+
+  return notaComRemovidos;
 }
 
 export default {
