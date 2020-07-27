@@ -240,6 +240,7 @@ import {
   comparaCodigo,
   mapKeys,
   identificaItemAdicionado,
+  adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
 export default {
@@ -540,6 +541,11 @@ export default {
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
         pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
@@ -630,6 +636,11 @@ export default {
 
           pedido.estado = estado;
           pedido.token = this.$store.state.token;
+
+          this.novoHistorico = adicionarNotaComRemovidos(
+            this.historico[this.historico.length - 1],
+            this.novoHistorico
+          );
 
           pedido.historico.push(this.novoHistorico);
 

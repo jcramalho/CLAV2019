@@ -293,6 +293,22 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
   return notaComRemovidos;
 }
 
+export function adicionarNotaComRemovidos(historicoAnterior, historicoAtual) {
+  for (const key in historicoAnterior) {
+    if (historicoAnterior[key].dados instanceof Array) {
+      const nota = notasComRemovidos(
+        historicoAnterior[key].dados,
+        historicoAtual[key].dados
+      );
+
+      if (historicoAtual[key].nota === null) historicoAtual[key].nota = nota;
+      else if (nota !== null) historicoAtual[key].nota += nota;
+    }
+  }
+
+  return historicoAtual;
+}
+
 export default {
   filtraNivel,
   comparaSigla,
@@ -303,5 +319,5 @@ export default {
   converterDadosOriginais,
   identificaItemAdicionado,
   identificaItemEmTabela,
-  notasComRemovidos,
+  adicionarNotaComRemovidos,
 };
