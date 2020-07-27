@@ -5,8 +5,6 @@ export default {
     menu1: false,
     menu2: false,
     classes_processadas: [],
-    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
-    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     erros: [],
     tituloClasse: null,
     existe_erros: false,
