@@ -52,7 +52,6 @@ export default {
   methods: {
     validaPCA1: function(dataContagem) {
       var currentTime = new Date();
-      console.log(pca)
       var pca = parseInt(this.pca) || 0
       var v = parseInt(dataContagem) || 0
       var res = pca + v + 1
