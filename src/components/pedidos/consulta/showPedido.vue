@@ -80,6 +80,7 @@
           </v-data-table>
         </v-card-text>
       </v-card>
+
       <ShowTSPluri
         v-if="p.objeto.tipo == 'TS Pluriorganizacional web'"
         :p="p"
@@ -113,6 +114,7 @@
       <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
+
     <v-card-actions>
       <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
       <v-spacer />

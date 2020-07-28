@@ -24,6 +24,43 @@
     </v-card-title>
 
     <v-card-text>
+      <span>
+        <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
+          <span v-if="this.p.objeto.dadosOriginais">
+            <b> {{ p.objeto.tipo }} </b>:
+            {{
+              p.objeto.dadosOriginais.sigla
+                ? p.objeto.dadosOriginais.sigla
+                : p.objeto.dadosOriginais.numero
+            }}
+            -
+            {{
+              p.objeto.dadosOriginais.designacao
+                ? p.objeto.dadosOriginais.designacao
+                : p.objeto.dadosOriginais.sumario
+            }}
+          </span>
+
+          <span v-else>
+            <b>{{ p.objeto.tipo }}</b
+            >:
+            {{
+              p.objeto.dados.sigla
+                ? p.objeto.dados.sigla
+                : p.objeto.dados.numero
+            }}
+            -
+            {{
+              p.objeto.dados.designacao
+                ? p.objeto.dados.designacao
+                : p.objeto.dados.sumario
+            }}
+          </span>
+        </v-alert>
+
+        <v-divider class="m-auto mb-2" />
+      </span>
+
       <!-- Aviso quando a legislação foi criada a partir de um RADA -->
       <div v-for="(info, campo) in dados" :key="campo">
         <v-row v-if="info !== '' && info !== null && info !== undefined">

@@ -46,6 +46,7 @@
               <span>Ver despachos...</span>
             </v-tooltip>
           </v-card-title>
+
           <!-- Para a Criação de novos dados -->
           <v-card-text
             v-if="
@@ -86,6 +87,48 @@
                 pedido.objeto.acao === 'Extinção'
             "
           >
+            <span>
+              <v-alert
+                type="info"
+                width="90%"
+                class="m-auto mb-2 mt-2"
+                outlined
+              >
+                <span v-if="this.pedido.objeto.dadosOriginais">
+                  <b> {{ pedido.objeto.tipo }} </b>:
+                  {{
+                    pedido.objeto.dadosOriginais.sigla
+                      ? pedido.objeto.dadosOriginais.sigla
+                      : pedido.objeto.dadosOriginais.numero
+                  }}
+                  -
+                  {{
+                    pedido.objeto.dadosOriginais.designacao
+                      ? pedido.objeto.dadosOriginais.designacao
+                      : pedido.objeto.dadosOriginais.sumario
+                  }}
+                </span>
+
+                <span v-else>
+                  <b>{{ pedido.objeto.tipo }}</b
+                  >:
+                  {{
+                    pedido.objeto.dados.sigla
+                      ? pedido.objeto.dados.sigla
+                      : pedido.objeto.dados.numero
+                  }}
+                  -
+                  {{
+                    pedido.objeto.dados.designacao
+                      ? pedido.objeto.dados.designacao
+                      : pedido.objeto.dados.sumario
+                  }}
+                </span>
+              </v-alert>
+
+              <v-divider class="m-auto mb-2" />
+            </span>
+
             <ValidaEditaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
