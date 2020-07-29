@@ -204,29 +204,31 @@ export default {
     DevolverPedido,
   },
 
-  data: () => ({
-    devolver: false,
-    verHistoricoDialog: false,
-    distribuir: false,
-    utilizadores: [],
-    erroDialog: {
-      visivel: false,
-      mensagem: null,
-    },
-    headers: [
-      { text: "Estado", align: "left", sortable: false, value: "estado" },
-      { text: "Data", value: "data" },
-      { text: "Responsável", value: "responsavel" },
-      { text: "Despacho", value: "despacho" },
-      { text: "Objeto", value: "objeto" },
-    ],
-    distHeaders: [
-      { text: "Estado", value: "estado", class: "subtitle-1" },
-      { text: "Data", value: "data", class: "subtitle-1" },
-      { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Despacho", value: "despacho", class: "subtitle-1" },
-    ],
-  }),
+  data() {
+    return {
+      devolver: false,
+      verHistoricoDialog: false,
+      distribuir: false,
+      utilizadores: [],
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
+      },
+      headers: [
+        { text: "Estado", align: "left", sortable: false, value: "estado" },
+        { text: "Data", value: "data" },
+        { text: "Responsável", value: "responsavel" },
+        { text: "Despacho", value: "despacho" },
+        { text: "Objeto", value: "objeto" },
+      ],
+      distHeaders: [
+        { text: "Estado", value: "estado", class: "subtitle-1" },
+        { text: "Data", value: "data", class: "subtitle-1" },
+        { text: "Responsável", value: "responsavel", class: "subtitle-1" },
+        { text: "Despacho", value: "despacho", class: "subtitle-1" },
+      ],
+    };
+  },
 
   async created() {
     if (this.p.estado !== "Submetido") {
@@ -375,16 +377,23 @@ export default {
     },
 
     voltar() {
-      const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
-      localStorage.setItem(
-        "pesquisa-pedidos",
-        JSON.stringify({
-          ...pesquisa,
-          limpar: false,
-        })
-      );
+      const submissao = JSON.parse(localStorage.getItem("submissao"));
 
-      this.$router.go(-1);
+      if (submissao) {
+        localStorage.removeItem("submissao");
+        this.$router.push("/pedidos");
+      } else {
+        const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
+        localStorage.setItem(
+          "pesquisa-pedidos",
+          JSON.stringify({
+            ...pesquisa,
+            limpar: false,
+          })
+        );
+
+        this.$router.go(-1);
+      }
     },
   },
 };

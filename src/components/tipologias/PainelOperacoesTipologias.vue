@@ -114,10 +114,7 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
-import {
-  criarHistorico,
-  extrairAlteracoes,
-} from "@/utils/utils";
+import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 
 export default {
   props: ["t", "acao", "original"],
@@ -259,9 +256,7 @@ export default {
               pedidoParams
             );
 
-            this.codigoPedido = codigoPedido.data;
-
-            this.dialogTipologiaCriada = true;
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }

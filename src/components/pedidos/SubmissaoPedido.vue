@@ -112,6 +112,10 @@ import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 export default {
   props: ["idp"],
 
+  components: {
+    ErroAPIDialog,
+  },
+
   data() {
     return {
       erros: [],
@@ -132,7 +136,7 @@ export default {
       };
 
       this.pedidoCarregado = true;
-    } catch (erro) {
+    } catch (e) {
       this.erroPedido = true;
 
       let parsedError = Object.assign({}, e);
@@ -155,7 +159,14 @@ export default {
 
   methods: {
     verPedido() {
-      this.$router.push("/pedidos/" + this.idp);
+      localStorage.setItem("submissao", true);
+
+      this.$router.push("/pedidos/novos/" + this.idp);
+    },
+
+    fecharErro() {
+      this.erroPedido = false;
+      this.$router.push("/");
     },
   },
 };
