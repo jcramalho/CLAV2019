@@ -56,15 +56,6 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de criação de legislacao submetido com sucesso -->
-      <v-dialog v-model="dialogLegislacaoCriada" width="70%" persistent>
-        <DialogLegislacaoSucesso
-          :l="l"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
-      </v-dialog>
-
       <!-- Cancelamento da criação de uma legislacao: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
@@ -108,17 +99,13 @@
 
 <script>
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
-import DialogLegislacaoSucesso from "@/components/legislacao/DialogLegislacaoSucesso";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 
 export default {
   props: ["l", "acao", "original"],
 
-  components: {
-    ValidarLegislacaoInfoBox,
-    DialogLegislacaoSucesso,
-  },
+  components: { ValidarLegislacaoInfoBox },
 
   data() {
     return {
@@ -126,8 +113,6 @@ export default {
       pendenteGuardadoInfo: "",
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar o Diploma!",
-      dialogLegislacaoCriada: false,
-      codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
     };
@@ -256,9 +241,7 @@ export default {
               pedidoParams
             );
 
-            this.codigoPedido = codigoPedido.data;
-
-            this.dialogLegislacaoCriada = true;
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }

@@ -58,15 +58,6 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de criação de tipologia submetido com sucesso -->
-      <v-dialog v-model="dialogTipologiaCriada" width="70%" persistent>
-        <DialogTipologiaSucesso
-          :t="t"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
-      </v-dialog>
-
       <!-- Cancelamento da criação de uma tipologia: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
@@ -112,7 +103,6 @@
 
 <script>
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
-import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 
@@ -121,7 +111,6 @@ export default {
 
   components: {
     ValidarTipologiaInfoBox,
-    DialogTipologiaSucesso,
   },
 
   data() {
@@ -129,8 +118,6 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
       dialogTipologiaCriada: false,
-      codigoPedido: "",
-      errosValidacao: false,
       pedidoEliminado: false,
     };
   },

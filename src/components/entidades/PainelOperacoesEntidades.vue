@@ -73,15 +73,6 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de "Ação" de entidade submetido com sucesso -->
-      <v-dialog v-model="dialogEntidadeCriada" width="70%" persistent>
-        <DialogEntidadeSucesso
-          :e="e"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
-      </v-dialog>
-
       <!-- Cancelamento da criação de uma entidade: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
@@ -122,7 +113,6 @@
 
 <script>
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
-import DialogEntidadeSucesso from "@/components/entidades/DialogEntidadeSucesso";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 
@@ -131,7 +121,6 @@ export default {
 
   components: {
     ValidarEntidadeInfoBox,
-    DialogEntidadeSucesso,
   },
 
   data() {
@@ -139,8 +128,6 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,
-      codigoPedido: "",
-      errosValidacao: false,
       pedidoEliminado: false,
     };
   },
@@ -372,9 +359,7 @@ export default {
               pedidoParams
             );
 
-            this.codigoPedido = codigoPedido.data;
-
-            this.dialogEntidadeCriada = true;
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }
