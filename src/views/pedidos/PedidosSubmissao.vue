@@ -1,5 +1,5 @@
 <template>
-  <SubmissaoPedido />
+  <SubmissaoPedido :idp="$route.params.idPedido" />
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import SubmissaoPedido from "@/components/pedidos/SubmissaoPedido.vue"; // @ is 
 
 export default {
   components: {
-    SubmissaoPedido
-  }
+    SubmissaoPedido,
+  },
 };
 </script>
