@@ -49,6 +49,7 @@ module.exports.help = {
   API:
     "Acesso à página de documentação da API de dados onde poderá consultar toda a informação sobre a mesma " +
     "experimentar as várias operações (página gerada a partir da especificação em Swagger).",
+  PermissoesAcesso: "Possui a informação das operações da interface e da API de dados que podem ser acedidas por determinado utilizador",
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
   AutosEliminacao:

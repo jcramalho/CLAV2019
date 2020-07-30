@@ -101,6 +101,7 @@
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
+import { eNUV, eDataFormatoErrado } from "@/utils/validadores";
 
 export default {
   props: ["l", "acao", "original"],
@@ -123,19 +124,19 @@ export default {
       let numeroErros = 0;
 
       // Tipo
-      if (this.l.tipo === "" || this.l.tipo === null) {
+      if (eNUV(this.l.tipo)) {
         numeroErros++;
       }
 
       // Número Diploma
-      if (this.l.numero === "" || this.l.numero === null) {
+      if (eNUV(this.l.numero)) {
         numeroErros++;
       }
 
       // Data
-      if (this.l.data === "" || this.l.data === null) {
+      if (eNUV(this.l.data)) {
         numeroErros++;
-      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.l.data)) {
+      } else if (eDataFormatoErrado(this.l.data)) {
         numeroErros++;
       }
 
@@ -145,15 +146,14 @@ export default {
       }
 
       // Data revogação
-      if (
-        this.l.data !== "" &&
-        this.l.data !== null &&
-        this.l.data !== undefined &&
-        this.l.dataRevogacao !== "" &&
-        this.l.dataRevogacao !== null &&
-        this.l.dataRevogacao !== undefined
-      ) {
-        if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
+      if (!eNUV(this.l.data) && !eNUV(this.l.dataRevogacao)) {
+        if (eDataFormatoErrado(this.l.dataRevogacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
           numeroErros++;
         }
       }
@@ -165,20 +165,19 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (dados.sumario === "" || dados.sumario === null) {
+      if (eNUV(dados.sumario)) {
         numeroErros++;
       }
 
       // Data revogação
-      if (
-        dados.data !== "" &&
-        dados.data !== null &&
-        dados.data !== undefined &&
-        dados.dataRevogacao !== "" &&
-        dados.dataRevogacao !== null &&
-        dados.dataRevogacao !== undefined
-      ) {
-        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+      if (!eNUV(dados.data) && !eNUV(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
           numeroErros++;
         }
       }
