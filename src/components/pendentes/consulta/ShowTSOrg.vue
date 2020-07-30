@@ -54,6 +54,10 @@
           <div class="info-content">{{ p.objeto.procUltimos.length }}</div>
         </v-col>
       </v-row>
+
+      <div class="info-content">
+        {{ JSON.stringify(p) }}
+      </div>
   </div>
 </template>
 

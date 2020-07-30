@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import { eNUV, eDataFormatoErrado } from "@/utils/validadores";
+
 export default {
   props: ["l", "acao", "original"],
 
@@ -73,7 +75,7 @@ export default {
       let numeroErros = 0;
 
       //Tipo
-      if (this.l.tipo === "" || this.l.tipo === null) {
+      if (eNUV(this.l.tipo)) {
         this.mensagensErro.push({
           sobre: "Tipo de Diploma",
           mensagem: "O tipo de diploma não pode ser vazio.",
@@ -82,7 +84,7 @@ export default {
       }
 
       // Número Diploma
-      if (this.l.numero === "" || this.l.numero === null) {
+      if (eNUV(this.l.numero)) {
         this.mensagensErro.push({
           sobre: "Número de Diploma",
           mensagem: "O número de diploma não pode ser vazio.",
@@ -113,13 +115,13 @@ export default {
       }
 
       // Data
-      if (this.l.data === "" || this.l.data === null) {
+      if (eNUV(this.l.data)) {
         this.mensagensErro.push({
           sobre: "Data",
           mensagem: "A data não pode ser vazia.",
         });
         numeroErros++;
-      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.l.data)) {
+      } else if (eDataFormatoErrado(this.l.data)) {
         this.mensagensErro.push({
           sobre: "Data",
           mensagem: "A data está no formato errado.",
@@ -128,7 +130,7 @@ export default {
       }
 
       // Sumário
-      if (this.l.sumario === "" || this.l.sumario === null) {
+      if (eNUV(this.l.sumario)) {
         this.mensagensErro.push({
           sobre: "Sumário",
           mensagem: "O sumário não pode ser vazio.",
@@ -137,15 +139,14 @@ export default {
       }
 
       // Data Revogação
-      if (
-        this.l.data !== "" &&
-        this.l.data !== null &&
-        this.l.data !== undefined &&
-        this.l.dataRevogacao !== "" &&
-        this.l.dataRevogacao !== null &&
-        this.l.dataRevogacao !== undefined
-      ) {
-        if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
+      if (!eNUV(this.l.data) && !eNUV(this.l.dataRevogacao)) {
+        if (eDataFormatoErrado(this.l.dataRevogacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
           this.mensagensErro.push({
             sobre: "Data de revogação",
             mensagem:
@@ -162,7 +163,7 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (dados.sumario === "" || dados.sumario === null) {
+      if (eNUV(dados.sumario)) {
         this.mensagensErro.push({
           sobre: "Sumário",
           mensagem: "O sumário não pode ser vazio.",
@@ -171,15 +172,14 @@ export default {
       }
 
       // Data Revogação
-      if (
-        dados.data !== "" &&
-        dados.data !== null &&
-        dados.data !== undefined &&
-        dados.dataRevogacao !== "" &&
-        dados.dataRevogacao !== null &&
-        dados.dataRevogacao !== undefined
-      ) {
-        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+      if (!eNUV(dados.data) && !eNUV(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
           this.mensagensErro.push({
             sobre: "Data de revogação",
             mensagem:
