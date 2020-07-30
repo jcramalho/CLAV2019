@@ -216,7 +216,6 @@ export default {
       catch(e){
           console.log('Erro ao carregar a informação inicial: ' + e);
       }
-      
   },
 
   methods: {
