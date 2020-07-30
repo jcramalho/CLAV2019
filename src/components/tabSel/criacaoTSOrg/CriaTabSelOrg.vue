@@ -306,8 +306,6 @@ export default {
       pendenteGuardado: false,
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
-      // Dialog de confirmação finalização de TS
-      finalizaUltPasso: false,
       // Dialog de confirmação de abandonar a operação
       sairOperacao: false
     };
@@ -543,7 +541,7 @@ export default {
         // Ao carregar será preciso fazer Merge com a LC
         // É preciso forçar uma cópia para não perder a lista corrente
         this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.dono || p.participante!="NP");
 
         var tsObj = {
           entidade: this.tabelaSelecao.idEntidade,
@@ -563,7 +561,7 @@ export default {
         };
 
         var codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
-        this.$router.push(`/pedidos/novos/${codigoPedido.data}`);
+        this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
       } catch (error) {
         console.log("Erro ao criar o pedido: " + error);
       }
@@ -576,7 +574,7 @@ export default {
         // Ao carregar será preciso fazer Merge com a LC
         // É preciso forçar uma cópia para não perder a lista corrente
         this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.dono || p.participante!="NP");
 
         var pendenteParams = {
           numInterv: 1,
