@@ -597,5 +597,11 @@ export default new Router({
       component: () => import("./views/exportacao/Exportacao.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
     },
+    {
+      path: "/permissoesAcesso",
+      name: "permissõesDeAcesso",
+      component: () => import("./views/PermissoesAcesso.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
   ],
 });
