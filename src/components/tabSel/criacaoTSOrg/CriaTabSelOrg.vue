@@ -170,8 +170,10 @@
             </v-stepper>
         </v-card-text>
         <v-card-actions>
+          <!-- Voltar ao passo anterior ............................................-->
           <v-btn v-if="stepNo>2" color="primary" @click="stepNo--;">Voltar</v-btn>
 
+          <!-- Validar a TS ........................................................-->
           <v-btn 
             v-if="stepNo>2" 
             color="primary" 
@@ -186,9 +188,9 @@
                 v-if="validacaoTerminada && numeroErros > 0"
                 :erros="mensagensErro"
                 @continuar="fechoValidacao" />
-              
           </v-btn>
 
+          <!-- Guardar o trabalho para continuar depois ..........................-->
           <v-btn
             v-if="stepNo>2"
             color="primary"
@@ -202,8 +204,10 @@
             
           </v-btn>
 
+          <!-- Submeter e criar o pedido ............................................-->
           <v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>
 
+          <!-- Sair da criação da TS sem abortar o processo .........................-->
           <v-btn 
             v-if="stepNo>2" 
             color="primary"
@@ -218,6 +222,7 @@
 
           </v-btn>
 
+          <!-- Abortar a criação da TS ..........................................-->
           <v-btn
             dark
             color="red darken-4"
@@ -534,19 +539,17 @@ export default {
     submeterTS: async function() {
       try {
         var userBD = this.$verifyTokenUser();
+        // Guardam-se apenas os processos que foram alterados
+        // Ao carregar será preciso fazer Merge com a LC
+        // É preciso forçar uma cópia para não perder a lista corrente
+        this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
 
         var tsObj = {
           entidade: this.tabelaSelecao.idEntidade,
           designacao: this.tabelaSelecao.designacao,
           tipologias: this.tipSel,
-          processos: this.listaTotalProcSel.map(p => {
-            return {
-              codigo: p.classe,
-              titulo: p.designacao,
-              dono: p.dono,
-              participante: p.participante ? p.participante : false
-            };
-          })
+          processos: this.tabelaSelecao.listaProcessos.procs
         };
 
         var pedidoParams = {
@@ -555,13 +558,14 @@ export default {
           novoObjeto: { ts: tsObj },
           user: { email: userBD.email },
           entidade: userBD.entidade,
-          token: this.$store.state.token
+          token: this.$store.state.token,
+          historico: []
         };
 
-        var response = await this.$request("post", "/pedidos", pedidoParams);
-        this.$router.push("/pedidos/submissao");
+        var codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
+        this.$router.push(`/pedidos/novos/${codigoPedido.data}`);
       } catch (error) {
-        return error;
+        console.log("Erro ao criar o pedido: " + error);
       }
     },
     // Guarda o trabalho de criação de uma TS
