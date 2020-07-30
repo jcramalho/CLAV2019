@@ -67,7 +67,7 @@ var validarClasses = (
   legislacao,
   formaContagem
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     let enc = new TextDecoder("utf-8");
     let ts = enc
       .decode(file)
@@ -78,13 +78,12 @@ var validarClasses = (
     let novas_classes = [];
 
     let erros = {
-      sem_codigo: [],
-      erros_area: [],
       codigo: [],
       tipo: [],
       series: [],
       area: [],
-      subseries: []
+      subseries: [],
+      relacoes: []
     };
 
     let pais = [];
@@ -121,7 +120,7 @@ var validarClasses = (
       }
 
       // Validar e criar cada classe
-      if (classe[0] != "") {
+      if (classe[0] != "" && !classes_originais.some(e => e.codigo == classe[0])) {
         switch (classe[2]) {
           case 1:
           case 2:
@@ -140,21 +139,19 @@ var validarClasses = (
             );
             break;
           case 5:
-            validarSubserie(classe, pai, erros, novas_classes);
+            validarSubserie(classe, pai, erros, novas_classes, formaContagem);
             break;
           default:
-            erros.tipo.push(classe[0]);
+            erros.tipo.push({ classe: classe[0], erro: 'Nível inválido!' });
             break;
         }
       } else {
-        erros.sem_codigo.push(i);
+        erros.codigo.push({ classe: 'Classe nº' + i, erro: 'Código inválido!' });
       }
     }
 
     if (
-      !!erros.sem_codigo[0] ||
       !!erros.codigo[0] ||
-      !!erros.erros_area[0] ||
       !!erros.tipo[0] ||
       !!erros.series[0] ||
       !!erros.area[0] ||
@@ -162,7 +159,14 @@ var validarClasses = (
     ) {
       reject({ erros });
     } else {
-      resolve({ novas_classes });
+      await validarRelacoes(novas_classes, erros);
+
+      if (!!erros.relacoes[0]) {
+        reject({ erros });
+      } else {
+        resolve({ novas_classes });
+      }
+
     }
   });
 };
@@ -247,7 +251,7 @@ function validarSerie(
   novas_classes.push(serie);
 }
 
-function validarSubserie(classe, pai, erros, novas_classes) {
+function validarSubserie(classe, pai, erros, novas_classes, formaContagem) {
   let subserie = {
     codigo: classe[0],
     titulo: !!classe[1]
@@ -282,6 +286,235 @@ function validarSubserie(classe, pai, erros, novas_classes) {
     tipo: "Subsérie"
   };
   novas_classes.push(subserie);
+}
+
+/* 
+  Função para validar as relações e completar os critérios;
+*/
+async function validarRelacoes(novas_classes, erros) {
+
+  let series_subseries = novas_classes.filter(e => e.tipo == "Subsérie" || e.tipo == "Série");
+
+  let setAuxRepetidos = new Set();
+  let setAuxSintese = new Set();
+
+  for (let i = 0; i < series_subseries.length; i++) {
+
+    let tem_duplicados = false;
+    let tem_sintese_sintetizado = false;
+
+    setAuxRepetidos.clear();
+    setAuxSintese.clear();
+
+    // Validar critérios legais
+    let l = await validaCriteriosLegais(series_subseries[i], series_subseries);
+
+    if (l != 0) {
+      erros.relacoes.push({
+        classe: series_subseries[i].codigo,
+        erro: l
+      });
+    }
+
+    for (let j = 0; j < series_subseries[i].relacoes.length; j++) {
+      if (!tem_duplicados) {
+        tem_duplicados = setAuxRepetidos.size === setAuxRepetidos.add(series_subseries[i].relacoes[j].serieRelacionada.codigo).size;
+      }
+
+      if (!tem_sintese_sintetizado && (series_subseries[i].relacoes[j].relacao == "Síntese de" || series_subseries[i].relacoes[j].relacao == "Sintetizado por")) {
+        tem_sintese_sintetizado = setAuxSintese.size === setAuxSintese.add(series_subseries[i].relacoes[j].relacao).size;
+      }
+
+      // Se já tiver o tipo é porque a relação inversa já foi validada;
+      if (series_subseries[i].relacoes[j].serieRelacionada.tipo == undefined) {
+        let classe_relacionada = series_subseries.find(e => e.codigo == series_subseries[i].relacoes[j].serieRelacionada.codigo &&
+          (e.tipo == "Série" || e.tipo == "Subsérie"));
+
+
+        if (classe_relacionada != undefined) {
+          await validarRelacaoInversa(classe_relacionada, series_subseries[i].relacoes[j], series_subseries[i])
+            .catch(err => {
+              erros.relacoes.push({
+                classe: series_subseries[i].codigo,
+                erro: err
+              });
+            })
+        } else {
+          erros.relacoes.push({
+            classe: series_subseries[i].codigo,
+            erro: "Classe relacionada é inválida!"
+          });
+        }
+      }
+    }
+
+    if (tem_duplicados) {
+      erros.relacoes.push({
+        classe: series_subseries[i].codigo,
+        erro: "Possuí relações para a mesma classe mais que uma vez!"
+      });
+    }
+
+    if (tem_sintese_sintetizado) {
+      erros.relacoes.push({
+        classe: series_subseries[i].codigo,
+        erro: "Possuí relações \"Síntese De\" e \"Sintetizado Por\"!"
+      });
+    }
+  }
+}
+
+/* 
+  Função para validar a relacao inversa
+*/
+function validarRelacaoInversa(classe_relacionada, relacao, classe) {
+  return new Promise(async (resolve, reject) => {
+
+    let relacao_inversa = null;
+    switch (relacao.relacao) {
+      case "Antecessora de":
+        relacao_inversa = "Sucessora de";
+        break;
+      case "Sucessora de":
+        relacao_inversa = "Antecessora de";
+        break;
+      case "Cruzado de":
+        relacao_inversa = "Cruzado de";
+        break;
+      case "Complementar de":
+        relacao_inversa = "Complementar de";
+        break;
+      case "Sintetizado por":
+        relacao_inversa = "Síntese de";
+        break;
+      case "Síntese de":
+        relacao_inversa = "Sintetizado por";
+        break;
+      case "Suplemento de":
+        relacao_inversa = "Suplemento para";
+        break;
+      case "Suplemento para":
+        relacao_inversa = "Suplemento de";
+        break;
+    }
+
+    let real_relacao_inversa = classe_relacionada.relacoes.find(e => e.relacao == relacao_inversa && e.serieRelacionada.codigo == classe.codigo);
+
+    if (real_relacao_inversa != undefined) {
+      real_relacao_inversa.serieRelacionada["tipo"] = classe.tipo;
+      relacao.serieRelacionada["tipo"] = classe_relacionada.tipo;
+
+      let r = await validaCriteriosDiversos(classe, classe_relacionada, relacao.relacao, relacao.serieRelacionada.codigo);
+
+      if (r != 0) {
+        reject(r);
+      }
+      resolve();
+
+    } else {
+      reject('Relação inversa de \"' + relacao.relacao + '\" não existente!')
+    }
+  })
+
+}
+
+
+/* 
+  Função para validar os criterios legais
+*/
+async function validaCriteriosLegais(classe, classes) {
+  try {
+    // Validar critérios legais
+    let criterio_legal_df = classe.justificacaoDF.find(e => e.tipo == "Critério Legal");
+    let criterio_legal_pca = classe.justificacaoPCA.find(e => e.tipo == "Critério Legal");
+
+    let legislacao = classe.legislacao;
+
+    if (classe.tipo == "Subsérie") {
+      let classe_pai = classes.find(e => e.codigo == classe.eFilhoDe);
+      legislacao = classe_pai.legislacao;
+    }
+
+    // Critério Legal do DF
+    if (criterio_legal_df != undefined) {
+      for (let i = 0; i < criterio_legal_df.relacoes.length; i++) {
+        if (!legislacao.some(e => e.legislacao.split(' - ')[0] == criterio_legal_df.relacoes[i])) {
+          return 'Critério legal do DF inválido!'
+        }
+      }
+    }
+    // Critério Legal do PCA
+    if (criterio_legal_pca != undefined) {
+      for (let j = 0; j < criterio_legal_pca.relacoes.length; j++) {
+        if (!legislacao.some(e => e.legislacao.split(' - ')[0] == criterio_legal_pca.relacoes[j])) {
+          return 'Critério legal do PCA inválido!'
+        }
+      }
+    }
+
+    return 0;
+
+  } catch (err) {
+    return err;
+  }
+}
+
+/* 
+  Função para validar os criterios menos o legal
+*/
+async function validaCriteriosDiversos(classe, classe_relacionada, relacao, codigo) {
+  try {
+    let relacao_inversa = null;
+    let criterio = null;
+    let criterioInverso = null;
+
+    switch (relacao) {
+      case "Complementar de":
+        relacao_inversa = "Complementar de";
+        criterio = classe.justificacaoDF.find(e => e.tipo == "Critério de Complementaridade Informacional");
+        criterioInverso = classe_relacionada.justificacaoDF.find(e => e.tipo == "Critério de Complementaridade Informacional");
+        break;
+      case "Sintetizado por":
+        relacao_inversa = "Síntese de";
+        criterio = classe.justificacaoDF.find(e => e.tipo == "Critério de Densidade Informacional");
+        criterioInverso = classe_relacionada.justificacaoDF.find(e => e.tipo == "Critério de Densidade Informacional");
+        break;
+      case "Síntese de":
+        relacao_inversa = "Sintetizado por";
+        criterio = classe.justificacaoDF.find(e => e.tipo == "Critério de Densidade Informacional");
+        criterioInverso = classe_relacionada.justificacaoDF.find(e => e.tipo == "Critério de Densidade Informacional");
+        break;
+      case "Suplemento para":
+        relacao_inversa = "Suplemento de";
+        criterio = classe.justificacaoPCA.find(e => e.tipo == "Critério de Utilidade Administrativa");
+        criterioInverso = undefined;
+        break;
+      case "Suplemento de":
+        relacao_inversa = "Suplemento para";
+        criterio = undefined;
+        criterioInverso = classe_relacionada.justificacaoPCA.find(e => e.tipo == "Critério de Utilidade Administrativa");
+        break;
+      default:
+        return 0;
+    }
+
+    if (criterio != undefined) {
+      criterio.relacoes.push({ codigo });
+    } else {
+      return "Erro nos critérios de justificação do " + (relacao == "Suplemento para" ? "PCA" : "DF");
+    }
+
+    if (criterioInverso != undefined) {
+      criterioInverso.relacoes.push({ codigo: classe.codigo })
+    } else {
+      return "Erro nos critérios de justificação do " + (relacao == "Suplemento para" ? "PCA" : "DF") + " da classe relacionada " + classe_relacionada.codigo;
+    }
+    
+    return 0;
+
+  } catch (err) {
+    return err;
+  }
 }
 
 /* 
@@ -345,7 +578,7 @@ function preencherJustPCA(classe, erros, tipo) {
           justificacaoPCA.push({
             tipo: "Critério Legal",
             nota: "Prazo prescricional estabelecido em: ",
-            relacoes: []
+            relacoes: criterios[i].split("Critério legal:")[1].split(/, */),
           });
         } else {
           erros[tipo].push({
@@ -388,7 +621,7 @@ function preencherJustDF(classe, erros, tipo) {
           justificacaoDF.push({
             tipo: "Critério Legal",
             nota: "Prazo prescricional estabelecido em: ",
-            relacoes: []
+            relacoes: criterios[i].split("Critério legal:")[1].split(/, */),
           });
         } else {
           erros[tipo].push({
@@ -436,27 +669,34 @@ function preencherRelacoes(classe, erros, tipo) {
 
   if (classesRelacionadas.length == classesRelacao.length) {
     for (let i = 0; i < classesRelacionadas.length; i++) {
-      switch (classesRelacao[i]) {
-        case "Antecessora de":
-        case "Cruzado de":
-        case "Sucessora de":
-        case "Complementar de":
-        case "Sintetizado por":
-        case "Síntese de":
-        case "Suplemento de":
-        case "Suplemento para":
-          relacoes.push({
-            relacao: classesRelacao[i],
-            serieRelacionada: {
-              codigo: classesRelacionadas[i]
-            }
-          });
-          break;
-        default:
-          erros[tipo].push({
-            classe: classe[0],
-            erro: "Relação inválida, nº " + (i + 1)
-          });
+      if (classesRelacionadas[i] != classe[0]) {
+        switch (classesRelacao[i]) {
+          case "Antecessora de":
+          case "Cruzado de":
+          case "Sucessora de":
+          case "Complementar de":
+          case "Sintetizado por":
+          case "Síntese de":
+          case "Suplemento de":
+          case "Suplemento para":
+            relacoes.push({
+              relacao: classesRelacao[i],
+              serieRelacionada: {
+                codigo: classesRelacionadas[i]
+              }
+            });
+            break;
+          default:
+            erros[tipo].push({
+              classe: classe[0],
+              erro: "Relação inválida, nº " + (i + 1)
+            });
+        }
+      } else {
+        erros[tipo].push({
+          classe: classe[0],
+          erro: "Não pode ter uma relação com a própria classe!"
+        });
       }
     }
   } else {
