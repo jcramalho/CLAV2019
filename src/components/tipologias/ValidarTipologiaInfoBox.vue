@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import { eNUV } from "@/utils/validadores";
+
 export default {
   props: ["t", "acao", "original"],
   data() {
@@ -71,7 +73,7 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (this.t.designacao === "" || this.t.designacao === null) {
+      if (eNUV(this.t.designacao)) {
         this.mensagensErro.push({
           sobre: "Nome da Tipologia",
           mensagem: "O nome da tipologia não pode ser vazio.",
@@ -84,6 +86,7 @@ export default {
             "/tipologias/designacao?valor=" +
               encodeURIComponent(this.t.designacao)
           );
+
           if (existeDesignacao.data) {
             this.mensagensErro.push({
               sobre: "Nome da Tipologia",
@@ -101,7 +104,7 @@ export default {
       }
 
       // Sigla
-      if (this.t.sigla === "" || this.t.sigla === null) {
+      if (eNUV(this.t.sigla)) {
         this.mensagensErro.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia.",
@@ -136,13 +139,13 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (dados.designacao === "" || dados.designacao === null) {
+      if (eNUV(dados.designacao)) {
         this.mensagensErro.push({
           sobre: "Nome da Tipologia",
           mensagem: "O nome da tipologia não pode ser vazio.",
         });
         numeroErros++;
-      } else if (dados.designacao !== undefined) {
+      } else {
         try {
           let existeDesignacao = await this.$request(
             "get",

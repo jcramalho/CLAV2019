@@ -105,6 +105,7 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
+import { eNUV } from "@/utils/validadores";
 
 export default {
   props: ["t", "acao", "original"],
@@ -119,6 +120,7 @@ export default {
       loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
       dialogTipologiaCriada: false,
       pedidoEliminado: false,
+      errosValidacao: false,
     };
   },
 
@@ -127,7 +129,7 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (this.t.designacao === "" || this.t.designacao === null) {
+      if (eNUV(this.t.designacao)) {
         numeroErros++;
       } else {
         try {
@@ -145,7 +147,7 @@ export default {
       }
 
       // Sigla
-      if (this.t.sigla === "" || this.t.sigla === null) {
+      if (eNUV(this.t.sigla)) {
         numeroErros++;
       } else {
         try {
@@ -168,9 +170,9 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (dados.designacao === "" || dados.designacao === null) {
+      if (eNUV(dados.designacao)) {
         numeroErros++;
-      } else if (dados.designacao !== undefined) {
+      } else {
         try {
           let existeDesignacao = await this.$request(
             "get",
