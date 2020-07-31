@@ -26,35 +26,10 @@
     <v-card-text>
       <span v-if="p.objeto.acao !== 'Criação'">
         <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
-          <span v-if="this.p.objeto.dadosOriginais">
-            <b> {{ p.objeto.tipo }} </b>:
-            {{
-              p.objeto.dadosOriginais.sigla
-                ? p.objeto.dadosOriginais.sigla
-                : p.objeto.dadosOriginais.numero
-            }}
-            -
-            {{
-              p.objeto.dadosOriginais.designacao
-                ? p.objeto.dadosOriginais.designacao
-                : p.objeto.dadosOriginais.sumario
-            }}
-          </span>
-
-          <span v-else>
-            <b>{{ p.objeto.tipo }}</b
-            >:
-            {{
-              p.objeto.dados.sigla
-                ? p.objeto.dados.sigla
-                : p.objeto.dados.numero
-            }}
-            -
-            {{
-              p.objeto.dados.designacao
-                ? p.objeto.dados.designacao
-                : p.objeto.dados.sumario
-            }}
+          <span>
+            <b> {{ p.objeto.tipo }}: </b>
+            {{ p.objeto.dadosOriginais.sigla }}
+            - {{ p.objeto.dadosOriginais.designacao }}
           </span>
         </v-alert>
 
