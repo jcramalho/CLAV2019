@@ -599,6 +599,7 @@ export default {
       await this.loadProcessos();
       await this.loadFechoTransitivo();
       await this.mergeProcs();
+      console.dir(this.listaProcessos);
     }
     catch(e){
       console.log("Erro no carregamento dinicial: " + e);
