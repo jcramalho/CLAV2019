@@ -129,6 +129,7 @@ export default {
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,
       pedidoEliminado: false,
+      errosValidacao: false,
     };
   },
 
