@@ -1,10 +1,13 @@
 <template>
   <v-dialog v-model="dialogState" max-width="80%">
     <v-card>
-      <v-card-title class="indigo darken-4 white--text">Importar Classes</v-card-title>
+      <v-card-title class="indigo darken-4 white--text">Importar Unidades de Instalação</v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <ImportarFicheiro label="Ficheiro Classes" @ficheiro="novoFicheiroClasses" />
+          <ImportarFicheiro
+            label="Ficheiro Unidades de Instalação"
+            @ficheiro="novoFicheiroClasses"
+          />
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -12,7 +15,7 @@
           Ficheiro inválido devido aos seguintes erros:
           <div v-for="(erro, index) in erros" :key="index">
             <ul>
-              <li v-for="(err, i) in erro" :key="i">{{ err.classe + ": " + err.erro}}</li>
+              <li v-for="(err, i) in erro" :key="i">{{ err.ui + ": " + err.erro}}</li>
             </ul>
           </div>
         </v-alert>
@@ -27,30 +30,24 @@
 <script>
 import ImportarFicheiro from "@/components/rada/importacao/importarFicheiro";
 
-const validarClasses = require("@/plugins/rada/conversor_ts").validarClasses;
+const validarUIs = require("@/plugins/rada/conversor_uis").importarUIs;
 
 export default {
-  props: ["dialog", "classes", "RE", "legislacao", "formaContagem"],
+  props: ["dialog", "classes", "RE", "UIs"],
   data: () => ({
-    ficheiroClasses: null,
+    ficheiroUIs: null,
     existe_erros: false,
     erros: null,
   }),
   methods: {
     novoFicheiroClasses(novoFicheiro) {
-      this.ficheiroClasses = novoFicheiro;
+      this.ficheiroUIs = novoFicheiro;
     },
     importar() {
       if (this.$refs.form.validate()) {
-        validarClasses(
-          this.ficheiroClasses,
-          this.classes,
-          this.RE,
-          this.legislacao,
-          this.formaContagem
-        )
+        validarUIs(this.ficheiroUIs, this.UIs, this.classes, this.RE)
           .then((res) => {
-            this.$emit("pendurarNovasClasses", res.novas_classes);
+            this.$emit("pendurarNovasUIs", res.novas_uis);
             this.dialogState = false;
           })
           .catch((err) => {

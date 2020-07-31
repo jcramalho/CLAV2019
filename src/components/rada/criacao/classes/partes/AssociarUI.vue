@@ -5,7 +5,6 @@
         <div class="info-label">Unidades de Instalação</div>
       </v-col>
       <v-col md="9" sm="9" xs="12">
-        <!-- {{newSerie.UIs}} -->
         <v-combobox
           v-model="newSerie.UIs"
           :items="getCodigos"
