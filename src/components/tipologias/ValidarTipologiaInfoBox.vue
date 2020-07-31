@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { eNUV } from "@/utils/validadores";
+import { eNUV, eNV } from "@/utils/validadores";
 
 export default {
   props: ["t", "acao", "original"],
@@ -139,13 +139,13 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (eNUV(dados.designacao)) {
+      if (eNV(dados.designacao)) {
         this.mensagensErro.push({
           sobre: "Nome da Tipologia",
           mensagem: "O nome da tipologia não pode ser vazio.",
         });
         numeroErros++;
-      } else {
+      } else if (!eUndefined(dados.designacao)) {
         try {
           let existeDesignacao = await this.$request(
             "get",
