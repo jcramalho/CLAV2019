@@ -262,7 +262,6 @@ export default {
         idTipologia: "",
         designacaoTipologia: "",
         designacaoTS: "",
-        tipologias: [],
         listaProcessos: {}
       },
       // Numero do passo da criação de TS
