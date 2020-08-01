@@ -363,7 +363,7 @@ export default {
           for (let i = 0; i < response.data.length; i++) {
 
             this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i;
+            this.listaProcessos.procs[i].chave = i+1; // O 0 não deve ser usado pq ao multiplicar por -1 não muda
             this.listaProcessos.procs[i].edited = false;
             this.listaProcessos.procs[i].descriptionEdited = false;
             this.listaProcessos.procs[i].preSelected = 0;
@@ -588,6 +588,7 @@ export default {
         }
       }
       this.listaProcessos.numProcessosSelecionados = this.tabelaSelecao.listaProcessos.numProcessosSelecionados;
+      this.listaProcessos.numProcessosPreSelecionados = this.tabelaSelecao.listaProcessos.numProcessosPreSelecionados;
       this.listaProcessosReady = true;
   }
   },
@@ -599,7 +600,6 @@ export default {
       await this.loadProcessos();
       await this.loadFechoTransitivo();
       await this.mergeProcs();
-      console.dir(this.listaProcessos);
     }
     catch(e){
       console.log("Erro no carregamento dinicial: " + e);

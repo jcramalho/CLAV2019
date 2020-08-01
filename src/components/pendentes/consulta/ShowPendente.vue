@@ -3,7 +3,7 @@
     <v-card-title class="pa-2 indigo darken-4 title white--text">
         Consulta do objeto do pendente: {{ p._id }} ({{p.acao}}-{{p.tipo}})</v-card-title>
     <v-card-text>
-      <!--ShowTSOrg v-if="p.tipo == 'TS Organizacional'" :p="p" /-->
+      <ShowTSOrg v-if="p.tipo == 'TS Organizacional'" :p="p" />
       <ShowTSPluri v-if="p.tipo == 'TS Pluriorganizacional'" :p="p" />
       <ShowClasse v-else-if="p.tipo == 'Classe'" :p="p" />  
       <ShowRADA v-else-if="p.tipo == 'RADA'" :p="p" /> 
@@ -29,7 +29,7 @@ export default {
 
   components: {
     ShowClasse,
-    //ShowTSOrg,
+    ShowTSOrg,
     ShowTSPluri,
     ShowDefault,
     ShowRADA,
