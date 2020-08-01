@@ -1,5 +1,15 @@
 <template>
   <div>
+    <v-overlay :value="overlay">
+      <v-progress-circular 
+        indeterminate 
+        :size="128"
+        :width="20"
+        color="indigo darken-4"
+      >
+      A processar pedido...
+      </v-progress-circular>
+    </v-overlay>
     <v-textarea v-model="json" rows="20" readonly />
     <v-row>
       <v-spacer />
@@ -9,23 +19,51 @@
         @devolverPedido="despacharPedido($event)"
       />
     </v-row>
+    <v-dialog v-model="sucessDialog" width="700" persistent>
+      <v-card outlined>
+        <v-card-title
+          class="success darken-4 title white--text"
+          dark
+        >Tabela de Seleção adicionada com sucesso!</v-card-title>
 
+        <v-card-text>
+          <span class="subtitle-1" style="white-space: pre-wrap">
+            O Pedido de criação da Tabela de Seleção foi efetuado com sucesso...
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="red darken-4" text @click="$router.go(-1)">Fechar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="erroPedido" width="80%" hide-overlay>
+      <ErroDialog :erros="erros" @fecharErro="erroPedido=false" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
+import ErroDialog from "@/components/pedidos/generic/ErroDialog";
 
 export default {
   props: ["p"],
   components: {
-    PO
+    PO,
+    ErroDialog
   },
 
   data() {
     return {
       json: null,
       result: "",
+      sucessDialog: false,
+      erros: [],
+      erroPedido: false,
+      overlay: false,
     };
   },
   methods: {
@@ -71,31 +109,34 @@ export default {
           }
         }
 
-        var res = await this.$request("post", "/tabelasSelecao", {
+        this.overlay = true;
+        await this.$request("post", "/tabelasSelecao", {
           tabela: pedido,
         });
         
-        // const estado = "Validado";
+        const estado = "Validado";
 
-        // let dadosUtilizador = this.$verifyTokenUser();
+        let dadosUtilizador = this.$verifyTokenUser();
 
-        // const novaDistribuicao = {
-        //   estado: estado,
-        //   responsavel: dadosUtilizador.email,
-        //   data: new Date(),
-        //   despacho: dados.mensagemDespacho,
-        // };
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
 
-        // pedido.estado = estado;
-        // pedido.token = this.$store.state.token;
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
 
-        // await this.$request("put", "/pedidos", {
-        //   pedido: pedido,
-        //   distribuicao: novaDistribuicao,
-        // });
-        // this.sucessDialog = true;
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.overlay = false;
+        this.sucessDialog = true;
           
       } catch (e) {
+        this.overlay = false;
         this.erroPedido = true;
 
         let parsedError = Object.assign({}, e);
