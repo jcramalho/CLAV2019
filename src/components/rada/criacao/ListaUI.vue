@@ -1,9 +1,15 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12" xs="12" sm="12">
+      <v-col cols="auto">
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_nova_ui = true">
           <v-icon dark left>add</v-icon>Unidade de Instalação
+        </v-btn>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col class="text-right">
+        <v-btn color="indigo lighten-2" dark class="ma-2" @click="importar_uis = true">
+          <v-icon dark left>add</v-icon>Importar UI
         </v-btn>
       </v-col>
     </v-row>
@@ -94,21 +100,33 @@
       :RE="RE"
       :classes="TS.classes"
     />
+    <ImportarUIs
+      v-if="importar_uis"
+      :dialog="importar_uis"
+      @fecharDialog="importar_uis = false"
+      @pendurarNovasUIs="mergeUIs"
+      :classes="TS.classes"
+      :RE="RE"
+      :UIs="TS.UIs"
+    />
   </div>
 </template>
 
 <script>
 import UI from "@/components/rada/criacao/classes/UI";
 import EditaUI from "@/components/rada/alteracao/EditarUI";
+import ImportarUIs from "@/components/rada/importacao/importarUIs";
 
 export default {
   props: ["TS", "RE"],
   components: {
     UI,
-    EditaUI
+    EditaUI,
+    ImportarUIs,
   },
   data: () => ({
     UI_para_copiar: null,
+    importar_uis: false,
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     criar_nova_ui: false,
@@ -117,14 +135,14 @@ export default {
     dialog_editar_UI: false,
     footer_props: {
       "items-per-page-options": [1, 5, 10, -1],
-      "items-per-page-text": "Mostrar"
+      "items-per-page-text": "Mostrar",
     },
     headers: [
       {
         align: "center",
         width: "1%",
         sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Código",
@@ -132,7 +150,7 @@ export default {
         value: "codigo",
         width: "9%",
         sortable: true,
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Título",
@@ -140,7 +158,7 @@ export default {
         align: "center",
         width: "45%",
         sortable: true,
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Séries/Subséries Associadas",
@@ -148,30 +166,37 @@ export default {
         align: "center",
         width: "45%",
         sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
+        class: ["table-header", "body-2", "font-weight-bold"],
+      },
+    ],
   }),
   computed: {
     filtrar_uis() {
       if (!!this.search) {
         return this.TS.UIs.filter(
-          e =>
+          (e) =>
             e.codigo.includes(this.search) ||
             e.titulo.includes(this.search) ||
             e.classesAssociadas.some(
-              e =>
-                e.codigo.includes(this.search) || e.tipo.includes(this.search) || this.buscarTituloTable(e.codigo).includes(this.search)
+              (e) =>
+                e.codigo.includes(this.search) ||
+                e.tipo.includes(this.search) ||
+                this.buscarTituloTable(e.codigo).includes(this.search)
             )
         );
       } else {
         return this.TS.UIs;
       }
-    }
+    },
   },
   methods: {
+    mergeUIs(uis) {
+      for (let i = 0; i < uis.length; i++) {
+        this.TS.UIs.push(uis[i]);
+      }
+    },
     buscarTituloTable(codigo) {
-      let classe = this.TS.classes.find(cl => cl.codigo == codigo);
+      let classe = this.TS.classes.find((cl) => cl.codigo == codigo);
 
       return classe.titulo;
     },
@@ -196,7 +221,7 @@ export default {
       // Iterar o array alterado pelo utilizador
       for (let i = 0; i < UI_copia.classesAssociadas.length; i++) {
         let classe_ui_igual = UI_real.classesAssociadas.find(
-          ui => ui.codigo == UI_copia.classesAssociadas[i].codigo
+          (ui) => ui.codigo == UI_copia.classesAssociadas[i].codigo
         );
 
         if (classe_ui_igual == undefined) {
@@ -210,7 +235,7 @@ export default {
       //Iterar o array original de uis
       for (let j = 0; j < UI_real.classesAssociadas.length; j++) {
         let classe_ui_igual = UI_copia.classesAssociadas.find(
-          ui => ui.codigo == UI_real.classesAssociadas[j].codigo
+          (ui) => ui.codigo == UI_real.classesAssociadas[j].codigo
         );
 
         if (classe_ui_igual == undefined) {
@@ -223,13 +248,13 @@ export default {
       return novo_classesAssociadas;
     },
     elimina_de_classe(classe_eliminada, codigo_UI) {
-      let classe = this.TS.classes.find(cl => cl.codigo == classe_eliminada);
+      let classe = this.TS.classes.find((cl) => cl.codigo == classe_eliminada);
 
-      classe.UIs = classe.UIs.filter(e => e != codigo_UI);
+      classe.UIs = classe.UIs.filter((e) => e != codigo_UI);
     },
     adiciona_a_classe(classe_adicionada, codigo_UI) {
       let classe = this.TS.classes.find(
-        cl => cl.codigo == classe_adicionada.codigo
+        (cl) => cl.codigo == classe_adicionada.codigo
       );
 
       if (classe == undefined) {
@@ -253,13 +278,13 @@ export default {
             UIs: [codigo_UI],
             pca: null,
             formaContagem: {
-              forma: null
+              forma: null,
             },
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
             eFilhoDe: null,
-            tipo: "Série"
+            tipo: "Série",
           };
         } else {
           classe = {
@@ -274,13 +299,13 @@ export default {
             notaDF: null,
             pca: null,
             formaContagem: {
-              forma: null
+              forma: null,
             },
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
             eFilhoDe: null,
-            tipo: "Subsérie"
+            tipo: "Subsérie",
           };
         }
         this.TS.classes.push(classe);
@@ -289,7 +314,7 @@ export default {
       }
     },
     async atualizarUI() {
-      let UI = this.TS.UIs.find(ui => ui.codigo == this.UI_clone.codigo);
+      let UI = this.TS.UIs.find((ui) => ui.codigo == this.UI_clone.codigo);
       UI.classesAssociadas = await this.editaClasses(UI, this.UI_clone);
 
       UI.titulo = this.UI_clone.titulo;
@@ -313,18 +338,18 @@ export default {
       this.dialog_editar_UI = true;
     },
     buscarTitulosClasses(UI) {
-      UI.classesAssociadas.forEach(rel => {
+      UI.classesAssociadas.forEach((rel) => {
         let classe_relacionada = this.TS.classes.find(
-          cl => cl.codigo == rel.codigo
+          (cl) => cl.codigo == rel.codigo
         );
 
         rel["titulo"] = classe_relacionada.titulo;
       });
     },
     remover_UI(ui_codigo) {
-      this.TS.UIs = this.TS.UIs.filter(e => e.codigo != ui_codigo);
-    }
-  }
+      this.TS.UIs = this.TS.UIs.filter((e) => e.codigo != ui_codigo);
+    },
+  },
 };
 </script>
 

@@ -27,7 +27,7 @@
 <script>
 import ImportarFicheiro from "@/components/rada/importacao/importarFicheiro";
 
-const conversor = require("@/plugins/conversorRADA").importarRE;
+const conversor = require("@/plugins/rada/conversor_re").importarRE;
 
 export default {
   props: ["dialog", "entidades", "tipologias", "RE"],
