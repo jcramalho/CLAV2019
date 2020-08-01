@@ -120,6 +120,7 @@
               v-bind:auto="auto"
               v-bind:index="index"
               v-bind:agregacoes="auto.zonaControlo[index].agregacoes"
+              v-bind:tipo="tipo"
             />
             
           </v-list-item-title>

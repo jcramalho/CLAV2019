@@ -77,6 +77,13 @@
               :p="pedido"
               :tipo="pedido.objeto.tipo"
             />
+
+            <ValidaTS
+              v-if="
+                pedido.objeto.tipo.includes('TS ')
+              "
+              :p="pedido"
+            />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
@@ -130,6 +137,7 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
+import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
 import ValidaRADA from "@/components/pedidos/validacao/ValidaRADA";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
@@ -153,6 +161,7 @@ export default {
     ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
     ValidaAE,
+    ValidaTS,
     Loading,
     VerDespachos,
     ErroDialog,

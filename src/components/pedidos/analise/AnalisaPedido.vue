@@ -83,6 +83,13 @@
               :tipo="pedido.objeto.tipo"
             />
 
+            <AnalisaTS
+              v-else-if="
+                pedido.objeto.tipo.includes('TS ')
+              "
+              :p="pedido"
+            />
+            
             <AnalisaDefault v-else :p="pedido" />
           </v-card-text>
 
@@ -153,6 +160,7 @@ import AnalisaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
 import AnalisaAE from "@/components/pedidos/analise/AnalisaAE";
+import AnalisaTS from "@/components/pedidos/analise/AnalisaTS";
 
 import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
 import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLegislacao";
@@ -179,6 +187,7 @@ export default {
     AnalisaEditaLegislacao,
     AnalisaEditaTipologiaEntidade,
     AnalisaAE,
+    AnalisaTS,
     AnalisaDefault,
     VerDespachos,
     ErroDialog,
