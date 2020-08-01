@@ -104,7 +104,8 @@ export default {
           },
           token: this.$store.state.token,
           criadoPor: this.userEmail,
-          entidade: this.user_entidade
+          entidade: this.user_entidade,
+          historico: [],
         };
 
         let response = await this.$request("post", "/pedidos", pedidoEntidades);
@@ -220,6 +221,7 @@ export default {
           token: this.$store.state.token,
           criadoPor: this.userEmail,
           entidade: this.user_entidade,
+          historico: [],
           despacho: !!despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
             despacho
@@ -421,7 +423,8 @@ export default {
             // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
             await this.$request("delete", "/pendentes/" + id_remocao_pendente);
           }
-          this.$router.push("/pedidos/submissao");
+          this.$router.push(`/pedidos/submissao/${response.data}`);
+
         }
       }
     }
