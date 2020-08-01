@@ -43,7 +43,7 @@ export default {
             this.etapaPedido = "Pedidos Devolvidos";
             break;
           case "Validado":
-            this.etapaPedido = "Pedidos Processados";
+            this.etapaPedido = "Pedidos Aprovados";
             break;
 
           default:

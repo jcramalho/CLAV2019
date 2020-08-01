@@ -101,7 +101,7 @@
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
-import { eNUV, eDataFormatoErrado } from "@/utils/validadores";
+import { eNUV, eDataFormatoErrado, eNV } from "@/utils/validadores";
 
 export default {
   props: ["l", "acao", "original"],
@@ -165,7 +165,7 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (eNUV(dados.sumario)) {
+      if (eNV(dados.sumario)) {
         numeroErros++;
       }
 

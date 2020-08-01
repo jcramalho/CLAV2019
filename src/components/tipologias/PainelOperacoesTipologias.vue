@@ -105,7 +105,7 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
-import { eNUV } from "@/utils/validadores";
+import { eNUV, eNV, eUndefined } from "@/utils/validadores";
 
 export default {
   props: ["t", "acao", "original"],
@@ -170,9 +170,9 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (eNUV(dados.designacao)) {
+      if (eNV(dados.designacao)) {
         numeroErros++;
-      } else {
+      } else if (!eUndefined(dados.designacao)) {
         try {
           let existeDesignacao = await this.$request(
             "get",

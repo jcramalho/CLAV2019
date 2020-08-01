@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { eNUV, eDataFormatoErrado } from "@/utils/validadores";
+import { eNUV, eDataFormatoErrado, eNV } from "@/utils/validadores";
 
 export default {
   props: ["l", "acao", "original"],
@@ -163,7 +163,7 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (eNUV(dados.sumario)) {
+      if (eNV(dados.sumario)) {
         this.mensagensErro.push({
           sobre: "Sumário",
           mensagem: "O sumário não pode ser vazio.",

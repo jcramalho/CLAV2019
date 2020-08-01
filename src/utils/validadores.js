@@ -14,6 +14,10 @@ export function eNUV(valor) {
   return eNull(valor) || eUndefined(valor) || eVazio(valor);
 }
 
+export function eNV(valor) {
+  return eNull(valor) || eVazio(valor);
+}
+
 export function eDataFormatoErrado(data) {
   return !/[0-9]+-[0-9]+-[0-9]+/.test(data);
 }
@@ -23,5 +27,6 @@ export default {
   eUndefined,
   eVazio,
   eNUV,
+  eNV,
   eDataFormatoErrado,
 };
