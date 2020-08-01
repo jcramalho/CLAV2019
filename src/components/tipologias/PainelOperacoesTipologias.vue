@@ -58,15 +58,6 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de criação de tipologia submetido com sucesso -->
-      <v-dialog v-model="dialogTipologiaCriada" width="70%" persistent>
-        <DialogTipologiaSucesso
-          :t="t"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
-      </v-dialog>
-
       <!-- Cancelamento da criação de uma tipologia: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
@@ -112,19 +103,15 @@
 
 <script>
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
-import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
-import {
-  criarHistorico,
-  extrairAlteracoes,
-} from "@/utils/utils";
+import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
+import { eNUV, eNV, eUndefined } from "@/utils/validadores";
 
 export default {
   props: ["t", "acao", "original"],
 
   components: {
     ValidarTipologiaInfoBox,
-    DialogTipologiaSucesso,
   },
 
   data() {
@@ -132,9 +119,8 @@ export default {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
       dialogTipologiaCriada: false,
-      codigoPedido: "",
-      errosValidacao: false,
       pedidoEliminado: false,
+      errosValidacao: false,
     };
   },
 
@@ -143,7 +129,7 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (this.t.designacao === "" || this.t.designacao === null) {
+      if (eNUV(this.t.designacao)) {
         numeroErros++;
       } else {
         try {
@@ -161,7 +147,7 @@ export default {
       }
 
       // Sigla
-      if (this.t.sigla === "" || this.t.sigla === null) {
+      if (eNUV(this.t.sigla)) {
         numeroErros++;
       } else {
         try {
@@ -184,9 +170,9 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (dados.designacao === "" || dados.designacao === null) {
+      if (eNV(dados.designacao)) {
         numeroErros++;
-      } else if (dados.designacao !== undefined) {
+      } else if (!eUndefined(dados.designacao)) {
         try {
           let existeDesignacao = await this.$request(
             "get",
@@ -259,9 +245,7 @@ export default {
               pedidoParams
             );
 
-            this.codigoPedido = codigoPedido.data;
-
-            this.dialogTipologiaCriada = true;
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }

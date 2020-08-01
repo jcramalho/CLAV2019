@@ -21,7 +21,6 @@
             color="indigo"
             single-line
             v-model="valorEditado"
-            maxlength="150"
             label="Nome da Entidade"
           ></v-text-field>
         </v-col>
@@ -40,7 +39,6 @@
             color="indigo"
             single-line
             v-model="valorEditado"
-            maxlength="10"
             label="Sigla"
           ></v-text-field>
         </v-col>
@@ -117,7 +115,6 @@
             color="indigo"
             single-line
             v-model="valorEditado"
-            maxlength="50"
             label="Nome da Tipologia"
           ></v-text-field>
         </v-col>
@@ -134,7 +131,6 @@
             color="indigo"
             single-line
             v-model="valorEditado"
-            maxlength="10"
             label="Sigla"
           ></v-text-field>
         </v-col>
