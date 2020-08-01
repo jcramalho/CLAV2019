@@ -13,7 +13,7 @@
       </v-col>
     </v-row>
     <v-data-table
-      :headers="cabecalho"
+      :headers="(tipo=='TS_LC' || tipo=='PGD_LC') ? cabecalhoLC : cabecalho"
       :items="agregacoes"
       item-key="codigo"
       :items-per-page="5"
@@ -47,7 +47,7 @@
               clearable
             ></v-text-field>
           </td>
-          <td><v-select :items="natureza" v-model="ni" dense></v-select></td>
+          <td v-if="tipo=='TS_LC' || tipo=='PGD_LC'"><v-select :items="natureza" v-model="ni" dense></v-select></td>
           <td>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -85,7 +85,7 @@
               clearable
             ></v-text-field>
           </td>
-          <td><v-select :items="natureza" v-model="ni" dense></v-select></td>
+          <td v-if="tipo=='TS_LC' || tipo=='PGD_LC'"><v-select :items="natureza" v-model="ni" dense></v-select></td>
           <td>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -107,7 +107,7 @@
           <td>{{ prop.item.codigo }}</td>
           <td>{{ prop.item.titulo }}</td>
           <td>{{ prop.item.dataContagem }}</td>
-          <td>{{ prop.item.ni }}</td>
+          <td v-if="tipo=='TS_LC' || tipo=='PGD_LC'">{{ prop.item.ni }}</td>
           <td>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -196,7 +196,7 @@
 const help = require("@/config/help").help;
 
 export default {
-  props: ["auto", "index","agregacoes"],
+  props: ["auto", "index","agregacoes","tipo"],
 
   components: {},
 
@@ -204,18 +204,24 @@ export default {
     codigo: null,
     titulo: null,
     dataContagem: null,
-    ni: null,
+    ni: "Dono",
     natureza: ["Dono", "Participante"],
     changeSwitch: 0,
     snackbar: false,
     search: "",
     deleteDialog: false,
     deleteObj: null,
-    cabecalho: [
+    cabecalhoLC: [
       { text: "Código", align: "left", sortable: false, value: "codigo" , width: "20%"},
       { text: "Título", align: "left", value: "titulo", width: "30%" },
       { text: "Data de Contagem", align: "center", value: "dataContagem" , width: "15%"},
       { text: "Natureza de Intervenção", align: "center", value: "ni", width: "20%" },
+      { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
+    ],
+    cabecalho: [
+      { text: "Código", align: "left", sortable: false, value: "codigo" , width: "30%"},
+      { text: "Título", align: "left", value: "titulo", width: "40%" },
+      { text: "Data de Contagem", align: "center", value: "dataContagem" , width: "15%"},
       { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
     ],
     footer_props: {

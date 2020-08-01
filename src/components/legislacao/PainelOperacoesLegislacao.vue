@@ -56,15 +56,6 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de criação de legislacao submetido com sucesso -->
-      <v-dialog v-model="dialogLegislacaoCriada" width="70%" persistent>
-        <DialogLegislacaoSucesso
-          :l="l"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
-      </v-dialog>
-
       <!-- Cancelamento da criação de uma legislacao: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
@@ -108,17 +99,14 @@
 
 <script>
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
-import DialogLegislacaoSucesso from "@/components/legislacao/DialogLegislacaoSucesso";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
+import { eNUV, eDataFormatoErrado, eNV } from "@/utils/validadores";
 
 export default {
   props: ["l", "acao", "original"],
 
-  components: {
-    ValidarLegislacaoInfoBox,
-    DialogLegislacaoSucesso,
-  },
+  components: { ValidarLegislacaoInfoBox },
 
   data() {
     return {
@@ -126,8 +114,6 @@ export default {
       pendenteGuardadoInfo: "",
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar o Diploma!",
-      dialogLegislacaoCriada: false,
-      codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
     };
@@ -138,19 +124,19 @@ export default {
       let numeroErros = 0;
 
       // Tipo
-      if (this.l.tipo === "" || this.l.tipo === null) {
+      if (eNUV(this.l.tipo)) {
         numeroErros++;
       }
 
       // Número Diploma
-      if (this.l.numero === "" || this.l.numero === null) {
+      if (eNUV(this.l.numero)) {
         numeroErros++;
       }
 
       // Data
-      if (this.l.data === "" || this.l.data === null) {
+      if (eNUV(this.l.data)) {
         numeroErros++;
-      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.l.data)) {
+      } else if (eDataFormatoErrado(this.l.data)) {
         numeroErros++;
       }
 
@@ -160,15 +146,14 @@ export default {
       }
 
       // Data revogação
-      if (
-        this.l.data !== "" &&
-        this.l.data !== null &&
-        this.l.data !== undefined &&
-        this.l.dataRevogacao !== "" &&
-        this.l.dataRevogacao !== null &&
-        this.l.dataRevogacao !== undefined
-      ) {
-        if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
+      if (!eNUV(this.l.data) && !eNUV(this.l.dataRevogacao)) {
+        if (eDataFormatoErrado(this.l.dataRevogacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
           numeroErros++;
         }
       }
@@ -180,20 +165,19 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (dados.sumario === "" || dados.sumario === null) {
+      if (eNV(dados.sumario)) {
         numeroErros++;
       }
 
       // Data revogação
-      if (
-        dados.data !== "" &&
-        dados.data !== null &&
-        dados.data !== undefined &&
-        dados.dataRevogacao !== "" &&
-        dados.dataRevogacao !== null &&
-        dados.dataRevogacao !== undefined
-      ) {
-        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+      if (!eNUV(dados.data) && !eNUV(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
           numeroErros++;
         }
       }
@@ -256,9 +240,7 @@ export default {
               pedidoParams
             );
 
-            this.codigoPedido = codigoPedido.data;
-
-            this.dialogLegislacaoCriada = true;
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }

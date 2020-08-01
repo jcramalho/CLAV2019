@@ -353,7 +353,7 @@
         <v-card-title
           class="red darken-4 title white--text"
           dark
-        >Não foi possível criar o pedido de criação de auto de eliminação</v-card-title>
+        >Erro no pedido de importação de auto de eliminação</v-card-title>
 
         <v-card-text>
           <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro"></span>

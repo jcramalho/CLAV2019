@@ -482,6 +482,7 @@ export default {
           this.numInterv++;
           var cDate = Date.now();
           this.auto.tipo = this.tipo
+          this.auto.switchRada = this.switchRada
           var userBD = this.$verifyTokenUser();
           if(this.numInterv == 1) {
             var pendenteParams = {
@@ -531,6 +532,7 @@ export default {
           this.numInterv++;
           var cDate = Date.now();
           this.auto.tipo = this.tipo
+          this.auto.switchRada = this.switchRada
           var userBD = this.$verifyTokenUser();
           if(this.numInterv == 1) {
             var pendenteParams = {

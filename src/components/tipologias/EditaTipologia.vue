@@ -23,7 +23,6 @@
                 color="indigo"
                 single-line
                 v-model="tipologia.designacao"
-                maxlength="50"
                 label="Nome da Tipologia"
               ></v-text-field>
             </v-col>

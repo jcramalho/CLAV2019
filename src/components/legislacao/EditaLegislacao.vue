@@ -167,7 +167,6 @@ export default {
         tipo: "",
         data: "",
         link: "",
-        diplomaFonte: "Não especificada",
         codigo: "",
         dataRevogacao: "",
         entidadesSel: [],
@@ -176,8 +175,6 @@ export default {
       legislacaoOriginal: {},
 
       tiposDiploma: [],
-
-      diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
 
       // Para o seletor de entidades
       entidades: [],
@@ -290,14 +287,6 @@ export default {
   async created() {
     this.legislacao = JSON.parse(JSON.stringify(this.l));
     this.legislacaoOriginal = JSON.parse(JSON.stringify(this.l));
-
-    if (
-      this.legislacao.diplomaFonte === "" ||
-      this.legislacao.diplomaFonte === null ||
-      this.legislacao.diplomaFonte === undefined
-    ) {
-      this.legislacao.diplomaFonte = "Não especificada";
-    }
 
     await this.loadTipoDiploma();
     await this.loadEntidades();

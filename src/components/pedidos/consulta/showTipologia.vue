@@ -24,8 +24,29 @@
     </v-card-title>
 
     <v-card-text>
+      <span v-if="p.objeto.acao !== 'Criação'">
+        <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
+          <span>
+            <b> {{ p.objeto.tipo }}: </b>
+            {{ p.objeto.dadosOriginais.sigla }}
+            - {{ p.objeto.dadosOriginais.designacao }}
+          </span>
+        </v-alert>
+
+        <v-divider class="m-auto mb-2" />
+      </span>
+
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row v-if="info !== '' && info !== null && info !== undefined">
+        <v-row
+          v-if="
+            (p.objeto.acao === 'Criação' && campo === 'sigla') ||
+              (campo !== 'sigla' &&
+                campo !== 'estado' &&
+                info !== '' &&
+                info !== null &&
+                info !== undefined)
+          "
+        >
           <v-col cols="2">
             <div class="info-descricao">{{ transformaKeys(campo) }}</div>
           </v-col>

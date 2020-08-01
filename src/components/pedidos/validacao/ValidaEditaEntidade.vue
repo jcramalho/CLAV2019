@@ -411,6 +411,8 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
+        let numeroErros = 0;
+
         if (pedido.objeto.acao === "Extinção") {
           await this.$request(
             "put",
@@ -418,7 +420,6 @@ export default {
             { dataExtincao: pedido.objeto.dados.dataExtincao }
           );
         } else {
-          let numeroErros = 0;
           if (pedido.objeto.dados.hasOwnProperty("designacao")) {
             numeroErros = await this.validar(
               pedido.objeto.acao,
@@ -447,33 +448,37 @@ export default {
           }
         }
 
-        const estado = "Validado";
+        if (numeroErros === 0) {
+          const estado = "Validado";
 
-        let dadosUtilizador = this.$verifyTokenUser();
+          let dadosUtilizador = this.$verifyTokenUser();
 
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho,
-        };
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho,
+          };
 
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+          pedido.estado = estado;
+          pedido.token = this.$store.state.token;
 
-        this.novoHistorico = adicionarNotaComRemovidos(
-          this.historico[this.historico.length - 1],
-          this.novoHistorico
-        );
+          this.novoHistorico = adicionarNotaComRemovidos(
+            this.historico[this.historico.length - 1],
+            this.novoHistorico
+          );
 
-        pedido.historico.push(this.novoHistorico);
+          pedido.historico.push(this.novoHistorico);
 
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao,
-        });
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao,
+          });
 
-        this.$router.go(-1);
+          this.$router.go(-1);
+        } else {
+          this.erroPedido = true;
+        }
       } catch (e) {
         this.erroPedido = true;
 
