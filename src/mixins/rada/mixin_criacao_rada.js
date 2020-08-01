@@ -273,60 +273,67 @@ export default {
       }
     },
     validar_relacoes(series_subseries) {
-      this.erros_relacoes = [];
+      try {
 
-      for (let i = 0; i < series_subseries.length; i++) {
-        for (let j = 0; j < series_subseries[i].relacoes.length; j++) {
-          // perante uma relacao series_subseries[i].relacoes[j]
-          let a = this.datas_extremas_classes.find(
-            e => e.codigo == series_subseries[i].codigo
-          );
-          let b = this.datas_extremas_classes.find(
-            e =>
-              e.codigo ==
-              series_subseries[i].relacoes[j].serieRelacionada.codigo
-          );
+        this.erros_relacoes = [];
 
-          switch (series_subseries[i].relacoes[j].relacao) {
-            case "Complementar de":
-              if (
-                !(
-                  (a.dataInicial <= b.dataInicial &&
-                    b.dataInicial <= a.dataFinal) ||
-                  (b.dataInicial <= a.dataInicial &&
-                    a.dataInicial <= b.dataFinal)
-                )
-              ) {
-                this.erros_relacoes.push([
-                  a.codigo,
-                  b.codigo,
-                  series_subseries[i].relacoes[j].relacao
-                ]);
-              }
-              break;
-            case "Síntese de":
-              if (
-                !(a.dataInicial <= b.dataInicial && a.dataFinal >= b.dataFinal)
-              ) {
-                this.erros_relacoes.push([
-                  a.codigo,
-                  b.codigo,
-                  series_subseries[i].relacoes[j].relacao
-                ]);
-              }
-              break;
-            case "Sucessora de":
-              if (a.dataInicial <= b.dataInicial) {
-                this.erros_relacoes.push([
-                  a.codigo,
-                  b.codigo,
-                  series_subseries[i].relacoes[j].relacao
-                ]);
-              }
-              break;
+        for (let i = 0; i < series_subseries.length; i++) {
+          for (let j = 0; j < series_subseries[i].relacoes.length; j++) {
+            // perante uma relacao series_subseries[i].relacoes[j]
+            let a = this.datas_extremas_classes.find(
+              e => e.codigo == series_subseries[i].codigo
+            );
+            let b = this.datas_extremas_classes.find(
+              e =>
+                e.codigo ==
+                series_subseries[i].relacoes[j].serieRelacionada.codigo
+            );
+
+            switch (series_subseries[i].relacoes[j].relacao) {
+              case "Complementar de":
+                if (
+                  !(
+                    (a.dataInicial <= b.dataInicial &&
+                      b.dataInicial <= a.dataFinal) ||
+                    (b.dataInicial <= a.dataInicial &&
+                      a.dataInicial <= b.dataFinal)
+                  )
+                ) {
+                  this.erros_relacoes.push([
+                    a.codigo,
+                    b.codigo,
+                    series_subseries[i].relacoes[j].relacao
+                  ]);
+                }
+                break;
+              case "Síntese de":
+                if (
+                  !(a.dataInicial <= b.dataInicial && a.dataFinal >= b.dataFinal)
+                ) {
+                  this.erros_relacoes.push([
+                    a.codigo,
+                    b.codigo,
+                    series_subseries[i].relacoes[j].relacao
+                  ]);
+                }
+                break;
+              case "Sucessora de":
+                if (a.dataInicial <= b.dataInicial) {
+                  this.erros_relacoes.push([
+                    a.codigo,
+                    b.codigo,
+                    series_subseries[i].relacoes[j].relacao
+                  ]);
+                }
+                break;
+            }
           }
         }
+      } catch (e) {
+        return err;
       }
+
+
     },
     async concluir(id_remocao_pendente) {
       if (!this.RADA.tsRada.classes.some(e => e.tipo == "Série")) {
@@ -340,7 +347,7 @@ export default {
         );
 
         this.descobrir_datas_extremas(series_subseries);
-        this.validar_relacoes(series_subseries);
+        await this.validar_relacoes(series_subseries);
 
         //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
         //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
