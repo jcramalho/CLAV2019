@@ -99,6 +99,14 @@ var validarClasses = (
         } else {
             await validarRelacoes(novas_classes, erros);
 
+            // Limpar critérios que possam estar a mais;
+            for (let i = 0; i < novas_classes.length; i++) {
+                if (novas_classes[i].tipo == "Série" || novas_classes[i].tipo == "Subsérie") {
+                    novas_classes[i].justificacaoPCA = novas_classes[i].justificacaoPCA.filter(e => !!e.relacoes ? e.relacoes.length > 0 : true);
+                    novas_classes[i].justificacaoDF = novas_classes[i].justificacaoDF.filter(e => e.relacoes.length > 0);
+                }
+            }
+
             if (!!erros.relacoes[0]) {
                 reject({ erros });
             } else {
