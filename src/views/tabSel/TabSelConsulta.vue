@@ -23,6 +23,13 @@ export default {
         "/tabelasSelecao/" + this.id
       );
       this.ts = response.data;
+      this.ts.classes = response.data.classes.map(c=> {
+        if(c.nivel<3) {
+          c.pca.valores="";
+          c.df.valor="";
+        }
+        return c
+      })
     } catch (e) {
       return e;
     }

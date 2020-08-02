@@ -123,7 +123,6 @@ export default {
             link: ""
           };
         });
-        console.log(this.fontesTS)
         this.fontesTSReady = true;
       })
       .catch(e => {
