@@ -177,6 +177,8 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
+import { eNUV, eDataFormatoErrado } from "@/utils/validadores";
+
 export default {
   props: ["p"],
 
@@ -402,20 +404,17 @@ export default {
       }
     },
 
-    async validarEntidade(acao, dados) {
+    async validarEntidade(dados) {
       let numeroErros = 0;
 
       // Designação
-      if (
-        (dados.designacao === "" || dados.designacao === null) &&
-        acao === "Criação"
-      ) {
+      if (eNUV(dados.designacao)) {
         this.erros.push({
           sobre: "Nome da Entidade",
           mensagem: "O nome da entidade não pode ser vazio.",
         });
         numeroErros++;
-      } else if (acao === "Criação") {
+      } else {
         try {
           let existeDesignacao = await this.$request(
             "get",
@@ -439,13 +438,13 @@ export default {
       }
 
       // Sigla
-      if ((dados.sigla === "" || dados.sigla === null) && acao === "Criação") {
+      if (eNUV(dados.sigla)) {
         this.erros.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia.",
         });
         numeroErros++;
-      } else if (acao === "Criação") {
+      } else {
         try {
           let existeSigla = await this.$request(
             "get",
@@ -468,7 +467,7 @@ export default {
       }
 
       // Internacional
-      if (dados.internacional === "" || dados.internacional === null) {
+      if (eNUV(dados.internacional)) {
         this.erros.push({
           sobre: "Internacional",
           mensagem: "O campo internacional tem de ter uma opção.",
@@ -477,11 +476,34 @@ export default {
       }
 
       // SIOE
-      if (dados.sioe !== "" && dados.sioe !== null) {
+      if (!eNUV(dados.sioe)) {
         if (dados.sioe.length > 12) {
           this.erros.push({
             sobre: "SIOE",
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
+          });
+          numeroErros++;
+        }
+      }
+
+      //Data Criação
+      if (!eNUV(dados.dataCriacao)) {
+        if (eDataFormatoErrado(dados.dataCriacao)) {
+          this.erros.push({
+            sobre: "Data de Criação",
+            mensagem: "A data de criação está no formato errado",
+          });
+          numeroErros++;
+        }
+      }
+
+      // Data de Extinção
+      if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
+        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+          this.erros.push({
+            sobre: "Data de Extinçao",
+            mensagem:
+              "A data de extinção tem de ser superior à data de criação.",
           });
           numeroErros++;
         }
@@ -494,10 +516,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        let numeroErros = await this.validarEntidade(
-          pedido.objeto.acao,
-          pedido.objeto.dados
-        );
+        let numeroErros = await this.validarEntidade(pedido.objeto.dados);
 
         if (numeroErros === 0) {
           for (const key in pedido.objeto.dados) {

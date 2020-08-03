@@ -177,6 +177,8 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
+import { eNUV } from "@/utils/validadores";
+
 export default {
   props: ["p"],
 
@@ -400,11 +402,11 @@ export default {
       }
     },
 
-    async validarTipologiaEntidade(acao, dados) {
+    async validarTipologiaEntidade(dados) {
       let numeroErros = 0;
 
       // Designação
-      if (dados.designacao === "" || dados.designacao === null) {
+      if (eNUV(dados.designacao)) {
         this.erros.push({
           sobre: "Nome da Tipologia",
           mensagem: "O nome da tipologia não pode ser vazio.",
@@ -434,7 +436,7 @@ export default {
       }
 
       // Sigla
-      if (dados.sigla === "" || dados.sigla === null) {
+      if (eNUV(dados.sigla)) {
         this.erros.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia.",
@@ -470,7 +472,6 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         let numeroErros = await this.validarTipologiaEntidade(
-          pedido.objeto.acao,
           pedido.objeto.dados
         );
 
