@@ -70,6 +70,14 @@
                       </div>
                     </template>
                   </v-radio>
+                  
+                  <v-radio value="RADA_CLAV">
+                    <template v-slot:label>
+                      <div class="mt-2">
+                        RADA/CLAV
+                      </div>
+                    </template>
+                  </v-radio>
                 </v-radio-group>
                 <div v-if="tipo=='PGD_LC'">
                   <v-autocomplete
@@ -84,6 +92,8 @@
                   <v-autocomplete
                     label="Selecione a Tabela de Seleção"
                     :items="tabelasSelecao"
+                    return-object
+                    item-text="titulo"
                     v-model="auto.legislacao"
                     solo 
                     dense
@@ -98,32 +108,25 @@
                     dense
                   ></v-autocomplete>
                 </div>
-                <div v-else>
-                  <v-row>
-                    <v-col cols="3">
-                      <v-switch class="ma-1" v-model="switchRada" :label="radaLabel"></v-switch>
-                    </v-col>
-                    <v-col>
+                <div v-else-if="tipo=='RADA'">
                       <v-autocomplete
-                        v-if="switchRada"
-                        label="Selecione a Tabela de Selação"
-                        :items="tsRada"
-                        item-text="titulo"
-                        return-object
-                        v-model="auto.legislacao"
-                        solo
-                        dense
-                      ></v-autocomplete>
-                      <v-autocomplete
-                        v-else
                         label="Selecione a fonte de legitimação"
                         :items="portariaRada"
                         v-model="auto.legislacao"
                         solo
                         dense
                       ></v-autocomplete>
-                    </v-col>
-                  </v-row>
+                </div>
+                <div v-else>
+                  <v-autocomplete
+                    label="Selecione a Tabela de Selação"
+                    :items="tsRada"
+                    item-text="titulo"
+                    return-object
+                    v-model="auto.legislacao"
+                    solo
+                    dense
+                  ></v-autocomplete>
                 </div>
               </v-col>
             </v-row>
@@ -373,7 +376,6 @@ export default {
     numInterv: 0,
     _id: null,
     tipo: "TS_LC",
-    switchRada: false,
     donos: [],
     steps: 1,
     erro: null,
@@ -386,11 +388,6 @@ export default {
     pendenteGuardadoInfo: null,
     eliminar: false
   }),
-  computed: {
-    radaLabel: function() {
-      return this.switchRada ? "Tabela de Seleção" : "Fonte de Legitimação"
-    }
-  },
   created: async function() {
     try {
       var user = this.$verifyTokenUser();
@@ -409,7 +406,12 @@ export default {
       this.portaria = await this.prepararLeg(response2.data);
       var response3 = await this.$request("get", "/legislacao?fonte=RADA");
       this.portariaRada = await this.prepararLeg(response3.data);
-      this.tabelasSelecao.push("Lista Consolidada")
+      var response5 = await this.$request("get","/tabelasSelecao")
+      this.tabelasSelecao = response5.data.map(ts=>{return {
+          titulo: ts.designacao,
+          codigo: ts.id.split("clav#")[1]
+        }
+      });
       var response4 = await this.$request("get","/rada");
       this.tsRada = response4.data
 
@@ -436,15 +438,9 @@ export default {
         }
       }
       if(this.erro==="") {
-        if(this.tipo=="TS_LC") {
-          delete this.auto["legislacao"]
-          //Para já apenas LC
-          this.auto.referencial = "Lista Consolidada#lc1"
-        }
-        if(this.tipo=="RADA" && this.switchRada) {
+        if(this.tipo=="TS_LC" || this.tipo=="RADA_CLAV") {
           this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
           delete this.auto["legislacao"]
-
         }
         var user = this.$verifyTokenUser();
 
@@ -482,7 +478,7 @@ export default {
           this.numInterv++;
           var cDate = Date.now();
           this.auto.tipo = this.tipo
-          this.auto.switchRada = this.switchRada
+
           var userBD = this.$verifyTokenUser();
           if(this.numInterv == 1) {
             var pendenteParams = {
@@ -532,7 +528,7 @@ export default {
           this.numInterv++;
           var cDate = Date.now();
           this.auto.tipo = this.tipo
-          this.auto.switchRada = this.switchRada
+
           var userBD = this.$verifyTokenUser();
           if(this.numInterv == 1) {
             var pendenteParams = {
@@ -659,19 +655,23 @@ export default {
       if(this.tipo == "TS_LC") {
         var response = await this.$request(
           "get",
-          "/classes?nivel=3&info=completa"
+          "/tabelasSelecao/"+this.auto.referencial
         );
-        var response2 = await this.$request(
-          "get",
-          "/classes?nivel=4&info=completa"
-        );
-        this.classesCompletas = await this.prepararClassesCompletas(
-          response.data,
-          response2.data
-        );
-        this.classes = await this.prepararClasses(this.classesCompletas);
+        this.classesCompletas = response.data.classes.filter(c=> c.nivel>2).map(c => {
+            return {
+              idClasse: "c"+c.codigo+"_"+this.auto.referencial,
+              nivel: c.nivel,
+              codigo: c.codigo,
+              referencia: c.referencia,
+              titulo: c.titulo,
+              df: {valor: c.df.valor, nota: c.df.nota || ""},
+              pca: {valores: c.pca.valores, notas: c.pca.nota || ""},
+            }
+          })
+        this.classesCompletas = this.classesCompletas.filter(c => this.validaPCAeDF(c))
+        this.classes = this.classesCompletas.map(c=>{return c.codigo +" - "+c.titulo})
       }
-      else if(this.tipo == "PGD" || this.tipo == "PGD_LC" || (this.tipo=="RADA" && !this.switchRada)) {
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC" || this.tipo=="RADA") {
         var response = await this.$request(
           "get",
           "/legislacao"
@@ -713,7 +713,7 @@ export default {
             else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
         
-      } else if(this.tipo == "RADA" && this.switchRada) {
+      } else if(this.tipo == "RADA_CLAV") {
         var response = await this.$request(
           "get",
           "/rada/"+this.auto.referencial
@@ -743,10 +743,7 @@ export default {
   watch: {
     tipo: function() {
       this.auto.legislacao = null;
-    },
-    switchRada: function() {
-      this.auto.legislacao = null;
-    } 
+    }
   }
 };
 </script>

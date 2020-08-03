@@ -99,6 +99,19 @@
                       </div>
                     </template>
                   </v-radio>
+                  <v-radio value="RADA_CLAV">
+                    <template v-slot:label>
+                      <div class="mt-2">
+                        RADA/CLAV
+                        <InfoBox
+                          header="Fonte de Legitimação - RADA"
+                          :text="myhelp.AutoEliminacao.Campos.RADA"
+                          helpColor="indigo darken-4"
+                          dialogColor="#E0F2F1"
+                        />
+                      </div>
+                    </template>
+                  </v-radio>
                 </v-radio-group>
                 <div v-if="tipo=='PGD_LC'">
                   <v-autocomplete
@@ -113,6 +126,8 @@
                   <v-autocomplete
                     label="Selecione a Tabela de Seleção"
                     :items="tabelasSelecao"
+                    return-object
+                    item-text="titulo"
                     v-model="auto.legislacao"
                     solo 
                     dense
@@ -127,32 +142,25 @@
                     dense
                   ></v-autocomplete>
                 </div>
-                <div v-else>
-                  <v-row>
-                    <v-col cols="3">
-                      <v-switch class="ma-1" v-model="switchRada" :label="radaLabel"></v-switch>
-                    </v-col>
-                    <v-col>
-                      <v-autocomplete
-                        v-if="switchRada"
-                        label="Selecione a Tabela de Selação"
-                        :items="tsRada"
-                        item-text="titulo"
-                        return-object
-                        v-model="auto.legislacao"
-                        solo
-                        dense
-                      ></v-autocomplete>
-                      <v-autocomplete
-                        v-else
+                <div v-else-if="tipo=='RADA'">
+                  <v-autocomplete
                         label="Selecione a fonte de legitimação"
                         :items="portariaRada"
                         v-model="auto.legislacao"
                         solo
                         dense
                       ></v-autocomplete>
-                    </v-col>
-                  </v-row>
+                </div>
+                <div v-else>
+                  <v-autocomplete
+                    label="Selecione a Tabela de Selação"
+                    :items="tsRada"
+                    item-text="titulo"
+                    return-object
+                    v-model="auto.legislacao"
+                    solo
+                    dense
+                  ></v-autocomplete>
                 </div>
                 <div style="width:100%">
                   Para submeter um auto de eliminação, selecione os ficheiros
@@ -402,7 +410,6 @@ export default {
     fileSerie: null,
     fileAgreg: null,
     tipo: "TS_LC",
-    switchRada: false,
     flagAE: false,
     successDialog: false,
     success: "",
@@ -417,11 +424,6 @@ export default {
     publicPath: process.env.BASE_URL,
     myhelp: help
   }),
-  computed: {
-    radaLabel: function() {
-      return this.switchRada ? "Tabela de Seleção" : "Fonte de Legitimação"
-    }
-  },
   methods: {
     validar: async function() {
       for(var zc of this.auto.zonaControlo) {
@@ -560,9 +562,8 @@ export default {
                      +"deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                     return;
                   }
+                  this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
                   delete this.auto["legislacao"]
-                  //Para já apenas LC
-                  this.auto.referencial = "Lista Consolidada#lc1"
 
                   delete zc["referencia"];
                   
@@ -583,7 +584,7 @@ export default {
                 });
               }
               else {
-                if(this.tipo == "RADA" && this.switchRada) {
+                if(this.tipo == "RADA_CLAV") {
                   this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
                   delete this.auto["legislacao"]
                 }
@@ -699,6 +700,11 @@ export default {
         this.fileAgreg = null;
       }
     },
+    validaPCAeDF: function(classe) {
+      if((!classe.pca.valores || classe.pca.valores=="NE") && !classe.pca.notas) return false;
+      else if((!classe.df.valor || classe.df.valor=="NE") && !classe.df.nota) return false;
+      else return true
+    },
     prepararLeg: async function(leg) {
       try {
         var myPortarias = [];
@@ -744,18 +750,23 @@ export default {
       if(this.tipo == "TS_LC") {
         var response = await this.$request(
           "get",
-          "/classes?nivel=3&info=completa"
+          "/tabelasSelecao/"+this.auto.referencial
         );
-        var response2 = await this.$request(
-          "get",
-          "/classes?nivel=4&info=completa"
-        );
-        this.classes = await this.prepararClassesCompletas(
-          response.data,
-          response2.data
-        );
+        this.classes = response.data.classes.filter(c=> c.nivel>2).map(c => {
+            return {
+              idClasse: "c"+c.codigo+"_"+this.auto.referencial,
+              nivel: c.nivel,
+              codigo: c.codigo,
+              referencia: c.referencia,
+              titulo: c.titulo,
+              df: {valor: c.df.valor, nota: c.df.nota || ""},
+              pca: {valores: c.pca.valores, notas: c.pca.nota || ""},
+            }
+          })
+        this.classes = this.classes.filter(c => this.validaPCAeDF(c))
+        
       }
-      else if(this.tipo == "PGD" || this.tipo == "PGD_LC"|| (this.tipo=="RADA" && !this.switchRada)) {
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC"|| this.tipo=="RADA") {
         var response = await this.$request(
           "get",
           "/legislacao"
@@ -789,7 +800,7 @@ export default {
               pca: {valores: c.pca, notas: c.notaPCA},
             }
         })
-      } else if(this.tipo == "RADA" && this.switchRada) {
+      } else if(this.tipo == "RADA_CLAV") {
         var response = await this.$request(
           "get",
           "/rada/"+this.auto.referencial
@@ -829,7 +840,12 @@ export default {
       this.portaria = await this.prepararLeg(response2.data);
       var response3 = await this.$request("get", "/legislacao?fonte=RADA");
       this.portariaRada = await this.prepararLeg(response3.data);
-      this.tabelasSelecao.push("Lista Consolidada")
+      var response5 = await this.$request("get","/tabelasSelecao")
+      this.tabelasSelecao = response5.data.map(ts=>{return {
+          titulo: ts.designacao,
+          codigo: ts.id.split("clav#")[1]
+        }
+      });
       var response4 = await this.$request("get","/rada");
       this.tsRada = response4.data
     } catch (e) {
@@ -843,10 +859,7 @@ export default {
   watch: {
     tipo: function() {
       this.auto.legislacao = null;
-    },
-    switchRada: function() {
-      this.auto.legislacao = null;
-    } 
+    }
   }
 };
 </script>

@@ -263,7 +263,6 @@ export default {
       zonaControlo: []
     },
     tipo: "",
-    switchRada: false,
     donos: [],
     apagarAE: false,
     steps: 2,
@@ -303,7 +302,6 @@ export default {
       
       this.auto = this.obj.objeto;
       this.tipo = this.auto.tipo;
-      this.switchRada = this.auto.switchRada;
 
       this.filtrarDonos()
       this.pendenteID = this.obj._id;
@@ -385,16 +383,11 @@ export default {
         }
       }
       if(this.erro==="") {
-        if(this.tipo=="TS_LC") {
-          delete this.auto["legislacao"]
-          //Para já apenas LC
-          this.auto.referencial = "Lista Consolidada#lc1"
-        }
-        if(this.tipo=="RADA" && this.switchRada) {
+        if(this.tipo=="TS_LC" || this.tipo=="RADA_CLAV") {
           this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
           delete this.auto["legislacao"]
-
         }
+        
         var user = this.$verifyTokenUser();
 
         this.auto.responsavel = user.email;
@@ -503,7 +496,7 @@ export default {
         );
         this.classes = await this.prepararClasses(this.classesCompletas);
       }
-      else if(this.tipo == "PGD" || this.tipo == "PGD_LC" || (this.tipo=="RADA" && !this.switchRada)) {
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC" || this.tipo=="RADA") {
         var response = await this.$request(
           "get",
           "/legislacao"
@@ -545,7 +538,7 @@ export default {
             else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
         
-      } else if(this.tipo == "RADA" && this.switchRada) {
+      } else if(this.tipo == "RADA_CLAV") {
         var response = await this.$request(
           "get",
           "/rada/"+this.auto.referencial
