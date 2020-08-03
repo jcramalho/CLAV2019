@@ -115,7 +115,7 @@
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
-import { eNUV, eNV, eUndefined } from "@/utils/validadores";
+import { eNUV, eNV, eUndefined, eDataFormatoErrado } from "@/utils/validadores";
 
 export default {
   props: ["e", "acao", "original"],
@@ -179,7 +179,14 @@ export default {
         if (this.e.sioe.length > 12) numeroErros++;
       }
 
-      // Datas
+      //Data Criação
+      if (!eNUV(this.e.dataCriacao)) {
+        if (eDataFormatoErrado(this.e.dataCriacao)) {
+          numeroErros++;
+        }
+      }
+
+      // Data de Extinção
       if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
         if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao))
           numeroErros++;
@@ -210,7 +217,7 @@ export default {
       }
 
       // Internacional
-      if (eNUV(dados.internacional)) {
+      if (eNV(dados.internacional)) {
         numeroErros++;
       }
 
@@ -219,7 +226,14 @@ export default {
         if (dados.sioe.length > 12) numeroErros++;
       }
 
-      // Datas
+      //Data Criação
+      if (!eNUV(dados.dataCriacao)) {
+        if (eDataFormatoErrado(dados.dataCriacao)) {
+          numeroErros++;
+        }
+      }
+
+      // Data de Extinção
       if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
         if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao))
           numeroErros++;
@@ -280,11 +294,7 @@ export default {
               erros = this.validarEntidadeExtincao(dataObj);
 
               for (const key in dataObj) {
-                if (
-                  key !== "sigla" &&
-                  key !== "dataExtincao" &&
-                  key !== "dataCriacao"
-                )
+                if (key !== "sigla" && key !== "dataExtincao")
                   delete dataObj[key];
               }
 
