@@ -243,6 +243,8 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
+import { eNUV, eNV, eDataFormatoErrado } from "@/utils/validadores";
+
 export default {
   props: ["p"],
 
@@ -333,6 +335,10 @@ export default {
   computed: {
     dados() {
       return this.p.objeto.dados;
+    },
+
+    dadosOriginais() {
+      return this.p.objeto.dadosOriginais;
     },
 
     historico() {
@@ -565,7 +571,7 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (dados.sumario === "" || dados.sumario === null) {
+      if (eNV(dados.sumario)) {
         this.erros.push({
           sobre: "Sumário",
           mensagem: "O sumário não pode ser vazio.",
@@ -574,15 +580,34 @@ export default {
       }
 
       // Data Revogação
-      if (
-        dados.data !== "" &&
-        dados.data !== null &&
-        dados.data !== undefined &&
-        dados.dataRevogacao !== "" &&
-        dados.dataRevogacao !== null &&
-        dados.dataRevogacao !== undefined
+      if (!eNUV(dados.data) && !eNUV(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          this.erros.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+          this.erros.push({
+            sobre: "Data de revogação",
+            mensagem:
+              "A data de revogação tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
+      } else if (
+        !eNUV(this.dadosOriginais.data) &&
+        !eNUV(dados.dataRevogacao)
       ) {
-        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          this.erros.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (
+          new Date(this.dadosOriginais.data) >= new Date(dados.dataRevogacao)
+        ) {
           this.erros.push({
             sobre: "Data de revogação",
             mensagem:

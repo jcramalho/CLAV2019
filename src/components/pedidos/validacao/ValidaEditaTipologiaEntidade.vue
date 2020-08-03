@@ -178,6 +178,8 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
+import { eNV, eUndefined } from "@/utils/validadores";
+
 export default {
   props: ["p"],
 
@@ -484,25 +486,33 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      try {
-        let existeDesignacao = await this.$request(
-          "get",
-          "/entidades/designacao?valor=" + encodeURIComponent(dados.designacao)
-        );
-
-        if (existeDesignacao.data) {
-          this.erros.push({
-            sobre: "Nome da Entidade",
-            mensagem: "Nome da entidade já existente na BD.",
-          });
-          numeroErros++;
-        }
-      } catch (err) {
-        numeroErros++;
+      if (eNV(dados.designacao)) {
         this.erros.push({
-          sobre: "Acesso à Ontologia",
-          mensagem: "Não consegui verificar a existência da designação.",
+          sobre: "Nome da Tipologia",
+          mensagem: "O nome da tipologia não pode ser vazio.",
         });
+        numeroErros++;
+      } else if (!eUndefined(dados.designacao)) {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/tipologias/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            this.erros.push({
+              sobre: "Nome da Tipologia",
+              mensagem: "Nome da tipologia já existente na BD.",
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação.",
+          });
+        }
       }
 
       return numeroErros;
