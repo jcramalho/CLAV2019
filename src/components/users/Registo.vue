@@ -46,8 +46,8 @@
                     'Administrador de Perfil Funcional',
                     'Utilizador Decisor',
                     'Utilizador Validador',
-                    'Utilizador Validador (AD)',
                     'Utilizador Avançado',
+                    'Utilizador Arquivo Distrital',
                     'Utilizador Simples',
                     'Representante Entidade'
                   ]"
@@ -182,10 +182,10 @@ export default {
           case "Utilizador Validador":
             parsedType = 4;
             break;
-          case "Utilizador Validador (AD)":
+          case "Utilizador Avançado":
             parsedType = 3.5;
             break;
-          case "Utilizador Avançado":
+          case "Utilizador Arquivo Distrital":
             parsedType = 3;
             break;
           case "Utilizador Simples":

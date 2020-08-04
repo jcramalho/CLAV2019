@@ -222,10 +222,10 @@ export default {
           ret = "Utilizador Simples";
           break;
         case 3:
-          ret = "Utilizador Avançado";
+          ret = "Utilizador Arquivo Distrital";
           break;
         case 3.5:
-          ret = "Utilizador Validador (AD)";
+          ret = "Utilizador Avançado";
           break;
         case 4:
           ret = "Utilizador Validador";
