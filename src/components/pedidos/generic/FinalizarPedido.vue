@@ -66,7 +66,7 @@ export default {
       const despacho = {};
       if (this.mensagemDespacho !== null)
         despacho.mensagemDespacho = this.mensagemDespacho;
-
+      
       this.$emit("finalizarPedido", despacho);
     },
   },

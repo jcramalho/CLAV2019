@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { eNUV, eNV, eUndefined } from "@/utils/validadores";
+import { eNUV, eNV, eUndefined, eDataFormatoErrado } from "@/utils/validadores";
 
 export default {
   props: ["e", "acao", "original"],
@@ -152,11 +152,22 @@ export default {
         }
       }
 
-      // Datas
+      //Data Criação
+      if (!eNUV(this.e.dataCriacao)) {
+        if (eDataFormatoErrado(this.e.dataCriacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Criação",
+            mensagem: "A data de criação está no formato errado",
+          });
+          numeroErros++;
+        }
+      }
+
+      // Data de Extinção
       if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
         if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) {
           this.mensagensErro.push({
-            sobre: "Datas",
+            sobre: "Data de Extinção",
             mensagem:
               "A data de extinção tem de ser superior à data de criação.",
           });
@@ -201,7 +212,7 @@ export default {
       }
 
       // Internacional
-      if (eNUV(dados.internacional)) {
+      if (eNV(dados.internacional)) {
         this.mensagensErro.push({
           sobre: "Internacional",
           mensagem: "O campo internacional tem de ter uma opção.",
@@ -220,11 +231,22 @@ export default {
         }
       }
 
-      // Datas
-      if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
-        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+      //Data Criação
+      if (!eNUV(this.e.dataCriacao)) {
+        if (eDataFormatoErrado(this.e.dataCriacao)) {
           this.mensagensErro.push({
-            sobre: "Datas",
+            sobre: "Data de Criação",
+            mensagem: "A data de criação está no formato errado",
+          });
+          numeroErros++;
+        }
+      }
+
+      // Data de Extinção
+      if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
+        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Extinção",
             mensagem:
               "A data de extinção tem de ser superior à data de criação.",
           });
@@ -239,10 +261,10 @@ export default {
       let numeroErros = 0;
 
       // Datas
-      if (!eNUV(dados.dataExtincao)) {
+      if (eNUV(dados.dataExtincao)) {
         this.mensagensErro.push({
           sobre: "Data de extinção",
-          mensagem: "A data não pode ser vazia.",
+          mensagem: "A data de extinção não pode ser vazia.",
         });
         numeroErros++;
       } else if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {

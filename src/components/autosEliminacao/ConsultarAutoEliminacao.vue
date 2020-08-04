@@ -46,8 +46,8 @@
               <div class="info-label">Referencial Classificativo</div>
             </td>
             <td style="width:80%;">
-              <span v-if="auto.referencialLabel">{{auto.referencialLabel}}</span>
-              <span v-else>{{auto.referencialTitulo}}</span>
+              <span v-if="auto.referencialLabel"><a :href="'/ts/'+auto.referencial">{{auto.referencialLabel}}</a> (TS/LC)</span>
+              <span v-else>{{auto.referencialTitulo}} (RADA/CLAV)</span>
             </td>
           </tr>
           <tr>

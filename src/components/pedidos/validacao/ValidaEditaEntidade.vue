@@ -178,6 +178,8 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
+import { eNUV, eNV, eDataFormatoErrado } from "@/utils/validadores";
+
 export default {
   props: ["p"],
 
@@ -414,11 +416,13 @@ export default {
         let numeroErros = 0;
 
         if (pedido.objeto.acao === "Extinção") {
-          await this.$request(
-            "put",
-            `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
-            { dataExtincao: pedido.objeto.dados.dataExtincao }
-          );
+          numeroErros = this.validarExtincao(pedido.objeto.dados.dataExtincao);
+          if (numeroErros === 0)
+            await this.$request(
+              "put",
+              `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
+              { dataExtincao: pedido.objeto.dados.dataExtincao }
+            );
         } else {
           if (pedido.objeto.dados.hasOwnProperty("designacao")) {
             numeroErros = await this.validar(
@@ -504,25 +508,90 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      try {
-        let existeDesignacao = await this.$request(
-          "get",
-          "/entidades/designacao?valor=" + encodeURIComponent(dados.designacao)
-        );
-
-        if (existeDesignacao.data) {
+      if (eNV(dados.designacao)) {
+        this.erros.push({
+          sobre: "Nome da Entidade",
+          mensagem: "O nome da entidade não pode ser vazio.",
+        });
+        numeroErros++;
+      } else if (!eUndefined(dados.designacao)) {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/entidades/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            this.erros.push({
+              sobre: "Nome da Entidade",
+              mensagem: "Nome da entidade já existente na BD.",
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
           this.erros.push({
-            sobre: "Nome da Entidade",
-            mensagem: "Nome da entidade já existente na BD.",
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação.",
+          });
+        }
+      }
+
+      // Internacional
+      if (eNV(dados.internacional)) {
+        this.erros.push({
+          sobre: "Internacional",
+          mensagem: "O campo internacional tem de ter uma opção.",
+        });
+        numeroErros++;
+      }
+
+      // SIOE
+      if (!eNUV(dados.sioe)) {
+        if (dados.sioe.length > 12) {
+          this.erros.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           numeroErros++;
         }
-      } catch (err) {
-        numeroErros++;
-        this.erros.push({
-          sobre: "Acesso à Ontologia",
-          mensagem: "Não consegui verificar a existência da designação.",
-        });
+      }
+
+      //Data Criação
+      if (!eNUV(dados.dataCriacao)) {
+        if (eDataFormatoErrado(dados.dataCriacao)) {
+          this.erros.push({
+            sobre: "Data de Criação",
+            mensagem: "A data de criação está no formato errado",
+          });
+          numeroErros++;
+        }
+      }
+
+      return numeroErros;
+    },
+
+    validarExtincao(data) {
+      let numeroErros = 0;
+
+      // Data de Extinção
+      if (!eNUV(this.dadosOriginais.dataExtincao) && !eNUV(data)) {
+        if (eDataFormatoErrado(data)) {
+          this.erros.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (
+          new Date(this.dadosOriginais.dataExtincao) >= new Date(data)
+        ) {
+          this.erros.push({
+            sobre: "Data de revogação",
+            mensagem:
+              "A data de revogação tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
       }
 
       return numeroErros;

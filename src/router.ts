@@ -210,6 +210,12 @@ export default new Router({
       component: () => import("./views/tabSel/TabSelImportaCSV.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] },
     },
+    {
+      path: "/ts/:id",
+      name: "consultarTS",
+      component: () => import("./views/tabSel/TabSelConsulta.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] },
+    },
     // Routes dos termos de indice
     {
       path: "/termosIndice",
