@@ -470,43 +470,20 @@ export default {
       }
     },
 
-    loadProcessosEspecificos: async function(entidade){
-      try{
-        var url = "/classes?tipo=especifico&ents=" + entidade.id;
-        var response = await this.$request("get", url);
-        
-        for (let j = 0; j < response.data.length; j++) {
-          this.listaCodigosEsp.push(response.data[j].codigo);
-        }
-        // Marcamos os processos que não são específicos desta entidade como restantes
-        var index;
-        for(let j = 0; j < this.listaProcessos.procs.length; j++){
-          if(this.listaProcessos.procs[j].tipoProc != "Processo Comum"){
-            index = this.listaCodigosEsp.indexOf(this.listaProcessos.procs[j].codigo);
-            if(index == -1) this.listaProcessos.procs[j].tipoProc = "Processo Restante";
-          }
-        }
-      }
-      catch(e){
-        console.log("Erro ao calcular os processos específicos das entidades: " + e);
-      }
-    },
-
     // Carrega os processos específicos da entidade e das tipologias em causa
     loadProcEspecificos: async function() {
       try {
         if (!this.listaProcEspReady) {
           var url =
-            "/classes?tipo=especifico&ents=" + this.tabelaSelecao.idEntidade;
-          if (this.tipSel.length || this.tipSel.length) {
-            url += "&tips=";
+            "/classes?tipo=especifico";
+
+          if(this.tabelaSelecao.idEntidade != ""){
+            url += "&ents=" + this.tabelaSelecao.idEntidade;
           }
-          if (this.tipSel.length) {
-            for (var i = 0; i < this.tipSel.length - 1; i++) {
-              url += this.tipSel[i].id + ",";
-            }
-            url += this.tipSel[i].id;
+          else{
+            url += "&tips=" + this.tabelaSelecao.idTipologia;
           }
+          
           var response = await this.$request("get", url);
           for (var x = 0; x < response.data.length; x++) {
             if (response.data[x].transversal === "S") {
@@ -543,9 +520,11 @@ export default {
         this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.dono || p.participante!="NP");
 
         var tsObj = {
-          entidade: this.tabelaSelecao.idEntidade,
+          idEntidade: this.tabelaSelecao.idEntidade,
+          designacaoEntidade: this.tabelaSelecao.designacaoEntidade,
           designacao: this.tabelaSelecao.designacao,
-          tipologias: this.tipSel,
+          idTipologia: this.tabelaSelecao.idTipologia,
+          designacaoTipologia: this.tabelaSelecao.designacaoTipologia,
           processos: this.tabelaSelecao.listaProcessos.procs
         };
 
