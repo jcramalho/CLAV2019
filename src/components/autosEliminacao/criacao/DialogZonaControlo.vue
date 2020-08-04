@@ -326,7 +326,11 @@ export default {
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
-        zc => zc.codigo + " - " + zc.titulo == this.classe
+        zc => {
+          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
+          else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
+        }
       );
       var uiPapel = parseFloat(this.uiPapel) || 0;
       var uiDigital = parseFloat(this.uiDigital) || 0;
@@ -468,7 +472,11 @@ export default {
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
-        zc => zc.codigo + " - " + zc.titulo == this.classe
+        zc => {
+          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
+          else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
+        }
       );
       var uiPapel = parseInt(this.uiPapel) || 0;
       var uiDigital = parseInt(this.uiDigital) || 0;
