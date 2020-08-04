@@ -23,15 +23,17 @@
         <div class="info-label">Subforma de Contagem do PCA</div>
       </v-col>
       <v-col sm="9" md="9" style="padding-right: 20px;">
-        <v-select
+        <v-combobox
           :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
           :items="formaContagem.subFormasContagem"
           v-model="newSerie.formaContagem.subforma"
           item-text="label"
+          item-value="label"
           label="Subforma de Contagem"
           solo
           clearable
-        ></v-select>
+          :return-object="false"
+        ></v-combobox>
       </v-col>
     </v-row>
   </v-card>
@@ -41,12 +43,11 @@
 export default {
   props: ["newSerie", "formaContagem", "rules"],
   watch: {
-    "newSerie.formaContagem.forma": function(val) {
-      // console.log(JSON.stringify(val));
+    "newSerie.formaContagem.forma": function (val) {
       if (val != "vc_pcaFormaContagem_disposicaoLegal") {
         delete this.newSerie.formaContagem["subforma"];
       }
-    }
+    },
   },
   methods: {
     rule(v) {
@@ -55,7 +56,7 @@ export default {
       } else {
         return true;
       }
-    }
-  }
+    },
+  },
 };
 </script>

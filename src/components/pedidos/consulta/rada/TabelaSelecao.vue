@@ -1,6 +1,6 @@
 <template>
   <v-card flat class="mb-12">
-    <RADAEntry label="Título" :value="TS.titulo" />
+    <RADAEntry v-if="!!TS.titulo" label="Título" :value="TS.titulo" />
     <v-row>
       <v-col xs="11" sm="11">
         <v-text-field
@@ -155,7 +155,7 @@ export default {
     ShowSerieSubserie,
     ShowUI,
     TabelaClassesRADA,
-    RADAEntry
+    RADAEntry,
   },
   data: () => ({
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
@@ -169,12 +169,11 @@ export default {
     treeview_object: null,
     tree_ou_tabela: false,
     formaContagem: {
-      subFormasContagem: [],
-      formasContagem: []
+      formasContagem: [],
     },
     footer_props: {
       "items-per-page-options": [1, 5, 10, -1],
-      "items-per-page-text": "Mostrar"
+      "items-per-page-text": "Mostrar",
     },
     headers: [
       {
@@ -183,14 +182,14 @@ export default {
         value: "codigo",
         width: "10%",
         sortable: true,
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Título",
         value: "titulo",
         align: "center",
         width: "45%",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Séries/Subséries Associadas",
@@ -198,19 +197,19 @@ export default {
         align: "center",
         width: "45%",
         sortable: false,
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
+        class: ["table-header", "body-2", "font-weight-bold"],
+      },
+    ],
   }),
   computed: {
     filtrar_uis() {
       if (!!this.search) {
         return this.TS.UIs.filter(
-          e =>
+          (e) =>
             e.codigo.includes(this.search) ||
             e.titulo.includes(this.search) ||
             e.classesAssociadas.some(
-              e =>
+              (e) =>
                 e.codigo.includes(this.search) ||
                 e.tipo.includes(this.search) ||
                 e.titulo.includes(this.search)
@@ -245,12 +244,12 @@ export default {
             children: this.preparaTreeFilhos(
               this.TS.classes[i].codigo,
               this.TS.classes[i].titulo
-            )
+            ),
           });
         }
       }
       return myTree;
-    }
+    },
   },
   methods: {
     showUI(item) {
@@ -266,7 +265,7 @@ export default {
         this.show_area_organico = true;
       }
     },
-    preparaTreeFilhos: function(pai_codigo, pai_titulo) {
+    preparaTreeFilhos: function (pai_codigo, pai_titulo) {
       let children = [];
 
       for (let i = 0; i < this.TS.classes.length; i++) {
@@ -280,13 +279,13 @@ export default {
             children: this.preparaTreeFilhos(
               this.TS.classes[i].codigo,
               this.TS.classes[i].titulo
-            )
+            ),
           });
         }
       }
 
       return children;
-    }
+    },
   },
   async created() {
     // FAZER PEDIDOS PARA A FORMA/SUBFORMA DE CONTAGEM
@@ -294,35 +293,23 @@ export default {
       "get",
       "/vocabularios/vc_pcaFormaContagem"
     );
-
-    this.formaContagem.formasContagem = responseFC.data.map(item => {
+    
+    this.formaContagem.formasContagem = responseFC.data.map((item) => {
       return {
         label: item.termo,
-        value: item.idtermo.split("#")[1]
-      };
-    });
-
-    let responseSFC = await this.$request(
-      "get",
-      "/vocabularios/vc_pcaSubformaContagem"
-    );
-
-    this.formaContagem.subFormasContagem = responseSFC.data.map(item => {
-      return {
-        label: item.termo.split(": ")[1] + ": " + item.desc,
-        value: item.idtermo.split("#")[1]
+        value: item.idtermo.split("#")[1],
       };
     });
 
     // MANIPULAÇÃO DOS DADOS PARA ADICIONAR OS TITULOS DAS CLASSES PARA SURGIREM NAS VIEWS
     let series_subseries = this.TS.classes.filter(
-      cl => cl.tipo == "Série" || cl.tipo == "Subsérie"
+      (cl) => cl.tipo == "Série" || cl.tipo == "Subsérie"
     );
 
     for (let i = 0; i < series_subseries.length; i++) {
-      series_subseries[i].relacoes.forEach(rel => {
+      series_subseries[i].relacoes.forEach((rel) => {
         let classe_relacionada = this.TS.classes.find(
-          cl => cl.codigo == rel.serieRelacionada.codigo
+          (cl) => cl.codigo == rel.serieRelacionada.codigo
         );
         rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
 
@@ -330,22 +317,22 @@ export default {
           let criterio = null;
           if (rel.relacao == "Suplemento para") {
             criterio = series_subseries[i].justificacaoPCA.find(
-              e => e.tipo == "Critério de Utilidade Administrativa"
+              (e) => e.tipo == "Critério de Utilidade Administrativa"
             );
           }
           if (rel.relacao == "Complementar de") {
             criterio = series_subseries[i].justificacaoDF.find(
-              e => e.tipo == "Critério de Complementaridade Informacional"
+              (e) => e.tipo == "Critério de Complementaridade Informacional"
             );
           }
           if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
             criterio = series_subseries[i].justificacaoDF.find(
-              e => e.tipo == "Critério de Densidade Informacional"
+              (e) => e.tipo == "Critério de Densidade Informacional"
             );
           }
           if (criterio != null) {
             let relacaoCriterio = criterio.relacoes.find(
-              e => e.codigo == classe_relacionada.codigo
+              (e) => e.codigo == classe_relacionada.codigo
             );
             relacaoCriterio["titulo"] = classe_relacionada.titulo;
           }
@@ -354,15 +341,15 @@ export default {
     }
 
     for (let j = 0; j < this.TS.UIs.length; j++) {
-      this.TS.UIs[j].classesAssociadas.forEach(rel => {
+      this.TS.UIs[j].classesAssociadas.forEach((rel) => {
         let classe_relacionada = this.TS.classes.find(
-          cl => cl.codigo == rel.codigo
+          (cl) => cl.codigo == rel.codigo
         );
 
         this.$set(rel, "titulo", classe_relacionada.titulo);
       });
     }
-  }
+  },
 };
 </script>
 
