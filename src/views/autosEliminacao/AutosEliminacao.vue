@@ -41,15 +41,19 @@ export default {
         for (var i = 0; i < listaAutosEliminacao.length; i++) {
           var obj = {
             id: listaAutosEliminacao[i].id.split("#")[1].replace("ae_", "").replace(/\_/g,"/"),
-            tipo: listaAutosEliminacao[i].tipo || listaAutosEliminacao[i].autoTipo,
+            tipo: listaAutosEliminacao[i].tipo || listaAutosEliminacao[i].autoTipo.replace(/\_/g,"/"),
             fonte: listaAutosEliminacao[i].tipo=="RADA" ? "Despacho " + listaAutosEliminacao[i].numero : "Portaria " + listaAutosEliminacao[i].numero,
             entidade: listaAutosEliminacao[i].entidade
               .split("#")[1]
               .replace("ent_", ""),
             data: listaAutosEliminacao[i].data
           };
-          if(listaAutosEliminacao[i].referencial && listaAutosEliminacao[i].autoTipo!="RADA") obj.fonte = "Lista Consolidada"
-          else if(listaAutosEliminacao[i].referencial && listaAutosEliminacao[i].autoTipo=="RADA") obj.fonte = "RADA"
+          if(listaAutosEliminacao[i].referencialLabel) { 
+            obj.fonte = listaAutosEliminacao[i].referencialLabel
+          }
+          else if(listaAutosEliminacao[i].referencialTitulo) {
+            obj.fonte = listaAutosEliminacao[i].referencialTitulo
+          }
           myTree.push(obj);
         }
         return myTree;

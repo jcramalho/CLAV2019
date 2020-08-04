@@ -78,6 +78,13 @@
               :p="pedido"
               :tipo="pedido.objeto.tipo"
             />
+
+            <ValidaTS
+              v-if="
+                pedido.objeto.tipo.includes('TS ')
+              "
+              :p="pedido"
+            />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
@@ -94,35 +101,22 @@
                 class="m-auto mb-2 mt-2"
                 outlined
               >
-                <span v-if="this.pedido.objeto.dadosOriginais">
-                  <b> {{ pedido.objeto.tipo }} </b>:
-                  {{
-                    pedido.objeto.dadosOriginais.sigla
-                      ? pedido.objeto.dadosOriginais.sigla
-                      : pedido.objeto.dadosOriginais.numero
-                  }}
-                  -
-                  {{
-                    pedido.objeto.dadosOriginais.designacao
-                      ? pedido.objeto.dadosOriginais.designacao
-                      : pedido.objeto.dadosOriginais.sumario
-                  }}
+                <span v-if="pedido.objeto.tipo === 'Legislação'">
+                  <b> {{ pedido.objeto.tipo }}: </b>
+                  {{ pedido.objeto.dadosOriginais.diplomaFonte }}
+                  - {{ pedido.objeto.dadosOriginais.numero }} -
+                  {{ pedido.objeto.dadosOriginais.sumario }}
                 </span>
 
-                <span v-else>
-                  <b>{{ pedido.objeto.tipo }}</b
-                  >:
-                  {{
-                    pedido.objeto.dados.sigla
-                      ? pedido.objeto.dados.sigla
-                      : pedido.objeto.dados.numero
-                  }}
-                  -
-                  {{
-                    pedido.objeto.dados.designacao
-                      ? pedido.objeto.dados.designacao
-                      : pedido.objeto.dados.sumario
-                  }}
+                <span
+                  v-else-if="
+                    pedido.objeto.tipo === 'Entidade' ||
+                      pedido.objeto.tipo === 'Tipologia'
+                  "
+                >
+                  <b> {{ pedido.objeto.tipo }}: </b>
+                  {{ pedido.objeto.dadosOriginais.sigla }}
+                  - {{ pedido.objeto.dadosOriginais.designacao }}
                 </span>
               </v-alert>
 
@@ -173,6 +167,7 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
+import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
 import ValidaRADA from "@/components/pedidos/validacao/ValidaRADA";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
@@ -196,6 +191,7 @@ export default {
     ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
     ValidaAE,
+    ValidaTS,
     Loading,
     VerDespachos,
     ErroDialog,

@@ -101,7 +101,7 @@
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
-import { eNUV, eDataFormatoErrado } from "@/utils/validadores";
+import { eNUV, eDataFormatoErrado, eNV } from "@/utils/validadores";
 
 export default {
   props: ["l", "acao", "original"],
@@ -131,6 +131,19 @@ export default {
       // Número Diploma
       if (eNUV(this.l.numero)) {
         numeroErros++;
+      } else {
+        try {
+          let existeNumero = await this.$request(
+            "get",
+            "/legislacao/numero?valor=" + encodeURIComponent(this.l.numero)
+          );
+
+          if (existeNumero.data) {
+            this.numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+        }
       }
 
       // Data
@@ -141,17 +154,13 @@ export default {
       }
 
       // Sumário
-      if (this.l.sumario === "" || this.l.sumario === null) {
+      if (eNUV(this.l.sumario)) {
         numeroErros++;
       }
 
       // Data revogação
       if (!eNUV(this.l.data) && !eNUV(this.l.dataRevogacao)) {
         if (eDataFormatoErrado(this.l.dataRevogacao)) {
-          this.mensagensErro.push({
-            sobre: "Data de Revogação",
-            mensagem: "A data de revogação está no formato errado.",
-          });
           numeroErros++;
         } else if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
           numeroErros++;
@@ -165,7 +174,7 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (eNUV(dados.sumario)) {
+      if (eNV(dados.sumario)) {
         numeroErros++;
       }
 

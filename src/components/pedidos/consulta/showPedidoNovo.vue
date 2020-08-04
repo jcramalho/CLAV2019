@@ -278,7 +278,14 @@ export default {
 
         this.fecharDialog();
 
-        this.$router.go(-1);
+        const submissao = JSON.parse(localStorage.getItem("submissao"));
+
+        if (submissao) {
+          localStorage.removeItem("submissao");
+          this.$router.push("/pedidos");
+        } else {
+          this.$router.go(-1);
+        }
       } catch (e) {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem =

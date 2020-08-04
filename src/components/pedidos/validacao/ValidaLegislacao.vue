@@ -243,6 +243,8 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
+import { eNUV, eNV, eDataFormatoErrado } from "@/utils/validadores";
+
 export default {
   props: ["p"],
 
@@ -561,11 +563,11 @@ export default {
       }
     },
 
-    async validarLegislacao(acao, dados) {
+    async validarLegislacao(dados) {
       let numeroErros = 0;
 
       //Tipo
-      if (dados.tipo === "" || dados.tipo === null) {
+      if (eNUV(dados.tipo)) {
         this.erros.push({
           sobre: "Tipo de Diploma",
           mensagem: "O tipo de diploma não pode ser vazio.",
@@ -575,7 +577,7 @@ export default {
       }
 
       // Número Diploma
-      if (dados.numero === "" || dados.numero === null) {
+      if (eNUV(dados.numero)) {
         this.erros.push({
           sobre: "Número de Diploma",
           mensagem: "O número de diploma não pode ser vazio.",
@@ -608,96 +610,48 @@ export default {
       }
 
       // Data
-      if (dados.data === "" || dados.data === null) {
+      if (eNV(dados.data)) {
         this.erros.push({
-          sobre: "Data",
-          mensagem: "A data não pode ser vazia.",
+          sobre: "Data do Diploma",
+          mensagem: "A data do diploma não pode ser vazia.",
         });
 
         numeroErros++;
-      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(dados.data)) {
+      } else if (eDataFormatoErrado(dados.data)) {
         this.erros.push({
-          sobre: "Data",
-          mensagem: "A data está no formato errado.",
+          sobre: "Data do Diploma",
+          mensagem: "A data do diploma está no formato errado.",
         });
 
         numeroErros++;
-      } else {
-        let date = new Date();
-
-        let ano = parseInt(dados.data.slice(1, 4));
-        let mes = parseInt(dados.data.slice(5, 7));
-        let dia = parseInt(dados.data.slice(8, 10));
-
-        let dias = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-        if (mes > 12) {
-          this.erros.push({
-            sobre: "Data",
-            mensagem: "A data apresenta o mês errado.",
-          });
-
-          numeroErros++;
-        } else if (dia > dias[mes - 1]) {
-          if (mes == 2) {
-            if (!(ano % 4 == 0 && mes == 2 && dia == 29)) {
-              this.erros.push({
-                sobre: "Data",
-                mensagem: "A data apresenta o dia do mês errado.",
-              });
-
-              numeroErros++;
-            }
-          } else {
-            this.erros.push({
-              sobre: "Data",
-              mensagem: "A data apresenta o dia do mês errado.",
-            });
-
-            numeroErros++;
-          }
-        } else if (ano > parseInt(date.getFullYear())) {
-          this.erros.push({
-            sobre: "Data",
-            mensagem:
-              "Ano inválido! Por favor selecione uma data anterior à atual",
-          });
-
-          numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes > parseInt(date.getMonth() + 1)
-        ) {
-          this.erros.push({
-            sobre: "Data",
-            mensagem:
-              "Mês inválido! Por favor selecione uma data anterior à atual",
-          });
-
-          numeroErros++;
-        } else if (
-          ano == parseInt(date.getFullYear()) &&
-          mes == parseInt(date.getMonth() + 1) &&
-          dia > parseInt(date.getDate())
-        ) {
-          this.erros.push({
-            sobre: "Data",
-            mensagem:
-              "Dia inválido! Por favor selecione uma data anterior à atual",
-          });
-
-          numeroErros++;
-        }
       }
 
       // Sumário
-      if (dados.sumario === "" || dados.sumario === null) {
+      if (eNUV(dados.sumario)) {
         this.erros.push({
           sobre: "Sumário",
           mensagem: "O sumário não pode ser vazio.",
         });
 
         numeroErros++;
+      }
+
+      // Data Revogação
+      if (!eNUV(dados.data) && !eNUV(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          this.erros.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+          this.erros.push({
+            sobre: "Data de Revogação",
+            mensagem:
+              "A data de revogação tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -707,10 +661,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        let numeroErros = await this.validarLegislacao(
-          pedido.objeto.acao,
-          pedido.objeto.dados
-        );
+        let numeroErros = await this.validarLegislacao(pedido.objeto.dados);
 
         if (numeroErros === 0) {
           for (const key in pedido.objeto.dados) {

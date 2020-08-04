@@ -1,5 +1,6 @@
 <template>
-  <div>
+<div>
+  <div v-if="infoReady">
     <v-row>
       <v-col>
         <v-radio-group v-model="filtroLabel" row>
@@ -13,7 +14,7 @@
     </v-row>
 
     <v-data-table
-      :items="listaProcs.procs"
+      :items="listaProcessos.procs"
       :headers="headers"
       class="ma-1"
       item-key="chave"
@@ -92,6 +93,10 @@
         @editado = "blocoDescritivoEditado($event)"/>
 
   </div>
+  <div v-else>
+    <p>A preparar a informação dos processos...</p>
+  </div>
+</div>
 </template>
 
 <script>
@@ -112,10 +117,14 @@ export default {
   data: () => ({
     // Processo corrente
     procSel: {},
+    // Lista de processos local, para forçar um watcher
+    listaProcessos: {},
     // Fecho Transitivo dos processos
     fechoTransitivo: {},
     // Tipos de participação carregados da BD
     participacao: [],
+    // Flag de controlo da preparação da informação
+    infoReady: false,
     // Número de processos selecionados
     numProcessosSelecionados: 0,
     // Número de processos pré-selecionados
@@ -206,6 +215,10 @@ export default {
     catch(e){
       console.log("Erro no carregamento dos tipos de participação: " + e);
     }
+    this.listaProcessos = this.listaProcs;
+    this.numProcessosSelecionados = this.listaProcs.numProcessosSelecionados;
+    this.numProcessosPreSelecionados = this.listaProcs.numProcessosPreSelecionados;
+    this.infoReady = true;
   },
 
   methods: {

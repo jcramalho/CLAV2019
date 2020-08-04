@@ -105,6 +105,7 @@ export default {
     },
 
     finalizarPedido(dados) {
+      this.fecharDialog();
       this.$emit("finalizarPedido", dados);
     },
   },

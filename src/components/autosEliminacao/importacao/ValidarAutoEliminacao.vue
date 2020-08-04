@@ -87,7 +87,7 @@
               {{item.destino}}
             </v-col>
           </v-row>
-          <div v-if="item.destino==='Conservação' || item.destino==='C'">
+          <div v-if="(tipo=='TS_LC' || tipo=='PGD_LC') && item.destino==='Conservação' || item.destino==='C'">
             <v-row>
               <v-col cols="3">
                 <div class="info-label">
@@ -98,7 +98,7 @@
                 Participante
               </v-col>
             </v-row>
-            <v-row v-if="tipo!='RADA' && tipo!='PGD'">
+            <v-row v-if="tipo!='RADA_CLAV' && tipo!='RADA' && tipo!='PGD'">
               <v-col cols="3">
                 <div class="info-label">Dono do PN</div>
               </v-col>
@@ -202,6 +202,7 @@
             v-bind:pca="item.prazo"
             v-bind:dataInicio="item.dataInicio"
             v-bind:search="search"
+            v-bind:tipo="tipo"
           />
         </div>
       </v-list-item-title>

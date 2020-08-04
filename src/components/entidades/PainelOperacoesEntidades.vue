@@ -115,6 +115,7 @@
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
+import { eNUV, eNV, eUndefined, eDataFormatoErrado } from "@/utils/validadores";
 
 export default {
   props: ["e", "acao", "original"],
@@ -129,6 +130,7 @@ export default {
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
       dialogEntidadeCriada: false,
       pedidoEliminado: false,
+      errosValidacao: false,
     };
   },
 
@@ -137,7 +139,7 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (this.e.designacao === "" || this.e.designacao === null) {
+      if (eNUV(this.e.designacao)) {
         numeroErros++;
       } else {
         try {
@@ -146,16 +148,14 @@ export default {
             "/entidades/designacao?valor=" +
               encodeURIComponent(this.e.designacao)
           );
-          if (existeDesignacao.data) {
-            numeroErros++;
-          }
+          if (existeDesignacao.data) numeroErros++;
         } catch (err) {
           numeroErros++;
         }
       }
 
       // Sigla
-      if (this.e.sigla === "" || this.e.sigla === null) {
+      if (eNUV(this.e.sigla)) {
         numeroErros++;
       } else {
         try {
@@ -163,38 +163,33 @@ export default {
             "get",
             "/entidades/sigla?valor=" + encodeURIComponent(this.e.sigla)
           );
-          if (existeSigla.data) {
-            numeroErros++;
-          }
+          if (existeSigla.data) numeroErros++;
         } catch (err) {
           numeroErros++;
         }
       }
 
       // Internacional
-      if (this.e.internacional === "" || this.e.internacional === null) {
+      if (eNUV(this.e.internacional)) {
         numeroErros++;
       }
 
       // SIOE
-      if (this.e.sioe !== "" && this.e.sioe !== null) {
-        if (this.e.sioe.length > 12) {
+      if (!eNUV(this.e.sioe)) {
+        if (this.e.sioe.length > 12) numeroErros++;
+      }
+
+      //Data Criação
+      if (!eNUV(this.e.dataCriacao)) {
+        if (eDataFormatoErrado(this.e.dataCriacao)) {
           numeroErros++;
         }
       }
 
-      // Datas
-      if (
-        this.e.dataCriacao !== "" &&
-        this.e.dataCriacao !== null &&
-        this.e.dataCriacao !== undefined &&
-        this.e.dataExtincao !== "" &&
-        this.e.dataExtincao !== null &&
-        this.e.dataExtincao !== undefined
-      ) {
-        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) {
+      // Data de Extinção
+      if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
+        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao))
           numeroErros++;
-        }
       }
 
       return numeroErros;
@@ -204,9 +199,9 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (dados.designacao === "" || dados.designacao === null) {
+      if (eNV(dados.designacao)) {
         numeroErros++;
-      } else if (dados.designacao !== undefined) {
+      } else if (!eUndefined(dados.designacao)) {
         try {
           let existeDesignacao = await this.$request(
             "get",
@@ -222,30 +217,26 @@ export default {
       }
 
       // Internacional
-      if (dados.internacional === "" || dados.internacional === null) {
+      if (eNV(dados.internacional)) {
         numeroErros++;
       }
 
       // SIOE
-      if (dados.sioe !== "" && dados.sioe !== null) {
-        if (dados.sioe !== undefined)
-          if (dados.sioe.length > 12) {
-            numeroErros++;
-          }
+      if (!eNUV(dados.sioe)) {
+        if (dados.sioe.length > 12) numeroErros++;
       }
 
-      // Datas
-      if (
-        dados.dataCriacao !== "" &&
-        dados.dataCriacao !== null &&
-        dados.dataCriacao !== undefined &&
-        dados.dataExtincao !== "" &&
-        dados.dataExtincao !== null &&
-        dados.dataExtincao !== undefined
-      ) {
-        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+      //Data Criação
+      if (!eNUV(dados.dataCriacao)) {
+        if (eDataFormatoErrado(dados.dataCriacao)) {
           numeroErros++;
         }
+      }
+
+      // Data de Extinção
+      if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
+        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao))
+          numeroErros++;
       }
 
       return numeroErros;
@@ -255,23 +246,11 @@ export default {
       let numeroErros = 0;
 
       // Datas
-      if (
-        dados.dataExtincao === "" ||
-        dados.dataExtincao === null ||
-        dados.dataExtincao === undefined
-      ) {
+      if (eNUV(dados.dataExtincao)) {
         numeroErros++;
-      } else if (
-        dados.dataCriacao !== "" &&
-        dados.dataCriacao !== null &&
-        dados.dataCriacao !== undefined &&
-        dados.dataExtincao !== "" &&
-        dados.dataExtincao !== null &&
-        dados.dataExtincao !== undefined
-      ) {
-        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+      } else if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
+        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao))
           numeroErros++;
-        }
       }
 
       return numeroErros;
@@ -315,11 +294,7 @@ export default {
               erros = this.validarEntidadeExtincao(dataObj);
 
               for (const key in dataObj) {
-                if (
-                  key !== "sigla" &&
-                  key !== "dataExtincao" &&
-                  key !== "dataCriacao"
-                )
+                if (key !== "sigla" && key !== "dataExtincao")
                   delete dataObj[key];
               }
 
@@ -365,6 +340,7 @@ export default {
           }
         }
       } catch (err) {
+        console.log("err", err);
         return err;
       }
     },

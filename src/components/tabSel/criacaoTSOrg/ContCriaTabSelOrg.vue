@@ -4,7 +4,7 @@
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
-            >Nova Tabela de Seleção</v-toolbar-title
+            >Nova Tabela de Seleção (continuação do trabalho guardado)</v-toolbar-title
           >
         </v-app-bar>
         <v-card-text class="panel-body">
@@ -34,91 +34,6 @@
                   </v-chip>
                 </span>
               </v-stepper-step>
-              <v-stepper-content step="1">
-                <div v-if="entidadeDGLAB">
-                  <v-col>
-                        <span class="subtitle-2">Pretende:</span>
-                        <v-radio-group v-model="tipoTS" column>
-                          <v-radio label="Criar uma Tabela de Seleção para uma entidade" value="entidade"></v-radio>
-                          <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
-                        </v-radio-group>
-
-                        <div v-if="tipoTS=='entidade' && entidadesReady">
-                          <v-col >
-                            <v-autocomplete
-                              :items="entidades"
-                              label="Selecione a entidade"
-                              item-text="label"
-                              return-object
-                              v-model="ent"
-                              prepend-icon="account_balance"
-                            >
-                            </v-autocomplete>
-                          </v-col>
-                          <v-btn
-                            v-if="ent != ''"
-                            color="primary"
-                            @click="guardaEntidade"
-                          >Continuar</v-btn>
-                        </div>
-
-                        <div v-if="tipoTS=='tipologia' && tipologiasReady">
-                          <v-col>
-                            <v-autocomplete
-                              :items="tipologias"
-                              item-text="label"
-                              return-object
-                              label="Selecione a tipologia"
-                              v-model="tipSel"
-                              prepend-icon="account_balance"
-                            >
-                            </v-autocomplete>
-                          </v-col>
-                          <v-btn
-                            color="primary"
-                            @click="guardaTipologia"
-                          >Continuar</v-btn>
-                        </div>
-                    </v-col>
-                </div>
-
-                <div v-else>
-                    <v-col>
-                        <span class="subtitle-2">Pretende:</span>
-                        <v-radio-group v-model="tipoTS" column>
-                          <v-radio label="Criar uma Tabela de Seleção para a minha organização" value="utilizador"></v-radio>
-                          <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
-                        </v-radio-group>
-
-                    <div v-if="tipoTS=='utilizador'">
-                      <v-btn
-                        color="primary"
-                        @click="guardaEntidadeUtilizador"
-                      >Continuar</v-btn>
-                    </div>
-
-                    <div v-if="tipoTS=='tipologia' && tipologiasReady">
-                          <v-col>
-                            <v-autocomplete
-                              :items="tipologias"
-                              item-text="label"
-                              return-object
-                              label="Selecione a tipologia"
-                              v-model="tipSel"
-                              prepend-icon="account_balance"
-                            >
-                            </v-autocomplete>
-                          </v-col>
-                          <v-btn
-                            color="primary"
-                            @click="guardaTipologia"
-                          >Continuar</v-btn>
-                    </div>
-
-                  </v-col>
-                </div>
-
-              </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 2" step="2">
                 Designação da Tabela de Seleção
@@ -249,6 +164,8 @@ import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValid
 import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
 
 export default {
+  props: ["obj"],
+
   components: {
     ListaProcessos, DialogPendenteGuardado, DialogCancelar,
     DialogValidacaoOK, DialogValidacaoErros, DialogSair
@@ -265,8 +182,13 @@ export default {
         tipologias: [],
         listaProcessos: {}
       },
+
+      // Fecho Transitivo dos processos
+      fechoTransitivo: {},
+
       // Numero do passo da criação de TS
-      stepNo: null,
+      // Na continuação não se permite alterar a entidade/tipologia alvo
+      stepNo: 2,
       
       entidadeDGLAB: false,
       entidades: [],
@@ -314,20 +236,7 @@ export default {
     debug: function(obj){
       alert(JSON.stringify(obj));
     },
-    // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
-    infoUserEnt: async function() {
-      var resUser = this.$verifyTokenUser();
 
-      if (resUser.entidade === "ent_DGLAB") {
-        this.stepNo = 1;
-        await this.loadEntidades();
-        this.entidadeDGLAB = true;
-      } else {
-        var resEnt = await this.$request("get", "/entidades/" + resUser.entidade);
-        this.entidadeUtilizador = resEnt.data;
-        this.stepNo = 1;
-      }
-    },
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
@@ -454,7 +363,7 @@ export default {
           for (let i = 0; i < response.data.length; i++) {
 
             this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i;
+            this.listaProcessos.procs[i].chave = i+1; // O 0 não deve ser usado pq ao multiplicar por -1 não muda
             this.listaProcessos.procs[i].edited = false;
             this.listaProcessos.procs[i].descriptionEdited = false;
             this.listaProcessos.procs[i].preSelected = 0;
@@ -641,29 +550,60 @@ export default {
       this.$router.push("/");
     },
 
+    // Carrega os fechos transitivos necessários para os que já estão selecionados
+    loadFechoTransitivo: async function(){
+        try{
+            var response = await this.$request("get", "/travessiaV2");
+            this.fechoTransitivo = response.data;
+        }
+        catch(e){
+            console.log("Erro ao carregar o fecho transitivo: " + e);
+        }
+    },
+
+    // Faz a pré-seleção do fecho transitivo dos processos já selecionados
+    acrescentaFecho: function(processo) {
+        var fecho = this.fechoTransitivo[processo.codigo];
+        for(let i=0; i < fecho.length; i++){
+          var index = this.listaProcessos.procs.findIndex(p => p.codigo == fecho[i]);
+          if(index != -1){
+            this.listaProcessos.procs[index].preSelected ++;
+            if(this.listaProcessos.procs[index].preSelected == 1) {
+              this.listaProcessos.numProcessosPreSelecionados++;
+              this.listaProcessos.procs[index].preSelectedLabel = "Pré-Selecionado";
+            }
+          } 
+        }
+    },
+
+  // Merge do estado antigo dos processos com os que foram carregados da BD
+  mergeProcs: async function(){
+      // Merge com os processos que já estavam selecionados
+      var index;
+      for(let i=0; i < this.tabelaSelecao.listaProcessos.procs.length; i++){
+        index = this.listaProcessos.procs.findIndex(p => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo);
+        if(index != -1){
+          this.listaProcessos.procs[index] = this.tabelaSelecao.listaProcessos.procs[i];
+          this.acrescentaFecho(this.listaProcessos.procs[index]);
+        }
+      }
+      this.listaProcessos.numProcessosSelecionados = this.tabelaSelecao.listaProcessos.numProcessosSelecionados;
+      this.listaProcessos.numProcessosPreSelecionados = this.tabelaSelecao.listaProcessos.numProcessosPreSelecionados;
+      this.listaProcessosReady = true;
+  }
   },
   created: async function() {
-    try{
-      await this.infoUserEnt();
-    }
-    catch(e){
-      console.log("Erro na recuperação da informação do utilizador: " + e);
-    }
-    
-    try{
-      await this.loadTipologias();
-    }
-    catch(e){
-      console.log("Erro no carregamento das tipologias: " + e);
-    }
+    this.pendente = this.obj;
+    this.tabelaSelecao = this.obj.objeto;
 
     try{
       await this.loadProcessos();
+      await this.loadFechoTransitivo();
+      await this.mergeProcs();
     }
     catch(e){
-      console.log("Erro no carregamento dos processos: " + e);
+      console.log("Erro no carregamento dinicial: " + e);
     }
-
   }
 };
 </script>
