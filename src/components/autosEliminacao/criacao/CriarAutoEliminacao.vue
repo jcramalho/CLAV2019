@@ -92,8 +92,8 @@
                   <v-autocomplete
                     label="Selecione a Tabela de Seleção"
                     :items="tabelasSelecao"
-                    return-object
                     item-text="titulo"
+                    return-object
                     v-model="auto.legislacao"
                     solo 
                     dense
@@ -412,6 +412,7 @@ export default {
           codigo: ts.id.split("clav#")[1]
         }
       });
+      
       var response4 = await this.$request("get","/rada");
       this.tsRada = response4.data
 
@@ -432,7 +433,7 @@ export default {
     submit: async function() {
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
-        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA' && this.tipo!='PGD') {
+        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA_CLAV' &&  this.tipo!='RADA' && this.tipo!='PGD') {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
         }
@@ -457,7 +458,7 @@ export default {
           token: this.$store.state.token,
           historico: []
         };
-
+        
         pedidoParams.objetoOriginal = this.auto;
 
         const codigoPedido = await this.$request(
@@ -466,7 +467,7 @@ export default {
           pedidoParams
         );
         if(this._id) this.$request("delete", "/pendentes/" + this._id);
-        this.$router.push('/pedidos/submissao')
+        this.$router.push('/pedidos/submissao/'+codigoPedido.data)
       }
     },
     guardarTrabalho: async function() {

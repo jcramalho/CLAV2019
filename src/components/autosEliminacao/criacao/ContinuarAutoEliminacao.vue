@@ -377,7 +377,7 @@ export default {
     submit: async function() {
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
-        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA' && this.tipo!='PGD') {
+        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA_CLAV' && this.tipo!='RADA' && this.tipo!='PGD') {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
         }
@@ -413,7 +413,7 @@ export default {
 
 
         this.$request("delete", "/pendentes/" + this.obj._id);
-        this.$router.push('/pedidos/submissao')
+        this.$router.push('/pedidos/submissao/'+codigoPedido.data)
       }
     },
     guardarTrabalho: async function() {

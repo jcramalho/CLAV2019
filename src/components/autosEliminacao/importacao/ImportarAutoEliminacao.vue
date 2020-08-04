@@ -530,7 +530,7 @@ export default {
         pedidoParams
       );
       
-      this.$router.push('/pedidos/submissao')
+      this.$router.push('/pedidos/submissao/'+codigoPedido.data)
 
     },
     converter: async function() {

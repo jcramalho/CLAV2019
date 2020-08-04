@@ -48,8 +48,12 @@ export default {
               .replace("ent_", ""),
             data: listaAutosEliminacao[i].data
           };
-          if(listaAutosEliminacao[i].referencial && listaAutosEliminacao[i].autoTipo=="RADA_CLAV") obj.fonte = "RADA/CLAV"
-          else if(listaAutosEliminacao[i].referencial && listaAutosEliminacao[i].autoTipo!="RADA") obj.fonte = "Lista Consolidada"
+          if(listaAutosEliminacao[i].referencialLabel) { 
+            obj.fonte = listaAutosEliminacao[i].referencialLabel
+          }
+          else if(listaAutosEliminacao[i].referencialTitulo) {
+            obj.fonte = listaAutosEliminacao[i].referencialTitulo
+          }
           myTree.push(obj);
         }
         return myTree;
