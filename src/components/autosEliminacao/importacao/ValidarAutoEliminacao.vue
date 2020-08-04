@@ -98,7 +98,7 @@
                 Participante
               </v-col>
             </v-row>
-            <v-row v-if="tipo!='RADA' && tipo!='PGD'">
+            <v-row v-if="tipo!='RADA_CLAV' && tipo!='RADA' && tipo!='PGD'">
               <v-col cols="3">
                 <div class="info-label">Dono do PN</div>
               </v-col>

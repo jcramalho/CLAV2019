@@ -32,7 +32,7 @@
           <v-text-field :value="df" solo dense readonly></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="df=='Conservação' && tipo!='RADA' && tipo!='PGD'">
+      <v-row v-if="df=='Conservação' && tipo!='RADA_CLAV' && tipo!='RADA' && tipo!='PGD'">
         <v-col>
           <div class="info-label">Natureza de Intervenção</div>
         </v-col>
@@ -326,7 +326,11 @@ export default {
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
-        zc => zc.codigo + " - " + zc.titulo == this.classe
+        zc => {
+          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
+          else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
+        }
       );
       var uiPapel = parseFloat(this.uiPapel) || 0;
       var uiDigital = parseFloat(this.uiDigital) || 0;
@@ -380,7 +384,7 @@ export default {
       } else if (this.uiOutros && !reUI.test(this.uiOutros)) {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
-      } else if(this.df == "Conservação" && this.dono.length==0 && this.tipo!="RADA" && this.tipo!="PGD") {
+      } else if(this.df == "Conservação" && this.dono.length==0 && this.tipo!="RADA_CLAV" && this.tipo!="RADA" && this.tipo!="PGD") {
         this.erro = help.AutoEliminacao.Erros.DonoPN;
         this.erroDialog = true;
       } else if(uiPapel+uiDigital+uiOutros<=0) {
@@ -468,7 +472,11 @@ export default {
       const re = /\d{4}/;
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
-        zc => zc.codigo + " - " + zc.titulo == this.classe
+        zc => {
+          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
+          else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
+        }
       );
       var uiPapel = parseInt(this.uiPapel) || 0;
       var uiDigital = parseInt(this.uiDigital) || 0;
@@ -529,7 +537,7 @@ export default {
         this.erro = help.AutoEliminacao.Erros.MedicaoOutro;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup;
-      } else if(this.df == "Conservação" && this.dono.length==0 && this.tipo!="RADA" && this.tipo!="PGD") {
+      } else if(this.df == "Conservação" && this.dono.length==0 && this.tipo!="RADA_CLAV" && this.tipo!="RADA" && this.tipo!="PGD") {
         this.erro = help.AutoEliminacao.Erros.DonoPN;
         this.erroDialog = true;
         this.auto.zonaControlo[this.index] = backup;

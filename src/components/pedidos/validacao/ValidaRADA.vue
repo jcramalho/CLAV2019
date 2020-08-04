@@ -27,12 +27,12 @@ export default {
   data: () => ({
     erroDialog: {
       visivel: false,
-      mensagem: null
-    }
+      mensagem: null,
+    },
   }),
   components: {
     PO,
-    ErroDialog
+    ErroDialog,
   },
   props: ["p"],
   methods: {
@@ -44,7 +44,7 @@ export default {
           estado: "Devolvido",
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -54,7 +54,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -69,8 +69,23 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        let triplos = await converterParaTriplosRADA(pedido.objeto.dados);
+        // Fazer pedido para obter as subformas do PCA pois pode ter subformas que existem na plataforma e outras não;
+        // Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
         
+        let responseSFC = await this.$request(
+          "get",
+          "/vocabularios/vc_pcaSubformaContagem"
+        );
+
+        let subformasContagem = responseSFC.data.map((item) => {
+          return {
+            label: item.termo.split(": ")[1] + ": " + item.desc,
+            value: item.idtermo.split("#")[1],
+          };
+        });
+
+        let triplos = await converterParaTriplosRADA(pedido.objeto.dados, subformasContagem);
+
         await this.$request("post", "/rada", { triplos });
 
         let dadosUtilizador = this.$verifyTokenUser();
@@ -79,7 +94,7 @@ export default {
           estado: "Validado",
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         pedido.estado = "Validado";
@@ -87,14 +102,14 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
       } catch (e) {
         console.log(e);
       }
-    }
-  }
+    },
+  },
 };
 </script>
