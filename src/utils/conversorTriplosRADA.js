@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 let classes_rada = '';
 
-export async function converterParaTriplosRADA(obj) {
+export async function converterParaTriplosRADA(obj, subformasContagem) {
     classes_rada = obj.tsRada.classes;
 
     let triplos = `clav:rada_${obj.id} rdf:type owl:NamedIndividual, clav:RADA;
@@ -15,7 +15,7 @@ export async function converterParaTriplosRADA(obj) {
                             clav:titulo "${obj.titulo}" .\n\n`;
 
     triplos += await triplosRE(obj.RE, obj.id);
-    triplos += await triplosTS(obj.tsRada, obj.id);
+    triplos += await triplosTS(obj.tsRada, obj.id, subformasContagem);
     triplos += await triplosUnidadeInstalacao(obj.tsRada.UIs);
 
     return triplos;
@@ -48,7 +48,7 @@ async function triplosRE(RE, codigoRADA) {
     }
 }
 
-async function triplosTS(ts, codigoRADA) {
+async function triplosTS(ts, codigoRADA, subformasContagem) {
     try {
         let triplos = `clav:rada_${codigoRADA}_ts rdf:type owl:NamedIndividual , clav:TabelaSelecaoRada ;
                                     clav:titulo "${ts.titulo}" ;
@@ -60,10 +60,10 @@ async function triplosTS(ts, codigoRADA) {
         for (let i = 0; i < ts.classes.length; i++) {
             switch (ts.classes[i].tipo) {
                 case "Série":
-                    triplos += await triplosSerie(ts.classes[i], codigoRADA);
+                    triplos += await triplosSerie(ts.classes[i], codigoRADA, subformasContagem);
                     break;
                 case "Subsérie":
-                    triplos += await triplosSubserie(ts.classes[i], codigoRADA);
+                    triplos += await triplosSubserie(ts.classes[i], codigoRADA, subformasContagem);
                     break;
                 default:
                     triplos += await triplosAreaOrganico(ts.classes[i], codigoRADA);
@@ -90,7 +90,7 @@ function triplosAreaOrganico(classe, codigoRADA) {
     }
 }
 
-async function triplosSerie(classe, codigoRADA) {
+async function triplosSerie(classe, codigoRADA, subformasContagem) {
     try {
         let triplos = `clav:${classe.id} rdf:type owl:NamedIndividual , clav:Serie ;
                                     clav:codigo "${classe.codigo}" ;
@@ -115,7 +115,7 @@ async function triplosSerie(classe, codigoRADA) {
         triplos += await triplosSuporteMedicao(classe);
 
         if ("pca" in classe && "df" in classe) {
-            triplos += await triplosPCA(classe, codigoRADA);
+            triplos += await triplosPCA(classe, codigoRADA, subformasContagem);
             triplos += await triplosDF(classe, codigoRADA);
         }
 
@@ -142,7 +142,7 @@ async function triplosSuporteMedicao(classe) {
     }
 }
 
-async function triplosSubserie(classe, codigoRADA) {
+async function triplosSubserie(classe, codigoRADA, subformasContagem) {
     try {
         let triplos = `clav:${classe.id} rdf:type owl:NamedIndividual , clav:Subserie ;
                                     clav:codigo "${classe.codigo}" ;
@@ -154,7 +154,7 @@ async function triplosSubserie(classe, codigoRADA) {
                                     clav:temPai clav:rada_${codigoRADA + "_serie_" + classe.eFilhoDe} .\n\n`
 
         triplos += await triplosRelacoes(classe, codigoRADA);
-        triplos += await triplosPCA(classe, codigoRADA);
+        triplos += await triplosPCA(classe, codigoRADA, subformasContagem);
         triplos += await triplosDF(classe, codigoRADA);
 
         return triplos;
@@ -233,13 +233,14 @@ function destinoFinal(df) {
     return destino;
 }
 
-async function triplosPCA(classe, codigoRADA) {
+async function triplosPCA(classe, codigoRADA, subformasContagem) {
     try {
         let triplos = `clav:${classe.id} clav:temPCA clav:pca_${classe.id} .\n\nclav:pca_${classe.id} rdf:type owl:NamedIndividual , clav:PCA ;
                 clav:pcaValor ${!!classe.pca ? `"${classe.pca}"` : `"NE"`} ;
                 ${!!classe.notaPCA ? `clav:pcaNota "${classe.notaPCA}" ;` : ''}
-                ${!!classe.formaContagem.subforma ? `clav:pcaSubformaContagem clav:${classe.formaContagem.subforma} ;` : ''}
                 clav:pcaFormaContagemNormalizada clav:${classe.formaContagem.forma} . \n\n`
+
+        triplos += await triplosSubforma(classe.id, classe.formaContagem.subforma, subformasContagem);
 
         if (!!classe.justificacaoPCA[0]) {
             triplos += `clav:just_pca_${classe.id} rdf:type owl:NamedIndividual , clav:JustificacaoPCA.\nclav:pca_${classe.id} clav:temJustificacao clav:just_pca_${classe.id} .\n\n`;
@@ -255,6 +256,27 @@ async function triplosPCA(classe, codigoRADA) {
         console.log(err);
     }
 }
+
+function triplosSubforma(id_pca, subforma, subformasContagem) {
+    try {
+
+        let triplos = '';
+        if (!!subforma) {
+            let sf = subformasContagem.find(e => e.label == subforma);
+
+            if (sf != undefined) {
+                triplos += `clav:pca_${id_pca} clav:pcaSubformaContagem clav:${sf.value} .`
+            } else {
+                triplos += `clav:pca_${id_pca} clav:pcaSubformaContagemNaoNormalizada "${subforma}" .`
+            }
+        }
+
+        return triplos;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 
 async function triplosJustificacaoPCACriterios(criterio, i, classe, codigoRADA) {
     try {
