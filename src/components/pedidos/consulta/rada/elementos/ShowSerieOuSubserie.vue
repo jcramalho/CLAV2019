@@ -8,7 +8,7 @@
         <RADAEntry label="Código" :value="classe.codigo" />
         <RADAEntry label="Titulo" :value="classe.titulo" />
         <RADAEntry label="Descrição" :value="classe.descricao" />
-        <RADAEntry label="Classe Pai" :value="classe.eFilhoDe" />
+        <RADAEntry label="Classe Pai" :value="this.treeview_object.eFilhoDe" />
         <RADAEntryDouble
           label_1="Data Inicial"
           :value_1="classe.dataInicial"

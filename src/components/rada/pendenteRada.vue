@@ -46,6 +46,7 @@
             @seguinte="changeE1"
             :RE="RADA.RE"
             :UIs="RADA.tsRada.UIs"
+            @guardar="guardarTrabalho"
             :classes="RADA.tsRada.classes"
             :entidades="entidades"
             :entidadesProcessadas="entidadesProcessadas"

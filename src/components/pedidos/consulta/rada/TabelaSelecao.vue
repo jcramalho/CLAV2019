@@ -1,61 +1,74 @@
 <template>
   <v-card flat class="mb-12">
-    <RADAEntry v-if="!!TS.titulo" label="Título" :value="TS.titulo" />
-    <v-row>
-      <v-col xs="11" sm="11">
-        <v-text-field
-          v-model="searchClasse"
-          label="Pesquise a classe"
-          clearable
-          append-icon="search"
-        ></v-text-field>
-      </v-col>
-      <v-col xs="1" sm="1">
-        <v-tooltip top v-if="!!TS.classes[0]">
-          <template v-slot:activator="{ on }">
-            <v-switch
-              prepend-icon="table_view"
-              inset
-              hide-details
-              v-model="tree_ou_tabela"
-              v-on="on"
-            ></v-switch>
-          </template>
-          <span>Alterar modo de visualização das classes</span>
-        </v-tooltip>
-      </v-col>
-    </v-row>
+    <RADAEntry label="Título" :value="TS.titulo" />
+    <div v-if="!!TS.classes[0]">
+      <v-row>
+        <v-col xs="11" sm="11">
+          <v-text-field
+            v-model="searchClasse"
+            label="Pesquise a classe"
+            clearable
+            append-icon="search"
+          ></v-text-field>
+        </v-col>
+        <v-col xs="1" sm="1">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-switch
+                prepend-icon="table_view"
+                inset
+                hide-details
+                v-model="tree_ou_tabela"
+                v-on="on"
+              ></v-switch>
+            </template>
+            <span>Alterar modo de visualização das classes</span>
+          </v-tooltip>
+        </v-col>
+      </v-row>
 
-    <v-row v-if="!tree_ou_tabela">
-      <v-col cols="12">
-        <v-treeview
-          hoverable
-          :items="preparaTree"
-          item-key="codigo"
+      <v-row v-if="!tree_ou_tabela">
+        <v-col cols="12">
+          <v-treeview
+            hoverable
+            :items="preparaTree"
+            item-key="codigo"
+            :search="searchClasse"
+            :filter="filter"
+          >
+            <template v-slot:prepend="{ item }">
+              <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
+              <img
+                v-else-if="item.tipo == 'Subsérie'"
+                style="width:23px; height:30px"
+                :src="svg_ssr"
+              />
+            </template>
+            <template v-slot:label="{ item }">
+              <b @click="showClasse(item)">{{ item.titulo }}</b>
+            </template>
+          </v-treeview>
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <TabelaClassesRADA
+          :formaContagem="formaContagem"
+          :classes="TS.classes"
+          @editarClasse="showClasse"
           :search="searchClasse"
-          :filter="filter"
-        >
-          <template v-slot:prepend="{ item }">
-            <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
-            <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
-          </template>
-          <template v-slot:label="{ item }">
-            <b @click="showClasse(item)">{{ item.titulo }}</b>
-          </template>
-        </v-treeview>
-      </v-col>
-    </v-row>
-    <v-row v-else>
-      <TabelaClassesRADA
-        :formaContagem="formaContagem"
-        :classes="TS.classes"
-        @editarClasse="showClasse"
-        :search="searchClasse"
-      />
-    </v-row>
+        />
+      </v-row>
+    </div>
+    <div v-else>
+      <br />
+      <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
+        <b>Sem Classes!</b> É obrigatório adicionar.
+      </v-alert>
+    </div>
     <br />
     <br />
     <br />
+
     <h5>Unidades de Instalação</h5>
     <v-divider></v-divider>
     <v-row v-if="TS.UIs[0]">
@@ -288,12 +301,12 @@ export default {
     },
   },
   async created() {
-    // FAZER PEDIDOS PARA A FORMA/SUBFORMA DE CONTAGEM
+    // FAZER PEDIDOS PARA A FORMA DE CONTAGEM
     let responseFC = await this.$request(
       "get",
       "/vocabularios/vc_pcaFormaContagem"
     );
-    
+
     this.formaContagem.formasContagem = responseFC.data.map((item) => {
       return {
         label: item.termo,
