@@ -89,7 +89,7 @@
       </v-row>
 
       <!-- Consulta de Entidade: Natureza de intervenção nos PNs -->
-      <v-card v-if="tipo === 'Entidades' && listaProcD.length">
+      <v-card v-if="tipo === 'Entidades' && (listaProcD.length || parts)">
         <v-card-title class="indigo darken-4 white--text"
           >Natureza de intervenção nos Processos de Negócio</v-card-title
         >
