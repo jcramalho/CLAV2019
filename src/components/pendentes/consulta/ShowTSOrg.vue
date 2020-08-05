@@ -80,7 +80,7 @@
       </v-data-table>
         </v-col>
       </v-row>
-
+      
       <!--div class="info-content">
         {{ JSON.stringify(p) }}
       </div-->

@@ -391,7 +391,7 @@ export default {
         };
 
         var response = await this.$request("post", "/pedidos", pedidoParams);
-        this.$router.push("/pedidos/submissao");
+        this.$router.push("/pedidos/submissao/"+response.data);
       } catch (error) {
         console.log("Erro no POST da TS: " + error);
       }
