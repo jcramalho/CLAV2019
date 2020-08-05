@@ -31,6 +31,7 @@
             :classes="RADA.tsRada.classes"
             :UIs="RADA.tsRada.UIs"
             :RE="RADA.RE"
+            @guardar="guardarTrabalho"
             :entidades="entidades"
             :entidadesProcessadas="entidadesProcessadas"
             :tipologias="tipologias"

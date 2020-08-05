@@ -5,7 +5,7 @@
     </v-col>
     <v-col cols="12" xs="12" sm="9">
       <div class="info-content">
-        {{value}}
+        <span>{{ value }}</span>
         <slot name="valor"></slot>
       </div>
     </v-col>
@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  props: ["label", "value"]
+  props: ["label", "value"],
 };
 </script>
 
@@ -33,6 +33,7 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
+  height: 100%;
   border: 1px solid #1a237e;
 }
 </style>

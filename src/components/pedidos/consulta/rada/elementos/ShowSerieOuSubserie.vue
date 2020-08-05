@@ -8,7 +8,7 @@
         <RADAEntry label="Código" :value="classe.codigo" />
         <RADAEntry label="Titulo" :value="classe.titulo" />
         <RADAEntry label="Descrição" :value="classe.descricao" />
-        <RADAEntry label="Classe Pai" :value="classe.eFilhoDe" />
+        <RADAEntry label="Classe Pai" :value="this.treeview_object.eFilhoDe" />
         <RADAEntryDouble
           label_1="Data Inicial"
           :value_1="classe.dataInicial"
@@ -123,9 +123,9 @@
                   />
                   <RADAEntry v-if="!!forma" label="Forma de Contagem do PCA" :value="forma.label"></RADAEntry>
                   <RADAEntry
-                    v-if="!!subforma"
+                    v-if="!!this.classe.formaContagem.subforma"
                     label="Subforma de Contagem do PCA"
-                    :value="subforma.label"
+                    :value="this.classe.formaContagem.subforma"
                   />
                   <RADAEntry label="Justificação do PCA" v-if="!!classe.justificacaoPCA[0]">
                     <template v-slot:valor>
@@ -206,11 +206,10 @@ export default {
     "classes",
     "formaContagem",
     "show_a_partir_de_pedido",
-    "dialog"
+    "dialog",
   ],
   data: () => ({
     forma: null,
-    subforma: null,
     relacoes: [],
     classe: {},
     headers: [
@@ -218,19 +217,19 @@ export default {
         text: "Relação",
         value: "rel",
         width: "30%",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Série/Subsérie",
         value: "classes",
         width: "70%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
+        class: ["table-header", "body-2", "font-weight-bold"],
+      },
+    ],
   }),
   components: {
     RADAEntry,
-    RADAEntryDouble
+    RADAEntryDouble,
   },
   computed: {
     dialogState: {
@@ -239,18 +238,18 @@ export default {
       },
       set(val) {
         this.$emit("fecharDialog", false);
-      }
-    }
+      },
+    },
   },
   created() {
     this.classe = this.classes.find(
-      e => e.codigo == this.treeview_object.codigo
+      (e) => e.codigo == this.treeview_object.codigo
     );
 
     if (this.show_a_partir_de_pedido == false) {
       // Buscar nome do pai para colocar no combobox;
       let classe_que_e_pai = this.classes.find(
-        e => e.codigo == this.classe.eFilhoDe
+        (e) => e.codigo == this.classe.eFilhoDe
       );
 
       if (classe_que_e_pai != undefined) {
@@ -262,20 +261,20 @@ export default {
       this.classe = JSON.parse(JSON.stringify(this.classe));
 
       // Buscar titulos para as relações;
-      this.classe.relacoes.map(rel => {
+      this.classe.relacoes.map((rel) => {
         let classe_que_tem_relacao = this.classes.find(
-          e => e.codigo == rel.serieRelacionada.codigo
+          (e) => e.codigo == rel.serieRelacionada.codigo
         );
 
         rel.serieRelacionada["titulo"] = classe_que_tem_relacao.titulo;
       });
 
       //Buscar titulos para a justificação DF e ao mesmo tempo fazer deep clone;
-      this.classe.justificacaoDF.map(criterio => {
+      this.classe.justificacaoDF.map((criterio) => {
         if (criterio.tipo != "Critério Legal") {
-          criterio.relacoes.map(rel => {
+          criterio.relacoes.map((rel) => {
             let relacao_criterio = this.classe.relacoes.find(
-              r => r.serieRelacionada.codigo == rel.codigo
+              (r) => r.serieRelacionada.codigo == rel.codigo
             );
 
             rel["titulo"] = relacao_criterio.serieRelacionada.titulo;
@@ -283,11 +282,11 @@ export default {
         }
       });
       //Buscar titulos para a justificação PCA  e ao mesmo tempo fazer deep clone;
-      this.classe.justificacaoPCA.map(criterio => {
+      this.classe.justificacaoPCA.map((criterio) => {
         if (criterio.tipo == "Critério de Utilidade Administrativa") {
-          criterio.relacoes.map(rel => {
+          criterio.relacoes.map((rel) => {
             let relacao_criterio = this.classe.relacoes.find(
-              r => r.serieRelacionada.codigo == rel.codigo
+              (r) => r.serieRelacionada.codigo == rel.codigo
             );
             rel["titulo"] = relacao_criterio.serieRelacionada.titulo;
           });
@@ -296,7 +295,9 @@ export default {
     }
 
     for (let i = 0; i < this.classe.relacoes.length; i++) {
-      let r = this.relacoes.find(e => e.rel == this.classe.relacoes[i].relacao);
+      let r = this.relacoes.find(
+        (e) => e.rel == this.classe.relacoes[i].relacao
+      );
 
       if (r != undefined) {
         r.classes.push(
@@ -310,24 +311,18 @@ export default {
           classes: [
             this.classe.relacoes[i].serieRelacionada.codigo +
               " - " +
-              this.classe.relacoes[i].serieRelacionada.titulo
-          ]
+              this.classe.relacoes[i].serieRelacionada.titulo,
+          ],
         });
       }
     }
 
     if (this.classe.formaContagem != undefined) {
       this.forma = this.formaContagem.formasContagem.find(
-        e => e.value == this.classe.formaContagem.forma
+        (e) => e.value == this.classe.formaContagem.forma
       );
-
-      if (!!this.classe.formaContagem.subforma) {
-        this.subforma = this.formaContagem.subFormasContagem.find(
-          e => e.value == this.classe.formaContagem.subforma
-        );
-      }
     }
-  }
+  },
 };
 </script>
 

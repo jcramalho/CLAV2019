@@ -136,7 +136,7 @@
                   <RADAEntry
                     v-if="!!classe.formaContagem.subforma"
                     label="Subforma de Contagem do PCA"
-                    :value="subforma(classe.formaContagem.subforma)"
+                    :value="classe.formaContagem.subforma"
                   />
                 </div>
                 <RADAEntry
@@ -234,16 +234,9 @@ export default {
   }),
   methods: {
     forma(v) {
-      let forma = this.formaContagem.formasContagem.find((e) => (e.value = v));
+      let forma = this.formaContagem.formasContagem.find((e) => e.value == v);
 
       return forma.label;
-    },
-    subforma(v) {
-      let subforma = this.formaContagem.subFormasContagem.find(
-        (e) => (e.value = v)
-      );
-
-      return subforma.label;
     },
   },
 };

@@ -34,6 +34,48 @@ module.exports.help = {
     "disponibilizado no separador Documentação técnica de apoio, em Formulários e instruções.</li></ul></p>" +
     "<p><b>Deve estar registado na CLAV para aceder a estas funcionalidades.</b></p>" +
     "<p><b>Consulte as instruções em Formulários e instruções</b></p>",
+  RADA:"<h5>Relatórios de Avaliação de Documentação Acumulada</h5>" +
+    "<p>Um Relatório de Avaliação de Documentação Acumulada (RADA) é um instrumento que caracteriza a documentação" +
+    " acumulada, tendo em vista a sua avaliação através da determinação do seu prazo de conservação" +
+    " administrativa (PCA) e do seu destino final (DF).</p>" +
+    "<p>Destina-se à documentação que ainda não foi objeto de avaliação arquivística, i.e., não abrangida" +
+    " por uma portaria de gestão de documentos.</p>" +
+    "<p>Um RADA integra um relatório expositivo e uma tabela de seleção.</p>" +
+    "<p>Um relatório expositivo do RADA consiste na descrição sumária do universo documental avaliado.</p>" +
+    "<p>Uma tabela de seleção do RADA consiste numa estrutura hierárquica de classes que reflete a organização" +
+    " da documentação. Integra áreas orgânico e/ou funcionais e series e subséries documentais, com as" +
+    " respetivas descrições de contextualização para avaliação. O último nível, série ou subsérie," +
+    " fixa as decisões de avaliação, i.e., o período de tempo que deve manter a informação (prazo de" +
+    " conservação administrativa), o destino a aplicar findo esse prazo (conservação permanente ou eliminação).</p>" +
+    "<p>Complementarmente, pode ainda integrar a identificação das unidades de instalação a que se aplica" +
+    " a tabela de seleção.</p>" +
+    "<p>Para aceder ao catálogo dos RADA e respetivas tabelas de seleção aprovados pela DGLAB e" +
+    "disponibilizados na CLAV selecione a opção CONSULTAR.</p>" +
+    "<p>Para propor um RADA selecione a opção CRIAR.</p>" +
+    "<p>Deve estar registado na CLAV para aceder à funcionalidade CRIAR. Consulte as instruções em Formulários" +
+    "e instruções.</p>" +
+    "<h6>CONSULTAR</h6>" +
+    "<p>As tabelas de seleção encontram-se organizadas em dois conjuntos:" +
+    "<ol>" +
+    "<li>RADA - Relatório de Avaliação de Documentação Acumulada produzidos e aprovados fora da plataforma" +
+    "CLAV.</li>" +
+    "<li>RADA/CLAV - Relatório de Avaliação de Documentação Acumulada produzidos e aprovados através da" +
+    "plataforma CLAV.</li>" +
+    "</ol></p>"+
+    "<h6>CRIAR</h6>" +
+    "<p>A criação de um RADA é efetuada em três etapas:" +
+    "<ol>" +
+    "<li>Informação Geral, em que se indica o Título do RADA e as entidades responsáveis pela" + 
+    "apresentação deste instrumento;</li>" +
+    "<li>Relatório expositivo, efetuado através de preenchimento de formulário online, com criação assistida," +
+    "ou através de submissão de ficheiro preenchido previamente offline, a partir de formulário disponibilizado.</li>" +
+    "<li>Tabela de seleção, efetuada igualmente com possibilidade de preenchimento de formulário online" +
+    "ou de submissão de:" +
+    "<ul>" +
+    "<li>ficheiro para as classes relativas às áreas orgânico-funcional e às séries/subséries e," +
+    "quando aplicável,</li>" +
+    "<li>ficheiro para as unidades de instalação.</li>" +
+    "</ul></ol></p>",
   Entidades:
     "Entidades públicas que intervêm nos processos de negócio (classes de 3º nível) da " +
     "Lista Consolidada. Podem integrar uma ou mais tipologias de entidades.",
