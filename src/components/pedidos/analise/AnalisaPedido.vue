@@ -84,12 +84,10 @@
             />
 
             <AnalisaTS
-              v-else-if="
-                pedido.objeto.tipo.includes('TS ')
-              "
+              v-else-if="pedido.objeto.tipo.includes('TS ')"
               :p="pedido"
             />
-            
+
             <AnalisaDefault v-else :p="pedido" />
           </v-card-text>
 
@@ -97,7 +95,8 @@
           <v-card-text
             v-else-if="
               pedido.objeto.acao === 'Alteração' ||
-                pedido.objeto.acao === 'Extinção'
+                pedido.objeto.acao === 'Extinção' ||
+                pedido.objeto.acao === 'Revogação'
             "
           >
             <span>

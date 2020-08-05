@@ -18,6 +18,13 @@
           @click="criarAlterarLegislacao"
           >Alterar Diploma</v-btn
         >
+        <v-btn
+          v-else-if="this.acao == 'Revogação'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarAlterarLegislacao"
+          >Revogar Diploma</v-btn
+        >
       </v-col>
 
       <v-col>
@@ -34,6 +41,14 @@
           class="red darken-4 white--text"
           @click="eliminarLegislacao"
           >Cancelar Alteração</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Revogação'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarLegislacao"
+          >Cancelar Revogação</v-btn
         >
       </v-col>
 
@@ -110,8 +125,6 @@ export default {
 
   data() {
     return {
-      pendenteGuardado: false,
-      pendenteGuardadoInfo: "",
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar o Diploma!",
       errosValidacao: false,
@@ -178,13 +191,17 @@ export default {
         numeroErros++;
       }
 
-      // Data revogação
-      if (!eNUV(dados.data) && !eNUV(dados.dataRevogacao)) {
+      return numeroErros;
+    },
+
+    validarLegislacaoRevogacao(dados) {
+      let numeroErros = 0;
+
+      // Data Revogação
+      if (eNUV(dados.dataRevogacao)) {
+        numeroErros++;
+      } else if (!eNUV(dados.dataRevogacao)) {
         if (eDataFormatoErrado(dados.dataRevogacao)) {
-          this.mensagensErro.push({
-            sobre: "Data de Revogação",
-            mensagem: "A data de revogação está no formato errado.",
-          });
           numeroErros++;
         } else if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
           numeroErros++;
@@ -222,6 +239,23 @@ export default {
 
               break;
 
+            case "Revogação":
+              erros = this.validarLegislacaoRevogacao(dataObj);
+
+              for (const key in dataObj) {
+                if (key !== "sigla" && key !== "dataRevogacao")
+                  delete dataObj[key];
+              }
+
+              historico.push({
+                dataRevogacao: {
+                  cor: "amarelo",
+                  dados: dataObj.dataRevogacao,
+                  nota: null,
+                },
+              });
+              break;
+
             default:
               break;
           }
@@ -257,10 +291,6 @@ export default {
       } catch (err) {
         return err;
       }
-    },
-
-    criacaoPendenteTerminada: function() {
-      this.$router.push("/");
     },
 
     // Cancela a criação da Legislacao
