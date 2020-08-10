@@ -70,6 +70,8 @@
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 import FinalizarPedido from "@/components/pedidos/generic/FinalizarPedido";
+import { filtraNivel } from "@/utils/permissoes";
+import { NIVEIS_VALIDAR_PEDIDO } from "@/utils/consts";
 
 export default {
   props: ["operacao"],
@@ -89,7 +91,21 @@ export default {
     };
   },
 
+  async created() {
+    try {
+      await this.preparaUtilizadores();
+    } catch (e) {
+      return e;
+    }
+  },
+
   methods: {
+    async preparaUtilizadores() {
+      const { data } = await this.$request("get", "/users");
+
+      this.utilizadores = filtraNivel(data, NIVEIS_VALIDAR_PEDIDO);
+    },
+
     fecharDialog() {
       this.avancarPedidoDialog = false;
       this.devolverPedidoDialog = false;
@@ -108,15 +124,6 @@ export default {
       this.fecharDialog();
       this.$emit("finalizarPedido", dados);
     },
-  },
-
-  async created() {
-    try {
-      const response = await this.$request("get", "/users");
-      this.utilizadores = response.data;
-    } catch (e) {
-      return e;
-    }
   },
 };
 </script>
