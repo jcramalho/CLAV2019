@@ -350,10 +350,49 @@ export default {
       this.existe_erros = false;
       this.erros = [];
 
-      if (this.$refs.formUI.validate()) {
+      if (this.$refs.formUI.validate() && (await this.validaDatas())) {
         this.$emit("atualizar");
       } else {
         this.recolherErros(this.UI_clone);
+      }
+    },
+    validaDatas() {
+      try {
+        let data_inicial = new Date(this.UI_clone.dataInicial);
+        let data_final = new Date(this.UI_clone.dataFinal);
+        let r = true;
+
+        for (let i = 0; i < this.UI_clone.classesAssociadas.length; i++) {
+          let classe = this.classes.find(
+            (e) => e.codigo == this.UI_clone.classesAssociadas[i].codigo
+          );
+
+          if (classe != undefined) {
+            if (
+              !(
+                (!!classe.dataInicial
+                  ? new Date(classe.dataInicial) <= data_inicial
+                  : true) &&
+                (!!classe.dataFinal
+                  ? new Date(classe.dataFinal) >= data_final
+                  : true)
+              )
+            ) {
+              r = false;
+              this.erros.push(
+                "Datas da classe associada " +
+                  classe.codigo +
+                  " é entre " +
+                  classe.dataInicial +
+                  " e " +
+                  classe.dataFinal
+              );
+            }
+          }
+        }
+        return r;
+      } catch (e) {
+        return false;
       }
     },
   },

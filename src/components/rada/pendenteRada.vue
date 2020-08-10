@@ -80,7 +80,6 @@
             outlined
             type="error"
             prominent
-            dismissible
             border="left"
           >
             <div v-if="!!erroProdutoras[0]">

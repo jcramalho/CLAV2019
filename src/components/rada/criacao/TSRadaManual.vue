@@ -102,6 +102,9 @@
                 style="width:23px; height:30px"
                 :src="svg_ssr"
               />
+              <img v-else-if="item.tipo == 'N1'" style="width:23px; height:30px" :src="svg_N1" />
+              <img v-else-if="item.tipo == 'N2'" style="width:23px; height:30px" :src="svg_N2" />
+              <img v-else-if="item.tipo == 'N3'" style="width:23px; height:30px" :src="svg_N3" />
             </template>
             <template v-slot:label="{ item }">
               <div @mouseover="mostrar_botao_copia = item" @mouseout="mostrar_botao_copia = false">
@@ -312,6 +315,9 @@ export default {
     criar_serie: false,
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+    svg_N1: require("@/assets/n1.svg"),
+    svg_N2: require("@/assets/n2.svg"),
+    svg_N3: require("@/assets/n3.svg"),
     erros_ts: [],
     formaContagem: {
       subFormasContagem: [],
