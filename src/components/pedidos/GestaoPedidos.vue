@@ -40,7 +40,7 @@
 
       <v-dialog v-model="distribuir" width="80%" persistent>
         <AvancarPedido
-          :utilizadores="utilizadores"
+          :utilizadores="utilizadoresParaAnalisar"
           :texto="{
             textoTitulo: 'Distribuição',
             textoAlert: 'análise',
@@ -63,8 +63,10 @@ import PedidosDevolvidos from "@/components/pedidos/PedidosDevolvidos";
 import PedidosProcessados from "@/components/pedidos/PedidosProcessados";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
-import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
-import { filtraNivel } from "@/utils/utils";
+import {
+  NIVEIS_ANALISAR_PEDIDO,
+} from "@/utils/consts";
+import { filtraNivel } from "@/utils/permissoes";
 
 export default {
   components: {
@@ -80,7 +82,7 @@ export default {
     return {
       pedidoParaDistribuir: {},
       distribuir: false,
-      utilizadores: [],
+      utilizadoresParaAnalisar: [],
       pedidosSubmetidos: [],
       pedidosDistribuidos: [],
       pedidosValidados: [],
@@ -121,7 +123,7 @@ export default {
         this.pedidosDevolvidos = pedidos.filter((p) => p.estado == "Devolvido");
         this.pedidosProcessados = pedidos.filter((p) => p.estado == "Validado");
 
-        await this.listaUtilizadores();
+        await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
         return e;
       }
@@ -136,16 +138,15 @@ export default {
       this.distribuir = true;
     },
 
-    async listaUtilizadores() {
+    async listaUtilizadoresParaAnalisar() {
       const response = await this.$request("get", "/users");
 
-      const utilizadores = filtraNivel(
+      const utilizadoresFiltrados = filtraNivel(
         response.data,
-        NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS,
-        ">="
+        NIVEIS_ANALISAR_PEDIDO
       );
 
-      this.utilizadores = utilizadores;
+      this.utilizadoresParaAnalisar = utilizadoresFiltrados;
     },
 
     analisaPedido(pedido) {

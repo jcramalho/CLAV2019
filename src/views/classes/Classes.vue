@@ -89,7 +89,9 @@
                   </span>
                   <v-chip dark label color="indigo accent-4">
                     {{
-                      c.campo.enum.filter(e => e.value == c.campo.nome)[0].text
+                      c.campo.enum.filter(
+                        e => e.value == c.campo.nome || e.value == c.subcampo
+                      )[0].text
                     }}
                   </v-chip>
                 </span>
@@ -97,7 +99,9 @@
                   <v-chip dark color="indigo darken-4">
                     {{
                       camposPesquisa.filter(
-                        e => e.value.nome == c.campo.nome
+                        e =>
+                          e.value.nome == c.campo.nome ||
+                          e.value.nome == c.subcampo
                       )[0].text
                     }}
                   </v-chip>
@@ -174,9 +178,9 @@
                 <div v-if="camposUsados[index].campo.label">
                   <v-autocomplete
                     :items="camposUsados[index].campo.enum"
-                    label="É"
+                    label="Tipo de Intervenção"
                     :rules="regraV"
-                    v-model="camposUsados[index].campo.nome"
+                    v-model="camposUsados[index].subcampo"
                   />
                   <v-autocomplete
                     :items="entidades"
@@ -274,7 +278,7 @@ export default {
     regraV: [v => !!v || "Obrigatório. Escolha um valor."],
     conetor: "E",
     opLogicas: ["E", "OU"],
-    camposUsados: [{ campo: null, valor: "", not: false }],
+    camposUsados: [{ campo: null, subcampo: null, valor: "", not: false }],
     camposPesquisa: [
       {
         text: "Código",
@@ -318,7 +322,7 @@ export default {
       {
         text: "Entidade",
         value: {
-          nome: "",
+          nome: "entidade",
           label: "Entidade a pesquisar",
           enum: [
             { text: "Dona", value: "donos" },
@@ -503,14 +507,22 @@ export default {
         var stat = op;
         for (let c of this.camposUsados) {
           var statAux;
+          let campo = "";
+
+          if (c.subcampo) {
+            campo = c.subcampo;
+          } else {
+            campo = c.campo.nome;
+          }
+
           if (c.campo.enum.length > 0) {
-            if (classes[i][c.campo.nome] instanceof Array) {
-              statAux = classes[i][c.campo.nome].includes(c.valor);
+            if (classes[i][campo] instanceof Array) {
+              statAux = classes[i][campo].includes(c.valor);
             } else {
-              statAux = classes[i][c.campo.nome] == c.valor;
+              statAux = classes[i][campo] == c.valor;
             }
           } else {
-            statAux = classes[i][c.campo.nome].indexOf(c.valor) > -1;
+            statAux = classes[i][campo].indexOf(c.valor) > -1;
           }
 
           if (c.not) statAux = !statAux;

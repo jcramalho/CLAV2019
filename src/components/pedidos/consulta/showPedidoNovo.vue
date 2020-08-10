@@ -112,18 +112,22 @@
       <v-card-actions>
         <v-btn color="indigo" dark @click="voltar">Voltar</v-btn>
         <v-spacer />
-        <v-btn
-          class="mr-9"
-          text
-          color="red accent-4"
-          dark
-          @click="devolver = true"
-        >
-          Devolver
-        </v-btn>
-        <v-btn color="indigo accent-4" dark @click="distribuir = true">
-          Distribuir
-        </v-btn>
+        <span v-if="temPermissaoDistribuir()">
+          <!-- TODO: Alterar com as permissões corretas -->
+          <v-btn
+            class="mr-9"
+            text
+            color="red accent-4"
+            dark
+            @click="devolver = true"
+          >
+            Devolver
+          </v-btn>
+
+          <v-btn color="indigo accent-4" dark @click="distribuir = true">
+            Distribuir
+          </v-btn>
+        </span>
       </v-card-actions>
 
       <v-dialog v-model="distribuir" width="80%" persistent>
@@ -180,8 +184,12 @@ import ErroDialog from "@/components/generic/ErroDialog";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
-import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
-import { filtraNivel, converteData } from "@/utils/utils";
+import {
+  NIVEIS_ANALISAR_PEDIDO,
+  NIVEL_MINIMO_DISTRIBUIR_PEDIDOS,
+} from "@/utils/consts";
+import { converteData } from "@/utils/utils";
+import { filtraNivel } from "@/utils/permissoes";
 
 export default {
   props: ["p"],
@@ -240,6 +248,10 @@ export default {
   },
 
   methods: {
+    temPermissaoDistribuir() {
+      return this.$userLevel() >= NIVEL_MINIMO_DISTRIBUIR_PEDIDOS;
+    },
+
     converteData(data) {
       let dataFormatada = "";
       let dataConvertida = new Date(data);
@@ -326,11 +338,7 @@ export default {
     async listaUtilizadores() {
       const response = await this.$request("get", "/users");
 
-      const utilizadores = filtraNivel(
-        response.data,
-        NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS,
-        ">="
-      );
+      const utilizadores = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
 
       this.utilizadores = utilizadores;
     },

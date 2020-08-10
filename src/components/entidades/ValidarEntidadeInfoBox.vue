@@ -242,35 +242,31 @@ export default {
         }
       }
 
-      // Data de Extinção
-      if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
-        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) {
-          this.mensagensErro.push({
-            sobre: "Data de Extinção",
-            mensagem:
-              "A data de extinção tem de ser superior à data de criação.",
-          });
-          numeroErros++;
-        }
-      }
-
       return numeroErros;
     },
 
     validarEntidadeExtincao(dados) {
       let numeroErros = 0;
 
-      // Datas
+      // Data de Extinção
       if (eNUV(dados.dataExtincao)) {
         this.mensagensErro.push({
-          sobre: "Data de extinção",
+          sobre: "Data de Extinção",
           mensagem: "A data de extinção não pode ser vazia.",
         });
         numeroErros++;
+      } else if (!eNUV(dados.dataExtincao)) {
+        if (eDataFormatoErrado(dados.dataExtincao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Extinção",
+            mensagem: "A data de extinção está no formato errado.",
+          });
+          numeroErros++;
+        }
       } else if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
         if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
           this.mensagensErro.push({
-            sobre: "Datas",
+            sobre: "Data de Extinção",
             mensagem:
               "A data de extinção tem de ser superior à data de criação.",
           });

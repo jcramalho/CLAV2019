@@ -424,12 +424,7 @@ export default {
               { dataExtincao: pedido.objeto.dados.dataExtincao }
             );
         } else {
-          if (pedido.objeto.dados.hasOwnProperty("designacao")) {
-            numeroErros = await this.validar(
-              pedido.objeto.acao,
-              pedido.objeto.dados
-            );
-          }
+          numeroErros = await this.validar(pedido.objeto.dados);
 
           if (numeroErros === 0) {
             for (const key in pedido.objeto.dadosOriginais) {
@@ -575,20 +570,26 @@ export default {
       let numeroErros = 0;
 
       // Data de Extinção
-      if (!eNUV(this.dadosOriginais.dataExtincao) && !eNUV(data)) {
+      if (eNUV(data)) {
+        this.erros.push({
+          sobre: "Data de Extinção",
+          mensagem: "A data de extinção não pode ser vazia.",
+        });
+        numeroErros++;
+      } else if (!eNUV(this.dadosOriginais.dataExtincao) && !eNUV(data)) {
         if (eDataFormatoErrado(data)) {
           this.erros.push({
-            sobre: "Data de Revogação",
-            mensagem: "A data de revogação está no formato errado.",
+            sobre: "Data de Extinção",
+            mensagem: "A data de extinção está no formato errado.",
           });
           numeroErros++;
         } else if (
           new Date(this.dadosOriginais.dataExtincao) >= new Date(data)
         ) {
           this.erros.push({
-            sobre: "Data de revogação",
+            sobre: "Data de Extinção",
             mensagem:
-              "A data de revogação tem de ser superior à data do diploma.",
+              "A data de extinção tem de ser superior à data do diploma.",
           });
           numeroErros++;
         }

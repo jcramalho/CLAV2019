@@ -128,7 +128,6 @@ export default {
     return {
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
-      dialogEntidadeCriada: false,
       pedidoEliminado: false,
       errosValidacao: false,
     };
@@ -233,24 +232,23 @@ export default {
         }
       }
 
-      // Data de Extinção
-      if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
-        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao))
-          numeroErros++;
-      }
-
       return numeroErros;
     },
 
     validarEntidadeExtincao(dados) {
       let numeroErros = 0;
 
-      // Datas
+      // Data de Extinção
       if (eNUV(dados.dataExtincao)) {
         numeroErros++;
-      } else if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
-        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao))
+      } else if (!eNUV(dados.dataExtincao)) {
+        if (eDataFormatoErrado(dados.dataExtincao)) {
           numeroErros++;
+        }
+      } else if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
+        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+          numeroErros++;
+        }
       }
 
       return numeroErros;

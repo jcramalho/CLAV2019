@@ -435,12 +435,12 @@ export default {
             {
               label: "Consultar",
               url: "/rada",
-              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7],
             },
             {
               label: "Criar",
               url: "/rada/criar",
-              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7],
             }
           ],
         },
@@ -576,7 +576,7 @@ export default {
             {
               label: "Adicionar",
               url: "/colaboracoes/criar",
-              level: [4, 5, 6, 7],
+              level: [3.5, 4, 5, 6, 7],
             },
           ],
         },

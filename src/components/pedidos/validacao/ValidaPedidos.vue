@@ -79,19 +79,15 @@
               :tipo="pedido.objeto.tipo"
             />
 
-            <ValidaTS
-              v-if="
-                pedido.objeto.tipo.includes('TS ')
-              "
-              :p="pedido"
-            />
+            <ValidaTS v-if="pedido.objeto.tipo.includes('TS ')" :p="pedido" />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
           <v-card-text
             v-if="
               pedido.objeto.acao === 'Alteração' ||
-                pedido.objeto.acao === 'Extinção'
+                pedido.objeto.acao === 'Extinção' ||
+                pedido.objeto.acao === 'Revogação'
             "
           >
             <span>

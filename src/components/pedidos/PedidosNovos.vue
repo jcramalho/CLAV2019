@@ -78,31 +78,34 @@
               <span>Ver pedido...</span>
             </v-tooltip>
 
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon
-                  @click="distribuiPedido(item)"
-                  color="indigo darken-2"
-                  v-on="on"
-                >
-                  person
-                </v-icon>
-              </template>
-              <span>Distribuir pedido...</span>
-            </v-tooltip>
+            <span v-if="temPermissaoDistribuir()">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    @click="distribuiPedido(item)"
+                    color="indigo darken-2"
+                    v-on="on"
+                  >
+                    person
+                  </v-icon>
+                </template>
+                <span>Distribuir pedido...</span>
+              </v-tooltip>
 
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon
-                  @click="devolverPedido(item)"
-                  color="indigo darken-2"
-                  v-on="on"
-                >
-                  assignment_return
-                </v-icon>
-              </template>
-              <span>Devolver pedido...</span>
-            </v-tooltip>
+              <!-- TODO: Alterar com as permissões corretas -->
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    @click="devolverPedido(item)"
+                    color="indigo darken-2"
+                    v-on="on"
+                  >
+                    assignment_return
+                  </v-icon>
+                </template>
+                <span>Devolver pedido...</span>
+              </v-tooltip>
+            </span>
           </template>
 
           <template v-slot:pageText="props">
@@ -131,6 +134,7 @@
 <script>
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 import ErroDialog from "@/components/generic/ErroDialog";
+import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS } from "@/utils/consts";
 
 export default {
   props: ["pedidos", "pesquisaPedidos"],
@@ -219,6 +223,10 @@ export default {
   },
 
   methods: {
+    temPermissaoDistribuir() {
+      return this.$userLevel() >= NIVEL_MINIMO_DISTRIBUIR_PEDIDOS;
+    },
+
     atualizaPedidos() {
       this.dadosTabela = this.pedidos.map((pedido) => {
         const dados = {};
