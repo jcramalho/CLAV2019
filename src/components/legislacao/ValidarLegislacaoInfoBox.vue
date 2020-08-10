@@ -171,8 +171,20 @@ export default {
         numeroErros++;
       }
 
+      return numeroErros;
+    },
+
+    validarLegislacaoRevogacao(dados) {
+      let numeroErros = 0;
+
       // Data Revogação
-      if (!eNUV(dados.data) && !eNUV(dados.dataRevogacao)) {
+      if (eNUV(dados.dataRevogacao)) {
+        this.mensagensErro.push({
+          sobre: "Data de Revogação",
+          mensagem: "A data de revogação não pode ser vazia.",
+        });
+        numeroErros++;
+      } else if (!eNUV(dados.dataRevogacao)) {
         if (eDataFormatoErrado(dados.dataRevogacao)) {
           this.mensagensErro.push({
             sobre: "Data de Revogação",
@@ -212,6 +224,14 @@ export default {
             }
           }
 
+          break;
+
+        case "Revogação":
+          erros = this.validarLegislacaoRevogacao(dataObj);
+
+          for (const key in dataObj) {
+            if (key !== "sigla" && key !== "dataRevogacao") delete dataObj[key];
+          }
           break;
 
         default:

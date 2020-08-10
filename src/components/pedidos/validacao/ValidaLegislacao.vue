@@ -235,6 +235,8 @@ import Loading from "@/components/generic/Loading";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import ErroDialog from "@/components/generic/ErroDialog";
 
+import { nanoid } from "nanoid";
+
 import {
   comparaSigla,
   comparaCodigo,
@@ -676,7 +678,25 @@ export default {
           if (pedido.objeto.dados.diplomaFonte === "Não especificada")
             delete pedido.objeto.dados.diplomaFonte;
 
-          await this.$request("post", "/legislacao", pedido.objeto.dados);
+          const dataRevogacao = JSON.parse(
+            JSON.stringify(pedido.objeto.dados.dataRevogacao)
+          );
+
+          const id = `leg_${nanoid()}`;
+
+          pedido.objeto.dados.id = id;
+
+          const { data } = await this.$request(
+            "post",
+            "/legislacao",
+            pedido.objeto.dados
+          );
+
+          if (dataRevogacao) {
+            await this.$request("put", `/legislacao/${id}/revogar`, {
+              dataRevogacao,
+            });
+          }
 
           const estado = "Validado";
 

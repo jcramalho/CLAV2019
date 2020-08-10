@@ -11,110 +11,147 @@
         </v-app-bar>
 
         <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Sumário</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="legislacao.sumario"
-                label="Sumário"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+        <v-card-text class="ma-0 pa-0">
+          <v-stepper v-model="etapa" vertical>
+            <!-- Step 1 -->
+            <v-stepper-step :complete="etapa > 1" step="1" editable>
+              Escolha a operação
+            </v-stepper-step>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Link</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="legislacao.link"
-                filled
-                clearable
-                color="indigo"
-                single-line
-                label="Link"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Data de revogação
+            <v-stepper-content step="1">
+              <div class="ma-4">
+                <v-radio-group v-model="acao" row>
+                  <v-radio label="Editar" value="Alteração"></v-radio>
+                  <v-radio
+                    v-if="legislacao.estado === 'Ativo'"
+                    label="Revogar"
+                    value="Revogação"
+                  ></v-radio>
+                </v-radio-group>
               </div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="legislacao.dataRevogacao"
-                :label="'Data: AAAA-MM-DD'"
-                @dataSelecionada="legislacao.dataRevogacao = $event"
-              />
-            </v-col>
-          </v-row>
 
-          <!-- Blocos expansivos -->
-          <v-expansion-panels>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Entidade responsável pela publicação
-                </div>
+              <v-btn color="primary" @click="etapa = 2">
+                Continuar
+              </v-btn>
+            </v-stepper-content>
 
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelEnt
-                  :entidades="entSel"
-                  tipo="legislacao"
-                  @unselectEntidade="unselectEntidade($event)"
-                />
+            <!-- Step 2 -->
+            <v-stepper-step :complete="etapa > 2" step="2">{{
+              acao
+            }}</v-stepper-step>
 
-                <hr style="border-top: 1px dashed #dee2f8;" />
+            <v-stepper-content step="2">
+              <div v-if="acao === 'Alteração'">
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Sumário</div>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      filled
+                      clearable
+                      color="indigo"
+                      single-line
+                      v-model="legislacao.sumario"
+                      label="Sumário"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
 
-                <SelEnt
-                  :entidadesReady="entidadesReady"
-                  :entidades="entidades"
-                  @selectEntidade="selectEntidade($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Link</div>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-model="legislacao.link"
+                      filled
+                      clearable
+                      color="indigo"
+                      single-line
+                      label="Link"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
 
-            <!-- Segundo bloco expansivo -->
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Processos de negócio que regula ou enquadra
-                </div>
+                <!-- Blocos expansivos -->
+                <v-expansion-panels>
+                  <v-expansion-panel popout focusable>
+                    <v-expansion-panel-header class="expansion-panel-heading">
+                      <div>
+                        Entidade responsável pela publicação
+                      </div>
 
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelProc
-                  :processos="procSel"
-                  @unselectProcesso="unselectProcesso($event)"
-                />
+                      <template v-slot:actions>
+                        <v-icon color="white">expand_more</v-icon>
+                      </template>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <DesSelEnt
+                        :entidades="entSel"
+                        tipo="legislacao"
+                        @unselectEntidade="unselectEntidade($event)"
+                      />
 
-                <hr style="border-top: 1px dashed #dee2f8;" />
+                      <hr style="border-top: 1px dashed #dee2f8;" />
 
-                <SelProc
-                  :processosReady="processosReady"
-                  :processos="processos"
-                  @selectProcesso="selectProcesso($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+                      <SelEnt
+                        :entidadesReady="entidadesReady"
+                        :entidades="entidades"
+                        @selectEntidade="selectEntidade($event)"
+                      />
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+
+                  <!-- Segundo bloco expansivo -->
+                  <v-expansion-panel popout focusable>
+                    <v-expansion-panel-header class="expansion-panel-heading">
+                      <div>
+                        Processos de negócio que regula ou enquadra
+                      </div>
+
+                      <template v-slot:actions>
+                        <v-icon color="white">expand_more</v-icon>
+                      </template>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <DesSelProc
+                        :processos="procSel"
+                        @unselectProcesso="unselectProcesso($event)"
+                      />
+
+                      <hr style="border-top: 1px dashed #dee2f8;" />
+
+                      <SelProc
+                        :processosReady="processosReady"
+                        :processos="processos"
+                        @selectProcesso="selectProcesso($event)"
+                      />
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </div>
+
+              <div v-else>
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">
+                      Data de revogação
+                    </div>
+                  </v-col>
+                  <v-col>
+                    <SelecionarData
+                      :d="legislacao.dataRevogacao"
+                      :label="'Data: AAAA-MM-DD'"
+                      @dataSelecionada="legislacao.dataRevogacao = $event"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+            </v-stepper-content>
+          </v-stepper>
+
+          <!-- j  -->
         </v-card-text>
         <v-snackbar
           v-model="snackbar"
@@ -129,9 +166,10 @@
 
       <!-- Painel Operações -->
       <PainelOpsLeg
+        v-if="etapa === 2"
         :l="legislacao"
         :original="legislacaoOriginal"
-        :acao="'Alteração'"
+        :acao="acao"
       />
     </v-col>
   </v-row>
@@ -161,6 +199,7 @@ export default {
 
   data() {
     return {
+      etapa: 1,
       legislacao: {
         numero: "",
         sumario: "",
@@ -173,6 +212,7 @@ export default {
         processosSel: [],
       },
       legislacaoOriginal: {},
+      acao: "Alteração",
 
       tiposDiploma: [],
 

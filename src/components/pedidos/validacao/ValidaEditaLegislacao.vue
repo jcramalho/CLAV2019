@@ -620,34 +620,80 @@ export default {
       return numeroErros;
     },
 
+    validarRevogacao(data) {
+      let numeroErros = 0;
+
+      // Data Revogação
+      if (eNUV(data)) {
+        this.erros.push({
+          sobre: "Data de Revogação",
+          mensagem: "A data de revogação não pode ser vazia.",
+        });
+        numeroErros++;
+      } else if (!eNUV(data)) {
+        if (eDataFormatoErrado(data)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(this.dadosOriginais.data) >= new Date(data)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem:
+              "A data de revogação tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
+      }
+
+      return numeroErros;
+    },
+
     async finalizarPedido(dados) {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        for (const key in pedido.objeto.dadosOriginais) {
-          if (!pedido.objeto.dados.hasOwnProperty(key)) {
-            pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+        let numeroErros = 0;
+
+        if (pedido.objeto.acao === "Revogação") {
+          numeroErros = this.validarRevogacao(
+            pedido.objeto.dados.dataRevogacao
+          );
+          if (numeroErros === 0)
+            await this.$request(
+              "put",
+              `/legislacao/${this.dadosOriginais.id}/revogar`,
+              { dataRevogacao: pedido.objeto.dados.dataRevogacao }
+            );
+        } else {
+          numeroErros = this.validar(pedido.objeto.dados);
+
+          if (numeroErros === 0) {
+            for (const key in pedido.objeto.dadosOriginais) {
+              if (!pedido.objeto.dados.hasOwnProperty(key)) {
+                pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+              }
+
+              if (
+                pedido.objeto.dados[key] === "" ||
+                pedido.objeto.dados[key] === null
+              )
+                delete pedido.objeto.dados[key];
+            }
+
+            if (pedido.objeto.dados.diplomaFonte === "Não especificada")
+              delete pedido.objeto.dados.diplomaFonte;
           }
 
-          if (
-            pedido.objeto.dados[key] === "" ||
-            pedido.objeto.dados[key] === null
-          )
-            delete pedido.objeto.dados[key];
-        }
-
-        if (pedido.objeto.dados.diplomaFonte === "Não especificada")
-          delete pedido.objeto.dados.diplomaFonte;
-
-        let numeroErros = this.validar(pedido);
-
-        if (numeroErros === 0) {
           await this.$request(
             "put",
             `/legislacao/${pedido.objeto.dados.id}`,
             pedido.objeto.dados
           );
+        }
 
+        if (numeroErros === 0) {
           const estado = "Validado";
 
           let dadosUtilizador = this.$verifyTokenUser();

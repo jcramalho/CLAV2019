@@ -99,27 +99,16 @@ export default {
 
           listaLegislacao[i].entidades = temp;
 
-          if (listaLegislacao[i].estado === "Ativo")
-            myTree.push({
-              data: listaLegislacao[i].data,
-              tipo: listaLegislacao[i].tipo,
-              entidades: listaLegislacao[i].entidades,
-              numero: listaLegislacao[i].numero,
-              sumario: listaLegislacao[i].sumario,
-              estado: listaLegislacao[i].estado,
-              operacoes: this.operacoes,
-              id: listaLegislacao[i].id,
-            });
-          else
-            myTree.push({
-              data: listaLegislacao[i].data,
-              tipo: listaLegislacao[i].tipo,
-              entidades: listaLegislacao[i].entidades,
-              numero: listaLegislacao[i].numero,
-              sumario: listaLegislacao[i].sumario,
-              estado: listaLegislacao[i].estado,
-              id: listaLegislacao[i].id,
-            });
+          myTree.push({
+            data: listaLegislacao[i].data,
+            tipo: listaLegislacao[i].tipo,
+            entidades: listaLegislacao[i].entidades,
+            numero: listaLegislacao[i].numero,
+            sumario: listaLegislacao[i].sumario,
+            estado: listaLegislacao[i].estado,
+            operacoes: this.operacoes,
+            id: listaLegislacao[i].id,
+          });
         }
       } else {
         for (let i = 0; i < listaLegislacao.length; i++) {
