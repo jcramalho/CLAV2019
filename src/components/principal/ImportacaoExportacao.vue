@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
+import { NIVEL_MINIMO_DOC } from "@/utils/consts";
 const lhost = require("@/config/global").host;
 
 export default {
@@ -61,7 +61,7 @@ export default {
           exportar: "/noticias"
         },
       ],
-      min: NIVEL_MINIMO_ALTERAR
+      min: NIVEL_MINIMO_DOC
     };
   },
   methods: {

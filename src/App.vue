@@ -15,7 +15,7 @@
 
       <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
       <Estatisticas
-        v-if="this.$store.state.name != '' && level >= 3.5"
+        v-if="this.$store.state.name != '' && level >= 3"
         :drawer="drawE"
       />
     </v-content>

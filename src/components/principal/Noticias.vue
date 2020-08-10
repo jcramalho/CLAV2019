@@ -50,7 +50,7 @@ export default {
       {
         label: "Adicionar",
         url: "/noticias/criar",
-        level: [4, 5, 6, 7]
+        level: [3.5, 4, 5, 6, 7]
       }
     ]
   }),

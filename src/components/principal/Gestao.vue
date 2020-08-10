@@ -29,7 +29,7 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
-        <ImportacaoExportacao :level="level"/>
+        <ImportacaoExportacao :level="level" v-if="level >= 3.5" />
       </v-expansion-panels>
     </v-card-text>
   </v-card>
@@ -126,12 +126,12 @@ export default {
             {
               label: "Consultar utilizadores",
               url: "/users/listagem",
-              level: [5, 6, 7]
+              level: [4, 5, 6, 7]
             },
             {
               label: "Registo de utilizadores para uma entidade",
               url: "/users/registoParaEntidade",
-              level: [5, 6, 7]
+              level: [4, 5, 6, 7]
             },
             {
               label: "Registo de acesso",
