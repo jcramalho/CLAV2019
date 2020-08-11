@@ -244,7 +244,7 @@ export default {
       this.erroDialog.mensagem = "Este pedido não se encontra neste estado.";
     }
 
-    await this.listaUtilizadores();
+    if (this.temPermissaoDistribuir()) await this.listaUtilizadores();
   },
 
   methods: {
