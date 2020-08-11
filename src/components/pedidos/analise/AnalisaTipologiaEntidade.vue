@@ -7,7 +7,6 @@
           v-if="
             info !== '' &&
               info !== null &&
-              campo !== 'codigo' &&
               campo !== 'estado'
           "
           dense

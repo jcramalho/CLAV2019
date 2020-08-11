@@ -163,7 +163,6 @@ export default {
       sigla: "",
       internacional: "",
       sioe: "",
-      codigo: "",
       dataCriacao: "",
       dataExtincao: "",
       estado: "Ativa",

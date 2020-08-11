@@ -8,7 +8,6 @@
             info !== '' &&
               info !== null &&
               campo !== 'sigla' &&
-              campo !== 'codigo' &&
               campo !== 'estado'
           "
           dense
