@@ -206,7 +206,7 @@ export default {
       tipologiasReady: false,
 
       regraSIOE: [
-        (v) => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos.",
+        (v) => /^\d+$/.test(v) || "Apenas são aceites caracteres numéricos.",
       ],
 
       snackbar: false,

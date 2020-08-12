@@ -478,6 +478,12 @@ export default {
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           numeroErros++;
+        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+          this.erros.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE só pode ter digitos numéricos.",
+          });
+          numeroErros++;
         }
       }
 

@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { eNUV, eNV } from "@/utils/validadores";
+import { eNUV, eNV, eUndefined } from "@/utils/validadores";
 
 export default {
   props: ["t", "acao", "original"],

@@ -121,7 +121,13 @@ import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBo
 import ErroDialog from "@/components/generic/ErroDialog";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
-import { eNUV, eNV, eUndefined, eDataFormatoErrado } from "@/utils/validadores";
+import {
+  eNUV,
+  eNV,
+  eUndefined,
+  eDataFormatoErrado,
+  testarRegex,
+} from "@/utils/validadores";
 
 export default {
   props: ["e", "acao", "original"],
@@ -190,6 +196,7 @@ export default {
       // SIOE
       if (!eNUV(this.e.sioe)) {
         if (this.e.sioe.length > 12) numeroErros++;
+        else if (!testarRegex(this.e.sioe, /^\d+$/)) numeroErros++;
       }
 
       //Data Criação
@@ -237,6 +244,7 @@ export default {
       // SIOE
       if (!eNUV(dados.sioe)) {
         if (dados.sioe.length > 12) numeroErros++;
+        else if (!testarRegex(this.e.sioe, /^\d+$/)) numeroErros++;
       }
 
       //Data Criação
@@ -323,14 +331,14 @@ export default {
               break;
           }
 
-          const objKeys = Object.keys(dataObj);
-
-          if (objKeys.length < 2)
-            throw new Error(
-              "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
-            );
-
           if (erros === 0) {
+            const objKeys = Object.keys(dataObj);
+
+            if (objKeys.length < 2)
+              throw new Error(
+                "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
+              );
+
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
