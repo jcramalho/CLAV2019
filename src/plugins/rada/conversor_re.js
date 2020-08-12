@@ -6,40 +6,47 @@ var importarRE = (file, entidades, tipologias, RE) => {
             .replace(/['"]/g, "")
             .split("\n");
         //console.log(re);
-        let erros = {};
+        let erros = {
+            produtoras: null
+        };
 
         // Produtoras
         let entProd = re[1].split(";").slice(0, 2);
 
-        // Verificar se existe entidades
-        if (entProd[1] == "") {
-            let tipProd = re[2].split(";").slice(0, 2);
+        if (entProd.length == 2) {
+            // Verificar se existe entidades
+            if (entProd[1] == "") {
+                let tipProd = re[2].split(";").slice(0, 2);
 
-            if (tipProd[1] != "") {
-                let tip = tipologias.find(
-                    e => e.tipologia.split(" - ")[1] == tipProd[1]
-                );
+                if (tipProd[1] != "") {
+                    let tip = tipologias.find(
+                        e => e.tipologia.split(" - ")[1] == tipProd[1]
+                    );
 
-                if (tip != undefined) {
-                    RE.tipologiasProd = tip.tipologia;
-                } else {
-                    erros["produtoras"] = "Tipologia associada não existe no sistema!";
+                    if (tip != undefined) {
+                        RE.tipologiasProd = tip.tipologia;
+                    } else {
+                        erros.produtoras = "Tipologia associada não existe no sistema!";
+                    }
+                }
+            } else {
+                let ents = entProd[1].split("#");
+
+                RE.entidadesProd = [];
+                for (let h = 0; h < ents.length; h++) {
+                    let ent = entidades.find(e => e.designacao == ents[h]);
+
+                    if (ent != undefined) {
+                        RE.entidadesProd.push(ent.sigla + " - " + ent.designacao);
+                    } else {
+                        erros.produtoras = "Entidades associadas não existem no sistema!";
+                    }
                 }
             }
         } else {
-            let ents = entProd[1].split("#");
-
-            RE.entidadesProd = [];
-            for (let h = 0; h < ents.length; h++) {
-                let ent = entidades.find(e => e.designacao == ents[h]);
-
-                if (ent != undefined) {
-                    RE.entidadesProd.push(ent.sigla + " - " + ent.designacao);
-                } else {
-                    erros["produtoras"] = "Entidades associadas não existem no sistema!";
-                }
-            }
+            erros.produtoras = "Ficheiro inválido!";
         }
+
         if (erros.produtoras) {
             reject({ erros });
         }
