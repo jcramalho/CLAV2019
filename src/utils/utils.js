@@ -77,6 +77,10 @@ export function mapKeys(key) {
       descricao = "Data de Revogação";
       break;
 
+    case "data":
+      descricao = "Data do Diploma";
+      break;
+
     case "numero":
       descricao = "Número";
       break;
