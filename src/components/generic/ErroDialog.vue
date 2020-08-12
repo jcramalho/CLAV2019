@@ -26,7 +26,7 @@
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn text rounded color="red" dark @click="redirecionar()">
+      <v-btn text rounded color="red" dark @click="voltar()">
         Fechar
       </v-btn>
     </v-card-actions>
@@ -44,6 +44,11 @@ export default {
   },
 
   methods: {
+    voltar() {
+      if (this.uri) this.redirecionar();
+      else this.$emit("fecharErro");
+    },
+
     validaTipoDados() {
       if (this.erros instanceof Array) this.eLista = true;
     },

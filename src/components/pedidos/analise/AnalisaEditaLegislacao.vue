@@ -4,13 +4,7 @@
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
         <v-row
-          v-if="
-            info !== '' &&
-              info !== null &&
-              campo !== 'sigla' &&
-              campo !== 'codigo' &&
-              campo !== 'estado'
-          "
+          v-if="campo !== 'sigla' && campo !== 'estado'"
           dense
           class="ma-1"
         >
@@ -28,7 +22,10 @@
           <!-- Conteudo -->
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+              <span v-if="info === '' || info === null">
+                [Campo não preenchido na submissão do pedido]
+              </span>
+              <span v-else>{{ info }}</span>
             </div>
             <div v-else>
               <!-- Se o conteudo for uma lista de entidades -->

@@ -65,6 +65,7 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import {
   NIVEIS_ANALISAR_PEDIDO,
+  NIVEL_MINIMO_DISTRIBUIR_PEDIDOS,
 } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
@@ -110,6 +111,10 @@ export default {
   },
 
   methods: {
+    temPermissaoDistribuir() {
+      return this.$userLevel() >= NIVEL_MINIMO_DISTRIBUIR_PEDIDOS;
+    },
+
     async carregaPedidos() {
       try {
         let pedidos = await this.$request("get", "/pedidos");
@@ -123,7 +128,8 @@ export default {
         this.pedidosDevolvidos = pedidos.filter((p) => p.estado == "Devolvido");
         this.pedidosProcessados = pedidos.filter((p) => p.estado == "Validado");
 
-        await this.listaUtilizadoresParaAnalisar();
+        if (this.temPermissaoDistribuir())
+          await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
         return e;
       }

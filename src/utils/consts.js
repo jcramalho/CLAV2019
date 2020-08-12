@@ -9,4 +9,6 @@ CONSTS.NIVEL_MINIMO_DOC = 3.5;
 CONSTS.NIVEIS_ANALISAR_PEDIDO = [3.5, 4, 6, 7]; // TODO: Confirmar com a DGLAB
 CONSTS.NIVEIS_VALIDAR_PEDIDO = [4, 6, 7]; // TODO: Confirmar com a DGLAB
 
+// TODO: Adicionar niveis para poderem ver o histórico
+
 // LEVELS.NIVEL_MINIMO_REMOVER = "X"; // restantes restrições

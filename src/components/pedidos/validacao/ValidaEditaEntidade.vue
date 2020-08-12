@@ -4,13 +4,7 @@
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
         <v-row
-          v-if="
-            info !== '' &&
-              info !== null &&
-              campo !== 'sigla' &&
-              campo !== 'codigo' &&
-              campo !== 'estado'
-          "
+          v-if="campo !== 'sigla' && campo !== 'estado'"
           dense
           class="ma-1"
         >
@@ -26,7 +20,10 @@
 
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+              <span v-if="info === '' || info === null">
+                [Campo não preenchido na submissão do pedido]
+              </span>
+              <span v-else>{{ info }}</span>
             </div>
 
             <div v-else>
@@ -547,6 +544,12 @@ export default {
           this.erros.push({
             sobre: "SIOE",
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
+          });
+          numeroErros++;
+        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+          this.erros.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE só pode ter digitos numéricos.",
           });
           numeroErros++;
         }

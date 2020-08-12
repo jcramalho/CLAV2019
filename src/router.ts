@@ -424,7 +424,7 @@ export default new Router({
       path: "/pedidos/novos/:idPedido",
       name: "pedidoNovo",
       component: () => import("./views/pedidos/PedidosNovos.vue"),
-      meta: { levels: [3, 3.5, 4, 5, 6, 7] },
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] },
     },
     // Routes dos pendentes (trabalho guardado)
     {

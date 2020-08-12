@@ -49,7 +49,13 @@
 </template>
 
 <script>
-import { eNUV, eNV, eUndefined, eDataFormatoErrado } from "@/utils/validadores";
+import {
+  eNUV,
+  eNV,
+  eUndefined,
+  eDataFormatoErrado,
+  testarRegex,
+} from "@/utils/validadores";
 
 export default {
   props: ["e", "acao", "original"],
@@ -149,6 +155,12 @@ export default {
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           numeroErros++;
+        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+          this.mensagensErro.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE só pode ter digitos numéricos.",
+          });
+          numeroErros++;
         }
       }
 
@@ -226,6 +238,12 @@ export default {
           this.mensagensErro.push({
             sobre: "SIOE",
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
+          });
+          numeroErros++;
+        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+          this.mensagensErro.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE só pode ter digitos numéricos.",
           });
           numeroErros++;
         }

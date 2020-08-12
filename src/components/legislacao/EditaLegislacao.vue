@@ -206,7 +206,6 @@ export default {
         tipo: "",
         data: "",
         link: "",
-        codigo: "",
         dataRevogacao: "",
         entidadesSel: [],
         processosSel: [],

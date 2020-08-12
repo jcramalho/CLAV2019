@@ -119,7 +119,10 @@
       <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
       <v-spacer />
       <v-btn
-        v-if="p.estado === 'Distribuído' || p.estado === 'Apreciado'"
+        v-if="
+          (p.estado === 'Distribuído' || p.estado === 'Apreciado') &&
+            temPermissaoSubstituirResponsavel()
+        "
         color="indigo accent-4"
         dark
         @click="substituir()"
@@ -157,6 +160,7 @@ import ShowPGD from "@/components/pedidos/consulta/showPGD";
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
+import { NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL } from "@/utils/consts";
 
 export default {
   props: ["p", "etapaPedido"],
@@ -198,6 +202,10 @@ export default {
   },
 
   methods: {
+    temPermissaoSubstituirResponsavel() {
+      return this.$userLevel() >= NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL;
+    },
+
     converteData(data) {
       let dataFormatada = "";
       let dataConvertida = new Date(data);
