@@ -289,13 +289,6 @@ export default {
 
           switch (this.acao) {
             case "Criação":
-              if (
-                dataObj.dataExtincao !== undefined &&
-                dataObj.dataExtincao !== null &&
-                dataObj.dataExtincao !== ""
-              )
-                dataObj.estado = "Inativa";
-
               erros = await this.validarEntidadeCriacao();
 
               historico.push(criarHistorico(dataObj));

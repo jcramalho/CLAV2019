@@ -109,6 +109,10 @@ export function mapKeys(key) {
       descricao = "Referencial Classificativo";
       break;
 
+    case "sioe":
+      descricao = "SIOE";
+      break;
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;

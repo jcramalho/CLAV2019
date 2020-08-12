@@ -71,7 +71,6 @@
             color="indigo"
             single-line
             v-model="valorEditado"
-            :rules="regraSIOE"
             label="SIOE"
           ></v-text-field>
         </v-col>
