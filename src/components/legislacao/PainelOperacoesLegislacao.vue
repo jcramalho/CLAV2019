@@ -259,8 +259,7 @@ export default {
               erros = this.validarLegislacaoRevogacao(dataObj);
 
               for (const key in dataObj) {
-                if (key !== "sigla" && key !== "dataRevogacao")
-                  delete dataObj[key];
+                if (key !== "dataRevogacao") delete dataObj[key];
               }
 
               historico.push({
@@ -278,6 +277,8 @@ export default {
 
           if (erros === 0) {
             const objKeys = Object.keys(dataObj);
+
+            console.log("objkeys", objKeys);
 
             if (objKeys.length < 2)
               throw new Error(
