@@ -1,45 +1,3 @@
-/**
- * Retorna uma lista de utilizadores filtrados com base no nivel
- * @param {Array} utilizadores Lista com todos os utilizadores
- * @param {number} nivel Nível a filtra
- * @param {string} operador Operador de filtragem da lista
- * @returns {["=", "<", ">", "<=", ">="]} Lista com os utilizadores filtrados
- */
-export function filtraNivel(utilizadores, nivel, operador = "=") {
-  let utilizadoresFiltrados = [];
-
-  switch (operador) {
-    case "=":
-      utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level == nivel
-      );
-      break;
-    case "<":
-      utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level < nivel
-      );
-      break;
-    case ">":
-      utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level > nivel
-      );
-      break;
-    case "<=":
-      utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level <= nivel
-      );
-      break;
-    case ">=":
-      utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level >= nivel
-      );
-      break;
-    default:
-      break;
-  }
-  return utilizadoresFiltrados;
-}
-
 export function comparaSigla(a, b) {
   const keyA = a.sigla;
   const keyB = b.sigla;
@@ -119,6 +77,10 @@ export function mapKeys(key) {
       descricao = "Data de Revogação";
       break;
 
+    case "data":
+      descricao = "Data do Diploma";
+      break;
+
     case "numero":
       descricao = "Número";
       break;
@@ -147,6 +109,10 @@ export function mapKeys(key) {
       descricao = "Referencial Classificativo";
       break;
 
+    case "sioe":
+      descricao = "SIOE";
+      break;
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;
@@ -161,7 +127,7 @@ export function extrairAlteracoes(objeto, objetoOriginal) {
 
   for (const key in dados) {
     if (typeof dados[key] === "string") {
-      if (dados[key] === dadosOriginais[key] && key !== "sigla")
+      if (dados[key] === dadosOriginais[key] && key !== "sigla" && key !== "id")
         delete dados[key];
     } else if (dados[key] instanceof Array) {
       if (comparaArraySel(dados[key], dadosOriginais[key])) delete dados[key];
@@ -310,7 +276,6 @@ export function adicionarNotaComRemovidos(historicoAnterior, historicoAtual) {
 }
 
 export default {
-  filtraNivel,
   comparaSigla,
   comparaCodigo,
   mapKeys,

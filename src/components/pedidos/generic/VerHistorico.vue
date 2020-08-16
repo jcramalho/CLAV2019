@@ -355,11 +355,13 @@ export default {
     novoItemAdicionado(item, lista) {
       if (this.onboarding === 0) return false;
 
-      return identificaItemAdicionado(
-        item,
-        lista,
-        this.dados[this.onboarding - 1]
-      );
+      // return identificaItemAdicionado(
+      // item,
+      //   lista,
+      //   this.dados[this.onboarding - 1]
+      // ); // Histórico com base na etapa anterior
+
+      return identificaItemAdicionado(item, lista, this.dados[0]); // Histórico acumulativo
     },
 
     /**

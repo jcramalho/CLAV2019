@@ -3,17 +3,7 @@
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row
-          v-if="
-            info !== '' &&
-              info !== null &&
-              campo !== 'sigla' &&
-              campo !== 'codigo' &&
-              campo !== 'estado'
-          "
-          dense
-          class="ma-1"
-        >
+        <v-row v-if="campo !== 'id' && campo !== 'estado'" dense class="ma-1">
           <!-- Label -->
           <v-col cols="2">
             <div
@@ -28,7 +18,10 @@
           <!-- Conteudo -->
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+              <span v-if="info === '' || info === null">
+                [Campo não preenchido na submissão do pedido]
+              </span>
+              <span v-else>{{ info }}</span>
             </div>
             <div v-else>
               <!-- Se o conteudo for uma lista de entidades -->
@@ -167,7 +160,7 @@
         <v-spacer />
         <PO
           operacao="Validar"
-          @finalizarPedido="finalizarPedido($event)"
+          @finalizarPedido="verificaEstadoCampos($event)"
           @devolverPedido="despacharPedido($event)"
         />
       </v-row>
@@ -222,6 +215,15 @@
         @selecao="adicionaProcessos"
       />
     </v-dialog>
+
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="fechaDialogConfirmacao()"
+        @confirma="finalizarPedido(dialogConfirmacao.dados)"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -234,6 +236,7 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import ErroDialog from "@/components/generic/ErroDialog";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
 import {
   comparaSigla,
@@ -256,10 +259,16 @@ export default {
     SelecionaAutocomplete,
     EditarCamposDialog,
     AdicionarNota,
+    ConfirmacaoOperacao,
   },
 
   data() {
     return {
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      },
       animacoes: {},
       esconderOperacoes: {},
       notaDialog: {
@@ -648,6 +657,31 @@ export default {
       }
 
       return numeroErros;
+    },
+
+    fechaDialogConfirmacao() {
+      this.dialogConfirmacao = {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      };
+    },
+
+    async verificaEstadoCampos(dados) {
+      // procura campos a vermelho
+      const haVermelhos = Object.keys(this.novoHistorico).some(
+        (key) => this.novoHistorico[key].cor === "vermelho"
+      );
+      // Se existirem abre dialog de confirmação
+      if (haVermelhos)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados,
+        };
+      // Caso contrário segue para a finalização do pedido
+      else await this.finalizarPedido(dados);
     },
 
     async finalizarPedido(dados) {

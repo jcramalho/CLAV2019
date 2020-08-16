@@ -16,6 +16,9 @@
       <template v-slot:item.tipo="{ item }">
         <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
         <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
+        <img v-else-if="item.tipo == 'N1'" style="width:23px; height:30px" :src="svg_N1" />
+        <img v-else-if="item.tipo == 'N2'" style="width:23px; height:30px" :src="svg_N2" />
+        <img v-else-if="item.tipo == 'N3'" style="width:23px; height:30px" :src="svg_N3" />
         <i v-else>{{ item.tipo }}</i>
       </template>
 
@@ -92,6 +95,9 @@ export default {
     },
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+    svg_N1: require("@/assets/n1.svg"),
+    svg_N2: require("@/assets/n2.svg"),
+    svg_N3: require("@/assets/n3.svg"),
     class: ["table-header", "body-2", "font-weight-bold"],
     headers: [
       {

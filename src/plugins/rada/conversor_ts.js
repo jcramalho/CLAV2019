@@ -21,7 +21,8 @@ var validarClasses = (
             series: [],
             area: [],
             subseries: [],
-            relacoes: []
+            relacoes: [],
+            validade: []
         };
 
         let pais = [];
@@ -30,6 +31,14 @@ var validarClasses = (
 
         for (let i = 1; i < ts_length; i++) {
             let classe = ts[i].split(/ *; */).slice(0, 23);
+
+
+            if (classe.length != 23) {
+                erros = {
+                    validade: [{ classe: 'Erro na análise', erro: 'Ficheiro inválido!' }]
+                };
+                break;
+            }
 
             classe[2] = Number(classe[2]);
 
@@ -86,9 +95,12 @@ var validarClasses = (
             } else {
                 erros.codigo.push({ classe: 'Classe nº' + i, erro: 'Código inválido!' });
             }
+
+
         }
 
         if (
+            !!erros.validade[0] ||
             !!erros.codigo[0] ||
             !!erros.tipo[0] ||
             !!erros.series[0] ||

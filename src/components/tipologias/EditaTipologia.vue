@@ -87,7 +87,6 @@ export default {
     tipologia: {
       designacao: "",
       sigla: "",
-      codigo: "",
       entidadesSel: [],
     },
     tipologiaOriginal: {},

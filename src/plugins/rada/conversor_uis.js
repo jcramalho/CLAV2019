@@ -8,13 +8,21 @@ var importarUIs = (file, uis_originais, classes_originais, re) => {
 
         let erros = {
             codigo: [],
-            uis: []
+            uis: [],
+            validade: []
         };
 
         let novas_uis = [];
 
         for (let i = 1; i < uis.length; i++) {
             let ui = uis[i].split(/ *; */).slice(0, 10);
+
+            if (ui.length != 10) {
+                erros = {
+                    validade: [{ ui: 'Erro na análise', erro: 'Ficheiro inválido!' }]
+                };
+                break;
+            }
 
             if (ui[0] != "" && !uis_originais.some(e => e.codigo == ui[0])) {
                 let obj_ui = {
@@ -41,7 +49,7 @@ var importarUIs = (file, uis_originais, classes_originais, re) => {
 
         }
 
-        if (!!erros.codigo[0] || !!erros.uis[0]) {
+        if (!!erros.validade[0] || !!erros.codigo[0] || !!erros.uis[0]) {
             reject({ erros })
         } else {
             await validarClassesAssociadas(novas_uis, classes_originais);

@@ -342,19 +342,17 @@ export default {
       };
       this.$refs.formUI.resetValidation();
     },
-    guardar() {
+    async guardar() {
       this.existe_erros = false;
       this.erros = [];
 
-      if (this.$refs.formUI.validate()) {
-        // Alterei await aqui
+      if (this.$refs.formUI.validate() && (await this.validaDatas())) {
         this.adicionarClasse();
         this.UI.classesAssociadas.forEach(
           (associacao) => delete associacao.titulo
         );
         this.UIs.push(Object.assign({}, this.UI));
         this.dialogState = false;
-        // this.apagar();
       } else {
         if (
           !this.UI.codigo ||
@@ -363,6 +361,45 @@ export default {
           this.erros.push("Código;");
         }
         this.recolherErros(this.UI);
+      }
+    },
+    validaDatas() {
+      try {
+        let data_inicial = new Date(this.UI.dataInicial);
+        let data_final = new Date(this.UI.dataFinal);
+        let r = true;
+
+        for (let i = 0; i < this.UI.classesAssociadas.length; i++) {
+          let classe = this.classes.find(
+            (e) => e.codigo == this.UI.classesAssociadas[i].codigo
+          );
+
+          if (classe != undefined) {
+            if (
+              !(
+                (!!classe.dataInicial
+                  ? new Date(classe.dataInicial) <= data_inicial
+                  : true) &&
+                (!!classe.dataFinal
+                  ? new Date(classe.dataFinal) >= data_final
+                  : true)
+              )
+            ) {
+              r = false;
+              this.erros.push(
+                "Datas da classe associada " +
+                  classe.codigo +
+                  " é entre " +
+                  classe.dataInicial +
+                  " e " +
+                  classe.dataFinal
+              );
+            }
+          }
+        }
+        return r;
+      } catch (e) {
+        return false;
       }
     },
     verificaCodigoUI(v) {

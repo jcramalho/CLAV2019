@@ -99,7 +99,6 @@ export default {
       designacao: "",
       sigla: "",
       estado: "Ativa",
-      codigo: "",
       entidadesSel: [],
     },
 

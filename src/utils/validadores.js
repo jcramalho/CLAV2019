@@ -22,6 +22,10 @@ export function eDataFormatoErrado(data) {
   return !/[0-9]+-[0-9]+-[0-9]+/.test(data);
 }
 
+export function testarRegex(valor, expressao) {
+  return expressao.test(valor);
+}
+
 export default {
   eNull,
   eUndefined,
@@ -29,4 +33,5 @@ export default {
   eNUV,
   eNV,
   eDataFormatoErrado,
+  testarRegex,
 };

@@ -17,8 +17,20 @@
           </div>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="indigo darken-4" dark @click="importar">Importar</v-btn>
+        <v-btn
+          v-if="!importarCircle"
+          color="indigo darken-4"
+          dark
+          @click="dialogState = false"
+        >Voltar</v-btn>
+        <v-btn v-if="!importarCircle" color="indigo darken-4" dark @click="importar">Importar</v-btn>
+        <v-progress-circular
+          v-if="importarCircle"
+          :size="40"
+          :width="3"
+          color="amber accent-3"
+          indeterminate
+        ></v-progress-circular>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -35,6 +47,7 @@ export default {
     ficheiroClasses: null,
     existe_erros: false,
     erros: null,
+    importarCircle: false,
   }),
   methods: {
     novoFicheiroClasses(novoFicheiro) {
@@ -42,6 +55,7 @@ export default {
     },
     importar() {
       if (this.$refs.form.validate()) {
+        this.importarCircle = true;
         validarClasses(
           this.ficheiroClasses,
           this.classes,
@@ -52,10 +66,12 @@ export default {
           .then((res) => {
             this.$emit("pendurarNovasClasses", res.novas_classes);
             this.dialogState = false;
+            this.importarCircle = false;
           })
           .catch((err) => {
             this.erros = err.erros;
             this.existe_erros = true;
+            this.importarCircle = false;
           });
       }
     },

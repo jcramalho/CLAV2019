@@ -15,7 +15,7 @@
     <ListagemLeg
       v-if="fontesRADA.length>0"
       :lista="fontesRADA"
-      tipo="TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE DOCUMENTAÇÃO ACUMULADA"
+      tipo="TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE AVALIAÇÃO DE DOCUMENTAÇÃO ACUMULADA"
     />
   </div>
 </template>

@@ -109,11 +109,17 @@
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
     </v-row>
+
+    <!-- Dialog de erro no caso de algum erro ocorrer -->
+    <v-dialog v-model="erroDialog" width="50%" persistent>
+      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
+import ErroDialog from "@/components/generic/ErroDialog";
 
 import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 import { eNUV, eDataFormatoErrado, eNV } from "@/utils/validadores";
@@ -121,10 +127,15 @@ import { eNUV, eDataFormatoErrado, eNV } from "@/utils/validadores";
 export default {
   props: ["l", "acao", "original"],
 
-  components: { ValidarLegislacaoInfoBox },
+  components: {
+    ValidarLegislacaoInfoBox,
+    ErroDialog,
+  },
 
   data() {
     return {
+      erroDialog: false,
+      erros: [],
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar o Diploma!",
       errosValidacao: false,
@@ -133,6 +144,11 @@ export default {
   },
 
   methods: {
+    fecharErro() {
+      this.erroDialog = false;
+      this.erros = [];
+    },
+
     async validarLegislacaoCriacao() {
       let numeroErros = 0;
 
@@ -243,8 +259,7 @@ export default {
               erros = this.validarLegislacaoRevogacao(dataObj);
 
               for (const key in dataObj) {
-                if (key !== "sigla" && key !== "dataRevogacao")
-                  delete dataObj[key];
+                if (key !== "dataRevogacao") delete dataObj[key];
               }
 
               historico.push({
@@ -261,6 +276,15 @@ export default {
           }
 
           if (erros === 0) {
+            const objKeys = Object.keys(dataObj);
+
+            console.log("objkeys", objKeys);
+
+            if (objKeys.length < 2)
+              throw new Error(
+                "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
+              );
+
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
@@ -289,7 +313,10 @@ export default {
           }
         }
       } catch (err) {
-        return err;
+        if (typeof err.message === "string") {
+          this.erros.push(err.message);
+          this.erroDialog = true;
+        }
       }
     },
 
