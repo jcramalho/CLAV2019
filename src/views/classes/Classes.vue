@@ -407,9 +407,16 @@ export default {
       await this.load("vc_status", transF, "Estado");
     },
     loadTipoProc: async function() {
+      var transF = item => {
+        return {
+          text: item.termo,
+          value: item.termo.toLowerCase()
+        };
+      };
+
       await this.load(
         "vc_processoTipo",
-        item => item.termo,
+        transF,
         "Tipo de processo"
       );
     },
@@ -428,16 +435,30 @@ export default {
       );
     },
     loadPCAFormasContagem: async function() {
+      var transF = item => {
+        return {
+          text: item.termo,
+          value: item.termo.toLowerCase()
+        };
+      };
+
       await this.load(
         "vc_pcaFormaContagem",
-        item => item.termo,
+        transF,
         "Forma de contagem do PCA"
       );
     },
     loadPCASubFormasContagem: async function() {
+      var transF = item => {
+        return {
+          text: item.desc,
+          value: item.desc.toLowerCase()
+        };
+      };
+
       await this.load(
         "vc_pcaSubformaContagem",
-        item => item.desc,
+        transF,
         "Subforma de contagem do PCA"
       );
     },
@@ -713,6 +734,7 @@ export default {
           name: lclasses[i].nome,
           titulo: lclasses[i].titulo.toLowerCase(),
           status: lclasses[i].status.toLowerCase(),
+          descricao: lclasses[i].descricao.toLowerCase(),
           tp: lclasses[i].tp.toLowerCase(),
           pt: lclasses[i].pt.toLowerCase(),
           na: lclasses[i].na.toLowerCase(),
