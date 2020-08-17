@@ -346,6 +346,10 @@ export default {
             { text: "Participante", value: "participantes" }
           ]
         }
+      },
+      {
+        text: "Tipo de participação",
+        value: { nome: "tipo_participacao", enum: [] }
       }
     ],
     classesTree: [],
@@ -379,6 +383,7 @@ export default {
       await this.loadPCAFormasContagem();
       await this.loadPCASubFormasContagem();
       await this.loadCriterios();
+      await this.loadTiposParticipacoes();
     }
 
     var entidades = await this.$request("get", "/entidades");
@@ -502,6 +507,21 @@ export default {
       await this.load("vc_pcaCriterios", transF, "Justificação do PCA");
       await this.load("vc_dfCriterios", transF, "Justificação do DF");
     },
+    loadTiposParticipacoes: async function() {
+      var transF = item => {
+        let name = item.idtermo.split("#vc_processoParticipante_")[1];
+        return {
+          text: name.charAt(0).toUpperCase() + name.slice(1),
+          value: name
+        };
+      };
+
+      await this.load(
+        "vc_processoTipoParticipacao",
+        transF,
+        "Tipo de participação"
+      );
+    },
     addActive: function(code) {
       if (!this.selected.includes(code)) {
         this.selected.push(code);
@@ -566,7 +586,8 @@ export default {
               statAux = classes[i][campo] == c.valor;
             }
           } else {
-            statAux = classes[i][campo].indexOf(c.valor) > -1;
+            let regExp = new RegExp(c.valor, "g");
+            statAux = regExp.test(classes[i][campo]);
           }
 
           if (c.not) statAux = !statAux;
@@ -623,13 +644,14 @@ export default {
       for (var classe of classes) {
         var c = JSON.parse(JSON.stringify(classe));
         c.children = await this.simpleFilter(c.children, searchText);
+        let regExp = new RegExp(searchText, "g");
 
         if (
-          c.id.indexOf(searchText) > -1 ||
-          c.titulo.indexOf(searchText) > -1 ||
-          c.na.indexOf(searchText) > -1 ||
-          c.exemploNa.indexOf(searchText) > -1 ||
-          c.ti.indexOf(searchText) > -1
+          regExp.test(c.id) ||
+          regExp.test(c.titulo) ||
+          regExp.test(c.na) ||
+          regExp.test(c.exemploNa) ||
+          regExp.test(c.ti)
         ) {
           this.addActive(c.id);
           this.buscarpais(c.id);
@@ -772,6 +794,9 @@ export default {
           crit_df: lclasses[i].crit_df.map(j => j.toLowerCase()),
           donos: lclasses[i].donos.map(d => d.toLowerCase()),
           participantes: lclasses[i].participantes.map(p => p.toLowerCase()),
+          tipo_participacao: lclasses[i].tipo_participacao.map(p =>
+            p.toLowerCase()
+          ),
           children: this.preparaTree(lclasses[i].filhos)
         });
       }
