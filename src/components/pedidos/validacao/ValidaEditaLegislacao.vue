@@ -709,10 +709,7 @@ export default {
                 pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
               }
 
-              if (
-                pedido.objeto.dados[key] === "" ||
-                pedido.objeto.dados[key] === null
-              )
+              if (eNV(pedido.objeto.dados[key]))
                 delete pedido.objeto.dados[key];
             }
 
@@ -722,7 +719,7 @@ export default {
 
           await this.$request(
             "put",
-            `/legislacao/${pedido.objeto.dados.id}`,
+            `/legislacao/${pedido.objeto.dadosOriginais.id}`,
             pedido.objeto.dados
           );
         }
@@ -759,6 +756,7 @@ export default {
           this.erroPedido = true;
         }
       } catch (e) {
+        console.log("e", e);
         this.erroPedido = true;
 
         let parsedError = Object.assign({}, e);
