@@ -1,26 +1,9 @@
 <template>
-<<<<<<< HEAD
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
-      <v-btn
-        color="indigo lighten-2"
-        dark
-        class="ma-2"
-        @click="filterSeries"
-        v-on="on"
-      >
-        <v-icon dark left>add</v-icon>Subsérie
-      </v-btn>
-    </template>
-    <v-card>
-      <v-card-title class="indigo darken-1 white--text"
-        >Adicionar Classe Subsérie</v-card-title
-      >
-=======
   <v-dialog v-model="dialogState" persistent max-width="90%">
     <v-card>
-      <v-card-title class="indigo darken-4 white--text">Adicionar Classe Subsérie</v-card-title>
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
+      <v-card-title class="indigo darken-4 white--text"
+        >Adicionar Classe Subsérie</v-card-title
+      >
       <br />
       <v-card-text>
         <v-form ref="form" :lazy-validation="false">
@@ -54,15 +37,24 @@
 
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSubserie" :UIs="UIs" :RE="RE" :classes="classes" />
+                <ZonaDescritiva
+                  :newSerie="newSubserie"
+                  :UIs="UIs"
+                  :RE="RE"
+                  :classes="classes"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -74,7 +66,9 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -104,20 +98,13 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-<<<<<<< HEAD
-        <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-        </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close"
+        <v-btn color="indigo darken-4" dark @click="dialogState = false"
           >Voltar</v-btn
         >
-        <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
-        <v-btn color="success" class="mr-4" @click="save">Criar</v-btn>
-=======
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="indigo darken-4" dark @click="save(newSubserie)">Adicionar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="save(newSubserie)"
+          >Adicionar</v-btn
+        >
         <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
       </v-card-actions>
     </v-card>
   </v-dialog>

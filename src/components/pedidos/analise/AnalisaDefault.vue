@@ -10,12 +10,12 @@ export default {
 
   data() {
     return {
-      json: null,
+      json: null
     };
   },
 
   mounted() {
     this.json = JSON.stringify(this.p, null, 2);
-  },
+  }
 };
 </script>

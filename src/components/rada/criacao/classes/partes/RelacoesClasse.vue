@@ -8,11 +8,19 @@
         <!-- {{newSerie.relacoes}} -->
         <v-row>
           <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
-            <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>
-              <template v-slot:item.relacao="props">{{ props.item.relacao }}</template>
+            <v-data-table
+              :headers="headers"
+              :items="newSerie.relacoes"
+              hide-default-footer
+            >
+              <template v-slot:item.relacao="props">{{
+                props.item.relacao
+              }}</template>
               <template v-slot:item.edicao="props">
                 <td>
-                  <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
+                  <v-icon color="red darken-2" dark @click="remove(props.item)"
+                    >remove_circle</v-icon
+                  >
                 </td>
               </template>
               <template v-slot:item.serieRelacionada="props">
@@ -28,9 +36,9 @@
                 />
                 <b @click="showClasse(props.item)">
                   {{
-                  props.item.serieRelacionada.codigo +
-                  " - " +
-                  props.item.serieRelacionada.titulo
+                    props.item.serieRelacionada.codigo +
+                      " - " +
+                      props.item.serieRelacionada.titulo
                   }}
                 </b>
               </template>
@@ -125,9 +133,7 @@
                     <template v-slot:selection="data">
                       <v-chip>
                         <v-avatar left color="amber accent-3">
-                          {{
-                          data.item[0]
-                          }}
+                          {{ data.item[0] }}
                         </v-avatar>
                         {{ data.item }}
                       </v-chip>
@@ -135,22 +141,32 @@
                   </v-select>
                 </v-col>
                 <v-col md="3" sm="3" xs="12" class="text-right">
-                  <v-icon @click="add()" size="35" color="green lighten-1">add_circle</v-icon>
-                  <v-btn style="margin-left: 10px" dark color="red darken-4" @click="$refs.addRel.reset()">Limpar</v-btn>
+                  <v-icon @click="add()" size="35" color="green lighten-1"
+                    >add_circle</v-icon
+                  >
+                  <v-btn
+                    style="margin-left: 10px"
+                    dark
+                    color="red darken-4"
+                    @click="$refs.addRel.reset()"
+                    >Limpar</v-btn
+                  >
                 </v-col>
               </v-row>
               <v-row v-if="!!alertOn">
                 <v-col>
                   <v-alert dismissible dense text type="error">
-                    Impossível criar relação! Já existe ou classe já se
-                    encontra relacionada ou relação inválida!
+                    Impossível criar relação! Já existe ou classe já se encontra
+                    relacionada ou relação inválida!
                   </v-alert>
                 </v-col>
               </v-row>
             </v-form>
             <v-snackbar v-model="snackbar" color="#fafafa" :timeout="2000">
               <font color="#000000">Classe ainda não existe no sistema!</font>
-              <v-btn color="#3949ab" text @click="snackbar = false">Fechar</v-btn>
+              <v-btn color="#3949ab" text @click="snackbar = false"
+                >Fechar</v-btn
+              >
             </v-snackbar>
           </v-card-text>
         </v-card>

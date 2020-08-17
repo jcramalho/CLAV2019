@@ -48,7 +48,7 @@ export default {
   methods: {
     cancelar() {
       this.$emit("fecharDialog");
-    },
-  },
+    }
+  }
 };
 </script>

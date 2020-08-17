@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row>{{p.objeto.dados}}</v-row>
+    <v-row>{{ p.objeto.dados }}</v-row>
     <v-row>
       <v-spacer />
       <PO
@@ -70,7 +70,7 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         let triplos = await converterParaTriplosRADA(pedido.objeto.dados);
-        
+
         await this.$request("post", "/rada", { triplos });
 
         let dadosUtilizador = this.$verifyTokenUser();

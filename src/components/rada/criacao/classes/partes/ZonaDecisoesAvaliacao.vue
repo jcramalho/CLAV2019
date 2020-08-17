@@ -2,7 +2,6 @@
   <div>
     <!-- 1 -->
     <v-row>
-
       <v-col md="3" sm="3">
         <div class="info-label">Prazo de Conservação Administrativo</div>
       </v-col>
@@ -32,7 +31,11 @@
       </v-col>
     </v-row>
     <!-- 2 -->
-    <FormaContagem :newSerie="newSerie" :formaContagem="formaContagem" :rules="rules" />
+    <FormaContagem
+      :newSerie="newSerie"
+      :formaContagem="formaContagem"
+      :rules="rules"
+    />
     <!-- 3 -->
     <JustificacaoPCA :newSerie="newSerie" :classes="classes" :rules="rules" />
     <!-- 4 -->

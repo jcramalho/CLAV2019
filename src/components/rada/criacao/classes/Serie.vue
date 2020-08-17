@@ -1,26 +1,9 @@
 <template>
-<<<<<<< HEAD
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
-      <v-btn
-        color="indigo lighten-2"
-        dark
-        class="ma-2"
-        @click="filterSeries"
-        v-on="on"
-      >
-        <v-icon dark left>add</v-icon>Série
-      </v-btn>
-    </template>
-    <v-card>
-      <v-card-title class="indigo darken-1 white--text"
-        >Adicionar Classe Série</v-card-title
-      >
-=======
   <v-dialog v-model="dialogState" persistent max-width="90%">
     <v-card>
-      <v-card-title class="indigo darken-4 white--text">Adicionar Classe Série</v-card-title>
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
+      <v-card-title class="indigo darken-4 white--text"
+        >Adicionar Classe Série</v-card-title
+      >
       <br />
 
       <v-card-text>
@@ -53,17 +36,30 @@
               </v-autocomplete>
             </v-col>
           </v-row>
-          <v-expansion-panels v-model="panels" :multiple="isMultiple" class="ma-1">
+          <v-expansion-panels
+            v-model="panels"
+            :multiple="isMultiple"
+            class="ma-1"
+          >
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSerie" :classes="classes" :UIs="UIs" :RE="RE" />
+                <ZonaDescritiva
+                  :newSerie="newSerie"
+                  :classes="classes"
+                  :UIs="UIs"
+                  :RE="RE"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -79,7 +75,9 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -92,45 +90,6 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-<<<<<<< HEAD
-          <br />
-
-          <h5>Hierarquia</h5>
-          <v-divider></v-divider>
-          <v-row>
-            <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai</div>
-            </v-col>
-            <v-col sm="9" md="9">
-              <v-autocomplete
-                v-model="newSerie.eFilhoDe"
-                :items="classesHierarquia"
-                :rules="[v => !!v || 'Campo obrigatório!']"
-                item-value="codigo"
-                item-text="searchField"
-                solo
-                clearable
-                placeholder="Classe Pai"
-                chips
-              >
-                <!-- <template v-slot:item="{ item }">{{ item.codigo + ' - ' + item.titulo}}</template>
-                <template v-slot:selection="{ item }">
-                  <v-chip>{{ item.codigo + ' - ' + item.titulo}}</v-chip>
-                </template>-->
-
-                <template v-slot:no-data>
-                  <v-list-item>
-                    <v-list-item-title>
-                      <strong>Classe Área Orgânico-Funcional</strong> em questão
-                      não existe!
-                    </v-list-item-title>
-                  </v-list-item>
-                </template>
-              </v-autocomplete>
-            </v-col>
-          </v-row>
-=======
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
         </v-form>
       </v-card-text>
 
@@ -149,20 +108,13 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-<<<<<<< HEAD
-        <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-        </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close"
+        <v-btn color="indigo darken-4" dark @click="dialogState = false"
           >Voltar</v-btn
         >
-        <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
-        <v-btn color="success" class="mr-4" @click="save">Criar</v-btn>
-=======
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="indigo darken-4" dark @click="save(newSerie)">Adicionar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="save(newSerie)"
+          >Adicionar</v-btn
+        >
         <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
       </v-card-actions>
     </v-card>
   </v-dialog>

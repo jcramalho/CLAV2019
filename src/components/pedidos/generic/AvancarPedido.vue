@@ -122,8 +122,8 @@ export default {
       this.utilizadorSelecionado = null;
       this.mensagemDespacho = null;
       this.procuraUtilizador = null;
-    },
-  },
+    }
+  }
 };
 </script>
 

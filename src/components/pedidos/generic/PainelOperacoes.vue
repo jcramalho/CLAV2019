@@ -40,7 +40,7 @@
         :texto="{
           textoTitulo: 'Distribuição',
           textoAlert: 'validação',
-          textoBotao: 'Distribuir',
+          textoBotao: 'Distribuir'
         }"
         :pedido="this.$route.params.idPedido"
         @fecharDialog="fecharDialog()"
@@ -77,7 +77,7 @@ export default {
   components: {
     AvancarPedido,
     DevolverPedido,
-    FinalizarPedido,
+    FinalizarPedido
   },
 
   data() {
@@ -85,7 +85,7 @@ export default {
       avancarPedidoDialog: false,
       devolverPedidoDialog: false,
       finalizarPedidoDialog: false,
-      utilizadores: [],
+      utilizadores: []
     };
   },
 
@@ -106,7 +106,7 @@ export default {
 
     finalizarPedido(dados) {
       this.$emit("finalizarPedido", dados);
-    },
+    }
   },
 
   async created() {
@@ -116,7 +116,7 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>
 

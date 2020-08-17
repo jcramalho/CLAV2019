@@ -63,7 +63,7 @@ export default {
   name: "Dashboard",
   components: {
     Bar,
-    Doughnut,
+    Doughnut
     //LineChart
   },
   data() {

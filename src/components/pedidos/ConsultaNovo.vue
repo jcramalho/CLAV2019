@@ -19,18 +19,18 @@ export default {
 
   data: () => ({
     selectedPedido: {},
-    pedidoLoaded: false,
+    pedidoLoaded: false
   }),
 
-  mounted: function () {
+  mounted: function() {
     this.$request("get", "/pedidos/" + this.idp)
-      .then((response) => {
+      .then(response => {
         this.selectedPedido = response.data;
         this.pedidoLoaded = true;
       })
-      .catch((error) => {
+      .catch(error => {
         return error;
       });
-  },
+  }
 };
 </script>

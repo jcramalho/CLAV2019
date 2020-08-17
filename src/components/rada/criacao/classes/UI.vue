@@ -6,7 +6,9 @@
       </v-btn>
     </template>-->
     <v-card>
-      <v-card-title class="indigo darken-4 white--text">Adicionar Unidade de Instalação</v-card-title>
+      <v-card-title class="indigo darken-4 white--text"
+        >Adicionar Unidade de Instalação</v-card-title
+      >
       <br />
 
       <v-card-text>
@@ -17,7 +19,12 @@
             </v-col>
             <v-col sm="3" md="3">
               <v-text-field
-                :rules="[v => verificaCodigoUI(v) || !!v || 'Campo de preenchimento obrigatório!']"
+                :rules="[
+                  v =>
+                    verificaCodigoUI(v) ||
+                    !!v ||
+                    'Campo de preenchimento obrigatório!'
+                ]"
                 solo
                 clearable
                 v-model="UI.codigo"
@@ -42,7 +49,12 @@
               <div class="info-label">Cota</div>
             </v-col>
             <v-col sm="2" md="2">
-              <v-text-field solo clearable v-model="UI.codCota" label="Cota"></v-text-field>
+              <v-text-field
+                solo
+                clearable
+                v-model="UI.codCota"
+                label="Cota"
+              ></v-text-field>
             </v-col>
 
             <v-col md="2" sm="2">
@@ -96,7 +108,9 @@
               >
                 <template v-slot:default="slotProps">
                   <v-text-field
-                    :rules="[v => data_final_valida(v, UI) || 'Campo obrigatório!']"
+                    :rules="[
+                      v => data_final_valida(v, UI) || 'Campo obrigatório!'
+                    ]"
                     v-model="slotProps.item.dataValor"
                     :label="slotProps.item.label"
                     prepend-icon="event"
@@ -137,7 +151,12 @@
                 </template>
                 <template v-slot:item.edicao="props">
                   <td>
-                    <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
+                    <v-icon
+                      color="red darken-2"
+                      dark
+                      @click="remove(props.item)"
+                      >remove_circle</v-icon
+                    >
                   </td>
                 </template>
               </v-data-table>
@@ -147,7 +166,8 @@
                 :value="true"
                 icon="warning"
                 color="amber accent-3"
-              >Não tem séries/subséries selecionadas...</v-alert>
+                >Não tem séries/subséries selecionadas...</v-alert
+              >
             </v-col>
           </v-row>
           <v-card outlined>
@@ -159,7 +179,12 @@
                 <v-row>
                   <v-col sm="4" xs="12">
                     <v-combobox
-                      :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório para associar série/subsérie!']"
+                      :rules="[
+                        v =>
+                          eCodigoClasseValido(v) ||
+                          !!v ||
+                          'Campo obrigatório para associar série/subsérie!'
+                      ]"
                       v-model="cod"
                       :items="classes_processadas"
                       label="Código"
@@ -170,7 +195,7 @@
                       clearable
                       chips
                     >
-                      <template v-slot:item="{item}">
+                      <template v-slot:item="{ item }">
                         <img
                           v-if="item.tipo == 'Série'"
                           style="width:23px; height:30px"
@@ -181,7 +206,9 @@
                           style="width:23px; height:30px"
                           :src="svg_ssr"
                         />
-                        <span style="padding-left: 20px;">{{ item.searchField }}</span>
+                        <span style="padding-left: 20px;">{{
+                          item.searchField
+                        }}</span>
                       </template>
                       <template v-slot:no-data>
                         <v-list-item>
@@ -189,12 +216,15 @@
                             <v-list-item-title>
                               Classe
                               <strong>Série</strong> e
-                              <strong>Subsérie</strong> em questão não existe no sistema!
+                              <strong>Subsérie</strong> em questão não existe no
+                              sistema!
                             </v-list-item-title>
                             <v-list-item-subtitle>
                               Pode criar aqui uma nova classe Série ou Subsérie.
-                              Para tal, escreva código da nova classe e prima a tecla
-                              <i>"Enter"</i>. Posteriormente preencha os restantes campos.
+                              Para tal, escreva código da nova classe e prima a
+                              tecla
+                              <i>"Enter"</i>. Posteriormente preencha os
+                              restantes campos.
                             </v-list-item-subtitle>
                           </v-list-item-content>
                         </v-list-item>
@@ -203,7 +233,11 @@
                   </v-col>
                   <v-col sm="6" xs="12">
                     <v-text-field
-                      :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
+                      :rules="[
+                        v =>
+                          !!v ||
+                          'Campo obrigatório para associar série/subsérie!'
+                      ]"
                       :disabled="iscodvalido"
                       solo
                       clearable
@@ -213,7 +247,11 @@
                   </v-col>
                   <v-col sm="2" xs="12">
                     <v-select
-                      :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
+                      :rules="[
+                        v =>
+                          !!v ||
+                          'Campo obrigatório para associar série/subsérie!'
+                      ]"
                       :disabled="iscodvalido"
                       label="Série / Subsérie"
                       v-model="tipoClasse"
@@ -224,7 +262,9 @@
                     >
                       <template v-slot:selection="data">
                         <v-chip>
-                          <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                          <v-avatar left color="amber accent-3">{{
+                            data.item[0]
+                          }}</v-avatar>
                           {{ data.item }}
                         </v-chip>
                       </template>
@@ -237,18 +277,22 @@
                       @click="adicionarClasseUI(UI)"
                       size="35"
                       color="green lighten-1"
-                    >add_circle</v-icon>
+                      >add_circle</v-icon
+                    >
                     <v-btn
                       style="margin-left: 10px"
                       dark
                       color="red darken-4"
                       @click="$refs.addRel.reset()"
-                    >Limpar</v-btn>
+                      >Limpar</v-btn
+                    >
                   </v-col>
                 </v-row>
                 <v-row v-if="!!alertOn">
                   <v-col>
-                    <v-alert dismissible dense text type="error">Associação já existente!</v-alert>
+                    <v-alert dismissible dense text type="error"
+                      >Associação já existente!</v-alert
+                    >
                   </v-col>
                 </v-row>
               </v-form>
@@ -259,27 +303,46 @@
               <div class="info-label">Notas</div>
             </v-col>
             <v-col sm="4" md="4">
-              <v-text-field solo clearable v-model="UI.notas" label="Notas"></v-text-field>
+              <v-text-field
+                solo
+                clearable
+                v-model="UI.notas"
+                label="Notas"
+              ></v-text-field>
             </v-col>
             <v-col md="2" sm="2">
               <div class="info-label">Localização</div>
             </v-col>
             <v-col sm="4" md="4">
-              <v-text-field solo clearable v-model="UI.localizacao" label="Localização"></v-text-field>
+              <v-text-field
+                solo
+                clearable
+                v-model="UI.localizacao"
+                label="Localização"
+              ></v-text-field>
             </v-col>
           </v-row>
         </v-form>
       </v-card-text>
 
       <v-card-actions>
-        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+        <v-alert
+          width="100%"
+          :value="existe_erros"
+          outlined
+          type="error"
+          prominent
+          border="left"
+        >
           É necessário preencher os campos seguintes:
           <ul>
-            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+            <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false"
+          >Voltar</v-btn
+        >
         <v-btn color="indigo darken-4" dark @click="guardar">Adicionar</v-btn>
         <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
       </v-card-actions>

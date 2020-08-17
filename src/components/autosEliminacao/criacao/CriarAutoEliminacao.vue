@@ -2,7 +2,9 @@
   <div>
     <v-card class="ma-4">
       <v-app-bar color="expansion-panel-heading" dark>
-        <v-toolbar-title class="card-heading">Novo Auto de Eliminação</v-toolbar-title>
+        <v-toolbar-title class="card-heading"
+          >Novo Auto de Eliminação</v-toolbar-title
+        >
       </v-app-bar>
 
       <v-card-text>
@@ -10,7 +12,7 @@
           <v-stepper-step :complete="steps > 1" step="1">
             Seleção de Fonte e Fundo
             <span v-if="steps > 1">
-              <v-chip 
+              <v-chip
                 class="ma-2"
                 color="indigo darken-4"
                 text-color="white"
@@ -21,7 +23,7 @@
               </v-chip>
             </span>
             <span v-if="steps > 1">
-              <v-chip 
+              <v-chip
                 v-for="fundo in auto.fundo"
                 :key="fundo"
                 class="ma-2"
@@ -41,7 +43,12 @@
                 <div class="info-label">Fonte de legitimação</div>
               </v-col>
               <v-col>
-                <v-radio-group row v-model="tipo" :mandatory="true" :disabled="steps > 1">
+                <v-radio-group
+                  row
+                  v-model="tipo"
+                  :mandatory="true"
+                  :disabled="steps > 1"
+                >
                   <v-radio value="TS_LC">
                     <template v-slot:label>
                       <div class="mt-2">
@@ -71,7 +78,7 @@
                     </template>
                   </v-radio>
                 </v-radio-group>
-                <div v-if="tipo=='PGD_LC'">
+                <div v-if="tipo == 'PGD_LC'">
                   <v-autocomplete
                     label="Selecione a fonte de legitimação"
                     :items="portariaLC"
@@ -80,16 +87,16 @@
                     dense
                   ></v-autocomplete>
                 </div>
-                <div v-else-if="tipo=='TS_LC'">
+                <div v-else-if="tipo == 'TS_LC'">
                   <v-autocomplete
                     label="Selecione a Tabela de Seleção"
                     :items="tabelasSelecao"
                     v-model="auto.legislacao"
-                    solo 
+                    solo
                     dense
                   />
                 </div>
-                <div v-else-if="tipo=='PGD'">
+                <div v-else-if="tipo == 'PGD'">
                   <v-autocomplete
                     label="Selecione a fonte de legitimação"
                     :items="portaria"
@@ -99,29 +106,32 @@
                   ></v-autocomplete>
                 </div>
                 <div v-else>
-
                   <v-row>
-                  <v-col cols="3">
-                    <v-switch class="ma-1" v-model="switchRada" :label="radaLabel"></v-switch>
-                  </v-col>
-                  <v-col>
-                    <v-autocomplete
-                      v-if="switchRada"
-                      label="Selecione a Tabela de Selação"
-                      :items="tsRada"
-                      v-model="auto.legislacao"
-                      solo
-                      dense
-                    ></v-autocomplete>
-                    <v-autocomplete
-                      v-else
-                      label="Selecione a fonte de legitimação"
-                      :items="portariaRada"
-                      v-model="auto.legislacao"
-                      solo
-                      dense
-                    ></v-autocomplete>
-                  </v-col>
+                    <v-col cols="3">
+                      <v-switch
+                        class="ma-1"
+                        v-model="switchRada"
+                        :label="radaLabel"
+                      ></v-switch>
+                    </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        v-if="switchRada"
+                        label="Selecione a Tabela de Selação"
+                        :items="tsRada"
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                      <v-autocomplete
+                        v-else
+                        label="Selecione a fonte de legitimação"
+                        :items="portariaRada"
+                        v-model="auto.legislacao"
+                        solo
+                        dense
+                      ></v-autocomplete>
+                    </v-col>
                   </v-row>
                 </div>
               </v-col>
@@ -143,10 +153,22 @@
                 ></v-autocomplete>
               </v-col>
             </v-row>
-            <v-btn class="ma-2" color="indigo darken-4" dark @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Continuar</v-btn>
+            <v-btn
+              class="ma-2"
+              color="indigo darken-4"
+              dark
+              @click="
+                filtrarDonos();
+                steps = 2;
+              "
+              :disabled="!auto.legislacao || auto.fundo.length == 0"
+              >Continuar</v-btn
+            >
           </v-stepper-content>
 
-          <v-stepper-step step="2">Identificação de Classes e Agregações</v-stepper-step>
+          <v-stepper-step step="2"
+            >Identificação de Classes e Agregações</v-stepper-step
+          >
 
           <v-stepper-content step="2">
             <!-- Adicionar Zona Controlo -->
@@ -176,116 +198,146 @@
                 dark
                 @click="guardarTrabalho"
                 :disabled="
-                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                  !auto.legislacao ||
+                    !auto.fundo ||
+                    auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-              >Guardar Trabalho <v-icon right>save</v-icon></v-btn>
+                >Guardar Trabalho <v-icon right>save</v-icon></v-btn
+              >
               <v-btn
                 medium
                 color="indigo darken-4"
                 dark
                 @click="continuarDepois"
                 :disabled="
-                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                  !auto.legislacao ||
+                    !auto.fundo ||
+                    auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-              >Continuar Depois <v-icon right>save</v-icon></v-btn>
+                >Continuar Depois <v-icon right>save</v-icon></v-btn
+              >
               <v-btn
                 medium
                 color="indigo darken-4"
                 dark
-                @click="successDialog=true"
+                @click="successDialog = true"
                 :disabled="
-                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                  !auto.legislacao ||
+                    !auto.fundo ||
+                    auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-              >Submeter</v-btn>
-              
+                >Submeter</v-btn
+              >
+
               <v-btn
                 medium
                 color="red darken-4"
                 dark
-                @click="eliminar=true"
+                @click="eliminar = true"
                 :disabled="
-                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                  !auto.legislacao ||
+                    !auto.fundo ||
+                    auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-              >Eliminar</v-btn>
+                >Eliminar</v-btn
+              >
             </div>
-            
           </v-stepper-content>
         </v-stepper>
       </v-card-text>
     </v-card>
     <v-dialog v-model="successDialog" width="950" persistent>
       <v-card outlined>
-        <v-card-title
-          class="teal darken-4 title white--text"
-          dark
-        >Validação de auto de eliminação executada com sucesso</v-card-title>
+        <v-card-title class="teal darken-4 title white--text" dark
+          >Validação de auto de eliminação executada com sucesso</v-card-title
+        >
 
         <v-card-text>
-          Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação, selecione "Confirmar". Caso ainda pretenda realizar alguma alteração ao AE, clique em "Voltar".
+          Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação,
+          selecione "Confirmar". Caso ainda pretenda realizar alguma alteração
+          ao AE, clique em "Voltar".
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-4" text @click="successDialog=false">Voltar</v-btn>
-          <v-btn color="green darken-4" text @click="successDialog=false; submit()">Confirmar</v-btn>
+          <v-btn color="red darken-4" text @click="successDialog = false"
+            >Voltar</v-btn
+          >
+          <v-btn
+            color="green darken-4"
+            text
+            @click="
+              successDialog = false;
+              submit();
+            "
+            >Confirmar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="eliminar" width="950" persistent>
       <v-card outlined>
-        <v-card-title
-          class="warning darken-4 title white--text"
-          dark
-        >Apagar Auto de Eliminação</v-card-title>
+        <v-card-title class="warning darken-4 title white--text" dark
+          >Apagar Auto de Eliminação</v-card-title
+        >
 
         <v-card-text>
-          Esta ação elimina toda a informação do auto de eliminação, tem a certeza que deseja continuar?.
+          Esta ação elimina toda a informação do auto de eliminação, tem a
+          certeza que deseja continuar?.
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-4" text @click="eliminar=false">Cancelar</v-btn>
-          <v-btn color="red darken-4" text @click="eliminar=false; eliminarAE()">Eliminar</v-btn>
+          <v-btn color="green darken-4" text @click="eliminar = false"
+            >Cancelar</v-btn
+          >
+          <v-btn
+            color="red darken-4"
+            text
+            @click="
+              eliminar = false;
+              eliminarAE();
+            "
+            >Eliminar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar
-      color="success"
-      v-model="guardadoSuccess"
-      :timeout="5000"
-    >
-      Auto de Eliminação guardado com sucesso! 
-      <v-btn
-        dark
-        text
-        @click="guardadoSuccess = false"
-      >
+    <v-snackbar color="success" v-model="guardadoSuccess" :timeout="5000">
+      Auto de Eliminação guardado com sucesso!
+      <v-btn dark text @click="guardadoSuccess = false">
         Fechar
       </v-btn>
     </v-snackbar>
     <v-dialog v-model="erroDialog" width="700" persistent>
       <v-card outlined>
-        <v-card-title
-          class="red darken-4 title white--text"
-          dark
-        >Não foi possível criar o pedido de criação de auto de eliminação</v-card-title>
+        <v-card-title class="red darken-4 title white--text" dark
+          >Não foi possível criar o pedido de criação de auto de
+          eliminação</v-card-title
+        >
 
         <v-card-text>
-          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro"></span>
+          <span
+            class="subtitle-1"
+            style="white-space: pre-wrap"
+            v-html="erro"
+          ></span>
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="red darken-4" text @click="erroDialog = false">Fechar</v-btn>
+          <v-btn color="red darken-4" text @click="erroDialog = false"
+            >Fechar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -296,8 +348,8 @@
         <v-card-text>
           <div>
             <strong>
-              Os seus dados foram guardados para que possa retomar o trabalho mais
-              tarde.
+              Os seus dados foram guardados para que possa retomar o trabalho
+              mais tarde.
             </strong>
           </div>
 
@@ -326,19 +378,19 @@
 
             <v-col class="info-content">
               <div v-for="c in auto.zonaControlo" :key="c.codigo">
-                {{ c.codigo +" - "+c.titulo }}
-                <li
-                  class="ml-4"
-                  v-for="a in c.agregacoes"
-                  :key="a.codigo"
-                >{{+a.codigo + " - " + a.titulo}}</li>
+                {{ c.codigo + " - " + c.titulo }}
+                <li class="ml-4" v-for="a in c.agregacoes" :key="a.codigo">
+                  {{ +a.codigo + " - " + a.titulo }}
+                </li>
               </div>
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="green darken-1" dark @click="$router.push('/')">Fechar</v-btn>
+          <v-btn color="green darken-1" dark @click="$router.push('/')"
+            >Fechar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -387,7 +439,7 @@ export default {
   }),
   computed: {
     radaLabel: function() {
-      return this.switchRada ? "Tabela de Seleção" : "Fonte de Legitimação"
+      return this.switchRada ? "Tabela de Seleção" : "Fonte de Legitimação";
     }
   },
   created: async function() {
@@ -408,13 +460,12 @@ export default {
       this.portaria = await this.prepararLeg(response2.data);
       var response3 = await this.$request("get", "/legislacao?fonte=RADA");
       this.portariaRada = await this.prepararLeg(response3.data);
-      this.tabelasSelecao.push("Lista Consolidada")
-      var response4 = await this.$request("get","/rada");
+      this.tabelasSelecao.push("Lista Consolidada");
+      var response4 = await this.$request("get", "/rada");
       this.tsRada = response4.data.map(ts => {
-        return "" + ts.titulo + " (" + ts.dataAprovacao + ")"
-      })
-      console.log(response4.data)
-
+        return "" + ts.titulo + " (" + ts.dataAprovacao + ")";
+      });
+      console.log(response4.data);
     } catch (e) {
       this.auto.fundo = [];
       this.portariaLC = [];
@@ -426,22 +477,32 @@ export default {
   },
   methods: {
     eliminarAE: async function() {
-      if(this._id) this.$request("delete", "/pendentes/" + this._id);
+      if (this._id) this.$request("delete", "/pendentes/" + this._id);
       this.$router.push("/");
     },
     submit: async function() {
-      this.erro = ""
-      for(var zc of this.auto.zonaControlo) {
-        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA' && this.tipo!='PGD') {
+      this.erro = "";
+      for (var zc of this.auto.zonaControlo) {
+        if (
+          zc.destino == "C" &&
+          zc.dono.length === 0 &&
+          this.tipo != "RADA" &&
+          this.tipo != "PGD"
+        ) {
           this.erroDialog = true;
-          this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
+          this.erro =
+            "Dono do PN não preenchido em " +
+            zc.codigo +
+            " - " +
+            zc.titulo +
+            ".\n";
         }
       }
-      if(this.erro==="") {
-        if(this.tipo=="TS_LC") {
-          delete this.auto["legislacao"]
+      if (this.erro === "") {
+        if (this.tipo == "TS_LC") {
+          delete this.auto["legislacao"];
           //Para já apenas LC
-          this.auto.referencial = "lc1"
+          this.auto.referencial = "lc1";
         }
         var user = this.$verifyTokenUser();
 
@@ -465,8 +526,8 @@ export default {
           "/pedidos",
           pedidoParams
         );
-        if(this._id) this.$request("delete", "/pendentes/" + this._id);
-        this.$router.push('/pedidos/submissao')
+        if (this._id) this.$request("delete", "/pendentes/" + this._id);
+        this.$router.push("/pedidos/submissao");
       }
     },
     guardarTrabalho: async function() {
@@ -477,9 +538,9 @@ export default {
           var response;
           this.numInterv++;
           var cDate = Date.now();
-          this.auto.tipo = this.tipo
+          this.auto.tipo = this.tipo;
           var userBD = this.$verifyTokenUser();
-          if(this.numInterv == 1) {
+          if (this.numInterv == 1) {
             var pendenteParams = {
               numInterv: this.numInterv,
               acao: "Criação",
@@ -494,8 +555,7 @@ export default {
               "/pendentes",
               pendenteParams
             );
-          }
-          else {
+          } else {
             var pendenteParams = {
               _id: this._id,
               dataAtualizacao: cDate,
@@ -511,7 +571,7 @@ export default {
 
             response = await this.$request("put", "/pendentes", pendenteParams);
           }
-          this._id = response.data._id
+          this._id = response.data._id;
           this.guardadoSuccess = true;
         }
       } catch (error) {
@@ -526,9 +586,9 @@ export default {
           var response;
           this.numInterv++;
           var cDate = Date.now();
-          this.auto.tipo = this.tipo
+          this.auto.tipo = this.tipo;
           var userBD = this.$verifyTokenUser();
-          if(this.numInterv == 1) {
+          if (this.numInterv == 1) {
             var pendenteParams = {
               numInterv: this.numInterv,
               acao: "Criação",
@@ -543,8 +603,7 @@ export default {
               "/pendentes",
               pendenteParams
             );
-          }
-          else {
+          } else {
             var pendenteParams = {
               _id: this._id,
               dataAtualizacao: cDate,
@@ -570,8 +629,7 @@ export default {
     prepararClasses: async function(classes) {
       try {
         var myClasses = [];
-        for (var c of classes)
-          myClasses.push(c.codigo + " - " + c.titulo);
+        for (var c of classes) myClasses.push(c.codigo + " - " + c.titulo);
         return myClasses;
       } catch (error) {
         return [];
@@ -591,7 +649,7 @@ export default {
               } else break;
             }
             nivel4.splice(0, indexs);
-            if(indexs==0) myClasses.push(c);
+            if (indexs == 0) myClasses.push(c);
           }
         }
         return myClasses;
@@ -600,30 +658,35 @@ export default {
       }
     },
     validaPCAeDF: function(classe) {
-      if((!classe.pca.valores || classe.pca.valores=="NE") && !classe.pca.notas) return false;
-      else if((!classe.df.valor || classe.df.valor=="NE") && !classe.df.nota) return false;
-      else return true
+      if (
+        (!classe.pca.valores || classe.pca.valores == "NE") &&
+        !classe.pca.notas
+      )
+        return false;
+      else if ((!classe.df.valor || classe.df.valor == "NE") && !classe.df.nota)
+        return false;
+      else return true;
     },
     prepararClassesCompletas: async function(classes, nivel4) {
       try {
         var myClasses = [];
         for (var c of classes) {
-            var indexs = 0;
-            for (var n of nivel4) {
-              if (n.codigo.includes(c.codigo) && this.validaPCAeDF(n)) {
-                myClasses.push(n);
-                indexs++;
-              } else break;
-            }
-            nivel4.splice(0, indexs);
-            if(indexs==0 && this.validaPCAeDF(c)) myClasses.push(c);
+          var indexs = 0;
+          for (var n of nivel4) {
+            if (n.codigo.includes(c.codigo) && this.validaPCAeDF(n)) {
+              myClasses.push(n);
+              indexs++;
+            } else break;
+          }
+          nivel4.splice(0, indexs);
+          if (indexs == 0 && this.validaPCAeDF(c)) myClasses.push(c);
         }
         return myClasses;
       } catch (error) {
         return [];
       }
     },
-    
+
     prepararLeg: async function(leg) {
       try {
         var myPortarias = [];
@@ -636,17 +699,17 @@ export default {
       }
     },
     filtrarDonos: async function() {
-      this.donos = this.entidades
+      this.donos = this.entidades;
 
-      for(var f of this.auto.fundo) {
-        this.donos = this.donos.filter(e => !e.includes(f))
+      for (var f of this.auto.fundo) {
+        this.donos = this.donos.filter(e => !e.includes(f));
 
-        for(var zc of this.auto.zonaControlo) {
-          zc.dono = zc.dono.filter(e => !e.includes(f))
+        for (var zc of this.auto.zonaControlo) {
+          zc.dono = zc.dono.filter(e => !e.includes(f));
         }
       }
 
-      if(this.tipo == "TS_LC") {
+      if (this.tipo == "TS_LC") {
         var response = await this.$request(
           "get",
           "/classes?nivel=3&info=completa"
@@ -660,46 +723,44 @@ export default {
           response2.data
         );
         this.classes = await this.prepararClasses(this.classesCompletas);
-      }
-      else if(this.tipo == "PGD" || this.tipo == "PGD_LC") {
-        var response = await this.$request(
-          "get",
-          "/legislacao"
-        )
+      } else if (this.tipo == "PGD" || this.tipo == "PGD_LC") {
+        var response = await this.$request("get", "/legislacao");
 
-        var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[1])
+        var leg = response.data.filter(
+          l => l.numero == this.auto.legislacao.split(" ")[1]
+        );
 
-        if(this.tipo=="PGD") 
+        if (this.tipo == "PGD")
+          var response2 = await this.$request("get", "/pgd/pgd_" + leg[0].id);
+        else
           var response2 = await this.$request(
             "get",
-            "/pgd/pgd_"+leg[0].id
-          )
-        else 
-          var response2 = await this.$request(
-            "get",
-            "/pgd/pgd_lc_"+leg[0].id
-          )
-        this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
+            "/pgd/pgd_lc_" + leg[0].id
+          );
+        this.classesCompletas = response2.data
+          .filter(c => c.nivel > 2)
+          .map(c => {
             return {
               idClasse: c.classe,
               nivel: c.nivel,
               codigo: c.codigo,
               referencia: c.referencia,
               titulo: c.titulo,
-              df: {valor: c.df, nota: c.notaDF},
-              pca: {valores: c.pca, notas: c.notaPCA},
-            }
-          })
-        this.classesCompletas = this.classesCompletas.filter(c => this.validaPCAeDF(c))
+              df: { valor: c.df, nota: c.notaDF },
+              pca: { valores: c.pca, notas: c.notaPCA }
+            };
+          });
+        this.classesCompletas = this.classesCompletas.filter(c =>
+          this.validaPCAeDF(c)
+        );
 
         this.classes = this.classesCompletas.map(c => {
-            if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
-            else if(c.codigo) return ""+c.codigo+" - "+c.titulo
-            else if(c.referencia) return ""+c.referencia+" - "+c.titulo
-        })
-        
-      }
-      else {
+          if (c.codigo && c.referencia)
+            return "" + c.codigo + " " + c.referencia + " - " + c.titulo;
+          else if (c.codigo) return "" + c.codigo + " - " + c.titulo;
+          else if (c.referencia) return "" + c.referencia + " - " + c.titulo;
+        });
+      } else {
         this.classes = [];
         this.classesCompletas = [];
       }
@@ -711,7 +772,7 @@ export default {
     },
     switchRada: function() {
       this.auto.legislacao = null;
-    } 
+    }
   }
 };
 </script>

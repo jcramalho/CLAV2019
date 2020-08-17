@@ -76,12 +76,13 @@
             fill="#ffffff"
           />
           <p class="ml-2">Submeter</p>
-          <DialogClasseCriada 
-            v-if="classeCriada" 
+          <DialogClasseCriada
+            v-if="classeCriada"
             :c="c"
             :codigoPedido="codigoPedido"
             acao="criação"
-            @sair="classeCriada = false"/>
+            @sair="classeCriada = false"
+          />
         </v-btn>
       </v-col>
 
@@ -249,7 +250,8 @@ import DialogClasseCriada from "@/components/classes/criacao/DialogClasseCriada.
 export default {
   props: ["c", "pendenteId"],
   components: {
-    ValidaClasseInfoBox, DialogClasseCriada
+    ValidaClasseInfoBox,
+    DialogClasseCriada
   },
   data() {
     return {
@@ -740,7 +742,9 @@ export default {
           }
         }
       } catch (error) {
-        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
+        console.log(
+          "Erro na criação do pedido: " + JSON.stringify(error.response.data)
+        );
       }
     },
 

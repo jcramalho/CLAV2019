@@ -15,7 +15,10 @@
 
     <v-card-text>
       <v-data-table
-        v-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE DOCUMENTAÇÃO ACUMULADA'"
+        v-if="
+          tipo ==
+            'TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE DOCUMENTAÇÃO ACUMULADA'
+        "
         :headers="headers"
         :items="lista"
         :search="search"
@@ -30,34 +33,36 @@
 
         <template v-slot:item.link="{ item }">
           <v-tooltip bottom v-if="item.link">
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="red darken-3" :href="item.link"
-                  v-on="on">
-                    <v-icon>picture_as_pdf</v-icon>
-                  </v-btn>
-                </template>
-                <span>Aceder à TS do RADA em PDF...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="indigo darken-3" @click="$router.push('/pgd/'+item.idRADA)"
-                  v-on="on">
-                    <v-icon>remove_red_eye</v-icon>
-                  </v-btn>
-                </template>
-                <span>Ver RADA...</span>
-              </v-tooltip>
+            <template v-slot:activator="{ on }">
+              <v-btn icon color="red darken-3" :href="item.link" v-on="on">
+                <v-icon>picture_as_pdf</v-icon>
+              </v-btn>
+            </template>
+            <span>Aceder à TS do RADA em PDF...</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                color="indigo darken-3"
+                @click="$router.push('/pgd/' + item.idRADA)"
+                v-on="on"
+              >
+                <v-icon>remove_red_eye</v-icon>
+              </v-btn>
+            </template>
+            <span>Ver RADA...</span>
+          </v-tooltip>
         </template>
 
         <template v-slot:pageText="props">
           Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
           {{ props.itemsLength }}
         </template>
-
       </v-data-table>
 
       <v-data-table
-      v-else
+        v-else
         :headers="headers"
         :items="lista"
         :search="search"
@@ -72,23 +77,26 @@
 
         <template v-slot:item.link="{ item }">
           <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="red darken-3" :href="item.link"
-                  v-on="on">
-                    <v-icon>picture_as_pdf</v-icon>
-                  </v-btn>
-                </template>
-                <span>Aceder a Diario da Republica...</span>
-              </v-tooltip>
-              <v-tooltip bottom v-if="item.idPGD">
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="indigo darken-3" @click="$router.push('/pgd/'+item.idPGD)"
-                  v-on="on">
-                    <v-icon>remove_red_eye</v-icon>
-                  </v-btn>
-                </template>
-                <span>Ver Portaria...</span>
-              </v-tooltip>
+            <template v-slot:activator="{ on }">
+              <v-btn icon color="red darken-3" :href="item.link" v-on="on">
+                <v-icon>picture_as_pdf</v-icon>
+              </v-btn>
+            </template>
+            <span>Aceder a Diario da Republica...</span>
+          </v-tooltip>
+          <v-tooltip bottom v-if="item.idPGD">
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                color="indigo darken-3"
+                @click="$router.push('/pgd/' + item.idPGD)"
+                v-on="on"
+              >
+                <v-icon>remove_red_eye</v-icon>
+              </v-btn>
+            </template>
+            <span>Ver Portaria...</span>
+          </v-tooltip>
         </template>
 
         <template v-slot:pageText="props">
@@ -106,17 +114,17 @@ export default {
   data: () => ({
     search: "",
     headers: [
-      {text: "Data", value: "data", width: "8%"},
-      {text: "Tipo", value: "tipo", width: "10%"},
-      {text: "Número", value: "numero", width: "10%"},
-      {text: "Sumário", value: "sumario", width: "64%"},
-      {text: "Acesso", value: "link", width: "8%"},
+      { text: "Data", value: "data", width: "8%" },
+      { text: "Tipo", value: "tipo", width: "10%" },
+      { text: "Número", value: "numero", width: "10%" },
+      { text: "Sumário", value: "sumario", width: "64%" },
+      { text: "Acesso", value: "link", width: "8%" }
     ],
     dialog: false,
     footer_props: {
       "items-per-page-options": [10, 20, -1],
       "items-per-page-text": "Mostrar",
-        "items-per-page-all-text": "Todos"
+      "items-per-page-all-text": "Todos"
     }
   })
 };

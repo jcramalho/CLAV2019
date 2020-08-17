@@ -45,7 +45,7 @@ export default {
 
   data() {
     return {
-      nota: null,
+      nota: null
     };
   },
 
@@ -53,7 +53,7 @@ export default {
     notaAtual(novaNota, antigaNota) {
       if (novaNota !== undefined) this.nota = novaNota;
       else this.nota = "";
-    },
+    }
   },
 
   mounted() {
@@ -73,11 +73,11 @@ export default {
     adicionar() {
       this.$emit("adicionar", {
         nota: this.nota,
-        campo: this.campo,
+        campo: this.campo
       });
       this.nota = "";
-    },
-  },
+    }
+  }
 };
 </script>
 

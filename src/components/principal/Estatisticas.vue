@@ -50,8 +50,8 @@ export default {
 
   data() {
     return {
-      panelHeaderColor: "indigo darken-4",
+      panelHeaderColor: "indigo darken-4"
     };
-  },
+  }
 };
 </script>

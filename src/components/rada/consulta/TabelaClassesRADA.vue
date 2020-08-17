@@ -2,7 +2,11 @@
   <div style="overflow: auto; width:100%;">
     <v-data-table
       flat
-      :style="`background-color:${!!background_color ? background_color : '#ffffff;'} `"
+      :style="
+        `background-color:${
+          !!background_color ? background_color : '#ffffff;'
+        } `
+      "
       :headers="headers"
       :items="classes"
       class="elevation-1 mytable"
@@ -14,19 +18,33 @@
       item-key="codigo"
     >
       <template v-slot:item.tipo="{ item }">
-        <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
-        <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
+        <img
+          v-if="item.tipo == 'Série'"
+          style="width:23px; height:30px"
+          :src="svg_sr"
+        />
+        <img
+          v-else-if="item.tipo == 'Subsérie'"
+          style="width:23px; height:30px"
+          :src="svg_ssr"
+        />
         <i v-else>{{ item.tipo }}</i>
       </template>
 
-      <template v-slot:item.df="{ item }">{{ !classes.some(e => e.eFilhoDe == item.codigo) ? item.df : '' }}</template>
+      <template v-slot:item.df="{ item }">{{
+        !classes.some(e => e.eFilhoDe == item.codigo) ? item.df : ""
+      }}</template>
 
-      <template v-slot:item.pca="{ item }">{{ !classes.some(e => e.eFilhoDe == item.codigo) ? item.pca : '' }}</template>
+      <template v-slot:item.pca="{ item }">{{
+        !classes.some(e => e.eFilhoDe == item.codigo) ? item.pca : ""
+      }}</template>
 
       <template v-slot:item.editar="{ item }">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-icon v-on="on" v-if="true" @click="editarClasse(item)">edit</v-icon>
+            <v-icon v-on="on" v-if="true" @click="editarClasse(item)"
+              >edit</v-icon
+            >
           </template>
           <span>Clique para editar</span>
         </v-tooltip>
@@ -38,9 +56,17 @@
             <v-icon
               color="red"
               v-on="on"
-              v-if="(item.tipo == 'Série' && (item.eFilhoDe == null || (item.temDF && !!!item.children[0]))) || (item.tipo == 'Subsérie' && (item.eFilhoDe == null || item.temDF)) || (item.eFilhoDe == null &&
-                    (item.tipo == 'N2' || item.tipo == 'N3'))"
-            >report</v-icon>
+              v-if="
+                (item.tipo == 'Série' &&
+                  (item.eFilhoDe == null ||
+                    (item.temDF && !!!item.children[0]))) ||
+                  (item.tipo == 'Subsérie' &&
+                    (item.eFilhoDe == null || item.temDF)) ||
+                  (item.eFilhoDe == null &&
+                    (item.tipo == 'N2' || item.tipo == 'N3'))
+              "
+              >report</v-icon
+            >
           </template>
           <span>Classe incompleta</span>
         </v-tooltip>
@@ -48,8 +74,16 @@
 
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <AreaOrganica :classe="item" v-if="item.tipo != 'Série' && item.tipo != 'Subsérie'" />
-          <SerieSubserie :classe="item" :formaContagem="formaContagem" :classes="classes" v-else />
+          <AreaOrganica
+            :classe="item"
+            v-if="item.tipo != 'Série' && item.tipo != 'Subsérie'"
+          />
+          <SerieSubserie
+            :classe="item"
+            :formaContagem="formaContagem"
+            :classes="classes"
+            v-else
+          />
         </td>
       </template>
     </v-data-table>

@@ -182,7 +182,7 @@ export default {
     AnalisaDefault,
     VerDespachos,
     ErroDialog,
-    VerHistorico,
+    VerHistorico
   },
 
   data() {
@@ -191,11 +191,11 @@ export default {
       loading: true,
       snackbar: {
         visivel: false,
-        texto: "Test",
+        texto: "Test"
       },
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       pedido: {},
       despachosDialog: false,
@@ -203,9 +203,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" },
+        { text: "Despacho", value: "despacho" }
       ],
-      etapas: [],
+      etapas: []
     };
   },
 
@@ -243,7 +243,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>

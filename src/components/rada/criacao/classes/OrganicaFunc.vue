@@ -68,10 +68,12 @@
                   <v-list-item>
                     <v-list-item-content>
                       <v-list-item-title>
-                        <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                        <strong>Classe Área Orgânico-Funcional</strong> em
+                        questão não existe!
                       </v-list-item-title>
                       <v-list-item-subtitle>
-                        Este campo pode não ser preenchido. Se assim for, a classe será do tipo
+                        Este campo pode não ser preenchido. Se assim for, a
+                        classe será do tipo
                         <i>N1</i>.
                       </v-list-item-subtitle>
                     </v-list-item-content>
@@ -85,7 +87,9 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false"
+          >Voltar</v-btn
+        >
         <v-btn color="indigo darken-4" dark @click="save">Adicionar</v-btn>
         <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
       </v-card-actions>

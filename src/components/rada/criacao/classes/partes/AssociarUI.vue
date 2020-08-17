@@ -23,10 +23,12 @@
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title>
-                  <strong>Unidade de Instalação</strong> em questão não existe no sistema!
+                  <strong>Unidade de Instalação</strong> em questão não existe
+                  no sistema!
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  Pode criar aqui uma nova unidade de instalação. Para tal, escreva o código da nova UI e prima a tecla "
+                  Pode criar aqui uma nova unidade de instalação. Para tal,
+                  escreva o código da nova UI e prima a tecla "
                   <i>Enter</i>".
                 </v-list-item-subtitle>
               </v-list-item-content>

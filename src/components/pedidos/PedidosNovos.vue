@@ -137,7 +137,7 @@ export default {
 
   components: {
     DevolverPedido,
-    ErroDialog,
+    ErroDialog
   },
 
   data: () => {
@@ -145,7 +145,7 @@ export default {
       devolverPedidoDialog: false,
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       pedidoADevolver: "",
       procurar: "",
@@ -156,28 +156,28 @@ export default {
           value: "codigo",
           class: "title",
           sortable: true,
-          filterable: true,
+          filterable: true
         },
         {
           text: "Tipo",
           value: "tipo",
           class: "title",
           sortable: true,
-          filterable: true,
+          filterable: true
         },
         {
           text: "Entidade",
           value: "entidade",
           class: "title",
           sortable: true,
-          filterable: true,
+          filterable: true
         },
         {
           text: "Criador",
           value: "responsavel",
           class: "title",
           sortable: true,
-          filterable: true,
+          filterable: true
         },
         {
           text: "Data",
@@ -185,23 +185,23 @@ export default {
           value: "data",
           class: "title",
           sortable: true,
-          filterable: true,
+          filterable: true
         },
         {
           text: "Tarefa",
           value: "tarefa",
           sortable: false,
           class: "title",
-          filterable: false,
-        },
+          filterable: false
+        }
       ],
       dadosTabela: [],
 
       footer_props: {
         "items-per-page-text": "Pedidos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
-      },
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
 
@@ -215,12 +215,12 @@ export default {
         this.paginaTabela = this.pesquisaPedidos.pagina;
         this.procurar = this.pesquisaPedidos.pesquisa;
       }
-    },
+    }
   },
 
   methods: {
     atualizaPedidos() {
-      this.dadosTabela = this.pedidos.map((pedido) => {
+      this.dadosTabela = this.pedidos.map(pedido => {
         const dados = {};
         dados.codigo = pedido.codigo;
         dados.tipo = `${pedido.objeto.tipo} - ${pedido.objeto.acao}`;
@@ -311,7 +311,7 @@ export default {
     },
 
     distribuiPedido(pedido) {
-      const pedidoProps = this.pedidos.find((p) => p.codigo === pedido.codigo);
+      const pedidoProps = this.pedidos.find(p => p.codigo === pedido.codigo);
       this.$emit("distribuir", pedidoProps);
     },
 
@@ -322,7 +322,7 @@ export default {
 
     devolverPedido(pedido) {
       const pedidoEncontrado = this.pedidos.find(
-        (p) => p.codigo === pedido.codigo
+        p => p.codigo === pedido.codigo
       );
 
       this.pedidoADevolver = pedidoEncontrado;
@@ -339,7 +339,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
@@ -349,7 +349,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.fecharDialog();
@@ -368,12 +368,12 @@ export default {
           painel: 0,
           pesquisa: this.procurar,
           pagina: this.paginaTabela,
-          limpar: true,
+          limpar: true
         })
       );
 
       this.$router.push("/pedidos/novos/" + pedido.codigo);
-    },
-  },
+    }
+  }
 };
 </script>

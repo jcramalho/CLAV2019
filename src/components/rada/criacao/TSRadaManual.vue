@@ -16,26 +16,52 @@
     </v-row>
     <v-row>
       <v-col cols="auto">
-        <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_area = true">
+        <v-btn
+          color="indigo lighten-2"
+          dark
+          class="ma-2"
+          @click="criar_area = true"
+        >
           <v-icon dark left>add</v-icon>área orgânico-funcional
         </v-btn>
-        <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_serie = true">
+        <v-btn
+          color="indigo lighten-2"
+          dark
+          class="ma-2"
+          @click="criar_serie = true"
+        >
           <v-icon dark left>add</v-icon>Série
         </v-btn>
-        <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_subserie = true">
+        <v-btn
+          color="indigo lighten-2"
+          dark
+          class="ma-2"
+          @click="criar_subserie = true"
+        >
           <v-icon dark left>add</v-icon>Subsérie
         </v-btn>
       </v-col>
       <v-spacer></v-spacer>
       <v-col class="text-right">
-        <v-btn disabled color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
+        <v-btn
+          disabled
+          color="indigo lighten-2"
+          dark
+          class="ma-2"
+          @click="importar_classes = true"
+        >
           <v-icon dark left>add</v-icon>Importar Classes
         </v-btn>
       </v-col>
     </v-row>
     <v-row v-if="!!TS.classes[0]">
       <v-col xs="11" sm="11">
-        <v-text-field v-model="search" label="Pesquise a classe" clearable append-icon="search"></v-text-field>
+        <v-text-field
+          v-model="search"
+          label="Pesquise a classe"
+          clearable
+          append-icon="search"
+        ></v-text-field>
       </v-col>
       <v-col xs="1" sm="1">
         <v-tooltip top>
@@ -61,8 +87,10 @@
     <!-- v-if="criar_serie" -->
     <Serie
       :dialog="criar_serie"
-      @fecharDialog="criar_serie = false;
-                      classe_copia = null;"
+      @fecharDialog="
+        criar_serie = false;
+        classe_copia = null;
+      "
       @limpar_copia="classe_copia = null"
       :classe_para_copiar="classe_copia"
       :classes="TS.classes"
@@ -76,8 +104,10 @@
     <SubSerie
       :dialog="criar_subserie"
       :classe_para_copiar="classe_copia"
-      @fecharDialog="criar_subserie = false;
-      classe_copia = null;"
+      @fecharDialog="
+        criar_subserie = false;
+        classe_copia = null;
+      "
       @limpar_copia="classe_copia = null"
       :classes="TS.classes"
       :UIs="TS.UIs"
@@ -96,7 +126,11 @@
             :filter="filter"
           >
             <template v-slot:prepend="{ item }">
-              <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
+              <img
+                v-if="item.tipo == 'Série'"
+                style="width:23px; height:30px"
+                :src="svg_sr"
+              />
               <img
                 v-else-if="item.tipo == 'Subsérie'"
                 style="width:23px; height:30px"
@@ -104,47 +138,63 @@
               />
             </template>
             <template v-slot:label="{ item }">
-              <div @mouseover="mostrar_botao_copia = item" @mouseout="mostrar_botao_copia = false">
+              <div
+                @mouseover="mostrar_botao_copia = item"
+                @mouseout="mostrar_botao_copia = false"
+              >
                 <b text @click="editarClasse(item)">{{ item.titulo }}</b>
                 <!-- Série -->
                 <b
                   v-show="
-                  item.tipo == 'Série' &&
-                    (item.eFilhoDe == null ||
-                      (item.temDF && !!!item.children[0]))
-                "
+                    item.tipo == 'Série' &&
+                      (item.eFilhoDe == null ||
+                        (item.temDF && !!!item.children[0]))
+                  "
                   style="color:red"
-                >*</b>
+                  >*</b
+                >
                 <!-- Subsérie -->
                 <b
                   v-show="
-                  item.tipo == 'Subsérie' &&
-                    (item.eFilhoDe == null || item.temDF)
-                "
+                    item.tipo == 'Subsérie' &&
+                      (item.eFilhoDe == null || item.temDF)
+                  "
                   style="color:red"
-                >*</b>
+                  >*</b
+                >
                 <!-- N1, N2 OU N3 -->
                 <b
                   v-show="
-                  item.eFilhoDe == null &&
-                    (item.tipo == 'N2' || item.tipo == 'N3')
-                "
+                    item.eFilhoDe == null &&
+                      (item.tipo == 'N2' || item.tipo == 'N3')
+                  "
                   style="color:red"
-                >*</b>
+                  >*</b
+                >
 
                 <v-icon
-                  v-if="mostrar_botao_copia === item && (item.tipo == 'Série' || item.tipo == 'Subsérie')"
+                  v-if="
+                    mostrar_botao_copia === item &&
+                      (item.tipo == 'Série' || item.tipo == 'Subsérie')
+                  "
                   @click="nova_classe_copia(item)"
                   style="padding-left: 15px;"
                   small
-                >file_copy</v-icon>
+                  >file_copy</v-icon
+                >
               </div>
             </template>
           </v-treeview>
           <br />
           <b v-if="incompleto" style="color:red">*Campos por preencher</b>
         </div>
-        <v-alert class="text-center" v-else :value="true" color="amber accent-3" icon="warning">
+        <v-alert
+          class="text-center"
+          v-else
+          :value="true"
+          color="amber accent-3"
+          icon="warning"
+        >
           <b>Sem Classes!</b> É obrigatório adicionar.
         </v-alert>
         <br />
@@ -222,7 +272,9 @@
     <div v-else>
       <v-row no-gutters>
         <v-col cols="12">
-          <v-btn color="indigo darken-4" dark @click="$emit('voltar', 2)">Voltar</v-btn>
+          <v-btn color="indigo darken-4" dark @click="$emit('voltar', 2)"
+            >Voltar</v-btn
+          >
           <v-btn
             style="margin-left: 10px"
             color="indigo darken-4"
@@ -237,15 +289,16 @@
             color="indigo darken-4"
             dark
             @click="$emit('guardar', 'nao')"
-          >Continuar Depois</v-btn>
+            >Continuar Depois</v-btn
+          >
           <v-btn
             style="margin-left: 10px"
             :disabled="
-          !Boolean(TS.classes[0]) ||
-            UIs_validas ||
-            incompleto ||
-            !Boolean(TS.titulo)
-        "
+              !Boolean(TS.classes[0]) ||
+                UIs_validas ||
+                incompleto ||
+                !Boolean(TS.titulo)
+            "
             color="indigo darken-4"
             @click="sendToFather()"
           >
@@ -257,7 +310,8 @@
             dark
             v-if="pode_remover"
             @click="$emit('remover')"
-          >Eliminar</v-btn>
+            >Eliminar</v-btn
+          >
         </v-col>
       </v-row>
     </div>

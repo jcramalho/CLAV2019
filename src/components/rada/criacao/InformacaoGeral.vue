@@ -17,7 +17,9 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div style="padding-top:6px" class="info-label">Entidades Responsáveis</div>
+          <div style="padding-top:6px" class="info-label">
+            Entidades Responsáveis
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-autocomplete
@@ -55,10 +57,10 @@ export default {
   computed: {
     entidadesProcessadas() {
       return this.entidades
-      .filter(item => item.estado !== "Inativa")
-      .map(item => {
-        return item.sigla + " - " + item.designacao;
-      });
+        .filter(item => item.estado !== "Inativa")
+        .map(item => {
+          return item.sigla + " - " + item.designacao;
+        });
     }
   },
   methods: {

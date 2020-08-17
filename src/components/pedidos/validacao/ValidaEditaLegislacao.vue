@@ -219,7 +219,7 @@ export default {
     ErroDialog,
     SelecionaAutocomplete,
     EditarCamposDialog,
-    AdicionarNota,
+    AdicionarNota
   },
 
   data() {
@@ -229,7 +229,7 @@ export default {
       notaDialog: {
         visivel: false,
         campo: "",
-        nota: "",
+        nota: ""
       },
       novoHistorico: {},
       loading: true,
@@ -237,14 +237,14 @@ export default {
         visivel: false,
         nome: "",
         key: "",
-        valorAtual: "",
+        valorAtual: ""
       },
 
       erros: [],
       erroPedido: false,
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
@@ -255,13 +255,13 @@ export default {
           class: "subtitle-1",
           sortable: false,
           width: "10%",
-          align: "center",
-        },
+          align: "center"
+        }
       ],
       footerPropsEntidades: {
         "items-per-page-text": "Entidades por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todas"
       },
       processosHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
@@ -272,27 +272,27 @@ export default {
           class: "subtitle-1",
           sortable: false,
           width: "10%",
-          align: "center",
-        },
+          align: "center"
+        }
       ],
       footerPropsProcessos: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
+        "items-per-page-all-text": "Todos"
       },
 
       mensagemAutocompleteEntidades: {
         titulo: "entidades",
-        autocomplete: "entidades",
+        autocomplete: "entidades"
       },
       mensagemAutocompleteProcessos: {
         titulo: "processos",
-        autocomplete: "processos",
+        autocomplete: "processos"
       },
       dialogEntidades: false,
       dialogProcessos: false,
       entidades: [],
-      processos: [],
+      processos: []
     };
   },
 
@@ -303,7 +303,7 @@ export default {
 
     historico() {
       return this.p.historico;
-    },
+    }
   },
 
   async created() {
@@ -324,11 +324,11 @@ export default {
       JSON.stringify(this.historico[this.historico.length - 1])
     );
 
-    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+    Object.keys(copiaHistorico).forEach(h => (copiaHistorico[h].nota = null));
 
     this.novoHistorico = copiaHistorico;
 
-    Object.keys(this.dados).forEach((key) => {
+    Object.keys(this.dados).forEach(key => {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
     });
@@ -340,9 +340,9 @@ export default {
     },
 
     abreEntidadesDialog() {
-      this.dados.entidadesSel.forEach((entSel) => {
+      this.dados.entidadesSel.forEach(entSel => {
         const index = this.entidades.findIndex(
-          (ent) => ent.sigla === entSel.sigla
+          ent => ent.sigla === entSel.sigla
         );
 
         if (index !== -1) this.entidades.splice(index, 1);
@@ -352,9 +352,9 @@ export default {
     },
 
     abreProcessosDialog() {
-      this.dados.processosSel.forEach((procSel) => {
+      this.dados.processosSel.forEach(procSel => {
         const index = this.processos.findIndex(
-          (proc) => proc.codigo === procSel.codigo
+          proc => proc.codigo === procSel.codigo
         );
 
         if (index !== -1) this.processos.splice(index, 1);
@@ -373,10 +373,10 @@ export default {
 
     removeEntidade(entidade) {
       const index = this.dados.entidadesSel.findIndex(
-        (entSel) => entSel.sigla === entidade.sigla
+        entSel => entSel.sigla === entidade.sigla
       );
 
-      const existe = this.entidades.some((ent) => ent.sigla === entidade.sigla);
+      const existe = this.entidades.some(ent => ent.sigla === entidade.sigla);
 
       if (index !== -1) {
         if (!existe) {
@@ -387,7 +387,7 @@ export default {
         this.novoHistorico.entidadesSel = {
           ...this.novoHistorico.entidadesSel,
           cor: "amarelo",
-          dados: this.dados.entidadesSel,
+          dados: this.dados.entidadesSel
         };
 
         this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
@@ -397,11 +397,11 @@ export default {
 
     removeProcesso(processo) {
       const index = this.dados.processosSel.findIndex(
-        (procSel) => procSel.codigo === processo.codigo
+        procSel => procSel.codigo === processo.codigo
       );
 
       const existe = this.processos.some(
-        (proc) => proc.codigo === processo.codigo
+        proc => proc.codigo === processo.codigo
       );
 
       if (index !== -1) {
@@ -413,7 +413,7 @@ export default {
         this.novoHistorico.processosSel = {
           ...this.novoHistorico.processosSel,
           cor: "amarelo",
-          dados: this.dados.processosSel,
+          dados: this.dados.processosSel
         };
 
         this.animacoes.processosSel = !this.animacoes.processosSel;
@@ -427,7 +427,7 @@ export default {
       this.novoHistorico.entidadesSel = {
         ...this.novoHistorico.entidadesSel,
         cor: "amarelo",
-        dados: this.dados.entidadesSel,
+        dados: this.dados.entidadesSel
       };
 
       this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
@@ -440,7 +440,7 @@ export default {
       this.novoHistorico.processosSel = {
         ...this.novoHistorico.processosSel,
         cor: "amarelo",
-        dados: this.dados.processosSel,
+        dados: this.dados.processosSel
       };
 
       this.animacoes.processosSel = !this.animacoes.processosSel;
@@ -450,11 +450,11 @@ export default {
     async loadEntidades() {
       try {
         const { data } = await this.$request("get", "/entidades");
-        this.entidades = data.map((ent) => {
+        this.entidades = data.map(ent => {
           return {
             sigla: ent.sigla,
             designacao: ent.designacao,
-            id: ent.id,
+            id: ent.id
           };
         });
       } catch (err) {
@@ -467,11 +467,11 @@ export default {
     async loadProcessos() {
       try {
         const { data } = await this.$request("get", "/classes?nivel=3");
-        this.processos = data.map((proc) => {
+        this.processos = data.map(proc => {
           return {
             codigo: proc.codigo,
             titulo: proc.titulo,
-            id: proc.codigo,
+            id: proc.codigo
           };
         });
       } catch (err) {
@@ -491,7 +491,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -503,7 +503,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -521,7 +521,7 @@ export default {
       if (dados.sumario === "" || dados.sumario === null) {
         this.erros.push({
           sobre: "Sumário",
-          mensagem: "O sumário não pode ser vazio.",
+          mensagem: "O sumário não pode ser vazio."
         });
         numeroErros++;
       }
@@ -539,7 +539,7 @@ export default {
           this.erros.push({
             sobre: "Data de revogação",
             mensagem:
-              "A data de revogação tem de ser superior à data do diploma.",
+              "A data de revogação tem de ser superior à data do diploma."
           });
           numeroErros++;
         }
@@ -584,7 +584,7 @@ export default {
             estado: estado,
             responsavel: dadosUtilizador.email,
             data: new Date(),
-            despacho: dados.mensagemDespacho,
+            despacho: dados.mensagemDespacho
           };
 
           pedido.estado = estado;
@@ -594,7 +594,7 @@ export default {
 
           await this.$request("put", "/pedidos", {
             pedido: pedido,
-            distribuicao: novaDistribuicao,
+            distribuicao: novaDistribuicao
           });
 
           this.$router.go(-1);
@@ -609,14 +609,14 @@ export default {
 
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
-            parsedError.data.forEach((erro) => {
+            parsedError.data.forEach(erro => {
               this.erros.push({ parametro: erro.param, mensagem: erro.msg });
             });
           }
         } else {
           this.erros.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Ocorreu um erro ao aceder à ontologia.",
+            mensagem: "Ocorreu um erro ao aceder à ontologia."
           });
         }
       }
@@ -625,7 +625,7 @@ export default {
     verifica(campo) {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
-        cor: "verde",
+        cor: "verde"
       };
 
       this.animacoes[campo] = !this.animacoes[campo];
@@ -634,7 +634,7 @@ export default {
     anula(campo) {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
-        cor: "vermelho",
+        cor: "vermelho"
       };
 
       this.animacoes[campo] = !this.animacoes[campo];
@@ -645,7 +645,7 @@ export default {
         visivel: true,
         nome: this.transformaKeys(campo),
         key: campo,
-        valorAtual: this.dados[campo],
+        valorAtual: this.dados[campo]
       };
     },
 
@@ -653,7 +653,7 @@ export default {
       this.notaDialog.visivel = false;
       this.novoHistorico[dados.campo] = {
         ...this.novoHistorico[dados.campo],
-        nota: dados.nota,
+        nota: dados.nota
       };
     },
 
@@ -675,7 +675,7 @@ export default {
       this.novoHistorico[event.campo.key] = {
         ...this.novoHistorico[event.campo.key],
         dados: event.dados,
-        cor: "amarelo",
+        cor: "amarelo"
       };
 
       this.esconderOperacoes[event.campo.key] = true;
@@ -685,8 +685,8 @@ export default {
     fecharErro() {
       this.erros = [];
       this.erroPedido = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

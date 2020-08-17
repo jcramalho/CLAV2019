@@ -7,23 +7,36 @@
 
         <v-divider></v-divider>
 
-        <v-stepper-step step="2" editable>Zona de Contexto de Avaliação</v-stepper-step>
+        <v-stepper-step step="2" editable
+          >Zona de Contexto de Avaliação</v-stepper-step
+        >
 
-        <v-divider v-if="!classes.some(e => e.eFilhoDe == classe.codigo)"></v-divider>
+        <v-divider
+          v-if="!classes.some(e => e.eFilhoDe == classe.codigo)"
+        ></v-divider>
 
         <v-stepper-step
           step="3"
           editable
           v-if="!classes.some(e => e.eFilhoDe == classe.codigo)"
-        >Zona de Decisões de Avaliação</v-stepper-step>
+          >Zona de Decisões de Avaliação</v-stepper-step
+        >
       </v-stepper-header>
       <v-stepper-items>
         <!-- zona descritiva -->
         <v-stepper-content :step="1" flat>
           <v-card flat>
             <v-card-text>
-              <RADAEntry v-if="!!classe.descricao" label="Descrição" :value="classe.descricao" />
-              <RADAEntry v-if="!!classe.eFilhoDe" label="Classe Pai" :value="classe.eFilhoDe" />
+              <RADAEntry
+                v-if="!!classe.descricao"
+                label="Descrição"
+                :value="classe.descricao"
+              />
+              <RADAEntry
+                v-if="!!classe.eFilhoDe"
+                label="Classe Pai"
+                :value="classe.eFilhoDe"
+              />
               <RADAEntry
                 v-if="classe.tipo"
                 label="Nível"
@@ -39,7 +52,7 @@
               <RADAEntry v-if="!!classe.UIs[0]" label="Unidades de Instalação">
                 <template v-slot:valor>
                   <ul>
-                    <li v-for="(ui, i) in classe.UIs" :key="i">{{ui}}</li>
+                    <li v-for="(ui, i) in classe.UIs" :key="i">{{ ui }}</li>
                   </ul>
                 </template>
               </RADAEntry>
@@ -53,7 +66,10 @@
                 />
                 <v-card
                   outlined
-                  v-if="!!classe.suporte_e_medicao.suporte && !!classe.suporte_e_medicao.medicao"
+                  v-if="
+                    !!classe.suporte_e_medicao.suporte &&
+                      !!classe.suporte_e_medicao.medicao
+                  "
                 >
                   <RADAEntryDouble
                     v-for="(valores, i) in classe.suporte_e_medicao"
@@ -81,26 +97,41 @@
               <div v-if="classe.tipo == 'Série'">
                 <RADAEntry
                   label="Produtoras"
-                  v-if="!!classe.entProdutoras[0] || !!classe.tipologiasProdutoras[0]"
+                  v-if="
+                    !!classe.entProdutoras[0] ||
+                      !!classe.tipologiasProdutoras[0]
+                  "
                 >
                   <template v-slot:valor>
                     <ul>
-                      <li v-for="(ent, i) in classe.entProdutoras" :key="i">{{ent}}</li>
+                      <li v-for="(ent, i) in classe.entProdutoras" :key="i">
+                        {{ ent }}
+                      </li>
                     </ul>
                     <ul>
-                      <li v-for="(tip, i) in classe.tipologiasProdutoras" :key="i">{{tip}}</li>
+                      <li
+                        v-for="(tip, i) in classe.tipologiasProdutoras"
+                        :key="i"
+                      >
+                        {{ tip }}
+                      </li>
                     </ul>
                   </template>
                 </RADAEntry>
                 <RADAEntry label="Legislação" v-if="!!classe.legislacao[0]">
                   <template v-slot:valor>
                     <ul>
-                      <li v-for="(leg, i) in classe.legislacao" :key="i">{{leg.legislacao}}</li>
+                      <li v-for="(leg, i) in classe.legislacao" :key="i">
+                        {{ leg.legislacao }}
+                      </li>
                     </ul>
                   </template>
                 </RADAEntry>
               </div>
-              <RADAEntry label="Séries/Subséries Relacionadas" v-if="!!classe.relacoes[0]">
+              <RADAEntry
+                label="Séries/Subséries Relacionadas"
+                v-if="!!classe.relacoes[0]"
+              >
                 <template v-slot:valor>
                   <v-data-table
                     :items-per-page="classe.relacoes.length"
@@ -110,8 +141,12 @@
                     class="elevation-1"
                     hide-default-footer
                   >
-                    <template v-slot:item.rel="props">{{props.item.relacao}}</template>
-                    <template v-slot:item.classe="props">{{props.item.serieRelacionada.codigo}}</template>
+                    <template v-slot:item.rel="props">{{
+                      props.item.relacao
+                    }}</template>
+                    <template v-slot:item.classe="props">{{
+                      props.item.serieRelacionada.codigo
+                    }}</template>
                   </v-data-table>
                 </template>
               </RADAEntry>
@@ -125,8 +160,16 @@
             <v-card outlined>
               <div class="info-label">Prazo de Conservação Administrativo</div>
               <v-card-text>
-                <RADAEntry v-if="!!classe.pca" label="PCA" :value="classe.pca" />
-                <RADAEntry v-if="!!classe.notaPCA" label="Nota sobre PCA" :value="classe.notaPCA" />
+                <RADAEntry
+                  v-if="!!classe.pca"
+                  label="PCA"
+                  :value="classe.pca"
+                />
+                <RADAEntry
+                  v-if="!!classe.notaPCA"
+                  label="Nota sobre PCA"
+                  :value="classe.notaPCA"
+                />
                 <div v-if="!!classe.formaContagem">
                   <RADAEntry
                     v-if="!!classe.formaContagem.forma"
@@ -141,7 +184,10 @@
                 </div>
                 <RADAEntry
                   label="Justificação do PCA"
-                  v-if="!!classe.justificacaoPCA && classe.justificacaoPCA.length > 0"
+                  v-if="
+                    !!classe.justificacaoPCA &&
+                      classe.justificacaoPCA.length > 0
+                  "
                 >
                   <template v-slot:valor>
                     <RADAEntry
@@ -151,11 +197,20 @@
                     >
                       <template v-slot:valor>
                         {{ criterio.nota }}
-                        <ul v-if="criterio.tipo == 'Critério de Utilidade Administrativa'">
-                          <li v-for="(rel, i) in criterio.relacoes" :key="i">{{rel.codigo}}</li>
+                        <ul
+                          v-if="
+                            criterio.tipo ==
+                              'Critério de Utilidade Administrativa'
+                          "
+                        >
+                          <li v-for="(rel, i) in criterio.relacoes" :key="i">
+                            {{ rel.codigo }}
+                          </li>
                         </ul>
                         <ul v-else-if="criterio.tipo == 'Critério Legal'">
-                          <li v-for="(rel, i) in criterio.relacoes" :key="i">{{rel }}</li>
+                          <li v-for="(rel, i) in criterio.relacoes" :key="i">
+                            {{ rel }}
+                          </li>
                         </ul>
                       </template>
                     </RADAEntry>
@@ -169,10 +224,16 @@
               <div class="info-label">Destino Final</div>
               <v-card-text>
                 <RADAEntry v-if="!!classe.df" label="DF" :value="classe.df" />
-                <RADAEntry v-if="!!classe.notaDF" label="Nota sobre o DF" :value="classe.notaDF" />
+                <RADAEntry
+                  v-if="!!classe.notaDF"
+                  label="Nota sobre o DF"
+                  :value="classe.notaDF"
+                />
                 <RADAEntry
                   label="Justificação do DF"
-                  v-if="!!classe.justificacaoDF && classe.justificacaoDF.length > 0"
+                  v-if="
+                    !!classe.justificacaoDF && classe.justificacaoDF.length > 0
+                  "
                 >
                   <template v-slot:valor>
                     <RADAEntry
@@ -185,10 +246,14 @@
                         <div v-if="!!criterio.relacoes[0]">
                           <br />
                           <ul v-if="criterio.tipo != 'Critério Legal'">
-                            <li v-for="(rel, i) in criterio.relacoes" :key="i">{{rel.codigo}}</li>
+                            <li v-for="(rel, i) in criterio.relacoes" :key="i">
+                              {{ rel.codigo }}
+                            </li>
                           </ul>
                           <ul v-else>
-                            <li v-for="(rel, i) in criterio.relacoes" :key="i">{{rel }}</li>
+                            <li v-for="(rel, i) in criterio.relacoes" :key="i">
+                              {{ rel }}
+                            </li>
                           </ul>
                         </div>
                       </template>

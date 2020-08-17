@@ -123,7 +123,7 @@ export default {
     dialog: false,
     snackbar: false,
     texto: ""
-  }),  
+  }),
   methods: {
     updateText(e) {
       //this.$refs.descricao.value
@@ -373,11 +373,11 @@ export default {
       var items = tmpStr.substring(0, start).match(/^(\s*)\d+\.\s+.*/gm);
       //var items = tmpStr.match(/^(\s*)\d+\.\s+.*/gm);
       var max = 0;
-      if(items){
+      if (items) {
         items.forEach(element => {
           var i = parseInt(element.match(/\d+(?=\.)/g)[0], 10);
-          max = i > max ? i : max ;
-        })
+          max = i > max ? i : max;
+        });
       }
       max++;
       // insert:

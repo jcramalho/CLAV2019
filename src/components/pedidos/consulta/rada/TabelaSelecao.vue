@@ -36,31 +36,19 @@
           :filter="filter"
         >
           <template v-slot:prepend="{ item }">
-            <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
-            <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
+            <img
+              v-if="item.tipo == 'Série'"
+              style="width:23px; height:30px"
+              :src="svg_sr"
+            />
+            <img
+              v-else-if="item.tipo == 'Subsérie'"
+              style="width:23px; height:30px"
+              :src="svg_ssr"
+            />
           </template>
           <template v-slot:label="{ item }">
-<<<<<<< HEAD
-            <ShowSerie
-              v-if="item.tipo == 'Série'"
-              :formaContagem="formaContagem"
-              :treeview_object="item"
-              :classes="TS.classes"
-            />
-            <ShowSubserie
-              v-else-if="item.tipo == 'Subsérie'"
-              :treeview_object="item"
-              :classes="TS.classes"
-              :formaContagem="formaContagem"
-            />
-            <ShowOrganico
-              v-else
-              :treeview_object="item"
-              :classes="TS.classes"
-            />
-=======
             <b @click="showClasse(item)">{{ item.titulo }}</b>
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
           </template>
         </v-treeview>
       </v-col>
@@ -94,7 +82,10 @@
           :items-per-page="5"
         >
           <template v-slot:item="props">
-            <tr style="text-align: center; background-color:#ffffff" @click="showUI(props.item)">
+            <tr
+              style="text-align: center; background-color:#ffffff"
+              @click="showUI(props.item)"
+            >
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
               <!-- <td>
@@ -120,9 +111,15 @@
                         style="width:23px; height:30px"
                         :src="svg_sr"
                       />
-                      <img v-else style="width:23px; height:30px" :src="svg_ssr" />
+                      <img
+                        v-else
+                        style="width:23px; height:30px"
+                        :src="svg_ssr"
+                      />
                     </v-list-item-icon>
-                    <v-list-item-content>{{classe.codigo + " - " + classe.titulo}}</v-list-item-content>
+                    <v-list-item-content>{{
+                      classe.codigo + " - " + classe.titulo
+                    }}</v-list-item-content>
                   </v-list-item>
                 </v-list>
                 <p v-else>Não tem séries/subséries associadas!</p>
@@ -161,7 +158,12 @@
       :treeview_object="treeview_object"
       :classes="TS.classes"
     />
-    <ShowUI v-if="show_ui" @fecharDialog="show_ui = false" :dialog="show_ui" :UI="UI" />
+    <ShowUI
+      v-if="show_ui"
+      @fecharDialog="show_ui = false"
+      :dialog="show_ui"
+      :UI="UI"
+    />
   </v-card>
 </template>
 

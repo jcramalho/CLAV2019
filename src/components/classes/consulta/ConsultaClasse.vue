@@ -354,7 +354,10 @@
                       >
                         {{ classe.pca.valores + " ano" }}
                       </div>
-                      <div class="info-content pa-4" v-else-if="classe.pca.notas != ''">
+                      <div
+                        class="info-content pa-4"
+                        v-else-if="classe.pca.notas != ''"
+                      >
                         Não especificado
                       </div>
                     </v-col>
@@ -582,7 +585,9 @@
                         <span v-else-if="classe.df.valor == 'CP'">
                           Conservação Parcial
                         </span>
-                        <span v-else-if="classe.df.nota!=''">Não Especificado</span>
+                        <span v-else-if="classe.df.nota != ''"
+                          >Não Especificado</span
+                        >
                       </div>
                     </v-col>
                   </v-row>

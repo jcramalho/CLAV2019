@@ -1,27 +1,8 @@
 <template>
   <v-card class="ma-4" style="background-color:#fafafa">
-<<<<<<< HEAD
-    <v-card-title class="indigo darken-4 white--text">
-      Criar Relatório de Avaliação de Documentação Acumulada
-      <v-spacer />
-      <v-btn v-if="guardar" color="indigo darken-4" dark @click="toSave = true">
-        Guardar Trabalho
-        <v-icon right>save</v-icon>
-      </v-btn>
-      <v-icon
-        v-if="pode_remover"
-        dark
-        color="red"
-        @click="toDelete = true"
-        right
-        >delete_sweep</v-icon
-      >
-    </v-card-title>
-=======
-    <v-card-title
-      class="indigo darken-4 white--text"
-    >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title>
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
+    <v-card-title class="indigo darken-4 white--text"
+      >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title
+    >
     <v-card-text>
       <br />
       <v-alert
@@ -109,7 +90,12 @@
           />
           <v-alert
             width="100%"
-            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie"
+            :value="
+              !!erroProdutoras[0] ||
+                !!erros_relacoes[0] ||
+                !!erros_datas_uis[0] ||
+                !existe_serie
+            "
             outlined
             type="error"
             prominent
@@ -117,32 +103,58 @@
             dismissible
           >
             <div v-if="!!erroProdutoras[0]">
-              <b>As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série:</b>
+              <b
+                >As seguintes tipologias/entidades produtoras não foram
+                adicionadas a nenhuma série:</b
+              >
               <ul>
-                <li v-for="(produtora, i) in erroProdutoras" :key="i">{{produtora}}</li>
+                <li v-for="(produtora, i) in erroProdutoras" :key="i">
+                  {{ produtora }}
+                </li>
               </ul>
               <br />
             </div>
             <div v-if="!!erros_relacoes[0]">
-              <b>As seguintes relações entre classes são inválidas devido às datas:</b>
+              <b
+                >As seguintes relações entre classes são inválidas devido às
+                datas:</b
+              >
               <ul>
-                <li
-                  v-for="(erro_rel, i) in erros_relacoes"
-                  :key="i"
-                >{{erro_rel[0] + " " + erro_rel[2].toLowerCase().trim() + " " + erro_rel[1] + ";"}}</li>
+                <li v-for="(erro_rel, i) in erros_relacoes" :key="i">
+                  {{
+                    erro_rel[0] +
+                      " " +
+                      erro_rel[2].toLowerCase().trim() +
+                      " " +
+                      erro_rel[1] +
+                      ";"
+                  }}
+                </li>
               </ul>
             </div>
             <div v-if="!!erros_datas_uis[0]">
-              <b>As seguintes associações entre classes e unidades de instalação são inválidas devido às datas:</b>
+              <b
+                >As seguintes associações entre classes e unidades de instalação
+                são inválidas devido às datas:</b
+              >
               <ul>
-                <li
-                  v-for="(erro_uis, i) in erros_datas_uis"
-                  :key="i"
-                >{{"Classe " + erro_uis.codigoClasse + " e UI " + erro_uis.codigoUI + ";"}}</li>
+                <li v-for="(erro_uis, i) in erros_datas_uis" :key="i">
+                  {{
+                    "Classe " +
+                      erro_uis.codigoClasse +
+                      " e UI " +
+                      erro_uis.codigoUI +
+                      ";"
+                  }}
+                </li>
               </ul>
             </div>
             <div v-if="!existe_serie">
-              <b>Deve adicionar séries ao RADA, antes de o submeter. Tem possibilidade de associar unidades de instalação às séries em avaliação.</b>
+              <b
+                >Deve adicionar séries ao RADA, antes de o submeter. Tem
+                possibilidade de associar unidades de instalação às séries em
+                avaliação.</b
+              >
             </div>
           </v-alert>
         </v-stepper-content>
@@ -159,8 +171,6 @@
                 Os seus dados foram guardados para que possa retomar o trabalho
                 mais tarde. Aceda aos pendentes para continuar.
               </p>
-<<<<<<< HEAD
-              <!-- <p>{{ mensagemPendenteCriadoOK }}</p> -->
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -171,65 +181,6 @@
           </v-card>
         </v-dialog>
       </v-row>
-      <v-row justify-center>
-        <v-dialog v-model="dialogRADACriado" persistent width="50%">
-          <v-card>
-            <v-card-title class="headline grey lighten-2" primary-title
-              >Pedido de Criação do RADA Submetido.</v-card-title
-            >
-            <v-card-text>
-              <br />
-              {{ mensagemPedidoCriadoOK }}
-=======
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/')"
-                >Fechar</v-btn
-              >
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-<<<<<<< HEAD
-      <v-row justify-center>
-        <v-dialog v-model="toSave" width="50%">
-          <v-card>
-            <v-card-title class="headline grey lighten-2" primary-title
-              >Pretende continuar o trabalho neste momento?</v-card-title
-            >
-
-            <v-card-text align="center">
-              <br />
-              <v-progress-circular
-                v-if="loading_circle"
-                :size="70"
-                :width="7"
-                color="amber accent-3"
-                indeterminate
-              ></v-progress-circular>
-              <div v-else>
-                <v-spacer></v-spacer>
-                <v-btn
-                  class="ma-3 pa-3"
-                  color="indigo lighten-3"
-                  @click="guardarTrabalho('nao')"
-                  >Não, pretendo continuar depois.</v-btn
-                >
-                <v-btn
-                  class="ma-3 pa-3"
-                  color="indigo lighten-3"
-                  @click="guardarTrabalho('sim')"
-                  >Sim.</v-btn
-                >
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-      </v-row>
-=======
->>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
       <v-row>
         <v-dialog v-model="toDelete" width="50%">
           <v-card>

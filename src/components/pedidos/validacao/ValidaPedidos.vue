@@ -157,7 +157,7 @@ export default {
     VerDespachos,
     ErroDialog,
     ValidaRADA,
-    VerHistorico,
+    VerHistorico
   },
 
   data() {
@@ -167,7 +167,7 @@ export default {
       pedido: {},
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       pedidoLoaded: false,
       despachosDialog: false,
@@ -175,9 +175,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" },
+        { text: "Despacho", value: "despacho" }
       ],
-      etapas: [],
+      etapas: []
     };
   },
 
@@ -213,7 +213,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>

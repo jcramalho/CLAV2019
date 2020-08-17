@@ -28,7 +28,7 @@ export default {
 
     onRowClick(item) {
       this.$emit("rowClicked", item);
-    },
-  },
+    }
+  }
 };
 </script>

@@ -106,7 +106,7 @@ export default {
 
   components: {
     Loading,
-    ErroAPIDialog,
+    ErroAPIDialog
   },
 
   data() {
@@ -123,8 +123,8 @@ export default {
       mensagemDespacho: null,
       usersHeaders: [
         { text: "Nome", value: "name", class: "title" },
-        { text: "Entidade", value: "entidade", class: "title" },
-      ],
+        { text: "Entidade", value: "entidade", class: "title" }
+      ]
     };
   },
 
@@ -162,7 +162,7 @@ export default {
       distribuicao.proximoResponsavel = {
         nome: this.utilizadorSelecionado.name,
         entidade: this.utilizadorSelecionado.entidade,
-        email: this.utilizadorSelecionado.email,
+        email: this.utilizadorSelecionado.email
       };
 
       if (this.mensagemDespacho !== null)
@@ -187,19 +187,19 @@ export default {
 
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
-            parsedError.data.forEach((erro) => {
+            parsedError.data.forEach(erro => {
               this.erros.push({ parametro: erro.param, mensagem: erro.msg });
             });
           }
         } else {
           this.erros.push({
             sobre: "Substituição de responsável",
-            mensagem: "Ocorreu um erro ao tentar substituir o responsável.",
+            mensagem: "Ocorreu um erro ao tentar substituir o responsável."
           });
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

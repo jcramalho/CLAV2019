@@ -1,20 +1,20 @@
 <template>
   <v-row>
     <v-col xs="12" sm="3">
-      <div class="info-label">{{label_1}}</div>
+      <div class="info-label">{{ label_1 }}</div>
     </v-col>
     <v-col xs="12" sm="3">
       <div class="info-content">
-        {{value_1}}
+        {{ value_1 }}
         <slot name="valor1"></slot>
       </div>
     </v-col>
     <v-col xs="12" sm="3">
-      <div class="info-label">{{label_2}}</div>
+      <div class="info-label">{{ label_2 }}</div>
     </v-col>
     <v-col xs="12" sm="3">
       <div class="info-content">
-        {{value_2}}
+        {{ value_2 }}
         <slot name="valor2"></slot>
       </div>
     </v-col>

@@ -1,11 +1,11 @@
 <template>
   <v-row>
     <v-col cols="12" xs="12" sm="3">
-      <div class="info-label">{{label}}</div>
+      <div class="info-label">{{ label }}</div>
     </v-col>
     <v-col cols="12" xs="12" sm="9">
       <div class="info-content">
-        {{value}}
+        {{ value }}
         <slot name="valor"></slot>
       </div>
     </v-col>

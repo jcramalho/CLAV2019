@@ -16,7 +16,6 @@
         tipo="TABELAS DE SELEÇÃO (DERIVADAS DA LC) INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
       />
     </div>
-    
   </div>
 </template>
 <script>
@@ -74,12 +73,14 @@ export default {
       .catch(e2 => {
         return e2;
       });
-    
+
     await this.$request("get", "/pgd")
       .then(response => {
         this.fontesPGDTS = this.fontesPGD.map(f => {
-          var obj = response.data.find(res => res.tipo == f.tipo && res.numero == f.numero)
-          if(obj) 
+          var obj = response.data.find(
+            res => res.tipo == f.tipo && res.numero == f.numero
+          );
+          if (obj)
             return {
               idPGD: obj.idPGD,
               data: obj.data,
@@ -88,7 +89,7 @@ export default {
               sumario: obj.sumario,
               link: obj.link
             };
-          else 
+          else
             return {
               idPGD: "",
               data: f.data,
@@ -97,7 +98,6 @@ export default {
               sumario: f.sumario,
               link: f.link
             };
-
         });
         this.fontesPGDTSReady = true;
       })

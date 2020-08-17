@@ -9,24 +9,30 @@
   >
     <template slot="item" slot-scope="prop">
       <tr>
-        <td>{{prop.item.codigo}}</td>
-        <td>{{prop.item.titulo}}</td>
+        <td>{{ prop.item.codigo }}</td>
+        <td>{{ prop.item.titulo }}</td>
         <td style="text-align: center; width: 15%">
-          <v-text-field
-            v-model="prop.item.dataContagem"
-            single-line
-            dense
-          />
+          <v-text-field v-model="prop.item.dataContagem" single-line dense />
         </td>
-        <td style="text-align: center;" v-if="(df==='C' || df==='Conservação') && prop.item.ni!=='Participante'">
+        <td
+          style="text-align: center;"
+          v-if="
+            (df === 'C' || df === 'Conservação') &&
+              prop.item.ni !== 'Participante'
+          "
+        >
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-icon color="orange darken-2" v-on="on">warning</v-icon> Participante
+              <v-icon color="orange darken-2" v-on="on">warning</v-icon>
+              Participante
             </template>
-            <span>Alterado em confomidade com <strong>Destino Final</strong> de <strong>Conservação</strong></span>
+            <span
+              >Alterado em confomidade com <strong>Destino Final</strong> de
+              <strong>Conservação</strong></span
+            >
           </v-tooltip>
         </td>
-        <td style="text-align: center;" v-else>{{prop.item.ni}}</td>
+        <td style="text-align: center;" v-else>{{ prop.item.ni }}</td>
       </tr>
     </template>
   </v-data-table>
@@ -36,7 +42,7 @@
 const help = require("@/config/help").help;
 
 export default {
-  props: ["agregacoes","df","pca","dataInicio","search"],
+  props: ["agregacoes", "df", "pca", "dataInicio", "search"],
 
   data: () => ({
     cabecalho: [
@@ -52,20 +58,23 @@ export default {
   methods: {
     validaPCA1: function(dataContagem) {
       var currentTime = new Date();
-      console.log(pca)
-      var pca = parseInt(this.pca) || 0
-      var v = parseInt(dataContagem) || 0
-      var res = pca + v + 1
-      return res <= currentTime.getFullYear() || "Deve ser igual ou inferior à subtração do PCA ao ano corrente."
+      console.log(pca);
+      var pca = parseInt(this.pca) || 0;
+      var v = parseInt(dataContagem) || 0;
+      var res = pca + v + 1;
+      return (
+        res <= currentTime.getFullYear() ||
+        "Deve ser igual ou inferior à subtração do PCA ao ano corrente."
+      );
     },
-    
+
     validaPCA2: function(dataContagem) {
       var currentTime = new Date();
-      var data = parseInt(this.dataInicio) || 0
-      var v = parseInt(dataContagem) || 0
-      var res = v - data
-      return res >= 0 || "Não pode ser inferior à Data de Início da Classe."
+      var data = parseInt(this.dataInicio) || 0;
+      var v = parseInt(dataContagem) || 0;
+      var res = v - data;
+      return res >= 0 || "Não pode ser inferior à Data de Início da Classe.";
     }
   }
-}
+};
 </script>

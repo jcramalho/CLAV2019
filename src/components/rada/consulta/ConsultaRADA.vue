@@ -1,21 +1,26 @@
 <template>
   <v-card class="ma-4" style="background-color:#fafafa">
-    <v-card-title
-      class="indigo darken-4 white--text"
-    >Relatório de Avaliação de Documentação Acumulada: {{rada.titulo}}</v-card-title>
+    <v-card-title class="indigo darken-4 white--text"
+      >Relatório de Avaliação de Documentação Acumulada:
+      {{ rada.titulo }}</v-card-title
+    >
     <v-card-text>
       <InformacaoGeral :rada="rada" />
       <v-expansion-panels>
         <v-expansion-panel class="ma-1">
           <v-expansion-panel-header
             class="pa-2 indigo darken-4 title white--text"
-          >Relatório Expositivo</v-expansion-panel-header>
+            >Relatório Expositivo</v-expansion-panel-header
+          >
           <v-expansion-panel-content>
             <RelatorioExpositivo :rada="rada" />
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel class="ma-1">
-          <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">Tabela de Seleção</v-expansion-panel-header>
+          <v-expansion-panel-header
+            class="pa-2 indigo darken-4 title white--text"
+            >Tabela de Seleção</v-expansion-panel-header
+          >
           <v-expansion-panel-content>
             <TabelaSelecao :rada="rada" />
           </v-expansion-panel-content>
@@ -53,11 +58,11 @@ export default {
         e["tipo"] = tipo[tipo.length - 2];
       }
 
-       this.rada.tsRadaArv = await this.preparaTree();
+      this.rada.tsRadaArv = await this.preparaTree();
     });
   },
   methods: {
-     preparaTree() {
+    preparaTree() {
       var myTree = [];
 
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties

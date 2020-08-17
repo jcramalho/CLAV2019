@@ -297,7 +297,7 @@ export default {
   props: ["campo", "tipoPedido"],
 
   components: {
-    SelecionarData,
+    SelecionarData
   },
 
   data() {
@@ -306,7 +306,7 @@ export default {
       internacionalItems: ["Sim", "Não"],
       diplomaFonteItems: ["Não especificada", "PGD", "PGD/LC", "RADA"],
       valorEditado: "",
-      erroDialog: false,
+      erroDialog: false
     };
   },
 
@@ -317,7 +317,7 @@ export default {
   computed: {
     valorAtual() {
       return this.campo.valorAtual;
-    },
+    }
   },
 
   watch: {
@@ -325,7 +325,7 @@ export default {
       if (novoValor !== null && novoValor !== undefined)
         this.valorEditado = novoValor;
       else this.valorEditado = "";
-    },
+    }
   },
 
   mounted() {
@@ -360,7 +360,7 @@ export default {
       } else if (this.valorAtual !== this.valorEditado) {
         this.$emit("editarCampo", {
           dados: this.valorEditado,
-          campo: this.campo,
+          campo: this.campo
         });
       } else {
         this.fechar();
@@ -372,8 +372,8 @@ export default {
         this.valorEditado = this.valorAtual;
 
       this.erroDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

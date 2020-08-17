@@ -7,40 +7,43 @@
       <v-row>
         <v-col xs="2" sm="2">
           <div class="info-label">
-             Designação
+            Designação
           </div>
         </v-col>
         <v-col class="mt-3">{{ p.objeto.dados.designacao }}</v-col>
         <v-col xs="2" sm="2">
           <div class="info-label">
-                     Data de Criação
+            Data de Criação
           </div>
         </v-col>
         <v-col class="mt-3">{{ p.objeto.dados.dataCriacao }}</v-col>
       </v-row>
       <v-row>
-          <v-col xs="2" sm="2" class="mt-1">
-              <div class="info-label">
-                      Entidades
-              </div>
-          </v-col>
-          <v-col>
-              <span>
-                <v-chip
-                  v-for="(e,i) in p.objeto.dados.entidades" :key="i"
-                  class="ma-2"
-                  color="indigo darken-4"
-                  outlined
-                  label
-                >
-                  <v-icon left>account_balance</v-icon>
-                  {{ e }}
-                </v-chip>
-              </span>
-          </v-col>
+        <v-col xs="2" sm="2" class="mt-1">
+          <div class="info-label">
+            Entidades
+          </div>
+        </v-col>
+        <v-col>
+          <span>
+            <v-chip
+              v-for="(e, i) in p.objeto.dados.entidades"
+              :key="i"
+              class="ma-2"
+              color="indigo darken-4"
+              outlined
+              label
+            >
+              <v-icon left>account_balance</v-icon>
+              {{ e }}
+            </v-chip>
+          </span>
+        </v-col>
       </v-row>
       <v-row justify="space-between" class="info-label">
-        <v-col class="mt-6" style="font-size: 20px;">Lista de Classes / Séries</v-col>
+        <v-col class="mt-6" style="font-size: 20px;"
+          >Lista de Classes / Séries</v-col
+        >
         <v-col>
           <v-text-field
             v-model="search"
@@ -76,8 +79,8 @@
             <td>{{ props.item.seriesDocumentais }}</td>
             <td>{{ props.item.pca }}</td>
             <td>
-              <span v-if="props.item.df=='E'">Eliminação</span>
-              <span v-else-if="props.item.df=='C'">Conservação</span>
+              <span v-if="props.item.df == 'E'">Eliminação</span>
+              <span v-else-if="props.item.df == 'C'">Conservação</span>
               <span v-else>Conservação Parcial</span>
             </td>
           </tr>
@@ -104,7 +107,11 @@ export default {
     headers: [
       { text: "Código", value: "codigo", class: "subtitle-1" },
       { text: "Referência", value: "referencia", class: "subtitle-1" },
-      { text: "Séries Documentais", value: "seriesDocumentais", class: "subtitle-1" },
+      {
+        text: "Séries Documentais",
+        value: "seriesDocumentais",
+        class: "subtitle-1"
+      },
       { text: "PCA", value: "pca", class: "subtitle-1" },
       { text: "Destino Final", value: "df", class: "subtitle-1" }
     ],

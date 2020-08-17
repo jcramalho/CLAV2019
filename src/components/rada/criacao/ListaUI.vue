@@ -2,7 +2,12 @@
   <div>
     <v-row>
       <v-col cols="12" xs="12" sm="12">
-        <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_nova_ui = true">
+        <v-btn
+          color="indigo lighten-2"
+          dark
+          class="ma-2"
+          @click="criar_nova_ui = true"
+        >
           <v-icon dark left>add</v-icon>Unidade de Instalação
         </v-btn>
       </v-col>
@@ -26,15 +31,22 @@
         >
           <template v-slot:item="props">
             <tr
-              :style="'text-align: center; background-color:' + isComplete(props.item)"
+              :style="
+                'text-align: center; background-color:' + isComplete(props.item)
+              "
               @click="editarUI(props.item)"
             >
               <td @click.stop>
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
-                    <v-icon small v-on="on" @click="nova_ui_copia(props.item)">file_copy</v-icon>
+                    <v-icon small v-on="on" @click="nova_ui_copia(props.item)"
+                      >file_copy</v-icon
+                    >
                   </template>
-                  <span>Criar nova UI baseada nos campos de {{props.item.codigo}}!</span>
+                  <span
+                    >Criar nova UI baseada nos campos de
+                    {{ props.item.codigo }}!</span
+                  >
                 </v-tooltip>
               </td>
               <td>{{ props.item.codigo }}</td>
@@ -45,21 +57,28 @@
                   dense
                   :style="'background-color:' + isComplete(props.item)"
                 >
-                  <v-list-item v-for="(classe, i) in props.item.classesAssociadas" :key="i">
+                  <v-list-item
+                    v-for="(classe, i) in props.item.classesAssociadas"
+                    :key="i"
+                  >
                     <v-list-item-icon>
                       <img
                         v-if="classe.tipo == 'Série'"
                         style="width:23px; height:30px"
                         :src="svg_sr"
                       />
-                      <img v-else style="width:23px; height:30px" :src="svg_ssr" />
+                      <img
+                        v-else
+                        style="width:23px; height:30px"
+                        :src="svg_ssr"
+                      />
                     </v-list-item-icon>
-                    <v-list-item-content>{{classe.codigo + " - " + buscarTituloTable(classe.codigo)}}</v-list-item-content>
+                    <v-list-item-content>{{
+                      classe.codigo + " - " + buscarTituloTable(classe.codigo)
+                    }}</v-list-item-content>
                   </v-list-item>
                 </v-list>
-                <p v-else>
-                  <br />Não tem séries/subséries associadas!
-                </p>
+                <p v-else><br />Não tem séries/subséries associadas!</p>
               </td>
             </tr>
           </template>
@@ -166,7 +185,9 @@ export default {
             e.titulo.includes(this.search) ||
             e.classesAssociadas.some(
               e =>
-                e.codigo.includes(this.search) || e.tipo.includes(this.search) || this.buscarTituloTable(e.codigo).includes(this.search)
+                e.codigo.includes(this.search) ||
+                e.tipo.includes(this.search) ||
+                this.buscarTituloTable(e.codigo).includes(this.search)
             )
         );
       } else {
