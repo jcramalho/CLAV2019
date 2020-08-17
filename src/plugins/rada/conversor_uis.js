@@ -29,10 +29,10 @@ var importarUIs = (file, uis_originais, classes_originais, re) => {
                     codigo: ui[0],
                     codCota: ui[2],
                     titulo: !!ui[1] ? ui[1] : adicionarErro(erros, ui[0], "Título"),
-                    dataInicial: new Number(ui[4]) > 0
+                    dataInicial: new Date(ui[4] + "-01-01") >= new Date(re.dataInicial)
                         ? ui[4] + "-01-01"
                         : adicionarErro(erros, ui[0], "Data Inicial"),
-                    dataFinal: new Number(ui[5]) >= new Number(ui[4])
+                    dataFinal: new Date(ui[5] + "-12-31") <= new Date(re.dataFinal) && new Date(ui[5] + "-12-31") >= new Date(ui[4] + "-01-01")
                         ? ui[5] + "-12-31"
                         : adicionarErro(erros, ui[0], "Data Final"),
                     produtor: produtoras(ui, erros, re),
@@ -85,28 +85,32 @@ function validarClassesAssociadas(novas_uis, classes_originais) {
   Função para preencher as classes associadads de um UI
 */
 function preencherClassesAssociadas(ui, classes_originais, erros) {
+
     let classes_associadas = ui[7].split("#");
     let classes_associadas_validado = [];
     let setAuxRepetidos = new Set();
     let tem_duplicados = false;
+    
+    if (classes_associadas.length > 1) {
+        for (let i = 0; i < classes_associadas.length; i++) {
+            let classe = classes_originais.find(e => e.codigo == classes_associadas[i] && (e.tipo == "Série" || e.tipo == "Subsérie"))
 
-    for (let i = 0; i < classes_associadas.length; i++) {
-        let classe = classes_originais.find(e => e.codigo == classes_associadas[i] && (e.tipo == "Série" || e.tipo == "Subsérie"))
-
-        if (classe != undefined) {
-            if (!tem_duplicados) {
-                tem_duplicados = setAuxRepetidos.size === setAuxRepetidos.add(classes_associadas[i]).size;
+            if (classe != undefined) {
+                if (!tem_duplicados) {
+                    tem_duplicados = setAuxRepetidos.size === setAuxRepetidos.add(classes_associadas[i]).size;
+                }
+                classes_associadas_validado.push({ codigo: classe.codigo, tipo: classe.tipo });
+            } else {
+                erros.uis.push({ ui: ui[0], erro: 'Classe associada é inválida, ' + classes_associadas[i] });
             }
-            classes_associadas_validado.push({ codigo: classe.codigo, tipo: classe.tipo });
-        } else {
-            erros.uis.push({ ui: ui[0], erro: 'Classe associada é inválida, ' + classes_associadas[i] });
+
         }
 
+        if (tem_duplicados) {
+            erros.uis.push({ ui: ui[0], erro: 'Possuí associações com a mesma classe mais que uma vez!' });
+        }
     }
 
-    if (tem_duplicados) {
-        erros.uis.push({ ui: ui[0], erro: 'Possuí associações com a mesma classe mais que uma vez!' });
-    }
 
     return classes_associadas_validado;
 }

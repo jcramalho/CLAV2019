@@ -13,6 +13,8 @@ var validarClasses = (
             .split("\n");
         let ts_length = ts.length;
 
+        console.log("RE: ", re);
+
         let novas_classes = [];
 
         let erros = {
@@ -86,7 +88,7 @@ var validarClasses = (
                         );
                         break;
                     case 5:
-                        validarSubserie(classe, pai, erros, novas_classes, formaContagem);
+                        validarSubserie(classe, pai, erros, re, novas_classes, formaContagem);
                         break;
                     default:
                         erros.tipo.push({ classe: classe[0], erro: 'Nível inválido!' });
@@ -162,11 +164,11 @@ function validarSerie(
             ? classe[3]
             : adicionarErro(erros, "series", classe[0], "Descrição"),
         dataInicial:
-            new Number(classe[4]) > 0
+            new Date(classe[4] + "-01-01") >= new Date(re.dataInicial)
                 ? classe[4] + "-01-01"
                 : adicionarErro(erros, "series", classe[0], "Data Inicial"),
         dataFinal:
-            new Number(classe[5]) >= new Number(classe[4])
+            new Date(classe[5] + "-12-31") <= new Date(re.dataFinal) && new Date(classe[5] + "-12-31") >= new Date(classe[4] + "-01-01")
                 ? classe[5] + "-12-31"
                 : adicionarErro(erros, "series", classe[0], "Data Final"),
         tUA: ["Processo", "Coleção", "Dossier", "Registo"].includes(classe[6])
@@ -209,7 +211,7 @@ function validarSerie(
     novas_classes.push(serie);
 }
 
-function validarSubserie(classe, pai, erros, novas_classes, formaContagem) {
+function validarSubserie(classe, pai, erros, re, novas_classes, formaContagem) {
     let subserie = {
         codigo: classe[0],
         titulo: !!classe[1]
@@ -219,11 +221,11 @@ function validarSubserie(classe, pai, erros, novas_classes, formaContagem) {
             ? classe[3]
             : adicionarErro(erros, "subseries", classe[0], "Descrição"),
         dataInicial:
-            new Number(classe[4]) > 0
+            new Date(classe[4] + "-01-01") >= new Date(re.dataInicial)
                 ? classe[4] + "-01-01"
                 : adicionarErro(erros, "subseries", classe[0], "Data Inicial"),
         dataFinal:
-            new Number(classe[5]) >= new Number(classe[4])
+            new Date(classe[5] + "-12-31") <= new Date(re.dataFinal) && new Date(classe[5] + "-12-31") >= new Date(classe[4] + "-01-01")
                 ? classe[5] + "-12-31"
                 : adicionarErro(erros, "subseries", classe[0], "Data Final"),
         UIs: [],

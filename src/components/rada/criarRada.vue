@@ -166,12 +166,12 @@ export default {
         entRes: [],
         RE: {
           entidadesProd: [
-            // "AAN - Autoridade Aeronáutica Nacional",
+            //"AAN - Autoridade Aeronáutica Nacional"
             // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
           ],
           tipologiasProd: null,
-          // dataInicial: "2020-01-02",
-          // dataFinal: "2020-06-01",
+          // dataInicial: "2020-08-10",
+          // dataFinal: "2020-08-12",
           dataInicial: null,
           dataFinal: null,
           dimSuporte: {
