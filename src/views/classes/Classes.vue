@@ -168,6 +168,10 @@
                   label="Campo a pesquisar"
                   :rules="regraCampo"
                   v-model="camposUsados[index].campo"
+                  @change="
+                    camposUsados[index].valor = '';
+                    camposUsados[index].subcampo = null;
+                  "
                 />
               </v-col>
               <v-col cols="1">
@@ -443,7 +447,7 @@ export default {
       var transF = item => {
         return {
           text: item.termo,
-          value: item.termo.charAt(0)
+          value: item.termo.charAt(0).toLowerCase()
         };
       };
 
