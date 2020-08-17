@@ -185,7 +185,13 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
-import { eNUV, eNV, eDataFormatoErrado } from "@/utils/validadores";
+import {
+  eNUV,
+  eNV,
+  eDataFormatoErrado,
+  eUndefined,
+  testarRegex,
+} from "@/utils/validadores";
 
 export default {
   props: ["p"],
@@ -439,7 +445,8 @@ export default {
       if (haVermelhos)
         this.dialogConfirmacao = {
           visivel: true,
-          mensagem: "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          mensagem:
+            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
           dados: dados,
         };
       // Caso contrário segue para a finalização do pedido
@@ -457,7 +464,7 @@ export default {
           if (numeroErros === 0)
             await this.$request(
               "put",
-              `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
+              `/entidades/ent_${pedido.objeto.dadosOriginais.sigla}/extinguir`,
               { dataExtincao: pedido.objeto.dados.dataExtincao }
             );
         } else {
@@ -469,16 +476,13 @@ export default {
                 pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
               }
 
-              if (
-                pedido.objeto.dados[key] === "" ||
-                pedido.objeto.dados[key] === null
-              )
+              if (eNV(pedido.objeto.dados[key]))
                 delete pedido.objeto.dados[key];
             }
 
             await this.$request(
               "put",
-              `/entidades/ent_${pedido.objeto.dados.sigla}`,
+              `/entidades/ent_${pedido.objeto.dadosOriginais.sigla}`,
               pedido.objeto.dados
             );
           }
@@ -586,7 +590,7 @@ export default {
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           numeroErros++;
-        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+        } else if (!testarRegex(dados.sioe, /^\d+$/)) {
           this.erros.push({
             sobre: "SIOE",
             mensagem: "O campo SIOE só pode ter digitos numéricos.",

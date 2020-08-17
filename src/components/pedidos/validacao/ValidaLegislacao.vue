@@ -239,7 +239,7 @@ import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import ErroDialog from "@/components/generic/ErroDialog";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
-import { nanoid } from "nanoid";
+import nanoid from "nanoid";
 
 import {
   comparaSigla,
@@ -713,10 +713,6 @@ export default {
           if (pedido.objeto.dados.diplomaFonte === "Não especificada")
             delete pedido.objeto.dados.diplomaFonte;
 
-          const dataRevogacao = JSON.parse(
-            JSON.stringify(pedido.objeto.dados.dataRevogacao)
-          );
-
           const id = `leg_${nanoid()}`;
 
           pedido.objeto.dados.id = id;
@@ -727,9 +723,9 @@ export default {
             pedido.objeto.dados
           );
 
-          if (dataRevogacao) {
+          if (pedido.objeto.dados.dataRevogacao) {
             await this.$request("put", `/legislacao/${id}/revogar`, {
-              dataRevogacao,
+              dataRevogacao: pedido.objeto.dados.dataRevogacao,
             });
           }
 

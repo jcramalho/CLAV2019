@@ -278,9 +278,7 @@ export default {
           if (erros === 0) {
             const objKeys = Object.keys(dataObj);
 
-            console.log("objkeys", objKeys);
-
-            if (objKeys.length < 2)
+            if (objKeys.length === 0)
               throw new Error(
                 "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
               );

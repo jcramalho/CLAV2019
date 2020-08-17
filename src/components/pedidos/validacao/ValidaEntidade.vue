@@ -569,17 +569,13 @@ export default {
             }
           }
 
-          const dataExtincao = JSON.parse(
-            JSON.stringify(pedido.objeto.dados.dataExtincao)
-          );
-
           await this.$request("post", "/entidades", pedido.objeto.dados);
 
-          if (dataExtincao) {
+          if (pedido.objeto.dados.dataExtincao) {
             await this.$request(
               "put",
               `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
-              { dataExtincao }
+              { dataExtincao: pedido.objeto.dados.dataExtincao }
             );
           }
 
