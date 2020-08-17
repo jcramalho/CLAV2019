@@ -15,14 +15,22 @@
         <div class="info-label">Data Inicial</div>
       </v-col>
       <v-col sm="3" md="3">
-        <v-text-field v-model="classe.dataInicial" prepend-icon="event" readonly></v-text-field>
+        <v-text-field
+          v-model="classe.dataInicial"
+          prepend-icon="event"
+          readonly
+        ></v-text-field>
       </v-col>
       <!-- DATA FINAL -->
       <v-col md="3" sm="3">
         <div class="info-label">Data Final</div>
       </v-col>
       <v-col sm="3" md="3">
-        <v-text-field v-model="classe.dataFinal" prepend-icon="event" readonly></v-text-field>
+        <v-text-field
+          v-model="classe.dataFinal"
+          prepend-icon="event"
+          readonly
+        ></v-text-field>
       </v-col>
     </v-row>
     <!-- UNIDADES DE INSTALAÇÃO -->
@@ -62,7 +70,9 @@
           >
             <template v-slot:selection="data">
               <v-chip>
-                <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                <v-avatar left color="amber accent-3">{{
+                  data.item[0]
+                }}</v-avatar>
                 {{ data.item }}
               </v-chip>
             </template>
@@ -72,7 +82,12 @@
           <div class="info-label">Tipo de Série</div>
         </v-col>
         <v-col sm="3" md="3">
-          <v-select readonly :items="aberto_fechado" solo v-model="classe.tSerie"></v-select>
+          <v-select
+            readonly
+            :items="aberto_fechado"
+            solo
+            v-model="classe.tSerie"
+          ></v-select>
         </v-col>
       </v-row>
 
@@ -81,13 +96,23 @@
           <div class="info-label">Suporte</div>
         </v-col>
         <v-col sm="3" md="3">
-          <v-select :items="suporte_items" solo v-model="classe.suporte" readonly></v-select>
+          <v-select
+            :items="suporte_items"
+            solo
+            v-model="classe.suporte"
+            readonly
+          ></v-select>
         </v-col>
         <v-col md="3" sm="3">
           <div class="info-label">Medição</div>
         </v-col>
         <v-col sm="3" md="3">
-          <v-text-field type="number" solo v-model="classe.medicao" readonly></v-text-field>
+          <v-text-field
+            type="number"
+            solo
+            v-model="classe.medicao"
+            readonly
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -95,7 +120,13 @@
           <div class="info-label">Localização</div>
         </v-col>
         <v-col sm="9" md="9">
-          <v-combobox readonly multiple solo v-model="classe.localizacao" chips></v-combobox>
+          <v-combobox
+            readonly
+            multiple
+            solo
+            v-model="classe.localizacao"
+            chips
+          ></v-combobox>
         </v-col>
       </v-row>
     </div>

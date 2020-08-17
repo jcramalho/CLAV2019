@@ -330,17 +330,15 @@
                     </a>
                   </li>
                   <li>
-                    <a
-                      :href="
-                        `${publicPath}documentos/FormularioAE_SERIE.csv`
-                      "
-                    >
-                      Formulário para submissão de Classes / Séries para auto de Eliminação
+                    <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`">
+                      Formulário para submissão de Classes / Séries para auto de
+                      Eliminação
                     </a>
                   </li>
                   <li>
                     <a :href="`${publicPath}documentos/FormularioAE_UI.csv`">
-                      Formulário para submissão de Agregações / UI para auto de Eliminação
+                      Formulário para submissão de Agregações / UI para auto de
+                      Eliminação
                     </a>
                   </li>
                   <li>

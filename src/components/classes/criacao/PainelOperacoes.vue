@@ -15,6 +15,7 @@
             'px-8': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown
           }"
+          style="width: 100%;"
           id="default-button"
         >
           <unicon
@@ -37,6 +38,7 @@
             'px-8': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown
           }"
+          style="width: 100%;"
           id="default-button"
         >
           <unicon
@@ -63,8 +65,8 @@
             'px-8': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown
           }"
-          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-outline: none !important;"
+          style="width: 100%;"
+          id="botao-verde"
         >
           <unicon
             name="adicionar-icon"
@@ -88,8 +90,8 @@ outline: none !important;"
             'px-8': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown
           }"
-          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-outline: none !important;"
+          style="width: 100%;"
+          id="botao-vermelho"
         >
           <unicon
             name="eliminar-icon"

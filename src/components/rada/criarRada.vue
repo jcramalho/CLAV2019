@@ -7,26 +7,59 @@
         Guardar Trabalho
         <v-icon right>save</v-icon>
       </v-btn>
-      <v-icon v-if="pode_remover" dark color="red" @click="toDelete = true" right>delete_sweep</v-icon>
+      <v-icon
+        v-if="pode_remover"
+        dark
+        color="red"
+        @click="toDelete = true"
+        right
+        >delete_sweep</v-icon
+      >
     </v-card-title>
     <v-card-text>
       <br />
-      <v-alert :value="alert_guardar" outlined type="success" text dismissible border="left">
+      <v-alert
+        :value="alert_guardar"
+        outlined
+        type="success"
+        text
+        dismissible
+        border="left"
+      >
         <b>Trabalho guardado com sucesso!</b>
       </v-alert>
-      <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
+      <v-stepper
+        v-model="e1"
+        vertical
+        class="elevation-0"
+        style="background-color:#fafafa"
+      >
         <!-- Informação Geral -->
-        <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
+        <v-stepper-step
+          color="amber accent-3"
+          :key="1"
+          :complete="e1 > 1"
+          :step="1"
+        >
           <font size="4">
             <b>Informação Geral</b>
           </font>
         </v-stepper-step>
         <v-stepper-content step="1">
-          <InformacaoGeral @seguinte="changeE1" :RADA="RADA" :entidades="entidades" />
+          <InformacaoGeral
+            @seguinte="changeE1"
+            :RADA="RADA"
+            :entidades="entidades"
+          />
         </v-stepper-content>
 
         <!-- Relatório Expositivo -->
-        <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
+        <v-stepper-step
+          color="amber accent-3"
+          :key="2"
+          :complete="e1 > 2"
+          :step="2"
+        >
           <font size="4">
             <b>Relatório Expositivo</b>
           </font>
@@ -44,7 +77,12 @@
         </v-stepper-content>
 
         <!-- Tabela de Seleção -->
-        <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
+        <v-stepper-step
+          color="amber accent-3"
+          :key="3"
+          :complete="e1 > 3"
+          :step="3"
+        >
           <font size="4">
             <b>Tabela de Seleção</b>
           </font>
@@ -64,7 +102,9 @@
       <v-row justify-center>
         <v-dialog v-model="dialogRADAPendente" persistent width="50%">
           <v-card>
-            <v-card-title class="headline grey lighten-2" primary-title>Trabalho pendente guardado</v-card-title>
+            <v-card-title class="headline grey lighten-2" primary-title
+              >Trabalho pendente guardado</v-card-title
+            >
             <v-card-text>
               <br />
               <p>
@@ -75,7 +115,9 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+              <v-btn color="green darken-1" text @click="$router.push('/')"
+                >Fechar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -83,17 +125,18 @@
       <v-row justify-center>
         <v-dialog v-model="dialogRADACriado" persistent width="50%">
           <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >Pedido de Criação do RADA Submetido.</v-card-title>
+            <v-card-title class="headline grey lighten-2" primary-title
+              >Pedido de Criação do RADA Submetido.</v-card-title
+            >
             <v-card-text>
               <br />
               {{ mensagemPedidoCriadoOK }}
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+              <v-btn color="green darken-1" text @click="$router.push('/')"
+                >Fechar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -101,10 +144,9 @@
       <v-row justify-center>
         <v-dialog v-model="toSave" width="50%">
           <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >Pretende continuar o trabalho neste momento?</v-card-title>
+            <v-card-title class="headline grey lighten-2" primary-title
+              >Pretende continuar o trabalho neste momento?</v-card-title
+            >
 
             <v-card-text align="center">
               <br />
@@ -114,19 +156,21 @@
                 :width="7"
                 color="amber accent-3"
                 indeterminate
-              ></v-progress-circular> 
+              ></v-progress-circular>
               <div v-else>
                 <v-spacer></v-spacer>
                 <v-btn
                   class="ma-3 pa-3"
                   color="indigo lighten-3"
                   @click="guardarTrabalho('nao')"
-                >Não, pretendo continuar depois.</v-btn>
+                  >Não, pretendo continuar depois.</v-btn
+                >
                 <v-btn
                   class="ma-3 pa-3"
                   color="indigo lighten-3"
                   @click="guardarTrabalho('sim')"
-                >Sim.</v-btn>
+                  >Sim.</v-btn
+                >
               </div>
             </v-card-text>
           </v-card>
@@ -135,15 +179,24 @@
       <v-row>
         <v-dialog v-model="toDelete" width="50%">
           <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >Pretende mesmo eliminar o trabalho?</v-card-title>
+            <v-card-title class="headline grey lighten-2" primary-title
+              >Pretende mesmo eliminar o trabalho?</v-card-title
+            >
 
             <v-card-text align="center">
               <br />
-              <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
-              <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarTrabalho">Sim</v-btn>
+              <v-btn
+                class="ma-3 pa-3"
+                color="indigo lighten-3"
+                @click="toDelete = false"
+                >Voltar</v-btn
+              >
+              <v-btn
+                class="ma-3 pa-5"
+                color="red lighten-1"
+                @click="eliminarTrabalho"
+                >Sim</v-btn
+              >
             </v-card-text>
           </v-card>
         </v-dialog>

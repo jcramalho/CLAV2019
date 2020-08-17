@@ -1,8 +1,5 @@
 <template>
-  <ImportarAuto 
-    v-bind:entidades="entidades"
-    v-bind:classes="classes"
-  />
+  <ImportarAuto v-bind:entidades="entidades" v-bind:classes="classes" />
 </template>
 
 <script>
@@ -17,11 +14,11 @@ export default {
     classes: []
   }),
   methods: {
-    prepararEntidade: async function(ent,user) {
+    prepararEntidade: async function(ent, user) {
       try {
         var myEntidades = [];
         for (var e of ent) {
-          if(e.id!=user.entidade)
+          if (e.id != user.entidade)
             myEntidades.push(e.sigla + " - " + e.designacao);
         }
         return myEntidades;

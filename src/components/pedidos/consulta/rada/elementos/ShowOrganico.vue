@@ -2,9 +2,7 @@
   <v-dialog v-model="dialogOrganico">
     <template v-slot:activator="{ on }">
       <b text depressed @click="getSerie" v-on="on">
-        {{
-        treeview_object.titulo
-        }}
+        {{ treeview_object.titulo }}
       </b>
     </template>
     <v-card>
@@ -17,13 +15,21 @@
             <div class="info-label">Código</div>
           </v-col>
           <v-col sm="3" md="3">
-            <v-text-field readonly v-model="organico.codigo" solo></v-text-field>
+            <v-text-field
+              readonly
+              v-model="organico.codigo"
+              solo
+            ></v-text-field>
           </v-col>
           <v-col xs="3" sm="3">
             <div class="info-label">Título</div>
           </v-col>
           <v-col sm="3" md="3">
-            <v-text-field readonly v-model="organico.titulo" solo></v-text-field>
+            <v-text-field
+              readonly
+              v-model="organico.titulo"
+              solo
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
@@ -31,7 +37,11 @@
             <div class="info-label">Descrição</div>
           </v-col>
           <v-col sm="9" md="9">
-            <v-text-field readonly v-model="organico.descricao" solo></v-text-field>
+            <v-text-field
+              readonly
+              v-model="organico.descricao"
+              solo
+            ></v-text-field>
           </v-col>
         </v-row>
         <h5>Hierarquia</h5>
@@ -57,7 +67,13 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogOrganico = false">Voltar</v-btn>
+        <v-btn
+          color="indigo darken-4"
+          outlined
+          text
+          @click="dialogOrganico = false"
+          >Voltar</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

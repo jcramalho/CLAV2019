@@ -17,7 +17,11 @@
         ></v-select>
       </v-col>
     </v-row>
-    <v-row v-if="newSerie.formaContagem.forma == 'vc_pcaFormaContagem_disposicaoLegal'">
+    <v-row
+      v-if="
+        newSerie.formaContagem.forma == 'vc_pcaFormaContagem_disposicaoLegal'
+      "
+    >
       <!-- newSerie.formaContagem.forma == 'vc_pcaFormaContagem_disposicaoLegal'  -->
       <v-col md="3" sm="3">
         <div class="info-label">Subforma de Contagem do PCA</div>

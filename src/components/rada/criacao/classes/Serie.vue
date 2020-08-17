@@ -1,12 +1,20 @@
 <template>
   <v-dialog v-model="dialog" persistent>
     <template v-slot:activator="{ on }">
-      <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
+      <v-btn
+        color="indigo lighten-2"
+        dark
+        class="ma-2"
+        @click="filterSeries"
+        v-on="on"
+      >
         <v-icon dark left>add</v-icon>Série
       </v-btn>
     </template>
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">Adicionar Classe Série</v-card-title>
+      <v-card-title class="indigo darken-1 white--text"
+        >Adicionar Classe Série</v-card-title
+      >
       <br />
 
       <v-card-text>
@@ -78,7 +86,8 @@
                 <template v-slot:no-data>
                   <v-list-item>
                     <v-list-item-title>
-                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão
+                      não existe!
                     </v-list-item-title>
                   </v-list-item>
                 </template>
@@ -89,17 +98,26 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+        <v-alert
+          width="100%"
+          :value="existe_erros"
+          outlined
+          type="error"
+          prominent
+          border="left"
+        >
           É necessário preencher os campos seguintes:
           <ul>
-            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+            <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
         <v-btn color="indigo darken-4" text @click="apagar">
           <v-icon>delete_sweep</v-icon>
         </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close">Voltar</v-btn>
+        <v-btn color="indigo darken-4" outlined text @click="close"
+          >Voltar</v-btn
+        >
         <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
         <v-btn color="success" class="mr-4" @click="save">Criar</v-btn>
       </v-card-actions>

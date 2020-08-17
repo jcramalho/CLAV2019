@@ -1,8 +1,13 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Loading v-if="!dadosReady" :message="'a entidade'" />
     <EditaEntidade v-else :e="entidade" />
-  </div>
+  </v-content>
 </template>
 
 <script>
@@ -12,12 +17,12 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     EditaEntidade,
-    Loading,
+    Loading
   },
 
   data: () => ({
     entidade: {},
-    dadosReady: false,
+    dadosReady: false
   }),
 
   methods: {
@@ -29,7 +34,7 @@ export default {
           sioe: ent.sioe,
           internacional: ent.internacional,
           tipologiasSel: tip,
-          estado: ent.estado,
+          estado: ent.estado
         };
 
         if (ent.dataCriacao) {
@@ -44,7 +49,7 @@ export default {
       } catch (e) {
         return {};
       }
-    },
+    }
   },
 
   created: async function() {
@@ -67,6 +72,6 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>

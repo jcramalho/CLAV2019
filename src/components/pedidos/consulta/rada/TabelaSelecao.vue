@@ -24,7 +24,11 @@
               :classes="TS.classes"
               :formaContagem="formaContagem"
             />
-            <ShowOrganico v-else :treeview_object="item" :classes="TS.classes" />
+            <ShowOrganico
+              v-else
+              :treeview_object="item"
+              :classes="TS.classes"
+            />
           </template>
         </v-treeview>
       </v-col>
@@ -57,7 +61,12 @@
     </v-row>
     <v-row v-else>
       <v-col cols="12" xs="12" sm="12">
-        <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
+        <v-alert
+          class="text-center"
+          :value="true"
+          color="amber accent-3"
+          icon="warning"
+        >
           Não foram adicionadas
           <b>Unidades de Instalação</b>.
         </v-alert>

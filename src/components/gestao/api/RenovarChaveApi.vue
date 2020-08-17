@@ -5,14 +5,7 @@
       'px-12': $vuetify.breakpoint.mdAndUp
     }"
   >
-    <v-container
-      fluid
-      class="pa-0 ma-auto"
-      :class="{
-        'px-0': $vuetify.breakpoint.mdAndDown,
-        'px-12': $vuetify.breakpoint.lgAndUp
-      }"
-    >
+    <v-container fluid class="pa-0 ma-auto">
       <v-row>
         <v-col class="pt-0">
           <v-card flat style="border-radius: 10px !important;">
@@ -28,7 +21,7 @@
               API, que será associada ao seu email já existente.
               <v-form ref="form" lazy-validation>
                 <div
-                  class="info-content px-3 pb-1 my-4"
+                  class="info-content px-3 pb-1 mt-8 mb-4"
                   style="min-height: 50px;"
                 >
                   <v-row>

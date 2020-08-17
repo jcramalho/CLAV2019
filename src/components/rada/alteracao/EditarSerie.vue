@@ -2,35 +2,50 @@
   <v-dialog v-model="dialogSerie" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
-        {{
-        treeview_object.titulo
-        }}
+        {{ treeview_object.titulo }}
       </b>
       <b
-        v-show="treeview_object.eFilhoDe == null || !treeview_object.temUIs_ou_datas || (treeview_object.temDF && !(!!(treeview_object.children[0])))"
+        v-show="
+          treeview_object.eFilhoDe == null ||
+            !treeview_object.temUIs_ou_datas ||
+            (treeview_object.temDF && !!!treeview_object.children[0])
+        "
         style="color:red"
-      >*</b>
+        >*</b
+      >
     </template>
     <v-card>
       <v-card-title class="indigo darken-1 white--text">
         <b>{{ "Alterar a série: " + treeview_object.titulo }}</b>
         <v-spacer />
-        <v-icon @click="toDelete = true" dark color="red" right>delete_sweep</v-icon>
+        <v-icon @click="toDelete = true" dark color="red" right
+          >delete_sweep</v-icon
+        >
       </v-card-title>
       <br />
       <v-card-text>
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
             <v-card>
-              <v-card-title
-                class="headline grey lighten-2"
-                primary-title
-              >Pretende mesmo eliminar a classe {{ treeview_object.titulo }} ?</v-card-title>
+              <v-card-title class="headline grey lighten-2" primary-title
+                >Pretende mesmo eliminar a classe
+                {{ treeview_object.titulo }} ?</v-card-title
+              >
 
               <v-card-text align="center">
                 <br />
-                <v-btn class="ma-3 pa-3" color="indigo lighten-3" @click="toDelete = false">Voltar</v-btn>
-                <v-btn class="ma-3 pa-5" color="red lighten-1" @click="eliminarClasse">Sim</v-btn>
+                <v-btn
+                  class="ma-3 pa-3"
+                  color="indigo lighten-3"
+                  @click="toDelete = false"
+                  >Voltar</v-btn
+                >
+                <v-btn
+                  class="ma-3 pa-5"
+                  color="red lighten-1"
+                  @click="eliminarClasse"
+                  >Sim</v-btn
+                >
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -61,7 +76,11 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel popout focusable v-if="!(!!(treeview_object.children[0]))">
+            <v-expansion-panel
+              popout
+              focusable
+              v-if="!!!treeview_object.children[0]"
+            >
               <v-expansion-panel-header class="expansion-panel-heading">
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
@@ -80,7 +99,12 @@
                 <div class="info-label">Notas</div>
               </v-col>
               <v-col sm="9" md="9">
-                <v-text-field solo clearable v-model="serie.notas" label="Notas"></v-text-field>
+                <v-text-field
+                  solo
+                  clearable
+                  v-model="serie.notas"
+                  label="Notas"
+                ></v-text-field>
               </v-col>
             </v-row>
           </v-expansion-panels>
@@ -110,7 +134,8 @@
                 <template v-slot:no-data>
                   <v-list-item>
                     <v-list-item-title>
-                      <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão
+                      não existe!
                     </v-list-item-title>
                   </v-list-item>
                 </template>
@@ -121,14 +146,27 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+        <v-alert
+          width="100%"
+          :value="existe_erros"
+          outlined
+          type="error"
+          prominent
+          border="left"
+        >
           É necessário preencher os campos seguintes:
           <ul>
-            <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
+            <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogSerie = false">Voltar</v-btn>
+        <v-btn
+          color="indigo darken-4"
+          outlined
+          text
+          @click="dialogSerie = false"
+          >Voltar</v-btn
+        >
 
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
       </v-card-actions>

@@ -40,7 +40,11 @@
         <div class="info-label">Data Inicial da Documentação</div>
       </v-col>
       <v-col xs="12" sm="9" md="9">
-        <v-text-field readonly v-model="RE.dataInicial" prepend-icon="event"></v-text-field>
+        <v-text-field
+          readonly
+          v-model="RE.dataInicial"
+          prepend-icon="event"
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row>
@@ -48,7 +52,11 @@
         <div class="info-label">Data Final da Documentação</div>
       </v-col>
       <v-col xs="12" sm="9" md="9">
-        <v-text-field readonly v-model="RE.dataFinal" prepend-icon="event"></v-text-field>
+        <v-text-field
+          readonly
+          v-model="RE.dataFinal"
+          prepend-icon="event"
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
@@ -60,19 +68,31 @@
             <div class="info-label">Número de Séries</div>
           </v-col>
           <v-col xs="12" sm="1" md="1">
-            <v-text-field readonly v-model="RE.dimSuporte.nSeries" solo></v-text-field>
+            <v-text-field
+              readonly
+              v-model="RE.dimSuporte.nSeries"
+              solo
+            ></v-text-field>
           </v-col>
           <v-col xs="12" sm="3" md="3">
             <div class="info-label">Número de Subséries</div>
           </v-col>
           <v-col xs="12" sm="1" md="1">
-            <v-text-field readonly v-model="RE.dimSuporte.nSubseries" solo></v-text-field>
+            <v-text-field
+              readonly
+              v-model="RE.dimSuporte.nSubseries"
+              solo
+            ></v-text-field>
           </v-col>
           <v-col xs="12" sm="3" md="3">
             <div class="info-label">Número de Unidades de Instalação</div>
           </v-col>
           <v-col xs="12" sm="1" md="1">
-            <v-text-field readonly v-model="RE.dimSuporte.nUI" solo></v-text-field>
+            <v-text-field
+              readonly
+              v-model="RE.dimSuporte.nUI"
+              solo
+            ></v-text-field>
           </v-col>
         </v-row>
 
@@ -81,19 +101,31 @@
             <div class="info-label">Medição das UIs em Papel</div>
           </v-col>
           <v-col sm="1" md="1">
-            <v-text-field v-model="RE.dimSuporte.medicaoUI_papel" solo readonly></v-text-field>
+            <v-text-field
+              v-model="RE.dimSuporte.medicaoUI_papel"
+              solo
+              readonly
+            ></v-text-field>
           </v-col>
           <v-col sm="3" md="3">
             <div class="info-label">Medição das UIs em Digital</div>
           </v-col>
           <v-col sm="1" md="1">
-            <v-text-field readonly v-model="RE.dimSuporte.medicaoUI_digital" solo></v-text-field>
+            <v-text-field
+              readonly
+              v-model="RE.dimSuporte.medicaoUI_digital"
+              solo
+            ></v-text-field>
           </v-col>
           <v-col sm="3" md="3">
             <div class="info-label">Medição das UIs em noutros suportes</div>
           </v-col>
           <v-col sm="1" md="1">
-            <v-text-field readonly v-model="RE.dimSuporte.medicaoUI_outros" solo></v-text-field>
+            <v-text-field
+              readonly
+              v-model="RE.dimSuporte.medicaoUI_outros"
+              solo
+            ></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
@@ -110,7 +142,11 @@
               <div class="info-label">História Administrativa/Biográfica</div>
             </v-col>
             <v-col xs="12" sm="9">
-              <v-text-field readonly v-model="RE.hist_admin" solo></v-text-field>
+              <v-text-field
+                readonly
+                v-model="RE.hist_admin"
+                solo
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -148,7 +184,11 @@
               <div class="info-label">Localização</div>
             </v-col>
             <v-col xs="12" sm="9">
-              <v-text-field readonly v-model="RE.localizacao" solo></v-text-field>
+              <v-text-field
+                readonly
+                v-model="RE.localizacao"
+                solo
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -156,7 +196,11 @@
               <div class="info-label">Estado de Conservação</div>
             </v-col>
             <v-col xs="12" sm="9">
-              <v-text-field readonly v-model="RE.est_conser" solo></v-text-field>
+              <v-text-field
+                readonly
+                v-model="RE.est_conser"
+                solo
+              ></v-text-field>
             </v-col>
           </v-row>
         </v-expansion-panel-content>

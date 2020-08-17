@@ -45,6 +45,20 @@
         </div>
       </v-col>
       <v-col cols="12" lg="10">
+        <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px;">
+          <v-select
+            class="mt-n4 px-3"
+            item-text="label"
+            item-value="value"
+            v-model="c.df.valor"
+            :items="destinoFinalTipos"
+            label="Selecione uma forma de contagem para o prazo"
+            clearable
+            hide-details
+            single-line
+          />
+        </div>
+        <!--
         <div class="info-content pa-4" style="font-weight: bold;">
           <SelectValueFromList
             class="mt-n4 px-4"
@@ -57,7 +71,7 @@
           <span class="mt-n4 px-4" v-else>{{
             destinoFinalLabels[c.df.valor]
           }}</span>
-        </div>
+        </div> -->
       </v-col>
     </v-row>
 
@@ -364,7 +378,6 @@ export default {
   props: ["c", "semaforos"],
 
   components: {
-    SelectValueFromList,
     InfoBox
   },
 

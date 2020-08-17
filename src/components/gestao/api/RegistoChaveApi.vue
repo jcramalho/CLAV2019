@@ -82,7 +82,7 @@
                       name="entidade-icon"
                       width="24"
                       height="24"
-                      viewBox="0 0 20.71 17.989"
+                      viewBox="0 0 20.711 21.105"
                       fill="#4da0d0"
                     />
                   </v-col>

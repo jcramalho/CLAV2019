@@ -10,14 +10,26 @@
     <td class="subheading">{{ item.numero }}</td>
     <td class="subheading">{{ item.sumario }}</td>
     <td @click.stop align="right">
-      <v-icon
+      <v-tooltip
+        top
+        color="info"
+        open-delay="100"
         v-for="(operacao, index) in item.operacoes"
-        @click="doOperation(item, operacao)"
-        color="indigo darken-2"
         :key="index"
-        class="mr-2"
-        >{{ operacao.icon }}</v-icon
       >
+        <template v-slot:activator="{ on }">
+          <v-icon
+            v-on="on"
+            v-for="(operacao, index) in item.operacoes"
+            @click="doOperation(item, operacao)"
+            color="indigo darken-2"
+            :key="index"
+            class="mr-2"
+            >{{ operacao.icon }}</v-icon
+          >
+        </template>
+        <span v-if="operacao.icon == 'edit'">Alterar</span>
+      </v-tooltip>
     </td>
   </tr>
 </template>

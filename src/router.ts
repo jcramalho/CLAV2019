@@ -146,6 +146,12 @@ export default new Router({
     // Routes das entidades
     {
       path: "/entidades",
+      name: "entInfo",
+      component: () => import("./views/EntidadeInfo.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/entidades/consultar",
       name: "entidades",
       component: () => import("./views/entidades/Entidades.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
@@ -171,6 +177,12 @@ export default new Router({
     // Routes da legislação
     {
       path: "/legislacao",
+      name: "legInfo",
+      component: () => import("./views/LegislacaoInfo.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/legislacao/consultar",
       name: "legislacao",
       component: () => import("./views/legislacao/Legislacao.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
@@ -306,6 +318,12 @@ export default new Router({
     // Routes das tipologias
     {
       path: "/tipologias",
+      name: "tipEntInfo",
+      component: () => import("./views/TipEntidadeInfo.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/tipologias/consultar",
       name: "tipologias",
       component: () => import("./views/tipologias/Tipologias.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }

@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Loading v-if="!entidadesReady" :message="'entidades'" />
     <Listagem
       v-else
@@ -8,7 +13,7 @@
       :cabecalho="cabecalhos"
       :campos="campos"
     />
-  </div>
+  </v-content>
 </template>
 
 <script>
@@ -23,19 +28,19 @@ export default {
     campos: [],
     cabecalhos: [],
     operacoes: [],
-    entidadesReady: false,
+    entidadesReady: false
   }),
 
   components: {
     Listagem,
-    Loading,
+    Loading
   },
 
   methods: {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" },
+          { icon: "edit", descricao: "Alteração" }
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }
@@ -60,28 +65,28 @@ export default {
             myTree.push({
               id: listaEntidades[i].sigla,
               designacao: listaEntidades[i].designacao,
-              operacoes: this.operacoes,
+              operacoes: this.operacoes
             });
           else
             myTree.push({
               id: listaEntidades[i].sigla,
-              designacao: listaEntidades[i].designacao,
+              designacao: listaEntidades[i].designacao
             });
         }
       } else {
         for (let i = 0; i < listaEntidades.length; i++) {
           myTree.push({
             id: listaEntidades[i].sigla,
-            designacao: listaEntidades[i].designacao,
+            designacao: listaEntidades[i].designacao
           });
         }
       }
 
       return myTree;
-    },
+    }
   },
 
-  created: async function () {
+  created: async function() {
     try {
       let response = await this.$request("get", "/entidades");
 
@@ -97,6 +102,6 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>

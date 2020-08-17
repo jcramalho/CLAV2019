@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Loading v-if="!legislacaoReady" :message="'legislações'" />
     <Listagem
       v-else
@@ -9,7 +14,7 @@
       :campos="campos"
       :ids="ids"
     />
-  </div>
+  </v-content>
 </template>
 
 <script>
@@ -25,18 +30,18 @@ export default {
     cabecalhos: [],
     operacoes: [],
     ids: [],
-    legislacaoReady: false,
+    legislacaoReady: false
   }),
   components: {
     Listagem,
-    Loading,
+    Loading
   },
 
   methods: {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" },
+          { icon: "edit", descricao: "Alteração" }
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }
@@ -50,7 +55,7 @@ export default {
           "Entidade(s)",
           "Número",
           "Sumário",
-          "Operações",
+          "Operações"
         ];
         this.campos = [
           "data",
@@ -58,7 +63,7 @@ export default {
           "entidades",
           "numero",
           "sumario",
-          "operacoes",
+          "operacoes"
         ];
       } else {
         this.cabecalhos = [
@@ -66,7 +71,7 @@ export default {
           "Tipo",
           "Entidade(s)",
           "Número",
-          "Sumário",
+          "Sumário"
         ];
         this.campos = ["data", "tipo", "entidades", "numero", "sumario"];
       }
@@ -97,7 +102,7 @@ export default {
               numero: listaLegislacao[i].numero,
               sumario: listaLegislacao[i].sumario,
               operacoes: this.operacoes,
-              id: listaLegislacao[i].id,
+              id: listaLegislacao[i].id
             });
           else
             myTree.push({
@@ -106,7 +111,7 @@ export default {
               entidades: listaLegislacao[i].entidades,
               numero: listaLegislacao[i].numero,
               sumario: listaLegislacao[i].sumario,
-              id: listaLegislacao[i].id,
+              id: listaLegislacao[i].id
             });
         }
       } else {
@@ -129,7 +134,7 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
-            id: listaLegislacao[i].id,
+            id: listaLegislacao[i].id
           });
         }
       }
@@ -143,15 +148,15 @@ export default {
       for (let i = 0; i < listaLegislacao.length; i++) {
         ids.push({
           numero: listaLegislacao[i].numero,
-          id: listaLegislacao[i].id,
+          id: listaLegislacao[i].id
         });
       }
 
       return ids;
-    },
+    }
   },
 
-  created: async function () {
+  created: async function() {
     try {
       let response = await this.$request("get", "/legislacao");
 
@@ -169,6 +174,6 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>

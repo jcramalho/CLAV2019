@@ -2,9 +2,7 @@
   <v-dialog v-model="dialogSubserie">
     <template v-slot:activator="{ on }">
       <b text depressed @click="getSerie" v-on="on">
-        {{
-        treeview_object.titulo
-        }}
+        {{ treeview_object.titulo }}
       </b>
     </template>
     <v-card>
@@ -37,7 +35,10 @@
               <b>Zona de Decisões de Avaliação</b>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <ZonaDecisoesAvaliacao :classe="subserie" :formaContagem="formaContagem" />
+              <ZonaDecisoesAvaliacao
+                :classe="subserie"
+                :formaContagem="formaContagem"
+              />
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -64,7 +65,13 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogSubserie = false">Voltar</v-btn>
+        <v-btn
+          color="indigo darken-4"
+          outlined
+          text
+          @click="dialogSubserie = false"
+          >Voltar</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

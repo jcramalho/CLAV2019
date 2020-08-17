@@ -13,6 +13,7 @@
             append-icon="search"
             label="Procurar / filtrar os diplomas"
             class="mt-n2 mb-3 mx-6"
+            clearable
             single-line
             hide-details
             color="blue darken-3"
@@ -27,6 +28,17 @@
             item-key="id"
             :footer-props="footer_props"
           >
+            <template v-slot:no-results>
+              <v-alert
+                :value="true"
+                color="error"
+                icon="warning"
+                class="font-weight-medium my-3"
+                id="alerta-erro"
+                >Não foram encontrados resultados para
+                <b>"{{ searchDiplomas }}"</b>.</v-alert
+              >
+            </template>
             <template v-slot:item="props">
               <tr @click="selectDiploma(props.item)" style="cursor: pointer;">
                 <td>{{ props.item.tipo }}</td>

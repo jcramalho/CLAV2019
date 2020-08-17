@@ -122,8 +122,8 @@
 
                   <v-row
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- DESCRIÇÂO -->
@@ -223,8 +223,8 @@
 
                   <v-row
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- TRANSVERSALIDADE -->
@@ -326,8 +326,8 @@
 
                   <v-row
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- PRAZO -->
@@ -363,8 +363,8 @@
                   <v-row
                     v-if="classe.pca.notas != ''"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- NOTAS -->
@@ -388,8 +388,8 @@
                   <v-row
                     v-if="classe.pca.formaContagem"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- FORMA DE CONTAGEM -->
@@ -413,8 +413,8 @@
                   <v-row
                     v-if="classe.pca.subFormaContagem"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- SUBFORMA DE CONTAGEM -->
@@ -438,8 +438,8 @@
                   <v-row
                     v-if="classe.pca.justificacao"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- JUSTIFICAÇÂO -->
@@ -558,8 +558,8 @@
 
                   <v-row
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- VALOR -->
@@ -590,9 +590,9 @@
                   <v-row
                     v-if="classe.df.nota"
                     ::class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
-                    }"
+                'mt-5': $vuetify.breakpoint.smAndDown,
+                'mt-4': $vuetify.breakpoint.mdAndUp
+              }"
                   >
                     <!-- NOTA ao DF -->
                     <v-col cols="12" lg="2">
@@ -613,8 +613,8 @@
                   <v-row
                     v-if="classe.df.justificacao"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- JUSTIFICAÇÂO -->

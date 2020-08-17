@@ -7,7 +7,26 @@
   >
     <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
       <v-row>
-        <v-col class="pt-0">
+        <v-col class="py-0 my-0">
+          <v-btn
+            @click="goBack"
+            rounded
+            class="white--text mb-6"
+            :class="{
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
+            }"
+            id="default-button"
+          >
+            <unicon
+              name="arrow-back-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.71 37.261"
+              fill="#ffffff"
+            />
+            <p class="ml-2">Voltar</p>
+          </v-btn>
           <v-card flat style="border-radius: 10px !important;">
             <p
               class="content-title-1 py-5"
@@ -281,9 +300,10 @@
                       </template>
                     </v-treeview>
                     <v-alert
-                      type="info"
+                      color="error"
+                      icon="warning"
                       class="font-weight-medium my-auto"
-                      style="background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;"
+                      id="alerta-erro"
                       :value="classesTree.length == 0"
                     >
                       Sem resultados. Volte a pesquisar...
@@ -566,6 +586,9 @@ export default {
     this.classesCarregadas = true;
   },
   methods: {
+    goBack() {
+      this.$router.push("/lcinfo");
+    },
     //Necessário para o caso especial de pesquisar com o campo Entidade
     cleanNome: function() {
       for (var i = 0; i < this.camposPesquisa.length; i++) {

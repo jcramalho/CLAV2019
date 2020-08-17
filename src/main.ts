@@ -52,9 +52,11 @@ import {
   emailIcon,
   ccIcon,
   entidadeIcon,
+  tipologiaEntIcon,
   recuperarPasswordIcon,
   cmdIcon,
-  renovarApiIcon
+  renovarApiIcon,
+  legislacaoIcon
 } from "./custom-icons";
 
 //import BootstrapVue from "bootstrap-vue";
@@ -111,9 +113,11 @@ Unicon.add([
   emailIcon,
   ccIcon,
   entidadeIcon,
+  tipologiaEntIcon,
   recuperarPasswordIcon,
   cmdIcon,
-  renovarApiIcon
+  renovarApiIcon,
+  legislacaoIcon
 ]);
 Vue.use(Unicon);
 

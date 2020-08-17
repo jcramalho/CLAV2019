@@ -1,106 +1,191 @@
 <template>
   <div>
-    <v-row class="ma-2 text-center">
+    <v-row class="align-center pa-3" style="text-align:center;">
       <ValidarEntidadeInfoBox :e="e" :original="original" :acao="acao" />
 
       <v-col>
         <v-btn
           v-if="this.acao == 'Criação'"
-          rounded
-          class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Criar Entidade</v-btn
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="botao-verde"
         >
+          <unicon
+            name="adicionar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.71"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Criar</p>
+        </v-btn>
+
         <v-btn
           v-else-if="this.acao == 'Alteração'"
-          rounded
-          class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Alterar Entidade</v-btn
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="botao-verde"
         >
+          <unicon
+            name="alterar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.727"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Alterar</p>
+        </v-btn>
+
         <v-btn
           v-else-if="this.acao == 'Extinção'"
-          rounded
-          class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Extinguir Entidade</v-btn
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="botao-verde"
         >
+          <unicon
+            name="eliminar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.71"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Extinguir</p>
+        </v-btn>
       </v-col>
 
       <v-col>
         <v-btn
-          v-if="this.acao == 'Criação'"
-          dark
-          rounded
-          class="red darken-4"
           @click="eliminarEntidade"
-          >Cancelar Criação</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Alteração'"
-          dark
+          color="red darken-4"
           rounded
-          class="red darken-4"
-          @click="eliminarEntidade"
-          >Cancelar Alteração</v-btn
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="botao-vermelho"
         >
-        <v-btn
-          v-else-if="this.acao == 'Extinção'"
-          dark
-          rounded
-          class="red darken-4"
-          @click="eliminarEntidade"
-          >Cancelar Extinção</v-btn
-        >
+          <unicon
+            name="remove-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+          <p v-if="this.acao == 'Criação'" class="ml-2">Eliminar</p>
+          <p
+            v-if="this.acao == 'Alteração' || this.acao == 'Extinção'"
+            class="ml-2"
+          >
+            Cancelar
+          </p>
+        </v-btn>
       </v-col>
-
-      <!-- Erros de Validação -->
-      <v-dialog v-model="errosValidacao" width="30%">
-        <v-card>
-          <v-card-title>Erros detetados na validação</v-card-title>
-          <v-card-text>
-            <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
-            </p>
-          </v-card-text>
+    </v-row>
+    <!-- Erros de Validação -->
+    <v-row justify-center>
+      <v-dialog v-model="errosValidacao" width="60%">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2"
+            >Erros detetados na validação</v-card-title
+          >
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Há erros de validação. Selecione "Validar" para ver exatamente
+                quais e proceder à sua correção.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
-            <v-spacer />
-            <v-btn color="red darken-4" dark @click="errosValidacao = false"
-              >Fechar</v-btn
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="errosValidacao = false"
             >
+              Fechar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-row>
 
-      <!-- Pedido de "Ação" de entidade submetido com sucesso -->
-      <v-dialog v-model="dialogEntidadeCriada" width="70%" persistent>
+    <!-- Pedido de "Ação" de entidade submetido com sucesso -->
+    <v-row justify-center>
+      <v-dialog v-model="dialogEntidadeCriada" persistent max-width="60%">
         <DialogEntidadeSucesso
           :e="e"
           :codigoPedido="codigoPedido"
           :acao="acao"
         />
       </v-dialog>
+    </v-row>
 
-      <!-- Cancelamento da criação de uma entidade: confirmação -->
-      <v-dialog v-model="pedidoEliminado" width="50%">
-        <v-card>
-          <v-card-title>Cancelamento do pedido.</v-card-title>
-          <v-card-text>
-            <p>Selecionou o cancelamento do pedido.</p>
-            <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
-          </v-card-text>
+    <!-- Cancelamento da criação de uma entidade: confirmação -->
+    <v-row justify-center>
+      <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2">
+            Cancelamento e eliminação do pedido de
+            {{ formatarLabel(this.acao) }} de entidade
+          </v-card-title>
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Selecionou o cancelamento de {{ formatarLabel(this.acao) }} da
+                entidade.
+              </p>
+              <p>Toda a informação introduzida será eliminada.</p>
+              <p>
+                Confirme a decisão para ser reencaminhado para a página
+                principal.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
-            <v-spacer />
-            <v-btn color="indigo darken-1" text @click="cancelarCriacaoEntidade"
-              >Confirmo</v-btn
+            <v-spacer></v-spacer>
+            <v-btn
+              color="success darken-1"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="cancelarCriacaoEntidade"
             >
-            <v-btn color="red darken-1" dark @click="pedidoEliminado = false"
-              >Enganei-me, desejo continuar o trabalho</v-btn
+              Confirmo
+            </v-btn>
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="pedidoEliminado = false"
             >
+              Enganei-me, desejo continuar o trabalho
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -114,7 +199,15 @@
         :top="true"
       >
         {{ loginErrorMessage }}
-        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+        <v-btn icon color="white" @click="loginErrorSnackbar = false">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
       </v-snackbar>
     </v-row>
   </div>
@@ -145,6 +238,9 @@ export default {
   },
 
   methods: {
+    formatarLabel: function(action) {
+      return action.toLowerCase();
+    },
     validarEntidadeCriacao: async function() {
       let numeroErros = 0;
 
@@ -373,28 +469,21 @@ export default {
     },
 
     cancelarCriacaoEntidade: function() {
-      this.$router.push("/");
+      this.$router.push("/entidades");
     }
   }
 };
 </script>
 
 <style scoped>
-.info-label {
-  color: #1a237e !important;
-  padding: 8px;
-  width: 100%;
-  background-color: #dee2f8;
-  font-weight: bold;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 6px;
-  text-align: center;
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
 }
 .info-content {
-  padding: 5px;
-  width: 100%;
+  padding: 8px;
   background-color: #f1f6f8 !important;
+  color: #606060;
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
   border-radius: 10px;
 }

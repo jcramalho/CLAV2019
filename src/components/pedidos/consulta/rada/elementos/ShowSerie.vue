@@ -2,9 +2,7 @@
   <v-dialog v-model="dialogSerie">
     <template v-slot:activator="{ on }">
       <b text depressed @click="getSerie" v-on="on">
-        {{
-        treeview_object.titulo
-        }}
+        {{ treeview_object.titulo }}
       </b>
     </template>
     <v-card>
@@ -31,12 +29,19 @@
               <ZonaContexto :classe="serie" />
             </v-expansion-panel-content>
           </v-expansion-panel>
-          <v-expansion-panel popout focusable v-if="!(!!(treeview_object.children[0]))">
+          <v-expansion-panel
+            popout
+            focusable
+            v-if="!!!treeview_object.children[0]"
+          >
             <v-expansion-panel-header class="expansion-panel-heading">
               <b>Zona de Decisões de Avaliação</b>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <ZonaDecisoesAvaliacao :classe="serie" :formaContagem="formaContagem" />
+              <ZonaDecisoesAvaliacao
+                :classe="serie"
+                :formaContagem="formaContagem"
+              />
             </v-expansion-panel-content>
           </v-expansion-panel>
 
@@ -45,7 +50,13 @@
               <div class="info-label">Notas</div>
             </v-col>
             <v-col sm="9" md="9">
-              <v-text-field solo readonly v-model="serie.notas" label="Notas" placeholder="Notas"></v-text-field>
+              <v-text-field
+                solo
+                readonly
+                v-model="serie.notas"
+                label="Notas"
+                placeholder="Notas"
+              ></v-text-field>
             </v-col>
           </v-row>
         </v-expansion-panels>
@@ -71,7 +82,13 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogSerie = false">Voltar</v-btn>
+        <v-btn
+          color="indigo darken-4"
+          outlined
+          text
+          @click="dialogSerie = false"
+          >Voltar</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

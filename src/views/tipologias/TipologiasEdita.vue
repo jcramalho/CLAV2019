@@ -1,8 +1,13 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Loading v-if="!dadosReady" :message="'tipologia'" />
     <EditaTipologia v-else :t="tipologia" />
-  </div>
+  </v-content>
 </template>
 
 <script>
@@ -12,12 +17,12 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     EditaTipologia,
-    Loading,
+    Loading
   },
 
   data: () => ({
     tipologia: {},
-    dadosReady: false,
+    dadosReady: false
   }),
 
   methods: {
@@ -27,13 +32,13 @@ export default {
           designacao: tip.designacao,
           sigla: tip.sigla,
           estado: tip.estado,
-          entidadesSel: ent,
+          entidadesSel: ent
         };
         return myTipologia;
       } catch (e) {
         return {};
       }
-    },
+    }
   },
 
   created: async function() {
@@ -59,6 +64,6 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>

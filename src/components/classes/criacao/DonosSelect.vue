@@ -14,6 +14,7 @@
             label="Procurar / filtrar entidades"
             class="mt-n2 mb-3 mx-6"
             color="blue darken-3"
+            clearable
             single-line
             hide-details
           ></v-text-field>
@@ -27,6 +28,17 @@
             item-key="id"
             :footer-props="footer_props"
           >
+            <template v-slot:no-results>
+              <v-alert
+                :value="true"
+                color="error"
+                icon="warning"
+                class="font-weight-medium my-3"
+                id="alerta-erro"
+                >Não foram encontrados resultados para
+                <b>"{{ searchEntidades }}"</b>.</v-alert
+              >
+            </template>
             <template v-slot:item="props">
               <tr @click="selectEntidade(props.item)" style="cursor: pointer;">
                 <td style="color: #1A237E;">{{ props.item.sigla }}</td>

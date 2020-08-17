@@ -35,7 +35,7 @@
                   <v-btn
                     v-if="
                       [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
-                      item.entidade === 'Entidades'
+                        item.entidade === 'Entidades'
                     "
                     color="indigo accent-4"
                     dark
@@ -48,7 +48,7 @@
                   <v-btn
                     v-if="
                       [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
-                      item.entidade === 'Legislação'
+                        item.entidade === 'Legislação'
                     "
                     color="indigo accent-4"
                     dark
@@ -61,7 +61,7 @@
                   <v-btn
                     v-if="
                       [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
-                      item.entidade === 'Tipologias de Entidades'
+                        item.entidade === 'Tipologias de Entidades'
                     "
                     color="indigo accent-4"
                     dark
@@ -237,7 +237,7 @@ const lhost = require("@/config/global").host;
 export default {
   props: ["level"],
   methods: {
-    go: function (url) {
+    go: function(url) {
       if (url.startsWith("http")) {
         window.location.href = url;
       } else {
@@ -249,7 +249,7 @@ export default {
       let leg = null;
       if (tipo === "Legislação") {
         leg = this.legislacao.legislacao.find(
-          (legislacao) => legislacao.numero === this.dadosEditar.split(" ")[0]
+          legislacao => legislacao.numero === this.dadosEditar.split(" ")[0]
         );
       }
 
@@ -271,13 +271,11 @@ export default {
       }
     },
 
-    filtraOps: function (operacoes) {
+    filtraOps: function(operacoes) {
       var filtered = [];
       for (var i = 0; i < operacoes.length; i++) {
         var levelsSet = new Set();
-        operacoes[i].ops.forEach((b) =>
-          b.level.forEach((l) => levelsSet.add(l))
-        );
+        operacoes[i].ops.forEach(b => b.level.forEach(l => levelsSet.add(l)));
         var levels = Array.from(levelsSet);
 
         if (levels.includes(this.level)) {
@@ -286,7 +284,7 @@ export default {
             tooltip: operacoes[i].tooltip,
             html: operacoes[i].html,
             texto: operacoes[i].texto,
-            ops: operacoes[i].ops.filter((o) => o.level.includes(this.level)),
+            ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
           });
         }
       }
@@ -294,9 +292,9 @@ export default {
     },
 
     preparaEntidades(dados, entOuTip) {
-      let dadosTratados = dados.filter((dado) => dado.estado === "Ativa");
+      let dadosTratados = dados.filter(dado => dado.estado === "Ativa");
       dadosTratados = dadosTratados.map(
-        (dado) => `${dado.sigla} - ${dado.designacao}`
+        dado => `${dado.sigla} - ${dado.designacao}`
       );
 
       if (entOuTip === "Entidades") {
@@ -310,16 +308,16 @@ export default {
 
     preparaLegislacoes(legislacoes) {
       this.legislacao.legislacao = JSON.parse(JSON.stringify(legislacoes));
-      let dadosTratados = legislacoes.filter((leg) => leg.estado === "Ativo");
+      let dadosTratados = legislacoes.filter(leg => leg.estado === "Ativo");
 
       dadosTratados = dadosTratados.map(
-        (legislacao) =>
+        legislacao =>
           `${legislacao.numero} - ${legislacao.sumario} - ${legislacao.tipo}`
       );
 
       this.legislacao.legislacaoItems = dadosTratados;
       this.legislacao.ready = true;
-    },
+    }
   },
 
   async created() {
@@ -338,9 +336,9 @@ export default {
   },
 
   computed: {
-    fops: function () {
+    fops: function() {
       return this.filtraOps(this.operacoes);
-    },
+    }
   },
 
   data() {
@@ -350,16 +348,16 @@ export default {
       tipologiasDialog: false,
       tipologias: {
         tipologias: [],
-        ready: false,
+        ready: false
       },
       entidades: {
         entidades: [],
-        ready: false,
+        ready: false
       },
       legislacao: {
         legislacao: [],
         legislacaoItems: [],
-        ready: false,
+        ready: false
       },
       dadosEditar: null,
       panelHeaderColor: "indigo darken-4",
@@ -374,19 +372,19 @@ export default {
             {
               label: "Consultar",
               url: "/classes",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar Classe",
               url: "/classes/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Alterar Classe",
               url: "/classes/editar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Tabelas de Seleção",
@@ -397,19 +395,19 @@ export default {
             {
               label: "Consultar",
               url: "/ts",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar",
               url: "/ts/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Importar Ficheiro",
               url: "/ts/importar/csv",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Relatórios de Avaliação de Documentação Acumulada",
@@ -419,9 +417,9 @@ export default {
             {
               label: "Criar",
               url: "/rada/criar",
-              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 2, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Autos de Eliminação",
@@ -431,19 +429,19 @@ export default {
             {
               label: "Consultar",
               url: "/autosEliminacao",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar",
               url: "/autosEliminacao/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Importar",
               url: "/autosEliminacao/importar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Entidades",
@@ -452,14 +450,14 @@ export default {
             {
               label: "Consultar",
               url: "/entidades",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
               url: "/entidades/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Tipologias de Entidades",
@@ -468,14 +466,14 @@ export default {
             {
               label: "Consultar",
               url: "/tipologias",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
               url: "/tipologias/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Legislação",
@@ -484,14 +482,14 @@ export default {
             {
               label: "Consultar",
               url: "/legislacao",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
               url: "/legislacao/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Termos de Indice",
@@ -500,14 +498,14 @@ export default {
             {
               label: "Consultar",
               url: "/termosIndice",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             } /*,
             {
               label: "Adicionar",
               url: "/termosIndice/criar",
               level: [1, 3, 3.5, 4, 5, 6, 7]
-            }*/,
-          ],
+            }*/
+          ]
         },
         {
           entidade: "Exportação de Dados",
@@ -517,9 +515,9 @@ export default {
             {
               label: "Área de exportação",
               url: "/exportar",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "API de dados",
@@ -528,13 +526,13 @@ export default {
             {
               label: "Aceder",
               url: lhost + "/docs",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
-        },
-      ],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
+        }
+      ]
     };
-  },
+  }
 };
 </script>
 

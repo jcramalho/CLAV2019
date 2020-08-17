@@ -23,6 +23,7 @@
       v-model="dataValor"
       no-title
       scrollable
+      width="390"
       color="blue darken-3"
       show-current
       first-day-of-week="1"
