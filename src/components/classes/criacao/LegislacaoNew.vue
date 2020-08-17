@@ -68,7 +68,7 @@
             </v-col>
 
             <v-col cols="12" sm="6" class="mt-n6">
-              <SelecionarData :d="data" @dataSelecionada="data = $event" />
+              <SelecionarData :d="data" :label="'Data: AAAA-MM-DD'" @dataSelecionada="data = $event" />
             </v-col>
           </v-row>
         </v-form>

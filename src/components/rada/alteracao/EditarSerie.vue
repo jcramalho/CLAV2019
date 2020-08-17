@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <v-dialog v-model="dialogSerie" persistent>
     <template v-slot:activator="{ on }">
       <b text depressed @click="filterSeries" v-on="on">
@@ -14,19 +15,26 @@
         >*</b
       >
     </template>
+=======
+  <v-dialog v-model="dialogState" persistent max-width="90%">
+>>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">
+      <v-card-title class="indigo darken-4 white--text">
         <b>{{ "Alterar a série: " + treeview_object.titulo }}</b>
+<<<<<<< HEAD
         <v-spacer />
         <v-icon @click="toDelete = true" dark color="red" right
           >delete_sweep</v-icon
         >
+=======
+>>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
       </v-card-title>
       <br />
       <v-card-text>
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
             <v-card>
+<<<<<<< HEAD
               <v-card-title class="headline grey lighten-2" primary-title
                 >Pretende mesmo eliminar a classe
                 {{ treeview_object.titulo }} ?</v-card-title
@@ -46,24 +54,62 @@
                   @click="eliminarClasse"
                   >Sim</v-btn
                 >
+=======
+              <v-card-title class="headline grey lighten-2" primary-title>
+                Pretende mesmo eliminar a classe
+                {{ treeview_object.titulo }} ?
+              </v-card-title>
+
+              <v-card-text align="center">
+                <br />
+                <v-btn class="ma-3 pa-3" color="indigo darken-4" dark @click="toDelete = false">Voltar</v-btn>
+                <v-btn class="ma-3 pa-5" color="red darken-4" dark @click="eliminarClasse">Sim</v-btn>
+>>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
               </v-card-text>
             </v-card>
           </v-dialog>
         </v-row>
-        <v-form ref="formSerie" :lazy-validation="false">
+        <v-form ref="form" :lazy-validation="false">
           <Identificacao :newSerie="serie" />
+          <v-row>
+            <v-col md="3" sm="3">
+              <div class="info-label">Classe Pai</div>
+            </v-col>
+            <v-col sm="9" md="9">
+              <v-autocomplete
+                v-model="serie.eFilhoDe"
+                :items="classesHierarquia"
+                :rules="[v => !!v || 'Campo obrigatório!']"
+                item-value="codigo"
+                item-text="searchField"
+                solo
+                clearable
+                placeholder="Classe Pai"
+                chips
+              >
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <v-list-item-title>
+                      <strong>Classe Área Orgânico-Funcional</strong> em questão
+                      não existe!
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+              </v-autocomplete>
+            </v-col>
+          </v-row>
 
           <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
+            <v-expansion-panel class="ma-1" popout focusable>
+              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE" />
+                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE" :classes="classes" />
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
+            <v-expansion-panel class="ma-1" popout focusable>
+              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -73,15 +119,23 @@
                   :legislacao="legislacao"
                   :RE="RE"
                   :legislacaoProcessada="legislacaoProcessada"
+                  :formaContagem="formaContagem"
+                  :editar="true"
+                  :tipos="tipos"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
+<<<<<<< HEAD
             <v-expansion-panel
               popout
               focusable
               v-if="!!!treeview_object.children[0]"
             >
               <v-expansion-panel-header class="expansion-panel-heading">
+=======
+            <v-expansion-panel class="ma-1" popout focusable v-if="!!!treeview_object.children[0]">
+              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+>>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -93,6 +147,7 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
+<<<<<<< HEAD
 
             <v-row v-else>
               <v-col md="3" sm="3">
@@ -142,6 +197,9 @@
               </v-autocomplete>
             </v-col>
           </v-row>
+=======
+          </v-expansion-panels>
+>>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
         </v-form>
       </v-card-text>
 
@@ -160,6 +218,7 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
+<<<<<<< HEAD
         <v-btn
           color="indigo darken-4"
           outlined
@@ -169,6 +228,11 @@
         >
 
         <v-btn color="success" class="mr-4" @click="save">Atualizar</v-btn>
+=======
+        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="atualizar(serie)">Atualizar</v-btn>
+        <v-btn @click="toDelete = true" dark color="red darken-4">Eliminar</v-btn>
+>>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -180,6 +244,8 @@ import ZonaDescritiva from "../criacao/classes/partes/ZonaDescritiva";
 import ZonaContexto from "../criacao/classes/partes/ZonaContextoAvaliacao";
 import ZonaDecisoesAvaliacao from "../criacao/classes/partes/ZonaDecisoesAvaliacao";
 
+import mixin_edicao_serie_subserie from "@/mixins/rada/mixin_edicao_serie_subserie";
+
 export default {
   props: [
     "treeview_object",
@@ -188,7 +254,9 @@ export default {
     "RE",
     "UIs",
     "formaContagem",
-    "legislacaoProcessada"
+    "legislacaoProcessada",
+    "dialog",
+    "tipos"
   ],
   components: {
     Identificacao,
@@ -197,125 +265,10 @@ export default {
     ZonaDecisoesAvaliacao
   },
   data: () => ({
-    existe_erros: false,
-    erros: [],
-    toDelete: false,
-    panels: [0, 0, 0],
-    isMultiple: false,
-    dialogSerie: false,
-    serie: {},
-    classesHierarquia: []
+    serie: {}
   }),
+  mixins: [mixin_edicao_serie_subserie],
   methods: {
-    clonePCA(serie_real) {
-      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO PCA
-      let newJustificacaoPCA = [];
-
-      for (let i = 0; i < serie_real.justificacaoPCA.length; i++) {
-        let criterio = Object.assign({}, serie_real.justificacaoPCA[i]);
-
-        if (serie_real.justificacaoPCA[i].tipo != "Critério Gestionário") {
-          criterio.relacoes = [...serie_real.justificacaoPCA[i].relacoes];
-        }
-
-        newJustificacaoPCA.push(criterio);
-      }
-
-      return newJustificacaoPCA;
-    },
-    cloneDF(serie_real) {
-      // DEEP CLONE DOS CRITÉRIOS JUSTIFICACAO DF
-      let newJustificacaoDF = [];
-
-      for (let i = 0; i < serie_real.justificacaoDF.length; i++) {
-        let criterio = Object.assign({}, serie_real.justificacaoDF[i]);
-        criterio.relacoes = [...serie_real.justificacaoDF[i].relacoes];
-
-        newJustificacaoDF.push(criterio);
-      }
-
-      return newJustificacaoDF;
-    },
-    eliminarClasse() {
-      // Buscar a classe original pois é a que temos que eliminar, o clone pode estar desatualizado
-      let serie_real = this.classes.find(
-        e => e.codigo == this.treeview_object.codigo
-      );
-      this.$emit("remover", serie_real);
-      this.dialogSerie = false;
-    },
-    buscarTitulosClasses() {
-      this.serie.relacoes.forEach(rel => {
-        let classe_relacionada = this.classes.find(
-          cl => cl.codigo == rel.serieRelacionada.codigo
-        );
-
-        rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
-
-        let criterio = null;
-
-        if (rel.relacao == "Suplemento para") {
-          criterio = this.serie.justificacaoPCA.find(
-            e => e.tipo == "Critério de Utilidade Administrativa"
-          );
-        }
-
-        if (rel.relacao == "Complementar de") {
-          criterio = this.serie.justificacaoDF.find(
-            e => e.tipo == "Critério de Complementaridade Informacional"
-          );
-        }
-
-        if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
-          criterio = this.serie.justificacaoDF.find(
-            e => e.tipo == "Critério de Densidade Informacional"
-          );
-        }
-
-        if (criterio != null) {
-          let relacaoCriterio = criterio.relacoes.find(
-            e => e.codigo == classe_relacionada.codigo
-          );
-
-          relacaoCriterio["titulo"] = classe_relacionada.titulo;
-        }
-      });
-    },
-    async filterSeries() {
-      this.existe_erros = false;
-      this.erros = [];
-      this.panels = [0, 0, 0];
-      this.isMultiple = false;
-      // ir buscar o verdadeiro objeto
-      let serie_real = this.classes.find(
-        e => e.codigo == this.treeview_object.codigo
-      );
-
-      // DEEP CLONE do objetos
-      this.serie = Object.assign({}, serie_real);
-      this.serie.tipologiasProdutoras = [...serie_real.tipologiasProdutoras];
-      this.serie.entProdutoras = [...serie_real.entProdutoras];
-      this.serie.legislacao = [...serie_real.legislacao];
-      this.serie.localizacao = [...serie_real.localizacao];
-      this.serie.formaContagem = Object.assign({}, serie_real.formaContagem);
-      this.serie.justificacaoPCA = await this.clonePCA(serie_real);
-      this.serie.justificacaoDF = await this.cloneDF(serie_real);
-      this.serie.relacoes = [...serie_real.relacoes];
-      this.buscarTitulosClasses();
-
-      this.serie.UIs = [...serie_real.UIs];
-
-      // Classes para definir a hierarquia
-      this.classesHierarquia = this.classes
-        .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo))
-        .map(classe => {
-          return {
-            searchField: classe.codigo + " - " + classe.titulo,
-            codigo: classe.codigo
-          };
-        });
-    },
     recolherErros() {
       this.existe_erros = true;
 
@@ -327,15 +280,8 @@ export default {
         this.erros.push("Descrição;");
       }
 
-      if (
-        !!this.serie.UIs[0] == false &&
-        (!this.serie.dataInicial || !this.serie.dataFinal)
-      ) {
-        this.erros.push("Datas ou Unidades de Instalação;");
-      }
-
-      if (!!this.serie.relacoes[0] == false) {
-        this.erros.push("Relações;");
+      if (!this.serie.dataInicial || !this.serie.dataFinal) {
+        this.erros.push("Datas Extremas;");
       }
 
       if (!this.serie.eFilhoDe) {
@@ -346,43 +292,32 @@ export default {
         this.erros.push("Tipo de Unidade Arquivistica;");
       }
 
-      if (!this.serie.suporte) {
-        this.erros.push("Suporte;");
-      }
-
-      if (!this.serie.medicao) {
-        this.erros.push("Medição;");
+      if (
+        this.serie.suporte_e_medicao.some(
+          e =>
+            e.suporte == null || e.medicao == null || new Number(e.medicao) < 0
+        )
+      ) {
+        this.erros.push("Suporte ou medição!");
       }
 
       if (!!this.serie.localizacao[0] == false) {
         this.erros.push("Localização;");
       }
 
-      if (
-        !!this.serie.entProdutoras[0] == false &&
-        !!this.serie.tipologiasProdutoras[0] == false
-      ) {
-        this.erros.push("Produtoras;");
-      }
-
-      if (!!this.serie.legislacao[0] == false) {
-        this.erros.push("Legislação;");
-      }
       if (!!this.treeview_object.children[0] == 0) {
-        if (!this.serie.pca) {
-          this.erros.push("Prazo de Conservação Administrativa;");
+        if (!Boolean(this.serie.pca)) {
+          if (!Boolean(this.serie.notaPCA)) {
+            this.erros.push(
+              "Prazo de Conservação Administrativo ou nota sobre o PCA;"
+            );
+          }
         }
 
-        if (!!this.serie.justificacaoPCA[0] == false) {
-          this.erros.push("Justificação do PCA;");
-        }
-
-        if (!!this.serie.justificacaoDF[0] == false) {
-          this.erros.push("Justificação do DF;");
-        }
-
-        if (!this.serie.df) {
-          this.erros.push("Destino Final;");
+        if (!Boolean(this.serie.df)) {
+          if (!Boolean(this.serie.notaDF)) {
+            this.erros.push("Destino Final ou nota sobre o DF;");
+          }
         }
 
         if (!this.serie.formaContagem.forma) {
@@ -397,23 +332,33 @@ export default {
           }
         }
       }
-    },
-    save() {
-      this.existe_erros = false;
-      this.erros = [];
-      this.isMultiple = true;
-      this.panels = [0, 1, 2];
-      setTimeout(() => {
-        if (this.$refs.formSerie.validate()) {
-          this.$emit("atualizacao", this.serie);
-          this.dialogSerie = false;
-        } else {
-          this.isMultiple = false;
-          this.panels = [0, 0, 0];
-          this.recolherErros();
-        }
-      }, 1);
+
+      if (!Boolean(this.erros[0])) {
+        this.erros.push("Datas Inválidas;");
+      }
     }
+  },
+  created() {
+    // ir buscar o verdadeiro objeto
+    let serie_real = this.classes.find(
+      e => e.codigo == this.treeview_object.codigo
+    );
+
+    // DEEP CLONE do objetos
+    this.serie = JSON.parse(JSON.stringify(serie_real));
+
+    this.buscarTitulosClasses(this.serie);
+
+    // Classes para definir a hierarquia
+    this.classesHierarquia = this.classes
+      .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+      .sort((a, b) => a.codigo.localeCompare(b.codigo))
+      .map(classe => {
+        return {
+          searchField: classe.codigo + " - " + classe.titulo,
+          codigo: classe.codigo
+        };
+      });
   }
 };
 </script>

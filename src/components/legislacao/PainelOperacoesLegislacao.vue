@@ -188,6 +188,12 @@
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
 import DialogLegislacaoSucesso from "@/components/legislacao/DialogLegislacaoSucesso";
 
+import {
+  comparaArraySel,
+  criarHistorico,
+  extrairAlteracoes
+} from "@/utils/utils";
+
 export default {
   props: ["l", "acao", "original"],
 
@@ -235,6 +241,20 @@ export default {
         numeroErros++;
       }
 
+      // Data revogação
+      if (
+        this.l.data !== "" &&
+        this.l.data !== null &&
+        this.l.data !== undefined &&
+        this.l.dataRevogacao !== "" &&
+        this.l.dataRevogacao !== null &&
+        this.l.dataRevogacao !== undefined
+      ) {
+        if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
+          numeroErros++;
+        }
+      }
+
       return numeroErros;
     },
 
@@ -244,6 +264,20 @@ export default {
       // Sumário
       if (dados.sumario === "" || dados.sumario === null) {
         numeroErros++;
+      }
+
+      // Data revogação
+      if (
+        dados.data !== "" &&
+        dados.data !== null &&
+        dados.data !== undefined &&
+        dados.dataRevogacao !== "" &&
+        dados.dataRevogacao !== null &&
+        dados.dataRevogacao !== undefined
+      ) {
+        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -258,29 +292,30 @@ export default {
           let erros = 0;
           let dataObj = JSON.parse(JSON.stringify(this.l));
 
+          const historico = [];
+
           switch (this.acao) {
             case "Criação":
               erros = await this.validarLegislacaoCriacao();
+
+              historico.push(criarHistorico(dataObj));
+
               break;
 
             case "Alteração":
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "id") delete dataObj[key];
-                }
-              }
+              dataObj = extrairAlteracoes(this.l, this.original);
 
               erros = this.validarLegislacaoAlteracao(dataObj);
+
+              historico.push(criarHistorico(this.l, this.original));
+
               break;
 
             default:
               break;
           }
 
-          if (erros == 0) {
+          if (erros === 0) {
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
@@ -289,11 +324,13 @@ export default {
               novoObjeto: dataObj,
               user: { email: userBD.email },
               entidade: userBD.entidade,
-              token: this.$store.state.token
+              token: this.$store.state.token,
+              historico: historico
             };
 
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
+            else pedidoParams.objetoOriginal = dataObj;
 
             const codigoPedido = await this.$request(
               "post",

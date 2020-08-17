@@ -1,9 +1,11 @@
-FROM node:10
+FROM node:14.5 
 COPY ./ /app
 WORKDIR /app
-RUN npm install && npm audit fix && npm run build
+RUN npm install
+RUN npm audit fix 
+RUN npm run build
 
-FROM nginx
+FROM nginx:1.19
 RUN mkdir /app
 COPY --from=0 /app/dist /app
 #COPY nginx2.conf /etc/nginx/nginx.conf

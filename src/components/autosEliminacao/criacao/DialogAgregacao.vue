@@ -154,7 +154,10 @@ export default {
         var res2 =
           parseInt(this.dataContagem) -
           parseInt(this.auto.zonaControlo[this.index].dataInicio);
-        if (res >= currentTime.getFullYear()) {
+        if (
+          this.auto.zonaControlo[this.index].prazoConservacao &&
+          res >= currentTime.getFullYear()
+        ) {
           this.erro = help.AutoEliminacao.Erros.DataContagem;
           this.erroDialog = true;
         } else if (res2 < 0) {
@@ -200,7 +203,10 @@ export default {
         var res2 =
           parseInt(this.dataContagem) -
           parseInt(this.auto.zonaControlo[this.index].dataInicio);
-        if (!(res <= currentTime.getFullYear())) {
+        if (
+          this.auto.zonaControlo[this.index].prazoConservacao &&
+          !(res <= currentTime.getFullYear())
+        ) {
           this.erro = help.AutoEliminacao.Erros.DataContagem;
           this.erroDialog = true;
           this.auto.zonaControlo[this.index].agregacoes[this.indexAg] = backup;

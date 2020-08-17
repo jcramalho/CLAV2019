@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title>Insira uma mensagem para devolução</v-card-title>
+    <v-card-title class="indigo darken-3 white--text">
+      Insira uma mensagem para devolução
+    </v-card-title>
     <v-card-text>
       <v-row>
         <v-col cols="2">
@@ -41,7 +43,6 @@ export default {
 
   methods: {
     cancelar() {
-      this.utilizadorSelecionado = null;
       this.mensagemDespacho = null;
       this.$emit("fecharDialog");
     },
@@ -50,7 +51,7 @@ export default {
       const despacho = {};
 
       if (this.mensagemDespacho !== null)
-        despacho.utilizadorSelecionado = this.utilizadorSelecionado;
+        despacho.mensagemDespacho = this.mensagemDespacho;
 
       this.$emit("devolverPedido", despacho);
     }

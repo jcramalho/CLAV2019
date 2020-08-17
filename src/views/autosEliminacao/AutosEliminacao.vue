@@ -39,15 +39,17 @@ export default {
       try {
         var myTree = [];
         for (var i = 0; i < listaAutosEliminacao.length; i++) {
-          myTree.push({
-            id: listaAutosEliminacao[i].id.split("#")[1].replace("ae_", ""),
-            tipo: listaAutosEliminacao[i].tipo,
+          var obj = {
+            id: listaAutosEliminacao[i].id.split("#")[1].replace("ae_", "").replace(/\_/g,"/"),
+            tipo: listaAutosEliminacao[i].tipo || "TS/LC",
             fonte: "Portaria " + listaAutosEliminacao[i].numero,
             entidade: listaAutosEliminacao[i].entidade
               .split("#")[1]
               .replace("ent_", ""),
             data: listaAutosEliminacao[i].data
-          });
+          };
+          if(listaAutosEliminacao[i].referencial) obj.fonte = "Lista Consolidada"
+          myTree.push(obj);
         }
         return myTree;
       } catch (error) {

@@ -151,6 +151,7 @@
 <script>
 import ListagemTI from "@/components/generic/ListagemTI";
 import ListagemTE from "@/components/generic/ListagemTE";
+import ListagemE from "@/components/generic/ListagemE";
 import ListagemLegislacao from "@/components/generic/ListagemLegislacao";
 import ListagemNot from "@/components/generic/ListagemNot";
 

@@ -85,7 +85,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="indigo darken-4" dark @click="cancelar">
-                  Cancelar
+                  Voltar
                 </v-btn>
                 <v-btn color="indigo darken-4" dark @click="executar">
                   Exportar
@@ -108,6 +108,7 @@
 <script>
 import InfoBox from "@/components/generic/infoBox.vue";
 const lhost = require("@/config/global").host;
+var iconv = require("iconv-lite");
 
 export default {
   data: () => {
@@ -115,14 +116,23 @@ export default {
       label: "Formato de saída",
       desc: "Formato de saída do resultado",
       enum: [
-        "Por definir",
-        "application/json",
-        "json",
-        "application/xml",
-        "xml",
-        "text/csv",
-        "csv",
-        "excel/csv"
+        { text: "Por definir", value: "" },
+        { text: "JSON", value: "application/json" },
+        { text: "XML", value: "application/xml" },
+        { text: "CSV", value: "text/csv" },
+        { text: "CSV para Excel", value: "excel/csv" }
+      ],
+      multiple: false
+    };
+    let enc = {
+      label: "Encoding de saída",
+      desc: "Encoding de saída do resultado",
+      enum: [
+        { text: "Por definir", value: "" },
+        { text: "UTF-8", value: "utf-8" },
+        { text: "UTF-16", value: "utf-16" },
+        { text: "ISO-8859-1", value: "iso-8859-1" },
+        { text: "windows-1252", value: "win1252" }
       ],
       multiple: false
     };
@@ -207,11 +217,12 @@ export default {
             label:
               "Informação completa? Ou pretende apenas o esqueleto para criar uma TS?",
             desc:
-              "Caso seja um valor que não 'completa' e 'esqueleto' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve numa estrutura pronta a ser preenchida para a criação de uma Tabela de Seleção, devolve os campos: código, título, descrição, PCA, DF dono (a ser preenchido pelo utilizador) e participante (a ser preenchido pelo utilizador).",
-            enum: ["Por definir", "completa", "esqueleto"],
+              "Caso seja um valor que não 'completa', 'esqueleto' ou 'pre-selecionados' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve numa estrutura pronta a ser preenchida para a criação de uma Tabela de Seleção, devolve os campos: código, título, descrição, PCA, DF, dono (a ser preenchido pelo utilizador) e participante (a ser preenchido pelo utilizador). Caso o valor seja 'pre-selecionados' devolve os campos: código, título, descrição, PCA, DF, dono e participante.",
+            enum: ["Por definir", "completa", "esqueleto", "pre-selecionados"],
             multiple: false
           },
-          fs: fs
+          fs: fs,
+          encoding: enc
         },
         entidades: {
           ents: {
@@ -270,7 +281,8 @@ export default {
             enum: ["Por definir", "completa"],
             multiple: false
           },
-          fs: fs
+          fs: fs,
+          encoding: enc
         },
         tipologias: {
           tips: {
@@ -300,7 +312,8 @@ export default {
             enum: ["Por definir", "completa"],
             multiple: false
           },
-          fs: fs
+          fs: fs,
+          encoding: enc
         },
         legislacoes: {
           processos: {
@@ -331,7 +344,8 @@ export default {
             enum: ["Por definir", "completa"],
             multiple: false
           },
-          fs: fs
+          fs: fs,
+          encoding: enc
         },
         classe: {
           tipo: {
@@ -341,7 +355,8 @@ export default {
             enum: ["Por definir", "subarvore"],
             multiple: false
           },
-          fs: fs
+          fs: fs,
+          encoding: enc
         },
         entidade: {
           info: {
@@ -351,7 +366,8 @@ export default {
             enum: ["Por definir", "completa"],
             multiple: false
           },
-          fs: fs
+          fs: fs,
+          encoding: enc
         },
         tipologia: {
           info: {
@@ -361,7 +377,8 @@ export default {
             enum: ["Por definir", "completa"],
             multiple: false
           },
-          fs: fs
+          fs: fs,
+          encoding: enc
         },
         legislacao: {
           info: {
@@ -371,7 +388,8 @@ export default {
             enum: ["Por definir", "completa"],
             multiple: false
           },
-          fs: fs
+          fs: fs,
+          encoding: enc
         },
         ontologia: {
           inferencia: {
@@ -390,13 +408,10 @@ export default {
             desc:
               "Formato em que é devolvido os triplos. Pode ser um dos seguintes valores: turtle (text/turtle), json-ld (application/ld+json) ou rdf-xml (application/rdf+xml). No caso de não ser passado nenhum formato ou o que é colocado não é suportado é devolvido turtle. O formato também pode ser indicado na header 'Accept' sofrendo das mesmas restrições que se for indicado por query. Caso seja definido das duas formas a fornecida pela query string é a que é usada.",
             enum: [
-              "Por definir",
-              "turtle",
-              "text/turtle",
-              "json-ld",
-              "application/ld+json",
-              "rdf-xml",
-              "application/rdf+xml"
+              { text: "Por definir", value: "" },
+              { text: "Turtle", value: "text/turtle" },
+              { text: "JSON-LD", value: "application/ld+json" },
+              { text: "RDF-XML", value: "application/rdf+xml" }
             ],
             multiple: false
           }
@@ -500,9 +515,9 @@ export default {
       element.click();
       document.body.removeChild(element);
     },
-    downloadData(filename, content, format) {
+    downloadData(filename, content, format, encoding) {
       var blob = new Blob([content], {
-        type: format + ";charset=utf-8;"
+        type: format + `;charset=${encoding};`
       });
 
       if (window.navigator.msSaveBlob) {
@@ -578,19 +593,20 @@ export default {
 
         //criar query string
         if (Object.keys(this.queriesSel).length > 0) {
-          path += "?";
-
           var q = [];
           for (var key in this.queriesSel) {
             if (
               this.queriesSel[key] != "Por definir" &&
-              this.queriesSel[key] != ""
+              this.queriesSel[key] != "" &&
+              key != "encoding"
             ) {
               q.push(key + "=" + encodeURIComponent(this.queriesSel[key]));
             }
           }
 
-          path += q.join("&");
+          if (q.length > 0) {
+            path += "?" + q.join("&");
+          }
         }
 
         if (this.tipo.filename != "ontologia") {
@@ -609,7 +625,14 @@ export default {
 
           //criar ficheiro e devolver ao user
           var fcf = this.defineParams(response.data);
-          this.downloadData(fcf[0], fcf[1], fcf[2]);
+          var encoding = "utf-8";
+          if (this.queriesSel.encoding && this.queriesSel.encoding != "") {
+            encoding = this.queriesSel.encoding;
+            if (encoding != "utf-8") {
+              fcf[1] = iconv.encode(fcf[1], encoding);
+            }
+          }
+          this.downloadData(fcf[0], fcf[1], fcf[2], encoding);
         } else {
           await this.downloadFile(path);
         }

@@ -9,20 +9,30 @@
         <v-row>
           <v-col sm="12" xs="12" v-if="newSerie.relacoes[0]">
             <v-data-table :headers="headers" :items="newSerie.relacoes" hide-default-footer>
-              <template v-slot:item.relacao="props">
-                {{
-                props.item.relacao
-                }}
-              </template>
+              <template v-slot:item.relacao="props">{{ props.item.relacao }}</template>
               <template v-slot:item.edicao="props">
                 <td>
                   <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
                 </td>
               </template>
               <template v-slot:item.serieRelacionada="props">
-                {{
-                props.item.serieRelacionada.codigo + " - " + props.item.serieRelacionada.titulo
-                }}
+                <img
+                  v-if="props.item.serieRelacionada.tipo == 'Série'"
+                  style="width:23px; height:30px"
+                  :src="svg_sr"
+                />
+                <img
+                  v-else-if="props.item.serieRelacionada.tipo == 'Subsérie'"
+                  style="width:23px; height:30px"
+                  :src="svg_ssr"
+                />
+                <b @click="showClasse(props.item)">
+                  {{
+                  props.item.serieRelacionada.codigo +
+                  " - " +
+                  props.item.serieRelacionada.titulo
+                  }}
+                </b>
               </template>
             </v-data-table>
             <hr style="border: 3px solid; border-radius: 2px;" />
@@ -40,7 +50,7 @@
                     :rules="[v => codigoIgual(v)]"
                     v-model="codrel"
                     :items="getCodigos"
-                    label="Classe"
+                    label="Código"
                     item-value="codigo"
                     item-text="searchField"
                     solo
@@ -54,12 +64,15 @@
                           <v-list-item-title>
                             Classe
                             <strong>Série</strong> e
-                            <strong>Subsérie</strong> em questão não existe no sistema!
+                            <strong>Subsérie</strong> em questão não existe no
+                            sistema!
                           </v-list-item-title>
                           <v-list-item-subtitle>
                             Pode criar aqui uma nova classe Série ou Subsérie.
-                            Para tal, escreva código da nova classe e prima a tecla
-                            <i>"Enter"</i>. Posteriormente preencha os restantes campos.
+                            Para tal, escreva código da nova classe e prima a
+                            tecla
+                            <i>"Enter"</i>. Posteriormente preencha os restantes
+                            campos.
                           </v-list-item-subtitle>
                         </v-list-item-content>
                       </v-list-item>
@@ -78,8 +91,8 @@
                 </v-col>
               </v-row>
 
-              <v-row>
-                <v-col sm="6" xs="12">
+              <v-row justify="center">
+                <v-col sm="5" xs="12">
                   <v-autocomplete
                     :rules="[v => !!v || 'Campo obrigatório!']"
                     v-model="rel"
@@ -98,11 +111,11 @@
                     </template>
                   </v-autocomplete>
                 </v-col>
-                <v-col sm="5" xs="12">
+                <v-col sm="4" xs="12">
                   <v-select
                     :disabled="iscodvalido"
                     :rules="[v => !!v || 'Campo obrigatório!']"
-                    label="Tipo de Classe"
+                    label="Série / Subsérie"
                     v-model="tipoClasse"
                     :items="['Série', 'Subsérie']"
                     chips
@@ -111,48 +124,68 @@
                   >
                     <template v-slot:selection="data">
                       <v-chip>
-                        <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                        <v-avatar left color="amber accent-3">
+                          {{
+                          data.item[0]
+                          }}
+                        </v-avatar>
                         {{ data.item }}
                       </v-chip>
                     </template>
                   </v-select>
                 </v-col>
-                <v-col sm="1" xs="12">
-                  <v-btn text rounded @click="add()">
-                    <v-icon color="green lighten-1">add_circle</v-icon>
-                  </v-btn>
-                  <v-btn text rounded @click="$refs.addRel.reset()">
-                    <v-icon color="red lighten-1">delete_sweep</v-icon>
-                  </v-btn>
+                <v-col md="3" sm="3" xs="12" class="text-right">
+                  <v-icon @click="add()" size="35" color="green lighten-1">add_circle</v-icon>
+                  <v-btn style="margin-left: 10px" dark color="red darken-4" @click="$refs.addRel.reset()">Limpar</v-btn>
                 </v-col>
               </v-row>
               <v-row v-if="!!alertOn">
                 <v-col>
-                  <v-alert
-                    dismissible
-                    dense
-                    text
-                    type="error"
-                  >Impossível criar relação! Já existe ou classe já se encontra relacionada ou relação inválida!</v-alert>
+                  <v-alert dismissible dense text type="error">
+                    Impossível criar relação! Já existe ou classe já se
+                    encontra relacionada ou relação inválida!
+                  </v-alert>
                 </v-col>
               </v-row>
             </v-form>
+            <v-snackbar v-model="snackbar" color="#fafafa" :timeout="2000">
+              <font color="#000000">Classe ainda não existe no sistema!</font>
+              <v-btn color="#3949ab" text @click="snackbar = false">Fechar</v-btn>
+            </v-snackbar>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+    <ShowSerieSubserie
+      v-if="show_serie_subserie"
+      :dialog="show_serie_subserie"
+      @fecharDialog="show_serie_subserie = false"
+      :formaContagem="formaContagem"
+      :show_a_partir_de_pedido="false"
+      :treeview_object="treeview_object"
+      :classes="classes"
+    />
   </div>
 </template>
 
 <script>
 const labels = require("@/config/labels").criterios;
+import ShowSerieSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSerieOuSubserie";
 
 export default {
   name: "RelacoesClasse",
-  props: ["newSerie", "classes"],
+  props: ["newSerie", "classes", "formaContagem"],
+  components: {
+    ShowSerieSubserie
+  },
   data() {
     return {
+      svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+      svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+      snackbar: false,
+      show_serie_subserie: false,
       tituloClasse: null,
+      treeview_object: null,
       tipoClasse: null,
       iscodvalido: false,
       alertOn: false,
@@ -165,7 +198,8 @@ export default {
         "Sintetizado por",
         "Síntese de",
         "Suplemento de",
-        "Suplemento para"
+        "Suplemento para",
+        "Cruzado de"
       ],
       headers: [
         {
@@ -222,7 +256,7 @@ export default {
   watch: {
     codrel: function(novo, old) {
       let c = this.classes.find(e => e.codigo == novo);
-      if (c != undefined) {
+      if (c != undefined && (c.tipo == "Série" || c.tipo == "Subsérie")) {
         this.iscodvalido = true;
         this.tipoClasse = c.tipo;
         this.tituloClasse = c.titulo;
@@ -232,6 +266,22 @@ export default {
     }
   },
   methods: {
+    showClasse(item) {
+      if (this.classes.some(cl => cl.codigo == item.serieRelacionada.codigo)) {
+        this.treeview_object = {
+          tipo: item.serieRelacionada.tipo,
+          codigo: item.serieRelacionada.codigo,
+          titulo:
+            item.serieRelacionada.codigo + " - " + item.serieRelacionada.titulo,
+          eFilhoDe: "",
+          children: []
+        };
+
+        this.show_serie_subserie = true;
+      } else {
+        this.snackbar = true;
+      }
+    },
     alteraDF(tipo_criterio) {
       if (tipo_criterio == "Critério de Complementaridade Informacional") {
         if (this.newSerie.relacoes.some(e => e.relacao == "Síntese de")) {
@@ -290,7 +340,7 @@ export default {
         }
       }
     },
-    remove: function(item) {
+    remove(item) {
       if (item.relacao == "Suplemento para") {
         this.remove_criterio(
           item.serieRelacionada.codigo,
@@ -319,7 +369,7 @@ export default {
         );
       });
     },
-    codigoIgual: function(v) {
+    codigoIgual(v) {
       if (v == null || v == "") {
         return "Campo Obrigatório";
       } else {
@@ -335,7 +385,7 @@ export default {
         }
       }
     },
-    add: async function() {
+    async add() {
       this.alertOn = false;
 
       if (this.$refs.addRel.validate()) {
@@ -454,7 +504,6 @@ export default {
       } else {
         if (this.rel == "Síntese de" || this.rel == "Sintetizado por") {
           let classe = this.classes.find(cl => cl.codigo == this.codrel);
-
           if (
             classe != undefined &&
             classe.relacoes.some(e => e.relacao == this.rel)

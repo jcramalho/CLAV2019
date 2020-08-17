@@ -7,13 +7,14 @@
       </v-col>
       <v-col xs="12" sm="9">
         <v-autocomplete
-          :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.entProdutoras"
           :items="RE.entidadesProd"
-          placeholder="Selecione as Entidades Produtoras."
+          label="Selecione as Entidades Produtoras"
           multiple
           chips
           deletable-chips
+          solo
+          clearable
         >
           <template v-slot:no-data>
             <v-list-item>
@@ -33,13 +34,14 @@
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-autocomplete
-          :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
           v-model="newSerie.tipologiasProdutoras"
-          :items="RE.tipologiasProd"
-          placeholder="Selecione as Tipologias da Entidades produtoras."
+          :items="[RE.tipologiasProd]"
+          label="Selecione as Tipologias da Entidades produtoras"
           multiple
           chips
           deletable-chips
+          solo
+          clearable
         >
           <template v-slot:no-data>
             <v-list-item>
@@ -57,6 +59,26 @@
 <script>
 export default {
   name: "EntidadesProdutores",
-  props: ["newSerie", "RE"]
+  props: ["newSerie", "RE", "editar"],
+  created() {
+    if (
+      !this.editar &&
+      this.newSerie.entProdutoras.length == 0 &&
+      this.newSerie.tipologiasProdutoras.length == 0
+    ) {
+      this.newSerie.entProdutoras = JSON.parse(
+        JSON.stringify(this.RE.entidadesProd)
+      );
+      this.newSerie.tipologiasProdutoras = [this.RE.tipologiasProd];
+    }
+  },
+  watch: {
+    "RE.entidadesProd": function(newValue) {
+      this.newSerie.entProdutoras = JSON.parse(JSON.stringify(newValue));
+    },
+    "RE.tipologiasProd": function(newValue) {
+      this.newSerie.tipologiasProdutoras = [newValue];
+    }
+  }
 };
 </script>

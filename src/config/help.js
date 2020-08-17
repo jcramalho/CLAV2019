@@ -296,7 +296,7 @@ module.exports.help = {
       FaltaCampos:
         "Verifique se os campos <strong>Código da Classe, Data de Início e/ou Data de Fim</strong> se encontram preenchidos.",
       CodigoClasse:
-        "O <strong>Código de Classe</strong> que introduziu na Zona de Controlo já foi introduzido no Auto.",
+        "A <strong>Classe</strong> que selecionou já foi introduzida no Auto.",
       DatasExtremas:
         "Verifique se os campos <strong>Data de Início e Data de Fim</strong> se encontram devidamente preenchidos.",
       DataInicio:
@@ -312,7 +312,7 @@ module.exports.help = {
       FaltaCamposAg:
         "Verifique se os campos <strong>Código da Agregação, Título da Agregação e Data de Contagem do PCA</strong> se encontram devidamente preenchidos.",
       CodigoAg:
-        "O <strong>Código da Agregação</strong> que introduziu já foi associado a esta Zona de Controlo.",
+        "O <strong>Código da Agregação</strong> que introduziu já existe nesta Classe",
       DataContagem:
         "A Data de inicio da contagem deve ser igual ou inferior à subtração do Prazo de conservação administrativa ao ano corrente. Para garantia de cumprimento integral do PCA é aconselhável adicionar a este valor um ano.",
       DataContagemP:
@@ -325,6 +325,7 @@ module.exports.help = {
     Campos: {
       FonteLegitimacao:
         "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
+      TS: "Tabela de Seleção conforme à Lista Consolidada",
       PGD_LC: "Portaria de Gestão de Documentos conforme à Lista Consolidada",
       PGD: "Portaria de Gestão de Documentos",
       RADA: "Relatório de Avaliação de Documentação Acumulada"

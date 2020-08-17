@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="dialog">
-    <template v-slot:activator="{ on }">
+  <v-dialog v-model="dialogState" persistent max-width="90%">
+    <!-- <template v-slot:activator="{ on }">
       <v-btn color="#dee2f8" class="ma-2" v-on="on">
         <v-icon dark left>add</v-icon>Unidade de Instalação
       </v-btn>
-    </template>
+    </template>-->
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">Adicionar Unidade de Instalação</v-card-title>
+      <v-card-title class="indigo darken-4 white--text">Adicionar Unidade de Instalação</v-card-title>
       <br />
 
       <v-card-text>
@@ -39,16 +39,10 @@
           </v-row>
           <v-row>
             <v-col md="2" sm="2">
-              <div class="info-label">Código Classificação/Cota</div>
+              <div class="info-label">Cota</div>
             </v-col>
             <v-col sm="2" md="2">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI.codCota"
-                label="Código Classificação/Cota"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI.codCota" label="Cota"></v-text-field>
             </v-col>
 
             <v-col md="2" sm="2">
@@ -69,90 +63,52 @@
               <div class="info-label">Data Inicial da Documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
-              <v-menu
-                ref="menu1"
-                v-model="menu1"
-                :close-on-content-click="false"
-                :return-value.sync="UI.dataInicial"
-                transition="scale-transition"
-                max-width="290px"
+              <SelecionarData
+                label="Data Inicial"
+                :d="UI.dataInicial"
+                @dataSelecionada="UI.dataInicial = $event"
+                :dataMinima="RE.dataInicial"
+                :dataMaxima="RE.dataFinal"
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:default="slotProps">
                   <v-text-field
                     :rules="[v => !!v || 'Campo obrigatório!']"
-                    v-model="UI.dataInicial"
-                    label="Data Inicial"
+                    v-model="slotProps.item.dataValor"
+                    :label="slotProps.item.label"
                     prepend-icon="event"
                     readonly
-                    v-on="on"
-                    clearable
+                    v-on="slotProps.item.on"
+                    solo
                   ></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="UI.dataInicial"
-                  full-width
-                  color="amber accent-3"
-                  scrollable
-                  locale="pt"
-                  :min="RE.dataInicial"
-                  :max="RE.dataFinal"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text @click="menu1 = false">
-                    <v-icon>keyboard_backspace</v-icon>
-                  </v-btn>
-                  <v-btn text @click="$refs.menu1.save(UI.dataInicial)">
-                    <v-icon>check</v-icon>
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
+              </SelecionarData>
             </v-col>
             <v-col xs="12" sm="3">
               <div class="info-label">Data Final da Documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
-              <v-menu
-                ref="menu2"
-                v-model="menu2"
-                :close-on-content-click="false"
-                :return-value.sync="UI.dataFinal"
-                transition="scale-transition"
-                max-width="290px"
+              <SelecionarData
+                label="Data Final"
+                :d="UI.dataFinal"
+                @dataSelecionada="UI.dataFinal = $event"
+                :dataMinima="RE.dataInicial"
+                :dataMaxima="RE.dataFinal"
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:default="slotProps">
                   <v-text-field
-                    :rules="[v => data_final_valida(v) || 'Campo obrigatório!']"
-                    v-model="UI.dataFinal"
-                    label="Data Final"
+                    :rules="[v => data_final_valida(v, UI) || 'Campo obrigatório!']"
+                    v-model="slotProps.item.dataValor"
+                    :label="slotProps.item.label"
                     prepend-icon="event"
                     readonly
-                    v-on="on"
-                    clearable
+                    v-on="slotProps.item.on"
+                    solo
                   ></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="UI.dataFinal"
-                  full-width
-                  color="amber accent-3"
-                  scrollable
-                  locale="pt"
-                  :min="RE.dataInicial"
-                  :max="RE.dataFinal"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu2 = false">
-                    <v-icon>keyboard_backspace</v-icon>
-                  </v-btn>
-                  <v-btn text color="primary" @click="$refs.menu2.save(UI.dataFinal)">
-                    <v-icon>check</v-icon>
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
+              </SelecionarData>
             </v-col>
           </v-row>
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <EntidadesProdutoras :newSerie="UI.produtor" :RE="RE" />
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <!-- {{classesUI}}
           {{UI.classesAssociadas}}-->
           <v-row>
@@ -164,11 +120,21 @@
                 :headers="headers"
                 :items="UI.classesAssociadas"
                 hide-default-footer
-                v-if="UI.classesAssociadas[0]"
+                v-if="!!UI.classesAssociadas[0]"
               >
-                <template
-                  v-slot:item.codigo="props"
-                >{{ props.item.codigo + " - " + props.item.titulo }}</template>
+                <template v-slot:item.codigo="props">
+                  <img
+                    v-if="props.item.tipo == 'Série'"
+                    style="width:23px; height:30px"
+                    :src="svg_sr"
+                  />
+                  <img
+                    v-else-if="props.item.tipo == 'Subsérie'"
+                    style="width:23px; height:30px"
+                    :src="svg_ssr"
+                  />
+                  {{ props.item.codigo + " - " + props.item.titulo }}
+                </template>
                 <template v-slot:item.edicao="props">
                   <td>
                     <v-icon color="red darken-2" dark @click="remove(props.item)">remove_circle</v-icon>
@@ -195,7 +161,7 @@
                     <v-combobox
                       :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório para associar série/subsérie!']"
                       v-model="cod"
-                      :items="getCodigos"
+                      :items="classes_processadas"
                       label="Código"
                       item-text="searchField"
                       item-value="codigo"
@@ -204,6 +170,19 @@
                       clearable
                       chips
                     >
+                      <template v-slot:item="{item}">
+                        <img
+                          v-if="item.tipo == 'Série'"
+                          style="width:23px; height:30px"
+                          :src="svg_sr"
+                        />
+                        <img
+                          v-else-if="item.tipo == 'Subsérie'"
+                          style="width:23px; height:30px"
+                          :src="svg_ssr"
+                        />
+                        <span style="padding-left: 20px;">{{ item.searchField }}</span>
+                      </template>
                       <template v-slot:no-data>
                         <v-list-item>
                           <v-list-item-content>
@@ -222,21 +201,21 @@
                       </template>
                     </v-combobox>
                   </v-col>
-                  <v-col sm="5" xs="12">
+                  <v-col sm="6" xs="12">
                     <v-text-field
                       :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
                       :disabled="iscodvalido"
                       solo
                       clearable
                       v-model="tituloClasse"
-                      label="Título da Série/Subsérie"
+                      label="Título"
                     ></v-text-field>
                   </v-col>
                   <v-col sm="2" xs="12">
                     <v-select
                       :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']"
                       :disabled="iscodvalido"
-                      label="Tipo de Classe"
+                      label="Série / Subsérie"
                       v-model="tipoClasse"
                       :items="['Série', 'Subsérie']"
                       chips
@@ -251,14 +230,20 @@
                       </template>
                     </v-select>
                   </v-col>
-
-                  <v-col sm="1" xs="12">
-                    <v-btn text rounded @click="adicionarClasseUI">
-                      <v-icon color="green lighten-1">add_circle</v-icon>
-                    </v-btn>
-                    <v-btn text rounded @click="$refs.addRel.reset()">
-                      <v-icon color="red lighten-1">delete_sweep</v-icon>
-                    </v-btn>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="text-right">
+                    <v-icon
+                      @click="adicionarClasseUI(UI)"
+                      size="35"
+                      color="green lighten-1"
+                    >add_circle</v-icon>
+                    <v-btn
+                      style="margin-left: 10px"
+                      dark
+                      color="red darken-4"
+                      @click="$refs.addRel.reset()"
+                    >Limpar</v-btn>
                   </v-col>
                 </v-row>
                 <v-row v-if="!!alertOn">
@@ -269,32 +254,18 @@
               </v-form>
             </v-card-text>
           </v-card>
-
-          <v-divider style="border: 2px solid; border-radius: 1px;"></v-divider>
           <v-row>
             <v-col md="2" sm="2">
               <div class="info-label">Notas</div>
             </v-col>
             <v-col sm="4" md="4">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI.notas"
-                label="Notas"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI.notas" label="Notas"></v-text-field>
             </v-col>
             <v-col md="2" sm="2">
               <div class="info-label">Localização</div>
             </v-col>
             <v-col sm="4" md="4">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                solo
-                clearable
-                v-model="UI.localizacao"
-                label="Localização"
-              ></v-text-field>
+              <v-text-field solo clearable v-model="UI.localizacao" label="Localização"></v-text-field>
             </v-col>
           </v-row>
         </v-form>
@@ -308,11 +279,9 @@
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-        </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="dialog = false">Voltar</v-btn>
-        <v-btn color="success" class="mr-4" @click="guardar">Guardar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="guardar">Adicionar</v-btn>
+        <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -320,124 +289,27 @@
 
 <script>
 import EntidadesProdutoras from "@/components/rada/criacao/classes/partes/EntidadesProdutoras.vue";
+import SelecionarData from "@/components/generic/SelecionarData";
+
+import mixin_unidade_instalacao from "@/mixins/rada/mixin_unidade_instalacao";
 
 export default {
-  props: ["UIs", "RE", "classes"],
+  props: ["UIs", "RE", "classes", "dialog", "UI_para_copiar"],
   components: {
-    EntidadesProdutoras
+    EntidadesProdutoras,
+    SelecionarData
   },
-  computed: {
-    getCodigos() {
-      return this.classes
-        .filter(
-          e =>
-            (e.tipo == "Série" || e.tipo == "Subsérie") && e.dataInicial == null
-        )
-        .map(e => {
-          return {
-            codigo: e.codigo,
-            searchField: e.codigo + " - " + e.titulo
-          };
-        });
-    }
-  },
-  watch: {
-    cod: function(novo, old) {
-      let c = this.classes.find(e => e.codigo == novo);
-
-      if (c != undefined) {
-        this.iscodvalido = true;
-        this.tituloClasse = c.titulo;
-        this.tipoClasse = c.tipo;
-      } else {
-        this.iscodvalido = false;
-      }
-    }
-  },
+  mixins: [mixin_unidade_instalacao],
   data: () => ({
-    tituloClasse: null,
-    existe_erros: false,
-    erros: [],
-    menu1: false,
-    menu2: false,
-    alertOn: false,
-    iscodvalido: false,
-    tipoClasse: null,
-    dialog: false,
-    cod: null,
-    UI: {
-      codigo: "",
-      codCota: "",
-      titulo: "",
-      dataInicial: null,
-      dataFinal: null,
-      produtor: {
-        tipologiasProdutoras: [],
-        entProdutoras: []
-      },
-      classesAssociadas: [],
-      descricao: "",
-      notas: "",
-      localizacao: ""
-    },
-    headers: [
-      {
-        text: "Série/Subsérie Associada",
-        align: "center",
-        value: "codigo",
-        width: "75%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        text: "Tipo",
-        align: "center",
-        value: "tipo",
-        width: "20%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      },
-      {
-        value: "edicao",
-        align: "center",
-        sortable: false,
-        width: "5%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
+    UI: null
   }),
   methods: {
-    data_final_valida(v) {
-      if (!!v) {
-        if (this.UI.dataInicial != null) {
-          let data_inicial = new Date(this.UI.dataInicial);
-          let data_final = new Date(v);
-
-          if (data_inicial > data_final) {
-            return "Data final inválida! É anterior à data inicial.";
-          }
-        }
-        return true;
-      }
-      return false;
-    },
-    eCodigoClasseValido(v) {
-      if (
-        this.classes.some(
-          e =>
-            e.codigo == v &&
-            (e.dataInicial === undefined || e.dataInicial != null)
-        )
-      ) {
-        return "Impossível criar associação, altere o código!";
-      } else {
-        return false;
-      }
-    },
-    remove: function(item) {
+    remove(item) {
       this.UI.classesAssociadas = this.UI.classesAssociadas.filter(e => {
         return e.codigo != item.codigo;
       });
     },
-    apagar: function() {
+    apagar() {
       this.existe_erros = false;
       this.erros = [];
 
@@ -458,47 +330,7 @@ export default {
       };
       this.$refs.formUI.resetValidation();
     },
-    recolherErros() {
-      this.existe_erros = true;
-
-      if (!this.UI.codigo) {
-        this.erros.push("Código;");
-      }
-
-      if (!this.UI.titulo) {
-        this.erros.push("Título;");
-      }
-
-      if (!this.UI.codCota) {
-        this.erros.push("Código Cota;");
-      }
-
-      if (!this.UI.dataInicial || !this.UI.dataFinal) {
-        this.erros.push("Datas;");
-      }
-
-      if (
-        !!this.UI.produtor.entProdutoras[0] == false &&
-        !!this.UI.produtor.tipologiasProdutoras[0] == false
-      ) {
-        this.erros.push("Produtoras;");
-      }
-
-      if (!!this.UI.classesAssociadas[0] == false) {
-        this.erros.push("Classes Associadas;");
-      }
-      if (!this.UI.descricao) {
-        this.erros.push("Descrição;");
-      }
-
-      if (!this.UI.notas) {
-        this.erros.push("Notas;");
-      }
-      if (!this.UI.localizacao) {
-        this.erros.push("Localização;");
-      }
-    },
-    guardar: function() {
+    guardar() {
       this.existe_erros = false;
       this.erros = [];
 
@@ -509,10 +341,13 @@ export default {
           associacao => delete associacao.titulo
         );
         this.UIs.push(Object.assign({}, this.UI));
-        this.dialog = false;
-        this.apagar();
+        this.dialogState = false;
+        // this.apagar();
       } else {
-        this.recolherErros();
+        if (!this.UI.codigo || this.UIs.some(e => e.codigo == this.UI.codigo)) {
+          this.erros.push("Código;");
+        }
+        this.recolherErros(this.UI);
       }
     },
     verificaCodigoUI(v) {
@@ -541,8 +376,7 @@ export default {
               dataFinal: null,
               tUA: null,
               tSerie: null,
-              suporte: null,
-              medicao: null,
+              suporte_e_medicao: [{ suporte: null, medicao: null }],
               localizacao: [],
               UIs: [this.UI.codigo],
               entProdutoras: [],
@@ -550,13 +384,14 @@ export default {
               legislacao: [],
               relacoes: [],
               pca: null,
+              notaPCA: null,
+              notaDF: null,
               formaContagem: {
                 forma: null
               },
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              notas: "",
               eFilhoDe: null
             });
           } else {
@@ -568,6 +403,8 @@ export default {
               dataFinal: null,
               relacoes: [],
               pca: null,
+              notaPCA: null,
+              notaDF: null,
               UIs: [this.UI.codigo],
               formaContagem: {
                 forma: null
@@ -575,34 +412,36 @@ export default {
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              notas: "",
               eFilhoDe: null,
               tipo: "Subsérie"
             });
           }
         }
       }
-    },
-    async adicionarClasseUI() {
-      if (this.$refs.addRel.validate()) {
-        if (!(await this.validateUI())) {
-          this.UI.classesAssociadas.push({
-            codigo: this.cod,
-            tipo: this.tipoClasse,
-            titulo: this.tituloClasse
-          });
-
-          this.$refs.addRel.reset();
-        } else {
-          this.alertOn = true;
-        }
-      }
-    },
-    validateUI: function() {
-      return this.UI.classesAssociadas.some(el => {
-        return el.codigo == this.cod;
-      });
     }
+  },
+  created() {
+    this.UI =
+      this.UI_para_copiar != null
+        ? this.UI_para_copiar
+        : {
+            codigo: "",
+            codCota: "",
+            titulo: "",
+            dataInicial: null,
+            dataFinal: null,
+            produtor: {
+              tipologiasProdutoras: [],
+              entProdutoras: []
+            },
+            classesAssociadas: [],
+            descricao: "",
+            notas: "",
+            localizacao: ""
+          };
+  },
+  beforeDestroy() {
+    this.$emit("limpar_copia");
   }
 };
 </script>

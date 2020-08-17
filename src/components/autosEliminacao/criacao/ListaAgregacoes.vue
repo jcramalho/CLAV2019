@@ -14,7 +14,8 @@
     </v-row>
     <v-data-table
       :headers="cabecalho"
-      :items="auto.zonaControlo[index].agregacoes"
+      :items="agregacoes"
+      item-key="codigo"
       :items-per-page="5"
       class="elevation-1 ml-2 mt-3"
       :footer-props="footer_props"
@@ -58,7 +59,7 @@
         </tr>
       </template>
 
-      <template slot="item" slot-scope="prop">
+      <template v-slot:item="prop">
         <tr v-if="prop.index === 0">
           <td>
             <v-text-field
@@ -98,8 +99,7 @@
               <template v-slot:activator="{ on }">
                 <v-icon v-on="on" small @click="addAgregacao">check</v-icon>
               </template>
-              <span v-if="editAG === -1">Adicionar Agregação</span>
-              <span v-else>Editar Agregação</span>
+              <span>Adicionar Agregação</span>
             </v-tooltip>
           </td>
         </tr>
@@ -119,22 +119,7 @@
                   >arrow_upward</v-icon
                 >
               </template>
-              <span>Utilizar Agregação</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-icon
-                  v-on="on"
-                  small
-                  class="mr-2"
-                  @click="
-                    editAG = prop.item;
-                    upAgregacao(prop.item);
-                  "
-                  >edit</v-icon
-                >
-              </template>
-              <span>Editar Agregação</span>
+              <span>Duplicar Agregação</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -211,7 +196,7 @@
 const help = require("@/config/help").help;
 
 export default {
-  props: ["auto", "index"],
+  props: ["auto", "index","agregacoes"],
 
   components: {},
 
@@ -221,18 +206,17 @@ export default {
     dataContagem: null,
     ni: null,
     natureza: ["Dono", "Participante"],
-
-    editAG: null,
+    changeSwitch: 0,
     snackbar: false,
     search: "",
     deleteDialog: false,
     deleteObj: null,
     cabecalho: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" },
-      { text: "Título", align: "left", value: "titulo" },
-      { text: "Data de Contagem", align: "center", value: "dataContagem" },
-      { text: "Natureza de Intervenção", align: "center", value: "ni" },
-      { text: "Ações", align: "center", sortable: false, value: "action" }
+      { text: "Código", align: "left", sortable: false, value: "codigo" , width: "20%"},
+      { text: "Título", align: "left", value: "titulo", width: "30%" },
+      { text: "Data de Contagem", align: "center", value: "dataContagem" , width: "15%"},
+      { text: "Natureza de Intervenção", align: "center", value: "ni", width: "20%" },
+      { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
     ],
     footer_props: {
       "items-per-page-text": "Mostrar"
@@ -242,7 +226,7 @@ export default {
     erroDialog: false
   }),
   created: function() {
-    if(this.auto.zonaControlo[this.index].destino =="C") {
+    if(this.auto.zonaControlo[this.index].destino =="C" || this.auto.zonaControlo[this.index].destino =="Conservação") {
       this.ni = "Participante"
       this.natureza = ["Participante"] 
     }
@@ -252,34 +236,22 @@ export default {
       this.codigo = null;
       this.titulo = null;
       this.dataContagem = null;
-      if(this.auto.zonaControlo[this.index].destino =="C") {
-        this.ni = "Participante"
-        this.natureza = ["Participante"]
-      } else 
-        this.ni = "Dono";
       this.editAG = null;
     },
     deleteAG: function() {
-      var indexAG = this.auto.zonaControlo[this.index].agregacoes
+      var indexAG = this.agregacoes
         .map(function(x) {
           return x.codigo;
         })
         .indexOf(this.deleteObj.codigo);
-      this.auto.zonaControlo[this.index].agregacoes.splice(indexAG, 1);
+      this.agregacoes.splice(indexAG, 1);
       this.deleteDialog = false;
+      this.limparAG();
     },
     addAgregacao: function() {
-      if (this.editAG !== null) {
-        var indexAG = this.auto.zonaControlo[this.index].agregacoes
-          .map(function(x) {
-            return x.codigo;
-          })
-          .indexOf(this.editAG.codigo);
-        this.auto.zonaControlo[this.index].agregacoes.splice(indexAG, 1);
-      }
       const re = /\d{4}/;
       var currentTime = new Date();
-      var result = this.auto.zonaControlo[this.index].agregacoes.filter(
+      var result = this.agregacoes.filter(
         ag => ag.codigo == this.codigo
       );
       if (!this.codigo || !this.titulo || !this.dataContagem) {
@@ -306,7 +278,7 @@ export default {
           this.erro = help.AutoEliminacao.Erros.DataContagemInicio;
           this.erroDialog = true;
         } else {
-          this.auto.zonaControlo[this.index].agregacoes.unshift({
+          this.agregacoes.unshift({
             codigo: this.codigo,
             titulo: this.titulo,
             dataContagem: this.dataContagem,

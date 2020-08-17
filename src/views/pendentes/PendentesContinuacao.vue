@@ -61,6 +61,9 @@ export default {
           case "RADA":
             this.tipoRADA = true;
             break;
+          case "PGD":
+            this.tipoPGD = true;
+            break;
         }
         this.objLoaded = true;
       })

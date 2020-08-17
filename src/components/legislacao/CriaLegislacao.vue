@@ -178,6 +178,28 @@
                 </div>
               </v-col>
             </v-row>
+            <v-row
+              :class="{
+                'mt-5': $vuetify.breakpoint.smAndDown,
+                'mt-4': $vuetify.breakpoint.mdAndUp
+              }"
+            >
+              <v-col cols="12" lg="2">
+                <div class="info-label">Data de revogação</div>
+              </v-col>
+              <v-col cols="12" lg="10">
+                <div
+                  class="info-content px-8 pb-2 mt-n1"
+                  style="min-height: 50px; padding-top: 0 !important;"
+                >
+                  <SelecionarData
+                    :d="legislacao.dataRevogacao"
+                    :label="'Data: AAAA-MM-DD'"
+                    @dataSelecionada="legislacao.dataRevogacao = $event"
+                  />
+                </div>
+              </v-col>
+            </v-row>
 
             <!-- Blocos expansivos -->
             <v-expansion-panels flat class="mb-4">
@@ -317,10 +339,11 @@ export default {
         data: "",
         link: "",
         diplomaFonte: "Não especificada",
-        entidadesSel: [],
-        processosSel: [],
         codigo: "",
-        estado: "Ativo"
+        dataRevogacao: "",
+        estado: "Ativo",
+        entidadesSel: [],
+        processosSel: []
       },
 
       tiposDiploma: [],

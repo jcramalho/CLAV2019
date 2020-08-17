@@ -17,23 +17,50 @@
       </v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-expansion-panels v-if="notificacoes" hover id="painel-notificacoes">
+      <v-expansion-panels v-if="notificacoes" id="painel-notificacoes">
         <v-expansion-panel v-for="(item, i) in notificacoes" :key="i">
           <v-expansion-panel-header>
+            <div>
+              <p class="font-weight-medium mr-2">
+                {{ item.acao }} de {{ item.tipo }} {{ item.objeto }}
+              </p>
+            </div>
             <template v-slot:actions>
+              <v-tooltip v-if="item.pedido" bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    @click="$router.push(`/pedidos/${item.pedido}`)"
+                    color="indigo darken-2"
+                    v-on="on"
+                  >
+                    visibility
+                  </v-icon>
+                </template>
+                <span>Ver pedido...</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    color="red"
+                    @click.stop="removerNotificacao(item)"
+                    v-on="on"
+                  >
+                    clear
+                  </v-icon>
+                </template>
+                <span>Remover notificação</span>
+              </v-tooltip>
               <v-icon color="#67cc72">$expand</v-icon>
             </template>
-            <p class="font-weight-medium">Pedido: {{ item.pedido }}</p>
-            <v-btn text small @click="removerNotificacao(item._id)">
-              <v-icon color="red">
-                clear
-              </v-icon>
-            </v-btn>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color="blue lighten-5">
+          <v-expansion-panel-content>
+            <p class="pt-3">- Movido para {{ item.novoEstado }}.</p>
+            <p class="pt-3">- Realizado por: {{ item.realizadoPor }}</p>
+            <p v-if="item.responsavel" class="pt-3">
+              - Responsável: {{ item.responsavel }}.
+            </p>
             <p class="pt-3">
-              Messagem: {{ item.acao }} de {{ item.tipo }} movido para
-              {{ item.novoEstado }} por {{ item.responsavel }}.
+              - Entidade responsavel: {{ item.entidade.split("_")[1] }}
             </p>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -86,4 +113,9 @@ theme--dark.v-footer,
 .v-expansion-panel-content {
    border-radius: 0 0 10px 10px;
 }
+
+.eye {
+  color:indigo
+}
+
 </style>

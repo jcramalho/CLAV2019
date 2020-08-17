@@ -8,15 +8,16 @@
     min-width="290px"
   >
     <template v-slot:activator="{ on }">
-      <v-text-field
-        v-model="dataValor"
-        v-on="on"
-        label="Data: AAAA-MM-DD"
-        prepend-icon="event"
-        readonly
-        single-line
-        color="blue darken-3"
-      />
+      <slot :item="{ label, dataValor, on }">
+        <v-text-field
+          filled
+          v-model="dataValor"
+          :label="label"
+          prepend-icon="event"
+          readonly
+          v-on="on"
+        />
+      </slot>
     </template>
 
     <v-date-picker
@@ -27,8 +28,8 @@
       color="blue darken-3"
       show-current
       first-day-of-week="1"
-      :max="new Date().toISOString().substr(0, 10)"
-      min="1970-01-01"
+      :max="maxData"
+      :min="minData"
       locale="pt"
       @input="
         menu1 = false;
@@ -40,15 +41,29 @@
 
 <script>
 export default {
-  props: ["d"],
-
+  props: ["d", "label", "dataMinima", "dataMaxima"],
   data() {
     return {
       dataValor: this.d,
-      menu1: false
+      menu1: false,
+      minData: "",
+      maxData: ""
     };
   },
+  /* 
+  No caso dos RADA, no preenchimento de uma subsérie o utilizador pode preencher ou injetar as datas da série pai,
+  caso injete a props "d" altera e este watch serve para verificar essa mudança.
+  */
 
+  watch: {
+    d(novoValor) {
+      this.dataValor = novoValor;
+    }
+  },
+  created() {
+    this.minData = this.dataMinima || "1800-01-01";
+    this.maxData = this.dataMaxima || new Date().toISOString().substr(0, 10);
+  },
   methods: {
     dataSelecionada: function() {
       this.$refs.menu1.save(this.dataValor);

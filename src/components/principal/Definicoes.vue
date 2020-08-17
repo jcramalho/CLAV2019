@@ -51,25 +51,11 @@
 
 <script>
 export default {
-  props: ["level", "drawer"],
+  props: ["level", "drawer", "socket"],
   methods: {
     logoutUtilizador() {
-      this.text = "Logout efetuado com sucesso!";
-      this.color = "success";
-      this.snackbar = true;
-      // this.$store.state.name = '';
-      // this.$store.state.token = '';
-      this.$store.commit("guardaTokenUtilizador", "");
-      this.$store.commit("guardaNomeUtilizador", "");
-      this.$store.commit("guardaEntidade", "");
-
-      //se já está na página inicial (home)
-      if (this.$route.path == "/") {
-        //faz reload da página para atualizar os componentes que dependem do nível do utilizador
-        this.$router.go();
-      } else {
-        this.$router.push("/");
-      }
+      this.socket.disconnect();
+      this.$router.push("/users/logout");
     }
   }
 };

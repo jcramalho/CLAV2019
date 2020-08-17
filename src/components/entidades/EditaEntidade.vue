@@ -318,10 +318,10 @@ export default {
         sigla: "",
         internacional: "",
         sioe: "",
-        tipologiasSel: [],
         codigo: "",
         dataCriacao: "",
-        dataExtincao: ""
+        dataExtincao: "",
+        tipologiasSel: []
       },
       entidadeOriginal: {},
       acao: "Alteração",

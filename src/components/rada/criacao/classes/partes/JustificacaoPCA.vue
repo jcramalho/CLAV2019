@@ -107,9 +107,19 @@
           </v-col>
         </v-row>
       </v-card>
+<<<<<<< HEAD
       <v-alert v-else border="left" dense icon="warning" color="amber accent-3"
         >Não existe justificação do Prazo de Conservação Administrativa</v-alert
       >
+=======
+      <v-alert
+        v-else
+        border="left"
+        dense
+        icon="warning"
+        color="amber accent-3"
+      >Não existe justificação do Prazo de Conservação Administrativo</v-alert>
+>>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
     </v-col>
   </v-row>
 </template>

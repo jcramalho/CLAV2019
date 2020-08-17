@@ -160,6 +160,28 @@
                 </div>
               </v-col>
             </v-row>
+            <v-row
+              :class="{
+                'mt-5': $vuetify.breakpoint.smAndDown,
+                'mt-4': $vuetify.breakpoint.mdAndUp
+              }"
+            >
+              <v-col cols="12" lg="2">
+                <div class="info-label">Data de extinção</div>
+              </v-col>
+              <v-col cols="12" lg="10">
+                <div
+                  class="info-content px-8 pb-2 mt-n1"
+                  style="min-height: 50px; padding-top: 0 !important;"
+                >
+                  <SelecionarData
+                    :d="entidade.dataExtincao"
+                    :label="'Data: AAAA-MM-DD'"
+                    @dataSelecionada="entidade.dataExtincao = $event"
+                  />
+                </div>
+              </v-col>
+            </v-row>
 
             <!-- Blocos expansivos -->
             <v-expansion-panels flat class="mb-4">
@@ -247,10 +269,11 @@ export default {
       sigla: "",
       internacional: "",
       sioe: "",
-      tipologiasSel: [],
       codigo: "",
       dataCriacao: "",
-      estado: "Ativa"
+      dataExtincao: "",
+      estado: "Ativa",
+      tipologiasSel: []
     },
 
     // Para o seletor de processos

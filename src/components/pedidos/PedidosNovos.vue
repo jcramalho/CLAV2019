@@ -32,16 +32,24 @@
         <v-data-table
           :headers="headers"
           :items="dadosTabela"
-          :search="procurar"
+          :search.sync="procurar"
           class="elevation-1"
           sortDesc
           sort-by="data"
           :custom-sort="ordenaTabela"
           :footer-props="footer_props"
+          :page.sync="paginaTabela"
         >
           <template v-slot:no-data>
-            <v-alert :value="true" color="error" icon="warning">
+            <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
               Não existem pedidos neste estado...
+            </v-alert>
+          </template>
+
+          <template v-slot:no-results>
+            <v-alert type="info" width="50%" class="m-auto mb-2 mt-2" outlined>
+              Sem resultados para "<strong>{{ procurar }}</strong
+              >".
             </v-alert>
           </template>
 
@@ -82,53 +90,20 @@
               </template>
               <span>Distribuir pedido...</span>
             </v-tooltip>
-          </template>
 
-          <!-- <template v-slot:item="{ item }">
-            <tr>
-              <td class="subheading">{{ item.codigo }}</td>
-              <td class="subheading">
-                {{ tipo(item) }}
-              </td>
-               <td class="subheading">
-                <span v-if="props.item.entidade">{{
-                  props.item.entidade.split("_")[1]
-                }}</span>
-              </td>
-              <td class="subheading">{{ props.item.criadoPor }}</td>
-              <td class="subheading">{{ converteData(props.item.data) }}</td>
-              <td>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon
-                      @click="showPedido(props.item)"
-                      color="indigo darken-2"
-                      v-on="on"
-                      >visibility</v-icon
-                    >
-                  </template>
-                  <span>Ver pedido...</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon
-                      @click="distribuiPedido(props.item)"
-                      color="indigo darken-2"
-                      v-on="on"
-                      >person</v-icon
-                    >
-                  </template>
-                  <span>Distribuir pedido...</span>
-                </v-tooltip>
-                <v-tooltip bottom v-if="false">
-                  <template v-slot:activator="{ on }">
-                    <v-icon color="red darken-2" v-on="on">delete</v-icon>
-                  </template>
-                  <span>Apagar pedido</span>
-                </v-tooltip> 
-               </td>
-            </tr>
-          </template> -->
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon
+                  @click="devolverPedido(item)"
+                  color="indigo darken-2"
+                  v-on="on"
+                >
+                  assignment_return
+                </v-icon>
+              </template>
+              <span>Devolver pedido...</span>
+            </v-tooltip>
+          </template>
 
           <template v-slot:pageText="props">
             Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
@@ -137,16 +112,44 @@
         </v-data-table>
       </v-card>
     </v-expansion-panel-content>
+
+    <!-- Campo despacho -->
+    <v-dialog v-model="devolverPedidoDialog" width="60%">
+      <DevolverPedido
+        @fecharDialog="fecharDialog()"
+        @devolverPedido="despacharPedido($event)"
+      />
+    </v-dialog>
+
+    <!-- Dialog de erros -->
+    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
+      <ErroDialog :erros="erroDialog.mensagem" uri="/" />
+    </v-dialog>
   </v-expansion-panel>
 </template>
 
 <script>
+import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
+import ErroDialog from "@/components/generic/ErroDialog";
+
 export default {
-  props: ["pedidos", "titulo"],
+  props: ["pedidos", "pesquisaPedidos"],
+
+  components: {
+    DevolverPedido,
+    ErroDialog,
+  },
 
   data: () => {
     return {
+      devolverPedidoDialog: false,
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
+      },
+      pedidoADevolver: "",
       procurar: "",
+      paginaTabela: 1,
       headers: [
         {
           text: "Código",
@@ -166,11 +169,11 @@ export default {
           text: "Entidade",
           value: "entidade",
           class: "title",
-          sortable: false,
+          sortable: true,
           filterable: true,
         },
         {
-          text: "Responsável",
+          text: "Criador",
           value: "responsavel",
           class: "title",
           sortable: true,
@@ -206,6 +209,13 @@ export default {
     pedidos() {
       this.atualizaPedidos();
     },
+
+    pesquisaPedidos() {
+      if (this.pesquisaPedidos.painel !== undefined) {
+        this.paginaTabela = this.pesquisaPedidos.pagina;
+        this.procurar = this.pesquisaPedidos.pesquisa;
+      }
+    },
   },
 
   methods: {
@@ -213,7 +223,7 @@ export default {
       this.dadosTabela = this.pedidos.map((pedido) => {
         const dados = {};
         dados.codigo = pedido.codigo;
-        dados.tipo = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
+        dados.tipo = `${pedido.objeto.tipo} - ${pedido.objeto.acao}`;
         if (pedido.entidade !== undefined)
           dados.entidade = pedido.entidade.split("_")[1];
         dados.responsavel = pedido.criadoPor;
@@ -305,7 +315,63 @@ export default {
       this.$emit("distribuir", pedidoProps);
     },
 
-    showPedido: function(pedido) {
+    fecharDialog() {
+      this.devolverPedidoDialog = false;
+      this.pedidoADevolver = "";
+    },
+
+    devolverPedido(pedido) {
+      const pedidoEncontrado = this.pedidos.find(
+        (p) => p.codigo === pedido.codigo
+      );
+
+      this.pedidoADevolver = pedidoEncontrado;
+      this.devolverPedidoDialog = true;
+    },
+
+    async despacharPedido(dados) {
+      try {
+        const estado = "Devolvido";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
+
+        pedido.estado = estado;
+        pedido.token = this.$store.state.token;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.fecharDialog();
+        location.reload();
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao devolver o pedido, por favor tente novamente";
+      }
+    },
+
+    showPedido(pedido) {
+      localStorage.setItem(
+        "pesquisa-pedidos",
+        JSON.stringify({
+          painel: 0,
+          pesquisa: this.procurar,
+          pagina: this.paginaTabela,
+          limpar: true,
+        })
+      );
+
       this.$router.push("/pedidos/novos/" + pedido.codigo);
     },
   },

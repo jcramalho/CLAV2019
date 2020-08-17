@@ -109,6 +109,7 @@
                 >
                   <SelecionarData
                     :d="legislacao.dataRevogacao"
+                    :label="'Data: AAAA-MM-DD'"
                     @dataSelecionada="legislacao.dataRevogacao = $event"
                   />
                 </div>
@@ -267,11 +268,11 @@ export default {
         tipo: "",
         data: "",
         link: "",
-        fonte: "Não especificada",
-        entidadesSel: [],
-        processosSel: [],
+        diplomaFonte: "Não especificada",
         codigo: "",
-        dataRevogacao: ""
+        dataRevogacao: "",
+        entidadesSel: [],
+        processosSel: []
       },
       legislacaoOriginal: {},
 
@@ -390,16 +391,16 @@ export default {
     }
   },
 
-  created: async function() {
+  async created() {
     this.legislacao = JSON.parse(JSON.stringify(this.l));
     this.legislacaoOriginal = JSON.parse(JSON.stringify(this.l));
 
     if (
-      this.legislacao.fonte === "" ||
-      this.legislacao.fonte === null ||
-      this.legislacao.fonte === undefined
+      this.legislacao.diplomaFonte === "" ||
+      this.legislacao.diplomaFonte === null ||
+      this.legislacao.diplomaFonte === undefined
     ) {
-      this.legislacao.fonte = "Não especificada";
+      this.legislacao.diplomaFonte = "Não especificada";
     }
 
     await this.loadTipoDiploma();

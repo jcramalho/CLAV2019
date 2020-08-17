@@ -1,17 +1,46 @@
 <template>
   <v-card flat class="mb-12">
+    <RADAEntry label="Título" :value="TS.titulo" />
     <v-row>
-      <v-col cols="12" xs="12" sm="3">
-        <div class="info-label">Título</div>
+      <v-col xs="11" sm="11">
+        <v-text-field
+          v-model="searchClasse"
+          label="Pesquise a classe"
+          clearable
+          append-icon="search"
+        ></v-text-field>
       </v-col>
-      <v-col xs="12" sm="9">
-        <v-text-field readonly v-model="TS.titulo" solo></v-text-field>
+      <v-col xs="1" sm="1">
+        <v-tooltip top v-if="!!TS.classes[0]">
+          <template v-slot:activator="{ on }">
+            <v-switch
+              prepend-icon="table_view"
+              inset
+              hide-details
+              v-model="tree_ou_tabela"
+              v-on="on"
+            ></v-switch>
+          </template>
+          <span>Alterar modo de visualização das classes</span>
+        </v-tooltip>
       </v-col>
     </v-row>
-    <v-row>
+
+    <v-row v-if="!tree_ou_tabela">
       <v-col cols="12">
-        <v-treeview hoverable :items="preparaTree" item-key="codigo">
+        <v-treeview
+          hoverable
+          :items="preparaTree"
+          item-key="codigo"
+          :search="searchClasse"
+          :filter="filter"
+        >
+          <template v-slot:prepend="{ item }">
+            <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
+            <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
+          </template>
           <template v-slot:label="{ item }">
+<<<<<<< HEAD
             <ShowSerie
               v-if="item.tipo == 'Série'"
               :formaContagem="formaContagem"
@@ -29,9 +58,20 @@
               :treeview_object="item"
               :classes="TS.classes"
             />
+=======
+            <b @click="showClasse(item)">{{ item.titulo }}</b>
+>>>>>>> 19aa347ffbebc7de3f58077a61af422fc80a45a0
           </template>
         </v-treeview>
       </v-col>
+    </v-row>
+    <v-row v-else>
+      <TabelaClassesRADA
+        :formaContagem="formaContagem"
+        :classes="TS.classes"
+        @editarClasse="showClasse"
+        :search="searchClasse"
+      />
     </v-row>
     <br />
     <br />
@@ -49,12 +89,45 @@
         ></v-text-field>
         <v-data-table
           :headers="headers"
-          :items="TS.UIs"
-          :search="search"
+          :items="filtrar_uis"
           :footer-props="footer_props"
+          :items-per-page="5"
         >
           <template v-slot:item="props">
-            <ShowUI :UI="props.item" />
+            <tr style="text-align: center; background-color:#ffffff" @click="showUI(props.item)">
+              <td>{{ props.item.codigo }}</td>
+              <td>{{ props.item.titulo }}</td>
+              <!-- <td>
+                <br/>
+                <ul v-if="!!props.item.classesAssociadas[0]">
+                  <li
+                    v-for="(classe, i) in props.item.classesAssociadas"
+                    :key="i"
+                  >{{ classe.codigo }}</li>
+                </ul>
+                <p v-else>Não tem séries/subséries associadas!</p>
+              </td>-->
+              <td>
+                <v-list v-if="!!props.item.classesAssociadas[0]" dense>
+                  <v-list-item
+                    v-for="(classe, i) in props.item.classesAssociadas"
+                    :key="i"
+                    align-center
+                  >
+                    <v-list-item-icon>
+                      <img
+                        v-if="classe.tipo == 'Série'"
+                        style="width:23px; height:30px"
+                        :src="svg_sr"
+                      />
+                      <img v-else style="width:23px; height:30px" :src="svg_ssr" />
+                    </v-list-item-icon>
+                    <v-list-item-content>{{classe.codigo + " - " + classe.titulo}}</v-list-item-content>
+                  </v-list-item>
+                </v-list>
+                <p v-else>Não tem séries/subséries associadas!</p>
+              </td>
+            </tr>
           </template>
         </v-data-table>
       </v-col>
@@ -72,31 +145,60 @@
         </v-alert>
       </v-col>
     </v-row>
+    <ShowSerieSubserie
+      v-if="show_serie_subserie"
+      :dialog="show_serie_subserie"
+      @fecharDialog="show_serie_subserie = false"
+      :formaContagem="formaContagem"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+      :show_a_partir_de_pedido="true"
+    />
+    <ShowOrganico
+      v-if="show_area_organico"
+      @fecharDialog="show_area_organico = false"
+      :dialog="show_area_organico"
+      :treeview_object="treeview_object"
+      :classes="TS.classes"
+    />
+    <ShowUI v-if="show_ui" @fecharDialog="show_ui = false" :dialog="show_ui" :UI="UI" />
   </v-card>
 </template>
 
 <script>
-import ShowSerie from "@/components/pedidos/consulta/rada/elementos/ShowSerie";
-import ShowSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSubserie";
+import ShowSerieSubserie from "@/components/pedidos/consulta/rada/elementos/ShowSerieOuSubserie";
 import ShowOrganico from "@/components/pedidos/consulta/rada/elementos/ShowOrganico";
 import ShowUI from "@/components/pedidos/consulta/rada/elementos/ShowUI";
+import TabelaClassesRADA from "@/components/rada/consulta/TabelaClassesRADA";
+
+import RADAEntry from "@/components/rada/consulta/elementos/campos/RadaEntry.vue";
 
 export default {
   props: ["TS"],
   components: {
     ShowOrganico,
-    ShowSubserie,
-    ShowSerie,
-    ShowUI
+    ShowSerieSubserie,
+    ShowUI,
+    TabelaClassesRADA,
+    RADAEntry
   },
   data: () => ({
+    svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+    svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
     search: "",
+    searchClasse: null,
+    UI: null,
+    show_ui: false,
+    show_serie_subserie: false,
+    show_area_organico: false,
+    treeview_object: null,
+    tree_ou_tabela: false,
     formaContagem: {
       subFormasContagem: [],
       formasContagem: []
     },
     footer_props: {
-      "items-per-page-options": [10, 20, 100],
+      "items-per-page-options": [1, 5, 10, -1],
       "items-per-page-text": "Mostrar"
     },
     headers: [
@@ -104,7 +206,7 @@ export default {
         text: "Código",
         align: "center",
         value: "codigo",
-        width: "50%",
+        width: "10%",
         sortable: true,
         class: ["table-header", "body-2", "font-weight-bold"]
       },
@@ -112,12 +214,45 @@ export default {
         text: "Título",
         value: "titulo",
         align: "center",
-        width: "50%",
+        width: "45%",
+        class: ["table-header", "body-2", "font-weight-bold"]
+      },
+      {
+        text: "Séries/Subséries Associadas",
+        value: "classesAssociadas",
+        align: "center",
+        width: "45%",
+        sortable: false,
         class: ["table-header", "body-2", "font-weight-bold"]
       }
     ]
   }),
   computed: {
+    filtrar_uis() {
+      if (!!this.search) {
+        return this.TS.UIs.filter(
+          e =>
+            e.codigo.includes(this.search) ||
+            e.titulo.includes(this.search) ||
+            e.classesAssociadas.some(
+              e =>
+                e.codigo.includes(this.search) ||
+                e.tipo.includes(this.search) ||
+                e.titulo.includes(this.search)
+            )
+        );
+      } else {
+        return this.TS.UIs;
+      }
+    },
+    filter() {
+      return (item, searchClasse) => {
+        return (
+          item.codigo.indexOf(searchClasse) > -1 ||
+          item.titulo.indexOf(searchClasse) > -1
+        );
+      };
+    },
     preparaTree() {
       var myTree = [];
 
@@ -143,6 +278,19 @@ export default {
     }
   },
   methods: {
+    showUI(item) {
+      this.UI = item;
+      this.show_ui = true;
+    },
+    showClasse(item) {
+      if (item.tipo == "Série" || item.tipo == "Subsérie") {
+        this.treeview_object = item;
+        this.show_serie_subserie = true;
+      } else {
+        this.treeview_object = item;
+        this.show_area_organico = true;
+      }
+    },
     preparaTreeFilhos: function(pai_codigo, pai_titulo) {
       let children = [];
 
@@ -203,27 +351,29 @@ export default {
         );
         rel.serieRelacionada["titulo"] = classe_relacionada.titulo;
 
-        let criterio = null;
-        if (rel.relacao == "Suplemento para") {
-          criterio = series_subseries[i].justificacaoPCA.find(
-            e => e.tipo == "Critério de Utilidade Administrativa"
-          );
-        }
-        if (rel.relacao == "Complementar de") {
-          criterio = series_subseries[i].justificacaoDF.find(
-            e => e.tipo == "Critério de Complementaridade Informacional"
-          );
-        }
-        if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
-          criterio = series_subseries[i].justificacaoDF.find(
-            e => e.tipo == "Critério de Densidade Informacional"
-          );
-        }
-        if (criterio != null) {
-          let relacaoCriterio = criterio.relacoes.find(
-            e => e.codigo == classe_relacionada.codigo
-          );
-          relacaoCriterio["titulo"] = classe_relacionada.titulo;
+        if (!!series_subseries[i].justificacaoPCA) {
+          let criterio = null;
+          if (rel.relacao == "Suplemento para") {
+            criterio = series_subseries[i].justificacaoPCA.find(
+              e => e.tipo == "Critério de Utilidade Administrativa"
+            );
+          }
+          if (rel.relacao == "Complementar de") {
+            criterio = series_subseries[i].justificacaoDF.find(
+              e => e.tipo == "Critério de Complementaridade Informacional"
+            );
+          }
+          if (rel.relacao == "Síntese de" || rel.relacao == "Sintetizado por") {
+            criterio = series_subseries[i].justificacaoDF.find(
+              e => e.tipo == "Critério de Densidade Informacional"
+            );
+          }
+          if (criterio != null) {
+            let relacaoCriterio = criterio.relacoes.find(
+              e => e.codigo == classe_relacionada.codigo
+            );
+            relacaoCriterio["titulo"] = classe_relacionada.titulo;
+          }
         }
       });
     }
@@ -234,15 +384,18 @@ export default {
           cl => cl.codigo == rel.codigo
         );
 
-        rel["titulo"] = classe_relacionada.titulo;
+        this.$set(rel, "titulo", classe_relacionada.titulo);
       });
     }
   }
 };
 </script>
 
-<style scoped>
-::v-deep .v-treeview-node {
-  background-color: rgba(240, 163, 10, 0.2);
+<style>
+.table-header {
+  color: #1a237e;
+  font-weight: 400;
+  background-color: #dee2f8;
+  font-weight: bold;
 }
 </style>

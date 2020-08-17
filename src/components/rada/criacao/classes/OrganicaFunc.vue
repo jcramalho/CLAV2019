@@ -1,12 +1,7 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
-    <template v-slot:activator="{ on }">
-      <v-btn color="indigo lighten-2" dark class="ma-2" @click="filterSeries" v-on="on">
-        <v-icon dark left>add</v-icon>área orgânico-funcional
-      </v-btn>
-    </template>
+  <v-dialog v-model="dialogState" persistent max-width="90%">
     <v-card>
-      <v-card-title class="indigo darken-1 white--text">
+      <v-card-title class="indigo darken-4 white--text">
         <b>Adicionar Classe Área Orgânico-Funcional</b>
       </v-card-title>
       <br />
@@ -54,8 +49,6 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <h5>Hierarquia</h5>
-          <v-divider></v-divider>
           <v-row>
             <v-col md="3" sm="3">
               <div class="info-label">Classe Pai</div>
@@ -68,7 +61,7 @@
                 item-text="searchField"
                 solo
                 clearable
-                placeholder="Classe Pai"
+                label="Classe Pai"
                 chips
               >
                 <template v-slot:no-data>
@@ -92,12 +85,9 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" text @click="apagar">
-          <v-icon>delete_sweep</v-icon>
-        </v-btn>
-        <v-btn color="indigo darken-4" outlined text @click="close">Voltar</v-btn>
-        <!-- <v-btn color="indigo darken-4" outlined text @click="save">Guardar</v-btn> -->
-        <v-btn color="success" class="mr-4" @click="save">Criar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="save">Adicionar</v-btn>
+        <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -105,9 +95,8 @@
 
 <script>
 export default {
-  props: ["classes"],
+  props: ["classes", "dialog"],
   data: () => ({
-    dialog: false,
     classesHierarquia: [],
     newOrgFunc: {
       codigo: "",
@@ -117,12 +106,19 @@ export default {
       tipo: ""
     }
   }),
+  computed: {
+    dialogState: {
+      get() {
+        return this.dialog;
+      },
+      set(val) {
+        this.$emit("fecharDialog", false);
+      }
+    }
+  },
   methods: {
     apagar() {
       this.$refs.form.reset();
-    },
-    close() {
-      this.dialog = false;
     },
     tipo() {
       if (this.newOrgFunc.eFilhoDe == null) {
@@ -143,20 +139,9 @@ export default {
       if (this.$refs.form.validate()) {
         await this.tipo();
         this.classes.push(Object.assign({}, this.newOrgFunc));
-        this.dialog = false;
+        this.dialogState = false;
         this.$refs.form.reset();
       }
-    },
-    filterSeries() {
-      this.classesHierarquia = this.classes
-        .filter(classe => classe.tipo == "N1" || classe.tipo == "N2")
-        .sort((a, b) => a.codigo.localeCompare(b.codigo))
-        .map(classe => {
-          return {
-            searchField: classe.codigo + " - " + classe.titulo,
-            codigo: classe.codigo
-          };
-        });
     },
     verificaCodigo(v) {
       if (this.classes.some(e => e.codigo == v)) {
@@ -165,6 +150,17 @@ export default {
         return false;
       }
     }
+  },
+  created() {
+    this.classesHierarquia = this.classes
+      .filter(classe => classe.tipo == "N1" || classe.tipo == "N2")
+      .sort((a, b) => a.codigo.localeCompare(b.codigo))
+      .map(classe => {
+        return {
+          searchField: classe.codigo + " - " + classe.titulo,
+          codigo: classe.codigo
+        };
+      });
   }
 };
 </script>

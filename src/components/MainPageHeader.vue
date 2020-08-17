@@ -24,14 +24,12 @@
                 'title-letters-md': $vuetify.breakpoint.mdAndDown
               }"
               class="d-inline font-weight-bold text-wrap"
+              >CLAV -</span
             >
-              CLAV -
-            </span>
           </template>
           <span>Voltar à página inicial</span>
         </v-tooltip>
         <span
-          v-on="on"
           v-if="this.$store.state.name == ''"
           :class="{
             'subtitle-letter-lg': $vuetify.breakpoint.lgAndUp,
@@ -39,11 +37,9 @@
             'subtitle-letter-sm': $vuetify.breakpoint.smOnly
           }"
           class="d-inline font-weight-light text-wrap"
+          >Classificação e Avaliação da Informação Pública</span
         >
-          Classificação e Avaliação da Informação Pública
-        </span>
         <span
-          v-on="on"
           v-if="this.$store.state.name != ''"
           :class="{
             'subtitle-letter-lg': $vuetify.breakpoint.lgAndUp,
@@ -51,9 +47,8 @@
             'subtitle-letter-sm': $vuetify.breakpoint.smOnly
           }"
           class="d-inline font-weight-light text-wrap"
+          >{{ this.$store.state.entidade.split("_")[1] }}</span
         >
-          {{ this.$store.state.entidade.split("_")[1] }}
-        </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-snackbar
@@ -173,9 +168,9 @@
                   :key="menuLink.opcao"
                   @click="goRoute(menuLink.url)"
                 >
-                  <v-list-item-title class="text-wrap">{{
-                    menuLink.opcao
-                  }}</v-list-item-title>
+                  <v-list-item-title class="text-wrap">
+                    {{ menuLink.opcao }}
+                  </v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>

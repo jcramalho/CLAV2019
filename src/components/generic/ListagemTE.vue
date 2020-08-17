@@ -2,7 +2,7 @@
   <tr @click="onRowClick(item)">
     <td class="subheading">{{ item.id }}</td>
     <td class="subheading">{{ item.designacao }}</td>
-    <td @click.stop align="right">
+    <td v-if="item.operacoes" @click.stop align="right">
       <v-tooltip
         top
         color="info"
@@ -12,6 +12,8 @@
       >
         <template v-slot:activator="{ on }">
           <v-icon
+            v-for="(operacao, index) in item.operacoes"
+            :key="index"
             @click="doOperation(item, operacao)"
             v-on="on"
             color="indigo darken-2"

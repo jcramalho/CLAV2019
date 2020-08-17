@@ -190,6 +190,12 @@
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
 import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
 
+import {
+  comparaArraySel,
+  criarHistorico,
+  extrairAlteracoes
+} from "@/utils/utils";
+
 export default {
   props: ["t", "acao", "original"],
 
@@ -284,32 +290,31 @@ export default {
           let erros = 0;
           let dataObj = JSON.parse(JSON.stringify(this.t));
 
+          const historico = [];
+
           switch (this.acao) {
             case "Criação":
               erros = await this.validarTipologiaCriacao();
+
+              historico.push(criarHistorico(dataObj));
+
               break;
 
             case "Alteração":
-              for (const key in dataObj) {
-                if (
-                  typeof dataObj[key] === "string" &&
-                  dataObj[key] === this.original[key]
-                ) {
-                  if (key !== "sigla") delete dataObj[key];
-                }
-              }
+              dataObj = extrairAlteracoes(this.t, this.original);
 
               erros = await this.validarTipologiasAlteracao(dataObj);
+
+              historico.push(criarHistorico(this.t, this.original));
+
               break;
 
             default:
               break;
           }
 
-          if (erros == 0) {
-            var userBD = this.$verifyTokenUser();
-
-            // dataObj.codigo = "tip_" + this.t.sigla;
+          if (erros === 0) {
+            let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
               tipoPedido: this.acao,
@@ -317,11 +322,13 @@ export default {
               novoObjeto: dataObj,
               user: { email: userBD.email },
               entidade: userBD.entidade,
-              token: this.$store.state.token
+              token: this.$store.state.token,
+              historico: historico
             };
 
             if (this.original !== undefined)
               pedidoParams.objetoOriginal = this.original;
+            else pedidoParams.objetoOriginal = dataObj;
 
             const codigoPedido = await this.$request(
               "post",

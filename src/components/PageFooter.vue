@@ -75,11 +75,14 @@
 </template>
 
 <script>
+const interfaceVersion = require("@/config/global").interfaceVersion;
+
 export default {
   data: function() {
     return {
       ontoReady: false,
-      ontologia: ""
+      ontologia: "",
+      interfaceVersion: interfaceVersion
     };
   },
 

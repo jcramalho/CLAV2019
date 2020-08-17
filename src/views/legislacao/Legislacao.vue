@@ -55,6 +55,7 @@ export default {
           "Entidade(s)",
           "Número",
           "Sumário",
+          "Estado",
           "Operações"
         ];
         this.campos = [
@@ -63,6 +64,7 @@ export default {
           "entidades",
           "numero",
           "sumario",
+          "estado",
           "operacoes"
         ];
       } else {
@@ -71,9 +73,17 @@ export default {
           "Tipo",
           "Entidade(s)",
           "Número",
+          "Estado",
           "Sumário"
         ];
-        this.campos = ["data", "tipo", "entidades", "numero", "sumario"];
+        this.campos = [
+          "data",
+          "tipo",
+          "entidades",
+          "numero",
+          "sumario",
+          "estado"
+        ];
       }
     },
 
@@ -101,6 +111,7 @@ export default {
               entidades: listaLegislacao[i].entidades,
               numero: listaLegislacao[i].numero,
               sumario: listaLegislacao[i].sumario,
+              estado: listaLegislacao[i].estado,
               operacoes: this.operacoes,
               id: listaLegislacao[i].id
             });
@@ -111,6 +122,7 @@ export default {
               entidades: listaLegislacao[i].entidades,
               numero: listaLegislacao[i].numero,
               sumario: listaLegislacao[i].sumario,
+              estado: listaLegislacao[i].estado,
               id: listaLegislacao[i].id
             });
         }
@@ -134,6 +146,7 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
+            estado: listaLegislacao[i].estado,
             id: listaLegislacao[i].id
           });
         }
