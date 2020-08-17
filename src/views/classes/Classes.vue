@@ -79,7 +79,9 @@
               >
                 <span v-if="c.campo.label">
                   <v-chip dark color="indigo darken-4">
-                    {{ entidades.filter(e => e.value == c.valor)[0].text }}
+                    {{
+                      get(c.campo.nome + "s").filter(e => e.value == c.valor)[0].text
+                    }}
                   </v-chip>
                   <span v-if="c.not">
                     <v-chip dark color="indigo lighten-2">não</v-chip> é
@@ -183,7 +185,7 @@
                     v-model="camposUsados[index].subcampo"
                   />
                   <v-autocomplete
-                    :items="entidades"
+                    :items="get(camposUsados[index].campo.nome + 's')"
                     :label="camposUsados[index].campo.label"
                     :rules="regraV"
                     v-model="camposUsados[index].valor"
@@ -329,11 +331,23 @@ export default {
             { text: "Participante", value: "participantes" }
           ]
         }
+      },
+      {
+        text: "Tipologia",
+        value: {
+          nome: "tipologia",
+          label: "Tipologia a pesquisar",
+          enum: [
+            { text: "Dona", value: "donos" },
+            { text: "Participante", value: "participantes" }
+          ]
+        }
       }
     ],
     classesTree: [],
     classesOriginal: [],
     entidades: [],
+    tipologias: [],
     classesCarregadas: false,
     search: null,
     selected: [],
@@ -365,6 +379,11 @@ export default {
 
     var entidades = await this.$request("get", "/entidades");
     this.entidades = entidades.data.map(e => {
+      return { text: e.designacao, value: e.id };
+    });
+
+    var tipologias = await this.$request("get", "/tipologias");
+    this.tipologias = tipologias.data.map(e => {
       return { text: e.designacao, value: e.id };
     });
     this.classesCarregadas = true;
@@ -776,6 +795,9 @@ export default {
           savedSearch: ss
         }
       });
+    },
+    get: function(name) {
+      return this[name];
     }
   },
   watch: {
