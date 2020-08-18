@@ -181,14 +181,14 @@ export default {
           estrutura: {
             label: "Estrutura",
             desc:
-              "Estrutura. Pode ser em árvore ou em lista. Quanto nenhum parâmetro é definido (formato, tipo e nivel) o formato de saída em arvore é o predefinido.",
+              "Estrutura. Pode ser em árvore ou em lista. A estrutura em arvore é a predefinida.",
             enum: ["Por definir", "arvore", "lista"],
             multiple: false
           },
           tipo: {
             label: "Tipo",
             desc:
-              "Devolve as classes de nível 3 (processos) filtrando pelo tipo de processo (comuns ou especificos).",
+              "Devolve as classes (processos) filtrando pelo tipo de processo (comuns ou especificos).",
             enum: ["Por definir", "comum", "especifico"],
             multiple: false
           },
@@ -201,24 +201,28 @@ export default {
           },
           ents: {
             label: "Entidades",
-            desc:
-              "Obtém os processos destas entidades. Quando usado em conjunto com o parâmetro tipo com valor igual a especifico devolve os processos especificos destas entidades.",
+            desc: "Obtém os processos destas entidades.",
             enum: [],
             multiple: true
           },
           tips: {
             label: "Tipologias",
-            desc:
-              "Obtém os processos destas tipologias. Quando usado em conjunto com o parâmetro tipo com valor igual a especifico devolve os processos especificos destas tipologias.",
+            desc: "Obtém os processos destas tipologias.",
             enum: [],
             multiple: true
           },
           info: {
             label:
-              "Informação completa? Ou pretende apenas o esqueleto para criar uma TS?",
+              "Informação completa? Esqueleto para criar uma TS? Outra forma?",
             desc:
-              "Caso seja um valor que não 'completa', 'esqueleto' ou 'pre-selecionados' devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve numa estrutura pronta a ser preenchida para a criação de uma Tabela de Seleção, devolve os campos: código, título, descrição, PCA, DF, dono (a ser preenchido pelo utilizador) e participante (a ser preenchido pelo utilizador). Caso o valor seja 'pre-selecionados' devolve os campos: código, título, descrição, PCA, DF, dono e participante.",
-            enum: ["Por definir", "completa", "esqueleto", "pre-selecionados"],
+              "Se esta query string não for definida devolve apenas o código, a descrição e o título das classes. Caso o valor seja 'completa' devolve toda a informação de cada classe. Caso o valor seja 'esqueleto' devolve numa estrutura pronta a ser preenchida para a criação de uma Tabela de Seleção, devolve os campos: código, título, descrição, PCA, DF, dono (a ser preenchido pelo utilizador) e participante (a ser preenchido pelo utilizador). Caso o valor seja 'pesquisa', devolve as classes num formato pronto a ser usado para a pesquisa avançada da interface CLAV. Caso o valor seja 'pre-selecionados' devolve os campos: código, título, descrição, PCA, DF, dono e participante. O 'pre-selecionados' no campo dono possui se as entidades e/ou as tipologias são donas. Já no campo participante possui se as entidades e/ou as tipologias são participantes e se forem o tipo de participação. Estes campos são listas, estando os seus valores ordenados primeiramente pelas entidades presentes na query string ents e de seguida pelas tipologias presentes na query string tips.",
+            enum: [
+              "Por definir",
+              "completa",
+              "esqueleto",
+              "pre-selecionados",
+              "pesquisa"
+            ],
             multiple: false
           },
           fs: fs,
