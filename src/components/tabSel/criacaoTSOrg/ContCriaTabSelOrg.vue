@@ -382,7 +382,7 @@ export default {
 
     loadProcessosEspecificos: async function(entidade){
       try{
-        var url = "/classes?tipo=especifico&ents=" + entidade.id;
+        var url = "/classes?nivel=3&tipo=especifico&ents=" + entidade.id;
         var response = await this.$request("get", url);
         
         for (let j = 0; j < response.data.length; j++) {
@@ -407,7 +407,7 @@ export default {
       try {
         if (!this.listaProcEspReady) {
           var url =
-            "/classes?tipo=especifico&ents=" + this.tabelaSelecao.idEntidade;
+            "/classes?nivel=3&tipo=especifico&ents=" + this.tabelaSelecao.idEntidade;
           if (this.tipSel.length || this.tipSel.length) {
             url += "&tips=";
           }

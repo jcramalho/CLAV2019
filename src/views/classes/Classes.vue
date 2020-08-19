@@ -79,7 +79,9 @@
               >
                 <span v-if="c.campo.label">
                   <v-chip dark color="indigo darken-4">
-                    {{ entidades.filter(e => e.value == c.valor)[0].text }}
+                    {{
+                      get(c.campo.nome + "s").filter(e => e.value == c.valor)[0].text
+                    }}
                   </v-chip>
                   <span v-if="c.not">
                     <v-chip dark color="indigo lighten-2">não</v-chip> é
@@ -166,6 +168,10 @@
                   label="Campo a pesquisar"
                   :rules="regraCampo"
                   v-model="camposUsados[index].campo"
+                  @change="
+                    camposUsados[index].valor = '';
+                    camposUsados[index].subcampo = null;
+                  "
                 />
               </v-col>
               <v-col cols="1">
@@ -183,7 +189,7 @@
                     v-model="camposUsados[index].subcampo"
                   />
                   <v-autocomplete
-                    :items="entidades"
+                    :items="get(camposUsados[index].campo.nome + 's')"
                     :label="camposUsados[index].campo.label"
                     :rules="regraV"
                     v-model="camposUsados[index].valor"
@@ -329,11 +335,27 @@ export default {
             { text: "Participante", value: "participantes" }
           ]
         }
+      },
+      {
+        text: "Tipologia",
+        value: {
+          nome: "tipologia",
+          label: "Tipologia a pesquisar",
+          enum: [
+            { text: "Dona", value: "donos" },
+            { text: "Participante", value: "participantes" }
+          ]
+        }
+      },
+      {
+        text: "Tipo de participação",
+        value: { nome: "tipo_participacao", enum: [] }
       }
     ],
     classesTree: [],
     classesOriginal: [],
     entidades: [],
+    tipologias: [],
     classesCarregadas: false,
     search: null,
     selected: [],
@@ -361,10 +383,16 @@ export default {
       await this.loadPCAFormasContagem();
       await this.loadPCASubFormasContagem();
       await this.loadCriterios();
+      await this.loadTiposParticipacoes();
     }
 
     var entidades = await this.$request("get", "/entidades");
     this.entidades = entidades.data.map(e => {
+      return { text: e.designacao, value: e.id };
+    });
+
+    var tipologias = await this.$request("get", "/tipologias");
+    this.tipologias = tipologias.data.map(e => {
       return { text: e.designacao, value: e.id };
     });
     this.classesCarregadas = true;
@@ -407,9 +435,16 @@ export default {
       await this.load("vc_status", transF, "Estado");
     },
     loadTipoProc: async function() {
+      var transF = item => {
+        return {
+          text: item.termo,
+          value: item.termo.toLowerCase()
+        };
+      };
+
       await this.load(
         "vc_processoTipo",
-        item => item.termo,
+        transF,
         "Tipo de processo"
       );
     },
@@ -417,7 +452,7 @@ export default {
       var transF = item => {
         return {
           text: item.termo,
-          value: item.termo.charAt(0)
+          value: item.termo.charAt(0).toLowerCase()
         };
       };
 
@@ -428,16 +463,30 @@ export default {
       );
     },
     loadPCAFormasContagem: async function() {
+      var transF = item => {
+        return {
+          text: item.termo,
+          value: item.termo.toLowerCase()
+        };
+      };
+
       await this.load(
         "vc_pcaFormaContagem",
-        item => item.termo,
+        transF,
         "Forma de contagem do PCA"
       );
     },
     loadPCASubFormasContagem: async function() {
+      var transF = item => {
+        return {
+          text: item.desc,
+          value: item.desc.toLowerCase()
+        };
+      };
+
       await this.load(
         "vc_pcaSubformaContagem",
-        item => item.desc,
+        transF,
         "Subforma de contagem do PCA"
       );
     },
@@ -457,6 +506,21 @@ export default {
 
       await this.load("vc_pcaCriterios", transF, "Justificação do PCA");
       await this.load("vc_dfCriterios", transF, "Justificação do DF");
+    },
+    loadTiposParticipacoes: async function() {
+      var transF = item => {
+        let name = item.idtermo.split("#vc_processoParticipante_")[1];
+        return {
+          text: name.charAt(0).toUpperCase() + name.slice(1),
+          value: name
+        };
+      };
+
+      await this.load(
+        "vc_processoTipoParticipacao",
+        transF,
+        "Tipo de participação"
+      );
     },
     addActive: function(code) {
       if (!this.selected.includes(code)) {
@@ -522,7 +586,8 @@ export default {
               statAux = classes[i][campo] == c.valor;
             }
           } else {
-            statAux = classes[i][campo].indexOf(c.valor) > -1;
+            let regExp = new RegExp(c.valor, "g");
+            statAux = regExp.test(classes[i][campo]);
           }
 
           if (c.not) statAux = !statAux;
@@ -579,13 +644,14 @@ export default {
       for (var classe of classes) {
         var c = JSON.parse(JSON.stringify(classe));
         c.children = await this.simpleFilter(c.children, searchText);
+        let regExp = new RegExp(searchText, "g");
 
         if (
-          c.id.indexOf(searchText) > -1 ||
-          c.titulo.indexOf(searchText) > -1 ||
-          c.na.indexOf(searchText) > -1 ||
-          c.exemploNa.indexOf(searchText) > -1 ||
-          c.ti.indexOf(searchText) > -1
+          regExp.test(c.id) ||
+          regExp.test(c.titulo) ||
+          regExp.test(c.na) ||
+          regExp.test(c.exemploNa) ||
+          regExp.test(c.ti)
         ) {
           this.addActive(c.id);
           this.buscarpais(c.id);
@@ -713,6 +779,7 @@ export default {
           name: lclasses[i].nome,
           titulo: lclasses[i].titulo.toLowerCase(),
           status: lclasses[i].status.toLowerCase(),
+          descricao: lclasses[i].descricao.toLowerCase(),
           tp: lclasses[i].tp.toLowerCase(),
           pt: lclasses[i].pt.toLowerCase(),
           na: lclasses[i].na.toLowerCase(),
@@ -727,6 +794,9 @@ export default {
           crit_df: lclasses[i].crit_df.map(j => j.toLowerCase()),
           donos: lclasses[i].donos.map(d => d.toLowerCase()),
           participantes: lclasses[i].participantes.map(p => p.toLowerCase()),
+          tipo_participacao: lclasses[i].tipo_participacao.map(p =>
+            p.toLowerCase()
+          ),
           children: this.preparaTree(lclasses[i].filhos)
         });
       }
@@ -754,6 +824,9 @@ export default {
           savedSearch: ss
         }
       });
+    },
+    get: function(name) {
+      return this[name];
     }
   },
   watch: {

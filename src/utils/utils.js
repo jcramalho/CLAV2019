@@ -127,8 +127,7 @@ export function extrairAlteracoes(objeto, objetoOriginal) {
 
   for (const key in dados) {
     if (typeof dados[key] === "string") {
-      if (dados[key] === dadosOriginais[key] && key !== "sigla" && key !== "id")
-        delete dados[key];
+      if (dados[key] === dadosOriginais[key]) delete dados[key];
     } else if (dados[key] instanceof Array) {
       if (comparaArraySel(dados[key], dadosOriginais[key])) delete dados[key];
     }

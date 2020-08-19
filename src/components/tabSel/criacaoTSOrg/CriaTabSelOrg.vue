@@ -475,7 +475,7 @@ export default {
       try {
         if (!this.listaProcEspReady) {
           var url =
-            "/classes?tipo=especifico";
+            "/classes?nivel=3&tipo=especifico";
 
           if(this.tabelaSelecao.idEntidade != ""){
             url += "&ents=" + this.tabelaSelecao.idEntidade;

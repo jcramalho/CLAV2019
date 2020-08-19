@@ -456,16 +456,12 @@ export default {
               pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
             }
 
-            if (
-              pedido.objeto.dados[key] === null ||
-              pedido.objeto.dados[key] === ""
-            )
-              delete pedido.objeto.dados[key];
+            if (eNV(pedido.objeto.dados[key])) delete pedido.objeto.dados[key];
           }
 
           await this.$request(
             "put",
-            `/tipologias/tip_${pedido.objeto.dados.sigla}`,
+            `/tipologias/tip_${pedido.objeto.dadosOriginais.sigla}`,
             pedido.objeto.dados
           );
 
