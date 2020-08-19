@@ -25,7 +25,6 @@
           :items="pedidos"
           :search.sync="procurar"
           class="elevation-1"
-          sortDesc
           sort-by="codigo"
           :custom-sort="ordenaTabela"
           :footer-props="footerProps"
@@ -59,6 +58,16 @@
               {{ item.estado }}
               <v-icon right>assignment_late</v-icon>
             </v-chip>
+
+            <v-chip
+              v-else-if="item.estado === 'Submetido'"
+              outlined
+              color="blue"
+            >
+              {{ item.estado }}
+              <v-icon right>send</v-icon>
+            </v-chip>
+
             <v-chip v-else outlined color="orange">
               {{ item.estado }}
               <v-icon right>assignment</v-icon>
@@ -185,7 +194,7 @@ export default {
     showPedido(pedido) {
       // TODO: Alterar isto para um componente mais simples
       // (apenas informações básicas do pedido)
-      this.$router.push("/pedidos/" + pedido.codigo);
+      this.$router.push("/users/pedidos/" + pedido.codigo);
     },
   },
 };
