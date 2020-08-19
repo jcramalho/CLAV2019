@@ -35,7 +35,7 @@ export default {
     ListagemLeg
   },
   async created() {
-    await this.$request("get", "/pgd/rada")
+    await this.$request("get", "/rada/old")
       .then(response2 => {
         this.fontesRADA = response2.data.map(f => {
           return {
