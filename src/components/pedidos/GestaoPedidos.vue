@@ -172,7 +172,6 @@ export default {
         let dadosUtilizador = this.$verifyTokenUser();
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         const novaDistribuicao = {
           estado: estado,

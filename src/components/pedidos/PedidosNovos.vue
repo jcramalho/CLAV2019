@@ -353,7 +353,6 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,

@@ -130,7 +130,6 @@
                           :items="info"
                           class="elevation-1"
                           :footer-props="entidadesFooterProps"
-                          dense
                         >
                           <template v-slot:no-data>
                             <v-alert
@@ -162,7 +161,6 @@
                           :items="info"
                           class="elevation-1"
                           :footer-props="processosFooterProps"
-                          dense
                         >
                           <template v-slot:no-data>
                             <v-alert
@@ -194,7 +192,6 @@
                           :items="info"
                           class="elevation-1"
                           :footer-props="tipologiasFooterProps"
-                          dense
                         >
                           <template v-slot:no-data>
                             <v-alert

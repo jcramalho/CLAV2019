@@ -192,8 +192,6 @@ export default {
     },
 
     showPedido(pedido) {
-      // TODO: Alterar isto para um componente mais simples
-      // (apenas informações básicas do pedido)
       this.$router.push("/users/pedidos/" + pedido.codigo);
     },
   },
