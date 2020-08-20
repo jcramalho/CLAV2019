@@ -1,11 +1,17 @@
+const Papa = require("papaparse");
+
+const papa_config = {
+    delimitersToGuess: [',', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+    skipEmptyLines: true
+}
+
 var importarUIs = (file, uis_originais, classes_originais, re) => {
     return new Promise(async (resolve, reject) => {
-        let enc = new TextDecoder("utf-8");
-        let uis = enc
-            .decode(file)
-            .replace(/['"]/g, "")
-            .split("\n");
+        let parsedFile = Papa.parse(file, papa_config);
+        
+        let uis = parsedFile.data;
 
+        // Inicializar variáveis
         let erros = {
             codigo: [],
             uis: [],
@@ -15,31 +21,31 @@ var importarUIs = (file, uis_originais, classes_originais, re) => {
         let novas_uis = [];
 
         for (let i = 1; i < uis.length; i++) {
-            let ui = uis[i].split(/ *; */).slice(0, 10);
+            //let ui = uis[i].split(/ *; */).slice(0, 10);
 
-            if (ui.length != 10) {
+            if (uis[i].length != 10) {
                 erros = {
                     validade: [{ ui: 'Erro na análise', erro: 'Ficheiro inválido!' }]
                 };
                 break;
             }
 
-            if (ui[0] != "" && !uis_originais.some(e => e.codigo == ui[0])) {
+            if (uis[i][0] != "" && !uis_originais.some(e => e.codigo == uis[i][0])) {
                 let obj_ui = {
-                    codigo: ui[0],
-                    codCota: ui[2],
-                    titulo: !!ui[1] ? ui[1] : adicionarErro(erros, ui[0], "Título"),
-                    dataInicial: new Date(ui[4] + "-01-01") >= new Date(re.dataInicial)
-                        ? ui[4] + "-01-01"
-                        : adicionarErro(erros, ui[0], "Data Inicial"),
-                    dataFinal: new Date(ui[5] + "-12-31") <= new Date(re.dataFinal) && new Date(ui[5] + "-12-31") >= new Date(ui[4] + "-01-01")
-                        ? ui[5] + "-12-31"
-                        : adicionarErro(erros, ui[0], "Data Final"),
-                    produtor: produtoras(ui, erros, re),
-                    classesAssociadas: preencherClassesAssociadas(ui, classes_originais, erros),
-                    descricao: !!ui[3] ? ui[3] : adicionarErro(erros, ui[0], "Descrição"),
-                    notas: ui[8],
-                    localizacao: ui[9]
+                    codigo: uis[i][0],
+                    codCota: uis[i][2],
+                    titulo: !!uis[i][1] ? uis[i][1] : adicionarErro(erros, uis[i][0], "Título"),
+                    dataInicial: new Date(uis[i][4] + "-01-01") >= new Date(re.dataInicial)
+                        ? uis[i][4] + "-01-01"
+                        : adicionarErro(erros, uis[i][0], "Data Inicial"),
+                    dataFinal: new Date(uis[i][5] + "-12-31") <= new Date(re.dataFinal) && new Date(uis[i][5] + "-12-31") >= new Date(uis[i][4] + "-01-01")
+                        ? uis[i][5] + "-12-31"
+                        : adicionarErro(erros, uis[i][0], "Data Final"),
+                    produtor: produtoras(uis[i], erros, re),
+                    classesAssociadas: preencherClassesAssociadas(uis[i], classes_originais, erros),
+                    descricao: !!uis[i][3] ? uis[i][3] : adicionarErro(erros, uis[i][0], "Descrição"),
+                    notas: uis[i][8],
+                    localizacao: uis[i][9]
                 }
 
                 novas_uis.push(obj_ui);
@@ -91,7 +97,7 @@ function preencherClassesAssociadas(ui, classes_originais, erros) {
     let setAuxRepetidos = new Set();
     let tem_duplicados = false;
     
-    if (classes_associadas.length > 1) {
+    if (classes_associadas[0] != "") {
         for (let i = 0; i < classes_associadas.length; i++) {
             let classe = classes_originais.find(e => e.codigo == classes_associadas[i] && (e.tipo == "Série" || e.tipo == "Subsérie"))
 

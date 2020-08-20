@@ -1,8 +1,8 @@
 <template>
   <v-card class="ma-4" style="background-color:#fafafa">
-    <v-card-title class="indigo darken-4 white--text">
-      Criar Relatório de Avaliação de Documentação Acumulada
-    </v-card-title>
+    <v-card-title
+      class="indigo darken-4 white--text"
+    >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title>
     <v-card-text>
       <v-row>
         <v-dialog v-model="toDelete" width="50%">
@@ -73,15 +73,23 @@
             :pode_remover="true"
             @guardar="guardarTrabalho"
             @remover="toDelete = true"
+            @validar="validarRADA"
           />
           <v-alert
             width="100%"
-            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie"
+            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie || !!erros_em_falta[0]"
             outlined
             type="error"
             prominent
             border="left"
           >
+            <div v-if="!!erros_em_falta[0]">
+              <b>Os seguintes constituintes do RADA estão incompletos ou por preencher:</b>
+              <ul>
+                <li v-for="(em_falta, i) in erros_em_falta" :key="i">{{em_falta}}</li>
+              </ul>
+              <br />
+            </div>
             <div v-if="!!erroProdutoras[0]">
               <b>As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série:</b>
               <ul>
@@ -111,6 +119,14 @@
               <b>Deve adicionar séries ao RADA, antes de o submeter. Tem possibilidade de associar unidades de instalação às séries em avaliação.</b>
             </div>
           </v-alert>
+          <v-alert
+            width="100%"
+            :value="alert_valido"
+            outlined
+            type="success"
+            prominent
+            border="left"
+          >Validação efetuada com sucesso!</v-alert>
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>
@@ -146,12 +162,12 @@ export default {
   components: {
     RelatorioExpositivo,
     TSRada,
-    InformacaoGeral
+    InformacaoGeral,
   },
   mixins: [mixin_criacao_rada],
   data() {
     return {
-      RADA: this.obj.objeto.rada
+      RADA: this.obj.objeto.rada,
     };
   },
 
@@ -162,14 +178,16 @@ export default {
         _id: this.obj._id,
         objeto: {
           rada: this.RADA,
-          entidades: this.entidades.filter(e => e.estado_no_sistema == "Nova"),
-          legislacao: this.legislacao.filter(e => e.estado == "Nova")
-        }
+          entidades: this.entidades.filter(
+            (e) => e.estado_no_sistema == "Nova"
+          ),
+          legislacao: this.legislacao.filter((e) => e.estado == "Nova"),
+        },
       };
 
       let response = this.$request("put", "/pendentes", updatePendente);
 
-      response.then(resp => {
+      response.then((resp) => {
         if (continuar_ou_nao == "nao") {
           this.dialogRADAPendente = true;
         } else {
@@ -184,11 +202,11 @@ export default {
 
     //ELIMINAR O PENDENTE
     eliminarTrabalho() {
-      this.$request("delete", "/pendentes/" + this.obj._id).then(response => {
+      this.$request("delete", "/pendentes/" + this.obj._id).then((response) => {
         this.$router.push("/pendentes");
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

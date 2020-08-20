@@ -137,13 +137,13 @@
                 <div class="info-label">História Administrativa/Biográfica</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  placeholder="História Administrativa/Biográfica"
-                  v-model="RE.hist_admin"
+                <v-textarea
                   solo
-                  clearable
+                  name="input-7-4"
+                  v-model="RE.hist_admin"
+                  placeholder="História Administrativa/Biográfica"
                   :rules="basicRule"
-                ></v-text-field>
+                ></v-textarea>
               </v-col>
             </v-row>
             <v-row>
@@ -151,13 +151,13 @@
                 <div class="info-label">História Custodial</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  :rules="basicRule"
-                  placeholder="História Custodial"
-                  v-model="RE.hist_cust"
+                <v-textarea
                   solo
-                  clearable
-                ></v-text-field>
+                  name="input-7-4"
+                  v-model="RE.hist_cust"
+                  placeholder="História Custodial"
+                  :rules="basicRule"
+                ></v-textarea>
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -172,13 +172,13 @@
                 <div class="info-label">Sistema de Organização</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  :rules="basicRule"
-                  placeholder="Sistema de Organização"
-                  v-model="RE.sist_org"
+                <v-textarea
                   solo
-                  clearable
-                ></v-text-field>
+                  name="input-7-4"
+                  v-model="RE.sist_org"
+                  placeholder="Sistema de Organização"
+                  :rules="basicRule"
+                ></v-textarea>
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -193,13 +193,13 @@
                 <div class="info-label">Localização</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  :rules="basicRule"
-                  placeholder="Localização"
-                  v-model="RE.localizacao"
+                <v-textarea
                   solo
-                  clearable
-                ></v-text-field>
+                  name="input-7-4"
+                  v-model="RE.localizacao"
+                  placeholder="Localização"
+                  :rules="basicRule"
+                ></v-textarea>
               </v-col>
             </v-row>
             <v-row>
@@ -207,13 +207,13 @@
                 <div class="info-label">Estado de Conservação</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  :rules="basicRule"
-                  placeholder="Estado de Conservação"
-                  v-model="RE.est_conser"
+                <v-textarea
                   solo
-                  clearable
-                ></v-text-field>
+                  name="input-7-4"
+                  v-model="RE.est_conser"
+                  placeholder="Estado de Conservação"
+                  :rules="basicRule"
+                ></v-textarea>
               </v-col>
             </v-row>
           </v-expansion-panel-content>

@@ -50,6 +50,7 @@
             @voltar="changeE1"
             @guardar="guardarTrabalho"
             @remover="toDelete = true"
+            @validar="validarRADA"
             :legislacao="legislacao"
             :RE="RADA.RE"
             :TS="RADA.tsRada"
@@ -60,12 +61,19 @@
           />
           <v-alert
             width="100%"
-            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie"
+            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie || !!erros_em_falta[0]"
             outlined
             type="error"
             prominent
             border="left"
           >
+            <div v-if="!!erros_em_falta[0]">
+              <b>Os seguintes constituintes do RADA estão incompletos ou por preencher:</b>
+              <ul>
+                <li v-for="(em_falta, i) in erros_em_falta" :key="i">{{em_falta}}</li>
+              </ul>
+              <br />
+            </div>
             <div v-if="!!erroProdutoras[0]">
               <b>As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série:</b>
               <ul>
@@ -94,6 +102,9 @@
             <div v-if="!existe_serie">
               <b>Deve adicionar séries ao RADA, antes de o submeter. Tem possibilidade de associar unidades de instalação às séries em avaliação.</b>
             </div>
+          </v-alert>
+          <v-alert width="100%" :value="alert_valido" outlined type="success" prominent border="left">
+            Validação efetuada com sucesso!
           </v-alert>
         </v-stepper-content>
       </v-stepper>

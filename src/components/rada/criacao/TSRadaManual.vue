@@ -242,6 +242,9 @@
             dark
             @click="$emit('guardar', 'nao')"
           >Continuar Depois</v-btn>
+          <v-btn style="margin-left: 10px" color="indigo darken-4" @click="$emit('validar')">
+            <font style="color: white">Validar</font>
+          </v-btn>
           <v-btn
             style="margin-left: 10px"
             :disabled="
@@ -255,6 +258,7 @@
           >
             <font style="color: white">Submeter</font>
           </v-btn>
+
           <v-btn
             style="margin-left: 10px"
             color="red darken-4"

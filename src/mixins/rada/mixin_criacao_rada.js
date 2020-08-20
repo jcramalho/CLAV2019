@@ -20,7 +20,9 @@ export default {
     datas_extremas_classes: [],
     erros_relacoes: [],
     erros_datas_uis: [],
-    existe_serie: true
+    erros_em_falta: [],
+    existe_serie: true,
+    alert_valido: false
   }),
   methods: {
     changeE1(e) {
@@ -48,7 +50,7 @@ export default {
               this.RADA.RE.dimSuporte.medicaoUI_papel +=
                 Number(series[i].suporte_e_medicao[j].medicao);
               break;
-            case "Eletrónico Digitalizado" || "Eletrónico Nativo":
+            case "Eletrónico Digitalizado": case "Eletrónico Nativo":
               this.RADA.RE.dimSuporte.medicaoUI_digital +=
                 Number(series[i].suporte_e_medicao[j].medicao);
               break;
@@ -332,8 +334,87 @@ export default {
       } catch (e) {
         return err;
       }
+    },
+    async validarRADA() {
+      this.erros_em_falta = [];
 
+      // erros que impedem o botão de submissão de ficar disponivel
+      if (!Boolean(this.RADA.tsRada.titulo)) {
+        this.erros_em_falta.push("É obrigatório inserir o título da tabela de seleção;");
+      }
 
+      if (!Boolean(this.RADA.tsRada.classes[0])) {
+        this.erros_em_falta.push("É obrigatório inserir classes;");
+      }
+
+      for (let i = 0; i < this.RADA.tsRada.UIs.length; i++) {
+        if (this.RADA.tsRada.UIs[i].classesAssociadas.length == 0 || this.RADA.tsRada.UIs[i].titulo == "") {
+          this.erros_em_falta.push("Unidade de instalação com código " + this.RADA.tsRada.UIs[i].codigo + " está incompleta;");
+        }
+      }
+
+      for (let j = 0; j < this.RADA.tsRada.classes.length; j++) {
+        if (
+
+          (this.RADA.tsRada.classes[j].tipo == "Série" &&
+            ((!this.RADA.tsRada.classes.some((cl) => cl.eFilhoDe == this.RADA.tsRada.classes[j].codigo) &&
+              ((!Boolean(this.RADA.tsRada.classes[j].df) && !Boolean(this.RADA.tsRada.classes[j].notaDF)) ||
+                (!Boolean(this.RADA.tsRada.classes[j].pca) && !Boolean(this.RADA.tsRada.classes[j].notaPCA)) ||
+                this.RADA.tsRada.classes[j].formaContagem.forma == null)) ||
+              this.RADA.tsRada.classes[j].eFilhoDe == null)) ||
+          (this.RADA.tsRada.classes[j].tipo == "Subsérie" &&
+            ((!Boolean(this.RADA.tsRada.classes[j].df) && !Boolean(this.RADA.tsRada.classes[j].notaDF)) || this.RADA.tsRada.classes[j].eFilhoDe == null)) ||
+          (this.RADA.tsRada.classes[j].eFilhoDe == null && (this.RADA.tsRada.classes[j].tipo == "N2" || this.RADA.tsRada.classes[j].tipo == "N3"))
+        ) {
+          this.erros_em_falta.push("Classe com código " + this.RADA.tsRada.classes[j].codigo + " está incompleta;");
+        }
+      }
+
+      // erros que impedem a submissão do pedido de criação
+      if (!this.RADA.tsRada.classes.some(e => e.tipo == "Série")) {
+        this.existe_serie = false;
+      } else {
+        this.existe_serie = true;
+      }
+
+      let series_subseries = this.RADA.tsRada.classes.filter(
+        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      );
+
+      await this.descobrir_datas_extremas(series_subseries);
+      await this.validar_relacoes(series_subseries);
+      await this.validar_produtoras();
+
+      if (!(!!this.erroProdutoras[0] ||
+        !!this.erros_relacoes[0] ||
+        !!this.erros_datas_uis[0] || !this.existe_serie || !!this.erros_em_falta[0])) {
+        this.alert_valido = true;
+
+        setTimeout(() => {
+          this.alert_valido = false;
+        }, 4000)
+      }
+    },
+    validar_produtoras() {
+      //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
+      //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
+      this.erroProdutoras = [];
+
+      if (!!this.RADA.RE.entidadesProd[0]) {
+        let entidades_selecionadas = this.entidadesProcessadas
+          .filter(e => e.disabled == true)
+          .map(e => e.entidade);
+
+        this.RADA.RE.entidadesProd.forEach(ent => {
+          if (!entidades_selecionadas.some(e => e == ent)) {
+            this.erroProdutoras.push(ent);
+          }
+        });
+      } else {
+        if (!this.RADA.tsRada.classes.some(e => e.tipologiasProdutoras && e.tipologiasProdutoras == this.RADA.RE.tipologiasProd)) {
+          this.erroProdutoras.push(this.RADA.RE.tipologiasProd);
+        }
+      }
     },
     async concluir(id_remocao_pendente) {
       if (!this.RADA.tsRada.classes.some(e => e.tipo == "Série")) {
@@ -346,28 +427,9 @@ export default {
           e => e.tipo == "Série" || e.tipo == "Subsérie"
         );
 
-        this.descobrir_datas_extremas(series_subseries);
+        await this.descobrir_datas_extremas(series_subseries);
         await this.validar_relacoes(series_subseries);
-
-        //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
-        //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
-        this.erroProdutoras = [];
-
-        if (!!this.RADA.RE.entidadesProd[0]) {
-          let entidades_selecionadas = this.entidadesProcessadas
-            .filter(e => e.disabled == true)
-            .map(e => e.entidade);
-
-          this.RADA.RE.entidadesProd.forEach(ent => {
-            if (!entidades_selecionadas.some(e => e == ent)) {
-              this.erroProdutoras.push(ent);
-            }
-          });
-        } else {
-          if (!this.RADA.tsRada.classes.some(e => e.tipologiasProdutoras && e.tipologiasProdutoras == this.RADA.RE.tipologiasProd)) {
-            this.erroProdutoras.push(this.RADA.RE.tipologiasProd);
-          }
-        }
+        await this.validar_produtoras();
 
         if (
           !!this.erroProdutoras[0] ||
@@ -397,10 +459,10 @@ export default {
             .filter(e => e.tipo == "Série");
 
           // Nesta função será removida a zona de decisões de avaliação respeitando o invariante;
-          this.removerDecisoesAvaliacao(series);
+          await this.removerDecisoesAvaliacao(series);
 
           // Calcular os valores de dimensão e suporte no relatório expositivo
-          this.calcular_dimensao_suporte(series);
+          await this.calcular_dimensao_suporte(series);
 
           // Tratar dos pedidos da novas entidades
           await this.fazer_pedidos_entidades(series);

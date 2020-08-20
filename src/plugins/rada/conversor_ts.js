@@ -1,3 +1,10 @@
+const Papa = require("papaparse");
+
+const papa_config = {
+    delimitersToGuess: [',', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+    skipEmptyLines: true
+}
+
 var validarClasses = (
     file,
     classes_originais,
@@ -6,15 +13,13 @@ var validarClasses = (
     formaContagem
 ) => {
     return new Promise(async (resolve, reject) => {
-        let enc = new TextDecoder("utf-8");
-        let ts = enc
-            .decode(file)
-            .replace(/['"]/g, "")
-            .split("\n");
+        let parsedFile = Papa.parse(file, papa_config);
+
+        let ts = parsedFile.data;
         let ts_length = ts.length;
 
-        console.log("RE: ", re);
-
+        // console.log(ts)
+        // Inicializar variáveis
         let novas_classes = [];
 
         let erros = {
@@ -32,53 +37,53 @@ var validarClasses = (
         let n = 1;
 
         for (let i = 1; i < ts_length; i++) {
-            let classe = ts[i].split(/ *; */).slice(0, 23);
-
-
-            if (classe.length != 23) {
+            if (ts[i].length != 23) {
                 erros = {
                     validade: [{ classe: 'Erro na análise', erro: 'Ficheiro inválido!' }]
                 };
                 break;
             }
 
-            classe[2] = Number(classe[2]);
+            // Limpar os espaços nas extremidades dos campos
+            ts[i] = ts[i].map(s => { return s.trim() });
+
+            ts[i][2] = Number(ts[i][2]);
 
             // Descobrir PAI
-            if (classe[2] == 1) {
-                pais = [classe[0]];
-                n = classe[2];
+            if (ts[i][2] == 1) {
+                pais = [ts[i][0]];
+                n = ts[i][2];
                 pai = null;
-            } else if (classe[2] > n) {
+            } else if (ts[i][2] > n) {
                 pai = pais[pais.length - 1];
-                pais.push(classe[0]);
-                n = classe[2];
-            } else if (n == classe[2]) {
+                pais.push(ts[i][0]);
+                n = ts[i][2];
+            } else if (n == ts[i][2]) {
                 pais.pop();
                 pai = pais[pais.length - 1];
-                pais.push(classe[0]);
-                n = classe[2];
+                pais.push(ts[i][0]);
+                n = ts[i][2];
             } else {
-                let nPops = n - classe[2] + 1;
+                let nPops = n - ts[i][2] + 1;
 
                 for (let j = 0; j < nPops; j++) pais.pop();
 
                 pai = pais[pais.length - 1];
-                pais.push(classe[0]);
-                n = classe[2];
+                pais.push(ts[i][0]);
+                n = ts[i][2];
             }
 
             // Validar e criar cada classe
-            if (classe[0] != "" && !classes_originais.some(e => e.codigo == classe[0])) {
-                switch (classe[2]) {
+            if (ts[i][0] != "" && !classes_originais.some(e => e.codigo == ts[i][0])) {
+                switch (ts[i][2]) {
                     case 1:
                     case 2:
                     case 3:
-                        validarArea(classe, pai, erros, novas_classes);
+                        validarArea(ts[i], pai, erros, novas_classes);
                         break;
                     case 4:
                         validarSerie(
-                            classe,
+                            ts[i],
                             pai,
                             erros,
                             novas_classes,
@@ -88,10 +93,10 @@ var validarClasses = (
                         );
                         break;
                     case 5:
-                        validarSubserie(classe, pai, erros, re, novas_classes, formaContagem);
+                        validarSubserie(ts[i], pai, erros, re, novas_classes, formaContagem);
                         break;
                     default:
-                        erros.tipo.push({ classe: classe[0], erro: 'Nível inválido!' });
+                        erros.tipo.push({ classe: ts[i][0], erro: 'Nível inválido!' });
                         break;
                 }
             } else {
@@ -485,16 +490,15 @@ function preencherFormaContagem(classe, formaContagem, erros, tipo) {
         forma: null
     };
 
-    let f = formaContagem.formasContagem.find(e => e.label == classe[17]);
+    let f = formaContagem.formasContagem.find(e => e.label.toLowerCase() == classe[17].toLowerCase());
 
     if (f != undefined) {
         forma_serie.forma = f.value;
 
         if (f.label == "Conforme disposição legal") {
-            let sf = formaContagem.subFormasContagem.find(e => e.label.split(':')[0] == classe[18]);
 
-            if (sf != undefined) {
-                forma_serie["subforma"] = sf.value;
+            if (classe[18] != "") {
+                forma_serie["subforma"] = classe[18];
             } else {
                 erros[tipo].push({
                     classe: classe[0],
@@ -601,14 +605,14 @@ function preencherJustDF(classe, erros, tipo) {
 function validarDF(classe, erros, tipo) {
     let df = null;
 
-    switch (classe[20]) {
-        case "C":
+    switch (classe[20].toLowerCase()) {
+        case "conservação":
             df = "Conservação";
             break;
-        case "E":
+        case "eliminação":
             df = "Eliminação";
             break;
-        case "CP":
+        case "conservação parcial":
             df = "Conservação Parcial";
             break;
         default:
@@ -622,8 +626,8 @@ function validarDF(classe, erros, tipo) {
   Função para preencher as relações de uma série
 */
 function preencherRelacoes(classe, erros, tipo) {
-    let classesRelacionadas = classe[13].split("#").filter(e => e != "");
-    let classesRelacao = classe[14].split("#").filter(e => e != "");
+    let classesRelacionadas = classe[13].replace(/\r\n/g, "").split("#").filter(e => e != "");
+    let classesRelacao = classe[14].replace(/\r\n/g, "").split("#").filter(e => e != "");
 
     let relacoes = [];
 
