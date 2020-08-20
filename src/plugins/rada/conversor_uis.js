@@ -8,7 +8,7 @@ const papa_config = {
 var importarUIs = (file, uis_originais, classes_originais, re) => {
     return new Promise(async (resolve, reject) => {
         let parsedFile = Papa.parse(file, papa_config);
-        
+
         let uis = parsedFile.data;
 
         // Inicializar variáveis
@@ -21,7 +21,7 @@ var importarUIs = (file, uis_originais, classes_originais, re) => {
         let novas_uis = [];
 
         for (let i = 1; i < uis.length; i++) {
-            //let ui = uis[i].split(/ *; */).slice(0, 10);
+
 
             if (uis[i].length != 10) {
                 erros = {
@@ -29,6 +29,9 @@ var importarUIs = (file, uis_originais, classes_originais, re) => {
                 };
                 break;
             }
+
+            // Limpar os espaços nas extremidades dos campos
+            uis[i] = uis[i].map(s => { return s.trim() });
 
             if (uis[i][0] != "" && !uis_originais.some(e => e.codigo == uis[i][0])) {
                 let obj_ui = {
@@ -96,7 +99,7 @@ function preencherClassesAssociadas(ui, classes_originais, erros) {
     let classes_associadas_validado = [];
     let setAuxRepetidos = new Set();
     let tem_duplicados = false;
-    
+
     if (classes_associadas[0] != "") {
         for (let i = 0; i < classes_associadas.length; i++) {
             let classe = classes_originais.find(e => e.codigo == classes_associadas[i] && (e.tipo == "Série" || e.tipo == "Subsérie"))
