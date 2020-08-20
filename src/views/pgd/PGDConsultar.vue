@@ -100,7 +100,7 @@ export default {
         this.idLegislacao = this.idLegislacao.split("_tip")[0];
         this.idLegislacao = this.idLegislacao.split("_ent")[0];
         this.message = "Relatório de Avaliação de Documentação Acumulada"
-        var response = await this.$request("get","/pgd/rada/"+this.id)
+        var response = await this.$request("get","/rada/old/"+this.id)
         this.classesTree = await this.prepararClasses(response.data)
         this.classes = response.data.map(c => {
           return {

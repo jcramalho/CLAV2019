@@ -161,7 +161,7 @@ export default {
     verPedido() {
       localStorage.setItem("submissao", true);
 
-      this.$router.push("/pedidos/novos/" + this.idp);
+      this.$router.push(`/users/pedidos/${this.idp}`);
     },
 
     fecharErro() {

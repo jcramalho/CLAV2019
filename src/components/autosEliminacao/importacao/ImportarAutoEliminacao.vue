@@ -787,7 +787,7 @@ export default {
         else 
           var response2 = await this.$request(
             "get",
-            "/pgd/rada/tsRada_"+leg[0].id
+            "/rada/old/tsRada_"+leg[0].id
           )
         this.classes = response2.data.filter(c=> c.nivel>2).map(c => {
             return {

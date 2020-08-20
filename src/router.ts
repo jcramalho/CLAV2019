@@ -506,6 +506,18 @@ export default new Router({
       component: () => import("./views/users/RegistoAcesso.vue"),
       meta: { levels: [6, 7] },
     },
+    {
+      path: "/users/pedidos",
+      name: "pedidosUtilizador",
+      component: () => import("./views/users/GestaoPedidos.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
+    {
+      path: "/users/pedidos/:numeroPedido",
+      name: "consultaPedidoUtilizador",
+      component: () => import("./views/users/ConsultaPedidoUtilizador.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
     //cartao cidadao
     {
       path: "/users/handlerCC",

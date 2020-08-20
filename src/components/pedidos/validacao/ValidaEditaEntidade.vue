@@ -110,7 +110,7 @@
         <v-spacer />
         <PO
           operacao="Validar"
-          @finalizarPedido="finalizarPedido($event)"
+          @finalizarPedido="verificaEstadoCampos($event)"
           @devolverPedido="despacharPedido($event)"
         />
       </v-row>
@@ -155,6 +155,15 @@
         @selecao="adicionaTipologias"
       />
     </v-dialog>
+
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="fechaDialogConfirmacao()"
+        @confirma="finalizarPedido(dialogConfirmacao.dados)"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -167,6 +176,7 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import ErroDialog from "@/components/generic/ErroDialog";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
 import {
   comparaSigla,
@@ -175,7 +185,13 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
-import { eNUV, eNV, eDataFormatoErrado } from "@/utils/validadores";
+import {
+  eNUV,
+  eNV,
+  eDataFormatoErrado,
+  eUndefined,
+  testarRegex,
+} from "@/utils/validadores";
 
 export default {
   props: ["p"],
@@ -188,10 +204,16 @@ export default {
     SelecionaAutocomplete,
     EditarCamposDialog,
     AdicionarNota,
+    ConfirmacaoOperacao,
   },
 
   data() {
     return {
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      },
       animacoes: {},
       esconderOperacoes: {},
       notaDialog: {
@@ -406,6 +428,31 @@ export default {
       }
     },
 
+    fechaDialogConfirmacao() {
+      this.dialogConfirmacao = {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      };
+    },
+
+    async verificaEstadoCampos(dados) {
+      // procura campos a vermelho
+      const haVermelhos = Object.keys(this.novoHistorico).some(
+        (key) => this.novoHistorico[key].cor === "vermelho"
+      );
+      // Se existirem abre dialog de confirmação
+      if (haVermelhos)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados,
+        };
+      // Caso contrário segue para a finalização do pedido
+      else await this.finalizarPedido(dados);
+    },
+
     async finalizarPedido(dados) {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -417,7 +464,7 @@ export default {
           if (numeroErros === 0)
             await this.$request(
               "put",
-              `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
+              `/entidades/ent_${pedido.objeto.dadosOriginais.sigla}/extinguir`,
               { dataExtincao: pedido.objeto.dados.dataExtincao }
             );
         } else {
@@ -429,16 +476,13 @@ export default {
                 pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
               }
 
-              if (
-                pedido.objeto.dados[key] === "" ||
-                pedido.objeto.dados[key] === null
-              )
+              if (eNV(pedido.objeto.dados[key]))
                 delete pedido.objeto.dados[key];
             }
 
             await this.$request(
               "put",
-              `/entidades/ent_${pedido.objeto.dados.sigla}`,
+              `/entidades/ent_${pedido.objeto.dadosOriginais.sigla}`,
               pedido.objeto.dados
             );
           }
@@ -546,7 +590,7 @@ export default {
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           numeroErros++;
-        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+        } else if (!testarRegex(dados.sioe, /^\d+$/)) {
           this.erros.push({
             sobre: "SIOE",
             mensagem: "O campo SIOE só pode ter digitos numéricos.",

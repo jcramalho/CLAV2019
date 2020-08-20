@@ -117,14 +117,14 @@ export default {
       // Data
       if (eNUV(this.l.data)) {
         this.mensagensErro.push({
-          sobre: "Data",
-          mensagem: "A data não pode ser vazia.",
+          sobre: "Data do Diploma",
+          mensagem: "A data do diploma não pode ser vazia.",
         });
         numeroErros++;
       } else if (eDataFormatoErrado(this.l.data)) {
         this.mensagensErro.push({
-          sobre: "Data",
-          mensagem: "A data está no formato errado.",
+          sobre: "Data do Diploma",
+          mensagem: "A data do diploma está no formato errado.",
         });
         numeroErros++;
       }

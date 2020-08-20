@@ -3,11 +3,7 @@
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row
-          v-if="campo !== 'sigla' && campo !== 'estado'"
-          dense
-          class="ma-1"
-        >
+        <v-row v-if="campo !== 'id' && campo !== 'estado'" dense class="ma-1">
           <!-- Label -->
           <v-col cols="2">
             <div

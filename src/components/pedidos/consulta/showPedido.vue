@@ -130,6 +130,16 @@
       >
         Substituir Responsável
       </v-btn>
+
+      <v-btn
+        v-if="p.estado === 'Apreciado'"
+        color="indigo accent-4"
+        dark
+        @click="reapreciar()"
+        rounded
+      >
+        Reapreciar pedido
+      </v-btn>
     </v-card-actions>
 
     <!-- Substituir responsável dialog -->
@@ -140,6 +150,21 @@
     <!-- Dialog Ver Historico de Alterações-->
     <v-dialog v-model="verHistoricoDialog" width="70%">
       <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
+    </v-dialog>
+
+    <!-- Dialog para reapreciar pedidos -->
+    <v-dialog v-model="reapreciarDialog" width="80%" persistent>
+      <AvancarPedido
+        :utilizadores="utilizadores"
+        :texto="{
+          textoTitulo: 'Distribuição',
+          textoAlert: 'reapreciação',
+          textoBotao: 'Reapreciar',
+        }"
+        :pedido="p.codigo"
+        @fecharDialog="fecharReapreciarDialog()"
+        @avancarPedido="reapreciarPedido($event)"
+      />
     </v-dialog>
   </v-card>
 </template>
@@ -158,9 +183,14 @@ import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
 
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
+import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
-import { NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL } from "@/utils/consts";
+import {
+  NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL,
+  NIVEIS_ANALISAR_PEDIDO,
+} from "@/utils/consts";
+import { filtraNivel } from "@/utils/permissoes";
 
 export default {
   props: ["p", "etapaPedido"],
@@ -179,10 +209,13 @@ export default {
     SubstituirResponsavel,
     ShowPGD,
     VerHistorico,
+    AvancarPedido,
   },
 
   data() {
     return {
+      utilizadores: [],
+      reapreciarDialog: false,
       substituirResponsavelDialog: false,
       verHistoricoDialog: false,
       headers: [
@@ -201,7 +234,61 @@ export default {
     };
   },
 
+  async created() {
+    await this.listaUtilizadores();
+  },
+
   methods: {
+    async listaUtilizadores() {
+      const response = await this.$request("get", "/users");
+
+      const utilizadores = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
+
+      this.utilizadores = utilizadores;
+    },
+
+    reapreciar() {
+      this.reapreciarDialog = true;
+    },
+
+    fecharReapreciarDialog() {
+      this.reapreciarDialog = false;
+    },
+
+    async reapreciarPedido(dados) {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        const estado = "Distribuído"; // TODO: Ver se resulta assim
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.fecharReapreciarDialog();
+        this.$router.push("/pedidos");
+      } catch (e) {
+        //console.log("e :", e);
+      }
+    },
+
     temPermissaoSubstituirResponsavel() {
       return this.$userLevel() >= NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL;
     },

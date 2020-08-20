@@ -15,7 +15,7 @@
     <ListagemLeg
       v-if="fontesRADA.length>0"
       :lista="fontesRADA"
-      tipo="TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE DOCUMENTAÇÃO ACUMULADA"
+      tipo="TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE AVALIAÇÃO DE DOCUMENTAÇÃO ACUMULADA"
     />
   </div>
 </template>
@@ -35,7 +35,7 @@ export default {
     ListagemLeg
   },
   async created() {
-    await this.$request("get", "/pgd/rada")
+    await this.$request("get", "/rada/old")
       .then(response2 => {
         this.fontesRADA = response2.data.map(f => {
           return {
