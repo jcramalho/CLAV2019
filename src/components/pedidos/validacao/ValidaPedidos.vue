@@ -219,7 +219,7 @@ export default {
   async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
-      if (data.estado !== "Apreciado")
+      if (data.estado !== "Apreciado" && data.estado !== "Reapreciado")
         throw new URIError("Este pedido não pertence a este estado.");
 
       this.pedido = data;

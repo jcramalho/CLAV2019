@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12">
         <h1>RADAAA</h1>
-        <p>{{p.objeto}}</p>
+        <p>{{ p.objeto }}</p>
       </v-col>
     </v-row>
     <v-row>
@@ -30,14 +30,14 @@ export default {
   props: ["p"],
   components: {
     PO,
-    ErroDialog
+    ErroDialog,
   },
   data() {
     return {
       erroDialog: {
         visivel: false,
-        mensagem: null
-      }
+        mensagem: null,
+      },
     };
   },
   methods: {
@@ -47,24 +47,27 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        pedido.estado = "Apreciado";
+        const estado =
+          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+
+        pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
         const novaDistribuicao = {
-          estado: "Apreciado",
+          estado: estado,
           responsavel: dadosUtilizador.email,
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email
+            email: dados.utilizadorSelecionado.email,
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -82,7 +85,7 @@ export default {
           estado: "Devolvido",
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -92,7 +95,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -101,7 +104,7 @@ export default {
         this.erroDialog.mensagem =
           "Erro ao devolver o pedido, por favor tente novamente";
       }
-    }
-  }
+    },
+  },
 };
 </script>

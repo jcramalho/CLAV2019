@@ -248,7 +248,7 @@ export default {
   async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
-      if (data.estado !== "Distribuído")
+      if (data.estado !== "Distribuído" && data.estado !== "Redistribuído")
         throw new URIError("Este pedido não pertence a este estado.");
 
       this.pedido = data;

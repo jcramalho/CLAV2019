@@ -120,13 +120,22 @@ export default {
         let pedidos = await this.$request("get", "/pedidos");
         pedidos = pedidos.data;
 
-        this.pedidosSubmetidos = pedidos.filter((p) => p.estado == "Submetido");
-        this.pedidosDistribuidos = pedidos.filter(
-          (p) => p.estado == "Distribuído"
+        this.pedidosSubmetidos = pedidos.filter(
+          (p) => p.estado === "Submetido"
         );
-        this.pedidosValidados = pedidos.filter((p) => p.estado == "Apreciado");
-        this.pedidosDevolvidos = pedidos.filter((p) => p.estado == "Devolvido");
-        this.pedidosProcessados = pedidos.filter((p) => p.estado == "Validado");
+        this.pedidosDistribuidos = pedidos.filter((p) => {
+          if (p.estado === "Distribuído" || p.estado === "Redistribuído")
+            return p;
+        });
+        this.pedidosValidados = pedidos.filter((p) => {
+          if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
+        });
+        this.pedidosDevolvidos = pedidos.filter(
+          (p) => p.estado === "Devolvido"
+        );
+        this.pedidosProcessados = pedidos.filter(
+          (p) => p.estado === "Validado"
+        );
 
         if (this.temPermissaoDistribuir())
           await this.listaUtilizadoresParaAnalisar();
@@ -167,7 +176,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.pedidoParaDistribuir));
 
-        const estado = "Distribuído";
+        let estado = "Distribuído";
 
         let dadosUtilizador = this.$verifyTokenUser();
 
