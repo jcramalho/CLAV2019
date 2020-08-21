@@ -45,16 +45,19 @@ export default {
         for (let j = 0; j < series[i].suporte_e_medicao.length; j++) {
           switch (series[i].suporte_e_medicao[j].suporte) {
             case "Papel":
-              this.RADA.RE.dimSuporte.medicaoUI_papel +=
-                Number(series[i].suporte_e_medicao[j].medicao);
+              this.RADA.RE.dimSuporte.medicaoUI_papel += Number(
+                series[i].suporte_e_medicao[j].medicao
+              );
               break;
             case "Eletrónico Digitalizado" || "Eletrónico Nativo":
-              this.RADA.RE.dimSuporte.medicaoUI_digital +=
-                Number(series[i].suporte_e_medicao[j].medicao);
+              this.RADA.RE.dimSuporte.medicaoUI_digital += Number(
+                series[i].suporte_e_medicao[j].medicao
+              );
               break;
             case "Outro":
-              this.RADA.RE.dimSuporte.medicaoUI_outros +=
-                Number(series[i].suporte_e_medicao[j].medicao);
+              this.RADA.RE.dimSuporte.medicaoUI_outros += Number(
+                series[i].suporte_e_medicao[j].medicao
+              );
 
               break;
           }
@@ -355,7 +358,13 @@ export default {
             }
           });
         } else {
-          if (!this.RADA.tsRada.classes.some(e => e.tipologiasProdutoras && e.tipologiasProdutoras == this.RADA.RE.tipologiasProd)) {
+          if (
+            !this.RADA.tsRada.classes.some(
+              e =>
+                e.tipologiasProdutoras &&
+                e.tipologiasProdutoras == this.RADA.RE.tipologiasProd
+            )
+          ) {
             this.erroProdutoras.push(this.RADA.RE.tipologiasProd);
           }
         }

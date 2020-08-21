@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Loading v-if="!entidadesReady" :message="'entidades'" />
     <Listagem
       v-else
@@ -8,7 +13,7 @@
       :cabecalho="cabecalhos"
       :campos="campos"
     />
-  </div>
+  </v-content>
 </template>
 
 <script>
@@ -23,19 +28,19 @@ export default {
     campos: [],
     cabecalhos: [],
     operacoes: [],
-    entidadesReady: false,
+    entidadesReady: false
   }),
 
   components: {
     Listagem,
-    Loading,
+    Loading
   },
 
   methods: {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" },
+          { icon: "edit", descricao: "Alteração" }
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }
@@ -48,14 +53,14 @@ export default {
           "Designação",
           "Estado",
           "Internacional",
-          "Operações",
+          "Operações"
         ];
         this.campos = [
           "id",
           "designacao",
           "estado",
           "internacional",
-          "operacoes",
+          "operacoes"
         ];
       } else {
         this.cabecalhos = ["Sigla", "Designação", "Estado", "Internacional"];
@@ -73,7 +78,7 @@ export default {
             designacao: listaEntidades[i].designacao,
             estado: listaEntidades[i].estado,
             internacional: listaEntidades[i].internacional,
-            operacoes: this.operacoes,
+            operacoes: this.operacoes
           });
         }
       } else {
@@ -82,13 +87,13 @@ export default {
             id: listaEntidades[i].sigla,
             designacao: listaEntidades[i].designacao,
             estado: listaEntidades[i].estado,
-            internacional: listaEntidades[i].internacional,
+            internacional: listaEntidades[i].internacional
           });
         }
       }
 
       return myTree;
-    },
+    }
   },
 
   created: async function() {
@@ -107,6 +112,6 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>

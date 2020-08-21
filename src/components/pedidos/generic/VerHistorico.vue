@@ -226,7 +226,7 @@ export default {
   props: ["pedido"],
   components: {
     ZonaControlo,
-    VerHistoricoEmTabela,
+    VerHistoricoEmTabela
   },
   data() {
     return {
@@ -234,40 +234,40 @@ export default {
       dialogVerHistoricoEmTabela: false,
       dialogVerNota: {
         visivel: false,
-        nota: "",
+        nota: ""
       },
       etapaReferente: "",
       onboarding: 0,
       dados: [],
       entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ],
       footerPropsEntidades: {
         "items-per-page-text": "Entidades por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todas"
       },
 
       tipologiasHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ],
       footerPropsTipologias: {
         "items-per-page-text": "Tipologias por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todas"
       },
 
       processosHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" }
       ],
       footerPropsProcessos: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
-      },
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
 
@@ -295,13 +295,13 @@ export default {
 
     distribuicao() {
       return this.pedido.distribuicao;
-    },
+    }
   },
 
   watch: {
     onboarding(novoValor, antigoValor) {
       this.etapaReferente = this.distribuicaoFormatada[novoValor];
-    },
+    }
   },
 
   methods: {
@@ -318,7 +318,7 @@ export default {
       const distribuicaoSemRepetidos = distribuicaoAlterada.reduce(
         (semRepetidos, valorAtual) => {
           if (
-            !semRepetidos.some((obj) => obj.estado === valorAtual.estado) &&
+            !semRepetidos.some(obj => obj.estado === valorAtual.estado) &&
             valorAtual.estado !== "Distribuído"
           ) {
             if (valorAtual.estado === "Submetido")
@@ -375,8 +375,8 @@ export default {
     cancelar() {
       this.onboarding = 0;
       this.$emit("fecharDialog");
-    },
-  },
+    }
+  }
 };
 </script>
 

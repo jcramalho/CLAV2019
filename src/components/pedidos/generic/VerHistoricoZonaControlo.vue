@@ -1,50 +1,53 @@
 <template>
   <div>
-  <v-expansion-panels>
-    <v-expansion-panel
-      v-for="(item,i) in object"
-      :key="i"
-    >
-      <v-expansion-panel-header :class="`info-header-${item.cor}`"
-        v-if="item.dados.codigo && item.dados.referencia"
-      >
-        {{item.dados.codigo + ', ' + item.dados.referencia + ' - ' +item.dados.titulo}}
-        <v-tooltip v-if="item.nota" bottom>
-          <template v-slot:activator="{ on }">
-            <v-icon v-on="on" @click="verNota(item.nota)">
-              message
-            </v-icon>
-          </template>
-          <span>Ver nota relativa ao campo...</span>
-        </v-tooltip>
-      </v-expansion-panel-header>
-      <v-expansion-panel-header :class="`info-header-${item.cor}`"
-        v-else-if="item.dados.codigo"
-      >
-        {{ item.dados.codigo + ' - ' + item.dados.titulo }}
-        <v-tooltip v-if="item.nota" bottom>
-          <template v-slot:activator="{ on }">
-            <v-icon v-on="on" @click="verNota(item.nota)">
-              message
-            </v-icon>
-          </template>
-          <span>Ver nota relativa ao campo...</span>
-        </v-tooltip>
-      </v-expansion-panel-header>
-      <v-expansion-panel-header :class="`info-header-${item.cor}`"
-        v-else
-      >
-        {{item.dados.referencia + ' - ' + item.dados.titulo}}
-        <v-tooltip v-if="item.nota" bottom>
-          <template v-slot:activator="{ on }">
-            <v-icon v-on="on" @click="verNota(item.nota)">
-              message
-            </v-icon>
-          </template>
-          <span>Ver nota relativa ao campo...</span>
-        </v-tooltip>
-      </v-expansion-panel-header>
-      <v-expansion-panel-content :class="`info-background-${backColor}`">
+    <v-expansion-panels>
+      <v-expansion-panel v-for="(item, i) in object" :key="i">
+        <v-expansion-panel-header
+          :class="`info-header-${item.cor}`"
+          v-if="item.dados.codigo && item.dados.referencia"
+        >
+          {{
+            item.dados.codigo +
+              ", " +
+              item.dados.referencia +
+              " - " +
+              item.dados.titulo
+          }}
+          <v-tooltip v-if="item.nota" bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="verNota(item.nota)">
+                message
+              </v-icon>
+            </template>
+            <span>Ver nota relativa ao campo...</span>
+          </v-tooltip>
+        </v-expansion-panel-header>
+        <v-expansion-panel-header
+          :class="`info-header-${item.cor}`"
+          v-else-if="item.dados.codigo"
+        >
+          {{ item.dados.codigo + " - " + item.dados.titulo }}
+          <v-tooltip v-if="item.nota" bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="verNota(item.nota)">
+                message
+              </v-icon>
+            </template>
+            <span>Ver nota relativa ao campo...</span>
+          </v-tooltip>
+        </v-expansion-panel-header>
+        <v-expansion-panel-header :class="`info-header-${item.cor}`" v-else>
+          {{ item.dados.referencia + " - " + item.dados.titulo }}
+          <v-tooltip v-if="item.nota" bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="verNota(item.nota)">
+                message
+              </v-icon>
+            </template>
+            <span>Ver nota relativa ao campo...</span>
+          </v-tooltip>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content :class="`info-background-${backColor}`">
           <v-row v-if="item.dados.codigo">
             <v-col cols="4">
               <div :class="`info-descricao-${item.cor}`">Código da classe</div>
@@ -71,10 +74,14 @@
           </v-row>
           <v-row v-if="item.dados.prazoConservacao">
             <v-col cols="4">
-              <div :class="`info-descricao-${item.cor}`">Prazo de Conservação Administrativa</div>
+              <div :class="`info-descricao-${item.cor}`">
+                Prazo de Conservação Administrativa
+              </div>
             </v-col>
             <v-col>
-              {{ item.dados.prazoConservacao }} <span v-if="item.dados.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
+              {{ item.dados.prazoConservacao }}
+              <span v-if="item.dados.prazoConservacao == '1'">Ano</span
+              ><span v-else>Anos</span>
             </v-col>
           </v-row>
           <v-row v-if="item.dados.destino">
@@ -91,7 +98,13 @@
               {{ item.dados.destino }}
             </v-col>
           </v-row>
-          <v-row v-if="item.dados.ni && (item.dados.destino === 'C' || item.dados.destino === 'Conservação')">
+          <v-row
+            v-if="
+              item.dados.ni &&
+                (item.dados.destino === 'C' ||
+                  item.dados.destino === 'Conservação')
+            "
+          >
             <v-col cols="4">
               <div :class="`info-descricao-${item.cor}`">
                 Natureza de intervenção
@@ -99,11 +112,22 @@
             </v-col>
             <v-col>{{ item.dados.ni }}</v-col>
           </v-row>
-          <v-row v-if="item.dados.dono && item.dados.dono.length>0 && (item.dados.destino === 'C' || item.dados.destino === 'Conservação')">
+          <v-row
+            v-if="
+              item.dados.dono &&
+                item.dados.dono.length > 0 &&
+                (item.dados.destino === 'C' ||
+                  item.dados.destino === 'Conservação')
+            "
+          >
             <v-col cols="4">
               <div :class="`info-descricao-${item.cor}`">Donos do PN</div>
             </v-col>
-            <v-col><li v-for="(d,i) in item.dados.dono" :key="i">{{ d }}</li></v-col>
+            <v-col
+              ><li v-for="(d, i) in item.dados.dono" :key="i">
+                {{ d }}
+              </li></v-col
+            >
           </v-row>
           <v-row>
             <v-col cols="4">
@@ -151,10 +175,10 @@
             </v-col>
             <v-col>{{ item.dados.uiOutros }}</v-col>
           </v-row>
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
-  <!-- Ver nota dialog -->
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+    <!-- Ver nota dialog -->
     <v-dialog v-model="dialogVerNota.visivel" width="50%">
       <v-card>
         <v-card-title class="indigo darken-4 title white--text">
@@ -196,23 +220,22 @@ export default {
         visivel: false,
         nota: ""
       },
-      backColor: "azul",
-    }
+      backColor: "azul"
+    };
   },
 
   created: function() {
-     if(this.tipo) {
-       this.object = JSON.parse(JSON.stringify(this.info))
-       this.backColor = "laranja"
-     }
-     else {
-       for(var zc of this.info)
-         this.object.push({
-           cor: "azul",
-           dados: zc,
-           nota: null
-         })
-     }
+    if (this.tipo) {
+      this.object = JSON.parse(JSON.stringify(this.info));
+      this.backColor = "laranja";
+    } else {
+      for (var zc of this.info)
+        this.object.push({
+          cor: "azul",
+          dados: zc,
+          nota: null
+        });
+    }
   },
   methods: {
     verNota(nota) {
@@ -223,9 +246,9 @@ export default {
     fecharDialogVerNota() {
       this.dialogVerNota.nota = "";
       this.dialogVerNota.visivel = false;
-    },
+    }
   }
-}
+};
 </script>
 <style scoped>
 .info-descricao-verde {
@@ -277,15 +300,14 @@ export default {
 }
 
 .info-header-azul {
-  background: #E8EAF6;
+  background: #e8eaf6;
 }
 
 .info-background-azul {
-  background: #E8EAF6;
+  background: #e8eaf6;
 }
 
 .info-background-laranja {
-  background: #FFF3E0;
+  background: #fff3e0;
 }
-
 </style>

@@ -33,7 +33,10 @@
     <v-col sm="9" md="9">
       <!-- {{ newSerie.justificacaoPCA }} -->
       <v-card outlined v-if="!!newSerie.justificacaoPCA[0]">
-        <v-row v-for="(criterio, cindex) in newSerie.justificacaoPCA" :key="cindex">
+        <v-row
+          v-for="(criterio, cindex) in newSerie.justificacaoPCA"
+          :key="cindex"
+        >
           <v-col cols="3">
             <div style="padding-left: 15px;" class="info-label">
               <v-icon
@@ -42,7 +45,8 @@
                 color="red darken-2"
                 dark
                 small
-              >remove_circle_outline</v-icon>
+                >remove_circle_outline</v-icon
+              >
               {{ criterio.tipo }}
             </div>
             <!-- @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')" -->
@@ -72,21 +76,29 @@
                 v-model="criterio.nota"
               ></v-textarea>
               <v-card-text>
-                <ul v-if="criterio.tipo == 'Critério de Utilidade Administrativa'">
+                <ul
+                  v-if="criterio.tipo == 'Critério de Utilidade Administrativa'"
+                >
                   <li
                     v-for="(relacao, relindex) in criterio.relacoes"
                     :key="relindex"
-                  >{{ relacao.codigo + " - " + relacao.titulo }}</li>
+                  >
+                    {{ relacao.codigo + " - " + relacao.titulo }}
+                  </li>
                 </ul>
                 <ul v-else>
-                  <li v-for="(relacao, relindex) in criterio.relacoes" :key="relindex">
+                  <li
+                    v-for="(relacao, relindex) in criterio.relacoes"
+                    :key="relindex"
+                  >
                     {{ relacao }}
                     <v-icon
                       @click="removeRelacao(relindex, criterio, cindex)"
                       color="red darken-2"
                       dark
                       small
-                    >remove_circle_outline</v-icon>
+                      >remove_circle_outline</v-icon
+                    >
                   </li>
                 </ul>
               </v-card-text>
@@ -95,13 +107,9 @@
           </v-col>
         </v-row>
       </v-card>
-      <v-alert
-        v-else
-        border="left"
-        dense
-        icon="warning"
-        color="amber accent-3"
-      >Não existe justificação do Prazo de Conservação Administrativo</v-alert>
+      <v-alert v-else border="left" dense icon="warning" color="amber accent-3"
+        >Não existe justificação do Prazo de Conservação Administrativo</v-alert
+      >
     </v-col>
   </v-row>
 </template>

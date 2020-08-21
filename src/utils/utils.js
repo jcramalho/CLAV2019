@@ -11,27 +11,27 @@ export function filtraNivel(utilizadores, nivel, operador = "=") {
   switch (operador) {
     case "=":
       utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level == nivel
+        utilizador => utilizador.level == nivel
       );
       break;
     case "<":
       utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level < nivel
+        utilizador => utilizador.level < nivel
       );
       break;
     case ">":
       utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level > nivel
+        utilizador => utilizador.level > nivel
       );
       break;
     case "<=":
       utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level <= nivel
+        utilizador => utilizador.level <= nivel
       );
       break;
     case ">=":
       utilizadoresFiltrados = utilizadores.filter(
-        (utilizador) => utilizador.level >= nivel
+        utilizador => utilizador.level >= nivel
       );
       break;
     default:
@@ -71,8 +71,8 @@ export function comparaCodigo(a, b) {
 export function comparaArraySel(arrA, arrB, key) {
   var arraysIguais = false;
 
-  const keysA = arrA.map((el) => el[key]).sort();
-  const keysB = arrB.map((el) => el[key]).sort();
+  const keysA = arrA.map(el => el[key]).sort();
+  const keysB = arrB.map(el => el[key]).sort();
 
   arraysIguais = JSON.stringify(keysA) === JSON.stringify(keysB);
 
@@ -185,7 +185,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null,
+            nota: null
           };
         }
       } else if (objSubmetido[key] instanceof Array) {
@@ -193,7 +193,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null,
+            nota: null
           };
         } else if (
           !comparaArraySel(objSubmetido[key], objOriginal[key], "sigla")
@@ -201,7 +201,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null,
+            nota: null
           };
         }
       }
@@ -212,7 +212,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
         historico[key] = {
           cor: "verde",
           dados: objSubmetido[key],
-          nota: null,
+          nota: null
         };
       }
     }
@@ -228,7 +228,7 @@ export function converterDadosOriginais(dados) {
     dadosConvertidos[key] = {
       cor: null,
       dados: dados[key],
-      nota: null,
+      nota: null
     };
   }
 
@@ -242,10 +242,8 @@ export function extrairRemovidos(objetoAnterior, objetoAtual, lista) {
   const removidos = [];
 
   if (lista === "entidadesSel") {
-    dadosAtuais.entidadesSel.dados.forEach((dado) => {
-      if (
-        !dadosAnteriores.entidadesSel.dados.some((s) => s.sigla === dado.sigla)
-      )
+    dadosAtuais.entidadesSel.dados.forEach(dado => {
+      if (!dadosAnteriores.entidadesSel.dados.some(s => s.sigla === dado.sigla))
         removidos.push(dado.sigla);
     });
   }
@@ -262,5 +260,5 @@ export default {
   extrairAlteracoes,
   criarHistorico,
   converterDadosOriginais,
-  extrairRemovidos,
+  extrairRemovidos
 };

@@ -172,7 +172,7 @@ export default {
     ShowTI,
     SubstituirResponsavel,
     ShowPGD,
-    VerHistorico,
+    VerHistorico
   },
 
   data() {
@@ -184,14 +184,14 @@ export default {
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
         { text: "Despacho", value: "despacho" },
-        { text: "Objeto", value: "objeto" },
+        { text: "Objeto", value: "objeto" }
       ],
       distHeaders: [
         { text: "Estado", value: "estado", class: "subtitle-1" },
         { text: "Data", value: "data", class: "subtitle-1" },
         { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-        { text: "Despacho", value: "despacho", class: "subtitle-1" },
-      ],
+        { text: "Despacho", value: "despacho", class: "subtitle-1" }
+      ]
     };
   },
 
@@ -215,7 +215,7 @@ export default {
         "pesquisa-pedidos",
         JSON.stringify({
           ...pesquisa,
-          limpar: false,
+          limpar: false
         })
       );
 
@@ -236,8 +236,8 @@ export default {
 
     substituir() {
       this.substituirResponsavelDialog = true;
-    },
-  },
+    }
+  }
 };
 </script>
 

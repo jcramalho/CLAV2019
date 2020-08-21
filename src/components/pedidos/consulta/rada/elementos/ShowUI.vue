@@ -16,10 +16,15 @@
           :value_2="UI.dataFinal"
         />
 
-        <RADAEntry label="Entidades Produtoras" v-if="UI.produtor.entProdutoras.length > 0">
+        <RADAEntry
+          label="Entidades Produtoras"
+          v-if="UI.produtor.entProdutoras.length > 0"
+        >
           <template v-slot:valor>
             <ul>
-              <li v-for="(ent, i) in UI.produtor.entProdutoras" :key="i">{{ent}}</li>
+              <li v-for="(ent, i) in UI.produtor.entProdutoras" :key="i">
+                {{ ent }}
+              </li>
             </ul>
           </template>
         </RADAEntry>
@@ -27,14 +32,20 @@
         <RADAEntry v-else label="Tipologias Produtoras">
           <template v-slot:valor>
             <ul>
-              <li v-for="(ent, i) in UI.produtor.tipologiasProdutoras" :key="i">{{ent}}</li>
+              <li v-for="(ent, i) in UI.produtor.tipologiasProdutoras" :key="i">
+                {{ ent }}
+              </li>
             </ul>
           </template>
         </RADAEntry>
 
         <RADAEntry label="Série/Subsérie">
           <template v-slot:valor>
-            <v-data-table :headers="headers" :items="UI.classesAssociadas" hide-default-footer>
+            <v-data-table
+              :headers="headers"
+              :items="UI.classesAssociadas"
+              hide-default-footer
+            >
               <template v-slot:item.codigo="props">
                 <img
                   v-if="props.item.tipo == 'Série'"
@@ -46,20 +57,28 @@
                   style="width:23px; height:30px"
                   :src="svg_ssr"
                 />
-                {{
-                props.item.codigo + " - " + props.item.titulo
-                }}
+                {{ props.item.codigo + " - " + props.item.titulo }}
               </template>
             </v-data-table>
           </template>
         </RADAEntry>
 
         <RADAEntry v-if="!!UI.notas" label="Notas" :value="UI.notas" />
-        <RADAEntry v-if="!!UI.localizacao" label="Localização" :value="UI.localizacao" />
+        <RADAEntry
+          v-if="!!UI.localizacao"
+          label="Localização"
+          :value="UI.localizacao"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" outlined text @click="dialogState = false">Voltar</v-btn>
+        <v-btn
+          color="indigo darken-4"
+          outlined
+          text
+          @click="dialogState = false"
+          >Voltar</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

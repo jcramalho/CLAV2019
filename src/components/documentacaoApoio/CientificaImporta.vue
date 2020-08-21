@@ -5,7 +5,8 @@
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
           <v-toolbar-title class="card-heading"
-            >Importação de Dados na Documentação Técnica/Científica</v-toolbar-title
+            >Importação de Dados na Documentação
+            Técnica/Científica</v-toolbar-title
           >
         </v-app-bar>
         <!-- Content -->
@@ -21,7 +22,7 @@
               </v-radio-group>
             </v-col>
           </v-row>
-   
+
           <v-row>
             <v-col cols="2">
               <div class="info-label">Ficheiro</div>
@@ -40,17 +41,17 @@
           </v-row>
         </v-card-text>
         <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="indigo darken-4" dark @click="cancelar">
-                Cancelar
-            </v-btn>
-            <v-btn v-if="ready" color="indigo darken-4" dark @click="executar">
-                Importar
-            </v-btn>
-            <v-btn v-else text disabled>
-                Importar
-            </v-btn>
-            <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
+          <v-btn color="indigo darken-4" dark @click="cancelar">
+            Cancelar
+          </v-btn>
+          <v-btn v-if="ready" color="indigo darken-4" dark @click="executar">
+            Importar
+          </v-btn>
+          <v-btn v-else text disabled>
+            Importar
+          </v-btn>
+          <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
       <v-alert :value="text != ''" :type="alertType">
@@ -62,9 +63,7 @@
 
 <script>
 export default {
-  components: {
-    
-  },
+  components: {},
   data: nt => ({
     opcao: "adição",
     ficheiro: null,
@@ -72,18 +71,21 @@ export default {
     alertType: "success"
   }),
   computed: {
-      ready(){
-          if((this.opcao === "adição" || this.opcao === "substituição") && this.ficheiro && this.ficheiro.name){
-            return true;
-          }
-          else {
-              return false;
-          }    
+    ready() {
+      if (
+        (this.opcao === "adição" || this.opcao === "substituição") &&
+        this.ficheiro &&
+        this.ficheiro.name
+      ) {
+        return true;
+      } else {
+        return false;
       }
+    }
   },
   methods: {
     cancelar() {
-        this.$router.push("/");
+      this.$router.push("/");
     },
     async executar() {
       var formData = new FormData();
@@ -91,11 +93,7 @@ export default {
       if (this.ficheiro != null) {
         formData.append("file", this.ficheiro);
       }
-      this.$request(
-        "post",
-        "/documentacaoCientifica/importar",
-        formData
-      )
+      this.$request("post", "/documentacaoCientifica/importar", formData)
         .then(res => {
           this.text = res.data;
           this.alertType = "success";

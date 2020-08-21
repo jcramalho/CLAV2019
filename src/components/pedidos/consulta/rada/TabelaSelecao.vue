@@ -36,8 +36,16 @@
           :filter="filter"
         >
           <template v-slot:prepend="{ item }">
-            <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
-            <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
+            <img
+              v-if="item.tipo == 'Série'"
+              style="width:23px; height:30px"
+              :src="svg_sr"
+            />
+            <img
+              v-else-if="item.tipo == 'Subsérie'"
+              style="width:23px; height:30px"
+              :src="svg_ssr"
+            />
           </template>
           <template v-slot:label="{ item }">
             <b @click="showClasse(item)">{{ item.titulo }}</b>
@@ -74,7 +82,10 @@
           :items-per-page="5"
         >
           <template v-slot:item="props">
-            <tr style="text-align: center; background-color:#ffffff" @click="showUI(props.item)">
+            <tr
+              style="text-align: center; background-color:#ffffff"
+              @click="showUI(props.item)"
+            >
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
               <!-- <td>
@@ -100,9 +111,15 @@
                         style="width:23px; height:30px"
                         :src="svg_sr"
                       />
-                      <img v-else style="width:23px; height:30px" :src="svg_ssr" />
+                      <img
+                        v-else
+                        style="width:23px; height:30px"
+                        :src="svg_ssr"
+                      />
                     </v-list-item-icon>
-                    <v-list-item-content>{{classe.codigo + " - " + classe.titulo}}</v-list-item-content>
+                    <v-list-item-content>{{
+                      classe.codigo + " - " + classe.titulo
+                    }}</v-list-item-content>
                   </v-list-item>
                 </v-list>
                 <p v-else>Não tem séries/subséries associadas!</p>
@@ -114,7 +131,12 @@
     </v-row>
     <v-row v-else>
       <v-col cols="12" xs="12" sm="12">
-        <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
+        <v-alert
+          class="text-center"
+          :value="true"
+          color="amber accent-3"
+          icon="warning"
+        >
           Não foram adicionadas
           <b>Unidades de Instalação</b>.
         </v-alert>
@@ -136,7 +158,12 @@
       :treeview_object="treeview_object"
       :classes="TS.classes"
     />
-    <ShowUI v-if="show_ui" @fecharDialog="show_ui = false" :dialog="show_ui" :UI="UI" />
+    <ShowUI
+      v-if="show_ui"
+      @fecharDialog="show_ui = false"
+      :dialog="show_ui"
+      :UI="UI"
+    />
   </v-card>
 </template>
 

@@ -1,79 +1,140 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading"
-            >Editar tipologia de entidade ({{ tipologiaOriginal.sigla }} -
-            {{ tipologiaOriginal.designacao }})</v-toolbar-title
-          >
-        </v-app-bar>
-
-        <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nome da Tipologia</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="tipologia.designacao"
-                maxlength="50"
-                label="Nome da Tipologia"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <!-- Blocos expansivos -->
-          <v-expansion-panels>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Entidades
-                </div>
-
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelEnt
-                  :entidades="entSel"
-                  tipo="tipologias"
-                  @unselectEntidade="unselectEntidade($event)"
-                />
-
-                <hr style="border-top: 1px dashed #dee2f8;" />
-
-                <SelEnt
-                  :entidadesReady="entidadesReady"
-                  :entidades="entidades"
-                  @selectEntidade="selectEntidade($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
+  <v-container fluid class="pa-0 ma-0" style="max-width:100%">
+    <v-row>
+      <!-- HEADER -->
+      <v-col class="py-0 my-0">
+        <v-btn
+          @click="goBack"
+          rounded
+          class="white--text mb-6"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="default-button"
         >
-          {{ text }}
-          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
+          <unicon
+            name="arrow-back-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 37.261"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Voltar</p>
+        </v-btn>
+        <v-card flat style="border-radius: 10px !important;">
+          <p
+            class="content-title-1 pt-5"
+            style="color: #4da0d0 !important; text-align: center;  padding-bottom: 0.7rem !important;"
+          >
+            Alterar Tipologia de Entidade
+          </p>
+          <p
+            class="content-title-2 pb-5"
+            style="color: #4da0d0 !important; text-align: center;"
+          >
+            {{ tipologiaOriginal.sigla }} -
+            {{ tipologiaOriginal.designacao }}
+          </p>
+          <!-- Content -->
+          <v-card-text class="mt-0 px-4">
+            <v-row class="pa-4">
+              <v-col cols="12" lg="2">
+                <div class="info-label">Nome da Tipologia</div>
+              </v-col>
+              <v-col cols="12" lg="10">
+                <div
+                  class="info-content pt-3 pb-5 px-5"
+                  style="min-height: 50px;"
+                >
+                  <v-text-field
+                    class="mt-n3 px-3"
+                    text
+                    hide-details
+                    single-line
+                    clearable
+                    color="blue darken-3"
+                    maxlength="50"
+                    v-model="tipologia.designacao"
+                    label="Nome da Tipologia"
+                  ></v-text-field>
+                </div>
+              </v-col>
+            </v-row>
 
-      <!-- Painel Operações -->
-      <PainelOpsTip :t="tipologia" :original="tipologiaOriginal" :acao="acao" />
-    </v-col>
-  </v-row>
+            <!-- Blocos expansivos -->
+            <v-expansion-panels flat>
+              <v-expansion-panel popout class="mt-3 px-4 mb-4">
+                <v-expansion-panel-header
+                  style="outline: none;"
+                  :class="{
+                    'text-center': $vuetify.breakpoint.smAndDown,
+                    'text-left': $vuetify.breakpoint.mdAndUp
+                  }"
+                  class="pa-0"
+                >
+                  <div
+                    :class="{
+                      'px-3': $vuetify.breakpoint.mdAndUp
+                    }"
+                    class="separador"
+                  >
+                    <unicon
+                      class="mt-3"
+                      name="entidade-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20.711 21.105"
+                      fill="#ffffff"
+                    />
+                    <span class="ml-3 mr-1">Entidades</span>
+                  </div>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content id="expanded-content">
+                  <DesSelEnt
+                    :entidades="entSel"
+                    tipo="tipologias"
+                    @unselectEntidade="unselectEntidade($event)"
+                  />
+
+                  <hr style="border-top: 1px dashed #dee2f8;" />
+
+                  <SelEnt
+                    :entidadesReady="entidadesReady"
+                    :entidades="entidades"
+                    @selectEntidade="selectEntidade($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-card-text>
+          <v-snackbar
+            v-model="snackbar"
+            :timeout="8000"
+            color="error"
+            :top="true"
+          >
+            {{ text }}
+            <v-btn icon color="white" @click="fecharSnackbar">
+              <unicon
+                name="remove-icon"
+                width="15"
+                height="15"
+                viewBox="0 0 20.71 20.697"
+                fill="#ffffff"
+              />
+            </v-btn>
+          </v-snackbar>
+        </v-card>
+        <!-- Painel Operações -->
+        <PainelOpsTip
+          :t="tipologia"
+          :original="tipologiaOriginal"
+          :acao="acao"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -89,7 +150,7 @@ export default {
       designacao: "",
       sigla: "",
       codigo: "",
-      entidadesSel: [],
+      entidadesSel: []
     },
     tipologiaOriginal: {},
     acao: "Alteração",
@@ -100,15 +161,18 @@ export default {
     entidadesReady: false,
 
     snackbar: false,
-    text: "",
+    text: ""
   }),
   components: {
     DesSelEnt,
     SelEnt,
-    PainelOpsTip,
+    PainelOpsTip
   },
 
   methods: {
+    goBack() {
+      this.$router.push("/tipologias");
+    },
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
@@ -118,7 +182,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id,
+            id: item.id
           };
         });
 
@@ -131,7 +195,7 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      let index = this.entSel.findIndex((e) => e.id === entidade.id);
+      let index = this.entSel.findIndex(e => e.id === entidade.id);
       this.entSel.splice(index, 1);
       this.tipologia.entidadesSel = this.entSel;
     },
@@ -140,14 +204,14 @@ export default {
       this.entSel.push(entidade);
       this.tipologia.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      let index = this.entidades.findIndex((e) => e.id === entidade.id);
+      let index = this.entidades.findIndex(e => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    },
+    }
   },
 
   created: async function() {
@@ -158,11 +222,11 @@ export default {
 
     try {
       if (this.tipologia.entidadesSel.length !== 0) {
-        this.tipologia.entidadesSel.forEach((ent) => {
+        this.tipologia.entidadesSel.forEach(ent => {
           this.entSel.push(ent);
 
           // Remove dos selecionáveis
-          let index = this.entidades.findIndex((e) => e.id === ent.id);
+          let index = this.entidades.findIndex(e => e.id === ent.id);
           this.entidades.splice(index, 1);
         });
       }
@@ -170,35 +234,14 @@ export default {
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
-  },
+  }
 };
 </script>
 
 <style scoped>
-.separador {
-  color: white;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1a237e;
-  font-size: 14pt;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+#stepper-card {
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22);
 }
-
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
 .info-label {
   color: #1a237e !important;
   padding: 8px;
@@ -209,5 +252,30 @@ export default {
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
   border-radius: 6px;
   text-align: center;
+}
+.info-content {
+  padding: 5px;
+  width: 100%;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
+}
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  min-height: 50px;
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
+  font-size: 14pt;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+}
+#expanded-content {
+  margin-top: -1.1rem;
+  margin-right: -0.3rem;
+  border: 1px solid #dee2f8;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
 }
 </style>

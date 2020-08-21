@@ -21,7 +21,9 @@
         <v-expansion-panel v-for="(item, i) in notificacoes" :key="i">
           <v-expansion-panel-header>
             <div>
-              <p class="font-weight-medium mr-2">{{ item.acao }} de {{ item.tipo }} {{ item.objeto }}</p>
+              <p class="font-weight-medium mr-2">
+                {{ item.acao }} de {{ item.tipo }} {{ item.objeto }}
+              </p>
             </div>
             <template v-slot:actions>
               <v-tooltip v-if="item.pedido" bottom>
@@ -38,8 +40,8 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-icon 
-                    color="red" 
+                  <v-icon
+                    color="red"
                     @click.stop="removerNotificacao(item)"
                     v-on="on"
                   >
@@ -52,17 +54,13 @@
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <p class="pt-3">
-              - Movido para {{ item.novoEstado }}.
-            </p>
-            <p class="pt-3">
-              - Realizado por: {{ item.realizadoPor }}
-            </p>
+            <p class="pt-3">- Movido para {{ item.novoEstado }}.</p>
+            <p class="pt-3">- Realizado por: {{ item.realizadoPor }}</p>
             <p v-if="item.responsavel" class="pt-3">
               - Responsável: {{ item.responsavel }}.
             </p>
             <p class="pt-3">
-              - Entidade responsavel: {{ item.entidade.split('_')[1]}}
+              - Entidade responsavel: {{ item.entidade.split("_")[1] }}
             </p>
           </v-expansion-panel-content>
         </v-expansion-panel>

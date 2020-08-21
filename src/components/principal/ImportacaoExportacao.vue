@@ -38,28 +38,28 @@ const lhost = require("@/config/global").host;
 export default {
   props: ["level"],
   data() {
-    return {  
-      colecoes : [
+    return {
+      colecoes: [
         {
-          nome: "Colaborações", 
+          nome: "Colaborações",
           importar: "/colaboracoes/importar",
           exportar: "/colaboracoes"
         },
         {
-          nome: "Documentação de Apoio", 
+          nome: "Documentação de Apoio",
           importar: "/documentacaoApoio/importar/documentacao_apoio",
           exportar: "/documentacaoApoio"
         },
         {
-          nome: "Documentação Técnica/Científica", 
+          nome: "Documentação Técnica/Científica",
           importar: "/documentacaoApoio/importar/tecnico_cientifico",
           exportar: "/documentacaoCientifica"
         },
         {
-          nome: "Notícias", 
+          nome: "Notícias",
           importar: "/noticias/importar",
           exportar: "/noticias"
-        },
+        }
       ],
       min: NIVEL_MINIMO_ALTERAR
     };
@@ -67,7 +67,7 @@ export default {
   methods: {
     download(path, filename) {
       var element = document.createElement("a");
-      
+
       element.setAttribute("href", path);
       element.setAttribute("download", filename);
       element.style.display = "none";
@@ -90,9 +90,7 @@ export default {
       } else {
         this.$router.push(url);
       }
-    },
+    }
   }
-
-}
-
+};
 </script>

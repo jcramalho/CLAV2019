@@ -7,7 +7,7 @@
     class="mb-n5"
   >
     <v-container fluid class="pa-0 ma-auto">
-      <v-row style="min-height: 400px;">
+      <v-row style="min-height: 376px;">
         <v-card flat style="border-radius: 10px !important; width:100%;">
           <v-tabs-items v-model="active_tab">
             <v-tab-item v-for="item in tab_items" :key="item.id">
@@ -29,10 +29,12 @@
 
                     <v-row
                       v-if="item.botoes"
-                      class="align-center pa-3 mt-8"
+                      class="align-center mt-11"
                       style="text-align:center;"
                     >
                       <v-col
+                        cols="12"
+                        :md="item.md_botao_prop"
                         v-for="botao in item.botoes"
                         :key="botao.descricao"
                       >
@@ -88,6 +90,26 @@
                             <p class="ml-2">{{ botao.descricao }}</p>
                           </v-btn>
                         </form>
+                      </v-col>
+                    </v-row>
+                    <v-row
+                      v-if="item.linkAjuda"
+                      class="align-center mt-6"
+                      style="text-align:center;"
+                    >
+                      <v-col>
+                        <p style="display:inline;">
+                          {{ item.linkAjuda.texto }}
+                        </p>
+
+                        <a
+                          style="display:inline;"
+                          @click="
+                            HandleFunctionCall(item.linkAjuda.click_event)
+                          "
+                        >
+                          Recuperar
+                        </a>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -150,6 +172,7 @@ export default {
           tab: "Autenticação",
           texto1:
             "De modo a aceder à plataforma CLAV, por favor escolha um dos seguintes métodos de autenticação:",
+          md_botao_prop: 4,
           botoes: [
             {
               descricao: "Cartão de Cidadão",
@@ -183,12 +206,17 @@ export default {
               },
               click_event: "loginEmail"
             }
-          ]
+          ],
+          linkAjuda: {
+            texto: "Esqueceu a sua password?",
+            click_event: "recuperarPw"
+          }
         },
         {
           id: 2,
           tab: "Registo de chaves API",
           texto1: "É um fornecedor de serviços? Registe aqui a sua chave API",
+          md_botao_prop: 12,
           botoes: [
             {
               descricao: "Registar",
@@ -205,6 +233,7 @@ export default {
           tab: "Renovação de chaves API",
           texto1:
             "A sua chave API expirou? Peça aqui a renovação da sua chave API",
+          md_botao_prop: 12,
           botoes: [
             {
               descricao: "Renovar",

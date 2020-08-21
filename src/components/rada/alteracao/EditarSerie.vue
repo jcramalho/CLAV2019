@@ -16,8 +16,20 @@
 
               <v-card-text align="center">
                 <br />
-                <v-btn class="ma-3 pa-3" color="indigo darken-4" dark @click="toDelete = false">Voltar</v-btn>
-                <v-btn class="ma-3 pa-5" color="red darken-4" dark @click="eliminarClasse">Sim</v-btn>
+                <v-btn
+                  class="ma-3 pa-3"
+                  color="indigo darken-4"
+                  dark
+                  @click="toDelete = false"
+                  >Voltar</v-btn
+                >
+                <v-btn
+                  class="ma-3 pa-5"
+                  color="red darken-4"
+                  dark
+                  @click="eliminarClasse"
+                  >Sim</v-btn
+                >
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -54,15 +66,24 @@
 
           <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="serie" :UIs="UIs" :RE="RE" :classes="classes" />
+                <ZonaDescritiva
+                  :newSerie="serie"
+                  :UIs="UIs"
+                  :RE="RE"
+                  :classes="classes"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -78,8 +99,15 @@
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel class="ma-1" popout focusable v-if="!!!treeview_object.children[0]">
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+            <v-expansion-panel
+              class="ma-1"
+              popout
+              focusable
+              v-if="!!!treeview_object.children[0]"
+            >
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -96,16 +124,29 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+        <v-alert
+          width="100%"
+          :value="existe_erros"
+          outlined
+          type="error"
+          prominent
+          border="left"
+        >
           É necessário preencher os campos seguintes:
           <ul>
             <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="indigo darken-4" dark @click="atualizar(serie)">Atualizar</v-btn>
-        <v-btn @click="toDelete = true" dark color="red darken-4">Eliminar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false"
+          >Voltar</v-btn
+        >
+        <v-btn color="indigo darken-4" dark @click="atualizar(serie)"
+          >Atualizar</v-btn
+        >
+        <v-btn @click="toDelete = true" dark color="red darken-4"
+          >Eliminar</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

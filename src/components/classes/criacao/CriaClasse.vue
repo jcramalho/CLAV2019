@@ -7,7 +7,26 @@
   >
     <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
       <v-row>
-        <v-col class="pt-0">
+        <v-col class="py-0 my-0">
+          <v-btn
+            @click="$router.go(-1)"
+            rounded
+            class="white--text mb-6"
+            :class="{
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
+            }"
+            id="default-button"
+          >
+            <unicon
+              name="arrow-back-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.71 37.261"
+              fill="#ffffff"
+            />
+            <p class="ml-2">Voltar</p>
+          </v-btn>
           <!-- HEADER -->
           <v-card flat style="border-radius: 10px !important;">
             <p
@@ -23,10 +42,7 @@
                   <div class="info-label">Nível</div>
                 </v-col>
                 <v-col cols="12" lg="10">
-                  <div
-                    class="info-content info-content pa-4 pb-4"
-                    style="min-height: 50px;"
-                  >
+                  <div class="info-content pa-4 pb-4" style="min-height: 50px;">
                     <v-radio-group
                       v-model="classe.nivel"
                       row

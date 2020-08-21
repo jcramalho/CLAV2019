@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12">
         <h1>RADAAA</h1>
-        <p>{{p.objeto}}</p>
+        <p>{{ p.objeto }}</p>
       </v-col>
     </v-row>
     <v-row>

@@ -1,54 +1,61 @@
 <template>
-    <v-container>
-      <v-row>
-        <v-dialog v-model="dialog" width="95%">
-      <v-card>
-        <v-card-title class="headline">
-          Descrição: {{ p.codigo }} - {{ p.titulo }}
-        </v-card-title>
-        <v-card-text>
-          <v-row>
-            <!-- DESCRIÇÂO -->
-            <v-col cols="2">
+  <v-container>
+    <v-row>
+      <v-dialog v-model="dialog" width="95%">
+        <v-card>
+          <v-card-title class="headline">
+            Descrição: {{ p.codigo }} - {{ p.titulo }}
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <!-- DESCRIÇÂO -->
+              <v-col cols="2">
                 <div class="info-label">
-                    Descrição
+                  Descrição
                 </div>
-            </v-col>
-            <v-col>
-                <v-textarea v-model="p.descricao" label="Descrição" 
-                        dense solo clearable auto-grow rows="2"></v-textarea>
-            </v-col>
-          </v-row>
+              </v-col>
+              <v-col>
+                <v-textarea
+                  v-model="p.descricao"
+                  label="Descrição"
+                  dense
+                  solo
+                  clearable
+                  auto-grow
+                  rows="2"
+                ></v-textarea>
+              </v-col>
+            </v-row>
 
-          <hr style="border-top: 1px dashed #dee2f8;" />
+            <hr style="border-top: 1px dashed #dee2f8;" />
 
-          <BlocoDescritivoNotasAp :c="p" />
+            <BlocoDescritivoNotasAp :c="p" />
 
-          <hr style="border-top: 1px dashed #dee2f8;" />
+            <hr style="border-top: 1px dashed #dee2f8;" />
 
-          <BlocoDescritivoExemplosNotasAp :c="p" />
+            <BlocoDescritivoExemplosNotasAp :c="p" />
 
-          <hr style="border-top: 1px dashed #dee2f8;" />
+            <hr style="border-top: 1px dashed #dee2f8;" />
 
-          <BlocoDescritivoNotasEx :c="p" />
+            <BlocoDescritivoNotasEx :c="p" />
 
-          <hr style="border-top: 1px dashed #dee2f8;" />
+            <hr style="border-top: 1px dashed #dee2f8;" />
 
-          <TermosIndiceOps :c="p" v-if="!p.temSubclasses4Nivel" />
-
-        </v-card-text>
-        <v-card-actions>
+            <TermosIndiceOps :c="p" v-if="!p.temSubclasses4Nivel" />
+          </v-card-text>
+          <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="indigo darken-4" text dark rounded @click="selecionar">Guardar</v-btn>
-        </v-card-actions>
-      </v-card>
+            <v-btn color="indigo darken-4" text dark rounded @click="selecionar"
+              >Guardar</v-btn
+            >
+          </v-card-actions>
+        </v-card>
       </v-dialog>
-      </v-row>
-    </v-container>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-
 import BlocoDescritivoNotasAp from "@/components/classes/criacao/BlocoDescritivoNotasAp.vue";
 import BlocoDescritivoExemplosNotasAp from "@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue";
 import BlocoDescritivoNotasEx from "@/components/classes/criacao/BlocoDescritivoNotasEx.vue";
@@ -58,7 +65,7 @@ export default {
   props: ["p"],
 
   components: {
-      BlocoDescritivoNotasAp,
+    BlocoDescritivoNotasAp,
     BlocoDescritivoExemplosNotasAp,
     BlocoDescritivoNotasEx,
     TermosIndiceOps
@@ -67,22 +74,21 @@ export default {
   data: function() {
     return {
       dialog: false
-    }
+    };
   },
 
-  mounted: function(){
+  mounted: function() {
     this.dialog = true;
   },
 
   methods: {
     // Devolve a seleção para cima
-    selecionar: function(){
-        this.p.descriptionEdited = true;
-        this.$emit("editado", this.p);
+    selecionar: function() {
+      this.p.descriptionEdited = true;
+      this.$emit("editado", this.p);
     }
   }
-}
-
+};
 </script>
 <style>
 .info-label {

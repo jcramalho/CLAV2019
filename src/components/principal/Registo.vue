@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
     <v-card  class="ma-4 pa-2" >
       <v-toolbar color="indigo darken-4" dark>

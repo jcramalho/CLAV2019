@@ -24,7 +24,8 @@
             (listaResEspRestantes.findIndex(p => p == props.item.classe) !=
               -1 ||
               preSel.findIndex(p => p == props.item.classe) != -1) &&
-            (!props.item.dono && !props.item.participante)
+            !props.item.dono &&
+            !props.item.participante
               ? 'orange'
               : 'transparent'
         }"

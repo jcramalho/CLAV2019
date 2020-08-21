@@ -51,7 +51,7 @@
 
 <script>
 export default {
-  props: ["level", "drawer","socket"],
+  props: ["level", "drawer", "socket"],
   methods: {
     logoutUtilizador() {
       this.socket.disconnect();

@@ -122,8 +122,8 @@
 
                   <v-row
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- DESCRIÇÂO -->
@@ -223,8 +223,8 @@
 
                   <v-row
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- TRANSVERSALIDADE -->
@@ -326,8 +326,8 @@
 
                   <v-row
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- PRAZO -->
@@ -354,7 +354,10 @@
                       >
                         {{ classe.pca.valores + " ano" }}
                       </div>
-                      <div class="info-content pa-4" v-else-if="classe.pca.notas != ''">
+                      <div
+                        class="info-content pa-4"
+                        v-else-if="classe.pca.notas != ''"
+                      >
                         Não especificado
                       </div>
                     </v-col>
@@ -363,8 +366,8 @@
                   <v-row
                     v-if="classe.pca.notas != ''"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- NOTAS -->
@@ -388,8 +391,8 @@
                   <v-row
                     v-if="classe.pca.formaContagem"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- FORMA DE CONTAGEM -->
@@ -413,8 +416,8 @@
                   <v-row
                     v-if="classe.pca.subFormaContagem"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- SUBFORMA DE CONTAGEM -->
@@ -438,8 +441,8 @@
                   <v-row
                     v-if="classe.pca.justificacao"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- JUSTIFICAÇÂO -->
@@ -558,8 +561,8 @@
 
                   <v-row
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- VALOR -->
@@ -582,7 +585,9 @@
                         <span v-else-if="classe.df.valor == 'CP'">
                           Conservação Parcial
                         </span>
-                        <span v-else-if="classe.df.nota!=''">Não Especificado</span>
+                        <span v-else-if="classe.df.nota != ''"
+                          >Não Especificado</span
+                        >
                       </div>
                     </v-col>
                   </v-row>
@@ -590,9 +595,9 @@
                   <v-row
                     v-if="classe.df.nota"
                     ::class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
-                    }"
+                'mt-5': $vuetify.breakpoint.smAndDown,
+                'mt-4': $vuetify.breakpoint.mdAndUp
+              }"
                   >
                     <!-- NOTA ao DF -->
                     <v-col cols="12" lg="2">
@@ -613,8 +618,8 @@
                   <v-row
                     v-if="classe.df.justificacao"
                     :class="{
-                      'mt-7': $vuetify.breakpoint.smAndDown,
-                      'mt-6': $vuetify.breakpoint.mdAndUp
+                      'mt-5': $vuetify.breakpoint.smAndDown,
+                      'mt-4': $vuetify.breakpoint.mdAndUp
                     }"
                   >
                     <!-- JUSTIFICAÇÂO -->

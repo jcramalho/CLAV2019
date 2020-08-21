@@ -196,7 +196,7 @@
 const help = require("@/config/help").help;
 
 export default {
-  props: ["auto", "index","agregacoes"],
+  props: ["auto", "index", "agregacoes"],
 
   components: {},
 
@@ -212,11 +212,33 @@ export default {
     deleteDialog: false,
     deleteObj: null,
     cabecalho: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" , width: "20%"},
+      {
+        text: "Código",
+        align: "left",
+        sortable: false,
+        value: "codigo",
+        width: "20%"
+      },
       { text: "Título", align: "left", value: "titulo", width: "30%" },
-      { text: "Data de Contagem", align: "center", value: "dataContagem" , width: "15%"},
-      { text: "Natureza de Intervenção", align: "center", value: "ni", width: "20%" },
-      { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
+      {
+        text: "Data de Contagem",
+        align: "center",
+        value: "dataContagem",
+        width: "15%"
+      },
+      {
+        text: "Natureza de Intervenção",
+        align: "center",
+        value: "ni",
+        width: "20%"
+      },
+      {
+        text: "Ações",
+        align: "center",
+        sortable: false,
+        value: "action",
+        width: "5%"
+      }
     ],
     footer_props: {
       "items-per-page-text": "Mostrar"
@@ -226,9 +248,12 @@ export default {
     erroDialog: false
   }),
   created: function() {
-    if(this.auto.zonaControlo[this.index].destino =="C" || this.auto.zonaControlo[this.index].destino =="Conservação") {
-      this.ni = "Participante"
-      this.natureza = ["Participante"] 
+    if (
+      this.auto.zonaControlo[this.index].destino == "C" ||
+      this.auto.zonaControlo[this.index].destino == "Conservação"
+    ) {
+      this.ni = "Participante";
+      this.natureza = ["Participante"];
     }
   },
   methods: {
@@ -251,9 +276,7 @@ export default {
     addAgregacao: function() {
       const re = /\d{4}/;
       var currentTime = new Date();
-      var result = this.agregacoes.filter(
-        ag => ag.codigo == this.codigo
-      );
+      var result = this.agregacoes.filter(ag => ag.codigo == this.codigo);
       if (!this.codigo || !this.titulo || !this.dataContagem) {
         this.erro = help.AutoEliminacao.Erros.FaltaCamposAg;
         this.erroDialog = true;
@@ -266,7 +289,8 @@ export default {
       } else {
         var res =
           parseInt(this.auto.zonaControlo[this.index].prazoConservacao) +
-          parseInt(this.dataContagem) + 1;
+          parseInt(this.dataContagem) +
+          1;
         //var res2 = parseInt(this.dataContagem) - parseInt(this.auto.zonaControlo[this.index].dataFim)
         var res2 =
           parseInt(this.dataContagem) -

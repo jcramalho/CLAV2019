@@ -211,9 +211,7 @@ export default {
         }
         stats += "</ul>";
 
-        this.success = `Código do pedido: ${
-          response.data.codigo
-        }\nEstatísticas:\n${stats}`;
+        this.success = `Código do pedido: ${response.data.codigo}\nEstatísticas:\n${stats}`;
 
         this.successDialog = true;
       } catch (e) {

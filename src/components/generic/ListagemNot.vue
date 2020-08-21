@@ -6,13 +6,25 @@
       {{ item.ativa == true ? "Sim" : "Não" }}
     </td>
     <td @click.stop align="right">
-      <v-icon
+      <v-tooltip
+        top
+        color="info"
+        open-delay="100"
         v-for="(operacao, index) in item.operacoes"
-        @click="doOperation(item, operacao)"
-        :color="operacao.cor"
         :key="index"
-        >{{ operacao.icon }}</v-icon
       >
+        <template v-slot:activator="{ on }">
+          <v-icon
+            v-on="on"
+            v-for="(operacao, index) in item.operacoes"
+            @click="doOperation(item, operacao)"
+            :color="operacao.cor"
+            :key="index"
+            >{{ operacao.icon }}</v-icon
+          >
+        </template>
+        <span v-if="operacao.icon == 'edit'">Alterar</span>
+      </v-tooltip>
     </td>
   </tr>
 </template>

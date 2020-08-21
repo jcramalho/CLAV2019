@@ -38,9 +38,15 @@
               <div class="info-label">Fonte de Legitimação</div>
             </td>
             <td style="width:80%;">
-              {{auto.tipo+" - "}}
-              <a v-if="auto.tipo=='PGD'" :href="'/pgd/pgd_' + auto.refLegislacao">{{ auto.legislacao }}</a>
-              <a v-else :href="'/legislacao/' + auto.refLegislacao">{{ auto.legislacao }}</a>
+              {{ auto.tipo + " - " }}
+              <a
+                v-if="auto.tipo == 'PGD'"
+                :href="'/pgd/pgd_' + auto.refLegislacao"
+                >{{ auto.legislacao }}</a
+              >
+              <a v-else :href="'/legislacao/' + auto.refLegislacao">{{
+                auto.legislacao
+              }}</a>
             </td>
           </tr>
           <tr v-else>
@@ -48,7 +54,7 @@
               <div class="info-label">Referencial Classificativo</div>
             </td>
             <td style="width:80%;">
-              {{auto.referencialLabel}}
+              {{ auto.referencialLabel }}
             </td>
           </tr>
           <tr>
@@ -64,6 +70,7 @@
             </td>
           </tr>
         </table>
+
         <v-expansion-panels v-model="panel" multiple popout>
           <v-expansion-panel class="ma-1">
             <v-expansion-panel-header
@@ -81,9 +88,21 @@
                   <template v-slot:activator>
                     <v-list-item-content class="info-label">
                       <v-list-item-title class="mx-2">
-                        <div v-if="item.codigo && item.referencia">{{item.codigo + ': ' + item.referencia + ' - ' + item.titulo}}</div>
-                        <div v-else-if="item.codigo">{{item.codigo + ' - ' + item.titulo}}</div>
-                        <div v-else>{{item.referencia + ' - ' + item.titulo}}</div>
+                        <div v-if="item.codigo && item.referencia">
+                          {{
+                            item.codigo +
+                              ": " +
+                              item.referencia +
+                              " - " +
+                              item.titulo
+                          }}
+                        </div>
+                        <div v-else-if="item.codigo">
+                          {{ item.codigo + " - " + item.titulo }}
+                        </div>
+                        <div v-else>
+                          {{ item.referencia + " - " + item.titulo }}
+                        </div>
                       </v-list-item-title>
                     </v-list-item-content>
                   </template>
@@ -95,13 +114,12 @@
                             <div class="info-label">Código da classe</div>
                           </td>
                           <td style="width:80%;">
-                            <div v-if="auto.tipo=='TS/LC'">
-                              <a
-                                :href="'/classes/consultar/c' + item.codigo"
-                                >{{ item.codigo }}</a
-                              >
+                            <div v-if="auto.tipo == 'TS/LC'">
+                              <a :href="'/classes/consultar/c' + item.codigo">{{
+                                item.codigo
+                              }}</a>
                             </div>
-                            <div v-else>{{item.codigo}}</div>
+                            <div v-else>{{ item.codigo }}</div>
                           </td>
                         </tr>
                         <tr v-if="item.referencia">
@@ -109,7 +127,7 @@
                             <div class="info-label">Referência</div>
                           </td>
                           <td style="width:80%;">
-                            <div>{{item.referencia}}</div>
+                            <div>{{ item.referencia }}</div>
                           </td>
                         </tr>
                         <tr v-if="item.titulo">
@@ -122,10 +140,14 @@
                         </tr>
                         <tr v-if="item.pca && item.pca != 'NE'">
                           <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa</div>
+                            <div class="info-label">
+                              Prazo de Conservação Administrativa
+                            </div>
                           </td>
                           <td style="width:80%;">
-                            <span v-if="item.pca=='1'">{{ item.pca }} Ano</span>
+                            <span v-if="item.pca == '1'"
+                              >{{ item.pca }} Ano</span
+                            >
                             <span v-else>{{ item.pca }} Anos</span>
                           </td>
                           <td style="width:80%;">{{ item.pca }} Anos</td>
@@ -155,7 +177,7 @@
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
-                        <tr v-if="item.dono && item.dono.length>0 ">
+                        <tr v-if="item.dono && item.dono.length > 0">
                           <td style="width:20%;">
                             <div class="info-label">Dono do PN</div>
                           </td>
@@ -181,7 +203,9 @@
                           </td>
                           <td style="width:80%;">{{ item.dataFim }}</td>
                         </tr>
-                        <tr v-if="item.agregacoes && item.agregacoes.length>0">
+                        <tr
+                          v-if="item.agregacoes && item.agregacoes.length > 0"
+                        >
                           <td style="width:20%;">
                             <div class="info-label">
                               N.º de agregações
@@ -216,7 +240,11 @@
                           <td style="width:80%;">{{ item.UIoutros }}</td>
                         </tr>
                       </table>
-                      <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length>0">
+
+                      <div
+                        class="ma-1"
+                        v-if="item.agregacoes && item.agregacoes.length > 0"
+                      >
                         <v-row justify="space-between" class="info-label">
                           <v-col>Lista de Agregações</v-col>
                           <v-col>

@@ -29,7 +29,7 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
-        <ImportacaoExportacao :level="level"/>
+        <ImportacaoExportacao :level="level" />
       </v-expansion-panels>
     </v-card-text>
   </v-card>
@@ -41,7 +41,7 @@ import ImportacaoExportacao from "@/components/principal/ImportacaoExportacao";
 
 export default {
   props: ["level"],
-  components:{
+  components: {
     ImportacaoExportacao
   },
   methods: {

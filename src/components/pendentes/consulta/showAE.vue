@@ -1,7 +1,7 @@
 <template>
-<v-card class="my-2 panel panel-default panel-custom">
+  <v-card class="my-2 panel panel-default panel-custom">
     <v-card-title class="pa-2 indigo darken-4 title white--text" dark>
-      {{ p.acao }} de {{p.tipo}}
+      {{ p.acao }} de {{ p.tipo }}
     </v-card-title>
     <v-card-text class="panel-body">
       <div class="form-group">
@@ -30,19 +30,22 @@
             <td style="width:20%;">
               <div class="info-label">Fundo</div>
             </td>
-            <td style="width:80%;"><div v-for="(f,i) in p.objeto.fundo" :key="i">{{f}}</div></td>
+            <td style="width:80%;">
+              <div v-for="(f, i) in p.objeto.fundo" :key="i">{{ f }}</div>
+            </td>
           </tr>
         </table>
 
         <v-expansion-panels popout>
           <v-expansion-panel class="ma-1">
-            <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
+            <v-expansion-panel-header
+              class="pa-2 indigo darken-4 title white--text"
               >Classes</v-expansion-panel-header
             >
             <v-expansion-panel-content>
               <v-list>
                 <v-list-group
-                  v-for="(item,index) in p.objeto.zonaControlo"
+                  v-for="(item, index) in p.objeto.zonaControlo"
                   :key="index"
                   color="grey darken-1"
                   no-action
@@ -54,9 +57,9 @@
                         v-text="
                           item.codigo +
                             ', ' +
-                          item.referencia +
+                            item.referencia +
                             ' - ' +
-                          item.titulo                           
+                            item.titulo
                         "
                       ></v-list-item-title>
                       <v-list-item-title
@@ -98,10 +101,14 @@
                         </tr>
                         <tr v-if="item.prazoConservacao">
                           <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa</div>
+                            <div class="info-label">
+                              Prazo de Conservação Administrativa
+                            </div>
                           </td>
                           <td style="width:80%;">
-                            {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
+                            {{ item.prazoConservacao }}
+                            <span v-if="item.prazoConservacao == '1'">Ano</span
+                            ><span v-else>Anos</span>
                           </td>
                         </tr>
                         <tr v-if="item.destino">
@@ -111,14 +118,23 @@
                           <td v-if="item.destino === 'E'" style="width:80%;">
                             Eliminação
                           </td>
-                          <td v-else-if="item.destino === 'C'" style="width:80%;">
+                          <td
+                            v-else-if="item.destino === 'C'"
+                            style="width:80%;"
+                          >
                             Conservação
                           </td>
                           <td v-else style="width:80%;">
                             {{ item.destino }}
                           </td>
                         </tr>
-                        <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
+                        <tr
+                          v-if="
+                            item.ni &&
+                              (item.destino === 'C' ||
+                                item.destino === 'Conservação')
+                          "
+                        >
                           <td style="width:20%;">
                             <div class="info-label">
                               Natureza de intervenção
@@ -126,11 +142,22 @@
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
-                        <tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
+                        <tr
+                          v-if="
+                            item.dono &&
+                              item.dono.length > 0 &&
+                              (item.destino === 'C' ||
+                                item.destino === 'Conservação')
+                          "
+                        >
                           <td style="width:20%;">
                             <div class="info-label">Donos do PN</div>
                           </td>
-                          <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
+                          <td style="width:80%;">
+                            <li v-for="(d, i) in item.dono" :key="i">
+                              {{ d }}
+                            </li>
+                          </td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
@@ -152,7 +179,9 @@
                               N.º de agregações
                             </div>
                           </td>
-                          <td style="width:80%;">{{ item.agregacoes.length }}</td>
+                          <td style="width:80%;">
+                            {{ item.agregacoes.length }}
+                          </td>
                         </tr>
                         <tr v-if="item.uiPapel">
                           <td style="width:20%;">
@@ -179,6 +208,7 @@
                           <td style="width:80%;">{{ item.uiOutros }}</td>
                         </tr>
                       </table>
+
                       <div class="ma-1">
                         <v-row justify="space-between" class="info-label">
                           <v-col>Lista de Agregações</v-col>

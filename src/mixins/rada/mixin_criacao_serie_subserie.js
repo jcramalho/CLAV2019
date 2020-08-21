@@ -1,3 +1,4 @@
+/* eslint-disable */
 const labels = require("@/config/labels").criterios;
 
 export default {
@@ -195,8 +196,16 @@ export default {
             dataInicial: null,
             dataFinal: null,
             produtor: {
-              tipologiasProdutoras: !!clone_nova_classe.tipologiasProdutoras && clone_nova_classe.tipologiasProdutoras.length == 1 ? [...clone_nova_classe.tipologiasProdutoras] : [],
-              entProdutoras: !!clone_nova_classe.entProdutoras && clone_nova_classe.entProdutoras.length == 1 ? [...clone_nova_classe.entProdutoras] : []
+              tipologiasProdutoras:
+                !!clone_nova_classe.tipologiasProdutoras &&
+                  clone_nova_classe.tipologiasProdutoras.length == 1
+                  ? [...clone_nova_classe.tipologiasProdutoras]
+                  : [],
+              entProdutoras:
+                !!clone_nova_classe.entProdutoras &&
+                  clone_nova_classe.entProdutoras.length == 1
+                  ? [...clone_nova_classe.entProdutoras]
+                  : []
             },
             classesAssociadas: [
               {
@@ -408,7 +417,8 @@ export default {
           );
 
           this.remove_criterio_densidade_informacional(
-            relacoes_sintese[i].serieRelacionada.codigo, classe
+            relacoes_sintese[i].serieRelacionada.codigo,
+            classe
           );
         }
       }

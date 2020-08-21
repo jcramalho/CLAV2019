@@ -35,24 +35,24 @@
     <v-layout row wrap>
       <v-flex md6 xs12>
         <v-card light>
-          <DoughnutPNS/>
+          <DoughnutPNS />
         </v-card>
       </v-flex>
       <v-flex md6 xs12>
         <v-card light>
-          <DoughnutParticipantes/>
+          <DoughnutParticipantes />
         </v-card>
       </v-flex>
     </v-layout>
     <v-layout row wrap>
       <v-flex md6 xs12>
         <v-card light>
-          <DoughnutDF/>
+          <DoughnutDF />
         </v-card>
       </v-flex>
       <v-flex md6 xs12>
         <v-card light>
-          <DoughnutCriterio :crit="criterios"/>
+          <DoughnutCriterio :crit="criterios" />
         </v-card>
       </v-flex>
     </v-layout>

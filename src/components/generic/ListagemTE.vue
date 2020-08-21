@@ -3,14 +3,26 @@
     <td class="subheading">{{ item.id }}</td>
     <td class="subheading">{{ item.designacao }}</td>
     <td v-if="item.operacoes" @click.stop align="right">
-      <v-icon
+      <v-tooltip
+        top
+        color="info"
+        open-delay="100"
         v-for="(operacao, index) in item.operacoes"
-        @click="doOperation(item, operacao)"
-        color="indigo darken-2"
         :key="index"
-        class="mr-2"
-        >{{ operacao.icon }}</v-icon
       >
+        <template v-slot:activator="{ on }">
+          <v-icon
+            v-for="(operacao, index) in item.operacoes"
+            :key="index"
+            @click="doOperation(item, operacao)"
+            v-on="on"
+            color="indigo darken-2"
+            class="mr-2"
+            >{{ operacao.icon }}</v-icon
+          >
+        </template>
+        <span v-if="operacao.icon == 'edit'">Alterar</span>
+      </v-tooltip>
     </td>
   </tr>
 </template>
@@ -26,7 +38,7 @@ export default {
 
     onRowClick(item) {
       this.$emit("rowClicked", item);
-    },
-  },
+    }
+  }
 };
 </script>

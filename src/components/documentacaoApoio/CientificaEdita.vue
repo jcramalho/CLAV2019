@@ -259,7 +259,7 @@ export default {
   props: ["doc"],
   data: nt => ({
     opcoes: [
-      { key: "Sim", value: true }, 
+      { key: "Sim", value: true },
       { key: "Não", value: false }
     ],
     tipos: [],

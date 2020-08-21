@@ -92,29 +92,29 @@ export default {
     return {
       entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ],
       footerPropsEntidades: {
         "items-per-page-text": "Entidades por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todas"
       },
       processosHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" }
       ],
       footerPropsProcessos: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
-      },
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
 
   computed: {
     dados() {
       return this.p.objeto.dados;
-    },
+    }
   },
 
   methods: {
@@ -124,8 +124,8 @@ export default {
 
     transformaKeys(key) {
       return mapKeys(key);
-    },
-  },
+    }
+  }
 };
 </script>
 

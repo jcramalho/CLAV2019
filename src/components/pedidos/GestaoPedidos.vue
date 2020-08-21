@@ -89,8 +89,8 @@ export default {
       pesquisaPedidos: {
         painel: undefined,
         pesquisa: "",
-        pagina: 1,
-      },
+        pagina: 1
+      }
     };
   },
 

@@ -15,6 +15,7 @@
             'px-8': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown
           }"
+          style="width: 100%;"
           id="default-button"
         >
           <unicon
@@ -37,6 +38,7 @@
             'px-8': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown
           }"
+          style="width: 100%;"
           id="default-button"
         >
           <unicon
@@ -63,8 +65,8 @@
             'px-8': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown
           }"
-          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-outline: none !important;"
+          style="width: 100%;"
+          id="botao-verde"
         >
           <unicon
             name="adicionar-icon"
@@ -74,12 +76,13 @@ outline: none !important;"
             fill="#ffffff"
           />
           <p class="ml-2">Submeter</p>
-          <DialogClasseCriada 
-            v-if="classeCriada" 
+          <DialogClasseCriada
+            v-if="classeCriada"
             :c="c"
             :codigoPedido="codigoPedido"
             acao="criação"
-            @sair="classeCriada = false"/>
+            @sair="classeCriada = false"
+          />
         </v-btn>
       </v-col>
 
@@ -94,8 +97,8 @@ outline: none !important;"
             'px-8': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown
           }"
-          style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-outline: none !important;"
+          style="width: 100%;"
+          id="botao-vermelho"
         >
           <unicon
             name="eliminar-icon"
@@ -247,7 +250,8 @@ import DialogClasseCriada from "@/components/classes/criacao/DialogClasseCriada.
 export default {
   props: ["c", "pendenteId"],
   components: {
-    ValidaClasseInfoBox, DialogClasseCriada
+    ValidaClasseInfoBox,
+    DialogClasseCriada
   },
   data() {
     return {
@@ -738,7 +742,9 @@ export default {
           }
         }
       } catch (error) {
-        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
+        console.log(
+          "Erro na criação do pedido: " + JSON.stringify(error.response.data)
+        );
       }
     },
 

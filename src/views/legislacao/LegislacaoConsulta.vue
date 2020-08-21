@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Loading v-if="!legislacaoReady" :message="'legislação'" />
     <ConsultaLeg
       v-else
@@ -7,7 +12,7 @@
       v-bind:titulo="titulo"
       v-bind:listaReg="regulaProc"
     />
-  </div>
+  </v-content>
 </template>
 
 <script>

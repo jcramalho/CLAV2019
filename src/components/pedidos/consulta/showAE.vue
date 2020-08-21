@@ -33,7 +33,9 @@
             <td style="width:20%;">
               <div class="info-label">Fundo</div>
             </td>
-            <td style="width:80%;"><div v-for="(f,i) in p.objeto.dados.fundo" :key="i">{{f}}</div></td>
+            <td style="width:80%;">
+              <div v-for="(f, i) in p.objeto.dados.fundo" :key="i">{{ f }}</div>
+            </td>
           </tr>
         </table>
 
@@ -46,7 +48,7 @@
             <v-expansion-panel-content>
               <v-list>
                 <v-list-group
-                  v-for="(item,index) in p.objeto.dados.zonaControlo"
+                  v-for="(item, index) in p.objeto.dados.zonaControlo"
                   :key="index"
                   color="grey darken-1"
                   no-action
@@ -58,9 +60,9 @@
                         v-text="
                           item.codigo +
                             ', ' +
-                          item.referencia +
+                            item.referencia +
                             ' - ' +
-                          item.titulo                           
+                            item.titulo
                         "
                       ></v-list-item-title>
                       <v-list-item-title
@@ -102,10 +104,14 @@
                         </tr>
                         <tr v-if="item.prazoConservacao">
                           <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa</div>
+                            <div class="info-label">
+                              Prazo de Conservação Administrativa
+                            </div>
                           </td>
                           <td style="width:80%;">
-                            {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
+                            {{ item.prazoConservacao }}
+                            <span v-if="item.prazoConservacao == '1'">Ano</span
+                            ><span v-else>Anos</span>
                           </td>
                         </tr>
                         <tr v-if="item.notasPCA">
@@ -141,16 +147,28 @@
                           </td>
                           <td style="width:80%;">{{ item.notaDF }}</td>
                         </tr>
-                        
-                        <tr v-if="item.destino=='CP' && item.justificaDF">
+
+                        <tr v-if="item.destino == 'CP' && item.justificaDF">
                           <td style="width:20%;">
                             <div class="info-label">
                               Justificação do DF
                             </div>
                           </td>
-                          <td style="width:80%;"><span v-for="(just,index) in item.justificaDF" :key="index">{{ just }}</span></td>
+                          <td style="width:80%;">
+                            <span
+                              v-for="(just, index) in item.justificaDF"
+                              :key="index"
+                              >{{ just }}</span
+                            >
+                          </td>
                         </tr>
-                        <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
+                        <tr
+                          v-if="
+                            item.ni &&
+                              (item.destino === 'C' ||
+                                item.destino === 'Conservação')
+                          "
+                        >
                           <td style="width:20%;">
                             <div class="info-label">
                               Natureza de intervenção
@@ -158,7 +176,14 @@
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
                         </tr>
-                        <tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
+                        <tr
+                          v-if="
+                            item.dono &&
+                              item.dono.length > 0 &&
+                              (item.destino === 'C' ||
+                                item.destino === 'Conservação')
+                          "
+                        >
                           <td style="width:20%;">
                             <div class="info-label">Donos do PN</div>
                           </td>

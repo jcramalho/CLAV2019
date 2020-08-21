@@ -8,7 +8,7 @@
     min-width="290px"
   >
     <template v-slot:activator="{ on }">
-      <slot :item="{label, dataValor, on}">
+      <slot :item="{ label, dataValor, on }">
         <v-text-field
           filled
           v-model="dataValor"
@@ -24,6 +24,7 @@
       v-model="dataValor"
       no-title
       scrollable
+      width="390"
       color="blue darken-3"
       show-current
       first-day-of-week="1"
@@ -52,9 +53,10 @@ export default {
   /* 
   No caso dos RADA, no preenchimento de uma subsérie o utilizador pode preencher ou injetar as datas da série pai,
   caso injete a props "d" altera e este watch serve para verificar essa mudança.
-  */ 
+  */
+
   watch: {
-    d(novoValor){
+    d(novoValor) {
       this.dataValor = novoValor;
     }
   },

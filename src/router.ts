@@ -192,7 +192,8 @@ export default new Router({
     {
       path: "/documentacaoApoio/importar/tecnico_cientifico",
       name: "importarTecnicoCientifico",
-      component: () => import("./views/documentacaoApoio/CientificaImporta.vue"),
+      component: () =>
+        import("./views/documentacaoApoio/CientificaImporta.vue"),
       meta: { levels: [4, 5, 6, 7] }
     },
     {
@@ -210,6 +211,12 @@ export default new Router({
     // Routes das entidades
     {
       path: "/entidades",
+      name: "entInfo",
+      component: () => import("./views/EntidadeInfo.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/entidades/consultar",
       name: "entidades",
       component: () => import("./views/entidades/Entidades.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
@@ -235,6 +242,12 @@ export default new Router({
     // Routes da legislação
     {
       path: "/legislacao",
+      name: "legInfo",
+      component: () => import("./views/LegislacaoInfo.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/legislacao/consultar",
       name: "legislacao",
       component: () => import("./views/legislacao/Legislacao.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
@@ -337,7 +350,7 @@ export default new Router({
       path: "/rada",
       name: "Rada",
       component: () => import("./views/rada/Radas.vue"),
-      meta: { levels: [4, 5, 6, 7] },
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/rada/criar",
@@ -348,17 +361,15 @@ export default new Router({
     {
       path: "/rada/:id",
       name: "consultaRADA",
-      component: () =>
-        import("./views/rada/ConsultaRADA.vue"),
-      meta: { levels: [4, 5, 6, 7] },
+      component: () => import("./views/rada/ConsultaRADA.vue"),
+      meta: { levels: [4, 5, 6, 7] }
     },
     // Routes das PGD
     {
       path: "/pgd/:idPGD",
       name: "consultaPDG",
-      component: () =>
-        import("./views/pgd/PGDConsultar.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+      component: () => import("./views/pgd/PGDConsultar.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     // Routes dos Autos de Eliminação
     {
@@ -391,6 +402,12 @@ export default new Router({
     // Routes das tipologias
     {
       path: "/tipologias",
+      name: "tipEntInfo",
+      component: () => import("./views/TipEntidadeInfo.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/tipologias/consultar",
       name: "tipologias",
       component: () => import("./views/tipologias/Tipologias.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
@@ -449,13 +466,13 @@ export default new Router({
       path: "/colaboracoes",
       name: "colaboracoes",
       component: () => import("./views/colaboracoes/Colaboracoes.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
       path: "/colaboracoes/criar",
       name: "criaColaboracao",
       component: () => import("./views/colaboracoes/ColaboracoesCria.vue"),
-      meta: { levels: [4, 5, 6, 7] },
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/colaboracoes/importar",
@@ -467,13 +484,13 @@ export default new Router({
       path: "/colaboracoes/editar/:idColaboracao",
       name: "editaColaboracao",
       component: () => import("./views/colaboracoes/ColaboracoesEdita.vue"),
-      meta: { levels: [4, 5, 6, 7] },
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/colaboracoes/:idColaboracao",
       name: "consultaColaboracao",
       component: () => import("./views/colaboracoes/ColaboracoesConsulta.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     // Routes dos pedidos
     {
@@ -687,7 +704,7 @@ export default new Router({
       path: "/gestao/alterarParametros",
       name: "alterarParametros",
       component: () => import("./views/gestao/AlterarParametros.vue"),
-      meta: { levels: [7] },
+      meta: { levels: [7] }
     },
     {
       path: "/gestao/exportarColecoes",
@@ -699,7 +716,7 @@ export default new Router({
       path: "/gestao/apagarColecoes",
       name: "apagarColecoes",
       component: () => import("./views/gestao/ApagarColecoes.vue"),
-      meta: { levels: [7] },
+      meta: { levels: [7] }
     },
     // Routes de Invariantes
     {

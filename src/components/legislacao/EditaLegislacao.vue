@@ -1,140 +1,241 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading"
-            >Editar Diploma ({{ legislacaoOriginal.tipo }} -
-            {{ legislacaoOriginal.numero }})</v-toolbar-title
-          >
-        </v-app-bar>
-
-        <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Sumário</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="legislacao.sumario"
-                label="Sumário"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Link</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="legislacao.link"
-                filled
-                clearable
-                color="indigo"
-                single-line
-                label="Link"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Data de revogação
-              </div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="legislacao.dataRevogacao"
-                :label="'Data: AAAA-MM-DD'"
-                @dataSelecionada="legislacao.dataRevogacao = $event"
-              />
-            </v-col>
-          </v-row>
-
-          <!-- Blocos expansivos -->
-          <v-expansion-panels>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Entidade responsável pela publicação
-                </div>
-
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelEnt
-                  :entidades="entSel"
-                  tipo="legislacao"
-                  @unselectEntidade="unselectEntidade($event)"
-                />
-
-                <hr style="border-top: 1px dashed #dee2f8;" />
-
-                <SelEnt
-                  :entidadesReady="entidadesReady"
-                  :entidades="entidades"
-                  @selectEntidade="selectEntidade($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-
-            <!-- Segundo bloco expansivo -->
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Processos de negócio que regula ou enquadra
-                </div>
-
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelProc
-                  :processos="procSel"
-                  @unselectProcesso="unselectProcesso($event)"
-                />
-
-                <hr style="border-top: 1px dashed #dee2f8;" />
-
-                <SelProc
-                  :processosReady="processosReady"
-                  :processos="processos"
-                  @selectProcesso="selectProcesso($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
+  <v-container fluid class="pa-0 ma-0" style="max-width:100%">
+    <v-row>
+      <!-- HEADER -->
+      <v-col class="py-0 my-0">
+        <v-btn
+          @click="goBack"
+          rounded
+          class="white--text mb-6"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="default-button"
         >
-          {{ text }}
-          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
+          <unicon
+            name="arrow-back-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 37.261"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Voltar</p>
+        </v-btn>
+        <v-card flat style="border-radius: 10px !important;">
+          <p
+            class="content-title-1 pt-5"
+            style="color: #4da0d0 !important; text-align: center;  padding-bottom: 0.7rem !important;"
+          >
+            Editar Diploma
+          </p>
+          <p
+            class="content-title-2 pb-5"
+            style="color: #4da0d0 !important; text-align: center;"
+          >
+            {{ legislacaoOriginal.tipo }} -
+            {{ legislacaoOriginal.numero }}
+          </p>
+          <!-- Content -->
+          <v-card-text class="mt-0 px-4">
+            <v-row class="pa-4">
+              <v-col cols="12" lg="2">
+                <div class="info-label">Sumário</div>
+              </v-col>
+              <v-col cols="12" lg="10">
+                <div
+                  class="info-content pt-3 pb-5 px-5"
+                  style="min-height: 50px;"
+                >
+                  <v-text-field
+                    class="mt-n3 px-3"
+                    text
+                    hide-details
+                    single-line
+                    clearable
+                    color="blue darken-3"
+                    v-model="legislacao.sumario"
+                    label="Sumário"
+                  ></v-text-field>
+                </div>
+              </v-col>
+            </v-row>
 
-      <!-- Painel Operações -->
-      <PainelOpsLeg
-        :l="legislacao"
-        :original="legislacaoOriginal"
-        :acao="'Alteração'"
-      />
-    </v-col>
-  </v-row>
+            <v-row
+              class="px-4"
+              :class="{
+                'mt-5': $vuetify.breakpoint.smAndDown,
+                'mt-4': $vuetify.breakpoint.mdAndUp
+              }"
+            >
+              <v-col cols="12" lg="2">
+                <div class="info-label">Link</div>
+              </v-col>
+              <v-col cols="12" lg="10">
+                <div
+                  class="info-content pt-3 pb-5 px-5"
+                  style="min-height: 50px;"
+                >
+                  <v-text-field
+                    class="mt-n3 px-3"
+                    text
+                    hide-details
+                    single-line
+                    clearable
+                    color="blue darken-3"
+                    v-model="legislacao.link"
+                    label="Link"
+                  ></v-text-field>
+                </div>
+              </v-col>
+            </v-row>
+
+            <v-row
+              class="px-4"
+              :class="{
+                'mt-5': $vuetify.breakpoint.smAndDown,
+                'mt-4': $vuetify.breakpoint.mdAndUp
+              }"
+            >
+              <v-col cols="12" lg="2">
+                <div class="info-label">
+                  Data de revogação
+                </div>
+              </v-col>
+              <v-col cols="12" lg="10">
+                <div
+                  class="info-content px-8 pb-2 mt-n1"
+                  style="min-height: 50px; padding-top: 0 !important;"
+                >
+                  <SelecionarData
+                    :d="legislacao.dataRevogacao"
+                    :label="'Data: AAAA-MM-DD'"
+                    @dataSelecionada="legislacao.dataRevogacao = $event"
+                  />
+                </div>
+              </v-col>
+            </v-row>
+
+            <!-- Blocos expansivos -->
+            <v-expansion-panels flat class="mb-4">
+              <v-expansion-panel popout class="mt-6">
+                <v-expansion-panel-header
+                  style="outline: none;"
+                  :class="{
+                    'text-center': $vuetify.breakpoint.smAndDown,
+                    'text-left': $vuetify.breakpoint.mdAndUp
+                  }"
+                  class="pa-0"
+                >
+                  <div
+                    :class="{
+                      'px-3': $vuetify.breakpoint.mdAndUp
+                    }"
+                    class="separador"
+                  >
+                    <unicon
+                      class="mt-3"
+                      name="entidade-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20.711 21.105"
+                      fill="#ffffff"
+                    />
+                    <span class="ml-3 mr-1">
+                      Entidade responsável pela publicação</span
+                    >
+                  </div>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content id="expanded-content">
+                  <DesSelEnt
+                    :entidades="entSel"
+                    tipo="legislacao"
+                    @unselectEntidade="unselectEntidade($event)"
+                  />
+
+                  <hr style="border-top: 1px dashed #dee2f8;" />
+
+                  <SelEnt
+                    :entidadesReady="entidadesReady"
+                    :entidades="entidades"
+                    @selectEntidade="selectEntidade($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+
+              <!-- Segundo bloco expansivo -->
+              <v-expansion-panel popout class="mt-6">
+                <v-expansion-panel-header
+                  style="outline: none;"
+                  :class="{
+                    'text-center': $vuetify.breakpoint.smAndDown,
+                    'text-left': $vuetify.breakpoint.mdAndUp
+                  }"
+                  class="pa-0"
+                >
+                  <div
+                    :class="{
+                      'px-3': $vuetify.breakpoint.mdAndUp
+                    }"
+                    class="separador"
+                  >
+                    <unicon
+                      class="mt-3"
+                      name="legislacao-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20.71 23.668"
+                      fill="#ffffff"
+                    />
+                    <span class="ml-3 mr-1"
+                      >Processos de negócio que regula ou enquadra</span
+                    >
+                  </div>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content id="expanded-content">
+                  <DesSelProc
+                    :processos="procSel"
+                    @unselectProcesso="unselectProcesso($event)"
+                  />
+
+                  <hr style="border-top: 1px dashed #dee2f8;" />
+
+                  <SelProc
+                    :processosReady="processosReady"
+                    :processos="processos"
+                    @selectProcesso="selectProcesso($event)"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-card-text>
+          <v-snackbar
+            v-model="snackbar"
+            :timeout="8000"
+            color="error"
+            :top="true"
+          >
+            {{ text }}
+            <v-btn icon color="white" @click="fecharSnackbar">
+              <unicon
+                name="remove-icon"
+                width="15"
+                height="15"
+                viewBox="0 0 20.71 20.697"
+                fill="#ffffff"
+              />
+            </v-btn>
+          </v-snackbar>
+        </v-card>
+        <!-- Painel Operações -->
+        <PainelOpsLeg
+          :l="legislacao"
+          :original="legislacaoOriginal"
+          :acao="'Alteração'"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -156,7 +257,7 @@ export default {
     DesSelProc,
     SelProc,
     PainelOpsLeg,
-    SelecionarData,
+    SelecionarData
   },
 
   data() {
@@ -171,7 +272,7 @@ export default {
         codigo: "",
         dataRevogacao: "",
         entidadesSel: [],
-        processosSel: [],
+        processosSel: []
       },
       legislacaoOriginal: {},
 
@@ -193,11 +294,14 @@ export default {
 
       // para mostrar mensagens de erro
       snackbar: false,
-      text: "",
+      text: ""
     };
   },
 
   methods: {
+    goBack() {
+      this.$router.push("/legislacao");
+    },
     // Vai a API buscar todos os tipos de diplomas legislativos
     loadTipoDiploma: async function() {
       try {
@@ -218,7 +322,7 @@ export default {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
-      let index = this.entSel.findIndex((e) => e.id === entidade.id);
+      let index = this.entSel.findIndex(e => e.id === entidade.id);
       this.entSel.splice(index, 1);
       this.legislacao.entidadesSel = this.entSel;
     },
@@ -227,7 +331,7 @@ export default {
       this.entSel.push(entidade);
       this.legislacao.entidadesSel = this.entSel;
       // Remove dos selecionáveis
-      let index = this.entidades.findIndex((e) => e.id === entidade.id);
+      let index = this.entidades.findIndex(e => e.id === entidade.id);
       this.entidades.splice(index, 1);
     },
 
@@ -235,11 +339,11 @@ export default {
     loadEntidades: async function() {
       try {
         let response = await this.$request("get", "/entidades");
-        this.entidades = response.data.map((item) => {
+        this.entidades = response.data.map(item => {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id,
+            id: item.id
           };
         });
         this.entidadesReady = true;
@@ -251,7 +355,7 @@ export default {
     unselectProcesso: function(processo) {
       // Recoloca o processo nos selecionáveis
       this.processos.push(processo);
-      let index = this.procSel.findIndex((e) => e.id === processo.id);
+      let index = this.procSel.findIndex(e => e.id === processo.id);
       this.procSel.splice(index, 1);
       this.legislacao.processosSel = this.procSel;
     },
@@ -260,7 +364,7 @@ export default {
       this.procSel.push(processo);
       this.legislacao.processosSel = this.procSel;
       // Remove dos selecionáveis
-      let index = this.processos.findIndex((e) => e.id === processo.id);
+      let index = this.processos.findIndex(e => e.id === processo.id);
       this.processos.splice(index, 1);
     },
 
@@ -272,7 +376,7 @@ export default {
           return {
             codigo: item.codigo,
             titulo: item.titulo,
-            id: item.id.split("#")[1],
+            id: item.id.split("#")[1]
           };
         });
         this.processosReady = true;
@@ -284,7 +388,7 @@ export default {
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    },
+    }
   },
 
   async created() {
@@ -305,11 +409,11 @@ export default {
 
     try {
       if (this.legislacao.entidadesSel.length != 0) {
-        this.legislacao.entidadesSel.forEach((ent) => {
+        this.legislacao.entidadesSel.forEach(ent => {
           this.entSel.push(ent);
 
           // Remove dos selecionáveis
-          let index = this.entidades.findIndex((e) => {
+          let index = this.entidades.findIndex(e => {
             return e.id === ent.id;
           });
           this.entidades.splice(index, 1);
@@ -323,11 +427,11 @@ export default {
 
     try {
       if (this.legislacao.processosSel.length != 0) {
-        this.legislacao.processosSel.forEach((proc) => {
+        this.legislacao.processosSel.forEach(proc => {
           this.procSel.push(proc);
 
           // Remove dos selecionáveis
-          let index = this.processos.findIndex((p) => p.id === proc.id);
+          let index = this.processos.findIndex(p => p.id === proc.id);
           this.processos.splice(index, 1);
         });
       }
@@ -336,23 +440,14 @@ export default {
       this.text = "Erro ao carregar os dados, por favor tente novamente";
       this.snackbar = true;
     }
-  },
+  }
 };
 </script>
 
 <style scoped>
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
+#stepper-card {
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22);
 }
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
 .info-label {
   color: #1a237e !important;
   padding: 8px;
@@ -363,5 +458,31 @@ export default {
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
   border-radius: 6px;
   text-align: center;
+}
+.info-content {
+  padding: 5px;
+  width: 100%;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
+}
+.separador {
+  color: white;
+  padding: 5px;
+  margin: 5px;
+  font-weight: 400;
+  width: 100%;
+  min-height: 50px;
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
+  font-size: 14pt;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+}
+#expanded-content {
+  margin-left: 0.3rem;
+  margin-top: -1.1rem;
+  border: 1px solid #dee2f8;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
 }
 </style>

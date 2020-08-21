@@ -93,7 +93,9 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="t.desc !== undefined && t.desc !== null && t.desc !== ''">
+            <v-row
+              v-if="t.desc !== undefined && t.desc !== null && t.desc !== ''"
+            >
               <v-col cols="2">
                 <div class="info-label">Descrição</div>
               </v-col>
@@ -103,7 +105,13 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="t.data_inicio !== undefined && t.data_inicio !== null && t.data_inicio !== ''">
+            <v-row
+              v-if="
+                t.data_inicio !== undefined &&
+                  t.data_inicio !== null &&
+                  t.data_inicio !== ''
+              "
+            >
               <v-col cols="2">
                 <div class="info-label">Início</div>
               </v-col>
@@ -113,7 +121,13 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="t.data_fim !== undefined && t.data_fim !== null && t.data_fim !== ''">
+            <v-row
+              v-if="
+                t.data_fim !== undefined &&
+                  t.data_fim !== null &&
+                  t.data_fim !== ''
+              "
+            >
               <v-col cols="2">
                 <div class="info-label">Fim</div>
               </v-col>
@@ -136,7 +150,8 @@
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
           <v-card-title
-            >Cancelamento e eliminação do pedido de {{ acao }} da colaboração</v-card-title
+            >Cancelamento e eliminação do pedido de {{ acao }} da
+            colaboração</v-card-title
           >
           <v-card-text>
             <p>Selecionou o cancelamento da {{ acao }} do crédito.</p>
@@ -238,19 +253,19 @@ export default {
                   token: this.$store.state.token
                 };
 
-                // Devido à validação na API, opcionais só devem ser enviados se não forem nulos 
-                if (this.t.desc !== null && this.t.desc !== ""){
+                // Devido à validação na API, opcionais só devem ser enviados se não forem nulos
+                if (this.t.desc !== null && this.t.desc !== "") {
                   creditoParams.desc = this.t.desc;
                 }
 
-                if (this.t.data_inicio !== null && this.t.data_inicio !== ""){
+                if (this.t.data_inicio !== null && this.t.data_inicio !== "") {
                   creditoParams.data_inicio = this.t.data_inicio;
                 }
 
-                if (this.t.data_fim !== null && this.t.data_fim !== ""){
+                if (this.t.data_fim !== null && this.t.data_fim !== "") {
                   creditoParams.data_fim = this.t.data_fim;
                 }
-                
+
                 let response = await this.$request(
                   "put",
                   "/colaboracoes/" + this.idCredito,
@@ -271,16 +286,16 @@ export default {
                   token: this.$store.state.token
                 };
 
-                // Devido à validação na API, opcionais só devem ser enviados se não forem nulos 
-                if (this.t.desc !== null && this.t.desc !== ""){
+                // Devido à validação na API, opcionais só devem ser enviados se não forem nulos
+                if (this.t.desc !== null && this.t.desc !== "") {
                   creditoParams.desc = this.t.desc;
                 }
 
-                if (this.t.data_inicio !== null && this.t.data_inicio !== ""){
+                if (this.t.data_inicio !== null && this.t.data_inicio !== "") {
                   creditoParams.data_inicio = this.t.data_inicio;
                 }
 
-                if (this.t.data_fim !== null && this.t.data_fim !== ""){
+                if (this.t.data_fim !== null && this.t.data_fim !== "") {
                   creditoParams.data_fim = this.t.data_fim;
                 }
                 let response = await this.$request(
@@ -292,8 +307,8 @@ export default {
               } else {
                 this.errosValidacao = true;
               }
-              break;   
-            default:          
+              break;
+            default:
           }
         }
       } catch (err) {

@@ -1,9 +1,18 @@
 <template>
   <v-card flat class="mb-12" style="background-color:#fafafa">
     <v-form ref="form" :lazy-validation="false">
-      <v-row v-if="!this.classes.some(e => e.tipo == 'Série' || e.tipo == 'Subsérie')">
+      <v-row
+        v-if="
+          !this.classes.some(e => e.tipo == 'Série' || e.tipo == 'Subsérie')
+        "
+      >
         <v-col cols="12" class="text-right">
-          <v-btn color="indigo lighten-2" dark class="ma-2" @click="importar_re = true">
+          <v-btn
+            color="indigo lighten-2"
+            dark
+            class="ma-2"
+            @click="importar_re = true"
+          >
             <v-icon dark left>add</v-icon>Importar Relatório Expositivo
           </v-btn>
         </v-col>
@@ -117,7 +126,11 @@
             <template v-slot:default="slotProps">
               <v-text-field
                 :disabled="bloquearData()"
-                :rules="[v => data_final_valida(v) || 'Campo de preenchimento obrigatório!']"
+                :rules="[
+                  v =>
+                    data_final_valida(v) ||
+                    'Campo de preenchimento obrigatório!'
+                ]"
                 v-model="slotProps.item.dataValor"
                 :label="slotProps.item.label"
                 prepend-icon="event"
@@ -131,7 +144,9 @@
       </v-row>
       <v-expansion-panels v-model="panels" accordion :multiple="isMultiple">
         <v-expansion-panel class="ma-1" popout focusable>
-          <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+          <v-expansion-panel-header
+            class="pa-2 indigo darken-4 title white--text"
+          >
             <b>Contexto</b>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -166,7 +181,9 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel class="ma-1" popout focusable>
-          <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+          <v-expansion-panel-header
+            class="pa-2 indigo darken-4 title white--text"
+          >
             <b>Conteúdo e Estrutura</b>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -187,7 +204,9 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel class="ma-1" popout focusable>
-          <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+          <v-expansion-panel-header
+            class="pa-2 indigo darken-4 title white--text"
+          >
             <b>Condições de Acesso e Utilização</b>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -231,9 +250,15 @@
       />
     </v-form>
     <br />
-    <v-btn color="indigo darken-4" dark @click="$emit('seguinte', 1)">Voltar</v-btn>
-    <v-btn dark color="indigo darken-4" style="margin-left: 10px" @click="next">Continuar</v-btn>
-    <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">Limpar</v-btn>
+    <v-btn color="indigo darken-4" dark @click="$emit('seguinte', 1)"
+      >Voltar</v-btn
+    >
+    <v-btn dark color="indigo darken-4" style="margin-left: 10px" @click="next"
+      >Continuar</v-btn
+    >
+    <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar"
+      >Limpar</v-btn
+    >
   </v-card>
 </template>
 

@@ -1,8 +1,16 @@
 <template>
   <div style="width: 100%;">
     <RADAEntry label="Descrição" :value="classe.descricao" />
-    <RADAEntry v-if="!!classe.eFilhoDe" label="Classe Pai" :value="classe.eFilhoDe" />
-    <RADAEntry v-if="classe.tipo" label="Nível" :value="!!classe.tipo ? classe.tipo : 'N1'" />
+    <RADAEntry
+      v-if="!!classe.eFilhoDe"
+      label="Classe Pai"
+      :value="classe.eFilhoDe"
+    />
+    <RADAEntry
+      v-if="classe.tipo"
+      label="Nível"
+      :value="!!classe.tipo ? classe.tipo : 'N1'"
+    />
   </div>
 </template>
 

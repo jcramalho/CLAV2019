@@ -1,96 +1,164 @@
 <template>
   <div>
-    <v-row class="ma-2 text-center">
+    <v-row class="align-center pa-3" style="text-align:center;">
       <ValidarTipologiaInfoBox :t="t" :original="original" :acao="acao" />
 
       <v-col>
         <v-btn
           v-if="this.acao == 'Criação'"
-          rounded
-          class="indigo accent-4 white--text"
           @click="criarAlterarTipologia"
-          >Criar Tipologia</v-btn
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="botao-verde"
         >
+          <unicon
+            name="adicionar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.71"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Criar</p>
+        </v-btn>
         <v-btn
           v-else-if="this.acao == 'Alteração'"
-          rounded
-          class="indigo accent-4 white--text"
           @click="criarAlterarTipologia"
-          >Alterar Tipologia</v-btn
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="botao-verde"
         >
+          <unicon
+            name="alterar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.727"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Alterar</p>
+        </v-btn>
       </v-col>
 
       <v-col>
         <v-btn
-          v-if="this.acao == 'Criação'"
-          dark
-          rounded
-          class="red darken-4"
           @click="eliminarTipologia"
-          >Cancelar Criação</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Alteração'"
-          dark
+          color="red darken-4"
           rounded
-          class="red darken-4"
-          @click="eliminarTipologia"
-          >Cancelar Alteração</v-btn
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown
+          }"
+          id="botao-vermelho"
         >
+          <unicon
+            name="remove-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+          <p class="ml-2">
+            Cancelar
+          </p>
+        </v-btn>
       </v-col>
-
-      <!-- Erros de Validação -->
-      <v-dialog v-model="errosValidacao" width="30%">
-        <v-card>
-          <v-card-title>Erros detetados na validação</v-card-title>
-          <v-card-text>
-            <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
-            </p>
-          </v-card-text>
+    </v-row>
+    <!-- Erros de Validação -->
+    <v-row justify-center>
+      <v-dialog v-model="errosValidacao" width="60%">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2"
+            >Erros detetados na validação</v-card-title
+          >
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Há erros de validação. Selecione "Validar" para ver exatamente
+                quais e proceder à sua correção.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
-            <v-spacer />
-            <v-btn color="red darken-4" dark @click="errosValidacao = false"
-              >Fechar</v-btn
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="errosValidacao = false"
             >
+              Fechar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-row>
 
-      <!-- Pedido de criação de tipologia submetido com sucesso -->
-      <v-dialog v-model="dialogTipologiaCriada" width="70%" persistent>
+    <!-- Pedido de criação de tipologia submetido com sucesso -->
+    <v-row justify-center>
+      <v-dialog v-model="dialogTipologiaCriada" persistent max-width="60%">
         <DialogTipologiaSucesso
           :t="t"
           :codigoPedido="codigoPedido"
           :acao="acao"
         />
       </v-dialog>
+    </v-row>
 
-      <!-- Cancelamento da criação de uma tipologia: confirmação -->
-      <v-dialog v-model="pedidoEliminado" width="50%">
-        <v-card>
-          <v-card-title>
-            Cancelamento e eliminação do pedido
+    <!-- Cancelamento da criação de uma tipologia: confirmação -->
+    <v-row justify-center>
+      <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2">
+            Cancelamento e eliminação do pedido de criação de tipologia de
+            entidade
           </v-card-title>
-          <v-card-text>
-            <p>Selecionou o cancelamento do pedido.</p>
-            <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
-          </v-card-text>
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Selecionou o cancelamento do pedido de criação de tipologia de
+                entidade.
+              </p>
+              <p>Toda a informação introduzida será eliminada.</p>
+              <p>
+                Confirme a decisão para ser reencaminhado para a página
+                principal.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
-            <v-spacer />
+            <v-spacer></v-spacer>
             <v-btn
-              color="indigo darken-1"
-              text
+              color="success darken-1"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
               @click="cancelarCriacaoTipologia"
-              >Confirmo</v-btn
             >
-            <v-btn color="red darken-1" dark @click="pedidoEliminado = false"
-              >Enganei-me, desejo continuar o trabalho</v-btn
+              Confirmo
+            </v-btn>
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="pedidoEliminado = false"
             >
+              Enganei-me, desejo continuar o trabalho
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -104,7 +172,15 @@
         :top="true"
       >
         {{ loginErrorMessage }}
-        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+        <v-btn icon color="white" @click="loginErrorSnackbar = false">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
       </v-snackbar>
     </v-row>
   </div>
@@ -117,7 +193,7 @@ import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSuces
 import {
   comparaArraySel,
   criarHistorico,
-  extrairAlteracoes,
+  extrairAlteracoes
 } from "@/utils/utils";
 
 export default {
@@ -247,7 +323,7 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: historico,
+              historico: historico
             };
 
             if (this.original !== undefined)
@@ -289,21 +365,14 @@ export default {
 </script>
 
 <style scoped>
-.info-label {
-  color: #1a237e !important;
-  padding: 8px;
-  width: 100%;
-  background-color: #dee2f8;
-  font-weight: bold;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 6px;
-  text-align: center;
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
 }
 .info-content {
-  padding: 5px;
-  width: 100%;
+  padding: 8px;
   background-color: #f1f6f8 !important;
+  color: #606060;
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
   border-radius: 10px;
 }

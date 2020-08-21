@@ -15,7 +15,11 @@
               <v-form ref="form" :lazy-validation="false">
                 <v-row cols="12">
                   <v-col md="3" sm="3">
-                    <v-text-field :rules="siglaRules" v-model="sigla" label="Sigla"></v-text-field>
+                    <v-text-field
+                      :rules="siglaRules"
+                      v-model="sigla"
+                      label="Sigla"
+                    ></v-text-field>
                   </v-col>
 
                   <v-col md="3" sm="3">
@@ -31,7 +35,11 @@
                     ></v-text-field>
                   </v-col>
                   <v-col md="6" sm="6">
-                    <v-text-field :rules="designacaoRules" v-model="designacao" label="Designação"></v-text-field>
+                    <v-text-field
+                      :rules="designacaoRules"
+                      v-model="designacao"
+                      label="Designação"
+                    ></v-text-field>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -62,7 +70,9 @@
                     >
                       <template v-slot:default="slotProps">
                         <v-text-field
-                          :rules="[v => !!data_criacao ? data_final_valida(v) : true]"
+                          :rules="[
+                            v => (!!data_criacao ? data_final_valida(v) : true)
+                          ]"
                           v-model="slotProps.item.dataValor"
                           :label="slotProps.item.label"
                           prepend-icon="event"

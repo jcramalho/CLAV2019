@@ -13,8 +13,16 @@
       :search="search"
     >
       <template v-slot:item.tipo="{ item }">
-        <img v-if="item.tipo == 'serie'" style="width:23px; height:30px" :src="svg_sr" />
-        <img v-else-if="item.tipo == 'subserie'" style="width:23px; height:30px" :src="svg_ssr" />
+        <img
+          v-if="item.tipo == 'serie'"
+          style="width:23px; height:30px"
+          :src="svg_sr"
+        />
+        <img
+          v-else-if="item.tipo == 'subserie'"
+          style="width:23px; height:30px"
+          :src="svg_ssr"
+        />
         <i v-else>{{ item.nivel }}</i>
       </template>
       <template v-slot:item.produtoras="{ item }">
@@ -22,26 +30,32 @@
           <li v-for="(entidade, i) in item.produtoras" :key="i">
             <a
               v-if="entidade.ent_or_tip.split('#')[1].split('_')[0] == 'tip'"
-              :href="`${entidade.ent_or_tip.split('#')[1].split('_')[0] == 'tip' ? '/tipologias/' : '/entidades/'}` + entidade.ent_or_tip.split('#')[1]"
-            >{{ entidade.sigla + " - "+ entidade.designacao}}</a>
+              :href="
+                `${
+                  entidade.ent_or_tip.split('#')[1].split('_')[0] == 'tip'
+                    ? '/tipologias/'
+                    : '/entidades/'
+                }` + entidade.ent_or_tip.split('#')[1]
+              "
+              >{{ entidade.sigla + " - " + entidade.designacao }}</a
+            >
           </li>
         </ul>
       </template>
       <template v-slot:item.legislacao="{ item }">
         <ul>
           <li v-for="(leg, i) in item.legislacao" :key="i">
-            <a
-              :href="'/legislacao/' + leg.leg.split('#')[1]"
-            >{{ leg.tipo + " " + leg.numero + " - " + leg.sumario }}</a>
+            <a :href="'/legislacao/' + leg.leg.split('#')[1]">{{
+              leg.tipo + " " + leg.numero + " - " + leg.sumario
+            }}</a>
           </li>
         </ul>
       </template>
       <template v-slot:item.suporte_e_medicao="{ item }">
         <ul>
-          <li
-            v-for="(valores, i) in item.suporte_e_medicao"
-            :key="i"
-          >{{ valores.suporte + ": " + valores.medicao}}</li>
+          <li v-for="(valores, i) in item.suporte_e_medicao" :key="i">
+            {{ valores.suporte + ": " + valores.medicao }}
+          </li>
         </ul>
       </template>
       <template v-slot:item.UIs="{ item }">
@@ -52,22 +66,26 @@
 
       <template v-slot:item.relacoes="{ item }">
         <ul>
-          <li
-            v-for="(rel, i) in filtraRelacoes(item)"
-            :key="i"
-          >{{ relacaoCorreta(rel.rel) + ": " + rel.codigo }}</li>
+          <li v-for="(rel, i) in filtraRelacoes(item)" :key="i">
+            {{ relacaoCorreta(rel.rel) + ": " + rel.codigo }}
+          </li>
         </ul>
       </template>
       <template v-slot:item.justificacaoPCA="{ item }">
         <ul v-if="!!item.pca">
           <li v-for="(criterio, i) in item.pca.justificacaoPCA" :key="i">
-            <b>{{criterio.tipo == 'CriterioJustificacaoGestionario' ? 'Critério Gestionário' : (criterio.tipo == 'CriterioJustificacaoLegal' ? 'Critério Legal' : 'Critério de Utilidade Administrativa') + ": "}}</b>
+            <b>{{
+              criterio.tipo == "CriterioJustificacaoGestionario"
+                ? "Critério Gestionário"
+                : (criterio.tipo == "CriterioJustificacaoLegal"
+                    ? "Critério Legal"
+                    : "Critério de Utilidade Administrativa") + ": "
+            }}</b>
             {{ criterio.conteudo }}
             <ul v-if="criterio.relacoes">
-              <li
-                v-for="(rel, j) in criterio.relacoes"
-                :key="j"
-              >{{!!rel.codigo ? rel.codigo : rel.tipo + " " + rel.numero}}</li>
+              <li v-for="(rel, j) in criterio.relacoes" :key="j">
+                {{ !!rel.codigo ? rel.codigo : rel.tipo + " " + rel.numero }}
+              </li>
             </ul>
           </li>
         </ul>
@@ -76,13 +94,18 @@
       <template v-slot:item.justificacaoDF="{ item }">
         <ul v-if="!!item.df">
           <li v-for="(criterio, i) in item.df.justificacaoDF" :key="i">
-            <b>{{criterio.tipo == 'CriterioJustificacaoComplementaridadeInfo' ? 'Critério de Complementaridade Informacional' : (criterio.tipo == 'CriterioJustificacaoLegal' ? 'Critério Legal' : 'Critério de Densidade Informacional') + ": "}}</b>
+            <b>{{
+              criterio.tipo == "CriterioJustificacaoComplementaridadeInfo"
+                ? "Critério de Complementaridade Informacional"
+                : (criterio.tipo == "CriterioJustificacaoLegal"
+                    ? "Critério Legal"
+                    : "Critério de Densidade Informacional") + ": "
+            }}</b>
             {{ criterio.conteudo }}
             <ul v-if="criterio.relacoes">
-              <li
-                v-for="(rel, j) in criterio.relacoes"
-                :key="j"
-              >{{!!rel.codigo ? rel.codigo : rel.tipo + " " + rel.numero}}</li>
+              <li v-for="(rel, j) in criterio.relacoes" :key="j">
+                {{ !!rel.codigo ? rel.codigo : rel.tipo + " " + rel.numero }}
+              </li>
             </ul>
           </li>
         </ul>
@@ -90,9 +113,13 @@
 
       <template v-slot:item.formaContagem="{ item }">
         <div v-if="!!item.pca">
-          {{ !!item.pca.formaLabel ? "Forma: " + item.pca.formaLabel : ''}}
+          {{ !!item.pca.formaLabel ? "Forma: " + item.pca.formaLabel : "" }}
           <br />
-          {{ !!item.pca.subformaLabel ? "Subforma: " + item.pca.subformaLabel : '' }}
+          {{
+            !!item.pca.subformaLabel
+              ? "Subforma: " + item.pca.subformaLabel
+              : ""
+          }}
         </div>
       </template>
     </v-data-table>
@@ -292,9 +319,11 @@ export default {
     },
     filtraRelacoes(item) {
       if (item.relacoes) {
-        return item.relacoes.filter(e => e.rel != "temPai" && e.rel != "temFilho");
+        return item.relacoes.filter(
+          e => e.rel != "temPai" && e.rel != "temFilho"
+        );
       } else {
-        return []
+        return [];
       }
     },
     relacaoCorreta(relacao) {

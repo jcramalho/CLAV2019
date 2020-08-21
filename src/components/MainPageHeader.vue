@@ -24,7 +24,8 @@
                 'title-letters-md': $vuetify.breakpoint.mdAndDown
               }"
               class="d-inline font-weight-bold text-wrap"
-            >CLAV -</span>
+              >CLAV -</span
+            >
           </template>
           <span>Voltar à página inicial</span>
         </v-tooltip>
@@ -36,7 +37,8 @@
             'subtitle-letter-sm': $vuetify.breakpoint.smOnly
           }"
           class="d-inline font-weight-light text-wrap"
-        >Classificação e Avaliação da Informação Pública</span>
+          >Classificação e Avaliação da Informação Pública</span
+        >
         <span
           v-if="this.$store.state.name != ''"
           :class="{
@@ -45,10 +47,16 @@
             'subtitle-letter-sm': $vuetify.breakpoint.smOnly
           }"
           class="d-inline font-weight-light text-wrap"
-        >{{ this.$store.state.entidade.split("_")[1] }}</span>
+          >{{ this.$store.state.entidade.split("_")[1] }}</span
+        >
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-snackbar v-model="snackbar" :timeout="timeout" :color="color" :top="true">
+      <v-snackbar
+        v-model="snackbar"
+        :timeout="timeout"
+        :color="color"
+        :top="true"
+      >
         {{ text }}
         <v-btn text @click="fecharSnackbar">Fechar</v-btn>
       </v-snackbar>
@@ -73,7 +81,12 @@
         />
         <p class="d-inline ml-3 white--text">Iniciar Sessão</p>
       </v-btn>
-      <v-btn v-if="this.$store.state.name != ''" @click="drawerNotificacoes" icon color="blue">
+      <v-btn
+        v-if="this.$store.state.name != ''"
+        @click="drawerNotificacoes"
+        icon
+        color="blue"
+      >
         <v-badge color="red" :content="n" overlap>
           <unicon
             name="perfil-icon"
@@ -110,7 +123,11 @@
           id="tab-bar"
           :icons-and-text="$vuetify.breakpoint.mdAndDown"
         >
-          <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
+          <v-container
+            class="pa-0"
+            v-for="tab in tabsAcessiveis"
+            :key="tab.titulo"
+          >
             <v-tab
               v-if="!tab.menu"
               :class="{ active: tab.titulo == tabAtiva }"
@@ -129,7 +146,11 @@
             </v-tab>
             <v-menu v-if="tab.menu" offset-y open-on-hover nudge-top="2">
               <template v-slot:activator="{ on }">
-                <v-tab v-on="on" :class="{ active: tab.titulo == tabAtiva }" style="height: 48px;">
+                <v-tab
+                  v-on="on"
+                  :class="{ active: tab.titulo == tabAtiva }"
+                  style="height: 48px;"
+                >
                   <p class="hidden-lg-and-up">{{ tab.titulo }}</p>
                   <unicon
                     v-if="tab.icon"
@@ -148,9 +169,7 @@
                   @click="goRoute(menuLink.url)"
                 >
                   <v-list-item-title class="text-wrap">
-                    {{
-                    menuLink.opcao
-                    }}
+                    {{ menuLink.opcao }}
                   </v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -168,20 +187,33 @@
       </v-btn>-->
     </v-app-bar>
     <!--Navbar para xs (mobile) screens-->
-    <v-app-bar flat id="mobile-toolbar" class="hidden-sm-and-up toolbar white--text">
+    <v-app-bar
+      flat
+      id="mobile-toolbar"
+      class="hidden-sm-and-up toolbar white--text"
+    >
       <v-toolbar-title @click="goRoute('/')" style="cursor:pointer;">
         <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
         <p
           class="subtitle-letter-md font-weight-light d-inline text-wrap"
           v-if="this.$store.state.name == ''"
-        >Classificação e Avaliação da Informação Pública</p>
+        >
+          Classificação e Avaliação da Informação Pública
+        </p>
         <p
           class="subtitle-letter-md font-weight-light d-inline text-wrap"
           v-if="this.$store.state.name != ''"
-        >{{ this.$store.state.entidade.split("_")[1] }}</p>
+        >
+          {{ this.$store.state.entidade.split("_")[1] }}
+        </p>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="this.$store.state.name != ''" @click="drawerNotificacoes" icon color="blue">
+      <v-btn
+        v-if="this.$store.state.name != ''"
+        @click="drawerNotificacoes"
+        icon
+        color="blue"
+      >
         <v-badge color="red" :content="n" overlap>
           <unicon
             name="perfil-icon"
@@ -210,7 +242,12 @@
           fill="#e5e5e5"
         />
       </v-btn>
-      <v-dialog v-model="dialog" fullscreen hide-overlay transition="fade-transition">
+      <v-dialog
+        v-model="dialog"
+        fullscreen
+        hide-overlay
+        transition="fade-transition"
+      >
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" icon dark>
             <unicon
@@ -239,7 +276,9 @@
               <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
               <p
                 class="subtitle-letter-md font-weight-light d-inline text-wrap"
-              >{{ this.$store.state.entidade.split("_")[1] }}</p>
+              >
+                {{ this.$store.state.entidade.split("_")[1] }}
+              </p>
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn
@@ -265,7 +304,11 @@
             </v-btn>
           </v-app-bar>
           <v-list rounded color="rgba(0,0,0,0)" dark two-line>
-            <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
+            <v-container
+              class="pa-0"
+              v-for="tab in tabsAcessiveis"
+              :key="tab.titulo"
+            >
               <v-list-item
                 v-if="!tab.menu"
                 @click="
@@ -309,7 +352,9 @@
                   "
                 >
                   <v-list-item-content>
-                    <v-list-item-title class="text-wrap">- {{ menuLink.opcao }}</v-list-item-title>
+                    <v-list-item-title class="text-wrap"
+                      >- {{ menuLink.opcao }}</v-list-item-title
+                    >
                   </v-list-item-content>
                 </v-list-item>
               </v-list-group>

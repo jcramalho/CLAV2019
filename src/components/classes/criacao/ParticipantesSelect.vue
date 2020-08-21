@@ -13,6 +13,7 @@
             append-icon="search"
             label="Procurar / filtrar participantes"
             class="mt-n2 mb-3 mx-6"
+            clearable
             single-line
             hide-details
             color="blue darken-3"
@@ -28,6 +29,17 @@
             :footer-props="participantesFooterProps"
             :sort-by="['sigla']"
           >
+            <template v-slot:no-results>
+              <v-alert
+                :value="true"
+                color="error"
+                icon="warning"
+                class="font-weight-medium my-3"
+                id="alerta-erro"
+                >Não foram encontrados resultados para
+                <b>"{{ searchEntidades }}"</b>.</v-alert
+              >
+            </template>
             <template v-slot:item="props">
               <tr>
                 <td>

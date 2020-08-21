@@ -1,10 +1,12 @@
 <template>
   <div>
     <v-row class="mx-4">
-      <v-btn @click="addZC=true" dark color="indigo darken-4">Adicionar Classe</v-btn>
+      <v-btn @click="addZC = true" dark color="indigo darken-4"
+        >Adicionar Classe</v-btn
+      >
     </v-row>
     <v-dialog v-model="addZC">
-      <DialogZonaControlo 
+      <DialogZonaControlo
         v-bind:auto="auto"
         v-bind:classes="classes"
         v-bind:entidades="entidades"
@@ -17,19 +19,19 @@
   </div>
 </template>
 <script>
-import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaControlo.vue"
+import DialogZonaControlo from "@/components/autosEliminacao/criacao/DialogZonaControlo.vue";
 
 export default {
-  props: ["classes", "entidades", "auto", "classesCompletas","donos","tipo"],
+  props: ["classes", "entidades", "auto", "classesCompletas", "donos", "tipo"],
   components: {
     DialogZonaControlo
   },
   data: () => ({
-    addZC: false,
+    addZC: false
   }),
   methods: {
-    closeZC: function () {
-      this.addZC = false
+    closeZC: function() {
+      this.addZC = false;
     }
   }
 };

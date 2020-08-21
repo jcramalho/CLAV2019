@@ -71,7 +71,6 @@ export default {
 
   methods: {
     async validarCreditoAll() {
-      
       // Nome
       if (this.t.nome == "" || this.t.nome == null) {
         this.mensagensErro.push({
@@ -98,7 +97,6 @@ export default {
         });
         this.numeroErros++;
       }
-
     },
 
     async validarCredito() {

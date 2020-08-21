@@ -9,6 +9,7 @@
         'px-8': $vuetify.breakpoint.lgAndUp,
         'px-2': $vuetify.breakpoint.mdAndDown
       }"
+      style="width: 100%;"
       id="default-button"
     >
       <unicon

@@ -20,12 +20,12 @@ export default {
   data: () => ({
     etapaPedido: null,
     selectedPedido: {},
-    pedidoLoaded: false,
+    pedidoLoaded: false
   }),
 
   mounted: function() {
     this.$request("get", "/pedidos/" + this.idp)
-      .then((response) => {
+      .then(response => {
         const pedido = response.data;
         this.selectedPedido = pedido;
 
@@ -52,9 +52,9 @@ export default {
 
         this.pedidoLoaded = true;
       })
-      .catch((error) => {
+      .catch(error => {
         return error;
       });
-  },
+  }
 };
 </script>

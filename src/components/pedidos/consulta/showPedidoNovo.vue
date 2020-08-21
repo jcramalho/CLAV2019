@@ -201,7 +201,7 @@ export default {
     ShowPGD,
     ErroDialog,
     VerHistorico,
-    DevolverPedido,
+    DevolverPedido
   },
 
   data: () => ({
@@ -261,7 +261,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -271,7 +271,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.fecharDialog();
@@ -380,7 +380,7 @@ export default {
         "pesquisa-pedidos",
         JSON.stringify({
           ...pesquisa,
-          limpar: false,
+          limpar: false
         })
       );
 

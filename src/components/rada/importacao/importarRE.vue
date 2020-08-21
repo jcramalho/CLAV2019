@@ -2,9 +2,14 @@
   <v-dialog v-model="dialogState" max-width="80%">
     <v-card>
       <v-form ref="form">
-        <v-card-title class="indigo darken-4 white--text">Importar Relatório Expositivo</v-card-title>
+        <v-card-title class="indigo darken-4 white--text"
+          >Importar Relatório Expositivo</v-card-title
+        >
         <v-card-text>
-          <ImportarFicheiro label="Ficheiro Relatório Expositivo" @ficheiro="novoFicheiroRE" />
+          <ImportarFicheiro
+            label="Ficheiro Relatório Expositivo"
+            @ficheiro="novoFicheiroRE"
+          />
         </v-card-text>
         <v-card-actions>
           <v-alert
@@ -14,9 +19,12 @@
             type="error"
             prominent
             border="left"
-          >{{ erros.produtoras }}</v-alert>
+            >{{ erros.produtoras }}</v-alert
+          >
           <v-spacer></v-spacer>
-          <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+          <v-btn color="indigo darken-4" dark @click="dialogState = false"
+            >Voltar</v-btn
+          >
           <v-btn color="indigo darken-4" dark @click="importar">Importar</v-btn>
         </v-card-actions>
       </v-form>
@@ -92,5 +100,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

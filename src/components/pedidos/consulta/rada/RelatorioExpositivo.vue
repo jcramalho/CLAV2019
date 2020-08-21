@@ -3,12 +3,15 @@
     <RADAEntry v-if="!RE.tipologiasProd" label="Entidades Produtoras">
       <template v-slot:valor>
         <ul>
-          <li v-for="(ent, i) in RE.entidadesProd" :key="i">{{ent}}</li>
+          <li v-for="(ent, i) in RE.entidadesProd" :key="i">{{ ent }}</li>
         </ul>
       </template>
     </RADAEntry>
 
-    <RADAEntry v-if="!RE.entidadesProd[0]" label="Tipologias das Entidades Produtoras">
+    <RADAEntry
+      v-if="!RE.entidadesProd[0]"
+      label="Tipologias das Entidades Produtoras"
+    >
       <template v-slot:valor>
         <ul>
           <li>{{ RE.tipologiasProd }}</li>
@@ -42,7 +45,10 @@
         </v-card-text>
       </v-card>
     </div>
-    <RADAEntry label="História Administrativa/Biográfica" :value="RE.hist_admin" />
+    <RADAEntry
+      label="História Administrativa/Biográfica"
+      :value="RE.hist_admin"
+    />
     <RADAEntry label="História Custodial" :value="RE.hist_cust" />
     <RADAEntry label="Sistema de Organização" :value="RE.sist_org" />
     <RADAEntry label="Localização" :value="RE.localizacao" />

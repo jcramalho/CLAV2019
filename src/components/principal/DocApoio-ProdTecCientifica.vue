@@ -27,15 +27,20 @@
                           :href="publicacao.url"
                           >{{ publicacao.titulo }}</a
                         >
-                        <span 
+                        <span
                           class="fakea"
                           v-else
                           href="#"
                           @click="downloadFile(publicacao._id)"
-                        >{{ publicacao.titulo }}</span></b
+                          >{{ publicacao.titulo }}</span
+                        ></b
                       >, {{ publicacao.local }};
-                      <span v-for="(a,index) in publicacao.autores" :key="`${a}${index}`"
-                        >{{ nameWithComma(a, index, publicacao.autores.length) }}&nbsp;</span
+                      <span
+                        v-for="(a, index) in publicacao.autores"
+                        :key="`${a}${index}`"
+                        >{{
+                          nameWithComma(a, index, publicacao.autores.length)
+                        }}&nbsp;</span
                       >
                       <v-icon
                         v-for="(operacao, index) in operacoes"
@@ -129,10 +134,10 @@ export default {
     Loading
   },
   methods: {
-    nameWithComma(a, index, length){
-      if(index !== length-1){
+    nameWithComma(a, index, length) {
+      if (index !== length - 1) {
         return `${a}; `;
-      }else{
+      } else {
         return a;
       }
     },
@@ -187,7 +192,7 @@ export default {
     },
     download(path, filename) {
       var element = document.createElement("a");
-      
+
       element.setAttribute("href", path);
       element.setAttribute("download", filename);
       element.style.display = "none";
@@ -280,7 +285,7 @@ export default {
   created: async function() {
     let response = await this.$request("get", "/documentacaoCientifica");
 
-    let conteudo = response.data; 
+    let conteudo = response.data;
 
     this.preparaOperacoes(this.level);
 
@@ -298,6 +303,6 @@ export default {
 }
 
 .fakea {
-  color: #1A76D2;
+  color: #1a76d2;
 }
 </style>

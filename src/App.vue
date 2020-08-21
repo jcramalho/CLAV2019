@@ -18,8 +18,8 @@
         :notificacoes="notificacoes"
         @removerNotificacao="removerNotificacao($event)"
       />
-      <Definicoes 
-        v-if="this.$store.state.name != ''" 
+      <Definicoes
+        v-if="this.$store.state.name != ''"
         :drawer="drawD"
         :socket="socket"
       />
@@ -34,8 +34,8 @@ import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 import Definicoes from "@/components/principal/Definicoes.vue";
 import Notificacoes from "@/components/principal/Notificacoes.vue";
-import io from "socket.io-client"
-import { bus } from "./main"
+import io from "socket.io-client";
+import { bus } from "./main";
 const lhost = require("@/config/global").host;
 
 export default {
@@ -52,7 +52,7 @@ export default {
       if (this.$store.state.token != "") {
         var user = this.$verifyTokenUser();
         this.level = user.level;
-      } 
+      }
       // else {
       //   if(this.socket) this.socket.disconnect();
       // }
@@ -125,27 +125,27 @@ export default {
       if (index > -1) {
         this.notificacoes.splice(index, 1);
       }
-      this.socket.emit('remove', msg);
+      this.socket.emit("remove", msg);
     },
     consume() {
-      this.notificacoes = []
-      var email = this.$verifyTokenUser().email
-      if(email){
+      this.notificacoes = [];
+      var email = this.$verifyTokenUser().email;
+      if (email) {
         this.socket = io.connect("http://localhost:7779"); //lhost.replace('/v2', '')
-        this.socket.emit('email', {
+        this.socket.emit("email", {
           email: email
         });
-        this.socket.on(this.$verifyTokenUser().email, (data) => {
-          this.notificacoes.push(JSON.parse(data))
-        })
+        this.socket.on(this.$verifyTokenUser().email, data => {
+          this.notificacoes.push(JSON.parse(data));
+        });
       }
     }
   },
-  created(){
-    if (this.$store.state.token != "") this.consume()
-    bus.$on('notificacoes', (d) => {
-      this.consume()
-    })
+  created() {
+    if (this.$store.state.token != "") this.consume();
+    bus.$on("notificacoes", d => {
+      this.consume();
+    });
   },
   data: () => ({
     socket: null,
@@ -264,11 +264,70 @@ export default {
 }
 .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
   fill: #ffffff !important;
+  border-radius: 40px;
+}
+.theme--light.v-list-item--active:hover::before,
+.theme--light.v-list-item--active::before {
+  border-radius: 40px;
+  background-color: #002a8f !important;
+}
+.theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 40px;
+}
+.theme--light.v-list-item:hover::before {
+  opacity: 0.1;
+  background-color: #4da0d0;
+  border-radius: 40px;
+}
+.theme--light.v-list-item::before {
+  background-color: #4da0d0;
+  border-radius: 40px;
+}
+.theme--light.v-list {
+  background: #f1f6f8 !important;
+}
+.v-list-item__title,
+.v-list-item__subtitle {
+  white-space: normal !important;
 }
 .v-menu__content {
   border-radius: 0px 0px 10px 10px !important;
 }
+.v-ripple__container {
+  border-radius: 40px !important;
+  color: rgba(0, 85, 181, 0.3) !important;
+}
 .v-snack__wrapper {
+  border-radius: 40px !important;
+}
+.v-stepper {
+  border-radius: none !important;
+  box-shadow: none !important;
+}
+.v-stepper__header {
+  box-shadow: none !important;
+  border-bottom: 2px solid #d8d8d8;
+}
+.v-stepper__wrapper {
+  overflow: inherit !important;
+}
+.theme--light.v-stepper .v-stepper__step--editable:hover {
+  background: none !important;
+}
+.theme--light.v-stepper .v-stepper__step--active .v-stepper__label {
+  font-weight: bold !important;
+}
+.theme--light.v-stepper .v-stepper__step--complete .v-stepper__label {
+  color: rgba(43, 158, 54, 0.5) !important;
+}
+.theme--light.v-tabs .v-tab:hover::before {
+  border-radius: 40px !important;
+}
+.theme--dark.v-tabs .v-tab:hover::before {
+  border-radius: 40px !important;
+}
+.v-tab::before {
   border-radius: 40px !important;
 }
 .v-text-field .v-label {
@@ -285,9 +344,23 @@ export default {
 .v-text-field input {
   letter-spacing: 3px;
 }
+#alerta-erro {
+  border-radius: 40px !important;
+  text-align: center !important;
+}
 b {
   font-weight: 500 !important;
   text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+}
+#botao-verde {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+    0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+  outline: none !important;
+}
+#botao-vermelho {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+    0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+  outline: none !important;
 }
 .content-title-1 {
   font-size: 2rem;
@@ -295,6 +368,7 @@ b {
   color: #4da0d0;
   text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.32);
   padding-bottom: 2rem;
+  text-align: center;
 }
 .content-title-2 {
   font-size: 1.2rem;

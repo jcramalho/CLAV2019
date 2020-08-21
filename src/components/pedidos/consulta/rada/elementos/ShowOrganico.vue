@@ -5,14 +5,20 @@
         <b>{{ "Área orgânico-funcional: " + treeview_object.titulo }}</b>
       </v-card-title>
       <v-card-text>
-        <RADAEntry label="Código" :value="organico.codigo" /> 
+        <RADAEntry label="Código" :value="organico.codigo" />
         <RADAEntry label="Título" :value="organico.titulo" />
         <RADAEntry label="Descrição" :value="organico.descricao" />
-        <RADAEntry v-if="organico.eFilhoDe" label="Classe Pai" :value="organico.eFilhoDe" />
+        <RADAEntry
+          v-if="organico.eFilhoDe"
+          label="Classe Pai"
+          :value="organico.eFilhoDe"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false"
+          >Voltar</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
