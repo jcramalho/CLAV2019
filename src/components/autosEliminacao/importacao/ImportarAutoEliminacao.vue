@@ -463,7 +463,7 @@ export default {
           })
           this.errosVal.numErros++
         }
-        var pca = parseInt(zc.prazo) || 0;
+        var pca = parseInt(zc.prazo) || parseInt(zc.prazoConservacao) || 0;
         var dataInicio = parseInt(zc.dataInicio)
         var currentTime = new Date()
 
