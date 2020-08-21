@@ -18,6 +18,13 @@
           @click="criarAlterarLegislacao"
           >Alterar Diploma</v-btn
         >
+        <v-btn
+          v-else-if="this.acao == 'Revogação'"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="criarAlterarLegislacao"
+          >Revogar Diploma</v-btn
+        >
       </v-col>
 
       <v-col>
@@ -34,6 +41,14 @@
           class="red darken-4 white--text"
           @click="eliminarLegislacao"
           >Cancelar Alteração</v-btn
+        >
+        <v-btn
+          v-else-if="this.acao == 'Revogação'"
+          dark
+          rounded
+          class="red darken-4"
+          @click="eliminarLegislacao"
+          >Cancelar Revogação</v-btn
         >
       </v-col>
 
@@ -54,15 +69,6 @@
             >
           </v-card-actions>
         </v-card>
-      </v-dialog>
-
-      <!-- Pedido de criação de legislacao submetido com sucesso -->
-      <v-dialog v-model="dialogLegislacaoCriada" width="70%" persistent>
-        <DialogLegislacaoSucesso
-          :l="l"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
       </v-dialog>
 
       <!-- Cancelamento da criação de uma legislacao: confirmação -->
@@ -103,76 +109,89 @@
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
     </v-row>
+
+    <!-- Dialog de erro no caso de algum erro ocorrer -->
+    <v-dialog v-model="erroDialog" width="50%" persistent>
+      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import ValidarLegislacaoInfoBox from "@/components/legislacao/ValidarLegislacaoInfoBox";
-import DialogLegislacaoSucesso from "@/components/legislacao/DialogLegislacaoSucesso";
+import ErroDialog from "@/components/generic/ErroDialog";
 
-import {
-  comparaArraySel,
-  criarHistorico,
-  extrairAlteracoes,
-} from "@/utils/utils";
+import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
+import { eNUV, eDataFormatoErrado, eNV } from "@/utils/validadores";
 
 export default {
   props: ["l", "acao", "original"],
 
   components: {
     ValidarLegislacaoInfoBox,
-    DialogLegislacaoSucesso,
+    ErroDialog,
   },
 
   data() {
     return {
-      pendenteGuardado: false,
-      pendenteGuardadoInfo: "",
+      erroDialog: false,
+      erros: [],
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar o Diploma!",
-      dialogLegislacaoCriada: false,
-      codigoPedido: "",
       errosValidacao: false,
       pedidoEliminado: false,
     };
   },
 
   methods: {
+    fecharErro() {
+      this.erroDialog = false;
+      this.erros = [];
+    },
+
     async validarLegislacaoCriacao() {
       let numeroErros = 0;
 
       // Tipo
-      if (this.l.tipo === "" || this.l.tipo === null) {
+      if (eNUV(this.l.tipo)) {
         numeroErros++;
       }
 
       // Número Diploma
-      if (this.l.numero === "" || this.l.numero === null) {
+      if (eNUV(this.l.numero)) {
         numeroErros++;
+      } else {
+        try {
+          let existeNumero = await this.$request(
+            "get",
+            "/legislacao/numero?valor=" + encodeURIComponent(this.l.numero)
+          );
+
+          if (existeNumero.data) {
+            this.numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
+        }
       }
 
       // Data
-      if (this.l.data === "" || this.l.data === null) {
+      if (eNUV(this.l.data)) {
         numeroErros++;
-      } else if (!/[0-9]+-[0-9]+-[0-9]+/.test(this.l.data)) {
+      } else if (eDataFormatoErrado(this.l.data)) {
         numeroErros++;
       }
 
       // Sumário
-      if (this.l.sumario === "" || this.l.sumario === null) {
+      if (eNUV(this.l.sumario)) {
         numeroErros++;
       }
 
       // Data revogação
-      if (
-        this.l.data !== "" &&
-        this.l.data !== null &&
-        this.l.data !== undefined &&
-        this.l.dataRevogacao !== "" &&
-        this.l.dataRevogacao !== null &&
-        this.l.dataRevogacao !== undefined
-      ) {
-        if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
+      if (!eNUV(this.l.data) && !eNUV(this.l.dataRevogacao)) {
+        if (eDataFormatoErrado(this.l.dataRevogacao)) {
+          numeroErros++;
+        } else if (new Date(this.l.data) >= new Date(this.l.dataRevogacao)) {
           numeroErros++;
         }
       }
@@ -184,20 +203,23 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (dados.sumario === "" || dados.sumario === null) {
+      if (eNV(dados.sumario)) {
         numeroErros++;
       }
 
-      // Data revogação
-      if (
-        dados.data !== "" &&
-        dados.data !== null &&
-        dados.data !== undefined &&
-        dados.dataRevogacao !== "" &&
-        dados.dataRevogacao !== null &&
-        dados.dataRevogacao !== undefined
-      ) {
-        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+      return numeroErros;
+    },
+
+    validarLegislacaoRevogacao(dados) {
+      let numeroErros = 0;
+
+      // Data Revogação
+      if (eNUV(dados.dataRevogacao)) {
+        numeroErros++;
+      } else if (!eNUV(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          numeroErros++;
+        } else if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
           numeroErros++;
         }
       }
@@ -219,6 +241,9 @@ export default {
           switch (this.acao) {
             case "Criação":
               erros = await this.validarLegislacaoCriacao();
+
+              historico.push(criarHistorico(dataObj));
+
               break;
 
             case "Alteração":
@@ -230,11 +255,34 @@ export default {
 
               break;
 
+            case "Revogação":
+              erros = this.validarLegislacaoRevogacao(dataObj);
+
+              for (const key in dataObj) {
+                if (key !== "dataRevogacao") delete dataObj[key];
+              }
+
+              historico.push({
+                dataRevogacao: {
+                  cor: "amarelo",
+                  dados: dataObj.dataRevogacao,
+                  nota: null,
+                },
+              });
+              break;
+
             default:
               break;
           }
 
           if (erros === 0) {
+            const objKeys = Object.keys(dataObj);
+
+            if (objKeys.length === 0)
+              throw new Error(
+                "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
+              );
+
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
@@ -257,20 +305,17 @@ export default {
               pedidoParams
             );
 
-            this.codigoPedido = codigoPedido.data;
-
-            this.dialogLegislacaoCriada = true;
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (err) {
-        return err;
+        if (typeof err.message === "string") {
+          this.erros.push(err.message);
+          this.erroDialog = true;
+        }
       }
-    },
-
-    criacaoPendenteTerminada: function() {
-      this.$router.push("/");
     },
 
     // Cancela a criação da Legislacao

@@ -4,22 +4,15 @@
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
         <v-row
-          v-if="
-            info !== '' &&
-              info !== null &&
-              campo !== 'sigla' &&
-              campo !== 'codigo' &&
-              campo !== 'estado'
-          "
+          v-if="campo !== 'sigla' && campo !== 'estado'"
           dense
           class="ma-1"
         >
           <v-col cols="2">
             <div
-              :class="[
-                'info-descricao',
-                `info-descricao-${novoHistorico[campo].cor}`,
-              ]"
+              :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
+              class="info-descricao"
+              :class="`info-descricao-${novoHistorico[campo].cor}`"
             >
               {{ transformaKeys(campo) }}
             </div>
@@ -27,7 +20,10 @@
 
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+              <span v-if="info === '' || info === null">
+                [Campo não preenchido na submissão do pedido]
+              </span>
+              <span v-else>{{ info }}</span>
             </div>
 
             <div v-else>
@@ -47,6 +43,20 @@
                   >
                     Nenhuma tipologia selecionada...
                   </v-alert>
+                </template>
+
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    right
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
                 </template>
 
                 <template v-slot:item.operacao="{ item }">
@@ -100,7 +110,7 @@
         <v-spacer />
         <PO
           operacao="Validar"
-          @finalizarPedido="finalizarPedido($event)"
+          @finalizarPedido="verificaEstadoCampos($event)"
           @devolverPedido="despacharPedido($event)"
         />
       </v-row>
@@ -145,6 +155,15 @@
         @selecao="adicionaTipologias"
       />
     </v-dialog>
+
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="fechaDialogConfirmacao()"
+        @confirma="finalizarPedido(dialogConfirmacao.dados)"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -157,8 +176,22 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import ErroDialog from "@/components/generic/ErroDialog";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
-import { comparaSigla, mapKeys } from "@/utils/utils";
+import {
+  comparaSigla,
+  mapKeys,
+  identificaItemAdicionado,
+  adicionarNotaComRemovidos,
+} from "@/utils/utils";
+
+import {
+  eNUV,
+  eNV,
+  eDataFormatoErrado,
+  eUndefined,
+  testarRegex,
+} from "@/utils/validadores";
 
 export default {
   props: ["p"],
@@ -171,10 +204,17 @@ export default {
     SelecionaAutocomplete,
     EditarCamposDialog,
     AdicionarNota,
+    ConfirmacaoOperacao,
   },
 
   data() {
     return {
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      },
+      animacoes: {},
       esconderOperacoes: {},
       notaDialog: {
         visivel: false,
@@ -260,10 +300,19 @@ export default {
 
     Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
+      this.animacoes[key] = true;
     });
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.historico[this.historico.length - 1]
+      );
+    },
+
     transformaKeys(key) {
       return mapKeys(key);
     },
@@ -304,6 +353,9 @@ export default {
           cor: "amarelo",
           dados: this.dados.tipologiasSel,
         };
+
+        this.animacoes.tipologiasSel = !this.animacoes.tipologiasSel;
+        this.esconderOperacoes.tipologiasSel = true;
       }
     },
 
@@ -315,6 +367,9 @@ export default {
         cor: "amarelo",
         dados: this.dados.tipologiasSel,
       };
+
+      this.animacoes.tipologiasSel = !this.animacoes.tipologiasSel;
+      this.esconderOperacoes.tipologiasSel = true;
     },
 
     async loadTipologias() {
@@ -353,6 +408,11 @@ export default {
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
         pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
@@ -368,24 +428,47 @@ export default {
       }
     },
 
+    fechaDialogConfirmacao() {
+      this.dialogConfirmacao = {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      };
+    },
+
+    async verificaEstadoCampos(dados) {
+      // procura campos a vermelho
+      const haVermelhos = Object.keys(this.novoHistorico).some(
+        (key) => this.novoHistorico[key].cor === "vermelho"
+      );
+      // Se existirem abre dialog de confirmação
+      if (haVermelhos)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados,
+        };
+      // Caso contrário segue para a finalização do pedido
+      else await this.finalizarPedido(dados);
+    },
+
     async finalizarPedido(dados) {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
+        let numeroErros = 0;
+
         if (pedido.objeto.acao === "Extinção") {
-          await this.$request(
-            "put",
-            `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
-            { dataExtincao: pedido.objeto.dados.dataExtincao }
-          );
-        } else {
-          let numeroErros = 0;
-          if (pedido.objeto.dados.hasOwnProperty("designacao")) {
-            numeroErros = await this.validar(
-              pedido.objeto.acao,
-              pedido.objeto.dados
+          numeroErros = this.validarExtincao(pedido.objeto.dados.dataExtincao);
+          if (numeroErros === 0)
+            await this.$request(
+              "put",
+              `/entidades/ent_${pedido.objeto.dadosOriginais.sigla}/extinguir`,
+              { dataExtincao: pedido.objeto.dados.dataExtincao }
             );
-          }
+        } else {
+          numeroErros = await this.validar(pedido.objeto.dados);
 
           if (numeroErros === 0) {
             for (const key in pedido.objeto.dadosOriginais) {
@@ -393,43 +476,49 @@ export default {
                 pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
               }
 
-              if (
-                pedido.objeto.dados[key] === "" ||
-                pedido.objeto.dados[key] === null
-              )
+              if (eNV(pedido.objeto.dados[key]))
                 delete pedido.objeto.dados[key];
             }
 
             await this.$request(
               "put",
-              `/entidades/ent_${pedido.objeto.dados.sigla}`,
+              `/entidades/ent_${pedido.objeto.dadosOriginais.sigla}`,
               pedido.objeto.dados
             );
           }
         }
 
-        const estado = "Validado";
+        if (numeroErros === 0) {
+          const estado = "Validado";
 
-        let dadosUtilizador = this.$verifyTokenUser();
+          let dadosUtilizador = this.$verifyTokenUser();
 
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho,
-        };
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho,
+          };
 
-        pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+          pedido.estado = estado;
+          pedido.token = this.$store.state.token;
 
-        pedido.historico.push(this.novoHistorico);
+          this.novoHistorico = adicionarNotaComRemovidos(
+            this.historico[this.historico.length - 1],
+            this.novoHistorico
+          );
 
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao,
-        });
+          pedido.historico.push(this.novoHistorico);
 
-        this.$router.go(-1);
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao,
+          });
+
+          this.$router.go(-1);
+        } else {
+          this.erroPedido = true;
+        }
       } catch (e) {
         this.erroPedido = true;
 
@@ -455,25 +544,102 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      try {
-        let existeDesignacao = await this.$request(
-          "get",
-          "/entidades/designacao?valor=" + encodeURIComponent(dados.designacao)
-        );
-
-        if (existeDesignacao.data) {
+      if (eNV(dados.designacao)) {
+        this.erros.push({
+          sobre: "Nome da Entidade",
+          mensagem: "O nome da entidade não pode ser vazio.",
+        });
+        numeroErros++;
+      } else if (!eUndefined(dados.designacao)) {
+        try {
+          let existeDesignacao = await this.$request(
+            "get",
+            "/entidades/designacao?valor=" +
+              encodeURIComponent(dados.designacao)
+          );
+          if (existeDesignacao.data) {
+            this.erros.push({
+              sobre: "Nome da Entidade",
+              mensagem: "Nome da entidade já existente na BD.",
+            });
+            numeroErros++;
+          }
+        } catch (err) {
+          numeroErros++;
           this.erros.push({
-            sobre: "Nome da Entidade",
-            mensagem: "Nome da entidade já existente na BD.",
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da designação.",
+          });
+        }
+      }
+
+      // Internacional
+      if (eNV(dados.internacional)) {
+        this.erros.push({
+          sobre: "Internacional",
+          mensagem: "O campo internacional tem de ter uma opção.",
+        });
+        numeroErros++;
+      }
+
+      // SIOE
+      if (!eNUV(dados.sioe)) {
+        if (dados.sioe.length > 12) {
+          this.erros.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
+          });
+          numeroErros++;
+        } else if (!testarRegex(dados.sioe, /^\d+$/)) {
+          this.erros.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE só pode ter digitos numéricos.",
           });
           numeroErros++;
         }
-      } catch (err) {
-        numeroErros++;
+      }
+
+      //Data Criação
+      if (!eNUV(dados.dataCriacao)) {
+        if (eDataFormatoErrado(dados.dataCriacao)) {
+          this.erros.push({
+            sobre: "Data de Criação",
+            mensagem: "A data de criação está no formato errado",
+          });
+          numeroErros++;
+        }
+      }
+
+      return numeroErros;
+    },
+
+    validarExtincao(data) {
+      let numeroErros = 0;
+
+      // Data de Extinção
+      if (eNUV(data)) {
         this.erros.push({
-          sobre: "Acesso à Ontologia",
-          mensagem: "Não consegui verificar a existência da designação.",
+          sobre: "Data de Extinção",
+          mensagem: "A data de extinção não pode ser vazia.",
         });
+        numeroErros++;
+      } else if (!eNUV(this.dadosOriginais.dataExtincao) && !eNUV(data)) {
+        if (eDataFormatoErrado(data)) {
+          this.erros.push({
+            sobre: "Data de Extinção",
+            mensagem: "A data de extinção está no formato errado.",
+          });
+          numeroErros++;
+        } else if (
+          new Date(this.dadosOriginais.dataExtincao) >= new Date(data)
+        ) {
+          this.erros.push({
+            sobre: "Data de Extinção",
+            mensagem:
+              "A data de extinção tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
       }
 
       return numeroErros;
@@ -484,6 +650,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     anula(campo) {
@@ -491,6 +659,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     edita(campo) {
@@ -532,6 +702,7 @@ export default {
       };
 
       this.esconderOperacoes[event.campo.key] = true;
+      this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
     },
 
     fecharErro() {
@@ -560,14 +731,38 @@ export default {
 }
 
 .info-descricao-verde {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #c8e6c9; /* lighten-4 */
 }
 
 .info-descricao-vermelho {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffcdd2; /* lighten-4 */
 }
 
 .info-descricao-amarelo {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffe0b2; /* lighten-4 */
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

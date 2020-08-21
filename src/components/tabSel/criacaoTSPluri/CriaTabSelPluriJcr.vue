@@ -299,7 +299,7 @@ export default {
 
     loadProcessosEspecificos: async function(entidades){
       try{
-        var url = "/classes?tipo=especifico&ents=";
+        var url = "/classes?nivel=3&tipo=especifico&ents=";
         for (var i = 0; i < entidades.length-1; i++) {
           url += this.tabelaSelecao.entidades[i].id + ",";
         }
@@ -391,7 +391,7 @@ export default {
         };
 
         var response = await this.$request("post", "/pedidos", pedidoParams);
-        this.$router.push("/pedidos/submissao");
+        this.$router.push("/pedidos/submissao/"+response.data);
       } catch (error) {
         console.log("Erro no POST da TS: " + error);
       }
@@ -402,15 +402,15 @@ export default {
     },
 
     abortar: async function(){
-      try{
-        if(this.pendente._id){
+      if(this.pendente._id){
+        try{
           var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
         }
-        this.$router.push("/");
+        catch(e){
+          console.log("Erro ao eliminar o pendente: " + e);
+        }
       }
-      catch(e){
-        console.log("Erro ao eliminar o pendente: " + e);
-      }
+      this.$router.push("/");
     },
 
     // Funções de validação --------------------------------------

@@ -48,7 +48,7 @@
       </v-btn>
 
       <v-btn
-        v-if="$store.state.token != '' && level >= 3.5"
+        v-if="$store.state.token != '' && level >= 3"
         @click="drawerEstatisticas"
         icon
       >

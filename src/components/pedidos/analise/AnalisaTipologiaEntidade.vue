@@ -3,16 +3,7 @@
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row
-          v-if="
-            info !== '' &&
-              info !== null &&
-              campo !== 'codigo' &&
-              campo !== 'estado'
-          "
-          dense
-          class="ma-1"
-        >
+        <v-row v-if="campo !== 'estado'" dense class="ma-1">
           <v-col cols="2">
             <div
               :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
@@ -25,7 +16,10 @@
 
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+              <span v-if="info === '' || info === null">
+                [Campo não preenchido na submissão do pedido]
+              </span>
+              <span v-else>{{ info }}</span>
             </div>
 
             <div v-else>
@@ -45,6 +39,20 @@
                   >
                     Nenhuma entidade selecionada...
                   </v-alert>
+                </template>
+
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    right
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
                 </template>
 
                 <template v-slot:item.operacao="{ item }">
@@ -149,7 +157,12 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla, mapKeys } from "@/utils/utils";
+import {
+  comparaSigla,
+  mapKeys,
+  identificaItemAdicionado,
+  adicionarNotaComRemovidos,
+} from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -234,23 +247,29 @@ export default {
   },
 
   mounted() {
-    const criaNovoHistorico = {};
-    Object.keys(this.dados).forEach((key) => {
-      if (key !== "codigo")
-        criaNovoHistorico[key] = {
-          cor: "verde",
-          dados: this.dados[key],
-          nota: null,
-        };
+    const copiaHistorico = JSON.parse(
+      JSON.stringify(this.historico[this.historico.length - 1])
+    );
 
+    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+    this.novoHistorico = copiaHistorico;
+
+    Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
     });
-
-    this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.historico[this.historico.length - 1]
+      );
+    },
+
     transformaKeys(key) {
       return mapKeys(key);
     },
@@ -289,6 +308,9 @@ export default {
           cor: "amarelo",
           dados: this.dados.entidadesSel,
         };
+
+        this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+        this.esconderOperacoes.entidadesSel = true;
       }
     },
 
@@ -300,6 +322,9 @@ export default {
         cor: "amarelo",
         dados: this.dados.entidadesSel,
       };
+
+      this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+      this.esconderOperacoes.entidadesSel = true;
     },
 
     async loadEntidades() {
@@ -338,6 +363,11 @@ export default {
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
         pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
@@ -355,14 +385,20 @@ export default {
 
     async encaminharPedido(dados) {
       try {
-        const estado = "Apreciado";
-
         let dadosUtilizador = this.$verifyTokenUser();
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
+        const estado =
+          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
 
         pedido.historico.push(this.novoHistorico);
 
@@ -396,6 +432,7 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+
       this.animacoes[campo] = !this.animacoes[campo];
     },
 
@@ -404,6 +441,7 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+
       this.animacoes[campo] = !this.animacoes[campo];
     },
 

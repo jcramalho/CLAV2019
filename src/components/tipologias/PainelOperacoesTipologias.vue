@@ -58,15 +58,6 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de criação de tipologia submetido com sucesso -->
-      <v-dialog v-model="dialogTipologiaCriada" width="70%" persistent>
-        <DialogTipologiaSucesso
-          :t="t"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
-      </v-dialog>
-
       <!-- Cancelamento da criação de uma tipologia: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
@@ -107,44 +98,52 @@
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
     </v-row>
+
+    <!-- Dialog de erro no caso de algum erro ocorrer -->
+    <v-dialog v-model="erroDialog" width="50%" persistent>
+      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import ValidarTipologiaInfoBox from "@/components/tipologias/ValidarTipologiaInfoBox";
-import DialogTipologiaSucesso from "@/components/tipologias/DialogTipologiaSucesso";
+import ErroDialog from "@/components/generic/ErroDialog";
 
-import {
-  comparaArraySel,
-  criarHistorico,
-  extrairAlteracoes,
-} from "@/utils/utils";
+import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
+import { eNUV, eNV, eUndefined } from "@/utils/validadores";
 
 export default {
   props: ["t", "acao", "original"],
 
   components: {
     ValidarTipologiaInfoBox,
-    DialogTipologiaSucesso,
+    ErroDialog,
   },
 
   data() {
     return {
+      erroDialog: false,
+      erros: [],
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Tipologia!",
       dialogTipologiaCriada: false,
-      codigoPedido: "",
-      errosValidacao: false,
       pedidoEliminado: false,
+      errosValidacao: false,
     };
   },
 
   methods: {
+    fecharErro() {
+      this.erroDialog = false;
+      this.erros = [];
+    },
+
     async validarTipologiaCriacao() {
       let numeroErros = 0;
 
       // Designação
-      if (this.t.designacao === "" || this.t.designacao === null) {
+      if (eNUV(this.t.designacao)) {
         numeroErros++;
       } else {
         try {
@@ -162,7 +161,7 @@ export default {
       }
 
       // Sigla
-      if (this.t.sigla === "" || this.t.sigla === null) {
+      if (eNUV(this.t.sigla)) {
         numeroErros++;
       } else {
         try {
@@ -185,9 +184,9 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (dados.designacao === "" || dados.designacao === null) {
+      if (eNV(dados.designacao)) {
         numeroErros++;
-      } else if (dados.designacao !== undefined) {
+      } else if (!eUndefined(dados.designacao)) {
         try {
           let existeDesignacao = await this.$request(
             "get",
@@ -219,6 +218,9 @@ export default {
           switch (this.acao) {
             case "Criação":
               erros = await this.validarTipologiaCriacao();
+
+              historico.push(criarHistorico(dataObj));
+
               break;
 
             case "Alteração":
@@ -235,6 +237,13 @@ export default {
           }
 
           if (erros === 0) {
+            const objKeys = Object.keys(dataObj);
+
+            if (objKeys.length === 0)
+              throw new Error(
+                "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
+              );
+
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
@@ -257,15 +266,16 @@ export default {
               pedidoParams
             );
 
-            this.codigoPedido = codigoPedido.data;
-
-            this.dialogTipologiaCriada = true;
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (err) {
-        return err;
+        if (typeof err.message === "string") {
+          this.erros.push(err.message);
+          this.erroDialog = true;
+        }
       }
     },
 

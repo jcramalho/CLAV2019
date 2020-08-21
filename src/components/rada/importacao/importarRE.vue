@@ -16,8 +16,22 @@
             border="left"
           >{{ erros.produtoras }}</v-alert>
           <v-spacer></v-spacer>
-          <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
-          <v-btn color="indigo darken-4" dark @click="importar">Importar</v-btn>
+
+          <v-btn
+            v-if="!importarCircle"
+            color="indigo darken-4"
+            dark
+            @click="dialogState = false"
+          >Voltar</v-btn>
+          <v-btn v-if="!importarCircle" color="indigo darken-4" dark @click="importar">Importar</v-btn>
+
+          <v-progress-circular
+            v-if="importarCircle"
+            :size="40"
+            :width="3"
+            color="amber accent-3"
+            indeterminate
+          ></v-progress-circular>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -27,14 +41,15 @@
 <script>
 import ImportarFicheiro from "@/components/rada/importacao/importarFicheiro";
 
-const conversor = require("@/plugins/conversorRADA").importarRE;
+const conversor = require("@/plugins/rada/conversor_re").importarRE;
 
 export default {
   props: ["dialog", "entidades", "tipologias", "RE"],
   data: () => ({
     ficheiroRE: null,
     erros_ficheiro: false,
-    erros: {}
+    erros: {},
+    importarCircle: false,
   }),
   methods: {
     novoFicheiroRE(novoFicheiro) {
@@ -42,24 +57,27 @@ export default {
     },
     importar() {
       if (this.$refs.form.validate()) {
+        this.importarCircle = true;
         conversor(
           this.ficheiroRE,
           this.entidades,
           this.tipologias,
           JSON.parse(JSON.stringify(this.RE))
         )
-          .then(res => {
+          .then((res) => {
             this.copiarRE(res.RE);
             this.dialogState = false;
+            this.importarCircle = false;
           })
-          .catch(err => {
+          .catch((err) => {
             this.erros = err.erros;
             this.erros_ficheiro = true;
+            this.importarCircle = false;
 
             setTimeout(() => {
               this.erros_ficheiro = false;
               this.erros = {};
-            }, 3000);
+            }, 5000);
           });
       }
     },
@@ -73,11 +91,11 @@ export default {
       this.RE.sist_org = novo_RE.sist_org;
       this.RE.localizacao = novo_RE.localizacao;
       this.RE.est_conser = novo_RE.est_conser;
-    }
+    },
   },
 
   components: {
-    ImportarFicheiro
+    ImportarFicheiro,
   },
   computed: {
     dialogState: {
@@ -86,9 +104,9 @@ export default {
       },
       set(val) {
         this.$emit("fecharDialog", false);
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>
 

@@ -94,7 +94,7 @@
               </v-row>
 
               <v-row justify="center">
-                <v-col sm="5" xs="12">
+                <v-col sm="6" xs="12">
                   <v-autocomplete
                     :rules="[v => !!v || 'Campo obrigatório!']"
                     v-model="rel"
@@ -113,7 +113,7 @@
                     </template>
                   </v-autocomplete>
                 </v-col>
-                <v-col sm="4" xs="12">
+                <v-col sm="6" xs="12">
                   <v-select
                     :disabled="iscodvalido"
                     :rules="[v => !!v || 'Campo obrigatório!']"
@@ -126,19 +126,38 @@
                   >
                     <template v-slot:selection="data">
                       <v-chip>
-                        <v-avatar left color="amber accent-3">
-                          {{
-                          data.item[0]
-                          }}
+                        <v-avatar left>
+                          <img
+                            v-if="data.item == 'Série'"
+                            style="width:23px; height:30px"
+                            :src="svg_sr"
+                          />
+                          <img
+                            v-if="data.item == 'Subsérie'"
+                            style="width:23px; height:30px"
+                            :src="svg_ssr"
+                          />
                         </v-avatar>
                         {{ data.item }}
                       </v-chip>
                     </template>
                   </v-select>
                 </v-col>
-                <v-col md="3" sm="3" xs="12" class="text-right">
-                  <v-icon @click="add()" size="35" color="green lighten-1">add_circle</v-icon>
-                  <v-btn style="margin-left: 10px" dark color="red darken-4" @click="$refs.addRel.reset()">Limpar</v-btn>
+              </v-row>
+              <v-row>
+                <v-col cols="12" class="text-right">
+                  <v-btn
+                    style="margin-left: 10px"
+                    dark
+                    color="green lighten-1"
+                    @click="add()"
+                  >Clique para adicionar a relação com a série/subsérie</v-btn>
+                  <v-btn
+                    style="margin-left: 10px"
+                    dark
+                    color="red darken-4"
+                    @click="$refs.addRel.reset()"
+                  >Limpar</v-btn>
                 </v-col>
               </v-row>
               <v-row v-if="!!alertOn">
@@ -178,7 +197,7 @@ export default {
   name: "RelacoesClasse",
   props: ["newSerie", "classes", "formaContagem"],
   components: {
-    ShowSerieSubserie
+    ShowSerieSubserie,
   },
   data() {
     return {
@@ -201,7 +220,7 @@ export default {
         "Síntese de",
         "Suplemento de",
         "Suplemento para",
-        "Cruzado de"
+        "Cruzado de",
       ],
       headers: [
         {
@@ -209,32 +228,34 @@ export default {
           align: "center",
           value: "relacao",
           width: "30%",
-          class: ["table-header", "body-2", "font-weight-bold"]
+          class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
           text: "Série/Subsérie Relacionada",
           align: "center",
           value: "serieRelacionada",
           width: "65%",
-          class: ["table-header", "body-2", "font-weight-bold"]
+          class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
           value: "edicao",
           align: "center",
           sortable: false,
           width: "5%",
-          class: ["table-header", "body-2", "font-weight-bold"]
-        }
-      ]
+          class: ["table-header", "body-2", "font-weight-bold"],
+        },
+      ],
     };
   },
   computed: {
     filtrarRelacoes() {
-      if (this.newSerie.relacoes.some(e => e.relacao == "Síntese de")) {
-        return this.listaRelacoes.filter(e => e != "Sintetizado por");
+      if (this.newSerie.relacoes.some((e) => e.relacao == "Síntese de")) {
+        return this.listaRelacoes.filter((e) => e != "Sintetizado por");
       } else {
-        if (this.newSerie.relacoes.some(e => e.relacao == "Sintetizado por")) {
-          return this.listaRelacoes.filter(e => e != "Síntese de");
+        if (
+          this.newSerie.relacoes.some((e) => e.relacao == "Sintetizado por")
+        ) {
+          return this.listaRelacoes.filter((e) => e != "Síntese de");
         } else {
           return this.listaRelacoes;
         }
@@ -243,21 +264,21 @@ export default {
     getCodigos() {
       return this.classes
         .filter(
-          e =>
+          (e) =>
             e.codigo != this.newSerie.codigo &&
             (e.tipo == "Subsérie" || e.tipo == "Série")
         )
-        .map(e => {
+        .map((e) => {
           return {
             codigo: e.codigo,
-            searchField: e.codigo + " - " + e.titulo
+            searchField: e.codigo + " - " + e.titulo,
           };
         });
-    }
+    },
   },
   watch: {
-    codrel: function(novo, old) {
-      let c = this.classes.find(e => e.codigo == novo);
+    codrel: function (novo, old) {
+      let c = this.classes.find((e) => e.codigo == novo);
       if (c != undefined && (c.tipo == "Série" || c.tipo == "Subsérie")) {
         this.iscodvalido = true;
         this.tipoClasse = c.tipo;
@@ -265,18 +286,20 @@ export default {
       } else {
         this.iscodvalido = false;
       }
-    }
+    },
   },
   methods: {
     showClasse(item) {
-      if (this.classes.some(cl => cl.codigo == item.serieRelacionada.codigo)) {
+      if (
+        this.classes.some((cl) => cl.codigo == item.serieRelacionada.codigo)
+      ) {
         this.treeview_object = {
           tipo: item.serieRelacionada.tipo,
           codigo: item.serieRelacionada.codigo,
           titulo:
             item.serieRelacionada.codigo + " - " + item.serieRelacionada.titulo,
           eFilhoDe: "",
-          children: []
+          children: [],
         };
 
         this.show_serie_subserie = true;
@@ -286,11 +309,11 @@ export default {
     },
     alteraDF(tipo_criterio) {
       if (tipo_criterio == "Critério de Complementaridade Informacional") {
-        if (this.newSerie.relacoes.some(e => e.relacao == "Síntese de")) {
+        if (this.newSerie.relacoes.some((e) => e.relacao == "Síntese de")) {
           this.newSerie.df = "Conservação";
         } else {
           if (
-            this.newSerie.relacoes.some(e => e.relacao == "Sintetizado por")
+            this.newSerie.relacoes.some((e) => e.relacao == "Sintetizado por")
           ) {
             this.newSerie.df = "Eliminação";
           } else {
@@ -298,7 +321,9 @@ export default {
           }
         }
       } else {
-        if (this.newSerie.relacoes.some(e => e.relacao == "Complementar de")) {
+        if (
+          this.newSerie.relacoes.some((e) => e.relacao == "Complementar de")
+        ) {
           this.newSerie.df = "Conservação";
         } else {
           this.newSerie.df = null;
@@ -308,35 +333,35 @@ export default {
     remove_criterio(codigoClasse, tipo_criterio) {
       if (tipo_criterio == "Critério de Utilidade Administrativa") {
         let criterio = this.newSerie.justificacaoPCA.find(
-          crit => crit.tipo == tipo_criterio
+          (crit) => crit.tipo == tipo_criterio
         );
 
         if (criterio != undefined) {
           criterio.relacoes = criterio.relacoes.filter(
-            e => e.codigo != codigoClasse
+            (e) => e.codigo != codigoClasse
           );
 
           if (criterio.relacoes.length == 0) {
             this.newSerie.justificacaoPCA = this.newSerie.justificacaoPCA.filter(
-              e => e.tipo != tipo_criterio
+              (e) => e.tipo != tipo_criterio
             );
           }
         }
       } else {
         let criterio = this.newSerie.justificacaoDF.find(
-          crit => crit.tipo == tipo_criterio
+          (crit) => crit.tipo == tipo_criterio
         );
 
         if (criterio != undefined) {
           criterio.relacoes = criterio.relacoes.filter(
-            e => e.codigo != codigoClasse
+            (e) => e.codigo != codigoClasse
           );
 
           if (criterio.relacoes.length == 0) {
             this.alteraDF(tipo_criterio);
 
             this.newSerie.justificacaoDF = this.newSerie.justificacaoDF.filter(
-              e => e.tipo != tipo_criterio
+              (e) => e.tipo != tipo_criterio
             );
           }
         }
@@ -364,7 +389,7 @@ export default {
         );
       }
 
-      this.newSerie.relacoes = this.newSerie.relacoes.filter(e => {
+      this.newSerie.relacoes = this.newSerie.relacoes.filter((e) => {
         return (
           e.relacao != item.relacao ||
           e.serieRelacionada.codigo != item.serieRelacionada.codigo
@@ -378,7 +403,7 @@ export default {
         if (
           v == this.newSerie.codigo ||
           this.classes.some(
-            e => e.codigo == v && e.tipo != "Série" && e.tipo != "Subsérie"
+            (e) => e.codigo == v && e.tipo != "Série" && e.tipo != "Subsérie"
           )
         ) {
           return "Código Inválido";
@@ -425,8 +450,8 @@ export default {
             serieRelacionada: {
               codigo: this.codrel,
               tipo: this.tipoClasse,
-              titulo: this.tituloClasse
-            }
+              titulo: this.tituloClasse,
+            },
           });
 
           this.$refs.addRel.reset();
@@ -439,24 +464,24 @@ export default {
     adiciona_criterio(codigoClasse, tituloClasse, tipo_criterio, relacao) {
       if (tipo_criterio == "Critério de Utilidade Administrativa") {
         let criterio = this.newSerie.justificacaoPCA.find(
-          crit => crit.tipo == tipo_criterio
+          (crit) => crit.tipo == tipo_criterio
         );
 
         if (criterio == undefined) {
           this.newSerie.justificacaoPCA.push({
             tipo: tipo_criterio,
             nota: labels.textoCriterioUtilidadeAdministrativa,
-            relacoes: [{ codigo: codigoClasse, titulo: tituloClasse }]
+            relacoes: [{ codigo: codigoClasse, titulo: tituloClasse }],
           });
         } else {
           criterio.relacoes.push({
             codigo: codigoClasse,
-            titulo: tituloClasse
+            titulo: tituloClasse,
           });
         }
       } else {
         let criterio = this.newSerie.justificacaoDF.find(
-          crit => crit.tipo == tipo_criterio
+          (crit) => crit.tipo == tipo_criterio
         );
 
         if (criterio == undefined) {
@@ -466,7 +491,7 @@ export default {
             case "Sintetizado por":
               if (
                 !this.newSerie.justificacaoDF.some(
-                  e => e.tipo == "Critério de Complementaridade Informacional"
+                  (e) => e.tipo == "Critério de Complementaridade Informacional"
                 )
               ) {
                 this.newSerie.df = "Eliminação";
@@ -486,36 +511,36 @@ export default {
           this.newSerie.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
-            relacoes: [{ codigo: codigoClasse, titulo: tituloClasse }]
+            relacoes: [{ codigo: codigoClasse, titulo: tituloClasse }],
           });
         } else {
           criterio.relacoes.push({
             codigo: codigoClasse,
-            titulo: tituloClasse
+            titulo: tituloClasse,
           });
         }
       }
     },
-    validateRelacao: function() {
+    validateRelacao: function () {
       if (
         this.newSerie.relacoes.some(
-          el => el.serieRelacionada.codigo == this.codrel
+          (el) => el.serieRelacionada.codigo == this.codrel
         )
       ) {
         return true;
       } else {
         if (this.rel == "Síntese de" || this.rel == "Sintetizado por") {
-          let classe = this.classes.find(cl => cl.codigo == this.codrel);
+          let classe = this.classes.find((cl) => cl.codigo == this.codrel);
           if (
             classe != undefined &&
-            classe.relacoes.some(e => e.relacao == this.rel)
+            classe.relacoes.some((e) => e.relacao == this.rel)
           ) {
             return true;
           }
         }
       }
       return false;
-    }
-  }
+    },
+  },
 };
 </script>

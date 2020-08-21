@@ -88,7 +88,7 @@
 <script>
 import Loading from "@/components/generic/Loading";
 import ListagemColaboracao from "@/components/colaboracoes/ListagemColaboracao";
-import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
+import { NIVEL_MINIMO_DOC } from "@/utils/consts";
 
 export default {
   data: () => ({
@@ -120,7 +120,7 @@ export default {
 
   methods: {
     preparaOperacoes(level) {
-      if (level >= NIVEL_MINIMO_ALTERAR) {
+      if (level >= NIVEL_MINIMO_DOC) {
         this.operacoes = [
           { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
           { icon: "delete", descricao: "Remoção", cor: "red" }
@@ -129,7 +129,7 @@ export default {
     },
 
     preparaCabecalhos(level) {
-      if (level >= NIVEL_MINIMO_ALTERAR) {
+      if (level >= NIVEL_MINIMO_DOC) {
         this.cabecalhos = ["Nome", "Filiação", "Função", "Operações"];
         this.campos = ["nome", "filiacao", "funcao", "operacoes"];
       } else {
@@ -161,7 +161,7 @@ export default {
 
       if (this.operacoes.length != 0) {
         for (let i = 0; i < listaNoticias.length; i++) {
-          if (level >= NIVEL_MINIMO_ALTERAR) {
+          if (level >= NIVEL_MINIMO_DOC) {
             myTree.push({
               nome: listaNoticias[i].nome,
               filiacao: listaNoticias[i].filiacao,

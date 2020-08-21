@@ -35,6 +35,7 @@
             :classes="RADA.tsRada.classes"
             :UIs="RADA.tsRada.UIs"
             :RE="RADA.RE"
+            @guardar="guardarTrabalho"
             :entidades="entidades"
             :entidadesProcessadas="entidadesProcessadas"
             :tipologias="tipologias"
@@ -53,6 +54,7 @@
             @voltar="changeE1"
             @guardar="guardarTrabalho"
             @remover="toDelete = true"
+            @validar="validarRADA"
             :legislacao="legislacao"
             :RE="RADA.RE"
             :TS="RADA.tsRada"
@@ -63,13 +65,19 @@
           />
           <v-alert
             width="100%"
-            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie"
+            :value="!!erroProdutoras[0] || !!erros_relacoes[0] || !!erros_datas_uis[0] || !existe_serie || !!erros_em_falta[0]"
             outlined
             type="error"
             prominent
             border="left"
-            dismissible
           >
+            <div v-if="!!erros_em_falta[0]">
+              <b>Os seguintes constituintes do RADA estão incompletos ou por preencher:</b>
+              <ul>
+                <li v-for="(em_falta, i) in erros_em_falta" :key="i">{{em_falta}}</li>
+              </ul>
+              <br />
+            </div>
             <div v-if="!!erroProdutoras[0]">
               <b>As seguintes tipologias/entidades produtoras não foram adicionadas a nenhuma série:</b>
               <ul>
@@ -98,6 +106,9 @@
             <div v-if="!existe_serie">
               <b>Deve adicionar séries ao RADA, antes de o submeter. Tem possibilidade de associar unidades de instalação às séries em avaliação.</b>
             </div>
+          </v-alert>
+          <v-alert width="100%" :value="alert_valido" outlined type="success" prominent border="left">
+            Validação efetuada com sucesso!
           </v-alert>
         </v-stepper-content>
       </v-stepper>
@@ -154,7 +165,7 @@ export default {
   components: {
     RelatorioExpositivo,
     TSRada,
-    InformacaoGeral
+    InformacaoGeral,
   },
   mixins: [mixin_criacao_rada],
   data() {
@@ -172,12 +183,12 @@ export default {
         entRes: [],
         RE: {
           entidadesProd: [
-            // "ACSS - Administração Central do Sistema de Saúde, IP",
+            //"AAN - Autoridade Aeronáutica Nacional"
             // "ADSE - Instituto de Proteção e Assistência na Doença, IP"
           ],
           tipologiasProd: null,
-          // dataInicial: "2020-01-02",
-          // dataFinal: "2020-06-01",
+          // dataInicial: "2020-08-10",
+          // dataFinal: "2020-08-12",
           dataInicial: null,
           dataFinal: null,
           dimSuporte: {
@@ -186,13 +197,13 @@ export default {
             nUI: null,
             medicaoUI_papel: null,
             medicaoUI_digital: null,
-            medicaoUI_outros: null
+            medicaoUI_outros: null,
           },
           hist_admin: "",
           hist_cust: "",
           sist_org: "",
           localizacao: "",
-          est_conser: ""
+          est_conser: "",
         },
         tsRada: {
           titulo: "",
@@ -254,21 +265,21 @@ export default {
             //   titulo: "Classe 01",
             //   descricao: "Descrição",
             //   eFilhoDe: null,
-            //   tipo: "N1"
+            //   tipo: "N1",
             // },
             // {
             //   codigo: "01.01",
             //   titulo: "Classe 01.01",
             //   descricao: "Descrição",
             //   eFilhoDe: "01",
-            //   tipo: "N2"
+            //   tipo: "N2",
             // },
             // {
             //   codigo: "01.01.01",
             //   titulo: "Classe 01.01.01",
             //   descricao: "Descrição 01.01.01",
             //   eFilhoDe: "01.01",
-            //   tipo: "N3"
+            //   tipo: "N3",
             // },
             // {
             //   codigo: "01.02",
@@ -279,9 +290,9 @@ export default {
             //   tUA: "Coleção",
             //   tSerie: "Aberta",
             //   suporte_e_medicao: [
-            //     { suporte: "Eletrónico Digitalizado", medicao: "56" }
+            //     { suporte: "Eletrónico Digitalizado", medicao: "56" },
             //   ],
-            //   UIs: ["1"],
+            //   UIs: [],
             //   localizacao: ["Lisboa"],
             //   entProdutoras: [
             //     // "ACSS - Administração Central do Sistema de Saúde, IP",
@@ -292,20 +303,7 @@ export default {
             //     // "ACE - Administração Central do Estado"
             //   ],
             //   legislacao: [],
-            //   relacoes: [
-            //     {
-            //       relacao: "Síntese de",
-            //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
-            //     },
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.02.01", tipo: "Subsérie" }
-            //     },
-            //     {
-            //       relacao: "Suplemento para",
-            //       serieRelacionada: { codigo: "01.05", tipo: "Série" }
-            //     }
-            //   ],
+            //   relacoes: [],
             //   pca: "5",
             //   notaPCA: "Sem notas",
             //   notaDF: "Sem notas DF",
@@ -314,30 +312,13 @@ export default {
             //     {
             //       tipo: "Critério Gestionário",
             //       nota:
-            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
+            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos.",
             //     },
-            //     {
-            //       tipo: "Critério de Utilidade Administrativa",
-            //       nota:
-            //         "Prazo decorrente da necessidade de consulta para apuramento da responsabilidade em sede de: ",
-            //       relacoes: [{ codigo: "01.05" }]
-            //     }
             //   ],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Densidade Informacional",
-            //       nota: "Sintetiza a informação de: ",
-            //       relacoes: [{ codigo: "01.03" }]
-            //     },
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.02.01" }]
-            //     }
-            //   ],
+            //   df: null,
+            //   justificacaoDF: [],
             //   eFilhoDe: "01",
-            //   tipo: "Série"
+            //   tipo: "Série",
             // },
             // {
             //   codigo: "01.02.01",
@@ -345,41 +326,26 @@ export default {
             //   descricao: "Descrição 01.02.01",
             //   dataInicial: "2020-05-01",
             //   dataFinal: "2020-05-28",
-            //   relacoes: [
-            //     {
-            //       relacao: "Complementar de",
-            //       serieRelacionada: { codigo: "01.02", tipo: "Série" }
-            //     },
-            //     {
-            //       relacao: "Cruzado de",
-            //       serieRelacionada: { codigo: "01.03", tipo: "Série" }
-            //     }
-            //   ],
+            //   relacoes: [],
             //   UIs: ["1"],
             //   pca: "10",
             //   notaPCA: "Sem ntoas PCA",
             //   notaDF: "12",
             //   formaContagem: {
             //     forma: "vc_pcaFormaContagem_disposicaoLegal",
-            //     subforma: "vc_pcaSubformaContagem_F01.02"
+            //     subforma: "vc_pcaSubformaContagem_F01.02",
             //   },
             //   justificacaoPCA: [
             //     {
             //       tipo: "Critério Gestionário",
             //       nota:
-            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos."
-            //     }
+            //         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para a definição do prazo o tempo do mandato de maior duração: 5 anos.",
+            //     },
             //   ],
-            //   df: "Conservação",
-            //   justificacaoDF: [
-            //     {
-            //       tipo: "Critério de Complementaridade Informacional",
-            //       nota: "É complementar de: ",
-            //       relacoes: [{ codigo: "01.02" }]
-            //     }
-            //   ],
-            //   eFilhoDe: "01.03",
-            //   tipo: "Subsérie"
+            //   df: null,
+            //   justificacaoDF: [],
+            //   eFilhoDe: "01.02",
+            //   tipo: "Subsérie",
             // },
             // {
             //   codigo: "01.03",
@@ -467,9 +433,9 @@ export default {
             //   eFilhoDe: "01",
             //   tipo: "Série"
             // }
-          ]
-        }
-      }
+          ],
+        },
+      },
     };
   },
   watch: {
@@ -477,12 +443,12 @@ export default {
       if (v > 1 && !this.guardar) {
         this.guardar = true;
       }
-    }
+    },
   },
   methods: {
     eliminarTrabalho() {
       this.$request("delete", "/pendentes/" + this.idPendente).then(
-        response => {
+        (response) => {
           this.$router.push("/");
         }
       );
@@ -495,15 +461,15 @@ export default {
           objeto: {
             rada: this.RADA,
             entidades: this.entidades.filter(
-              e => e.estado_no_sistema == "Nova"
+              (e) => e.estado_no_sistema == "Nova"
             ),
-            legislacao: this.legislacao.filter(e => e.estado == "Nova")
-          }
+            legislacao: this.legislacao.filter((e) => e.estado == "Nova"),
+          },
         };
 
         let response = this.$request("put", "/pendentes", updatePendente);
 
-        response.then(resp => {
+        response.then((resp) => {
           if (continuar_ou_nao == "nao") {
             this.dialogRADAPendente = true;
           } else {
@@ -522,18 +488,18 @@ export default {
           objeto: {
             rada: this.RADA,
             entidades: this.entidades.filter(
-              e => e.estado_no_sistema == "Nova"
+              (e) => e.estado_no_sistema == "Nova"
             ),
-            legislacao: this.legislacao.filter(e => e.estado == "Nova")
+            legislacao: this.legislacao.filter((e) => e.estado == "Nova"),
           },
           criadoPor: this.userEmail,
           user: { email: this.userEmail },
-          token: this.$store.state.token
+          token: this.$store.state.token,
         };
 
         let response = this.$request("post", "/pendentes", pendenteParams);
 
-        response.then(resp => {
+        response.then((resp) => {
           if (continuar_ou_nao == "sim") {
             this.idPendente = resp.data._id;
             this.pode_remover = true;
@@ -547,7 +513,7 @@ export default {
           }
         });
       }
-    }
+    },
   },
   async created() {
     let userBD = this.$verifyTokenUser();
@@ -562,7 +528,7 @@ export default {
         " - " +
         user_entidade_completa.data.designacao
     );
-  }
+  },
 };
 </script>
 

@@ -28,7 +28,7 @@
       </v-col>
       <v-spacer></v-spacer>
       <v-col class="text-right">
-        <v-btn disabled color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
+        <v-btn color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
           <v-icon dark left>add</v-icon>Importar Classes
         </v-btn>
       </v-col>
@@ -102,6 +102,9 @@
                 style="width:23px; height:30px"
                 :src="svg_ssr"
               />
+              <img v-else-if="item.tipo == 'N1'" style="width:23px; height:30px" :src="svg_N1" />
+              <img v-else-if="item.tipo == 'N2'" style="width:23px; height:30px" :src="svg_N2" />
+              <img v-else-if="item.tipo == 'N3'" style="width:23px; height:30px" :src="svg_N3" />
             </template>
             <template v-slot:label="{ item }">
               <div @mouseover="mostrar_botao_copia = item" @mouseout="mostrar_botao_copia = false">
@@ -167,6 +170,7 @@
     <!-- IMPORTAR CLASSES -->
     <ImportarClasses
       v-if="importar_classes"
+      :formaContagem="formaContagem"
       :dialog="importar_classes"
       :classes="TS.classes"
       :RE="RE"
@@ -238,6 +242,9 @@
             dark
             @click="$emit('guardar', 'nao')"
           >Continuar Depois</v-btn>
+          <v-btn style="margin-left: 10px" color="indigo darken-4" @click="$emit('validar')">
+            <font style="color: white">Validar</font>
+          </v-btn>
           <v-btn
             style="margin-left: 10px"
             :disabled="
@@ -251,6 +258,7 @@
           >
             <font style="color: white">Submeter</font>
           </v-btn>
+
           <v-btn
             style="margin-left: 10px"
             color="red darken-4"
@@ -286,7 +294,7 @@ export default {
     "legislacaoProcessada",
     "loading_circle",
     "toSave",
-    "pode_remover"
+    "pode_remover",
   ],
   components: {
     ImportarClasses,
@@ -297,7 +305,7 @@ export default {
     EditarSubserie,
     EditarSerie,
     ListaUI,
-    TabelaClassesRADA
+    TabelaClassesRADA,
   },
   data: () => ({
     importar_classes: false,
@@ -311,15 +319,18 @@ export default {
     criar_serie: false,
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+    svg_N1: require("@/assets/n1.svg"),
+    svg_N2: require("@/assets/n2.svg"),
+    svg_N3: require("@/assets/n3.svg"),
     erros_ts: [],
     formaContagem: {
       subFormasContagem: [],
-      formasContagem: []
+      formasContagem: [],
     },
     treeview_object: null,
     editar_serie: false,
     editar_subserie: false,
-    editar_area_organico: false
+    editar_area_organico: false,
   }),
   computed: {
     filter() {
@@ -350,7 +361,7 @@ export default {
                   !Boolean(this.TS.classes[i].notaPCA)) ||
                 this.TS.classes[i].formaContagem.forma == null
             ),
-            children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
+            children: this.preparaTreeFilhos(this.TS.classes[i].codigo),
           });
         }
       }
@@ -358,9 +369,9 @@ export default {
     },
     incompleto() {
       return this.TS.classes.some(
-        e =>
+        (e) =>
           (e.tipo == "Série" &&
-            ((!this.TS.classes.some(cl => cl.eFilhoDe == e.codigo) &&
+            ((!this.TS.classes.some((cl) => cl.eFilhoDe == e.codigo) &&
               ((!Boolean(e.df) && !Boolean(e.notaDF)) ||
                 (!Boolean(e.pca) && !Boolean(e.notaPCA)) ||
                 e.formaContagem.forma == null)) ||
@@ -372,9 +383,9 @@ export default {
     },
     UIs_validas() {
       return this.TS.UIs.some(
-        e => e.classesAssociadas.length == 0 || e.titulo == ""
+        (e) => e.classesAssociadas.length == 0 || e.titulo == ""
       );
-    }
+    },
   },
   methods: {
     mergeClasses(novas_classes) {
@@ -398,7 +409,7 @@ export default {
           break;
       }
     },
-    preparaTreeFilhos: function(pai) {
+    preparaTreeFilhos: function (pai) {
       let children = [];
 
       for (let i = 0; i < this.TS.classes.length; i++) {
@@ -416,7 +427,7 @@ export default {
                   !Boolean(this.TS.classes[i].notaPCA)) ||
                 this.TS.classes[i].formaContagem.forma == null
             ),
-            children: this.preparaTreeFilhos(this.TS.classes[i].codigo)
+            children: this.preparaTreeFilhos(this.TS.classes[i].codigo),
           });
         }
       }
@@ -425,7 +436,7 @@ export default {
     },
     nova_classe_copia(item) {
       this.classe_copia = JSON.parse(
-        JSON.stringify(this.TS.classes.find(e => e.codigo == item.codigo))
+        JSON.stringify(this.TS.classes.find((e) => e.codigo == item.codigo))
       );
 
       if (item.tipo == "Série") {
@@ -434,12 +445,12 @@ export default {
         this.criar_subserie = true;
       }
     },
-    sendToFather: function() {
+    sendToFather: function () {
       this.$emit("update:loading_circle", true);
       this.$emit("done");
     },
     atualizacao_area_organico(c) {
-      let area_organico = this.TS.classes.find(e => e.codigo == c.codigo);
+      let area_organico = this.TS.classes.find((e) => e.codigo == c.codigo);
 
       area_organico.descricao = c.descricao;
       area_organico.titulo = c.titulo;
@@ -447,7 +458,7 @@ export default {
       area_organico.tipo = c.tipo;
     },
     async atualizacao_serie(c) {
-      let serie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
+      let serie_classe = this.TS.classes.find((e) => e.codigo == c.codigo);
 
       serie_classe.relacoes = await this.editaRelacoes(serie_classe, c);
       serie_classe.UIs = await this.editaUI(serie_classe, c);
@@ -475,23 +486,23 @@ export default {
       serie_classe.justificacaoDF = c.justificacaoDF;
       serie_classe.eFilhoDe = c.eFilhoDe;
 
-      serie_classe.justificacaoPCA.forEach(criterio => {
+      serie_classe.justificacaoPCA.forEach((criterio) => {
         if (criterio.tipo == "Critério de Utilidade Administrativa") {
-          criterio.relacoes.map(rel => delete rel.titulo);
+          criterio.relacoes.map((rel) => delete rel.titulo);
         }
       });
 
-      serie_classe.justificacaoDF.forEach(criterio => {
+      serie_classe.justificacaoDF.forEach((criterio) => {
         if (
           criterio.tipo == "Critério de Complementaridade Informacional" ||
           criterio.tipo == "Critério de Densidade Informacional"
         ) {
-          criterio.relacoes.map(rel => delete rel.titulo);
+          criterio.relacoes.map((rel) => delete rel.titulo);
         }
       });
     },
     async atualizacao_subserie(c) {
-      let subserie_classe = this.TS.classes.find(e => e.codigo == c.codigo);
+      let subserie_classe = this.TS.classes.find((e) => e.codigo == c.codigo);
 
       subserie_classe.relacoes = await this.editaRelacoes(subserie_classe, c);
       subserie_classe.UIs = await this.editaUI(subserie_classe, c);
@@ -509,53 +520,53 @@ export default {
       subserie_classe.justificacaoDF = c.justificacaoDF;
       subserie_classe.eFilhoDe = c.eFilhoDe;
 
-      subserie_classe.justificacaoPCA.forEach(criterio => {
+      subserie_classe.justificacaoPCA.forEach((criterio) => {
         if (criterio.tipo == "Critério de Utilidade Administrativa") {
-          criterio.relacoes.map(rel => delete rel.titulo);
+          criterio.relacoes.map((rel) => delete rel.titulo);
         }
       });
 
-      subserie_classe.justificacaoDF.forEach(criterio => {
+      subserie_classe.justificacaoDF.forEach((criterio) => {
         if (
           criterio.tipo == "Critério de Complementaridade Informacional" ||
           criterio.tipo == "Critério de Densidade Informacional"
         ) {
-          criterio.relacoes.map(rel => delete rel.titulo);
+          criterio.relacoes.map((rel) => delete rel.titulo);
         }
       });
     },
     alterarCriterioLegalSubseries(codigoPai, legislacao) {
       //procurar as subséries que são filhos e tratar dos seus critérios legislativos
-      let subseries = this.TS.classes.filter(e => e.eFilhoDe == codigoPai);
+      let subseries = this.TS.classes.filter((e) => e.eFilhoDe == codigoPai);
 
       for (let i = 0; i < subseries.length; i++) {
         // 1º remover do critério legal na justificação PCA
         let legalPCA_subserie = subseries[i].justificacaoPCA.find(
-          e => e.tipo == "Critério Legal"
+          (e) => e.tipo == "Critério Legal"
         );
         if (legalPCA_subserie != undefined) {
-          legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter(e =>
-            legislacao.some(leg => leg.legislacao == e)
+          legalPCA_subserie.relacoes = legalPCA_subserie.relacoes.filter((e) =>
+            legislacao.some((leg) => leg.legislacao == e)
           );
 
           if (legalPCA_subserie.relacoes.length == 0) {
             subseries[i].justificacaoPCA = subseries[i].justificacaoPCA.filter(
-              e => e.tipo != "Critério Legal"
+              (e) => e.tipo != "Critério Legal"
             );
           }
         }
         // 2º remover do critério legal na justificação DF
         let legalDF_subserie = subseries[i].justificacaoDF.find(
-          e => e.tipo == "Critério Legal"
+          (e) => e.tipo == "Critério Legal"
         );
         if (legalDF_subserie != undefined) {
-          legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter(e =>
-            legislacao.some(leg => leg.legislacao == e)
+          legalDF_subserie.relacoes = legalDF_subserie.relacoes.filter((e) =>
+            legislacao.some((leg) => leg.legislacao == e)
           );
 
           if (legalDF_subserie.relacoes.length == 0) {
             subseries[i].justificacaoDF = subseries[i].justificacaoDF.filter(
-              e => e.tipo != "Critério Legal"
+              (e) => e.tipo != "Critério Legal"
             );
           }
         }
@@ -566,7 +577,7 @@ export default {
 
       // Iterar o array alterado pelo utilizador
       for (let i = 0; i < c.UIs.length; i++) {
-        let UIs_igual = serie_classe.UIs.find(ui => ui == c.UIs[i]);
+        let UIs_igual = serie_classe.UIs.find((ui) => ui == c.UIs[i]);
 
         if (UIs_igual == undefined) {
           this.adicionaUI(c.UIs[i], serie_classe, c);
@@ -576,7 +587,7 @@ export default {
 
       // Iterar o array original de relacoes
       for (let j = 0; j < serie_classe.UIs.length; j++) {
-        let UIs_igual = c.UIs.find(ui => ui == serie_classe.UIs[j]);
+        let UIs_igual = c.UIs.find((ui) => ui == serie_classe.UIs[j]);
 
         if (UIs_igual == undefined) {
           this.eliminaUI(serie_classe.UIs[j], serie_classe);
@@ -585,19 +596,19 @@ export default {
       return novo_UIs;
     },
     eliminaUI(velhaUI, serie_classe) {
-      let UI = this.TS.UIs.find(e => e.codigo == velhaUI);
+      let UI = this.TS.UIs.find((e) => e.codigo == velhaUI);
 
       UI.classesAssociadas = UI.classesAssociadas.filter(
-        e => e.codigo != serie_classe.codigo
+        (e) => e.codigo != serie_classe.codigo
       );
     },
     adicionaUI(novaUI, serie_classe, c) {
-      let UI = this.TS.UIs.find(e => e.codigo == novaUI);
+      let UI = this.TS.UIs.find((e) => e.codigo == novaUI);
 
       if (UI != undefined) {
         UI.classesAssociadas.push({
           codigo: serie_classe.codigo,
-          tipo: serie_classe.tipo
+          tipo: serie_classe.tipo,
         });
       } else {
         this.TS.UIs.push({
@@ -614,17 +625,17 @@ export default {
             entProdutoras:
               !!c.entProdutoras && c.entProdutoras.length == 1
                 ? [...c.entProdutoras]
-                : []
+                : [],
           },
           classesAssociadas: [
             {
               codigo: serie_classe.codigo,
-              tipo: serie_classe.tipo
-            }
+              tipo: serie_classe.tipo,
+            },
           ],
           descricao: "",
           notas: "",
-          localizacao: ""
+          localizacao: "",
         });
       }
     },
@@ -634,7 +645,7 @@ export default {
       // Iterar o array alterado pelo utilizador
       for (let i = 0; i < c.relacoes.length; i++) {
         let relacao_igual = serie_classe.relacoes.find(
-          rel =>
+          (rel) =>
             rel.relacao == c.relacoes[i].relacao &&
             rel.serieRelacionada.codigo == c.relacoes[i].serieRelacionada.codigo
         );
@@ -650,7 +661,7 @@ export default {
       // Iterar o array original de relacoes
       for (let j = 0; j < serie_classe.relacoes.length; j++) {
         let relacao_igual = c.relacoes.find(
-          rel =>
+          (rel) =>
             rel.relacao == serie_classe.relacoes[j].relacao &&
             rel.serieRelacionada.codigo ==
               serie_classe.relacoes[j].serieRelacionada.codigo
@@ -665,7 +676,7 @@ export default {
     adicionaRelacoesInversas(relacao, serie_classe) {
       // console.log("ADICIONA RELACAO INVERSA");
       let classe_relacionada = this.TS.classes.find(
-        e => e.codigo == relacao.serieRelacionada.codigo
+        (e) => e.codigo == relacao.serieRelacionada.codigo
       );
 
       if (classe_relacionada == undefined) {
@@ -689,13 +700,13 @@ export default {
             UIs: [],
             pca: null,
             formaContagem: {
-              forma: null
+              forma: null,
             },
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
             eFilhoDe: null,
-            tipo: "Série"
+            tipo: "Série",
           };
         } else {
           classe_relacionada = {
@@ -710,13 +721,13 @@ export default {
             notaPCA: null,
             notaDF: null,
             formaContagem: {
-              forma: null
+              forma: null,
             },
             justificacaoPCA: [],
             df: null,
             justificacaoDF: [],
             eFilhoDe: null,
-            tipo: "Subsérie"
+            tipo: "Subsérie",
           };
         }
 
@@ -780,15 +791,15 @@ export default {
         relacao: relacao_inversa,
         serieRelacionada: {
           codigo: serie_classe.codigo,
-          tipo: serie_classe.tipo
-        }
+          tipo: serie_classe.tipo,
+        },
       });
     },
     adicionarDF(classe_relacionada, relacao) {
       // console.log("Adicionar DF");
       if (
         relacao == "Sintetizado por" &&
-        !classe_relacionada.relacoes.some(e => e.relacao == "Complementar de")
+        !classe_relacionada.relacoes.some((e) => e.relacao == "Complementar de")
       ) {
         classe_relacionada.df = "Eliminação";
       } else {
@@ -804,21 +815,21 @@ export default {
       // console.log("ADICIONAR CRITÉRIO -> " + tipo_criterio);
       if (tipo_criterio == "Critério de Utilidade Administrativa") {
         let criterio = classe_relacionada.justificacaoPCA.find(
-          crit => crit.tipo == tipo_criterio
+          (crit) => crit.tipo == tipo_criterio
         );
 
         if (criterio == undefined) {
           classe_relacionada.justificacaoPCA.push({
             tipo: tipo_criterio,
             nota: labels.textoCriterioUtilidadeAdministrativa,
-            relacoes: [{ codigo: codigoClasse }]
+            relacoes: [{ codigo: codigoClasse }],
           });
         } else {
           criterio.relacoes.push({ codigo: codigoClasse });
         }
       } else {
         let criterio = classe_relacionada.justificacaoDF.find(
-          crit => crit.tipo == tipo_criterio
+          (crit) => crit.tipo == tipo_criterio
         );
 
         if (criterio == undefined) {
@@ -840,7 +851,7 @@ export default {
           classe_relacionada.justificacaoDF.push({
             tipo: tipo_criterio,
             nota: nota,
-            relacoes: [{ codigo: codigoClasse }]
+            relacoes: [{ codigo: codigoClasse }],
           });
         } else {
           criterio.relacoes.push({ codigo: codigoClasse });
@@ -852,7 +863,7 @@ export default {
       if (tipo_criterio == "Critério de Densidade Informacional") {
         if (
           classe_relacionada.justificacaoDF.some(
-            e => e.tipo == "Critério de Complementaridade Informacional"
+            (e) => e.tipo == "Critério de Complementaridade Informacional"
           )
         ) {
           classe_relacionada.df = "Conservação";
@@ -860,12 +871,14 @@ export default {
           classe_relacionada.df = null;
         }
       } else {
-        if (classe_relacionada.relacoes.some(e => e.relacao == "Síntese de")) {
+        if (
+          classe_relacionada.relacoes.some((e) => e.relacao == "Síntese de")
+        ) {
           classe_relacionada.df = "Conservação";
         } else {
           if (
             classe_relacionada.relacoes.some(
-              e => e.relacao == "Sintetizado por"
+              (e) => e.relacao == "Sintetizado por"
             )
           ) {
             classe_relacionada.df = "Eliminação";
@@ -879,34 +892,34 @@ export default {
       // console.log("REMOVER CRITÉRIO -> " + tipo_criterio);
       if (tipo_criterio == "Critério de Utilidade Administrativa") {
         let criterio = classe_relacionada.justificacaoPCA.find(
-          crit => crit.tipo == tipo_criterio
+          (crit) => crit.tipo == tipo_criterio
         );
 
         if (criterio != undefined) {
           criterio.relacoes = criterio.relacoes.filter(
-            e => e.codigo != codigoClasse
+            (e) => e.codigo != codigoClasse
           );
 
           if (criterio.relacoes.length == 0) {
             classe_relacionada.justificacaoPCA = classe_relacionada.justificacaoPCA.filter(
-              e => e.tipo != tipo_criterio
+              (e) => e.tipo != tipo_criterio
             );
           }
         }
       } else {
         let criterio = classe_relacionada.justificacaoDF.find(
-          crit => crit.tipo == tipo_criterio
+          (crit) => crit.tipo == tipo_criterio
         );
 
         if (criterio != undefined) {
           criterio.relacoes = criterio.relacoes.filter(
-            e => e.codigo != codigoClasse
+            (e) => e.codigo != codigoClasse
           );
 
           if (criterio.relacoes.length == 0) {
             // Remover DF que é dependente do critério que vai ser eliminado;
             classe_relacionada.justificacaoDF = classe_relacionada.justificacaoDF.filter(
-              e => e.tipo != tipo_criterio
+              (e) => e.tipo != tipo_criterio
             );
             this.removerDF(classe_relacionada, tipo_criterio);
           }
@@ -916,7 +929,7 @@ export default {
     removeRelacoesInversas(relacao, serie_classe) {
       // console.log("REMOVE RELACAO INVERSA");
       let classe_relacionada = this.TS.classes.find(
-        e => e.codigo == relacao.serieRelacionada.codigo
+        (e) => e.codigo == relacao.serieRelacionada.codigo
       );
 
       let relacao_inversa = "";
@@ -968,7 +981,7 @@ export default {
           break;
       }
 
-      classe_relacionada.relacoes = classe_relacionada.relacoes.filter(e => {
+      classe_relacionada.relacoes = classe_relacionada.relacoes.filter((e) => {
         return (
           e.relacao != relacao_inversa ||
           e.serieRelacionada.codigo != serie_classe.codigo
@@ -977,8 +990,8 @@ export default {
     },
     remover_classe(classe) {
       this.TS.classes
-        .filter(e => e.eFilhoDe == classe.codigo)
-        .map(item => {
+        .filter((e) => e.eFilhoDe == classe.codigo)
+        .map((item) => {
           item.eFilhoDe = null;
         });
 
@@ -993,9 +1006,9 @@ export default {
         }
       }
       this.TS.classes = this.TS.classes.filter(
-        cl => cl.codigo != classe.codigo
+        (cl) => cl.codigo != classe.codigo
       );
-    }
+    },
   },
   async created() {
     let responseTipos = await this.$request(
@@ -1003,7 +1016,7 @@ export default {
       "/vocabularios/vc_tipoDiplomaLegislativo"
     );
 
-    this.tipos = responseTipos.data.map(t => {
+    this.tipos = responseTipos.data.map((t) => {
       return { label: t.termo, value: t.termo };
     });
 
@@ -1012,10 +1025,10 @@ export default {
       "/vocabularios/vc_pcaFormaContagem"
     );
 
-    this.formaContagem.formasContagem = responseFC.data.map(item => {
+    this.formaContagem.formasContagem = responseFC.data.map((item) => {
       return {
         label: item.termo,
-        value: item.idtermo.split("#")[1]
+        value: item.idtermo.split("#")[1],
       };
     });
 
@@ -1024,12 +1037,12 @@ export default {
       "/vocabularios/vc_pcaSubformaContagem"
     );
 
-    this.formaContagem.subFormasContagem = responseSFC.data.map(item => {
+    this.formaContagem.subFormasContagem = responseSFC.data.map((item) => {
       return {
         label: item.termo.split(": ")[1] + ": " + item.desc,
-        value: item.idtermo.split("#")[1]
+        value: item.idtermo.split("#")[1],
       };
     });
-  }
+  },
 };
 </script>

@@ -22,7 +22,6 @@
                 color="indigo"
                 single-line
                 v-model="entidade.designacao"
-                maxlength="150"
                 label="Nome da Entidade"
               ></v-text-field>
             </v-col>
@@ -41,7 +40,6 @@
                 color="indigo"
                 single-line
                 v-model="entidade.sigla"
-                maxlength="10"
                 label="Sigla"
               ></v-text-field>
             </v-col>
@@ -165,7 +163,6 @@ export default {
       sigla: "",
       internacional: "",
       sioe: "",
-      codigo: "",
       dataCriacao: "",
       dataExtincao: "",
       estado: "Ativa",
@@ -178,7 +175,7 @@ export default {
     tipologiasReady: false,
 
     regraSIOE: [
-      (v) => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos.",
+      (v) => /^\d+$/.test(v) || "Apenas são aceites caracteres numéricos.",
     ],
 
     snackbar: false,

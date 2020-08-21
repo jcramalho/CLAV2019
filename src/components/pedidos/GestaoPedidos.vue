@@ -40,7 +40,7 @@
 
       <v-dialog v-model="distribuir" width="80%" persistent>
         <AvancarPedido
-          :utilizadores="utilizadores"
+          :utilizadores="utilizadoresParaAnalisar"
           :texto="{
             textoTitulo: 'Distribuição',
             textoAlert: 'análise',
@@ -63,8 +63,11 @@ import PedidosDevolvidos from "@/components/pedidos/PedidosDevolvidos";
 import PedidosProcessados from "@/components/pedidos/PedidosProcessados";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
-import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
-import { filtraNivel } from "@/utils/utils";
+import {
+  NIVEIS_ANALISAR_PEDIDO,
+  NIVEL_MINIMO_DISTRIBUIR_PEDIDOS,
+} from "@/utils/consts";
+import { filtraNivel } from "@/utils/permissoes";
 
 export default {
   components: {
@@ -80,7 +83,7 @@ export default {
     return {
       pedidoParaDistribuir: {},
       distribuir: false,
-      utilizadores: [],
+      utilizadoresParaAnalisar: [],
       pedidosSubmetidos: [],
       pedidosDistribuidos: [],
       pedidosValidados: [],
@@ -108,20 +111,34 @@ export default {
   },
 
   methods: {
+    temPermissaoDistribuir() {
+      return this.$userLevel() >= NIVEL_MINIMO_DISTRIBUIR_PEDIDOS;
+    },
+
     async carregaPedidos() {
       try {
         let pedidos = await this.$request("get", "/pedidos");
         pedidos = pedidos.data;
 
-        this.pedidosSubmetidos = pedidos.filter((p) => p.estado == "Submetido");
-        this.pedidosDistribuidos = pedidos.filter(
-          (p) => p.estado == "Distribuído"
+        this.pedidosSubmetidos = pedidos.filter(
+          (p) => p.estado === "Submetido"
         );
-        this.pedidosValidados = pedidos.filter((p) => p.estado == "Apreciado");
-        this.pedidosDevolvidos = pedidos.filter((p) => p.estado == "Devolvido");
-        this.pedidosProcessados = pedidos.filter((p) => p.estado == "Validado");
+        this.pedidosDistribuidos = pedidos.filter((p) => {
+          if (p.estado === "Distribuído" || p.estado === "Redistribuído")
+            return p;
+        });
+        this.pedidosValidados = pedidos.filter((p) => {
+          if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
+        });
+        this.pedidosDevolvidos = pedidos.filter(
+          (p) => p.estado === "Devolvido"
+        );
+        this.pedidosProcessados = pedidos.filter(
+          (p) => p.estado === "Validado"
+        );
 
-        await this.listaUtilizadores();
+        if (this.temPermissaoDistribuir())
+          await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
         return e;
       }
@@ -136,16 +153,15 @@ export default {
       this.distribuir = true;
     },
 
-    async listaUtilizadores() {
+    async listaUtilizadoresParaAnalisar() {
       const response = await this.$request("get", "/users");
 
-      const utilizadores = filtraNivel(
+      const utilizadoresFiltrados = filtraNivel(
         response.data,
-        NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS,
-        ">="
+        NIVEIS_ANALISAR_PEDIDO
       );
 
-      this.utilizadores = utilizadores;
+      this.utilizadoresParaAnalisar = utilizadoresFiltrados;
     },
 
     analisaPedido(pedido) {
@@ -160,12 +176,11 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.pedidoParaDistribuir));
 
-        const estado = "Distribuído";
+        let estado = "Distribuído";
 
         let dadosUtilizador = this.$verifyTokenUser();
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         const novaDistribuicao = {
           estado: estado,

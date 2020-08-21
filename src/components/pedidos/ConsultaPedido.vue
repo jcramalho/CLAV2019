@@ -34,16 +34,18 @@ export default {
             this.etapaPedido = "Pedidos Novos";
             break;
           case "Distribuído":
+          case "Redistribuído":
             this.etapaPedido = "Pedidos em Apreciação Técnica";
             break;
           case "Apreciado":
+          case "Reapreciado":
             this.etapaPedido = "Pedidos em Validação";
             break;
           case "Devolvido":
             this.etapaPedido = "Pedidos Devolvidos";
             break;
           case "Validado":
-            this.etapaPedido = "Pedidos Processados";
+            this.etapaPedido = "Pedidos Aprovados";
             break;
 
           default:

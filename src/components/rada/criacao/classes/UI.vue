@@ -224,7 +224,18 @@
                     >
                       <template v-slot:selection="data">
                         <v-chip>
-                          <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                          <v-avatar left>
+                            <img
+                              v-if="data.item == 'Série'"
+                              style="width:23px; height:30px"
+                              :src="svg_sr"
+                            />
+                            <img
+                              v-if="data.item == 'Subsérie'"
+                              style="width:23px; height:30px"
+                              :src="svg_ssr"
+                            />
+                          </v-avatar>
                           {{ data.item }}
                         </v-chip>
                       </template>
@@ -233,11 +244,12 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12" class="text-right">
-                    <v-icon
+                    <v-btn
                       @click="adicionarClasseUI(UI)"
-                      size="35"
                       color="green lighten-1"
-                    >add_circle</v-icon>
+                      style="margin-left: 10px"
+                      dark
+                    >Clique para associar série/subsérie à unidade de instalação</v-btn>
                     <v-btn
                       style="margin-left: 10px"
                       dark
@@ -297,15 +309,15 @@ export default {
   props: ["UIs", "RE", "classes", "dialog", "UI_para_copiar"],
   components: {
     EntidadesProdutoras,
-    SelecionarData
+    SelecionarData,
   },
   mixins: [mixin_unidade_instalacao],
   data: () => ({
-    UI: null
+    UI: null,
   }),
   methods: {
     remove(item) {
-      this.UI.classesAssociadas = this.UI.classesAssociadas.filter(e => {
+      this.UI.classesAssociadas = this.UI.classesAssociadas.filter((e) => {
         return e.codigo != item.codigo;
       });
     },
@@ -321,37 +333,77 @@ export default {
         dataFinal: null,
         produtor: {
           tipologiasProdutoras: [],
-          entProdutoras: []
+          entProdutoras: [],
         },
         classesAssociadas: [],
         descricao: "",
         notas: "",
-        localizacao: ""
+        localizacao: "",
       };
       this.$refs.formUI.resetValidation();
     },
-    guardar() {
+    async guardar() {
       this.existe_erros = false;
       this.erros = [];
 
-      if (this.$refs.formUI.validate()) {
-        // Alterei await aqui
+      if (this.$refs.formUI.validate() && (await this.validaDatas())) {
         this.adicionarClasse();
         this.UI.classesAssociadas.forEach(
-          associacao => delete associacao.titulo
+          (associacao) => delete associacao.titulo
         );
         this.UIs.push(Object.assign({}, this.UI));
         this.dialogState = false;
-        // this.apagar();
       } else {
-        if (!this.UI.codigo || this.UIs.some(e => e.codigo == this.UI.codigo)) {
+        if (
+          !this.UI.codigo ||
+          this.UIs.some((e) => e.codigo == this.UI.codigo)
+        ) {
           this.erros.push("Código;");
         }
         this.recolherErros(this.UI);
       }
     },
+    validaDatas() {
+      try {
+        let data_inicial = new Date(this.UI.dataInicial);
+        let data_final = new Date(this.UI.dataFinal);
+        let r = true;
+
+        for (let i = 0; i < this.UI.classesAssociadas.length; i++) {
+          let classe = this.classes.find(
+            (e) => e.codigo == this.UI.classesAssociadas[i].codigo
+          );
+
+          if (classe != undefined) {
+            if (
+              !(
+                (!!classe.dataInicial
+                  ? new Date(classe.dataInicial) <= data_inicial
+                  : true) &&
+                (!!classe.dataFinal
+                  ? new Date(classe.dataFinal) >= data_final
+                  : true)
+              )
+            ) {
+              r = false;
+              this.erros.push(
+                "Datas da classe associada " +
+                  classe.codigo +
+                  " é entre " +
+                  classe.dataInicial +
+                  " e " +
+                  classe.dataFinal
+              );
+            }
+          }
+        }
+        return r;
+      } catch (e) {
+        return false;
+      }
+    },
     verificaCodigoUI(v) {
-      if (this.UIs.some(e => e.codigo == v)) {
+      if (this.UIs.some((e) => e.codigo == v)) {
         return "Código já existente!";
       } else {
         return false;
@@ -360,7 +412,7 @@ export default {
     adicionarClasse() {
       for (let i = 0; i < this.UI.classesAssociadas.length; i++) {
         let classe = this.classes.find(
-          e => e.codigo == this.UI.classesAssociadas[i].codigo
+          (e) => e.codigo == this.UI.classesAssociadas[i].codigo
         );
 
         if (classe != undefined) {
@@ -387,12 +439,12 @@ export default {
               notaPCA: null,
               notaDF: null,
               formaContagem: {
-                forma: null
+                forma: null,
               },
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
-              eFilhoDe: null
+              eFilhoDe: null,
             });
           } else {
             this.classes.push({
@@ -407,18 +459,18 @@ export default {
               notaDF: null,
               UIs: [this.UI.codigo],
               formaContagem: {
-                forma: null
+                forma: null,
               },
               justificacaoPCA: [],
               df: null,
               justificacaoDF: [],
               eFilhoDe: null,
-              tipo: "Subsérie"
+              tipo: "Subsérie",
             });
           }
         }
       }
-    }
+    },
   },
   created() {
     this.UI =
@@ -432,16 +484,16 @@ export default {
             dataFinal: null,
             produtor: {
               tipologiasProdutoras: [],
-              entProdutoras: []
+              entProdutoras: [],
             },
             classesAssociadas: [],
             descricao: "",
             notas: "",
-            localizacao: ""
+            localizacao: "",
           };
   },
   beforeDestroy() {
     this.$emit("limpar_copia");
-  }
+  },
 };
 </script>

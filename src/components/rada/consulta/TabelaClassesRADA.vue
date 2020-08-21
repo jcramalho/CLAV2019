@@ -16,12 +16,19 @@
       <template v-slot:item.tipo="{ item }">
         <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
         <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
+        <img v-else-if="item.tipo == 'N1'" style="width:23px; height:30px" :src="svg_N1" />
+        <img v-else-if="item.tipo == 'N2'" style="width:23px; height:30px" :src="svg_N2" />
+        <img v-else-if="item.tipo == 'N3'" style="width:23px; height:30px" :src="svg_N3" />
         <i v-else>{{ item.tipo }}</i>
       </template>
 
-      <template v-slot:item.df="{ item }">{{ !classes.some(e => e.eFilhoDe == item.codigo) ? item.df : '' }}</template>
+      <template
+        v-slot:item.df="{ item }"
+      >{{ !classes.some(e => e.eFilhoDe == item.codigo) ? item.df : '' }}</template>
 
-      <template v-slot:item.pca="{ item }">{{ !classes.some(e => e.eFilhoDe == item.codigo) ? item.pca : '' }}</template>
+      <template
+        v-slot:item.pca="{ item }"
+      >{{ !classes.some(e => e.eFilhoDe == item.codigo) ? item.pca : '' }}</template>
 
       <template v-slot:item.editar="{ item }">
         <v-tooltip bottom>
@@ -64,7 +71,7 @@ export default {
   props: ["classes", "formaContagem", "background_color", "search"],
   components: {
     AreaOrganica,
-    SerieSubserie
+    SerieSubserie,
   },
   methods: {
     editarClasse(item) {
@@ -72,22 +79,25 @@ export default {
         tipo: item.tipo,
         titulo: item.titulo,
         codigo: item.codigo,
-        children: [this.classes.find(e => e.eFilhoDe == item.codigo)],
+        children: [this.classes.find((e) => e.eFilhoDe == item.codigo)],
         temDF: Boolean(
           (!Boolean(item.df) && !Boolean(item.notaDF)) ||
             (!Boolean(item.pca) && !Boolean(item.notaPCA)) ||
             item.formaContagem.forma == null
-        )
+        ),
       });
-    }
+    },
   },
   data: () => ({
     footer_props: {
       "items-per-page-options": [1, 5, 10, -1],
-      "items-per-page-text": "Mostrar"
+      "items-per-page-text": "Mostrar",
     },
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+    svg_N1: require("@/assets/n1.svg"),
+    svg_N2: require("@/assets/n2.svg"),
+    svg_N3: require("@/assets/n3.svg"),
     class: ["table-header", "body-2", "font-weight-bold"],
     headers: [
       {
@@ -95,57 +105,70 @@ export default {
         value: "editar",
         align: "right",
         width: "5%",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Tipo",
         sortable: true,
         value: "tipo",
+        width: "10%",
         align: "center",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Código",
         sortable: true,
         align: "center",
+        width: "10%",
         value: "codigo",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Título",
         sortable: true,
         align: "center",
         value: "titulo",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        width: "35%",
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "PCA",
-        align: "left",
         sortable: true,
         align: "center",
         value: "pca",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        width: "10%",
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "DF",
-        align: "left",
         sortable: true,
         align: "center",
         value: "df",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        width: "10%",
+        class: ["table-header", "body-2", "font-weight-bold"],
+      },
+      {
+        text: "Classe Pai",
+        value: "eFilhoDe",
+        sortable: true,
+        align: "center",
+        width: "10%",
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         align: "center",
         value: "completo",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        width: "5%",
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "",
         value: "data-table-expand",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
-  })
+        width: "5%",
+        class: ["table-header", "body-2", "font-weight-bold"],
+      },
+    ],
+  }),
 };
 </script>
 <style scoped>

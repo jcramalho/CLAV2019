@@ -5,7 +5,7 @@
       dark
     >
       <div>
-        <b>Pedidos Processados</b>
+        <b>Pedidos Aprovados</b>
         <sup class="ml-1">
           <v-badge color="red">
             <template v-slot:badge>

@@ -51,7 +51,7 @@
       </div>
       <v-row v-if="!RE.entidadesProd[0]">
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Tipologias das Entidades Produtoras</div>
+          <div class="info-label">Tipologia de Entidade</div>
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
@@ -60,7 +60,7 @@
             :items="tipologias"
             item-text="tipologia"
             item-value="tipologia"
-            placeholder="Selecione as Tipologias das Entidades Produtoras"
+            placeholder="Selecione a Tipologia de Entidade"
             solo
             :disabled="produtoraTipologiaClasse(RE.tipologiasProd)"
             chips
@@ -137,13 +137,13 @@
                 <div class="info-label">História Administrativa/Biográfica</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  placeholder="História Administrativa/Biográfica"
-                  v-model="RE.hist_admin"
+                <v-textarea
                   solo
-                  clearable
+                  name="input-7-4"
+                  v-model="RE.hist_admin"
+                  placeholder="História Administrativa/Biográfica"
                   :rules="basicRule"
-                ></v-text-field>
+                ></v-textarea>
               </v-col>
             </v-row>
             <v-row>
@@ -151,13 +151,13 @@
                 <div class="info-label">História Custodial</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  :rules="basicRule"
-                  placeholder="História Custodial"
-                  v-model="RE.hist_cust"
+                <v-textarea
                   solo
-                  clearable
-                ></v-text-field>
+                  name="input-7-4"
+                  v-model="RE.hist_cust"
+                  placeholder="História Custodial"
+                  :rules="basicRule"
+                ></v-textarea>
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -172,13 +172,13 @@
                 <div class="info-label">Sistema de Organização</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  :rules="basicRule"
-                  placeholder="Sistema de Organização"
-                  v-model="RE.sist_org"
+                <v-textarea
                   solo
-                  clearable
-                ></v-text-field>
+                  name="input-7-4"
+                  v-model="RE.sist_org"
+                  placeholder="Sistema de Organização"
+                  :rules="basicRule"
+                ></v-textarea>
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -193,13 +193,13 @@
                 <div class="info-label">Localização</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  :rules="basicRule"
-                  placeholder="Localização"
-                  v-model="RE.localizacao"
+                <v-textarea
                   solo
-                  clearable
-                ></v-text-field>
+                  name="input-7-4"
+                  v-model="RE.localizacao"
+                  placeholder="Localização"
+                  :rules="basicRule"
+                ></v-textarea>
               </v-col>
             </v-row>
             <v-row>
@@ -207,13 +207,13 @@
                 <div class="info-label">Estado de Conservação</div>
               </v-col>
               <v-col xs="12" sm="9">
-                <v-text-field
-                  :rules="basicRule"
-                  placeholder="Estado de Conservação"
-                  v-model="RE.est_conser"
+                <v-textarea
                   solo
-                  clearable
-                ></v-text-field>
+                  name="input-7-4"
+                  v-model="RE.est_conser"
+                  placeholder="Estado de Conservação"
+                  :rules="basicRule"
+                ></v-textarea>
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -229,6 +229,16 @@
     </v-form>
     <br />
     <v-btn color="indigo darken-4" dark @click="$emit('seguinte', 1)">Voltar</v-btn>
+    <v-btn style="margin-left: 10px" color="indigo darken-4" dark @click="$emit('guardar', 'sim')">
+      Guardar Trabalho
+      <v-icon right>save</v-icon>
+    </v-btn>
+    <v-btn
+      style="margin-left: 10px"
+      color="indigo darken-4"
+      dark
+      @click="$emit('guardar', 'nao')"
+    >Continuar Depois</v-btn>
     <v-btn dark color="indigo darken-4" style="margin-left: 10px" @click="next">Continuar</v-btn>
     <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">Limpar</v-btn>
   </v-card>
@@ -246,20 +256,20 @@ export default {
     "tipologias",
     "classes",
     "UIs",
-    "entidadesProcessadas"
+    "entidadesProcessadas",
   ],
   components: {
     NovaEntidade,
     SelecionarData,
-    ImportarRE
+    ImportarRE,
   },
   data: () => ({
     panels: [0, 0, 0],
     menu1: false,
     menu2: false,
     isMultiple: false,
-    basicRule: [v => !!v || "Campo de preenchimento obrigatório!"],
-    importar_re: false
+    basicRule: [(v) => !!v || "Campo de preenchimento obrigatório!"],
+    importar_re: false,
   }),
   methods: {
     data_final_valida(v) {
@@ -278,13 +288,13 @@ export default {
     },
     bloquearData() {
       let classes = this.classes.some(
-        e =>
+        (e) =>
           (e.tipo == "Série" || e.tipo == "Subsérie") &&
           (e.dataInicial != null || e.dataFinal != null)
       );
 
       let uis = this.UIs.some(
-        e => e.dataInicial != null || e.dataFinal != null
+        (e) => e.dataInicial != null || e.dataFinal != null
       );
 
       if (classes || uis) {
@@ -299,7 +309,9 @@ export default {
       this.RE.localizacao = "";
       this.RE.est_conser = "";
 
-      if (!this.classes.some(e => e.tipo == "Série" || e.tipo == "Subsérie")) {
+      if (
+        !this.classes.some((e) => e.tipo == "Série" || e.tipo == "Subsérie")
+      ) {
         this.RE.entidadesProd = [];
         this.RE.tipologiasProd = null;
         this.RE.dataInicial = null;
@@ -308,7 +320,7 @@ export default {
       this.isMultiple = false;
       this.panels = [0, 0, 0];
     },
-    next: function() {
+    next: function () {
       this.isMultiple = true;
       this.panels = [0, 1, 2];
       setTimeout(() => {
@@ -317,17 +329,18 @@ export default {
         }
       }, 1);
     },
-    removeEnt: function(item) {
-      const index = this.RE.entidadesProd.findIndex(i => i === item.entidade);
+    removeEnt: function (item) {
+      const index = this.RE.entidadesProd.findIndex((i) => i === item.entidade);
       if (index >= 0) this.RE.entidadesProd.splice(index, 1);
     },
     produtoraEntidadeClasse(item, entidade) {
       let classes = this.classes.filter(
-        e => e.tipo == "Série" && e.entProdutoras.some(ent => ent == entidade)
+        (e) =>
+          e.tipo == "Série" && e.entProdutoras.some((ent) => ent == entidade)
       );
 
-      let uis = this.UIs.filter(e =>
-        e.produtor.entProdutoras.some(ent => ent == entidade)
+      let uis = this.UIs.filter((e) =>
+        e.produtor.entProdutoras.some((ent) => ent == entidade)
       );
 
       if (classes.length > 0 || uis.length > 0) {
@@ -340,19 +353,19 @@ export default {
     },
     produtoraTipologiaClasse(tipologia) {
       let classes = this.classes.filter(
-        e => e.tipo == "Série" && e.tipologiasProdutoras == tipologia
+        (e) => e.tipo == "Série" && e.tipologiasProdutoras == tipologia
       );
 
       let uis = this.UIs.filter(
-        e => e.produtor.tipologiasProdutoras == tipologia
+        (e) => e.produtor.tipologiasProdutoras == tipologia
       );
 
       if (classes.length > 0 || uis.length > 0) {
         return true;
       }
       return false;
-    }
-  }
+    },
+  },
 };
 </script>
 

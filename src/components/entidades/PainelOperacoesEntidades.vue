@@ -73,15 +73,6 @@
         </v-card>
       </v-dialog>
 
-      <!-- Pedido de "Ação" de entidade submetido com sucesso -->
-      <v-dialog v-model="dialogEntidadeCriada" width="70%" persistent>
-        <DialogEntidadeSucesso
-          :e="e"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
-      </v-dialog>
-
       <!-- Cancelamento da criação de uma entidade: confirmação -->
       <v-dialog v-model="pedidoEliminado" width="50%">
         <v-card>
@@ -117,44 +108,57 @@
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
     </v-row>
+
+    <!-- Dialog de erro no caso de algum erro ocorrer -->
+    <v-dialog v-model="erroDialog" width="50%" persistent>
+      <ErroDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
-import DialogEntidadeSucesso from "@/components/entidades/DialogEntidadeSucesso";
+import ErroDialog from "@/components/generic/ErroDialog";
 
+import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 import {
-  comparaArraySel,
-  criarHistorico,
-  extrairAlteracoes,
-} from "@/utils/utils";
+  eNUV,
+  eNV,
+  eUndefined,
+  eDataFormatoErrado,
+  testarRegex,
+} from "@/utils/validadores";
 
 export default {
   props: ["e", "acao", "original"],
 
   components: {
     ValidarEntidadeInfoBox,
-    DialogEntidadeSucesso,
+    ErroDialog,
   },
 
   data() {
     return {
+      erroDialog: false,
+      erros: [],
       loginErrorSnackbar: false,
       loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
-      dialogEntidadeCriada: false,
-      codigoPedido: "",
-      errosValidacao: false,
       pedidoEliminado: false,
+      errosValidacao: false,
     };
   },
 
   methods: {
+    fecharErro() {
+      this.erroDialog = false;
+      this.erros = [];
+    },
+
     async validarEntidadeCriacao() {
       let numeroErros = 0;
 
       // Designação
-      if (this.e.designacao === "" || this.e.designacao === null) {
+      if (eNUV(this.e.designacao)) {
         numeroErros++;
       } else {
         try {
@@ -163,16 +167,14 @@ export default {
             "/entidades/designacao?valor=" +
               encodeURIComponent(this.e.designacao)
           );
-          if (existeDesignacao.data) {
-            numeroErros++;
-          }
+          if (existeDesignacao.data) numeroErros++;
         } catch (err) {
           numeroErros++;
         }
       }
 
       // Sigla
-      if (this.e.sigla === "" || this.e.sigla === null) {
+      if (eNUV(this.e.sigla)) {
         numeroErros++;
       } else {
         try {
@@ -180,38 +182,34 @@ export default {
             "get",
             "/entidades/sigla?valor=" + encodeURIComponent(this.e.sigla)
           );
-          if (existeSigla.data) {
-            numeroErros++;
-          }
+          if (existeSigla.data) numeroErros++;
         } catch (err) {
           numeroErros++;
         }
       }
 
       // Internacional
-      if (this.e.internacional === "" || this.e.internacional === null) {
+      if (eNUV(this.e.internacional)) {
         numeroErros++;
       }
 
       // SIOE
-      if (this.e.sioe !== "" && this.e.sioe !== null) {
-        if (this.e.sioe.length > 12) {
+      if (!eNUV(this.e.sioe)) {
+        if (this.e.sioe.length > 12) numeroErros++;
+        else if (!testarRegex(this.e.sioe, /^\d+$/)) numeroErros++;
+      }
+
+      //Data Criação
+      if (!eNUV(this.e.dataCriacao)) {
+        if (eDataFormatoErrado(this.e.dataCriacao)) {
           numeroErros++;
         }
       }
 
-      // Datas
-      if (
-        this.e.dataCriacao !== "" &&
-        this.e.dataCriacao !== null &&
-        this.e.dataCriacao !== undefined &&
-        this.e.dataExtincao !== "" &&
-        this.e.dataExtincao !== null &&
-        this.e.dataExtincao !== undefined
-      ) {
-        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) {
+      // Data de Extinção
+      if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
+        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao))
           numeroErros++;
-        }
       }
 
       return numeroErros;
@@ -221,9 +219,9 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (dados.designacao === "" || dados.designacao === null) {
+      if (eNV(dados.designacao)) {
         numeroErros++;
-      } else if (dados.designacao !== undefined) {
+      } else if (!eUndefined(dados.designacao)) {
         try {
           let existeDesignacao = await this.$request(
             "get",
@@ -239,28 +237,19 @@ export default {
       }
 
       // Internacional
-      if (dados.internacional === "" || dados.internacional === null) {
+      if (eNV(dados.internacional)) {
         numeroErros++;
       }
 
       // SIOE
-      if (dados.sioe !== "" && dados.sioe !== null) {
-        if (dados.sioe !== undefined)
-          if (dados.sioe.length > 12) {
-            numeroErros++;
-          }
+      if (!eNUV(dados.sioe)) {
+        if (dados.sioe.length > 12) numeroErros++;
+        else if (!testarRegex(this.e.sioe, /^\d+$/)) numeroErros++;
       }
 
-      // Datas
-      if (
-        dados.dataCriacao !== "" &&
-        dados.dataCriacao !== null &&
-        dados.dataCriacao !== undefined &&
-        dados.dataExtincao !== "" &&
-        dados.dataExtincao !== null &&
-        dados.dataExtincao !== undefined
-      ) {
-        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+      //Data Criação
+      if (!eNUV(dados.dataCriacao)) {
+        if (eDataFormatoErrado(dados.dataCriacao)) {
           numeroErros++;
         }
       }
@@ -271,21 +260,14 @@ export default {
     validarEntidadeExtincao(dados) {
       let numeroErros = 0;
 
-      // Datas
-      if (
-        dados.dataExtincao === "" ||
-        dados.dataExtincao === null ||
-        dados.dataExtincao === undefined
-      ) {
+      // Data de Extinção
+      if (eNUV(dados.dataExtincao)) {
         numeroErros++;
-      } else if (
-        dados.dataCriacao !== "" &&
-        dados.dataCriacao !== null &&
-        dados.dataCriacao !== undefined &&
-        dados.dataExtincao !== "" &&
-        dados.dataExtincao !== null &&
-        dados.dataExtincao !== undefined
-      ) {
+      } else if (!eNUV(dados.dataExtincao)) {
+        if (eDataFormatoErrado(dados.dataExtincao)) {
+          numeroErros++;
+        }
+      } else if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
         if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
           numeroErros++;
         }
@@ -307,14 +289,10 @@ export default {
 
           switch (this.acao) {
             case "Criação":
-              if (
-                dataObj.dataExtincao !== undefined &&
-                dataObj.dataExtincao !== null &&
-                dataObj.dataExtincao !== ""
-              )
-                dataObj.estado = "Inativa";
-
               erros = await this.validarEntidadeCriacao();
+
+              historico.push(criarHistorico(dataObj));
+
               break;
 
             case "Alteração":
@@ -329,12 +307,7 @@ export default {
               erros = this.validarEntidadeExtincao(dataObj);
 
               for (const key in dataObj) {
-                if (
-                  key !== "sigla" &&
-                  key !== "dataExtincao" &&
-                  key !== "dataCriacao"
-                )
-                  delete dataObj[key];
+                if (key !== "dataExtincao") delete dataObj[key];
               }
 
               historico.push({
@@ -351,6 +324,13 @@ export default {
           }
 
           if (erros === 0) {
+            const objKeys = Object.keys(dataObj);
+
+            if (objKeys.length === 0)
+              throw new Error(
+                "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
+              );
+
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
@@ -373,15 +353,16 @@ export default {
               pedidoParams
             );
 
-            this.codigoPedido = codigoPedido.data;
-
-            this.dialogEntidadeCriada = true;
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (err) {
-        return err;
+        if (typeof err.message === "string") {
+          this.erros.push(err.message);
+          this.erroDialog = true;
+        }
       }
     },
 

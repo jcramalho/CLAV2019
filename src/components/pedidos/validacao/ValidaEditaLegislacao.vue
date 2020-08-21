@@ -3,24 +3,13 @@
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row
-          v-if="
-            info !== '' &&
-              info !== null &&
-              campo !== 'sigla' &&
-              campo !== 'codigo' &&
-              campo !== 'estado'
-          "
-          dense
-          class="ma-1"
-        >
+        <v-row v-if="campo !== 'id' && campo !== 'estado'" dense class="ma-1">
           <!-- Label -->
           <v-col cols="2">
             <div
-              :class="[
-                'info-descricao',
-                `info-descricao-${novoHistorico[campo].cor}`,
-              ]"
+              :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
+              class="info-descricao"
+              :class="`info-descricao-${novoHistorico[campo].cor}`"
             >
               {{ transformaKeys(campo) }}
             </div>
@@ -29,7 +18,10 @@
           <!-- Conteudo -->
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+              <span v-if="info === '' || info === null">
+                [Campo não preenchido na submissão do pedido]
+              </span>
+              <span v-else>{{ info }}</span>
             </div>
             <div v-else>
               <!-- Se o conteudo for uma lista de entidades -->
@@ -49,6 +41,20 @@
                   >
                     Nenhuma entidade selecionada...
                   </v-alert>
+                </template>
+
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    right
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
                 </template>
 
                 <template v-slot:item.operacao="{ item }">
@@ -87,6 +93,20 @@
                   >
                     Nenhum processo selecionado...
                   </v-alert>
+                </template>
+
+                <template v-slot:item.codigo="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    right
+                    dot
+                    inline
+                    >{{ item.codigo }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.codigo }}
+                  </span>
                 </template>
 
                 <template v-slot:item.operacao="{ item }">
@@ -140,7 +160,7 @@
         <v-spacer />
         <PO
           operacao="Validar"
-          @finalizarPedido="finalizarPedido($event)"
+          @finalizarPedido="verificaEstadoCampos($event)"
           @devolverPedido="despacharPedido($event)"
         />
       </v-row>
@@ -195,6 +215,15 @@
         @selecao="adicionaProcessos"
       />
     </v-dialog>
+
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="fechaDialogConfirmacao()"
+        @confirma="finalizarPedido(dialogConfirmacao.dados)"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -207,8 +236,17 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import ErroDialog from "@/components/generic/ErroDialog";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
-import { comparaSigla, comparaCodigo, mapKeys } from "@/utils/utils";
+import {
+  comparaSigla,
+  comparaCodigo,
+  mapKeys,
+  identificaItemAdicionado,
+  adicionarNotaComRemovidos,
+} from "@/utils/utils";
+
+import { eNUV, eNV, eDataFormatoErrado } from "@/utils/validadores";
 
 export default {
   props: ["p"],
@@ -221,10 +259,17 @@ export default {
     SelecionaAutocomplete,
     EditarCamposDialog,
     AdicionarNota,
+    ConfirmacaoOperacao,
   },
 
   data() {
     return {
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      },
+      animacoes: {},
       esconderOperacoes: {},
       notaDialog: {
         visivel: false,
@@ -301,6 +346,10 @@ export default {
       return this.p.objeto.dados;
     },
 
+    dadosOriginais() {
+      return this.p.objeto.dadosOriginais;
+    },
+
     historico() {
       return this.p.historico;
     },
@@ -330,10 +379,19 @@ export default {
 
     Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
+      this.animacoes[key] = true;
     });
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.historico[this.historico.length - 1]
+      );
+    },
+
     transformaKeys(key) {
       return mapKeys(key);
     },
@@ -382,13 +440,15 @@ export default {
           this.entidades.push(entidade);
           this.entidades.sort(comparaSigla);
         }
-
         this.dados.entidadesSel.splice(index, 1);
         this.novoHistorico.entidadesSel = {
           ...this.novoHistorico.entidadesSel,
           cor: "amarelo",
           dados: this.dados.entidadesSel,
         };
+
+        this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+        this.esconderOperacoes.entidadesSel = true;
       }
     },
 
@@ -406,13 +466,15 @@ export default {
           this.processos.push(processo);
           this.processos.sort(comparaCodigo);
         }
-
         this.dados.processosSel.splice(index, 1);
         this.novoHistorico.processosSel = {
           ...this.novoHistorico.processosSel,
           cor: "amarelo",
           dados: this.dados.processosSel,
         };
+
+        this.animacoes.processosSel = !this.animacoes.processosSel;
+        this.esconderOperacoes.processosSel = true;
       }
     },
 
@@ -424,6 +486,9 @@ export default {
         cor: "amarelo",
         dados: this.dados.entidadesSel,
       };
+
+      this.animacoes.entidadesSel = !this.animacoes.entidadesSel;
+      this.esconderOperacoes.entidadesSel = true;
     },
 
     adicionaProcessos(processos) {
@@ -434,6 +499,9 @@ export default {
         cor: "amarelo",
         dados: this.dados.processosSel,
       };
+
+      this.animacoes.processosSel = !this.animacoes.processosSel;
+      this.esconderOperacoes.processosSel = true;
     },
 
     async loadEntidades() {
@@ -488,6 +556,11 @@ export default {
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
         pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
@@ -507,7 +580,7 @@ export default {
       let numeroErros = 0;
 
       // Sumário
-      if (dados.sumario === "" || dados.sumario === null) {
+      if (eNV(dados.sumario)) {
         this.erros.push({
           sobre: "Sumário",
           mensagem: "O sumário não pode ser vazio.",
@@ -516,15 +589,34 @@ export default {
       }
 
       // Data Revogação
-      if (
-        dados.data !== "" &&
-        dados.data !== null &&
-        dados.data !== undefined &&
-        dados.dataRevogacao !== "" &&
-        dados.dataRevogacao !== null &&
-        dados.dataRevogacao !== undefined
+      if (!eNUV(dados.data) && !eNUV(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          this.erros.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+          this.erros.push({
+            sobre: "Data de revogação",
+            mensagem:
+              "A data de revogação tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
+      } else if (
+        !eNUV(this.dadosOriginais.data) &&
+        !eNUV(dados.dataRevogacao)
       ) {
-        if (new Date(dados.data) >= new Date(dados.dataRevogacao)) {
+        if (eDataFormatoErrado(dados.dataRevogacao)) {
+          this.erros.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (
+          new Date(this.dadosOriginais.data) >= new Date(dados.dataRevogacao)
+        ) {
           this.erros.push({
             sobre: "Data de revogação",
             mensagem:
@@ -537,34 +629,102 @@ export default {
       return numeroErros;
     },
 
+    validarRevogacao(data) {
+      let numeroErros = 0;
+
+      // Data Revogação
+      if (eNUV(data)) {
+        this.erros.push({
+          sobre: "Data de Revogação",
+          mensagem: "A data de revogação não pode ser vazia.",
+        });
+        numeroErros++;
+      } else if (!eNUV(data)) {
+        if (eDataFormatoErrado(data)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem: "A data de revogação está no formato errado.",
+          });
+          numeroErros++;
+        } else if (new Date(this.dadosOriginais.data) >= new Date(data)) {
+          this.mensagensErro.push({
+            sobre: "Data de Revogação",
+            mensagem:
+              "A data de revogação tem de ser superior à data do diploma.",
+          });
+          numeroErros++;
+        }
+      }
+
+      return numeroErros;
+    },
+
+    fechaDialogConfirmacao() {
+      this.dialogConfirmacao = {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      };
+    },
+
+    async verificaEstadoCampos(dados) {
+      // procura campos a vermelho
+      const haVermelhos = Object.keys(this.novoHistorico).some(
+        (key) => this.novoHistorico[key].cor === "vermelho"
+      );
+      // Se existirem abre dialog de confirmação
+      if (haVermelhos)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados,
+        };
+      // Caso contrário segue para a finalização do pedido
+      else await this.finalizarPedido(dados);
+    },
+
     async finalizarPedido(dados) {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        for (const key in pedido.objeto.dadosOriginais) {
-          if (!pedido.objeto.dados.hasOwnProperty(key)) {
-            pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+        let numeroErros = 0;
+
+        if (pedido.objeto.acao === "Revogação") {
+          numeroErros = this.validarRevogacao(
+            pedido.objeto.dados.dataRevogacao
+          );
+          if (numeroErros === 0)
+            await this.$request(
+              "put",
+              `/legislacao/${this.dadosOriginais.id}/revogar`,
+              { dataRevogacao: pedido.objeto.dados.dataRevogacao }
+            );
+        } else {
+          numeroErros = this.validar(pedido.objeto.dados);
+
+          if (numeroErros === 0) {
+            for (const key in pedido.objeto.dadosOriginais) {
+              if (!pedido.objeto.dados.hasOwnProperty(key)) {
+                pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+              }
+
+              if (eNV(pedido.objeto.dados[key]))
+                delete pedido.objeto.dados[key];
+            }
+
+            if (pedido.objeto.dados.diplomaFonte === "Não especificada")
+              delete pedido.objeto.dados.diplomaFonte;
           }
 
-          if (
-            pedido.objeto.dados[key] === "" ||
-            pedido.objeto.dados[key] === null
-          )
-            delete pedido.objeto.dados[key];
-        }
-
-        if (pedido.objeto.dados.diplomaFonte === "Não especificada")
-          delete pedido.objeto.dados.diplomaFonte;
-
-        let numeroErros = this.validar(pedido);
-
-        if (numeroErros === 0) {
           await this.$request(
             "put",
-            `/legislacao/${pedido.objeto.dados.id}`,
+            `/legislacao/${pedido.objeto.dadosOriginais.id}`,
             pedido.objeto.dados
           );
+        }
 
+        if (numeroErros === 0) {
           const estado = "Validado";
 
           let dadosUtilizador = this.$verifyTokenUser();
@@ -579,6 +739,11 @@ export default {
           pedido.estado = estado;
           pedido.token = this.$store.state.token;
 
+          this.novoHistorico = adicionarNotaComRemovidos(
+            this.historico[this.historico.length - 1],
+            this.novoHistorico
+          );
+
           pedido.historico.push(this.novoHistorico);
 
           await this.$request("put", "/pedidos", {
@@ -591,6 +756,7 @@ export default {
           this.erroPedido = true;
         }
       } catch (e) {
+        console.log("e", e);
         this.erroPedido = true;
 
         let parsedError = Object.assign({}, e);
@@ -616,6 +782,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     anula(campo) {
@@ -623,6 +791,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     edita(campo) {
@@ -664,6 +834,7 @@ export default {
       };
 
       this.esconderOperacoes[event.campo.key] = true;
+      this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
     },
 
     fecharErro() {
@@ -692,14 +863,38 @@ export default {
 }
 
 .info-descricao-verde {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #c8e6c9; /* lighten-4 */
 }
 
 .info-descricao-vermelho {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffcdd2; /* lighten-4 */
 }
 
 .info-descricao-amarelo {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffe0b2; /* lighten-4 */
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

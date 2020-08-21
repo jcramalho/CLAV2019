@@ -20,8 +20,7 @@
           <v-expansion-panel-content>
             <v-card>
               <v-card-text>
-                <p v-if="item.html"><span v-html="item.texto"></span></p>
-                <p v-else>{{ item.texto }}</p>
+                
                 <div>
                   <v-btn
                     v-for="op in item.ops"
@@ -71,6 +70,11 @@
                     Editar</v-btn
                   >
                 </div>
+                <div class="mt-2">
+                  <p v-if="item.html"><span v-html="item.texto"></span></p>
+                  <p v-else>{{ item.texto }}</p>
+                </div>
+                
               </v-card-text>
             </v-card>
 
@@ -425,18 +429,18 @@ export default {
         },*/
         {
           entidade: "Relatórios de Avaliação de Documentação Acumulada",
-          texto: "Texto para os Rada.",
+          texto: help.RADA,
           html: true,
           ops: [
             {
               label: "Consultar",
               url: "/rada",
-              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7],
             },
             {
               label: "Criar",
               url: "/rada/criar",
-              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7],
             }
           ],
         },
@@ -550,6 +554,17 @@ export default {
           ],
         },
         {
+          entidade: "Permissões de Acesso",
+          texto: help.PermissoesAcesso,
+          ops: [
+            {
+              label: "Consultar",
+              url: "/permissoesAcesso",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+          ],
+        },
+        {
           entidade: "Colaborações",
           texto: "As colaborações são constituídas por um grupo de pessoas que participaram no desenvolvimento da plataforma.",
           ops: [
@@ -561,7 +576,7 @@ export default {
             {
               label: "Adicionar",
               url: "/colaboracoes/criar",
-              level: [4, 5, 6, 7],
+              level: [3.5, 4, 5, 6, 7],
             },
           ],
         },

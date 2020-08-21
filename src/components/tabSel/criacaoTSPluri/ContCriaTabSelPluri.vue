@@ -216,7 +216,6 @@ export default {
       catch(e){
           console.log('Erro ao carregar a informação inicial: ' + e);
       }
-      
   },
 
   methods: {
@@ -298,7 +297,7 @@ export default {
 
     loadProcessosEspecificos: async function(entidades){
       try{
-        var url = "/classes?tipo=especifico&ents=";
+        var url = "/classes?nivel=3&tipo=especifico&ents=";
         for (var i = 0; i < entidades.length-1; i++) {
           url += this.tabelaSelecao.entidades[i].id + ",";
         }

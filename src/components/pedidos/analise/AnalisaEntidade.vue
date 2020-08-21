@@ -3,22 +3,12 @@
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row
-          v-if="
-            info !== '' &&
-              info !== null &&
-              campo !== 'codigo' &&
-              campo !== 'estado'
-          "
-          dense
-          class="ma-1"
-        >
+        <v-row v-if="campo !== 'estado'" dense class="ma-1">
           <v-col cols="2">
             <div
-              :class="[
-                'info-descricao',
-                `info-descricao-${novoHistorico[campo].cor}`,
-              ]"
+              :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
+              class="info-descricao"
+              :class="`info-descricao-${novoHistorico[campo].cor}`"
             >
               {{ transformaKeys(campo) }}
             </div>
@@ -26,7 +16,10 @@
 
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+              <span v-if="info === '' || info === null">
+                [Campo não preenchido na submissão do pedido]
+              </span>
+              <span v-else>{{ info }}</span>
             </div>
 
             <div v-else>
@@ -46,6 +39,20 @@
                   >
                     Nenhuma tipologia selecionada...
                   </v-alert>
+                </template>
+
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    right
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
                 </template>
 
                 <template v-slot:item.operacao="{ item }">
@@ -151,7 +158,12 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla, mapKeys } from "@/utils/utils";
+import {
+  comparaSigla,
+  mapKeys,
+  identificaItemAdicionado,
+  adicionarNotaComRemovidos,
+} from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -167,6 +179,7 @@ export default {
 
   data() {
     return {
+      animacoes: {},
       esconderOperacoes: {},
       notaDialog: {
         visivel: false,
@@ -235,22 +248,29 @@ export default {
   },
 
   mounted() {
-    const criaNovoHistorico = {};
+    const copiaHistorico = JSON.parse(
+      JSON.stringify(this.historico[this.historico.length - 1])
+    );
+
+    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+    this.novoHistorico = copiaHistorico;
+
     Object.keys(this.dados).forEach((key) => {
-      if (key !== "codigo")
-        criaNovoHistorico[key] = {
-          cor: "verde",
-          dados: this.dados[key],
-          nota: null,
-        };
-
       this.esconderOperacoes[key] = false;
+      this.animacoes[key] = true;
     });
-
-    this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.historico[this.historico.length - 1]
+      );
+    },
+
     transformaKeys(key) {
       return mapKeys(key);
     },
@@ -285,13 +305,15 @@ export default {
           this.tipologias.push(tipologia);
           this.tipologias.sort(comparaSigla);
         }
-
         this.dados.tipologiasSel.splice(index, 1);
         this.novoHistorico.tipologiasSel = {
           ...this.novoHistorico.tipologiasSel,
           cor: "amarelo",
           dados: this.dados.tipologiasSel,
         };
+
+        this.animacoes.tipologiasSel = !this.animacoes.tipologiasSel;
+        this.esconderOperacoes.tipologiasSel = true;
       }
     },
 
@@ -303,6 +325,9 @@ export default {
         cor: "amarelo",
         dados: this.dados.tipologiasSel,
       };
+
+      this.animacoes.tipologiasSel = !this.animacoes.tipologiasSel;
+      this.esconderOperacoes.tipologiasSel = true;
     },
 
     async loadTipologias() {
@@ -341,6 +366,11 @@ export default {
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
 
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
         pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
@@ -358,14 +388,20 @@ export default {
 
     async encaminharPedido(dados) {
       try {
-        const estado = "Apreciado";
-
         let dadosUtilizador = this.$verifyTokenUser();
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
+        const estado =
+          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
+
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
 
         pedido.historico.push(this.novoHistorico);
 
@@ -399,6 +435,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
+
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     anula(campo) {
@@ -406,6 +444,8 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
+
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     edita(campo) {
@@ -447,6 +487,7 @@ export default {
       };
 
       this.esconderOperacoes[event.campo.key] = true;
+      this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
     },
   },
 };
@@ -470,14 +511,38 @@ export default {
 }
 
 .info-descricao-verde {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #c8e6c9; /* lighten-4 */
 }
 
 .info-descricao-vermelho {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffcdd2; /* lighten-4 */
 }
 
 .info-descricao-amarelo {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
   background-color: #ffe0b2; /* lighten-4 */
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

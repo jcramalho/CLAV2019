@@ -118,7 +118,7 @@
                   />
                   <RADAEntry label="Forma de Contagem do PCA" :value="classe.pca.formaLabel"></RADAEntry>
                   <RADAEntry
-                    v-if="!!classe.pca.subformaContagem"
+                    v-if="!!classe.pca.subformaLabel"
                     label="Subforma de Contagem do PCA"
                     :value="classe.pca.subformaLabel"
                   />

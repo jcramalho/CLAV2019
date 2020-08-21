@@ -233,7 +233,18 @@
                     >
                       <template v-slot:selection="data">
                         <v-chip>
-                          <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                          <v-avatar left>
+                            <img
+                              v-if="data.item == 'Série'"
+                              style="width:23px; height:30px"
+                              :src="svg_sr"
+                            />
+                            <img
+                              v-if="data.item == 'Subsérie'"
+                              style="width:23px; height:30px"
+                              :src="svg_ssr"
+                            />
+                          </v-avatar>
                           {{ data.item }}
                         </v-chip>
                       </template>
@@ -242,11 +253,12 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12" class="text-right">
-                    <v-icon
+                    <v-btn
                       @click="adicionarClasseUI(UI_clone)"
-                      size="35"
                       color="green lighten-1"
-                    >add_circle</v-icon>
+                      style="margin-left: 10px"
+                      dark
+                    >Clique para associar série/subsérie à unidade de instalação</v-btn>
                     <v-btn
                       style="margin-left: 10px"
                       dark
@@ -304,25 +316,25 @@ import mixin_unidade_instalacao from "@/mixins/rada/mixin_unidade_instalacao";
 export default {
   props: ["UI_clone", "RE", "classes", "dialog"],
   data: () => ({
-    toDelete: false
+    toDelete: false,
   }),
   components: {
     EntidadesProdutoras,
-    SelecionarData
+    SelecionarData,
   },
   mixins: [mixin_unidade_instalacao],
   methods: {
     remove(item) {
       this.UI_clone.classesAssociadas = this.UI_clone.classesAssociadas.filter(
-        e => {
+        (e) => {
           return e.codigo != item.codigo;
         }
       );
     },
     elimina_de_classe(classe_eliminada, codigo_UI) {
-      let classe = this.classes.find(cl => cl.codigo == classe_eliminada);
+      let classe = this.classes.find((cl) => cl.codigo == classe_eliminada);
 
-      classe.UIs = classe.UIs.filter(e => e != codigo_UI);
+      classe.UIs = classe.UIs.filter((e) => e != codigo_UI);
     },
     eliminarUI() {
       for (let i = 0; i < this.UI_clone.classesAssociadas.length; i++) {
@@ -338,12 +350,51 @@ export default {
       this.existe_erros = false;
       this.erros = [];
 
-      if (this.$refs.formUI.validate()) {
+      if (this.$refs.formUI.validate() && (await this.validaDatas())) {
         this.$emit("atualizar");
       } else {
         this.recolherErros(this.UI_clone);
       }
-    }
-  }
+    },
+    validaDatas() {
+      try {
+        let data_inicial = new Date(this.UI_clone.dataInicial);
+        let data_final = new Date(this.UI_clone.dataFinal);
+        let r = true;
+
+        for (let i = 0; i < this.UI_clone.classesAssociadas.length; i++) {
+          let classe = this.classes.find(
+            (e) => e.codigo == this.UI_clone.classesAssociadas[i].codigo
+          );
+
+          if (classe != undefined) {
+            if (
+              !(
+                (!!classe.dataInicial
+                  ? new Date(classe.dataInicial) <= data_inicial
+                  : true) &&
+                (!!classe.dataFinal
+                  ? new Date(classe.dataFinal) >= data_final
+                  : true)
+              )
+            ) {
+              r = false;
+              this.erros.push(
+                "Datas da classe associada " +
+                  classe.codigo +
+                  " é entre " +
+                  classe.dataInicial +
+                  " e " +
+                  classe.dataFinal
+              );
+            }
+          }
+        }
+        return r;
+      } catch (e) {
+        return false;
+      }
+    },
+  },
 };
 </script>

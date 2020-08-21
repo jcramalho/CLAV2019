@@ -25,6 +25,7 @@
     "marked": "^0.8.2",
     "nanoid": "^2.1.11",
     "odometer": "^0.4.8",
+    "papaparse": "^5.2.0",
     "popper.js": "^1.16.1",
     "raw-loader": "^4.0.0",
     "register-service-worker": "^1.7.1",

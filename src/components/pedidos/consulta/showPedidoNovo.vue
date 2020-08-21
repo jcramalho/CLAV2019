@@ -112,18 +112,22 @@
       <v-card-actions>
         <v-btn color="indigo" dark @click="voltar">Voltar</v-btn>
         <v-spacer />
-        <v-btn
-          class="mr-9"
-          text
-          color="red accent-4"
-          dark
-          @click="devolver = true"
-        >
-          Devolver
-        </v-btn>
-        <v-btn color="indigo accent-4" dark @click="distribuir = true">
-          Distribuir
-        </v-btn>
+        <span v-if="temPermissaoDistribuir()">
+          <!-- TODO: Alterar com as permissões corretas -->
+          <v-btn
+            class="mr-9"
+            text
+            color="red accent-4"
+            dark
+            @click="devolver = true"
+          >
+            Devolver
+          </v-btn>
+
+          <v-btn color="indigo accent-4" dark @click="distribuir = true">
+            Distribuir
+          </v-btn>
+        </span>
       </v-card-actions>
 
       <v-dialog v-model="distribuir" width="80%" persistent>
@@ -180,8 +184,12 @@ import ErroDialog from "@/components/generic/ErroDialog";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
-import { NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS } from "@/utils/consts";
-import { filtraNivel, converteData } from "@/utils/utils";
+import {
+  NIVEIS_ANALISAR_PEDIDO,
+  NIVEL_MINIMO_DISTRIBUIR_PEDIDOS,
+} from "@/utils/consts";
+import { converteData } from "@/utils/utils";
+import { filtraNivel } from "@/utils/permissoes";
 
 export default {
   props: ["p"],
@@ -204,29 +212,31 @@ export default {
     DevolverPedido,
   },
 
-  data: () => ({
-    devolver: false,
-    verHistoricoDialog: false,
-    distribuir: false,
-    utilizadores: [],
-    erroDialog: {
-      visivel: false,
-      mensagem: null,
-    },
-    headers: [
-      { text: "Estado", align: "left", sortable: false, value: "estado" },
-      { text: "Data", value: "data" },
-      { text: "Responsável", value: "responsavel" },
-      { text: "Despacho", value: "despacho" },
-      { text: "Objeto", value: "objeto" },
-    ],
-    distHeaders: [
-      { text: "Estado", value: "estado", class: "subtitle-1" },
-      { text: "Data", value: "data", class: "subtitle-1" },
-      { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Despacho", value: "despacho", class: "subtitle-1" },
-    ],
-  }),
+  data() {
+    return {
+      devolver: false,
+      verHistoricoDialog: false,
+      distribuir: false,
+      utilizadores: [],
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
+      },
+      headers: [
+        { text: "Estado", align: "left", sortable: false, value: "estado" },
+        { text: "Data", value: "data" },
+        { text: "Responsável", value: "responsavel" },
+        { text: "Despacho", value: "despacho" },
+        { text: "Objeto", value: "objeto" },
+      ],
+      distHeaders: [
+        { text: "Estado", value: "estado", class: "subtitle-1" },
+        { text: "Data", value: "data", class: "subtitle-1" },
+        { text: "Responsável", value: "responsavel", class: "subtitle-1" },
+        { text: "Despacho", value: "despacho", class: "subtitle-1" },
+      ],
+    };
+  },
 
   async created() {
     if (this.p.estado !== "Submetido") {
@@ -234,10 +244,14 @@ export default {
       this.erroDialog.mensagem = "Este pedido não se encontra neste estado.";
     }
 
-    await this.listaUtilizadores();
+    if (this.temPermissaoDistribuir()) await this.listaUtilizadores();
   },
 
   methods: {
+    temPermissaoDistribuir() {
+      return this.$userLevel() >= NIVEL_MINIMO_DISTRIBUIR_PEDIDOS;
+    },
+
     converteData(data) {
       let dataFormatada = "";
       let dataConvertida = new Date(data);
@@ -276,7 +290,14 @@ export default {
 
         this.fecharDialog();
 
-        this.$router.go(-1);
+        const submissao = JSON.parse(localStorage.getItem("submissao"));
+
+        if (submissao) {
+          localStorage.removeItem("submissao");
+          this.$router.push("/pedidos");
+        } else {
+          this.$router.go(-1);
+        }
       } catch (e) {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem =
@@ -317,11 +338,7 @@ export default {
     async listaUtilizadores() {
       const response = await this.$request("get", "/users");
 
-      const utilizadores = filtraNivel(
-        response.data,
-        NIVEL_MINIMO_DISTRIBUIR_PEDIDOS_NOVOS,
-        ">="
-      );
+      const utilizadores = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
 
       this.utilizadores = utilizadores;
     },
@@ -375,16 +392,23 @@ export default {
     },
 
     voltar() {
-      const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
-      localStorage.setItem(
-        "pesquisa-pedidos",
-        JSON.stringify({
-          ...pesquisa,
-          limpar: false,
-        })
-      );
+      const submissao = JSON.parse(localStorage.getItem("submissao"));
 
-      this.$router.go(-1);
+      if (submissao) {
+        localStorage.removeItem("submissao");
+        this.$router.push("/pedidos");
+      } else {
+        const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
+        localStorage.setItem(
+          "pesquisa-pedidos",
+          JSON.stringify({
+            ...pesquisa,
+            limpar: false,
+          })
+        );
+
+        this.$router.go(-1);
+      }
     },
   },
 };

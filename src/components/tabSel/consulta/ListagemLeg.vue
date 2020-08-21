@@ -15,8 +15,44 @@
 
     <v-card-text>
       <v-data-table
-        v-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE DOCUMENTAÇÃO ACUMULADA'"
-        :headers="headersRADA"
+        v-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS NA CLAV'"
+        :headers="headersTS"
+        :items="lista"
+        :search="search"
+        class="elevation-1"
+        :footer-props="footer_props"
+      >
+        <template v-slot:no-results>
+          <v-alert :value="true" color="error" icon="warning"
+            >Não foram encontrados resultados para "{{ search }}".</v-alert
+          >
+        </template>
+
+        <template v-slot:item.link="{ item }">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon color="indigo darken-3" @click="$router.push('/ts/'+item.id)"
+                  v-on="on">
+                    <v-icon>remove_red_eye</v-icon>
+                  </v-btn>
+                </template>
+                <span>Ver Tabela de Seleção...</span>
+              </v-tooltip>
+        </template>
+        <template v-slot:item.entidades="{ item }">
+              <span v-for="(ent,index) in item.entidades" :key="index">{{ent}}</span>
+        </template>
+
+        <template v-slot:pageText="props">
+          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+          {{ props.itemsLength }}
+        </template>
+
+      </v-data-table>
+
+      <v-data-table
+        v-else-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE AVALIAÇÃO DE DOCUMENTAÇÃO ACUMULADA'"
+        :headers="headers"
         :items="lista"
         :search="search"
         class="elevation-1"
@@ -40,7 +76,7 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon color="indigo darken-3" @click="$router.push('/pgd/tsRada_ent_'+item.entidade+'_'+item.data)"
+                  <v-btn icon color="indigo darken-3" @click="$router.push('/pgd/'+item.idRADA)"
                   v-on="on">
                     <v-icon>remove_red_eye</v-icon>
                   </v-btn>
@@ -112,11 +148,10 @@ export default {
       {text: "Sumário", value: "sumario", width: "64%"},
       {text: "Acesso", value: "link", width: "8%"},
     ],
-    headersRADA: [
+    headersTS: [
       {text: "Data", value: "data", width: "8%"},
-      {text: "Tipo", value: "tipo", width: "10%"},
-      {text: "Entidade", value: "entidade", width: "10%"},
-      {text: "Sumário", value: "sumario", width: "64%"},
+      {text: "Entidades", value: "entidades", width: "20%"},
+      {text: "Sumário", value: "designacao", width: "64%"},
       {text: "Acesso", value: "link", width: "8%"},
     ],
     dialog: false,

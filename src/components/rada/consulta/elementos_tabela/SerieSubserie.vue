@@ -53,7 +53,7 @@
                 />
                 <v-card
                   outlined
-                  v-if="!!classe.suporte_e_medicao.suporte && !!classe.suporte_e_medicao.medicao"
+                  v-if="!!classe.suporte_e_medicao[0].suporte && !!classe.suporte_e_medicao[0].medicao"
                 >
                   <RADAEntryDouble
                     v-for="(valores, i) in classe.suporte_e_medicao"
@@ -84,10 +84,10 @@
                   v-if="!!classe.entProdutoras[0] || !!classe.tipologiasProdutoras[0]"
                 >
                   <template v-slot:valor>
-                    <ul>
+                    <ul v-if="!!classe.entProdutoras[0]">
                       <li v-for="(ent, i) in classe.entProdutoras" :key="i">{{ent}}</li>
                     </ul>
-                    <ul>
+                    <ul v-else>
                       <li v-for="(tip, i) in classe.tipologiasProdutoras" :key="i">{{tip}}</li>
                     </ul>
                   </template>
@@ -136,7 +136,7 @@
                   <RADAEntry
                     v-if="!!classe.formaContagem.subforma"
                     label="Subforma de Contagem do PCA"
-                    :value="subforma(classe.formaContagem.subforma)"
+                    :value="classe.formaContagem.subforma"
                   />
                 </div>
                 <RADAEntry
@@ -214,7 +214,7 @@ export default {
   props: ["classe", "formaContagem", "classes"],
   components: {
     RADAEntry,
-    RADAEntryDouble
+    RADAEntryDouble,
   },
   data: () => ({
     headers: [
@@ -222,29 +222,22 @@ export default {
         text: "Relação",
         value: "rel",
         width: "30%",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Série/Subsérie",
         value: "classe",
         width: "70%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
+        class: ["table-header", "body-2", "font-weight-bold"],
+      },
+    ],
   }),
   methods: {
     forma(v) {
-      let forma = this.formaContagem.formasContagem.find(e => (e.value = v));
+      let forma = this.formaContagem.formasContagem.find((e) => e.value == v);
 
       return forma.label;
     },
-    subforma(v) {
-      let subforma = this.formaContagem.subFormasContagem.find(
-        e => (e.value = v)
-      );
-
-      return subforma.label;
-    }
-  }
+  },
 };
 </script>

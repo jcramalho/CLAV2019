@@ -49,8 +49,17 @@
 </template>
 
 <script>
+import {
+  eNUV,
+  eNV,
+  eUndefined,
+  eDataFormatoErrado,
+  testarRegex,
+} from "@/utils/validadores";
+
 export default {
   props: ["e", "acao", "original"],
+
   data() {
     return {
       dialog: false,
@@ -71,7 +80,7 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (this.e.designacao === "" || this.e.designacao === null) {
+      if (eNUV(this.e.designacao)) {
         this.mensagensErro.push({
           sobre: "Nome da Entidade",
           mensagem: "O nome da entidade não pode ser vazio.",
@@ -101,7 +110,7 @@ export default {
       }
 
       // Sigla
-      if (this.e.sigla === "" || this.e.sigla === null) {
+      if (eNUV(this.e.sigla)) {
         this.mensagensErro.push({
           sobre: "Sigla",
           mensagem: "A sigla não pode ser vazia.",
@@ -130,7 +139,7 @@ export default {
       }
 
       // Internacional
-      if (this.e.internacional === "" || this.e.internacional === null) {
+      if (eNUV(this.e.internacional)) {
         this.mensagensErro.push({
           sobre: "Internacional",
           mensagem: "O campo internacional tem de ter uma opção.",
@@ -139,28 +148,38 @@ export default {
       }
 
       // SIOE
-      if (this.e.sioe !== "" && this.e.sioe !== null) {
+      if (!eNUV(this.e.sioe)) {
         if (this.e.sioe.length > 12) {
           this.mensagensErro.push({
             sobre: "SIOE",
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           numeroErros++;
+        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+          this.mensagensErro.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE só pode ter digitos numéricos.",
+          });
+          numeroErros++;
         }
       }
 
-      // Datas
-      if (
-        this.e.dataCriacao !== "" &&
-        this.e.dataCriacao !== null &&
-        this.e.dataCriacao !== undefined &&
-        this.e.dataExtincao !== "" &&
-        this.e.dataExtincao !== null &&
-        this.e.dataExtincao !== undefined
-      ) {
+      //Data Criação
+      if (!eNUV(this.e.dataCriacao)) {
+        if (eDataFormatoErrado(this.e.dataCriacao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Criação",
+            mensagem: "A data de criação está no formato errado",
+          });
+          numeroErros++;
+        }
+      }
+
+      // Data de Extinção
+      if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
         if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) {
           this.mensagensErro.push({
-            sobre: "Datas",
+            sobre: "Data de Extinção",
             mensagem:
               "A data de extinção tem de ser superior à data de criação.",
           });
@@ -175,13 +194,13 @@ export default {
       let numeroErros = 0;
 
       // Designação
-      if (dados.designacao === "" || dados.designacao === null) {
+      if (eNV(dados.designacao)) {
         this.mensagensErro.push({
           sobre: "Nome da Entidade",
           mensagem: "O nome da entidade não pode ser vazio.",
         });
         numeroErros++;
-      } else if (dados.designacao !== undefined) {
+      } else if (!eUndefined(dados.designacao)) {
         try {
           let existeDesignacao = await this.$request(
             "get",
@@ -205,7 +224,7 @@ export default {
       }
 
       // Internacional
-      if (dados.internacional === "" || dados.internacional === null) {
+      if (eNV(dados.internacional)) {
         this.mensagensErro.push({
           sobre: "Internacional",
           mensagem: "O campo internacional tem de ter uma opção.",
@@ -214,32 +233,28 @@ export default {
       }
 
       // SIOE
-      if (dados.sioe !== "" && dados.sioe !== null) {
-        if (dados.sioe !== undefined)
-          if (dados.sioe.length > 12) {
-            this.mensagensErro.push({
-              sobre: "SIOE",
-              mensagem:
-                "O campo SIOE tem de ter menos que 12 digitos numéricos.",
-            });
-            numeroErros++;
-          }
+      if (!eNUV(dados.sioe)) {
+        if (dados.sioe.length > 12) {
+          this.mensagensErro.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
+          });
+          numeroErros++;
+        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+          this.mensagensErro.push({
+            sobre: "SIOE",
+            mensagem: "O campo SIOE só pode ter digitos numéricos.",
+          });
+          numeroErros++;
+        }
       }
 
-      // Datas
-      if (
-        dados.dataCriacao !== "" &&
-        dados.dataCriacao !== null &&
-        dados.dataCriacao !== undefined &&
-        dados.dataExtincao !== "" &&
-        dados.dataExtincao !== null &&
-        dados.dataExtincao !== undefined
-      ) {
-        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
+      //Data Criação
+      if (!eNUV(this.e.dataCriacao)) {
+        if (eDataFormatoErrado(this.e.dataCriacao)) {
           this.mensagensErro.push({
-            sobre: "Datas",
-            mensagem:
-              "A data de extinção tem de ser superior à data de criação.",
+            sobre: "Data de Criação",
+            mensagem: "A data de criação está no formato errado",
           });
           numeroErros++;
         }
@@ -251,28 +266,25 @@ export default {
     validarEntidadeExtincao(dados) {
       let numeroErros = 0;
 
-      // Datas
-      if (
-        dados.dataExtincao === "" ||
-        dados.dataExtincao === null ||
-        dados.dataExtincao === undefined
-      ) {
+      // Data de Extinção
+      if (eNUV(dados.dataExtincao)) {
         this.mensagensErro.push({
-          sobre: "Data de extinção",
-          mensagem: "A data não pode ser vazia.",
+          sobre: "Data de Extinção",
+          mensagem: "A data de extinção não pode ser vazia.",
         });
         numeroErros++;
-      } else if (
-        dados.dataCriacao !== "" &&
-        dados.dataCriacao !== null &&
-        dados.dataCriacao !== undefined &&
-        dados.dataExtincao !== "" &&
-        dados.dataExtincao !== null &&
-        dados.dataExtincao !== undefined
-      ) {
+      } else if (!eNUV(dados.dataExtincao)) {
+        if (eDataFormatoErrado(dados.dataExtincao)) {
+          this.mensagensErro.push({
+            sobre: "Data de Extinção",
+            mensagem: "A data de extinção está no formato errado.",
+          });
+          numeroErros++;
+        }
+      } else if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
         if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
           this.mensagensErro.push({
-            sobre: "Datas",
+            sobre: "Data de Extinção",
             mensagem:
               "A data de extinção tem de ser superior à data de criação.",
           });

@@ -83,6 +83,11 @@
               :tipo="pedido.objeto.tipo"
             />
 
+            <AnalisaTS
+              v-else-if="pedido.objeto.tipo.includes('TS ')"
+              :p="pedido"
+            />
+
             <AnalisaDefault v-else :p="pedido" />
           </v-card-text>
 
@@ -90,9 +95,38 @@
           <v-card-text
             v-else-if="
               pedido.objeto.acao === 'Alteração' ||
-                pedido.objeto.acao === 'Extinção'
+                pedido.objeto.acao === 'Extinção' ||
+                pedido.objeto.acao === 'Revogação'
             "
           >
+            <span>
+              <v-alert
+                type="info"
+                width="90%"
+                class="m-auto mb-2 mt-2"
+                outlined
+              >
+                <span v-if="pedido.objeto.tipo === 'Legislação'">
+                  <b> {{ pedido.objeto.tipo }}: </b>
+                  {{ pedido.objeto.dadosOriginais.diplomaFonte }}
+                  - {{ pedido.objeto.dadosOriginais.numero }} -
+                  {{ pedido.objeto.dadosOriginais.sumario }}
+                </span>
+
+                <span
+                  v-else-if="
+                    pedido.objeto.tipo === 'Entidade' ||
+                      pedido.objeto.tipo === 'Tipologia'
+                  "
+                >
+                  <b> {{ pedido.objeto.tipo }}: </b>
+                  {{ pedido.objeto.dadosOriginais.sigla }}
+                  - {{ pedido.objeto.dadosOriginais.designacao }}
+                </span>
+              </v-alert>
+
+              <v-divider class="m-auto mb-2" />
+            </span>
             <AnalisaEditaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
@@ -153,6 +187,7 @@ import AnalisaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
 import AnalisaAE from "@/components/pedidos/analise/AnalisaAE";
+import AnalisaTS from "@/components/pedidos/analise/AnalisaTS";
 
 import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
 import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLegislacao";
@@ -179,6 +214,7 @@ export default {
     AnalisaEditaLegislacao,
     AnalisaEditaTipologiaEntidade,
     AnalisaAE,
+    AnalisaTS,
     AnalisaDefault,
     VerDespachos,
     ErroDialog,
@@ -212,7 +248,7 @@ export default {
   async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
-      if (data.estado !== "Distribuído")
+      if (data.estado !== "Distribuído" && data.estado !== "Redistribuído")
         throw new URIError("Este pedido não pertence a este estado.");
 
       this.pedido = data;

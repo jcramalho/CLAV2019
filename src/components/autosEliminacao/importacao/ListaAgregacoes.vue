@@ -1,6 +1,6 @@
 <template>
   <v-data-table
-    :headers="cabecalho"
+    :headers="(tipo=='TS_LC' || tipo=='PGD_LC') ? cabecalhoLC : cabecalho"
     :items="agregacoes"
     :items-per-page="5"
     class="elevation-1 ml-2 mt-3"
@@ -18,7 +18,7 @@
             dense
           />
         </td>
-        <td style="text-align: center;" v-if="(df==='C' || df==='Conservação') && prop.item.ni!=='Participante'">
+        <td style="text-align: center;" v-if="(tipo=='TS_LC' || tipo=='PGD_LC') && (df==='C' || df==='Conservação') && prop.item.ni!=='Participante'">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-icon color="orange darken-2" v-on="on">warning</v-icon> Participante
@@ -26,7 +26,7 @@
             <span>Alterado em confomidade com <strong>Destino Final</strong> de <strong>Conservação</strong></span>
           </v-tooltip>
         </td>
-        <td style="text-align: center;" v-else>{{prop.item.ni}}</td>
+        <td style="text-align: center;" v-else-if="tipo=='TS_LC' || tipo=='PGD_LC'">{{prop.item.ni}}</td>
       </tr>
     </template>
   </v-data-table>
@@ -36,14 +36,19 @@
 const help = require("@/config/help").help;
 
 export default {
-  props: ["agregacoes","df","pca","dataInicio","search"],
+  props: ["agregacoes","df","pca","dataInicio","search","tipo"],
 
   data: () => ({
-    cabecalho: [
+    cabecalhoLC: [
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", align: "left", value: "titulo" },
       { text: "Data de Contagem", align: "center", value: "dataContagem" },
       { text: "Natureza de Intervenção", align: "center", value: "ni" }
+    ],
+    cabecalho: [
+      { text: "Código", align: "left", sortable: false, value: "codigo" },
+      { text: "Título", align: "left", value: "titulo" },
+      { text: "Data de Contagem", align: "center", value: "dataContagem" }
     ],
     footer_props: {
       "items-per-page-text": "Mostrar"
@@ -52,7 +57,6 @@ export default {
   methods: {
     validaPCA1: function(dataContagem) {
       var currentTime = new Date();
-      console.log(pca)
       var pca = parseInt(this.pca) || 0
       var v = parseInt(dataContagem) || 0
       var res = pca + v + 1

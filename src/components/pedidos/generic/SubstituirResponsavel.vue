@@ -100,6 +100,8 @@
 <script>
 import Loading from "@/components/generic/Loading";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
+import { filtraNivel } from "@/utils/permissoes";
+import { NIVEIS_ANALISAR_PEDIDO, NIVEIS_VALIDAR_PEDIDO } from "@/utils/consts";
 
 export default {
   props: ["pedido"],
@@ -130,8 +132,7 @@ export default {
 
   async created() {
     try {
-      const response = await this.$request("get", "/users");
-      this.utilizadores = response.data;
+      await this.preparaUtilizadores(this.pedido.estado);
       this.pedidoCarregado = true;
     } catch (e) {
       console.log("e", e);
@@ -139,6 +140,24 @@ export default {
   },
 
   methods: {
+    async preparaUtilizadores(etapa) {
+      const { data } = await this.$request("get", "/users");
+
+      switch (etapa) {
+        case "Distribuído":
+          this.utilizadores = filtraNivel(data, NIVEIS_ANALISAR_PEDIDO);
+          break;
+
+        case "Apreciado":
+          this.utilizadores = filtraNivel(data, NIVEIS_VALIDAR_PEDIDO);
+          break;
+
+        default:
+          this.utilizadores = data;
+          break;
+      }
+    },
+
     cancelar() {
       this.utilizadorSelecionado = null;
       this.mensagemDespacho = null;

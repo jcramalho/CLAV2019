@@ -254,6 +254,7 @@ export default {
     portaria: [],
     portariaRada: [],
     tabelasSelecao: [],
+    tsRada: [],
     classes: [],
     classesCompletas: [],
     auto: {
@@ -293,7 +294,9 @@ export default {
       var response3 = await this.$request("get", "/legislacao?fonte=RADA");
       this.portariaRada = await this.prepararLeg(response3.data);
       this.tabelasSelecao.push("Lista Consolidada")
-      
+      var response4 = await this.$request("get","/rada");
+      this.tsRada = response4.data
+
       var response = await this.$request("get", "/entidades/");
       this.entidades = await this.prepararEntidade(response.data);
       
@@ -307,6 +310,7 @@ export default {
       this.portaria = [];
       this.portariaRada = [];
       this.tabelasSelecao = [];
+      this.tsRada = [];
       this.auto = this.obj.objeto;
       this.pendenteID = this.obj._id;
     }
@@ -359,7 +363,7 @@ export default {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push("Portaria " + l.numero + " - " + l.sumario);
+          myPortarias.push(l.tipo + " " + l.numero + " - " + l.sumario);
         }
         return myPortarias;
       } catch (error) {
@@ -373,21 +377,22 @@ export default {
     submit: async function() {
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
-        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA' && this.tipo!='PGD') {
+        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA_CLAV' && this.tipo!='RADA' && this.tipo!='PGD') {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
         }
       }
       if(this.erro==="") {
-        if(this.tipo=="TS_LC") {
+        if(this.tipo=="TS_LC" || this.tipo=="RADA_CLAV") {
+          this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
           delete this.auto["legislacao"]
-          //Para já apenas LC
-          this.auto.referencial = "lc1"
         }
+        
         var user = this.$verifyTokenUser();
 
         this.auto.responsavel = user.email;
         this.auto.entidade = user.entidade;
+        this.auto.tipo = this.tipo;
 
         var pedidoParams = {
           tipoPedido: "Criação",
@@ -408,7 +413,7 @@ export default {
 
 
         this.$request("delete", "/pendentes/" + this.obj._id);
-        this.$router.push('/pedidos/submissao')
+        this.$router.push('/pedidos/submissao/'+codigoPedido.data)
       }
     },
     guardarTrabalho: async function() {
@@ -462,6 +467,10 @@ export default {
       }
     },
     filtrarDonos: async function() {
+      if(typeof this.auto.legislacao != "string") {
+        this.auto.referencial = this.auto.legislacao.codigo;
+        this.auto.legislacao = this.auto.legislacao.titulo;
+      }
       this.donos = this.entidades
 
       for(var f of this.auto.fundo) {
@@ -487,7 +496,7 @@ export default {
         );
         this.classes = await this.prepararClasses(this.classesCompletas);
       }
-      else if(this.tipo == "PGD" || this.tipo == "PGD_LC") {
+      else if(this.tipo == "PGD" || this.tipo == "PGD_LC" || this.tipo=="RADA") {
         var response = await this.$request(
           "get",
           "/legislacao"
@@ -500,26 +509,55 @@ export default {
             "get",
             "/pgd/pgd_"+leg[0].id
           )
-        else 
+        else if(this.tipo=="PGD_LC")
           var response2 = await this.$request(
             "get",
             "/pgd/pgd_lc_"+leg[0].id
           )
-        this.classes = response2.data.filter(c => c.nivel>2).map(c => {
+        else 
+          var response2 = await this.$request(
+            "get",
+            "/rada/old/tsRada_"+leg[0].id
+          )
+        this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
+            return {
+              idClasse: c.classe,
+              nivel: c.nivel,
+              codigo: c.codigo,
+              referencia: c.referencia,
+              titulo: c.titulo,
+              df: {valor: c.df, nota: c.notaDF},
+              pca: {valores: c.pca, notas: c.notaPCA},
+            }
+          })
+        this.classesCompletas = this.classesCompletas.filter(c => this.validaPCAeDF(c))
+
+        this.classes = this.classesCompletas.map(c => {
             if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
             else if(c.codigo) return ""+c.codigo+" - "+c.titulo
             else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
-        this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
-            return {
-              idClasse: c.classe,
-              codigo: c.codigo,
-              referencia: c.referencia,
-              titulo: c.titulo,
-              df: {valor: c.df},
-              pca: {valores: c.pca},
-            }
-          })
+        
+      } else if(this.tipo == "RADA_CLAV") {
+        var response = await this.$request(
+          "get",
+          "/rada/"+this.auto.referencial
+        )
+        this.classesCompletas = response.data.tsRada.filter(c=> c.df && c.pca).map(c=> {
+          return {
+            idClasse: c.classes.split("#")[1],
+            codigo: c.codigo,
+            referencia: c.referencia,
+            titulo: c.titulo,
+            df: {valor: c.df.df, nota: c.df.notadf},
+            pca: {valores: c.pca.pca, notas: c.pca.notaPCA}
+          }
+        })
+        this.classes = this.classesCompletas.map(c => {
+          if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+          else if(c.codigo) return ""+c.codigo+" - "+c.titulo
+          else if(c.referencia) return ""+c.referencia+" - "+c.titulo
+        })
       }
       else {
         this.classes = [];

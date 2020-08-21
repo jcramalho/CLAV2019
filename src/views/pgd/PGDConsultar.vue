@@ -96,15 +96,10 @@ export default {
     try {
       this.id = window.location.pathname.split("/")[2];
       if(this.id.split("_")[0]=="tsRada") {
+        this.idLegislacao = this.id.split("tsRada_")[1];
+        this.idLegislacao = this.idLegislacao.split("_tip")[0];
         this.message = "Relatório de Avaliação de Documentação Acumulada"
-        this.legislacao = {
-          data: {campo: "Data da Tabela de Seleção", text: this.id.split("_")[3]},
-          sumario: {campo: "Sumário", text: "Tabela de Seleção do RADA pertencente à entidade "+this.id.split("_")[2]},
-          fonte: {campo: "Fonte de Legitimação", text: "RADA"},
-          entidade: {campo: "Entidade", text: this.id.split("_")[2]}
-        }
-        this.titulo = `Tabela de Seleção do RADA de ${this.id.split("_")[2]}, relativo ao ano ${this.id.split("_")[3]}`;
-        var response = await this.$request("get","/pgd/rada/"+this.id)
+        var response = await this.$request("get","/rada/old/"+this.id)
         this.classesTree = await this.prepararClasses(response.data)
         this.classes = response.data.map(c => {
           return {
@@ -123,6 +118,14 @@ export default {
             justificacaoPCA: c.justificacaoPCA,
           }
         })
+        
+        var response2 = await this.$request(
+          "get",
+          "/legislacao/" + this.idLegislacao
+        );
+        this.legislacao = await this.preparaLegislacao(response2.data);
+        this.titulo = `Tabela de Seleção de ${response2.data.tipo} ${response2.data.numero}`;
+
       } else {
         this.idLegislacao = this.id.split("pgd_")[1];
         if(this.idLegislacao.includes("lc_")) this.idLegislacao = this.idLegislacao.split("lc_")[1]

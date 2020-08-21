@@ -21,7 +21,7 @@
 export default {
   props: ["label"],
   data: () => ({
-    reader: null
+    reader: null,
   }),
   methods: {
     transformar_buffer(file) {
@@ -29,10 +29,10 @@ export default {
         let extensao = file.name.split(".")[1];
 
         if (extensao == "csv") {
-          this.reader.onload = e => {
+          this.reader.onload = (e) => {
             this.$emit("ficheiro", e.target.result);
           };
-          this.reader.readAsArrayBuffer(file);
+          this.reader.readAsText(file);
         }
       }
     },
@@ -45,11 +45,11 @@ export default {
       } else {
         return "Campo Obrigatório!";
       }
-    }
+    },
   },
   created() {
     this.reader = new FileReader();
-  }
+  },
 };
 </script>
 
