@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row class="justify-start align-start">
+    <v-row>
       <!-- Guardar trabalho......................... -->
       <v-col>
         <v-btn
@@ -11,9 +11,15 @@
           v-bind:disabled="o.objeto.codigo == ''"
         >
           Guardar trabalho
+
+          <DialogPendenteGuardado 
+              v-if="pendenteGuardado" 
+              :pendente="pendente"
+              @continuar="pendenteGuardado = false"/>
         </v-btn>
       </v-col>
 
+      <!-- Validar classe....................... -->
       <valida-classe-info-box :c="o.objeto" />
 
       <!-- Criar classe......................... -->
@@ -29,18 +35,41 @@
         </v-btn>
       </v-col>
 
+      <!-- Sair da criação da Classe sem abortar o processo .........................-->
+        <v-col>
+          <v-btn 
+            dark
+            rounded
+            class="ma-2 indigo darken-4"
+            @click="sairOperacao = true"
+            >Sair 
+                    
+            <DialogSair
+              v-if="sairOperacao" 
+              @continuar="sairOperacao=false"
+              @sair="sair"
+            />
+          </v-btn>
+        </v-col>
+
       <!-- Cancelar criação......................... -->
       <v-col>
         <v-btn
-          v-bind:disabled="o.objeto.codigo == ''"
+          v-bind:disabled="c.codigo == ''"
           dark
           rounded
           class="ma-2 red darken-4"
-          @click="eliminarClasse"
+          @click="eliminarClasse = true"
         >
           Cancelar criação
+
+          <DialogCancelar v-if="eliminarClasse"
+            @continuar="eliminarClasse = false"
+            @sair="cancelarCriacaoClasse"
+          />
         </v-btn>
       </v-col>
+
     </v-row>
 
     <!-- Erros de Validação .................................... -->
@@ -70,34 +99,6 @@
       </v-dialog>
     </v-row>
 
-    <!-- Trabalho pendente guardado com sucesso ........... -->
-    <v-row justify-center>
-      <v-dialog v-model="pendenteGuardado" persistent max-width="60%">
-        <v-card>
-          <v-card-title class="headline">
-            Trabalho pendente guardado
-          </v-card-title>
-          <v-card-text>
-            <p>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
-            </p>
-            <p>{{ pendenteGuardadoInfo }}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="green darken-1"
-              text
-              @click="criacaoPendenteTerminada"
-            >
-              Fechar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
-
     <!-- Pedido de criação de classe submetido com sucesso ........... -->
     <v-row justify-center>
       <v-dialog v-model="dialogClasseCriada" persistent max-width="60%">
@@ -110,33 +111,6 @@
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" text @click="criacaoClasseTerminada">
               Fechar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
-
-    <!-- Cancelamento da criação duma classe: confirmação ........... -->
-    <v-row justify-center>
-      <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
-        <v-card>
-          <v-card-title class="headline">
-            Cancelamento e eliminação do pedido de criação de classe
-          </v-card-title>
-          <v-card-text>
-            <p>Selecionou o cancelamento da criação da classe.</p>
-            <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" text @click="cancelarCriacaoClasse">
-              Confirmo
-            </v-btn>
-            <v-btn color="red darken-1" text @click="pedidoEliminado = false">
-              Enganei-me, desejo continuar o trabalho
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -159,19 +133,24 @@
 
 <script>
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
+import DialogCancelar from "@/components/classes/criacao/DialogCancelar.vue";
+import DialogPendenteGuardado from "@/components/classes/criacao/DialogPendenteGuardado.vue";
+import DialogSair from "@/components/classes/criacao/DialogSair.vue";
+
 
 export default {
   props: ["o"],
   components: {
-    ValidaClasseInfoBox
+    ValidaClasseInfoBox, DialogCancelar, DialogPendenteGuardado, DialogSair
   },
   data() {
     return {
       c: {},
+      pendente: {},
 
       pendenteGuardado: false,
-      pendenteGuardadoInfo: "",
       dialogClasseCriada: false,
+      eliminarClasse: false,
       pedidoEliminado: false,
       pedidoCriado: false,
       mensagemPedidoCriadoOK: "",
@@ -179,6 +158,7 @@ export default {
       loginErrorMessage: "Precisa de fazer login para criar a Classe!",
       numeroErros: 0,
       errosValidacao: false,
+      sairOperacao: false,
 
       codeFormats: {
         1: /^[0-9]{3}$/,
@@ -191,6 +171,7 @@ export default {
 
   created: function(){
       this.c = this.o.objeto;
+      this.pendente = this.o;
   },
 
   watch: {
@@ -217,17 +198,23 @@ export default {
             user: { email: userBD.email },
             token: this.$store.state.token
           };
-          var response = this.$request("put", "/pendentes", pendenteParams);
+          // É preciso testar se há um Pendente criado para não criar um novo
+          if(this.pendente._id){
+            pendenteParams._id = this.pendente._id;
+            pendenteParams.numInterv = this.pendente.numInterv++;
+            var response = await this.$request("put", "/pendentes", pendenteParams);
+          }
+          else{
+            pendenteParams.numInterv = 1;
+            var response = await this.$request("post", "/pendentes", pendenteParams);
+          }
+
+          this.pendente = response.data;
           this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
         }
       } catch (error) {
         return error;
       }
-    },
-
-    criacaoPendenteTerminada: function() {
-      this.$router.push("/");
     },
 
     // Verifica se o código introduzido pelo utilizador já existe na BD....................
@@ -665,12 +652,21 @@ export default {
       this.$router.push("/");
     },
 
-    // Cancela a criação da classe
-    eliminarClasse: function() {
-      this.pedidoEliminado = true;
+    // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
+    sair: async function(){
+        this.$router.push("/"); 
     },
 
-    cancelarCriacaoClasse: function() {
+    // Cancela a criação da classe
+    cancelarCriacaoClasse: async function() {
+      if(this.pendente && this.pendente._id){
+        try{
+          var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
+        }
+        catch(e){
+          console.log("Erro ao eliminar o pendente: " + e);
+        }
+      }
       this.$router.push("/");
     }
   }

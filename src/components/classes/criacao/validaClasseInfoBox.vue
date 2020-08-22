@@ -40,8 +40,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- Validação não detetou erros ........... -->
-    <v-row justify-center>
+    <!-- Validação não detetou erros ........... -->   
       <v-dialog v-model="dialogSemErros" persistent max-width="60%">
         <v-card>
           <v-card-title class="headline">Validação sem erros</v-card-title>
@@ -59,8 +58,7 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-      </v-dialog>
-    </v-row>
+      </v-dialog>  
   </v-col>
 </template>
 
@@ -251,35 +249,38 @@ export default {
 
     validaNotasAp: async function(){
       // Notas de Aplicação
-      for (let i = 0; i < this.c.notasAp.length; i++) {
-        try {
-          var existeNotaAp = await this.$request(
-            "get",
-            "/notasAp/notaAp?valor=" +
-              encodeURIComponent(this.c.notasAp[i].nota)
-          );
-          if (existeNotaAp.data) {
-            this.mensagensErro.push({
-              sobre: "Nota de Aplicação(" + (i + 1) + ")",
-              mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
-            });
-            this.numeroErros++;
-          }
-        } catch (e) {
-          this.numeroErros++;
-          this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da NotaAp."
-          });
-        }
-      }
       if (this.notaDuplicada(this.c.notasAp)) {
         this.mensagensErro.push({
-          sobre: "Nota de Aplicação(" + (i + 1) + ")",
+          sobre: "Nota de Aplicação(" + this.c.notasAp.length + ")",
           mensagem: "A última nota encontra-se duplicada."
         });
         this.numeroErros++;
       }
+      else{
+        for (let i = 0; i < this.c.notasAp.length; i++) {
+          try {
+            var existeNotaAp = await this.$request(
+              "get",
+              "/notasAp/notaAp?valor=" +
+                encodeURIComponent(this.c.notasAp[i].nota)
+            );
+            if (existeNotaAp.data) {
+              this.mensagensErro.push({
+                sobre: "Nota de Aplicação(" + (i + 1) + ")",
+                mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
+              });
+              this.numeroErros++;
+            }
+          } catch (e) {
+            this.numeroErros++;
+            this.mensagensErro.push({
+              sobre: "Acesso à Ontologia",
+              mensagem: "Não consegui verificar a existência da NotaAp (" + e + ")"
+            });
+          }
+        }
+      }
+      
     },
 
     validaExemplosNotasAp: async function(){
