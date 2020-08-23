@@ -33,31 +33,33 @@ import TabelaSelecao from "@/components/rada/consulta/elementos/TabelaSelecao.vu
 
 export default {
   data: () => ({
-    rada: {}
+    rada: {},
   }),
   components: {
     InformacaoGeral,
     RelatorioExpositivo,
-    TabelaSelecao
+    TabelaSelecao,
   },
   async mounted() {
     var response = await this.$request("get", "/rada/" + this.$route.params.id);
     this.rada = response.data;
 
-    this.rada.tsRada.forEach(async e => {
-      let pai = e.pai.split("_");
-      e.pai = pai[pai.length - 1];
+    this.rada.tsRada.forEach(async (e) => {
+      if (!!e.pai) {
+        let pai = e.pai.split("_");
+        e.pai = pai[pai.length - 1];
+      }
 
       if (!Boolean(e.tipo)) {
         let tipo = e.classes.split("_");
         e["tipo"] = tipo[tipo.length - 2];
       }
 
-       this.rada.tsRadaArv = await this.preparaTree();
+      this.rada.tsRadaArv = await this.preparaTree();
     });
   },
   methods: {
-     preparaTree() {
+    preparaTree() {
       var myTree = [];
 
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -73,13 +75,13 @@ export default {
             children: this.preparaTreeFilhos(
               this.rada.tsRada[i].codigo,
               this.rada.tsRada[i].titulo
-            )
+            ),
           });
         }
       }
       return myTree;
     },
-    preparaTreeFilhos: function(pai_codigo, pai_titulo) {
+    preparaTreeFilhos: function (pai_codigo, pai_titulo) {
       let children = [];
 
       for (let i = 0; i < this.rada.tsRada.length; i++) {
@@ -92,13 +94,13 @@ export default {
             children: this.preparaTreeFilhos(
               this.rada.tsRada[i].codigo,
               this.rada.tsRada[i].titulo
-            )
+            ),
           });
         }
       }
 
       return children;
-    }
-  }
+    },
+  },
 };
 </script>

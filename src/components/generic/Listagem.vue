@@ -72,7 +72,7 @@
           />
           <tr
             v-else-if="
-              tipo == 'Relatórios de Avaliação de Documentação Acumulada'
+              tipo == 'RADA/CLAV'
             "
             @click="$router.push('/rada/' + props.item.codigo)"
           >

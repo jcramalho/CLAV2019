@@ -12,7 +12,7 @@ export async function converterParaTriplosRADA(obj, subformasContagem) {
                             clav:eDaResponsabilidadeDe clav:${obj.entRes
             .map(e => "ent_" + e.split(" - ")[0])
             .join(", clav:")} ;
-                            clav:titulo "${obj.titulo}" .\n\n`;
+                            clav:titulo """${obj.titulo}""" .\n\n`;
 
     triplos += await triplosRE(obj.RE, obj.id);
     triplos += await triplosTS(obj.tsRada, obj.id, subformasContagem);
@@ -31,17 +31,17 @@ async function triplosRE(RE, codigoRADA) {
             } ;
             clav:dataFinal "${RE.dataFinal}" ;
             clav:dataInicial "${RE.dataInicial}" ;
-            clav:estadoConservacao "${RE.est_conser}" ;
-            clav:histAdministrativa "${RE.hist_admin}" ;
-            clav:histCustodial "${RE.hist_cust}" ;
-            clav:localizacao "${RE.localizacao}" ;
+            clav:estadoConservacao """${RE.est_conser}""" ;
+            clav:histAdministrativa """${RE.hist_admin}""" ;
+            clav:histCustodial """${RE.hist_cust}""" ;
+            clav:localizacao """${RE.localizacao}""" ;
             clav:medicaoUIsDigital ${RE.dimSuporte.medicaoUI_digital} ;
             clav:medicaoUIsOutros ${RE.dimSuporte.medicaoUI_outros} ;
             clav:medicaoUIsPapel ${RE.dimSuporte.medicaoUI_papel} ;
             clav:numeroSeries ${RE.dimSuporte.nSeries} ;
             clav:numeroSubseries ${RE.dimSuporte.nSubseries} ;
             clav:numeroUIs ${RE.dimSuporte.nUI} ;
-            clav:sistOrganizacao "${RE.sist_org}" .\n\n`;
+            clav:sistOrganizacao """${RE.sist_org}""" .\n\n`;
         return triplos;
     } catch (err) {
         console.log(err);
@@ -51,7 +51,7 @@ async function triplosRE(RE, codigoRADA) {
 async function triplosTS(ts, codigoRADA, subformasContagem) {
     try {
         let triplos = `clav:rada_${codigoRADA}_ts rdf:type owl:NamedIndividual , clav:TabelaSelecaoRada ;
-                                    clav:titulo "${ts.titulo}" ;
+                                    clav:titulo """${ts.titulo}""" ;
                                     clav:temClasse clav:${ts.classes
                 .map(e => e.id)
                 .join(",\n clav:")} . \n\n`;
@@ -80,10 +80,10 @@ function triplosAreaOrganico(classe, codigoRADA) {
     try {
         let triplos = `clav:${classe.id} rdf:type owl:NamedIndividual , clav:Area_Organico ;
                                     clav:codigo "${classe.codigo}" ;
-                                    clav:descricao "${classe.descricao}" ;
+                                    clav:descricao """${classe.descricao}""" ;
                                     clav:nivel "${classe.tipo}" ;
                                     ${!!classe.eFilhoDe ? "clav:temPai clav:rada_" + codigoRADA + "_organico_funcional_" + classe.eFilhoDe + " ;" : ''}
-                                    clav:titulo "${classe.titulo}" .\n\n`
+                                    clav:titulo """${classe.titulo}""" .\n\n`
         return triplos;
     } catch (err) {
         console.log(err);
@@ -94,8 +94,8 @@ async function triplosSerie(classe, codigoRADA, subformasContagem) {
     try {
         let triplos = `clav:${classe.id} rdf:type owl:NamedIndividual , clav:Serie ;
                                     clav:codigo "${classe.codigo}" ;
-                                    clav:descricao "${classe.descricao}" ;
-                                    clav:titulo "${classe.titulo}" ;
+                                    clav:descricao """${classe.descricao}""" ;
+                                    clav:titulo """${classe.titulo}""" ;
                                     clav:dataInicial "${classe.dataInicial}" ;
                                     clav:dataFinal "${classe.dataFinal}" ;
                                     clav:tipoUA "${classe.tUA}" ;
@@ -146,8 +146,8 @@ async function triplosSubserie(classe, codigoRADA, subformasContagem) {
     try {
         let triplos = `clav:${classe.id} rdf:type owl:NamedIndividual , clav:Subserie ;
                                     clav:codigo "${classe.codigo}" ;
-                                    clav:descricao "${classe.descricao}" ;
-                                    clav:titulo "${classe.titulo}" ;
+                                    clav:descricao """${classe.descricao}""" ;
+                                    clav:titulo """${classe.titulo}""" ;
                                     clav:dataInicial "${classe.dataInicial}" ;
                                     clav:dataFinal "${classe.dataFinal}" ;
                                     ${!!classe.UIs[0] ? "clav:ePaiDeUI " + classe.UIs.map(e => "clav:rada_" + codigoRADA + "_ui_" + e).join(", ") + " ;" : ''}
@@ -199,8 +199,8 @@ function triplosRelacoes(classe, codigoRADA) {
 async function triplosDF(classe, codigoRADA) {
     try {
         let triplos = `clav:${classe.id} clav:temDF clav:df_${classe.id} .\n\nclav:df_${classe.id} rdf:type owl:NamedIndividual , clav:DestinoFinal ;
-                            ${!!classe.notaDF ? `clav:dfNota "${classe.notaDF}" ;` : ''}
-                            clav:dfValor ${!!classe.df ? `"${await destinoFinal(classe.df)}"` : `"NE"`}.\n\n`
+                            ${!!classe.notaDF ? `clav:dfNota """${classe.notaDF}""" ;` : ''}
+                            clav:dfValor ${!!classe.df ? `"${await destinoFinal(classe.df)}"` : `""`}.\n\n`
 
         if (!!classe.justificacaoDF[0]) {
             triplos += `clav:just_df_${classe.id} rdf:type owl:NamedIndividual , clav:JustificacaoDF.\n\nclav:df_${classe.id} clav:temJustificacao clav:just_df_${classe.id} .\n\n`;
@@ -237,7 +237,7 @@ async function triplosPCA(classe, codigoRADA, subformasContagem) {
     try {
         let triplos = `clav:${classe.id} clav:temPCA clav:pca_${classe.id} .\n\nclav:pca_${classe.id} rdf:type owl:NamedIndividual , clav:PCA ;
                 clav:pcaValor ${!!classe.pca ? `"${classe.pca}"` : `"NE"`} ;
-                ${!!classe.notaPCA ? `clav:pcaNota "${classe.notaPCA}" ;` : ''}
+                ${!!classe.notaPCA ? `clav:pcaNota """${classe.notaPCA}""" ;` : ''}
                 clav:pcaFormaContagemNormalizada clav:${classe.formaContagem.forma} . \n\n`
 
         triplos += await triplosSubforma(classe.id, classe.formaContagem.subforma, subformasContagem);
@@ -267,7 +267,7 @@ function triplosSubforma(id_pca, subforma, subformasContagem) {
             if (sf != undefined) {
                 triplos += `clav:pca_${id_pca} clav:pcaSubformaContagem clav:${sf.value} .`
             } else {
-                triplos += `clav:pca_${id_pca} clav:pcaSubformaContagemNaoNormalizada "${subforma}" .`
+                triplos += `clav:pca_${id_pca} clav:pcaSubformaContagemNaoNormalizada """${subforma}""" .`
             }
         }
 
@@ -285,11 +285,11 @@ async function triplosJustificacaoPCACriterios(criterio, i, classe, codigoRADA) 
         switch (criterio.tipo) {
             case 'Critério Gestionário':
                 triplos += `clav:crit_just_pca_${classe.id}_${i} rdf:type owl:NamedIndividual , clav:CriterioJustificacaoGestionario;
-                                clav:conteudo "${criterio.nota}".\n`
+                                clav:conteudo """${criterio.nota}""".\n`
                 break;
             case 'Critério Legal':
                 triplos += `clav:crit_just_pca_${classe.id}_${i} rdf:type owl:NamedIndividual , clav:CriterioJustificacaoLegal;
-                    clav:conteudo "${criterio.nota}" ;
+                    clav:conteudo """${criterio.nota}""" ;
                     clav:criTemLegAssoc clav:${!!classe.legislacao ? criterio.relacoes.map(e => {
                     let l = classe.legislacao.find(leg => leg.legislacao == e);
 
@@ -298,7 +298,7 @@ async function triplosJustificacaoPCACriterios(criterio, i, classe, codigoRADA) 
                 break;
             case 'Critério de Utilidade Administrativa':
                 triplos += `clav:crit_just_pca_${classe.id}_${i} rdf:type owl:NamedIndividual , clav:CriterioJustificacaoUtilidadeAdministrativa;
-                    clav:conteudo "${criterio.nota}"; 
+                    clav:conteudo """${criterio.nota}"""; 
                     clav:critTemProcRel clav:${classe.relacoes.filter(e => e.relacao == "Suplemento para").map(e => "rada_" + codigoRADA + "_" + e.serieRelacionada.tipo.replace("é", "e").toLowerCase() + "_" + e.serieRelacionada.codigo).join(", clav:")} . \n`
                 break;
         }
@@ -317,12 +317,12 @@ async function triplosJustificacaoDFCriterios(criterio, i, classe, codigoRADA) {
         switch (criterio.tipo) {
             case 'Critério de Complementaridade Informacional':
                 triplos += `clav:crit_just_df_${classe.id}_${i} rdf:type owl:NamedIndividual , clav:CriterioJustificacaoComplementaridadeInfo ;
-                                clav:conteudo "${criterio.nota}" ;
+                                clav:conteudo """${criterio.nota}""" ;
                                 clav:critTemProcRel clav:${classe.relacoes.filter(e => e.relacao == "Complementar de").map(e => "rada_" + codigoRADA + "_" + e.serieRelacionada.tipo.replace("é", "e").toLowerCase() + "_" + e.serieRelacionada.codigo).join(", clav:")}. \n`
                 break;
             case 'Critério Legal':
                 triplos += `clav:crit_just_df_${classe.id}_${i} rdf:type owl:NamedIndividual , clav:CriterioJustificacaoLegal;
-                                clav:conteudo "${criterio.nota}" ;
+                                clav:conteudo """${criterio.nota}""" ;
                                 clav:criTemLegAssoc clav:${!!classe.legislacao ? criterio.relacoes.map(e => {
                     let l = classe.legislacao.find(leg => leg.legislacao == e);
                     return l.id;
@@ -331,11 +331,11 @@ async function triplosJustificacaoDFCriterios(criterio, i, classe, codigoRADA) {
             case 'Critério de Densidade Informacional':
                 if (classe.relacoes.some(e => e.relacao == "Síntese de")) {
                     triplos += `clav:crit_just_df_${classe.id}_${i} rdf:type owl:NamedIndividual , clav:CriterioJustificacaoDensidadeInfoSinDe;
-                    clav:conteudo "${criterio.nota}"; 
+                    clav:conteudo """${criterio.nota}"""; 
                     clav:critTemProcRel clav:${classe.relacoes.filter(e => e.relacao == "Síntese de").map(e => "rada_" + codigoRADA + "_" + e.serieRelacionada.tipo.replace("é", "e").toLowerCase() + "_" + e.serieRelacionada.codigo).join(", clav:")} . \n`
                 } else {
                     triplos += `clav:crit_just_df_${classe.id}_${i} rdf:type owl:NamedIndividual , clav:CriterioJustificacaoDensidadeInfoSinPor;
-                    clav:conteudo "${criterio.nota}"; 
+                    clav:conteudo """${criterio.nota}"""; 
                     clav:critTemProcRel clav:${classe.relacoes.filter(e => e.relacao == "Sintetizado por").map(e => "rada_" + codigoRADA + "_" + e.serieRelacionada.tipo.replace("é", "e").toLowerCase() + "_" + e.serieRelacionada.codigo).join(", clav:")} . \n`
                 }
                 break;
@@ -365,13 +365,13 @@ function triplosUnidadeInstalacao(UIs) {
     for (let i = 0; i < UIs.length; i++) {
         triplos += `clav:${UIs[i].id} rdf:type owl:NamedIndividual , clav:UnidadeInstalacao ;
                         clav:produzidaPor clav:${!!UIs[i].produtor.entProdutoras[0] ? UIs[i].produtor.entProdutoras.map(e => "ent_" + e.split(" - ")[0]).join(", clav:") : UIs[i].produtor.tipologiasProdutoras.map(e => "tip_" + e.split(" - ")[0]).join(", clav:")} ;
-                        ${!!UIs[i].codCota ? `clav:codigoClassificacao "${UIs[i].codCota}" ;` : ''}
+                        ${!!UIs[i].codCota ? `clav:codigoClassificacao """${UIs[i].codCota}""" ;` : ''}
                         clav:dataFinal "${UIs[i].dataFinal}" ;
                         clav:dataInicial "${UIs[i].dataInicial}" ;
-                        clav:descricao "${UIs[i].descricao}" ;
-                        ${!!UIs[i].localizacao ? `clav:localizacao "${UIs[i].localizacao}" ;` : ''}
-                        ${!!UIs[i].notas ? `clav:notas "${UIs[i].notas}" ;` : ''}
-                        clav:titulo "${UIs[i].titulo}" ;
+                        clav:descricao """${UIs[i].descricao}""" ;
+                        ${!!UIs[i].localizacao ? `clav:localizacao """${UIs[i].localizacao}""" ;` : ''}
+                        ${!!UIs[i].notas ? `clav:notas """${UIs[i].notas}""" ;` : ''}
+                        clav:titulo """${UIs[i].titulo}""" ;
                         clav:codigo "${UIs[i].codigo}" .\n`
     }
 

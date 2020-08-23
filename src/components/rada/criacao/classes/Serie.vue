@@ -107,7 +107,7 @@ export default {
     Identificacao,
     ZonaDescritiva,
     ZonaContexto,
-    ZonaDecisoesAvaliacao
+    ZonaDecisoesAvaliacao,
   },
   mixins: [mixin_criacao_serie_subserie],
   props: [
@@ -119,7 +119,7 @@ export default {
     "legislacaoProcessada",
     "dialog",
     "classe_para_copiar",
-    "tipos"
+    "tipos",
   ],
   data: () => ({
     newSerie: {
@@ -141,27 +141,27 @@ export default {
       notaPCA: null,
       notaDF: null,
       formaContagem: {
-        forma: null
+        forma: null,
       },
       justificacaoPCA: [],
       df: null,
       justificacaoDF: [],
       eFilhoDe: null,
-      tipo: "Série"
-    }
+      tipo: "Série",
+    },
   }),
   computed: {
     classesHierarquia() {
       return this.classes
-        .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+        .filter((classe) => classe.tipo != "Série" && classe.tipo != "Subsérie")
         .sort((a, b) => a.codigo.localeCompare(b.codigo))
-        .map(classe => {
+        .map((classe) => {
           return {
             searchField: classe.codigo + " - " + classe.titulo,
-            codigo: classe.codigo
+            codigo: classe.codigo,
           };
         });
-    }
+    },
   },
   watch: {
     classe_para_copiar(value) {
@@ -191,19 +191,19 @@ export default {
           relacoes: [],
           pca: null,
           formaContagem: {
-            forma: null
+            forma: null,
           },
           justificacaoPCA: [],
           df: null,
           justificacaoDF: [],
           eFilhoDe: null,
-          tipo: "Série"
+          tipo: "Série",
         };
       }
-    }
+    },
   },
   methods: {
-    apagar: function() {
+    apagar: function () {
       this.isMultiple = false;
       this.panels = [0, 0, 0];
       this.existe_erros = false;
@@ -228,13 +228,13 @@ export default {
         relacoes: [],
         pca: null,
         formaContagem: {
-          forma: null
+          forma: null,
         },
         justificacaoPCA: [],
         df: null,
         justificacaoDF: [],
         eFilhoDe: null,
-        tipo: "Série"
+        tipo: "Série",
       };
       this.$refs.form.resetValidation();
     },
@@ -243,7 +243,7 @@ export default {
 
       if (
         !this.newSerie.codigo ||
-        this.classes.some(e => e.codigo == this.newSerie.codigo)
+        this.classes.some((e) => e.codigo == this.newSerie.codigo)
       ) {
         this.erros.push("Código;");
       }
@@ -260,13 +260,20 @@ export default {
         this.erros.push("Datas extremas;");
       }
 
+      if (
+        !!this.newSerie.entProdutoras[0] == false &&
+        !!this.newSerie.tipologiasProdutoras[0] == false
+      ) {
+        this.erros.push("Produtoras;");
+      }
+
       if (!this.newSerie.tUA) {
         this.erros.push("Tipo de Unidade Arquivistica;");
       }
 
       if (
         this.newSerie.suporte_e_medicao.some(
-          e =>
+          (e) =>
             e.suporte == null || e.medicao == null || new Number(e.medicao) < 0
         )
       ) {
@@ -292,7 +299,7 @@ export default {
       if (!Boolean(this.erros[0])) {
         this.erros.push("Datas Inválidas;");
       }
-    }
-  }
+    },
+  },
 };
 </script>

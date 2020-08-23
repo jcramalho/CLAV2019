@@ -2,7 +2,8 @@
   <div>
     <Listagem
       :lista="radas"
-      tipo="Relatórios de Avaliação de Documentação Acumulada"
+      v-if="radas.length>0"
+      tipo="RADA/CLAV"
       :cabecalho="[
           'Data de Aprovação',
           'Título',
@@ -12,11 +13,7 @@
       :campos="['titulo', 'dataAprovacao', 'entResp']"
     />
     <!--Loading v-if="!fontesRADAReady" :message="'fontes de legitimação'" /-->
-    <ListagemLeg
-      v-if="fontesRADA.length>0"
-      :lista="fontesRADA"
-      tipo="TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE AVALIAÇÃO DE DOCUMENTAÇÃO ACUMULADA"
-    />
+    <ListagemLeg v-if="fontesRADA.length>0" :lista="fontesRADA" tipo="RADA" />
   </div>
 </template>
 
@@ -28,31 +25,30 @@ export default {
   data: () => ({
     radas: [],
     fontesRADA: [],
-    fontesRADAReady: false
+    fontesRADAReady: false,
   }),
   components: {
     Listagem,
-    ListagemLeg
+    ListagemLeg,
   },
   async created() {
     await this.$request("get", "/rada/old")
-      .then(response2 => {
-        this.fontesRADA = response2.data.map(f => {
+      .then((response2) => {
+        this.fontesRADA = response2.data.map((f) => {
           return {
             idRADA: f.idRADA,
             data: f.data,
             tipo: f.tipo,
             numero: f.numero,
             sumario: f.sumario,
-            link: f.link
+            link: f.link,
           };
         });
         this.fontesRADAReady = true;
       })
-      .catch(e => {
+      .catch((e) => {
         return e;
       });
-
   },
   async mounted() {
     try {
@@ -61,6 +57,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

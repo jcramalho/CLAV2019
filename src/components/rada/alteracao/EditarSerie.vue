@@ -16,7 +16,12 @@
 
               <v-card-text align="center">
                 <br />
-                <v-btn class="ma-3 pa-3" color="indigo darken-4" dark @click="toDelete = false">Voltar</v-btn>
+                <v-btn
+                  class="ma-3 pa-3"
+                  color="indigo darken-4"
+                  dark
+                  @click="toDelete = false"
+                >Voltar</v-btn>
                 <v-btn class="ma-3 pa-5" color="red darken-4" dark @click="eliminarClasse">Sim</v-btn>
               </v-card-text>
             </v-card>
@@ -129,16 +134,16 @@ export default {
     "formaContagem",
     "legislacaoProcessada",
     "dialog",
-    "tipos"
+    "tipos",
   ],
   components: {
     Identificacao,
     ZonaDescritiva,
     ZonaContexto,
-    ZonaDecisoesAvaliacao
+    ZonaDecisoesAvaliacao,
   },
   data: () => ({
-    serie: {}
+    serie: {},
   }),
   mixins: [mixin_edicao_serie_subserie],
   methods: {
@@ -161,13 +166,20 @@ export default {
         this.erros.push("Relação de Hierarquia;");
       }
 
+      if (
+        !!this.serie.entProdutoras[0] == false &&
+        !!this.serie.tipologiasProdutoras[0] == false
+      ) {
+        this.erros.push("Produtoras;");
+      }
+
       if (!this.serie.tUA) {
         this.erros.push("Tipo de Unidade Arquivistica;");
       }
 
       if (
         this.serie.suporte_e_medicao.some(
-          e =>
+          (e) =>
             e.suporte == null || e.medicao == null || new Number(e.medicao) < 0
         )
       ) {
@@ -209,12 +221,12 @@ export default {
       if (!Boolean(this.erros[0])) {
         this.erros.push("Datas Inválidas;");
       }
-    }
+    },
   },
   created() {
     // ir buscar o verdadeiro objeto
     let serie_real = this.classes.find(
-      e => e.codigo == this.treeview_object.codigo
+      (e) => e.codigo == this.treeview_object.codigo
     );
 
     // DEEP CLONE do objetos
@@ -224,14 +236,14 @@ export default {
 
     // Classes para definir a hierarquia
     this.classesHierarquia = this.classes
-      .filter(classe => classe.tipo != "Série" && classe.tipo != "Subsérie")
+      .filter((classe) => classe.tipo != "Série" && classe.tipo != "Subsérie")
       .sort((a, b) => a.codigo.localeCompare(b.codigo))
-      .map(classe => {
+      .map((classe) => {
         return {
           searchField: classe.codigo + " - " + classe.titulo,
-          codigo: classe.codigo
+          codigo: classe.codigo,
         };
       });
-  }
+  },
 };
 </script>
