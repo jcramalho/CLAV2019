@@ -335,10 +335,12 @@ export default {
           break;
 
         case "Distribuído":
+        case "Redistribuído":
           cor = "orange";
           break;
 
         case "Apreciado":
+        case "Reapreciado":
           cor = "orange";
           break;
 
@@ -367,10 +369,12 @@ export default {
           break;
 
         case "Distribuído":
+        case "Redistribuído":
           valor = (100 / 4) * 2;
           break;
 
         case "Apreciado":
+        case "Reapreciado":
           valor = (100 / 4) * 3;
           break;
 

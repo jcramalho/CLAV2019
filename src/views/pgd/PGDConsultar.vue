@@ -98,7 +98,6 @@ export default {
       if(this.id.split("_")[0]=="tsRada") {
         this.idLegislacao = this.id.split("tsRada_")[1];
         this.idLegislacao = this.idLegislacao.split("_tip")[0];
-        this.idLegislacao = this.idLegislacao.split("_ent")[0];
         this.message = "Relatório de Avaliação de Documentação Acumulada"
         var response = await this.$request("get","/rada/old/"+this.id)
         this.classesTree = await this.prepararClasses(response.data)

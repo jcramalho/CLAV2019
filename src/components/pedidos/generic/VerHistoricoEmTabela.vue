@@ -262,6 +262,15 @@ export default {
     };
   },
 
+  computed: {
+    etapas() {
+      return this.distribuicao.map((d) => {
+        if (d.estado !== "Distribuído" && d.estado !== "Redistribuído")
+          return d;
+      });
+    },
+  },
+
   created() {
     this.etapasHistorico = this.distribuicao;
   },

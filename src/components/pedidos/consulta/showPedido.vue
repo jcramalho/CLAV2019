@@ -120,7 +120,10 @@
       <v-spacer />
       <v-btn
         v-if="
-          (p.estado === 'Distribuído' || p.estado === 'Apreciado') &&
+          (p.estado === 'Distribuído' ||
+            p.estado === 'Apreciado' ||
+            p.estado === 'Redistribuído' ||
+            p.estado === 'Reapreciado') &&
             temPermissaoSubstituirResponsavel()
         "
         color="indigo accent-4"
@@ -132,7 +135,7 @@
       </v-btn>
 
       <v-btn
-        v-if="p.estado === 'Apreciado'"
+        v-if="p.estado === 'Apreciado' || p.estado === 'Reapreciado'"
         color="indigo accent-4"
         dark
         @click="reapreciar()"
@@ -259,7 +262,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado = "Distribuído"; // TODO: Ver se resulta assim
+        const estado = "Redistribuído";
 
         let dadosUtilizador = this.$verifyTokenUser();
 

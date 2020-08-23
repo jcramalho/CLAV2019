@@ -223,6 +223,12 @@ export default {
       {text: "PCA", sortable: false, value: "pca"},
       {text: "Destino Final", sortable: false, value: "df"},
     ],
+    headersLC: [
+      {text: "Código", sortable: false, value: "codigo"},
+      {text: "Título", sortable: false, value: "titulo"},
+      {text: "PCA", sortable: false, value: "pca"},
+      {text: "Destino Final", sortable: false, value: "df"}
+    ],
     footer_props: {
       "items-per-page-options": [10,25,-1],
       "items-per-page-text": "Mostrar",

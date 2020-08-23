@@ -396,11 +396,12 @@ export default {
 
     async encaminharPedido(dados) {
       try {
-        const estado = "Apreciado";
-
         let dadosUtilizador = this.$verifyTokenUser();
 
         let pedido = JSON.parse(JSON.stringify(this.p));
+
+        const estado =
+          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
 
         pedido.estado = estado;
         pedido.token = this.$store.state.token;
