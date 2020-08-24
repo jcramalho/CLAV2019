@@ -753,7 +753,6 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         pedido.historico.push(this.novoHistorico);
 
@@ -778,7 +777,6 @@ export default {
           pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         pedido.historico.push(this.novoHistorico);
 
