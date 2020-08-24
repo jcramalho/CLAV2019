@@ -281,7 +281,6 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -352,7 +351,8 @@ export default {
         let dadosUtilizador = this.$verifyTokenUser();
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+
+        pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
 
         const novaDistribuicao = {
           estado: estado,
