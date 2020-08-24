@@ -169,30 +169,31 @@ export default {
     },
 
     async substituir() {
-      const distribuicao = JSON.parse(
-        JSON.stringify(
-          this.pedido.distribuicao[this.pedido.distribuicao.length - 1]
-        )
-      );
-
-      delete distribuicao.despacho;
-
-      distribuicao.data = new Date().toISOString();
-      distribuicao.proximoResponsavel = {
-        nome: this.utilizadorSelecionado.name,
-        entidade: this.utilizadorSelecionado.entidade,
-        email: this.utilizadorSelecionado.email,
-      };
-
-      if (this.mensagemDespacho !== null)
-        distribuicao.despacho = this.mensagemDespacho;
-
       try {
-        await this.$request(
-          "post",
-          `/pedidos/${this.pedido.codigo}/distribuicao`,
-          distribuicao
-        );
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+
+        const novaDistribuicao = {
+          estado: pedido.estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: this.utilizadorSelecionado.name,
+            entidade: this.utilizadorSelecionado.entidade,
+            email: this.utilizadorSelecionado.email,
+          },
+          data: new Date().toISOString(),
+          despacho: this.mensagemDespacho
+            ? `#Responsável substituído.\n${this.mensagemDespacho}`
+            : "#Responsável substituído.",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
 
         this.utilizadorSelecionado = null;
         this.mensagemDespacho = null;
