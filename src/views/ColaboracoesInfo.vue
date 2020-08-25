@@ -1,34 +1,33 @@
 <template>
   <v-content class="px-12">
-    <p class="content-title-1">Tipologias de Entidade</p>
+    <p class="content-title-1">Colaborações</p>
     <p class="content-text px-8 py-2">
-      Forma de agrupamento de entidades que intervêm nos processos de negócio
-      (classes de 3º nível) da Lista Consolidada.
+      As colaborações são constituídas por um grupo de pessoas que participaram
+      no desenvolvimento da plataforma.
     </p>
     <p class="content-title-2 px-8 py-10 pb-3">
-      Para aceder ao catálogo das tipologias de entidades selecione a opção
-      CONSULTAR.
+      Para aceder ao catálogo das colaborações selecione a opção CONSULTAR.
     </p>
     <p class="content-text px-8 py-2">
-      Para <b>propor uma nova tipologia de entidade</b> para a Lista Consolidada
-      selecione a opção <b>CRIAR</b>. Deve estar <b>registado na CLAV</b> para
-      aceder a esta funcionalidade.
+      Para <b>propor uma nova colaboração</b> na plataforma selecione a opção
+      <b>CRIAR</b>. Deve estar <b>registado na CLAV</b> para aceder a esta
+      funcionalidade.
     </p>
+    <!--
     <p class="content-text px-8 py-2">
-      Para <b>propor uma alteração</b> a uma tipologia de entidade da Lista
-      Consolidada selecione a opção <b>ALTERAR</b>. Deve estar
+      Para <b>propor uma alteração</b> numa colaboração já existente na plataforma selecione a opção <b>ALTERAR</b>. Deve estar
       <b>registado na CLAV</b> para aceder a esta funcionalidade.
-    </p>
+    </p> -->
     <v-container fluid style="text-align: center;">
       <v-row justify="center" align="center">
         <v-col cols="12" md="4">
           <v-btn
             v-if="
-              [1, 3, 3.5, 4, 5, 6, 7].includes(this.$userLevel()) &&
+              [4, 5, 6, 7].includes(this.$userLevel()) &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
             "
-            @click="$router.push('/tipologias/criar')"
+            @click="$router.push('/colaboracoes/criar')"
             rounded
             class="white--text"
             :class="{
@@ -49,7 +48,7 @@
         </v-col>
         <v-col cols="12" md="4">
           <v-btn
-            @click="$router.push('/tipologias/consultar')"
+            @click="$router.push('/colaboracoes')"
             rounded
             class="white--text"
             :class="{
@@ -75,7 +74,7 @@
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
             "
-            @click="tipologiasDialog = true"
+            @click="colaboracoesDialog = true"
             rounded
             class="white--text"
             :class="{
@@ -95,12 +94,12 @@
           </v-btn>
         </v-col>
       </v-row>
-      <!-- Selecionar Tipologia a Editar-->
+      <!-- Selecionar Colaboração a Editar-->
       <v-row justify="center" align="center">
-        <v-dialog v-model="tipologiasDialog" max-width="80%">
+        <v-dialog v-model="colaboracoesDialog" max-width="80%">
           <v-card dark class="info-card">
             <v-card-title class="headline mb-2">
-              Selecione a tipologia de entidade a alterar</v-card-title
+              Selecione a colaboração a alterar</v-card-title
             >
             <div class="info-content px-3 mx-6 mb-2">
               <v-card-text class="pa-2 px-4 font-weight-medium">
@@ -112,18 +111,18 @@
                           light
                           clearable
                           color="blue darken-3"
-                          label="Tipologia de entidade"
+                          label="Colaboração"
                           :items="tipologias.tipologias"
                           v-model="dadosEditar"
                           v-on="on"
                         />
                       </template>
                       <span v-if="dadosEditar">{{ dadosEditar }}</span>
-                      <span v-else>Selecionar tipologia</span>
+                      <span v-else>Selecionar colaboração</span>
                     </v-tooltip>
                   </v-col>
                   <v-col v-else style="text-align: center;">
-                    <p>A carregar tipologias...</p>
+                    <p>A carregar colaborações...</p>
                     <v-progress-circular
                       indeterminate
                       size="100"
@@ -153,7 +152,7 @@
                 elevation="0"
                 class="px-4"
                 @click="
-                  tipologiasDialog = false;
+                  colaboracoesDialog = false;
                   dadosEditar = null;
                 "
                 >Fechar
@@ -168,13 +167,13 @@
 
 <script>
 export default {
-  name: "TipEntidades",
+  name: "Colaboracoes",
   mounted() {
     window.scrollTo(0, 0);
   },
   data() {
     return {
-      tipologiasDialog: false,
+      colaboracoesDialog: false,
       tipologias: {
         tipologias: [],
         ready: false
@@ -183,13 +182,14 @@ export default {
     };
   },
   methods: {
-    preparaTipEntidades(dados) {
+    preparaColaboracoes(dados) {
+      /* UPDATE NECESSÁRIO
       let dadosTratados = dados.filter(dado => dado.estado === "Ativa");
       dadosTratados = dadosTratados.map(
         dado => `${dado.sigla} - ${dado.designacao}`
       );
       this.tipologias.tipologias = dadosTratados;
-      this.tipologias.ready = true;
+      this.tipologias.ready = true;*/
     },
     go: function(url) {
       if (url.startsWith("http")) {
@@ -199,12 +199,12 @@ export default {
       }
     },
     editar() {
-      this.go(`/tipologias/editar/tip_${this.dadosEditar.split(" ")[0]}`);
+      // UPDATE NECESSÁRIO this.go(`/tipologias/editar/tip_${this.dadosEditar.split(" ")[0]}`);
     }
   },
   async created() {
-    let responseTipologias = await this.$request("get", "/tipologias");
-    this.preparaTipEntidades(responseTipologias.data);
+    let responseColaboracoes = await this.$request("get", "/colaboracoes");
+    this.preparaColaboracoes(responseColaboracoes.data);
   }
 };
 </script>

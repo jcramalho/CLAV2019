@@ -325,7 +325,7 @@ export default {
 </script>
 .myPanelHeader { color: #304FFE; }
 
-<style>
+<style scoped>
 .info-label {
   color: #1a237e;
   padding: 5px;

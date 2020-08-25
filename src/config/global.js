@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 //const dominioDefault = "http://clav-test.di.uminho.pt";
 const dominioDefault = "http://localhost:7779";
 //const dominioDefault = "http://192.168.1.160:7779";

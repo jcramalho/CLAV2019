@@ -58,7 +58,15 @@
         :top="true"
       >
         {{ text }}
-        <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+        <v-btn icon color="white" @click="fecharSnackbar">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
       </v-snackbar>
       <v-btn
         v-if="this.$store.state.name === ''"
@@ -450,6 +458,11 @@ export default {
               opcao: "Administração",
               level: [7],
               url: "/gestaoInfo"
+            },
+            {
+              opcao: "Importação/Exportação de Dados",
+              level: [4, 5, 6, 7],
+              url: "/importExportInfo"
             }
           ]
         },
@@ -463,22 +476,22 @@ export default {
             {
               opcao: "Lista Consolidada",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/lcinfo"
+              url: "/lcInfo"
             },
             {
               opcao: "Tabelas de Seleção",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/tsinfo"
+              url: "/tsInfo"
             },
             {
               opcao: "Relatórios de Avaliação de Documentação Acumulada",
-              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/rada/criar"
+              level: [4, 5, 6, 7],
+              url: "/radaInfo"
             },
             {
               opcao: "Autos de Eliminação",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/autosEliminacao"
+              url: "/autosEliminacaoInfo"
             },
             {
               opcao: "Entidades",
@@ -498,7 +511,7 @@ export default {
             {
               opcao: "Termos de Índice",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/termosIndice"
+              url: "/termosIndiceInfo"
             },
             {
               opcao: "Exportação de dados",
@@ -509,6 +522,11 @@ export default {
               opcao: "API de dados",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
               url: "/docs"
+            },
+            {
+              opcao: "Colaborações",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/colaboracoesInfo"
             }
           ]
         },
@@ -538,6 +556,11 @@ export default {
               opcao: "Produção Técnica e Científica",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
               url: "/prodtec"
+            },
+            {
+              opcao: "Adicionar Documentação",
+              level: [4, 5, 6, 7],
+              url: "/documentacaoApoioInfo"
             }
           ]
         },

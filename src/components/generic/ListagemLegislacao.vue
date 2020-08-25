@@ -9,7 +9,8 @@
     </td>
     <td class="subheading">{{ item.numero }}</td>
     <td class="subheading">{{ item.sumario }}</td>
-    <td @click.stop align="right">
+    <td class="subheading">{{ item.estado }}</td>
+    <td v-if="item.operacoes" @click.stop align="right">
       <v-tooltip
         top
         color="info"
@@ -19,11 +20,11 @@
       >
         <template v-slot:activator="{ on }">
           <v-icon
-            v-on="on"
             v-for="(operacao, index) in item.operacoes"
-            @click="doOperation(item, operacao)"
-            color="indigo darken-2"
             :key="index"
+            @click="doOperation(item, operacao)"
+            v-on="on"
+            color="indigo darken-2"
             class="mr-2"
             >{{ operacao.icon }}</v-icon
           >

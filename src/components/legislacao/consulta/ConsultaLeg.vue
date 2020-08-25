@@ -35,7 +35,6 @@
           </p>
           <!-- CONTENT -->
           <v-card-text class="px-8">
-            <div></div>
             <v-row
               v-for="(item, index) in objetoFiltrado"
               v-bind:key="index"
@@ -61,23 +60,31 @@
                 <div v-if="item.campo === 'Link'" class="info-content pa-4">
                   <a :href="item.text" target="_blank">{{ item.text }}</a>
                 </div>
-                <div v-else>
-                  <div
-                    v-if="item.campo === 'Entidades'"
-                    style="min-height:60px;"
-                    class="info-content py-4 px-2"
-                  >
-                    <ul style="margin-bottom: 0 !important;">
-                      <li v-for="(ent, i) in item.text" :key="i">
-                        <a :href="'/entidades/ent_' + ent.sigla">{{
-                          ent.sigla
-                        }}</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div v-else class="info-content pa-4">
-                    {{ item.text }}
-                  </div>
+                <div
+                  v-else-if="item.campo === 'Entidades'"
+                  style="min-height:60px;"
+                  class="info-content py-4 px-2"
+                >
+                  <ul style="margin-bottom: 0 !important;">
+                    <li v-for="(ent, i) in item.text" :key="i">
+                      <a :href="'/entidades/ent_' + ent.sigla">{{
+                        ent.sigla
+                      }}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div
+                  v-else-if="item.campo === 'Estado'"
+                  class="info-content pa-4"
+                  :class="{
+                    'texto-verde': item.text === 'Em vigor',
+                    'texto-vermelho': item.text === 'Revogado'
+                  }"
+                >
+                  {{ item.text }}
+                </div>
+                <div v-else class="info-content pa-4">
+                  {{ item.text }}
                 </div>
               </v-col>
             </v-row>
@@ -191,9 +198,6 @@ export default {
 }
 .texto-verde {
   color: #46c354 !important;
-}
-.texto-amarelo {
-  color: #dfb83a !important;
 }
 .texto-vermelho {
   color: #f44336 !important;

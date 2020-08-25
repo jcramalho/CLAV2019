@@ -1,46 +1,29 @@
 <template>
   <v-content class="px-12">
-    <p class="content-title-1">Tabelas de Seleção</p>
+    <p class="content-title-1">Autos de Eliminação</p>
     <p class="content-text px-8 py-2">
-      Uma tabela de seleção é um instrumento utilizado pelas entidades para a
-      gestão da informação. Permite organizar e estruturar a informação desde o
-      momento da sua produção, através da atribuição de um código de
-      classificação. A esse código de classificação estão associadas as decisões
-      de avaliação, i.e., o período de tempo que deve manter a informação (prazo
-      de conservação administrativa), o destino a aplicar findo esse prazo
-      (conservação permanente ou eliminação) e a responsabilização pela guarda
-      da informação de conservação permanente. As tabelas de seleção podem ser
-      organizacionais (de uma entidade ou de uma tipologia de entidades) ou
-      pluriorganizacionais (de um conjunto de entidades, por exemplo de âmbito
-      ministerial). Constituem as fontes de legitimação para a eliminação da
-      informação pública.
+      Autos de eliminação produzidos ao abrigo de tabela de seleção inserida em
+      Portaria de gestão de documentos ou Relatório de avaliação de documentação
+      acumulada e submetida à <b>DGLAB</b> para verificação de conformidade.
     </p>
     <p class="content-title-2 px-8 pt-8">
-      Para aceder ao catálogo de tabelas de seleção aprovadas selecione a opção
+      Para aceder ao catálogo de autos de eliminação selecione a opção
       CONSULTAR.
     </p>
-    <p class="content-text px-8 py-5">
-      As tabelas de seleção encontram-se organizadas por fonte de legitimação:
-      TS publicadas em Portaria de Gestão de Documentos (PGD) ou proveniente de
-      Relatório de Avaliação de Documentação Acumulada (RADA).
-    </p>
-    <p class="content-title-2 px-8 pt-3">
-      Para propor uma tabela de seleção derivada da Lista Consolidada selecione
-      uma das opções:
+    <p class="content-title-2 px-8 pt-10">
+      Existem também as opções:
     </p>
     <v-container fluid class="ma-0 px-12">
       <ul class="px-9 pt-3">
-        <li><b>CRIAR</b>, para a criação assistida online;</li>
-        <li>
-          <b>IMPORTAR FICHEIRO</b>, para submeter uma tabela criada offline, a
-          partir de um ficheiro pre-preenchido disponibilizado no separador
-          Documentação técnica de apoio, em Formulários e instruções.
-        </li>
+        <li><b>CRIAR</b>, para a criação assistida de autos de eliminação;</li>
+        <li><b>IMPORTAR </b>, para submeter autos de eliminação.</li>
       </ul>
     </v-container>
     <p class="content-text px-8 pb-4">
-      <u>Deve estar registado na CLAV para aceder a estas funcionalidades.</u>
-      Consulte as instruções em Formulários e instruções
+      <u
+        >Deve estar registado na CLAV para aceder a estas duas últimas
+        funcionalidades.</u
+      >
     </p>
     <v-container fluid style="text-align: center;">
       <v-row justify="center" align="center">
@@ -51,7 +34,7 @@
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
             "
-            @click="$router.push('/ts/criar')"
+            @click="$router.push('/autosEliminacao/criar')"
             rounded
             class="white--text"
             :class="{
@@ -72,7 +55,7 @@
         </v-col>
         <v-col cols="12" md="4">
           <v-btn
-            @click="$router.push('/ts')"
+            @click="$router.push('/autosEliminacao')"
             rounded
             class="white--text"
             :class="{
@@ -98,7 +81,7 @@
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
             "
-            @click="$router.push('/ts/importar/csv')"
+            @click="$router.push('/autosEliminacao/importar')"
             rounded
             class="white--text"
             :class="{
@@ -124,8 +107,9 @@
 
 <script>
 export default {
-  name: "TabelasSelecao",
-  mounted() {
+  name: "AutosEliminacaoInfo",
+
+  mounted: async function() {
     window.scrollTo(0, 0);
   }
 };

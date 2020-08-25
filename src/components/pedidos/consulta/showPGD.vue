@@ -124,7 +124,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
   color: #1a237e; /* indigo darken-4 */
   font-weight: 400;

@@ -9,14 +9,13 @@
     <v-container fluid style="text-align: center;">
       <v-row justify="center" align="center">
         <v-col cols="12" md="4">
-          <!-- Resolver este link -->
           <v-btn
-            @click="go(lhost + '/v2/docs')"
+            @click="go(url)"
             rounded
             class="white--text"
             :class="{
-              'px-12': $vuetify.breakpoint.lgAndUp,
-              'px-8': $vuetify.breakpoint.mdAndDown
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             id="default-button"
           >
@@ -39,8 +38,14 @@
 const lhost = require("@/config/global").host;
 export default {
   name: "ApiDadosInfo",
+  data() {
+    return {
+      url: lhost + "/docs"
+    };
+  },
   methods: {
     go: function(url) {
+      console.log(url);
       if (url.startsWith("http")) {
         window.location.href = url;
       } else {

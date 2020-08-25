@@ -57,10 +57,13 @@
     </p>
     <v-container fluid class="ma-0 px-12">
       <ul class="px-9 pt-3">
-        <li>Disponibilização de Documentação Técnica de Apoio;</li>
         <li>
-          Disponibilização de Notícias relevantes relacionadas com a
-          classificação e avaliação da informação arquivística.
+          Criação e submissão de Relatórios de Avaliação de Documentação
+          Acumulada (RADA);
+        </li>
+        <li>
+          Disponibilização de ferramentas para a elaboração e submissão de
+          planos de preservação digital e planos de substituição de suporte.
         </li>
       </ul>
     </v-container>

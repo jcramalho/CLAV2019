@@ -7,7 +7,15 @@
     />
     <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="0">
       {{ text }}
-      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+      <v-btn icon color="white" @click="fecharSnackbar">
+        <unicon
+          name="remove-icon"
+          width="15"
+          height="15"
+          viewBox="0 0 20.71 20.697"
+          fill="#ffffff"
+        />
+      </v-btn>
     </v-snackbar>
 
     <v-content :class="{ 'pt-0': $vuetify.breakpoint.xsOnly }">
@@ -264,6 +272,9 @@ export default {
 }
 .v-icon.v-icon.v-icon--link {
   color: #0155b5;
+}
+.theme--light.v-text-field--filled > .v-input__control > .v-input__slot {
+  background: none !important;
 }
 .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
   fill: #ffffff !important;

@@ -94,6 +94,7 @@
                 >
                   <SelecionarData
                     :d="legislacao.data"
+                    :label="'Data: AAAA-MM-DD'"
                     @dataSelecionada="legislacao.data = $event"
                   />
                 </div>

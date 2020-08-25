@@ -1,16 +1,23 @@
 <template>
-  <Listagem
-    v-bind:lista="autosEliminacao"
-    tipo="Autos de Eliminação"
-    v-bind:cabecalho="[
-      'Identificação',
-      'Fonte de Legitimação',
-      'Diploma Legislativo',
-      'Entidade Produtora',
-      'Data'
-    ]"
-    v-bind:campos="['id', 'tipo', 'numero', 'entidade', 'data']"
-  />
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
+    <Listagem
+      v-bind:lista="autosEliminacao"
+      tipo="Autos de Eliminação"
+      v-bind:cabecalho="[
+        'Identificação',
+        'Fonte de Legitimação',
+        'Diploma Legislativo',
+        'Entidade Produtora',
+        'Data'
+      ]"
+      v-bind:campos="['id', 'tipo', 'numero', 'entidade', 'data']"
+    />
+  </v-content>
 </template>
 
 <script>

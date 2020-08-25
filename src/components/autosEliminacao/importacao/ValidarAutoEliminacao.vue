@@ -249,7 +249,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .panel-custom .panel-heading {
   background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
 }

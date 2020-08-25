@@ -83,9 +83,16 @@
                 />
 
                 <ListagemTE
-                  v-else-if="
-                    tipo == 'Entidades' || tipo == 'Tipologias de Entidade'
+                  v-else-if="tipo == 'Tipologias de Entidade'"
+                  :item="props.item"
+                  @rowClicked="go($event.id)"
+                  @iconClicked="
+                    switchOperacao($event.operacao.descricao, $event.item.id)
                   "
+                  style="cursor: pointer;"
+                />
+                <ListagemE
+                  v-else-if="tipo == 'Entidades'"
                   :item="props.item"
                   @rowClicked="go($event.id)"
                   @iconClicked="
@@ -115,8 +122,35 @@
                 />
 
                 <tr
+                  v-else-if="
+                    tipo == 'Relatórios de Avaliação de Documentação Acumulada'
+                  "
+                  @click="$router.push('/rada/' + props.item.codigo)"
+                  style="cursor: pointer;"
+                >
+                  <td>{{ props.item.dataAprovacao }}</td>
+                  <td>{{ props.item.titulo }}</td>
+                  <td>
+                    <ul>
+                      <li v-for="(entidade, i) in props.item.entResp" :key="i">
+                        <a :href="'/entidades/ent_' + entidade.sigla">{{
+                          entidade.sigla + " - " + entidade.designacao
+                        }}</a>
+                      </li>
+                    </ul>
+                  </td>
+                  <!-- <td v-for="(campo, index) in props.item" v-bind:key="index">
+              <div v-if="props.item">
+                <div v-if="index === 'entidade'">
+                  <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
+                </div>
+                <div v-else>{{ campo }}</div>
+              </div>
+            </td> -->
+                </tr>
+                <tr
                   v-else-if="tipo == 'Autos de Eliminação'"
-                  @click="go(props.item.id)"
+                  @click="go(props.item.id.replace(/\//g, '_'))"
                   style="cursor: pointer;"
                 >
                   <td v-for="(campo, index) in props.item" v-bind:key="index">
@@ -128,8 +162,7 @@
                     </div>
                   </td>
                 </tr>
-
-                <tr v-else @click="go(props.item.id)" style="cursor: pointer;">
+                <tr v-else @click="go(props.item.id)">
                   <td v-for="(campo, index) in props.item" v-bind:key="index">
                     <div>{{ campo }}</div>
                   </td>
@@ -159,6 +192,7 @@ export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
   components: {
     ListagemTI,
+    ListagemE,
     ListagemTE,
     ListagemLegislacao,
     ListagemNot
@@ -256,12 +290,12 @@ export default {
         case "Notícias":
           this.$router.push("/noticias");
           break;
-        // case "Termos de Índice":
-        //   this.$router.push("/classes/consultar/c" + id);
-        //   break;
-        // case "Autos de Eliminação":
-        //   this.$router.push("/autosEliminacao/ae_" + id);
-        //   break;
+        case "Termos de Índice":
+          this.$router.push("/termosIndiceInfo");
+          break;
+        case "Autos de Eliminação":
+          this.$router.push("/autosEliminacaoInfo");
+          break;
         default:
           this.$router.push("/");
           break;
@@ -288,6 +322,13 @@ export default {
             };
             break;
           case "numero":
+            this.headers[i] = {
+              text: this.cabecalho[i],
+              value: this.campos[i],
+              width: "10%"
+            };
+            break;
+          case "estado":
             this.headers[i] = {
               text: this.cabecalho[i],
               value: this.campos[i],

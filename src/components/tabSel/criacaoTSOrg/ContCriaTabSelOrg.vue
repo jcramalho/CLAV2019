@@ -11,7 +11,7 @@
           <v-container grid-list-md fluid>
             <v-stepper v-model="stepNo" vertical>
               <v-progress-linear v-model="valorBarra"></v-progress-linear>
-               <v-stepper-step :complete="stepNo > 1" step="1">
+              <v-stepper-step :complete="stepNo > 1" step="1">
                 Identificação da entidade da tabela de seleção:
                 <span>
                   <v-chip
@@ -20,17 +20,21 @@
                     text-color="white"
                   >
                     <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
+                    {{
+                      tabelaSelecao.idEntidade.split("_")[1] +
+                        ": " +
+                        tabelaSelecao.designacaoEntidade
+                    }}
                   </v-chip>
                 </span>
               </v-stepper-step>
-              <v-stepper-content step="1">
-              </v-stepper-content>
+              <v-stepper-content step="1"> </v-stepper-content>
               <v-stepper-step :complete="stepNo > 2" step="2">
                 Tipologias de entidade a que pertence
                 <span v-if="stepNo > 2">
                   <v-chip
-                    v-for="(t,i) in tipSel" :key="i"
+                    v-for="(t, i) in tipSel"
+                    :key="i"
                     class="ma-2"
                     color="indigo darken-4"
                     text-color="white"
@@ -94,19 +98,23 @@
                     barra(28);
                     loadProcEspecificos();
                   "
-                  >Continuar</v-btn>
+                  >Continuar</v-btn
+                >
                 <v-btn
                   text
                   @click="
                     stepNo--;
                     barra(0);
                   "
-                  >Voltar</v-btn>
+                  >Voltar</v-btn
+                >
               </v-stepper-content>
 
               <v-stepper-step :complete="stepNo > 4" step="4">
                 Processos Comuns
-                <small>Processos passíveis de existir em qualquer entidade</small>
+                <small
+                  >Processos passíveis de existir em qualquer entidade</small
+                >
               </v-stepper-step>
               <v-stepper-content step="4">
                 <v-layout wrap>
@@ -721,7 +729,7 @@ export default {
   },
   methods: {
     // Visualização de estruturas para efeitos de debug
-    debug: function(obj){
+    debug: function(obj) {
       alert(JSON.stringify(obj));
     },
     // Valor da barra de progresso
@@ -757,7 +765,6 @@ export default {
         });
 
         this.tipSel = this.tabelaSelecao.tipologias;
-        
       } catch (error) {
         return error;
       }
@@ -1390,11 +1397,7 @@ export default {
           user: { email: userBD.email },
           token: this.$store.state.token
         };
-        var response = await this.$request(
-          "put",
-          "/pendentes",
-          pendenteParams
-        );
+        var response = await this.$request("put", "/pendentes", pendenteParams);
         this.pendenteGuardado = true;
       } catch (err) {
         return err;
@@ -1415,7 +1418,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .expansion-panel-heading {
   color: #1a237e !important;
   background-image: linear-gradient(to bottom, #bac1eb 0, #8c9eff 100%);
