@@ -268,6 +268,8 @@ export default {
 
         pedido.estado = estado;
 
+        pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
@@ -288,7 +290,7 @@ export default {
         this.fecharReapreciarDialog();
         this.$router.push("/pedidos");
       } catch (e) {
-        //console.log("e :", e);
+        // console.log("e :", e);
       }
     },
 

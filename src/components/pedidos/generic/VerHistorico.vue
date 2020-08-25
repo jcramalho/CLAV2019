@@ -29,7 +29,7 @@
       <v-card flat tile>
         <v-window v-model="onboarding" class="mt-2">
           <v-window-item v-for="(h, i) in dados" :key="i">
-            <v-card shaped class="rounded-card pa-4" :color="cor(i)">
+            <v-card shaped class="rounded-card pa-4" :color="corFundo[i]">
               <v-card-text>
                 <div v-for="(info, campo) in h" :key="campo">
                   <v-row
@@ -208,6 +208,20 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+
+      <!-- <v-alert
+        v-if="
+          etapaReferente === 'Distribuído' || etapaReferente === 'Redistribuído'
+        "
+        type="info"
+        width="100%"
+        class="m-auto mb-2 mt-2"
+        outlined
+      >
+        Esta etapa representa uma ação no workflow que não tem como objetivo a
+        alteração de dados. Dessa forma, os dados apresentados correspondem ao
+        estado anterior a essa ação.
+      </v-alert> -->
     </v-card-text>
 
     <v-card-actions>
@@ -263,21 +277,25 @@ import {
   mapKeys,
   converterDadosOriginais,
   identificaItemAdicionado,
+  renomearRepetidosEmArray,
 } from "@/utils/utils";
-import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 
+import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 import VerHistoricoEmTabela from "@/components/pedidos/generic/VerHistoricoEmTabela";
 
 export default {
   props: ["pedido"],
+
   components: {
     ZonaControlo,
     VerHistoricoEmTabela,
   },
+
   data() {
     return {
       identificarNovos: [],
       distribuicaoFormatada: [],
+      corFundo: [],
       dialogVerHistoricoEmTabela: false,
       dialogVerNota: {
         visivel: false,
@@ -323,12 +341,40 @@ export default {
 
     if (this.pedido.objeto.acao === "Criação") {
       this.dados.push(...this.historico);
-      this.etapaReferente = "Pedido Submetido";
+      this.etapaReferente = "Submetido";
     } else {
       this.dados.push(converterDadosOriginais(this.pedidoOriginal));
       this.dados.push(...this.historico);
       this.etapaReferente = "Objeto Atual no Sistema";
     }
+
+    // Cor Fundo
+    const cores = [];
+    this.distribuicaoFormatada.forEach((element) => {
+      switch (element) {
+        case "Objeto Atual no Sistema":
+        case "Submetido":
+          // if (this.pedido.objeto.acao === "Criação")
+          // cores.push("orange lighten-5");
+          // else cores.push("indigo lighten-5");
+          cores.push("indigo lighten-5");
+          break;
+
+        case "Devolvido":
+          cores.push("red lighten-5");
+          break;
+
+        case "Validado":
+          cores.push("green lighten-5");
+          break;
+
+        default:
+          cores.push("orange lighten-5");
+          break;
+      }
+    });
+
+    this.corFundo = cores;
   },
 
   computed: {
@@ -342,13 +388,6 @@ export default {
 
     distribuicao() {
       return this.pedido.distribuicao;
-    },
-
-    novaDistribuicao() {
-      return this.distribuicao.filter((d) => {
-        if (d.estado !== "Distribuído" && d.estado !== "Redistribuído")
-          return d;
-      });
     },
   },
 
@@ -373,40 +412,17 @@ export default {
         JSON.stringify(this.distribuicao)
       );
 
-      // Remove os estados duplicados (Quando há alteração de responsável e quando há nova apreciação)
-      // Substitui o nome das labels a apresentar
-      const distribuicaoSemRepetidos = distribuicaoAlterada.reduce(
-        (semRepetidos, valorAtual) => {
-          if (
-            !semRepetidos.some((obj) => obj.estado === valorAtual.estado) &&
-            valorAtual.estado !== "Distribuído"
-          ) {
-            if (valorAtual.estado === "Submetido")
-              semRepetidos.push(
-                this.pedido.objeto.acao === "Criação"
-                  ? "Pedido Submetido"
-                  : "Alteração Submetida"
-              );
-            else semRepetidos.push(valorAtual.estado);
-          }
+      // Cria array com todos os estados
+      const estados = distribuicaoAlterada.map((etapa) => etapa.estado);
 
-          return semRepetidos;
-        },
-        []
-      );
+      // Renomeia os estados repeticos (adiciona #x na frente do estado onde x é o numero de vezes repetido)
+      let estadosRenomeados = renomearRepetidosEmArray(estados);
 
       // Adiciona na distribuição o estado para o pedido original
       if (this.pedido.objeto.acao !== "Criação")
-        distribuicaoSemRepetidos.splice(0, 0, "Objeto Atual no Sistema");
+        estadosRenomeados.splice(0, 0, "Objeto Atual no Sistema");
 
-      this.distribuicaoFormatada = distribuicaoSemRepetidos;
-    },
-
-    cor(index) {
-      if (index === 0) return "indigo lighten-5";
-      else if (index === 1 && this.pedido.objeto.acao !== "Criação")
-        return "indigo lighten-5";
-      else return "orange lighten-5";
+      this.distribuicaoFormatada = estadosRenomeados;
     },
 
     verNota(nota) {

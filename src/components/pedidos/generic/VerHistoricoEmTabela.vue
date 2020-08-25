@@ -279,6 +279,7 @@ export default {
     novoItemAdicionado(item, lista, siglaOuCodigo) {
       return identificaItemEmTabela(item, lista, siglaOuCodigo);
     },
+
     cores(cor) {
       let retornaCor;
 

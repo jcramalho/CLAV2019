@@ -145,10 +145,12 @@ export default {
 
       switch (etapa) {
         case "Distribuído":
+        case "Redistribuído":
           this.utilizadores = filtraNivel(data, NIVEIS_ANALISAR_PEDIDO);
           break;
 
         case "Apreciado":
+        case "Reapreciado":
           this.utilizadores = filtraNivel(data, NIVEIS_VALIDAR_PEDIDO);
           break;
 
