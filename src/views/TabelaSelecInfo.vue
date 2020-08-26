@@ -40,7 +40,6 @@
     </v-container>
     <p class="content-text px-8 pb-4">
       <u>Deve estar registado na CLAV para aceder a estas funcionalidades.</u>
-      Consulte as instruções em Formulários e instruções
     </p>
     <v-container fluid style="text-align: center;">
       <v-row justify="center" align="center">
