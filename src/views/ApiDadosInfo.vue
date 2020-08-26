@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     go: function(url) {
-      console.log(url);
       if (url.startsWith("http")) {
         window.location.href = url;
       } else {
