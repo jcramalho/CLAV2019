@@ -15,13 +15,16 @@
     </p>
     <v-container fluid style="text-align: center;">
       <v-row justify="center" align="center">
-        <v-col cols="12" md="4">
+        <v-col
+          cols="12"
+          md="4"
+          v-if="
+            [4, 5, 6, 7].includes(this.$userLevel()) &&
+              this.$store.state.token != '' &&
+              this.$store.state.name != ''
+          "
+        >
           <v-btn
-            v-if="
-              [4, 5, 6, 7].includes(this.$userLevel()) &&
-                this.$store.state.token != '' &&
-                this.$store.state.name != ''
-            "
             @click="$router.push('/colaboracoes/criar')"
             rounded
             class="white--text"
