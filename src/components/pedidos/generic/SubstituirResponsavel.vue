@@ -40,6 +40,29 @@
                 </td>
               </tr>
             </template>
+
+            <template v-slot:no-results>
+              <v-alert
+                type="info"
+                width="50%"
+                class="m-auto mb-2 mt-2"
+                outlined
+              >
+                Sem resultados para "<strong>{{ procuraUtilizador }}</strong
+                >".
+              </v-alert>
+            </template>
+
+            <template v-slot:no-data>
+              <v-alert
+                type="error"
+                width="50%"
+                class="m-auto mb-2 mt-2"
+                outlined
+              >
+                Não existem utilizadores disponíveis...
+              </v-alert>
+            </template>
           </v-data-table>
         </div>
 
@@ -143,21 +166,33 @@ export default {
     async preparaUtilizadores(etapa) {
       const { data } = await this.$request("get", "/users");
 
+      let utilizadoresFiltrados = [];
+
       switch (etapa) {
         case "Distribuído":
         case "Redistribuído":
-          this.utilizadores = filtraNivel(data, NIVEIS_ANALISAR_PEDIDO);
+          utilizadoresFiltrados = filtraNivel(data, NIVEIS_ANALISAR_PEDIDO);
           break;
 
         case "Apreciado":
         case "Reapreciado":
-          this.utilizadores = filtraNivel(data, NIVEIS_VALIDAR_PEDIDO);
+          utilizadoresFiltrados = filtraNivel(data, NIVEIS_VALIDAR_PEDIDO);
           break;
 
         default:
-          this.utilizadores = data;
+          utilizadoresFiltrados = data;
           break;
       }
+
+      const responsavelAtual = this.pedido.distribuicao[
+        this.pedido.distribuicao.length - 1
+      ].proximoResponsavel;
+
+      const utilizadoresSemAtual = utilizadoresFiltrados.filter(
+        (utilizador) => utilizador.email !== responsavelAtual.email
+      );
+
+      this.utilizadores = utilizadoresSemAtual;
     },
 
     cancelar() {
