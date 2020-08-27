@@ -531,6 +531,7 @@ export default {
             }
           })
         this.classesCompletas = this.classesCompletas.filter(c => this.validaPCAeDF(c))
+        if(this.tipo == "PGD" || this.tipo=="RADA") this.classesCompletas = this.classesCompletas.filter(c=> c.df.valor!="C")
 
         this.classes = this.classesCompletas.map(c => {
             if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
@@ -553,6 +554,7 @@ export default {
             pca: {valores: c.pca.pca, notas: c.pca.notaPCA}
           }
         })
+        this.classesCompletas = this.classesCompletas.filter(c=> c.df.valor!="C")
         this.classes = this.classesCompletas.map(c => {
           if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
           else if(c.codigo) return ""+c.codigo+" - "+c.titulo
