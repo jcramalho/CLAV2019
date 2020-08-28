@@ -278,7 +278,23 @@ export default {
 
   computed: {
     dados() {
-      return this.pedido.objeto.dados;
+      if (
+        this.pedido.estado === "Devolvido" ||
+        this.pedido.estado === "Validado"
+      )
+        return this.pedido.objeto.dados;
+      else return this.dadosSubmetidos;
+    },
+
+    dadosSubmetidos() {
+      const criaEstruturaPedido = {};
+
+      Object.keys(this.pedido.historico[0]).forEach((key) => {
+        criaEstruturaPedido[key] = this.pedido.historico[0][key].dados;
+        return key;
+      });
+
+      return criaEstruturaPedido;
     },
 
     dadosOriginais() {
