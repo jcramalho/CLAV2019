@@ -87,7 +87,7 @@ export default {
   }),
   methods: {
     converter: async function() {
-      conversor(this.auto.zonaControlo, this.fileAgreg)
+      conversor(this.auto.zonaControlo, this.fileAgreg, this.tipo)
         .then(async res => {
           this.auto.zonaControlo = res.zonaControlo
           this.importAg = false;

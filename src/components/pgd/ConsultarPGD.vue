@@ -178,18 +178,20 @@
                       </v-col>
                     </v-row>
                     
-                    <v-row v-if="item.designacaoDono || item.designacaoParticipante">
-                      <v-col cols="2" v-if="item.designacaoDono">
+                    <v-row v-if="item.donos">
+                      <v-col cols="2">
                         <div class="info-label">Dono</div>
                       </v-col>
                       <v-col>
-                        <div class="info-content">{{item.designacaoDono}}</div>
+                        <div class="info-content"><div v-for="(d,index) in item.donos" :key="index">{{d.designacaoDono}}</div></div>
                       </v-col>
-                      <v-col cols="2" v-if="item.designacaoParticipante">
+                    </v-row>
+                    <v-row v-if="item.participantes">
+                      <v-col cols="2">
                         <div class="info-label">Participante</div>
                       </v-col>
                       <v-col>
-                        <div class="info-content">{{item.designacaoParticipante}}</div>
+                        <div class="info-content"><div v-for="(p,index) in item.participantes" :key="index">{{p.designacaoParticipante}};</div></div>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -242,7 +244,7 @@ export default {
       let csvContent
       let fileName = this.titulo.replace(/ /g,'_');
       if(this.objeto.fonte.text == "RADA") {
-        headers = "Código,N.º Referência,Título,Descrição,Diplomas Jurídico-Administrativo,PCA,Nota PCA,Forma de Contagem PCA,Justificação do PCA,DF,Nota DF,Justificação do DF"
+        headers = "Código,Nº de Referência,Título,Descrição,PCA,Nota PCA,Forma de contagem do PCA,DF,Nota ao DF"
         csvContent = [
           headers,
           ...this.classes.map(item => {
@@ -250,14 +252,11 @@ export default {
                   + '"' + (item.referencia || "") + '",' 
                   + '"' + (item.titulo || "") + '",' 
                   + '"' + (item.descricao || "") + '",'
-                  + '"' + (item.diplomas || "").replace(/#/g,"; ") + '",' 
                   + '"' + (item.pca || "") + '",' 
                   + '"' + (item.notaPCA || "") + '",' 
                   + '"' + (item.formaContagem || "") + '",'
-                  + '"' + (item.justificacaoPCA || "") + '",'
                   + '"' + (item.df || "") + '",' 
                   + '"' + (item.notaDF || "") + '",'
-                  + '"' + (item.justificacaoDF || "") + '"'
           })
         ]
           .join("\n")
@@ -267,6 +266,7 @@ export default {
       }
       else if(this.objeto.fonte.text == "PGD/LC") {
         headers = "Código,N.º Referência,Título,Descrição,Dono PN,Participante PN,PCA,Nota PCA,Forma de Contagem PCA,DF,Nota DF"
+        
         csvContent = [headers,
           ...this.classes.map(item => {
               var str = '"' + (item.codigo || "") + '",' 
