@@ -66,6 +66,7 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import {
   NIVEIS_ANALISAR_PEDIDO,
   NIVEL_MINIMO_DISTRIBUIR_PEDIDOS,
+  NIVEIS_DISTRIBUIR_PEDIDO,
 } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
@@ -112,7 +113,7 @@ export default {
 
   methods: {
     temPermissaoDistribuir() {
-      return this.$userLevel() >= NIVEL_MINIMO_DISTRIBUIR_PEDIDOS;
+      return NIVEIS_DISTRIBUIR_PEDIDOS.includes(this.$userLevel());
     },
 
     async carregaPedidos() {
