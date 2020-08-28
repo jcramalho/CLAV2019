@@ -183,7 +183,7 @@
                         <div class="info-label">Dono</div>
                       </v-col>
                       <v-col>
-                        <div class="info-content"><div v-for="(d,index) in item.donos" :key="index">{{d.designacaoDono}}</div></div>
+                        <div class="info-content"><div v-for="(d,index) in item.donos" :key="index"><a :href="'/entidades/' + d.entDono">{{d.designacaoDono}};</a></div></div>
                       </v-col>
                     </v-row>
                     <v-row v-if="item.participantes">
@@ -191,7 +191,7 @@
                         <div class="info-label">Participante</div>
                       </v-col>
                       <v-col>
-                        <div class="info-content"><div v-for="(p,index) in item.participantes" :key="index">{{p.designacaoParticipante}};</div></div>
+                        <div class="info-content"><div v-for="(p,index) in item.participantes" :key="index"><a :href="'/entidades/' + p.entParticipante">{{p.designacaoParticipante}}</a>;</div></div>
                       </v-col>
                     </v-row>
                   </v-card-text>
