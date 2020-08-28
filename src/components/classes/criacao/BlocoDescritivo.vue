@@ -20,7 +20,8 @@
           </div>
         </v-col>
         <v-col>
-          <v-text-field v-model="c.descricao" label="Descrição" solo clearable></v-text-field>
+          <v-textarea v-model="c.descricao" label="Descrição" rows="2" solo clearable auto-grow></v-textarea>
+          <!--v-text-field v-model="c.descricao" label="Descrição" solo clearable></v-text-field-->
         </v-col>
       </v-row>
 
