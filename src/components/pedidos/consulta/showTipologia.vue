@@ -7,10 +7,8 @@
 
       <v-tooltip
         v-if="
-          !(
-            p.objeto.acao === 'Criação' &&
-            (p.estado === 'Submetido' || p.estado === 'Distribuído')
-          )
+          temPermissaoConsultarHistorico() &&
+            !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
         "
         bottom
       >
@@ -85,6 +83,7 @@
 
 <script>
 import { mapKeys } from "@/utils/utils";
+import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
   props: ["p"],
@@ -110,6 +109,10 @@ export default {
   },
 
   methods: {
+    temPermissaoConsultarHistorico() {
+      return NIVEIS_CONSULTAR_HISTORICO.includes(this.$userLevel());
+    },
+
     verHistorico() {
       this.$emit("verHistorico");
     },

@@ -190,8 +190,8 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import {
-  NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL,
   NIVEIS_ANALISAR_PEDIDO,
+  NIVEIS_SUBSTITUIR_RESPONSAVEL,
 } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
@@ -295,7 +295,7 @@ export default {
     },
 
     temPermissaoSubstituirResponsavel() {
-      return this.$userLevel() >= NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL;
+      return NIVEIS_SUBSTITUIR_RESPONSAVEL.includes(this.$userLevel());
     },
 
     converteData(data) {

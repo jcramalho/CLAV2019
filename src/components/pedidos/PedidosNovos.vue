@@ -91,7 +91,7 @@
               <span>Distribuir pedido...</span>
             </v-tooltip>
 
-            <v-tooltip v-if="temPermissaoDevolverNovo()" bottom>
+            <v-tooltip v-if="temPermissaoDevolver()" bottom>
               <template v-slot:activator="{ on }">
                 <v-icon
                   @click="devolverPedido(item)"
@@ -132,8 +132,8 @@
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 import ErroDialog from "@/components/generic/ErroDialog";
 import {
-  NIVEIS_DISTRIBUIR_PEDIDO_NOVO,
-  NIVEIS_DEVOLVER_PEDIDO_NOVO,
+  NIVEIS_DISTRIBUIR_PEDIDO,
+  NIVEIS_DEVOLVER_PEDIDO,
 } from "@/utils/consts";
 
 export default {
@@ -224,11 +224,11 @@ export default {
 
   methods: {
     temPermissaoDistribuir() {
-      return NIVEIS_DISTRIBUIR_PEDIDO_NOVO.includes(this.$userLevel());
+      return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
     },
 
-    temPermissaoDevolverNovo() {
-      return NIVEIS_DEVOLVER_PEDIDO_NOVO.includes(this.$userLevel());
+    temPermissaoDevolver() {
+      return NIVEIS_DEVOLVER_PEDIDO.includes(this.$userLevel());
     },
 
     atualizaPedidos() {

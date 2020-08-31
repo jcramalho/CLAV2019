@@ -38,11 +38,12 @@
 <script>
 const help = require("@/config/help").help;
 import ImportacaoExportacao from "@/components/principal/ImportacaoExportacao";
+import { NIVEIS_CONSULTAR_WORKFLOW } from "@/utils/consts";
 
 export default {
   props: ["level"],
-  components:{
-    ImportacaoExportacao
+  components: {
+    ImportacaoExportacao,
   },
   methods: {
     go: function(url) {
@@ -53,7 +54,9 @@ export default {
       var filtered = [];
       for (var i = 0; i < operacoes.length; i++) {
         var levelsSet = new Set();
-        operacoes[i].ops.forEach(b => b.level.forEach(l => levelsSet.add(l)));
+        operacoes[i].ops.forEach((b) =>
+          b.level.forEach((l) => levelsSet.add(l))
+        );
         var levels = Array.from(levelsSet);
 
         if (levels.includes(this.level)) {
@@ -61,18 +64,18 @@ export default {
             entidade: operacoes[i].entidade,
             html: operacoes[i].html,
             texto: operacoes[i].texto,
-            ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
+            ops: operacoes[i].ops.filter((o) => o.level.includes(this.level)),
           });
         }
       }
       return filtered;
-    }
+    },
   },
 
   computed: {
     fops: function() {
       return this.filtraOps(this.operacoes);
-    }
+    },
   },
 
   data() {
@@ -87,14 +90,14 @@ export default {
             {
               label: "Consultar",
               url: "/pedidos",
-              level: [1, 3, 3.5, 4, 5, 6, 7]
+              level: NIVEIS_CONSULTAR_WORKFLOW,
             } /*,
             {
               label: "Criar pedido",
               url: "/pedidos/criar",
               level: [1, 3, 3.5, 4, 5, 6, 7]
-            }*/
-          ]
+            }*/,
+          ],
         },
         {
           entidade: "Pendentes",
@@ -104,9 +107,9 @@ export default {
             {
               label: "Consultar",
               url: "/pendentes",
-              level: [1, 3, 3.5, 4, 5, 6, 7]
-            }
-          ]
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+            },
+          ],
         },
         {
           entidade: "Invariantes",
@@ -115,9 +118,9 @@ export default {
             {
               label: "Listar Invariantes",
               url: "/invariantes",
-              level: [6, 7]
-            }
-          ]
+              level: [6, 7],
+            },
+          ],
         },
         {
           entidade: "Utilizadores",
@@ -126,19 +129,19 @@ export default {
             {
               label: "Consultar utilizadores",
               url: "/users/listagem",
-              level: [4, 5, 6, 7]
+              level: [4, 5, 6, 7],
             },
             {
               label: "Registo de utilizadores para uma entidade",
               url: "/users/registoParaEntidade",
-              level: [4, 5, 6, 7]
+              level: [4, 5, 6, 7],
             },
             {
               label: "Registo de acesso",
               url: "/users/registoAcesso",
-              level: [6, 7]
-            }
-          ]
+              level: [6, 7],
+            },
+          ],
         },
         {
           entidade: "Vocabulários Controlados",
@@ -147,9 +150,9 @@ export default {
             {
               label: "Consultar",
               url: "/vocabularios",
-              level: [1, 2, 3, 3.5, 4, 5, 6, 7]
-            }
-          ]
+              level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+          ],
         },
         {
           entidade: "Chaves API",
@@ -158,9 +161,9 @@ export default {
             {
               label: "Consultar chaves API",
               url: "/gestao/api/listagem",
-              level: [7]
-            }
-          ]
+              level: [7],
+            },
+          ],
         },
         {
           entidade: "Administração",
@@ -169,27 +172,27 @@ export default {
             {
               label: "Área de Administração",
               url: "/gestao/administracao",
-              level: [7]
+              level: [7],
             },
             {
               label: "Alterar parâmetros da API de dados",
               url: "/gestao/alterarParametros",
-              level: [7]
+              level: [7],
             },
             {
               label: "Exportar Coleções",
               url: "/gestao/exportarColecoes",
-              level: [7]
+              level: [7],
             },
             {
               label: "Apagar Coleções",
               url: "/gestao/apagarColecoes",
-              level: [7]
-            }
-          ]
-        }
-      ]
+              level: [7],
+            },
+          ],
+        },
+      ],
     };
-  }
+  },
 };
 </script>

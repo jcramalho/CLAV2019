@@ -11,11 +11,11 @@
             <v-spacer />
             <v-tooltip
               v-if="
-                !(
-                  pedido.objeto.acao === 'Criação' &&
-                  (pedido.estado === 'Submetido' ||
-                    pedido.estado === 'Distribuído')
-                )
+                temPermissaoConsultarHistorico() &&
+                  !(
+                    pedido.objeto.acao === 'Criação' &&
+                    pedido.estado === 'Submetido'
+                  )
               "
               bottom
             >
@@ -175,6 +175,7 @@ import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
+import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
   props: ["idp"],
@@ -234,6 +235,10 @@ export default {
   },
 
   methods: {
+    temPermissaoConsultarHistorico() {
+      return NIVEIS_CONSULTAR_HISTORICO.includes(this.$userLevel());
+    },
+
     verHistorico() {
       this.verHistoricoDialog = true;
     },
