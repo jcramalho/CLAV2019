@@ -754,7 +754,7 @@ export default {
           this.erroPedido = true;
         }
       } catch (e) {
-        console.log("e", e);
+        console.warn("e", e);
         this.erroPedido = true;
 
         let parsedError = Object.assign({}, e);
@@ -763,7 +763,10 @@ export default {
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
             parsedError.data.forEach((erro) => {
-              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+              this.erros.push({
+                parametro: mapKeys(erro.param),
+                mensagem: erro.msg,
+              });
             });
           }
         } else {
