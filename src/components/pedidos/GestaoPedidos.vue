@@ -65,7 +65,6 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import {
   NIVEIS_ANALISAR_PEDIDO,
-  NIVEL_MINIMO_DISTRIBUIR_PEDIDOS,
   NIVEIS_DISTRIBUIR_PEDIDO,
 } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
@@ -113,7 +112,7 @@ export default {
 
   methods: {
     temPermissaoDistribuir() {
-      return NIVEIS_DISTRIBUIR_PEDIDOS.includes(this.$userLevel());
+      return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
     },
 
     async carregaPedidos() {
@@ -141,6 +140,7 @@ export default {
         if (this.temPermissaoDistribuir())
           await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
+        console.log("e", e);
         return e;
       }
     },
@@ -157,10 +157,14 @@ export default {
     async listaUtilizadoresParaAnalisar() {
       const response = await this.$request("get", "/users");
 
+      console.log("response.data", response.data);
+
       const utilizadoresFiltrados = filtraNivel(
         response.data,
         NIVEIS_ANALISAR_PEDIDO
       );
+
+      console.log("utilizadoresFiltrados", utilizadoresFiltrados);
 
       this.utilizadoresParaAnalisar = utilizadoresFiltrados;
     },
