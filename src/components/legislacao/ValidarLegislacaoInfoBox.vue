@@ -1,12 +1,12 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="indigo darken-3" @click="validarLegislacao"
+    <v-btn dark rounded class="indigo darken-3" @click="validarLegislacao()"
       >Validar Diploma</v-btn
     >
 
     <!-- Erros na Validação ....................... -->
-    <v-dialog v-model="dialog" width="70%">
+    <v-dialog v-model="dialog" width="70%" persistent>
       <v-card>
         <v-card-title
           >Erros detetados na validação:
@@ -24,7 +24,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="dialog = false"
+          <v-btn class="red darken-4" dark @click="fecharDialog()"
             >Fechar</v-btn
           >
         </v-card-actions>
@@ -59,18 +59,16 @@ export default {
     return {
       dialog: false,
       dialogSemErros: false,
-
       mensagensErro: [],
     };
   },
 
-  watch: {
-    dialog: function(val) {
-      if (!val) this.limpaErros();
-    },
-  },
-
   methods: {
+    fecharDialog() {
+      this.dialog = false;
+      this.limpaErros();
+    },
+
     async validarLegislacaoCriacao() {
       let numeroErros = 0;
 
@@ -98,11 +96,11 @@ export default {
           );
 
           if (existeNumero.data) {
+            numeroErros++;
             this.mensagensErro.push({
               sobre: "Número de Diploma",
               mensagem: "O número de diploma já existente na BD.",
             });
-            this.numeroErros++;
           }
         } catch (err) {
           numeroErros++;
@@ -235,18 +233,18 @@ export default {
           break;
 
         default:
+          erros = 0;
           break;
       }
 
-      if (erros > 0) {
+      if (erros !== 0) {
         this.dialog = true;
       } else {
         this.dialogSemErros = true;
       }
     },
 
-    limpaErros: function() {
-      this.numeroErros = 0;
+    limpaErros() {
       this.mensagensErro = [];
     },
   },
