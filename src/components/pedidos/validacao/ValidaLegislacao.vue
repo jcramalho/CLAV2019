@@ -595,29 +595,6 @@ export default {
         });
 
         numeroErros++;
-      } else {
-        try {
-          const existeNumero = await this.$request(
-            "get",
-            "/legislacao/numero?valor=" + encodeURIComponent(dados.numero)
-          );
-
-          if (existeNumero.data) {
-            this.erros.push({
-              sobre: "Número de Diploma",
-              mensagem: "O número de diploma já existente na BD.",
-            });
-
-            numeroErros++;
-          }
-        } catch (err) {
-          numeroErros++;
-          this.erros.push({
-            sobre: "Acesso à Ontologia",
-            mensagem:
-              "Não consegui verificar a existência do número do diploma.",
-          });
-        }
       }
 
       // Data
@@ -766,7 +743,10 @@ export default {
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
             parsedError.data.forEach((erro) => {
-              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+              this.erros.push({
+                parametro: mapKeys(erro.param),
+                mensagem: erro.msg,
+              });
             });
           }
         } else {

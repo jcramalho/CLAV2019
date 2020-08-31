@@ -502,7 +502,10 @@ export default {
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
             parsedError.data.forEach((erro) => {
-              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+              this.erros.push({
+                parametro: mapKeys(erro.param),
+                mensagem: erro.msg,
+              });
             });
           }
         } else {
@@ -524,27 +527,6 @@ export default {
           mensagem: "O nome da tipologia não pode ser vazio.",
         });
         numeroErros++;
-      } else if (!eUndefined(dados.designacao)) {
-        try {
-          let existeDesignacao = await this.$request(
-            "get",
-            "/tipologias/designacao?valor=" +
-              encodeURIComponent(dados.designacao)
-          );
-          if (existeDesignacao.data) {
-            this.erros.push({
-              sobre: "Nome da Tipologia",
-              mensagem: "Nome da tipologia já existente na BD.",
-            });
-            numeroErros++;
-          }
-        } catch (err) {
-          numeroErros++;
-          this.erros.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação.",
-          });
-        }
       }
 
       return numeroErros;

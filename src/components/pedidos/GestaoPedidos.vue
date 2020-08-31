@@ -140,7 +140,7 @@ export default {
         if (this.temPermissaoDistribuir())
           await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
-        console.log("e", e);
+        console.warn("e", e);
         return e;
       }
     },
@@ -157,14 +157,10 @@ export default {
     async listaUtilizadoresParaAnalisar() {
       const response = await this.$request("get", "/users");
 
-      console.log("response.data", response.data);
-
       const utilizadoresFiltrados = filtraNivel(
         response.data,
         NIVEIS_ANALISAR_PEDIDO
       );
-
-      console.log("utilizadoresFiltrados", utilizadoresFiltrados);
 
       this.utilizadoresParaAnalisar = utilizadoresFiltrados;
     },

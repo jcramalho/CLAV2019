@@ -181,7 +181,7 @@ import {
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
-import { eNUV, eDataFormatoErrado } from "@/utils/validadores";
+import { eNUV, eDataFormatoErrado, testarRegex } from "@/utils/validadores";
 
 export default {
   props: ["p"],
@@ -423,27 +423,6 @@ export default {
           mensagem: "O nome da entidade não pode ser vazio.",
         });
         numeroErros++;
-      } else {
-        try {
-          let existeDesignacao = await this.$request(
-            "get",
-            "/entidades/designacao?valor=" +
-              encodeURIComponent(dados.designacao)
-          );
-          if (existeDesignacao.data) {
-            this.erros.push({
-              sobre: "Nome da Entidade",
-              mensagem: "Nome da entidade já existente na BD.",
-            });
-            numeroErros++;
-          }
-        } catch (err) {
-          numeroErros++;
-          this.erros.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da designação.",
-          });
-        }
       }
 
       // Sigla
@@ -453,26 +432,6 @@ export default {
           mensagem: "A sigla não pode ser vazia.",
         });
         numeroErros++;
-      } else {
-        try {
-          let existeSigla = await this.$request(
-            "get",
-            "/entidades/sigla?valor=" + encodeURIComponent(dados.sigla)
-          );
-          if (existeSigla.data) {
-            this.erros.push({
-              sobre: "Sigla",
-              mensagem: "Sigla já existente na BD.",
-            });
-            numeroErros++;
-          }
-        } catch (err) {
-          numeroErros++;
-          this.erros.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da sigla.",
-          });
-        }
       }
 
       // Internacional
@@ -492,7 +451,7 @@ export default {
             mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
           });
           numeroErros++;
-        } else if (!testarRegex(this.e.sioe, /^\d+$/)) {
+        } else if (!testarRegex(dados.sioe, /^\d+$/)) {
           this.erros.push({
             sobre: "SIOE",
             mensagem: "O campo SIOE só pode ter digitos numéricos.",
@@ -616,7 +575,10 @@ export default {
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
             parsedError.data.forEach((erro) => {
-              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+              this.erros.push({
+                parametro: mapKeys(erro.param),
+                mensagem: erro.msg,
+              });
             });
           }
         } else {
