@@ -27,6 +27,19 @@
           :search="procuraUtilizador"
           class="elevation-1"
         >
+          <template v-slot:no-data>
+            <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
+              Não existem utilizadores para selecionar...
+            </v-alert>
+          </template>
+
+          <template v-slot:no-results>
+            <v-alert type="info" width="50%" class="m-auto mb-2 mt-2" outlined>
+              Sem resultados para "<strong>{{ procuraUtilizador }}</strong
+              >".
+            </v-alert>
+          </template>
+
           <template v-slot:item="props">
             <tr @click="utilizadorSelecionado = props.item">
               <td class="subheading">{{ props.item.name }}</td>
