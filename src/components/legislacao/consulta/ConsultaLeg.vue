@@ -71,7 +71,7 @@
         <v-col>
           <v-btn
             class="indigo accent-4 white--text mr-4"
-            @click="$router.go(-1)"
+            @click="$router.push('/legislacao')"
             >Voltar</v-btn
           >
         </v-col>

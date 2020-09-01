@@ -562,7 +562,7 @@ export default {
             distribuicao: novaDistribuicao,
           });
 
-          this.$router.go(-1);
+          this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
         } else {
           this.erroPedido = true;
         }

@@ -403,6 +403,12 @@ export default new Router({
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] },
     },
     {
+      path: "/pedidos/finalizacao/:idPedido",
+      name: "finalizacaoPedido",
+      component: () => import("./views/pedidos/PedidosFinalizacao.vue"),
+      meta: { levels: [4, 6, 7] },
+    },
+    {
       path: "/pedidos/:idPedido",
       name: "consultaPedido",
       component: () => import("./views/pedidos/PedidosConsulta.vue"),
