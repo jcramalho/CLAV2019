@@ -26,6 +26,7 @@
           :items-per-page="5"
           :search="procuraUtilizador"
           class="elevation-1"
+          :footer-props="footerProps"
         >
           <template v-slot:no-data>
             <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
@@ -111,6 +112,11 @@ export default {
         { text: "Nome", value: "name", class: "title" },
         { text: "Entidade", value: "entidade", class: "title" },
       ],
+      footerProps: {
+        "items-per-page-text": "Utilizadores por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todos",
+      },
     };
   },
 
