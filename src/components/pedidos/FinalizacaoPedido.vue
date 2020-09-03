@@ -9,7 +9,7 @@
             type="card-heading"
             width="100%"
           >
-            <span>Pedido submetido com sucesso!</span>
+            <span>Pedido finalizado com sucesso!</span>
           </v-skeleton-loader>
         </v-card-title>
 
@@ -74,7 +74,7 @@
                   type="list-item-avatar-two-line"
                 >
                   <v-alert type="info" border="left" text>
-                    Aguarde a notificação de resposta ao seu pedido.
+                    Será enviada uma notificação ao criador do pedido.
                   </v-alert>
                 </v-skeleton-loader>
               </v-col>
@@ -89,8 +89,8 @@
             transition="fade-transition"
             type="button"
           >
-            <v-btn class="blue" dark @click="verPedido()">
-              Ver Pedido
+            <v-btn class="blue" dark @click="consultar()">
+              Consultar
               <v-icon right>search</v-icon>
             </v-btn>
           </v-skeleton-loader>
@@ -122,6 +122,7 @@ export default {
       erroPedido: false,
       pedidoCarregado: false,
       pedido: {},
+      objetoPedido: {},
     };
   },
 
@@ -134,6 +135,8 @@ export default {
         data: data.data.split("T")[0],
         tipoPedido: `${data.objeto.acao} - ${data.objeto.tipo}`,
       };
+
+      this.objetoPedido = data.objeto;
 
       this.pedidoCarregado = true;
     } catch (e) {
@@ -158,10 +161,41 @@ export default {
   },
 
   methods: {
-    verPedido() {
-      localStorage.setItem("submissao", true);
+    identificador() {
+      let id =
+        this.objetoPedido.dados.id ||
+        this.objetoPedido.dados.sigla ||
+        this.objetoPedido.dados.codigo;
 
-      this.$router.push(`/users/pedidos/${this.idp}`);
+      if (id === undefined)
+        id =
+          this.objetoPedido.dadosOriginais.id ||
+          this.objetoPedido.dadosOriginais.sigla ||
+          this.objetoPedido.dadosOriginais.codigo;
+
+      return id;
+    },
+
+    consultar() {
+      const id = this.identificador();
+
+      switch (this.objetoPedido.tipo) {
+        case "Tipologia":
+          this.$router.push(`/tipologias/tip_${id}`);
+          break;
+
+        case "Entidade":
+          this.$router.push(`/entidades/ent_${id}`);
+          break;
+
+        case "Legislação":
+          this.$router.push(`/legislacao/${id}`);
+          break;
+
+        default:
+          this.$router.push("/");
+          break;
+      }
     },
 
     fecharErro() {
