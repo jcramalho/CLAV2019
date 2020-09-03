@@ -92,11 +92,11 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Medição de UI em Papel</div>
+          <div class="info-label">Medição de UI em Papel (m.l.)</div>
         </v-col>
         <v-col>
           <v-text-field
-            hint="Exemplo: 11.50"
+            hint="Exemplo: 11,50"
             label="Insira a medição de UI"
             v-model="uiPapel"
             solo
@@ -106,11 +106,11 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI Digital</div>
+          <div class="info-label">Medição de UI Digital (GB)</div>
         </v-col>
         <v-col>
           <v-text-field
-            hint="Exemplo: 16.00"
+            hint="Exemplo: 16,00"
             label="Insira a medição de UI"
             v-model="uiDigital"
             solo
@@ -124,7 +124,7 @@
         </v-col>
         <v-col>
           <v-text-field
-            hint="Exemplo: 150.75"
+            hint="Exemplo: 150,75"
             label="Insira a medição de UI"
             v-model="uiOutros"
             solo
@@ -324,7 +324,7 @@ export default {
     adicionarZC: async function() {
       const date = new Date()
       const re = /\d{4}/;
-      const reUI = /^-?\d*(\.\d\d?)?$/;
+      const reUI = /^-?\d*(,\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
         zc => {
           if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
@@ -332,9 +332,9 @@ export default {
           else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
         }
       );
-      var uiPapel = parseFloat(this.uiPapel) || 0;
-      var uiDigital = parseFloat(this.uiDigital) || 0;
-      var uiOutros = parseFloat(this.uiOutros) || 0;
+      var uiPapel = parseFloat(this.uiPapel.replace(',', '.')) || 0;
+      var uiDigital = parseFloat(this.uiDigital.replace(',', '.')) || 0;
+      var uiOutros = parseFloat(this.uiOutros.replace(',', '.')) || 0;
       var dataInicio = parseInt(this.dataInicio) || 0;
       var dataFim = parseInt(this.dataFim) || 0;
       if (!this.classe || !this.dataInicio || !this.dataFim) {

@@ -10,7 +10,7 @@
           importação de ficheiros. Para tal são disponibilizados dois tipos de formulários que
           devem ser preenchidos previamente offline:
           <li>
-            Um formulário para as séries (veja
+            Um formulário para as classes / séries (veja
             <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download>aqui</a>)
           </li>
           <li>

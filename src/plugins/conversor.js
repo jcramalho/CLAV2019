@@ -336,6 +336,7 @@ var csv2JsonAg = function(zonaControlo, fileAgreg, tipo) {
     var enc = new TextDecoder("utf-8");
     var agregacoes = enc.decode(fileAgreg).split("\n")
     agregacoes.shift()
+    var addedAg = []
 
     zonaControlo.forEach((zc,index) => {  
       agregacoes.forEach(a => {
@@ -366,11 +367,12 @@ var csv2JsonAg = function(zonaControlo, fileAgreg, tipo) {
                 zc.agregacoes[pos] = ag;
               else 
                 zc.agregacoes.unshift(ag)
+              addedAg.push("Agregação <b>"+ag.codigo+" - "+ag.titulo+"</b> da classe / série <b>"+codigo+" "+referencia+"</b>");
             }
           }
         })
     })
-    resolve({zonaControlo: zonaControlo})
+    resolve({zonaControlo: zonaControlo, addedAg: addedAg})
   });
 }
 

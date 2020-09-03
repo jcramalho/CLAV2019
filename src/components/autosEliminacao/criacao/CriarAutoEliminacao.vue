@@ -90,7 +90,7 @@
                 </div>
                 <div v-else-if="tipo=='TS_LC'">
                   <v-autocomplete
-                    label="Selecione a Tabela de Seleção"
+                    label="Selecione a fonte de legitimação"
                     :items="tabelasSelecao"
                     item-text="titulo"
                     return-object
@@ -119,7 +119,7 @@
                 </div>
                 <div v-else>
                   <v-autocomplete
-                    label="Selecione a Tabela de Selação"
+                    label="Selecione a fonte de legitimação"
                     :items="tsRada"
                     item-text="titulo"
                     return-object
@@ -677,8 +677,9 @@ export default {
           "get",
           "/legislacao"
         )
-
-        var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[1])
+        if(this.auto.legislacao.split(" ")[0] != "Portaria") var indLeg = 2;
+        else indLeg = 1;
+        var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[indLeg])
 
         if(this.tipo=="PGD") 
           var response2 = await this.$request(
