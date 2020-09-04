@@ -416,6 +416,123 @@ export default {
         }
       }
     },
+    criarHistorico() {
+      let historico = [
+        {
+          titulo: {
+            cor: "verde",
+            dados: this.RADA.titulo,
+            nota: null
+          },
+          entRes: {
+            cor: "verde",
+            dados: this.RADA.entRes,
+            nota: null
+          },
+          RE: {
+            entidadesProd: {
+              cor: "verde",
+              dados: this.RADA.RE.entidadesProd,
+              nota: null
+            },
+            tipologiasProd: {
+              cor: "verde",
+              dados: this.RADA.RE.tipologiasProd,
+              nota: null
+            },
+            dataInicial: {
+              cor: "verde",
+              dados: this.RADA.RE.dataInicial,
+              nota: null
+            },
+            dataFinal: {
+              cor: "verde",
+              dados: this.RADA.RE.dataFinal,
+              nota: null
+            },
+            hist_admin: {
+              cor: "verde",
+              dados: this.RADA.RE.hist_admin,
+              nota: null
+            },
+            hist_cust: {
+              cor: "verde",
+              dados: this.RADA.RE.hist_cust,
+              nota: null
+            },
+            sist_org: {
+              cor: "verde",
+              dados: this.RADA.RE.sist_org,
+              nota: null
+            },
+            localizacao: {
+              cor: "verde",
+              dados: this.RADA.RE.localizacao,
+              nota: null
+            },
+            est_conser: {
+              cor: "verde",
+              dados: this.RADA.RE.est_conser,
+              nota: null
+            }
+          },
+          tsRada: {
+            titulo: {
+              cor: "verde",
+              dados: this.RADA.tsRada.titulo,
+              nota: null
+            },
+            classes: {
+              cor: "verde",
+              dados: this.RADA.tsRada.classes.map(e => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(e)),
+                  nota: null
+                }
+              }),
+              nota: null
+            },
+            UIs: {
+              cor: "verde",
+              dados: this.RADA.tsRada.UIs.map(e => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(e)),
+                  nota: null
+                }
+              }),
+              nota: null
+            }
+          }
+        }
+      ];
+
+      // criar histórico para as classes;
+      for (let i = 0; i < historico[0].tsRada.classes.dados.length; i++) {
+        Object.keys(historico[0].tsRada.classes.dados[i].dados).map(e => {
+          historico[0].tsRada.classes.dados[i].dados[e] = {
+            cor: "verde",
+            dados: historico[0].tsRada.classes.dados[i].dados[e],
+            nota: null
+          }
+        })
+      }
+
+      // criar histórico para as uis;
+      for (let j = 0; j < historico[0].tsRada.UIs.dados.length; j++) {
+        Object.keys(historico[0].tsRada.UIs.dados[j].dados).map(e => {
+          historico[0].tsRada.UIs.dados[j].dados[e] = {
+            cor: "verde",
+            dados: historico[0].tsRada.UIs.dados[j].dados[e],
+            nota: null
+          }
+        })
+      }
+
+
+      return historico;
+    },
     async concluir(id_remocao_pendente) {
       if (!this.RADA.tsRada.classes.some(e => e.tipo == "Série")) {
         this.existe_serie = false;
@@ -475,7 +592,7 @@ export default {
             tipoPedido: "Criação",
             tipoObjeto: "RADA",
             novoObjeto: this.RADA,
-            historico: [],
+            historico: await this.criarHistorico(),
             user: {
               email: this.userEmail
             },
