@@ -145,8 +145,8 @@ export default {
             notaPCA: c.notaPCA,
             formaContagem: c.formaContagem,
             subFormaContagem: c.subFormaContagem,
-            designacaoParticipante: c.designacaoParticipante,
-            designacaoDono: c.designacaoDono
+            participantes: c.participantes,
+            donos: c.donos
           }
         })
 

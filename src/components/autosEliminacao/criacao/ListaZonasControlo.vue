@@ -40,7 +40,7 @@
             </v-row>
               <v-row v-if="item.prazoConservacao">
                 <v-col cols="3">
-                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Prazo de Conservação Administrativa</v-card>
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Prazo de conservação administrativa</v-card>
                 </v-col>
                 <v-col><v-card class="mt-2" style="color: #757575" elevation="0">
                   <span v-if="item.prazoConservacao=='1'">{{ item.prazoConservacao }} Ano</span>
@@ -55,7 +55,7 @@
               </v-row>
               <v-row v-if="item.destino">
                 <v-col cols="3">
-                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Destino Final</v-card>
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Destino final</v-card>
                 </v-col>
                 <v-col v-if="item.destino === 'E'"><v-card class="mt-2" style="color: #757575" elevation="0">Eliminação</v-card></v-col>
                 <v-col v-else-if="item.destino === 'C'"><v-card class="mt-2" style="color: #757575" elevation="0">Conservação</v-card></v-col>
@@ -81,13 +81,13 @@
               </v-row>
               <v-row>
                 <v-col cols="3">
-                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Data de Início</v-card>
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Data de início</v-card>
                 </v-col>
                 <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.dataInicio }}</v-card></v-col>
               </v-row>
               <v-row>
                 <v-col cols="3">
-                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Data de Fim</v-card>
+                  <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Data de fim</v-card>
                 </v-col>
                 <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.dataFim }}</v-card></v-col>
               </v-row>

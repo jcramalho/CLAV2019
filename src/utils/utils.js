@@ -274,7 +274,25 @@ export function adicionarNotaComRemovidos(historicoAnterior, historicoAtual) {
   return historicoAtual;
 }
 
+export function renomearRepetidosEmArray(arr) {
+  let count = {};
+
+  arr.forEach((x, i) => {
+    if (arr.indexOf(x) !== i) {
+      let c = x in count ? (count[x] = count[x] + 1) : (count[x] = 1);
+      let j = c + 1;
+      let k = `${x} #${j}`;
+
+      while (arr.indexOf(k) !== -1) k = `${x} #${++j}`;
+      arr[i] = k;
+    }
+  });
+
+  return arr;
+}
+
 export default {
+  renomearRepetidosEmArray,
   comparaSigla,
   comparaCodigo,
   mapKeys,

@@ -117,7 +117,6 @@ export default {
           pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         const novaDistribuicao = {
           estado: estado,
@@ -157,7 +156,6 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = "Devolvido";
-        pedido.token = this.$store.state.token;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,

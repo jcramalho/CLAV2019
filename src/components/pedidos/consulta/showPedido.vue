@@ -190,8 +190,8 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import {
-  NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL,
   NIVEIS_ANALISAR_PEDIDO,
+  NIVEIS_SUBSTITUIR_RESPONSAVEL,
 } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
@@ -268,6 +268,8 @@ export default {
 
         pedido.estado = estado;
 
+        pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
@@ -288,12 +290,12 @@ export default {
         this.fecharReapreciarDialog();
         this.$router.push("/pedidos");
       } catch (e) {
-        //console.log("e :", e);
+        // console.log("e :", e);
       }
     },
 
     temPermissaoSubstituirResponsavel() {
-      return this.$userLevel() >= NIVEL_MINIMO_SUBSTITUIR_RESPONSAVEL;
+      return NIVEIS_SUBSTITUIR_RESPONSAVEL.includes(this.$userLevel());
     },
 
     converteData(data) {

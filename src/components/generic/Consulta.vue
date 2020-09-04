@@ -329,9 +329,7 @@
 
       <v-row>
         <v-col>
-          <v-btn
-            class="indigo accent-4 white--text mr-4"
-            @click="$router.go(-1)"
+          <v-btn class="indigo accent-4 white--text mr-4" @click="voltar()"
             >Voltar</v-btn
           >
         </v-col>
@@ -380,6 +378,28 @@ export default {
     },
     myhelp: help,
   }),
+
+  methods: {
+    voltar() {
+      switch (this.tipo) {
+        case "Tipologias":
+          this.$router.push("/tipologias");
+          break;
+
+        case "Entidades":
+          this.$router.push("/entidades");
+          break;
+
+        case "Legislação":
+          this.$router.push("/legislacao");
+          break;
+
+        default:
+          this.$router.go(-1);
+          break;
+      }
+    },
+  },
 };
 </script>
 

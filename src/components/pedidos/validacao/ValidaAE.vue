@@ -555,7 +555,6 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -623,7 +622,6 @@ export default {
             };
 
             pedido.estado = estado;
-            pedido.token = this.$store.state.token;
 
             await this.$request("put", "/pedidos", {
               pedido: pedido,

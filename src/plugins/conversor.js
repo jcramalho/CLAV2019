@@ -330,12 +330,13 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
   });
 }
 
-var csv2JsonAg = function(zonaControlo, fileAgreg) {
+var csv2JsonAg = function(zonaControlo, fileAgreg, tipo) {
   return new Promise(function(resolve, reject) {
     var currentTime = new Date();
     var enc = new TextDecoder("utf-8");
     var agregacoes = enc.decode(fileAgreg).split("\n")
     agregacoes.shift()
+    var addedAg = []
 
     zonaControlo.forEach((zc,index) => {  
       agregacoes.forEach(a => {
@@ -347,7 +348,7 @@ var csv2JsonAg = function(zonaControlo, fileAgreg) {
           var referencia = zc.referencia || "";
           if(agCodigo.replace(/['"]/g,'')==codigo && agReferencia.replace(/['"]/g,'')==referencia) {
             var ag = {
-              codigo: agregacao[2].replace(/[ -.,!/]/g, "_").replace(/['"]/g,''),
+              codigo: agregacao[2].replace(/['"]/g,'').replace(/[ -.,!/]/g,"_"),
               titulo: agregacao[3].replace(/^\"|\"$/g,"").replace(/['"]/g,''),
               dataContagem: agregacao[4].replace(/['"]/g,''),
               ni: agregacao[5].replace(/['"]/g,'')
@@ -358,7 +359,7 @@ var csv2JsonAg = function(zonaControlo, fileAgreg) {
             
             if (res > currentTime.getFullYear()) val = false
             if (res2 < 0) val = false
-            if((zc.destino == "C" || zc.destino=="Conservação") && ag.ni!="Participante") val = false
+            if((tipo=="PGD/LC" || tipo=="TS/LC") && (zc.destino == "C" || zc.destino=="Conservação") && ag.ni!="Participante") val = false
             
             if(val) {
               var pos = zc.agregacoes.map(a => {return a.codigo}).indexOf(ag.codigo)
@@ -366,11 +367,12 @@ var csv2JsonAg = function(zonaControlo, fileAgreg) {
                 zc.agregacoes[pos] = ag;
               else 
                 zc.agregacoes.unshift(ag)
+              addedAg.push("Agregação <b>"+ag.codigo+" - "+ag.titulo+"</b> da classe / série <b>"+codigo+" "+referencia+"</b>");
             }
           }
         })
     })
-    resolve({zonaControlo: zonaControlo})
+    resolve({zonaControlo: zonaControlo, addedAg: addedAg})
   });
 }
 

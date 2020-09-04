@@ -554,7 +554,6 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         this.novoHistorico = adicionarNotaComRemovidos(
           this.historico[this.historico.length - 1],
@@ -737,7 +736,6 @@ export default {
           };
 
           pedido.estado = estado;
-          pedido.token = this.$store.state.token;
 
           this.novoHistorico = adicionarNotaComRemovidos(
             this.historico[this.historico.length - 1],
@@ -751,12 +749,12 @@ export default {
             distribuicao: novaDistribuicao,
           });
 
-          this.$router.go(-1);
+          this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
         } else {
           this.erroPedido = true;
         }
       } catch (e) {
-        console.log("e", e);
+        console.warn("e", e);
         this.erroPedido = true;
 
         let parsedError = Object.assign({}, e);
@@ -765,7 +763,10 @@ export default {
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
             parsedError.data.forEach((erro) => {
-              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+              this.erros.push({
+                parametro: mapKeys(erro.param),
+                mensagem: erro.msg,
+              });
             });
           }
         } else {

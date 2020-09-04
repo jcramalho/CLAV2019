@@ -10,7 +10,7 @@
           importação de ficheiros. Para tal são disponibilizados dois tipos de formulários que
           devem ser preenchidos previamente offline:
           <li>
-            Um formulário para as séries (veja
+            Um formulário para as classes / séries (veja
             <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download>aqui</a>)
           </li>
           <li>
@@ -800,6 +800,8 @@ export default {
               pca: {valores: c.pca, notas: c.notaPCA},
             }
         })
+        if(this.tipo == "PGD" || this.tipo=="RADA") this.classes = this.classes.filter(c=> c.df.valor!="C")
+
       } else if(this.tipo == "RADA_CLAV") {
         var response = await this.$request(
           "get",
@@ -815,6 +817,7 @@ export default {
             pca: {valores: c.pca.pca, notas: c.pca.notaPCA}
           }
         })
+        this.classes = this.classes.filter(c=> c.df.valor!="C")
       }
       else this.classes = [];
 
