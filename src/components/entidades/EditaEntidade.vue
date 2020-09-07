@@ -188,6 +188,7 @@
                         >
                           <SelecionarData
                             :d="entidade.dataCriacao"
+                            :label="'Data: AAAA-MM-DD'"
                             @dataSelecionada="entidade.dataCriacao = $event"
                           />
                         </div>
@@ -255,6 +256,7 @@
                         >
                           <SelecionarData
                             :d="entidade.dataExtincao"
+                            :label="'Data: AAAA-MM-DD'"
                             @dataSelecionada="entidade.dataExtincao = $event"
                           />
                         </div>

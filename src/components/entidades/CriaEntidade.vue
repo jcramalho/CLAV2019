@@ -155,6 +155,7 @@
                 >
                   <SelecionarData
                     :d="entidade.dataCriacao"
+                    :label="'Data: AAAA-MM-DD'"
                     @dataSelecionada="entidade.dataCriacao = $event"
                   />
                 </div>

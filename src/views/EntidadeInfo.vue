@@ -24,7 +24,7 @@
         <v-col cols="12" md="4">
           <v-btn
             v-if="
-              [1, 3, 3.5, 4, 5, 6, 7].includes(this.$verifyTokenUser().level) &&
+              [1, 3, 3.5, 4, 5, 6, 7].includes(this.$userLevel()) &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
             "
@@ -32,8 +32,8 @@
             rounded
             class="white--text"
             :class="{
-              'px-12': $vuetify.breakpoint.lgAndUp,
-              'px-8': $vuetify.breakpoint.mdAndDown
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             id="default-button"
           >
@@ -53,8 +53,8 @@
             rounded
             class="white--text"
             :class="{
-              'px-12': $vuetify.breakpoint.lgAndUp,
-              'px-8': $vuetify.breakpoint.mdAndDown
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             id="default-button"
           >
@@ -71,7 +71,7 @@
         <v-col cols="12" md="4">
           <v-btn
             v-if="
-              [4, 5, 6, 7].includes(this.$verifyTokenUser().level) &&
+              [4, 5, 6, 7].includes(this.$userLevel()) &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
             "
@@ -79,8 +79,8 @@
             rounded
             class="white--text"
             :class="{
-              'px-12': $vuetify.breakpoint.lgAndUp,
-              'px-8': $vuetify.breakpoint.mdAndDown
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             id="default-button"
           >

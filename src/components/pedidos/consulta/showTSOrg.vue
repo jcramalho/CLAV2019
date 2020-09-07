@@ -67,7 +67,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
   color: #00695c;
   padding: 5px;

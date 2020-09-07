@@ -930,7 +930,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .consulta tr {
   vertical-align: top;
   border-bottom: 1px solid #ddd;
@@ -956,12 +956,6 @@ export default {
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #696969;
 }
 
 .expansion-panel-heading {

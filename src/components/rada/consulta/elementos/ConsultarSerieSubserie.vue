@@ -383,7 +383,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .table-header {
   color: #1a237e;
   font-weight: 400;

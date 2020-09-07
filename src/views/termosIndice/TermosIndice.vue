@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Loading v-if="!termosReady" :message="'os termos de índice'" />
     <Listagem
       v-else
@@ -8,7 +13,7 @@
       v-bind:cabecalho="['Termo', 'Classe', 'Título da Classe']"
       v-bind:campos="['termo', 'idClasse', 'tituloClasse']"
     />
-  </div>
+  </v-content>
 </template>
 
 <script>

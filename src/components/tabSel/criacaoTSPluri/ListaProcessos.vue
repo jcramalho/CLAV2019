@@ -312,7 +312,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-content {
   padding: 5px;
   width: 100%;

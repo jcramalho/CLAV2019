@@ -40,14 +40,13 @@
     </v-container>
     <p class="content-text px-8 pb-4">
       <u>Deve estar registado na CLAV para aceder a estas funcionalidades.</u>
-      Consulte as instruções em Formulários e instruções
     </p>
     <v-container fluid style="text-align: center;">
       <v-row justify="center" align="center">
         <v-col cols="12" md="4">
           <v-btn
             v-if="
-              this.$verifyTokenUser().level > 0 &&
+              this.$userLevel() > 0 &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
             "
@@ -55,8 +54,8 @@
             rounded
             class="white--text"
             :class="{
-              'px-12': $vuetify.breakpoint.lgAndUp,
-              'px-8': $vuetify.breakpoint.mdAndDown
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             id="default-button"
           >
@@ -76,8 +75,8 @@
             rounded
             class="white--text"
             :class="{
-              'px-12': $vuetify.breakpoint.lgAndUp,
-              'px-8': $vuetify.breakpoint.mdAndDown
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             id="default-button"
           >
@@ -94,7 +93,7 @@
         <v-col cols="12" md="4">
           <v-btn
             v-if="
-              this.$verifyTokenUser().level > 0 &&
+              this.$userLevel() > 0 &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
             "
@@ -102,8 +101,8 @@
             rounded
             class="white--text"
             :class="{
-              'px-12': $vuetify.breakpoint.lgAndUp,
-              'px-8': $vuetify.breakpoint.mdAndDown
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             id="default-button"
           >

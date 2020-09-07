@@ -203,7 +203,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
   color: #283593; /* indigo darken-3 */
   padding: 5px;

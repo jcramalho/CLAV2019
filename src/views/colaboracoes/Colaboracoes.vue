@@ -47,9 +47,7 @@
         </v-data-table>
         <v-row>
           <v-col>
-            <v-btn
-              class="indigo accent-4 white--text mr-4"
-              @click="mainPage()"
+            <v-btn class="indigo accent-4 white--text mr-4" @click="mainPage()"
               >Voltar</v-btn
             >
           </v-col>
@@ -111,7 +109,7 @@ export default {
     timeout: 4000,
     eliminarId: "",
     done: false
-    }),
+  }),
 
   components: {
     Loading,
@@ -153,7 +151,6 @@ export default {
             class: ["table-header", "subtitle-2", "font-weight-bold"]
           };
       }
-
     },
 
     preparaLista(level, listaNoticias) {
@@ -203,22 +200,22 @@ export default {
       this.$router.push("/colaboracoes/editar/" + id);
     },
 
-    remover(id){
+    remover(id) {
       this.$request("delete", "/colaboracoes/" + id)
         .then(res => {
-            this.text = res.data;
-            this.color = "success";
-            this.snackbar = true;
-            this.eliminarId = "";
-            this.done = true;
-            this.getColaboracoes();
+          this.text = res.data;
+          this.color = "success";
+          this.snackbar = true;
+          this.eliminarId = "";
+          this.done = true;
+          this.getColaboracoes();
         })
         .catch(e => {
-            this.text = e.response.data[0].msg || e.response.data;
-            this.color = "error";
-            this.snackbar = true;
-            this.eliminarId = "";
-            this.done = false;
+          this.text = e.response.data[0].msg || e.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.eliminarId = "";
+          this.done = false;
         });
     },
 
@@ -255,17 +252,14 @@ export default {
         this.colaboracoes = await this.preparaLista(level, response.data);
 
         this.colaboracoesReady = true;
-        
       } catch (e) {
         return e;
       }
     }
-
   },
 
   created: async function() {
     try {
-      
       let response = await this.$request("get", "/colaboracoes");
 
       let level = this.$userLevel();
@@ -275,7 +269,7 @@ export default {
       this.preparaOperacoes(level);
 
       this.colaboracoes = await this.preparaLista(level, response.data);
-      
+
       this.colaboracoesReady = true;
     } catch (e) {
       return e;

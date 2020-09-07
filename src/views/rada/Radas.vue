@@ -1,23 +1,23 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Listagem
       :lista="radas"
       tipo="Relatórios de Avaliação de Documentação Acumulada"
-      :cabecalho="[
-          'Data de Aprovação',
-          'Título',
-          'Entidades Responsáveis'
-        
-      ]"
+      :cabecalho="['Data de Aprovação', 'Título', 'Entidades Responsáveis']"
       :campos="['titulo', 'dataAprovacao', 'entResp']"
     />
     <!--Loading v-if="!fontesRADAReady" :message="'fontes de legitimação'" /-->
     <ListagemLeg
-      v-if="fontesRADA.length>0"
+      v-if="fontesRADA.length > 0"
       :lista="fontesRADA"
       tipo="TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE DOCUMENTAÇÃO ACUMULADA"
     />
-  </div>
+  </v-content>
 </template>
 
 <script>
@@ -52,7 +52,6 @@ export default {
       .catch(e => {
         return e;
       });
-
   },
   async mounted() {
     try {

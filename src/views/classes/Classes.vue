@@ -8,25 +8,60 @@
     <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
       <v-row>
         <v-col class="py-0 my-0">
-          <v-btn
-            @click="goBack"
-            rounded
-            class="white--text mb-6"
-            :class="{
-              'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown
-            }"
-            id="default-button"
-          >
-            <unicon
-              name="arrow-back-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20.71 37.261"
-              fill="#ffffff"
-            />
-            <p class="ml-2">Voltar</p>
-          </v-btn>
+          <v-row>
+            <v-col class="py-0 my-0">
+              <v-btn
+                @click="goBack"
+                rounded
+                class="white--text mb-6"
+                :class="{
+                  'px-8': $vuetify.breakpoint.lgAndUp,
+                  'px-2': $vuetify.breakpoint.mdAndDown
+                }"
+                id="default-button"
+              >
+                <unicon
+                  name="arrow-back-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 37.261"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Voltar</p>
+              </v-btn>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col class="py-0 my-0" style="text-align: right;">
+              <v-btn
+                @click="advancedSearch = !advancedSearch"
+                rounded
+                class="white--text mb-6"
+                :class="{
+                  'px-8': $vuetify.breakpoint.lgAndUp,
+                  'px-2': $vuetify.breakpoint.mdAndDown
+                }"
+                id="default-button"
+              >
+                <!--falta fazer: search = '' -->
+                <v-switch
+                  v-model="advancedSearch"
+                  color="green lighten-2"
+                  disabled
+                  hide-details
+                  style="opacity: 1 !important;"
+                ></v-switch>
+                <unicon
+                  name="zoom-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 20.697"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Pesquisa Avançada</p>
+              </v-btn>
+            </v-col>
+          </v-row>
+
           <v-card flat style="border-radius: 10px !important;">
             <p
               class="content-title-1 py-5"
@@ -34,37 +69,7 @@
             >
               Consultar Lista Consolidada
             </p>
-            <v-row class="my-3" no-gutters>
-              <div
-                id="advanced-search-card"
-                :class="{
-                  'pa-1': $vuetify.breakpoint.smAndDown,
-                  'pa-2': $vuetify.breakpoint.mdAndUp
-                }"
-              >
-                <!--falta fazer: search = '' -->
-                <v-switch
-                  v-model="advancedSearch"
-                  :class="{
-                    'mb-1': $vuetify.breakpoint.smAndDown,
-                    'mb-2': $vuetify.breakpoint.mdAndUp
-                  }"
-                  color="indigo"
-                  inset
-                  hide-details
-                ></v-switch>
-                <unicon
-                  name="zoom-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 20.697"
-                  fill="#1a237e"
-                />
-                <b class="ml-0">Pesquisa Avançada</b>
-              </div>
-            </v-row>
             <!-- !advancedSearch => Mostrar Classes Tree-->
-
             <v-row
               v-if="!advancedSearch"
               justify="center"
@@ -121,8 +126,6 @@
                   />
                   <p class="ml-2">Pesquisar</p>
                 </v-btn>
-                <!--"-->
-
                 <v-menu
                   v-if="this.selected.length > 0"
                   class="text-center"
@@ -313,7 +316,6 @@
                 </v-card-text>
               </v-col>
             </v-row>
-            <!-- /!advancedSearch -->
             <!-- advancedSearch -->
             <v-row v-else justify="center" class="text-center mx-12">
               <v-col>
@@ -471,7 +473,6 @@
                 </v-card-text>
               </v-col>
             </v-row>
-            <!-- /advancedSearch -->
           </v-card>
         </v-col>
       </v-row>

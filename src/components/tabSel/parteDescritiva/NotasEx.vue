@@ -138,12 +138,12 @@ export default {
       }
     }
   },
-  created: function(){
+  created: function() {
     this.componentKey += 1;
   }
 };
 </script>
-<style>
+<style scoped>
 .info-label {
   color: #00695c;
   padding: 5px;
