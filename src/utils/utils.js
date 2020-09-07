@@ -291,7 +291,35 @@ export function renomearRepetidosEmArray(arr) {
   return arr;
 }
 
+export function gerarDadosRelatorio(
+  pedidoSubmetido,
+  pedidoFinalizado,
+  despacho
+) {
+  let campos = [];
+  Object.keys(pedidoSubmetido).forEach((item) => {
+    if (item !== "estado" && item !== "id") campos.push(item);
+  });
+
+  console.log("campos", campos);
+
+  const relatorio = {
+    despacho,
+    dados: {},
+  };
+
+  campos.forEach((campo) => {
+    relatorio.dados[campo] = {
+      submetido: pedidoSubmetido[campo],
+      finalizado: pedidoFinalizado[campo],
+    };
+  });
+
+  return relatorio;
+}
+
 export default {
+  gerarDadosRelatorio,
   renomearRepetidosEmArray,
   comparaSigla,
   comparaCodigo,
