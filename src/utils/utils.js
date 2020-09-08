@@ -291,29 +291,55 @@ export function renomearRepetidosEmArray(arr) {
   return arr;
 }
 
-export function gerarDadosRelatorio(
-  pedidoSubmetido,
-  pedidoFinalizado,
-  despacho
-) {
+export function gerarDadosRelatorio(pedido) {
+  const pedidoSubmetido = pedido.historico[0];
+  const pedidoFinalizado = pedido.historico[pedido.historico.length - 1];
+  const despacho = pedido.distribuicao[pedido.distribuicao.length - 1];
   let campos = [];
+  const relatorio = {
+    despacho: despacho.despacho || "",
+    comparacao: {},
+    dataInicial: "",
+    dataFinal: "",
+    tipoPedido: "",
+    numeroPedido: "",
+    alteracaoInfo: "",
+  };
+
   Object.keys(pedidoSubmetido).forEach((item) => {
     if (item !== "estado" && item !== "id") campos.push(item);
   });
 
-  console.log("campos", campos);
-
-  const relatorio = {
-    despacho,
-    dados: {},
-  };
-
   campos.forEach((campo) => {
-    relatorio.dados[campo] = {
+    relatorio.comparacao[campo] = {
       submetido: pedidoSubmetido[campo],
       finalizado: pedidoFinalizado[campo],
     };
   });
+
+  relatorio.dataInicial = new Date(pedido.data).toISOString().split("T")[0];
+  relatorio.dataFinal = new Date(despacho.data).toISOString().split("T")[0];
+  relatorio.tipoPedido = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
+  relatorio.numeroPedido = pedido.codigo;
+
+  if (pedido.objeto.acao !== "Criação") {
+    switch (pedido.objeto.tipo) {
+      case "Legislação":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.diplomaFonte} - ${pedido.objeto.dadosOriginais.numero} - ${pedido.objeto.dadosOriginais.sumario}`;
+        break;
+
+      case "Entidade":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.sigla} - ${pedido.objeto.dadosOriginais.designacao}`;
+        break;
+
+      case "Tipologia":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.sigla} - ${pedido.objeto.dadosOriginais.designacao}`;
+        break;
+
+      default:
+        break;
+    }
+  }
 
   return relatorio;
 }

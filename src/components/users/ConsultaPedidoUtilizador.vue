@@ -222,8 +222,9 @@
             dark
             class="mb-2 mr-4"
             @click="verRelatorio"
-            >Ver Relatório</v-btn
           >
+            Ver Relatório
+          </v-btn>
         </v-card-actions>
       </v-card>
     </span>
@@ -239,7 +240,7 @@
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import Loading from "@/components/generic/Loading";
 
-import { gerarDadosRelatorio, mapKeys } from "@/utils/utils";
+import { mapKeys } from "@/utils/utils";
 import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
 
 export default {
@@ -352,21 +353,7 @@ export default {
 
   methods: {
     verRelatorio() {
-      const pedidoSubmetido = this.pedido.historico[0];
-      const pedidoFinalizado = this.pedido.historico[
-        this.pedido.historico.length - 1
-      ];
-      const despacho = this.pedido.distribuicao[
-        this.pedido.distribuicao.length - 1
-      ];
-
-      const relatorio = gerarDadosRelatorio(
-        pedidoSubmetido,
-        pedidoFinalizado,
-        despacho
-      );
-
-      console.log("relatorio", relatorio);
+      this.$router.push(`/users/pedidos/${this.pedido.codigo}/relatorio`);
     },
 
     calculaCor(estado) {
@@ -447,7 +434,7 @@ export default {
 
     fecharErro() {
       this.erroPedido = false;
-      this.$router.go(-1);
+      this.$router.push("/users/pedidos");
     },
 
     transformaKeys(key) {

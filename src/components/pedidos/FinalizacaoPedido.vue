@@ -153,7 +153,7 @@ export default {
         }
       } else {
         this.erros.push({
-          sobre: "Acesso à Ontologia",
+          parametro: "Acesso à Ontologia",
           mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
       }
