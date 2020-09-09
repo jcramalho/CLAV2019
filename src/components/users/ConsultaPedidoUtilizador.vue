@@ -25,7 +25,9 @@
           <v-card outlined class="ma-2">
             <v-card-title>
               {{ tipoPedido }}
+
               <v-spacer />
+
               <v-chip
                 v-if="pedido.estado === 'Validado'"
                 outlined

@@ -298,12 +298,13 @@ export function gerarDadosRelatorio(pedido) {
   let campos = [];
   const relatorio = {
     despacho: despacho.despacho || "",
-    comparacao: {},
+    comparacao: [],
     dataInicial: "",
     dataFinal: "",
     tipoPedido: "",
     numeroPedido: "",
     alteracaoInfo: "",
+    estadoPedido: "",
   };
 
   Object.keys(pedidoSubmetido).forEach((item) => {
@@ -311,16 +312,60 @@ export function gerarDadosRelatorio(pedido) {
   });
 
   campos.forEach((campo) => {
-    relatorio.comparacao[campo] = {
+    if (pedidoSubmetido[campo].nota !== null) {
+      let formatarNota = "";
+      formatarNota = pedidoSubmetido[campo].nota.replace(
+        "Itens removidos:",
+        ""
+      );
+
+      formatarNota = formatarNota.split("#")[0].trim();
+
+      if (formatarNota === "") formatarNota = null;
+
+      pedidoSubmetido[campo].nota = formatarNota;
+    }
+
+    if (pedidoFinalizado[campo].nota !== null) {
+      let formatarNota = "";
+      formatarNota = pedidoFinalizado[campo].nota.replace(
+        "Itens removidos:",
+        ""
+      );
+
+      formatarNota = formatarNota.split("#")[0].trim();
+
+      if (formatarNota === "") formatarNota = null;
+
+      pedidoFinalizado[campo].nota = formatarNota;
+    }
+
+    if (
+      pedidoFinalizado[campo].dados instanceof Array &&
+      pedidoFinalizado[campo].cor !== "vermelho"
+    ) {
+      const iguais = comparaArraySel(
+        pedidoSubmetido[campo].dados,
+        pedidoFinalizado[campo].dados
+      );
+
+      iguais
+        ? (pedidoFinalizado[campo].cor = "verde")
+        : (pedidoFinalizado[campo].cor = "amarelo");
+    }
+
+    relatorio.comparacao.push({
+      campo: mapKeys(campo),
       submetido: pedidoSubmetido[campo],
       finalizado: pedidoFinalizado[campo],
-    };
+    });
   });
 
   relatorio.dataInicial = new Date(pedido.data).toISOString().split("T")[0];
   relatorio.dataFinal = new Date(despacho.data).toISOString().split("T")[0];
   relatorio.tipoPedido = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
   relatorio.numeroPedido = pedido.codigo;
+  relatorio.estadoPedido = pedido.estado;
 
   if (pedido.objeto.acao !== "Criação") {
     switch (pedido.objeto.tipo) {
