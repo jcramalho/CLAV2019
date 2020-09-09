@@ -16,7 +16,7 @@
       </v-row>
 
       <v-row class="ma-1">
-        <p>Por favor devolva o pedido ou tente novamnete mais tarde.</p>
+        <p>Por favor devolva o pedido ou tente novamenete mais tarde.</p>
       </v-row>
     </v-card-text>
 

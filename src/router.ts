@@ -18,7 +18,7 @@ export default new Router({
       path: "/oldentry",
       name: "oldentry",
       component: () => import("./views/Entidade.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
     },
     {
       path: "/",
@@ -322,6 +322,12 @@ export default new Router({
       component: () => import("./views/tabSel/TabSelImportaCSV.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
+    {
+      path: "/ts/:id",
+      name: "consultarTS",
+      component: () => import("./views/tabSel/TabSelConsulta.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] },
+    },
     // Routes dos termos de indice
     {
       path: "/termosIndiceInfo",
@@ -542,13 +548,19 @@ export default new Router({
       }
     },
     {
-      path: "/pedidos/submissao",
+      path: "/pedidos/submissao/:idPedido",
       name: "submissaoPedido",
       component: () => import("./views/pedidos/PedidosSubmissao.vue"),
       meta: {
         levels: [1, 3, 3.5, 4, 5, 6, 7],
         tabAtiva: "Gestão da Plataforma"
       }
+    },
+    {
+      path: "/pedidos/finalizacao/:idPedido",
+      name: "finalizacaoPedido",
+      component: () => import("./views/pedidos/PedidosFinalizacao.vue"),
+      meta: { levels: [4, 6, 7] },
     },
     {
       path: "/pedidos/:idPedido",
@@ -675,6 +687,18 @@ export default new Router({
       component: () => import("./views/users/RegistoAcesso.vue"),
       meta: { levels: [6, 7], tabAtiva: "Gestão da Plataforma" }
     },
+    {
+      path: "/users/pedidos",
+      name: "pedidosUtilizador",
+      component: () => import("./views/users/GestaoPedidos.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
+    {
+      path: "/users/pedidos/:numeroPedido",
+      name: "consultaPedidoUtilizador",
+      component: () => import("./views/users/ConsultaPedidoUtilizador.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
     //cartao cidadao
     {
       path: "/users/handlerCC",
@@ -776,6 +800,12 @@ export default new Router({
       name: "exportação",
       component: () => import("./views/exportacao/Exportacao.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
-    }
-  ]
+    },
+    {
+      path: "/permissoesAcesso",
+      name: "permissõesDeAcesso",
+      component: () => import("./views/PermissoesAcesso.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
+  ],
 });

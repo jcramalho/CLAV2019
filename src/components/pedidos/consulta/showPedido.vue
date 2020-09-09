@@ -1,142 +1,127 @@
 <template>
-  <v-card class="ma-8">
-    <v-card-title class="pa-2 indigo darken-4 title white--text"
-      >Consulta do pedido: {{ p.codigo }} <v-spacer />
-      <v-chip
-        v-if="etapaPedido"
-        color="indigo accent-4"
-        text-color="white"
-        label
-      >
-        <v-icon class="mr-1">label</v-icon>
-        <b>{{ etapaPedido }}</b>
-      </v-chip>
+<v-card class="ma-8">
+    <v-card-title class="pa-2 indigo darken-4 title white--text">Consulta do pedido: {{ p.codigo }}
+        <v-spacer />
+        <v-chip v-if="etapaPedido" color="indigo accent-4" text-color="white" label>
+            <v-icon class="mr-1">label</v-icon>
+            <b>{{ etapaPedido }}</b>
+        </v-chip>
     </v-card-title>
     <v-card-text>
-      <v-row class="mt-1">
-        <v-col cols="2">
-          <div class="info-label">Estado</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">{{ p.estado }}</div>
-        </v-col>
-      </v-row>
-      <v-row class="mt-1">
-        <v-col cols="2">
-          <div class="info-label">Data</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">{{ p.data.split("T")[0] }}</div>
-        </v-col>
-      </v-row>
-      <v-row class="mt-1" v-if="p.entidade">
-        <v-col cols="2">
-          <div class="info-label">Entidade</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">{{ p.entidade }}</div>
-        </v-col>
-      </v-row>
-      <v-row class="mt-1">
-        <v-col cols="2">
-          <div class="info-label">Criado Por</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">{{ p.criadoPor }}</div>
-        </v-col>
-      </v-row>
-      <v-row class="mt-1">
-        <v-col cols="2">
-          <div class="info-label">Tipo</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">
-            {{ p.objeto.acao }} - {{ p.objeto.tipo }}
-          </div>
-        </v-col>
-      </v-row>
+        <v-row class="mt-1">
+            <v-col cols="2">
+                <div class="info-label">Estado</div>
+            </v-col>
+            <v-col>
+                <div class="info-content">{{ p.estado }}</div>
+            </v-col>
+        </v-row>
+        <v-row class="mt-1">
+            <v-col cols="2">
+                <div class="info-label">Data</div>
+            </v-col>
+            <v-col>
+                <div class="info-content">{{ p.data.split("T")[0] }}</div>
+            </v-col>
+        </v-row>
+        <v-row class="mt-1" v-if="p.entidade">
+            <v-col cols="2">
+                <div class="info-label">Entidade</div>
+            </v-col>
+            <v-col>
+                <div class="info-content">{{ p.entidade }}</div>
+            </v-col>
+        </v-row>
+        <v-row class="mt-1">
+            <v-col cols="2">
+                <div class="info-label">Criado Por</div>
+            </v-col>
+            <v-col>
+                <div class="info-content">{{ p.criadoPor }}</div>
+            </v-col>
+        </v-row>
+        <v-row class="mt-1">
+            <v-col cols="2">
+                <div class="info-label">Tipo</div>
+            </v-col>
+            <v-col>
+                <div class="info-content">
+                    {{ p.objeto.acao }} - {{ p.objeto.tipo }}
+                </div>
+            </v-col>
+        </v-row>
 
-      <v-card class="mt-3">
-        <v-card-title class="pa-2 indigo darken-4 title white--text"
-          >Distribuição</v-card-title
-        >
-        <v-card-text>
-          <v-data-table
-            :headers="distHeaders"
-            :items="p.distribuicao"
-            class="elevation-1"
-            hide-default-footer
-          >
-            <template v-slot:item="props">
-              <tr>
-                <td class="subheading">{{ props.item.estado }}</td>
-                <td class="subheading">
-                  {{ converteData(props.item.data) }}
-                </td>
-                <td class="subheading">{{ props.item.responsavel }}</td>
-                <td class="subheading">{{ props.item.despacho }}</td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-card-text>
-      </v-card>
-      <ShowTSPluri
-        v-if="p.objeto.tipo == 'TS Pluriorganizacional web'"
-        :p="p"
-      />
-      <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
-      <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
-      <ShowEntidade
-        v-else-if="p.objeto.tipo == 'Entidade'"
-        :p="p"
-        @verHistorico="verHistorico()"
-      />
+        <v-card class="mt-3">
+            <v-card-title class="pa-2 indigo darken-4 title white--text">Distribuição</v-card-title>
+            <v-card-text>
+                <v-data-table :headers="distHeaders" :items="p.distribuicao" class="elevation-1" hide-default-footer>
+                    <template v-slot:item="props">
+                        <tr>
+                            <td class="subheading">{{ props.item.estado }}</td>
+                            <td class="subheading">
+                                {{ converteData(props.item.data) }}
+                            </td>
+                            <td class="subheading">{{ props.item.responsavel }}</td>
+                            <td class="subheading">{{ props.item.despacho }}</td>
+                        </tr>
+                    </template>
+                </v-data-table>
+            </v-card-text>
+        </v-card>
 
-      <ShowAE
-        v-else-if="
+        <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional web'" :p="p" />
+        <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
+        <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
+        <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" @verHistorico="verHistorico()" />
+
+        <ShowAE v-else-if="
           p.objeto.tipo.includes('AE ') || p.objeto.tipo == 'Auto de Eliminação'
-        "
-        :p="p"
-      />
-      <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
-      <ShowTipologia
-        v-else-if="p.objeto.tipo === 'Tipologia'"
-        :p="p"
-        @verHistorico="verHistorico()"
-      />
-      <ShowLegislacao
-        v-else-if="p.objeto.tipo == 'Legislação'"
-        :p="p"
-        @verHistorico="verHistorico()"
-      />
-      <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
-      <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
-      <ShowDefault v-else :p="p" />
+        " :p="p" />
+        <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
+        <ShowTipologia v-else-if="p.objeto.tipo === 'Tipologia'" :p="p" @verHistorico="verHistorico()" />
+        <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" @verHistorico="verHistorico()" />
+        <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
+        <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
+        <ShowDefault v-else :p="p" />
     </v-card-text>
+
     <v-card-actions>
-      <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
-      <v-spacer />
-      <v-btn
-        v-if="p.estado === 'Distribuído' || p.estado === 'Apreciado'"
-        color="indigo accent-4"
-        dark
-        @click="substituir()"
-        rounded
-      >
-        Substituir Responsável
-      </v-btn>
+        <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
+        <v-spacer />
+        <v-btn v-if="
+          (p.estado === 'Distribuído' ||
+            p.estado === 'Apreciado' ||
+            p.estado === 'Redistribuído' ||
+            p.estado === 'Reapreciado') &&
+            temPermissaoSubstituirResponsavel()
+        " color="indigo accent-4" dark @click="substituir()" rounded>
+            Substituir Responsável
+        </v-btn>
+
+        <v-btn v-if="p.estado === 'Apreciado' || p.estado === 'Reapreciado'" color="indigo accent-4" dark @click="reapreciar()" rounded>
+            Reapreciar pedido
+        </v-btn>
     </v-card-actions>
 
     <!-- Substituir responsável dialog -->
     <v-dialog v-model="substituirResponsavelDialog" width="80%" persistent>
-      <SubstituirResponsavel :pedido="p" @fecharDialog="fecharDialog()" />
+        <SubstituirResponsavel :pedido="p" @fecharDialog="fecharDialog()" />
     </v-dialog>
 
     <!-- Dialog Ver Historico de Alterações-->
     <v-dialog v-model="verHistoricoDialog" width="70%">
-      <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
+        <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
     </v-dialog>
-  </v-card>
+
+    <!-- Dialog para reapreciar pedidos -->
+    <v-dialog v-model="reapreciarDialog" width="80%" persistent>
+        <AvancarPedido :utilizadores="utilizadores" :texto="{
+          textoTitulo: 'Distribuição',
+          textoAlert: 'reapreciação',
+          textoBotao: 'Reapreciar',
+        }" :pedido="p.codigo" @fecharDialog="fecharReapreciarDialog()" @avancarPedido="reapreciarPedido($event)" />
+    </v-dialog>
+</v-card>
 </template>
 
 <script>
@@ -153,111 +138,214 @@ import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
 
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
+import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
+import {
+    NIVEIS_ANALISAR_PEDIDO,
+    NIVEIS_SUBSTITUIR_RESPONSAVEL,
+} from "@/utils/consts";
+import {
+    filtraNivel
+} from "@/utils/permissoes";
 
 export default {
-  props: ["p", "etapaPedido"],
+    props: ["p", "etapaPedido"],
 
-  components: {
-    ShowTSPluri,
-    ShowRADA,
-    ShowTSOrg,
-    ShowClasse,
-    ShowDefault,
-    ShowAE,
-    ShowEntidade,
-    ShowTipologia,
-    ShowLegislacao,
-    ShowTI,
-    SubstituirResponsavel,
-    ShowPGD,
-    VerHistorico
-  },
-
-  data() {
-    return {
-      substituirResponsavelDialog: false,
-      verHistoricoDialog: false,
-      headers: [
-        { text: "Estado", align: "left", sortable: false, value: "estado" },
-        { text: "Data", value: "data" },
-        { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" },
-        { text: "Objeto", value: "objeto" }
-      ],
-      distHeaders: [
-        { text: "Estado", value: "estado", class: "subtitle-1" },
-        { text: "Data", value: "data", class: "subtitle-1" },
-        { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-        { text: "Despacho", value: "despacho", class: "subtitle-1" }
-      ]
-    };
-  },
-
-  methods: {
-    converteData(data) {
-      let dataFormatada = "";
-      let dataConvertida = new Date(data);
-
-      dataFormatada += `${data.split("T")[0]} - ${dataConvertida.getHours()}:`;
-
-      if (dataConvertida.getMinutes() < 10)
-        dataFormatada += `0${dataConvertida.getMinutes()}`;
-      else dataFormatada += dataConvertida.getMinutes();
-
-      return dataFormatada;
+    components: {
+        ShowTSPluri,
+        ShowRADA,
+        ShowTSOrg,
+        ShowClasse,
+        ShowDefault,
+        ShowAE,
+        ShowEntidade,
+        ShowTipologia,
+        ShowLegislacao,
+        ShowTI,
+        SubstituirResponsavel,
+        ShowPGD,
+        VerHistorico,
+        AvancarPedido,
     },
 
-    voltar() {
-      const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
-      localStorage.setItem(
-        "pesquisa-pedidos",
-        JSON.stringify({
-          ...pesquisa,
-          limpar: false
-        })
-      );
-
-      this.$router.go(-1);
+    data() {
+        return {
+            utilizadores: [],
+            reapreciarDialog: false,
+            substituirResponsavelDialog: false,
+            verHistoricoDialog: false,
+            headers: [{
+                    text: "Estado",
+                    align: "left",
+                    sortable: false,
+                    value: "estado"
+                },
+                {
+                    text: "Data",
+                    value: "data"
+                },
+                {
+                    text: "Responsável",
+                    value: "responsavel"
+                },
+                {
+                    text: "Despacho",
+                    value: "despacho"
+                },
+                {
+                    text: "Objeto",
+                    value: "objeto"
+                }
+            ],
+            distHeaders: [{
+                    text: "Estado",
+                    value: "estado",
+                    class: "subtitle-1"
+                },
+                {
+                    text: "Data",
+                    value: "data",
+                    class: "subtitle-1"
+                },
+                {
+                    text: "Responsável",
+                    value: "responsavel",
+                    class: "subtitle-1"
+                },
+                {
+                    text: "Despacho",
+                    value: "despacho",
+                    class: "subtitle-1"
+                }
+            ]
+        };
     },
 
-    verHistorico() {
-      this.verHistoricoDialog = true;
+    async created() {
+        await this.listaUtilizadores();
     },
 
-    fecharHistorico() {
-      this.verHistoricoDialog = false;
-    },
+    methods: {
+        async listaUtilizadores() {
+            const response = await this.$request("get", "/users");
 
-    fecharDialog() {
-      this.substituirResponsavelDialog = false;
-    },
+            const utilizadores = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
 
-    substituir() {
-      this.substituirResponsavelDialog = true;
+            this.utilizadores = utilizadores;
+        },
+
+        reapreciar() {
+            this.reapreciarDialog = true;
+        },
+
+        fecharReapreciarDialog() {
+            this.reapreciarDialog = false;
+        },
+
+        async reapreciarPedido(dados) {
+            try {
+                let pedido = JSON.parse(JSON.stringify(this.p));
+
+                const estado = "Redistribuído";
+
+                let dadosUtilizador = this.$verifyTokenUser();
+
+                pedido.estado = estado;
+
+                pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+
+                const novaDistribuicao = {
+                    estado: estado,
+                    responsavel: dadosUtilizador.email,
+                    proximoResponsavel: {
+                        nome: dados.utilizadorSelecionado.name,
+                        entidade: dados.utilizadorSelecionado.entidade,
+                        email: dados.utilizadorSelecionado.email,
+                    },
+                    data: new Date(),
+                    despacho: dados.mensagemDespacho,
+                };
+
+                await this.$request("put", "/pedidos", {
+                    pedido: pedido,
+                    distribuicao: novaDistribuicao,
+                });
+
+                this.fecharReapreciarDialog();
+                this.$router.push("/pedidos");
+            } catch (e) {
+                // console.log("e :", e);
+            }
+        },
+
+        temPermissaoSubstituirResponsavel() {
+            return NIVEIS_SUBSTITUIR_RESPONSAVEL.includes(this.$userLevel());
+        },
+
+        converteData(data) {
+            let dataFormatada = "";
+            let dataConvertida = new Date(data);
+
+            dataFormatada += `${data.split("T")[0]} - ${dataConvertida.getHours()}:`;
+
+            if (dataConvertida.getMinutes() < 10)
+                dataFormatada += `0${dataConvertida.getMinutes()}`;
+            else dataFormatada += dataConvertida.getMinutes();
+
+            return dataFormatada;
+        },
+
+        voltar() {
+            const pesquisa = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
+            localStorage.setItem(
+                "pesquisa-pedidos",
+                JSON.stringify({
+                    ...pesquisa,
+                    limpar: false
+                })
+            );
+
+            this.$router.go(-1);
+        },
+
+        verHistorico() {
+            this.verHistoricoDialog = true;
+        },
+
+        fecharHistorico() {
+            this.verHistoricoDialog = false;
+        },
+
+        fecharDialog() {
+            this.substituirResponsavelDialog = false;
+        },
+
+        substituir() {
+            this.substituirResponsavelDialog = true;
+        }
     }
-  }
 };
 </script>
 
 <style scoped>
 .info-label {
-  color: #1a237e !important;
-  padding: 8px;
-  width: 100%;
-  background-color: #dee2f8;
-  font-weight: bold;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 6px;
-  text-align: center;
+    color: #1a237e !important;
+    padding: 8px;
+    width: 100%;
+    background-color: #dee2f8;
+    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 6px;
+    text-align: center;
 }
+
 .info-content {
-  padding: 5px;
-  width: 100%;
-  background-color: #f1f6f8 !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 10px;
+    padding: 5px;
+    width: 100%;
+    background-color: #f1f6f8 !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 10px;
 }
 </style>

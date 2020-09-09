@@ -2,9 +2,6 @@ var jwt = require("jsonwebtoken");
 import apiKey from "!raw-loader!./keys/apiKey.pub";
 import userKey from "!raw-loader!./keys/userKey.pub";
 
-var axios = require("axios");
-const lhost = require("@/config/global").host;
-
 const verifyToken = {
   install(Vue) {
     Vue.prototype.$verifyTokenUser = function(tokenP) {

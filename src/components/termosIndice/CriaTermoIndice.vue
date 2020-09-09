@@ -22,7 +22,6 @@
                 color="indigo darken-4"
                 single-line
                 v-model="termoIndice.termo"
-                maxlength="50"
               ></v-text-field>
             </v-col>
           </v-row>

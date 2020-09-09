@@ -78,7 +78,7 @@
               <span>Ver pedido...</span>
             </v-tooltip>
 
-            <v-tooltip bottom>
+            <v-tooltip bottom v-if="temPermissaoValidar()">
               <template v-slot:activator="{ on }">
                 <v-icon
                   @click="validarPedido(item)"
@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import { NIVEIS_VALIDAR_PEDIDO } from "@/utils/consts";
 export default {
   props: ["pedidos", "pesquisaPedidos"],
 
@@ -186,6 +187,10 @@ export default {
   },
 
   methods: {
+    temPermissaoValidar() {
+      return NIVEIS_VALIDAR_PEDIDO.includes(this.$userLevel());
+    },
+
     atualizaPedidos() {
       this.dadosTabela = this.pedidos.map(pedido => {
         const dados = {};

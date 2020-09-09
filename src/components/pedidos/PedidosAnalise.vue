@@ -78,7 +78,7 @@
               <span>Ver pedido...</span>
             </v-tooltip>
 
-            <v-tooltip bottom>
+            <v-tooltip bottom v-if="temPermissaoAnalisar()">
               <template v-slot:activator="{ on }">
                 <v-icon
                   @click="analisaPedido(item)"
@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import { NIVEIS_ANALISAR_PEDIDO } from "@/utils/consts";
 export default {
   props: ["pedidos", "pesquisaPedidos"],
 
@@ -186,6 +187,10 @@ export default {
   },
 
   methods: {
+    temPermissaoAnalisar() {
+      return NIVEIS_ANALISAR_PEDIDO.includes(this.$userLevel());
+    },
+
     atualizaPedidos() {
       this.dadosTabela = this.pedidos.map(pedido => {
         const dados = {};

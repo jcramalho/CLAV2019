@@ -1,45 +1,3 @@
-/**
- * Retorna uma lista de utilizadores filtrados com base no nivel
- * @param {Array} utilizadores Lista com todos os utilizadores
- * @param {number} nivel Nível a filtra
- * @param {string} operador Operador de filtragem da lista
- * @returns {["=", "<", ">", "<=", ">="]} Lista com os utilizadores filtrados
- */
-export function filtraNivel(utilizadores, nivel, operador = "=") {
-  let utilizadoresFiltrados = [];
-
-  switch (operador) {
-    case "=":
-      utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level == nivel
-      );
-      break;
-    case "<":
-      utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level < nivel
-      );
-      break;
-    case ">":
-      utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level > nivel
-      );
-      break;
-    case "<=":
-      utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level <= nivel
-      );
-      break;
-    case ">=":
-      utilizadoresFiltrados = utilizadores.filter(
-        utilizador => utilizador.level >= nivel
-      );
-      break;
-    default:
-      break;
-  }
-  return utilizadoresFiltrados;
-}
-
 export function comparaSigla(a, b) {
   const keyA = a.sigla;
   const keyB = b.sigla;
@@ -68,11 +26,20 @@ export function comparaCodigo(a, b) {
   return comparation;
 }
 
-export function comparaArraySel(arrA, arrB, key) {
+export function comparaArraySel(arrA, arrB) {
   var arraysIguais = false;
 
-  const keysA = arrA.map(el => el[key]).sort();
-  const keysB = arrB.map(el => el[key]).sort();
+  let key = "sigla";
+  if (arrA[0] !== undefined) {
+    if (arrA[0].sigla === undefined) key = "codigo";
+  } else if (arrB[0] !== undefined) {
+    if (arrB[0].sigla === undefined) key = "codigo";
+  } else {
+    return true;
+  }
+
+  const keysA = arrA.map((el) => el[key]).sort();
+  const keysB = arrB.map((el) => el[key]).sort();
 
   arraysIguais = JSON.stringify(keysA) === JSON.stringify(keysB);
 
@@ -110,6 +77,10 @@ export function mapKeys(key) {
       descricao = "Data de Revogação";
       break;
 
+    case "data":
+      descricao = "Data do Diploma";
+      break;
+
     case "numero":
       descricao = "Número";
       break;
@@ -138,6 +109,10 @@ export function mapKeys(key) {
       descricao = "Referencial Classificativo";
       break;
 
+    case "sioe":
+      descricao = "SIOE";
+      break;
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;
@@ -152,19 +127,9 @@ export function extrairAlteracoes(objeto, objetoOriginal) {
 
   for (const key in dados) {
     if (typeof dados[key] === "string") {
-      if (dados[key] === dadosOriginais[key] && key !== "sigla")
-        delete dados[key];
+      if (dados[key] === dadosOriginais[key]) delete dados[key];
     } else if (dados[key] instanceof Array) {
-      if (
-        key !== "processosSel" &&
-        comparaArraySel(dados[key], dadosOriginais[key], "sigla")
-      )
-        delete dados[key];
-      else if (
-        key === "processosSel" &&
-        comparaArraySel(dados[key], dadosOriginais[key], "codigo")
-      )
-        delete dados[key];
+      if (comparaArraySel(dados[key], dadosOriginais[key])) delete dados[key];
     }
   }
 
@@ -193,15 +158,13 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
           };
-        } else if (
-          !comparaArraySel(objSubmetido[key], objOriginal[key], "sigla")
-        ) {
+        } else if (!comparaArraySel(objSubmetido[key], objOriginal[key])) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
           };
         }
       }
@@ -235,30 +198,136 @@ export function converterDadosOriginais(dados) {
   return dadosConvertidos;
 }
 
-export function extrairRemovidos(objetoAnterior, objetoAtual, lista) {
-  const dadosAnteriores = JSON.parse(JSON.stringify(objetoAnterior));
-  const dadosAtuais = JSON.parse(JSON.stringify(objetoAtual));
-
-  const removidos = [];
-
+export function identificaItemAdicionado(item, lista, historicoAnterior) {
   if (lista === "entidadesSel") {
-    dadosAtuais.entidadesSel.dados.forEach(dado => {
-      if (!dadosAnteriores.entidadesSel.dados.some(s => s.sigla === dado.sigla))
-        removidos.push(dado.sigla);
+    return !historicoAnterior.entidadesSel.dados.some((ent) => {
+      return ent.sigla === item.sigla;
+    });
+  } else if (lista === "tipologiasSel") {
+    return !historicoAnterior.tipologiasSel.dados.some((tip) => {
+      return tip.sigla === item.sigla;
+    });
+  } else if (lista === "processosSel") {
+    return !historicoAnterior.processosSel.dados.some((proc) => {
+      return proc.codigo === item.codigo;
     });
   }
 
-  return removidos;
+  return false;
+}
+
+export function identificaItemEmTabela(item, listaA, siglaOuCodigo) {
+  return !listaA.dados.some((dado) => {
+    return dado[siglaOuCodigo] === item;
+  });
+}
+
+export function notasComRemovidos(listaAnterior, listaAtual) {
+  let notaComRemovidos = "\nItens removidos:";
+
+  let siglaOuCodigo = "sigla";
+  let designacaoOuTitulo = "designacao";
+
+  if (listaAnterior[0] !== undefined) {
+    if (listaAnterior[0].sigla === undefined) {
+      siglaOuCodigo = "codigo";
+      designacaoOuTitulo = "titulo";
+    }
+  } else if (listaAtual[0] !== undefined) {
+    if (listaAtual[0].sigla === undefined) {
+      siglaOuCodigo = "codigo";
+      designacaoOuTitulo = "titulo";
+    }
+  } else {
+    return null;
+  }
+
+  listaAnterior.forEach((itemAnterior) => {
+    if (
+      !listaAtual.some(
+        (itemAtual) => itemAtual[siglaOuCodigo] === itemAnterior[siglaOuCodigo]
+      )
+    )
+      notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
+  });
+
+  if (notaComRemovidos === "\nItens removidos:") return null;
+
+  notaComRemovidos = notaComRemovidos.replace(/.$/, ".");
+
+  return notaComRemovidos;
+}
+
+export function adicionarNotaComRemovidos(historicoAnterior, historicoAtual) {
+  for (const key in historicoAnterior) {
+    if (historicoAnterior[key].dados instanceof Array) {
+      const nota = notasComRemovidos(
+        historicoAnterior[key].dados,
+        historicoAtual[key].dados
+      );
+
+      if (historicoAtual[key].nota === null) historicoAtual[key].nota = nota;
+      else if (nota !== null) historicoAtual[key].nota += nota;
+    }
+  }
+
+  return historicoAtual;
+}
+
+export function renomearRepetidosEmArray(arr) {
+  let count = {};
+
+  arr.forEach((x, i) => {
+    if (arr.indexOf(x) !== i) {
+      let c = x in count ? (count[x] = count[x] + 1) : (count[x] = 1);
+      let j = c + 1;
+      let k = `${x} #${j}`;
+
+      while (arr.indexOf(k) !== -1) k = `${x} #${++j}`;
+      arr[i] = k;
+    }
+  });
+
+  return arr;
+}
+
+export function gerarDadosRelatorio(
+  pedidoSubmetido,
+  pedidoFinalizado,
+  despacho
+) {
+  let campos = [];
+  Object.keys(pedidoSubmetido).forEach((item) => {
+    if (item !== "estado" && item !== "id") campos.push(item);
+  });
+
+  console.log("campos", campos);
+
+  const relatorio = {
+    despacho,
+    dados: {},
+  };
+
+  campos.forEach((campo) => {
+    relatorio.dados[campo] = {
+      submetido: pedidoSubmetido[campo],
+      finalizado: pedidoFinalizado[campo],
+    };
+  });
+
+  return relatorio;
 }
 
 export default {
-  filtraNivel,
+  gerarDadosRelatorio,
+  renomearRepetidosEmArray,
   comparaSigla,
   comparaCodigo,
-  comparaArraySel,
   mapKeys,
   extrairAlteracoes,
   criarHistorico,
   converterDadosOriginais,
-  extrairRemovidos
+  identificaItemAdicionado,
+  identificaItemEmTabela,
+  adicionarNotaComRemovidos,
 };

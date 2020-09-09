@@ -9,6 +9,7 @@
         <v-autocomplete
           v-model="newSerie.entProdutoras"
           :items="RE.entidadesProd"
+          :rules="[v => !!v[0] || 'Campo obrigatório!']"
           label="Selecione as Entidades Produtoras"
           multiple
           chips
@@ -38,6 +39,7 @@
           :items="[RE.tipologiasProd]"
           label="Selecione as Tipologias da Entidades produtoras"
           multiple
+          :rules="[v => !!v[0] || 'Campo obrigatório!']"
           chips
           deletable-chips
           solo

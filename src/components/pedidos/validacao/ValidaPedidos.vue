@@ -11,11 +11,11 @@
             <v-spacer />
             <v-tooltip
               v-if="
-                !(
-                  pedido.objeto.acao === 'Criação' &&
-                  (pedido.estado === 'Submetido' ||
-                    pedido.estado === 'Distribuído')
-                )
+                temPermissaoConsultarHistorico() &&
+                  !(
+                    pedido.objeto.acao === 'Criação' &&
+                    pedido.estado === 'Submetido'
+                  )
               "
               bottom
             >
@@ -46,6 +46,7 @@
               <span>Ver despachos...</span>
             </v-tooltip>
           </v-card-title>
+
           <!-- Para a Criação de novos dados -->
           <v-card-text
             v-if="
@@ -77,15 +78,47 @@
               :p="pedido"
               :tipo="pedido.objeto.tipo"
             />
+
+            <ValidaTS v-if="pedido.objeto.tipo.includes('TS ')" :p="pedido" />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
           <v-card-text
             v-if="
               pedido.objeto.acao === 'Alteração' ||
-                pedido.objeto.acao === 'Extinção'
+                pedido.objeto.acao === 'Extinção' ||
+                pedido.objeto.acao === 'Revogação'
             "
           >
+            <span>
+              <v-alert
+                type="info"
+                width="90%"
+                class="m-auto mb-2 mt-2"
+                outlined
+              >
+                <span v-if="pedido.objeto.tipo === 'Legislação'">
+                  <b> {{ pedido.objeto.tipo }}: </b>
+                  {{ pedido.objeto.dadosOriginais.diplomaFonte }}
+                  - {{ pedido.objeto.dadosOriginais.numero }} -
+                  {{ pedido.objeto.dadosOriginais.sumario }}
+                </span>
+
+                <span
+                  v-else-if="
+                    pedido.objeto.tipo === 'Entidade' ||
+                      pedido.objeto.tipo === 'Tipologia'
+                  "
+                >
+                  <b> {{ pedido.objeto.tipo }}: </b>
+                  {{ pedido.objeto.dadosOriginais.sigla }}
+                  - {{ pedido.objeto.dadosOriginais.designacao }}
+                </span>
+              </v-alert>
+
+              <v-divider class="m-auto mb-2" />
+            </span>
+
             <ValidaEditaEntidade
               v-if="pedido.objeto.tipo === 'Entidade'"
               :p="pedido"
@@ -130,6 +163,7 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
+import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
 import ValidaRADA from "@/components/pedidos/validacao/ValidaRADA";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
@@ -141,6 +175,7 @@ import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
+import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
   props: ["idp"],
@@ -153,6 +188,7 @@ export default {
     ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
     ValidaAE,
+    ValidaTS,
     Loading,
     VerDespachos,
     ErroDialog,
@@ -184,7 +220,7 @@ export default {
   async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
-      if (data.estado !== "Apreciado")
+      if (data.estado !== "Apreciado" && data.estado !== "Reapreciado")
         throw new URIError("Este pedido não pertence a este estado.");
 
       this.pedido = data;
@@ -199,6 +235,10 @@ export default {
   },
 
   methods: {
+    temPermissaoConsultarHistorico() {
+      return NIVEIS_CONSULTAR_HISTORICO.includes(this.$userLevel());
+    },
+
     verHistorico() {
       this.verHistoricoDialog = true;
     },

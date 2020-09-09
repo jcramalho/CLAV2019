@@ -1,72 +1,173 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12 sm10>
-        <v-card>
-          <v-toolbar color="blue" dark>
-            <v-toolbar-title>Pedido Submetido com sucesso</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-form>
-              <v-container>
-                <v-layout row wrap>
-                  <v-flex xs12 sm10>
-                    <v-text-field
-                      :value="pedido.codigo"
-                      label="Número do pedido"
-                      readonly
-                    ></v-text-field>
-                    <v-text-field
-                      v-if="pedido.objeto"
-                      :value="pedido.objeto.acao + ' de ' + pedido.objeto.tipo"
-                      label="Tipo de pedido"
-                      readonly
-                    ></v-text-field>
-                    <v-text-field
-                      value="O seu pedido foi submetido com sucesso"
-                      label="Descrição"
-                      readonly
-                    ></v-text-field>
-                    <v-text-field
-                      :value="pedido.data"
-                      label="Data de Submissão"
-                      readonly
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm10>
-                    <h3>Aguarde a notificação de resposta ao seu pedido</h3>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-form>
-          </v-card-text>
-        </v-card>
-        <div class="ma-4" style="text-align:center">
-          <v-btn medium color="primary" @click="verPedido()">Ver Pedido</v-btn>
-        </div>
-      </v-flex>
-    </v-layout>
+  <v-container fill-height fluid>
+    <v-row align="center" justify="center">
+      <v-card width="60%">
+        <v-card-title class="blue white--text" dark>
+          <v-skeleton-loader
+            :loading="!pedidoCarregado"
+            transition="fade-transition"
+            type="card-heading"
+            width="100%"
+          >
+            <span>Pedido submetido com sucesso!</span>
+          </v-skeleton-loader>
+        </v-card-title>
+
+        <v-card-text>
+          <v-container fluid>
+            <v-row no-gutters>
+              <v-col>
+                <v-skeleton-loader
+                  :loading="!pedidoCarregado"
+                  transition="fade-transition"
+                  type="list-item-two-line"
+                >
+                  <v-text-field
+                    filled
+                    :value="pedido.codigo"
+                    label="Número do pedido"
+                    readonly
+                  />
+                </v-skeleton-loader>
+              </v-col>
+            </v-row>
+
+            <v-row no-gutters>
+              <v-col>
+                <v-skeleton-loader
+                  :loading="!pedidoCarregado"
+                  transition="fade-transition"
+                  type="list-item-two-line"
+                >
+                  <v-text-field
+                    filled
+                    :value="pedido.tipoPedido"
+                    label="Tipo do pedido"
+                    readonly
+                  />
+                </v-skeleton-loader>
+              </v-col>
+            </v-row>
+
+            <v-row no-gutters>
+              <v-col>
+                <v-skeleton-loader
+                  :loading="!pedidoCarregado"
+                  transition="fade-transition"
+                  type="list-item-two-line"
+                >
+                  <v-text-field
+                    filled
+                    :value="pedido.data"
+                    label="Data de Submissão"
+                    readonly
+                  />
+                </v-skeleton-loader>
+              </v-col>
+            </v-row>
+
+            <v-row no-gutters>
+              <v-col>
+                <v-skeleton-loader
+                  :loading="!pedidoCarregado"
+                  transition="fade-transition"
+                  type="list-item-avatar-two-line"
+                >
+                  <v-alert type="info" border="left" text>
+                    Aguarde a notificação de resposta ao seu pedido.
+                  </v-alert>
+                </v-skeleton-loader>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-skeleton-loader
+            :loading="!pedidoCarregado"
+            transition="fade-transition"
+            type="button"
+          >
+            <v-btn class="blue" dark @click="verPedido()">
+              Ver Pedido
+              <v-icon right>search</v-icon>
+            </v-btn>
+          </v-skeleton-loader>
+          <v-spacer />
+        </v-card-actions>
+      </v-card>
+    </v-row>
+
+    <!-- Dialog de erros da API -->
+    <v-dialog v-model="erroPedido" width="50%" persistent>
+      <ErroAPIDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
+
 export default {
-  data: () => ({
-    pedido: {}
-  }),
-  methods: {
-    verPedido: function() {
-      this.$router.push("/pedidos/" + this.pedido.codigo);
+  props: ["idp"],
+
+  components: {
+    ErroAPIDialog,
+  },
+
+  data() {
+    return {
+      erros: [],
+      erroPedido: false,
+      pedidoCarregado: false,
+      pedido: {},
+    };
+  },
+
+  async created() {
+    try {
+      const { data } = await this.$request("get", `/pedidos/${this.idp}`);
+
+      this.pedido = {
+        codigo: data.codigo,
+        data: data.data.split("T")[0],
+        tipoPedido: `${data.objeto.acao} - ${data.objeto.tipo}`,
+      };
+
+      this.pedidoCarregado = true;
+    } catch (e) {
+      this.erroPedido = true;
+
+      let parsedError = Object.assign({}, e);
+      parsedError = parsedError.response;
+
+      if (parsedError !== undefined) {
+        if (parsedError.status === 422) {
+          parsedError.data.forEach((erro) => {
+            this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+          });
+        }
+      } else {
+        this.erros.push({
+          sobre: "Acesso à Ontologia",
+          mensagem: "Ocorreu um erro ao aceder à ontologia.",
+        });
+      }
     }
   },
-  mounted: async function() {
-    try {
-      var response = await this.$request("get", "/pedidos");
-      this.pedido = response.data[response.data.length - 1];
-      this.pedido.data = this.pedido.data.split("T")[0];
-    } catch (e) {
-      return e;
-    }
-  }
+
+  methods: {
+    verPedido() {
+      localStorage.setItem("submissao", true);
+
+      this.$router.push(`/users/pedidos/${this.idp}`);
+    },
+
+    fecharErro() {
+      this.erroPedido = false;
+      this.$router.push("/");
+    },
+  },
 };
 </script>

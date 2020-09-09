@@ -110,7 +110,7 @@
 <script>
 import Loading from "@/components/generic/Loading";
 const lhost = require("@/config/global").host;
-import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
+import { NIVEL_MINIMO_DOC } from "@/utils/consts";
 
 export default {
   props: ["level"],
@@ -127,7 +127,7 @@ export default {
       timeout: 4000,
       eliminarId: "",
       done: false,
-      min: NIVEL_MINIMO_ALTERAR
+      min: NIVEL_MINIMO_DOC
     };
   },
   components: {
@@ -165,7 +165,7 @@ export default {
       try {
         var response = conteudo;
         // Remover da lista entradas nao visiveis consoante o nivel
-        if (this.level < NIVEL_MINIMO_ALTERAR) {
+        if (this.level < NIVEL_MINIMO_DOC) {
           response = response.filter(item => item.visivel);
         }
         // Agrupar por classe
@@ -274,7 +274,7 @@ export default {
       }
     },
     preparaOperacoes(level) {
-      if (level >= NIVEL_MINIMO_ALTERAR) {
+      if (level >= NIVEL_MINIMO_DOC) {
         this.operacoes = [
           { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
           { icon: "delete", descricao: "Remoção", cor: "red" }

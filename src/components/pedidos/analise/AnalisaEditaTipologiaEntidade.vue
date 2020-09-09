@@ -4,13 +4,7 @@
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
         <v-row
-          v-if="
-            info !== '' &&
-              info !== null &&
-              campo !== 'sigla' &&
-              campo !== 'codigo' &&
-              campo !== 'estado'
-          "
+          v-if="campo !== 'sigla' && campo !== 'estado'"
           dense
           class="ma-1"
         >
@@ -26,7 +20,10 @@
 
           <v-col>
             <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+              <span v-if="info === '' || info === null">
+                [Campo não preenchido na submissão do pedido]
+              </span>
+              <span v-else>{{ info }}</span>
             </div>
 
             <div v-else>
@@ -46,6 +43,20 @@
                   >
                     Nenhuma entidade selecionada...
                   </v-alert>
+                </template>
+
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    right
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
                 </template>
 
                 <template v-slot:item.operacao="{ item }">
@@ -151,7 +162,12 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import { comparaSigla, mapKeys } from "@/utils/utils";
+import {
+  comparaSigla,
+  mapKeys,
+  identificaItemAdicionado,
+  adicionarNotaComRemovidos,
+} from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -252,6 +268,14 @@ export default {
   },
 
   methods: {
+    novoItemAdicionado(item, lista) {
+      return identificaItemAdicionado(
+        item,
+        lista,
+        this.historico[this.historico.length - 1]
+      );
+    },
+
     transformaKeys(key) {
       return mapKeys(key);
     },
@@ -343,7 +367,11 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
 
         pedido.historico.push(this.novoHistorico);
 
@@ -362,14 +390,19 @@ export default {
 
     async encaminharPedido(dados) {
       try {
-        const estado = "Apreciado";
-
         let dadosUtilizador = this.$verifyTokenUser();
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
+        const estado =
+          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
+
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
 
         pedido.historico.push(this.novoHistorico);
 

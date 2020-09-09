@@ -39,11 +39,11 @@ export default {
           );
         }
 
-        if (criterio != null) {
+        if (criterio != null && criterio.relacoes.length > 0) {
           let relacaoCriterio = criterio.relacoes.find(
             e => e.codigo == classe_relacionada.codigo
           );
-
+          
           this.$set(relacaoCriterio, "titulo", classe_relacionada.titulo);
         }
       }

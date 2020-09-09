@@ -136,70 +136,29 @@ var excel2Json = function (file, tipo) {
   });
 };
 
-var verificarSerie = function (str) {
-  var arr = str.split(/[,;]/);
-  if (
-    arr[0].replace(/['"]/g, "").trim() !=
-    "Código de classificação da série ou subsérie"
-  )
-    return false;
-  if (arr[1].replace(/['"]/g, "").trim() != "Número de referência")
-    return false;
-  if (arr[2].replace(/['"]/g, "").trim() != "Título da série ou subsérie")
-    return false;
-  if (
-    arr[3].replace(/['"]/g, "").trim() !=
-    "Data inicial da documentação proposta para eliminação"
-  )
-    return false;
-  if (
-    arr[4].replace(/['"]/g, "").trim() !=
-    "Data final da documentação proposta para eliminação"
-  )
-    return false;
-  if (
-    arr[5].replace(/['"]/g, "").trim() !=
-    "Nº de agregações simples / UI – unidade de instalação"
-  )
-    return false;
-  if (
-    arr[6].replace(/['"]/g, "").trim() !=
-    "Medição das agregações / UI em papel (m.l.)"
-  )
-    return false;
-  if (
-    arr[7].replace(/['"]/g, "").trim() !=
-    "Medição das agregações / UI em digital (Gb)"
-  )
-    return false;
-  if (
-    arr[8].replace(/['"]/g, "").trim() !=
-    "Medição das agregações / UI noutros suportes"
-  )
-    return false;
+var verificarSerie = function(str) {
+  var arr = str.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
+  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da série ou subsérie") return false;
+  if(arr[1].replace(/['"]/g,'').trim() != "Número de referência") return false;
+  if(arr[2].replace(/['"]/g,'').trim() != "Título da série ou subsérie") return false;
+  if(arr[3].replace(/['"]/g,'').trim() != "Data inicial da documentação proposta para eliminação") return false;
+  if(arr[4].replace(/['"]/g,'').trim() != "Data final da documentação proposta para eliminação") return false;
+  if(arr[5].replace(/['"]/g,'').trim() != "Nº de agregações simples / UI – unidade de instalação") return false;
+  if(arr[6].replace(/['"]/g,'').trim() != "Medição das agregações / UI em papel (m.l.)") return false;
+  if(arr[7].replace(/['"]/g,'').trim() != "Medição das agregações / UI em digital (Gb)") return false;
+  if(arr[8].replace(/['"]/g,'').trim() != "Medição das agregações / UI noutros suportes") return false;
   return true;
 };
 
-var verificarAgregacoes = function (str) {
-  var arr = str.split(/[,;]/);
-  if (
-    arr[0].replace(/['"]/g, "").trim() !=
-    "Código de classificação da série ou subsérie"
-  )
-    return false;
-  if (arr[1].replace(/['"]/g, "").trim() != "Número de referência")
-    return false;
-  if (
-    arr[2].replace(/['"]/g, "").trim() !=
-    "Código da agregação simples / UI - unidade de instalação"
-  )
-    return false;
-  if (arr[3].replace(/['"]/g, "").trim() != "Título da agregação / UI")
-    return false;
-  if (arr[4].replace(/['"]/g, "").trim() != "Data de início de contagem do PCA")
-    return false;
-  if (arr[5].replace(/['"]/g, "").trim() != "Natureza da intervenção")
-    return false;
+var verificarAgregacoes = function(str) {
+  var arr = str.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
+
+  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da série ou subsérie") return false;
+  if(arr[1].replace(/['"]/g,'').trim() != "Número de referência") return false;
+  if(arr[2].replace(/['"]/g,'').trim() != "Código da agregação simples / UI - unidade de instalação") return false;
+  if(arr[3].replace(/['"]/g,'').trim() != "Título da agregação / UI") return false;
+  if(arr[4].replace(/['"]/g,'').trim() != "Data de início de contagem do PCA") return false;
+  if(arr[5].replace(/['"]/g,'').trim() != "Natureza da intervenção") return false;
   return true;
 };
 
@@ -471,8 +430,54 @@ var validarCSVs = function (fileSerie, fileAgreg, tipo) {
   });
 };
 
-var csv2Json = function (fileSerie, fileAgreg, tipo) {
-  return new Promise(function (resolve, reject) {
+var csv2JsonAg = function(zonaControlo, fileAgreg, tipo) {
+  return new Promise(function(resolve, reject) {
+    var currentTime = new Date();
+    var enc = new TextDecoder("utf-8");
+    var agregacoes = enc.decode(fileAgreg).split("\n")
+    agregacoes.shift()
+    var addedAg = []
+
+    zonaControlo.forEach((zc,index) => {  
+      agregacoes.forEach(a => {
+          a = a.replace(/[\r\n]+/g,'');
+          var agregacao = a.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
+          var agCodigo = agregacao[0] || "";
+          var agReferencia = agregacao[1] || "";
+          var codigo = zc.codigo || "";
+          var referencia = zc.referencia || "";
+          if(agCodigo.replace(/['"]/g,'')==codigo && agReferencia.replace(/['"]/g,'')==referencia) {
+            var ag = {
+              codigo: agregacao[2].replace(/['"]/g,'').replace(/[ -.,!/]/g,"_"),
+              titulo: agregacao[3].replace(/^\"|\"$/g,"").replace(/['"]/g,''),
+              dataContagem: agregacao[4].replace(/['"]/g,''),
+              ni: agregacao[5].replace(/['"]/g,'')
+            }
+            var val = true;
+            var res = parseInt(zc.prazoConservacao) + parseInt(ag.dataContagem) + 1;
+            var res2 = parseInt(ag.dataContagem) - parseInt(zc.dataInicio);
+            
+            if (res > currentTime.getFullYear()) val = false
+            if (res2 < 0) val = false
+            if((tipo=="PGD/LC" || tipo=="TS/LC") && (zc.destino == "C" || zc.destino=="Conservação") && ag.ni!="Participante") val = false
+            
+            if(val) {
+              var pos = zc.agregacoes.map(a => {return a.codigo}).indexOf(ag.codigo)
+              if(pos>=0)
+                zc.agregacoes[pos] = ag;
+              else 
+                zc.agregacoes.unshift(ag)
+              addedAg.push("Agregação <b>"+ag.codigo+" - "+ag.titulo+"</b> da classe / série <b>"+codigo+" "+referencia+"</b>");
+            }
+          }
+        })
+    })
+    resolve({zonaControlo: zonaControlo, addedAg: addedAg})
+  });
+}
+
+var csv2Json = function(fileSerie, fileAgreg, tipo) {
+  return new Promise(function(resolve, reject) {
     var enc = new TextDecoder("utf-8");
     var series = enc.decode(fileSerie).split("\n");
     var agregacoes = enc.decode(fileAgreg).split("\n");
@@ -483,10 +488,10 @@ var csv2Json = function (fileSerie, fileAgreg, tipo) {
       tipo: tipo,
       zonaControlo: []
     };
-    series.forEach((s, index) => {
-      s = s.replace(/[\r\n]+/g, "");
-      var serie = s.split(/[;,]/);
-      if (serie[0] || serie[1]) {
+    series.forEach((s,index) => {
+      s = s.replace(/[\r\n]+/g,'');
+      var serie = s.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
+      if(serie[0] || serie[1]) {
         var zc = {
           codigo: serie[0].replace(/['"]/g, ""),
           referencia: serie[1].replace(/['"]/g, ""),
@@ -500,8 +505,8 @@ var csv2Json = function (fileSerie, fileAgreg, tipo) {
           agregacoes: []
         };
         agregacoes.forEach(a => {
-          a = a.replace(/[\r\n]+/g, "");
-          var agregacao = a.split(/[;,]/);
+          a = a.replace(/[\r\n]+/g,'');
+          var agregacao = a.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
           var agCodigo = agregacao[0] || "";
           var agReferencia = agregacao[1] || "";
           if (
@@ -526,4 +531,4 @@ var csv2Json = function (fileSerie, fileAgreg, tipo) {
   });
 };
 
-export { csv2Json, validarCSVs };
+export { csv2Json, validarCSVs, csv2JsonAg };

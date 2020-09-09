@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div v-if="fontesTSReady">
+      <ListagemLeg
+        :lista="fontesTS"
+        tipo="TABELAS DE SELEÇÃO INSERIDAS NA CLAV"
+      />
+    </div>
     <div>
       <Loading v-if="!fontesPGDTSReady" :message="'fontes de legitimação'" />
       <ListagemLeg
@@ -30,7 +36,9 @@ export default {
     fontesPGDLC: [],
     fontesPGDTS: [],
     fontesPGDLCReady: false,
-    fontesPGDTSReady: false
+    fontesPGDTSReady: false,
+    fontesTS: [],
+    fontesTSReady: false,
   }),
 
   components: {
@@ -104,6 +112,24 @@ export default {
       .catch(e2 => {
         return e2;
       });
+
+      await this.$request("get", "/tabelasSelecao")
+      .then(response => {
+        this.fontesTS = response.data.map(f => {
+          return {
+            id: f.id.split("clav#")[1],
+            data: f.data,
+            designacao: f.designacao,
+            entidades: f.entidades.map(e => {return e.split("ent_")[1]}),
+            link: ""
+          };
+        });
+        this.fontesTSReady = true;
+      })
+      .catch(e => {
+        return e;
+      });
+
   }
 };
 </script>

@@ -7,10 +7,8 @@
 
       <v-tooltip
         v-if="
-          !(
-            p.objeto.acao === 'Criação' &&
-            (p.estado === 'Submetido' || p.estado === 'Distribuído')
-          )
+          temPermissaoConsultarHistorico() &&
+            !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
         "
         bottom
       >
@@ -24,9 +22,29 @@
     </v-card-title>
 
     <v-card-text>
+      <span v-if="p.objeto.acao !== 'Criação'">
+        <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
+          <span>
+            <b> {{ p.objeto.tipo }}: </b>
+            {{ p.objeto.dadosOriginais.diplomaFonte }}
+            - {{ p.objeto.dadosOriginais.numero }} -
+            {{ p.objeto.dadosOriginais.sumario }}
+          </span>
+        </v-alert>
+
+        <v-divider class="m-auto mb-2" />
+      </span>
+
       <!-- Aviso quando a legislação foi criada a partir de um RADA -->
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row v-if="info !== '' && info !== null && info !== undefined">
+        <v-row
+          v-if="
+            campo !== 'estado' &&
+              info !== '' &&
+              info !== null &&
+              info !== undefined
+          "
+        >
           <v-col cols="2">
             <div class="info-descricao">{{ transformaKeys(campo) }}</div>
           </v-col>
@@ -84,6 +102,7 @@
 
 <script>
 import { mapKeys } from "@/utils/utils";
+import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
   props: ["p"],
@@ -118,6 +137,10 @@ export default {
   },
 
   methods: {
+    temPermissaoConsultarHistorico() {
+      return NIVEIS_CONSULTAR_HISTORICO.includes(this.$userLevel());
+    },
+
     verHistorico() {
       this.$emit("verHistorico");
     },

@@ -20,7 +20,9 @@ export default {
     datas_extremas_classes: [],
     erros_relacoes: [],
     erros_datas_uis: [],
-    existe_serie: true
+    erros_em_falta: [],
+    existe_serie: true,
+    alert_valido: false
   }),
   methods: {
     changeE1(e) {
@@ -49,10 +51,9 @@ export default {
                 series[i].suporte_e_medicao[j].medicao
               );
               break;
-            case "Eletrónico Digitalizado" || "Eletrónico Nativo":
-              this.RADA.RE.dimSuporte.medicaoUI_digital += Number(
-                series[i].suporte_e_medicao[j].medicao
-              );
+            case "Eletrónico Digitalizado": case "Eletrónico Nativo":
+              this.RADA.RE.dimSuporte.medicaoUI_digital +=
+                Number(series[i].suporte_e_medicao[j].medicao);
               break;
             case "Outro":
               this.RADA.RE.dimSuporte.medicaoUI_outros += Number(
@@ -107,7 +108,8 @@ export default {
           },
           token: this.$store.state.token,
           criadoPor: this.userEmail,
-          entidade: this.user_entidade
+          entidade: this.user_entidade,
+          historico: [],
         };
 
         let response = await this.$request("post", "/pedidos", pedidoEntidades);
@@ -223,6 +225,7 @@ export default {
           token: this.$store.state.token,
           criadoPor: this.userEmail,
           entidade: this.user_entidade,
+          historico: [],
           despacho: !!despacho
             ? "Submissão inicial. Este pedido está dependente da aprovação dos seguintes pedidos:\n" +
             despacho
@@ -274,60 +277,263 @@ export default {
       }
     },
     validar_relacoes(series_subseries) {
-      this.erros_relacoes = [];
+      try {
 
-      for (let i = 0; i < series_subseries.length; i++) {
-        for (let j = 0; j < series_subseries[i].relacoes.length; j++) {
-          // perante uma relacao series_subseries[i].relacoes[j]
-          let a = this.datas_extremas_classes.find(
-            e => e.codigo == series_subseries[i].codigo
-          );
-          let b = this.datas_extremas_classes.find(
-            e =>
-              e.codigo ==
-              series_subseries[i].relacoes[j].serieRelacionada.codigo
-          );
+        this.erros_relacoes = [];
 
-          switch (series_subseries[i].relacoes[j].relacao) {
-            case "Complementar de":
-              if (
-                !(
-                  (a.dataInicial <= b.dataInicial &&
-                    b.dataInicial <= a.dataFinal) ||
-                  (b.dataInicial <= a.dataInicial &&
-                    a.dataInicial <= b.dataFinal)
-                )
-              ) {
-                this.erros_relacoes.push([
-                  a.codigo,
-                  b.codigo,
-                  series_subseries[i].relacoes[j].relacao
-                ]);
-              }
-              break;
-            case "Síntese de":
-              if (
-                !(a.dataInicial <= b.dataInicial && a.dataFinal >= b.dataFinal)
-              ) {
-                this.erros_relacoes.push([
-                  a.codigo,
-                  b.codigo,
-                  series_subseries[i].relacoes[j].relacao
-                ]);
-              }
-              break;
-            case "Sucessora de":
-              if (a.dataInicial <= b.dataInicial) {
-                this.erros_relacoes.push([
-                  a.codigo,
-                  b.codigo,
-                  series_subseries[i].relacoes[j].relacao
-                ]);
-              }
-              break;
+        for (let i = 0; i < series_subseries.length; i++) {
+          for (let j = 0; j < series_subseries[i].relacoes.length; j++) {
+            // perante uma relacao series_subseries[i].relacoes[j]
+            let a = this.datas_extremas_classes.find(
+              e => e.codigo == series_subseries[i].codigo
+            );
+            let b = this.datas_extremas_classes.find(
+              e =>
+                e.codigo ==
+                series_subseries[i].relacoes[j].serieRelacionada.codigo
+            );
+
+            switch (series_subseries[i].relacoes[j].relacao) {
+              case "Complementar de":
+                if (
+                  !(
+                    (a.dataInicial <= b.dataInicial &&
+                      b.dataInicial <= a.dataFinal) ||
+                    (b.dataInicial <= a.dataInicial &&
+                      a.dataInicial <= b.dataFinal)
+                  )
+                ) {
+                  this.erros_relacoes.push([
+                    a.codigo,
+                    b.codigo,
+                    series_subseries[i].relacoes[j].relacao
+                  ]);
+                }
+                break;
+              case "Síntese de":
+                if (
+                  !(a.dataInicial <= b.dataInicial && a.dataFinal >= b.dataFinal)
+                ) {
+                  this.erros_relacoes.push([
+                    a.codigo,
+                    b.codigo,
+                    series_subseries[i].relacoes[j].relacao
+                  ]);
+                }
+                break;
+              case "Sucessora de":
+                if (a.dataInicial <= b.dataInicial) {
+                  this.erros_relacoes.push([
+                    a.codigo,
+                    b.codigo,
+                    series_subseries[i].relacoes[j].relacao
+                  ]);
+                }
+                break;
+            }
           }
         }
+      } catch (e) {
+        return err;
       }
+    },
+    async validarRADA() {
+      this.erros_em_falta = [];
+
+      // erros que impedem o botão de submissão de ficar disponivel
+      if (!Boolean(this.RADA.tsRada.titulo)) {
+        this.erros_em_falta.push("É obrigatório inserir o título da tabela de seleção;");
+      }
+
+      if (!Boolean(this.RADA.tsRada.classes[0])) {
+        this.erros_em_falta.push("É obrigatório inserir classes;");
+      }
+
+      for (let i = 0; i < this.RADA.tsRada.UIs.length; i++) {
+        if (this.RADA.tsRada.UIs[i].classesAssociadas.length == 0 || this.RADA.tsRada.UIs[i].titulo == "") {
+          this.erros_em_falta.push("Unidade de instalação com código " + this.RADA.tsRada.UIs[i].codigo + " está incompleta;");
+        }
+      }
+
+      for (let j = 0; j < this.RADA.tsRada.classes.length; j++) {
+        if (
+
+          (this.RADA.tsRada.classes[j].tipo == "Série" &&
+            ((!this.RADA.tsRada.classes.some((cl) => cl.eFilhoDe == this.RADA.tsRada.classes[j].codigo) &&
+              ((!Boolean(this.RADA.tsRada.classes[j].df) && !Boolean(this.RADA.tsRada.classes[j].notaDF)) ||
+                (!Boolean(this.RADA.tsRada.classes[j].pca) && !Boolean(this.RADA.tsRada.classes[j].notaPCA)) ||
+                this.RADA.tsRada.classes[j].formaContagem.forma == null)) ||
+              this.RADA.tsRada.classes[j].eFilhoDe == null)) ||
+          (this.RADA.tsRada.classes[j].tipo == "Subsérie" &&
+            ((!Boolean(this.RADA.tsRada.classes[j].df) && !Boolean(this.RADA.tsRada.classes[j].notaDF)) || this.RADA.tsRada.classes[j].eFilhoDe == null)) ||
+          (this.RADA.tsRada.classes[j].eFilhoDe == null && (this.RADA.tsRada.classes[j].tipo == "N2" || this.RADA.tsRada.classes[j].tipo == "N3"))
+        ) {
+          this.erros_em_falta.push("Classe com código " + this.RADA.tsRada.classes[j].codigo + " está incompleta;");
+        }
+      }
+
+      // erros que impedem a submissão do pedido de criação
+      if (!this.RADA.tsRada.classes.some(e => e.tipo == "Série")) {
+        this.existe_serie = false;
+      } else {
+        this.existe_serie = true;
+      }
+
+      let series_subseries = this.RADA.tsRada.classes.filter(
+        e => e.tipo == "Série" || e.tipo == "Subsérie"
+      );
+
+      await this.descobrir_datas_extremas(series_subseries);
+      await this.validar_relacoes(series_subseries);
+      await this.validar_produtoras();
+
+      if (!(!!this.erroProdutoras[0] ||
+        !!this.erros_relacoes[0] ||
+        !!this.erros_datas_uis[0] || !this.existe_serie || !!this.erros_em_falta[0])) {
+        this.alert_valido = true;
+
+        setTimeout(() => {
+          this.alert_valido = false;
+        }, 4000)
+      }
+    },
+    validar_produtoras() {
+      //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
+      //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
+      this.erroProdutoras = [];
+
+      if (!!this.RADA.RE.entidadesProd[0]) {
+        let entidades_selecionadas = this.entidadesProcessadas
+          .filter(e => e.disabled == true)
+          .map(e => e.entidade);
+
+        this.RADA.RE.entidadesProd.forEach(ent => {
+          if (!entidades_selecionadas.some(e => e == ent)) {
+            this.erroProdutoras.push(ent);
+          }
+        });
+      } else {
+        if (!this.RADA.tsRada.classes.some(e => e.tipologiasProdutoras && e.tipologiasProdutoras == this.RADA.RE.tipologiasProd)) {
+          this.erroProdutoras.push(this.RADA.RE.tipologiasProd);
+        }
+      }
+    },
+    criarHistorico() {
+      let historico = [
+        {
+          titulo: {
+            cor: "verde",
+            dados: this.RADA.titulo,
+            nota: null
+          },
+          entRes: {
+            cor: "verde",
+            dados: this.RADA.entRes,
+            nota: null
+          },
+          RE: {
+            entidadesProd: {
+              cor: "verde",
+              dados: this.RADA.RE.entidadesProd,
+              nota: null
+            },
+            tipologiasProd: {
+              cor: "verde",
+              dados: this.RADA.RE.tipologiasProd,
+              nota: null
+            },
+            dataInicial: {
+              cor: "verde",
+              dados: this.RADA.RE.dataInicial,
+              nota: null
+            },
+            dataFinal: {
+              cor: "verde",
+              dados: this.RADA.RE.dataFinal,
+              nota: null
+            },
+            hist_admin: {
+              cor: "verde",
+              dados: this.RADA.RE.hist_admin,
+              nota: null
+            },
+            hist_cust: {
+              cor: "verde",
+              dados: this.RADA.RE.hist_cust,
+              nota: null
+            },
+            sist_org: {
+              cor: "verde",
+              dados: this.RADA.RE.sist_org,
+              nota: null
+            },
+            localizacao: {
+              cor: "verde",
+              dados: this.RADA.RE.localizacao,
+              nota: null
+            },
+            est_conser: {
+              cor: "verde",
+              dados: this.RADA.RE.est_conser,
+              nota: null
+            }
+          },
+          tsRada: {
+            titulo: {
+              cor: "verde",
+              dados: this.RADA.tsRada.titulo,
+              nota: null
+            },
+            classes: {
+              cor: "verde",
+              dados: this.RADA.tsRada.classes.map(e => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(e)),
+                  nota: null
+                }
+              }),
+              nota: null
+            },
+            UIs: {
+              cor: "verde",
+              dados: this.RADA.tsRada.UIs.map(e => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(e)),
+                  nota: null
+                }
+              }),
+              nota: null
+            }
+          }
+        }
+      ];
+
+      // criar histórico para as classes;
+      for (let i = 0; i < historico[0].tsRada.classes.dados.length; i++) {
+        Object.keys(historico[0].tsRada.classes.dados[i].dados).map(e => {
+          historico[0].tsRada.classes.dados[i].dados[e] = {
+            cor: "verde",
+            dados: historico[0].tsRada.classes.dados[i].dados[e],
+            nota: null
+          }
+        })
+      }
+
+      // criar histórico para as uis;
+      for (let j = 0; j < historico[0].tsRada.UIs.dados.length; j++) {
+        Object.keys(historico[0].tsRada.UIs.dados[j].dados).map(e => {
+          historico[0].tsRada.UIs.dados[j].dados[e] = {
+            cor: "verde",
+            dados: historico[0].tsRada.UIs.dados[j].dados[e],
+            nota: null
+          }
+        })
+      }
+
+
+      return historico;
     },
     async concluir(id_remocao_pendente) {
       if (!this.RADA.tsRada.classes.some(e => e.tipo == "Série")) {
@@ -340,34 +546,9 @@ export default {
           e => e.tipo == "Série" || e.tipo == "Subsérie"
         );
 
-        this.descobrir_datas_extremas(series_subseries);
-        this.validar_relacoes(series_subseries);
-
-        //Filtrar as entidades produtoras ou tipologias produtoras para verificar o invariante
-        //em que as produtoras tem que estar associadas pelo menos a uma série ou ui
-        this.erroProdutoras = [];
-
-        if (!!this.RADA.RE.entidadesProd[0]) {
-          let entidades_selecionadas = this.entidadesProcessadas
-            .filter(e => e.disabled == true)
-            .map(e => e.entidade);
-
-          this.RADA.RE.entidadesProd.forEach(ent => {
-            if (!entidades_selecionadas.some(e => e == ent)) {
-              this.erroProdutoras.push(ent);
-            }
-          });
-        } else {
-          if (
-            !this.RADA.tsRada.classes.some(
-              e =>
-                e.tipologiasProdutoras &&
-                e.tipologiasProdutoras == this.RADA.RE.tipologiasProd
-            )
-          ) {
-            this.erroProdutoras.push(this.RADA.RE.tipologiasProd);
-          }
-        }
+        await this.descobrir_datas_extremas(series_subseries);
+        await this.validar_relacoes(series_subseries);
+        await this.validar_produtoras();
 
         if (
           !!this.erroProdutoras[0] ||
@@ -397,10 +578,10 @@ export default {
             .filter(e => e.tipo == "Série");
 
           // Nesta função será removida a zona de decisões de avaliação respeitando o invariante;
-          this.removerDecisoesAvaliacao(series);
+          await this.removerDecisoesAvaliacao(series);
 
           // Calcular os valores de dimensão e suporte no relatório expositivo
-          this.calcular_dimensao_suporte(series);
+          await this.calcular_dimensao_suporte(series);
 
           // Tratar dos pedidos da novas entidades
           await this.fazer_pedidos_entidades(series);
@@ -413,7 +594,7 @@ export default {
             tipoPedido: "Criação",
             tipoObjeto: "RADA",
             novoObjeto: this.RADA,
-            historico: [],
+            historico: await this.criarHistorico(),
             user: {
               email: this.userEmail
             },
@@ -430,7 +611,8 @@ export default {
             // ELIMINAR O PENDENTE DEPOIS DE FAZER O PEDIDO
             await this.$request("delete", "/pendentes/" + id_remocao_pendente);
           }
-          this.$router.push("/pedidos/submissao");
+          this.$router.push(`/pedidos/submissao/${response.data}`);
+
         }
       }
     }

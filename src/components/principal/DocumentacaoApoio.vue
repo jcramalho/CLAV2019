@@ -315,7 +315,7 @@ import marked from "marked";
 import Loading from "@/components/generic/Loading";
 import DocApoioProdTecCientifica from "@/components/principal/DocApoio-ProdTecCientifica.vue";
 const lhost = require("@/config/global").host;
-import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
+import { NIVEL_MINIMO_DOC } from "@/utils/consts";
 
 export default {
   components: {
@@ -345,15 +345,15 @@ export default {
         {
           label: "Adicionar Secção",
           url: "/documentacaoApoio/criar/classe",
-          level: [4, 5, 6, 7]
+          level: [3.5, 4, 5, 6, 7]
         },
         {
           label: "Adicionar Documento Técnico/Científico",
           url: "/documentacaoApoio/criar/tecnico_cientifico",
-          level: [4, 5, 6, 7]
+          level: [3.5, 4, 5, 6, 7]
         }
       ],
-      min: NIVEL_MINIMO_ALTERAR
+      min: NIVEL_MINIMO_DOC
     };
   },
   methods: {
@@ -361,7 +361,7 @@ export default {
       try {
         var response = conteudo;
         // Remover elementos nao visiveis consoante o nivel
-        if (this.level < NIVEL_MINIMO_ALTERAR) {
+        if (this.level < NIVEL_MINIMO_DOC) {
           response = response.map(classe => {
             classe.entradas.map(entrada => {
               entrada.elementos.filter(elemento => elemento.visivel);
@@ -604,7 +604,7 @@ export default {
       );
     },
     preparaOperacoesEntradaElemento(level) {
-      if (level >= NIVEL_MINIMO_ALTERAR) {
+      if (level >= NIVEL_MINIMO_DOC) {
         this.operacoes_entradas = [
           {
             icon: "edit",

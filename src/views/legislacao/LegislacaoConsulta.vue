@@ -22,14 +22,14 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     ConsultaLeg,
-    Loading
+    Loading,
   },
   data: () => ({
     idLegislacao: "",
     legislacao: {},
     titulo: "",
     regulaProc: [],
-    legislacaoReady: false
+    legislacaoReady: false,
   }),
   methods: {
     parseEntidades: async function(ent) {
@@ -48,42 +48,49 @@ export default {
         var myLegislacao = {
           data: {
             campo: "Data do diploma",
-            text: leg.data
+            text: leg.data,
           },
           sumario: {
             campo: "Sumário",
-            text: leg.sumario
+            text: leg.sumario,
           },
           fonte: {
             campo: "Fonte de legitimação",
-            text: leg.fonte
+            text: leg.fonte,
           },
           link: {
             campo: "Link",
-            text: leg.link
+            text: leg.link,
           },
           entidades: {
             campo: "Entidades",
             // text: await this.parseEntidades(leg.entidades)
-            text: leg.entidades
-          }
+            text: leg.entidades,
+          },
         };
         if (leg.estado == "Ativo") {
           myLegislacao.estado = {
             campo: "Estado",
-            text: "Em vigor"
+            text: "Em vigor",
           };
         } else {
           myLegislacao.estado = {
             campo: "Estado",
-            text: leg.estado
+            text: leg.estado,
           };
+
+          if (leg.dataRevogacao)
+            myLegislacao.dataRevogacao = {
+              campo: "Data de revogação",
+              text: leg.dataRevogacao,
+            };
         }
+
         return myLegislacao;
       } catch (e) {
         return {};
       }
-    }
+    },
   },
   created: async function() {
     try {
@@ -107,6 +114,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

@@ -12,7 +12,12 @@
         hide-details
         dark
       ></v-text-field>
-      <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-dialog
+        v-if="temPermissao()"
+        v-model="dialog"
+        persistent
+        max-width="600px"
+      >
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" class="ml-4" fab dark small color="indigo">
             <v-icon dark>add</v-icon>
@@ -84,7 +89,7 @@
           <td v-for="(campo, index) in props.item" v-bind:key="index">
             {{ campo }}
           </td>
-          <td>
+          <td v-if="temPermissao()">
             <v-btn @click="eliminarProp(props.item)" text>Apagar</v-btn>
           </td>
         </tr>
@@ -133,6 +138,8 @@
 </template>
 
 <script>
+import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
+
 export default {
   props: ["lista", "tipo", "cabecalho", "campos", "ids"],
   data: () => ({
@@ -147,6 +154,7 @@ export default {
     snackColor: "",
     deleteTerm: "",
     deleteIdTerm: "",
+    userLevel: 0,
     termosListaFooterProps: {
       "items-per-page-text": "Termos por página",
       "items-per-page-options": [10, 20, 100, -1],
@@ -210,9 +218,14 @@ export default {
           this.updateVC = {};
           this.dialog2 = false;
         });
+    },
+    temPermissao: function() {
+      return this.userLevel >= NIVEL_MINIMO_ALTERAR;
     }
   },
   mounted: async function() {
+    this.userLevel = this.$userLevel();
+
     try {
       for (var i = 0; i < this.cabecalho.length; i++) {
         this.headers[i] = {
@@ -220,9 +233,11 @@ export default {
           value: this.campos[i]
         };
       }
-      this.headers[i] = {
-        text: "Ação"
-      };
+      if (this.temPermissao()) {
+        this.headers[i] = {
+          text: "Ação"
+        };
+      }
     } catch (e) {
       return e;
     }
