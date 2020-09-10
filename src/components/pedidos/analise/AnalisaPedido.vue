@@ -62,6 +62,7 @@
             <AnalisaRADA
               v-else-if="pedido.objeto.tipo === 'RADA'"
               :p="pedido"
+              fase="analise"
             />
 
             <AnalisaLeg

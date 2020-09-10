@@ -269,17 +269,29 @@
               />
               <!-- TODO FORMA CONTAGEM PCA -->
               <ValidaCampo
-                :dadosOriginais="elemento"
-                :novoHistorico="novoHistorico.dados"
-                campoValue="formaContagem"
+                :dadosOriginais="elemento.formaContagem"
+                :novoHistorico="novoHistorico.dados.formaContagem"
+                campoValue="forma"
                 campoText="Forma de Contagem"
                 @corAlterada="validadeClasse"
+                tipo="string"
                 :permitirEditar="false"
               >
                 <template v-slot:campo>
-                  <span>{{ novoHistorico.dados.formaContagem.dados }}</span>
+                  <span>{{ textoForma(novoHistorico.dados.formaContagem.forma, formaContagem.formasContagem) }}</span>
                 </template>
               </ValidaCampo>
+              <!-- TODO SUBFORMA CONTAGEM PCA -->
+              <ValidaCampo
+                v-if="novoHistorico.dados.formaContagem.forma.dados == 'vc_pcaFormaContagem_disposicaoLegal'"
+                :dadosOriginais="elemento.formaContagem"
+                :novoHistorico="novoHistorico.dados.formaContagem"
+                campoValue="subforma"
+                campoText="Subforma de Contagem"
+                @corAlterada="validadeClasse"
+                tipo="string"
+                :permitirEditar="false"
+              />
               <!-- TODO JUSTIFICACAO PCA -->
               <ValidaCampo
                 :dadosOriginais="elemento"
@@ -330,7 +342,6 @@
                             </ul>
                           </v-card-text>
                         </v-card>
-                        
                       </v-col>
                     </v-row>
                   </div>
@@ -416,7 +427,7 @@
 import ValidaCampo from "@/components/pedidos/analise/rada/generic/ValidaCampo";
 
 export default {
-  props: ["elemento", "novoHistorico"],
+  props: ["elemento", "novoHistorico", "formaContagem"],
   components: {
     ValidaCampo,
   },
@@ -444,6 +455,10 @@ export default {
           this.novoHistorico.cor = "verde";
         }
       }
+    },
+    textoForma(item, lista) {
+      let f = lista.find((e) => e.value == item.dados);
+      return f.label;
     },
   },
 };

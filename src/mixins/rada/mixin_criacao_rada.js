@@ -508,14 +508,32 @@ export default {
         }
       ];
 
+
       // criar histórico para as classes;
       for (let i = 0; i < historico[0].tsRada.classes.dados.length; i++) {
         Object.keys(historico[0].tsRada.classes.dados[i].dados).map(e => {
-          historico[0].tsRada.classes.dados[i].dados[e] = {
-            cor: "verde",
-            dados: historico[0].tsRada.classes.dados[i].dados[e],
-            nota: null
+          if (e == 'formaContagem') {
+            historico[0].tsRada.classes.dados[i].dados[e] = {
+              forma: {
+                cor: 'verde',
+                dados: historico[0].tsRada.classes.dados[i].dados[e].forma,
+                nota: null
+              },
+              subforma: {
+                cor: 'verde',
+                dados: !!historico[0].tsRada.classes.dados[i].dados[e].subforma ? historico[0].tsRada.classes.dados[i].dados[e].subforma : null,
+                nota: null
+              }
+            }
+
+          } else {
+            historico[0].tsRada.classes.dados[i].dados[e] = {
+              cor: "verde",
+              dados: historico[0].tsRada.classes.dados[i].dados[e],
+              nota: null
+            }
           }
+
         })
       }
 

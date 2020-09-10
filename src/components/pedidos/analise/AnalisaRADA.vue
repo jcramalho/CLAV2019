@@ -2,13 +2,6 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <!-- <p>{{ "P: " + JSON.stringify(this.p.historico) }}</p>
-        <br />
-        <p>{{ "DADOS: " + JSON.stringify(this.p) }}</p>-->
-        <!-- <br />
-        <p>{{ "novoHistorico: " + JSON.stringify(novoHistorico) }}</p>-->
-        <!-- <br />
-        <p>{{ "animacoes: " + JSON.stringify(animacoes) }}</p>-->
         <v-stepper vertical class="elevation-0">
           <v-stepper-step color="amber accent-3" step="1" editable>
             <font size="4">
@@ -36,7 +29,11 @@
             </font>
           </v-stepper-step>
           <v-stepper-content step="3">
-            <AnalisaTS :RADA="p.objeto.dados" :novoHistorico="novoHistorico" />
+            <AnalisaTS
+              :RADA="p.objeto.dados"
+              :novoHistorico="novoHistorico"
+              :formaContagem="formaContagem"
+            />
           </v-stepper-content>
         </v-stepper>
         <!-- <h1>RADAAA</h1>
@@ -54,6 +51,13 @@
         operacao="Analisar"
         @avancarPedido="encaminharPedido($event)"
         @devolverPedido="despacharPedido($event)"
+        v-if="fase == 'analise'"
+      />
+      <PO
+        operacao="Validar"
+        @finalizarPedido="finalizarPedido($event)"
+        @devolverPedido="despacharPedido($event)"
+        v-else-if="fase == 'validacao'"
       />
     </v-row>
   </div>
@@ -65,9 +69,16 @@ import AnalisaRE from "@/components/pedidos/analise/rada/AnalisaRE";
 import AnalisaTS from "@/components/pedidos/analise/rada/AnalisaTS";
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/generic/ErroDialog";
+import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
 
 export default {
-  props: ["p"],
+  props: {
+    fase: {
+      type: String,
+      required: true,
+    },
+    p: {},
+  },
   components: {
     PO,
     ErroDialog,
@@ -83,6 +94,7 @@ export default {
       },
       novoHistorico: null,
       entidades: [],
+      formaContagem: {},
     };
   },
   async created() {
@@ -90,12 +102,33 @@ export default {
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );
 
+    for (let j = 0; j < this.novoHistorico.tsRada.UIs.dados.length; j++) {
+      Object.keys(this.novoHistorico.tsRada.UIs.dados[j].dados).map((k) => {
+        this.novoHistorico.tsRada.UIs.dados[j].dados[k].nota = null;
+      });
+    }
+
+    for (let i = 0; i < this.novoHistorico.tsRada.classes.dados.length; i++) {
+      Object.keys(this.novoHistorico.tsRada.classes.dados[i].dados).map((k) => {
+        if (k != "formaContagem") {
+          this.novoHistorico.tsRada.classes.dados[i].dados[k].nota = null;
+        } else {
+          this.novoHistorico.tsRada.classes.dados[
+            i
+          ].dados.formaContagem.forma.nota = null;
+          this.novoHistorico.tsRada.classes.dados[
+            i
+          ].dados.formaContagem.subforma.nota = null;
+        }
+      });
+    }
+
+    Object.keys(this.novoHistorico.RE).forEach((chaveRE) => {
+      this.novoHistorico["RE"][chaveRE].nota = null;
+    });
+
     Object.keys(this.novoHistorico).forEach((chave) => {
-      if (chave == "RE") {
-        Object.keys(this.novoHistorico["RE"]).forEach((chaveRE) => {
-          this.novoHistorico["RE"][chaveRE].nota = null;
-        });
-      } else {
+      if (chave != "tsRada" && chave != "RE") {
         this.novoHistorico[chave].nota = null;
       }
     });
@@ -105,11 +138,106 @@ export default {
     this.entidades = response.data.map((item) => {
       return item.sigla + " - " + item.designacao;
     });
+
+    let responseFC = await this.$request(
+      "get",
+      "/vocabularios/vc_pcaFormaContagem"
+    );
+
+    this.formaContagem["formasContagem"] = responseFC.data.map((item) => {
+      return {
+        label: item.termo,
+        value: item.idtermo.split("#")[1],
+      };
+    });
+
+    // let responseSFC = await this.$request(
+    //   "get",
+    //   "/vocabularios/vc_pcaSubformaContagem"
+    // );
+
+    // this.formaContagem["subFormasContagem"] = responseSFC.data.map((item) => {
+    //   return {
+    //     label: item.termo.split(": ")[1] + ": " + item.desc,
+    //     value: item.idtermo.split("#")[1],
+    //   };
+    // });
   },
   methods: {
+    alterarOriginal() {
+      // alterar informacao geral
+      Object.keys(this.novoHistorico).map((e) => {
+        if (e != "RE" && e != "tsRada") {
+          this.p.objeto.dados[e] = this.novoHistorico[e].dados;
+        }
+      });
+
+      // alterar relatorio expositivo
+      Object.keys(this.novoHistorico.RE).map((e) => {
+        this.p.objeto.dados.RE[e] = this.novoHistorico.RE[e].dados;
+      });
+
+      // alterar tabela selecao
+      Object.keys(this.novoHistorico.tsRada).map((e) => {
+        if (e == "classes") {
+          for (
+            let i = 0;
+            i < this.novoHistorico.tsRada.classes.dados.length;
+            i++
+          ) {
+            let classe_original = this.p.objeto.dados.tsRada.classes.find(
+              (e) =>
+                e.codigo ==
+                this.novoHistorico.tsRada.classes.dados[i].dados.codigo.dados
+            );
+
+            Object.keys(this.novoHistorico.tsRada.classes.dados[i].dados).map(
+              (k) => {
+                if (k != "formaContagem") {
+                  classe_original[k] = this.novoHistorico.tsRada.classes.dados[
+                    i
+                  ].dados[k].dados;
+                } else {
+                  classe_original[k][
+                    "forma"
+                  ] = this.novoHistorico.tsRada.classes.dados[
+                    i
+                  ].dados.formaContagem.forma.dados;
+                  classe_original[k][
+                    "subforma"
+                  ] = this.novoHistorico.tsRada.classes.dados[
+                    i
+                  ].dados.formaContagem.subforma.dados;
+                }
+              }
+            );
+          }
+        } else if (e == "UIs") {
+          for (let i = 0; i < this.novoHistorico.tsRada.UIs.dados.length; i++) {
+            let ui_original = this.p.objeto.dados.tsRada.UIs.find(
+              (e) =>
+                e.codigo ==
+                this.novoHistorico.tsRada.UIs.dados[i].dados.codigo.dados
+            );
+
+            Object.keys(this.novoHistorico.tsRada.UIs.dados[i].dados).map(
+              (k) => {
+                ui_original[k] = this.novoHistorico.tsRada.UIs.dados[i].dados[
+                  k
+                ].dados;
+              }
+            );
+          }
+        } else {
+          this.p.objeto.dados.tsRada[e] = this.novoHistorico.tsRada[e].dados;
+        }
+      });
+    },
     async encaminharPedido(dados) {
       try {
         let dadosUtilizador = this.$verifyTokenUser();
+
+        await this.alterarOriginal();
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
@@ -117,6 +245,8 @@ export default {
           pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
 
         pedido.estado = estado;
+
+        pedido.historico.push(this.novoHistorico);
 
         const novaDistribuicao = {
           estado: estado,
@@ -146,6 +276,8 @@ export default {
       try {
         let dadosUtilizador = this.$verifyTokenUser();
 
+        await this.alterarOriginal();
+
         const novaDistribuicao = {
           estado: "Devolvido",
           responsavel: dadosUtilizador.email,
@@ -157,6 +289,8 @@ export default {
 
         pedido.estado = "Devolvido";
 
+        pedido.historico.push(this.novoHistorico);
+
         await this.$request("put", "/pedidos", {
           pedido: pedido,
           distribuicao: novaDistribuicao,
@@ -167,6 +301,56 @@ export default {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem =
           "Erro ao devolver o pedido, por favor tente novamente";
+      }
+    },
+    async finalizarPedido(dados) {
+      try {
+        await this.alterarOriginal();
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        // Fazer pedido para obter as subformas do PCA pois pode ter subformas que existem na plataforma e outras não;
+        // Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
+
+        let responseSFC = await this.$request(
+          "get",
+          "/vocabularios/vc_pcaSubformaContagem"
+        );
+
+        let subformasContagem = responseSFC.data.map((item) => {
+          return {
+            label: item.termo.split(": ")[1] + ": " + item.desc,
+            value: item.idtermo.split("#")[1],
+          };
+        });
+
+        let triplos = await converterParaTriplosRADA(
+          pedido.objeto.dados,
+          subformasContagem
+        );
+
+        await this.$request("post", "/rada", { triplos });
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        const novaDistribuicao = {
+          estado: "Validado",
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        pedido.estado = "Validado";
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem = "Erro ao finalizar a validação!";
       }
     },
   },

@@ -100,6 +100,7 @@
       :elemento="classeOriginal"
       :novoHistorico="classeHistorico"
       @fechar="fechar"
+      :formaContagem="formaContagem"
     />
     <h5>Unidades de Instalação</h5>
     <v-divider></v-divider>
@@ -164,7 +165,7 @@ import AnalisaSerie from "@/components/pedidos/analise/rada/classes/AnalisaSerie
 import AnalisaUI from "@/components/pedidos/analise/rada/classes/AnalisaUI";
 
 export default {
-  props: ["RADA", "novoHistorico"],
+  props: ["RADA", "novoHistorico", "formaContagem"],
   components: {
     ValidaCampo,
     AnalisaArea,

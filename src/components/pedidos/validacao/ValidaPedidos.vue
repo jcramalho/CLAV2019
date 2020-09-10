@@ -59,7 +59,7 @@
               :p="pedido"
             />
 
-            <ValidaRADA v-if="pedido.objeto.tipo === 'RADA'" :p="pedido" />
+            <ValidaRADA v-if="pedido.objeto.tipo === 'RADA'" :p="pedido" fase="validacao" />
             <ValidaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
@@ -164,7 +164,7 @@ import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
 import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
-import ValidaRADA from "@/components/pedidos/validacao/ValidaRADA";
+import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
