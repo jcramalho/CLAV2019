@@ -8,7 +8,7 @@
         <RADAEntry label="Código" :value="UI.codigo" />
         <RADAEntry label="Título" :value="UI.titulo" />
         <RADAEntry v-if="!!UI.codCota" label="Cota" :value="UI.codCota" />
-        <RADAEntry label="Descrição" :value="UI.descricao" />
+        <RADAEntry v-if="!!UI.descricao" label="Descrição" :value="UI.descricao" />
         <RADAEntryDouble
           label_1="Data Inicial"
           :value_1="UI.dataInicial"

@@ -250,7 +250,7 @@ export default {
           }
         } else {
           this.erros.push({
-            sobre: "Substituição de responsável",
+            parametro: "Substituição de responsável",
             mensagem: "Ocorreu um erro ao tentar substituir o responsável.",
           });
         }

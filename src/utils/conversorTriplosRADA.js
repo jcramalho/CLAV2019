@@ -368,7 +368,7 @@ function triplosUnidadeInstalacao(UIs) {
                         ${!!UIs[i].codCota ? `clav:codigoClassificacao """${UIs[i].codCota}""" ;` : ''}
                         clav:dataFinal "${UIs[i].dataFinal}" ;
                         clav:dataInicial "${UIs[i].dataInicial}" ;
-                        clav:descricao """${UIs[i].descricao}""" ;
+                        ${!!UIs[i].descricao ? `clav:descricao """${UIs[i].descricao}""" ;` : ''}
                         ${!!UIs[i].localizacao ? `clav:localizacao """${UIs[i].localizacao}""" ;` : ''}
                         ${!!UIs[i].notas ? `clav:notas """${UIs[i].notas}""" ;` : ''}
                         clav:titulo """${UIs[i].titulo}""" ;
