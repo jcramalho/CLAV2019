@@ -25,7 +25,9 @@
           <v-card outlined class="ma-2">
             <v-card-title>
               {{ tipoPedido }}
+
               <v-spacer />
+
               <v-chip
                 v-if="pedido.estado === 'Validado'"
                 outlined
@@ -215,6 +217,16 @@
 
         <v-card-actions class="ml-4">
           <v-btn color="indigo" dark class="mb-2" @click="voltar">Voltar</v-btn>
+          <v-spacer />
+          <v-btn
+            v-if="['Validado', 'Devolvido'].includes(pedido.estado)"
+            color="indigo"
+            dark
+            class="mb-2 mr-4"
+            @click="verRelatorio"
+          >
+            Ver Relatório
+          </v-btn>
         </v-card-actions>
       </v-card>
     </span>
@@ -231,6 +243,7 @@ import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import Loading from "@/components/generic/Loading";
 
 import { mapKeys } from "@/utils/utils";
+import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
 
 export default {
   props: ["numeroPedido"],
@@ -291,7 +304,6 @@ export default {
 
       Object.keys(this.pedido.historico[0]).forEach((key) => {
         criaEstruturaPedido[key] = this.pedido.historico[0][key].dados;
-        return key;
       });
 
       return criaEstruturaPedido;
@@ -342,6 +354,10 @@ export default {
   },
 
   methods: {
+    verRelatorio() {
+      this.$router.push(`/users/pedidos/${this.pedido.codigo}/relatorio`);
+    },
+
     calculaCor(estado) {
       let cor = "blue";
 
@@ -420,7 +436,7 @@ export default {
 
     fecharErro() {
       this.erroPedido = false;
-      this.$router.go(-1);
+      this.$router.push("/users/pedidos");
     },
 
     transformaKeys(key) {

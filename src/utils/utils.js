@@ -291,7 +291,106 @@ export function renomearRepetidosEmArray(arr) {
   return arr;
 }
 
+export function gerarDadosRelatorio(pedido) {
+  const pedidoSubmetido = pedido.historico[0];
+  const pedidoFinalizado = pedido.historico[pedido.historico.length - 1];
+  const despacho = pedido.distribuicao[pedido.distribuicao.length - 1];
+  let campos = [];
+  const relatorio = {
+    despacho: despacho.despacho || "",
+    comparacao: [],
+    dataInicial: "",
+    dataFinal: "",
+    tipoPedido: "",
+    numeroPedido: "",
+    alteracaoInfo: "",
+    estadoPedido: "",
+  };
+
+  Object.keys(pedidoSubmetido).forEach((item) => {
+    if (item !== "estado" && item !== "id") campos.push(item);
+  });
+
+  campos.forEach((campo) => {
+    if (pedidoSubmetido[campo].nota !== null) {
+      let formatarNota = "";
+      formatarNota = pedidoSubmetido[campo].nota.replace(
+        "Itens removidos:",
+        ""
+      );
+
+      formatarNota = formatarNota.split("#")[0].trim();
+
+      if (formatarNota === "") formatarNota = null;
+
+      pedidoSubmetido[campo].nota = formatarNota;
+    }
+
+    if (pedidoFinalizado[campo].nota !== null) {
+      let formatarNota = "";
+      formatarNota = pedidoFinalizado[campo].nota.replace(
+        "Itens removidos:",
+        ""
+      );
+
+      formatarNota = formatarNota.split("#")[0].trim();
+
+      if (formatarNota === "") formatarNota = null;
+
+      pedidoFinalizado[campo].nota = formatarNota;
+    }
+
+    if (
+      pedidoFinalizado[campo].dados instanceof Array &&
+      pedidoFinalizado[campo].cor !== "vermelho"
+    ) {
+      const iguais = comparaArraySel(
+        pedidoSubmetido[campo].dados,
+        pedidoFinalizado[campo].dados
+      );
+
+      iguais
+        ? (pedidoFinalizado[campo].cor = "verde")
+        : (pedidoFinalizado[campo].cor = "amarelo");
+    }
+
+    relatorio.comparacao.push({
+      campo: mapKeys(campo),
+      submetido: pedidoSubmetido[campo],
+      finalizado: pedidoFinalizado[campo],
+    });
+  });
+
+  relatorio.dataInicial = new Date(pedido.data).toISOString().split("T")[0];
+  relatorio.dataFinal = new Date(despacho.data).toISOString().split("T")[0];
+  relatorio.tipoPedido = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
+  relatorio.numeroPedido = pedido.codigo;
+  relatorio.estadoPedido = pedido.estado;
+
+  if (pedido.objeto.acao !== "Criação") {
+    switch (pedido.objeto.tipo) {
+      case "Legislação":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.diplomaFonte} - ${pedido.objeto.dadosOriginais.numero} - ${pedido.objeto.dadosOriginais.sumario}`;
+        break;
+
+      case "Entidade":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.sigla} - ${pedido.objeto.dadosOriginais.designacao}`;
+        break;
+
+      case "Tipologia":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.sigla} - ${pedido.objeto.dadosOriginais.designacao}`;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return relatorio;
+}
+
 export default {
+  gerarDadosRelatorio,
   renomearRepetidosEmArray,
   comparaSigla,
   comparaCodigo,
