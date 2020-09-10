@@ -59,7 +59,6 @@
             </v-col>
             <v-col sm="6" md="6">
               <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
                 solo
                 clearable
                 v-model="UI_clone.descricao"
