@@ -340,14 +340,18 @@ export function gerarDadosRelatorio(pedido) {
       pedidoFinalizado[campo].nota = formatarNota;
     }
 
-    if (
-      pedidoFinalizado[campo].dados instanceof Array &&
-      pedidoFinalizado[campo].cor !== "vermelho"
-    ) {
-      const iguais = comparaArraySel(
-        pedidoSubmetido[campo].dados,
-        pedidoFinalizado[campo].dados
-      );
+    if (pedidoFinalizado[campo].cor !== "vermelho") {
+      let iguais = false;
+      if (pedidoFinalizado[campo].dados instanceof Array)
+        iguais = comparaArraySel(
+          pedidoSubmetido[campo].dados,
+          pedidoFinalizado[campo].dados
+        );
+      else if (
+        pedidoSubmetido[campo].dados.trim() ===
+        pedidoFinalizado[campo].dados.trim()
+      )
+        iguais = true;
 
       iguais
         ? (pedidoFinalizado[campo].cor = "verde")
