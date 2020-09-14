@@ -55,11 +55,19 @@
       />
       <PO
         operacao="Validar"
-        @finalizarPedido="finalizarPedido($event)"
+        @finalizarPedido="verificaVermelhos($event)"
         @devolverPedido="despacharPedido($event)"
         v-else-if="fase == 'validacao'"
       />
     </v-row>
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="dialogConfirmacao.visivel = false"
+        @confirma="finalizarPedido(dialogConfirmacao.dados)"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -70,6 +78,7 @@ import AnalisaTS from "@/components/pedidos/analise/rada/AnalisaTS";
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/generic/ErroDialog";
 import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
 export default {
   props: {
@@ -85,12 +94,18 @@ export default {
     AnalisaInformacaoGeral,
     AnalisaRE,
     AnalisaTS,
+    ConfirmacaoOperacao,
   },
   data() {
     return {
       erroDialog: {
         visivel: false,
         mensagem: null,
+      },
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null,
       },
       novoHistorico: null,
       entidades: [],
@@ -165,16 +180,26 @@ export default {
   },
   methods: {
     alterarOriginal() {
+      let n_vermelhos = 0;
+
       // alterar informacao geral
       Object.keys(this.novoHistorico).map((e) => {
         if (e != "RE" && e != "tsRada") {
           this.p.objeto.dados[e] = this.novoHistorico[e].dados;
+          n_vermelhos =
+            this.novoHistorico[e].cor === "vermelho"
+              ? n_vermelhos + 1
+              : n_vermelhos;
         }
       });
 
       // alterar relatorio expositivo
       Object.keys(this.novoHistorico.RE).map((e) => {
         this.p.objeto.dados.RE[e] = this.novoHistorico.RE[e].dados;
+        n_vermelhos =
+          this.novoHistorico.RE[e].cor === "vermelho"
+            ? n_vermelhos + 1
+            : n_vermelhos;
       });
 
       // alterar tabela selecao
@@ -197,6 +222,11 @@ export default {
                   classe_original[k] = this.novoHistorico.tsRada.classes.dados[
                     i
                   ].dados[k].dados;
+                  n_vermelhos =
+                    this.novoHistorico.tsRada.classes.dados[i].dados[k].cor ===
+                    "vermelho"
+                      ? n_vermelhos + 1
+                      : n_vermelhos;
                 } else {
                   classe_original[k][
                     "forma"
@@ -208,6 +238,16 @@ export default {
                   ] = this.novoHistorico.tsRada.classes.dados[
                     i
                   ].dados.formaContagem.subforma.dados;
+                  n_vermelhos =
+                    this.novoHistorico.tsRada.classes.dados[i].dados
+                      .formaContagem.forma.cor === "vermelho"
+                      ? n_vermelhos + 1
+                      : n_vermelhos;
+                  n_vermelhos =
+                    this.novoHistorico.tsRada.classes.dados[i].dados
+                      .formaContagem.subforma.cor === "vermelho"
+                      ? n_vermelhos + 1
+                      : n_vermelhos;
                 }
               }
             );
@@ -225,13 +265,23 @@ export default {
                 ui_original[k] = this.novoHistorico.tsRada.UIs.dados[i].dados[
                   k
                 ].dados;
+                n_vermelhos =
+                  this.novoHistorico.tsRada.UIs.dados[i].dados[k].cor ===
+                  "vermelho"
+                    ? n_vermelhos + 1
+                    : n_vermelhos;
               }
             );
           }
         } else {
           this.p.objeto.dados.tsRada[e] = this.novoHistorico.tsRada[e].dados;
+          n_vermelhos =
+            this.novoHistorico.tsRada[e].dados.cor === "vermelho"
+              ? n_vermelhos + 1
+              : n_vermelhos;
         }
       });
+      return n_vermelhos;
     },
     async encaminharPedido(dados) {
       try {
@@ -303,10 +353,22 @@ export default {
           "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
+    async verificaVermelhos(dados) {
+      let existem_vermelhos = await this.alterarOriginal();
+
+      // Se existirem abre dialog de confirmação
+      if (existem_vermelhos > 0)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem " + existem_vermelhos + " campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados,
+        };
+      // Caso contrário segue para a finalização do pedido
+      else await this.finalizarPedido(dados);
+    },
     async finalizarPedido(dados) {
       try {
-        await this.alterarOriginal();
-
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         // Fazer pedido para obter as subformas do PCA pois pode ter subformas que existem na plataforma e outras não;
@@ -347,7 +409,7 @@ export default {
           distribuicao: novaDistribuicao,
         });
 
-        this.$router.go(-1);
+        this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
       } catch (e) {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem = "Erro ao finalizar a validação!";
