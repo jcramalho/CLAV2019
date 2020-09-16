@@ -365,8 +365,10 @@ module.exports.help = {
     Campos: {
       FonteLegitimacao:
         "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
+      TS_LC: "Abreviatura de Tabela de Seleção / Lista Consolidada. <br/> Abrange as tabelas de seleção produzidas a partir da Lista Consolidada.",
+      PGD_LC: "Abreviatura de Portaria de Gestão de Documentos / Lista Consolidada. <br/> Abrange as tabelas de seleção, derivadas da Lista Consolidada, inseridas em portarias de gestão de documentos, publicadas em Diário da República.",
+      
       TS: "Tabela de Seleção conforme à Lista Consolidada",
-      PGD_LC: "Portaria de Gestão de Documentos conforme à Lista Consolidada",
       PGD: "Portaria de Gestão de Documentos",
       RADA: "Relatório de Avaliação de Documentação Acumulada"
     }

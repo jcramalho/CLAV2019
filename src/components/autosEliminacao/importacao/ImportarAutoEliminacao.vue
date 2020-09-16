@@ -124,7 +124,7 @@
                 </div>
                 <div v-else-if="tipo=='TS_LC'">
                   <v-autocomplete
-                    label="Selecione a Tabela de Seleção"
+                    label="Selecione a fonte de legitimação"
                     :items="tabelasSelecao"
                     return-object
                     item-text="titulo"
@@ -153,7 +153,7 @@
                 </div>
                 <div v-else>
                   <v-autocomplete
-                    label="Selecione a Tabela de Selação"
+                    label="Selecione a fonte de legitimação"
                     :items="tsRada"
                     item-text="titulo"
                     return-object
@@ -161,14 +161,6 @@
                     solo
                     dense
                   ></v-autocomplete>
-                </div>
-                <div style="width:100%">
-                  Para submeter um auto de eliminação, selecione os ficheiros
-                  que preencheu e guardou previamente.
-                </div>
-                <div>
-                  Em seguida, para concluir, execute o comando
-                  <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
                 </div>
               </v-col>
             </v-row>
@@ -179,7 +171,7 @@
               <v-col class="mt-2">
                 <v-autocomplete
                   deletable-chips
-                  label="Selecione a(s) entidade(s) produtira(s) da documentação"
+                  label="Selecione a(s) entidade(s) produtora(s) da documentação"
                   :items="entidades"
                   v-model="auto.fundo"
                   solo
@@ -217,7 +209,7 @@
             <v-btn class="ma-2" color="red darken-4" dark @click="fileSerie=null; fileAgreg=null">Limpar</v-btn>
           </v-stepper-content>
 
-          <v-stepper-step step="3">Validação de Séries / Agregações</v-stepper-step>
+          <v-stepper-step step="3">Validação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
           <v-stepper-content step="3">
             <ValidarAE 

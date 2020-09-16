@@ -137,7 +137,7 @@
               <v-col>
                 <v-autocomplete
                   deletable-chips
-                  label="Selecione a(s) entidade(s) produtira(s) da documentação"
+                  label="Selecione a(s) entidade(s) produtora(s) da documentação"
                   :items="entidades"
                   v-model="auto.fundo"
                   solo
