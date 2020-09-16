@@ -444,14 +444,14 @@ export default {
         if(!zc.destino || zc.destino=="") {
           this.errosVal.erros.push({
             sobre: "Destino Final",
-            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " " + zc.referencia
+            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " - " + zc.referencia
           })
           this.errosVal.numErros++
         }
         else if((zc.destino=="C" || zc.destino=="Conservação") && this.tipo!="RADA" && this.tipo!="PGD" && zc.dono.length===0) {
           this.errosVal.erros.push({
             sobre: "Dono do PN",
-            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " " + zc.referencia
+            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " - " + zc.referencia
           })
           this.errosVal.numErros++
         }
@@ -466,14 +466,14 @@ export default {
           if(res1 > currentTime.getFullYear()) {
             this.errosVal.erros.push({
               sobre: "Data Contagem",
-              mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente. Classe: "+ zc.codigo + " " + zc.referencia+" - Agregação: "+ag.codigo
+              mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente. Classe: "+ zc.codigo + " - " + zc.referencia+" - Agregação: "+ag.codigo
             })
             this.errosVal.numErros++
           }
           if(res2 < 0) {
             this.errosVal.erros.push({
               sobre: "Data Contagem",
-              mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe. Classe: "+ zc.codigo + " " + zc.referencia+" - Agregação: "+ag.codigo
+              mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe. Classe: "+ zc.codigo + " - " + zc.referencia+" - Agregação: "+ag.codigo
             })
             this.errosVal.numErros++
           }

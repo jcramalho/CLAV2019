@@ -745,7 +745,7 @@ export default {
         if(this.tipo == "PGD" || this.tipo=="RADA") this.classesCompletas = this.classesCompletas.filter(c=> c.df.valor!="C")
 
         this.classes = this.classesCompletas.map(c => {
-            if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+            if(c.codigo && c.referencia) return ""+c.codigo+" - "+c.referencia+" - "+c.titulo
             else if(c.codigo) return ""+c.codigo+" - "+c.titulo
             else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
@@ -767,7 +767,7 @@ export default {
         })
         this.classesCompletas = this.classesCompletas.filter(c=> c.df.valor!="C")
         this.classes = this.classesCompletas.map(c => {
-          if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+          if(c.codigo && c.referencia) return ""+c.codigo+" - "+c.referencia+" - "+c.titulo
           else if(c.codigo) return ""+c.codigo+" - "+c.titulo
           else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })

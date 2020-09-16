@@ -236,7 +236,7 @@ export default {
   watch: {
     "index": function() {
       if (this.zona) {
-        if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " " + this.zona.referencia + " - " + this.zona.titulo;
+        if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " - " + this.zona.referencia + " - " + this.zona.titulo;
         else if(this.zona.codigo) this.classe = this.zona.codigo + " - " + this.zona.titulo;
         else if(this.zona.referencia) this.classe = this.zona.referencia + " - " + this.zona.titulo;
       
@@ -258,7 +258,7 @@ export default {
   },
   created: async function() {
     if (this.zona) {
-      if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " " + this.zona.referencia + " - " + this.zona.titulo;
+      if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " - " + this.zona.referencia + " - " + this.zona.titulo;
       else if(this.zona.codigo) this.classe = this.zona.codigo + " - " + this.zona.titulo;
       else if(this.zona.referencia) this.classe = this.zona.referencia + " - " + this.zona.titulo;
 
@@ -281,7 +281,7 @@ export default {
   methods: {
     defClasse: async function() {
       var c = this.classesCompletas.filter(c => {
-          if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+          if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
           else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
           else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
         }
@@ -327,7 +327,7 @@ export default {
       const reUI = /^-?\d*(,\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
         zc => {
-          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          if(zc.codigo && zc.referencia) return zc.codigo + " - "+ zc.referencia + " - " + zc.titulo == this.classe
           else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
           else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
         }
@@ -392,7 +392,7 @@ export default {
         this.erroDialog = true;
       } else {
         var classe = this.classesCompletas.filter(c => {
-            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
             else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
             else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
           }
@@ -418,8 +418,8 @@ export default {
         var added = false;
 
         for(var i in this.auto.zonaControlo) {
-          var tituloZC = this.auto.zonaControlo[i].codigo + " " + this.auto.zonaControlo[i].referencia
-          if(tituloZC > (codigo + " " +referencia)) {
+          var tituloZC = this.auto.zonaControlo[i].codigo + " - " + this.auto.zonaControlo[i].referencia
+          if(tituloZC > (codigo + " - " +referencia)) {
             this.auto.zonaControlo.splice(i,0,{
               idClasse: idClasse,
               codigo: codigo,
@@ -473,7 +473,7 @@ export default {
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
         zc => {
-          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          if(zc.codigo && zc.referencia) return zc.codigo + " - "+ zc.referencia + " - " + zc.titulo == this.classe
           else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
           else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
         }
@@ -546,7 +546,7 @@ export default {
         this.erroDialog = true;
       }  else {
         var classe = this.classesCompletas.filter(c => {
-            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
             else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
             else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
           }

@@ -137,9 +137,9 @@ var excel2Json = function(file, tipo) {
 
 var verificarSerie = function(str) {
   var arr = str.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
-  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da série ou subsérie") return false;
+  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da classe / série") return false;
   if(arr[1].replace(/['"]/g,'').trim() != "Número de referência") return false;
-  if(arr[2].replace(/['"]/g,'').trim() != "Título da série ou subsérie") return false;
+  if(arr[2].replace(/['"]/g,'').trim() != "Título da classe / série") return false;
   if(arr[3].replace(/['"]/g,'').trim() != "Data inicial da documentação proposta para eliminação") return false;
   if(arr[4].replace(/['"]/g,'').trim() != "Data final da documentação proposta para eliminação") return false;
   if(arr[5].replace(/['"]/g,'').trim() != "Nº de agregações simples / UI – unidade de instalação") return false;
@@ -152,7 +152,7 @@ var verificarSerie = function(str) {
 var verificarAgregacoes = function(str) {
   var arr = str.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
 
-  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da série ou subsérie") return false;
+  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da classe / série") return false;
   if(arr[1].replace(/['"]/g,'').trim() != "Número de referência") return false;
   if(arr[2].replace(/['"]/g,'').trim() != "Código da agregação simples / UI - unidade de instalação") return false;
   if(arr[3].replace(/['"]/g,'').trim() != "Título da agregação / UI") return false;
@@ -252,7 +252,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         numErros: errosSerie.numeroErros + errosAgregacoes.numeroErros
       }
       if(errosSerie.codigosRepetidos.length>0) errosVal.erros.push({
-        sobre: "Código da série ou subsérie",
+        sobre: "Código da série / subsérie",
         mensagem: "O código não pode ser repetido no mesmo auto",
         linhasSerie: errosSerie.codigosRepetidos
       })
