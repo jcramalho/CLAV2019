@@ -20,13 +20,13 @@
       </v-row>
       <v-row>
         <v-col :md="2" v-if="prazo.split(' ')[0]">
-          <div class="info-label">Prazo de Conservação Administrativa</div>
+          <div class="info-label">Prazo de conservação administrativa</div>
         </v-col>
         <v-col v-if="prazo.split(' ')[0]">
           <v-text-field :value="prazo" solo dense readonly></v-text-field>
         </v-col>
         <v-col :md="2" v-if="df">
-          <div class="info-label">Destino Final</div>
+          <div class="info-label">Destino final</div>
         </v-col>
         <v-col v-if="df">
           <v-text-field :value="df" solo dense readonly></v-text-field>
@@ -34,7 +34,7 @@
       </v-row>
       <v-row v-if="df=='Conservação' && tipo!='RADA_CLAV' && tipo!='RADA' && tipo!='PGD'">
         <v-col>
-          <div class="info-label">Natureza de Intervenção</div>
+          <div class="info-label">Natureza de intervenção</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -62,7 +62,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Data de Início</div>
+          <div class="info-label">Data de início</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -76,7 +76,7 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Data de Fim</div>
+          <div class="info-label">Data de fim</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -92,7 +92,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Medição de UI em Papel (m.l.)</div>
+          <div class="info-label">Medição de UI em papel (m.l.)</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -106,7 +106,7 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI Digital (GB)</div>
+          <div class="info-label">Medição de UI digital (GB)</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -120,7 +120,7 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI noutro Suporte</div>
+          <div class="info-label">Medição de UI noutro suporte</div>
         </v-col>
         <v-col>
           <v-text-field

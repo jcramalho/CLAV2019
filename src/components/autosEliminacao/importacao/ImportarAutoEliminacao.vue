@@ -104,8 +104,8 @@
                       <div class="mt-2">
                         RADA/CLAV
                         <InfoBox
-                          header="Fonte de Legitimação - RADA"
-                          :text="myhelp.AutoEliminacao.Campos.RADA"
+                          header="Fonte de Legitimação - RADA/CLAV"
+                          :text="myhelp.AutoEliminacao.Campos.RADA_CLAV"
                           helpColor="indigo darken-4"
                           dialogColor="#E0F2F1"
                         />
