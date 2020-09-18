@@ -1,49 +1,22 @@
 <template>
   <div>
-    <!-- validar titulo TS -->
-    <!-- {{ novoHistorico.tsRada.classes.dados }} -->
-    <ValidaCampo
-      :dadosOriginais="RADA.tsRada"
-      :novoHistorico="novoHistorico.tsRada"
-      campoValue="titulo"
-      campoText="Título Tabela Seleção"
-      tipo="string"
-    >
-      <template v-slot:input="props">
-        <v-text-field
-          :rules="[v => !!v || 'Campo obrigatório']"
-          solo
-          v-model="props.items.campoEditado"
-          @input="props.items.updateValue"
-        ></v-text-field>
-      </template>
-    </ValidaCampo>
+    <VerHistoricoCampo campoText="Título Tabela Seleção" :historicoCampo="historico.titulo" />
 
     <!-- LISTAR CLASSES -->
+
     <v-row>
       <v-col cols="12">
-        <v-text-field
-          v-model="search"
-          clearable
-          prepend-inner-icon="search"
-          label="Pesquise a classe..."
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
+        <v-divider></v-divider>
+        <h5>Classes</h5>
         <v-data-table
           flat
           :headers="headers"
-          :items="novoHistorico.tsRada.classes.dados"
+          :items="historico.classes.dados"
           :footer-props="footer_props"
           :items-per-page="5"
-          @click:row="validarClasse"
-          item-key="codigo"
-          :custom-filter="(value, search, item) => {
-            return !!JSON.stringify(item.dados).includes(search) ? true : false;
-          }"
-          :search="search"
+          item-key="dados.codigo.dados"
+          show-expand
+          single-expand
         >
           <template v-slot:item.tipo="{ item }">
             <img
@@ -90,42 +63,32 @@
             <v-avatar size="25" color="red" v-else-if="item.cor == 'vermelho'"></v-avatar>
             <v-avatar size="25" color="amber" v-else-if="item.cor == 'amarelo'"></v-avatar>
           </template>
+
+          <template v-slot:expanded-item="{ headers, item }">
+            <td :colspan="headers.length">
+              <VerHistoricoArea
+                v-if="item.dados.tipo.dados != 'Série' && item.dados.tipo.dados != 'Subsérie'"
+                :historico="item.dados"
+              />
+              <VerHistoricoSerie v-else :formaContagem="formaContagem" :historico="item.dados" />
+            </td>
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
-    <AnalisaArea
-      v-if="tipoClasse == 'N1' || tipoClasse == 'N2' || tipoClasse == 'N3'"
-      :elemento="classeOriginal"
-      :novoHistorico="classeHistorico"
-      @fechar="fechar"
-    />
-    <AnalisaSerie
-      v-if="tipoClasse == 'Série' || tipoClasse == 'Subsérie'"
-      :elemento="classeOriginal"
-      :novoHistorico="classeHistorico"
-      @fechar="fechar"
-      :formaContagem="formaContagem"
-    />
-    <h5>Unidades de Instalação</h5>
-    <v-divider></v-divider>
-    <v-row v-if="novoHistorico.tsRada.UIs.dados[0]">
+
+    <v-row v-if="!!historico.UIs.dados[0]">
       <v-col cols="12">
-        <v-text-field
-          v-model="searchUI"
-          clearable
-          prepend-inner-icon="search"
-          label="Pesquise a unidade de instalação..."
-        />
+        <v-divider></v-divider>
+        <h5>Unidades de Instalação</h5>
         <v-data-table
           :headers="headersUI"
-          :items="novoHistorico.tsRada.UIs.dados"
+          :items="historico.UIs.dados"
           :footer-props="footer_props"
           :items-per-page="5"
-          @click:row="validarUI"
-          :custom-filter="(value, search, item) => {
-            return !!JSON.stringify(item.dados).includes(search) ? true : false;
-          }"
-          :search="searchUI"
+          item-key="dados.codigo.dados"
+          show-expand
+          single-expand
         >
           <template v-slot:item.validade="{ item }">
             <v-avatar size="25" color="green" v-if="item.cor == 'verde'"></v-avatar>
@@ -150,70 +113,39 @@
               <br />Não tem séries/subséries associadas!
             </p>
           </template>
+          <template v-slot:expanded-item="{ headers, item }">
+            <td :colspan="headers.length">
+              <VerHistoricoUI :historico="item.dados" />
+            </td>
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
-    <AnalisaUI
-      v-if="tipoClasse == 'UI'"
-      :elemento="classeOriginal"
-      :novoHistorico="classeHistorico"
-      @fechar="fechar"
-    />
   </div>
 </template>
 
 <script>
-import ValidaCampo from "@/components/pedidos/analise/rada/generic/ValidaCampo";
-import AnalisaArea from "@/components/pedidos/analise/rada/classes/AnalisaArea";
-import AnalisaSerie from "@/components/pedidos/analise/rada/classes/AnalisaSerie";
-import AnalisaUI from "@/components/pedidos/analise/rada/classes/AnalisaUI";
+import VerHistoricoCampo from "@/components/pedidos/analise/rada/generic/VerHistoricoCampo";
+import VerHistoricoArea from "@/components/pedidos/analise/rada/generic/VerHistoricoArea";
+import VerHistoricoSerie from "@/components/pedidos/analise/rada/generic/VerHistoricoSerie";
+import VerHistoricoUI from "@/components/pedidos/analise/rada/generic/VerHistoricoUI";
 
 export default {
-  props: ["RADA", "novoHistorico", "formaContagem"],
+  props: ["historico"],
   components: {
-    ValidaCampo,
-    AnalisaArea,
-    AnalisaSerie,
-    AnalisaUI,
-  },
-  methods: {
-    fechar() {
-      this.tipoClasse = null;
-      this.classeOriginal = null;
-      this.classeHistorico = null;
-    },
-    validarClasse(item) {
-      this.tipoClasse = item.dados.tipo.dados;
-      this.classeOriginal = this.RADA.tsRada.classes.find(
-        (e) => e.codigo == item.dados.codigo.dados
-      );
-      this.classeHistorico = this.novoHistorico.tsRada.classes.dados.find(
-        (e) => e.dados.codigo.dados == item.dados.codigo.dados
-      );
-    },
-    validarUI(item) {
-      this.tipoClasse = "UI";
-      this.classeOriginal = this.RADA.tsRada.UIs.find(
-        (e) => e.codigo == item.dados.codigo.dados
-      );
-      this.classeHistorico = this.novoHistorico.tsRada.UIs.dados.find(
-        (e) => e.dados.codigo.dados == item.dados.codigo.dados
-      );
-    },
+    VerHistoricoCampo,
+    VerHistoricoArea,
+    VerHistoricoSerie,
+    VerHistoricoUI
   },
   data() {
     return {
-      validar: false,
-      searchUI: "",
-      tipoClasse: null,
-      classeOriginal: null,
-      classeHistorico: null,
+      formaContagem: [],
       svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
       svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
       svg_N1: require("@/assets/n1.svg"),
       svg_N2: require("@/assets/n2.svg"),
       svg_N3: require("@/assets/n3.svg"),
-      search: "",
       footer_props: {
         "items-per-page-options": [1, 5, 10, -1],
         "items-per-page-text": "Mostrar",
@@ -228,7 +160,7 @@ export default {
         },
         {
           text: "Tipo",
-          sortable: true,
+          sortable: false,
           value: "tipo",
           width: "10%",
           align: "center",
@@ -236,7 +168,7 @@ export default {
         },
         {
           text: "Código",
-          sortable: true,
+          sortable: false,
           align: "center",
           width: "15%",
           value: "codigo",
@@ -244,7 +176,7 @@ export default {
         },
         {
           text: "Título",
-          sortable: true,
+          sortable: false,
           align: "center",
           value: "titulo",
           width: "35%",
@@ -252,7 +184,7 @@ export default {
         },
         {
           text: "PCA",
-          sortable: true,
+          sortable: false,
           align: "center",
           value: "pca",
           width: "10%",
@@ -260,7 +192,7 @@ export default {
         },
         {
           text: "DF",
-          sortable: true,
+          sortable: false,
           align: "center",
           value: "df",
           width: "10%",
@@ -269,9 +201,15 @@ export default {
         {
           text: "Classe Pai",
           value: "eFilhoDe",
-          sortable: true,
+          sortable: false,
           align: "center",
-          width: "15%",
+          width: "10%",
+          class: ["table-header", "body-2", "font-weight-bold"],
+        },
+        {
+          text: "",
+          value: "data-table-expand",
+          width: "5%",
           class: ["table-header", "body-2", "font-weight-bold"],
         },
       ],
@@ -288,7 +226,7 @@ export default {
           align: "center",
           value: "codigo",
           width: "10%",
-          sortable: true,
+          sortable: false,
           class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
@@ -296,27 +234,38 @@ export default {
           value: "titulo",
           align: "center",
           width: "45%",
-          sortable: true,
+          sortable: false,
           class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
           text: "Séries/Subséries Associadas",
           value: "classesAssociadas",
           align: "center",
-          width: "40%",
+          width: "35%",
           sortable: false,
+          class: ["table-header", "body-2", "font-weight-bold"],
+        },
+        {
+          text: "",
+          value: "data-table-expand",
+          width: "5%",
           class: ["table-header", "body-2", "font-weight-bold"],
         },
       ],
     };
   },
+  async created() {
+    let responseFC = await this.$request(
+      "get",
+      "/vocabularios/vc_pcaFormaContagem"
+    );
+
+    this.formaContagem = responseFC.data.map((item) => {
+      return {
+        label: item.termo,
+        value: item.idtermo.split("#")[1],
+      };
+    });
+  },
 };
 </script>
-<style>
-.table-header {
-  color: #1a237e;
-  font-weight: 400;
-  background-color: #dee2f8;
-  font-weight: bold;
-}
-</style>

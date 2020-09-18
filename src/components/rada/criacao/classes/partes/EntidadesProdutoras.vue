@@ -71,16 +71,18 @@ export default {
       this.newSerie.entProdutoras = JSON.parse(
         JSON.stringify(this.RE.entidadesProd)
       );
-      this.newSerie.tipologiasProdutoras = [this.RE.tipologiasProd];
+      this.newSerie.tipologiasProdutoras = !!this.RE.tipologiasProd
+        ? [this.RE.tipologiasProd]
+        : [];
     }
   },
   watch: {
-    "RE.entidadesProd": function(newValue) {
+    "RE.entidadesProd": function (newValue) {
       this.newSerie.entProdutoras = JSON.parse(JSON.stringify(newValue));
     },
-    "RE.tipologiasProd": function(newValue) {
+    "RE.tipologiasProd": function (newValue) {
       this.newSerie.tipologiasProdutoras = [newValue];
-    }
-  }
+    },
+  },
 };
 </script>
