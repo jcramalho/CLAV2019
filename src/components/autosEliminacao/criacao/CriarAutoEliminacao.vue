@@ -46,6 +46,12 @@
                     <template v-slot:label>
                       <div class="mt-2">
                         TS/LC
+                        <InfoBox
+                          header="Fonte de Legitimação - TS/LC"
+                          :text="myhelp.AutoEliminacao.Campos.TS_LC"
+                          helpColor="indigo darken-4"
+                          dialogColor="#E0F2F1"
+                        />
                       </div>
                     </template>
                   </v-radio>
@@ -53,6 +59,12 @@
                     <template v-slot:label>
                       <div class="mt-2">
                         PGD/LC
+                        <InfoBox
+                          header="Fonte de Legitimação - PGD/LC"
+                          :text="myhelp.AutoEliminacao.Campos.PGD_LC"
+                          helpColor="indigo darken-4"
+                          dialogColor="#E0F2F1"
+                        />
                       </div>
                     </template>
                   </v-radio>
@@ -60,6 +72,12 @@
                     <template v-slot:label>
                       <div class="mt-2">
                         PGD
+                        <InfoBox
+                          header="Fonte de Legitimação - PGD"
+                          :text="myhelp.AutoEliminacao.Campos.PGD"
+                          helpColor="indigo darken-4"
+                          dialogColor="#E0F2F1"
+                        />
                       </div>
                     </template>
                   </v-radio>
@@ -67,6 +85,12 @@
                     <template v-slot:label>
                       <div class="mt-2">
                         RADA
+                        <InfoBox
+                          header="Fonte de Legitimação - RADA"
+                          :text="myhelp.AutoEliminacao.Campos.RADA"
+                          helpColor="indigo darken-4"
+                          dialogColor="#E0F2F1"
+                        />
                       </div>
                     </template>
                   </v-radio>
@@ -75,6 +99,12 @@
                     <template v-slot:label>
                       <div class="mt-2">
                         RADA/CLAV
+                        <InfoBox
+                          header="Fonte de Legitimação - RADA/CLAV"
+                          :text="myhelp.AutoEliminacao.Campos.RADA_CLAV"
+                          helpColor="indigo darken-4"
+                          dialogColor="#E0F2F1"
+                        />
                       </div>
                     </template>
                   </v-radio>
@@ -137,7 +167,7 @@
               <v-col>
                 <v-autocomplete
                   deletable-chips
-                  label="Selecione a(s) entidade(s) produtira(s) da documentação"
+                  label="Selecione a(s) entidade(s) produtora(s) da documentação"
                   :items="entidades"
                   v-model="auto.fundo"
                   solo
@@ -352,15 +382,18 @@
 <script>
 import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/AdicionarZonaControlo.vue";
 import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
   props: ["entidades"],
   components: {
     AdicionarZonaControlo,
-    ListaZonasControlo
+    ListaZonasControlo,
+    InfoBox
   },
   data: () => ({
+    myhelp: help,
     classes: [],
     classesCompletas: [],
     auto: {
@@ -712,7 +745,7 @@ export default {
         if(this.tipo == "PGD" || this.tipo=="RADA") this.classesCompletas = this.classesCompletas.filter(c=> c.df.valor!="C")
 
         this.classes = this.classesCompletas.map(c => {
-            if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+            if(c.codigo && c.referencia) return ""+c.codigo+" - "+c.referencia+" - "+c.titulo
             else if(c.codigo) return ""+c.codigo+" - "+c.titulo
             else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
@@ -734,7 +767,7 @@ export default {
         })
         this.classesCompletas = this.classesCompletas.filter(c=> c.df.valor!="C")
         this.classes = this.classesCompletas.map(c => {
-          if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+          if(c.codigo && c.referencia) return ""+c.codigo+" - "+c.referencia+" - "+c.titulo
           else if(c.codigo) return ""+c.codigo+" - "+c.titulo
           else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })

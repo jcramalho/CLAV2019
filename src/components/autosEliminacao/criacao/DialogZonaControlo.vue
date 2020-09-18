@@ -20,13 +20,13 @@
       </v-row>
       <v-row>
         <v-col :md="2" v-if="prazo.split(' ')[0]">
-          <div class="info-label">Prazo de Conservação Administrativa</div>
+          <div class="info-label">Prazo de conservação administrativa</div>
         </v-col>
         <v-col v-if="prazo.split(' ')[0]">
           <v-text-field :value="prazo" solo dense readonly></v-text-field>
         </v-col>
         <v-col :md="2" v-if="df">
-          <div class="info-label">Destino Final</div>
+          <div class="info-label">Destino final</div>
         </v-col>
         <v-col v-if="df">
           <v-text-field :value="df" solo dense readonly></v-text-field>
@@ -34,7 +34,7 @@
       </v-row>
       <v-row v-if="df=='Conservação' && tipo!='RADA_CLAV' && tipo!='RADA' && tipo!='PGD'">
         <v-col>
-          <div class="info-label">Natureza de Intervenção</div>
+          <div class="info-label">Natureza de intervenção</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -62,7 +62,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Data de Início</div>
+          <div class="info-label">Data de início</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -76,7 +76,7 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Data de Fim</div>
+          <div class="info-label">Data de fim</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -92,7 +92,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Medição de UI em Papel (m.l.)</div>
+          <div class="info-label">Medição de UI em papel (m.l.)</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -106,7 +106,7 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI Digital (GB)</div>
+          <div class="info-label">Medição de UI digital (GB)</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -120,7 +120,7 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI noutro Suporte</div>
+          <div class="info-label">Medição de UI noutro suporte</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -236,7 +236,7 @@ export default {
   watch: {
     "index": function() {
       if (this.zona) {
-        if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " " + this.zona.referencia + " - " + this.zona.titulo;
+        if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " - " + this.zona.referencia + " - " + this.zona.titulo;
         else if(this.zona.codigo) this.classe = this.zona.codigo + " - " + this.zona.titulo;
         else if(this.zona.referencia) this.classe = this.zona.referencia + " - " + this.zona.titulo;
       
@@ -258,7 +258,7 @@ export default {
   },
   created: async function() {
     if (this.zona) {
-      if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " " + this.zona.referencia + " - " + this.zona.titulo;
+      if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " - " + this.zona.referencia + " - " + this.zona.titulo;
       else if(this.zona.codigo) this.classe = this.zona.codigo + " - " + this.zona.titulo;
       else if(this.zona.referencia) this.classe = this.zona.referencia + " - " + this.zona.titulo;
 
@@ -281,7 +281,7 @@ export default {
   methods: {
     defClasse: async function() {
       var c = this.classesCompletas.filter(c => {
-          if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+          if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
           else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
           else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
         }
@@ -327,7 +327,7 @@ export default {
       const reUI = /^-?\d*(,\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
         zc => {
-          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          if(zc.codigo && zc.referencia) return zc.codigo + " - "+ zc.referencia + " - " + zc.titulo == this.classe
           else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
           else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
         }
@@ -392,7 +392,7 @@ export default {
         this.erroDialog = true;
       } else {
         var classe = this.classesCompletas.filter(c => {
-            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
             else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
             else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
           }
@@ -418,8 +418,8 @@ export default {
         var added = false;
 
         for(var i in this.auto.zonaControlo) {
-          var tituloZC = this.auto.zonaControlo[i].codigo + " " + this.auto.zonaControlo[i].referencia
-          if(tituloZC > (codigo + " " +referencia)) {
+          var tituloZC = this.auto.zonaControlo[i].codigo + " - " + this.auto.zonaControlo[i].referencia
+          if(tituloZC > (codigo + " - " +referencia)) {
             this.auto.zonaControlo.splice(i,0,{
               idClasse: idClasse,
               codigo: codigo,
@@ -473,7 +473,7 @@ export default {
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
         zc => {
-          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          if(zc.codigo && zc.referencia) return zc.codigo + " - "+ zc.referencia + " - " + zc.titulo == this.classe
           else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
           else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
         }
@@ -546,7 +546,7 @@ export default {
         this.erroDialog = true;
       }  else {
         var classe = this.classesCompletas.filter(c => {
-            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
             else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
             else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
           }
