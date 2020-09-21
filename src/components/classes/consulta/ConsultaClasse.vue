@@ -616,6 +616,7 @@ export default {
     this.$request("get", "/classes/" + this.idc)
       .then(async response => {
         this.classe = response.data;
+        debugger;
         if (this.classe.df.justificacao) {
           for (let i = 0; i < this.classe.df.justificacao.length; i++) {
             if (this.classe.df.justificacao[i].processos) {
