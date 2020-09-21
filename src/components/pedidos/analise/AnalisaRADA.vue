@@ -68,6 +68,15 @@
         @confirma="finalizarPedido(dialogConfirmacao.dados)"
       />
     </v-dialog>
+    <v-alert width="100%" :value="!todos_validados" outlined type="error" prominent border="left">
+      Impossível validar RADA. As seguintes dependências não foram validadas:
+      <ul>
+        <li v-for="(e, i) in por_validar" :key="i">
+          <span @click="$router.push('/pedidos/' + e.codigo)">{{e.codigo}}</span>
+          - {{ e.texto }}
+        </li>
+      </ul>
+    </v-alert>
   </div>
 </template>
 
@@ -110,6 +119,8 @@ export default {
       novoHistorico: null,
       entidades: [],
       formaContagem: {},
+      todos_validados: true,
+      por_validar: [],
     };
   },
   async created() {
@@ -361,7 +372,9 @@ export default {
         this.dialogConfirmacao = {
           visivel: true,
           mensagem:
-            "Existem " + existem_vermelhos + " campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+            "Existem " +
+            existem_vermelhos +
+            " campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
           dados: dados,
         };
       // Caso contrário segue para a finalização do pedido
@@ -371,45 +384,72 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        // Fazer pedido para obter as subformas do PCA pois pode ter subformas que existem na plataforma e outras não;
-        // Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
-
-        let responseSFC = await this.$request(
-          "get",
-          "/vocabularios/vc_pcaSubformaContagem"
+        let dependencias = pedido.distribuicao[0].despacho.match(
+          /(?<=\[)(.*)(?=\])/g
         );
 
-        let subformasContagem = responseSFC.data.map((item) => {
-          return {
-            label: item.termo.split(": ")[1] + ": " + item.desc,
-            value: item.idtermo.split("#")[1],
+        this.todos_validados = true;
+        this.por_validar = [];
+
+        if (dependencias.length > 0) {
+          for (let i = 0; i < dependencias.length; i++) {
+            let response = await this.$request(
+              "get",
+              "/pedidos/" + dependencias[i]
+            );
+
+            if (response.data.estado != "Validado") {
+              this.todos_validados = false;
+              this.por_validar.push({
+                codigo: response.data.codigo,
+                texto:
+                  response.data.objeto.acao + " " + response.data.objeto.tipo,
+              });
+            }
+          }
+        }
+
+        if (this.todos_validados) {
+          //Fazer pedido para obter as subformas do PCA pois pode ter subformas que existem na plataforma e outras não;
+          //Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
+
+          let responseSFC = await this.$request(
+            "get",
+            "/vocabularios/vc_pcaSubformaContagem"
+          );
+
+          let subformasContagem = responseSFC.data.map((item) => {
+            return {
+              label: item.termo.split(": ")[1] + ": " + item.desc,
+              value: item.idtermo.split("#")[1],
+            };
+          });
+
+          let triplos = await converterParaTriplosRADA(
+            pedido.objeto.dados,
+            subformasContagem
+          );
+
+          await this.$request("post", "/rada", { triplos });
+
+          let dadosUtilizador = this.$verifyTokenUser();
+
+          const novaDistribuicao = {
+            estado: "Validado",
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho,
           };
-        });
 
-        let triplos = await converterParaTriplosRADA(
-          pedido.objeto.dados,
-          subformasContagem
-        );
+          pedido.estado = "Validado";
 
-        await this.$request("post", "/rada", { triplos });
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao,
+          });
 
-        let dadosUtilizador = this.$verifyTokenUser();
-
-        const novaDistribuicao = {
-          estado: "Validado",
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho,
-        };
-
-        pedido.estado = "Validado";
-
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao,
-        });
-
-        this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
+          this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
+        }
       } catch (e) {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem = "Erro ao finalizar a validação!";

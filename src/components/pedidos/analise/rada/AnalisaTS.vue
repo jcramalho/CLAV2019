@@ -106,53 +106,59 @@
       @fechar="fechar"
       :formaContagem="formaContagem"
     />
-    <h5>Unidades de Instalação</h5>
-    <v-divider></v-divider>
-    <v-row v-if="novoHistorico.tsRada.UIs.dados[0]">
-      <v-col cols="12">
-        <v-text-field
-          v-model="searchUI"
-          clearable
-          prepend-inner-icon="search"
-          label="Pesquise a unidade de instalação..."
-        />
-        <v-data-table
-          :headers="headersUI"
-          :items="novoHistorico.tsRada.UIs.dados"
-          :footer-props="footer_props"
-          :items-per-page="5"
-          @click:row="validarUI"
-          :custom-filter="(value, search, item) => {
+    <div v-if="novoHistorico.tsRada.UIs.dados[0]">
+      <h5>Unidades de Instalação</h5>
+      <v-divider></v-divider>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            v-model="searchUI"
+            clearable
+            prepend-inner-icon="search"
+            label="Pesquise a unidade de instalação..."
+          />
+          <v-data-table
+            :headers="headersUI"
+            :items="novoHistorico.tsRada.UIs.dados"
+            :footer-props="footer_props"
+            :items-per-page="5"
+            @click:row="validarUI"
+            :custom-filter="(value, search, item) => {
             return !!JSON.stringify(item.dados).includes(search) ? true : false;
           }"
-          :search="searchUI"
-        >
-          <template v-slot:item.validade="{ item }">
-            <v-avatar size="25" color="green" v-if="item.cor == 'verde'"></v-avatar>
-            <v-avatar size="25" color="red" v-else-if="item.cor == 'vermelho'"></v-avatar>
-            <v-avatar size="25" color="amber" v-else-if="item.cor == 'amarelo'"></v-avatar>
-          </template>
-          <template v-slot:item.codigo="{ item }">{{ item.dados.codigo.dados }}</template>
+            :search="searchUI"
+          >
+            <template v-slot:item.validade="{ item }">
+              <v-avatar size="25" color="green" v-if="item.cor == 'verde'"></v-avatar>
+              <v-avatar size="25" color="red" v-else-if="item.cor == 'vermelho'"></v-avatar>
+              <v-avatar size="25" color="amber" v-else-if="item.cor == 'amarelo'"></v-avatar>
+            </template>
+            <template v-slot:item.codigo="{ item }">{{ item.dados.codigo.dados }}</template>
 
-          <template v-slot:item.titulo="{ item }">{{ item.dados.titulo.dados }}</template>
+            <template v-slot:item.titulo="{ item }">{{ item.dados.titulo.dados }}</template>
 
-          <template v-slot:item.classesAssociadas="{ item }">
-            <ul style="list-style-type:none;" v-if="!!item.dados.classesAssociadas.dados[0]">
-              <li v-for="(classe, i) in item.dados.classesAssociadas.dados" :key="i">
-                <span style="padding-right: 10px;">
-                  <img v-if="classe.tipo == 'Série'" style="width:23px; height:23px" :src="svg_sr" />
-                  <img v-else style="width:23px; height:23px" :src="svg_ssr" />
-                </span>
-                <span>{{ classe.codigo }}</span>
-              </li>
-            </ul>
-            <p v-else>
-              <br />Não tem séries/subséries associadas!
-            </p>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
+            <template v-slot:item.classesAssociadas="{ item }">
+              <ul style="list-style-type:none;" v-if="!!item.dados.classesAssociadas.dados[0]">
+                <li v-for="(classe, i) in item.dados.classesAssociadas.dados" :key="i">
+                  <span style="padding-right: 10px;">
+                    <img
+                      v-if="classe.tipo == 'Série'"
+                      style="width:23px; height:23px"
+                      :src="svg_sr"
+                    />
+                    <img v-else style="width:23px; height:23px" :src="svg_ssr" />
+                  </span>
+                  <span>{{ classe.codigo }}</span>
+                </li>
+              </ul>
+              <p v-else>
+                <br />Não tem séries/subséries associadas!
+              </p>
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </div>
     <AnalisaUI
       v-if="tipoClasse == 'UI'"
       :elemento="classeOriginal"

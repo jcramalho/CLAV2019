@@ -1,3 +1,5 @@
+import { criarHistorico } from "@/utils/utils";
+
 export default {
   data: () => ({
     alert_guardar: false,
@@ -98,8 +100,7 @@ export default {
               };
             }),
             dataCriacao: entidades[i].dataCriacao,
-            dataExtincao: entidades[i].dataExtincao,
-            codigo: ""
+            dataExtincao: entidades[i].dataExtincao
           },
           user: {
             email: this.userEmail
@@ -109,6 +110,8 @@ export default {
           entidade: this.user_entidade,
           historico: [],
         };
+
+        pedidoEntidades.historico.push(criarHistorico(pedidoEntidades.novoObjeto));
 
         let response = await this.$request("post", "/pedidos", pedidoEntidades);
 
@@ -159,7 +162,6 @@ export default {
             )
         )
         .map(leg => {
-          leg["codigo"] = "";
           leg["diplomaFonte"] = "RADA";
           leg["estado"] = "Ativo";
           leg["processosSel"] = [];
@@ -229,6 +231,8 @@ export default {
             despacho
             : "Submissão inicial"
         };
+
+        pedidoLegis.historico.push(criarHistorico(pedidoLegis.novoObjeto));
 
         let response = await this.$request("post", "/pedidos", pedidoLegis);
 
@@ -416,7 +420,7 @@ export default {
         }
       }
     },
-    criarHistorico() {
+    criarHistoricoRADA() {
       let historico = [
         {
           titulo: {
@@ -610,7 +614,7 @@ export default {
             tipoPedido: "Criação",
             tipoObjeto: "RADA",
             novoObjeto: this.RADA,
-            historico: await this.criarHistorico(),
+            historico: await this.criarHistoricoRADA(),
             user: {
               email: this.userEmail
             },
