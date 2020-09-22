@@ -1,24 +1,32 @@
+import { mdiAppleKeyboardControl } from "@mdi/js";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-const pdf = {
-  header: "Cabeçalho...Cabeçalho...Cabeçalho...Cabeçalho...Cabeçalho...",
+let pdf = {};
 
-  footer: {
-    columns: [
-      "Rodapé Esquerda",
-      { text: "Rodapé Direita", alignment: "right" },
-    ],
-  },
-};
+let content = [];
 
-const content = [];
-const styles = {
+let styles = {
   defaultStyle: {
     fontSize: 15,
     bold: false,
   },
+};
+
+const gerarHeader = () => {
+  pdf.header = {
+    text: "Cabeçalho...Cabeçalho...Cabeçalho...Cabeçalho...Cabeçalho...",
+  };
+};
+
+const gerarFooter = () => {
+  pdf.footer = {
+    columns: [
+      "Rodapé Esquerda",
+      { text: "Rodapé Direita", alignment: "right" },
+    ],
+  };
 };
 
 const gerarHeaderConteudo = (dados) => {
@@ -73,6 +81,8 @@ const gerarHeaderConteudo = (dados) => {
 };
 
 const contextoPedido = (contexto) => {
+  linhaEmBranco();
+
   const infoPedido = {
     table: {
       widths: ["15%", "70%", "15%"],
@@ -81,11 +91,99 @@ const contextoPedido = (contexto) => {
     layout: "noBorders",
   };
 
-  content.push(linhaEmBranco);
   content.push(infoPedido);
 };
 
-const linhaEmBranco = { text: "\n" };
+const dadosPedido = (dados) => {
+  linhaEmBranco();
+
+  const linhas = [];
+  dados.forEach((el) => {
+    const { campo, submetido, finalizado } = el;
+    const linha = [];
+
+    linha.push({ text: campo, style: "campoTabela" });
+    linha.push({ text: submetido.dados, style: switchStyle(submetido.cor) });
+    linha.push({ text: finalizado.dados, style: switchStyle(finalizado.cor) });
+
+    linhas.push(linha);
+
+    if (finalizado.nota)
+      linhas.push(["Nota", { colSpan: 2, text: finalizado.nota }, ""]);
+  });
+
+  console.table(linhas);
+
+  const tabela = {
+    table: {
+      widths: ["auto", "*", "*"],
+      body: [
+        [
+          { text: "Campo", style: "cabecalhoTabela" },
+          { text: "Submetido", style: "cabecalhoTabela" },
+          { text: "Finalizado", style: "cabecalhoTabela" },
+        ],
+        ...linhas,
+      ],
+    },
+  };
+
+  styles.cabecalhoTabela = {
+    bold: true,
+    fontSize: 14,
+    color: "black",
+    fillColor: "#E0E0E0",
+  };
+
+  styles.campoTabela = {
+    bold: true,
+    fontSize: 12,
+    color: "black",
+    fillColor: "#FAFAFA",
+  };
+
+  styles.valorCerto = {
+    fillColor: "#C8E6C9",
+  };
+
+  styles.valorErrado = {
+    fillColor: "#FFCDD2",
+  };
+
+  styles.valorAlterado = {
+    fillColor: "#FFF9C4",
+  };
+
+  content.push(tabela);
+};
+
+const linhaEmBranco = () => {
+  content.push({ text: "\n" });
+};
+
+const switchStyle = (cor) => {
+  let style = "";
+
+  switch (cor) {
+    case "verde":
+      style = "valorCerto";
+      break;
+
+    case "vermelho":
+      style = "valorErrado";
+      break;
+
+    case "amarelo":
+      style = "valorAlterado";
+      break;
+
+    default:
+      style = "";
+      break;
+  }
+
+  return style;
+};
 
 const guardarPDF = (nome) => {
   pdf.content = content;
@@ -95,14 +193,33 @@ const guardarPDF = (nome) => {
   pdfMake.createPdf(pdf).download(`relatorio-${nome}`);
 };
 
+const resetPDF = () => {
+  pdf = {};
+  content = [];
+  styles = {};
+};
+
+/**
+ *
+ * Main Function
+ *
+ */
 export const gerarPDF = (relatorio) => {
   console.log("relatorio", relatorio);
+
+  gerarHeader();
 
   gerarHeaderConteudo(relatorio);
 
   if (relatorio.alteracaoInfo) contextoPedido(relatorio.alteracaoInfo);
 
+  dadosPedido(relatorio.comparacao);
+
+  gerarFooter();
+
   guardarPDF(relatorio.numeroPedido);
+
+  resetPDF();
 };
 
 export default {
