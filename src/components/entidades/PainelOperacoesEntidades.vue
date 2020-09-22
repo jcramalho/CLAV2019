@@ -92,15 +92,16 @@ z<template>
                             principal.
                         </p>
                     </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="success darken-1" rounded dark elevation="0" class="px-4" @click="cancelarCriacaoEntidade">
-                            Confirmo
-                        </v-btn>
-                        <v-btn color="red darken-4" rounded dark elevation="0" class="px-4" @click="pedidoEliminado = false">
-                            Enganei-me, desejo continuar o trabalho
-                        </v-btn>
-                    </v-card-actions>
+                </div>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="success darken-1" rounded dark elevation="0" class="px-4" @click="cancelarCriacaoEntidade">
+                        Confirmo
+                    </v-btn>
+                    <v-btn color="red darken-4" rounded dark elevation="0" class="px-4" @click="pedidoEliminado = false">
+                        Enganei-me, desejo continuar o trabalho
+                    </v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
     </v-row>
