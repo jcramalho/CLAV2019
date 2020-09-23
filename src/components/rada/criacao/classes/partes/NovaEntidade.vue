@@ -160,7 +160,7 @@ export default {
         },
         {
           label: "Não",
-          value: "Nao"
+          value: "Não"
         }
       ]
     };

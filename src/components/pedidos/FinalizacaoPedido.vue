@@ -180,6 +180,9 @@ export default {
       const id = this.identificador();
 
       switch (this.objetoPedido.tipo) {
+        case "RADA":
+          this.$router.push(`/rada/${this.objetoPedido.dados.id}`);
+          break;
         case "Tipologia":
           this.$router.push(`/tipologias/tip_${id}`);
           break;

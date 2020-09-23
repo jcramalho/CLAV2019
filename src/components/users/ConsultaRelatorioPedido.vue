@@ -108,10 +108,7 @@
                     </v-chip>
 
                     <ul v-else class="ma-0">
-                      <span
-                        v-for="dado in item.submetido.dados"
-                        :key="dado.sigla"
-                      >
+                      <span v-for="(dado, i) in item.submetido.dados" :key="i">
                         <li v-if="dado.sigla">
                           {{ dado.sigla }}
                         </li>
@@ -250,7 +247,7 @@
       <v-card-actions class="ml-4">
         <v-btn color="indigo" dark class="mb-2" @click="voltar">Voltar</v-btn>
         <v-spacer />
-        <v-btn color="indigo accent-4" dark class="mb-2">
+        <v-btn color="indigo accent-4" dark class="mb-2 mr-4" @click="geraPDF">
           Descarregar
           <v-icon right dark>picture_as_pdf</v-icon>
         </v-btn>
@@ -268,7 +265,7 @@
 import ConsultarNota from "@/components/generic/ConsultarNotaCampoDialog";
 
 import { gerarDadosRelatorio, identificaItemEmTabela } from "@/utils/utils";
-import { mdiTrumpet } from "@mdi/js";
+import { gerarPDF } from "@/utils/pdf";
 
 export default {
   props: ["pedido"],
@@ -322,6 +319,10 @@ export default {
   },
 
   methods: {
+    geraPDF() {
+      gerarPDF(this.relatorio);
+    },
+
     fecharNotaDialog() {
       this.notaDialog = {
         visivel: false,
@@ -390,7 +391,6 @@ export default {
       const relatorio = gerarDadosRelatorio(this.pedido);
 
       this.relatorio = relatorio;
-      console.log("relatorio", relatorio);
     },
 
     voltar() {

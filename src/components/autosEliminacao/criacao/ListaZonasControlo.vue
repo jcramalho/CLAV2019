@@ -14,7 +14,7 @@
                   <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Classe</v-card>
                 </v-col>
                 <v-col>
-                  <div class="mt-2" v-if="item.codigo && item.referencia">{{ item.codigo + " " + item.referencia +" - "+item.titulo }}</div>
+                  <div class="mt-2" v-if="item.codigo && item.referencia">{{ item.codigo + " - " + item.referencia +" - "+item.titulo }}</div>
                   <div class="mt-2" v-else-if="item.codigo">{{ item.codigo +" - "+item.titulo }}</div>
                   <div class="mt-2" v-else-if="item.referencia">{{ item.referencia +" - "+item.titulo }}</div>
                 </v-col>
