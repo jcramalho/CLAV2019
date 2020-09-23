@@ -1,44 +1,52 @@
 <template>
-  <v-card class="ma-4" style="background-color:#fafafa">
-    <v-card-title
-      class="indigo darken-4 white--text"
-    >Relatório de Avaliação de Documentação Acumulada: {{rada.titulo}}</v-card-title>
-    <v-card-text>
-      <InformacaoGeral :rada="rada" />
-      <v-expansion-panels>
-        <v-expansion-panel class="ma-1">
-          <v-expansion-panel-header
-            class="pa-2 indigo darken-4 title white--text"
-          >Relatório Expositivo</v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <RelatorioExpositivo :rada="rada" />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel class="ma-1">
-          <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">Tabela de Seleção</v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <TabelaSelecao :rada="rada" />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <!-- <p>{{rada}}</p> -->
-    </v-card-text>
-  </v-card>
+  <Loading v-if="loading" :message="'RADA/CLAV'" />
+  <div v-else>
+    <v-card class="ma-4" style="background-color:#fafafa">
+      <v-card-title
+        class="indigo darken-4 white--text"
+      >Relatório de Avaliação de Documentação Acumulada: {{rada.titulo}}</v-card-title>
+      <v-card-text>
+        <InformacaoGeral :rada="rada" />
+        <v-expansion-panels>
+          <v-expansion-panel class="ma-1">
+            <v-expansion-panel-header
+              class="pa-2 indigo darken-4 title white--text"
+            >Relatório Expositivo</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <RelatorioExpositivo :rada="rada" />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel class="ma-1">
+            <v-expansion-panel-header
+              class="pa-2 indigo darken-4 title white--text"
+            >Tabela de Seleção</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <TabelaSelecao :rada="rada" />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        <!-- <p>{{rada}}</p> -->
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script>
 import InformacaoGeral from "@/components/rada/consulta/elementos/InformaçãoGeral.vue";
 import RelatorioExpositivo from "@/components/rada/consulta/elementos/RelatorioExpositivo.vue";
 import TabelaSelecao from "@/components/rada/consulta/elementos/TabelaSelecao.vue";
+import Loading from "@/components/generic/Loading";
 
 export default {
   data: () => ({
     rada: {},
+    loading: true,
   }),
   components: {
     InformacaoGeral,
     RelatorioExpositivo,
     TabelaSelecao,
+    Loading
   },
   async mounted() {
     var response = await this.$request("get", "/rada/" + this.$route.params.id);
@@ -56,6 +64,7 @@ export default {
       }
 
       this.rada.tsRadaArv = await this.preparaTree();
+      this.loading = false;
     });
   },
   methods: {
@@ -70,7 +79,10 @@ export default {
           myTree.push({
             codigo: this.rada.tsRada[i].codigo,
             titulo: this.rada.tsRada[i].titulo,
-            tipo: this.rada.tsRada[i].tipo,
+            tipo:
+              this.rada.tsRada[i].tipo == "funcional"
+                ? this.rada.tsRada[i].nivel
+                : this.rada.tsRada[i].tipo,
             eFilhoDe: this.rada.tsRada[i].pai,
             children: this.preparaTreeFilhos(
               this.rada.tsRada[i].codigo,
@@ -89,7 +101,10 @@ export default {
           children.push({
             codigo: this.rada.tsRada[i].codigo,
             titulo: this.rada.tsRada[i].titulo,
-            tipo: this.rada.tsRada[i].tipo,
+            tipo:
+              this.rada.tsRada[i].tipo == "funcional"
+                ? this.rada.tsRada[i].nivel
+                : this.rada.tsRada[i].tipo,
             eFilhoDe: this.rada.tsRada[i].pai + " - " + pai_titulo,
             children: this.preparaTreeFilhos(
               this.rada.tsRada[i].codigo,

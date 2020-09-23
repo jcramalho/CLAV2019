@@ -155,7 +155,6 @@
     </v-row>
     <v-row v-else>
       <TabelaClassesRADA
-        background_color="#fafafa;"
         :formaContagem="formaContagem"
         :classes="TS.classes"
         :search="search"

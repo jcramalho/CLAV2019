@@ -2,7 +2,7 @@
   <div style="overflow: auto; width:100%;">
     <v-data-table
       flat
-      :style="`background-color:${!!background_color ? background_color : '#ffffff;'} `"
+      style="background-color:#fafafa;"
       :headers="headers"
       :items="classes"
       class="elevation-1 mytable"
@@ -68,7 +68,7 @@ import AreaOrganica from "@/components/rada/consulta/elementos_tabela/AreaOrgani
 import SerieSubserie from "@/components/rada/consulta/elementos_tabela/SerieSubserie";
 
 export default {
-  props: ["classes", "formaContagem", "background_color", "search"],
+  props: ["classes", "formaContagem", "search"],
   components: {
     AreaOrganica,
     SerieSubserie,
