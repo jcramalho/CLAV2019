@@ -46,7 +46,7 @@ const gerarHeaderConteudo = (dados) => {
 
   const dataFinalizacao = {
     text: [
-      { text: "Data de Finalização: ", style: "cabecalho" },
+      { text: "Data de finalização: ", style: "cabecalho" },
       { text: dados.dataFinal, style: "texto" },
     ],
   };
@@ -101,10 +101,54 @@ const dadosPedido = (dados) => {
   dados.forEach((el) => {
     const { campo, submetido, finalizado } = el;
     const linha = [];
+    const siglasOuCodigos = [];
 
+    // Campo
     linha.push({ text: campo, style: "campoTabela" });
-    linha.push({ text: submetido.dados, style: switchStyle(submetido.cor) });
-    linha.push({ text: finalizado.dados, style: switchStyle(finalizado.cor) });
+
+    // Dados Submetidos
+    if (submetido.dados instanceof Array) {
+      const lista = [];
+
+      submetido.dados.forEach((dado) => {
+        if (dado.sigla) {
+          siglasOuCodigos.push(dado.sigla);
+          lista.push(dado.sigla);
+        } else {
+          siglasOuCodigos.push(dado.codigo);
+          lista.push(dado.codigo);
+        }
+      });
+
+      linha.push({ ul: lista, style: switchStyle(submetido.cor) });
+    } else {
+      linha.push({ text: submetido.dados, style: switchStyle(submetido.cor) });
+    }
+
+    // Dados Submetidos
+    if (finalizado.dados instanceof Array) {
+      const lista = [];
+
+      finalizado.dados.forEach((dado) => {
+        if (dado.sigla)
+          lista.push({
+            text: dado.sigla,
+            listType: siglasOuCodigos.includes(dado.sigla) ? "dot" : "circle",
+          });
+        else
+          lista.push({
+            text: dado.codigo,
+            listType: siglasOuCodigos.includes(dado.codigo) ? "dot" : "circle",
+          });
+      });
+
+      linha.push({ ul: lista, style: switchStyle(finalizado.cor) });
+    } else {
+      linha.push({
+        text: finalizado.dados,
+        style: switchStyle(finalizado.cor),
+      });
+    }
 
     linhas.push(linha);
 
@@ -154,6 +198,10 @@ const dadosPedido = (dados) => {
     fillColor: "#FFF9C4",
   };
 
+  styles.valorNormal = {
+    fillColor: "#FFFFFF",
+  };
+
   content.push(tabela);
 };
 
@@ -178,7 +226,7 @@ const switchStyle = (cor) => {
       break;
 
     default:
-      style = "";
+      style = "valorNormal";
       break;
   }
 

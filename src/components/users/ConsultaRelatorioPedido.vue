@@ -108,10 +108,7 @@
                     </v-chip>
 
                     <ul v-else class="ma-0">
-                      <span
-                        v-for="dado in item.submetido.dados"
-                        :key="dado.sigla"
-                      >
+                      <span v-for="(dado, i) in item.submetido.dados" :key="i">
                         <li v-if="dado.sigla">
                           {{ dado.sigla }}
                         </li>
