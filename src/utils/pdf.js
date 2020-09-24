@@ -17,15 +17,22 @@ let styles = {
 const gerarHeader = () => {
   pdf.header = {
     text: "Cabeçalho...Cabeçalho...Cabeçalho...Cabeçalho...Cabeçalho...",
+    margin: [10, 10],
   };
 };
 
 const gerarFooter = () => {
-  pdf.footer = {
-    columns: [
-      "Rodapé Esquerda",
-      { text: "Rodapé Direita", alignment: "right" },
-    ],
+  pdf.footer = (currentPage, pageCount) => {
+    return {
+      columns: [
+        "Rodapé Esquerda",
+        {
+          text: `Página ${currentPage.toString()} de ${pageCount}`,
+          alignment: "right",
+        },
+      ],
+      margin: [10, 10],
+    };
   };
 };
 
@@ -101,48 +108,78 @@ const dadosPedido = (dados) => {
   dados.forEach((el) => {
     const { campo, submetido, finalizado } = el;
     const linha = [];
-    const siglasOuCodigos = [];
+    const siglasOuCodigosSubmetidos = [];
+    const siglasOuCodigosFinalizados = [];
 
     // Campo
     linha.push({ text: campo, style: "campoTabela" });
 
     // Dados Submetidos
     if (submetido.dados instanceof Array) {
-      const lista = [];
+      if (submetido.dados.length !== 0) {
+        const lista = [];
 
-      submetido.dados.forEach((dado) => {
-        if (dado.sigla) {
-          siglasOuCodigos.push(dado.sigla);
-          lista.push(dado.sigla);
-        } else {
-          siglasOuCodigos.push(dado.codigo);
-          lista.push(dado.codigo);
-        }
-      });
+        submetido.dados.forEach((dado) => {
+          if (dado.sigla) {
+            siglasOuCodigosSubmetidos.push(dado.sigla);
+            lista.push(dado.sigla);
+          } else {
+            siglasOuCodigosSubmetidos.push(dado.codigo);
+            lista.push(dado.codigo);
+          }
+        });
 
-      linha.push({ ul: lista, style: switchStyle(submetido.cor) });
+        linha.push({ ul: lista, style: switchStyle(submetido.cor) });
+      } else {
+        linha.push({
+          text: {
+            text: "A lista está vazia.",
+            color: "#424242",
+            decoration: "underline",
+          },
+          style: switchStyle(submetido.cor),
+        });
+      }
     } else {
       linha.push({ text: submetido.dados, style: switchStyle(submetido.cor) });
     }
 
     // Dados Submetidos
     if (finalizado.dados instanceof Array) {
-      const lista = [];
+      if (finalizado.dados.length !== 0) {
+        const lista = [];
 
-      finalizado.dados.forEach((dado) => {
-        if (dado.sigla)
-          lista.push({
-            text: dado.sigla,
-            listType: siglasOuCodigos.includes(dado.sigla) ? "dot" : "circle",
-          });
-        else
-          lista.push({
-            text: dado.codigo,
-            listType: siglasOuCodigos.includes(dado.codigo) ? "dot" : "circle",
-          });
-      });
+        finalizado.dados.forEach((dado) => {
+          if (dado.sigla) {
+            siglasOuCodigosFinalizados.push(dado.sigla);
+            lista.push({
+              text: dado.sigla,
+              listType: siglasOuCodigosSubmetidos.includes(dado.sigla)
+                ? "dot"
+                : "circle",
+            });
+          } else {
+            siglasOuCodigosFinalizados.push(dado.codigo);
+            lista.push({
+              text: dado.codigo,
+              listType: siglasOuCodigosSubmetidos.includes(dado.codigo)
+                ? "dot"
+                : "circle",
+            });
+          }
+        });
 
-      linha.push({ ul: lista, style: switchStyle(finalizado.cor) });
+        linha.push({ ul: lista, style: switchStyle(finalizado.cor) });
+      } else {
+        linha.push({
+          text: {
+            text: "A lista está vazia.",
+            color: "#424242",
+            decoration: "underline",
+          },
+          style: switchStyle(finalizado.cor),
+        });
+      }
     } else {
       linha.push({
         text: finalizado.dados,
@@ -152,11 +189,36 @@ const dadosPedido = (dados) => {
 
     linhas.push(linha);
 
-    if (finalizado.nota)
-      linhas.push(["Nota", { colSpan: 2, text: finalizado.nota }, ""]);
-  });
+    const itensRemovidos = siglasOuCodigosSubmetidos.filter((el) => {
+      if (!siglasOuCodigosFinalizados.includes(el)) return el;
+    });
 
-  console.table(linhas);
+    if (
+      (finalizado.nota && itensRemovidos.length !== 0) ||
+      (!finalizado.nota && itensRemovidos.length !== 0)
+    )
+      linhas.push([
+        "Nota",
+        {
+          colSpan: 2,
+          stack: [
+            { text: finalizado.nota },
+            "\nItens removidos:",
+            { ul: itensRemovidos },
+          ],
+        },
+        "",
+      ]);
+    else if (finalizado.nota)
+      linhas.push([
+        "Nota",
+        {
+          colSpan: 2,
+          text: finalizado.nota,
+        },
+        "",
+      ]);
+  });
 
   const tabela = {
     table: {
@@ -205,6 +267,31 @@ const dadosPedido = (dados) => {
   content.push(tabela);
 };
 
+const despachoFinal = (despacho) => {
+  linhaEmBranco();
+
+  const despachoFinal = {
+    table: {
+      widths: ["5%", "20%", "70%", "5%"],
+      body: [
+        [
+          "",
+          {
+            text: "Despacho final:",
+            fillColor: "#EEEEEE",
+            style: "campoTabela",
+          },
+          { text: despacho, fillColor: "#EEEEEE" },
+          "",
+        ],
+      ],
+    },
+    layout: "noBorders",
+  };
+
+  content.push(despachoFinal);
+};
+
 const linhaEmBranco = () => {
   content.push({ text: "\n" });
 };
@@ -237,7 +324,6 @@ const guardarPDF = (nome) => {
   pdf.content = content;
   pdf.styles = styles;
 
-  console.log("pdf", pdf);
   pdfMake.createPdf(pdf).download(`relatorio-${nome}`);
 };
 
@@ -253,8 +339,6 @@ const resetPDF = () => {
  *
  */
 export const gerarPDF = (relatorio) => {
-  console.log("relatorio", relatorio);
-
   gerarHeader();
 
   gerarHeaderConteudo(relatorio);
@@ -262,6 +346,8 @@ export const gerarPDF = (relatorio) => {
   if (relatorio.alteracaoInfo) contextoPedido(relatorio.alteracaoInfo);
 
   dadosPedido(relatorio.comparacao);
+
+  if (relatorio.despacho) despachoFinal(relatorio.despacho);
 
   gerarFooter();
 
