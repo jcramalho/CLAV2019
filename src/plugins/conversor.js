@@ -266,7 +266,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       })
       if(errosSerie.codigo.length>0 || errosAgregacoes.codigo.length>0) errosVal.erros.push({
         sobre: "Código da série ou subsérie",
-        mensagem: "O código é obrigatório nas Tabelas de Seleção.",
+        mensagem: "O código é obrigatório nas Tabelas de Seleção da Lista Consolidada.",
         linhasSerie: errosSerie.codigo,
         linhasUI: errosAgregacoes.codigo
       })
