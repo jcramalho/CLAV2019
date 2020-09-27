@@ -215,6 +215,7 @@ export default {
     dono: [],
     dataInicio: "",
     dataFim: "",
+    nrAgregacoes: 0,
     uiPapel: "",
     uiDigital: "",
     uiOutros: "",
@@ -273,6 +274,7 @@ export default {
       this.notaDF = this.zona.notaDF;
       this.dataInicio = this.zona.dataInicio;
       this.dataFim = this.zona.dataFim;
+      this.nrAgregacoes = this.zona.nrAgregacoes;
       this.uiPapel = this.zona.uiPapel;
       this.uiDigital = this.zona.uiDigital;
       this.uiOutros = this.zona.uiOutros;
@@ -317,6 +319,7 @@ export default {
       this.validaJustificaDF = false;
       this.dataInicio = "";
       this.dataFim = "";
+      this.nrAgregacoes = 0;
       this.uiPapel = "";
       this.uiDigital = "";
       this.uiOutros = "";
@@ -405,6 +408,7 @@ export default {
         var destino = this.df;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
+        var nrAgregacoes = this.nrAgregacoes;
         var ni = this.ni;
         var dono = this.dono;
 
@@ -433,6 +437,7 @@ export default {
               dono: dono,
               dataInicio: dataInicio,
               dataFim: dataFim,
+              nrAgregacoes: nrAgregacoes,
               uiPapel: uiPapel,
               uiDigital: uiDigital,
               uiOutros: uiOutros,
@@ -455,6 +460,7 @@ export default {
               dono: dono,
               dataInicio: dataInicio,
               dataFim: dataFim,
+              nrAgregacoes: nrAgregacoes,
               uiPapel: uiPapel,
               uiDigital: uiDigital,
               uiOutros: uiOutros,
@@ -559,6 +565,7 @@ export default {
         var destino = this.df;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
+        var nrAgregacoes = this.nrAgregacoes;
         var ni = this.ni;
         var dono = this.dono;
 
@@ -591,6 +598,7 @@ export default {
           dono: dono,
           dataInicio: dataInicio,
           dataFim: dataFim,
+          nrAgregacoes: nrAgregacoes,
           uiPapel: uiPapel,
           uiDigital: uiDigital,
           uiOutros: uiOutros,

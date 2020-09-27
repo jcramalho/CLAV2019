@@ -31,7 +31,7 @@
           através da importação de um ficheiro.
           <p>
             O ficheiro está disponível
-            <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download>aqui</a>.
+            <a :href="`${publicPath}documentos/Formulario_auto_importacao_agregacoes_UI.csv`" download>aqui</a>.
           </p>
           <p>O seu preenchimento deve ser efetuado offline.</p>
           <p>
