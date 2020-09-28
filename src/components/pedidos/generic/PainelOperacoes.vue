@@ -62,6 +62,7 @@
       <FinalizarPedido
         @fecharDialog="fecharDialog()"
         @finalizarPedido="finalizarPedido($event)"
+        :existeNumDespacho="existeNumDespacho"
       />
     </v-dialog>
   </div>
@@ -75,7 +76,13 @@ import { filtraNivel } from "@/utils/permissoes";
 import { NIVEIS_VALIDAR_PEDIDO, NIVEIS_DEVOLVER_PEDIDO } from "@/utils/consts";
 
 export default {
-  props: ["operacao"],
+  props: {
+    operacao: {},
+    existeNumDespacho: {
+      type: Boolean,
+      default: false,
+    }
+  },
 
   components: {
     AvancarPedido,

@@ -11,11 +11,11 @@
           devem ser preenchidos previamente offline:
           <li>
             Um formulário para as classes / séries (veja
-            <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download>aqui</a>)
+            <a :href="`${publicPath}documentos/Formulario_auto_importacao_classes_series.csv`" download>aqui</a>)
           </li>
           <li>
             um formulário para as agregações simples / unidades de instalação (veja
-            <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download>aqui</a>)
+            <a :href="`${publicPath}documentos/Formulario_auto_importacao_agregacoes_UI.csv`" download>aqui</a>)
           </li>
 
           <p>
@@ -30,7 +30,7 @@
         </div>
         
         <v-stepper v-model="steps" vertical>
-          <v-stepper-step :complete="steps > 1" step="1">Seleção de Fonte e Fundo</v-stepper-step>
+          <v-stepper-step :complete="steps > 1" step="1">Seleção de fonte e fundo</v-stepper-step>
 
           <v-stepper-content step="1">
             <v-row>
@@ -189,24 +189,24 @@
           <v-stepper-content step="2">
             <v-row>
               <v-col :md="3">
-                <div class="info-label">Ficheiro série</div>
+                <div class="info-label">Ficheiro classes / séries</div>
               </v-col>
               <v-col class="mt-2">
-                <input type="file" id="fileSerie" ref="myFiles" @change="previewFileSerie" />
+                <input type="file" id="fileSerie" @change="previewFileSerie" />
               </v-col>
             </v-row>
             <v-row>
               <v-col :md="3">
-                <div class="info-label">Ficheiro Agregações / Unidades de instalação</div>
+                <div class="info-label">Ficheiro agregações / unidades de instalação</div>
               </v-col>
               <v-col class="mt-2">
-                <input type="file" id="fileAgreg" ref="myFiles" @change="previewFileAgreg" />
+                <input type="file" id="fileAgreg" @change="previewFileAgreg" />
               </v-col>
             </v-row>
             
-            <v-btn @click="steps = 1" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
-            <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie || !fileAgreg">Validar Ficheiros e Continuar</v-btn>
-            <v-btn class="ma-2" color="red darken-4" dark @click="fileSerie=null; fileAgreg=null">Limpar</v-btn>
+            <v-btn @click="steps=1; cleanFiles()" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
+            <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie" v-if="fileSerie">Validar Ficheiros e Continuar</v-btn>
+            <v-btn class="ma-2" color="red darken-4" dark @click="cleanFiles">Limpar</v-btn>
           </v-stepper-content>
 
           <v-stepper-step step="3">Validação de classes / séries e agregações / unidades de instalação</v-stepper-step>
@@ -218,13 +218,13 @@
               :submit="submit" 
               :tipo="tipo"
             />
-            <v-btn @click="steps = 2" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
+            <v-btn @click="steps = 2; cleanFiles()" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
             <v-btn
               medium
               color="indigo darken-4"
               dark
               @click="validar"
-              :disabled="!fileSerie || !fileAgreg || !auto.fundo "
+              :disabled="!fileSerie || !auto.fundo "
               class="ma-2"
             >Validar e Submeter</v-btn>
           </v-stepper-content>
@@ -568,6 +568,7 @@ export default {
                   zc.validaNotaDF = false;
                   zc.validaNotaPCA = false;
                   zc.validaJustificaDF = false;
+                  if(zc.agregacoes.length > 0) zc.nrAgregacoes = zc.agregacoes.length;
                   if(classe.df.valor == "E")
                     zc.destino = "Eliminação";
                   else if(classe.df.valor == "C")
@@ -581,6 +582,12 @@ export default {
                   delete this.auto["legislacao"]
                 }
                 this.auto.zonaControlo.forEach(zc => {
+                  if(this.tipo!="PGD_LC" && (zc.destino == "Conservação" || zc.destino == "C")) {
+                    this.flagAE = true;
+                    this.erro = "Classe / Série com " + (zc.codigo ? "Codigo <b>"+zc.codigo+"</b> " : "") + (zc.referencial ? "Número de referência <b>"+ zc.referencia +"</b> " : "") 
+                      + "com destino final de conservação.";
+                    return; //ERROS
+                  }
                   if(zc.codigo && zc.referencia)
                     var classe = this.classes.find(
                       elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
@@ -642,6 +649,7 @@ export default {
                   zc.validaNotaDF = false;
                   zc.validaNotaPCA = false;
                   zc.validaJustificaDF = false;
+                  if(zc.agregacoes.length > 0) zc.nrAgregacoes = zc.agregacoes.length;
                   if(classe.df.valor == "E")
                     zc.destino = "Eliminação";
                   else if(classe.df.valor == "C")
@@ -649,19 +657,32 @@ export default {
                   else zc.destino = classe.df.valor;
                 })
               }
-              if (this.flagAE) this.erroDialog = true;
+              if (this.flagAE) {
+                this.erroDialog = true;
+                this.cleanFiles()  
+              }
               else this.steps=3;
             })
             .catch(err => {
               this.erro = err;
               this.erroDialog = true;
+              this.cleanFiles();
             });
         })
         .catch(err => {
           this.errosVal = err;
           this.errosValDialog = true;
+          this.cleanFiles();
         });
     },
+
+    cleanFiles: function () {
+      this.fileSerie = null;
+      this.fileAgreg = null;
+      document.getElementById("fileSerie").value = ""
+      document.getElementById("fileAgreg").value = ""
+    },
+
     previewFileSerie: function(ev) {
       const file = ev.target.files[0];
       var fileName = file.name.split(".");
@@ -670,7 +691,7 @@ export default {
         reader.onload = e => (this.fileSerie = e.target.result);
         reader.readAsArrayBuffer(file);
       } else {
-        ev.target.value = "";
+        ev.target = null
         this.erro =
           "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>";
         this.erroDialog = true;
@@ -685,7 +706,7 @@ export default {
         reader.onload = e => (this.fileAgreg = e.target.result);
         reader.readAsArrayBuffer(file);
       } else {
-        ev.target.value = "";
+        ev.target = null
         this.erro =
           "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>";
         this.erroDialog = true;

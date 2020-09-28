@@ -1,8 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="warning title white--text" dark>
-      <v-icon color="white" class="ma-1">warning</v-icon>
-      Aviso
+      <v-icon color="white" class="ma-1">warning</v-icon>Aviso
     </v-card-title>
     <v-card-text>
       <v-container>
@@ -17,41 +16,56 @@
       <hr />
 
       <v-container>
-        <v-row>
-          <v-col cols="3">
-            <div class="info-label">Despacho</div>
-          </v-col>
+        <v-form ref="form">
+          <v-row v-if="existeNumDespacho">
+            <v-col cols="3">
+              <div class="info-label">Nº do Despacho</div>
+            </v-col>
 
-          <v-col>
-            <v-textarea
-              solo
-              hide-details
-              color="indigo"
-              label="Mensagem de despacho"
-              v-model="mensagemDespacho"
-            />
-          </v-col>
-        </v-row>
+            <v-col>
+              <v-text-field
+                solo
+                :rules="[v => !!v || 'Campo Obrigatório']"
+                color="indigo"
+                label="Nº do Despacho"
+                v-model="nDespacho"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              <div class="info-label">Despacho</div>
+            </v-col>
+
+            <v-col>
+              <v-textarea
+                solo
+                hide-details
+                color="indigo"
+                label="Mensagem de despacho"
+                v-model="mensagemDespacho"
+              />
+            </v-col>
+          </v-row>
+        </v-form>
       </v-container>
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn color="red darken-4" dark rounded text @click="cancelar()">
-        Não
-      </v-btn>
+      <v-btn color="red darken-4" dark rounded text @click="cancelar()">Não</v-btn>
 
-      <v-btn class="indigo accent-4" rounded dark @click="finalizarPedido()">
-        Sim
-      </v-btn>
+      <v-btn class="indigo accent-4" rounded dark @click="finalizarPedido()">Sim</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 export default {
+  props: ["existeNumDespacho"],
   data() {
     return {
       mensagemDespacho: null,
+      nDespacho: null
     };
   },
 
@@ -63,13 +77,17 @@ export default {
     },
 
     finalizarPedido() {
-      const despacho = {};
-      if (this.mensagemDespacho !== null)
-        despacho.mensagemDespacho = this.mensagemDespacho;
-      
-      this.$emit("finalizarPedido", despacho);
-    },
-  },
+      if (this.$refs.form.validate()) {
+        const despacho = {};
+        if (this.mensagemDespacho !== null)
+          despacho.mensagemDespacho = this.mensagemDespacho;
+
+        if (this.nDespacho !== null) despacho.nDespacho = this.nDespacho;
+
+        this.$emit("finalizarPedido", despacho);
+      }
+    }
+  }
 };
 </script>
 

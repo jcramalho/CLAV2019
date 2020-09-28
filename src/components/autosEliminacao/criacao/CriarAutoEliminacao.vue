@@ -8,7 +8,7 @@
       <v-card-text>
         <v-stepper v-model="steps" vertical>
           <v-stepper-step :complete="steps > 1" step="1">
-            Seleção de Fonte e Fundo
+            Seleção de fonte e fundo
             <span v-if="steps > 1">
               <v-chip 
                 class="ma-2"
@@ -180,7 +180,7 @@
             <v-btn class="ma-2" color="indigo darken-4" dark @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Continuar</v-btn>
           </v-stepper-content>
 
-          <v-stepper-step step="2">Identificação de Classes e Agregações</v-stepper-step>
+          <v-stepper-step step="2">Identificação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
           <v-stepper-content step="2">
             <!-- Adicionar Zona Controlo -->

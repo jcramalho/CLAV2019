@@ -292,8 +292,10 @@ export function renomearRepetidosEmArray(arr) {
 }
 
 export function gerarDadosRelatorio(pedido) {
-  const pedidoSubmetido = pedido.historico[0];
-  const pedidoFinalizado = pedido.historico[pedido.historico.length - 1];
+  const pedidoSubmetido = JSON.parse(JSON.stringify(pedido.historico[0]));
+  const pedidoFinalizado = JSON.parse(
+    JSON.stringify(pedido.historico[pedido.historico.length - 1])
+  );
   const despacho = pedido.distribuicao[pedido.distribuicao.length - 1];
   let campos = [];
   const relatorio = {
@@ -353,9 +355,12 @@ export function gerarDadosRelatorio(pedido) {
       )
         iguais = true;
 
-      iguais
-        ? (pedidoFinalizado[campo].cor = "verde")
-        : (pedidoFinalizado[campo].cor = "amarelo");
+      if (pedido.historico.length === 1)
+        pedidoFinalizado[campo].cor = "vermelho";
+      else
+        iguais
+          ? (pedidoFinalizado[campo].cor = "verde")
+          : (pedidoFinalizado[campo].cor = "amarelo");
     }
 
     relatorio.comparacao.push({
@@ -519,5 +524,5 @@ export default {
   identificaItemAdicionado,
   identificaItemEmTabela,
   adicionarNotaComRemovidos,
-  mapKeysRADA
+  mapKeysRADA,
 };

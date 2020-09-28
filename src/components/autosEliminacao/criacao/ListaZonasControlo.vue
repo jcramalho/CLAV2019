@@ -95,7 +95,16 @@
                 <v-col cols="3">
                   <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">N.º de agregações</v-card>
                 </v-col>
-                <v-col><v-card class="mt-2" style="color: #757575" elevation="0">{{ item.agregacoes.length }}</v-card></v-col>
+                <v-col>
+                  <v-card v-if="item.agregacoes.length==0" class="mt-2" style="color: #757575" elevation="0">
+                    <v-text-field
+                      v-model="item.nrAgregacoes"
+                      single-line
+                      dense
+                    />
+                  </v-card>
+                  <v-card v-else class="mt-2" style="color: #757575" elevation="0">{{ item.agregacoes.length }}</v-card>
+                </v-col>
               </v-row>
               <v-row v-if="item.uiPapel">
                 <v-col cols="3">

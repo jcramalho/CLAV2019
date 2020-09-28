@@ -58,6 +58,7 @@
         @finalizarPedido="verificaVermelhos($event)"
         @devolverPedido="despacharPedido($event)"
         v-else-if="fase == 'validacao'"
+        :existeNumDespacho="true"
       />
     </v-row>
     <!-- Dialog de confirmação de operação -->
@@ -68,11 +69,20 @@
         @confirma="finalizarPedido(dialogConfirmacao.dados)"
       />
     </v-dialog>
-    <v-alert width="100%" :value="!todos_validados" outlined type="error" prominent border="left">
+    <v-alert
+      width="100%"
+      :value="!todos_validados"
+      outlined
+      type="error"
+      prominent
+      border="left"
+    >
       Impossível validar RADA. As seguintes dependências não foram validadas:
       <ul>
         <li v-for="(e, i) in por_validar" :key="i">
-          <span @click="$router.push('/pedidos/' + e.codigo)">{{e.codigo}}</span>
+          <span @click="$router.push('/pedidos/' + e.codigo)">{{
+            e.codigo
+          }}</span>
           - {{ e.texto }}
         </li>
       </ul>
@@ -88,6 +98,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/generic/ErroDialog";
 import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
+const nanoid = require("nanoid");
 
 export default {
   props: {
@@ -391,7 +402,7 @@ export default {
         this.todos_validados = true;
         this.por_validar = [];
 
-        if (dependencias.length > 0) {
+        if (dependencias != null) {
           for (let i = 0; i < dependencias.length; i++) {
             let response = await this.$request(
               "get",
@@ -425,12 +436,44 @@ export default {
             };
           });
 
+          let dataAprovacao = new Date();
+
+          const despachoAprovacao = {
+            id: "leg_" + nanoid(),
+            numero: dados.nDespacho,
+            sumario: pedido.objeto.dados.titulo,
+            tipo: "Despacho",
+            data:
+              dataAprovacao.getFullYear() +
+              "-" +
+              ("0" + (dataAprovacao.getMonth() + 1)).slice(-2) +
+              "-" +
+              dataAprovacao.getDate(),
+            link: "/rada/" + pedido.objeto.dados.id,
+            diplomaFonte: "RADA",
+            dataRevogacao: "",
+            estado: "Ativo",
+            entidadesSel: [
+              {
+                sigla: "DGLAB",
+                designacao:
+                  "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
+                id: "ent_DGLAB",
+              },
+            ],
+            processosSel: [],
+          };
+
           let triplos = await converterParaTriplosRADA(
             pedido.objeto.dados,
-            subformasContagem
+            subformasContagem,
+            despachoAprovacao.data,
+            despachoAprovacao.id
           );
 
           await this.$request("post", "/rada", { triplos });
+
+          await this.$request("post", "/legislacao", despachoAprovacao);
 
           let dadosUtilizador = this.$verifyTokenUser();
 
@@ -451,6 +494,7 @@ export default {
           this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
         }
       } catch (e) {
+        console.log(e);
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem = "Erro ao finalizar a validação!";
       }
