@@ -58,6 +58,7 @@
         @finalizarPedido="verificaVermelhos($event)"
         @devolverPedido="despacharPedido($event)"
         v-else-if="fase == 'validacao'"
+        :existeNumDespacho="true"
       />
     </v-row>
     <!-- Dialog de confirmação de operação -->
