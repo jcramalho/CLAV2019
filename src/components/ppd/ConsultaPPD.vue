@@ -70,6 +70,11 @@ export default {
     } catch (e) {
       return e;
     }
+  },
+  methods:{
+      rowClicked: function(i){
+          return true;
+      }
   }
 
 };

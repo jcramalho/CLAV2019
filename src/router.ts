@@ -634,9 +634,15 @@ export default new Router({
     },
     //PPD
     {
-      path: "/ppds",
+      path: "/ppd",
       name: "ConsultaPPD",
       component: () => import("./views/ppd/ConsultaPPD.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
+      path: "/ppd/criar",
+      name: "CriaPPD",
+      component: () => import("./views/ppd/CriaPPD.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     }
   ]
