@@ -45,24 +45,38 @@
                 clearable
             ></v-textarea>
             </v-col>
-
+            <v-col>
+                <hr style="border: 3px solid indigo; border-radius: 2px;" />
+            </v-col>
+        </v-row>
+        <v-row>
             <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Atividade do SI</div>
+                <div class="info-label">Atividade do SI</div>
+            </v-col>
+            <v-col
+              class="d-flex"
+              cols="12"
+              sm="9"
+            >
+              <v-select
+                :items="checkedAti"
+                label="Indique o estado de atividade do sistema"
+                v-model="c.avaliacao.checkedAti"
+                dense
+                solo
+              ></v-select>
+            </v-col>
+            <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Número de referência do SI</div>
             </v-col>
             <v-col cols="12" xs="12" sm="9">
-                <input type="radio" id="act" value="Ativo" v-model="c.avaliacao.checkedAti">
-                <label for="act">Ativo</label>
-                <br>
-                <input type="radio" id="semi" value="Semi-ativo" v-model="c.avaliacao.checkedAti">
-                <label for="semi">Semi-Ativo</label>
-                <br>
-                <input type="radio" id="in" value="Inativo" v-model="c.avaliacao.checkedAti">
-                <label for="in">Inativo</label>
-                <br>
-                <input type="radio" id="ab" value="Abatido" v-model="c.avaliacao.checkedAti">
-                <label for="ab">Abatido</label>
-                <br>
-                <span>Selected: {{ c.avaliacao.checkedAti }}</span>
+            <v-text-field
+                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                v-model="c.avaliacao.nRef"
+                label="Indique nº de referência do sistema relacionado"
+                solo
+                clearable
+            ></v-text-field>
             </v-col>
         </v-row>
         <v-row>
@@ -90,6 +104,7 @@ export default {
   data: () => {
     return {
       myhelp: help,
+      checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"]
     };
   },
 

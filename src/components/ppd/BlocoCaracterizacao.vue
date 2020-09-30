@@ -10,12 +10,25 @@
     <v-expansion-panel-content>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Código de classificação </div>
+          <div class="info-label">Número de referência SI</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
-            v-model="c.avaliacao.codigo"
-            label="Código do Plano de Classificação, se aplicável"
+            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+            v-model="c.caracterizacao.nRef"
+            label="Identificador do sistema de informação"
+            solo
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" xs="12" sm="3">
+          <div class="info-label">Nome do SI</div>
+        </v-col>
+        <v-col cols="12" xs="12" sm="9">
+          <v-text-field
+            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+            v-model="c.caracterizacao.nomeSI"
+            label="Designação oficial do sistema"
             solo
             clearable
           ></v-text-field>
@@ -26,6 +39,173 @@
           <hr style="border: 3px solid indigo; border-radius: 2px;" />
         </v-col>
       </v-row>
+      <v-row>
+            <v-col cols="12" xs="12" sm="3">
+                <div class="info-label">Nível de dependência do Software</div>
+            </v-col>
+            <v-col
+              class="d-flex"
+              cols="12"
+              sm="9"
+            >
+              <v-select
+                :items="dependenciaSoft"
+                label="Indique nível de dependência para com fornecedores privados"
+                v-model="c.caracterizacao.dependenciaSoft"
+                dense
+                solo
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+                <div class="info-label">Modelo de crescimento</div>
+            </v-col>
+            <v-col
+              class="d-flex"
+              cols="12"
+              sm="9"
+            >
+              <v-select
+                :items="modeloCres"
+                label="Indique o modelo de adição de dados ao sistema"
+                v-model="c.caracterizacao.modeloCres"
+                dense
+                solo
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Dimensão atual</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+            <v-text-field
+                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                v-model="c.caracterizacao.dimensao"
+                label="Indique nº de registos e dimensão em unidades binárias."
+                solo
+                clearable
+            ></v-text-field>
+            </v-col>
+            <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Crescimento anual</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+            <v-text-field
+                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                v-model="c.caracterizacao.crescimento"
+                label="Indique nº de registos e dimensão em unidades binárias."
+                solo
+                clearable
+            ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+                <div class="info-label">Localização de Sistema</div>
+            </v-col>
+            <v-col
+              class="d-flex"
+              cols="12"
+              sm="9"
+            >
+              <v-select
+                :items="localSistema"
+                label="Indique se os sistemas estão sediados num ponto central ou dispersos"
+                v-model="c.caracterizacao.localSistema"
+                dense
+                solo
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+                <div class="info-label">Sala técnica</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+                <input type="radio" id="nivelS1" value="Sim" v-model="c.caracterizacao.salaTec" style="margin-left: 1">
+                <label for="nivelS1">Sim</label>
+                <input type="radio" id="nivelS2" value="Não" v-model="c.caracterizacao.salaTec">
+                <label for="nivelS2">Não</label>
+                <br>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+                <div class="info-label">Acesso reservado a sala técnica</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+                <input type="radio" id="nivelAS1" value="Sim" v-model="c.caracterizacao.acessoSalaTec">
+                <label for="nivelAS1">Sim</label>
+                <input type="radio" id="nivelAS2" value="Não" v-model="c.caracterizacao.acessoSalaTec">
+                <label for="nivelAS2">Não</label>
+                <br>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+                <div class="info-label">Sistemas de energia redundantes</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+                <input type="radio" id="nivelER1" value="Sim" v-model="c.caracterizacao.energiaRed">
+                <label for="nivelER1">Sim</label>
+                <input type="radio" id="nivelER2" value="Não" v-model="c.caracterizacao.energiaRed">
+                <label for="nivelER2">Não</label>
+                <br>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+                <div class="info-label">Energia socorrida</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+                <input type="radio" id="nivelES1" value="Sim" v-model="c.caracterizacao.energiaSoc">
+                <label for="nivelES1">Sim</label>
+                <input type="radio" id="nivelES2" value="Não" v-model="c.caracterizacao.energiaSoc">
+                <label for="nivelES2">Não</label>
+                <br>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Sistema de alarme e extinção de incêndio</div>
+            </v-col>
+            <v-col
+              class="d-flex"
+              cols="12"
+              sm="9"
+            >
+              <v-select
+                :items="alarme"
+                label="Indique se há segurança relativamente a incêndios"
+                v-model="c.caracterizacao.alarme"
+                dense
+                solo
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Climatização dedicada</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+                <input type="radio" id="nivelC1" value="Sim" v-model="c.caracterizacao.climatizacao">
+                <label for="nivelC1">Sim</label>
+                <input type="radio" id="nivelC2" value="Não" v-model="c.caracterizacao.climatizacao">
+                <label for="nivelC2">Não</label>
+                <br>
+            </v-col>
+
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Utilização de métodos de prevenção ou mitigação de malware e outras ciberameaças</div>
+            </v-col>
+            <v-col
+              class="d-flex"
+              cols="12"
+              sm="9"
+            >
+              <v-select
+                :items="seguranca"
+                label="Indique se existe algum tipo de proteção"
+                v-model="c.caracterizacao.seguranca"
+                dense
+                solo
+              ></v-select>
+            </v-col>
+
+        </v-row>
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
@@ -46,6 +226,17 @@ export default {
   data: () => {
     return {
       myhelp: help,
+      dependenciaSoft: ["Uso exclusivo de SW não proprietário",
+                        "Uso de SW proprietário, mas com adequadas facilidades de exportação de dados",
+                        "Uso de SW proprietário com especificações fechadas, e sem adequadas facilidades de exportação de dados"],
+      modeloCres: ["Acumulção contínua - dados continuamente adicionados sem se proceder a expurgo",
+                   "Substituição de dado - os dados são escritos por cima de registos anteriores criando diferentes versões de um registo qs quais podem ou não ser guardadas",
+                   "Expurgo de registos que perdem utilidade operacional - periodicamente o sistema é purgado de dados que perdem utilidade operacional",
+                   "Outra situação"],
+      seguranca: ["Sim", "Não", "Em estudo"],
+      alarme: ["Sim há sistemas de alarme e extinção", "Não há sistemas de alarme ou extinção",
+               "Há sistemas de alarme mas não de extinção", "Outros"],
+      localSistema: ["Centralizado","Descentralizado","Misto"]
     };
   },
 

@@ -111,7 +111,44 @@ export default {
       avaliacao: {
         codigo: "",
         descricao: "",
-        checkedAti: ""
+        checkedAti: "",
+        nRef: ""
+      },
+      caracterizacao:{
+        nRef: "",
+        nomeSI: "",
+        dependenciaSoft: "",
+        modeloCres: "",
+        dimensao:"",
+        crescimento: "",
+        localSistema: "",
+        salaTec: "",
+        acessoSalaTec: "",
+        energiaRed: "",
+        energiaSoc: "",
+        alarme: "",
+        climatizacao: "",
+        seguranca: "",
+        comunicacaoEx: "",
+        planoContingencia: "",
+        planoMudEvolucao: "",
+        privAcesso: "",
+        catSegDados: "",
+        rotinaAuditoria: "",
+        logsRotinas: "",
+        integridadeInfo: "",
+        armazenamento: "",
+        replicacaoDados: "",
+        backupsRegular: "",
+        modeloBackup: "",
+        qualidadeBackup: "",
+        inventarioSoft: "",
+        inventarioHard: "",
+        documentacaoSis: "",
+        documentacaoProc: "",
+        controlVersaoDProc: "",
+        contratoAtivos: "",
+        planoRecuperacao: ""
       },
       codigo: "",
       titulo: "",
@@ -121,22 +158,6 @@ export default {
       notasEx: [],
       termosInd: [],
 
-      temSubclasses4Nivel: false,
-      temSubclasses4NivelPCA: false,
-      temSubclasses4NivelDF: false,
-      subdivisao4Nivel01Sintetiza02: true,
-
-      // Donos do processo: lista de entidades
-      donos: [],
-
-      // Participantes no processo: lista de entidades
-      participantes: [],
-
-      // Processos Relacionados
-      processosRelacionados: [],
-
-      // Legislação Associada
-      legislacao: [],
 
       user: {
         token: ""
@@ -158,18 +179,6 @@ export default {
     listaProcessos: [],
     listaLegislacao: [],
 
-    semaforos: {
-      paisReady: false,
-      classesReady: false,
-      entidadesReady: false,
-      legislacaoReady: false,
-      pcaFormasContagemReady: false,
-      pcaSubFormasContagemReady: false,
-      critLegalAdicionadoPCA: false,
-      critLegalAdicionadoDF: false,
-      critGestionarioAdicionado: false
-    },
-
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar um PLano de preservação digital!",
@@ -188,9 +197,9 @@ export default {
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
-            identificacao: item.identificacao,
+            identificacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.identificacao
+            label: item.sigla + " - " + item.designacao
           };
         });
         this.entidadesReady = true;
@@ -226,29 +235,7 @@ export default {
       }
     },
 
-    // Carrega a legislação da BD....................
-    loadLegislacao: async function() {
-      try {
-        var response = await this.$request("get", "/legislacao?estado=Ativo");
-        this.listaLegislacao = response.data
-          .map(function(item) {
-            return {
-              tipo: item.tipo,
-              numero: item.numero,
-              sumario: item.sumario,
-              data: item.data,
-              selected: false,
-              id: item.id
-            };
-          })
-          .sort(function(a, b) {
-            return -1 * a.data.localeCompare(b.data);
-          });
-        this.semaforos.legislacaoReady = true;
-      } catch (error) {
-        return error;
-      }
-    }
+
   },
 
   /* em principio nao vai ser necessario porque vou buscar a info toda logo no inicio
@@ -267,8 +254,6 @@ export default {
   created: async function() {
       try{
             await this.loadEntidades();
-            //await this.loadProcessos();
-            await this.loadLegislacao();
       }
       catch(e){
           console.log('Erro ao carregar a informação inicial: ' + e);
@@ -280,11 +265,11 @@ export default {
 
 <style>
 .separador {
-  color: white; 
+  color: white;
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #1A237E; 
+  background-color: #1A237E;
   font-size: 14pt;
   font-weight: bold;
   margin: 5px;
