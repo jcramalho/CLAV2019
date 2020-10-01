@@ -448,7 +448,7 @@ export default {
               "-" +
               ("0" + (dataAprovacao.getMonth() + 1)).slice(-2) +
               "-" +
-              dataAprovacao.getDate(),
+              ("0" + dataAprovacao.getDate()).slice(-3),
             link: "/rada/" + pedido.objeto.dados.id,
             diplomaFonte: "RADA",
             dataRevogacao: "",
