@@ -3,18 +3,24 @@
     <DespachoAprovacao
       v-if="!!sumario"
       @criar="finalizarPedido"
+      @devolver="devolverPedido"
       :sumario="sumario"
     />
     <ConsultaPedido
       :idp="$route.params.idPedido"
       @pedido_original="pedido = $event"
     />
+    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
+      <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import ConsultaPedido from "@/components/pedidos/ConsultaPedido.vue"; // @ is an alias to /src
 import DespachoAprovacao from "@/components/pedidos/DespachoAprovacao.vue";
+import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
+import ErroDialog from "@/components/generic/ErroDialog";
 const nanoid = require("nanoid");
 
 export default {
@@ -22,6 +28,10 @@ export default {
     return {
       pedido: null,
       sumario: null,
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
+      },
     };
   },
   watch: {
@@ -30,34 +40,115 @@ export default {
     },
   },
   methods: {
-    finalizarPedido(despacho) {
-      const despachoAprovacao = {
-        id: "leg_" + nanoid(),
-        numero: "1",
-        sumario: despacho.sumario,
-        tipo: "Despacho",
-        data: despacho.data,
-        link: "/rada/" + this.pedido.objeto.dados.id,
-        diplomaFonte: "RADA",
-        dataRevogacao: despacho.dataRevogacao,
-        estado: "Ativo",
-        entidadesSel: [
-          {
-            sigla: "DGLAB",
-            designacao:
-              "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
-            id: "ent_DGLAB",
-          },
-        ],
-        processosSel: [],
-      };
+    async finalizarPedido(despacho) {
+      try {
+        let res = await this.$request("get", "/contador/despacho");
 
-      console.log(despachoAprovacao);
+        let n = res.data.valor;
+
+        const despachoAprovacao = {
+          id: "leg_" + nanoid(),
+          numero: n.toString(),
+          sumario: despacho.sumario,
+          tipo: "Despacho",
+          data: despacho.data,
+          link: "/rada/" + this.pedido.objeto.dados.id,
+          diplomaFonte: "RADA",
+          dataRevogacao: despacho.dataRevogacao,
+          estado: "Ativo",
+          entidadesSel: [
+            {
+              sigla: "DGLAB",
+              designacao:
+                "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
+              id: "ent_DGLAB",
+            },
+          ],
+          processosSel: [],
+        };
+
+        console.log(despachoAprovacao);
+
+        //Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
+
+        let responseSFC = await this.$request(
+          "get",
+          "/vocabularios/vc_pcaSubformaContagem"
+        );
+
+        let subformasContagem = responseSFC.data.map((item) => {
+          return {
+            label: item.termo.split(": ")[1] + ": " + item.desc,
+            value: item.idtermo.split("#")[1],
+          };
+        });
+
+        let triplos = await converterParaTriplosRADA(
+          this.pedido.objeto.dados,
+          subformasContagem,
+          despachoAprovacao.data,
+          despachoAprovacao.id
+        );
+
+        await this.$request("post", "/rada", { triplos });
+
+        await this.$request("post", "/legislacao", despachoAprovacao);
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        const novaDistribuicao = {
+          estado: "Validado",
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: despacho.mensagem,
+        };
+
+        this.pedido.estado = "Validado";
+
+        await this.$request("put", "/pedidos", {
+          pedido: this.pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        await this.$request("put", "/contador/despacho");
+
+        this.$router.push(
+          `/pedidos/finalizacao/${this.$route.params.idPedido}`
+        );
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem = "Erro ao finalizar o pedido!";
+      }
+    },
+    async devolverPedido(dados) {
+      try {
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        const novaDistribuicao = {
+          estado: "Devolvido",
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        this.pedido.estado = "Devolvido";
+
+        await this.$request("put", "/pedidos", {
+          pedido: this.pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem = "Erro ao devolver o pedido!";
+      }
     },
   },
   components: {
     ConsultaPedido,
     DespachoAprovacao,
+    ErroDialog,
   },
 };
 </script>
