@@ -582,24 +582,10 @@ export default {
                   delete this.auto["legislacao"]
                 }
                 this.auto.zonaControlo.forEach(zc => {
-                  if(this.tipo!="PGD_LC" && (zc.destino == "Conservação" || zc.destino == "C")) {
-                    this.flagAE = true;
-                    this.erro = "Classe / Série com " + (zc.codigo ? "Codigo <b>"+zc.codigo+"</b> " : "") + (zc.referencial ? "Número de referência <b>"+ zc.referencia +"</b> " : "") 
-                      + "com destino final de conservação.";
-                    return; //ERROS
-                  }
-                  if(zc.codigo && zc.referencia)
-                    var classe = this.classes.find(
-                      elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
-                    )
-                  else if(zc.codigo)
-                    var classe = this.classes.find(
-                      elem => elem.codigo == zc.codigo
-                    )
-                  else 
-                    var classe = this.classes.find(
-                      elem => elem.referencia == zc.referencia
-                    )
+                  var classe = this.classes.find(
+                    elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
+                  )
+
                   if (!classe) {
                     this.flagAE = true;
                     if(zc.codigo && zc.referencia) 
@@ -619,6 +605,12 @@ export default {
                         zc.referencia +
                         "</b> não foi encontrada em "+this.auto.legislacao.split(" - ")[0];
                     return; //ERROS
+                  } 
+                  else if((this.tipo == "PGD" || this.tipo=="RADA") && classe.df.valor == "C") {
+                    this.flagAE = true;
+                    this.erro = "Classe / Série com " + (zc.codigo ? "Codigo <b>"+zc.codigo+"</b> " : "") + (zc.referencia ? "Número de referência <b>"+ zc.referencia +"</b> " : "") 
+                      + "com destino final de conservação.";
+                    return;
                   }
                   
                   var pca = classe.pca.valor;
@@ -813,7 +805,7 @@ export default {
               pca: {valores: c.pca, notas: c.notaPCA},
             }
         })
-        if(this.tipo == "PGD" || this.tipo=="RADA") this.classes = this.classes.filter(c=> c.df.valor!="C")
+        //if(this.tipo == "PGD" || this.tipo=="RADA") this.classes = this.classes.filter(c=> c.df.valor!="C")
 
       } else if(this.tipo == "RADA_CLAV") {
         var response = await this.$request(
