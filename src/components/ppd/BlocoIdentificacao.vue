@@ -4,7 +4,7 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         Identificação do plano de preservação digital
-        <InfoBox header="Identificação ppd" :text="myhelp.Classe.BlocoDecisoes"  helpColor="white"/>
+        <InfoBox header="Identificação ppd" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
@@ -102,12 +102,16 @@
           <div class="info-label">Definição formal de responsabilidades</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <input type="radio" id="nivelDF1" value="Sim" v-model="c.identificacao.defFormal">
-          <label for="nivelDF1">Sim</label>
-          <input type="radio" id="nivelDF2" value="Não" v-model="c.identificacao.defFormal">
-          <label for="nivelDF2">Não</label>
-          <br>
-          <div v-if="c.identificacao.defFormal === 'Sim'">
+          <v-radio-group v-model="defCheck" row>
+            <v-radio
+              v-for="(p, i) in simNao"
+              :key="i"
+              :label="p"
+              :value="p"
+              color="indigo darken-3"
+            ></v-radio>
+          </v-radio-group>
+          <div v-if="defCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
               v-model="c.identificacao.defResponsavel"
@@ -122,12 +126,16 @@
           <div class="info-label">Insourcing</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <input type="radio" id="nivelIN1" value="Sim" v-model="c.identificacao.insourcingCheck">
-          <label for="nivelIN1">Sim</label>
-          <input type="radio" id="nivelIN2" value="Não" v-model="c.identificacao.insourcingCheck">
-          <label for="nivelIN2">Não</label>
-          <br>
-          <div v-if="c.identificacao.insourcingCheck === 'Sim'">
+          <v-radio-group v-model="insourcingCheck" row>
+            <v-radio
+              v-for="(p, i) in simNao"
+              :key="i"
+              :label="p"
+              :value="p"
+              color="indigo darken-3"
+            ></v-radio>
+          </v-radio-group>
+          <div v-if="insourcingCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
               v-model="c.identificacao.insourcing"
@@ -141,12 +149,16 @@
           <div class="info-label">Outsourcing</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <input type="radio" id="nivelOS1" value="Sim" v-model="c.identificacao.outsourcingCheck">
-          <label for="nivelOS1">Sim</label>
-          <input type="radio" id="nivelOS2" value="Não" v-model="c.identificacao.outsourcingCheck">
-          <label for="nivelOS2">Não</label>
-          <br>
-          <div v-if="c.identificacao.outsourcingCheck === 'Sim'">
+          <v-radio-group v-model="outsourcingCheck" row>
+            <v-radio
+              v-for="(p, i) in simNao"
+              :key="i"
+              :label="p"
+              :value="p"
+              color="indigo darken-3"
+            ></v-radio>
+          </v-radio-group>
+          <div v-if="outsourcingCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
               v-model="c.identificacao.outsourcing"
@@ -255,6 +267,11 @@ export default {
 
   data: () => {
     return {
+      simNao: ["Sim","Não"],
+      defCheck: "",
+      insourcingCheck: "",
+      outsourcingCheck: "",
+
       myhelp: help,
       naVaziaFlag: false,
       naDuplicadoFlag: false,

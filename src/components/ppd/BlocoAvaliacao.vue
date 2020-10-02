@@ -4,15 +4,15 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         Avaliação do plano de preservação digital
-        <InfoBox header="Avaliação ppd" :text="myhelp.Classe.BlocoDecisoes"  helpColor="white"/>
+        <InfoBox header="Avaliação ppd" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
         <v-row>
-            <v-col cols="12" xs="12" sm="3">
+          <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Número de referência SI</div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="9">
+          </v-col>
+          <v-col cols="12" xs="12" sm="9">
             <v-text-field
                 :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
                 v-model="c.nRef"
@@ -20,64 +20,45 @@
                 solo
                 clearable
             ></v-text-field>
-            </v-col>
+          </v-col>
 
-            <v-col cols="12" xs="12" sm="3">
+          <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Código de classificação </div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="9">
-            <v-text-field
-                v-model="c.avaliacao.codigo"
-                label="Código do Plano de Classificação, se aplicável"
-                solo
-                clearable
-            ></v-text-field>
-            </v-col>
+          </v-col>
+          <v-col cols="12" xs="12" sm="9">
+            <v-radio-group v-model="loadCheck" row>
+              <v-radio
+                v-for="(p, i) in tsRada"
+                :key="i"
+                :label="p"
+                :value="p"
+                color="indigo darken-3"
+              ></v-radio>
+            </v-radio-group>
+            <div v-if="loadCheck === 'TS'">
+              <span>TS</span>
+            </div>
+            <div v-if="loadCheck === 'RADA'">
+              <span>RADA</span>
+            </div>
+          </v-col>
 
-            <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Descrição e conteúdo da classe</div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="9">
-            <v-textarea
-                v-model="c.avaliacao.descricao"
-                label="Descrição das actividades"
-                solo
-                clearable
-            ></v-textarea>
-            </v-col>
-            <v-col>
-                <hr style="border: 3px solid indigo; border-radius: 2px;" />
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">Atividade do SI</div>
-            </v-col>
-            <v-col
-              class="d-flex"
-              cols="12"
-              sm="9"
-            >
-              <v-select
-                :items="checkedAti"
-                label="Indique o estado de atividade do sistema"
-                v-model="c.avaliacao.checkedAti"
-                dense
-                solo
-              ></v-select>
-            </v-col>
-            <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Número de referência do SI</div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="9">
-            <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="c.avaliacao.nRef"
-                label="Indique nº de referência do sistema relacionado"
-                solo
-                clearable
-            ></v-text-field>
-            </v-col>
+          <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Atividade do SI</div>
+          </v-col>
+          <v-col
+            class="d-flex"
+            cols="12"
+            sm="9"
+          >
+            <v-select
+              :items="checkedAti"
+              label="Indique o estado de atividade do sistema"
+              v-model="c.avaliacao.checkedAti"
+              dense
+              solo
+            ></v-select>
+          </v-col>
         </v-row>
         <v-row>
         <v-col>
@@ -104,7 +85,9 @@ export default {
   data: () => {
     return {
       myhelp: help,
-      checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"]
+      checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"],
+      loadCheck: "",
+      tsRada: ["TS","RADA"],
     };
   },
 

@@ -104,11 +104,8 @@ export default {
         propSistema: "",
         propDados: "",
         userList: [],
-        defFormal: "",
         defResponsavel: "",
-        insourcingCheck: "",
         insourcing: "",
-        outsourcingCheck: "",
         outsourcing: "",
         notas: "",
         mencaoResp: ""
