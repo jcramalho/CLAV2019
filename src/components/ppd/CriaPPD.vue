@@ -49,11 +49,6 @@
             <!-- BLOCO IDENTIFICAÇÃO -->
             <BlocoIdentificacao
               :c="ppd"
-              :semaforos="semaforos"
-              :donos="entidadesD"
-              :participantes="entidadesP"
-              :procRel="listaProcessos"
-              :legs="listaLegislacao"
             />
             <!-- BLOCO AVALIAÇÃO -->
             <BlocoAvaliacao
@@ -77,7 +72,6 @@
         </v-snackbar>
       </v-card>
 
-      <PainelOperacoes :c="ppd" :pendenteId="''" />
     </v-col>
   </v-row>
 </template>
@@ -90,14 +84,12 @@ const criteriosLabels = require("@/config/labels").criterios;
 import BlocoIdentificacao from "@/components/ppd/BlocoIdentificacao.vue";
 import BlocoAvaliacao from "@/components/ppd/BlocoAvaliacao.vue";
 import BlocoCaracterizacao from "@/components/ppd/BlocoCaracterizacao.vue";
-import PainelOperacoes from "@/components/classes/criacao/PainelOperacoes.vue";
 
 export default {
   components: {
     BlocoIdentificacao,
     BlocoAvaliacao,
     BlocoCaracterizacao,
-    PainelOperacoes
   },
 
   data: () => ({
@@ -106,7 +98,20 @@ export default {
       nRef: "",
       identificacao: {
         nomeSI: "",
-        local: ""
+        local: "",
+        adminSistema: "",
+        adminDados: "",
+        propSistema: "",
+        propDados: "",
+        userList: [],
+        defFormal: "",
+        defResponsavel: "",
+        insourcingCheck: "",
+        insourcing: "",
+        outsourcingCheck: "",
+        outsourcing: "",
+        notas: "",
+        mencaoResp: ""
       },
       avaliacao: {
         codigo: "",
