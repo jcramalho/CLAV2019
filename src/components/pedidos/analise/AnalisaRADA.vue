@@ -58,7 +58,7 @@
         @finalizarPedido="verificaVermelhos($event)"
         @devolverPedido="despacharPedido($event)"
         v-else-if="fase == 'validacao'"
-        :existeNumDespacho="true"
+        :vai_para_despacho="true"
       />
     </v-row>
     <!-- Dialog de confirmação de operação -->
@@ -98,7 +98,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/generic/ErroDialog";
 import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
-const nanoid = require("nanoid");
+
 
 export default {
   props: {
@@ -393,6 +393,7 @@ export default {
     },
     async finalizarPedido(dados) {
       try {
+        console.log("cheguei aqui ", dados)
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         let dependencias = pedido.distribuicao[0].despacho.match(
@@ -421,77 +422,97 @@ export default {
         }
 
         if (this.todos_validados) {
-          //Fazer pedido para obter as subformas do PCA pois pode ter subformas que existem na plataforma e outras não;
-          //Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
-
-          let responseSFC = await this.$request(
-            "get",
-            "/vocabularios/vc_pcaSubformaContagem"
-          );
-
-          let subformasContagem = responseSFC.data.map((item) => {
-            return {
-              label: item.termo.split(": ")[1] + ": " + item.desc,
-              value: item.idtermo.split("#")[1],
-            };
-          });
-
-          let dataAprovacao = new Date();
-
-          const despachoAprovacao = {
-            id: "leg_" + nanoid(),
-            numero: dados.nDespacho,
-            sumario: pedido.objeto.dados.titulo,
-            tipo: "Despacho",
-            data:
-              dataAprovacao.getFullYear() +
-              "-" +
-              ("0" + (dataAprovacao.getMonth() + 1)).slice(-2) +
-              "-" +
-              ("0" + dataAprovacao.getDate()).slice(-3),
-            link: "/rada/" + pedido.objeto.dados.id,
-            diplomaFonte: "RADA",
-            dataRevogacao: "",
-            estado: "Ativo",
-            entidadesSel: [
-              {
-                sigla: "DGLAB",
-                designacao:
-                  "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
-                id: "ent_DGLAB",
-              },
-            ],
-            processosSel: [],
-          };
-
-          let triplos = await converterParaTriplosRADA(
-            pedido.objeto.dados,
-            subformasContagem,
-            despachoAprovacao.data,
-            despachoAprovacao.id
-          );
-
-          await this.$request("post", "/rada", { triplos });
-
-          await this.$request("post", "/legislacao", despachoAprovacao);
-
           let dadosUtilizador = this.$verifyTokenUser();
 
+          const estado = "Em Despacho";
+          pedido.estado = estado;
+
+          pedido.historico.push(this.novoHistorico);
+
           const novaDistribuicao = {
-            estado: "Validado",
+            estado: estado,
             responsavel: dadosUtilizador.email,
             data: new Date(),
             despacho: dados.mensagemDespacho,
           };
-
-          pedido.estado = "Validado";
 
           await this.$request("put", "/pedidos", {
             pedido: pedido,
             distribuicao: novaDistribuicao,
           });
 
-          this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
+          this.$router.go(-1);
+          //Fazer pedido para obter as subformas do PCA pois pode ter subformas que existem na plataforma e outras não;
+          //Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
+
+          // let responseSFC = await this.$request(
+          //   "get",
+          //   "/vocabularios/vc_pcaSubformaContagem"
+          // );
+
+          // let subformasContagem = responseSFC.data.map((item) => {
+          //   return {
+          //     label: item.termo.split(": ")[1] + ": " + item.desc,
+          //     value: item.idtermo.split("#")[1],
+          //   };
+          // });
+
+          // let dataAprovacao = new Date();
+
+          // const despachoAprovacao = {
+          //   id: "leg_" + nanoid(),
+          //   numero: dados.nDespacho,
+          //   sumario: pedido.objeto.dados.titulo,
+          //   tipo: "Despacho",
+          //   data:
+          //     dataAprovacao.getFullYear() +
+          //     "-" +
+          //     ("0" + (dataAprovacao.getMonth() + 1)).slice(-2) +
+          //     "-" +
+          //     ("0" + dataAprovacao.getDate()).slice(-3),
+          //   link: "/rada/" + pedido.objeto.dados.id,
+          //   diplomaFonte: "RADA",
+          //   dataRevogacao: "",
+          //   estado: "Ativo",
+          //   entidadesSel: [
+          //     {
+          //       sigla: "DGLAB",
+          //       designacao:
+          //         "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
+          //       id: "ent_DGLAB",
+          //     },
+          //   ],
+          //   processosSel: [],
+          // };
+
+          // let triplos = await converterParaTriplosRADA(
+          //   pedido.objeto.dados,
+          //   subformasContagem,
+          //   despachoAprovacao.data,
+          //   despachoAprovacao.id
+          // );
+
+          // await this.$request("post", "/rada", { triplos });
+
+          // await this.$request("post", "/legislacao", despachoAprovacao);
+
+          // let dadosUtilizador = this.$verifyTokenUser();
+
+          // const novaDistribuicao = {
+          //   estado: "Validado",
+          //   responsavel: dadosUtilizador.email,
+          //   data: new Date(),
+          //   despacho: dados.mensagemDespacho,
+          // };
+
+          // pedido.estado = "Validado";
+
+          // await this.$request("put", "/pedidos", {
+          //   pedido: pedido,
+          //   distribuicao: novaDistribuicao,
+          // });
+
+          // this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
         }
       } catch (e) {
         console.log(e);

@@ -427,6 +427,12 @@ export default new Router({
       meta: { levels: [3, 3.5, 4, 5, 6, 7] },
     },
     {
+      path: "/pedidos/despachar/:idPedido",
+      name: "despacharPedido",
+      component: () => import("./views/pedidos/PedidosDespacho.vue"),
+      meta: { levels: [3, 3.5, 4, 5, 6, 7] },
+    },
+    {
       path: "/pedidos/novos/:idPedido",
       name: "pedidoNovo",
       component: () => import("./views/pedidos/PedidosNovos.vue"),
