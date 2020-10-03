@@ -38,16 +38,31 @@
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="green darken-4" text @click="$router.push('/')">
+          <v-btn color="red darken-4" text @click="$router.push('/')">
             Fechar
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            color="green darken-4"
+            text
+            @click="$router.push(`/pedidos/submissao/${codigo}`)"
+          >
+            Seguir pedido
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-card class="ma-2 mx-auto" outlined width="60%">
-      <v-card-title>Seleção do ficheiro</v-card-title>
+      <v-card-title class="primary white--text">
+        Importar Tabela de Seleção
+      </v-card-title>
       <v-card-text>
+        <v-text-field
+          clearable
+          v-model="designacao"
+          label="Designação da Tabela de Seleção"
+        ></v-text-field>
         <v-select
           :items="['Organizacional', 'Pluriorganizacional']"
           label="Tipo de Tabela de Seleção"
@@ -55,22 +70,101 @@
           @change="entidade_tipologia = null"
         >
         </v-select>
-        <v-select
-          v-if="tipo == 'Organizacional'"
-          :items="entidades_tipologias"
-          label="Entidade/Tipologia"
-          v-model="entidade_tipologia"
-          prepend-icon="account_balance"
-        >
-        </v-select>
-        <v-file-input
-          v-model="file"
-          label="Importar CSV/Excel"
-          placeholder="Selecione o ficheiro com a Tabela de Seleção"
-          show-size
-          accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          multiple
-        ></v-file-input>
+        <div v-if="tipo != null">
+          <v-autocomplete
+            v-if="tipo == 'Organizacional'"
+            :items="entidades_tipologias"
+            label="Entidade/Tipologia"
+            v-model="entidade_tipologia"
+            prepend-icon="account_balance"
+          >
+          </v-autocomplete>
+          <v-file-input
+            v-model="file"
+            label="Ficheiro CSV/Excel"
+            placeholder="Selecione o ficheiro CSV/Excel com a Tabela de Seleção"
+            show-size
+            accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            multiple
+          ></v-file-input>
+          <v-alert v-if="tipo == 'Organizacional'" type="info">
+            Caso o ficheiro seja CSV deve respeitar o seguinte:
+
+            <ul>
+              <li>Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'</li>
+              <li>O quote e o escape são realizados através de "</li>
+              <li>O encoding do ficheiro tem de ser UTF-8</li>
+            </ul>
+
+            O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma sheet em que
+            tenha:
+
+            <ul>
+              <li>Uma coluna 'Código' com os códigos dos processos</li>
+              <li>Uma coluna 'Título' com os títulos dos processos</li>
+              <li>
+                Uma coluna 'Dono' com:
+                <ul>
+                  <li>x ou X nos processos selecionados</li>
+                  <li>Nada para os processos não selecionados</li>
+                </ul>
+              </li>
+              <li>
+                Uma coluna 'Participante' com o tipo de participação:
+                <ul>
+                  <li>Apreciador</li>
+                  <li>Assessor</li>
+                  <li>Comunicador</li>
+                  <li>Decisor</li>
+                  <li>Executor</li>
+                  <li>Iniciador</li>
+                  <li>Nada para os processos não selecionados</li>
+                </ul>
+              </li>
+            </ul>
+          </v-alert>
+          <v-alert v-if="tipo == 'Pluriorganizacional'" type="info">
+            Caso o ficheiro seja CSV deve respeitar o seguinte:
+
+            <ul>
+              <li>Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'</li>
+              <li>O quote e o escape são realizados através de "</li>
+              <li>O encoding do ficheiro tem de ser UTF-8</li>
+            </ul>
+
+            O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma sheet em que
+            tenha:
+
+            <ul>
+              <li>Uma coluna 'Código' com os códigos dos processos</li>
+              <li>Uma coluna 'Título' com os títulos dos processos</li>
+              <li>
+                Uma coluna 'Dono' com as siglas das entidades/tipologias que são
+                donas separadas por '#'
+              </li>
+              <li>
+                Uma coluna 'Participante' com as siglas das entidades/tipologias
+                que são donas separadas por '#'
+              </li>
+              <li>
+                Uma coluna 'Tipo de participação' com os tipos de participação
+                das entidades/tipologias referidas na coluna 'Participante'
+                separados por '#'
+              </li>
+              <li>
+                Os tipos de participação válidos são:
+                <ul>
+                  <li>Apreciador</li>
+                  <li>Assessor</li>
+                  <li>Comunicador</li>
+                  <li>Decisor</li>
+                  <li>Executor</li>
+                  <li>Iniciador</li>
+                </ul>
+              </li>
+            </ul>
+          </v-alert>
+        </div>
       </v-card-text>
       <v-card-actions>
         <v-btn
@@ -81,13 +175,15 @@
         >
           Voltar
         </v-btn>
+        <v-spacer />
         <v-btn
           class="white--text ma-2"
           color="indigo darken-4"
           @click="enviarFicheiro()"
           :loading="loading"
           :disabled="
-            file.length == 0 ||
+            designacao == '' ||
+              file.length == 0 ||
               tipo == null ||
               (tipo == 'Organizacional' && entidade_tipologia == null)
           "
@@ -110,7 +206,9 @@ export default {
     loading: false,
     entidades_tipologias: [],
     entidade_tipologia: null,
-    tipo: null
+    tipo: null,
+    designacao: "",
+    codigo: ""
   }),
 
   mounted: async function() {
@@ -151,6 +249,7 @@ export default {
         this.loading = true;
         var formData = new FormData();
         formData.append("file", this.file[0]);
+        formData.append("designacao", this.designacao);
         formData.append("entidade_ts", this.entidade_tipologia);
         formData.append("tipo_ts", "TS " + this.tipo);
 
@@ -212,6 +311,7 @@ export default {
         stats += "</ul>";
 
         this.success = `Código do pedido: ${response.data.codigo}\nEstatísticas:\n${stats}`;
+        this.codigo = response.data.codigo;
 
         this.successDialog = true;
       } catch (e) {

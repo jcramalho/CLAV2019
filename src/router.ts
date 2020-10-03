@@ -403,6 +403,12 @@ export default new Router({
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] },
     },
     {
+      path: "/pedidos/finalizacao/:idPedido",
+      name: "finalizacaoPedido",
+      component: () => import("./views/pedidos/PedidosFinalizacao.vue"),
+      meta: { levels: [4, 6, 7] },
+    },
+    {
       path: "/pedidos/:idPedido",
       name: "consultaPedido",
       component: () => import("./views/pedidos/PedidosConsulta.vue"),
@@ -418,6 +424,12 @@ export default new Router({
       path: "/pedidos/validar/:idPedido",
       name: "validarPedido",
       component: () => import("./views/pedidos/PedidosValidacao.vue"),
+      meta: { levels: [3, 3.5, 4, 5, 6, 7] },
+    },
+    {
+      path: "/pedidos/despachar/:idPedido",
+      name: "despacharPedido",
+      component: () => import("./views/pedidos/PedidosDespacho.vue"),
       meta: { levels: [3, 3.5, 4, 5, 6, 7] },
     },
     {
@@ -516,6 +528,12 @@ export default new Router({
       path: "/users/pedidos/:numeroPedido",
       name: "consultaPedidoUtilizador",
       component: () => import("./views/users/ConsultaPedidoUtilizador.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+    },
+    {
+      path: "/users/pedidos/:numeroPedido/relatorio",
+      name: "consultaRelatorioPedidoUtilizador",
+      component: () => import("./views/users/ConsultaRelatorioPedido.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
     },
     //cartao cidadao

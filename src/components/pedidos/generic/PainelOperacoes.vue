@@ -3,6 +3,7 @@
     <v-row class="ma-2 text-center">
       <v-col>
         <v-btn
+          v-if="temPermissaoDevolver()"
           dark
           rounded
           class="red darken-4"
@@ -23,7 +24,7 @@
         </v-btn>
 
         <v-btn
-          v-else
+          v-else-if="operacao === 'Validar'"
           rounded
           class="indigo accent-4 white--text"
           @click="finalizarPedidoDialog = true"
@@ -61,6 +62,7 @@
       <FinalizarPedido
         @fecharDialog="fecharDialog()"
         @finalizarPedido="finalizarPedido($event)"
+        :vai_para_despacho="vai_para_despacho"
       />
     </v-dialog>
   </div>
@@ -71,10 +73,16 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 import FinalizarPedido from "@/components/pedidos/generic/FinalizarPedido";
 import { filtraNivel } from "@/utils/permissoes";
-import { NIVEIS_VALIDAR_PEDIDO } from "@/utils/consts";
+import { NIVEIS_VALIDAR_PEDIDO, NIVEIS_DEVOLVER_PEDIDO } from "@/utils/consts";
 
 export default {
-  props: ["operacao"],
+  props: {
+    operacao: {},
+    vai_para_despacho: {
+      type: Boolean,
+      default: false,
+    }
+  },
 
   components: {
     AvancarPedido,
@@ -100,6 +108,10 @@ export default {
   },
 
   methods: {
+    temPermissaoDevolver() {
+      return NIVEIS_DEVOLVER_PEDIDO.includes(this.$userLevel());
+    },
+
     async preparaUtilizadores() {
       const { data } = await this.$request("get", "/users");
 

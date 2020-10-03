@@ -9,7 +9,7 @@
             type="card-heading"
             width="100%"
           >
-            <span>Pedido submetido com sucesso</span>
+            <span>Pedido submetido com sucesso!</span>
           </v-skeleton-loader>
         </v-card-title>
 
@@ -150,7 +150,7 @@ export default {
         }
       } else {
         this.erros.push({
-          sobre: "Acesso à Ontologia",
+          parametro: "Acesso à Ontologia",
           mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
       }

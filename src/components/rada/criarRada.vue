@@ -107,9 +107,14 @@
               <b>Deve adicionar séries ao RADA, antes de o submeter. Tem possibilidade de associar unidades de instalação às séries em avaliação.</b>
             </div>
           </v-alert>
-          <v-alert width="100%" :value="alert_valido" outlined type="success" prominent border="left">
-            Validação efetuada com sucesso!
-          </v-alert>
+          <v-alert
+            width="100%"
+            :value="alert_valido"
+            outlined
+            type="success"
+            prominent
+            border="left"
+          >Validação efetuada com sucesso!</v-alert>
         </v-stepper-content>
       </v-stepper>
       <v-row justify-center>

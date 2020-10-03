@@ -274,7 +274,247 @@ export function adicionarNotaComRemovidos(historicoAnterior, historicoAtual) {
   return historicoAtual;
 }
 
+export function renomearRepetidosEmArray(arr) {
+  let count = {};
+
+  arr.forEach((x, i) => {
+    if (arr.indexOf(x) !== i) {
+      let c = x in count ? (count[x] = count[x] + 1) : (count[x] = 1);
+      let j = c + 1;
+      let k = `${x} #${j}`;
+
+      while (arr.indexOf(k) !== -1) k = `${x} #${++j}`;
+      arr[i] = k;
+    }
+  });
+
+  return arr;
+}
+
+export function gerarDadosRelatorio(pedido) {
+  const pedidoSubmetido = JSON.parse(JSON.stringify(pedido.historico[0]));
+  const pedidoFinalizado = JSON.parse(
+    JSON.stringify(pedido.historico[pedido.historico.length - 1])
+  );
+  const despacho = pedido.distribuicao[pedido.distribuicao.length - 1];
+  let campos = [];
+  const relatorio = {
+    despacho: despacho.despacho || "",
+    comparacao: [],
+    dataInicial: "",
+    dataFinal: "",
+    tipoPedido: "",
+    numeroPedido: "",
+    alteracaoInfo: "",
+    estadoPedido: "",
+  };
+
+  Object.keys(pedidoSubmetido).forEach((item) => {
+    if (item !== "estado" && item !== "id") campos.push(item);
+  });
+
+  campos.forEach((campo) => {
+    if (pedidoSubmetido[campo].nota !== null) {
+      let formatarNota = "";
+      formatarNota = pedidoSubmetido[campo].nota.replace(
+        "Itens removidos:",
+        ""
+      );
+
+      formatarNota = formatarNota.split("#")[0].trim();
+
+      if (formatarNota === "") formatarNota = null;
+
+      pedidoSubmetido[campo].nota = formatarNota;
+    }
+
+    if (pedidoFinalizado[campo].nota !== null) {
+      let formatarNota = "";
+      formatarNota = pedidoFinalizado[campo].nota.replace(
+        "Itens removidos:",
+        ""
+      );
+
+      formatarNota = formatarNota.split("#")[0].trim();
+
+      if (formatarNota === "") formatarNota = null;
+
+      pedidoFinalizado[campo].nota = formatarNota;
+    }
+
+    if (pedidoFinalizado[campo].cor !== "vermelho") {
+      let iguais = false;
+      if (pedidoFinalizado[campo].dados instanceof Array)
+        iguais = comparaArraySel(
+          pedidoSubmetido[campo].dados,
+          pedidoFinalizado[campo].dados
+        );
+      else if (
+        pedidoSubmetido[campo].dados.trim() ===
+        pedidoFinalizado[campo].dados.trim()
+      )
+        iguais = true;
+
+      if (pedido.historico.length === 1)
+        pedidoFinalizado[campo].cor = "vermelho";
+      else
+        iguais
+          ? (pedidoFinalizado[campo].cor = "verde")
+          : (pedidoFinalizado[campo].cor = "amarelo");
+    }
+
+    relatorio.comparacao.push({
+      campo: mapKeys(campo),
+      submetido: pedidoSubmetido[campo],
+      finalizado: pedidoFinalizado[campo],
+    });
+  });
+
+  relatorio.dataInicial = new Date(pedido.data).toISOString().split("T")[0];
+  relatorio.dataFinal = new Date(despacho.data).toISOString().split("T")[0];
+  relatorio.tipoPedido = `${pedido.objeto.acao} - ${pedido.objeto.tipo}`;
+  relatorio.numeroPedido = pedido.codigo;
+  relatorio.estadoPedido = pedido.estado;
+
+  if (pedido.objeto.acao !== "Criação") {
+    switch (pedido.objeto.tipo) {
+      case "Legislação":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.diplomaFonte} - ${pedido.objeto.dadosOriginais.numero} - ${pedido.objeto.dadosOriginais.sumario}`;
+        break;
+
+      case "Entidade":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.sigla} - ${pedido.objeto.dadosOriginais.designacao}`;
+        break;
+
+      case "Tipologia":
+        relatorio.alteracaoInfo = `${pedido.objeto.tipo}: ${pedido.objeto.dadosOriginais.sigla} - ${pedido.objeto.dadosOriginais.designacao}`;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return relatorio;
+}
+
+export function mapKeysRADA(key) {
+  let descricao = "";
+
+  switch (key) {
+    case "titulo":
+      descricao = "Título";
+      break;
+    case "entRes":
+      descricao = "Entidades Responsáveis";
+      break;
+    case "entidadesProd":
+      descricao = "Entidades Produtoras";
+      break;
+    case "tipologiasProd":
+      descricao = "Tipologia Produtora";
+      break;
+    case "dataInicial":
+      descricao = "Data Inicial";
+      break;
+    case "dataFinal":
+      descricao = "Data Final";
+      break;
+    case "hist_admin":
+      descricao = "História Administrativa/Biográfica";
+      break;
+    case "hist_cust":
+      descricao = "História Custodial";
+      break;
+    case "sist_org":
+      descricao = "Sistema de Organização";
+      break;
+    case "localizacao":
+      descricao = "Localização";
+      break;
+    case "est_conser":
+      descricao = "Estado de Conservação";
+      break;
+    case "codigo":
+      descricao = "Código";
+      break;
+    case "descricao":
+      descricao = "Descrição";
+      break;
+    case "est_conser":
+      descricao = "Estado de Conservação";
+      break;
+    case "eFilhoDe":
+      descricao = "Pai";
+      break;
+    case "tipo":
+      descricao = "Tipo de Classe";
+      break;
+    case "tUA":
+      descricao = "Tipo de Unidade Arquivística";
+      break;
+    case "tSerie":
+      descricao = "Tipo de Série";
+      break;
+    case "UIs":
+      descricao = "Unidades de Instalação";
+      break;
+    case "suporte_e_medicao":
+      descricao = "Suporte e Medição";
+      break;
+    case "relacoes":
+      descricao = "Relações";
+      break;
+    case "pca":
+      descricao = "Prazo de Conservação Administrativo";
+      break;
+    case "notaPCA":
+      descricao = "Nota PCA";
+      break;
+    case "justificacaoPCA":
+      descricao = "Justificação do PCA";
+      break;
+    case "df":
+      descricao = "Destino Final";
+      break;
+    case "justificacaoDF":
+      descricao = "Justificação do DF";
+      break;
+    case "notaDF":
+      descricao = "Nota DF";
+      break;
+    case "entProdutoras":
+      descricao = "Entidades Produtoras";
+      break;
+    case "tipologiasProdutoras":
+      descricao = "Tipologia Produtora";
+      break;
+    case "legislacao":
+      descricao = "Legislação";
+      break;
+    case "formaContagem":
+      descricao = "Forma Contagem";
+      break;
+    case "codCota":
+      descricao = "Cota";
+      break;
+    case "classesAssociadas":
+      descricao = "Classes Associadas";
+      break;
+    case "notas":
+      descricao = "Notas";
+      break;
+    case "produtor":
+      descricao = "Produtor";
+      break;
+  }
+
+  return descricao;
+}
+
 export default {
+  gerarDadosRelatorio,
+  renomearRepetidosEmArray,
   comparaSigla,
   comparaCodigo,
   mapKeys,
@@ -284,4 +524,5 @@ export default {
   identificaItemAdicionado,
   identificaItemEmTabela,
   adicionarNotaComRemovidos,
+  mapKeysRADA,
 };

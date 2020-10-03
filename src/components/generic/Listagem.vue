@@ -70,12 +70,7 @@
               switchOperacao($event.operacao.descricao, props.item.id)
             "
           />
-          <tr
-            v-else-if="
-              tipo == 'Relatórios de Avaliação de Documentação Acumulada'
-            "
-            @click="$router.push('/rada/' + props.item.codigo)"
-          >
+          <tr v-else-if="tipo == 'RADA/CLAV'">
             <td>{{ props.item.dataAprovacao }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
@@ -86,6 +81,14 @@
                   }}</a>
                 </li>
               </ul>
+            </td>
+            <td>
+              <v-btn text @click="$emit('ver', props.item.codigo)"
+                ><v-icon>remove_red_eye</v-icon></v-btn
+              >
+              <v-btn text @click="$emit('download', props.item.codigo)"
+                ><v-icon color="#c62828">picture_as_pdf</v-icon></v-btn
+              >
             </td>
             <!-- <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="props.item">
@@ -223,7 +226,7 @@ export default {
       }
     },
   },
-  created: function() {
+  created: function () {
     try {
       for (let i = 0; i < this.cabecalho.length; i++) {
         if (this.campos[i] === "operacoes")

@@ -41,8 +41,8 @@ export default {
         for (var i = 0; i < listaAutosEliminacao.length; i++) {
           var obj = {
             id: listaAutosEliminacao[i].id.split("#")[1].replace("ae_", "").replace(/\_/g,"/"),
-            tipo: listaAutosEliminacao[i].tipo || listaAutosEliminacao[i].autoTipo.replace(/\_/g,"/"),
-            fonte: listaAutosEliminacao[i].tipo=="RADA" ? "Despacho " + listaAutosEliminacao[i].numero : "Portaria " + listaAutosEliminacao[i].numero,
+            tipo: listaAutosEliminacao[i].fonte || listaAutosEliminacao[i].autoTipo.replace(/\_/g,"/"),
+            fonte: listaAutosEliminacao[i].tipo + " " + listaAutosEliminacao[i].numero,
             entidade: listaAutosEliminacao[i].entidade
               .split("#")[1]
               .replace("ent_", ""),

@@ -11,11 +11,11 @@
             <v-spacer />
             <v-tooltip
               v-if="
-                !(
-                  pedido.objeto.acao === 'Criação' &&
-                  (pedido.estado === 'Submetido' ||
-                    pedido.estado === 'Distribuído')
-                )
+                temPermissaoConsultarHistorico() &&
+                  !(
+                    pedido.objeto.acao === 'Criação' &&
+                    pedido.estado === 'Submetido'
+                  )
               "
               bottom
             >
@@ -59,7 +59,7 @@
               :p="pedido"
             />
 
-            <ValidaRADA v-if="pedido.objeto.tipo === 'RADA'" :p="pedido" />
+            <ValidaRADA v-if="pedido.objeto.tipo === 'RADA'" :p="pedido" fase="validacao" />
             <ValidaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
@@ -152,7 +152,7 @@
     </v-dialog>
 
     <!-- Dialog Ver Historico de Alterações-->
-    <v-dialog v-model="verHistoricoDialog" width="70%">
+    <v-dialog v-model="verHistoricoDialog" width="90%">
       <VerHistorico :pedido="pedido" @fecharDialog="fecharHistorico()" />
     </v-dialog>
   </v-row>
@@ -164,7 +164,7 @@ import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
 import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
-import ValidaRADA from "@/components/pedidos/validacao/ValidaRADA";
+import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
@@ -175,6 +175,7 @@ import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
+import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
   props: ["idp"],
@@ -234,6 +235,10 @@ export default {
   },
 
   methods: {
+    temPermissaoConsultarHistorico() {
+      return NIVEIS_CONSULTAR_HISTORICO.includes(this.$userLevel());
+    },
+
     verHistorico() {
       this.verHistoricoDialog = true;
     },

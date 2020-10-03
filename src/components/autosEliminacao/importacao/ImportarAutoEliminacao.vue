@@ -10,12 +10,12 @@
           importação de ficheiros. Para tal são disponibilizados dois tipos de formulários que
           devem ser preenchidos previamente offline:
           <li>
-            Um formulário para as séries (veja
-            <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download>aqui</a>)
+            Um formulário para as classes / séries (veja
+            <a :href="`${publicPath}documentos/Formulario_auto_importacao_classes_series.csv`" download>aqui</a>)
           </li>
           <li>
             um formulário para as agregações simples / unidades de instalação (veja
-            <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download>aqui</a>)
+            <a :href="`${publicPath}documentos/Formulario_auto_importacao_agregacoes_UI.csv`" download>aqui</a>)
           </li>
 
           <p>
@@ -30,7 +30,7 @@
         </div>
         
         <v-stepper v-model="steps" vertical>
-          <v-stepper-step :complete="steps > 1" step="1">Seleção de Fonte e Fundo</v-stepper-step>
+          <v-stepper-step :complete="steps > 1" step="1">Seleção de fonte e fundo</v-stepper-step>
 
           <v-stepper-content step="1">
             <v-row>
@@ -104,8 +104,8 @@
                       <div class="mt-2">
                         RADA/CLAV
                         <InfoBox
-                          header="Fonte de Legitimação - RADA"
-                          :text="myhelp.AutoEliminacao.Campos.RADA"
+                          header="Fonte de Legitimação - RADA/CLAV"
+                          :text="myhelp.AutoEliminacao.Campos.RADA_CLAV"
                           helpColor="indigo darken-4"
                           dialogColor="#E0F2F1"
                         />
@@ -124,7 +124,7 @@
                 </div>
                 <div v-else-if="tipo=='TS_LC'">
                   <v-autocomplete
-                    label="Selecione a Tabela de Seleção"
+                    label="Selecione a fonte de legitimação"
                     :items="tabelasSelecao"
                     return-object
                     item-text="titulo"
@@ -153,7 +153,7 @@
                 </div>
                 <div v-else>
                   <v-autocomplete
-                    label="Selecione a Tabela de Selação"
+                    label="Selecione a fonte de legitimação"
                     :items="tsRada"
                     item-text="titulo"
                     return-object
@@ -161,14 +161,6 @@
                     solo
                     dense
                   ></v-autocomplete>
-                </div>
-                <div style="width:100%">
-                  Para submeter um auto de eliminação, selecione os ficheiros
-                  que preencheu e guardou previamente.
-                </div>
-                <div>
-                  Em seguida, para concluir, execute o comando
-                  <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
                 </div>
               </v-col>
             </v-row>
@@ -179,7 +171,7 @@
               <v-col class="mt-2">
                 <v-autocomplete
                   deletable-chips
-                  label="Selecione a(s) entidade(s) produtira(s) da documentação"
+                  label="Selecione a(s) entidade(s) produtora(s) da documentação"
                   :items="entidades"
                   v-model="auto.fundo"
                   solo
@@ -197,27 +189,27 @@
           <v-stepper-content step="2">
             <v-row>
               <v-col :md="3">
-                <div class="info-label">Ficheiro série</div>
+                <div class="info-label">Ficheiro classes / séries</div>
               </v-col>
               <v-col class="mt-2">
-                <input type="file" id="fileSerie" ref="myFiles" @change="previewFileSerie" />
+                <input type="file" id="fileSerie" @change="previewFileSerie" />
               </v-col>
             </v-row>
             <v-row>
               <v-col :md="3">
-                <div class="info-label">Ficheiro Agregações / Unidades de instalação</div>
+                <div class="info-label">Ficheiro agregações / unidades de instalação</div>
               </v-col>
               <v-col class="mt-2">
-                <input type="file" id="fileAgreg" ref="myFiles" @change="previewFileAgreg" />
+                <input type="file" id="fileAgreg" @change="previewFileAgreg" />
               </v-col>
             </v-row>
             
-            <v-btn @click="steps = 1" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
-            <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie || !fileAgreg">Validar Ficheiros e Continuar</v-btn>
-            <v-btn class="ma-2" color="red darken-4" dark @click="fileSerie=null; fileAgreg=null">Limpar</v-btn>
+            <v-btn @click="steps=1; cleanFiles()" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
+            <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie" v-if="fileSerie">Validar Ficheiros e Continuar</v-btn>
+            <v-btn class="ma-2" color="red darken-4" dark @click="cleanFiles">Limpar</v-btn>
           </v-stepper-content>
 
-          <v-stepper-step step="3">Validação de Séries / Agregações</v-stepper-step>
+          <v-stepper-step step="3">Validação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
           <v-stepper-content step="3">
             <ValidarAE 
@@ -226,13 +218,13 @@
               :submit="submit" 
               :tipo="tipo"
             />
-            <v-btn @click="steps = 2" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
+            <v-btn @click="steps = 2; cleanFiles()" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
             <v-btn
               medium
               color="indigo darken-4"
               dark
               @click="validar"
-              :disabled="!fileSerie || !fileAgreg || !auto.fundo "
+              :disabled="!fileSerie || !auto.fundo "
               class="ma-2"
             >Validar e Submeter</v-btn>
           </v-stepper-content>
@@ -452,14 +444,14 @@ export default {
         if(!zc.destino || zc.destino=="") {
           this.errosVal.erros.push({
             sobre: "Destino Final",
-            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " " + zc.referencia
+            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " - " + zc.referencia
           })
           this.errosVal.numErros++
         }
         else if((zc.destino=="C" || zc.destino=="Conservação") && this.tipo!="RADA" && this.tipo!="PGD" && zc.dono.length===0) {
           this.errosVal.erros.push({
             sobre: "Dono do PN",
-            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " " + zc.referencia
+            mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " - " + zc.referencia
           })
           this.errosVal.numErros++
         }
@@ -474,14 +466,14 @@ export default {
           if(res1 > currentTime.getFullYear()) {
             this.errosVal.erros.push({
               sobre: "Data Contagem",
-              mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente. Classe: "+ zc.codigo + " " + zc.referencia+" - Agregação: "+ag.codigo
+              mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente. Classe: "+ zc.codigo + " - " + zc.referencia+" - Agregação: "+ag.codigo
             })
             this.errosVal.numErros++
           }
           if(res2 < 0) {
             this.errosVal.erros.push({
               sobre: "Data Contagem",
-              mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe. Classe: "+ zc.codigo + " " + zc.referencia+" - Agregação: "+ag.codigo
+              mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe. Classe: "+ zc.codigo + " - " + zc.referencia+" - Agregação: "+ag.codigo
             })
             this.errosVal.numErros++
           }
@@ -576,6 +568,7 @@ export default {
                   zc.validaNotaDF = false;
                   zc.validaNotaPCA = false;
                   zc.validaJustificaDF = false;
+                  if(zc.agregacoes.length > 0) zc.nrAgregacoes = zc.agregacoes.length;
                   if(classe.df.valor == "E")
                     zc.destino = "Eliminação";
                   else if(classe.df.valor == "C")
@@ -589,18 +582,10 @@ export default {
                   delete this.auto["legislacao"]
                 }
                 this.auto.zonaControlo.forEach(zc => {
-                  if(zc.codigo && zc.referencia)
-                    var classe = this.classes.find(
-                      elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
-                    )
-                  else if(zc.codigo)
-                    var classe = this.classes.find(
-                      elem => elem.codigo == zc.codigo
-                    )
-                  else 
-                    var classe = this.classes.find(
-                      elem => elem.referencia == zc.referencia
-                    )
+                  var classe = this.classes.find(
+                    elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
+                  )
+
                   if (!classe) {
                     this.flagAE = true;
                     if(zc.codigo && zc.referencia) 
@@ -620,6 +605,12 @@ export default {
                         zc.referencia +
                         "</b> não foi encontrada em "+this.auto.legislacao.split(" - ")[0];
                     return; //ERROS
+                  } 
+                  else if((this.tipo == "PGD" || this.tipo=="RADA") && classe.df.valor == "C") {
+                    this.flagAE = true;
+                    this.erro = "Classe / Série com " + (zc.codigo ? "Codigo <b>"+zc.codigo+"</b> " : "") + (zc.referencia ? "Número de referência <b>"+ zc.referencia +"</b> " : "") 
+                      + "com destino final de conservação.";
+                    return;
                   }
                   
                   var pca = classe.pca.valor;
@@ -650,6 +641,7 @@ export default {
                   zc.validaNotaDF = false;
                   zc.validaNotaPCA = false;
                   zc.validaJustificaDF = false;
+                  if(zc.agregacoes.length > 0) zc.nrAgregacoes = zc.agregacoes.length;
                   if(classe.df.valor == "E")
                     zc.destino = "Eliminação";
                   else if(classe.df.valor == "C")
@@ -657,19 +649,32 @@ export default {
                   else zc.destino = classe.df.valor;
                 })
               }
-              if (this.flagAE) this.erroDialog = true;
+              if (this.flagAE) {
+                this.erroDialog = true;
+                this.cleanFiles()  
+              }
               else this.steps=3;
             })
             .catch(err => {
               this.erro = err;
               this.erroDialog = true;
+              this.cleanFiles();
             });
         })
         .catch(err => {
           this.errosVal = err;
           this.errosValDialog = true;
+          this.cleanFiles();
         });
     },
+
+    cleanFiles: function () {
+      this.fileSerie = null;
+      this.fileAgreg = null;
+      document.getElementById("fileSerie").value = ""
+      document.getElementById("fileAgreg").value = ""
+    },
+
     previewFileSerie: function(ev) {
       const file = ev.target.files[0];
       var fileName = file.name.split(".");
@@ -678,7 +683,7 @@ export default {
         reader.onload = e => (this.fileSerie = e.target.result);
         reader.readAsArrayBuffer(file);
       } else {
-        ev.target.value = "";
+        ev.target = null
         this.erro =
           "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>";
         this.erroDialog = true;
@@ -693,7 +698,7 @@ export default {
         reader.onload = e => (this.fileAgreg = e.target.result);
         reader.readAsArrayBuffer(file);
       } else {
-        ev.target.value = "";
+        ev.target = null
         this.erro =
           "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>";
         this.erroDialog = true;
@@ -800,6 +805,8 @@ export default {
               pca: {valores: c.pca, notas: c.notaPCA},
             }
         })
+        //if(this.tipo == "PGD" || this.tipo=="RADA") this.classes = this.classes.filter(c=> c.df.valor!="C")
+
       } else if(this.tipo == "RADA_CLAV") {
         var response = await this.$request(
           "get",
@@ -815,6 +822,7 @@ export default {
             pca: {valores: c.pca.pca, notas: c.pca.notaPCA}
           }
         })
+        this.classes = this.classes.filter(c=> c.df.valor!="C")
       }
       else this.classes = [];
 

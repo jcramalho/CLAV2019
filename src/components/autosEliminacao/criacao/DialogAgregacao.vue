@@ -4,82 +4,71 @@
       >Adicionar Agregação</v-card-title
     >
 
-    <v-card-text class="mt-2">
-      <v-row>
-        <v-col :md="2">
-          <div class="info-label">Código da Agregação</div>
-        </v-col>
-        <v-col>
-          <v-text-field
-            hint="Exemplo: AS_DGLAB_1/2019"
-            label="Insira um código para a agregação"
-            v-model="codigo"
-            solo
-            clearable
-            >Insira um codigo para a agregação</v-text-field
-          >
-        </v-col>
-        <v-col>
-          <div class="info-label">Titulo da Agregação</div>
-        </v-col>
-        <v-col>
-          <v-text-field
-            hint="Exemplo: Auditoria à Entidade A"
-            label="Insira um título para a agregação"
-            v-model="titulo"
-            solo
-            clearable
-            >Insira um codigo para a agregação</v-text-field
-          >
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col :md="2">
-          <div class="info-label">Data de Contagem do PCA</div>
-        </v-col>
-        <v-col>
-          <v-text-field
-            hint="Exemplo: 2009"
-            label="Insira o ano de contagem do PCA"
-            v-model="dataContagem"
-            solo
-            clearable
-            >Insira um codigo para a agregação</v-text-field
-          >
-        </v-col>
-        <v-col>
-          <div class="info-label">Natureza de Intervenção</div>
-        </v-col>
-        <v-col>
-          <v-select
-            label="Selecione a Natureza de Intervenção"
-            :items="natureza"
-            v-model="ni"
-            solo
-            dense
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row justify="end">
-        <v-btn color="red darken-4" dark text @click="limparAG">Limpar</v-btn>
-        <v-btn
-          v-if="!this.agregacao"
-          color="green darken-4"
-          dark
-          text
-          @click="adicionarAG"
-          >Adicionar</v-btn
-        >
-        <v-btn v-else color="green darken-4" dark text @click="editarAG"
-          >Editar</v-btn
-        >
-      </v-row>
-    </v-card-text>
-    <v-dialog v-model="erroDialog" width="700" persistent>
-      <v-card outlined>
-        <v-card-title class="red darken-4 title white--text" dark
-          >Erro: Não foi possível adicionar Agregação</v-card-title
-        >
+        <v-card-text class="mt-2">
+          <v-row>
+            <v-col :md="2">
+              <div class="info-label">Código da Agregação</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                hint="Exemplo: AS_DGLAB_1/2019"
+                label="Insira um código para a agregação"
+                v-model="codigo"
+                solo
+                clearable
+              >Insira um codigo para a agregação</v-text-field>
+            </v-col>
+            <v-col>
+              <div class="info-label">Titulo da Agregação</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                hint="Exemplo: Auditoria à Entidade A"
+                label="Insira um título para a agregação"
+                v-model="titulo"
+                solo
+                clearable
+              >Insira um codigo para a agregação</v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col :md="2">
+              <div class="info-label">Data de início de contagem do PCA</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                hint="Exemplo: 2009"
+                label="Insira o ano de contagem do PCA"
+                v-model="dataContagem"
+                solo
+                clearable
+              >Insira um codigo para a agregação</v-text-field>
+            </v-col>
+            <v-col>
+              <div class="info-label">Natureza de intervenção</div>
+            </v-col>
+            <v-col>
+              <v-select
+                label="Selecione a Natureza de Intervenção"
+                :items="natureza"
+                v-model="ni"
+                solo
+                dense
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row justify="end">
+            <v-btn color="red darken-4" dark text @click="limparAG">Limpar</v-btn>
+            <v-btn v-if="!this.agregacao" color="green darken-4" dark text @click="adicionarAG">Adicionar</v-btn>
+            <v-btn v-else color="green darken-4" dark text @click="editarAG">Editar</v-btn>
+          </v-row>
+        </v-card-text>
+        <v-dialog v-model="erroDialog" width="700" persistent>
+          <v-card outlined>
+            <v-card-title
+              class="red darken-4 title white--text"
+              dark
+            >Erro: Não foi possível adicionar Agregação</v-card-title>
 
         <v-card-text>
           <span

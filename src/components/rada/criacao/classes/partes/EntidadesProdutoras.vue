@@ -9,6 +9,7 @@
         <v-autocomplete
           v-model="newSerie.entProdutoras"
           :items="RE.entidadesProd"
+          :rules="[v => !!v[0] || 'Campo obrigatório!']"
           label="Selecione as Entidades Produtoras"
           multiple
           chips
@@ -38,6 +39,7 @@
           :items="[RE.tipologiasProd]"
           label="Selecione as Tipologias da Entidades produtoras"
           multiple
+          :rules="[v => !!v[0] || 'Campo obrigatório!']"
           chips
           deletable-chips
           solo
@@ -69,16 +71,18 @@ export default {
       this.newSerie.entProdutoras = JSON.parse(
         JSON.stringify(this.RE.entidadesProd)
       );
-      this.newSerie.tipologiasProdutoras = [this.RE.tipologiasProd];
+      this.newSerie.tipologiasProdutoras = !!this.RE.tipologiasProd
+        ? [this.RE.tipologiasProd]
+        : [];
     }
   },
   watch: {
-    "RE.entidadesProd": function(newValue) {
+    "RE.entidadesProd": function (newValue) {
       this.newSerie.entProdutoras = JSON.parse(JSON.stringify(newValue));
     },
-    "RE.tipologiasProd": function(newValue) {
+    "RE.tipologiasProd": function (newValue) {
       this.newSerie.tipologiasProdutoras = [newValue];
-    }
-  }
+    },
+  },
 };
 </script>

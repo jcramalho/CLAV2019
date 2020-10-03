@@ -9,7 +9,7 @@
     min-width="290px"
   >
     <template v-slot:activator="{ on }">
-      <slot :item="{label, dataValor, on}">
+      <slot :item="{ label, dataValor, on }">
         <v-text-field
           filled
           v-model="dataValor"
@@ -40,34 +40,48 @@
 
 <script>
 export default {
-  props: ["d", "label", "dataMinima", "dataMaxima"],
+  props: {
+    d: {},
+    label: {},
+    dataMinima: {},
+    dataMaxima: {},
+    dataFuturoInfinito: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       dataValor: this.d,
       menu1: false,
       minData: "",
-      maxData: ""
+      maxData: "",
     };
   },
   /* 
   No caso dos RADA, no preenchimento de uma subsérie o utilizador pode preencher ou injetar as datas da série pai,
   caso injete a props "d" altera e este watch serve para verificar essa mudança.
-  */ 
+  */
   watch: {
-    d(novoValor){
+    d(novoValor) {
       this.dataValor = novoValor;
-    }
+    },
   },
   created() {
-    this.minData = this.dataMinima || "1800-01-01";
-    this.maxData = this.dataMaxima || new Date().toISOString().substr(0, 10);
+    if (this.dataFuturoInfinito) {
+      this.minData = new Date().toISOString().substr(0, 10);
+      this.maxData = null;
+    } else {
+      this.minData = this.dataMinima || "1800-01-01";
+      this.maxData = this.dataMaxima || new Date().toISOString().substr(0, 10);
+    }
   },
   methods: {
-    dataSelecionada: function() {
+    dataSelecionada: function () {
       this.$refs.menu1.save(this.dataValor);
       this.$emit("dataSelecionada", this.dataValor);
       this.dataValor = "";
-    }
-  }
+    },
+  },
 };
 </script>

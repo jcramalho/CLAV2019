@@ -26,7 +26,7 @@ var importarRE = (file, entidades, tipologias, RE) => {
         if (re[1][1] == "") {
 
             let tip = tipologias.find(
-                e => e.tipologia.split(" - ")[1] == re[2][1]
+                e => e.tipologia.split(" - ")[0] == re[2][1]
             );
 
             if (tip != undefined) {
@@ -40,7 +40,7 @@ var importarRE = (file, entidades, tipologias, RE) => {
 
             RE.entidadesProd = [];
             for (let i = 0; i < ents.length; i++) {
-                let ent = entidades.find(e => e.designacao == ents[i]);
+                let ent = entidades.find(e => e.sigla == ents[i]);
 
                 if (ent != undefined) {
                     RE.entidadesProd.push(ent.sigla + " - " + ent.designacao);

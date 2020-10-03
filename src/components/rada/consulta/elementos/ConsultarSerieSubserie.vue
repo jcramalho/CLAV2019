@@ -130,7 +130,7 @@
                         :label="criterio.tipo == 'CriterioJustificacaoGestionario' ? 'Critério Gestionário' : (criterio.tipo == 'CriterioJustificacaoLegal' ? 'Critério Legal' : 'Critério de Utilidade Administrativa')"
                       >
                         <template v-slot:valor>
-                          {{ criterio.conteudo }}
+                          {{ criterio.conteudo != "undefined" ? criterio.conteudo : '' }}
                           <ul v-if="criterio.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
                             <li
                               v-for="(rel, i) in criterio.relacoes"
@@ -168,7 +168,7 @@
                         :label="criterio.tipo == 'CriterioJustificacaoComplementaridadeInfo' ? 'Critério de Complementaridade Informacional' : (criterio.tipo == 'CriterioJustificacaoLegal' ? 'Critério Legal' : 'Critério de Densidade Informacional')"
                       >
                         <template v-slot:valor>
-                          {{ criterio.conteudo }}
+                          {{ criterio.conteudo != "undefined" ? criterio.conteudo : '' }}
                           <div v-if="!!criterio.relacoes[0]">
                             <br />
                             <ul v-if="criterio.tipo != 'CriterioJustificacaoLegal'">
@@ -212,7 +212,7 @@ export default {
   props: ["dialog", "classe"],
   components: {
     RADAEntry,
-    RADAEntryDouble
+    RADAEntryDouble,
   },
   data: () => ({
     relacoes: [],
@@ -221,15 +221,15 @@ export default {
         text: "Relação",
         value: "relacao",
         width: "30%",
-        class: ["table-header", "body-2", "font-weight-bold"]
+        class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
         text: "Série/Subsérie",
         value: "classes",
         width: "70%",
-        class: ["table-header", "body-2", "font-weight-bold"]
-      }
-    ]
+        class: ["table-header", "body-2", "font-weight-bold"],
+      },
+    ],
   }),
   computed: {
     dialogState: {
@@ -238,14 +238,14 @@ export default {
       },
       set(val) {
         this.$emit("fecharDialog", false);
-      }
-    }
+      },
+    },
   },
   created() {
-    this.classe.relacoes.forEach(r => {
+    this.classe.relacoes.forEach((r) => {
       let traducao = "";
 
-      let relacao = this.relacoes.find(e => e.rel == r.rel);
+      let relacao = this.relacoes.find((e) => e.rel == r.rel);
 
       if (relacao != undefined) {
         relacao.classes.push(r.codigo + " - " + r.titulo);
@@ -281,12 +281,12 @@ export default {
           this.relacoes.push({
             rel: r.rel,
             relacao: traducao,
-            classes: [r.codigo + " - " + r.titulo]
+            classes: [r.codigo + " - " + r.titulo],
           });
         }
       }
     });
-  }
+  },
 };
 </script>
 

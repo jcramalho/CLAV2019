@@ -242,6 +242,22 @@
                     </tr>
                     <tr>
                       <td style="width:20%;">
+                        <div
+                          :class="[
+                            'info-descricao',
+                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                          ]"
+                        >
+                          N.º de agregações
+                        </div>
+                      </td>
+                      <td v-if="item.agregacoes.length==0" style="width:80%;">
+                        {{ item.nrAgregacoes }}
+                      </td>
+                      <td style="width:80%;" v-else>{{item.agregacoes.length}}</td>
+                    </tr>
+                    <tr>
+                      <td style="width:20%;">
                         <div :class="[
                           'info-descricao',
                           `info-descricao-${novoHistorico.zonaControlo[index].cor}`
@@ -287,7 +303,7 @@
                     </tr>
                   </table>
                   
-                  <div class="ma-1">
+                  <div class="ma-1" v-if="item.agregacoes.length>0">
                     <v-data-table
                       :headers="cabecalho"
                       :items="item.agregacoes"
@@ -555,7 +571,6 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         pedido.estado = estado;
-        pedido.token = this.$store.state.token;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
@@ -623,7 +638,6 @@ export default {
             };
 
             pedido.estado = estado;
-            pedido.token = this.$store.state.token;
 
             await this.$request("put", "/pedidos", {
               pedido: pedido,

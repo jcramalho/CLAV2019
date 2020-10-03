@@ -25,6 +25,12 @@
               @validar="validaPedido($event)"
             />
 
+            <PedidosEmDespacho
+              :pedidos="pedidosEmDespacho"
+              :pesquisaPedidos="pesquisaPedidos"
+              @despachar="despacharPedido($event)"
+            />
+
             <PedidosDevolvidos
               :pedidos="pedidosDevolvidos"
               :pesquisaPedidos="pesquisaPedidos"
@@ -60,12 +66,13 @@ import PedidosNovos from "@/components/pedidos/PedidosNovos";
 import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
 import PedidosValidacao from "@/components/pedidos/PedidosValidacao";
 import PedidosDevolvidos from "@/components/pedidos/PedidosDevolvidos";
+import PedidosEmDespacho from "@/components/pedidos/PedidosEmDespacho";
 import PedidosProcessados from "@/components/pedidos/PedidosProcessados";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import {
   NIVEIS_ANALISAR_PEDIDO,
-  NIVEL_MINIMO_DISTRIBUIR_PEDIDOS,
+  NIVEIS_DISTRIBUIR_PEDIDO,
 } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
@@ -77,6 +84,7 @@ export default {
     PedidosDevolvidos,
     PedidosProcessados,
     AvancarPedido,
+    PedidosEmDespacho,
   },
 
   data() {
@@ -87,6 +95,7 @@ export default {
       pedidosSubmetidos: [],
       pedidosDistribuidos: [],
       pedidosValidados: [],
+      pedidosEmDespacho: [],
       pedidosDevolvidos: [],
       pedidosProcessados: [],
       pesquisaPedidos: {
@@ -112,7 +121,7 @@ export default {
 
   methods: {
     temPermissaoDistribuir() {
-      return this.$userLevel() >= NIVEL_MINIMO_DISTRIBUIR_PEDIDOS;
+      return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
     },
 
     async carregaPedidos() {
@@ -127,6 +136,9 @@ export default {
           if (p.estado === "Distribuído" || p.estado === "Redistribuído")
             return p;
         });
+        this.pedidosEmDespacho = pedidos.filter((p) => {
+          if (p.estado === "Em Despacho") return p;
+        });
         this.pedidosValidados = pedidos.filter((p) => {
           if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
         });
@@ -140,6 +152,7 @@ export default {
         if (this.temPermissaoDistribuir())
           await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
+        console.warn("e", e);
         return e;
       }
     },
@@ -167,6 +180,9 @@ export default {
     analisaPedido(pedido) {
       this.$router.push("/pedidos/analisar/" + pedido.codigo);
     },
+    despacharPedido(pedido) {
+      this.$router.push("/pedidos/despachar/" + pedido.codigo);
+    },
 
     validaPedido(pedido) {
       this.$router.push("/pedidos/validar/" + pedido.codigo);
@@ -181,6 +197,8 @@ export default {
         let dadosUtilizador = this.$verifyTokenUser();
 
         pedido.estado = estado;
+
+        pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
 
         const novaDistribuicao = {
           estado: estado,

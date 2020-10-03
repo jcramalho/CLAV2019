@@ -20,7 +20,6 @@
           <v-expansion-panel-content>
             <v-card>
               <v-card-text>
-                
                 <div>
                   <v-btn
                     v-for="op in item.ops"
@@ -34,7 +33,7 @@
                   <v-btn
                     v-if="
                       [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
-                      item.entidade === 'Entidades'
+                        item.entidade === 'Entidades'
                     "
                     color="indigo accent-4"
                     dark
@@ -47,7 +46,7 @@
                   <v-btn
                     v-if="
                       [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
-                      item.entidade === 'Legislação'
+                        item.entidade === 'Legislação'
                     "
                     color="indigo accent-4"
                     dark
@@ -60,7 +59,7 @@
                   <v-btn
                     v-if="
                       [1, 3, 3.5, 4, 5, 6, 7].includes(level) &&
-                      item.entidade === 'Tipologias de Entidades'
+                        item.entidade === 'Tipologias de Entidades'
                     "
                     color="indigo accent-4"
                     dark
@@ -74,7 +73,6 @@
                   <p v-if="item.html"><span v-html="item.texto"></span></p>
                   <p v-else>{{ item.texto }}</p>
                 </div>
-                
               </v-card-text>
             </v-card>
 
@@ -93,7 +91,18 @@
                         label="SELECIONE A ENTIDADE"
                         :items="entidades.entidades"
                         v-model="dadosEditar"
-                      />
+                      >
+                        <template v-slot:no-data>
+                          <v-alert
+                            type="info"
+                            width="80%"
+                            class="m-auto"
+                            outlined
+                          >
+                            Sem entidades a mostrar...
+                          </v-alert>
+                        </template>
+                      </v-autocomplete>
                     </v-col>
                     <v-col v-else style="text-align: center;">
                       <p>A carregar entidades...</p>
@@ -143,7 +152,18 @@
                         label="SELECIONE A LEGISLAÇÃO"
                         :items="legislacao.legislacaoItems"
                         v-model="dadosEditar"
-                      />
+                      >
+                        <template v-slot:no-data>
+                          <v-alert
+                            type="info"
+                            width="80%"
+                            class="m-auto"
+                            outlined
+                          >
+                            Sem legislação a mostrar...
+                          </v-alert>
+                        </template>
+                      </v-autocomplete>
                     </v-col>
                     <v-col v-else style="text-align: center;">
                       <p>A carregar legislações...</p>
@@ -193,7 +213,18 @@
                         label="SELECIONE A TIPOLOGIA DE ENTIDADE"
                         :items="tipologias.tipologias"
                         v-model="dadosEditar"
-                      />
+                      >
+                        <template v-slot:no-data>
+                          <v-alert
+                            type="info"
+                            width="80%"
+                            class="m-auto"
+                            outlined
+                          >
+                            Sem tipologias a mostrar...
+                          </v-alert>
+                        </template>
+                      </v-autocomplete>
                     </v-col>
                     <v-col v-else style="text-align: center;">
                       <p>A carregar tipologias...</p>
@@ -241,7 +272,7 @@ const lhost = require("@/config/global").host;
 export default {
   props: ["level"],
   methods: {
-    go: function (url) {
+    go: function(url) {
       if (url.startsWith("http")) {
         window.location.href = url;
       } else {
@@ -275,7 +306,7 @@ export default {
       }
     },
 
-    filtraOps: function (operacoes) {
+    filtraOps: function(operacoes) {
       var filtered = [];
       for (var i = 0; i < operacoes.length; i++) {
         var levelsSet = new Set();
@@ -342,7 +373,7 @@ export default {
   },
 
   computed: {
-    fops: function () {
+    fops: function() {
       return this.filtraOps(this.operacoes);
     },
   },
@@ -409,7 +440,7 @@ export default {
               level: [1, 3, 3.5, 4, 5, 6, 7],
             },
             {
-              label: "Importar Ficheiro",
+              label: "Importar",
               url: "/ts/importar/csv",
               level: [1, 3, 3.5, 4, 5, 6, 7],
             },
@@ -441,7 +472,7 @@ export default {
               label: "Criar",
               url: "/rada/criar",
               level: [1, 3, 3.5, 4, 5, 6, 7],
-            }
+            },
           ],
         },
         {
@@ -531,6 +562,28 @@ export default {
           ],
         },
         {
+          entidade: "Planos de Preservação Digital",
+          texto:
+            "A ser adicionado...",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/ppd",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
+              label: "Criar",
+              url: "/ppd/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
+              label: "Importar",
+              url: "/ppd/importar/csv",
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+            },
+          ],
+        },
+        {
           entidade: "Exportação de Dados",
           texto:
             "Exportar dados das classes, entidades, tipologias, legislação e ontologia.",
@@ -566,7 +619,8 @@ export default {
         },
         {
           entidade: "Colaborações",
-          texto: "As colaborações são constituídas por um grupo de pessoas que participaram no desenvolvimento da plataforma.",
+          texto:
+            "As colaborações são constituídas por um grupo de pessoas que participaram no desenvolvimento da plataforma.",
           ops: [
             {
               label: "Consultar",

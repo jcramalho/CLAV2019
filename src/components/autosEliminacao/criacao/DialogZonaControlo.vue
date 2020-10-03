@@ -20,13 +20,13 @@
       </v-row>
       <v-row>
         <v-col :md="2" v-if="prazo.split(' ')[0]">
-          <div class="info-label">Prazo de Conservação Administrativa</div>
+          <div class="info-label">Prazo de conservação administrativa</div>
         </v-col>
         <v-col v-if="prazo.split(' ')[0]">
           <v-text-field :value="prazo" solo dense readonly></v-text-field>
         </v-col>
         <v-col :md="2" v-if="df">
-          <div class="info-label">Destino Final</div>
+          <div class="info-label">Destino final</div>
         </v-col>
         <v-col v-if="df">
           <v-text-field :value="df" solo dense readonly></v-text-field>
@@ -34,7 +34,7 @@
       </v-row>
       <v-row v-if="df=='Conservação' && tipo!='RADA_CLAV' && tipo!='RADA' && tipo!='PGD'">
         <v-col>
-          <div class="info-label">Natureza de Intervenção</div>
+          <div class="info-label">Natureza de intervenção</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -62,7 +62,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Data de Início</div>
+          <div class="info-label">Data de início</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -76,7 +76,7 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Data de Fim</div>
+          <div class="info-label">Data de fim</div>
         </v-col>
         <v-col>
           <v-text-field
@@ -92,11 +92,11 @@
       </v-row>
       <v-row>
         <v-col>
-          <div class="info-label">Medição de UI em Papel</div>
+          <div class="info-label">Medição de UI em papel (m.l.)</div>
         </v-col>
         <v-col>
           <v-text-field
-            hint="Exemplo: 11.50"
+            hint="Exemplo: 11,50"
             label="Insira a medição de UI"
             v-model="uiPapel"
             solo
@@ -106,11 +106,11 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI Digital</div>
+          <div class="info-label">Medição de UI digital (GB)</div>
         </v-col>
         <v-col>
           <v-text-field
-            hint="Exemplo: 16.00"
+            hint="Exemplo: 16,00"
             label="Insira a medição de UI"
             v-model="uiDigital"
             solo
@@ -120,11 +120,11 @@
           </v-text-field>
         </v-col>
         <v-col>
-          <div class="info-label">Medição de UI noutro Suporte</div>
+          <div class="info-label">Medição de UI noutro suporte</div>
         </v-col>
         <v-col>
           <v-text-field
-            hint="Exemplo: 150.75"
+            hint="Exemplo: 150,75"
             label="Insira a medição de UI"
             v-model="uiOutros"
             solo
@@ -215,6 +215,7 @@ export default {
     dono: [],
     dataInicio: "",
     dataFim: "",
+    nrAgregacoes: 0,
     uiPapel: "",
     uiDigital: "",
     uiOutros: "",
@@ -236,7 +237,7 @@ export default {
   watch: {
     index: function() {
       if (this.zona) {
-        if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " " + this.zona.referencia + " - " + this.zona.titulo;
+        if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " - " + this.zona.referencia + " - " + this.zona.titulo;
         else if(this.zona.codigo) this.classe = this.zona.codigo + " - " + this.zona.titulo;
         else if(this.zona.referencia) this.classe = this.zona.referencia + " - " + this.zona.titulo;
       
@@ -258,7 +259,7 @@ export default {
   },
   created: async function() {
     if (this.zona) {
-      if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " " + this.zona.referencia + " - " + this.zona.titulo;
+      if(this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " - " + this.zona.referencia + " - " + this.zona.titulo;
       else if(this.zona.codigo) this.classe = this.zona.codigo + " - " + this.zona.titulo;
       else if(this.zona.referencia) this.classe = this.zona.referencia + " - " + this.zona.titulo;
 
@@ -273,6 +274,7 @@ export default {
       this.notaDF = this.zona.notaDF;
       this.dataInicio = this.zona.dataInicio;
       this.dataFim = this.zona.dataFim;
+      this.nrAgregacoes = this.zona.nrAgregacoes;
       this.uiPapel = this.zona.uiPapel;
       this.uiDigital = this.zona.uiDigital;
       this.uiOutros = this.zona.uiOutros;
@@ -281,7 +283,7 @@ export default {
   methods: {
     defClasse: async function() {
       var c = this.classesCompletas.filter(c => {
-          if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+          if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
           else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
           else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
         }
@@ -317,6 +319,7 @@ export default {
       this.validaJustificaDF = false;
       this.dataInicio = "";
       this.dataFim = "";
+      this.nrAgregacoes = 0;
       this.uiPapel = "";
       this.uiDigital = "";
       this.uiOutros = "";
@@ -324,17 +327,17 @@ export default {
     adicionarZC: async function() {
       const date = new Date()
       const re = /\d{4}/;
-      const reUI = /^-?\d*(\.\d\d?)?$/;
+      const reUI = /^-?\d*(,\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
         zc => {
-          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          if(zc.codigo && zc.referencia) return zc.codigo + " - "+ zc.referencia + " - " + zc.titulo == this.classe
           else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
           else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
         }
       );
-      var uiPapel = parseFloat(this.uiPapel) || 0;
-      var uiDigital = parseFloat(this.uiDigital) || 0;
-      var uiOutros = parseFloat(this.uiOutros) || 0;
+      var uiPapel = parseFloat(this.uiPapel.replace(',', '.')) || 0;
+      var uiDigital = parseFloat(this.uiDigital.replace(',', '.')) || 0;
+      var uiOutros = parseFloat(this.uiOutros.replace(',', '.')) || 0;
       var dataInicio = parseInt(this.dataInicio) || 0;
       var dataFim = parseInt(this.dataFim) || 0;
       if (!this.classe || !this.dataInicio || !this.dataFim) {
@@ -392,7 +395,7 @@ export default {
         this.erroDialog = true;
       } else {
         var classe = this.classesCompletas.filter(c => {
-            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
             else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
             else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
           }
@@ -405,6 +408,7 @@ export default {
         var destino = this.df;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
+        var nrAgregacoes = this.nrAgregacoes;
         var ni = this.ni;
         var dono = this.dono;
 
@@ -418,8 +422,8 @@ export default {
         var added = false;
 
         for(var i in this.auto.zonaControlo) {
-          var tituloZC = this.auto.zonaControlo[i].codigo + " " + this.auto.zonaControlo[i].referencia
-          if(tituloZC > (codigo + " " +referencia)) {
+          var tituloZC = this.auto.zonaControlo[i].codigo + " - " + this.auto.zonaControlo[i].referencia
+          if(tituloZC > (codigo + " - " +referencia)) {
             this.auto.zonaControlo.splice(i,0,{
               idClasse: idClasse,
               codigo: codigo,
@@ -433,6 +437,7 @@ export default {
               dono: dono,
               dataInicio: dataInicio,
               dataFim: dataFim,
+              nrAgregacoes: nrAgregacoes,
               uiPapel: uiPapel,
               uiDigital: uiDigital,
               uiOutros: uiOutros,
@@ -455,6 +460,7 @@ export default {
               dono: dono,
               dataInicio: dataInicio,
               dataFim: dataFim,
+              nrAgregacoes: nrAgregacoes,
               uiPapel: uiPapel,
               uiDigital: uiDigital,
               uiOutros: uiOutros,
@@ -473,7 +479,7 @@ export default {
       const reUI = /^-?\d*(\.\d\d?)?$/;
       var result = this.auto.zonaControlo.filter(
         zc => {
-          if(zc.codigo && zc.referencia) return zc.codigo + " "+ zc.referencia + " - " + zc.titulo == this.classe
+          if(zc.codigo && zc.referencia) return zc.codigo + " - "+ zc.referencia + " - " + zc.titulo == this.classe
           else if(zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
           else if(zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
         }
@@ -546,7 +552,7 @@ export default {
         this.erroDialog = true;
       }  else {
         var classe = this.classesCompletas.filter(c => {
-            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0])
+            if(c.codigo && c.referencia) return (c.codigo+" "+c.referencia == this.classe.split(" - ")[0]+" "+this.classe.split(" - ")[1])
             else if(c.codigo) return (c.codigo == this.classe.split(" - ")[0]) 
             else if(c.referencia) return (c.referencia == this.classe.split(" - ")[0]) 
           }
@@ -559,6 +565,7 @@ export default {
         var destino = this.df;
         var dataInicio = this.dataInicio;
         var dataFim = this.dataFim;
+        var nrAgregacoes = this.nrAgregacoes;
         var ni = this.ni;
         var dono = this.dono;
 
@@ -591,6 +598,7 @@ export default {
           dono: dono,
           dataInicio: dataInicio,
           dataFim: dataFim,
+          nrAgregacoes: nrAgregacoes,
           uiPapel: uiPapel,
           uiDigital: uiDigital,
           uiOutros: uiOutros,

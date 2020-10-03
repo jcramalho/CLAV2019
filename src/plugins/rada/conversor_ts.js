@@ -701,7 +701,7 @@ function produtoras(serie, classe, erros, re) {
     let tipologiasProdutoras = [];
 
     if (re.entidadesProd.length > 0) {
-        let entidades = classe[11].split("#");
+        let entidades = classe[11].split("#")[0] == "" ? [] : classe[11].split("#");
 
         for (let i = 0; i < entidades.length; i++) {
             let ent = re.entidadesProd.find(e => e.split(" - ")[0] == entidades[i]);
@@ -709,22 +709,33 @@ function produtoras(serie, classe, erros, re) {
             if (ent != undefined) {
                 entProdutoras.push(ent);
             } else {
-                erros.series.push({
-                    classe: classe[0],
-                    erro: "Entidade não é válida, " + entidades[i] + "!"
-                });
+                if (entidades[i] != "") {
+                    erros.series.push({
+                        classe: classe[0],
+                        erro: "Entidade não é válida, " + entidades[i] + "!"
+                    });
+                }
             }
         }
     } else {
         if (re.tipologiasProd.split(" - ")[0] == classe[11]) {
             tipologiasProdutoras = [re.tipologiasProd];
         } else {
-            erros.series.push({ classe: classe[0], erro: "Tipologia não é válida!" });
+            if (classe[11] != "") {
+                erros.series.push({ classe: classe[0], erro: "Tipologia não é válida!" });
+            }
         }
+    }
+
+    // verificar se existem produtoras
+    if (!!entProdutoras[0] == false && !!tipologiasProdutoras[0] == false) {
+        erros.series.push({ classe: classe[0], erro: "Não existem entidades/tipologias produtoras!" });
     }
 
     serie["entProdutoras"] = entProdutoras;
     serie["tipologiasProdutoras"] = tipologiasProdutoras;
+
+
 }
 
 /* 

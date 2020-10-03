@@ -8,7 +8,7 @@
       <v-card-text>
         <v-stepper v-model="steps" vertical>
           <v-stepper-step :complete="steps > 1" step="1">
-            Seleção de Fonte e Fundo
+            Seleção de fonte e fundo
             <span v-if="steps > 1">
               <v-chip 
                 class="ma-2"
@@ -37,7 +37,7 @@
 
 
 
-          <v-stepper-step step="2">Identificação de Classes e Agregações</v-stepper-step>
+          <v-stepper-step step="2">Identificação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
           <v-stepper-content step="2">
             <!-- Adicionar Zona Controlo -->
@@ -531,9 +531,10 @@ export default {
             }
           })
         this.classesCompletas = this.classesCompletas.filter(c => this.validaPCAeDF(c))
+        if(this.tipo == "PGD" || this.tipo=="RADA") this.classesCompletas = this.classesCompletas.filter(c=> c.df.valor!="C")
 
         this.classes = this.classesCompletas.map(c => {
-            if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+            if(c.codigo && c.referencia) return ""+c.codigo+" - "+c.referencia+" - "+c.titulo
             else if(c.codigo) return ""+c.codigo+" - "+c.titulo
             else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
@@ -553,8 +554,9 @@ export default {
             pca: {valores: c.pca.pca, notas: c.pca.notaPCA}
           }
         })
+        this.classesCompletas = this.classesCompletas.filter(c=> c.df.valor!="C")
         this.classes = this.classesCompletas.map(c => {
-          if(c.codigo && c.referencia) return ""+c.codigo+" "+c.referencia+" - "+c.titulo
+          if(c.codigo && c.referencia) return ""+c.codigo+" - "+c.referencia+" - "+c.titulo
           else if(c.codigo) return ""+c.codigo+" - "+c.titulo
           else if(c.referencia) return ""+c.referencia+" - "+c.titulo
         })
