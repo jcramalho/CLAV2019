@@ -150,7 +150,9 @@ export default {
         documentacaoProc: "",
         controlVersaoDProc: "",
         contratoAtivos: "",
-        planoRecuperacao: ""
+        planoRecuperacao: "",
+        notas: "",
+        mencaoResp: ""
       },
       codigo: "",
       titulo: "",
