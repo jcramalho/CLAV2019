@@ -36,7 +36,7 @@ const gerarFooter = () => {
   };
 };
 
-const gerarHeaderConteudo = (rada, despachoAprovacao) => {
+const gerarHeaderConteudo = (rada) => {
   const titulo = {
     text: [
       { text: 'Título: ', fontSize: 11, bold: true },
@@ -65,10 +65,17 @@ const gerarHeaderConteudo = (rada, despachoAprovacao) => {
     ]
   }
 
+  const dataRevogacao = {
+    text: [
+      { text: '\nData de Revogação: ', fontSize: 11, bold: true },
+      { text: rada.dataRevogacao, fontSize: 11 }
+    ]
+  }
+
   const despacho = {
     text: [
       { text: "\nDespacho: ", fontSize: 11, bold: true },
-      { text: despachoAprovacao.numero + '  - ' + despachoAprovacao.sumario, fontSize: 11, link: 'https://clav.dglab.gov.pt/legislacao/' + despachoAprovacao.id }
+      { text: rada.despachoNumero + '  - ' + rada.despachoSumario, fontSize: 11, link: 'https://clav.dglab.gov.pt/legislacao/' + rada.despachoAprovacao.split('#')[1] }
     ]
   }
 
@@ -76,6 +83,7 @@ const gerarHeaderConteudo = (rada, despachoAprovacao) => {
   content.push(entResp);
   content.push(aprovadoPor);
   content.push(dataAprovacao);
+  content.push(dataRevogacao);
   content.push(despacho);
 
 };
@@ -250,10 +258,10 @@ const corrigirNomeCriterio = (criterio) => {
  * Main Function
  *
  */
-export const gerarPDF = (rada, despachoAprovacao) => {
+export const gerarPDF = (rada) => {
   gerarHeader();
 
-  gerarHeaderConteudo(rada, despachoAprovacao);
+  gerarHeaderConteudo(rada);
 
   gerarRE(rada);
 

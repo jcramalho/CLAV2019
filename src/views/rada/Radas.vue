@@ -43,9 +43,7 @@ export default {
       let rada = response.data;
 
       if (!!rada) {
-        let r = await this.$request("get", "/legislacao/" + rada.despachoAprovacao.split('#')[1]);
-        
-        gerarPDF(rada, r.data);
+        gerarPDF(rada);
       }
     },
   },

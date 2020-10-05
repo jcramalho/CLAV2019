@@ -67,30 +67,30 @@ export default {
           processosSel: [],
         };
 
-        console.log(despachoAprovacao);
+        if (this.pedido.objeto.tipo === "RADA") {
+          //Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
+          let responseSFC = await this.$request(
+            "get",
+            "/vocabularios/vc_pcaSubformaContagem"
+          );
 
-        //Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
+          let subformasContagem = responseSFC.data.map((item) => {
+            return {
+              label: item.termo.split(": ")[1] + ": " + item.desc,
+              value: item.idtermo.split("#")[1],
+            };
+          });
 
-        let responseSFC = await this.$request(
-          "get",
-          "/vocabularios/vc_pcaSubformaContagem"
-        );
+          let triplos = await converterParaTriplosRADA(
+            this.pedido.objeto.dados,
+            subformasContagem,
+            despachoAprovacao.data,
+            despachoAprovacao.dataRevogacao,
+            despachoAprovacao.id
+          );
 
-        let subformasContagem = responseSFC.data.map((item) => {
-          return {
-            label: item.termo.split(": ")[1] + ": " + item.desc,
-            value: item.idtermo.split("#")[1],
-          };
-        });
-
-        let triplos = await converterParaTriplosRADA(
-          this.pedido.objeto.dados,
-          subformasContagem,
-          despachoAprovacao.data,
-          despachoAprovacao.id
-        );
-
-        await this.$request("post", "/rada", { triplos });
+          await this.$request("post", "/rada", { triplos });
+        }
 
         await this.$request("post", "/legislacao", despachoAprovacao);
 
@@ -116,6 +116,7 @@ export default {
           `/pedidos/finalizacao/${this.$route.params.idPedido}`
         );
       } catch (e) {
+        console.log(e);
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem = "Erro ao finalizar o pedido!";
       }
@@ -140,6 +141,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
+        console.log(e);
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem = "Erro ao devolver o pedido!";
       }
