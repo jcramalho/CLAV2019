@@ -13,15 +13,13 @@
               <div class="info-label">Nível</div>
             </v-col>
             <v-col>
-              <v-radio-group v-model="classe.nivel" row>
-                <v-radio
-                  v-for="(n, i) in classeNiveis"
-                  :key="i"
-                  :label="n.label"
-                  :value="n.value"
-                  color="indigo darken-3"
-                ></v-radio>
-              </v-radio-group>
+              <input type="radio" id="one" value="One" v-model="picked">
+              <label for="one">One</label>
+              <br>
+              <input type="radio" id="one" value="One" v-model="picked">
+              <label for="one">One</label>
+              <br>
+              <span>Picked: {{ picked }}</span>
             </v-col>
           </v-row>
 
@@ -565,7 +563,6 @@ export default {
     },
 
     // Carrega a legislação da BD....................
-
     loadLegislacao: async function() {
       try {
         var response = await this.$request("get", "/legislacao?estado=Ativo");
