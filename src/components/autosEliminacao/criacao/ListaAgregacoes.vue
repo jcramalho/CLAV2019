@@ -214,14 +214,14 @@ export default {
     cabecalhoLC: [
       { text: "Código", align: "left", sortable: false, value: "codigo" , width: "20%"},
       { text: "Título", align: "left", value: "titulo", width: "30%" },
-      { text: "Data de contagem", align: "center", value: "dataContagem" , width: "15%"},
+      { text: "Data de início de contagem do PCA", align: "center", value: "dataContagem" , width: "15%"},
       { text: "Natureza de intervenção", align: "center", value: "ni", width: "20%" },
       { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
     ],
     cabecalho: [
       { text: "Código", align: "left", sortable: false, value: "codigo" , width: "30%"},
       { text: "Título", align: "left", value: "titulo", width: "40%" },
-      { text: "Data de contagem", align: "center", value: "dataContagem" , width: "15%"},
+      { text: "Data de início de contagem do PCA", align: "center", value: "dataContagem" , width: "15%"},
       { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
     ],
     footer_props: {

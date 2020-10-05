@@ -31,7 +31,7 @@
           </v-row>
           <v-row>
             <v-col :md="2">
-              <div class="info-label">Data de Contagem do PCA</div>
+              <div class="info-label">Data de início de contagem do PCA</div>
             </v-col>
             <v-col>
               <v-text-field
@@ -43,7 +43,7 @@
               >Insira um codigo para a agregação</v-text-field>
             </v-col>
             <v-col>
-              <div class="info-label">Natureza de Intervenção</div>
+              <div class="info-label">Natureza de intervenção</div>
             </v-col>
             <v-col>
               <v-select

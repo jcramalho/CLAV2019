@@ -136,7 +136,13 @@
                 N.º de agregações
               </div>
             </v-col>
-            <v-col class="mt-2">{{ item.agregacoes.length }}</v-col>
+            <v-col v-if="item.agregacoes.length==0" class="mt-2">
+              <v-text-field
+                v-model="item.nrAgregacoes"
+                single-line
+                dense
+              /></v-col>
+            <v-col v-else class="mt-2">{{ item.nrAgregacoes }}</v-col>
           </v-row>
           <v-row v-if="item.uiPapel">
             <v-col cols="3">
@@ -183,7 +189,7 @@
               </template>
             </v-checkbox>
           </v-row>
-        <div class="ma-1">
+        <div class="ma-1" v-if="item.agregacoes.length>0">
           <v-row justify="space-between" class="info-label">
             <v-col>Lista de Agregações</v-col>
             <v-col>

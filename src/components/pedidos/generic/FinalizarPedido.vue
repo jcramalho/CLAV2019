@@ -1,17 +1,18 @@
 <template>
   <v-card>
     <v-card-title class="warning title white--text" dark>
-      <v-icon color="white" class="ma-1">warning</v-icon>
-      Aviso
+      <v-icon color="white" class="ma-1">warning</v-icon>Aviso
     </v-card-title>
     <v-card-text>
       <v-container>
         <h4>Deseja mesmo finalizar o pedido?</h4>
-        <br />
-        <h6>
-          Ao clicar em Sim está a introduzir toda a informação validada no
-          sistema.
-        </h6>
+        <div v-if="!vai_para_despacho">
+          <br />
+          <h6>
+            Ao clicar em Sim está a introduzir toda a informação validada no
+            sistema.
+          </h6>
+        </div>
       </v-container>
 
       <hr />
@@ -36,19 +37,20 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn color="red darken-4" dark rounded text @click="cancelar()">
-        Não
-      </v-btn>
+      <v-btn color="red darken-4" dark rounded text @click="cancelar()"
+        >Não</v-btn
+      >
 
-      <v-btn class="indigo accent-4" rounded dark @click="finalizarPedido()">
-        Sim
-      </v-btn>
+      <v-btn class="indigo accent-4" rounded dark @click="finalizarPedido()"
+        >Sim</v-btn
+      >
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 export default {
+  props: ["vai_para_despacho"],
   data() {
     return {
       mensagemDespacho: null,
@@ -66,7 +68,7 @@ export default {
       const despacho = {};
       if (this.mensagemDespacho !== null)
         despacho.mensagemDespacho = this.mensagemDespacho;
-      
+        
       this.$emit("finalizarPedido", despacho);
     },
   },

@@ -562,6 +562,28 @@ export default {
           ],
         },
         {
+          entidade: "Planos de Preservação Digital",
+          texto:
+            "A ser adicionado...",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/ppd",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
+              label: "Criar",
+              url: "/ppd/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
+              label: "Importar",
+              url: "/ppd/importar/csv",
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+            },
+          ],
+        },
+        {
           entidade: "Exportação de Dados",
           texto:
             "Exportar dados das classes, entidades, tipologias, legislação e ontologia.",

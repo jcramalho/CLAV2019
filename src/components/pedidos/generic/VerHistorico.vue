@@ -2,7 +2,6 @@
   <v-card>
     <v-card-title class="indigo darken-4 title white--text" dark>
       Histórico de alterações
-
       <v-spacer />
 
       <v-chip color="indigo accent-4" text-color="white" label>
@@ -17,9 +16,7 @@
             color="white"
             v-on="on"
             class="ml-4"
-          >
-            table_chart
-          </v-icon>
+          >table_chart</v-icon>
         </template>
         <span>Comparar duas etapas do histórico em formato tabela...</span>
       </v-tooltip>
@@ -30,7 +27,7 @@
         <v-window v-model="onboarding" class="mt-2">
           <v-window-item v-for="(h, i) in dados" :key="i">
             <v-card shaped class="rounded-card pa-4" :color="corFundo[i]">
-              <v-card-text>
+              <v-card-text v-if="pedido.objeto.tipo != 'RADA'">
                 <div v-for="(info, campo) in h" :key="campo">
                   <v-row
                     v-if="
@@ -44,18 +41,14 @@
                       <div
                         class="info-descricao"
                         :class="`info-descricao-${info.cor}`"
-                      >
-                        {{ transformaKeys(campo) }}
-                      </div>
+                      >{{ transformaKeys(campo) }}</div>
                     </v-col>
 
                     <v-col>
                       <div
                         v-if="!(info.dados instanceof Array)"
                         class="info-conteudo"
-                      >
-                        {{ info.dados }}
-                      </div>
+                      >{{ info.dados }}</div>
 
                       <div v-else>
                         <v-data-table
@@ -71,9 +64,7 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >
-                              Nenhuma entidade selecionada...
-                            </v-alert>
+                            >Nenhuma entidade selecionada...</v-alert>
                           </template>
 
                           <template v-slot:item.sigla="{ item }">
@@ -82,12 +73,9 @@
                               right
                               dot
                               inline
-                              >{{ item.sigla }}</v-badge
-                            >
+                            >{{ item.sigla }}</v-badge>
 
-                            <span v-else>
-                              {{ item.sigla }}
-                            </span>
+                            <span v-else>{{ item.sigla }}</span>
                           </template>
                         </v-data-table>
 
@@ -104,9 +92,7 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >
-                              Nenhuma tipologia selecionada...
-                            </v-alert>
+                            >Nenhuma tipologia selecionada...</v-alert>
                           </template>
 
                           <template v-slot:item.sigla="{ item }">
@@ -115,12 +101,9 @@
                               right
                               dot
                               inline
-                              >{{ item.sigla }}</v-badge
-                            >
+                            >{{ item.sigla }}</v-badge>
 
-                            <span v-else>
-                              {{ item.sigla }}
-                            </span>
+                            <span v-else>{{ item.sigla }}</span>
                           </template>
                         </v-data-table>
 
@@ -137,9 +120,7 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >
-                              Nenhum processo selecionado...
-                            </v-alert>
+                            >Nenhum processo selecionado...</v-alert>
                           </template>
 
                           <template v-slot:item.codigo="{ item }">
@@ -148,19 +129,13 @@
                               right
                               dot
                               inline
-                              >{{ item.codigo }}</v-badge
-                            >
+                            >{{ item.codigo }}</v-badge>
 
-                            <span v-else>
-                              {{ item.codigo }}
-                            </span>
+                            <span v-else>{{ item.codigo }}</span>
                           </template>
                         </v-data-table>
 
-                        <div
-                          class="info-conteudo"
-                          v-else-if="campo === 'zonaControlo'"
-                        >
+                        <div class="info-conteudo" v-else-if="campo === 'zonaControlo'">
                           <ZonaControlo :info="info" />
                         </div>
 
@@ -174,15 +149,16 @@
                     <v-col cols="1">
                       <v-tooltip v-if="info.nota" bottom>
                         <template v-slot:activator="{ on }">
-                          <v-icon v-on="on" @click="verNota(info.nota)">
-                            message
-                          </v-icon>
+                          <v-icon v-on="on" @click="verNota(info.nota)">message</v-icon>
                         </template>
                         <span>Ver nota relativa ao campo...</span>
                       </v-tooltip>
                     </v-col>
                   </v-row>
                 </div>
+              </v-card-text>
+              <v-card-text v-else>
+                <VerHistoricoRADA :historico="h" />
               </v-card-text>
             </v-card>
           </v-window-item>
@@ -193,11 +169,7 @@
             <v-icon medium>chevron_left</v-icon>
           </v-btn>
           <v-item-group v-model="onboarding" class="text-center" mandatory>
-            <v-item
-              v-for="(n, i) in dados"
-              :key="`btn-${i}`"
-              v-slot:default="{ active, toggle }"
-            >
+            <v-item v-for="(n, i) in dados" :key="`btn-${i}`" v-slot:default="{ active, toggle }">
               <v-btn :input-value="active" icon @click="toggle">
                 <b>{{ i + 1 }}</b>
               </v-btn>
@@ -221,19 +193,24 @@
         Esta etapa representa uma ação no workflow que não tem como objetivo a
         alteração de dados. Dessa forma, os dados apresentados correspondem ao
         estado anterior a essa ação.
-      </v-alert> -->
+      </v-alert>-->
     </v-card-text>
 
     <v-card-actions>
       <v-spacer />
-      <v-btn color="red darken-4" text rounded dark @click="cancelar()">
-        Fechar
-      </v-btn>
+      <v-btn color="red darken-4" text rounded dark @click="cancelar()">Fechar</v-btn>
     </v-card-actions>
 
     <!-- Ver historico em tabela dialog -->
-    <v-dialog v-model="dialogVerHistoricoEmTabela" width="80%" persistent>
+    <v-dialog v-model="dialogVerHistoricoEmTabela" width="90%" persistent>
       <VerHistoricoEmTabela
+        v-if="pedido.objeto.tipo != 'RADA'"
+        :historico="dados"
+        :distribuicao="distribuicaoFormatada"
+        @fecharDialog="dialogVerHistoricoEmTabela = false"
+      />
+      <VerHistoricoRADATabela
+        v-else
         :historico="dados"
         :distribuicao="distribuicaoFormatada"
         @fecharDialog="dialogVerHistoricoEmTabela = false"
@@ -243,29 +220,19 @@
     <!-- Ver nota dialog -->
     <v-dialog v-model="dialogVerNota.visivel" width="50%">
       <v-card>
-        <v-card-title class="indigo darken-4 title white--text">
-          Nota
-        </v-card-title>
+        <v-card-title class="indigo darken-4 title white--text">Nota</v-card-title>
 
         <v-card-text>
           <v-row>
             <v-col>
-              <v-textarea
-                :value="dialogVerNota.nota"
-                auto-grow
-                outlined
-                readonly
-                color="indigo"
-              />
+              <v-textarea :value="dialogVerNota.nota" auto-grow outlined readonly color="indigo" />
             </v-col>
           </v-row>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="fecharDialogVerNota()">
-            Fechar
-          </v-btn>
+          <v-btn class="red darken-4" dark @click="fecharDialogVerNota()">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -282,6 +249,8 @@ import {
 
 import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 import VerHistoricoEmTabela from "@/components/pedidos/generic/VerHistoricoEmTabela";
+import VerHistoricoRADA from "@/components/pedidos/analise/rada/generic/VerHistoricoRADA";
+import VerHistoricoRADATabela from "@/components/pedidos/analise/rada/generic/VerHistoricoRADATabela";
 
 export default {
   props: ["pedido"],
@@ -289,6 +258,8 @@ export default {
   components: {
     ZonaControlo,
     VerHistoricoEmTabela,
+    VerHistoricoRADA,
+    VerHistoricoRADATabela,
   },
 
   data() {

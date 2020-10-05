@@ -169,13 +169,14 @@
                           </td>
                           <td style="width:80%;">{{ item.dataFim }}</td>
                         </tr>
-                        <tr v-if="item.agregacoes && item.agregacoes.length>0">
+                        <tr>
                           <td style="width:20%;">
                             <div class="info-label">
                               N.º de agregações
                             </div>
                           </td>
-                          <td style="width:80%;">{{ item.agregacoes.length }}</td>
+                          <td v-if="item.agregacoes.length>0" style="width:80%;">{{ item.agregacoes.length }}</td>
+                          <td v-else style="width:80%;">{{ item.nrAgregacoes }}</td>
                         </tr>
                         <tr v-if="item.UIpapel">
                           <td style="width:20%;">

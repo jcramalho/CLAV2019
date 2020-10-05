@@ -27,18 +27,6 @@
             </span>
             <span v-else>[Campo não preenchido na submissão do pedido]</span>
           </slot>
-          <!-- <span
-            v-if="tipo == 'string' && !!novoHistorico[campoValue].dados"
-          >{{novoHistorico[campoValue].dados}}</span>
-          <span v-else-if="(tipo == 'array') && !!novoHistorico[campoValue].dados[0]">
-            <ul>
-              <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
-                {{ v }}
-                <v-badge v-if="!dadosOriginais[campoValue].some(e => e == v)" right dot inline></v-badge>
-              </li>
-            </ul>
-          </span>
-          <span v-else>[Campo não preenchido na submissão do pedido]</span>-->
         </div>
       </v-col>
       <v-col cols="auto" v-if="editaCampo != campoValue">

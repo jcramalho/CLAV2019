@@ -3,6 +3,7 @@
     <v-row class="mx-4">
       <v-btn @click="addZC=true" dark color="indigo darken-4">Adicionar Classe</v-btn>
       <v-btn class="mx-4" @click="importAg=true" v-if="auto.zonaControlo.length>0" dark color="indigo darken-4">Importar Agregações / UI</v-btn>
+      <v-btn @click="dialogAddAg=true" v-if="auto.zonaControlo.length>0" dark color="indigo darken-4">Adicionar Agregações / UI</v-btn>
     </v-row>
     <v-dialog v-model="addZC">
       <DialogZonaControlo 
@@ -30,7 +31,7 @@
           através da importação de um ficheiro.
           <p>
             O ficheiro está disponível
-            <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download>aqui</a>.
+            <a :href="`${publicPath}documentos/Formulario_auto_importacao_agregacoes_UI.csv`" download>aqui</a>.
           </p>
           <p>O seu preenchimento deve ser efetuado offline.</p>
           <p>
@@ -92,6 +93,21 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogAddAg" width="500">
+      <v-card outlined>
+        <v-card-title></v-card-title>
+        <v-card-text>
+          <p>Para inserir a informação relativa às agregações / UI deve preencher a tabela de identificação das agregações / UI que se encontra no final da área específica de cada <b>classe / série</b>.</p>
+          <p>Para ter acesso a esta tabela deve abrir a área da <b>classe / série</b>, clicando na barra de identificação da <b>classe / série</b>.</p>
+          <p>O preenchimento da <b>tabela das agregações / UI</b> é feito classe a classe / série a série.</p>
+        </v-card-text>
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="indigo darken-4" text @click="dialogAddAg = false">Entendi</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -108,6 +124,7 @@ export default {
     importAg: false,
     erroDialog: false,
     sucessDialog: false,
+    dialogAddAg: false,
     addedAg: [],
     erro: "",
     fileAgreg: null,
