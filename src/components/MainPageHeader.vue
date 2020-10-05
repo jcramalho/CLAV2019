@@ -3,6 +3,7 @@
     <v-btn to="/" icon>
       <v-icon large>home</v-icon>
     </v-btn>
+    <v-img :src="require('./../assets/DGLAB_logo.jpg')" max-width="200" />
     <v-toolbar-title class="headline" @click="goHome">
       
       <span 

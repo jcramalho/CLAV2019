@@ -20,7 +20,8 @@
     <v-spacer></v-spacer>
 
     <v-toolbar-title>
-      <v-btn text depressed href="mailto:clav@dglab.gov.pt">Contactos</v-btn>
+      <v-btn text depressed href="mailto:clav@dglab.gov.pt">Contacte-nos</v-btn>
+      <v-btn text depressed @click="true">Equipa técnica</v-btn>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-img :src="require('./../assets/feder.png')" aspect-ratio="4.8600" />

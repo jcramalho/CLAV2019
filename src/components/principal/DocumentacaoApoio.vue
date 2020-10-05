@@ -2,7 +2,7 @@
   <Loading v-if="!conteudoReady" :message="'documentação de apoio'" />
   <v-card v-else class="ma-4 pa-2">
     <v-toolbar :color="panelHeaderColor" dark>
-      <v-toolbar-title>Documentação Técnica de Apoio</v-toolbar-title>
+      <v-toolbar-title>Documentos técnicos</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
       <v-expansion-panels>

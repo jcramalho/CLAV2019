@@ -446,18 +446,6 @@ export default {
             },
           ],
         },
-        /*{
-          entidade: "Portaria de Gestão de Documentos",
-          html: true,
-          texto: "Texto para as PGD",
-          ops: [
-            {
-              label: "Consultar",
-              url: "/pgd",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-            }
-          ]
-        },*/
         {
           entidade: "Relatórios de Avaliação de Documentação Acumulada",
           texto: help.RADA,
@@ -493,6 +481,28 @@ export default {
             {
               label: "Importar",
               url: "/autosEliminacao/importar",
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+            },
+          ],
+        },
+        {
+          entidade: "Planos de Preservação Digital",
+          texto:
+            "A ser adicionado...",
+          ops: [
+            {
+              label: "Consultar",
+              url: "/ppd",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
+              label: "Criar",
+              url: "/ppd/criar",
+              level: [1, 3, 3.5, 4, 5, 6, 7],
+            },
+            {
+              label: "Importar",
+              url: "/ppd/importar/csv",
               level: [1, 3, 3.5, 4, 5, 6, 7],
             },
           ],
@@ -562,28 +572,6 @@ export default {
           ],
         },
         {
-          entidade: "Planos de Preservação Digital",
-          texto:
-            "A ser adicionado...",
-          ops: [
-            {
-              label: "Consultar",
-              url: "/ppd",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-            },
-            {
-              label: "Criar",
-              url: "/ppd/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-            {
-              label: "Importar",
-              url: "/ppd/importar/csv",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
-        },
-        {
           entidade: "Exportação de Dados",
           texto:
             "Exportar dados das classes, entidades, tipologias, legislação e ontologia.",
@@ -597,22 +585,12 @@ export default {
         },
         {
           entidade: "API de dados",
+          html: true, 
           texto: help.API,
           ops: [
             {
               label: "Aceder",
               url: lhost + "/docs",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
-        },
-        {
-          entidade: "Permissões de Acesso",
-          texto: help.PermissoesAcesso,
-          ops: [
-            {
-              label: "Consultar",
-              url: "/permissoesAcesso",
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
             },
           ],

@@ -12,10 +12,10 @@ module.exports.help = {
     "também a contextualizar e avaliar a informação.</p>" +
     "<p>Para aceder ao catálogo dos processos de negócio selecione a opção CONSULTAR.</p>" +
     "<p>Para propor uma nova classe para a Lista Consolidada selecione a opção <b>CRIAR CLASSE</b>. " +
-    "Deve estar <b>registado na CLAV</b> para aceder a esta funcionalidade. Consulte as “Instruções para criação assistida de " +
-    "classes na LC em <b>Formulários e instruções para a CLAV</b>.</p>" +
+    "<b>Deve estar registado na CLAV para aceder a esta funcionalidade. Consulte as “Instruções para criação assistida de " +
+    "classes na LC em Formulários e instruções</b>.</p>" +
     "<p>Para <b>propor uma  alteração</b> a uma classe da Lista Consolidada selecione a opção <b>ALTERAR CLASSE</b>. " +
-    "Deve estar <b>registado na CLAV</b> para aceder a esta funcionalidade.</p>",
+    "<b>Deve estar registado na CLAV para aceder a esta funcionalidade.</b></p>",
   TabelasSelecao:
     "<p>Uma tabela de seleção é um instrumento utilizado pelas entidades para a gestão da informação. " +
     "Permite organizar e estruturar a informação desde o momento da sua produção, através da atribuição de um código de " +
@@ -51,8 +51,8 @@ module.exports.help = {
     " a tabela de seleção.</p>" +
     "<p>Para aceder ao catálogo dos RADA e respetivas tabelas de seleção aprovados pela DGLAB e" +
     "disponibilizados na CLAV selecione a opção CONSULTAR.</p>" +
-    "<p>Para propor um RADA selecione a opção CRIAR.</p>" +
-    "<p>Deve estar registado na CLAV para aceder à funcionalidade CRIAR. Consulte as instruções em Formulários" +
+    "<p>Para propor um RADA selecione a opção CRIAR. " +
+    "Deve estar registado na CLAV para aceder à funcionalidade CRIAR. Consulte as instruções em Formulários" +
     "e instruções.</p>" +
     "<h6>CONSULTAR</h6>" +
     "<p>As tabelas de seleção encontram-se organizadas em dois conjuntos:" +
@@ -89,8 +89,9 @@ module.exports.help = {
     "Termos que detalham o âmbito de aplicação dos processos de negócio e apoiam a recuperação da informação." +
     " Aplica-se às classes de 3º e 4º nível.",
   API:
-    "Acesso à página de documentação da API de dados onde poderá consultar toda a informação sobre a mesma " +
-    "experimentar as várias operações (página gerada a partir da especificação em Swagger).",
+    "<p>Página gerada a partir da especificação em Swagger, que permite às entidades otimizar as funcionalidades disponíveis na plataforma CLAV," +
+    " nomeadamente através da criação de automatismos.</p>" +
+    "<p>Para aceder à página API de dados, selecione a opção <b>ACEDER</b>.</p>",
   PermissoesAcesso: "Possui a informação das operações da interface e da API de dados que podem ser acedidas por determinado utilizador",
   VocabulariosControlados:
     "Gestão dos Vocabulários Controlados utilizados na aplicação.",
