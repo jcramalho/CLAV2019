@@ -16,7 +16,7 @@
         <div class="mb-1">
           <v-icon left>account_balance</v-icon>
           {{ p.objeto.dados.ts.designacaoEntidade }}
-          {{p.objeto.dados.ts.designacaoTipologia}}
+          {{ p.objeto.dados.ts.designacaoTipologia}}
         </div>
       </v-col>
       <v-col cols="1">
@@ -32,7 +32,7 @@
     </v-row>
     <v-data-table
       :headers="tsHeaders"
-      :items="p.objeto.dados.ts.processos"
+      :items="p.objeto.dados.ts.listaProcessos.procs"
       class="elevation-1"
       :footer-props="tsFooterProps"
     >
@@ -57,7 +57,10 @@
               outlined
               label
               x-small
-            >{{ props.item.sigla }}</v-chip>
+            >
+              {{ p.objeto.dados.ts.idEntidade }}
+              {{ p.objeto.dados.ts.idTipologia}}
+            </v-chip>
           </td>
           <td>
             <v-chip
@@ -254,7 +257,6 @@ export default {
     async finalizarPedido(dados) {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
-
         for (const key in pedido.objeto.dados) {
           if (
             pedido.objeto.dados[key] === undefined ||

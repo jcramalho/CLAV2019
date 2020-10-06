@@ -19,7 +19,7 @@
 
     <v-data-table
       :headers="tsHeaders"
-      :items="p.objeto.dados.ts.processos"
+      :items="p.objeto.dados.ts.listaProcessos.procs"
       class="elevation-1"
       :footer-props="tsFooterProps"
     >

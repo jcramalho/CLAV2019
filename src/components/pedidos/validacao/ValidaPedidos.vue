@@ -56,7 +56,9 @@
               :tipo="pedido.objeto.tipo"
             />
 
-            <ValidaTS v-if="pedido.objeto.tipo.includes('TS ')" :p="pedido" />
+            <ValidaTS v-if="pedido.objeto.tipo=='TS Pluriorganizacional'" :p="pedido" />
+
+            <ValidaTSOrg v-if="pedido.objeto.tipo == 'TS Organizacional'" :p="pedido" />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
@@ -124,6 +126,7 @@ import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
 import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
+import ValidaTSOrg from "@/components/pedidos/validacao/ValidaTSOrg";
 import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
@@ -149,6 +152,7 @@ export default {
     ValidaEditaTipologiaEntidade,
     ValidaAE,
     ValidaTS,
+    ValidaTSOrg,
     Loading,
     VerDespachos,
     ErroDialog,
