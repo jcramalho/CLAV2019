@@ -1,47 +1,71 @@
 <template>
-  <v-card class="mt-4">
-    <v-card-title class="info-label title" dark>
-      Tabela de Seleção para a entidade {{ p.objeto.dados.ts.entidade }}
-    </v-card-title>
-    <v-card-text>
+  <div>
+    <v-row class="mt-1">
+      <v-col cols="2">
+        <div class="info-label">Entidade</div>
+      </v-col>
+      <v-col>
+        <div class="info-content">
+          <span>
+            <v-chip class="ma-2" color="indigo darken-4" outlined label>
+              <v-icon left>account_balance</v-icon>
+              {{ p.objeto.dados.ts.designacaoEntidade }}
+              {{ p.objeto.dados.ts.designacaoTipologia }}
+            </v-chip>
+          </span>
+        </div>
+      </v-col>
+    </v-row>
+    <v-card class="mt-4">
+      <v-card-title
+        class="info-label title"
+        dark
+      >Tabela de Seleção para a entidade {{ p.objeto.dados.ts.entidade }}</v-card-title>
+      <v-card-text>
+        <v-data-table
+          :headers="tsHeaders"
+          :items="p.objeto.dados.ts.listaProcessos.procs"
+          class="elevation-1"
+          :footer-props="tsFooterProps"
+        >
+          <template v-slot:no-data>
+            <v-alert
+              :value="true"
+              color="error"
+              icon="warning"
+            >Não existem processos para mostrar...</v-alert>
+          </template>
 
-      <v-data-table
-        :headers="tsHeaders"
-        :items="p.objeto.dados.ts.processos"
-        class="elevation-1"
-        :footer-props="tsFooterProps"
-      >
-        <template v-slot:no-data>
-          <v-alert :value="true" color="error" icon="warning">
-            Não existem processos para mostrar...
-          </v-alert>
-        </template>
+          <template v-slot:footer.page-text="props">
+            {{ props.pageStart }} - {{ props.pageStop }} de
+            {{ props.itemsLength }}
+          </template>
 
-        <template v-slot:footer.page-text="props">
-          {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
+          <template v-slot:item="props">
+            <tr>
+              <td>{{ props.item.codigo }}</td>
+              <td>{{ props.item.titulo }}</td>
+              <td>
+                <span v-if="props.item.dono">X</span>
+              </td>
+              <td>
+                <span v-if="props.item.participante">{{ props.item.participante }}</span>
+              </td>
+            </tr>
+          </template>
 
-        <template v-slot:item="props">
-          <tr>
-            <td>{{ props.item.codigo }}</td>
-            <td>{{ props.item.titulo }}</td>
-            <td><span v-if="props.item.dono">X</span></td>
-            <td><span v-if="props.item.participante">{{ props.item.participante }}</span></td>
-          </tr>
-        </template>
+          <template v-slot:pageText="props">
+            Processos {{ props.pageStart }} - {{ props.pageStop }} de
+            {{ props.itemsLength }}
+          </template>
+        </v-data-table>
 
-        <template v-slot:pageText="props">
-          Processos {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
-      </v-data-table>
-
-      <!--div class="info-content">
+        <!--div class="info-content">
         {{ JSON.stringify(p) }}
-      </div-->
-    </v-card-text>
-  </v-card>
+        </div-->
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script>

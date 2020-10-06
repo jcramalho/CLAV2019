@@ -3,237 +3,195 @@
     <v-col>
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading"
-            >Nova Tabela de Seleção</v-toolbar-title
-          >
+          <v-toolbar-title class="card-heading">Nova Tabela de Seleção</v-toolbar-title>
         </v-app-bar>
         <v-card-text class="panel-body">
-            <v-stepper v-model="stepNo" vertical>
-              <v-stepper-step :complete="stepNo > 1" step="1">
-                Identificação da entidade ou tipologia da tabela de seleção:
-                <span v-if="stepNo > 1 && tipoTS!='tipologia'">
-                  <v-chip
-                    class="ma-2"
-                    color="indigo darken-4"
-                    text-color="white"
-                    label
-                  >
-                    <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
-                  </v-chip>
-                </span>
-                <span v-else-if="stepNo > 1 && tipoTS=='tipologia'">
-                  <v-chip
-                    class="ma-2"
-                    color="indigo darken-4"
-                    text-color="white"
-                    label
-                  >
-                    <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idTipologia.split("_")[1] + ": " + tabelaSelecao.designacaoTipologia }}
-                  </v-chip>
-                </span>
-              </v-stepper-step>
-              <v-stepper-content step="1">
-                <div v-if="entidadeDGLAB">
-                  <v-col>
-                        <span class="subtitle-2">Pretende:</span>
-                        <v-radio-group v-model="tipoTS" column>
-                          <v-radio label="Criar uma Tabela de Seleção para uma entidade" value="entidade"></v-radio>
-                          <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
-                        </v-radio-group>
+          <v-stepper v-model="stepNo" vertical>
+            <v-stepper-step :complete="stepNo > 1" step="1">
+              Identificação da entidade ou tipologia da tabela de seleção:
+              <span
+                v-if="stepNo > 1 && tipoTS!='tipologia'"
+              >
+                <v-chip class="ma-2" color="indigo darken-4" text-color="white" label>
+                  <v-icon left>account_balance</v-icon>
+                  {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
+                </v-chip>
+              </span>
+              <span v-else-if="stepNo > 1 && tipoTS=='tipologia'">
+                <v-chip class="ma-2" color="indigo darken-4" text-color="white" label>
+                  <v-icon left>account_balance</v-icon>
+                  {{ tabelaSelecao.idTipologia.split("_")[1] + ": " + tabelaSelecao.designacaoTipologia }}
+                </v-chip>
+              </span>
+            </v-stepper-step>
+            <v-stepper-content step="1">
+              <div v-if="entidadeDGLAB">
+                <v-col>
+                  <span class="subtitle-2">Pretende:</span>
+                  <v-radio-group v-model="tipoTS" column>
+                    <v-radio label="Criar uma Tabela de Seleção para uma entidade" value="entidade"></v-radio>
+                    <v-radio
+                      label="Criar uma Tabela de Seleção para uma tipologia"
+                      value="tipologia"
+                    ></v-radio>
+                  </v-radio-group>
 
-                        <div v-if="tipoTS=='entidade' && entidadesReady">
-                          <v-col >
-                            <v-autocomplete
-                              :items="entidades"
-                              label="Selecione a entidade"
-                              item-text="label"
-                              return-object
-                              v-model="ent"
-                              prepend-icon="account_balance"
-                            >
-                            </v-autocomplete>
-                          </v-col>
-                          <v-btn
-                            v-if="ent != ''"
-                            color="primary"
-                            @click="guardaEntidade"
-                          >Continuar</v-btn>
-                        </div>
-
-                        <div v-if="tipoTS=='tipologia' && tipologiasReady">
-                          <v-col>
-                            <v-autocomplete
-                              :items="tipologias"
-                              item-text="label"
-                              return-object
-                              label="Selecione a tipologia"
-                              v-model="tipSel"
-                              prepend-icon="account_balance"
-                            >
-                            </v-autocomplete>
-                          </v-col>
-                          <v-btn
-                            color="primary"
-                            @click="guardaTipologia"
-                          >Continuar</v-btn>
-                        </div>
-                    </v-col>
-                </div>
-
-                <div v-else>
+                  <div v-if="tipoTS=='entidade' && entidadesReady">
                     <v-col>
-                        <span class="subtitle-2">Pretende:</span>
-                        <v-radio-group v-model="tipoTS" column>
-                          <v-radio label="Criar uma Tabela de Seleção para a minha organização" value="utilizador"></v-radio>
-                          <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
-                        </v-radio-group>
+                      <v-autocomplete
+                        :items="entidades"
+                        label="Selecione a entidade"
+                        item-text="label"
+                        return-object
+                        v-model="ent"
+                        prepend-icon="account_balance"
+                      ></v-autocomplete>
+                    </v-col>
+                    <v-btn v-if="ent != ''" color="primary" @click="guardaEntidade">Continuar</v-btn>
+                  </div>
 
-                    <div v-if="tipoTS=='utilizador'">
-                      <v-btn
-                        color="primary"
-                        @click="guardaEntidadeUtilizador"
-                      >Continuar</v-btn>
-                    </div>
+                  <div v-if="tipoTS=='tipologia' && tipologiasReady">
+                    <v-col>
+                      <v-autocomplete
+                        :items="tipologias"
+                        item-text="label"
+                        return-object
+                        label="Selecione a tipologia"
+                        v-model="tipSel"
+                        prepend-icon="account_balance"
+                      ></v-autocomplete>
+                    </v-col>
+                    <v-btn color="primary" @click="guardaTipologia">Continuar</v-btn>
+                  </div>
+                </v-col>
+              </div>
 
-                    <div v-if="tipoTS=='tipologia' && tipologiasReady">
-                          <v-col>
-                            <v-autocomplete
-                              :items="tipologias"
-                              item-text="label"
-                              return-object
-                              label="Selecione a tipologia"
-                              v-model="tipSel"
-                              prepend-icon="account_balance"
-                            >
-                            </v-autocomplete>
-                          </v-col>
-                          <v-btn
-                            color="primary"
-                            @click="guardaTipologia"
-                          >Continuar</v-btn>
-                    </div>
+              <div v-else>
+                <v-col>
+                  <span class="subtitle-2">Pretende:</span>
+                  <v-radio-group v-model="tipoTS" column>
+                    <v-radio
+                      label="Criar uma Tabela de Seleção para a minha organização"
+                      value="utilizador"
+                    ></v-radio>
+                    <v-radio
+                      label="Criar uma Tabela de Seleção para uma tipologia"
+                      value="tipologia"
+                    ></v-radio>
+                  </v-radio-group>
 
-                  </v-col>
-                </div>
+                  <div v-if="tipoTS=='utilizador'">
+                    <v-btn color="primary" @click="guardaEntidadeUtilizador">Continuar</v-btn>
+                  </div>
 
-              </v-stepper-content>
+                  <div v-if="tipoTS=='tipologia' && tipologiasReady">
+                    <v-col>
+                      <v-autocomplete
+                        :items="tipologias"
+                        item-text="label"
+                        return-object
+                        label="Selecione a tipologia"
+                        v-model="tipSel"
+                        prepend-icon="account_balance"
+                      ></v-autocomplete>
+                    </v-col>
+                    <v-btn color="primary" @click="guardaTipologia">Continuar</v-btn>
+                  </div>
+                </v-col>
+              </div>
+            </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 2" step="2">
-                Designação da Tabela de Seleção
-                <span v-if="stepNo > 1">
-                  <v-chip
-                    class="ma-2"
-                    color="indigo darken-4"
-                    text-color="white"
-                    label
-                  >
-                    {{ tabelaSelecao.designacao }}
-                  </v-chip>
-                </span>
-              </v-stepper-step>
-              <v-stepper-content step="2">
-                <v-flex xs12 sm6 md10>
-                  <v-text-field
-                    :placeholder="tabelaSelecao.designacao"
-                    v-model="tabelaSelecao.designacao"
-                  ></v-text-field>
-                </v-flex>
-                <v-btn
-                  color="primary"
-                  @click="
+            <v-stepper-step :complete="stepNo > 2" step="2">
+              Designação da Tabela de Seleção
+              <span v-if="stepNo > 1">
+                <v-chip
+                  class="ma-2"
+                  color="indigo darken-4"
+                  text-color="white"
+                  label
+                >{{ tabelaSelecao.designacao }}</v-chip>
+              </span>
+            </v-stepper-step>
+            <v-stepper-content step="2">
+              <v-flex xs12 sm6 md10>
+                <v-text-field
+                  :placeholder="tabelaSelecao.designacao"
+                  v-model="tabelaSelecao.designacao"
+                ></v-text-field>
+              </v-flex>
+              <v-btn
+                color="primary"
+                @click="
                     stepNo = stepNo + 1;
                     loadProcEspecificos();
                   "
-                  >Continuar</v-btn
-                >
-              </v-stepper-content>
+              >Continuar</v-btn>
+            </v-stepper-content>
 
-              <v-stepper-step :complete="stepNo > 3" step="3">
-                Seleção dos Processos
-              </v-stepper-step>
-              <v-stepper-content step="3">
-                <v-col v-if="listaProcessosReady">
-                  <v-card>
-                    <v-card-text>
-                      <ListaProcessos
-                            :listaProcs="listaProcessos"
-                            :listaCodigosEsp="listaCodigosEsp"
-                      />
-                    </v-card-text>
-                  </v-card>
-                </v-col>
+            <v-stepper-step :complete="stepNo > 3" step="3">Seleção dos Processos</v-stepper-step>
+            <v-stepper-content step="3">
+              <v-col v-if="listaProcessosReady">
+                <v-card>
+                  <v-card-text>
+                    <ListaProcessos
+                      :listaProcs="listaProcessos"
+                      :listaCodigosEsp="listaCodigosEsp"
+                    />
+                  </v-card-text>
+                </v-card>
+              </v-col>
 
-                <v-col v-else>Ainda não foi possível carregar a informação dos Processos...</v-col>
-              </v-stepper-content>
-            </v-stepper>
+              <v-col v-else>Ainda não foi possível carregar a informação dos Processos...</v-col>
+            </v-stepper-content>
+          </v-stepper>
         </v-card-text>
         <v-card-actions>
           <!-- Voltar ao passo anterior ............................................-->
           <v-btn v-if="stepNo>2" color="primary" @click="stepNo--;">Voltar</v-btn>
 
           <!-- Validar a TS ........................................................-->
-          <v-btn 
-            v-if="stepNo>2" 
-            color="primary" 
-            @click="validarTS">
-              Validar TS
-                  
-            <DialogValidacaoOK 
+          <v-btn v-if="stepNo>2" color="primary" @click="validarTS">
+            Validar TS
+            <DialogValidacaoOK
               v-if="validacaoTerminada && numeroErros == 0"
-              @continuar="fechoValidacao" />
+              @continuar="fechoValidacao"
+            />
 
-            <DialogValidacaoErros 
-                v-if="validacaoTerminada && numeroErros > 0"
-                :erros="mensagensErro"
-                @continuar="fechoValidacao" />
+            <DialogValidacaoErros
+              v-if="validacaoTerminada && numeroErros > 0"
+              :erros="mensagensErro"
+              @continuar="fechoValidacao"
+            />
           </v-btn>
 
           <!-- Guardar o trabalho para continuar depois ..........................-->
-          <v-btn
-            v-if="stepNo>2"
-            color="primary"
-            @click="guardarTrabalho"
-            >Guardar trabalho
-
-            <DialogPendenteGuardado 
-              v-if="pendenteGuardado" 
+          <v-btn v-if="stepNo>2" color="primary" @click="guardarTrabalho">
+            Guardar trabalho
+            <DialogPendenteGuardado
+              v-if="pendenteGuardado"
               :pendente="pendente"
-              @continuar="pendenteGuardado = false"/>
-            
+              @continuar="pendenteGuardado = false"
+            />
           </v-btn>
 
           <!-- Submeter e criar o pedido ............................................-->
           <v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>
 
           <!-- Sair da criação da TS sem abortar o processo .........................-->
-          <v-btn 
-            v-if="stepNo>2" 
-            color="primary"
-            @click="sairOperacao = true"
-            >Sair 
-                    
-            <DialogSair
-              v-if="sairOperacao" 
-              @continuar="sairOperacao=false"
-              @sair="sair"
-            />
-
+          <v-btn v-if="stepNo>2" color="primary" @click="sairOperacao = true">
+            Sair
+            <DialogSair v-if="sairOperacao" @continuar="sairOperacao=false" @sair="sair" />
           </v-btn>
 
           <!-- Abortar a criação da TS ..........................................-->
-          <v-btn
-            dark
-            color="red darken-4"
-            @click="eliminarTabela = true"
-            >Cancelar
-                  
-              <DialogCancelar 
-                v-if="eliminarTabela" 
-                @continuar="eliminarTabela=false"
-                @sair="abortar"/>
-              </v-btn>
+          <v-btn dark color="red darken-4" @click="eliminarTabela = true">
+            Cancelar
+            <DialogCancelar
+              v-if="eliminarTabela"
+              @continuar="eliminarTabela=false"
+              @sair="abortar"
+            />
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
@@ -250,8 +208,12 @@ import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
 
 export default {
   components: {
-    ListaProcessos, DialogPendenteGuardado, DialogCancelar,
-    DialogValidacaoOK, DialogValidacaoErros, DialogSair
+    ListaProcessos,
+    DialogPendenteGuardado,
+    DialogCancelar,
+    DialogValidacaoOK,
+    DialogValidacaoErros,
+    DialogSair
   },
   data() {
     return {
@@ -266,7 +228,7 @@ export default {
       },
       // Numero do passo da criação de TS
       stepNo: null,
-      
+
       entidadeDGLAB: false,
       entidades: [],
       entidadesReady: false,
@@ -310,7 +272,7 @@ export default {
     };
   },
   methods: {
-    debug: function(obj){
+    debug: function(obj) {
       alert(JSON.stringify(obj));
     },
     // Função que procura o nome da entidade e o id da Entidade associada ao utilizador
@@ -322,7 +284,10 @@ export default {
         await this.loadEntidades();
         this.entidadeDGLAB = true;
       } else {
-        var resEnt = await this.$request("get", "/entidades/" + resUser.entidade);
+        var resEnt = await this.$request(
+          "get",
+          "/entidades/" + resUser.entidade
+        );
         this.entidadeUtilizador = resEnt.data;
         this.stepNo = 1;
       }
@@ -340,14 +305,14 @@ export default {
           };
         });
         this.entidadesReady = true;
-      }
-        catch (err) {
-          console.log("Erro ao recuperar a lista de entidades: " + err);
+      } catch (err) {
+        console.log("Erro ao recuperar a lista de entidades: " + err);
       }
     },
 
     guardaEntidade: async function() {
-      this.tabelaSelecao.designacao = "Tabela de Seleção de " + this.ent.designacao;
+      this.tabelaSelecao.designacao =
+        "Tabela de Seleção de " + this.ent.designacao;
       this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
       this.tabelaSelecao.idEntidade = "ent_" + this.ent.sigla;
       try {
@@ -360,7 +325,8 @@ export default {
 
     guardaTipologia: function() {
       // id e designação
-      this.tabelaSelecao.designacao = "Tabela de seleção de " + this.tipSel.designacao;
+      this.tabelaSelecao.designacao =
+        "Tabela de seleção de " + this.tipSel.designacao;
       this.tabelaSelecao.designacaoTipologia = this.tipSel.designacao;
       this.tabelaSelecao.idTipologia = this.tipSel.id;
       this.stepNo = this.stepNo + 1;
@@ -368,7 +334,8 @@ export default {
 
     guardaEntidadeUtilizador: function() {
       // id e designação
-      this.tabelaSelecao.designacao = "Tabela de seleção de " + this.entidadeUtilizador.designacao;
+      this.tabelaSelecao.designacao =
+        "Tabela de seleção de " + this.entidadeUtilizador.designacao;
       this.tabelaSelecao.designacaoEntidade = this.entidadeUtilizador.designacao;
       this.tabelaSelecao.idEntidade = this.entidadeUtilizador.id;
       this.stepNo = this.stepNo + 1;
@@ -390,9 +357,10 @@ export default {
             label: item.sigla + " - " + item.designacao
           };
         });
-      }
-      catch(e){
-        console.log("Erro ao carregar as tipologias da entidade do utilizador: " + e);
+      } catch (e) {
+        console.log(
+          "Erro ao carregar as tipologias da entidade do utilizador: " + e
+        );
       }
     },
 
@@ -443,15 +411,17 @@ export default {
     },
 
     // Carregamento dos processos
-    loadProcessos: async function(){
+    loadProcessos: async function() {
       try {
         if (!this.listaProcessosReady) {
           this.listaProcessos.numProcessosSelecionados = 0;
           this.listaProcessos.numProcessosPreSelecionados = 0;
           this.listaProcessos.procs = [];
-          var response = await this.$request("get", "/classes?nivel=3&info=completa");
+          var response = await this.$request(
+            "get",
+            "/classes?nivel=3&info=completa"
+          );
           for (let i = 0; i < response.data.length; i++) {
-
             this.listaProcessos.procs.push(response.data[i]);
             this.listaProcessos.procs[i].chave = i;
             this.listaProcessos.procs[i].edited = false;
@@ -461,7 +431,7 @@ export default {
             this.listaProcessos.procs[i].preSelectedLabel = "";
             this.listaProcessos.procs[i].dono = false;
             this.listaProcessos.procs[i].participante = "NP";
-          } 
+          }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;
         }
@@ -474,16 +444,14 @@ export default {
     loadProcEspecificos: async function() {
       try {
         if (!this.listaProcEspReady) {
-          var url =
-            "/classes?nivel=3&tipo=especifico";
+          var url = "/classes?nivel=3&tipo=especifico";
 
-          if(this.tabelaSelecao.idEntidade != ""){
+          if (this.tabelaSelecao.idEntidade != "") {
             url += "&ents=" + this.tabelaSelecao.idEntidade;
-          }
-          else{
+          } else {
             url += "&tips=" + this.tabelaSelecao.idTipologia;
           }
-          
+
           var response = await this.$request("get", url);
           for (var x = 0; x < response.data.length; x++) {
             if (response.data[x].transversal === "S") {
@@ -508,7 +476,7 @@ export default {
         return error;
       }
     },
-    
+
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
@@ -516,8 +484,12 @@ export default {
         // Guardam-se apenas os processos que foram alterados
         // Ao carregar será preciso fazer Merge com a LC
         // É preciso forçar uma cópia para não perder a lista corrente
-        this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.dono || p.participante!="NP");
+        this.tabelaSelecao.listaProcessos = JSON.parse(
+          JSON.stringify(this.listaProcessos)
+        );
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+          p => p.dono || p.participante != "NP"
+        );
 
         var tsObj = {
           idEntidade: this.tabelaSelecao.idEntidade,
@@ -525,7 +497,7 @@ export default {
           designacao: this.tabelaSelecao.designacao,
           idTipologia: this.tabelaSelecao.idTipologia,
           designacaoTipologia: this.tabelaSelecao.designacaoTipologia,
-          processos: this.tabelaSelecao.listaProcessos.procs
+          listaProcessos: this.tabelaSelecao.listaProcessos
         };
 
         var pedidoParams = {
@@ -538,7 +510,11 @@ export default {
           historico: []
         };
 
-        var codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
+        var codigoPedido = await this.$request(
+          "post",
+          "/pedidos",
+          pedidoParams
+        );
         this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
       } catch (error) {
         console.log("Erro ao criar o pedido: " + error);
@@ -551,8 +527,12 @@ export default {
         // Guardam-se apenas os processos que foram alterados
         // Ao carregar será preciso fazer Merge com a LC
         // É preciso forçar uma cópia para não perder a lista corrente
-        this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.dono || p.participante!="NP");
+        this.tabelaSelecao.listaProcessos = JSON.parse(
+          JSON.stringify(this.listaProcessos)
+        );
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+          p => p.dono || p.participante != "NP"
+        );
 
         var pendenteParams = {
           numInterv: 1,
@@ -565,14 +545,21 @@ export default {
         };
 
         // É preciso testar se há um Pendente criado para não criar um novo
-        if(this.pendente._id){
+        if (this.pendente._id) {
           pendenteParams._id = this.pendente._id;
           pendenteParams.numInterv = this.pendente.numInterv++;
-          var response = await this.$request("put", "/pendentes", pendenteParams);
-        }
-        else{
+          var response = await this.$request(
+            "put",
+            "/pendentes",
+            pendenteParams
+          );
+        } else {
           pendenteParams.numInterv = 1;
-          var response = await this.$request("post", "/pendentes", pendenteParams);
+          var response = await this.$request(
+            "post",
+            "/pendentes",
+            pendenteParams
+          );
         }
 
         this.pendente = response.data;
@@ -587,12 +574,12 @@ export default {
     },
 
     // Valida a TS construída até ao momento
-    validarTS: function(){
+    validarTS: function() {
       return true;
     },
 
     // Quando a validação termina chama-se esta rotina para fazer reset ao estado da Validação
-    fechoValidacao: async function(){
+    fechoValidacao: async function() {
       this.numeroErros = 0;
       this.mensagensErro = [];
       //this.notasApSet = [];
@@ -602,46 +589,43 @@ export default {
     },
 
     // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
-    sair: async function(){
-        this.$router.push("/"); 
+    sair: async function() {
+      this.$router.push("/");
     },
 
     // Abortar a operação apagando o pendente se existir
-    abortar: async function(){
-      if(this.pendente && this.pendente._id){
-        try{
-          var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
-        }
-        catch(e){
+    abortar: async function() {
+      if (this.pendente && this.pendente._id) {
+        try {
+          var response = await this.$request(
+            "delete",
+            "/pendentes/" + this.pendente._id
+          );
+        } catch (e) {
           console.log("Erro ao eliminar o pendente: " + e);
         }
       }
       this.$router.push("/");
-    },
-
+    }
   },
   created: async function() {
-    try{
+    try {
       await this.infoUserEnt();
-    }
-    catch(e){
+    } catch (e) {
       console.log("Erro na recuperação da informação do utilizador: " + e);
     }
-    
-    try{
+
+    try {
       await this.loadTipologias();
-    }
-    catch(e){
+    } catch (e) {
       console.log("Erro no carregamento das tipologias: " + e);
     }
 
-    try{
+    try {
       await this.loadProcessos();
-    }
-    catch(e){
+    } catch (e) {
       console.log("Erro no carregamento dos processos: " + e);
     }
-
   }
 };
 </script>
