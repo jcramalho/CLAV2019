@@ -24,7 +24,7 @@
         </v-btn>
 
         <v-btn
-          v-else
+          v-else-if="operacao === 'Validar'"
           rounded
           class="indigo accent-4 white--text"
           @click="finalizarPedidoDialog = true"
@@ -62,7 +62,7 @@
       <FinalizarPedido
         @fecharDialog="fecharDialog()"
         @finalizarPedido="finalizarPedido($event)"
-        :existeNumDespacho="existeNumDespacho"
+        :vai_para_despacho="vai_para_despacho"
       />
     </v-dialog>
   </div>
@@ -78,7 +78,7 @@ import { NIVEIS_VALIDAR_PEDIDO, NIVEIS_DEVOLVER_PEDIDO } from "@/utils/consts";
 export default {
   props: {
     operacao: {},
-    existeNumDespacho: {
+    vai_para_despacho: {
       type: Boolean,
       default: false,
     }
