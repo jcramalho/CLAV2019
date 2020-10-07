@@ -71,11 +71,12 @@
             <v-stepper-content step="2">
               <v-col xs12 sm6 md10>
                 <v-text-field
+                  :rules="[v => !!v || 'A designação não pode ser vazia']"
                   placeholder="Designação da Nova Tabela de Seleção"
                   v-model="tabelaSelecao.designacao"
                 ></v-text-field>
               </v-col>
-              <v-btn color="primary" @click="stepNo = 3">Continuar</v-btn>
+              <v-btn color="primary" @click="validaTSnome">Continuar</v-btn>
             </v-stepper-content>
 
             <v-stepper-step :complete="stepNo > 3" step="3">
@@ -234,6 +235,11 @@ export default {
   },
 
   methods: {
+    validaTSnome: function() {
+      if (this.tabelaSelecao.designacao != "") {
+        this.stepNo = 3;
+      }
+    },
     debug: function(data) {
       alert(JSON.stringify(data));
     },
