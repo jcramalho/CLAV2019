@@ -292,8 +292,10 @@ export function renomearRepetidosEmArray(arr) {
 }
 
 export function gerarDadosRelatorio(pedido) {
-  const pedidoSubmetido = pedido.historico[0];
-  const pedidoFinalizado = pedido.historico[pedido.historico.length - 1];
+  const pedidoSubmetido = JSON.parse(JSON.stringify(pedido.historico[0]));
+  const pedidoFinalizado = JSON.parse(
+    JSON.stringify(pedido.historico[pedido.historico.length - 1])
+  );
   const despacho = pedido.distribuicao[pedido.distribuicao.length - 1];
   let campos = [];
   const relatorio = {
@@ -353,9 +355,12 @@ export function gerarDadosRelatorio(pedido) {
       )
         iguais = true;
 
-      iguais
-        ? (pedidoFinalizado[campo].cor = "verde")
-        : (pedidoFinalizado[campo].cor = "amarelo");
+      if (pedido.historico.length === 1)
+        pedidoFinalizado[campo].cor = "vermelho";
+      else
+        iguais
+          ? (pedidoFinalizado[campo].cor = "verde")
+          : (pedidoFinalizado[campo].cor = "amarelo");
     }
 
     relatorio.comparacao.push({
@@ -393,6 +398,120 @@ export function gerarDadosRelatorio(pedido) {
   return relatorio;
 }
 
+export function mapKeysRADA(key) {
+  let descricao = "";
+
+  switch (key) {
+    case "titulo":
+      descricao = "Título";
+      break;
+    case "entRes":
+      descricao = "Entidades Responsáveis";
+      break;
+    case "entidadesProd":
+      descricao = "Entidades Produtoras";
+      break;
+    case "tipologiasProd":
+      descricao = "Tipologia Produtora";
+      break;
+    case "dataInicial":
+      descricao = "Data Inicial";
+      break;
+    case "dataFinal":
+      descricao = "Data Final";
+      break;
+    case "hist_admin":
+      descricao = "História Administrativa/Biográfica";
+      break;
+    case "hist_cust":
+      descricao = "História Custodial";
+      break;
+    case "sist_org":
+      descricao = "Sistema de Organização";
+      break;
+    case "localizacao":
+      descricao = "Localização";
+      break;
+    case "est_conser":
+      descricao = "Estado de Conservação";
+      break;
+    case "codigo":
+      descricao = "Código";
+      break;
+    case "descricao":
+      descricao = "Descrição";
+      break;
+    case "est_conser":
+      descricao = "Estado de Conservação";
+      break;
+    case "eFilhoDe":
+      descricao = "Pai";
+      break;
+    case "tipo":
+      descricao = "Tipo de Classe";
+      break;
+    case "tUA":
+      descricao = "Tipo de Unidade Arquivística";
+      break;
+    case "tSerie":
+      descricao = "Tipo de Série";
+      break;
+    case "UIs":
+      descricao = "Unidades de Instalação";
+      break;
+    case "suporte_e_medicao":
+      descricao = "Suporte e Medição";
+      break;
+    case "relacoes":
+      descricao = "Relações";
+      break;
+    case "pca":
+      descricao = "Prazo de Conservação Administrativo";
+      break;
+    case "notaPCA":
+      descricao = "Nota PCA";
+      break;
+    case "justificacaoPCA":
+      descricao = "Justificação do PCA";
+      break;
+    case "df":
+      descricao = "Destino Final";
+      break;
+    case "justificacaoDF":
+      descricao = "Justificação do DF";
+      break;
+    case "notaDF":
+      descricao = "Nota DF";
+      break;
+    case "entProdutoras":
+      descricao = "Entidades Produtoras";
+      break;
+    case "tipologiasProdutoras":
+      descricao = "Tipologia Produtora";
+      break;
+    case "legislacao":
+      descricao = "Legislação";
+      break;
+    case "formaContagem":
+      descricao = "Forma Contagem";
+      break;
+    case "codCota":
+      descricao = "Cota";
+      break;
+    case "classesAssociadas":
+      descricao = "Classes Associadas";
+      break;
+    case "notas":
+      descricao = "Notas";
+      break;
+    case "produtor":
+      descricao = "Produtor";
+      break;
+  }
+
+  return descricao;
+}
+
 export default {
   gerarDadosRelatorio,
   renomearRepetidosEmArray,
@@ -405,4 +524,5 @@ export default {
   identificaItemAdicionado,
   identificaItemEmTabela,
   adicionarNotaComRemovidos,
+  mapKeysRADA,
 };

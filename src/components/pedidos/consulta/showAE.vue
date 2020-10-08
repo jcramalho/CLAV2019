@@ -185,6 +185,7 @@
                               N.º de agregações
                             </div>
                           </td>
+                          <td v-if="item.agregacoes.length ==0" style="width:80%;">{{ item.nrAgregacoes }}</td>
                           <td style="width:80%;">{{ item.agregacoes.length }}</td>
                         </tr>
                         <tr v-if="item.uiPapel">
@@ -212,7 +213,7 @@
                           <td style="width:80%;">{{ item.uiOutros }}</td>
                         </tr>
                       </table>
-                      <div class="ma-1">
+                      <div class="ma-1" v-if="item.agregacoes.length >0">
                         <v-row justify="space-between" class="info-label">
                           <v-col>Lista de Agregações</v-col>
                           <v-col>

@@ -214,6 +214,7 @@
                   tipo="array"
                   :permitirEditar="false"
                 />
+
                 <ValidaCampo
                   :dadosOriginais="elemento"
                   :novoHistorico="novoHistorico.dados"
@@ -221,7 +222,18 @@
                   campoText="Legislação"
                   tipo="array"
                   :permitirEditar="false"
-                />
+                >
+                  <template v-slot:campo>
+                    <span>
+                      <ul>
+                        <li
+                          v-for="(v, i) in novoHistorico.dados.legislacao.dados"
+                          :key="i"
+                        >{{ v.legislacao }}</li>
+                      </ul>
+                    </span>
+                  </template>
+                </ValidaCampo>
               </div>
               <!-- RELACOES -->
               <ValidaCampo
@@ -246,7 +258,12 @@
               </ValidaCampo>
             </v-expansion-panel-content>
           </v-expansion-panel>
-          <v-expansion-panel class="ma-1" popout focusable>
+          <v-expansion-panel
+            class="ma-1"
+            popout
+            focusable
+            v-if="!!novoHistorico.dados.pca || !!novoHistorico.dados.notaPCA"
+          >
             <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
               <b>Zona de Decisões de Avaliação</b>
             </v-expansion-panel-header>

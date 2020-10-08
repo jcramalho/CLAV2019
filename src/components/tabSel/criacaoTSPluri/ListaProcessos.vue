@@ -1,15 +1,30 @@
 <template>
   <div>
-  
     <v-row>
       <v-col>
         <v-radio-group v-model="filtroLabel" row>
-            <v-radio label="Todos" @click="filtro=''; filtroLabel='Todos'" value="Todos"></v-radio>
-            <v-radio label="Comuns" @click="filtro='Processo Comum'; filtroLabel='Processo Comum'" value="Processo Comum"></v-radio>
-            <v-radio label="Específicos" @click="filtro='Processo Específico'; filtroLabel='Processo Específico'" value="Processo Específico"></v-radio>
-            <v-radio label="Restantes" @click="filtro='Processo Restante'; filtroLabel='Processo Restante'" value="Processo Restante"></v-radio>
-            <v-radio label="Pré-Selecionados" @click="filtro='Pré-Selecionado'; filtroLabel='Pré-Selecionado'" value="Pré-Selecionado"></v-radio>
-          </v-radio-group>
+          <v-radio label="Todos" @click="filtro=''; filtroLabel='Todos'" value="Todos"></v-radio>
+          <v-radio
+            label="Comuns"
+            @click="filtro='Processo Comum'; filtroLabel='Processo Comum'"
+            value="Processo Comum"
+          ></v-radio>
+          <v-radio
+            label="Específicos"
+            @click="filtro='Processo Específico'; filtroLabel='Processo Específico'"
+            value="Processo Específico"
+          ></v-radio>
+          <v-radio
+            label="Restantes"
+            @click="filtro='Processo Restante'; filtroLabel='Processo Restante'"
+            value="Processo Restante"
+          ></v-radio>
+          <v-radio
+            label="Pré-Selecionados"
+            @click="filtro='Pré-Selecionado'; filtroLabel='Pré-Selecionado'"
+            value="Pré-Selecionado"
+          ></v-radio>
+        </v-radio-group>
       </v-col>
     </v-row>
 
@@ -21,90 +36,90 @@
       :footer-props="procsFooterProps"
       :search="filtro"
     >
-
-    <template v-slot:item="props">
-      <tr
-        :style="{
+      <template v-slot:item="props">
+        <tr
+          :style="{
           backgroundColor: props.item.edited
               ? '#BBDEFB'
               : (props.item.preSelected > 0 ? '#FFECB3' : 'transparent')
         }"
-      >
-        <td>
-          {{ props.item.codigo }}
-        </td>
-        <td>
-          {{ props.item.titulo }}
-        </td>
-        <td>
+        >
+          <td>{{ props.item.codigo }}</td>
+          <td>{{ props.item.titulo }}</td>
+          <td>
             <v-icon v-if="props.item.dono">check</v-icon>
-        </td>
-        <td>
-          <v-icon v-if="props.item.participante">check</v-icon>
-        </td>
-        <td>
-            <v-btn small class="ma-2"
-                  @click="selecionaParticipacoes(props.item)">
+          </td>
+          <td>
+            <v-icon v-if="props.item.participante">check</v-icon>
+          </td>
+          <td>
+            <v-btn small class="ma-2" @click="selecionaParticipacoes(props.item)">
               <v-icon dark>{{ selecionaResponsabilidadesIcon }}</v-icon>
             </v-btn>
-            <v-btn v-if="props.item.descriptionEdited" small class="ma-2" 
-                  @click="editaBlocoDescritivo(props.item)">
+            <v-btn
+              v-if="props.item.descriptionEdited"
+              small
+              class="ma-2"
+              @click="editaBlocoDescritivo(props.item)"
+            >
               <v-icon dark>{{ editadoIcon }}</v-icon>
             </v-btn>
-            <v-btn v-else small class="ma-2"
-                  @click="editaBlocoDescritivo(props.item)">
+            <v-btn v-else small class="ma-2" @click="editaBlocoDescritivo(props.item)">
               <v-icon dark>{{ editaBlocoDescritivoIcon }}</v-icon>
             </v-btn>
-        </td>
-      </tr>
-    </template>
-    <template v-slot:footer.page-text="props">
-      Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
-      {{ props.itemsLength }}
-    </template>
-  </v-data-table>
+          </td>
+        </tr>
+      </template>
+      <template v-slot:footer.page-text="props">
+        Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+        {{ props.itemsLength }}
+      </template>
+    </v-data-table>
 
-  <v-row wrap>
-    <v-col>
+    <v-row wrap>
+      <v-col>
         <v-text-field
-            readonly
-            label="Nº de processos selecionados"
-            v-model="listaProcs.numProcessosSelecionados"
+          readonly
+          label="Nº de processos selecionados"
+          v-model="listaProcs.numProcessosSelecionados"
         ></v-text-field>
-    </v-col>
-    <v-col>
+      </v-col>
+      <v-col>
         <v-text-field
-            readonly
-            label="Nº de processos pré-selecionados"
-            v-model="listaProcs.numProcessosPreSelecionados"
+          readonly
+          label="Nº de processos a selecionar"
+          v-model="listaProcs.numProcessosPreSelecionados"
         ></v-text-field>
-    </v-col>
-  </v-row>
+      </v-col>
+    </v-row>
 
-  <Selresponsabilidade v-if="selecionaResponsabilidades" 
-        :p = "procSel"
-        @selecionadas = "selectProc($event)"
-        @cancelada = "selecaoCancelada" />
+    <Selresponsabilidade
+      v-if="selecionaResponsabilidades"
+      :p="procSel"
+      @selecionadas="selectProc($event)"
+      @cancelada="selecaoCancelada"
+    />
 
-  <EditDescritivo v-if="editaBlocoDescritivoFlag"
-        :p = "procSel"
-        @editado = "blocoDescritivoEditado($event)"/>
-
+    <EditDescritivo
+      v-if="editaBlocoDescritivoFlag"
+      :p="procSel"
+      @editado="blocoDescritivoEditado($event)"
+    />
   </div>
 </template>
 
 <script>
-
 import Selresponsabilidade from "@/components/tabSel/criacaoTSPluri/SelResponsabilidade.vue";
 import EditDescritivo from "@/components/tabSel/criacaoTSPluri/EditDescritivo.vue";
-import { mdiPencil } from '@mdi/js';
-import { mdiFileDocumentEdit } from '@mdi/js';
-import { mdiCheckCircle } from '@mdi/js';
+import { mdiPencil } from "@mdi/js";
+import { mdiFileDocumentEdit } from "@mdi/js";
+import { mdiCheckCircle } from "@mdi/js";
 
 export default {
   props: ["listaProcs", "listaCodigosEsp"],
   components: {
-      Selresponsabilidade, EditDescritivo
+    Selresponsabilidade,
+    EditDescritivo
   },
 
   data: () => ({
@@ -144,14 +159,14 @@ export default {
         value: "tipoProc",
         width: "0%",
         class: ["body-2", "font-weight-bold"],
-        align: ' d-none'   
+        align: " d-none"
       },
       {
         text: "Pré-Selecionado",
         value: "preSelectedLabel",
         width: "0%",
         class: ["body-2", "font-weight-bold"],
-        align: ' d-none'   
+        align: " d-none"
       },
       {
         text: "Dono",
@@ -180,85 +195,83 @@ export default {
     }
   }),
 
-  created: async function(){
-    try{
+  created: async function() {
+    try {
       var response = await this.$request("get", "/travessiaV2");
       this.fechoTransitivo = response.data;
-    }
-    catch(e){
+    } catch (e) {
       console.log("Erro ao carregar o fecho transitivo: " + e);
     }
   },
 
   methods: {
     // Filtra os processos na tabela
-    filtraProcessos: function (value, search, item) {
-        return (item.tipoProc == "");
-      },
+    filtraProcessos: function(value, search, item) {
+      return item.tipoProc == "";
+    },
 
     // Seleção das participações
-    selecionaParticipacoes: function(proc){
-        this.procSel = proc;
-        this.selecionaResponsabilidades = true;
+    selecionaParticipacoes: function(proc) {
+      this.procSel = proc;
+      this.selecionaResponsabilidades = true;
     },
 
     // Função de retorno do processo de seleção
-    selecaoCancelada: function(){
+    selecaoCancelada: function() {
       this.selecionaResponsabilidades = false;
     },
 
-    // Função de retorno do processo de seleção  
-    selectProc: async function(p){
-        try{
-          this.selecionaResponsabilidades = false;
-          this.listaProcs.numProcessosSelecionados += p.inc;
-          if(p.inc > 0){ // foi selecionado
-              await this.acrescentaFecho(p);
-          }
-          else if(p.inc < 0){
-              await this.retiraFecho(p);
-          }
+    // Função de retorno do processo de seleção
+    selectProc: async function(p) {
+      try {
+        this.selecionaResponsabilidades = false;
+        this.listaProcs.numProcessosSelecionados += p.inc;
+        if (p.inc > 0) {
+          // foi selecionado
+          await this.acrescentaFecho(p);
+        } else if (p.inc < 0) {
+          await this.retiraFecho(p);
         }
-        catch (err) {
+      } catch (err) {
         return err;
       }
     },
-    
+
     acrescentaFecho: function(processo) {
-        var fecho = this.fechoTransitivo[processo.codigo];
-        for(let i=0; i < fecho.length; i++){
-          var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
-          if(index != -1){
-            this.listaProcs.procs[index].preSelected ++;
-            if(this.listaProcs.procs[index].preSelected == 1) {
-              this.listaProcs.numProcessosPreSelecionados++;
-              this.listaProcs.procs[index].preSelectedLabel = "Pré-Selecionado";
-            }
-          } 
+      var fecho = this.fechoTransitivo[processo.codigo];
+      for (let i = 0; i < fecho.length; i++) {
+        var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
+        if (index != -1) {
+          this.listaProcs.procs[index].preSelected++;
+          if (this.listaProcs.procs[index].preSelected == 1) {
+            this.listaProcs.numProcessosPreSelecionados++;
+            this.listaProcs.procs[index].preSelectedLabel = "Pré-Selecionado";
+          }
         }
+      }
     },
     // Reverte a seleção
     retiraFecho: async function(processo) {
-        var fecho = this.fechoTransitivo[processo.codigo];
-        for(let i=0; i < fecho.length; i++){
-          var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
-          if(index != -1){
-            this.listaProcs.procs[index].preSelected --;
-            if(this.listaProcs.procs[index].preSelected == 0){
-              this.listaProcs.numProcessosPreSelecionados--;
-              this.listaProcs.procs[index].preSelectedLabel = "";
-            } 
-          } 
+      var fecho = this.fechoTransitivo[processo.codigo];
+      for (let i = 0; i < fecho.length; i++) {
+        var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
+        if (index != -1) {
+          this.listaProcs.procs[index].preSelected--;
+          if (this.listaProcs.procs[index].preSelected == 0) {
+            this.listaProcs.numProcessosPreSelecionados--;
+            this.listaProcs.procs[index].preSelectedLabel = "";
+          }
         }
+      }
     },
 
     // Edição dos Blocos Descritivos dos processos
-    editaBlocoDescritivo: function(p){
+    editaBlocoDescritivo: function(p) {
       this.procSel = p;
       this.editaBlocoDescritivoFlag = true;
     },
     // Função de retorno do processo de edição do Bloco Descritivo
-    blocoDescritivoEditado: function(p){
+    blocoDescritivoEditado: function(p) {
       this.editaBlocoDescritivoFlag = false;
     }
   }

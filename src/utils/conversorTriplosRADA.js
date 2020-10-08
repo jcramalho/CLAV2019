@@ -1,14 +1,16 @@
 /* eslint-disable prettier/prettier */
 let classes_rada = '';
 
-export async function converterParaTriplosRADA(obj, subformasContagem) {
+export async function converterParaTriplosRADA(obj, subformasContagem, dataAprovacao, dataRevogacao, idDespachoAprovacao) {
     classes_rada = obj.tsRada.classes;
 
     let triplos = `clav:rada_${obj.id} rdf:type owl:NamedIndividual, clav:RADA;
                             clav:contemRE clav:rada_${obj.id}_re ;
                             clav:contemTS clav:rada_${obj.id}_ts ;
                             clav:codigo "${obj.id}" ;
-                            clav:dataAprovacao "${new Date().toLocaleString("pt-pt", { timeZone: "Europe/London" })}" ;
+                            clav:aprovadoPorLeg clav:${idDespachoAprovacao} ;
+                            clav:dataAprovacao "${dataAprovacao}" ;
+                            clav:dataRevogacao "${dataRevogacao}" ;
                             clav:eDaResponsabilidadeDe clav:${obj.entRes
             .map(e => "ent_" + e.split(" - ")[0])
             .join(", clav:")} ;
@@ -24,8 +26,7 @@ export async function converterParaTriplosRADA(obj, subformasContagem) {
 async function triplosRE(RE, codigoRADA) {
     try {
         let triplos = `clav:rada_${codigoRADA}_re rdf:type owl:NamedIndividual, clav:RelatorioExpositivo ;
-            clav:avaliaDocProduzidaPor clav:${
-            !!RE.entidadesProd[0]
+            clav:avaliaDocProduzidaPor clav:${!!RE.entidadesProd[0]
                 ? RE.entidadesProd.map(e => "ent_" + e.split(" - ")[0]).join(", clav:")
                 : "tip_" + RE.tipologiasProd.split(" - ")[0]
             } ;
@@ -101,10 +102,9 @@ async function triplosSerie(classe, codigoRADA, subformasContagem) {
                                     clav:tipoUA "${classe.tUA}" ;
                                     clav:tipoSerie "${classe.tSerie}" ;
                                     ${!!classe.legislacao[0] ? `clav:reguladaPor clav:${classe.legislacao.map(e => e.id).join(", clav:")} ;` : ''}
-                                    ${!!classe.entProdutoras[0] || !!classe.tipologiasProdutoras[0] ? `clav:produzidaPor clav:${
-                !!classe.entProdutoras[0]
-                    ? classe.entProdutoras.map(e => "ent_" + e.split(" - ")[0]).join(", clav:")
-                    : classe.tipologiasProdutoras.map(e => "tip_" + e.split(" - ")[0]).join(", clav:")
+                                    ${!!classe.entProdutoras[0] || !!classe.tipologiasProdutoras[0] ? `clav:produzidaPor clav:${!!classe.entProdutoras[0]
+                ? classe.entProdutoras.map(e => "ent_" + e.split(" - ")[0]).join(", clav:")
+                : classe.tipologiasProdutoras.map(e => "tip_" + e.split(" - ")[0]).join(", clav:")
                 } ;` : ''}
                                     
                                     clav:localizacao "${classe.localizacao.join(" ,")}" ;

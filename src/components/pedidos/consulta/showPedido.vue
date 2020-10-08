@@ -1,13 +1,9 @@
 <template>
   <v-card class="ma-8">
-    <v-card-title class="pa-2 indigo darken-4 title white--text"
-      >Consulta do pedido: {{ p.codigo }} <v-spacer />
-      <v-chip
-        v-if="etapaPedido"
-        color="indigo accent-4"
-        text-color="white"
-        label
-      >
+    <v-card-title class="pa-2 indigo darken-4 title white--text">
+      Consulta do pedido: {{ p.codigo }}
+      <v-spacer />
+      <v-chip v-if="etapaPedido" color="indigo accent-4" text-color="white" label>
         <v-icon class="mr-1">label</v-icon>
         <b>{{ etapaPedido }}</b>
       </v-chip>
@@ -50,16 +46,12 @@
           <div class="info-label">Tipo</div>
         </v-col>
         <v-col>
-          <div class="info-content">
-            {{ p.objeto.acao }} - {{ p.objeto.tipo }}
-          </div>
+          <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
         </v-col>
       </v-row>
 
       <v-card class="mt-3">
-        <v-card-title class="pa-2 indigo darken-4 title white--text"
-          >Distribuição</v-card-title
-        >
+        <v-card-title class="pa-2 indigo darken-4 title white--text">Distribuição</v-card-title>
         <v-card-text>
           <v-data-table
             :headers="distHeaders"
@@ -70,9 +62,7 @@
             <template v-slot:item="props">
               <tr>
                 <td class="subheading">{{ props.item.estado }}</td>
-                <td class="subheading">
-                  {{ converteData(props.item.data) }}
-                </td>
+                <td class="subheading">{{ converteData(props.item.data) }}</td>
                 <td class="subheading">{{ props.item.responsavel }}</td>
                 <td class="subheading">{{ props.item.despacho }}</td>
               </tr>
@@ -81,17 +71,10 @@
         </v-card-text>
       </v-card>
 
-      <ShowTSPluri
-        v-if="p.objeto.tipo == 'TS Pluriorganizacional web'"
-        :p="p"
-      />
+      <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
       <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
-      <ShowEntidade
-        v-else-if="p.objeto.tipo == 'Entidade'"
-        :p="p"
-        @verHistorico="verHistorico()"
-      />
+      <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" @verHistorico="verHistorico()" />
 
       <ShowAE
         v-else-if="
@@ -130,9 +113,7 @@
         dark
         @click="substituir()"
         rounded
-      >
-        Substituir Responsável
-      </v-btn>
+      >Substituir Responsável</v-btn>
 
       <v-btn
         v-if="p.estado === 'Apreciado' || p.estado === 'Reapreciado'"
@@ -140,9 +121,7 @@
         dark
         @click="reapreciar()"
         rounded
-      >
-        Reapreciar pedido
-      </v-btn>
+      >Reapreciar pedido</v-btn>
     </v-card-actions>
 
     <!-- Substituir responsável dialog -->
@@ -191,7 +170,7 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import {
   NIVEIS_ANALISAR_PEDIDO,
-  NIVEIS_SUBSTITUIR_RESPONSAVEL,
+  NIVEIS_SUBSTITUIR_RESPONSAVEL
 } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
@@ -212,7 +191,7 @@ export default {
     SubstituirResponsavel,
     ShowPGD,
     VerHistorico,
-    AvancarPedido,
+    AvancarPedido
   },
 
   data() {
@@ -226,14 +205,14 @@ export default {
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
         { text: "Despacho", value: "despacho" },
-        { text: "Objeto", value: "objeto" },
+        { text: "Objeto", value: "objeto" }
       ],
       distHeaders: [
         { text: "Estado", value: "estado", class: "subtitle-1" },
         { text: "Data", value: "data", class: "subtitle-1" },
         { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-        { text: "Despacho", value: "despacho", class: "subtitle-1" },
-      ],
+        { text: "Despacho", value: "despacho", class: "subtitle-1" }
+      ]
     };
   },
 
@@ -276,15 +255,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.fecharReapreciarDialog();
@@ -317,7 +296,7 @@ export default {
         "pesquisa-pedidos",
         JSON.stringify({
           ...pesquisa,
-          limpar: false,
+          limpar: false
         })
       );
 
@@ -338,8 +317,8 @@ export default {
 
     substituir() {
       this.substituirResponsavelDialog = true;
-    },
-  },
+    }
+  }
 };
 </script>
 
