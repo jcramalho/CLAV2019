@@ -1,6 +1,24 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title">{{ !!p.objeto.acao ?  p.objeto.acao : 'Criação'}} do RADA</v-card-title>
+    <v-card-title class="indigo darken-4 white--text title"
+      >{{ !!p.objeto.acao ? p.objeto.acao : "Criação" }} do RADA
+      <v-spacer />
+
+      <v-tooltip
+        v-if="
+          temPermissaoConsultarHistorico() &&
+          !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
+        "
+        bottom
+      >
+        <template v-slot:activator="{ on }">
+          <v-icon @click="verHistorico()" color="white" v-on="on">
+            history
+          </v-icon>
+        </template>
+        <span>Ver histórico de alterações...</span>
+      </v-tooltip>
+    </v-card-title>
     <v-card-text>
       <br />
       <v-stepper v-model="e1" vertical class="elevation-0">
@@ -42,22 +60,31 @@
 import InformacaoGeral from "@/components/pedidos/consulta/rada/InformacaoGeral";
 import RelatorioExpositivo from "@/components/pedidos/consulta/rada/RelatorioExpositivo";
 import TSRada from "@/components/pedidos/consulta/rada/TabelaSelecao";
+import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
   props: ["p"],
   data: () => ({
-    e1: 1
+    e1: 1,
   }),
   components: {
     InformacaoGeral,
     RelatorioExpositivo,
-    TSRada
+    TSRada,
   },
-  created(){
-    if(!this.p.objeto.dados){
+  created() {
+    if (!this.p.objeto.dados) {
       this.p.objeto.dados = this.p.objeto.rada;
       delete this.p.objeto["rada"];
     }
-  }
+  },
+  methods: {
+    temPermissaoConsultarHistorico() {
+      return NIVEIS_CONSULTAR_HISTORICO.includes(this.$userLevel());
+    },
+    verHistorico() {
+      this.$emit("verHistorico");
+    },
+  },
 };
 </script>

@@ -140,7 +140,7 @@ export default {
           if (p.estado === "Em Despacho") return p;
         });
         this.pedidosValidados = pedidos.filter((p) => {
-          if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
+          if (p.estado === "Apreciado" || p.estado === "Reapreciado" || p.estado === "Devolvido para validação") return p;
         });
         this.pedidosDevolvidos = pedidos.filter(
           (p) => p.estado === "Devolvido"

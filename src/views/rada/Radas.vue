@@ -8,9 +8,10 @@
         'Data de Aprovação',
         'Título',
         'Entidades Responsáveis',
+        'Estado',
         'Acessos',
       ]"
-      :campos="['titulo', 'dataAprovacao', 'entResp']"
+      :campos="['titulo', 'dataAprovacao', 'entResp', 'estado']"
       @download="fazerDownloadRADA"
       @ver="redirecionar"
     />

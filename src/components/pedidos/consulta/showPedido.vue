@@ -66,6 +66,7 @@
             :items="p.distribuicao"
             class="elevation-1"
             hide-default-footer
+            :items-per-page="p.distribuicao.length"
           >
             <template v-slot:item="props">
               <tr>
@@ -111,7 +112,11 @@
         @verHistorico="verHistorico()"
       />
       <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
-      <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
+      <ShowRADA
+        v-else-if="p.objeto.tipo == 'RADA'"
+        :p="p"
+        @verHistorico="verHistorico()"
+      />
       <ShowDefault v-else :p="p" />
     </v-card-text>
 
@@ -124,7 +129,7 @@
             p.estado === 'Apreciado' ||
             p.estado === 'Redistribuído' ||
             p.estado === 'Reapreciado') &&
-            temPermissaoSubstituirResponsavel()
+          temPermissaoSubstituirResponsavel()
         "
         color="indigo accent-4"
         dark
@@ -135,7 +140,11 @@
       </v-btn>
 
       <v-btn
-        v-if="p.estado === 'Apreciado' || p.estado === 'Reapreciado'"
+        v-if="
+          p.estado === 'Apreciado' ||
+          p.estado === 'Reapreciado' ||
+          (p.objeto.tipo === 'RADA' && p.estado === 'Em Despacho')
+        "
         color="indigo accent-4"
         dark
         @click="reapreciar()"
@@ -262,7 +271,10 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado = "Redistribuído";
+        const estado =
+          this.p.estado == "Em Despacho"
+            ? "Devolvido para validação"
+            : "Redistribuído";
 
         let dadosUtilizador = this.$verifyTokenUser();
 

@@ -82,6 +82,7 @@
                 </li>
               </ul>
             </td>
+            <td>{{ props.item.estado }}</td>
             <td>
               <v-btn text @click="$emit('ver', props.item.codigo)"
                 ><v-icon>remove_red_eye</v-icon></v-btn

@@ -5,6 +5,7 @@
       @criar="finalizarPedido"
       @devolver="devolverPedido"
       :sumario="sumario"
+      :numeroDespacho="numeroDespacho"
     />
     <ConsultaPedido
       :idp="$route.params.idPedido"
@@ -32,7 +33,12 @@ export default {
         visivel: false,
         mensagem: null,
       },
+      numeroDespacho: null
     };
+  },
+  async created() {
+    let res = await this.$request("get", "/contador/despacho");
+    this.numeroDespacho = res.data.valor.toString() + '/' + new Date().getFullYear();
   },
   watch: {
     pedido(newValue) {
@@ -44,17 +50,17 @@ export default {
       try {
         let res = await this.$request("get", "/contador/despacho");
 
-        let n = res.data.valor;
+        this.numeroDespacho = res.data.valor.toString() + '/' + new Date().getFullYear();
 
         const despachoAprovacao = {
           id: "leg_" + nanoid(),
-          numero: n.toString(),
+          numero: this.numeroDespacho,
           sumario: despacho.sumario,
           tipo: "Despacho",
           data: despacho.data,
           link: "/rada/" + this.pedido.objeto.dados.id,
           diplomaFonte: "RADA",
-          dataRevogacao: despacho.dataRevogacao,
+          dataRevogacao: "",
           estado: "Ativo",
           entidadesSel: [
             {
@@ -85,7 +91,6 @@ export default {
             this.pedido.objeto.dados,
             subformasContagem,
             despachoAprovacao.data,
-            despachoAprovacao.dataRevogacao,
             despachoAprovacao.id
           );
 
@@ -96,12 +101,15 @@ export default {
 
         let dadosUtilizador = this.$verifyTokenUser();
 
-        const novaDistribuicao = {
+        let novaDistribuicao = {
           estado: "Validado",
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: despacho.mensagem,
         };
+
+        if (!!despacho.mensagem) {
+          novaDistribuicao["despacho"] = despacho.mensagem;
+        }
 
         this.pedido.estado = "Validado";
 

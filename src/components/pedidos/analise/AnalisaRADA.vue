@@ -186,18 +186,6 @@ export default {
         value: item.idtermo.split("#")[1],
       };
     });
-
-    // let responseSFC = await this.$request(
-    //   "get",
-    //   "/vocabularios/vc_pcaSubformaContagem"
-    // );
-
-    // this.formaContagem["subFormasContagem"] = responseSFC.data.map((item) => {
-    //   return {
-    //     label: item.termo.split(": ")[1] + ": " + item.desc,
-    //     value: item.idtermo.split("#")[1],
-    //   };
-    // });
   },
   methods: {
     alterarOriginal() {
