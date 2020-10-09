@@ -144,6 +144,17 @@ export default {
           ],
         },
         {
+          entidade: "Permissões de Acesso",
+          texto: help.PermissoesAcesso,
+          ops: [
+            {
+              label: "Consultar",
+              url: "/permissoesAcesso",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+            },
+          ],
+        },
+        {
           entidade: "Vocabulários Controlados",
           texto: help.VocabulariosControlados,
           ops: [

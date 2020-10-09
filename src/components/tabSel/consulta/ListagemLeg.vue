@@ -51,7 +51,7 @@
       </v-data-table>
 
       <v-data-table
-        v-else-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE AVALIAÇÃO DE DOCUMENTAÇÃO ACUMULADA'"
+        v-else-if="tipo=='RADA'"
         :headers="headers"
         :items="lista"
         :search="search"
