@@ -710,8 +710,10 @@ export default {
           "get",
           "/legislacao"
         )
-        if(this.auto.legislacao.split(" ")[0] != "Portaria") var indLeg = 2;
-        else indLeg = 1;
+        var legAux = this.auto.legislacao.split(" - ")
+        legAux = legAux[0].split(" ")
+        var indLeg = legAux.length - 1;
+
         var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[indLeg])
 
         if(this.tipo=="PGD") 
@@ -729,6 +731,7 @@ export default {
             "get",
             "/rada/old/tsRada_"+leg[0].id
           )
+        console.log(response2.data)
         this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
             return {
               idClasse: c.classe,
