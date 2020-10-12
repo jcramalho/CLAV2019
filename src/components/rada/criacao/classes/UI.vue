@@ -16,12 +16,7 @@
                         <div class="info-label">Código</div>
                     </v-col>
                     <v-col sm="3" md="3">
-                        <v-text-field :rules="[
-                  v =>
-                    verificaCodigoUI(v) ||
-                    !!v ||
-                    'Campo de preenchimento obrigatório!'
-                ]" solo clearable v-model="UI.codigo" label="Código"></v-text-field>
+                        <v-text-field :rules="[v => verificaCodigoUI(v) || !!v || 'Campo de preenchimento obrigatório!']" solo clearable v-model="UI.codigo" label="Código"></v-text-field>
                     </v-col>
                     <v-col md="3" sm="3">
                         <div class="info-label">Titulo</div>
@@ -42,7 +37,7 @@
                         <div class="info-label">Descrição</div>
                     </v-col>
                     <v-col sm="6" md="6">
-                        <v-text-field :rules="[v => !!v || 'Campo de preenchimento obrigatório!']" solo clearable v-model="UI.descricao" label="Descrição"></v-text-field>
+                        <v-text-field solo clearable v-model="UI.descricao" label="Descrição"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -62,9 +57,7 @@
                     <v-col xs="12" sm="3">
                         <SelecionarData label="Data Final" :d="UI.dataFinal" @dataSelecionada="UI.dataFinal = $event" :dataMinima="RE.dataInicial" :dataMaxima="RE.dataFinal">
                             <template v-slot:default="slotProps">
-                                <v-text-field :rules="[
-                      v => data_final_valida(v, UI) || 'Campo obrigatório!'
-                    ]" v-model="slotProps.item.dataValor" :label="slotProps.item.label" prepend-icon="event" readonly v-on="slotProps.item.on" solo></v-text-field>
+                                <v-text-field :rules="[v => data_final_valida(v, UI) || 'Campo obrigatório!']" v-model="slotProps.item.dataValor" :label="slotProps.item.label" prepend-icon="event" readonly v-on="slotProps.item.on" solo></v-text-field>
                             </template>
                         </SelecionarData>
                     </v-col>
@@ -100,18 +93,11 @@
                         <v-form ref="addRel" :lazy-validation="false">
                             <v-row>
                                 <v-col sm="4" xs="12">
-                                    <v-combobox :rules="[
-                        v =>
-                          eCodigoClasseValido(v) ||
-                          !!v ||
-                          'Campo obrigatório para associar série/subsérie!'
-                      ]" v-model="cod" :items="classes_processadas" label="Código" item-text="searchField" item-value="codigo" :return-object="false" solo clearable chips>
-                                        <template v-slot:item="{ item }">
+                                    <v-combobox :rules="[v => eCodigoClasseValido(v) || !!v || 'Campo obrigatório para associar série/subsérie!']" v-model="cod" :items="classes_processadas" label="Código" item-text="searchField" item-value="codigo" :return-object="false" solo clearable chips>
+                                        <template v-slot:item="{item}">
                                             <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
                                             <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
-                                            <span style="padding-left: 20px;">{{
-                          item.searchField
-                        }}</span>
+                                            <span style="padding-left: 20px;">{{ item.searchField }}</span>
                                         </template>
                                         <template v-slot:no-data>
                                             <v-list-item>
@@ -119,15 +105,12 @@
                                                     <v-list-item-title>
                                                         Classe
                                                         <strong>Série</strong> e
-                                                        <strong>Subsérie</strong> em questão não existe no
-                                                        sistema!
+                                                        <strong>Subsérie</strong> em questão não existe no sistema!
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle>
                                                         Pode criar aqui uma nova classe Série ou Subsérie.
-                                                        Para tal, escreva código da nova classe e prima a
-                                                        tecla
-                                                        <i>"Enter"</i>. Posteriormente preencha os
-                                                        restantes campos.
+                                                        Para tal, escreva código da nova classe e prima a tecla
+                                                        <i>"Enter"</i>. Posteriormente preencha os restantes campos.
                                                     </v-list-item-subtitle>
                                                 </v-list-item-content>
                                             </v-list-item>
@@ -135,18 +118,10 @@
                                     </v-combobox>
                                 </v-col>
                                 <v-col sm="6" xs="12">
-                                    <v-text-field :rules="[
-                        v =>
-                          !!v ||
-                          'Campo obrigatório para associar série/subsérie!'
-                      ]" :disabled="iscodvalido" solo clearable v-model="tituloClasse" label="Título"></v-text-field>
+                                    <v-text-field :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']" :disabled="iscodvalido" solo clearable v-model="tituloClasse" label="Título"></v-text-field>
                                 </v-col>
                                 <v-col sm="2" xs="12">
-                                    <v-select :rules="[
-                        v =>
-                          !!v ||
-                          'Campo obrigatório para associar série/subsérie!'
-                      ]" :disabled="iscodvalido" label="Série / Subsérie" v-model="tipoClasse" :items="['Série', 'Subsérie']" chips solo clearable>
+                                    <v-select :rules="[v => !!v || 'Campo obrigatório para associar série/subsérie!']" :disabled="iscodvalido" label="Série / Subsérie" v-model="tipoClasse" :items="['Série', 'Subsérie']" chips solo clearable>
                                         <template v-slot:selection="data">
                                             <v-chip>
                                                 <v-avatar left>
@@ -194,7 +169,7 @@
             <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
                 É necessário preencher os campos seguintes:
                 <ul>
-                    <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
+                    <li v-for="(erro, i) in erros" :key="i">{{erro}}</li>
                 </ul>
             </v-alert>
             <v-spacer></v-spacer>

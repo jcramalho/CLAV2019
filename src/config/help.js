@@ -368,10 +368,11 @@ module.exports.help = {
     Campos: {
       FonteLegitimacao:
         "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
-      TS: "Tabela de Seleção conforme à Lista Consolidada",
-      PGD_LC: "Portaria de Gestão de Documentos conforme à Lista Consolidada",
-      PGD: "Portaria de Gestão de Documentos",
-      RADA: "Relatório de Avaliação de Documentação Acumulada"
+      TS_LC: "Abreviatura de Tabela de Seleção / Lista Consolidada. <br/> Abrange as tabelas de seleção produzidas a partir da Lista Consolidada.",
+      PGD_LC: "Abreviatura de Portaria de Gestão de Documentos / Lista Consolidada. <br/> Abrange as tabelas de seleção, derivadas da Lista Consolidada, inseridas em portarias de gestão de documentos, publicadas em Diário da República.",
+      PGD: "Abreviatura de Portaria de Gestão de Documentos. <br/> Abrange as tabelas de seleção, não derivadas da Lista Consolidada, inseridas em portarias de gestão de documentos, publicadas em Diário da República.",
+      RADA: "Abreviatura de Relatório de Avaliação de Documentação Acumulada. <br/> Abrange as tabelas de seleção, inseridas em Relatórios de Avaliação de Documentação Acumulada, que não foram submetidos na Plataforma CLAV. Apesar de estes RADA não terem sido submetidos na CLAV, as suas tabelas de seleção foram importadas e estão disponíveis na plataforma.",
+      RADA_CLAV: "Abreviatura de Relatório de Avaliação de Documentação Acumulada / Classificação e Avaliação da Informação Pública. <br/> Abrange as tabelas de seleção, inseridas em Relatórios de Avaliação de Documentação Acumulada submetidos na CLAV."
     }
   }
 };

@@ -3,7 +3,13 @@
     <v-list-group v-for="item in auto.zonaControlo" :key="item.codigo" color="grey darken-1" no-action>
         <template v-slot:activator>
             <v-list-item-content class="info-label">
-                <v-list-item-title v-if="item.codigo && item.referencia" v-text="item.codigo + ' - ' + item.referencia + ' - ' + item.titulo"></v-list-item-title>
+                <v-list-item-title v-if="item.codigo && item.referencia" v-text="
+                item.codigo +
+                ' - ' +
+                item.referencia +
+                ' - ' +
+                item.titulo
+            "></v-list-item-title>
                 <v-list-item-title v-else-if="item.codigo" v-text="item.codigo + ' - ' + item.titulo"></v-list-item-title>
                 <v-list-item-title v-else v-text="item.referencia + ' - ' + item.titulo"></v-list-item-title>
             </v-list-item-content>
@@ -39,7 +45,7 @@
                         <div class="info-label">Prazo de Conservação Administrativa</div>
                     </v-col>
                     <v-col class="mt-2">
-                        <span v-if="item.prazoConservacao == '1'">{{ item.prazoConservacao }} Ano</span>
+                        <span v-if="item.prazoConservacao=='1'">{{ item.prazoConservacao }} Ano</span>
                         <span v-else>{{ item.prazoConservacao }} Anos</span>
                     </v-col>
                 </v-row>
@@ -99,7 +105,10 @@
                             N.º de agregações
                         </div>
                     </v-col>
-                    <v-col class="mt-2">{{ item.agregacoes.length }}</v-col>
+                    <v-col v-if="item.agregacoes.length==0" class="mt-2">
+                        <v-text-field v-model="item.nrAgregacoes" single-line dense />
+                    </v-col>
+                    <v-col v-else class="mt-2">{{ item.nrAgregacoes }}</v-col>
                 </v-row>
                 <v-row v-if="item.uiPapel">
                     <v-col cols="3">
@@ -128,32 +137,25 @@
                 <v-row style="margin:0px !important;">
                     <v-checkbox dense v-if="item.notasPCA" v-model="item.validaNotaPCA">
                         <template v-slot:label>
-                            <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a
-                                condição do PCA <b>"{{ item.notasPCA }}"</b></span>
+                            <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a condição do PCA <b>"{{item.notasPCA}}"</b></span>
                         </template>
                     </v-checkbox>
                 </v-row>
                 <v-row style="margin:0px !important;">
                     <v-checkbox dense v-if="item.notaDF" v-model="item.validaNotaDF">
                         <template v-slot:label>
-                            <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a
-                                condição do DF <b>"{{ item.notaDF }}"</b></span>
+                            <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a condição do DF <b>"{{item.notaDF}}"</b></span>
                         </template>
                     </v-checkbox>
                 </v-row>
-                <v-row style="margin:0px !important;" v-for="(just, index) in item.justificaDF" :key="index">
-                    <v-checkbox dense v-if="
-                (tipo == 'TS_LC' || tipo == 'PGD_LC') && item.destino == 'CP'
-              " v-model="item.validaJustificaDF">
+                <v-row style="margin:0px !important;" v-for="(just,index) in item.justificaDF" :key="index">
+                    <v-checkbox dense v-if="(tipo=='TS_LC' || tipo=='PGD_LC') && item.destino=='CP'" v-model="item.validaJustificaDF">
                         <template v-slot:label>
-                            <div style="font-size: small">
-                                Confirmo que as agregações que pretendo eliminar cumprem as
-                                condição de justificação do DF <b>"{{ just }}"</b>
-                            </div>
+                            <div style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem as condição de justificação do DF <b>"{{just}}"</b></div>
                         </template>
                     </v-checkbox>
                 </v-row>
-                <div class="ma-1">
+                <div class="ma-1" v-if="item.agregacoes.length>0">
                     <v-row justify="space-between" class="info-label">
                         <v-col>Lista de Agregações</v-col>
                         <v-col>
@@ -183,7 +185,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .panel-custom .panel-heading {
     background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
 }

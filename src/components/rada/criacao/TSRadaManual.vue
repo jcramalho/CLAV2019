@@ -99,7 +99,7 @@
         </v-col>
     </v-row>
     <v-row v-else>
-        <TabelaClassesRADA background_color="#fafafa;" :formaContagem="formaContagem" :classes="TS.classes" :search="search" @editarClasse="editarClasse" />
+        <TabelaClassesRADA :formaContagem="formaContagem" :classes="TS.classes" :search="search" @editarClasse="editarClasse" />
     </v-row>
     <v-row>
         <v-col sm="12" xs="12">
@@ -487,13 +487,9 @@ export default {
                     dataFinal: null,
                     produtor: {
                         tipologiasProdutoras:
-                            !!c.tipologiasProdutoras && c.tipologiasProdutoras.length == 1 ?
-                            [...c.tipologiasProdutoras] :
-                            [],
+                            !!c.tipologiasProdutoras && c.tipologiasProdutoras.length == 1 ? [...c.tipologiasProdutoras] : [],
                         entProdutoras:
-                            !!c.entProdutoras && c.entProdutoras.length == 1 ?
-                            [...c.entProdutoras] :
-                            [],
+                            !!c.entProdutoras && c.entProdutoras.length == 1 ? [...c.entProdutoras] : [],
                     },
                     classesAssociadas: [{
                         codigo: serie_classe.codigo,

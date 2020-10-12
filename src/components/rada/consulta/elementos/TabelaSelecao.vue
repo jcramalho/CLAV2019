@@ -46,6 +46,10 @@
                 style="width:23px; height:30px"
                 :src="svg_ssr"
               />
+
+              <img v-else-if="item.tipo == 'N2'" style="width:23px; height:30px" :src="svg_N2" />
+              <img v-else-if="item.tipo == 'N3'" style="width:23px; height:30px" :src="svg_N3" />
+              <img v-else style="width:23px; height:30px" :src="svg_N1" />
             </template>
             <template v-slot:label="{ item }">
               <b text @click="consultarClasse(item)">{{
@@ -61,7 +65,6 @@
       v-else
       :search="search"
       :classes="rada.tsRada"
-      :formaContagem="formaContagem"
       @consultarClasse="consultarClasse"
     />
     <ConsultarSerieSubserie
@@ -92,20 +95,19 @@ export default {
     search: null,
     svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
     svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+    svg_N1: require("@/assets/n1.svg"),
+    svg_N2: require("@/assets/n2.svg"),
+    svg_N3: require("@/assets/n3.svg"),
     consultar_serie_subserie: false,
     consultar_area_organico: false,
     show_item: null,
     tree_ou_tabela: false,
-    formaContagem: {
-      subFormasContagem: [],
-      formasContagem: []
-    }
   }),
   components: {
     RADAEntry,
     ConsultarSerieSubserie,
     ConsultarAreaOrganico,
-    TabelaClassesRADAConsulta
+    TabelaClassesRADAConsulta,
   },
   computed: {
     filter() {
@@ -114,7 +116,7 @@ export default {
           item.codigo.indexOf(search) > -1 || item.titulo.indexOf(search) > -1
         );
       };
-    }
+    },
   },
   methods: {
     consultarClasse(item) {
@@ -124,35 +126,9 @@ export default {
         this.consultar_area_organico = true;
       }
 
-      this.show_item = this.rada.tsRada.find(e => e.codigo == item.codigo);
+      this.show_item = this.rada.tsRada.find((e) => e.codigo == item.codigo);
       this.show_item.pai = item.eFilhoDe;
-    }
+    },
   },
-  async created() {
-    // FAZER PEDIDOS PARA A FORMA/SUBFORMA DE CONTAGEM
-    let responseFC = await this.$request(
-      "get",
-      "/vocabularios/vc_pcaFormaContagem"
-    );
-
-    this.formaContagem.formasContagem = responseFC.data.map(item => {
-      return {
-        label: item.termo,
-        value: item.idtermo.split("#")[1]
-      };
-    });
-
-    let responseSFC = await this.$request(
-      "get",
-      "/vocabularios/vc_pcaSubformaContagem"
-    );
-
-    this.formaContagem.subFormasContagem = responseSFC.data.map(item => {
-      return {
-        label: item.termo.split(": ")[1] + ": " + item.desc,
-        value: item.idtermo.split("#")[1]
-      };
-    });
-  }
 };
 </script>

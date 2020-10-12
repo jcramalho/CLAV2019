@@ -161,7 +161,7 @@ export default {
                 width: "30%"
             },
             {
-                text: "Data de contagem",
+                text: "Data de início de contagem do PCA",
                 align: "center",
                 value: "dataContagem",
                 width: "15%"
@@ -194,7 +194,7 @@ export default {
                 width: "40%"
             },
             {
-                text: "Data de contagem",
+                text: "Data de início de contagem do PCA",
                 align: "center",
                 value: "dataContagem",
                 width: "15%"

@@ -8,18 +8,12 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     /*
-    {
-      path: "/oldentry",
-      name: "oldentry",
-      component: () => import("./views/Principal.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
-    },*/
-    {
-      path: "/oldentry",
-      name: "oldentry",
-      component: () => import("./views/Entidade.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
-    },
+      {
+            path: "/oldentry",
+            name: "oldentry",
+            component: () => import("./views/Principal.vue"),
+            meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      },*/
     {
       path: "/",
       name: "home",
@@ -326,7 +320,7 @@ export default new Router({
       path: "/ts/:id",
       name: "consultarTS",
       component: () => import("./views/tabSel/TabSelConsulta.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] },
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
     // Routes dos termos de indice
     {
@@ -383,19 +377,19 @@ export default new Router({
       path: "/rada",
       name: "Rada",
       component: () => import("./views/rada/Radas.vue"),
-      meta: { levels: [4, 5, 6, 7], tabAtiva: "Operações" }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
       path: "/rada/criar",
       name: "criarRada",
       component: () => import("./views/rada/criarRada.vue"),
-      meta: { levels: [4, 5, 6, 7], tabAtiva: "Operações" }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
       path: "/rada/:id",
       name: "consultaRADA",
       component: () => import("./views/rada/ConsultaRADA.vue"),
-      meta: { levels: [4, 5, 6, 7], tabAtiva: "Operações" }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     // Routes das PGD
     {
@@ -429,7 +423,7 @@ export default new Router({
       name: "importarAutosEliminacao",
       component: () =>
         import("./views/autosEliminacao/AutosEliminacaoImportar.vue"),
-      meta: { levels: [3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
       path: "/autosEliminacao/:idAE",
@@ -480,19 +474,19 @@ export default new Router({
       path: "/noticias/criar",
       name: "criaNoticia",
       component: () => import("./views/noticias/NoticiasCria.vue"),
-      meta: { levels: [4, 5, 6, 7], tabAtiva: "Notícias" }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Notícias" }
     },
     {
       path: "/noticias/importar",
       name: "importarNoticias",
       component: () => import("./views/noticias/NoticiasImporta.vue"),
-      meta: { levels: [4, 5, 6, 7], tabAtiva: "Gestão da Plataforma" }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Gestão da Plataforma" }
     },
     {
       path: "/noticias/editar/:idNoticia",
       name: "editaNoticia",
       component: () => import("./views/noticias/NoticiasEdita.vue"),
-      meta: { levels: [4, 5, 6, 7], tabAtiva: "Notícias" }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Notícias" }
     },
     {
       path: "/noticias/:idNoticia",
@@ -560,7 +554,7 @@ export default new Router({
       path: "/pedidos/finalizacao/:idPedido",
       name: "finalizacaoPedido",
       component: () => import("./views/pedidos/PedidosFinalizacao.vue"),
-      meta: { levels: [4, 6, 7] },
+      meta: { levels: [4, 6, 7] }
     },
     {
       path: "/pedidos/:idPedido",
@@ -576,7 +570,7 @@ export default new Router({
       name: "analisePedido",
       component: () => import("./views/pedidos/PedidosAnalise.vue"),
       meta: {
-        levels: [1, 3, 3.5, 4, 5, 6, 7],
+        levels: [3, 3.5, 4, 5, 6, 7],
         tabAtiva: "Gestão da Plataforma"
       }
     },
@@ -585,9 +579,15 @@ export default new Router({
       name: "validarPedido",
       component: () => import("./views/pedidos/PedidosValidacao.vue"),
       meta: {
-        levels: [1, 3, 3.5, 4, 5, 6, 7],
+        levels: [3, 3.5, 4, 5, 6, 7],
         tabAtiva: "Gestão da Plataforma"
       }
+    },
+    {
+      path: "/pedidos/despachar/:idPedido",
+      name: "despacharPedido",
+      component: () => import("./views/pedidos/PedidosDespacho.vue"),
+      meta: { levels: [3, 3.5, 4, 5, 6, 7] },
     },
     {
       path: "/pedidos/novos/:idPedido",
@@ -637,7 +637,7 @@ export default new Router({
       path: "/users/registo",
       name: "registo",
       component: () => import("./views/users/Registo.vue"),
-      meta: { levels: [5, 6, 7], tabAtiva: "" }
+      meta: { levels: [4, 5, 6, 7], tabAtiva: "" }
     },
     {
       path: "/users/login",
@@ -673,13 +673,13 @@ export default new Router({
       path: "/users/listagem",
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue"),
-      meta: { levels: [5, 6, 7], tabAtiva: "Gestão da Plataforma" }
+      meta: { levels: [4, 5, 6, 7], tabAtiva: "Gestão da Plataforma" }
     },
     {
       path: "/users/registoParaEntidade",
       name: "registoParaEntidade",
       component: () => import("./views/users/RegistoParaEntidade.vue"),
-      meta: { levels: [5, 6, 7], tabAtiva: "Gestão da Plataforma" }
+      meta: { levels: [4, 5, 6, 7], tabAtiva: "Gestão da Plataforma" }
     },
     {
       path: "/users/registoAcesso",
@@ -691,13 +691,19 @@ export default new Router({
       path: "/users/pedidos",
       name: "pedidosUtilizador",
       component: () => import("./views/users/GestaoPedidos.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
       path: "/users/pedidos/:numeroPedido",
       name: "consultaPedidoUtilizador",
       component: () => import("./views/users/ConsultaPedidoUtilizador.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
+      path: "/users/pedidos/:numeroPedido/relatorio",
+      name: "consultaRelatorioPedidoUtilizador",
+      component: () => import("./views/users/ConsultaRelatorioPedido.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     //cartao cidadao
     {
@@ -805,7 +811,20 @@ export default new Router({
       path: "/permissoesAcesso",
       name: "permissõesDeAcesso",
       component: () => import("./views/PermissoesAcesso.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] },
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
-  ],
+    //PPD
+    {
+      path: "/ppd",
+      name: "ConsultaPPD",
+      component: () => import("./views/ppd/ConsultaPPD.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
+      path: "/ppd/criar",
+      name: "CriaPPD",
+      component: () => import("./views/ppd/CriaPPD.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    }
+  ]
 });

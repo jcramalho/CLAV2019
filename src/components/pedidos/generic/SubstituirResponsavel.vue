@@ -138,107 +138,61 @@ export default {
         }
     },
 
-    methods: {
-        async preparaUtilizadores(etapa) {
-            const {
-                data
-            } = await this.$request("get", "/users");
+    async substituir() {
+        try {
+            let pedido = JSON.parse(JSON.stringify(this.pedido));
 
-            let utilizadoresFiltrados = [];
+            let dadosUtilizador = this.$verifyTokenUser();
 
-            switch (etapa) {
-                case "Distribuído":
-                case "Redistribuído":
-                    utilizadoresFiltrados = filtraNivel(data, NIVEIS_ANALISAR_PEDIDO);
-                    break;
+            pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
 
-                case "Apreciado":
-                case "Reapreciado":
-                    utilizadoresFiltrados = filtraNivel(data, NIVEIS_VALIDAR_PEDIDO);
-                    break;
+            const novaDistribuicao = {
+                estado: pedido.estado,
+                responsavel: dadosUtilizador.email,
+                proximoResponsavel: {
+                    nome: this.utilizadorSelecionado.name,
+                    entidade: this.utilizadorSelecionado.entidade,
+                    email: this.utilizadorSelecionado.email,
+                },
+                data: new Date().toISOString(),
+                despacho: this.mensagemDespacho ?
+                    `#Responsável substituído.\n${this.mensagemDespacho}` :
+                    "#Responsável substituído.",
+            };
 
-                default:
-                    utilizadoresFiltrados = data;
-                    break;
-            }
+            await this.$request("put", "/pedidos", {
+                pedido: pedido,
+                distribuicao: novaDistribuicao,
+            });
 
-            const responsavelAtual = this.pedido.distribuicao[
-                this.pedido.distribuicao.length - 1
-            ].proximoResponsavel;
-
-            const utilizadoresSemAtual = utilizadoresFiltrados.filter(
-                (utilizador) => utilizador.email !== responsavelAtual.email
-            );
-
-            this.utilizadores = utilizadoresSemAtual;
-        },
-
-        cancelar() {
             this.utilizadorSelecionado = null;
             this.mensagemDespacho = null;
-            this.$emit("fecharDialog");
-        },
 
-        fecharErro() {
-            this.erroPedido = false;
-        },
+            this.$router.push("/pedidos");
+        } catch (err) {
+            this.erroPedido = true;
 
-        async substituir() {
-            try {
-                let pedido = JSON.parse(JSON.stringify(this.pedido));
+            let parsedError = Object.assign({}, err);
+            parsedError = parsedError.response;
 
-                let dadosUtilizador = this.$verifyTokenUser();
-
-                pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
-
-                const novaDistribuicao = {
-                    estado: pedido.estado,
-                    responsavel: dadosUtilizador.email,
-                    proximoResponsavel: {
-                        nome: this.utilizadorSelecionado.name,
-                        entidade: this.utilizadorSelecionado.entidade,
-                        email: this.utilizadorSelecionado.email,
-                    },
-                    data: new Date().toISOString(),
-                    despacho: this.mensagemDespacho ?
-                        `#Responsável substituído.\n${this.mensagemDespacho}` :
-                        "#Responsável substituído.",
-                };
-
-                await this.$request("put", "/pedidos", {
-                    pedido: pedido,
-                    distribuicao: novaDistribuicao,
-                });
-
-                this.utilizadorSelecionado = null;
-                this.mensagemDespacho = null;
-
-                this.$router.push("/pedidos");
-            } catch (err) {
-                this.erroPedido = true;
-
-                let parsedError = Object.assign({}, err);
-                parsedError = parsedError.response;
-
-                if (parsedError !== undefined) {
-                    if (parsedError.status === 422) {
-                        parsedError.data.forEach(erro => {
-                            this.erros.push({
-                                parametro: erro.param,
-                                mensagem: erro.msg
-                            });
+            if (parsedError !== undefined) {
+                if (parsedError.status === 422) {
+                    parsedError.data.forEach((erro) => {
+                        this.erros.push({
+                            parametro: erro.param,
+                            mensagem: erro.msg
                         });
-                    }
-                } else {
-                    this.erros.push({
-                        sobre: "Substituição de responsável",
-                        mensagem: "Ocorreu um erro ao tentar substituir o responsável."
                     });
                 }
+            } else {
+                this.erros.push({
+                    parametro: "Substituição de responsável",
+                    mensagem: "Ocorreu um erro ao tentar substituir o responsável.",
+                });
             }
         }
     }
-};
+}
 </script>
 
 <style scoped>

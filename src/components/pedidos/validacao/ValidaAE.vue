@@ -67,17 +67,21 @@
             <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">Classes</v-expansion-panel-header>
             <v-expansion-panel-content>
                 <v-list>
-                    <v-list-group v-for="(item, index) in dados.zonaControlo" :key="item.codigo" color="grey darken-1" no-action>
+                    <v-list-group v-for="(item,index) in dados.zonaControlo" :key="item.codigo" color="grey darken-1" no-action>
                         <template v-slot:activator>
                             <v-list-item-content :class="[
-                    'info-descricao',
-                    `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                  ]">
+                  'info-descricao',
+                  `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                ]">
                                 <v-list-item-title v-if="item.codigo && item.referencia" v-text="
-                      item.codigo + ', ' + item.referencia + ' - ' + item.titulo
+                        item.codigo +
+                        ', ' +
+                        item.referencia +
+                        ' - ' +
+                        item.titulo
                     "></v-list-item-title>
-                                <v-list-item-title v-else-if="item.codigo" v-text="item.codigo + ' - ' + item.titulo"></v-list-item-title>
-                                <v-list-item-title v-else v-text="item.referencia + ' - ' + item.titulo"></v-list-item-title>
+                                <v-list-item-title v-else-if="item.codigo" v-text="item.codigo+ ' - ' + item.titulo"></v-list-item-title>
+                                <v-list-item-title v-else v-text="item.referencia+ ' - ' + item.titulo"></v-list-item-title>
                             </v-list-item-content>
                         </template>
                         <v-list-item-content>
@@ -86,23 +90,17 @@
                                     <tr v-if="item.codigo">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Código da Classe
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Código da Classe</div>
                                         </td>
                                         <td style="width:70%;">
                                             {{ item.codigo }}
                                         </td>
                                         <td style="width:10%">
-                                            <v-icon color="green" @click="
-                            novoHistorico.zonaControlo[index].cor = 'verde'
-                          ">check</v-icon>
-                                            <v-icon color="red" @click="
-                            novoHistorico.zonaControlo[index].cor = 'vermelho'
-                          ">clear</v-icon>
-                                            <v-icon @click="abrirNotaDialog('zonaControlo', index)">
+                                            <v-icon color="green" @click="novoHistorico.zonaControlo[index].cor='verde'">check</v-icon>
+                                            <v-icon color="red" @click="novoHistorico.zonaControlo[index].cor='vermelho'">clear</v-icon>
+                                            <v-icon @click="abrirNotaDialog('zonaControlo',index)">
                                                 add_comment
                                             </v-icon>
                                         </td>
@@ -110,34 +108,24 @@
                                     <tr v-if="item.referencia">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Referência
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Referência</div>
                                         </td>
                                         <td style="width:70%;">
                                             {{ item.referencia }}
                                         </td>
                                         <td v-if="!item.codigo" style="width:10%">
-                                            <v-icon color="green" @click="
-                            colorSwitch++;
-                            cores.zonaControlo[index] = '#C8E6C9';
-                          ">check</v-icon>
-                                            <v-icon color="red" @click="
-                            colorSwitch++;
-                            cores.zonaControlo[index] = '#FFCDD2';
-                          ">clear</v-icon>
+                                            <v-icon color="green" @click="colorSwitch++; cores.zonaControlo[index]='#C8E6C9'">check</v-icon>
+                                            <v-icon color="red" @click="colorSwitch++; cores.zonaControlo[index]='#FFCDD2'">clear</v-icon>
                                         </td>
                                     </tr>
                                     <tr v-if="item.titulo">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Título
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Título</div>
                                         </td>
                                         <td style="width:80%;">
                                             {{ item.titulo }}
@@ -146,25 +134,20 @@
                                     <tr v-if="item.prazoConservacao">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Prazo de Conservação Administrativa
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Prazo de Conservação Administrativa</div>
                                         </td>
                                         <td style="width:80%;">
-                                            {{ item.prazoConservacao }}
-                                            <span v-if="item.prazoConservacao == '1'">Ano</span><span v-else>Anos</span>
+                                            {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
                                         </td>
                                     </tr>
                                     <tr v-if="item.notasPCA">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Notas do PCA
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Notas do PCA</div>
                                         </td>
                                         <td style="width:80%;">
                                             {{ item.notasPCA }}
@@ -173,11 +156,9 @@
                                     <tr v-if="item.destino">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Destino Final
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Destino Final</div>
                                         </td>
                                         <td v-if="item.destino === 'E'" style="width:80%;">
                                             Eliminação
@@ -192,70 +173,53 @@
                                     <tr v-if="item.notaDF">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Nota do DF
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Nota do DF</div>
                                         </td>
                                         <td style="width:80%;">
                                             {{ item.notaDF }}
                                         </td>
                                     </tr>
-                                    <tr v-if="item.destino == 'CP' && item.justificaDF">
+                                    <tr v-if="item.destino=='CP' && item.justificaDF">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Justificação do DF
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Justificação do DF</div>
                                         </td>
                                         <td style="width:80%;">
-                                            <span v-for="(just, index) in item.justificaDF" :key="index">{{ just }}</span>
+                                            <span v-for="(just,index) in item.justificaDF" :key="index">{{ just }}</span>
                                         </td>
                                     </tr>
-                                    <tr v-if="
-                        item.ni &&
-                          (item.destino === 'C' ||
-                            item.destino === 'Conservação')
-                      ">
+                                    <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">
                                                 Natureza de intervenção
                                             </div>
                                         </td>
                                         <td style="width:80%;">{{ item.ni }}</td>
                                     </tr>
-                                    <tr v-if="
-                        item.dono &&
-                          item.dono.length > 0 &&
-                          (item.destino === 'C' ||
-                            item.destino === 'Conservação')
-                      ">
+                                    <tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Donos do PN
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Donos do PN</div>
                                         </td>
                                         <td style="width:80%;">
-                                            <li v-for="(d, i) in item.dono" :key="i">{{ d }}</li>
+                                            <li v-for="(d,i) in item.dono" :key="i">{{ d }}</li>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Data de Início
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Data de Início</div>
                                         </td>
                                         <td style="width:80%;">
                                             {{ item.dataInicio }}
@@ -264,11 +228,9 @@
                                     <tr>
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
-                                                Data de Fim
-                                            </div>
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Data de Fim</div>
                                         </td>
                                         <td style="width:80%;">{{ item.dataFim }}</td>
                                     </tr>
@@ -276,75 +238,73 @@
                                         <td style="width:20%;">
                                             <div :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
                           ]">
+                                                N.º de agregações
+                                            </div>
+                                        </td>
+                                        <td v-if="item.agregacoes.length==0" style="width:80%;">
+                                            {{ item.nrAgregacoes }}
+                                        </td>
+                                        <td style="width:80%;" v-else>{{item.agregacoes.length}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:20%;">
+                                            <div :class="[
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">
                                                 Medição das UI em papel (m.l.)
                                             </div>
                                         </td>
-                                        <td style="width:70%;" v-if="item.uiPapel">
-                                            {{ item.uiPapel }}
-                                        </td>
+                                        <td style="width:70%;" v-if="item.uiPapel">{{ item.uiPapel }}</td>
                                         <td style="width:70%;" v-else>0</td>
                                         <td style="width:10%;">
-                                            <v-icon color="orange" @click="
-                            abrirEditor('Medição das UI em papel (m.l.)', index)
-                          ">create</v-icon>
+                                            <v-icon color="orange" @click="abrirEditor('Medição das UI em papel (m.l.)',index)">create</v-icon>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">
                                                 Medição das UI em digital (Gb)
                                             </div>
                                         </td>
-                                        <td style="width:70%;" v-if="item.uiDigital">
-                                            {{ item.uiDigital }}
-                                        </td>
+                                        <td style="width:70%;" v-if="item.uiDigital">{{ item.uiDigital }}</td>
                                         <td style="width:70%;" v-else>0</td>
                                         <td style="width:10%;">
-                                            <v-icon color="orange" @click="
-                            abrirEditor('Medição das UI em digital (Gb)', index)
-                          ">create</v-icon>
+                                            <v-icon color="orange" @click="abrirEditor('Medição das UI em digital (Gb)',index)">create</v-icon>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:20%;">
                                             <div :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                          ]">
+                          'info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">
                                                 Medição das UI noutros suportes
                                             </div>
                                         </td>
-                                        <td style="width:70%;" v-if="item.uiOutros">
-                                            {{ item.uiOutros }}
-                                        </td>
+                                        <td style="width:70%;" v-if="item.uiOutros">{{ item.uiOutros }}</td>
                                         <td style="width:70%;" v-else>0</td>
                                         <td style="width:10%;">
-                                            <v-icon color="orange" @click="
-                            abrirEditor(
-                              'Medição das UI noutros suportes',
-                              index
-                            )
-                          ">create</v-icon>
+                                            <v-icon color="orange" @click="abrirEditor('Medição das UI noutros suportes',index)">create</v-icon>
                                         </td>
                                     </tr>
                                 </table>
 
-                                <div class="ma-1">
+                                <div class="ma-1" v-if="item.agregacoes.length>0">
                                     <v-data-table :headers="cabecalho" :items="item.agregacoes" :items-per-page="5" class="elevation-1 mt-3" :footer-props="footer_props" :search="search">
                                         <template v-slot:top>
                                             <v-toolbar flat>
                                                 <v-row>
                                                     <v-col cols="3">
-                                                        <div :class="[
-                                  'info-descricao',
-                                  `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                                ]">
-                                                            Lista de Agregações
+                                                        <div :class="['info-descricao',
+                          `info-descricao-${novoHistorico.zonaControlo[index].cor}`
+                        ]">Lista de Agregações
+
                                                         </div>
                                                     </v-col>
                                                     <v-col>
@@ -355,18 +315,10 @@
                                         </template>
                                         <template v-slot:item="prop">
                                             <tr>
-                                                <td style=" text-align: left">
-                                                    {{ prop.item.codigo }}
-                                                </td>
-                                                <td style=" text-align: left">
-                                                    {{ prop.item.titulo }}
-                                                </td>
-                                                <td style=" text-align: center">
-                                                    {{ prop.item.dataContagem }}
-                                                </td>
-                                                <td style=" text-align: center">
-                                                    {{ prop.item.ni }}
-                                                </td>
+                                                <td style=" text-align: left">{{ prop.item.codigo }}</td>
+                                                <td style=" text-align: left">{{ prop.item.titulo }}</td>
+                                                <td style=" text-align: center">{{ prop.item.dataContagem }}</td>
+                                                <td style=" text-align: center">{{ prop.item.ni }}</td>
                                             </tr>
                                         </template>
                                     </v-data-table>

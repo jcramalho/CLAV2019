@@ -29,6 +29,7 @@
     "net": "^1.0.2",
     "odometer": "^0.4.8",
     "papaparse": "^5.2.0",
+    "pdfmake": "^0.1.68",
     "popper.js": "^1.16.1",
     "raw-loader": "^4.0.0",
     "register-service-worker": "^1.7.1",

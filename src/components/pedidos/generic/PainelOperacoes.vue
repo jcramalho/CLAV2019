@@ -12,7 +12,7 @@
                 Encaminhar
             </v-btn>
 
-            <v-btn v-else rounded class="indigo accent-4 white--text" @click="finalizarPedidoDialog = true">
+            <v-btn v-else-if="operacao === 'Validar'" rounded class="indigo accent-4 white--text" @click="finalizarPedidoDialog = true">
                 Finalizar
             </v-btn>
         </v-col>
@@ -34,7 +34,7 @@
 
     <!-- Dialog de Confirmação de Operação -->
     <v-dialog v-model="finalizarPedidoDialog" width="50%">
-        <FinalizarPedido @fecharDialog="fecharDialog()" @finalizarPedido="finalizarPedido($event)" />
+        <FinalizarPedido @fecharDialog="fecharDialog()" @finalizarPedido="finalizarPedido($event)" :vai_para_despacho="vai_para_despacho" />
     </v-dialog>
 </div>
 </template>
@@ -52,12 +52,18 @@ import {
 } from "@/utils/consts";
 
 export default {
-    props: ["operacao"],
+    props: {
+        operacao: {},
+        vai_para_despacho: {
+            type: Boolean,
+            default: false,
+        }
+    },
 
     components: {
         AvancarPedido,
         DevolverPedido,
-        FinalizarPedido
+        FinalizarPedido,
     },
 
     data() {
@@ -65,7 +71,7 @@ export default {
             avancarPedidoDialog: false,
             devolverPedidoDialog: false,
             finalizarPedidoDialog: false,
-            utilizadores: []
+            utilizadores: [],
         };
     },
 

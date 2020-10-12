@@ -1,7 +1,7 @@
 <template>
 <div>
     <v-list shaped>
-        <v-list-group v-for="(item, index) in auto.zonaControlo" :key="index" color="grey darken-1">
+        <v-list-group v-for="(item,index) in auto.zonaControlo" :key="index" color="grey darken-1">
             <template v-slot:activator>
                 <v-list-item-content>
                     <v-list-item-title>
@@ -10,17 +10,9 @@
                                 <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">Classe</v-card>
                             </v-col>
                             <v-col>
-                                <div class="mt-2" v-if="item.codigo && item.referencia">
-                                    {{
-                      item.codigo + " " + item.referencia + " - " + item.titulo
-                    }}
-                                </div>
-                                <div class="mt-2" v-else-if="item.codigo">
-                                    {{ item.codigo + " - " + item.titulo }}
-                                </div>
-                                <div class="mt-2" v-else-if="item.referencia">
-                                    {{ item.referencia + " - " + item.titulo }}
-                                </div>
+                                <div class="mt-2" v-if="item.codigo && item.referencia">{{ item.codigo + " - " + item.referencia +" - "+item.titulo }}</div>
+                                <div class="mt-2" v-else-if="item.codigo">{{ item.codigo +" - "+item.titulo }}</div>
+                                <div class="mt-2" v-else-if="item.referencia">{{ item.referencia +" - "+item.titulo }}</div>
                             </v-col>
                         </v-row>
                     </v-list-item-title>
@@ -31,20 +23,13 @@
                     <v-row justify="end" class="mx-4">
                         <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" class="mr-2" @click="
-                      editarIndex = index;
-                      editarZC = true;
-                    ">edit</v-icon>
+                                <v-icon v-on="on" class="mr-2" @click="editarIndex=index; editarZC=true;">edit</v-icon>
                             </template>
                             <span>Editar Classe</span>
                         </v-tooltip>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" @click="
-                      deleteIndex = index;
-                      ag = item.agregacoes.length;
-                      deleteDialog = true;
-                    ">delete</v-icon>
+                                <v-icon v-on="on" @click="deleteIndex=index; ag=item.agregacoes.length; deleteDialog=true">delete</v-icon>
                             </template>
                             <span>Remover Classe</span>
                         </v-tooltip>
@@ -130,7 +115,10 @@
                             <v-card class="info-label" style="color: #1a237e; background-color: #dee2f8;" elevation="0">N.º de agregações</v-card>
                         </v-col>
                         <v-col>
-                            <v-card class="mt-2" style="color: #757575" elevation="0">{{ item.agregacoes.length }}</v-card>
+                            <v-card v-if="item.agregacoes.length==0" class="mt-2" style="color: #757575" elevation="0">
+                                <v-text-field v-model="item.nrAgregacoes" single-line dense />
+                            </v-card>
+                            <v-card v-else class="mt-2" style="color: #757575" elevation="0">{{ item.agregacoes.length }}</v-card>
                         </v-col>
                     </v-row>
                     <v-row v-if="item.uiPapel">
@@ -159,6 +147,7 @@
                     </v-row>
                     <!-- Lista de Agregacoes -->
                     <ListaAgregacoes v-bind:auto="auto" v-bind:index="index" v-bind:agregacoes="auto.zonaControlo[index].agregacoes" v-bind:tipo="tipo" />
+
                 </v-list-item-title>
             </v-list-item-content>
             <v-dialog v-model="editarZC">

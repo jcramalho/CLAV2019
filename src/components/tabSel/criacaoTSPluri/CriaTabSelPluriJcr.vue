@@ -18,7 +18,11 @@
                     </v-stepper-step>
                     <v-stepper-content step="1">
                         <v-col v-if="entidadesReady">
-                            <v-autocomplete v-model="entSel" :items="entidades" item-text="label" placeholder="Selecione as entidades abrangidas pela TS" multiple chips deletable-chips return-object>
+                            <v-autocomplete v-model="entSel" :items="entidades" :rules="[
+                    v =>
+                      (v && v.length > 1) ||
+                      'Tem de escolher pelo menos 2 entidades'
+                  ]" item-text="label" placeholder="Selecione as entidades abrangidas pela TS" multiple chips deletable-chips return-object>
                             </v-autocomplete>
                         </v-col>
                         <v-col v-else>
@@ -27,10 +31,7 @@
                             </v-alert>
                         </v-col>
                         <hr style="border-top: 0px" />
-                        <v-btn color="primary" @click="
-                  stepNo = 2;
-                  entidadesSelecionadas();
-                ">Continuar</v-btn>
+                        <v-btn color="primary" @click="entidadesSelecionadas()">Continuar</v-btn>
                     </v-stepper-content>
 
                     <v-stepper-step :complete="stepNo > 2" step="2">
@@ -43,9 +44,9 @@
                     </v-stepper-step>
                     <v-stepper-content step="2">
                         <v-col xs12 sm6 md10>
-                            <v-text-field placeholder="Designação da Nova Tabela de Seleção" v-model="tabelaSelecao.designacao"></v-text-field>
+                            <v-text-field :rules="[v => !!v || 'A designação não pode ser vazia']" placeholder="Designação da Nova Tabela de Seleção" v-model="tabelaSelecao.designacao"></v-text-field>
                         </v-col>
-                        <v-btn color="primary" @click="stepNo = 3">Continuar</v-btn>
+                        <v-btn color="primary" @click="validaTSnome">Continuar</v-btn>
                     </v-stepper-content>
 
                     <v-stepper-step :complete="stepNo > 3" step="3">
@@ -163,6 +164,11 @@ export default {
     },
 
     methods: {
+        validaTSnome: function () {
+            if (this.tabelaSelecao.designacao != "") {
+                this.stepNo = 3;
+            }
+        },
         debug: function (data) {
             alert(JSON.stringify(data));
         },
@@ -217,23 +223,26 @@ export default {
         // Quando se termina a seleção das entidades
         entidadesSelecionadas: async function () {
             try {
-                this.entSel.sort((a, b) => (a.designacao > b.designacao ? 1 : -1));
-                this.tabelaSelecao.entidades = this.entSel;
+                if (this.entSel.length > 1) {
+                    this.entSel.sort((a, b) => (a.designacao > b.designacao ? 1 : -1));
+                    this.tabelaSelecao.entidades = this.entSel;
 
-                for (let i = 0; i < this.listaProcessos.procs.length; i++) {
-                    for (let j = 0; j < this.tabelaSelecao.entidades.length; j++) {
-                        this.listaProcessos.procs[i].entidades.push({
-                            sigla: this.tabelaSelecao.entidades[j].sigla,
-                            designacao: this.tabelaSelecao.entidades[j].designacao,
-                            id: this.tabelaSelecao.entidades[j].id,
-                            label: this.tabelaSelecao.entidades[j].label,
-                            dono: false,
-                            participante: "NP"
-                        });
+                    for (let i = 0; i < this.listaProcessos.procs.length; i++) {
+                        for (let j = 0; j < this.tabelaSelecao.entidades.length; j++) {
+                            this.listaProcessos.procs[i].entidades.push({
+                                sigla: this.tabelaSelecao.entidades[j].sigla,
+                                designacao: this.tabelaSelecao.entidades[j].designacao,
+                                id: this.tabelaSelecao.entidades[j].id,
+                                label: this.tabelaSelecao.entidades[j].label,
+                                dono: false,
+                                participante: "NP"
+                            });
+                        }
                     }
+                    await this.loadProcessosEspecificos(this.tabelaSelecao.entidades);
+                    this.entSelReady = true;
+                    this.stepNo = 2;
                 }
-                await this.loadProcessosEspecificos(this.tabelaSelecao.entidades);
-                this.entSelReady = true;
             } catch (e) {
                 console.log("Erro ao fundir as entidades nos processos: " + e);
             }
@@ -369,12 +378,16 @@ export default {
         abortar: async function () {
             if (this.pendente._id) {
                 try {
-                    var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
+                    var response = await this.$request(
+                        "delete",
+                        "/pendentes/" + this.pendente._id
+                    );
                 } catch (e) {
                     console.log("Erro ao eliminar o pendente: " + e);
                 }
+
+                // ----------Fim da validação ----------------------------
             }
-            this.$router.push("/");
         },
 
         // Funções de validação --------------------------------------

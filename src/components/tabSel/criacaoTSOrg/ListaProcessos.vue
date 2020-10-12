@@ -14,19 +14,14 @@
         </v-row>
 
         <v-data-table :items="listaProcessos.procs" :headers="headers" class="ma-1" item-key="chave" :footer-props="procsFooterProps" :search="filtro">
-
             <template v-slot:item="props">
                 <tr :style="{
           backgroundColor: props.item.dono || props.item.participante!= 'NP'
               ? '#BBDEFB'
               : (props.item.preSelected > 0 ? '#FFECB3' : 'transparent')
         }">
-                    <td>
-                        {{ props.item.codigo }}
-                    </td>
-                    <td>
-                        {{ props.item.titulo }}
-                    </td>
+                    <td>{{ props.item.codigo }}</td>
+                    <td>{{ props.item.titulo }}</td>
                     <td>
                         <v-btn v-if="props.item.dono" small text class="ma-2" @click="desselecionaDono(props.item)">
                             <v-icon dark>{{ donoSelecionado }}</v-icon>
@@ -64,13 +59,12 @@
                 {{ numProcessosSelecionados }}
             </v-col>
             <v-col>
-                Nº de processos pré-selecionados:
+                Nº de processos a selecionar:
                 {{ numProcessosPreSelecionados }}
             </v-col>
         </v-row>
 
         <EditDescritivo v-if="editaBlocoDescritivoFlag" :p="procSel" @editado="blocoDescritivoEditado($event)" />
-
     </div>
     <div v-else>
         <p>A preparar a informação dos processos...</p>
@@ -82,19 +76,19 @@
 import EditDescritivo from "@/components/tabSel/criacaoTSPluri/EditDescritivo.vue";
 import {
     mdiPencil
-} from '@mdi/js';
+} from "@mdi/js";
 import {
     mdiFileDocumentEdit
-} from '@mdi/js';
+} from "@mdi/js";
 import {
     mdiCheckCircle
-} from '@mdi/js';
+} from "@mdi/js";
 import {
     mdiCheckBoxOutline
-} from '@mdi/js';
+} from "@mdi/js";
 import {
     mdiCheckboxBlankOutline
-} from '@mdi/js';
+} from "@mdi/js";
 
 export default {
     props: ["listaProcs", "listaCodigosEsp"],
@@ -151,14 +145,14 @@ export default {
                 value: "tipoProc",
                 width: "0%",
                 class: ["body-2", "font-weight-bold"],
-                align: ' d-none'
+                align: " d-none"
             },
             {
                 text: "Pré-Selecionado",
                 value: "preSelectedLabel",
                 width: "0%",
                 class: ["body-2", "font-weight-bold"],
-                align: ' d-none'
+                align: " d-none"
             },
             {
                 text: "Dono",
@@ -195,7 +189,10 @@ export default {
         }
 
         try {
-            var resPar = await this.$request("get", "/vocabularios/vc_processoTipoParticipacao");
+            var resPar = await this.$request(
+                "get",
+                "/vocabularios/vc_processoTipoParticipacao"
+            );
             this.participacao = resPar.data;
         } catch (e) {
             console.log("Erro no carregamento dos tipos de participação: " + e);
@@ -208,11 +205,11 @@ export default {
 
     methods: {
         selecionaParticipacao: async function (proc, participacao) {
-            if (!proc.dono && proc.participante == 'NP') {
+            if (!proc.dono && proc.participante == "NP") {
                 this.listaProcs.numProcessosSelecionados++;
                 this.numProcessosSelecionados++;
                 await this.acrescentaFecho(proc);
-            } else if (!proc.dono && participacao == 'NP') {
+            } else if (!proc.dono && participacao == "NP") {
                 this.listaProcs.numProcessosSelecionados--;
                 this.numProcessosSelecionados--;
                 await this.retiraFecho(proc);
@@ -224,7 +221,7 @@ export default {
         selecionaDono: async function (proc) {
             proc.dono = true;
             // Se ainda não tinha sido selecionado
-            if (proc.participante == 'NP') {
+            if (proc.participante == "NP") {
                 this.listaProcs.numProcessosSelecionados++;
                 this.numProcessosSelecionados++;
                 await this.acrescentaFecho(proc);
@@ -235,7 +232,7 @@ export default {
         desselecionaDono: async function (proc) {
             proc.dono = false;
             // Se vai ficar desselecionado...
-            if (proc.participante == 'NP') {
+            if (proc.participante == "NP") {
                 this.listaProcs.numProcessosSelecionados--;
                 this.numProcessosSelecionados--;
                 await this.retiraFecho(proc);
@@ -244,7 +241,7 @@ export default {
 
         // Filtra os processos na tabela
         filtraProcessos: function (value, search, item) {
-            return (item.tipoProc == "");
+            return item.tipoProc == "";
         },
 
         acrescentaFecho: function (processo) {
@@ -287,7 +284,7 @@ export default {
             this.editaBlocoDescritivoFlag = false;
         }
     }
-};
+}
 </script>
 
 <style scoped>

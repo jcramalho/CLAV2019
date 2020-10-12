@@ -1,6 +1,6 @@
 <template>
 <v-card>
-    <v-card-title class="expansion-panel-heading">Classe {{ tipo.replace(/\_/g, "/") }}</v-card-title>
+    <v-card-title class="expansion-panel-heading">Classe {{tipo.replace(/\_/g,"/")}}</v-card-title>
     <v-card-text class="mt-4">
         <v-row>
             <v-col :md="2">
@@ -13,13 +13,13 @@
         </v-row>
         <v-row>
             <v-col :md="2" v-if="prazo.split(' ')[0]">
-                <div class="info-label">Prazo de Conservação Administrativa</div>
+                <div class="info-label">Prazo de conservação administrativa</div>
             </v-col>
             <v-col v-if="prazo.split(' ')[0]">
                 <v-text-field :value="prazo" solo dense readonly></v-text-field>
             </v-col>
             <v-col :md="2" v-if="df">
-                <div class="info-label">Destino Final</div>
+                <div class="info-label">Destino final</div>
             </v-col>
             <v-col v-if="df">
                 <v-text-field :value="df" solo dense readonly></v-text-field>
@@ -27,7 +27,7 @@
         </v-row>
         <v-row v-if="df=='Conservação' && tipo!='RADA_CLAV' && tipo!='RADA' && tipo!='PGD'">
             <v-col>
-                <div class="info-label">Natureza de Intervenção</div>
+                <div class="info-label">Natureza de intervenção</div>
             </v-col>
             <v-col>
                 <v-text-field :value="ni" solo dense readonly></v-text-field>
@@ -41,7 +41,7 @@
         </v-row>
         <v-row>
             <v-col>
-                <div class="info-label">Data de Início</div>
+                <div class="info-label">Data de início</div>
             </v-col>
             <v-col>
                 <v-text-field hint="Exemplo: 1995" label="Insira o ano de início" v-model="dataInicio" solo clearable>
@@ -49,7 +49,7 @@
                 </v-text-field>
             </v-col>
             <v-col>
-                <div class="info-label">Data de Fim</div>
+                <div class="info-label">Data de fim</div>
             </v-col>
             <v-col>
                 <v-text-field hint="Exemplo: 1995" label="Insira o ano de fim" v-model="dataFim" solo clearable>
@@ -59,7 +59,7 @@
         </v-row>
         <v-row>
             <v-col>
-                <div class="info-label">Medição de UI em Papel (m.l.)</div>
+                <div class="info-label">Medição de UI em papel (m.l.)</div>
             </v-col>
             <v-col>
                 <v-text-field hint="Exemplo: 11,50" label="Insira a medição de UI" v-model="uiPapel" solo clearable>
@@ -67,7 +67,7 @@
                 </v-text-field>
             </v-col>
             <v-col>
-                <div class="info-label">Medição de UI Digital (GB)</div>
+                <div class="info-label">Medição de UI digital (GB)</div>
             </v-col>
             <v-col>
                 <v-text-field hint="Exemplo: 16,00" label="Insira a medição de UI" v-model="uiDigital" solo clearable>
@@ -75,7 +75,7 @@
                 </v-text-field>
             </v-col>
             <v-col>
-                <div class="info-label">Medição de UI noutro Suporte</div>
+                <div class="info-label">Medição de UI noutro suporte</div>
             </v-col>
             <v-col>
                 <v-text-field hint="Exemplo: 150,75" label="Insira a medição de UI" v-model="uiOutros" solo clearable>
@@ -86,24 +86,21 @@
         <v-row style="margin:0px !important;">
             <v-checkbox dense v-if="notasPCA" v-model="validaNotaPCA">
                 <template v-slot:label>
-                    <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a
-                        condição do PCA <b>"{{ notasPCA }}"</b></span>
+                    <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a condição do PCA <b>"{{notasPCA}}"</b></span>
                 </template>
             </v-checkbox>
         </v-row>
         <v-row style="margin:0px !important;">
             <v-checkbox dense v-if="notaDF" v-model="validaNotaDF">
                 <template v-slot:label>
-                    <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a
-                        condição do DF <b>"{{ notaDF }}"</b></span>
+                    <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a condição do DF <b>"{{notaDF}}"</b></span>
                 </template>
             </v-checkbox>
         </v-row>
-        <v-row style="margin:0px !important;" v-for="(just, index) in justificaDF" :key="index">
-            <v-checkbox dense v-if="(tipo == 'TS_LC' || tipo == 'PGD_LC') && df == 'CP'" v-model="validaJustificaDF">
+        <v-row style="margin:0px !important;" v-for="(just,index) in justificaDF" :key="index">
+            <v-checkbox dense v-if="(tipo=='TS_LC' || tipo=='PGD_LC') && df=='CP'" v-model="validaJustificaDF">
                 <template v-slot:label>
-                    <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem as
-                        condição de justificação do DF <b>"{{ just }}"</b></span>
+                    <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem as condição de justificação do DF <b>"{{just}}"</b></span>
                 </template>
             </v-checkbox>
         </v-row>
@@ -162,6 +159,7 @@ export default {
         dono: [],
         dataInicio: "",
         dataFim: "",
+        nrAgregacoes: 0,
         uiPapel: "",
         uiDigital: "",
         uiOutros: "",
@@ -181,23 +179,15 @@ export default {
         erroDialog: false
     }),
     watch: {
-        index: function () {
+        "index": function () {
             if (this.zona) {
-                if (this.zona.codigo && this.zona.referencia)
-                    this.classe =
-                    this.zona.codigo +
-                    " " +
-                    this.zona.referencia +
-                    " - " +
-                    this.zona.titulo;
-                else if (this.zona.codigo)
-                    this.classe = this.zona.codigo + " - " + this.zona.titulo;
-                else if (this.zona.referencia)
-                    this.classe = this.zona.referencia + " - " + this.zona.titulo;
+                if (this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " - " + this.zona.referencia + " - " + this.zona.titulo;
+                else if (this.zona.codigo) this.classe = this.zona.codigo + " - " + this.zona.titulo;
+                else if (this.zona.referencia) this.classe = this.zona.referencia + " - " + this.zona.titulo;
 
-                if (this.zona.destino == "C") this.df = "Conservação";
-                else if (this.zona.destino == "E") this.df = "Eliminação";
-                else this.df = this.zona.destino;
+                if (this.zona.destino == "C") this.df = "Conservação"
+                else if (this.zona.destino == "E") this.df = "Eliminação"
+                else this.df = this.zona.destino
                 this.prazo = this.zona.prazoConservacao;
                 this.notasPCA = this.zona.notasPCA;
                 this.ni = this.zona.ni;
@@ -213,30 +203,22 @@ export default {
     },
     created: async function () {
         if (this.zona) {
-            if (this.zona.codigo && this.zona.referencia)
-                this.classe =
-                this.zona.codigo +
-                " " +
-                this.zona.referencia +
-                " - " +
-                this.zona.titulo;
-            else if (this.zona.codigo)
-                this.classe = this.zona.codigo + " - " + this.zona.titulo;
-            else if (this.zona.referencia)
-                this.classe = this.zona.referencia + " - " + this.zona.titulo;
+            if (this.zona.codigo && this.zona.referencia) this.classe = this.zona.codigo + " - " + this.zona.referencia + " - " + this.zona.titulo;
+            else if (this.zona.codigo) this.classe = this.zona.codigo + " - " + this.zona.titulo;
+            else if (this.zona.referencia) this.classe = this.zona.referencia + " - " + this.zona.titulo;
 
-            if (this.zona.destino == "C") this.df = "Conservação";
-            else if (this.zona.destino == "E") this.df = "Eliminação";
-            else this.df = this.zona.destino;
-            if (this.zona.prazoConservacao == "1")
-                this.prazo = this.zona.prazoConservacao + " Ano";
-            else this.prazo = this.zona.prazoConservacao + " Anos";
+            if (this.zona.destino == "C") this.df = "Conservação"
+            else if (this.zona.destino == "E") this.df = "Eliminação"
+            else this.df = this.zona.destino
+            if (this.zona.prazoConservacao == "1") this.prazo = this.zona.prazoConservacao + " Ano"
+            else this.prazo = this.zona.prazoConservacao + " Anos"
             this.notasPCA = this.zona.notasPCA;
             this.ni = this.zona.ni;
             this.dono = this.zona.dono;
             this.notaDF = this.zona.notaDF;
             this.dataInicio = this.zona.dataInicio;
             this.dataFim = this.zona.dataFim;
+            this.nrAgregacoes = this.zona.nrAgregacoes;
             this.uiPapel = this.zona.uiPapel;
             this.uiDigital = this.zona.uiDigital;
             this.uiOutros = this.zona.uiOutros;
@@ -245,33 +227,25 @@ export default {
     methods: {
         defClasse: async function () {
             var c = this.classesCompletas.filter(c => {
-                if (c.codigo && c.referencia)
-                    return c.codigo + " " + c.referencia == this.classe.split(" - ")[0];
-                else if (c.codigo) return c.codigo == this.classe.split(" - ")[0];
-                else if (c.referencia)
-                    return c.referencia == this.classe.split(" - ")[0];
+                if (c.codigo && c.referencia) return (c.codigo + " " + c.referencia == this.classe.split(" - ")[0] + " " + this.classe.split(" - ")[1])
+                else if (c.codigo) return (c.codigo == this.classe.split(" - ")[0])
+                else if (c.referencia) return (c.referencia == this.classe.split(" - ")[0])
             });
             if (c[0]) {
-                if (c[0].pca.valores == "1")
-                    this.prazo = (c[0].pca.valores || "") + " Ano";
+                if (c[0].pca.valores == "1") this.prazo = (c[0].pca.valores || "") + " Ano";
                 else this.prazo = (c[0].pca.valores || "") + " Anos";
-                if (c[0].pca.notas) this.notasPCA = c[0].pca.notas;
-                if (c[0].df.nota) this.notaDF = c[0].df.nota;
-                if (
-                    (this.tipo == "TS_LC" || this.tipo == "PGD_LC") &&
-                    c[0].df.valor == "CP" &&
-                    c[0].df.justificacao
-                )
-                    this.justificaDF = c[0].df.justificacao.map(just => {
-                        return just.conteudo;
-                    });
+                if (c[0].pca.notas) this.notasPCA = c[0].pca.notas
+                if (c[0].df.nota) this.notaDF = c[0].df.nota
+                if ((this.tipo == "TS_LC" || this.tipo == "PGD_LC") && c[0].df.valor == "CP" && c[0].df.justificacao) this.justificaDF = c[0].df.justificacao.map(just => {
+                    return just.conteudo
+                })
                 if (c[0].df.valor === "C") {
                     this.df = "Conservação";
                     this.ni = "Participante";
                 } else if (c[0].df.valor === "E") {
                     this.df = "Eliminação";
                     this.ni = null;
-                    this.dono = [];
+                    this.dono = []
                 } else this.df = c[0].df.valor;
             }
         },
@@ -290,17 +264,18 @@ export default {
             this.validaJustificaDF = false;
             this.dataInicio = "";
             this.dataFim = "";
+            this.nrAgregacoes = 0;
             this.uiPapel = "";
             this.uiDigital = "";
             this.uiOutros = "";
         },
         adicionarZC: async function () {
-            const date = new Date();
+            const date = new Date()
             const re = /\d{4}/;
             const reUI = /^-?\d*(,\d\d?)?$/;
             var result = this.auto.zonaControlo.filter(
                 zc => {
-                    if (zc.codigo && zc.referencia) return zc.codigo + " " + zc.referencia + " - " + zc.titulo == this.classe
+                    if (zc.codigo && zc.referencia) return zc.codigo + " - " + zc.referencia + " - " + zc.titulo == this.classe
                     else if (zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
                     else if (zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
                 }
@@ -325,36 +300,21 @@ export default {
                 this.erro = help.AutoEliminacao.Erros.DatasExtremas;
                 this.erroDialog = true;
             } else if (dataInicio < date.getFullYear() - 100) {
-                this.erro =
-                    "Não é permitido eliminar documentação com mais de 100 anos, por favor verifique a Data de Início";
+                this.erro = "Não é permitido eliminar documentação com mais de 100 anos, por favor verifique a Data de Início";
                 this.erroDialog = true;
             } else if (this.notasPCA && !this.validaNotaPCA) {
-                this.erro =
-                    'É necessária confirmação de cumprimento da nota do PCA <b>"' +
-                    this.notasPCA +
-                    '"</b>';
+                this.erro = "É necessária confirmação de cumprimento da nota do PCA <b>\"" + this.notasPCA + "\"</b>"
                 this.erroDialog = true;
             } else if (this.notaDF && !this.validaNotaDF) {
-                this.erro =
-                    'É necessária confirmação de cumprimento da nota do DF <b>"' +
-                    this.notaDF +
-                    '"</b>';
+                this.erro = "É necessária confirmação de cumprimento da nota do DF <b>\"" + this.notaDF + "\"</b>"
                 this.erroDialog = true;
-            } else if (
-                (this.tipo == "TS_LC" || this.tipo == "PGD_LC") &&
-                this.df == "CP" &&
-                !this.validaJustificaDF
-            ) {
-                this.erro = "";
+            } else if ((this.tipo == "TS_LC" || this.tipo == "PGD_LC") && this.df == "CP" && !this.validaJustificaDF) {
+                this.erro = ""
                 for (var just of this.justificaDF)
-                    this.erro +=
-                    '<p>É necessária confirmação de cumprimento da justificação do DF <b>"' +
-                    just +
-                    '"</b></p>\n';
+                    this.erro += "<p>É necessária confirmação de cumprimento da justificação do DF <b>\"" + just + "\"</b></p>\n"
                 this.erroDialog = true;
             } else if (dataInicio > date.getFullYear() - parseInt(this.prazo)) {
-                this.erro =
-                    "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente.";
+                this.erro = "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                 this.erroDialog = true;
             } else if (dataFim > date.getFullYear()) {
                 this.erro = "A Data de Fim deve ser anterior à data atual";
@@ -379,20 +339,19 @@ export default {
                 this.erroDialog = true;
             } else {
                 var classe = this.classesCompletas.filter(c => {
-                    if (c.codigo && c.referencia)
-                        return c.codigo + " " + c.referencia == this.classe.split(" - ")[0];
-                    else if (c.codigo) return c.codigo == this.classe.split(" - ")[0];
-                    else if (c.referencia)
-                        return c.referencia == this.classe.split(" - ")[0];
+                    if (c.codigo && c.referencia) return (c.codigo + " " + c.referencia == this.classe.split(" - ")[0] + " " + this.classe.split(" - ")[1])
+                    else if (c.codigo) return (c.codigo == this.classe.split(" - ")[0])
+                    else if (c.referencia) return (c.referencia == this.classe.split(" - ")[0])
                 });
-                var idClasse = classe[0].idClasse || "";
+                var idClasse = classe[0].idClasse || ""
                 var codigo = classe[0].codigo || "";
-                var referencia = classe[0].referencia || "";
+                var referencia = classe[0].referencia || ""
                 var titulo = classe[0].titulo;
                 var prazoConservacao = this.prazo.split(" ")[0] || "";
                 var destino = this.df;
                 var dataInicio = this.dataInicio;
                 var dataFim = this.dataFim;
+                var nrAgregacoes = this.nrAgregacoes;
                 var ni = this.ni;
                 var dono = this.dono;
 
@@ -406,11 +365,8 @@ export default {
                 var added = false;
 
                 for (var i in this.auto.zonaControlo) {
-                    var tituloZC =
-                        this.auto.zonaControlo[i].codigo +
-                        " " +
-                        this.auto.zonaControlo[i].referencia;
-                    if (tituloZC > codigo + " " + referencia) {
+                    var tituloZC = this.auto.zonaControlo[i].codigo + " - " + this.auto.zonaControlo[i].referencia
+                    if (tituloZC > (codigo + " - " + referencia)) {
                         this.auto.zonaControlo.splice(i, 0, {
                             idClasse: idClasse,
                             codigo: codigo,
@@ -424,48 +380,49 @@ export default {
                             dono: dono,
                             dataInicio: dataInicio,
                             dataFim: dataFim,
+                            nrAgregacoes: nrAgregacoes,
                             uiPapel: uiPapel,
                             uiDigital: uiDigital,
                             uiOutros: uiOutros,
                             agregacoes: []
-                        });
+                        })
                         added = true;
                         break;
                     }
                 }
-                if (added == false)
-                    this.auto.zonaControlo.push({
-                        idClasse: idClasse,
-                        codigo: codigo,
-                        referencia: referencia,
-                        titulo: titulo,
-                        prazoConservacao: prazoConservacao,
-                        notasPCA: this.notasPCA || "",
-                        destino: destino,
-                        notaDF: this.notaDF || "",
-                        ni: ni,
-                        dono: dono,
-                        dataInicio: dataInicio,
-                        dataFim: dataFim,
-                        uiPapel: uiPapel,
-                        uiDigital: uiDigital,
-                        uiOutros: uiOutros,
-                        agregacoes: []
-                    });
+                if (added == false) this.auto.zonaControlo.push({
+                    idClasse: idClasse,
+                    codigo: codigo,
+                    referencia: referencia,
+                    titulo: titulo,
+                    prazoConservacao: prazoConservacao,
+                    notasPCA: this.notasPCA || "",
+                    destino: destino,
+                    notaDF: this.notaDF || "",
+                    ni: ni,
+                    dono: dono,
+                    dataInicio: dataInicio,
+                    dataFim: dataFim,
+                    nrAgregacoes: nrAgregacoes,
+                    uiPapel: uiPapel,
+                    uiDigital: uiDigital,
+                    uiOutros: uiOutros,
+                    agregacoes: []
+                })
 
                 this.limparZC();
                 this.closeZC();
             }
         },
         editarZC: async function () {
-            const date = new Date();
+            const date = new Date()
             var backup = this.auto.zonaControlo[this.index];
             this.auto.zonaControlo[this.index] = {};
             const re = /\d{4}/;
             const reUI = /^-?\d*(\.\d\d?)?$/;
             var result = this.auto.zonaControlo.filter(
                 zc => {
-                    if (zc.codigo && zc.referencia) return zc.codigo + " " + zc.referencia + " - " + zc.titulo == this.classe
+                    if (zc.codigo && zc.referencia) return zc.codigo + " - " + zc.referencia + " - " + zc.titulo == this.classe
                     else if (zc.codigo) return zc.codigo + " - " + zc.titulo == this.classe
                     else if (zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
                 }
@@ -491,40 +448,22 @@ export default {
                 this.erroDialog = true;
                 this.auto.zonaControlo[this.index] = backup;
             } else if (parseInt(this.dataInicio) < date.getFullYear() - 100) {
-                this.erro =
-                    "Não é permitido eliminar documentação com mais de 100 anos, por favor verifique a Data de Início";
+                this.erro = "Não é permitido eliminar documentação com mais de 100 anos, por favor verifique a Data de Início";
                 this.erroDialog = true;
                 this.auto.zonaControlo[this.index] = backup;
             } else if (this.notasPCA && !this.validaNotaPCA) {
-                this.erro =
-                    'É necessária confirmação de cumprimento da nota do PCA <b>"' +
-                    this.notasPCA +
-                    '"</b>';
+                this.erro = "É necessária confirmação de cumprimento da nota do PCA <b>\"" + this.notasPCA + "\"</b>"
                 this.erroDialog = true;
             } else if (this.notaDF && !this.validaNotaDF) {
-                this.erro =
-                    'É necessária confirmação de cumprimento da nota do DF <b>"' +
-                    this.notaDF +
-                    '"</b>';
+                this.erro = "É necessária confirmação de cumprimento da nota do DF <b>\"" + this.notaDF + "\"</b>"
                 this.erroDialog = true;
-            } else if (
-                (this.tipo == "TS_LC" || this.tipo == "PGD_LC") &&
-                this.df == "CP" &&
-                !this.validaJustificaDF
-            ) {
-                this.erro = "";
+            } else if ((this.tipo == "TS_LC" || this.tipo == "PGD_LC") && this.df == "CP" && !this.validaJustificaDF) {
+                this.erro = ""
                 for (var just of this.justificaDF)
-                    this.erro +=
-                    '<p>É necessária confirmação de cumprimento da justificação do DF <b>"' +
-                    just +
-                    '"</b></p>\n';
+                    this.erro += "<p>É necessária confirmação de cumprimento da justificação do DF <b>\"" + just + "\"</b></p>\n"
                 this.erroDialog = true;
-            } else if (
-                parseInt(this.dataInicio) >
-                date.getFullYear() - parseInt(this.prazo)
-            ) {
-                this.erro =
-                    "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente.";
+            } else if (parseInt(this.dataInicio) > date.getFullYear() - parseInt(this.prazo)) {
+                this.erro = "A Data de inicio deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                 this.erroDialog = true;
                 this.auto.zonaControlo[this.index] = backup;
             } else if (parseInt(this.dataFim) > date.getFullYear()) {
@@ -556,20 +495,19 @@ export default {
                 this.erroDialog = true;
             } else {
                 var classe = this.classesCompletas.filter(c => {
-                    if (c.codigo && c.referencia)
-                        return c.codigo + " " + c.referencia == this.classe.split(" - ")[0];
-                    else if (c.codigo) return c.codigo == this.classe.split(" - ")[0];
-                    else if (c.referencia)
-                        return c.referencia == this.classe.split(" - ")[0];
+                    if (c.codigo && c.referencia) return (c.codigo + " " + c.referencia == this.classe.split(" - ")[0] + " " + this.classe.split(" - ")[1])
+                    else if (c.codigo) return (c.codigo == this.classe.split(" - ")[0])
+                    else if (c.referencia) return (c.referencia == this.classe.split(" - ")[0])
                 });
-                var idClasse = classe[0].idClasse || "";
+                var idClasse = classe[0].idClasse || ""
                 var codigo = classe[0].codigo || "";
-                var referencia = classe[0].referencia || "";
+                var referencia = classe[0].referencia || ""
                 var titulo = classe[0].titulo;
                 var prazoConservacao = this.prazo.split(" ")[0] || "";
                 var destino = this.df;
                 var dataInicio = this.dataInicio;
                 var dataFim = this.dataFim;
+                var nrAgregacoes = this.nrAgregacoes;
                 var ni = this.ni;
                 var dono = this.dono;
 
@@ -580,22 +518,16 @@ export default {
                 if (!this.uiOutros || this.uiOutros == "0") uiOutros = "";
                 else uiOutros = this.uiOutros;
 
-                var newAgregacoes = backup.agregacoes
-                    .filter(
-                        ag =>
-                        parseInt(ag.dataContagem) + parseInt(prazoConservacao) + 1 <=
-                        date.getFullYear()
-                    )
-                    .map(ag => {
-                        if ((destino == "C" || destino == "Conservação") && ag.ni == "Dono")
-                            return {
-                                codigo: ag.codigo,
-                                titulo: ag.titulo,
-                                dataContagem: ag.dataContagem,
-                                ni: "Participante"
-                            };
-                        else return ag;
-                    });
+                var newAgregacoes = backup.agregacoes.filter(ag => (parseInt(ag.dataContagem) + parseInt(prazoConservacao) + 1) <= date.getFullYear()).map(ag => {
+                    if ((destino == "C" || destino == "Conservação") && ag.ni == "Dono")
+                        return {
+                            codigo: ag.codigo,
+                            titulo: ag.titulo,
+                            dataContagem: ag.dataContagem,
+                            ni: "Participante"
+                        }
+                    else return ag;
+                })
 
                 this.auto.zonaControlo[this.index] = {
                     idClasse: idClasse,
@@ -608,6 +540,7 @@ export default {
                     dono: dono,
                     dataInicio: dataInicio,
                     dataFim: dataFim,
+                    nrAgregacoes: nrAgregacoes,
                     uiPapel: uiPapel,
                     uiDigital: uiDigital,
                     uiOutros: uiOutros,

@@ -13,6 +13,8 @@
 
                     <PedidosValidacao :pedidos="pedidosValidados" :pesquisaPedidos="pesquisaPedidos" @validar="validaPedido($event)" />
 
+                    <PedidosEmDespacho :pedidos="pedidosEmDespacho" :pesquisaPedidos="pesquisaPedidos" @despachar="despacharPedido($event)" />
+
                     <PedidosDevolvidos :pedidos="pedidosDevolvidos" :pesquisaPedidos="pesquisaPedidos" />
 
                     <PedidosProcessados :pedidos="pedidosProcessados" :pesquisaPedidos="pesquisaPedidos" />
@@ -36,6 +38,7 @@ import PedidosNovos from "@/components/pedidos/PedidosNovos";
 import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
 import PedidosValidacao from "@/components/pedidos/PedidosValidacao";
 import PedidosDevolvidos from "@/components/pedidos/PedidosDevolvidos";
+import PedidosEmDespacho from "@/components/pedidos/PedidosEmDespacho";
 import PedidosProcessados from "@/components/pedidos/PedidosProcessados";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
@@ -54,7 +57,8 @@ export default {
         PedidosValidacao,
         PedidosDevolvidos,
         PedidosProcessados,
-        AvancarPedido
+        AvancarPedido,
+        PedidosEmDespacho,
     },
 
     data() {
@@ -65,13 +69,14 @@ export default {
             pedidosSubmetidos: [],
             pedidosDistribuidos: [],
             pedidosValidados: [],
+            pedidosEmDespacho: [],
             pedidosDevolvidos: [],
             pedidosProcessados: [],
             pesquisaPedidos: {
                 painel: undefined,
                 pesquisa: "",
-                pagina: 1
-            }
+                pagina: 1,
+            },
         };
     },
 
@@ -105,6 +110,9 @@ export default {
                     if (p.estado === "Distribuído" || p.estado === "Redistribuído")
                         return p;
                 });
+                this.pedidosEmDespacho = pedidos.filter((p) => {
+                    if (p.estado === "Em Despacho") return p;
+                });
                 this.pedidosValidados = pedidos.filter((p) => {
                     if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
                 });
@@ -123,72 +131,148 @@ export default {
             }
         },
 
-        fecharDialog() {
-            this.distribuir = false;
+        data() {
+            return {
+                pedidoParaDistribuir: {},
+                distribuir: false,
+                utilizadoresParaAnalisar: [],
+                pedidosSubmetidos: [],
+                pedidosDistribuidos: [],
+                pedidosValidados: [],
+                pedidosDevolvidos: [],
+                pedidosProcessados: [],
+                pesquisaPedidos: {
+                    painel: undefined,
+                    pesquisa: "",
+                    pagina: 1
+                }
+            };
         },
 
-        distribuiPedido(dados) {
-            this.pedidoParaDistribuir = dados;
-            this.distribuir = true;
-        },
+        async created() {
+            await this.carregaPedidos();
 
-        async listaUtilizadoresParaAnalisar() {
-            const response = await this.$request("get", "/users");
+            const storage = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
 
-            const utilizadoresFiltrados = filtraNivel(
-                response.data,
-                NIVEIS_ANALISAR_PEDIDO
-            );
+            if (storage !== null && storage !== undefined) {
+                if (storage.limpar) localStorage.removeItem("pesquisa-pedidos");
+                else this.pesquisaPedidos = storage;
 
-            this.utilizadoresParaAnalisar = utilizadoresFiltrados;
-        },
-
-        analisaPedido(pedido) {
-            this.$router.push("/pedidos/analisar/" + pedido.codigo);
-        },
-
-        validaPedido(pedido) {
-            this.$router.push("/pedidos/validar/" + pedido.codigo);
-        },
-
-        async atribuirPedido(dados) {
-            try {
-                let pedido = JSON.parse(JSON.stringify(this.pedidoParaDistribuir));
-
-                let estado = "Distribuído";
-
-                let dadosUtilizador = this.$verifyTokenUser();
-
-                pedido.estado = estado;
-
-                pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
-
-                const novaDistribuicao = {
-                    estado: estado,
-                    responsavel: dadosUtilizador.email,
-                    proximoResponsavel: {
-                        nome: dados.utilizadorSelecionado.name,
-                        entidade: dados.utilizadorSelecionado.entidade,
-                        email: dados.utilizadorSelecionado.email
-                    },
-                    data: new Date(),
-                    despacho: dados.mensagemDespacho
-                };
-
-                await this.$request("put", "/pedidos", {
-                    pedido: pedido,
-                    distribuicao: novaDistribuicao
-                });
-
-                this.carregaPedidos();
-                // this.$router.push("/pedidos");
-                this.fecharDialog();
-            } catch (e) {
-                console.log("e :", e);
+                localStorage.removeItem("pesquisa-pedidos");
             }
-        }
+        },
+        methods: {
+            temPermissaoDistribuir() {
+                return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
+            },
+
+            async carregaPedidos() {
+                try {
+                    let pedidos = await this.$request("get", "/pedidos");
+                    pedidos = pedidos.data;
+
+                    this.pedidosSubmetidos = pedidos.filter(
+                        (p) => p.estado === "Submetido"
+                    );
+                    this.pedidosDistribuidos = pedidos.filter((p) => {
+                        if (p.estado === "Distribuído" || p.estado === "Redistribuído")
+                            return p;
+                    });
+                    this.pedidosValidados = pedidos.filter((p) => {
+                        if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
+                    });
+                    this.pedidosDevolvidos = pedidos.filter(
+                        (p) => p.estado === "Devolvido"
+                    );
+                    this.pedidosProcessados = pedidos.filter(
+                        (p) => p.estado === "Validado"
+                    );
+
+                    if (this.temPermissaoDistribuir())
+                        await this.listaUtilizadoresParaAnalisar();
+                } catch (e) {
+                    console.warn("e", e);
+                    return e;
+                }
+            },
+
+            fecharDialog() {
+                this.distribuir = false;
+            },
+
+            distribuiPedido(dados) {
+                this.pedidoParaDistribuir = dados;
+                this.distribuir = true;
+            },
+
+            async listaUtilizadoresParaAnalisar() {
+                const response = await this.$request("get", "/users");
+
+                const utilizadoresFiltrados = filtraNivel(
+                    response.data,
+                    NIVEIS_ANALISAR_PEDIDO
+                );
+
+                this.utilizadoresParaAnalisar = utilizadoresFiltrados;
+            },
+
+            analisaPedido(pedido) {
+                this.$router.push("/pedidos/analisar/" + pedido.codigo);
+            },
+
+            validaPedido(pedido) {
+                this.$router.push("/pedidos/validar/" + pedido.codigo);
+            },
+            analisaPedido(pedido) {
+                this.$router.push("/pedidos/analisar/" + pedido.codigo);
+            },
+            despacharPedido(pedido) {
+                this.$router.push("/pedidos/despachar/" + pedido.codigo);
+            },
+
+            validaPedido(pedido) {
+                this.$router.push("/pedidos/validar/" + pedido.codigo);
+            },
+
+            async atribuirPedido(dados) {
+                try {
+                    let pedido = JSON.parse(JSON.stringify(this.pedidoParaDistribuir));
+
+                    let estado = "Distribuído";
+
+                    let dadosUtilizador = this.$verifyTokenUser();
+
+                    pedido.estado = estado;
+
+                    pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+
+                    const novaDistribuicao = {
+                        estado: estado,
+                        responsavel: dadosUtilizador.email,
+                        proximoResponsavel: {
+                            nome: dados.utilizadorSelecionado.name,
+                            entidade: dados.utilizadorSelecionado.entidade,
+                            email: dados.utilizadorSelecionado.email,
+                        },
+                        data: new Date(),
+                        despacho: dados.mensagemDespacho,
+                    };
+
+                    await this.$request("put", "/pedidos", {
+                        pedido: pedido,
+                        distribuicao: novaDistribuicao,
+                    });
+
+                    this.carregaPedidos();
+                    // this.$router.push("/pedidos");
+                    this.fecharDialog();
+                } catch (e) {
+                    console.log("e :", e);
+                }
+            },
+        },
     }
-};
+}
 </script>
 
 <style scoped>

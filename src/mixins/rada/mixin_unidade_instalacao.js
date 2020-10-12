@@ -67,9 +67,6 @@ export default {
       if (!!UI.classesAssociadas[0] == false) {
         this.erros.push("Classes Associadas;");
       }
-      if (!UI.descricao) {
-        this.erros.push("Descrição;");
-      }
 
       if (!Boolean(this.erros[0])) {
         this.erros.push("Datas Inválidas;");

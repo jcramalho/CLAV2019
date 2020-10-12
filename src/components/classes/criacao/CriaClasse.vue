@@ -690,7 +690,6 @@ export default {
     },
 
     // Carrega a legislação da BD....................
-
     loadLegislacao: async function() {
       try {
         var response = await this.$request("get", "/legislacao?estado=Ativo");

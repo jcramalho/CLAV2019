@@ -48,11 +48,9 @@
                   " style="cursor: pointer;" />
 
                             <ListagemNot v-else-if="tipo == 'Notícias'" :item="props.item" @rowClicked="go($event.id)" @iconClicked="
-                    switchOperacao($event.operacao.descricao, props.item.id)
-                  " style="cursor: pointer;" />
-                            <tr v-else-if="
-              tipo == 'RADA/CLAV'
-            " @click="$router.push('/rada/' + props.item.codigo)" style="cursor: pointer;">
+              switchOperacao($event.operacao.descricao, props.item.id)
+            " />
+                            <tr v-else-if="tipo == 'RADA/CLAV'">
                                 <td>{{ props.item.dataAprovacao }}</td>
                                 <td>{{ props.item.titulo }}</td>
                                 <td>
@@ -63,6 +61,14 @@
                   }}</a>
                                         </li>
                                     </ul>
+                                </td>
+                                <td>
+                                    <v-btn text @click="$emit('ver', props.item.codigo)">
+                                        <v-icon>remove_red_eye</v-icon>
+                                    </v-btn>
+                                    <v-btn text @click="$emit('download', props.item.codigo)">
+                                        <v-icon color="#c62828">picture_as_pdf</v-icon>
+                                    </v-btn>
                                 </td>
                                 <!-- <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="props.item">
@@ -226,49 +232,78 @@ export default {
     created: function () {
         try {
             for (let i = 0; i < this.cabecalho.length; i++) {
-                switch (this.campos[i]) {
-                    case "operacoes":
-                        this.headers[i] = {
-                            text: this.cabecalho[i],
-                            value: this.campos[i],
-                            align: "end",
-                            width: "10%"
-                        };
-                        break;
-                    case "entidades":
-                        this.headers[i] = {
-                            text: this.cabecalho[i],
-                            value: this.campos[i],
-                            width: "12%"
-                        };
-                        break;
-                    case "numero":
-                        this.headers[i] = {
-                            text: this.cabecalho[i],
-                            value: this.campos[i],
-                            width: "10%"
-                        };
-                        break;
-                    case "estado":
-                        this.headers[i] = {
-                            text: this.cabecalho[i],
-                            value: this.campos[i],
-                            width: "10%"
-                        };
-                        break;
-                    default:
-                        this.headers[i] = {
-                            text: this.cabecalho[i],
-                            value: this.campos[i]
-                        };
-                        break;
-                }
+                if (this.campos[i] === "operacoes")
+                    this.headers[i] = {
+                        text: this.cabecalho[i],
+                        value: this.campos[i],
+                        align: "end",
+                        width: "auto",
+                        sortable: false,
+                        class: "subtitle-3",
+                    };
+                else if (this.campos[i] === "sumario")
+                    this.headers[i] = {
+                        text: this.cabecalho[i],
+                        value: this.campos[i],
+                        align: "start",
+                        sortable: false,
+                        width: "25%",
+                        class: "subtitle-3",
+                    };
+                else if (this.campos[i] === "entidades")
+                    this.headers[i] = {
+                        text: this.cabecalho[i],
+                        value: this.campos[i],
+                        align: "start",
+                        sortable: true,
+                        width: "15%",
+                        class: "subtitle-3",
+                    };
+                else if (this.campos[i] === "data" || this.campos[i] === "numero")
+                    this.headers[i] = {
+                        text: this.cabecalho[i],
+                        value: this.campos[i],
+                        align: "start",
+                        sortable: true,
+                        width: "13%",
+                        class: "subtitle-3",
+                    };
+                else if (
+                    this.campos[i] === "sigla" ||
+                    this.campos[i] === "estado" ||
+                    this.campos[i] === "internacional"
+                )
+                    this.headers[i] = {
+                        text: this.cabecalho[i],
+                        value: this.campos[i],
+                        align: "start",
+                        sortable: true,
+                        width: "20%",
+                        class: "subtitle-3",
+                    };
+                else if (this.campos[i] === "designacao")
+                    this.headers[i] = {
+                        text: this.cabecalho[i],
+                        value: this.campos[i],
+                        align: "start",
+                        sortable: true,
+                        width: "35%",
+                        class: "subtitle-3",
+                    };
+                else
+                    this.headers[i] = {
+                        text: this.cabecalho[i],
+                        value: this.campos[i],
+                        align: "start",
+                        sortable: true,
+                        class: "subtitle-3",
+                    };
             }
         } catch (e) {
             return e;
         }
     }
-};
+}
 </script>
 
 <style scoped>

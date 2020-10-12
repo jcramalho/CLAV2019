@@ -9,20 +9,24 @@
                 <v-stepper v-model="stepNo" vertical>
                     <v-stepper-step :complete="stepNo > 1" step="1">
                         Identificação da entidade ou tipologia da tabela de seleção:
-                        <span v-if="stepNo > 1 && tipoTS!='tipologia'">
+                        <span v-if="stepNo > 1 && tipoTS != 'tipologia'">
                             <v-chip class="ma-2" color="indigo darken-4" text-color="white" label>
                                 <v-icon left>account_balance</v-icon>
                                 {{
-                      tabelaSelecao.idEntidade.split("_")[1] +
-                        ": " +
-                        tabelaSelecao.designacaoEntidade
-                    }}
+                    tabelaSelecao.idEntidade.split("_")[1] +
+                      ": " +
+                      tabelaSelecao.designacaoEntidade
+                  }}
                             </v-chip>
                         </span>
-                        <span v-else-if="stepNo > 1 && tipoTS=='tipologia'">
+                        <span v-else-if="stepNo > 1 && tipoTS == 'tipologia'">
                             <v-chip class="ma-2" color="indigo darken-4" text-color="white" label>
                                 <v-icon left>account_balance</v-icon>
-                                {{ tabelaSelecao.idTipologia.split("_")[1] + ": " + tabelaSelecao.designacaoTipologia }}
+                                {{
+                    tabelaSelecao.idTipologia.split("_")[1] +
+                      ": " +
+                      tabelaSelecao.designacaoTipologia
+                  }}
                             </v-chip>
                         </span>
                     </v-stepper-step>
@@ -35,18 +39,16 @@
                                     <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
                                 </v-radio-group>
 
-                                <div v-if="tipoTS=='entidade' && entidadesReady">
+                                <div v-if="tipoTS == 'entidade' && entidadesReady">
                                     <v-col>
-                                        <v-autocomplete :items="entidades" label="Selecione a entidade" item-text="label" return-object v-model="ent" prepend-icon="account_balance">
-                                        </v-autocomplete>
+                                        <v-autocomplete :items="entidades" label="Selecione a entidade" item-text="label" return-object v-model="ent" prepend-icon="account_balance"></v-autocomplete>
                                     </v-col>
                                     <v-btn v-if="ent != ''" color="primary" @click="guardaEntidade">Continuar</v-btn>
                                 </div>
 
-                                <div v-if="tipoTS=='tipologia' && tipologiasReady">
+                                <div v-if="tipoTS == 'tipologia' && tipologiasReady">
                                     <v-col>
-                                        <v-autocomplete :items="tipologias" item-text="label" return-object label="Selecione a tipologia" v-model="tipSel" prepend-icon="account_balance">
-                                        </v-autocomplete>
+                                        <v-autocomplete :items="tipologias" item-text="label" return-object label="Selecione a tipologia" v-model="tipSel" prepend-icon="account_balance"></v-autocomplete>
                                     </v-col>
                                     <v-btn color="primary" @click="guardaTipologia">Continuar</v-btn>
                                 </div>
@@ -61,44 +63,37 @@
                                     <v-radio label="Criar uma Tabela de Seleção para uma tipologia" value="tipologia"></v-radio>
                                 </v-radio-group>
 
-                                <div v-if="tipoTS=='utilizador'">
+                                <div v-if="tipoTS == 'utilizador'">
                                     <v-btn color="primary" @click="guardaEntidadeUtilizador">Continuar</v-btn>
                                 </div>
 
-                                <div v-if="tipoTS=='tipologia' && tipologiasReady">
+                                <div v-if="tipoTS == 'tipologia' && tipologiasReady">
                                     <v-col>
-                                        <v-autocomplete :items="tipologias" item-text="label" return-object label="Selecione a tipologia" v-model="tipSel" prepend-icon="account_balance">
-                                        </v-autocomplete>
+                                        <v-autocomplete :items="tipologias" item-text="label" return-object label="Selecione a tipologia" v-model="tipSel" prepend-icon="account_balance"></v-autocomplete>
                                     </v-col>
                                     <v-btn color="primary" @click="guardaTipologia">Continuar</v-btn>
                                 </div>
-
                             </v-col>
                         </div>
-
                     </v-stepper-content>
 
                     <v-stepper-step :complete="stepNo > 2" step="2">
                         Designação da Tabela de Seleção
                         <span v-if="stepNo > 1">
-                            <v-chip class="ma-2" color="indigo darken-4" text-color="white" label>
-                                {{ tabelaSelecao.designacao }}
-                            </v-chip>
+                            <v-chip class="ma-2" color="indigo darken-4" text-color="white" label>{{ tabelaSelecao.designacao }}</v-chip>
                         </span>
                     </v-stepper-step>
                     <v-stepper-content step="2">
                         <v-flex xs12 sm6 md10>
-                            <v-text-field :placeholder="tabelaSelecao.designacao" v-model="tabelaSelecao.designacao"></v-text-field>
+                            <v-text-field :rules="[v => !!v || 'A designação não pode ser vazia']" :placeholder="tabelaSelecao.designacao" v-model="tabelaSelecao.designacao"></v-text-field>
                         </v-flex>
                         <v-btn color="primary" @click="
-                    stepNo = stepNo + 1;
-                    loadProcEspecificos();
-                  ">Continuar</v-btn>
+                  loadProcEspecificos();
+                  validaTSnome();
+                ">Continuar</v-btn>
                     </v-stepper-content>
 
-                    <v-stepper-step :complete="stepNo > 3" step="3">
-                        Seleção dos Processos
-                    </v-stepper-step>
+                    <v-stepper-step :complete="stepNo > 3" step="3">Seleção dos Processos</v-stepper-step>
                     <v-stepper-content step="3">
                         <v-col v-if="listaProcessosReady">
                             <v-card>
@@ -108,44 +103,42 @@
                             </v-card>
                         </v-col>
 
-                        <v-col v-else>Ainda não foi possível carregar a informação dos Processos...</v-col>
+                        <v-col v-else>Ainda não foi possível carregar a informação dos
+                            Processos...</v-col>
                     </v-stepper-content>
                 </v-stepper>
             </v-card-text>
             <v-card-actions>
                 <!-- Voltar ao passo anterior ............................................-->
-                <v-btn v-if="stepNo>2" color="primary" @click="stepNo--;">Voltar</v-btn>
+                <v-btn v-if="stepNo > 2" color="primary" @click="stepNo--">Voltar</v-btn>
 
                 <!-- Validar a TS ........................................................-->
-                <v-btn v-if="stepNo>2" color="primary" @click="validarTS">
+                <v-btn v-if="stepNo > 2" color="primary" @click="validarTS">
                     Validar TS
-
                     <DialogValidacaoOK v-if="validacaoTerminada && numeroErros == 0" @continuar="fechoValidacao" />
 
                     <DialogValidacaoErros v-if="validacaoTerminada && numeroErros > 0" :erros="mensagensErro" @continuar="fechoValidacao" />
                 </v-btn>
 
                 <!-- Guardar o trabalho para continuar depois ..........................-->
-                <v-btn v-if="stepNo>2" color="primary" @click="guardarTrabalho">Guardar trabalho
-
+                <v-btn v-if="stepNo > 2" color="primary" @click="guardarTrabalho">
+                    Guardar trabalho
                     <DialogPendenteGuardado v-if="pendenteGuardado" :pendente="pendente" @continuar="pendenteGuardado = false" />
-
                 </v-btn>
 
                 <!-- Submeter e criar o pedido ............................................-->
-                <v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>
+                <v-btn v-if="stepNo > 2" color="primary" @click="submeterTS">Submeter</v-btn>
 
                 <!-- Sair da criação da TS sem abortar o processo .........................-->
-                <v-btn v-if="stepNo>2" color="primary" @click="sairOperacao = true">Sair
-
-                    <DialogSair v-if="sairOperacao" @continuar="sairOperacao=false" @sair="sair" />
-
+                <v-btn v-if="stepNo > 2" color="primary" @click="sairOperacao = true">
+                    Sair
+                    <DialogSair v-if="sairOperacao" @continuar="sairOperacao = false" @sair="sair" />
                 </v-btn>
 
                 <!-- Abortar a criação da TS ..........................................-->
-                <v-btn dark color="red darken-4" @click="eliminarTabela = true">Cancelar
-
-                    <DialogCancelar v-if="eliminarTabela" @continuar="eliminarTabela=false" @sair="abortar" />
+                <v-btn dark color="red darken-4" @click="eliminarTabela = true">
+                    Cancelar
+                    <DialogCancelar v-if="eliminarTabela" @continuar="eliminarTabela = false" @sair="abortar" />
                 </v-btn>
             </v-card-actions>
         </v-card>

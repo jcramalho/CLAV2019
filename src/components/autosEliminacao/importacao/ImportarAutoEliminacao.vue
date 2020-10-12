@@ -6,30 +6,29 @@
         </v-app-bar>
         <v-card-text class="panel-body">
             <div class="ma-3">
-                A Plataforma CLAV permite a submissão de Autos de Eliminação (AE)
-                através da importação de ficheiros. Para tal são disponibilizados dois
-                tipos de formulários que devem ser preenchidos previamente offline:
+                A Plataforma CLAV permite a submissão de Autos de Eliminação (AE) através da
+                importação de ficheiros. Para tal são disponibilizados dois tipos de formulários que
+                devem ser preenchidos previamente offline:
                 <li>
                     Um formulário para as classes / séries (veja
-                    <a :href="`${publicPath}documentos/FormularioAE_SERIE.csv`" download>aqui</a>)
+                    <a :href="`${publicPath}documentos/Formulario_auto_importacao_classes_series.csv`" download>aqui</a>)
                 </li>
                 <li>
-                    um formulário para as agregações simples / unidades de instalação
-                    (veja
-                    <a :href="`${publicPath}documentos/FormularioAE_UI.csv`" download>aqui</a>)
+                    um formulário para as agregações simples / unidades de instalação (veja
+                    <a :href="`${publicPath}documentos/Formulario_auto_importacao_agregacoes_UI.csv`" download>aqui</a>)
                 </li>
 
                 <p>
                     Consulte
                     <a :href="
-                `${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`
-              ">aqui</a>
+                    `${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`
+                  ">aqui</a>
                     as instruções de preenchimento.
                 </p>
             </div>
 
             <v-stepper v-model="steps" vertical>
-                <v-stepper-step :complete="steps > 1" step="1">Seleção de Fonte e Fundo</v-stepper-step>
+                <v-stepper-step :complete="steps > 1" step="1">Seleção de fonte e fundo</v-stepper-step>
 
                 <v-stepper-content step="1">
                     <v-row>
@@ -77,33 +76,25 @@
                                     <template v-slot:label>
                                         <div class="mt-2">
                                             RADA/CLAV
-                                            <InfoBox header="Fonte de Legitimação - RADA" :text="myhelp.AutoEliminacao.Campos.RADA" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
+                                            <InfoBox header="Fonte de Legitimação - RADA/CLAV" :text="myhelp.AutoEliminacao.Campos.RADA_CLAV" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
                                         </div>
                                     </template>
                                 </v-radio>
                             </v-radio-group>
-                            <div v-if="tipo == 'PGD_LC'">
+                            <div v-if="tipo=='PGD_LC'">
                                 <v-autocomplete label="Selecione a fonte de legitimação" :items="portariaLC" v-model="auto.legislacao" solo dense></v-autocomplete>
                             </div>
-                            <div v-else-if="tipo == 'TS_LC'">
-                                <v-autocomplete label="Selecione a Tabela de Seleção" :items="tabelasSelecao" return-object item-text="titulo" v-model="auto.legislacao" solo dense />
+                            <div v-else-if="tipo=='TS_LC'">
+                                <v-autocomplete label="Selecione a fonte de legitimação" :items="tabelasSelecao" return-object item-text="titulo" v-model="auto.legislacao" solo dense />
                             </div>
-                            <div v-else-if="tipo == 'PGD'">
+                            <div v-else-if="tipo=='PGD'">
                                 <v-autocomplete label="Selecione a fonte de legitimação" :items="portaria" v-model="auto.legislacao" solo dense></v-autocomplete>
                             </div>
                             <div v-else-if="tipo=='RADA'">
                                 <v-autocomplete label="Selecione a fonte de legitimação" :items="portariaRada" v-model="auto.legislacao" solo dense></v-autocomplete>
                             </div>
                             <div v-else>
-                                <v-autocomplete label="Selecione a Tabela de Selação" :items="tsRada" item-text="titulo" return-object v-model="auto.legislacao" solo dense></v-autocomplete>
-                            </div>
-                            <div style="width:100%">
-                                Para submeter um auto de eliminação, selecione os ficheiros
-                                que preencheu e guardou previamente.
-                            </div>
-                            <div>
-                                Em seguida, para concluir, execute o comando
-                                <strong>SUBMETER AUTO DE ELIMINAÇÃO</strong>.
+                                <v-autocomplete label="Selecione a fonte de legitimação" :items="tsRada" item-text="titulo" return-object v-model="auto.legislacao" solo dense></v-autocomplete>
                             </div>
                         </v-col>
                     </v-row>
@@ -112,13 +103,10 @@
                             <div class="info-label">Fundo</div>
                         </v-col>
                         <v-col class="mt-2">
-                            <v-autocomplete deletable-chips label="Selecione a(s) entidade(s) produtira(s) da documentação" :items="entidades" v-model="auto.fundo" solo dense chips multiple></v-autocomplete>
+                            <v-autocomplete deletable-chips label="Selecione a(s) entidade(s) produtora(s) da documentação" :items="entidades" v-model="auto.fundo" solo dense chips multiple></v-autocomplete>
                         </v-col>
                     </v-row>
-                    <v-btn class="ma-2" color="indigo darken-4" dark @click="
-                filtrarDonos();
-                steps = 2;
-              " :disabled="!auto.legislacao || auto.fundo.length == 0">Continuar</v-btn>
+                    <v-btn class="ma-2" color="indigo darken-4" dark @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Continuar</v-btn>
                 </v-stepper-content>
 
                 <v-stepper-step :complete="steps > 2" step="2">Importação dos ficheiros de submissão</v-stepper-step>
@@ -126,37 +114,32 @@
                 <v-stepper-content step="2">
                     <v-row>
                         <v-col :md="3">
-                            <div class="info-label">Ficheiro série</div>
+                            <div class="info-label">Ficheiro classes / séries</div>
                         </v-col>
                         <v-col class="mt-2">
-                            <input type="file" id="fileSerie" ref="myFiles" @change="previewFileSerie" />
+                            <input type="file" id="fileSerie" @change="previewFileSerie" />
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col :md="3">
-                            <div class="info-label">
-                                Ficheiro Agregações / Unidades de instalação
-                            </div>
+                            <div class="info-label">Ficheiro agregações / unidades de instalação</div>
                         </v-col>
                         <v-col class="mt-2">
-                            <input type="file" id="fileAgreg" ref="myFiles" @change="previewFileAgreg" />
+                            <input type="file" id="fileAgreg" @change="previewFileAgreg" />
                         </v-col>
                     </v-row>
 
-                    <v-btn @click="steps = 1" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
-                    <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie || !fileAgreg">Validar Ficheiros e Continuar</v-btn>
-                    <v-btn class="ma-2" color="red darken-4" dark @click="
-                fileSerie = null;
-                fileAgreg = null;
-              ">Limpar</v-btn>
+                    <v-btn @click="steps=1; cleanFiles()" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
+                    <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie" v-if="fileSerie">Validar Ficheiros e Continuar</v-btn>
+                    <v-btn class="ma-2" color="red darken-4" dark @click="cleanFiles">Limpar</v-btn>
                 </v-stepper-content>
 
-                <v-stepper-step step="3">Validação de Séries / Agregações</v-stepper-step>
+                <v-stepper-step step="3">Validação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
                 <v-stepper-content step="3">
                     <ValidarAE :auto="auto" :donos="donos" :submit="submit" :tipo="tipo" />
-                    <v-btn @click="steps = 2" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
-                    <v-btn medium color="indigo darken-4" dark @click="validar" :disabled="!fileSerie || !fileAgreg || !auto.fundo" class="ma-2">Validar e Submeter</v-btn>
+                    <v-btn @click="steps = 2; cleanFiles()" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
+                    <v-btn medium color="indigo darken-4" dark @click="validar" :disabled="!fileSerie || !auto.fundo " class="ma-2">Validar e Submeter</v-btn>
                 </v-stepper-content>
             </v-stepper>
         </v-card-text>
@@ -164,8 +147,7 @@
 
     <v-dialog v-model="successDialog" width="950" persistent>
         <v-card outlined>
-            <v-card-title class="teal darken-4 title white--text" dark>Pedido de importação de auto de eliminação submetido com
-                sucesso</v-card-title>
+            <v-card-title class="teal darken-4 title white--text" dark>Pedido de importação de auto de eliminação submetido com sucesso</v-card-title>
 
             <v-card-text>
                 <v-row class="my-2">
@@ -192,7 +174,7 @@
                     </v-col>
 
                     <v-col class="info-content">
-                        <div v-for="(f, i) in auto.fundo" :key="i">{{ f }}</div>
+                        <div v-for="(f,i) in auto.fundo" :key="i">{{ f }}</div>
                     </v-col>
                 </v-row>
                 <v-row class="mt-2">
@@ -206,9 +188,7 @@
                 </v-row>
                 <v-row class="mt-2">
                     <v-col cols="2">
-                        <div class="info-label">
-                            Ficheiro Agregações / Unidades de Instalação
-                        </div>
+                        <div class="info-label">Ficheiro Agregações / Unidades de Instalação</div>
                     </v-col>
 
                     <v-col class="info-content">
@@ -229,26 +209,21 @@
             <v-card-title class="teal darken-4 title white--text" dark>Validação de auto de eliminação executada com sucesso</v-card-title>
 
             <v-card-text>
-                Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação,
-                selecione "Confirmar". Caso ainda pretenda realizar alguma alteração
-                ao AE, clique em "Voltar".
+                Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação, selecione "Confirmar". Caso ainda pretenda realizar alguma alteração ao AE, clique em "Voltar".
             </v-card-text>
 
             <v-divider></v-divider>
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="red darken-4" text @click="valDialog = false">Voltar</v-btn>
-                <v-btn color="green darken-4" text @click="
-              valDialog = false;
-              submit();
-            ">Confirmar</v-btn>
+                <v-btn color="red darken-4" text @click="valDialog=false">Voltar</v-btn>
+                <v-btn color="green darken-4" text @click="valDialog=false; submit()">Confirmar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
     <v-dialog v-model="errosValDialog" width="700" persistent>
         <v-card outlined>
-            <v-card-title class="title" dark>Ficheiros anexo com {{ errosVal.numErros }} erros</v-card-title>
+            <v-card-title class="title" dark>Ficheiros anexo com {{errosVal.numErros}} erros</v-card-title>
 
             <v-card-text v-if="errosVal.erros">
                 <v-row ma-2 v-for="(m, i) in errosVal.erros" :key="i">
@@ -258,29 +233,25 @@
                     <v-col class="info-content">
                         <div>{{ m.mensagem }}</div>
                         <div></div>
-                        <div v-if="m.linhasSerie && m.linhasSerie.length > 0">
+                        <div v-if="m.linhasSerie && m.linhasSerie.length>0">
                             Erro em ficheiro Classe / Série nas linhas:
-                            <span v-for="l in m.linhasSerie" :key="l">{{ l }};</span>
+                            <span v-for="l in m.linhasSerie" :key="l">{{l}};</span>
                         </div>
-                        <div v-if="m.linhasUI && m.linhasUI.length > 0">
+                        <div v-if="m.linhasUI && m.linhasUI.length>0">
                             Erro em ficheiro Agregações / UI nas linhas:
-                            <span v-for="l in m.linhasUI" :key="l">{{ l }};</span>
+                            <span v-for="l in m.linhasUI" :key="l">{{l}};</span>
                         </div>
                     </v-col>
                 </v-row>
             </v-card-text>
             <v-card-text v-else>
-                <div>{{ errosVal.msg }}</div>
+                <div>{{errosVal.msg}}</div>
             </v-card-text>
 
             <v-divider></v-divider>
 
             <v-card-actions>
-                <v-btn color="red darken-4" text @click="
-              errosValDialog = false;
-              errosVal.erros = [];
-              errosVal.numErros = 0;
-            ">Fechar</v-btn>
+                <v-btn color="red darken-4" text @click="errosValDialog = false; errosVal.erros=[]; errosVal.numErros=0;">Fechar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -308,7 +279,7 @@ const conversorTS = require("@/plugins/conversor").excel2JsonTS;
 const validador = require("@/plugins/conversor").validarCSVs;
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
-import ValidarAE from "@/components/autosEliminacao/importacao/ValidarAutoEliminacao.vue";
+import ValidarAE from "@/components/autosEliminacao/importacao/ValidarAutoEliminacao.vue"
 
 export default {
     props: ["entidades"],
@@ -355,58 +326,37 @@ export default {
                 if (zc.notasPCA && !zc.validaNotaPCA) {
                     this.errosVal.erros.push({
                         sobre: "Notas do PCA",
-                        mensagem: 'É necessária confirmação de cumprimento da nota do PCA "' +
-                            zc.notasPCA +
-                            '"'
-                    });
+                        mensagem: "É necessária confirmação de cumprimento da nota do PCA \"" + zc.notasPCA + "\""
+                    })
                     this.errosVal.numErros++;
                 }
                 if (zc.notaDF && !zc.validaNotaDF) {
                     this.errosVal.erros.push({
                         sobre: "Nota do DF",
-                        mensagem: 'É necessária confirmação de cumprimento da nota do DF "' +
-                            zc.notaDF +
-                            '"'
-                    });
+                        mensagem: "É necessária confirmação de cumprimento da nota do DF \"" + zc.notaDF + "\""
+                    })
                     this.errosVal.numErros++;
                 }
-                if (
-                    (this.tipo == "TS_LC" || this.tipo == "PGD_LC") &&
-                    zc.destino == "CP" &&
-                    !zc.validaJustificaDF
-                ) {
+                if ((this.tipo == "TS_LC" || this.tipo == "PGD_LC") && zc.destino == "CP" && !zc.validaJustificaDF) {
                     for (var just of zc.justificaDF)
                         this.errosVal.erros.push({
                             sobre: "Notas do PCA",
-                            mensagem: 'É necessária confirmação de cumprimento da justificação do DF "' +
-                                just +
-                                '"\n'
-                        });
+                            mensagem: "É necessária confirmação de cumprimento da justificação do DF \"" + just + "\"\n"
+                        })
                     this.errosVal.numErros++;
                 }
                 if (!zc.destino || zc.destino == "") {
                     this.errosVal.erros.push({
                         sobre: "Destino Final",
-                        mensagem: "Preenchimento incorreto ou não preenchimento na classe " +
-                            zc.codigo +
-                            " " +
-                            zc.referencia
-                    });
-                    this.errosVal.numErros++;
-                } else if (
-                    (zc.destino == "C" || zc.destino == "Conservação") &&
-                    this.tipo != "RADA" &&
-                    this.tipo != "PGD" &&
-                    zc.dono.length === 0
-                ) {
+                        mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " - " + zc.referencia
+                    })
+                    this.errosVal.numErros++
+                } else if ((zc.destino == "C" || zc.destino == "Conservação") && this.tipo != "RADA" && this.tipo != "PGD" && zc.dono.length === 0) {
                     this.errosVal.erros.push({
                         sobre: "Dono do PN",
-                        mensagem: "Preenchimento incorreto ou não preenchimento na classe " +
-                            zc.codigo +
-                            " " +
-                            zc.referencia
-                    });
-                    this.errosVal.numErros++;
+                        mensagem: "Preenchimento incorreto ou não preenchimento na classe " + zc.codigo + " - " + zc.referencia
+                    })
+                    this.errosVal.numErros++
                 }
                 var pca = parseInt(zc.prazo) || parseInt(zc.prazoConservacao) || 0;
                 var dataInicio = parseInt(zc.dataInicio)
@@ -419,26 +369,16 @@ export default {
                     if (res1 > currentTime.getFullYear()) {
                         this.errosVal.erros.push({
                             sobre: "Data Contagem",
-                            mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente. Classe: " +
-                                zc.codigo +
-                                " " +
-                                zc.referencia +
-                                " - Agregação: " +
-                                ag.codigo
-                        });
-                        this.errosVal.numErros++;
+                            mensagem: "A Data de Contagem deve ser igual ou inferior à subtração do PCA ao ano corrente. Classe: " + zc.codigo + " - " + zc.referencia + " - Agregação: " + ag.codigo
+                        })
+                        this.errosVal.numErros++
                     }
                     if (res2 < 0) {
                         this.errosVal.erros.push({
                             sobre: "Data Contagem",
-                            mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe. Classe: " +
-                                zc.codigo +
-                                " " +
-                                zc.referencia +
-                                " - Agregação: " +
-                                ag.codigo
-                        });
-                        this.errosVal.numErros++;
+                            mensagem: "A Data de Contagem não pode ser inferior à Data de Início da Classe. Classe: " + zc.codigo + " - " + zc.referencia + " - Agregação: " + ag.codigo
+                        })
+                        this.errosVal.numErros++
                     }
                 }
             }
@@ -489,7 +429,6 @@ export default {
 
             this.$router.push('/pedidos/submissao/' + codigoPedido.data)
 
-            this.$router.push("/pedidos/submissao");
         },
         converter: async function () {
             validador(this.fileSerie, this.fileAgreg, this.tipo)
@@ -513,15 +452,11 @@ export default {
                                         return; //ERROS
                                     }
                                     var pca = classe.pca.valor;
-                                    if (
-                                        parseInt(zc.dataInicio) <
-                                        currentDate.getFullYear() - parseInt(pca)
-                                    ) {
+                                    if (parseInt(zc.dataInicio) < currentDate.getFullYear() - parseInt(pca)) {
                                         this.flagAE = true;
-                                        this.erro =
-                                            "A Data de inicio da classe " +
+                                        this.erro = "A Data de inicio da classe " +
                                             zc.codigo +
-                                            "deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente.";
+                                            "deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                                         return;
                                     }
                                     this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
@@ -535,13 +470,16 @@ export default {
                                     zc.notaDF = classe.df.nota;
                                     if (classe.df.justificacao)
                                         zc.justificaDF = classe.df.justificacao.map(just => {
-                                            return just.conteudo;
-                                        });
+                                            return just.conteudo
+                                        })
                                     zc.validaNotaDF = false;
                                     zc.validaNotaPCA = false;
                                     zc.validaJustificaDF = false;
-                                    if (classe.df.valor == "E") zc.destino = "Eliminação";
-                                    else if (classe.df.valor == "C") zc.destino = "Conservação";
+                                    if (zc.agregacoes.length > 0) zc.nrAgregacoes = zc.agregacoes.length;
+                                    if (classe.df.valor == "E")
+                                        zc.destino = "Eliminação";
+                                    else if (classe.df.valor == "C")
+                                        zc.destino = "Conservação";
                                     else zc.destino = classe.df.valor;
                                 });
                             } else {
@@ -550,20 +488,10 @@ export default {
                                     delete this.auto["legislacao"]
                                 }
                                 this.auto.zonaControlo.forEach(zc => {
-                                    if (zc.codigo && zc.referencia)
-                                        var classe = this.classes.find(
-                                            elem =>
-                                            elem.codigo == zc.codigo &&
-                                            elem.referencia == zc.referencia
-                                        );
-                                    else if (zc.codigo)
-                                        var classe = this.classes.find(
-                                            elem => elem.codigo == zc.codigo
-                                        );
-                                    else
-                                        var classe = this.classes.find(
-                                            elem => elem.referencia == zc.referencia
-                                        );
+                                    var classe = this.classes.find(
+                                        elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
+                                    )
+
                                     if (!classe) {
                                         this.flagAE = true;
                                         if (zc.codigo && zc.referencia)
@@ -583,31 +511,28 @@ export default {
                                             zc.referencia +
                                             "</b> não foi encontrada em " + this.auto.legislacao.split(" - ")[0];
                                         return; //ERROS
+                                    } else if ((this.tipo == "PGD" || this.tipo == "RADA") && classe.df.valor == "C") {
+                                        this.flagAE = true;
+                                        this.erro = "Classe / Série com " + (zc.codigo ? "Codigo <b>" + zc.codigo + "</b> " : "") + (zc.referencia ? "Número de referência <b>" + zc.referencia + "</b> " : "") +
+                                            "com destino final de conservação.";
+                                        return;
                                     }
 
                                     var pca = classe.pca.valor;
-                                    if (
-                                        parseInt(zc.dataInicio) <
-                                        currentDate.getFullYear() - parseInt(pca)
-                                    ) {
+                                    if (parseInt(zc.dataInicio) < currentDate.getFullYear() - parseInt(pca)) {
                                         this.flagAE = true;
                                         if (zc.codigo && zc.referencia)
-                                            this.erro =
-                                            "A Data de inicio da classe " +
-                                            zc.codigo +
-                                            " - " +
-                                            zc.referencia +
-                                            "deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente.";
+                                            this.erro = "A Data de inicio da classe " +
+                                            zc.codigo + " - " + zc.referencia +
+                                            "deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                                         else if (zc.codigo)
-                                            this.erro =
-                                            "A Data de inicio da classe " +
+                                            this.erro = "A Data de inicio da classe " +
                                             zc.codigo +
-                                            "deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente.";
+                                            "deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                                         else
-                                            this.erro =
-                                            "A Data de inicio da classe " +
+                                            this.erro = "A Data de inicio da classe " +
                                             zc.referencia +
-                                            "deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente.";
+                                            "deve ser inferior à subtração do Prazo de conservação administrativa ao ano corrente."
                                         return;
                                     }
 
@@ -618,29 +543,44 @@ export default {
                                     zc.notaDF = classe.df.nota;
                                     if (classe.df.justificacao)
                                         zc.justificaDF = classe.df.justificacao.map(just => {
-                                            return just.conteudo;
-                                        });
+                                            return just.conteudo
+                                        })
                                     zc.validaNotaDF = false;
                                     zc.validaNotaPCA = false;
                                     zc.validaJustificaDF = false;
-                                    if (classe.df.valor == "E") zc.destino = "Eliminação";
-                                    else if (classe.df.valor == "C") zc.destino = "Conservação";
+                                    if (zc.agregacoes.length > 0) zc.nrAgregacoes = zc.agregacoes.length;
+                                    if (classe.df.valor == "E")
+                                        zc.destino = "Eliminação";
+                                    else if (classe.df.valor == "C")
+                                        zc.destino = "Conservação";
                                     else zc.destino = classe.df.valor;
-                                });
+                                })
                             }
-                            if (this.flagAE) this.erroDialog = true;
-                            else this.steps = 3;
+                            if (this.flagAE) {
+                                this.erroDialog = true;
+                                this.cleanFiles()
+                            } else this.steps = 3;
                         })
                         .catch(err => {
                             this.erro = err;
                             this.erroDialog = true;
+                            this.cleanFiles();
                         });
                 })
                 .catch(err => {
                     this.errosVal = err;
                     this.errosValDialog = true;
+                    this.cleanFiles();
                 });
         },
+
+        cleanFiles: function () {
+            this.fileSerie = null;
+            this.fileAgreg = null;
+            document.getElementById("fileSerie").value = ""
+            document.getElementById("fileAgreg").value = ""
+        },
+
         previewFileSerie: function (ev) {
             const file = ev.target.files[0];
             var fileName = file.name.split(".");
@@ -649,7 +589,7 @@ export default {
                 reader.onload = e => (this.fileSerie = e.target.result);
                 reader.readAsArrayBuffer(file);
             } else {
-                ev.target.value = "";
+                ev.target = null
                 this.erro =
                     "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>";
                 this.erroDialog = true;
@@ -664,7 +604,7 @@ export default {
                 reader.onload = e => (this.fileAgreg = e.target.result);
                 reader.readAsArrayBuffer(file);
             } else {
-                ev.target.value = "";
+                ev.target = null
                 this.erro =
                     "Por favor verifique se o ficheiro está no formato <strong>.csv</strong>";
                 this.erroDialog = true;
@@ -716,7 +656,7 @@ export default {
             this.donos = this.entidades
 
             for (var f of this.auto.fundo)
-                this.donos = this.donos.filter(e => !e.includes(f));
+                this.donos = this.donos.filter(e => !e.includes(f))
 
             if (this.tipo == "TS_LC") {
                 var response = await this.$request(
@@ -748,9 +688,7 @@ export default {
                     "/legislacao"
                 )
 
-                var leg = response.data.filter(
-                    l => l.numero == this.auto.legislacao.split(" ")[1]
-                );
+                var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[1])
 
                 if (this.tipo == "PGD")
                     var response2 = await this.$request(
@@ -784,7 +722,7 @@ export default {
                         },
                     }
                 })
-                if (this.tipo == "PGD" || this.tipo == "RADA") this.classes = this.classes.filter(c => c.df.valor != "C")
+                //if(this.tipo == "PGD" || this.tipo=="RADA") this.classes = this.classes.filter(c=> c.df.valor!="C")
 
             } else if (this.tipo == "RADA_CLAV") {
                 var response = await this.$request(
@@ -814,14 +752,16 @@ export default {
     },
     created: async function () {
         try {
-            var user = this.$verifyTokenUser();
+            var user = this.$verifyTokenUser()
             let user_entidade = await this.$request(
                 "get",
                 "/entidades/" + user.entidade
             );
 
             this.auto.fundo.push(
-                user_entidade.data.sigla + " - " + user_entidade.data.designacao
+                user_entidade.data.sigla +
+                " - " +
+                user_entidade.data.designacao
             );
 
             var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
@@ -855,7 +795,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .consulta tr {
     vertical-align: top;
     border-bottom: 1px solid #ddd;
@@ -884,6 +824,12 @@ export default {
     font-weight: bold;
     margin: 5px;
     border-radius: 3px;
+}
+
+.info-content {
+    padding: 5px;
+    width: 100%;
+    border: 1px solid #696969;
 }
 
 .expansion-panel-heading {

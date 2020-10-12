@@ -1,10 +1,6 @@
 <template>
 <div style="overflow: auto; width:100%;">
-    <v-data-table flat :style="
-        `background-color:${
-          !!background_color ? background_color : '#ffffff;'
-        } `
-      " :headers="headers" :items="classes" class="elevation-1 mytable" :footer-props="footer_props" :search="search" :items-per-page="5" show-expand single-expand item-key="codigo">
+    <v-data-table flat style="background-color:#fafafa;" :headers="headers" :items="classes" class="elevation-1 mytable" :footer-props="footer_props" :search="search" :items-per-page="5" show-expand single-expand item-key="codigo">
         <template v-slot:item.tipo="{ item }">
             <img v-if="item.tipo == 'Série'" style="width:23px; height:30px" :src="svg_sr" />
             <img v-else-if="item.tipo == 'Subsérie'" style="width:23px; height:30px" :src="svg_ssr" />
@@ -59,7 +55,7 @@ import AreaOrganica from "@/components/rada/consulta/elementos_tabela/AreaOrgani
 import SerieSubserie from "@/components/rada/consulta/elementos_tabela/SerieSubserie";
 
 export default {
-    props: ["classes", "formaContagem", "background_color", "search"],
+    props: ["classes", "formaContagem", "search"],
     components: {
         AreaOrganica,
         SerieSubserie,
@@ -78,88 +74,103 @@ export default {
                 ),
             });
         },
-    },
-    data: () => ({
-        footer_props: {
-            "items-per-page-options": [1, 5, 10, -1],
-            "items-per-page-text": "Mostrar",
+        methods: {
+            editarClasse(item) {
+                this.$emit("editarClasse", {
+                    tipo: item.tipo,
+                    titulo: item.titulo,
+                    codigo: item.codigo,
+                    children: [this.classes.find((e) => e.eFilhoDe == item.codigo)],
+                    temDF: Boolean(
+                        (!Boolean(item.df) && !Boolean(item.notaDF)) ||
+                        (!Boolean(item.pca) && !Boolean(item.notaPCA)) ||
+                        item.formaContagem.forma == null
+                    ),
+                });
+            },
         },
-        svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
-        svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
-        svg_N1: require("@/assets/n1.svg"),
-        svg_N2: require("@/assets/n2.svg"),
-        svg_N3: require("@/assets/n3.svg"),
-        class: ["table-header", "body-2", "font-weight-bold"],
-        headers: [{
-                sortable: false,
-                value: "editar",
-                align: "right",
-                width: "5%",
-                class: ["table-header", "body-2", "font-weight-bold"],
+        data: () => ({
+            footer_props: {
+                "items-per-page-options": [1, 5, 10, -1],
+                "items-per-page-text": "Mostrar",
             },
-            {
-                text: "Tipo",
-                sortable: true,
-                value: "tipo",
-                width: "10%",
-                align: "center",
-                class: ["table-header", "body-2", "font-weight-bold"],
-            },
-            {
-                text: "Código",
-                sortable: true,
-                align: "center",
-                width: "10%",
-                value: "codigo",
-                class: ["table-header", "body-2", "font-weight-bold"],
-            },
-            {
-                text: "Título",
-                sortable: true,
-                align: "center",
-                value: "titulo",
-                width: "35%",
-                class: ["table-header", "body-2", "font-weight-bold"],
-            },
-            {
-                text: "PCA",
-                sortable: true,
-                align: "center",
-                value: "pca",
-                width: "10%",
-                class: ["table-header", "body-2", "font-weight-bold"],
-            },
-            {
-                text: "DF",
-                sortable: true,
-                align: "center",
-                value: "df",
-                width: "10%",
-                class: ["table-header", "body-2", "font-weight-bold"],
-            },
-            {
-                text: "Classe Pai",
-                value: "eFilhoDe",
-                sortable: true,
-                align: "center",
-                width: "10%",
-                class: ["table-header", "body-2", "font-weight-bold"],
-            },
-            {
-                align: "center",
-                value: "completo",
-                width: "5%",
-                class: ["table-header", "body-2", "font-weight-bold"],
-            },
-            {
-                text: "",
-                value: "data-table-expand",
-                width: "5%",
-                class: ["table-header", "body-2", "font-weight-bold"],
-            },
-        ],
-    }),
-};
+            svg_sr: require("@/assets/common_descriptionlevel_sr.svg"),
+            svg_ssr: require("@/assets/common_descriptionlevel_ssr.svg"),
+            svg_N1: require("@/assets/n1.svg"),
+            svg_N2: require("@/assets/n2.svg"),
+            svg_N3: require("@/assets/n3.svg"),
+            class: ["table-header", "body-2", "font-weight-bold"],
+            headers: [{
+                    sortable: false,
+                    value: "editar",
+                    align: "right",
+                    width: "5%",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+                {
+                    text: "Tipo",
+                    sortable: true,
+                    value: "tipo",
+                    width: "10%",
+                    align: "center",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+                {
+                    text: "Código",
+                    sortable: true,
+                    align: "center",
+                    width: "10%",
+                    value: "codigo",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+                {
+                    text: "Título",
+                    sortable: true,
+                    align: "center",
+                    value: "titulo",
+                    width: "35%",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+                {
+                    text: "PCA",
+                    sortable: true,
+                    align: "center",
+                    value: "pca",
+                    width: "10%",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+                {
+                    text: "DF",
+                    sortable: true,
+                    align: "center",
+                    value: "df",
+                    width: "10%",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+                {
+                    text: "Classe Pai",
+                    value: "eFilhoDe",
+                    sortable: true,
+                    align: "center",
+                    width: "10%",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+                {
+                    align: "center",
+                    value: "completo",
+                    width: "5%",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+                {
+                    text: "",
+                    value: "data-table-expand",
+                    width: "5%",
+                    class: ["table-header", "body-2", "font-weight-bold"],
+                },
+            ],
+        }),
+    }
+}
 </script>
 
 <style scoped>

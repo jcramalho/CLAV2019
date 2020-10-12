@@ -8,7 +8,7 @@
         <v-card-text>
             <v-stepper v-model="steps" vertical>
                 <v-stepper-step :complete="steps > 1" step="1">
-                    Seleção de Fonte e Fundo
+                    Seleção de fonte e fundo
                     <span v-if="steps > 1">
                         <v-chip class="ma-2" color="indigo darken-4" text-color="white" label>
                             <v-icon left>description</v-icon>
@@ -34,6 +34,7 @@
                                     <template v-slot:label>
                                         <div class="mt-2">
                                             TS/LC
+                                            <InfoBox header="Fonte de Legitimação - TS/LC" :text="myhelp.AutoEliminacao.Campos.TS_LC" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
                                         </div>
                                     </template>
                                 </v-radio>
@@ -41,6 +42,7 @@
                                     <template v-slot:label>
                                         <div class="mt-2">
                                             PGD/LC
+                                            <InfoBox header="Fonte de Legitimação - PGD/LC" :text="myhelp.AutoEliminacao.Campos.PGD_LC" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
                                         </div>
                                     </template>
                                 </v-radio>
@@ -48,6 +50,7 @@
                                     <template v-slot:label>
                                         <div class="mt-2">
                                             PGD
+                                            <InfoBox header="Fonte de Legitimação - PGD" :text="myhelp.AutoEliminacao.Campos.PGD" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
                                         </div>
                                     </template>
                                 </v-radio>
@@ -55,6 +58,7 @@
                                     <template v-slot:label>
                                         <div class="mt-2">
                                             RADA
+                                            <InfoBox header="Fonte de Legitimação - RADA" :text="myhelp.AutoEliminacao.Campos.RADA" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
                                         </div>
                                     </template>
                                 </v-radio>
@@ -63,6 +67,7 @@
                                     <template v-slot:label>
                                         <div class="mt-2">
                                             RADA/CLAV
+                                            <InfoBox header="Fonte de Legitimação - RADA/CLAV" :text="myhelp.AutoEliminacao.Campos.RADA_CLAV" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
                                         </div>
                                     </template>
                                 </v-radio>
@@ -89,13 +94,13 @@
                             <div class="info-label">Fundo</div>
                         </v-col>
                         <v-col>
-                            <v-autocomplete deletable-chips label="Selecione a(s) entidade(s) produtira(s) da documentação" :items="entidades" v-model="auto.fundo" solo dense chips multiple></v-autocomplete>
+                            <v-autocomplete deletable-chips label="Selecione a(s) entidade(s) produtora(s) da documentação" :items="entidades" v-model="auto.fundo" solo dense chips multiple></v-autocomplete>
                         </v-col>
                     </v-row>
                     <v-btn class="ma-2" color="indigo darken-4" dark @click="filtrarDonos(); steps = 2" :disabled="!auto.legislacao || auto.fundo.length==0">Continuar</v-btn>
                 </v-stepper-content>
 
-                <v-stepper-step step="2">Identificação de Classes e Agregações</v-stepper-step>
+                <v-stepper-step step="2">Identificação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
                 <v-stepper-content step="2">
                     <!-- Adicionar Zona Controlo -->
@@ -236,15 +241,18 @@
 <script>
 import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/AdicionarZonaControlo.vue";
 import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
     props: ["entidades"],
     components: {
         AdicionarZonaControlo,
-        ListaZonasControlo
+        ListaZonasControlo,
+        InfoBox
     },
     data: () => ({
+        myhelp: help,
         classes: [],
         classesCompletas: [],
         auto: {
@@ -356,6 +364,7 @@ export default {
                 if (this._id) this.$request("delete", "/pendentes/" + this._id);
                 this.$router.push('/pedidos/submissao/' + codigoPedido.data)
             }
+
         },
         guardarTrabalho: async function () {
             try {
@@ -573,8 +582,10 @@ export default {
                     "get",
                     "/legislacao"
                 )
-                if (this.auto.legislacao.split(" ")[0] != "Portaria") var indLeg = 2;
-                else indLeg = 1;
+                var legAux = this.auto.legislacao.split(" - ")
+                legAux = legAux[0].split(" ")
+                var indLeg = legAux.length - 1;
+
                 var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[indLeg])
 
                 if (this.tipo == "PGD")
@@ -592,6 +603,7 @@ export default {
                         "get",
                         "/rada/old/tsRada_" + leg[0].id
                     )
+                console.log(response2.data)
                 this.classesCompletas = response2.data.filter(c => c.nivel > 2).map(c => {
                     return {
                         idClasse: c.classe,
@@ -614,7 +626,7 @@ export default {
                 if (this.tipo == "PGD" || this.tipo == "RADA") this.classesCompletas = this.classesCompletas.filter(c => c.df.valor != "C")
 
                 this.classes = this.classesCompletas.map(c => {
-                    if (c.codigo && c.referencia) return "" + c.codigo + " " + c.referencia + " - " + c.titulo
+                    if (c.codigo && c.referencia) return "" + c.codigo + " - " + c.referencia + " - " + c.titulo
                     else if (c.codigo) return "" + c.codigo + " - " + c.titulo
                     else if (c.referencia) return "" + c.referencia + " - " + c.titulo
                 })
@@ -642,7 +654,7 @@ export default {
                 })
                 this.classesCompletas = this.classesCompletas.filter(c => c.df.valor != "C")
                 this.classes = this.classesCompletas.map(c => {
-                    if (c.codigo && c.referencia) return "" + c.codigo + " " + c.referencia + " - " + c.titulo
+                    if (c.codigo && c.referencia) return "" + c.codigo + " - " + c.referencia + " - " + c.titulo
                     else if (c.codigo) return "" + c.codigo + " - " + c.titulo
                     else if (c.referencia) return "" + c.referencia + " - " + c.titulo
                 })
@@ -657,7 +669,7 @@ export default {
             this.auto.legislacao = null;
         }
     }
-};
+}
 </script>
 
 <style scoped>

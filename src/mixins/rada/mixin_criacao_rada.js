@@ -1,3 +1,5 @@
+import { criarHistorico } from "@/utils/utils";
+
 export default {
   data: () => ({
     alert_guardar: false,
@@ -100,8 +102,7 @@ export default {
               };
             }),
             dataCriacao: entidades[i].dataCriacao,
-            dataExtincao: entidades[i].dataExtincao,
-            codigo: ""
+            dataExtincao: entidades[i].dataExtincao
           },
           user: {
             email: this.userEmail
@@ -111,6 +112,8 @@ export default {
           entidade: this.user_entidade,
           historico: [],
         };
+
+        pedidoEntidades.historico.push(criarHistorico(pedidoEntidades.novoObjeto));
 
         let response = await this.$request("post", "/pedidos", pedidoEntidades);
 
@@ -161,7 +164,6 @@ export default {
             )
         )
         .map(leg => {
-          leg["codigo"] = "";
           leg["diplomaFonte"] = "RADA";
           leg["estado"] = "Ativo";
           leg["processosSel"] = [];
@@ -231,6 +233,8 @@ export default {
             despacho
             : "Submissão inicial"
         };
+
+        pedidoLegis.historico.push(criarHistorico(pedidoLegis.novoObjeto));
 
         let response = await this.$request("post", "/pedidos", pedidoLegis);
 
@@ -418,7 +422,7 @@ export default {
         }
       }
     },
-    criarHistorico() {
+    criarHistoricoRADA() {
       let historico = [
         {
           titulo: {
@@ -510,14 +514,32 @@ export default {
         }
       ];
 
+
       // criar histórico para as classes;
       for (let i = 0; i < historico[0].tsRada.classes.dados.length; i++) {
         Object.keys(historico[0].tsRada.classes.dados[i].dados).map(e => {
-          historico[0].tsRada.classes.dados[i].dados[e] = {
-            cor: "verde",
-            dados: historico[0].tsRada.classes.dados[i].dados[e],
-            nota: null
+          if (e == 'formaContagem') {
+            historico[0].tsRada.classes.dados[i].dados[e] = {
+              forma: {
+                cor: 'verde',
+                dados: historico[0].tsRada.classes.dados[i].dados[e].forma,
+                nota: null
+              },
+              subforma: {
+                cor: 'verde',
+                dados: !!historico[0].tsRada.classes.dados[i].dados[e].subforma ? historico[0].tsRada.classes.dados[i].dados[e].subforma : null,
+                nota: null
+              }
+            }
+
+          } else {
+            historico[0].tsRada.classes.dados[i].dados[e] = {
+              cor: "verde",
+              dados: historico[0].tsRada.classes.dados[i].dados[e],
+              nota: null
+            }
           }
+
         })
       }
 
@@ -594,7 +616,7 @@ export default {
             tipoPedido: "Criação",
             tipoObjeto: "RADA",
             novoObjeto: this.RADA,
-            historico: await this.criarHistorico(),
+            historico: await this.criarHistoricoRADA(),
             user: {
               email: this.userEmail
             },

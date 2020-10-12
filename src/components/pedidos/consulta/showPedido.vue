@@ -1,6 +1,7 @@
 <template>
 <v-card class="ma-8">
-    <v-card-title class="pa-2 indigo darken-4 title white--text">Consulta do pedido: {{ p.codigo }}
+    <v-card-title class="pa-2 indigo darken-4 title white--text">
+        Consulta do pedido: {{ p.codigo }}
         <v-spacer />
         <v-chip v-if="etapaPedido" color="indigo accent-4" text-color="white" label>
             <v-icon class="mr-1">label</v-icon>
@@ -45,9 +46,7 @@
                 <div class="info-label">Tipo</div>
             </v-col>
             <v-col>
-                <div class="info-content">
-                    {{ p.objeto.acao }} - {{ p.objeto.tipo }}
-                </div>
+                <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
             </v-col>
         </v-row>
 
@@ -58,9 +57,7 @@
                     <template v-slot:item="props">
                         <tr>
                             <td class="subheading">{{ props.item.estado }}</td>
-                            <td class="subheading">
-                                {{ converteData(props.item.data) }}
-                            </td>
+                            <td class="subheading">{{ converteData(props.item.data) }}</td>
                             <td class="subheading">{{ props.item.responsavel }}</td>
                             <td class="subheading">{{ props.item.despacho }}</td>
                         </tr>
@@ -69,7 +66,7 @@
             </v-card-text>
         </v-card>
 
-        <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional web'" :p="p" />
+        <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
         <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" @verHistorico="verHistorico()" />
@@ -94,13 +91,9 @@
             p.estado === 'Redistribuído' ||
             p.estado === 'Reapreciado') &&
             temPermissaoSubstituirResponsavel()
-        " color="indigo accent-4" dark @click="substituir()" rounded>
-            Substituir Responsável
-        </v-btn>
+        " color="indigo accent-4" dark @click="substituir()" rounded>Substituir Responsável</v-btn>
 
-        <v-btn v-if="p.estado === 'Apreciado' || p.estado === 'Reapreciado'" color="indigo accent-4" dark @click="reapreciar()" rounded>
-            Reapreciar pedido
-        </v-btn>
+        <v-btn v-if="p.estado === 'Apreciado' || p.estado === 'Reapreciado'" color="indigo accent-4" dark @click="reapreciar()" rounded>Reapreciar pedido</v-btn>
     </v-card-actions>
 
     <!-- Substituir responsável dialog -->
@@ -143,7 +136,7 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import {
     NIVEIS_ANALISAR_PEDIDO,
-    NIVEIS_SUBSTITUIR_RESPONSAVEL,
+    NIVEIS_SUBSTITUIR_RESPONSAVEL
 } from "@/utils/consts";
 import {
     filtraNivel
@@ -166,7 +159,7 @@ export default {
         SubstituirResponsavel,
         ShowPGD,
         VerHistorico,
-        AvancarPedido,
+        AvancarPedido
     },
 
     data() {
@@ -261,15 +254,15 @@ export default {
                     proximoResponsavel: {
                         nome: dados.utilizadorSelecionado.name,
                         entidade: dados.utilizadorSelecionado.entidade,
-                        email: dados.utilizadorSelecionado.email,
+                        email: dados.utilizadorSelecionado.email
                     },
                     data: new Date(),
-                    despacho: dados.mensagemDespacho,
+                    despacho: dados.mensagemDespacho
                 };
 
                 await this.$request("put", "/pedidos", {
                     pedido: pedido,
-                    distribuicao: novaDistribuicao,
+                    distribuicao: novaDistribuicao
                 });
 
                 this.fecharReapreciarDialog();
@@ -330,22 +323,20 @@ export default {
 
 <style scoped>
 .info-label {
-    color: #1a237e !important;
-    padding: 8px;
+    color: #1a237e;
+    /* indigo darken-4 */
+    font-weight: 400;
     width: 100%;
-    background-color: #dee2f8;
+    background-color: #e8eaf6;
+    /* indigo lighten-5 */
     font-weight: bold;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
-    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-    border-radius: 6px;
-    text-align: center;
+    border-radius: 3px;
 }
 
 .info-content {
     padding: 5px;
     width: 100%;
-    background-color: #f1f6f8 !important;
-    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-    border-radius: 10px;
+    border: 1px solid #1a237e;
+    border-radius: 3px;
 }
 </style>

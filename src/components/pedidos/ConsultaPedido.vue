@@ -47,11 +47,15 @@ export default {
           case "Validado":
             this.etapaPedido = "Pedidos Aprovados";
             break;
+          case "Em Despacho":
+            this.etapaPedido = "Pedidos em Despacho";
+            break;
 
           default:
             break;
         }
 
+        this.$emit('pedido_original', this.selectedPedido)
         this.pedidoLoaded = true;
       })
       .catch(error => {

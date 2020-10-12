@@ -214,6 +214,7 @@
                   tipo="array"
                   :permitirEditar="false"
                 />
+
                 <ValidaCampo
                   :dadosOriginais="elemento"
                   :novoHistorico="novoHistorico.dados"
@@ -221,7 +222,18 @@
                   campoText="Legislação"
                   tipo="array"
                   :permitirEditar="false"
-                />
+                >
+                  <template v-slot:campo>
+                    <span>
+                      <ul>
+                        <li
+                          v-for="(v, i) in novoHistorico.dados.legislacao.dados"
+                          :key="i"
+                        >{{ v.legislacao }}</li>
+                      </ul>
+                    </span>
+                  </template>
+                </ValidaCampo>
               </div>
               <!-- RELACOES -->
               <ValidaCampo
@@ -246,7 +258,12 @@
               </ValidaCampo>
             </v-expansion-panel-content>
           </v-expansion-panel>
-          <v-expansion-panel class="ma-1" popout focusable>
+          <v-expansion-panel
+            class="ma-1"
+            popout
+            focusable
+            v-if="!!novoHistorico.dados.pca || !!novoHistorico.dados.notaPCA"
+          >
             <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
               <b>Zona de Decisões de Avaliação</b>
             </v-expansion-panel-header>
@@ -269,17 +286,29 @@
               />
               <!-- TODO FORMA CONTAGEM PCA -->
               <ValidaCampo
-                :dadosOriginais="elemento"
-                :novoHistorico="novoHistorico.dados"
-                campoValue="formaContagem"
+                :dadosOriginais="elemento.formaContagem"
+                :novoHistorico="novoHistorico.dados.formaContagem"
+                campoValue="forma"
                 campoText="Forma de Contagem"
                 @corAlterada="validadeClasse"
+                tipo="string"
                 :permitirEditar="false"
               >
                 <template v-slot:campo>
-                  <span>{{ novoHistorico.dados.formaContagem.dados }}</span>
+                  <span>{{ textoForma(novoHistorico.dados.formaContagem.forma, formaContagem.formasContagem) }}</span>
                 </template>
               </ValidaCampo>
+              <!-- TODO SUBFORMA CONTAGEM PCA -->
+              <ValidaCampo
+                v-if="novoHistorico.dados.formaContagem.forma.dados == 'vc_pcaFormaContagem_disposicaoLegal'"
+                :dadosOriginais="elemento.formaContagem"
+                :novoHistorico="novoHistorico.dados.formaContagem"
+                campoValue="subforma"
+                campoText="Subforma de Contagem"
+                @corAlterada="validadeClasse"
+                tipo="string"
+                :permitirEditar="false"
+              />
               <!-- TODO JUSTIFICACAO PCA -->
               <ValidaCampo
                 :dadosOriginais="elemento"
@@ -330,7 +359,6 @@
                             </ul>
                           </v-card-text>
                         </v-card>
-                        
                       </v-col>
                     </v-row>
                   </div>
@@ -416,7 +444,7 @@
 import ValidaCampo from "@/components/pedidos/analise/rada/generic/ValidaCampo";
 
 export default {
-  props: ["elemento", "novoHistorico"],
+  props: ["elemento", "novoHistorico", "formaContagem"],
   components: {
     ValidaCampo,
   },
@@ -444,6 +472,10 @@ export default {
           this.novoHistorico.cor = "verde";
         }
       }
+    },
+    textoForma(item, lista) {
+      let f = lista.find((e) => e.value == item.dados);
+      return f.label;
     },
   },
 };
