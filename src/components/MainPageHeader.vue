@@ -134,9 +134,9 @@
                 <v-list rounded color="rgba(0,0,0,0)" dark two-line>
                     <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
                         <v-list-item v-if="!tab.menu" @click="
-                  goRoute(tab.url);
-                  dialog = false;
-                ">
+                            goRoute(tab.url);
+                            dialog = false;
+                        ">
                             <v-list-item-title class="px-2 font-weight-bold">
                                 <unicon v-if="tab.icon" :name="tab.icon.nome" width="24" height="24" :viewBox="tab.icon.viewbox" fill="#f3f7fc" />
                                 <p class="d-inline mobile-menu-link">{{ tab.titulo }}</p>
@@ -200,65 +200,8 @@ export default {
                         nome: "registo-icon",
                         viewbox: "0 0 25.71 25.809"
                     },
-                    menu: [{
-                            opcao: "Como registar-se na CLAV",
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: "/registo"
-                        },
-                        {
-                            opcao: "Indicação de representante da entidade",
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: "/indrepr"
-                        }
-                    ]
-                },
-                {
-                    titulo: "Gestão da Plataforma",
-                    icon: {
-                        nome: "gestao-icon",
-                        viewbox: "0 0 20.83 20.831"
-                    },
-                    menu: [{
-                            opcao: "Pedidos",
-                            level: [1, 3, 3.5, 4, 5, 6, 7],
-                            url: "/pedidos"
-                        },
-                        {
-                            opcao: "Pendentes",
-                            level: [1, 3, 3.5, 4, 5, 6, 7],
-                            url: "/pendentes"
-                        },
-                        {
-                            opcao: "Invariantes",
-                            level: [6, 7],
-                            url: "/invariantes"
-                        },
-                        {
-                            opcao: "Utilizadores",
-                            level: [5, 6, 7],
-                            url: "/usersInfo"
-                        },
-                        {
-                            opcao: "Vocabulários Controlados",
-                            level: [1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: "/vocabularios"
-                        },
-                        {
-                            opcao: "Chaves API",
-                            level: [7],
-                            url: "/gestao/api/listagem"
-                        },
-                        {
-                            opcao: "Administração",
-                            level: [7],
-                            url: "/gestaoInfo"
-                        },
-                        {
-                            opcao: "Importação/Exportação de Dados",
-                            level: [4, 5, 6, 7],
-                            url: "/importExportInfo"
-                        }
-                    ]
+                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                    url: "/registo"
                 },
                 {
                     titulo: "Operações",
@@ -315,11 +258,6 @@ export default {
                             opcao: "API de dados",
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: "/docs"
-                        },
-                        {
-                            opcao: "Colaborações",
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: "/colaboracoesInfo"
                         }
                     ]
                 },
@@ -335,14 +273,14 @@ export default {
                             url: "/docsmetdl"
                         },
                         {
-                            opcao: "Manuais",
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: "/manuais"
-                        },
-                        {
                             opcao: "Formulários e instruções para a CLAV",
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: "/forminstr"
+                        },
+                        {
+                            opcao: "Manuais",
+                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: "/manuais"
                         },
                         {
                             opcao: "Produção Técnica e Científica",
@@ -392,6 +330,54 @@ export default {
                     },
                     level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                     url: "/noticias"
+                },
+                {
+                    titulo: "Gestão da Plataforma",
+                    icon: {
+                        nome: "gestao-icon",
+                        viewbox: "0 0 20.83 20.831"
+                    },
+                    menu: [{
+                            opcao: "Pedidos",
+                            level: [1, 3, 3.5, 4, 5, 6, 7],
+                            url: "/pedidos"
+                        },
+                        {
+                            opcao: "Pendentes",
+                            level: [1, 3, 3.5, 4, 5, 6, 7],
+                            url: "/pendentes"
+                        },
+                        {
+                            opcao: "Invariantes",
+                            level: [6, 7],
+                            url: "/invariantes"
+                        },
+                        {
+                            opcao: "Utilizadores",
+                            level: [5, 6, 7],
+                            url: "/usersInfo"
+                        },
+                        {
+                            opcao: "Vocabulários Controlados",
+                            level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: "/vocabularios"
+                        },
+                        {
+                            opcao: "Chaves API",
+                            level: [7],
+                            url: "/gestao/api/listagem"
+                        },
+                        {
+                            opcao: "Administração",
+                            level: [7],
+                            url: "/gestaoInfo"
+                        },
+                        {
+                            opcao: "Importação/Exportação de Dados",
+                            level: [4, 5, 6, 7],
+                            url: "/importExportInfo"
+                        }
+                    ]
                 }
             ]
         };

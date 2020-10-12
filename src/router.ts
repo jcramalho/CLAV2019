@@ -505,25 +505,25 @@ export default new Router({
       path: "/colaboracoesInfo",
       name: "colaboracoesInfo",
       component: () => import("./views/ColaboracoesInfo.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
       path: "/colaboracoes",
       name: "colaboracoes",
       component: () => import("./views/colaboracoes/Colaboracoes.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
       path: "/colaboracoes/criar",
       name: "criaColaboracao",
       component: () => import("./views/colaboracoes/ColaboracoesCria.vue"),
-      meta: { levels: [4, 5, 6, 7], tabAtiva: "Operações" }
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/colaboracoes/importar",
       name: "importarColaboracoes",
       component: () => import("./views/colaboracoes/ColaboracoesImporta.vue"),
-      meta: { levels: [4, 5, 6, 7], tabAtiva: "Operações" }
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/colaboracoes/editar/:idColaboracao",
