@@ -20,14 +20,26 @@
               bottom
             >
               <template v-slot:activator="{ on }">
-                <v-icon @click="verHistorico()" color="white" v-on="on" class="ml-4">history</v-icon>
+                <v-icon
+                  @click="verHistorico()"
+                  color="white"
+                  v-on="on"
+                  class="ml-4"
+                  >history</v-icon
+                >
               </template>
               <span>Ver histórico de alterações...</span>
             </v-tooltip>
 
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-icon @click="showDespachos()" color="white" v-on="on" class="ml-2">comment</v-icon>
+                <v-icon
+                  @click="showDespachos()"
+                  color="white"
+                  v-on="on"
+                  class="ml-2"
+                  >comment</v-icon
+                >
               </template>
               <span>Ver despachos...</span>
             </v-tooltip>
@@ -40,12 +52,34 @@
                 pedido.objeto.acao === 'Importação'
             "
           >
-            <ValidaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
+            <ValidaEntidade
+              v-if="pedido.objeto.tipo === 'Entidade'"
+              :p="pedido"
+            />
 
-            <ValidaRADA v-if="pedido.objeto.tipo === 'RADA'" :p="pedido" fase="validacao" />
-            <ValidaLegislacao v-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" />
+            <ValidaRADA
+              v-if="pedido.objeto.tipo === 'RADA'"
+              :p="pedido"
+              fase="validacao"
+            />
+            <ValidaLegislacao
+              v-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
 
-            <ValidaTipologiaEntidade v-if="pedido.objeto.tipo === 'Tipologia'" :p="pedido" />
+            <ValidaTipologiaEntidade
+              v-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
+
+            <AnalisaClasseN1
+              v-else-if="
+                pedido.objeto.tipo === 'Classe_N3' ||
+                  pedido.objeto.tipo === 'Classe_N1' ||
+                  pedido.objeto.tipo === 'Classe_N2'
+              "
+              :p="pedido"
+            />
 
             <ValidaAE
               v-if="
@@ -56,9 +90,15 @@
               :tipo="pedido.objeto.tipo"
             />
 
-            <ValidaTS v-if="pedido.objeto.tipo=='TS Pluriorganizacional'" :p="pedido" />
+            <ValidaTS
+              v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'"
+              :p="pedido"
+            />
 
-            <ValidaTSOrg v-if="pedido.objeto.tipo == 'TS Organizacional'" :p="pedido" />
+            <ValidaTSOrg
+              v-if="pedido.objeto.tipo == 'TS Organizacional'"
+              :p="pedido"
+            />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
@@ -70,7 +110,12 @@
             "
           >
             <span>
-              <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
+              <v-alert
+                type="info"
+                width="90%"
+                class="m-auto mb-2 mt-2"
+                outlined
+              >
                 <span v-if="pedido.objeto.tipo === 'Legislação'">
                   <b>{{ pedido.objeto.tipo }}:</b>
                   {{ pedido.objeto.dadosOriginais.diplomaFonte }}
@@ -93,11 +138,20 @@
               <v-divider class="m-auto mb-2" />
             </span>
 
-            <ValidaEditaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
+            <ValidaEditaEntidade
+              v-if="pedido.objeto.tipo === 'Entidade'"
+              :p="pedido"
+            />
 
-            <ValidaEditaLegislacao v-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" />
+            <ValidaEditaLegislacao
+              v-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
 
-            <ValidaEditaTipologiaEntidade v-if="pedido.objeto.tipo === 'Tipologia'" :p="pedido" />
+            <ValidaEditaTipologiaEntidade
+              v-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -110,7 +164,10 @@
 
     <!-- Dialog Ver Despachos-->
     <v-dialog v-model="despachosDialog" width="50%">
-      <VerDespachos :despachos="pedido.distribuicao" @fecharDialog="fecharDialog()" />
+      <VerDespachos
+        :despachos="pedido.distribuicao"
+        @fecharDialog="fecharDialog()"
+      />
     </v-dialog>
 
     <!-- Dialog Ver Historico de Alterações-->
@@ -128,6 +185,7 @@ import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
 import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
 import ValidaTSOrg from "@/components/pedidos/validacao/ValidaTSOrg";
 import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
+import AnalisaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
@@ -150,6 +208,7 @@ export default {
     ValidaEditaEntidade,
     ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
+    AnalisaClasseN1,
     ValidaAE,
     ValidaTS,
     ValidaTSOrg,
@@ -157,7 +216,7 @@ export default {
     VerDespachos,
     ErroDialog,
     ValidaRADA,
-    VerHistorico
+    VerHistorico,
   },
 
   data() {
@@ -167,7 +226,7 @@ export default {
       pedido: {},
       erroDialog: {
         visivel: false,
-        mensagem: null
+        mensagem: null,
       },
       pedidoLoaded: false,
       despachosDialog: false,
@@ -175,9 +234,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" }
+        { text: "Despacho", value: "despacho" },
       ],
-      etapas: []
+      etapas: [],
     };
   },
 
@@ -217,7 +276,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    }
-  }
+    },
+  },
 };
 </script>
