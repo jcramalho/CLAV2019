@@ -26,12 +26,13 @@
           @click="criarClasse"
         >
           Criar classe
-          <DialogClasseCriada 
-            v-if="classeCriada" 
+          <DialogClasseCriada
+            v-if="classeCriada"
             :c="c"
             :codigoPedido="codigoPedido"
             acao="criação"
-            @sair="classeCriada = false"/>
+            @sair="classeCriada = false"
+          />
         </v-btn>
       </v-col>
 
@@ -148,11 +149,13 @@
 <script>
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
 import DialogClasseCriada from "@/components/classes/criacao/DialogClasseCriada.vue";
+import { criarHistorico } from "@/utils/utils";
 
 export default {
   props: ["c", "pendenteId"],
   components: {
-    ValidaClasseInfoBox, DialogClasseCriada
+    ValidaClasseInfoBox,
+    DialogClasseCriada,
   },
   data() {
     return {
@@ -171,20 +174,20 @@ export default {
         1: /^[0-9]{3}$/,
         2: /^[0-9]{3}\.[0-9]{2}$/,
         3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
-      }
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
+      },
     };
   },
 
   watch: {
-    dialog: function(val) {
+    dialog: function (val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
     // Permite guardar o trabalho para ser retomado depois
-    guardarTrabalho: async function() {
+    guardarTrabalho: async function () {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
@@ -197,7 +200,7 @@ export default {
             objeto: this.c,
             criadoPor: userBD.email,
             user: { email: userBD.email },
-            token: this.$store.state.token
+            token: this.$store.state.token,
           };
           var response = this.$request("post", "/pendentes", pendenteParams);
           this.pendenteGuardado = true;
@@ -208,13 +211,13 @@ export default {
       }
     },
 
-    criacaoPendenteTerminada: function() {
+    criacaoPendenteTerminada: function () {
       this.$router.push("/");
     },
 
     // Verifica se o código introduzido pelo utilizador já existe na BD....................
 
-    verificaExistenciaCodigo: async function(codigo) {
+    verificaExistenciaCodigo: async function (codigo) {
       var response = await this.$request(
         "get",
         "/classes/codigo?valor=" + encodeURIComponent(codigo)
@@ -222,10 +225,10 @@ export default {
       return response.data;
     },
 
-    notaDuplicada: function(notas) {
+    notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
-        var duplicados = notas.filter(n => n.nota == lastNota);
+        var duplicados = notas.filter((n) => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -234,10 +237,10 @@ export default {
       }
     },
 
-    exemploDuplicado: function(exemplos) {
+    exemploDuplicado: function (exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
-        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -246,10 +249,10 @@ export default {
       }
     },
 
-    tiDuplicado: function(termos) {
+    tiDuplicado: function (termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
-        var duplicados = termos.filter(t => t.termo == lastTermo);
+        var duplicados = termos.filter((t) => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -260,7 +263,7 @@ export default {
 
     // Valida a classe antes de a criar
 
-    validaClasse: async function() {
+    validaClasse: async function () {
       var i = 0,
         numeroErros = 0;
 
@@ -426,7 +429,7 @@ export default {
 
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
-    validarClasse2: async function() {
+    validarClasse2: async function () {
       var i = 0;
       this.numeroErros = 0;
 
@@ -569,13 +572,17 @@ export default {
       // Com subdivisão
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        
+
         for (i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
-          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+          if (
+            this.c.subclasses.filter(
+              (s) => s.titulo == this.c.subclasses[i].titulo
+            ).length > 1
+          ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
-              mensagem: "Está repetido noutra subclasse."
+              mensagem: "Está repetido noutra subclasse.",
             });
           }
           // PCA: prazo
@@ -609,7 +616,7 @@ export default {
 
     // Lança o pedido de criação da classe no worflow
 
-    criarClasse: async function() {
+    criarClasse: async function () {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
@@ -624,7 +631,7 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: []
+              historico: [criarHistorico(this.c)],
             };
 
             var response = await this.$request(
@@ -639,23 +646,25 @@ export default {
           }
         }
       } catch (error) {
-        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
+        console.log(
+          "Erro na criação do pedido: " + JSON.stringify(error.response.data)
+        );
       }
     },
 
-    criacaoClasseTerminada: function() {
+    criacaoClasseTerminada: function () {
       this.$router.push("/");
     },
 
     // Cancela a criação da classe
-    eliminarClasse: function() {
+    eliminarClasse: function () {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoClasse: function() {
+    cancelarCriacaoClasse: function () {
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
