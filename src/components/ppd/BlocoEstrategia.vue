@@ -3,8 +3,8 @@
     <!-- CONTEXTO DE AVALIAÇÃO DO PPD -->
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
-        2.	Avaliação do sistema de informação (SI)
-        <InfoBox header="Avaliação SI" helpColor="white"/>
+        4.	Estratégia de preservação do sistema de informação (SI)
+        <InfoBox header="Estrategia SI" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>

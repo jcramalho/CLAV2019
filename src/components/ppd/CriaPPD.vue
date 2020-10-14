@@ -44,11 +44,26 @@
                 Ainda não foi possível carregar as entidades...
               </v-alert>
             </v-col>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Menção de responsabilidade</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+              <v-textarea
+                  v-model="ppd.identificacao.mencaoResp"
+                  label=""
+                  solo
+                  clearable
+              ></v-textarea>
+            </v-col>
           </v-row>
           <v-expansion-panels>
             <!-- BLOCO IDENTIFICAÇÃO -->
             <BlocoIdentificacao
               :c="ppd"
+              :semaforos="semaforos"
+              :sis="listaSistema"
+              :entidadesReady="entidadesReady"
+              :entidades="entidades"
             />
             <!-- BLOCO AVALIAÇÃO -->
             <BlocoAvaliacao
@@ -58,6 +73,12 @@
             <BlocoCaracterizacao
               :c="ppd"
             />
+            <!-- BLOCO ESTRATÉGIA -->
+            <BlocoEstrategia
+              :c="ppd"
+            />
+
+
           </v-expansion-panels>
         </v-card-text>
 
@@ -84,12 +105,14 @@ const criteriosLabels = require("@/config/labels").criterios;
 import BlocoIdentificacao from "@/components/ppd/BlocoIdentificacao.vue";
 import BlocoAvaliacao from "@/components/ppd/BlocoAvaliacao.vue";
 import BlocoCaracterizacao from "@/components/ppd/BlocoCaracterizacao.vue";
+import BlocoEstrategia from "@/components/ppd/BlocoEstrategia.vue";
 
 export default {
   components: {
     BlocoIdentificacao,
     BlocoAvaliacao,
     BlocoCaracterizacao,
+    BlocoEstrategia
   },
 
   data: () => ({
@@ -97,18 +120,21 @@ export default {
     ppd: {
       nRef: "",
       identificacao: {
+        numeroSI: "",
         nomeSI: "",
-        local: "",
-        adminSistema: "",
-        adminDados: "",
-        propSistema: "",
-        propDados: "",
+        adminSistema: [],
+        adminDados: [],
+        propSistemaPublico: [],
+        propSistemaPrivado: "",
+        propDados: [],
+        localDadosPublico: [],
+        localDadosPrivado: "",
         userList: [],
         defResponsavel: "",
+        expressaoResponsavel:"",
         insourcing: "",
         outsourcing: "",
         notas: "",
-        mencaoResp: ""
       },
       avaliacao: {
         codigo: "",
@@ -154,6 +180,9 @@ export default {
         notas: "",
         mencaoResp: ""
       },
+      estrategia:{
+
+      },
       codigo: "",
       titulo: "",
       descricao: "",
@@ -162,11 +191,14 @@ export default {
       notasEx: [],
       termosInd: [],
 
+      sistema: [],
 
       user: {
         token: ""
       }
     },
+
+
     // Lista de todas as entidades existentes
     entidades: [],
     // Lista com as entidades selecionadas
@@ -181,12 +213,25 @@ export default {
     entidadesD: [],
     entidadesP: [],
     listaProcessos: [],
-    listaLegislacao: [],
+    listaSistema: [],
 
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar um PLano de preservação digital!",
-    mensValCodigo: ""
+    mensValCodigo: "",
+
+
+    semaforos: {
+      paisReady: false,
+      classesReady: false,
+      entidadesReady: false,
+      sistemaReady: false,
+      pcaFormasContagemReady: false,
+      pcaSubFormasContagemReady: false,
+      critLegalAdicionadoPCA: false,
+      critLegalAdicionadoDF: false,
+      critGestionarioAdicionado: false
+    },
 
   }),
 
@@ -240,6 +285,30 @@ export default {
     },
 
 
+    loadLegislacao: async function() {
+      try {
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
+        this.listaSistema = response.data
+          .map(function(item) {
+            return {
+              tipo: item.tipo,
+              numero: item.numero,
+              sumario: item.sumario,
+              data: item.data,
+              selected: false,
+              id: item.id
+            };
+          })
+          .sort(function(a, b) {
+            return -1 * a.data.localeCompare(b.data);
+          });
+        this.semaforos.sistemaReady = true;
+      } catch (error) {
+        return error;
+      }
+    },
+
+
   },
 
   /* em principio nao vai ser necessario porque vou buscar a info toda logo no inicio
@@ -258,6 +327,7 @@ export default {
   created: async function() {
       try{
             await this.loadEntidades();
+            await this.loadLegislacao();
       }
       catch(e){
           console.log('Erro ao carregar a informação inicial: ' + e);

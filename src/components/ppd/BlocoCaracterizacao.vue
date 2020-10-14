@@ -3,8 +3,8 @@
     <!-- CONTEXTO DE CARACTERIZAÇÃO DO PPD -->
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
-        Caracterização do plano de preservação digital
-        <InfoBox header="Caracterização ppd" :text="myhelp.Classe.BlocoDecisoes"  helpColor="white"/>
+        4.  Caracterização do sistema de informação (SI)
+        <InfoBox header="Caracterização SI" :text="myhelp"  helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
