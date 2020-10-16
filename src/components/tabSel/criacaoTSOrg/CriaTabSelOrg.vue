@@ -469,6 +469,7 @@ export default {
         if (!this.listaProcessosReady) {
           this.listaProcessos.numProcessosSelecionados = 0;
           this.listaProcessos.numProcessosPreSelecionados = 0;
+          this.listaProcessos.processosPreSelecionados = 0;
           this.listaProcessos.procs = [];
           var response = await this.$request(
             "get",
@@ -533,42 +534,60 @@ export default {
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = this.$verifyTokenUser();
-        // Guardam-se apenas os processos que foram alterados
-        // Ao carregar será preciso fazer Merge com a LC
-        // É preciso forçar uma cópia para não perder a lista corrente
-        this.tabelaSelecao.listaProcessos = JSON.parse(
-          JSON.stringify(this.listaProcessos)
-        );
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.dono || p.participante != "NP"
-        );
+        //Valida se os processos a selecionar estão todos selecionados
+        if (
+          this.listaProcessos.numProcessosPreSelecionados -
+            this.listaProcessos.processosPreSelecionados !=
+          0
+        ) {
+          this.mensagensErro.push({
+            sobre: "Escolha de processos",
 
-        var tsObj = {
-          idEntidade: this.tabelaSelecao.idEntidade,
-          designacaoEntidade: this.tabelaSelecao.designacaoEntidade,
-          designacao: this.tabelaSelecao.designacao,
-          idTipologia: this.tabelaSelecao.idTipologia,
-          designacaoTipologia: this.tabelaSelecao.designacaoTipologia,
-          listaProcessos: this.tabelaSelecao.listaProcessos
-        };
+            mensagem: `Ainda tem ${this.listaProcessos
+              .numProcessosPreSelecionados -
+              this.listaProcessos
+                .processosPreSelecionados} processos por selecionar`
+          });
+          this.numeroErros++;
+          this.validacaoTerminada = true;
+        } else {
+          var userBD = this.$verifyTokenUser();
+          // Guardam-se apenas os processos que foram alterados
+          // Ao carregar será preciso fazer Merge com a LC
+          // É preciso forçar uma cópia para não perder a lista corrente
+          this.tabelaSelecao.listaProcessos = JSON.parse(
+            JSON.stringify(this.listaProcessos)
+          );
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            p => p.dono || p.participante != "NP"
+          );
 
-        var pedidoParams = {
-          tipoPedido: "Criação",
-          tipoObjeto: "TS Organizacional",
-          novoObjeto: { ts: tsObj },
-          user: { email: userBD.email },
-          entidade: userBD.entidade,
-          token: this.$store.state.token,
-          historico: []
-        };
+          var tsObj = {
+            idEntidade: this.tabelaSelecao.idEntidade,
+            designacaoEntidade: this.tabelaSelecao.designacaoEntidade,
+            designacao: this.tabelaSelecao.designacao,
+            idTipologia: this.tabelaSelecao.idTipologia,
+            designacaoTipologia: this.tabelaSelecao.designacaoTipologia,
+            listaProcessos: this.tabelaSelecao.listaProcessos
+          };
 
-        var codigoPedido = await this.$request(
-          "post",
-          "/pedidos",
-          pedidoParams
-        );
-        this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+          var pedidoParams = {
+            tipoPedido: "Criação",
+            tipoObjeto: "TS Organizacional",
+            novoObjeto: { ts: tsObj },
+            user: { email: userBD.email },
+            entidade: userBD.entidade,
+            token: this.$store.state.token,
+            historico: []
+          };
+
+          var codigoPedido = await this.$request(
+            "post",
+            "/pedidos",
+            pedidoParams
+          );
+          this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+        }
       } catch (error) {
         console.log("Erro ao criar o pedido: " + error);
       }
@@ -628,7 +647,21 @@ export default {
 
     // Valida a TS construída até ao momento
     validarTS: function() {
-      return true;
+      if (
+        this.listaProcessos.numProcessosPreSelecionados -
+          this.listaProcessos.processosPreSelecionados !=
+        0
+      ) {
+        this.mensagensErro.push({
+          sobre: "Escolha de processos",
+          mensagem: `Ainda tem ${this.listaProcessos
+            .numProcessosPreSelecionados -
+            this.listaProcessos
+              .processosPreSelecionados} processos por selecionar`
+        });
+        this.numeroErros++;
+      }
+      this.validacaoTerminada = true;
     },
 
     // Quando a validação termina chama-se esta rotina para fazer reset ao estado da Validação

@@ -250,6 +250,7 @@ export default {
         if (!this.listaProcessosReady) {
           this.listaProcessos.numProcessosSelecionados = 0;
           this.listaProcessos.numProcessosPreSelecionados = 0;
+          this.listaProcessos.processosPreSelecionados = 0;
           this.listaProcessos.procs = [];
           var response = await this.$request(
             "get",
@@ -413,26 +414,44 @@ export default {
       }
 
       try {
-        var userBD = this.$verifyTokenUser();
-        // Guardam-se apenas os processos que foram alterados
-        this.tabelaSelecao.listaProcessos = this.listaProcessos;
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.edited
-        );
+        //Valida se os processos a selecionar estão todos selecionados
+        if (
+          this.listaProcessos.numProcessosPreSelecionados -
+            this.listaProcessos.processosPreSelecionados !=
+          0
+        ) {
+          this.mensagensErro.push({
+            sobre: "Escolha de processos",
 
-        var pedidoParams = {
-          tipoPedido: "Criação",
-          tipoObjeto: "TS Pluriorganizacional",
-          novoObjeto: this.tabelaSelecao,
-          criadoPor: userBD.email,
-          user: { email: userBD.email },
-          entidade: userBD.entidade,
-          token: this.$store.state.token,
-          historico: []
-        };
+            mensagem: `Ainda tem ${this.listaProcessos
+              .numProcessosPreSelecionados -
+              this.listaProcessos
+                .processosPreSelecionados} processos por selecionar`
+          });
+          this.numeroErros++;
+          this.validacaoTerminada = true;
+        } else {
+          var userBD = this.$verifyTokenUser();
+          // Guardam-se apenas os processos que foram alterados
+          this.tabelaSelecao.listaProcessos = this.listaProcessos;
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            p => p.edited
+          );
 
-        var response = await this.$request("post", "/pedidos", pedidoParams);
-        this.$router.push("/pedidos/submissao/" + response.data);
+          var pedidoParams = {
+            tipoPedido: "Criação",
+            tipoObjeto: "TS Pluriorganizacional",
+            novoObjeto: this.tabelaSelecao,
+            criadoPor: userBD.email,
+            user: { email: userBD.email },
+            entidade: userBD.entidade,
+            token: this.$store.state.token,
+            historico: []
+          };
+
+          var response = await this.$request("post", "/pedidos", pedidoParams);
+          this.$router.push("/pedidos/submissao/" + response.data);
+        }
       } catch (error) {
         console.log("Erro no POST da TS: " + error);
       }
@@ -459,6 +478,21 @@ export default {
     // Funções de validação --------------------------------------
     // Validação da TS
     validarTS: async function() {
+      //Valida se os processos a selecionar estão todos selecionados
+      if (
+        this.listaProcessos.numProcessosPreSelecionados -
+          this.listaProcessos.processosPreSelecionados !=
+        0
+      ) {
+        this.mensagensErro.push({
+          sobre: "Escolha de processos",
+          mensagem: `Ainda tem ${this.listaProcessos
+            .numProcessosPreSelecionados -
+            this.listaProcessos
+              .processosPreSelecionados} processos por selecionar`
+        });
+        this.numeroErros++;
+      }
       var processosSelecionados = this.listaProcessos.procs.filter(
         p => p.edited
       );

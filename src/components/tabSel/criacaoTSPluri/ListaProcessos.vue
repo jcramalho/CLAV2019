@@ -2,28 +2,16 @@
   <div>
     <v-row>
       <v-col>
-        <v-radio-group v-model="filtroLabel" row>
-          <v-radio label="Todos" @click="filtro=''; filtroLabel='Todos'" value="Todos"></v-radio>
-          <v-radio
-            label="Comuns"
-            @click="filtro='Processo Comum'; filtroLabel='Processo Comum'"
-            value="Processo Comum"
-          ></v-radio>
-          <v-radio
-            label="Específicos"
-            @click="filtro='Processo Específico'; filtroLabel='Processo Específico'"
-            value="Processo Específico"
-          ></v-radio>
-          <v-radio
-            label="Restantes"
-            @click="filtro='Processo Restante'; filtroLabel='Processo Restante'"
-            value="Processo Restante"
-          ></v-radio>
-          <v-radio
-            label="Pré-Selecionados"
-            @click="filtro='Pré-Selecionado'; filtroLabel='Pré-Selecionado'"
-            value="Pré-Selecionado"
-          ></v-radio>
+        <v-radio-group
+          v-model="filtroLabel"
+          v-on:change="ordenaProcs(filtroLabel)"
+          row
+        >
+          <v-radio label="Todos" value="Todos"></v-radio>
+          <v-radio label="Comuns" value="Processo Comum"></v-radio>
+          <v-radio label="Específicos" value="Processo Específico"></v-radio>
+          <v-radio label="Restantes" value="Processo Restante"></v-radio>
+          <v-radio label="Pré-Selecionados" value="Pré-Selecionado"></v-radio>
         </v-radio-group>
       </v-col>
     </v-row>
@@ -39,10 +27,12 @@
       <template v-slot:item="props">
         <tr
           :style="{
-          backgroundColor: props.item.edited
+            backgroundColor: props.item.edited
               ? '#BBDEFB'
-              : (props.item.preSelected > 0 ? '#FFECB3' : 'transparent')
-        }"
+              : props.item.preSelected > 0
+              ? '#FFECB3'
+              : 'transparent'
+          }"
         >
           <td>{{ props.item.codigo }}</td>
           <td>{{ props.item.titulo }}</td>
@@ -53,7 +43,11 @@
             <v-icon v-if="props.item.participante">check</v-icon>
           </td>
           <td>
-            <v-btn small class="ma-2" @click="selecionaParticipacoes(props.item)">
+            <v-btn
+              small
+              class="ma-2"
+              @click="selecionaParticipacoes(props.item)"
+            >
               <v-icon dark>{{ selecionaResponsabilidadesIcon }}</v-icon>
             </v-btn>
             <v-btn
@@ -64,13 +58,18 @@
             >
               <v-icon dark>{{ editadoIcon }}</v-icon>
             </v-btn>
-            <v-btn v-else small class="ma-2" @click="editaBlocoDescritivo(props.item)">
+            <v-btn
+              v-else
+              small
+              class="ma-2"
+              @click="editaBlocoDescritivo(props.item)"
+            >
               <v-icon dark>{{ editaBlocoDescritivoIcon }}</v-icon>
             </v-btn>
           </td>
         </tr>
       </template>
-      <template v-slot:footer.page-text="props">
+      <template v-slot:[`footer.page-text`]="props">
         Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
         {{ props.itemsLength }}
       </template>
@@ -88,7 +87,7 @@
         <v-text-field
           readonly
           label="Nº de processos a selecionar"
-          v-model="listaProcs.numProcessosPreSelecionados"
+          v-model="this.processosPreSelecionados"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -138,6 +137,8 @@ export default {
     // Filtro da tabela
     filtro: "",
     filtroLabel: "Todos",
+    //Conta o número de processos a selecionar selecionados
+    processosPreSelecionados: 0,
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
@@ -205,6 +206,15 @@ export default {
   },
 
   methods: {
+    // Ordena os processos de acordo com a legenda
+    ordenaProcs: function(label) {
+      if (label === "Todos") this.filtro = "";
+      else {
+        this.filtro = label;
+      }
+      this.filtroLabel = label;
+    },
+
     // Filtra os processos na tabela
     filtraProcessos: function(value, search, item) {
       return item.tipoProc == "";
@@ -229,8 +239,20 @@ export default {
         if (p.inc > 0) {
           // foi selecionado
           await this.acrescentaFecho(p);
+          if (p.preSelected >= 1) {
+            this.listaProcs.processosPreSelecionados++;
+          }
+          this.processosPreSelecionados =
+            this.listaProcs.numProcessosPreSelecionados -
+            this.listaProcs.processosPreSelecionados;
         } else if (p.inc < 0) {
+          if (p.preSelected >= 1) {
+            this.listaProcs.processosPreSelecionados--;
+          }
           await this.retiraFecho(p);
+          this.processosPreSelecionados =
+            this.listaProcs.numProcessosPreSelecionados -
+            this.listaProcs.processosPreSelecionados;
         }
       } catch (err) {
         return err;

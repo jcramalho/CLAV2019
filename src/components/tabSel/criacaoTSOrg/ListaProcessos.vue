@@ -3,28 +3,16 @@
     <div v-if="infoReady">
       <v-row>
         <v-col>
-          <v-radio-group v-model="filtroLabel" row>
-            <v-radio label="Todos" @click="filtro=''; filtroLabel='Todos'" value="Todos"></v-radio>
-            <v-radio
-              label="Comuns"
-              @click="filtro='Processo Comum'; filtroLabel='Processo Comum'"
-              value="Processo Comum"
-            ></v-radio>
-            <v-radio
-              label="Específicos"
-              @click="filtro='Processo Específico'; filtroLabel='Processo Específico'"
-              value="Processo Específico"
-            ></v-radio>
-            <v-radio
-              label="Restantes"
-              @click="filtro='Processo Restante'; filtroLabel='Processo Restante'"
-              value="Processo Restante"
-            ></v-radio>
-            <v-radio
-              label="Pré-Selecionados"
-              @click="filtro='Pré-Selecionado'; filtroLabel='Pré-Selecionado'"
-              value="Pré-Selecionado"
-            ></v-radio>
+          <v-radio-group
+            v-on:change="ordenaProcs(filtroLabel)"
+            v-model="filtroLabel"
+            row
+          >
+            <v-radio label="Todos" value="Todos"></v-radio>
+            <v-radio label="Comuns" value="Processo Comum"></v-radio>
+            <v-radio label="Específicos" value="Processo Específico"></v-radio>
+            <v-radio label="Restantes" value="Processo Restante"></v-radio>
+            <v-radio label="A Selecionar" value="Pré-Selecionado"></v-radio>
           </v-radio-group>
         </v-col>
       </v-row>
@@ -40,10 +28,13 @@
         <template v-slot:item="props">
           <tr
             :style="{
-          backgroundColor: props.item.dono || props.item.participante!= 'NP'
-              ? '#BBDEFB'
-              : (props.item.preSelected > 0 ? '#FFECB3' : 'transparent')
-        }"
+              backgroundColor:
+                props.item.dono || props.item.participante != 'NP'
+                  ? '#BBDEFB'
+                  : props.item.preSelected > 0
+                  ? '#FFECB3'
+                  : 'transparent'
+            }"
           >
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
@@ -57,20 +48,34 @@
               >
                 <v-icon dark>{{ donoSelecionado }}</v-icon>
               </v-btn>
-              <v-btn v-else small text class="ma-2" @click="selecionaDono(props.item)">
+              <v-btn
+                v-else
+                small
+                text
+                class="ma-2"
+                @click="selecionaDono(props.item)"
+              >
                 <v-icon dark>{{ donoDesselecionado }}</v-icon>
               </v-btn>
               <!--v-checkbox color="indigo darken-4" v-model="props.item.dono"></v-checkbox-->
             </td>
             <td>
-              <v-radio-group v-model="props.item.participante" row>
+              <v-radio-group
+                v-model="participante[props.item.chave]"
+                v-on:change="
+                  selecionaParticipacao(
+                    props.item,
+                    participante[props.item.chave]
+                  )
+                "
+                row
+              >
                 <v-radio label="Não part." value="NP"></v-radio>
                 <v-radio
                   v-for="p in participacao"
                   :key="p.idtermo"
-                  :label="p.termo.substring(0,3)"
+                  :label="p.termo.substring(0, 3)"
                   :value="p.termo"
-                  @click="selecionaParticipacao(props.item, p.termo)"
                   class="caption"
                 ></v-radio>
               </v-radio-group>
@@ -84,13 +89,18 @@
               >
                 <v-icon dark>{{ editadoIcon }}</v-icon>
               </v-btn>
-              <v-btn v-else small class="ma-2" @click="editaBlocoDescritivo(props.item)">
+              <v-btn
+                v-else
+                small
+                class="ma-2"
+                @click="editaBlocoDescritivo(props.item)"
+              >
                 <v-icon dark>{{ editaBlocoDescritivoIcon }}</v-icon>
               </v-btn>
             </td>
           </tr>
         </template>
-        <template v-slot:footer.page-text="props">
+        <template v-slot:[`footer.page-text`]="props">
           Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
           {{ props.itemsLength }}
         </template>
@@ -103,7 +113,7 @@
         </v-col>
         <v-col>
           Nº de processos a selecionar:
-          {{ numProcessosPreSelecionados }}
+          {{ numProcessosPreSelecionados - processosPreSelecionados }}
         </v-col>
       </v-row>
 
@@ -146,9 +156,12 @@ export default {
     infoReady: false,
     // Número de processos selecionados
     numProcessosSelecionados: 0,
-    // Número de processos pré-selecionados
+    // Número de processos a selecionar
     numProcessosPreSelecionados: 0,
-
+    // Número de Processos a selecionar selecionados
+    processosPreSelecionados: 0,
+    // Array que determina a seleção de paticipante de cada processo
+    participante: [],
     // Icons
     selecionaResponsabilidadesIcon: mdiPencil,
     editaBlocoDescritivoIcon: mdiFileDocumentEdit,
@@ -236,18 +249,31 @@ export default {
       console.log("Erro no carregamento dos tipos de participação: " + e);
     }
     this.listaProcessos = this.listaProcs;
+    this.participante = new Array(this.listaProcessos.procs.length).fill("NP");
     this.numProcessosSelecionados = this.listaProcs.numProcessosSelecionados;
     this.numProcessosPreSelecionados = this.listaProcs.numProcessosPreSelecionados;
     this.infoReady = true;
   },
 
   methods: {
-    selecionaParticipacao: async function(proc, participacao) {
-      if (!proc.dono && proc.participante == "NP") {
+    selecionaParticipacao: async function(proc, participacao, index) {
+      if (!proc.dono && proc.participante == "NP" && participacao != "NP") {
         this.listaProcs.numProcessosSelecionados++;
         this.numProcessosSelecionados++;
         await this.acrescentaFecho(proc);
-      } else if (!proc.dono && participacao == "NP") {
+        if (proc.preSelected >= 1) {
+          this.processosPreSelecionados++;
+          this.listaProcs.processosPreSelecionados++;
+        }
+      } else if (
+        !proc.dono &&
+        proc.participante != "NP" &&
+        participacao == "NP"
+      ) {
+        if (proc.preSelected >= 1) {
+          this.processosPreSelecionados--;
+          this.listaProcs.processosPreSelecionados--;
+        }
         this.listaProcs.numProcessosSelecionados--;
         this.numProcessosSelecionados--;
         await this.retiraFecho(proc);
@@ -263,6 +289,10 @@ export default {
         this.listaProcs.numProcessosSelecionados++;
         this.numProcessosSelecionados++;
         await this.acrescentaFecho(proc);
+        if (proc.preSelected >= 1) {
+          this.processosPreSelecionados++;
+          this.listaProcs.processosPreSelecionados++;
+        }
       }
     },
 
@@ -273,6 +303,10 @@ export default {
       if (proc.participante == "NP") {
         this.listaProcs.numProcessosSelecionados--;
         this.numProcessosSelecionados--;
+        if (proc.preSelected >= 1) {
+          this.processosPreSelecionados--;
+          this.listaProcs.processosPreSelecionados--;
+        }
         await this.retiraFecho(proc);
       }
     },
@@ -320,6 +354,15 @@ export default {
     // Função de retorno do processo de edição do Bloco Descritivo
     blocoDescritivoEditado: function(p) {
       this.editaBlocoDescritivoFlag = false;
+    },
+
+    // Ordena os processos de acordo com a legenda
+    ordenaProcs: function(label) {
+      if (label === "Todos") this.filtro = "";
+      else {
+        this.filtro = label;
+      }
+      this.filtroLabel = label;
     }
   }
 };
