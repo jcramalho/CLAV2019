@@ -4,151 +4,158 @@
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
-            >Nova Tabela de Seleção (continuação do trabalho guardado)</v-toolbar-title
+            >Nova Tabela de Seleção (continuação do trabalho
+            guardado)</v-toolbar-title
           >
         </v-app-bar>
         <v-card-text class="panel-body">
-            <v-stepper v-model="stepNo" vertical>
-              <v-stepper-step :complete="stepNo > 1" step="1">
-                Identificação da entidade ou tipologia da tabela de seleção:
-                <span v-if="stepNo > 1 && tipoTS!='tipologia'">
-                  <v-chip
-                    class="ma-2"
-                    color="indigo darken-4"
-                    text-color="white"
-                    label
-                  >
-                    <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idEntidade.split("_")[1] + ": " + tabelaSelecao.designacaoEntidade }}
-                  </v-chip>
-                </span>
-                <span v-else-if="stepNo > 1 && tipoTS=='tipologia'">
-                  <v-chip
-                    class="ma-2"
-                    color="indigo darken-4"
-                    text-color="white"
-                    label
-                  >
-                    <v-icon left>account_balance</v-icon>
-                    {{ tabelaSelecao.idTipologia.split("_")[1] + ": " + tabelaSelecao.designacaoTipologia }}
-                  </v-chip>
-                </span>
-              </v-stepper-step>
-
-              <v-stepper-step :complete="stepNo > 2" step="2">
-                Designação da Tabela de Seleção
-                <span v-if="stepNo > 1">
-                  <v-chip
-                    class="ma-2"
-                    color="indigo darken-4"
-                    text-color="white"
-                    label
-                  >
-                    {{ tabelaSelecao.designacao }}
-                  </v-chip>
-                </span>
-              </v-stepper-step>
-              <v-stepper-content step="2">
-                <v-flex xs12 sm6 md10>
-                  <v-text-field
-                    :placeholder="tabelaSelecao.designacao"
-                    v-model="tabelaSelecao.designacao"
-                  ></v-text-field>
-                </v-flex>
-                <v-btn
-                  color="primary"
-                  @click="
-                    stepNo = stepNo + 1;
-                    loadProcEspecificos();
-                  "
-                  >Continuar</v-btn
+          <v-stepper v-model="stepNo" vertical>
+            <v-stepper-step :complete="stepNo > 1" step="1">
+              Identificação da entidade ou tipologia da tabela de seleção:
+              <span v-if="stepNo > 1 && tipoTS != 'tipologia'">
+                <v-chip
+                  class="ma-2"
+                  color="indigo darken-4"
+                  text-color="white"
+                  label
                 >
-              </v-stepper-content>
+                  <v-icon left>account_balance</v-icon>
+                  {{
+                    tabelaSelecao.idEntidade.split("_")[1] +
+                      ": " +
+                      tabelaSelecao.designacaoEntidade
+                  }}
+                </v-chip>
+              </span>
+              <span v-else-if="stepNo > 1 && tipoTS == 'tipologia'">
+                <v-chip
+                  class="ma-2"
+                  color="indigo darken-4"
+                  text-color="white"
+                  label
+                >
+                  <v-icon left>account_balance</v-icon>
+                  {{
+                    tabelaSelecao.idTipologia.split("_")[1] +
+                      ": " +
+                      tabelaSelecao.designacaoTipologia
+                  }}
+                </v-chip>
+              </span>
+            </v-stepper-step>
 
-              <v-stepper-step :complete="stepNo > 3" step="3">
-                Seleção dos Processos
-              </v-stepper-step>
-              <v-stepper-content step="3">
-                <v-col v-if="listaProcessosReady">
-                  <v-card>
-                    <v-card-text>
-                      <ListaProcessos
-                            :listaProcs="listaProcessos"
-                            :listaCodigosEsp="listaCodigosEsp"
-                      />
-                    </v-card-text>
-                  </v-card>
-                </v-col>
+            <v-stepper-step :complete="stepNo > 2" step="2">
+              Designação da Tabela de Seleção
+              <span v-if="stepNo > 1">
+                <v-chip
+                  class="ma-2"
+                  color="indigo darken-4"
+                  text-color="white"
+                  label
+                >
+                  {{ tabelaSelecao.designacao }}
+                </v-chip>
+              </span>
+            </v-stepper-step>
+            <v-stepper-content step="2">
+              <v-flex xs12 sm6 md10>
+                <v-text-field
+                  :placeholder="tabelaSelecao.designacao"
+                  v-model="tabelaSelecao.designacao"
+                ></v-text-field>
+              </v-flex>
+              <v-btn
+                color="primary"
+                @click="
+                  loadProcEspecificos();
+                  validaTSnome();
+                "
+                >Continuar</v-btn
+              >
+            </v-stepper-content>
 
-                <v-col v-else>Ainda não foi possível carregar a informação dos Processos...</v-col>
-              </v-stepper-content>
-            </v-stepper>
+            <v-stepper-step :complete="stepNo > 3" step="3">
+              Seleção dos Processos
+            </v-stepper-step>
+            <v-stepper-content step="3">
+              <v-col v-if="listaProcessosReady">
+                <v-card>
+                  <v-card-text>
+                    <ListaProcessos
+                      :listaProcs="listaProcessos"
+                      :listaCodigosEsp="listaCodigosEsp"
+                      :participante="participante"
+                    />
+                  </v-card-text>
+                </v-card>
+              </v-col>
+
+              <v-col v-else
+                >Ainda não foi possível carregar a informação dos
+                Processos...</v-col
+              >
+            </v-stepper-content>
+          </v-stepper>
         </v-card-text>
         <v-card-actions>
           <!-- Voltar ao passo anterior ............................................-->
-          <v-btn v-if="stepNo>2" color="primary" @click="stepNo--;">Voltar</v-btn>
+          <v-btn v-if="stepNo > 2" color="primary" @click="stepNo--"
+            >Voltar</v-btn
+          >
 
           <!-- Validar a TS ........................................................-->
-          <v-btn 
-            v-if="stepNo>2" 
-            color="primary" 
-            @click="validarTS">
-              Validar TS
-                  
-            <DialogValidacaoOK 
-              v-if="validacaoTerminada && numeroErros == 0"
-              @continuar="fechoValidacao" />
+          <v-btn v-if="stepNo > 2" color="primary" @click="validarTS">
+            Validar TS
 
-            <DialogValidacaoErros 
-                v-if="validacaoTerminada && numeroErros > 0"
-                :erros="mensagensErro"
-                @continuar="fechoValidacao" />
+            <DialogValidacaoOK
+              v-if="validacaoTerminada && numeroErros == 0"
+              @continuar="fechoValidacao"
+            />
+
+            <DialogValidacaoErros
+              v-if="validacaoTerminada && numeroErros > 0"
+              :erros="mensagensErro"
+              @continuar="fechoValidacao"
+            />
           </v-btn>
 
           <!-- Guardar o trabalho para continuar depois ..........................-->
-          <v-btn
-            v-if="stepNo>2"
-            color="primary"
-            @click="guardarTrabalho"
+          <v-btn v-if="stepNo > 2" color="primary" @click="guardarTrabalho"
             >Guardar trabalho
 
-            <DialogPendenteGuardado 
-              v-if="pendenteGuardado" 
+            <DialogPendenteGuardado
+              v-if="pendenteGuardado"
               :pendente="pendente"
-              @continuar="pendenteGuardado = false"/>
-            
+              @continuar="pendenteGuardado = false"
+            />
           </v-btn>
 
           <!-- Submeter e criar o pedido ............................................-->
-          <v-btn v-if="stepNo>2" color="primary" @click="submeterTS">Submeter</v-btn>
+          <v-btn v-if="stepNo > 2" color="primary" @click="submeterTS"
+            >Submeter</v-btn
+          >
 
           <!-- Sair da criação da TS sem abortar o processo .........................-->
-          <v-btn 
-            v-if="stepNo>2" 
-            color="primary"
-            @click="sairOperacao = true"
-            >Sair 
-                    
+          <v-btn v-if="stepNo > 2" color="primary" @click="sairOperacao = true"
+            >Sair
+
             <DialogSair
-              v-if="sairOperacao" 
-              @continuar="sairOperacao=false"
+              v-if="sairOperacao"
+              @continuar="sairOperacao = false"
               @sair="sair"
             />
-
           </v-btn>
 
           <!-- Abortar a criação da TS ..........................................-->
-          <v-btn
-            dark
-            color="red darken-4"
-            @click="eliminarTabela = true"
+          <v-btn dark color="red darken-4" @click="eliminarTabela = true"
             >Cancelar
-                  
-              <DialogCancelar 
-                v-if="eliminarTabela" 
-                @continuar="eliminarTabela=false"
-                @sair="abortar"/>
-              </v-btn>
+
+            <DialogCancelar
+              v-if="eliminarTabela"
+              @continuar="eliminarTabela = false"
+              @sair="abortar"
+            />
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
@@ -167,8 +174,12 @@ export default {
   props: ["obj"],
 
   components: {
-    ListaProcessos, DialogPendenteGuardado, DialogCancelar,
-    DialogValidacaoOK, DialogValidacaoErros, DialogSair
+    ListaProcessos,
+    DialogPendenteGuardado,
+    DialogCancelar,
+    DialogValidacaoOK,
+    DialogValidacaoErros,
+    DialogSair
   },
   data() {
     return {
@@ -189,7 +200,7 @@ export default {
       // Numero do passo da criação de TS
       // Na continuação não se permite alterar a entidade/tipologia alvo
       stepNo: 2,
-      
+
       entidadeDGLAB: false,
       entidades: [],
       entidadesReady: false,
@@ -212,6 +223,8 @@ export default {
       listaProcessosReady: false,
       // Lista com os códigos dos processos específicos da entidade selecionada
       listaCodigosEsp: [],
+      // Array que determina a seleção de paticipante de cada processo
+      participante: [],
 
       // Tratamento de erros da validação
       mensagensErro: [],
@@ -233,10 +246,14 @@ export default {
     };
   },
   methods: {
-    debug: function(obj){
+    debug: function(obj) {
       alert(JSON.stringify(obj));
     },
-
+    validaTSnome: function() {
+      if (this.tabelaSelecao.designacao != "") {
+        this.stepNo = 3;
+      }
+    },
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
@@ -250,14 +267,14 @@ export default {
           };
         });
         this.entidadesReady = true;
-      }
-        catch (err) {
-          console.log("Erro ao recuperar a lista de entidades: " + err);
+      } catch (err) {
+        console.log("Erro ao recuperar a lista de entidades: " + err);
       }
     },
 
     guardaEntidade: async function() {
-      this.tabelaSelecao.designacao = "Tabela de Seleção de " + this.ent.designacao;
+      this.tabelaSelecao.designacao =
+        "Tabela de Seleção de " + this.ent.designacao;
       this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
       this.tabelaSelecao.idEntidade = "ent_" + this.ent.sigla;
       try {
@@ -270,7 +287,8 @@ export default {
 
     guardaTipologia: function() {
       // id e designação
-      this.tabelaSelecao.designacao = "Tabela de seleção de " + this.tipSel.designacao;
+      this.tabelaSelecao.designacao =
+        "Tabela de seleção de " + this.tipSel.designacao;
       this.tabelaSelecao.designacaoTipologia = this.tipSel.designacao;
       this.tabelaSelecao.idTipologia = this.tipSel.id;
       this.stepNo = this.stepNo + 1;
@@ -278,7 +296,8 @@ export default {
 
     guardaEntidadeUtilizador: function() {
       // id e designação
-      this.tabelaSelecao.designacao = "Tabela de seleção de " + this.entidadeUtilizador.designacao;
+      this.tabelaSelecao.designacao =
+        "Tabela de seleção de " + this.entidadeUtilizador.designacao;
       this.tabelaSelecao.designacaoEntidade = this.entidadeUtilizador.designacao;
       this.tabelaSelecao.idEntidade = this.entidadeUtilizador.id;
       this.stepNo = this.stepNo + 1;
@@ -300,9 +319,10 @@ export default {
             label: item.sigla + " - " + item.designacao
           };
         });
-      }
-      catch(e){
-        console.log("Erro ao carregar as tipologias da entidade do utilizador: " + e);
+      } catch (e) {
+        console.log(
+          "Erro ao carregar as tipologias da entidade do utilizador: " + e
+        );
       }
     },
 
@@ -353,25 +373,28 @@ export default {
     },
 
     // Carregamento dos processos
-    loadProcessos: async function(){
+    loadProcessos: async function() {
       try {
         if (!this.listaProcessosReady) {
           this.listaProcessos.numProcessosSelecionados = 0;
           this.listaProcessos.numProcessosPreSelecionados = 0;
+          this.listaProcessos.processosPreSelecionados = 0;
           this.listaProcessos.procs = [];
-          var response = await this.$request("get", "/classes?nivel=3&info=completa");
+          var response = await this.$request(
+            "get",
+            "/classes?nivel=3&info=completa"
+          );
           for (let i = 0; i < response.data.length; i++) {
-
             this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i+1; // O 0 não deve ser usado pq ao multiplicar por -1 não muda
+            this.listaProcessos.procs[i].chave = i;
             this.listaProcessos.procs[i].edited = false;
-            this.listaProcessos.procs[i].descriptionEdited = false;
+            this.listaProcessos.procs[i].descriptionEMergedited = false;
             this.listaProcessos.procs[i].preSelected = 0;
             // Para poder ser filtrado na tabela
             this.listaProcessos.procs[i].preSelectedLabel = "";
             this.listaProcessos.procs[i].dono = false;
             this.listaProcessos.procs[i].participante = "NP";
-          } 
+          }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;
         }
@@ -380,25 +403,29 @@ export default {
       }
     },
 
-    loadProcessosEspecificos: async function(entidade){
-      try{
+    loadProcessosEspecificos: async function(entidade) {
+      try {
         var url = "/classes?nivel=3&tipo=especifico&ents=" + entidade.id;
         var response = await this.$request("get", url);
-        
+
         for (let j = 0; j < response.data.length; j++) {
           this.listaCodigosEsp.push(response.data[j].codigo);
         }
         // Marcamos os processos que não são específicos desta entidade como restantes
         var index;
-        for(let j = 0; j < this.listaProcessos.procs.length; j++){
-          if(this.listaProcessos.procs[j].tipoProc != "Processo Comum"){
-            index = this.listaCodigosEsp.indexOf(this.listaProcessos.procs[j].codigo);
-            if(index == -1) this.listaProcessos.procs[j].tipoProc = "Processo Restante";
+        for (let j = 0; j < this.listaProcessos.procs.length; j++) {
+          if (this.listaProcessos.procs[j].tipoProc != "Processo Comum") {
+            index = this.listaCodigosEsp.indexOf(
+              this.listaProcessos.procs[j].codigo
+            );
+            if (index == -1)
+              this.listaProcessos.procs[j].tipoProc = "Processo Restante";
           }
         }
-      }
-      catch(e){
-        console.log("Erro ao calcular os processos específicos das entidades: " + e);
+      } catch (e) {
+        console.log(
+          "Erro ao calcular os processos específicos das entidades: " + e
+        );
       }
     },
 
@@ -407,7 +434,8 @@ export default {
       try {
         if (!this.listaProcEspReady) {
           var url =
-            "/classes?nivel=3&tipo=especifico&ents=" + this.tabelaSelecao.idEntidade;
+            "/classes?nivel=3&tipo=especifico&ents=" +
+            this.tabelaSelecao.idEntidade;
           if (this.tipSel.length || this.tipSel.length) {
             url += "&tips=";
           }
@@ -441,36 +469,62 @@ export default {
         return error;
       }
     },
-    
+
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
       try {
-        var userBD = this.$verifyTokenUser();
-        // Guardam-se apenas os processos que foram alterados
-        // Ao carregar será preciso fazer Merge com a LC
-        // É preciso forçar uma cópia para não perder a lista corrente
-        this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.dono || p.participante!="NP");
+        //Valida se os processos a selecionar estão todos selecionados
+        if (
+          this.listaProcessos.numProcessosPreSelecionados -
+            this.listaProcessos.processosPreSelecionados !=
+          0
+        ) {
+          this.mensagensErro.push({
+            sobre: "Escolha de processos",
 
-        var tsObj = {
-          entidade: this.tabelaSelecao.idEntidade,
-          designacao: this.tabelaSelecao.designacao,
-          tipologias: this.tipSel,
-          processos: this.tabelaSelecao.listaProcessos.procs
-        };
+            mensagem: `Ainda tem ${this.listaProcessos
+              .numProcessosPreSelecionados -
+              this.listaProcessos
+                .processosPreSelecionados} processos por selecionar`
+          });
+          this.numeroErros++;
+          this.validacaoTerminada = true;
+        } else {
+          var userBD = this.$verifyTokenUser();
+          // Guardam-se apenas os processos que foram alterados
+          // Ao carregar será preciso fazer Merge com a LC
+          // É preciso forçar uma cópia para não perder a lista corrente
+          this.tabelaSelecao.listaProcessos = JSON.parse(
+            JSON.stringify(this.listaProcessos)
+          );
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            p => p.dono || p.participante != "NP"
+          );
 
-        var pedidoParams = {
-          tipoPedido: "Criação",
-          tipoObjeto: "TS Organizacional",
-          novoObjeto: { ts: tsObj },
-          user: { email: userBD.email },
-          entidade: userBD.entidade,
-          token: this.$store.state.token,
-          historico: []
-        };
+          var tsObj = {
+            entidade: this.tabelaSelecao.idEntidade,
+            designacao: this.tabelaSelecao.designacao,
+            tipologias: this.tipSel,
+            processos: this.tabelaSelecao.listaProcessos.procs
+          };
 
-        var codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
-        this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+          var pedidoParams = {
+            tipoPedido: "Criação",
+            tipoObjeto: "TS Organizacional",
+            novoObjeto: { ts: tsObj },
+            user: { email: userBD.email },
+            entidade: userBD.entidade,
+            token: this.$store.state.token,
+            historico: []
+          };
+
+          var codigoPedido = await this.$request(
+            "post",
+            "/pedidos",
+            pedidoParams
+          );
+          this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+        }
       } catch (error) {
         console.log("Erro ao criar o pedido: " + error);
       }
@@ -482,8 +536,12 @@ export default {
         // Guardam-se apenas os processos que foram alterados
         // Ao carregar será preciso fazer Merge com a LC
         // É preciso forçar uma cópia para não perder a lista corrente
-        this.tabelaSelecao.listaProcessos = JSON.parse(JSON.stringify(this.listaProcessos));
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.dono || p.participante!="NP");
+        this.tabelaSelecao.listaProcessos = JSON.parse(
+          JSON.stringify(this.listaProcessos)
+        );
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+          p => p.dono || p.participante != "NP"
+        );
 
         var pendenteParams = {
           numInterv: 1,
@@ -496,14 +554,21 @@ export default {
         };
 
         // É preciso testar se há um Pendente criado para não criar um novo
-        if(this.pendente._id){
+        if (this.pendente._id) {
           pendenteParams._id = this.pendente._id;
           pendenteParams.numInterv = this.pendente.numInterv++;
-          var response = await this.$request("put", "/pendentes", pendenteParams);
-        }
-        else{
+          var response = await this.$request(
+            "put",
+            "/pendentes",
+            pendenteParams
+          );
+        } else {
           pendenteParams.numInterv = 1;
-          var response = await this.$request("post", "/pendentes", pendenteParams);
+          var response = await this.$request(
+            "post",
+            "/pendentes",
+            pendenteParams
+          );
         }
 
         this.pendente = response.data;
@@ -518,12 +583,26 @@ export default {
     },
 
     // Valida a TS construída até ao momento
-    validarTS: function(){
-      return true;
+    validarTS: function() {
+      if (
+        this.listaProcessos.numProcessosPreSelecionados -
+          this.listaProcessos.processosPreSelecionados !=
+        0
+      ) {
+        this.mensagensErro.push({
+          sobre: "Escolha de processos",
+          mensagem: `Ainda tem ${this.listaProcessos
+            .numProcessosPreSelecionados -
+            this.listaProcessos
+              .processosPreSelecionados} processos por selecionar`
+        });
+        this.numeroErros++;
+      }
+      this.validacaoTerminada = true;
     },
 
     // Quando a validação termina chama-se esta rotina para fazer reset ao estado da Validação
-    fechoValidacao: async function(){
+    fechoValidacao: async function() {
       this.numeroErros = 0;
       this.mensagensErro = [];
       //this.notasApSet = [];
@@ -533,17 +612,19 @@ export default {
     },
 
     // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
-    sair: async function(){
-        this.$router.push("/"); 
+    sair: async function() {
+      this.$router.push("/");
     },
 
     // Abortar a operação apagando o pendente se existir
-    abortar: async function(){
-      if(this.pendente && this.pendente._id){
-        try{
-          var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
-        }
-        catch(e){
+    abortar: async function() {
+      if (this.pendente && this.pendente._id) {
+        try {
+          var response = await this.$request(
+            "delete",
+            "/pendentes/" + this.pendente._id
+          );
+        } catch (e) {
           console.log("Erro ao eliminar o pendente: " + e);
         }
       }
@@ -551,57 +632,65 @@ export default {
     },
 
     // Carrega os fechos transitivos necessários para os que já estão selecionados
-    loadFechoTransitivo: async function(){
-        try{
-            var response = await this.$request("get", "/travessiaV2");
-            this.fechoTransitivo = response.data;
-        }
-        catch(e){
-            console.log("Erro ao carregar o fecho transitivo: " + e);
-        }
+    loadFechoTransitivo: async function() {
+      try {
+        var response = await this.$request("get", "/travessiaV2");
+        this.fechoTransitivo = response.data;
+      } catch (e) {
+        console.log("Erro ao carregar o fecho transitivo: " + e);
+      }
     },
 
     // Faz a pré-seleção do fecho transitivo dos processos já selecionados
     acrescentaFecho: function(processo) {
-        var fecho = this.fechoTransitivo[processo.codigo];
-        for(let i=0; i < fecho.length; i++){
-          var index = this.listaProcessos.procs.findIndex(p => p.codigo == fecho[i]);
-          if(index != -1){
-            this.listaProcessos.procs[index].preSelected ++;
-            if(this.listaProcessos.procs[index].preSelected == 1) {
-              this.listaProcessos.numProcessosPreSelecionados++;
-              this.listaProcessos.procs[index].preSelectedLabel = "Pré-Selecionado";
-            }
-          } 
+      var fecho = this.fechoTransitivo[processo.codigo];
+      for (let i = 0; i < fecho.length; i++) {
+        var index = this.listaProcessos.procs.findIndex(
+          p => p.codigo == fecho[i]
+        );
+        if (index != -1) {
+          this.listaProcessos.procs[index].preSelected++;
+          if (this.listaProcessos.procs[index].preSelected == 1) {
+            this.listaProcessos.numProcessosPreSelecionados++;
+            this.listaProcessos.procs[index].preSelectedLabel =
+              "Pré-Selecionado";
+          }
         }
+      }
     },
 
-  // Merge do estado antigo dos processos com os que foram carregados da BD
-  mergeProcs: async function(){
+    // Merge do estado antigo dos processos com os que foram carregados da BD
+    mergeProcs: async function() {
       // Merge com os processos que já estavam selecionados
       var index;
-      for(let i=0; i < this.tabelaSelecao.listaProcessos.procs.length; i++){
-        index = this.listaProcessos.procs.findIndex(p => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo);
-        if(index != -1){
-          this.listaProcessos.procs[index] = this.tabelaSelecao.listaProcessos.procs[i];
+      for (let i = 0; i < this.tabelaSelecao.listaProcessos.procs.length; i++) {
+        index = this.listaProcessos.procs.findIndex(
+          p => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
+        );
+        if (index != -1) {
+          this.listaProcessos.procs[
+            index
+          ] = this.tabelaSelecao.listaProcessos.procs[i];
           this.acrescentaFecho(this.listaProcessos.procs[index]);
         }
       }
       this.listaProcessos.numProcessosSelecionados = this.tabelaSelecao.listaProcessos.numProcessosSelecionados;
       this.listaProcessos.numProcessosPreSelecionados = this.tabelaSelecao.listaProcessos.numProcessosPreSelecionados;
+      this.listaProcessos.processosPreSelecionados = this.tabelaSelecao.listaProcessos.processosPreSelecionados;
       this.listaProcessosReady = true;
-  }
+    }
   },
   created: async function() {
     this.pendente = this.obj;
+    this.participante = this.obj.objeto.participante;
+    delete this.obj.objeto.participante;
     this.tabelaSelecao = this.obj.objeto;
 
-    try{
+    try {
       await this.loadProcessos();
       await this.loadFechoTransitivo();
       await this.mergeProcs();
-    }
-    catch(e){
+    } catch (e) {
       console.log("Erro no carregamento dinicial: " + e);
     }
   }

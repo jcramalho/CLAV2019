@@ -138,7 +138,7 @@ import { mdiCheckBoxOutline } from "@mdi/js";
 import { mdiCheckboxBlankOutline } from "@mdi/js";
 
 export default {
-  props: ["listaProcs", "listaCodigosEsp"],
+  props: ["listaProcs", "listaCodigosEsp", "participante"],
   components: {
     EditDescritivo
   },
@@ -160,8 +160,6 @@ export default {
     numProcessosPreSelecionados: 0,
     // Número de Processos a selecionar selecionados
     processosPreSelecionados: 0,
-    // Array que determina a seleção de paticipante de cada processo
-    participante: [],
     // Icons
     selecionaResponsabilidadesIcon: mdiPencil,
     editaBlocoDescritivoIcon: mdiFileDocumentEdit,
@@ -249,14 +247,14 @@ export default {
       console.log("Erro no carregamento dos tipos de participação: " + e);
     }
     this.listaProcessos = this.listaProcs;
-    this.participante = new Array(this.listaProcessos.procs.length).fill("NP");
     this.numProcessosSelecionados = this.listaProcs.numProcessosSelecionados;
     this.numProcessosPreSelecionados = this.listaProcs.numProcessosPreSelecionados;
+    this.processosPreSelecionados = this.listaProcs.processosPreSelecionados;
     this.infoReady = true;
   },
 
   methods: {
-    selecionaParticipacao: async function(proc, participacao, index) {
+    selecionaParticipacao: async function(proc, participacao) {
       if (!proc.dono && proc.participante == "NP" && participacao != "NP") {
         this.listaProcs.numProcessosSelecionados++;
         this.numProcessosSelecionados++;

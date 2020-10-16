@@ -173,6 +173,7 @@
                     <ListaProcessos
                       :listaProcs="listaProcessos"
                       :listaCodigosEsp="listaCodigosEsp"
+                      :participante="participante"
                     />
                   </v-card-text>
                 </v-card>
@@ -299,6 +300,8 @@ export default {
       listaProcessosReady: false,
       // Lista com os códigos dos processos específicos da entidade selecionada
       listaCodigosEsp: [],
+      // Array que determina a seleção de paticipante de cada processo
+      participante: [],
 
       // Tratamento de erros da validação
       mensagensErro: [],
@@ -486,6 +489,9 @@ export default {
             this.listaProcessos.procs[i].dono = false;
             this.listaProcessos.procs[i].participante = "NP";
           }
+          this.participante = new Array(this.listaProcessos.procs.length).fill(
+            "NP"
+          );
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;
         }
@@ -605,7 +611,7 @@ export default {
         this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
           p => p.dono || p.participante != "NP"
         );
-
+        this.tabelaSelecao.participante = this.participante;
         var pendenteParams = {
           numInterv: 1,
           acao: "Criação",
