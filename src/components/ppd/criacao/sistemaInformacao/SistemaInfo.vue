@@ -54,6 +54,7 @@
                 </v-toolbar-items>
               </v-app-bar>
               <v-sheet id="scrolling" class="overflow-y-auto" max-height="600">
+                <v-container style="height: 70px;"></v-container>
                 <v-row>
                   <v-col cols="12" xs="12" sm="3">
                     <div class="info-label">Número de referência SI</div>
@@ -82,11 +83,11 @@
                   </v-col>
 
                   <v-col cols="12" xs="12" sm="3">
-                    <div class="info-label">Adminstrador do Sistema</div>
+                    <div class="info-label">Administrador do Sistema</div>
                   </v-col>
                   <v-col cols="12" xs="12" sm="8" v-if="entidadesReady">
                     <v-autocomplete
-                      v-model="c.identificacao.adminSistema"
+                      v-model="adminSistema"
                       :items="entidades"
                       item-text="label"
                       placeholder="Selecione o organismo que tem a administração operacional do sistema"
@@ -104,7 +105,7 @@
                   </v-col>
 
                   <v-col cols="12" xs="12" sm="3">
-                    <div class="info-label">Adminstrador de Dados</div>
+                    <div class="info-label">Administrador de Dados</div>
                   </v-col>
                   <v-col cols="12" xs="12" sm="8" v-if="entidadesReady">
                     <v-autocomplete
@@ -155,7 +156,7 @@
                     <v-text-field
                       :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
                       v-model="c.identificacao.propSistemaPrivado"
-                      label="Indique nome do organismo responsável pela gestão dos dados"
+                      label="Indique o nome do organismo responsável pela gestão dos dados"
                       solo
                       clearable
                     ></v-text-field>
@@ -213,7 +214,7 @@
                     <v-text-field
                       :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
                       v-model="c.identificacao.localDadosPrivado"
-                      label="Indicar nome da entidade privada onde os dados residem"
+                      label="Indique o nome da entidade privada onde os dados residem"
                       solo
                       clearable
                     ></v-text-field>
@@ -242,19 +243,6 @@
                         clearable
                         ></v-text-field>
                     </div>
-                  </v-col>
-
-                  <v-col cols="12" xs="12" sm="3">
-                    <div class="info-label">Expressão da formalização de responsabilidades individuais</div>
-                  </v-col>
-                  <v-col cols="12" xs="12" sm="8">
-                    <v-text-field
-                      :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                      v-model="c.identificacao.expressaoResponsavel"
-                      label="Indicar qual a expressão dessa formalização de mandatos(despacho oficial,registo no próprio sistema de utilizadores...)"
-                      solo
-                      clearable
-                    ></v-text-field>
                   </v-col>
 
                   <v-col cols="12" xs="12" sm="3">
@@ -406,6 +394,7 @@ export default {
       valid: false,
       dialog: false,
       simNao: ["Sim","Não"],
+      adminSistema: [],
       defCheck: "",
       insourcingCheck: "",
       outsourcingCheck: "",
@@ -463,18 +452,6 @@ export default {
       this.erroValidacao = false;
     },
 
-
-    validaNumero: function(n) {
-      var res = true;
-      if (n == "") {
-        this.mensagensErro.push(
-          "O número não pode ser vazio, introduza um valor!"
-        );
-        res = false;
-      }
-      return res;
-    },
-
     validaDups: async function(t, n) {
       try {
         var legs = await this.$request("get", "/sistema");
@@ -504,20 +481,71 @@ export default {
       }
     },
 
-    validaNome: function(s) {
+    validaAll: function(tipo, s) {
       if (s != "") return true;
       else {
-        this.mensagensErro.push("O nome não pode ficar vazio!");
+        this.mensagensErro.push(tipo + " não pode ficar vazio!");
+        return false;
+      }
+    },
+
+    validaDef: function(res, s) {
+      if (s == ""){
+        this.mensagensErro.push("A definição de responsabilidaes não pode ficar sem escolha!");
+        return false;
+      }
+      if (s == "Não") return true;
+      if (res != "") return true;
+      else {
+        this.mensagensErro.push("A expressão da formalização de responsabilidade não pode ficar vazia!");
+        return false;
+      }
+    },
+
+    validaInsourcing: function(res, s) {
+      if (s == ""){
+        this.mensagensErro.push("O insouring não pode ficar sem escolha!");
+        return false;
+      }
+      if (s == "Não") return true;
+      if (res != "") return true;
+      else {
+        this.mensagensErro.push("O campo natureza dos serviços do insourcing não pode ficar vazio!");
+        return false;
+      }
+    },
+    validaOutsourcing: function(res, s) {
+      if (s == ""){
+        this.mensagensErro.push("O outsourcing não pode ficar sem escolha!");
+        return false;
+      }
+      if (s == "Não") return true;
+      if (res != "") return true;
+      else {
+        this.mensagensErro.push("O campo natureza dos serviços do outsourcing não pode ficar vazio!");
         return false;
       }
     },
 
     newSistema: async function() {
-      if(this.validaNumero(this.numero) && this.validaNome(this.nome)){
+      if(this.validaAll("O campo número do SI",this.c.identificacao.numeroSI) &&
+        this.validaAll("O campo  nome do SI",this.c.identificacao.nomeSI) &&
+        this.validaAll("O campo administrador do sistema",this.adminSistema) &&
+        this.validaAll("O campo administrador de dados",this.c.identificacao.adminDados) &&
+        this.validaAll("O campo proprietário do SI - entidade pública",this.c.identificacao.propSistemaPublico) &&
+        this.validaAll("O campo proprietário do SI - entidade privada",this.c.identificacao.propSistemaPrivado) &&
+        this.validaAll("O campo proprietário dos dados",this.c.identificacao.propDados) &&
+        this.validaAll("O campo localização dos dados - entidade pública",this.c.identificacao.localDadosPublico) &&
+        this.validaAll("O campo localização dos dados - entidade privada",this.c.identificacao.localDadosPrivado) &&
+        this.validaDef(this.c.identificacao.defResponsavel, this.defCheck) &&
+        this.validaInsourcing(this.c.identificacao.outsourcing, this.outsourcingCheck) &&
+        this.validaAll("O campo notas", this.c.identificacao.notas) &&
+        this.validaAll("O campo de utilizadores",this.c.identificacao.userList)
+      ){
         var sistema = {
           numeroSI: this.c.identificacao.numeroSI,
           nomeSI: this.c.identificacao.nomeSI,
-          adminSistema: this.c.identificacao.adminSistema,
+          adminSistema: this.adminSistema,
           adminDados: this.c.identificacao.adminDados,
           propSistemaPublico: this.c.identificacao.propSistemaPublico,
           propSistemaPrivado: this.c.identificacao.propSistemaPrivado,
@@ -531,9 +559,25 @@ export default {
           outsourcing: this.c.identificacao.outsourcing,
           notas: this.c.identificacao.notas,
         };
+        this.c.identificacao.numeroSI= "";
+        this.c.identificacao.nomeSI= "";
+        this.adminSistema= [];
+        this.c.identificacao.adminDados= [];
+        this.c.identificacao.propSistemaPublico= [];
+        this.c.identificacao.propSistemaPrivado= "";
+        this.c.identificacao.propDados= [];
+        this.c.identificacao.localDadosPublico= [];
+        this.c.identificacao.localDadosPrivado= "";
+        this.c.identificacao.userList= [];
+        this.c.identificacao.defResponsavel= "";
+        this.c.identificacao.expressaoResponsavel="";
+        this.c.identificacao.insourcing= "";
+        this.c.identificacao.outsourcing= "";
+        this.c.identificacao.notas= "";
         this.dialog= false;
         this.$emit("newSistema", sistema);
       } else {
+        this.dialog= true;
         this.erroValidacao = true;
       }
     }

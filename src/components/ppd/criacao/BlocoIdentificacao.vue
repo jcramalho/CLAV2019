@@ -41,9 +41,9 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
 import InfoBox from "@/components/generic/infoBox.vue";
-import SistemaOps from "@/components/ppd/SistemaOps.vue";
-import SistemaInfo from "@/components/ppd/SistemaInfo.vue";
-import SistemaSelect from "@/components/ppd/SistemaSelect.vue";
+import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
+import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
+import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
 
 export default {
   props: ["c","semaforos","sis","entidades","entidadesReady"],

@@ -22,6 +22,48 @@
             ></v-text-field>
           </v-col>
 
+
+          <v-col dark cols="12" xs="12" sm="12">
+            <div style="text-align:center" class="separador">SI relacionado</div>
+          </v-col>
+
+          <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Decomposição do</div>
+          </v-col>
+          <v-col cols="12" xs="12" sm="9">
+            <div class="info-label">???</div>
+          </v-col>
+
+          <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Número de referência</div>
+          </v-col>
+          <v-col cols="12" xs="12" sm="9">
+            <v-text-field
+                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                v-model="numeroRef"
+                label="Indique o número de referência do sistema relacionado"
+                solo
+                clearable
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Tipo de relação</div>
+          </v-col>
+          <v-col
+            class="d-flex"
+            cols="12"
+            sm="9"
+          >
+            <v-select
+              :items="tipoRelacao"
+              label="Indique o estado de atividade do sistema"
+              v-model="siTipoRelacao"
+              dense
+              multiple
+            ></v-select>
+          </v-col>
+
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Código de classificação </div>
           </v-col>
@@ -85,8 +127,20 @@ export default {
   data: () => {
     return {
       myhelp: help,
-      checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"],
+      numeroRef: "",
+      siTipoRelacao: [],
+      
       loadCheck: "",
+
+
+      //Listas das opções disponiveis
+      tipoRelacao: ["S (síntese - quando sintetiza o conteúdo informativo do sistema em análise)",
+                    "D (duplicada - quando possui, no todo ou em parte, o mesmo conteúdo informativo do sistema em análise - não confundir com backups ou réplicas do sistema)",
+                    "I (complementar - quando possui informação adicional que acrescenta significado à informação do sistema em análise)",
+                    "A (antecedente - quando se trata de um sistema inactivo, que foi substituído pelo sistema em análise)",
+                    "X (Input - quando fornece dados ou informação ao sistema em análise)",
+                    "O (Output - quando a informação, no todo ou em parte, tem origem ou resulta do processamento de dados existentes no sistema em análise)"],
+      checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"],
       tsRada: ["TS","RADA"],
     };
   },

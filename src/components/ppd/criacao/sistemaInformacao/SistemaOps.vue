@@ -29,8 +29,8 @@
 
         <template v-slot:item="props">
           <tr>
-            <td>{{ props.item.numero }}</td>
-            <td>{{ props.item.nome }}</td>
+            <td>{{ props.item.numeroSI }}</td>
+            <td>{{ props.item.nomeSI }}</td>
             <td>
             <template>
               <div class="text">
@@ -102,8 +102,8 @@ export default {
       myhelp: help,
       dialog: false,
       headers: [
-        { text: "Número", value: "numero" },
-        { text: "Nome", value: "nome" },
+        { text: "Número", value: "numeroSI" },
+        { text: "Nome", value: "nomeSI" },
         { text: "Alterar", value: ""},
         { text: "Remover", value: "" }
       ],

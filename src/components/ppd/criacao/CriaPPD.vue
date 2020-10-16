@@ -102,10 +102,10 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
-import BlocoIdentificacao from "@/components/ppd/BlocoIdentificacao.vue";
-import BlocoAvaliacao from "@/components/ppd/BlocoAvaliacao.vue";
-import BlocoCaracterizacao from "@/components/ppd/BlocoCaracterizacao.vue";
-import BlocoEstrategia from "@/components/ppd/BlocoEstrategia.vue";
+import BlocoIdentificacao from "@/components/ppd/criacao/BlocoIdentificacao.vue";
+import BlocoAvaliacao from "@/components/ppd/criacao/BlocoAvaliacao.vue";
+import BlocoCaracterizacao from "@/components/ppd/criacao/BlocoCaracterizacao.vue";
+import BlocoEstrategia from "@/components/ppd/criacao/BlocoEstrategia.vue";
 
 export default {
   components: {
@@ -131,7 +131,6 @@ export default {
         localDadosPrivado: "",
         userList: [],
         defResponsavel: "",
-        expressaoResponsavel:"",
         insourcing: "",
         outsourcing: "",
         notas: "",
