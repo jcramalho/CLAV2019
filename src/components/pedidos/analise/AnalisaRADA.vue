@@ -1,5 +1,9 @@
 <template>
   <div>
+    <showPedidosDependentes
+      v-if="!!p.pedidos_dependentes[0]"
+      :pedidos="p.pedidos_dependentes"
+    />
     <v-row>
       <v-col cols="12">
         <v-stepper vertical class="elevation-0">
@@ -69,24 +73,6 @@
         @confirma="finalizarPedido(dialogConfirmacao.dados)"
       />
     </v-dialog>
-    <v-alert
-      width="100%"
-      :value="!todos_validados"
-      outlined
-      type="error"
-      prominent
-      border="left"
-    >
-      Impossível validar RADA. As seguintes dependências não foram validadas:
-      <ul>
-        <li v-for="(e, i) in por_validar" :key="i">
-          <span @click="$router.push('/pedidos/' + e.codigo)">{{
-            e.codigo
-          }}</span>
-          - {{ e.texto }}
-        </li>
-      </ul>
-    </v-alert>
   </div>
 </template>
 
@@ -98,6 +84,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ErroDialog from "@/components/generic/ErroDialog";
 import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
+import showPedidosDependentes from "@/components/pedidos/consulta/showPedidosDependentes";
 
 export default {
   props: {
@@ -114,6 +101,7 @@ export default {
     AnalisaRE,
     AnalisaTS,
     ConfirmacaoOperacao,
+    showPedidosDependentes,
   },
   data() {
     return {
@@ -128,9 +116,7 @@ export default {
       },
       novoHistorico: null,
       entidades: [],
-      formaContagem: {},
-      todos_validados: true,
-      por_validar: [],
+      formaContagem: {}
     };
   },
   async created() {
@@ -382,53 +368,53 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        let dependencias = pedido.distribuicao[0].despacho.match(
-          /(?<=\[)(.*)(?=\])/g
-        );
+        // let dependencias = pedido.distribuicao[0].despacho.match(
+        //   /(?<=\[)(.*)(?=\])/g
+        // );
 
-        this.todos_validados = true;
-        this.por_validar = [];
+        // this.todos_validados = true;
+        // this.por_validar = [];
 
-        if (dependencias != null) {
-          for (let i = 0; i < dependencias.length; i++) {
-            let response = await this.$request(
-              "get",
-              "/pedidos/" + dependencias[i]
-            );
+        // if (dependencias != null) {
+        //   for (let i = 0; i < dependencias.length; i++) {
+        //     let response = await this.$request(
+        //       "get",
+        //       "/pedidos/" + dependencias[i]
+        //     );
 
-            if (response.data.estado != "Validado") {
-              this.todos_validados = false;
-              this.por_validar.push({
-                codigo: response.data.codigo,
-                texto:
-                  response.data.objeto.acao + " " + response.data.objeto.tipo,
-              });
-            }
-          }
-        }
+        //     if (response.data.estado != "Validado") {
+        //       this.todos_validados = false;
+        //       this.por_validar.push({
+        //         codigo: response.data.codigo,
+        //         texto:
+        //           response.data.objeto.acao + " " + response.data.objeto.tipo,
+        //       });
+        //     }
+        //   }
+        // }
 
-        if (this.todos_validados) {
-          let dadosUtilizador = this.$verifyTokenUser();
+        // if (this.todos_validados) {
+        let dadosUtilizador = this.$verifyTokenUser();
 
-          const estado = "Em Despacho";
-          pedido.estado = estado;
+        const estado = "Em Despacho";
+        pedido.estado = estado;
 
-          pedido.historico.push(this.novoHistorico);
+        pedido.historico.push(this.novoHistorico);
 
-          const novaDistribuicao = {
-            estado: estado,
-            responsavel: dadosUtilizador.email,
-            data: new Date(),
-            despacho: dados.mensagemDespacho,
-          };
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
 
-          await this.$request("put", "/pedidos", {
-            pedido: pedido,
-            distribuicao: novaDistribuicao,
-          });
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
 
-          this.$router.go(-1);
-        }
+        this.$router.go(-1);
+        // }
       } catch (e) {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem = "Erro ao finalizar a validação!";
