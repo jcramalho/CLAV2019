@@ -62,6 +62,7 @@
                 <v-text-field
                   :placeholder="tabelaSelecao.designacao"
                   v-model="tabelaSelecao.designacao"
+                  :rules="[v => !!v || 'A designação não pode ser vazia']"
                 ></v-text-field>
               </v-flex>
               <v-btn
@@ -502,10 +503,12 @@ export default {
           );
 
           var tsObj = {
-            entidade: this.tabelaSelecao.idEntidade,
+            idEntidade: this.tabelaSelecao.idEntidade,
+            designacaoEntidade: this.tabelaSelecao.designacaoEntidade,
             designacao: this.tabelaSelecao.designacao,
-            tipologias: this.tipSel,
-            processos: this.tabelaSelecao.listaProcessos.procs
+            idTipologia: this.tabelaSelecao.idTipologia,
+            designacaoTipologia: this.tabelaSelecao.designacaoTipologia,
+            listaProcessos: this.tabelaSelecao.listaProcessos
           };
 
           var pedidoParams = {
@@ -648,8 +651,14 @@ export default {
         var index = this.listaProcessos.procs.findIndex(
           p => p.codigo == fecho[i]
         );
-        if (index != -1) {
+        //Só acrescenta processos a selecionar que não tenham sido selecionados antes de guardar o trabalho
+        if (
+          index != -1 &&
+          !this.listaProcessos.procs[index].dono &&
+          this.listaProcessos.procs[index].participante == "NP"
+        ) {
           this.listaProcessos.procs[index].preSelected++;
+
           if (this.listaProcessos.procs[index].preSelected == 1) {
             this.listaProcessos.numProcessosPreSelecionados++;
             this.listaProcessos.procs[index].preSelectedLabel =
