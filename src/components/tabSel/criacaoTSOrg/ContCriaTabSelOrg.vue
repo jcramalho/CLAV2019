@@ -473,24 +473,35 @@ export default {
 
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
-      try {
-        //Valida se os processos a selecionar estão todos selecionados
-        if (
-          this.listaProcessos.numProcessosPreSelecionados -
-            this.listaProcessos.processosPreSelecionados !=
-          0
-        ) {
-          this.mensagensErro.push({
-            sobre: "Escolha de processos",
+      //Valida se os processos a selecionar estão todos selecionados
+      if (
+        this.listaProcessos.numProcessosPreSelecionados -
+          this.listaProcessos.processosPreSelecionados !=
+        0
+      ) {
+        this.mensagensErro.push({
+          sobre: "Escolha de processos",
 
-            mensagem: `Ainda tem ${this.listaProcessos
-              .numProcessosPreSelecionados -
-              this.listaProcessos
-                .processosPreSelecionados} processos por selecionar`
-          });
-          this.numeroErros++;
-          this.validacaoTerminada = true;
-        } else {
+          mensagem: `Ainda tem ${this.listaProcessos
+            .numProcessosPreSelecionados -
+            this.listaProcessos
+              .processosPreSelecionados} processos por selecionar`
+        });
+        this.numeroErros++;
+        this.validacaoTerminada = true;
+      } else {
+        // É preciso testar se há um Pendente criado para o apagar
+        if (this.pendente._id) {
+          try {
+            var response = await this.$request(
+              "delete",
+              "/pendentes/" + this.pendente._id
+            );
+          } catch (e) {
+            console.log("Erro ao remover o pendente na submissão da TS: " + e);
+          }
+        }
+        try {
           var userBD = this.$verifyTokenUser();
           // Guardam-se apenas os processos que foram alterados
           // Ao carregar será preciso fazer Merge com a LC
@@ -527,9 +538,9 @@ export default {
             pedidoParams
           );
           this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+        } catch (error) {
+          console.log("Erro ao criar o pedido: " + error);
         }
-      } catch (error) {
-        console.log("Erro ao criar o pedido: " + error);
       }
     },
     // Guarda o trabalho de criação de uma TS

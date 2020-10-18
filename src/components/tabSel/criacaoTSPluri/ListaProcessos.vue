@@ -203,6 +203,9 @@ export default {
     } catch (e) {
       console.log("Erro ao carregar o fecho transitivo: " + e);
     }
+    this.processosPreSelecionados =
+      this.listaProcs.numProcessosPreSelecionados -
+      this.listaProcs.processosPreSelecionados;
   },
 
   methods: {
