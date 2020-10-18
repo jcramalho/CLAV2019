@@ -6,7 +6,8 @@
         :size="128"
         :width="20"
         color="indigo darken-4"
-      >A processar pedido...</v-progress-circular>
+        >A processar pedido...</v-progress-circular
+      >
     </v-overlay>
     <v-row class="mt-1">
       <v-col cols="2">
@@ -16,12 +17,16 @@
         <div class="mb-1">
           <v-icon left>account_balance</v-icon>
           {{ p.objeto.dados.ts.designacaoEntidade }}
-          {{ p.objeto.dados.ts.designacaoTipologia}}
+          {{ p.objeto.dados.ts.designacaoTipologia }}
         </div>
       </v-col>
       <v-col cols="1">
-        <v-icon color="green" @click="novoHistorico.entidades.cor = 'verde'">check</v-icon>
-        <v-icon color="red" @click="novoHistorico.entidades.cor = 'vermelho'">clear</v-icon>
+        <v-icon color="green" @click="novoHistorico.entidades.cor = 'verde'"
+          >check</v-icon
+        >
+        <v-icon color="red" @click="novoHistorico.entidades.cor = 'vermelho'"
+          >clear</v-icon
+        >
         <v-icon @click="abrirNotaDialog('entidades', -1)">add_comment</v-icon>
       </v-col>
     </v-row>
@@ -37,10 +42,12 @@
       :footer-props="tsFooterProps"
     >
       <template v-slot:no-data>
-        <v-alert :value="true" color="error" icon="warning">Não existem processos para mostrar...</v-alert>
+        <v-alert :value="true" color="error" icon="warning"
+          >Não existem processos para mostrar...</v-alert
+        >
       </template>
 
-      <template v-slot:footer.page-text="props">
+      <template v-slot:[`footer.page-text`]="props">
         {{ props.pageStart }} - {{ props.pageStop }} de
         {{ props.itemsLength }}
       </template>
@@ -59,7 +66,7 @@
               x-small
             >
               {{ p.objeto.dados.ts.idEntidade }}
-              {{ p.objeto.dados.ts.idTipologia}}
+              {{ p.objeto.dados.ts.idTipologia }}
             </v-chip>
           </td>
           <td>
@@ -70,11 +77,20 @@
               outlined
               label
               x-small
-            >{{ props.item.participante }}</v-chip>
+              >{{ props.item.participante }}</v-chip
+            >
           </td>
           <td>
-            <v-icon color="green" @click="novoHistorico.legislacao.cor = 'verde'">check</v-icon>
-            <v-icon color="red" @click="novoHistorico.legislacao.cor = 'vermelho'">clear</v-icon>
+            <v-icon
+              color="green"
+              @click="novoHistorico.legislacao.cor = 'verde'"
+              >check</v-icon
+            >
+            <v-icon
+              color="red"
+              @click="novoHistorico.legislacao.cor = 'vermelho'"
+              >clear</v-icon
+            >
           </td>
         </tr>
       </template>
@@ -95,22 +111,23 @@
 
     <v-dialog v-model="sucessDialog" width="700" persistent>
       <v-card outlined>
-        <v-card-title
-          class="success darken-4 title white--text"
-          dark
-        >Tabela de Seleção adicionada com sucesso!</v-card-title>
+        <v-card-title class="success darken-4 title white--text" dark
+          >Tabela de Seleção adicionada com sucesso!</v-card-title
+        >
 
         <v-card-text>
-          <span
-            class="subtitle-1"
-            style="white-space: pre-wrap"
-          >O Pedido de criação da Tabela de Seleção foi efetuado com sucesso...</span>
+          <span class="subtitle-1" style="white-space: pre-wrap"
+            >O Pedido de criação da Tabela de Seleção foi efetuado com
+            sucesso...</span
+          >
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="red darken-4" text @click="$router.go(-1)">Fechar</v-btn>
+          <v-btn color="red darken-4" text @click="$router.go(-1)"
+            >Fechar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -120,10 +137,10 @@
     <!-- Dialog da nota -->
     <v-dialog v-model="notaDialog.visivel" width="70%" persistent>
       <v-card>
-        <v-card-title
-          class="indigo darken-4 title white--text mb-4"
-          dark
-        >Nota relativa ao campo: {{ converteCampo(notaDialog.campo) }}</v-card-title>
+        <v-card-title class="indigo darken-4 title white--text mb-4" dark
+          >Nota relativa ao campo:
+          {{ converteCampo(notaDialog.campo) }}</v-card-title
+        >
 
         <v-card-text>
           <v-row>
@@ -146,9 +163,21 @@
 
         <v-card-actions>
           <v-spacer />
-          <v-btn color="red darken-4" text rounded dark @click="notaDialog.visivel = false">Cancelar</v-btn>
+          <v-btn
+            color="red darken-4"
+            text
+            rounded
+            dark
+            @click="notaDialog.visivel = false"
+            >Cancelar</v-btn
+          >
 
-          <v-btn color="indigo accent-4 white--text" rounded @click="adicionarNota()">Adicionar</v-btn>
+          <v-btn
+            color="indigo accent-4 white--text"
+            rounded
+            @click="adicionarNota()"
+            >Adicionar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -49,7 +49,7 @@
         </v-alert>
       </template>
 
-      <template v-slot:footer.page-text="props">
+      <template v-slot:[`footer.page-text`]="props">
         {{ props.pageStart }} - {{ props.pageStop }} de
         {{ props.itemsLength }}
       </template>
@@ -205,7 +205,7 @@ export default {
   props: ["p"],
   components: {
     PO,
-    ErroDialog,
+    ErroDialog
   },
 
   data() {
@@ -221,20 +221,20 @@ export default {
         { text: "Título", value: "titulo", class: "subtitle-1" },
         { text: "Dono", value: "dono", class: "subtitle-1" },
         { text: "Participante", value: "participante", class: "subtitle-1" },
-        { text: "Validar", class: "subtitle-1", width: "8%" },
+        { text: "Validar", class: "subtitle-1", width: "8%" }
       ],
       tsFooterProps: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
+        "items-per-page-all-text": "Todos"
       },
       notaDialog: {
         visivel: false,
         campo: "",
         index: -1,
-        nota: "",
+        nota: ""
       },
-      novoHistorico: null,
+      novoHistorico: null
     };
   },
   methods: {
@@ -265,7 +265,7 @@ export default {
         visivel: false,
         campo: "",
         index: -1,
-        nota: "",
+        nota: ""
       };
     },
     async despacharPedido(dados) {
@@ -278,7 +278,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -287,7 +287,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -311,7 +311,7 @@ export default {
 
         this.overlay = true;
         await this.$request("post", "/tabelasSelecao", {
-          tabela: pedido,
+          tabela: pedido
         });
 
         const estado = "Validado";
@@ -322,14 +322,14 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         pedido.estado = estado;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
         this.overlay = false;
         this.sucessDialog = true;
@@ -342,30 +342,30 @@ export default {
 
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
-            parsedError.data.forEach((erro) => {
+            parsedError.data.forEach(erro => {
               this.erros.push({ parametro: erro.param, mensagem: erro.msg });
             });
           }
         } else {
           this.erros.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Ocorreu um erro ao aceder à ontologia.",
+            mensagem: "Ocorreu um erro ao aceder à ontologia."
           });
           //console.log("e :", e);
         }
       }
-    },
+    }
   },
   async created() {
     const copiaHistorico = JSON.parse(
       JSON.stringify(this.historico[this.historico.length - 1])
     );
-    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+    Object.keys(copiaHistorico).forEach(h => (copiaHistorico[h].nota = null));
 
     this.novoHistorico = copiaHistorico;
 
     this.loading = false;
-  },
+  }
 };
 </script>
 <style scoped>

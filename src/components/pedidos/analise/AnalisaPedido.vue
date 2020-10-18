@@ -11,10 +11,10 @@
             <v-tooltip
               v-if="
                 temPermissaoConsultarHistorico() &&
-                !(
-                  pedido.objeto.acao === 'Criação' &&
-                  pedido.estado === 'Submetido'
-                )
+                  !(
+                    pedido.objeto.acao === 'Criação' &&
+                    pedido.estado === 'Submetido'
+                  )
               "
               bottom
             >
@@ -48,7 +48,7 @@
           <v-card-text
             v-if="
               pedido.objeto.acao === 'Criação' ||
-              pedido.objeto.acao === 'Importação'
+                pedido.objeto.acao === 'Importação'
             "
           >
             <AnalisaEntidade
@@ -75,8 +75,8 @@
             <AnalisaClasseN1
               v-else-if="
                 pedido.objeto.tipo === 'Classe_N3' ||
-                pedido.objeto.tipo === 'Classe_N1' ||
-                pedido.objeto.tipo === 'Classe_N2'
+                  pedido.objeto.tipo === 'Classe_N1' ||
+                  pedido.objeto.tipo === 'Classe_N2'
               "
               :p="pedido"
             />
@@ -84,13 +84,13 @@
             <AnalisaAE
               v-else-if="
                 pedido.objeto.tipo.includes('AE ') ||
-                pedido.objeto.tipo === 'Auto de Eliminação'
+                  pedido.objeto.tipo === 'Auto de Eliminação'
               "
               :p="pedido"
               :tipo="pedido.objeto.tipo"
             />
 
-            <AnalisaTS
+            <AnalisaTSPluri
               v-else-if="pedido.objeto.tipo.includes('TS Pluri')"
               :p="pedido"
             />
@@ -107,8 +107,8 @@
           <v-card-text
             v-else-if="
               pedido.objeto.acao === 'Alteração' ||
-              pedido.objeto.acao === 'Extinção' ||
-              pedido.objeto.acao === 'Revogação'
+                pedido.objeto.acao === 'Extinção' ||
+                pedido.objeto.acao === 'Revogação'
             "
           >
             <span>
@@ -128,7 +128,7 @@
                 <span
                   v-else-if="
                     pedido.objeto.tipo === 'Entidade' ||
-                    pedido.objeto.tipo === 'Tipologia'
+                      pedido.objeto.tipo === 'Tipologia'
                   "
                 >
                   <b>{{ pedido.objeto.tipo }}:</b>
@@ -197,7 +197,7 @@ import AnalisaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
 import AnalisaAE from "@/components/pedidos/analise/AnalisaAE";
-import AnalisaTS from "@/components/pedidos/analise/AnalisaTS";
+import AnalisaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
 import AnalisaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
 import AnalisaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
 
@@ -227,13 +227,13 @@ export default {
     AnalisaEditaLegislacao,
     AnalisaEditaTipologiaEntidade,
     AnalisaAE,
-    AnalisaTS,
+    AnalisaTSPluri,
     AnalisaTSOrg,
     AnalisaClasseN1,
     AnalisaDefault,
     VerDespachos,
     ErroDialog,
-    VerHistorico,
+    VerHistorico
   },
 
   data() {
@@ -242,11 +242,11 @@ export default {
       loading: true,
       snackbar: {
         visivel: false,
-        texto: "Test",
+        texto: "Test"
       },
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       pedido: {},
       despachosDialog: false,
@@ -254,9 +254,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" },
+        { text: "Despacho", value: "despacho" }
       ],
-      etapas: [],
+      etapas: []
     };
   },
 
@@ -298,7 +298,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>
