@@ -84,8 +84,8 @@ export default {
               processosSel: [],
             };
 
-            if(!!pedidos_dependencias[i].link){
-              novoLeg['link'] = pedidos_dependencias[i].link
+            if (!!pedidos_dependencias[i].link) {
+              novoLeg["link"] = pedidos_dependencias[i].link;
             }
 
             await this.$request("post", "/legislacao", novoLeg);
@@ -99,7 +99,10 @@ export default {
     },
     async finalizarPedido(despacho) {
       try {
-        await this.criarDependentes(this.pedido.pedidos_dependentes);
+        if (!!this.pedido.pedidos_dependentes[0]) {
+          await this.criarDependentes(this.pedido.pedidos_dependentes);
+        }
+
         let res = await this.$request("get", "/contador/despacho");
 
         this.numeroDespacho =
